@@ -183,5 +183,5 @@
     </div>
     <x-footers.auth>
         </x-footer.auth>
-        <x-plugins></x-plugins>
+        
 </x-layout>

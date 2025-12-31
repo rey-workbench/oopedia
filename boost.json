@@ -1,0 +1,10 @@
+{
+    "agents": [
+        "kiro"
+    ],
+    "editors": [
+        "kiro",
+        "vscode"
+    ],
+    "guidelines": []
+}
