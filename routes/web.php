@@ -17,7 +17,8 @@ use App\Http\Controllers\Admin\{
     LogoutController as AdminLogoutController,
     UeqSurveyController,
     QuestionBankController,
-    UeqSurveyController as AdminUeqSurveyController
+    UeqSurveyController as AdminUeqSurveyController,
+    AdaptiveRuleController
 };
 use App\Http\Controllers\Mahasiswa\{
     DashboardController as MahasiswaDashboardController,
@@ -140,10 +141,17 @@ Route::middleware('auth')->group(function () {
         Route::delete('question-bank-configs/{config}', [QuestionBankController::class, 'deleteConfig'])
             ->name('question-bank-configs.delete');
 
+        // Adaptive Rules routes
+        Route::resource('adaptive-rules', App\Http\Controllers\Admin\AdaptiveRuleController::class);
+        Route::patch('adaptive-rules/{adapoggle-status', [App\Http\Controllers\Admin\AdaptiveRuleController::class, 'toggleStatus'])
+            ->name('adaptive-rules.toggle-status');
+
         // Media routes
         Route::get('/media/delete/{id}', [AdminMaterialController::class, 'deleteMedia'])
             ->name('media.delete');
     });
+        // Adaptive rules routes
+        Route::resource('adaptive-rules', AdaptiveRuleController::class);
 
     // Mahasiswa & Guest Routes (role 3 = mahasiswa, role 4 = guest)
     Route::middleware(['role:3|4'])->name('mahasiswa.')->prefix('mahasiswa')->group(function () {

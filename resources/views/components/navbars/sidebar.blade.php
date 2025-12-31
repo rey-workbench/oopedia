@@ -100,6 +100,17 @@
             </li>
             @endif
 
+            @if(auth()->user()->role_id <= 2)
+            <li class="nav-item">
+                <a class="nav-link text-white {{ $activePage == 'adaptive-rules' ? 'active bg-gradient-primary' : '' }}" href="{{ route('admin.adaptive-rules.index') }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">settings_suggest</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Adaptive Rules</span>
+                </a>
+            </li>
+            @endif
+
             {{-- Menu Progress Mahasiswa --}}
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Data Mahasiswa</h6>

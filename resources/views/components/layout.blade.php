@@ -36,7 +36,7 @@
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <!-- CSS Files -->
-    <link id="pagestyle" href="{{ asset('assets') }}/css/material-dashboard.css?v=3.0.0" rel="stylesheet" />
+    <link id="pagestyle" href="{{ asset('assets') }}/css/material-dashboard.min.css?v=3.0.0" rel="stylesheet" />
     <script src="https://cdn.tiny.cloud/1/9iw2xqwn1593xsb15d6xpi0y41mtrets5ms0l5s8kekdgf63/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <link href="{{ asset('css/admin-theme.css') }}" rel="stylesheet">
 
@@ -360,29 +360,8 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Perfect Scrollbar initialization
         if (document.querySelector('.sidenav')) {
-            var fixedPlugin = document.querySelector('.fixed-plugin');
-            var fixedPluginButton = document.querySelector('.fixed-plugin-button');
-            var fixedPluginButtonNav = document.querySelector('.fixed-plugin-button-nav');
-            var fixedPluginCard = document.querySelector('.fixed-plugin .card');
-            var fixedPluginCloseButton = document.querySelectorAll('.fixed-plugin-close-button');
             var navbar = document.getElementById('navbarBlur');
             var buttonNavbarFixed = document.getElementById('navbarFixed');
-
-            if (fixedPluginButton) {
-                fixedPluginButton.onclick = function() {
-                    if (!fixedPlugin.classList.contains('show')) {
-                        fixedPlugin.classList.add('show');
-                    } else {
-                        fixedPlugin.classList.remove('show');
-                    }
-                }
-            }
-
-            document.querySelector('body').onclick = function(e) {
-                if (e.target != fixedPluginButton && e.target != fixedPluginButtonNav && e.target.closest('.fixed-plugin .card') != fixedPluginCard) {
-                    fixedPlugin.classList.remove('show');
-                }
-            }
         }
     });
 

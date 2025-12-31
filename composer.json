@@ -27,6 +27,7 @@
     "require-dev": {
         "nunomaduro/collision": "^7.12",
         "spatie/laravel-ignition": "^2.9",
-        "laravel/sail": "^1.43"
+        "laravel/sail": "^1.43",
+        "jcf/boost-for-kiro-ide": "^1.0"
     }
 }
