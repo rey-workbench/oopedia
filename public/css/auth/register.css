@@ -1,0 +1,5 @@
+.oopedia-bg {
+    background-image: url('/images/background-log.jpg');
+    background-size: cover;
+    min-height: 600px;
+}

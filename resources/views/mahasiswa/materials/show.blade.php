@@ -2,49 +2,8 @@
     <x-slot:styles>
         <link href="{{ asset('css/mahasiswa.css') }}" rel="stylesheet">
         <link rel="stylesheet" href="{{ asset('css/material-show.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/mahasiswa/materials/show.css') }}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
-        <style>
-            .materi-media-section {
-                background-color: #f8f9fa;
-                border-radius: 10px;
-                padding: 20px;
-                margin-top: 30px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            }
-        
-            .media-heading {
-                font-size: 1.5rem;
-                color: #2c3e50;
-                margin-bottom: 20px;
-                border-bottom: 2px solid #3498db;
-                padding-bottom: 10px;
-            }
-        
-            .media-item {
-                transition: transform 0.3s ease;
-                border-radius: 8px;
-                overflow: hidden;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            }
-        
-            .media-item:hover {
-                transform: translateY(-5px);
-            }
-        
-            .media-item img {
-                width: 100%;
-                height: 200px;
-                object-fit: cover;
-            }
-        
-            .media-caption {
-                background-color: #fff;
-                padding: 10px;
-                font-size: 0.9rem;
-                color: #555;
-                text-align: center;
-            }
-        </style>
     </x-slot:styles>
 
     <div class="container-fluid px-4">
@@ -114,215 +73,19 @@
 
     <x-slot:scripts>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+        <script src="{{ asset('js/mahasiswa/materials/show.js') }}"></script>
         <script>
-        lightbox.option({
-            'resizeDuration': 200,
-            'wrapAround': true,
-            'albumLabel': "Gambar %1 dari %2"
-        });
-
-        function initializeQuestionForm() {
-            const questionForm = document.getElementById('questionForm');
-            const checkAnswerBtn = document.getElementById('checkAnswerBtn');
-            const feedbackElement = document.querySelector('.exercise-feedback');
-            
-            if (questionForm) {
-                questionForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    // Disable button to prevent multiple submissions
-                    if (checkAnswerBtn) {
-                        checkAnswerBtn.disabled = true;
-                        checkAnswerBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Memeriksa...';
+            document.addEventListener('DOMContentLoaded', function() {
+                // Initialize form logic if applicable
+                const config = {
+                    isGuest: {{ auth()->check() ? (auth()->user()->role_id === 4 ? 'true' : 'false') : 'true' }},
+                    maxQuestionsForGuest: 3, // Default fallback
+                    routes: {
+                        levelsUrl: "{{ route('mahasiswa.materials.questions.levels', ['material' => $material->id, 'difficulty' => request()->query('difficulty', 'all')]) }}"
                     }
-                    
-                    // Validasi untuk fill in the blank
-                    const fillInBlankInput = document.getElementById('fill_in_the_blank_answer');
-                    if (fillInBlankInput && fillInBlankInput.value.trim() === '') {
-                        alert('Jawaban tidak boleh kosong');
-                        if (checkAnswerBtn) {
-                            checkAnswerBtn.disabled = false;
-                            checkAnswerBtn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Periksa Jawaban';
-                        }
-                        return;
-                    }
-                    
-                    // Debugging - log form data
-                    console.log("Form data being sent:");
-                    const formData = new FormData(this);
-                    for (let pair of formData.entries()) {
-                        console.log(pair[0] + ': ' + pair[1]);
-                    }
-                    
-                    // Submit form via AJAX
-                    fetch(this.action, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'Accept': 'application/json'
-                        },
-                        credentials: 'same-origin'
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            return response.json().then(errorData => {
-                                throw new Error(JSON.stringify(errorData));
-                            });
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log("Response data:", data);
-                        
-                        const feedbackStatus = document.getElementById('feedbackStatus');
-                        const feedbackIcon = document.getElementById('feedbackIcon');
-                        const explanationBox = document.getElementById('explanationBox');
-                        const explanationText = document.getElementById('explanationText');
-                        const tryAgainBtn = document.getElementById('tryAgainBtn');
-                        const nextQuestionBtn = document.getElementById('nextQuestionBtn');
-        
-                        // Set status dan icon
-                        feedbackStatus.innerHTML = `<h3 class="${data.status === 'success' ? 'text-success' : 'text-danger'}">${data.message}</h3>`;
-                        feedbackIcon.className = `feedback-icon ${data.status === 'success' ? 'success' : 'error'}`;
-                        feedbackIcon.innerHTML = `<i class="fas ${data.status === 'success' ? 'fa-check-circle' : 'fa-times-circle'} fa-3x"></i>`;
-        
-                        // Tampilkan penjelasan
-                        if (data.explanation) {
-                            explanationText.innerHTML = data.explanation;
-                            explanationBox.style.display = 'block';
-                        } else if (data.selectedExplanation) {
-                            explanationText.innerHTML = data.selectedExplanation;
-                            explanationBox.style.display = 'block';
-                        } else {
-                            explanationBox.style.display = 'none';
-                        }
-        
-                        // Tampilkan tombol yang sesuai
-                        if (data.status === 'success') {
-                            tryAgainBtn.style.display = 'none';
-                            nextQuestionBtn.style.display = 'inline-block';
-                            
-                            // Check if guest has completed their maximum questions
-                            // Assuming isGuest & maxQuestionsForGuest are defined or handled elsewhere if this code runs
-                            if (typeof isGuest !== 'undefined' && typeof maxQuestionsForGuest !== 'undefined' && isGuest && data.answeredCount >= maxQuestionsForGuest) {
-                                nextQuestionBtn.innerHTML = '<i class="fas fa-check me-2"></i>Selesai';
-                                nextQuestionBtn.onclick = () => window.location.reload();
-                            } else if (typeof isGuest !== 'undefined' && isGuest && !data.hasNextQuestion) {
-                                // Jika pengguna tamu dan tidak ada soal berikutnya
-                                nextQuestionBtn.innerHTML = '<i class="fas fa-check me-2"></i>Selesai';
-                                nextQuestionBtn.onclick = () => window.location.reload();
-                            } else if (!data.hasNextQuestion) {
-                                // Jika tidak ada soal berikutnya untuk user biasa
-                                nextQuestionBtn.innerHTML = '<i class="fas fa-check me-2"></i>Selesai';
-                                nextQuestionBtn.onclick = () => {
-                                    window.location.href = "{{ route('mahasiswa.materials.questions.levels', [
-                                        'material' => $material->id,
-                                        'difficulty' => request()->query('difficulty', 'all')
-                                    ]) }}";
-                                };
-                            } else {
-                                nextQuestionBtn.innerHTML = 'Lanjut ke Soal Berikutnya <i class="fas fa-arrow-right ms-2"></i>';
-                                nextQuestionBtn.onclick = () => {
-                                    // Save current scroll position
-                                    const currentScroll = window.scrollY;
-                                    
-                                    // Fetch next question via AJAX
-                                    fetch(data.nextUrl, {
-                                        headers: {
-                                            'X-Requested-With': 'XMLHttpRequest'
-                                        }
-                                    })
-                                    .then(response => response.text())
-                                    .then(html => {
-                                        // Find and update only the question container
-                                        const parser = new DOMParser();
-                                        const doc = parser.parseFromString(html, 'text/html');
-                                        const newQuestionContainer = doc.querySelector('#questionContainer');
-                                        const currentQuestionContainer = document.querySelector('#questionContainer');
-                                        
-                                        if (newQuestionContainer && currentQuestionContainer) {
-                                            currentQuestionContainer.innerHTML = newQuestionContainer.innerHTML;
-                                            
-                                            // Hide feedback element
-                                            const feedbackElement = document.querySelector('.exercise-feedback');
-                                            if (feedbackElement) {
-                                                feedbackElement.style.display = 'none';
-                                            }
-                                            
-                                            // Show question form
-                                            const questionForm = document.querySelector('#questionForm');
-                                            if (questionForm) {
-                                                questionForm.style.display = 'block';
-                                            }
-                                            
-                                            // Restore scroll position
-                                            window.scrollTo(0, currentScroll);
-                                            
-                                            // Reinitialize event listeners for the new form
-                                            initializeQuestionForm();
-                                        } else {
-                                            // Fallback to full page reload if containers not found
-                                            window.location.href = data.nextUrl;
-                                        }
-                                    })
-                                    .catch(error => {
-                                        console.error('Error:', error);
-                                        window.location.href = data.nextUrl; // Fallback to full page reload
-                                    });
-                                };
-                            }
-                        } else {
-                            tryAgainBtn.style.display = 'inline-block';
-                            nextQuestionBtn.style.display = 'none';
-                            tryAgainBtn.onclick = () => {
-                                feedbackElement.style.display = 'none';
-                                questionForm.style.display = 'block';
-                                checkAnswerBtn.disabled = false;
-                                checkAnswerBtn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Periksa Jawaban';
-                            };
-                        }
-        
-                        feedbackElement.style.display = 'block';
-                        questionForm.style.display = 'none';
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        
-                        try {
-                            const errorData = JSON.parse(error.message);
-                            if (errorData.message) {
-                                alert(errorData.message);
-                            } else {
-                                alert('Terjadi kesalahan saat memeriksa jawaban. Silakan coba lagi.');
-                            }
-                        } catch (e) {
-                            alert('Terjadi kesalahan saat memeriksa jawaban. Silakan coba lagi.');
-                        }
-                        
-                        if (checkAnswerBtn) {
-                            checkAnswerBtn.disabled = false;
-                            checkAnswerBtn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Periksa Jawaban';
-                        }
-                    });
-                });
-            }
-            
-            // Initialize clickable answer options
-            const answerOptions = document.querySelectorAll('.answer-option');
-            answerOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    const radio = this.querySelector('input[type="radio"]');
-                    if (radio) {
-                        radio.checked = true;
-                    }
-                });
+                };
+                initializeQuestionForm(config);
             });
-        }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeQuestionForm();
-        });
         </script>
     </x-slot:scripts>
 </x-layouts.app>

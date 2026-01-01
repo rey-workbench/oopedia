@@ -175,21 +175,8 @@
                 },
             @endforeach
         ];
-        
-        function viewFullQuestion(questionId) {
-            // Find the question by ID
-            const question = questionsData.find(q => q.id === questionId);
-            
-            if (question) {
-                // Set the modal content
-                document.getElementById('fullQuestionContent').innerHTML = question.text;
-                
-                // Show the modal
-                const modal = new bootstrap.Modal(document.getElementById('fullQuestionModal'));
-                modal.show();
-            }
-        }
     </script>
+    <script src="{{ asset('js/admin/questions/index.js') }}"></script>
     @endpush
     <x-admin.tutorial />
 

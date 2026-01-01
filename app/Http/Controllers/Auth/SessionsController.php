@@ -100,6 +100,7 @@ class SessionsController extends Controller
 
     public function destroy(Request $request)
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         $isGuest = $user && $user->role_id === 4;
         

@@ -135,146 +135,22 @@
 
     @push('js')
         <script>
-            let answerCount = 1;
+            // Initializing variables for form.js
+            var initialAnswerCount = 1;
 
-            function handleQuestionTypeChange() {
-                const questionType = document.querySelector('[name="question_type"]').value;
-                const answerContainer = document.getElementById('answers-container');
-                const addAnswerBtn = document.getElementById('add-answer-btn');
-
-                // Reset container
-                while (answerContainer.firstChild) {
-                    answerContainer.removeChild(answerContainer.firstChild);
-                }
-
-                // Add initial answers based on question type
-                if (questionType === 'fill_in_the_blank') {
-                    addAnswer(); // Only add one answer for fill in the blank
-                    // Optionally hide the add answer button for fill in the blank
-                    if (addAnswerBtn) {
-                        addAnswerBtn.style.display = 'none';
-                    }
-                } else {
-                    // For other question types, add two answers and show the add button
-                    addAnswer();
-                    addAnswer();
-                    if (addAnswerBtn) {
-                        addAnswerBtn.style.display = 'block';
-                    }
-                }
-
-                // Update UI based on question type
-                updateAnswerUI(questionType);
-            }
-
-            function addAnswer() {
-                const container = document.getElementById('answers-container');
-                const answerCount = container.getElementsByClassName('answer-entry').length;
-
-                const newAnswer = document.createElement('div');
-                newAnswer.className = 'answer-entry mb-3';
-                newAnswer.innerHTML = `
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="input-group input-group-outline">
-                            <input type="text" name="answers[${answerCount}][answer_text]" class="form-control" placeholder="Jawaban" required>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="correct_answer" value="${answerCount}">
-                            <label class="form-check-label">Jawaban Benar</label>
-                            <input type="hidden" name="answers[${answerCount}][is_correct]" value="0">
-                        </div>
-                    </div>
-                </div>
-            `;
-
-                container.appendChild(newAnswer);
-            }
-
-            function updateAnswerUI(questionType) {
-                const answerEntries = document.querySelectorAll('.answer-entry');
-
-                answerEntries.forEach((entry, index) => {
-                    const radioInput = entry.querySelector('input[type="radio"]');
-                    const isCorrectInput = entry.querySelector('input[name$="[is_correct]"]');
-
-                    if (questionType === 'fill_in_the_blank' && index === 0) {
-                        // For fill in the blank, automatically set the first answer as correct
-                        if (radioInput) radioInput.checked = true;
-                        if (isCorrectInput) isCorrectInput.value = '1';
-                    }
-                });
-            }
-
+            // Pre-populate logic if needed, but for create we rely on resetAnswersForNewType() usually, 
+            // but we need to trigger it once on load.
             document.addEventListener('DOMContentLoaded', function() {
-                const questionTypeSelect = document.querySelector('[name="question_type"]');
-                const form = document.getElementById('questionForm');
-
-                // Event listener untuk perubahan tipe soal
-                questionTypeSelect.addEventListener('change', handleQuestionTypeChange);
-
-                // Event listener untuk perubahan jawaban benar
-                document.addEventListener('change', function(e) {
-                    if (e.target.type === 'radio' && e.target.name === 'correct_answer') {
-                        const container = document.getElementById('answers-container');
-                        const answers = container.getElementsByClassName('answer-entry');
-
-                        Array.from(answers).forEach((answer, index) => {
-                            const hiddenInput = answer.querySelector('input[name$="[is_correct]"]');
-                            if (hiddenInput) {
-                                hiddenInput.value = (index.toString() === e.target.value) ? '1' : '0';
-                            }
-                        });
-                    }
-                });
-
-                // Validasi form sebelum submit
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-
-                    // Ambil nilai dari TinyMCE
-                    const questionText = tinymce.get('content-editor').getContent();
-
-                    if (!questionText) {
-                        alert('Pertanyaan tidak boleh kosong!');
-                        return;
-                    }
-
-                    const questionType = questionTypeSelect.value;
-                    if (questionType === 'radio_button') {
-                        const selectedRadio = document.querySelector('input[name="correct_answer"]:checked');
-                        if (!selectedRadio) {
-                            alert('Pilih satu jawaban yang benar untuk tipe soal Radio Button');
-                            return;
-                        }
-
-                        const correctAnswers = document.querySelectorAll(
-                            'input[name$="[is_correct]"][value="1"]');
-                        if (correctAnswers.length !== 1) {
-                            alert('Harus ada tepat satu jawaban yang benar untuk tipe soal Radio Button');
-                            return;
-                        }
-                    }
-
-                    // Jika semua validasi passed, submit form
-                    this.submit();
-                });
-
-                // Disable tombol submit setelah diklik untuk mencegah double submit
-                document.getElementById('submitBtn').addEventListener('click', function() {
-                    setTimeout(() => {
-                        this.disabled = true;
-                        this.innerHTML =
-                            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Menyimpan...';
-                    }, 0);
-                });
-
-                // Inisialisasi awal
-                handleQuestionTypeChange();
+                 // Trigger reset to setup initial 2 answers for non-blank types
+                 // Note: we can't call resetAnswersForNewType directly here as it's in the external file 
+                 // which loads after. But form.js triggers handleQuestionTypeChange/reset on load/change.
+                 
+                 // In form.js we attached change listener. 
+                 // We need to trigger it.
+                 resetAnswersForNewType(); 
             });
         </script>
+        <script src="{{ asset('js/admin/questions/form.js') }}"></script>
     @endpush
     <x-admin.tutorial />
 </x-layouts.app>

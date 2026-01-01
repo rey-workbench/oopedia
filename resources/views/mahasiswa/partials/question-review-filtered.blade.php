@@ -54,26 +54,5 @@
     </div>
 </div>
 
-<style>
-    .question-review {
-        transition: all 0.3s ease;
-    }
-    
-    .question-review:hover {
-        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    }
-    
-    .answer-option {
-        position: relative;
-        transition: all 0.2s ease;
-    }
-    
-    .answer-option.border-success {
-        border: 1px solid #00c07f;
-    }
-    
-    .answer-explanation {
-        font-size: 0.95rem;
-        color: #555;
-    }
-</style> 
+{{-- Note: CSS should be included in the parent view --}}
+{{-- <link href="{{ asset('css/mahasiswa/partials/question-review-filtered.css') }}" rel="stylesheet"> --}}
