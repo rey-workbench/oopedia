@@ -79,19 +79,11 @@
                 {{-- <x-footers.guest></x-footers.guest> --}}
             </div>
         </main>
-        @push('js')
-<script src="{{ asset('assets') }}/js/jquery.min.js"></script>
-<script>
-    $(function() {
-
-    var text_val = $(".input-group input").val();
-    if (text_val === "") {
-      $(".input-group").removeClass('is-filled');
-    } else {
-      $(".input-group").addClass('is-filled');
-    }
-});
-</script>
-@endpush
-<link rel="stylesheet" href="{{ asset('css/blue-theme.css') }}">
+    @push('js')
+        <script src="{{ asset('assets') }}/js/jquery.min.js"></script>
+        <script src="{{ asset('js/auth/login.js') }}"></script>
+    @endpush
+    @push('css')
+        <link rel="stylesheet" href="{{ asset('css/blue-theme.css') }}">
+    @endpush
 </x-layouts.guest>

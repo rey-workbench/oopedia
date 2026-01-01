@@ -155,107 +155,19 @@
 </div>
 
 @push('styles')
-<link href="{{ asset('css/mahasiswa.css') }}" rel="stylesheet">
-<style>
-    /* Reset default badge styles */
-    .level-badge {
-        display: inline-block;
-        padding: 0.25rem 0.75rem;
-        font-size: 0.75rem;
-        font-weight: 600;
-        border-radius: 0.375rem;
-        text-align: center;
-    }
-    
-    /* Define specific badge colors */
-    .level-secondary {
-        background-color: #6c757d !important;
-        color: white !important;
-    }
-    
-    .level-success {
-        background-color: #28a745 !important;
-        color: white !important;
-    }
-    
-    .level-warning {
-        background-color: #ffc107 !important;
-        color: #212529 !important;
-    }
-    
-    .level-danger {
-        background-color: #dc3545 !important;
-        color: white !important;
-    }
-    
-    /* Override any conflicting styles */
-    .podium-item .level-badge {
-        margin-top: 5px;
-    }
-    
-    /* Style untuk badge skor */
-    .score-badge {
-        display: inline-block;
-        padding: 0.25rem 0.75rem;
-        font-size: 0.8rem;
-        font-weight: 700;
-        border-radius: 0.375rem;
-        background-color: #3498db;
-        color: white;
-    }
-    
-    /* Style untuk skor di podium */
-    .score-display {
-        margin-top: 5px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #333;
-        background-color: rgba(255, 255, 255, 0.7);
-        padding: 3px 8px;
-        border-radius: 12px;
-        display: inline-block;
-    }
-    
-    /* Skor pada peringkat pertama */
-    .first-place .score-display {
-        background-color: rgba(255, 215, 0, 0.3);
-    }
-</style>
+    <link href="{{ asset('css/mahasiswa.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/mahasiswa/leaderboard.css') }}" rel="stylesheet">
 @endpush
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ asset('js/mahasiswa/leaderboard.js') }}"></script>
 <script>
-    // Konfeti untuk peringkat teratas
-    document.addEventListener('DOMContentLoaded', function() {
-        @if($currentUserRank && $currentUserRank->rank <= 3)
-            // Konfeti untuk peringkat 1-3
-            const colors = [
-                ['#004e98', '#0074d9'], // Dark blue - peringkat 1
-                ['#0074d9', '#3498db'], // Medium blue - peringkat 2
-                ['#3498db', '#4fc3f7']  // Light blue - peringkat 3
-            ];
-            
-            const selectedColors = colors[{{ $currentUserRank->rank - 1 }}];
-            
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: selectedColors,
-                startVelocity: 30,
-                gravity: 0.5,
-                ticks: 200,
-                shapes: ['square', 'circle'],
-                zIndex: 1000
-            });
-        @endif
-    });
-
-    function showFeedback(result, score, attemptNumber) {
-        // Kode yang sudah dimodifikasi di atas
-    }
+    // Configuration for extracted JS
+    const leaderboardConfig = {
+        currentUserRank: {{ $currentUserRank ? $currentUserRank->rank : 'null' }}
+    };
 </script>
 @endpush
-</x-layouts.app> 
+</x-layouts.app>

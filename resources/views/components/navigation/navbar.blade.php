@@ -52,126 +52,14 @@
         </div>
     </nav>
 
-    <script>
-    function resetAllTutorials() {
-        // Hapus semua tutorial keys dari localStorage
-        for (let key in localStorage) {
-            if (key.includes('tutorial_complete') || key === 'skip_admin_tour') {
-                localStorage.removeItem(key);
-            }
-        }
-        
-        Swal.fire({
-            title: 'Tutorial Direset',
-            text: 'Tutorial akan dimulai ulang',
-            icon: 'success',
-            confirmButtonText: 'OK'
-        }).then(() => {
-            // Langsung jalankan tutorial setelah reset
-            const currentPage = '{{ request()->route()?->getName() ?? '' }}';
-            if (typeof startAdminTutorial === 'function') {
-                startAdminTutorial();
-            }
-        });
-    }
-    </script>
+    <script src="{{ asset('js/components/navbar.js') }}"></script>
 
 @elseif($isStudentRole())
     {{-- Mahasiswa/Guest Navbar --}}
     @push('css')
     <link href="{{ asset('css/mahasiswa.css') }}" rel="stylesheet">
     <link href="https://unpkg.com/intro.js/minified/introjs.min.css" rel="stylesheet">
-    <style>
-        /* Perbaikan responsif navbar */
-        @media (max-width: 767.98px) {
-            .navbar .container-fluid {
-                padding-left: 8px;
-                padding-right: 8px;
-            }
-            
-            .profile-dropdown {
-                position: static;
-            }
-            
-            .profile-dropdown .dropdown-menu {
-                position: absolute;
-                right: 10px;
-                left: auto;
-                width: auto;
-                min-width: 200px;
-                border-radius: 8px;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            }
-            
-            .dropdown-menu.show {
-                transform: translateY(0);
-                opacity: 1;
-                transition: transform 0.2s ease, opacity 0.2s ease;
-            }
-            
-            .dropdown-menu {
-                transform: translateY(-10px);
-                opacity: 0;
-            }
-        }
-        
-        .navbar {
-            position: sticky;
-            top: 0;
-            z-index: 1030;
-        }
-        
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            padding: 8px 16px;
-        }
-        
-        .profile-image {
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        
-        .mobile-header-links {
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 0.5rem;
-        }
-        
-        .mobile-header-links .btn-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: white;
-            color: #333;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        
-        .mobile-header-links .btn-icon.active {
-            background: #007bff;
-            color: white;
-        }
-        
-        @media (max-width: 359.98px) {
-            .profile-image {
-                width: 25px;
-                height: 25px;
-            }
-            
-            .navbar .container-fluid {
-                padding-left: 4px;
-                padding-right: 4px;
-            }
-            
-            .btn-icon {
-                padding: 0.25rem;
-                font-size: 0.875rem;
-            }
-        }
-    </style>
+    <link href="{{ asset('css/components/navbar.css') }}" rel="stylesheet">
     @endpush
 
     <nav class="navbar">

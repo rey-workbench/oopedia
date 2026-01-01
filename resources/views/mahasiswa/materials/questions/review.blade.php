@@ -3,34 +3,7 @@
         <link href="{{ asset('css/mahasiswa.css') }}" rel="stylesheet">
         <link rel="stylesheet" href="{{ asset('css/material-show.css') }}">
         <link rel="stylesheet" href="{{ asset('css/question-review.css') }}">
-        <style>
-            .question-review {
-                transition: all 0.3s ease;
-            }
-            
-            .question-review:hover {
-                box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            }
-            
-            .answer-option {
-                position: relative;
-                transition: all 0.2s ease;
-            }
-            
-            .answer-option.border-success {
-                border: 1px solid #00c07f;
-            }
-            
-            .answer-explanation {
-                font-size: 0.95rem;
-                color: #555;
-            }
-            
-            .difficulty-filter .btn {
-                border-radius: 20px;
-                padding: 0.375rem 1rem;
-            }
-        </style>
+        <link rel="stylesheet" href="{{ asset('css/mahasiswa/materials/questions/review.css') }}">
     </x-slot:styles>
 
     <div class="row">

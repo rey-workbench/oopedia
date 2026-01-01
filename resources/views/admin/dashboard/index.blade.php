@@ -221,62 +221,12 @@
     <x-slot:scripts>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                // Material Completion Chart
-                var ctx = document.getElementById('material-completion-chart').getContext('2d');
-                var materialChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: {!! json_encode($materialStats->pluck('title')) !!},
-                        datasets: [{
-                            label: 'Tingkat Penyelesaian (%)',
-                            data: {!! json_encode($materialStats->pluck('completion_rate')) !!},
-                            backgroundColor: [
-                                'rgba(54, 162, 235, 0.7)',
-                                'rgba(75, 192, 192, 0.7)',
-                                'rgba(153, 102, 255, 0.7)',
-                                'rgba(255, 159, 64, 0.7)',
-                                'rgba(255, 99, 132, 0.7)'
-                            ],
-                            borderColor: [
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(255, 159, 64, 1)',
-                                'rgba(255, 99, 132, 1)'
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: 100,
-                                ticks: {
-                                    callback: function(value) {
-                                        return value + '%';
-                                    }
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return context.dataset.label + ': ' + context.raw + '%';
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            });
+            // Pass PHP data to JS
+            var materialStats = {
+                labels: {!! json_encode($materialStats->pluck('title')) !!},
+                data: {!! json_encode($materialStats->pluck('completion_rate')) !!}
+            };
         </script>
+        <script src="{{ asset('js/admin/dashboard/index.js') }}"></script>
     </x-slot:scripts>
 </x-layouts.app>

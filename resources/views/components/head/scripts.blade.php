@@ -15,6 +15,8 @@
 {{-- Component JS --}}
 <script src="{{ asset('js/components/navigation.js') }}"></script>
 <script src="{{ asset('js/components/ui.js') }}"></script>
+<script src="{{ asset('js/components/tinymce-init.js') }}"></script>
+<script src="{{ asset('js/utils/scrollbar.js') }}"></script>
 
 {{-- Theme-specific scripts --}}
 @if($theme === 'admin')

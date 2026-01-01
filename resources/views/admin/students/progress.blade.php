@@ -124,6 +124,3 @@
     <x-admin.tutorial />
 
 </x-layouts.app>
-
-@push('js')
-@endpush

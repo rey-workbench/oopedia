@@ -1,0 +1,710 @@
+.level-container {
+    position: relative;
+    background-color: #f8f9fa;
+    background-image: radial-gradient(#e9ecef 1px, transparent 1px);
+    background-size: 20px 20px;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.level-header.text-center.mb-4 {
+    background-color: #333;
+    color: #4CAF50;
+    padding: 10px 20px;
+    border-radius: 10px;
+    display: inline-block;
+    font-weight: bold;
+}
+
+.level-map {
+    position: relative;
+    padding: 40px 20px;
+    background-image:
+        radial-gradient(#e9ecef 1px, transparent 1px),
+        radial-gradient(#e9ecef 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+}
+
+.level-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin: 40px 0;
+}
+
+.level-row::before {
+    content: none;
+    border: none;
+}
+
+/* Garis tengah (vertikal) */
+.level-row.center::before {
+    width: 2px;
+    height: 150px;
+    border: none;
+    border-left: 2px dashed #4CAF50;
+    left: 50%;
+    top: 100%;
+    z-index: 1;
+}
+
+/* Garis kiri (berbelok) */
+.level-row.left::before {
+    content: none;
+    border: none;
+}
+
+/* Garis kanan (berbelok) */
+.level-row.right::before {
+    content: none;
+    border: none;
+}
+
+/* Posisi level-item */
+.level-row.center {
+    justify-content: center;
+    margin-bottom: 150px;
+    position: relative;
+}
+
+.level-row.left {
+    justify-content: flex-start;
+    padding-left: 20%;
+    margin-bottom: 100px;
+    position: relative;
+}
+
+.level-row.right {
+    justify-content: flex-end;
+    padding-right: 20%;
+    margin-bottom: 100px;
+    position: relative;
+}
+
+/* Kotak garis putus-putus dekoratif */
+.level-row.left::after {
+    content: none;
+    border: none;
+}
+
+.level-row.right::after {
+    content: none;
+    border: none;
+}
+
+/* Garis penghubung tambahan untuk level 1 ke 2 */
+.level-row.center+.level-row.left::before {
+    content: none;
+    border: none;
+}
+
+/* Garis penghubung tambahan untuk level 2 ke 3 */
+.level-row.left+.level-row.right::before {
+    content: none;
+    border: none;
+}
+
+/* Titik-titik dekoratif */
+.level-dots {
+    position: absolute;
+    font-size: 24px;
+    color: #4CAF50;
+    letter-spacing: 8px;
+    z-index: 2;
+}
+
+.level-row.right .level-dots {
+    left: 35%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.level-row.left .level-dots {
+    right: 35%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.level-item {
+    position: relative;
+    z-index: 2;
+}
+
+.level-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    position: relative;
+    margin: 5px 0;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border: 5px solid #fff;
+}
+
+.completed .level-circle {
+    background: linear-gradient(145deg, #4CAF50, #45a049);
+    color: white;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.completed-icon {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: white;
+    border-radius: 50%;
+    padding: 5px;
+    font-size: 22px;
+    color: #4CAF50;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.locked .level-circle {
+    background: linear-gradient(145deg, #e9ecef, #dee2e6);
+    color: #adb5bd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.unlocked .level-circle {
+    background: linear-gradient(145deg, #2196F3, #1976D2);
+    color: white;
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
+    cursor: pointer;
+    position: relative;
+}
+
+/* Hapus animasi bola yang berputar */
+.unlocked .level-circle::before,
+.unlocked .level-circle::after {
+    content: none;
+}
+
+/* Tambahkan border berputar */
+.unlocked .level-circle {
+    position: relative;
+}
+
+.unlocked .level-circle::before {
+    content: '';
+    position: absolute;
+    width: calc(100% + 20px);
+    height: calc(100% + 20px);
+    top: -10px;
+    left: -10px;
+    border: 2px solid transparent;
+    border-top-color: #90CAF9;
+    border-right-color: #90CAF9;
+    border-radius: 50%;
+    animation: rotate 2s linear infinite;
+}
+
+.unlocked .level-circle::after {
+    content: '';
+    position: absolute;
+    width: calc(100% + 30px);
+    height: calc(100% + 30px);
+    top: -15px;
+    left: -15px;
+    border: 2px dashed transparent;
+    border-bottom-color: #64B5F6;
+    border-left-color: #64B5F6;
+    border-radius: 50%;
+    animation: rotate 3s linear infinite reverse;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.level-circle:hover {
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
+}
+
+.level-actions {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.trophy-circle {
+    width: 90px;
+    height: 90px;
+    margin-top: -5px;
+}
+
+.trophy.locked .trophy-circle {
+    background: #e9ecef;
+    border: 2px solid #dee2e6;
+}
+
+.trophy.locked .trophy-icon {
+    color: #adb5bd;
+    font-size: 24px;
+}
+
+.trophy.completed .trophy-circle {
+    background: linear-gradient(145deg, #FFD700, #FFA500);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    animation: pulseTrophy 2s infinite;
+}
+
+.trophy-icon {
+    font-size: 35px;
+    color: #adb5bd;
+}
+
+.trophy.completed .trophy-icon {
+    color: white;
+    animation: rotateTrophy 3s infinite;
+}
+
+@keyframes pulseTrophy {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes rotateTrophy {
+    0% {
+        transform: rotate(-15deg);
+    }
+
+    50% {
+        transform: rotate(15deg);
+    }
+
+    100% {
+        transform: rotate(-15deg);
+    }
+}
+
+.trophy {
+    margin-top: 10px;
+}
+
+.level-legend {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.legend-items {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.legend-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.difficulty-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 25px;
+    margin-top: 15px;
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
+    font-weight: 500;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.difficulty-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
+}
+
+.start-container {
+    display: inline-block;
+    padding: 10px 40px;
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+    transition: all 0.3s ease;
+}
+
+.start-title {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+    letter-spacing: 2px;
+}
+
+.start-underline {
+    width: 50%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.5);
+    margin: 5px auto 0;
+    border-radius: 2px;
+}
+
+.start-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+}
+
+.start-button {
+    background: #4CAF50;
+    padding: 15px 60px;
+    border-radius: 50px;
+    display: inline-block;
+    position: relative;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.25);
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.start-text {
+    color: #0D47A1;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    position: relative;
+    display: inline-block;
+    padding: 0 15px;
+    text-shadow:
+        2px 2px 0 #1976D2,
+        -2px -2px 0 #1976D2,
+        2px -2px 0 #1976D2,
+        -2px 2px 0 #1976D2;
+    animation: startGlow 2s ease-in-out infinite;
+}
+
+.start-line {
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            #0D47A1 50%,
+            transparent 100%);
+    margin-top: 8px;
+    opacity: 0.9;
+}
+
+@keyframes startGlow {
+    0% {
+        text-shadow:
+            2px 2px 0 #1976D2,
+            -2px -2px 0 #1976D2,
+            2px -2px 0 #1976D2,
+            -2px 2px 0 #1976D2,
+            0 0 10px rgba(25, 118, 210, 0.5);
+    }
+
+    50% {
+        text-shadow:
+            2px 2px 0 #1976D2,
+            -2px -2px 0 #1976D2,
+            2px -2px 0 #1976D2,
+            -2px 2px 0 #1976D2,
+            0 0 20px rgba(25, 118, 210, 0.8);
+    }
+
+    100% {
+        text-shadow:
+            2px 2px 0 #1976D2,
+            -2px -2px 0 #1976D2,
+            2px -2px 0 #1976D2,
+            -2px 2px 0 #1976D2,
+            0 0 10px rgba(25, 118, 210, 0.5);
+    }
+}
+
+@keyframes gentlePulse {
+    0% {
+        opacity: 0.7;
+        transform: scaleX(0.95);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+
+    100% {
+        opacity: 0.7;
+        transform: scaleX(0.95);
+    }
+}
+
+.start-line {
+    animation: gentlePulse 3s ease-in-out infinite;
+}
+
+.start-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent);
+    transition: 0.5s;
+}
+
+.start-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.35);
+    background: #43A047;
+}
+
+.start-button:hover::before {
+    left: 100%;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 6px 20px rgba(76, 175, 80, 0.25);
+    }
+
+    50% {
+        box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+    }
+
+    100% {
+        box-shadow: 0 6px 20px rgba(76, 175, 80, 0.25);
+    }
+}
+
+.start-button {
+    animation: pulse 2s infinite;
+}
+
+.start-label {
+    background: #4CAF50;
+    padding: 12px 50px;
+    border-radius: 50px;
+    display: inline-block;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+    pointer-events: none;
+}
+
+.start-text {
+    color: white;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+@keyframes gentlePulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+    }
+
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 4px 20px rgba(76, 175, 80, 0.25);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+    }
+}
+
+.start-label {
+    animation: gentlePulse 3s infinite ease-in-out;
+}
+
+.difficulty-selector {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.difficulty-selector select {
+    min-width: 150px;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.difficulty-badge {
+    display: inline-block;
+    padding: 8px 15px;
+    background: #f8f9fa;
+    border-radius: 20px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+@keyframes pulseAndFloat {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-5px) scale(1.05);
+    }
+
+    100% {
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes glowPulse {
+    0% {
+        opacity: 0.3;
+        transform: scale(1.1);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: scale(1.2);
+    }
+
+    100% {
+        opacity: 0.3;
+        transform: scale(1.1);
+    }
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes orbitDouble {
+    from {
+        transform: rotate(0deg) translateX(60px) rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg) translateX(60px) rotate(-360deg);
+    }
+}
+
+/* Efek glow untuk jalur yang sudah selesai */
+.map-path.completed-path {
+    filter: drop-shadow(0 0 3px rgba(76, 175, 80, 0.5));
+}
+
+/* Efek glow untuk titik yang sudah selesai */
+.map-dot.completed-dot {
+    filter: drop-shadow(0 0 3px rgba(76, 175, 80, 0.5));
+}
+
+/* Animasi untuk titik */
+@keyframes pulseDot {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Tambahkan style untuk level-difficulty */
+.level-difficulty {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 15px;
+    display: inline-block;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Style untuk setiap tingkat kesulitan */
+.level-difficulty.beginner {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
+}
+
+.level-difficulty.medium {
+    background-color: #fff3e0;
+    color: #ef6c00;
+    border: 1px solid #ffcc80;
+}
+
+.level-difficulty.hard {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ef9a9a;
+}

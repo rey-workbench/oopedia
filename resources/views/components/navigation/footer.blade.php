@@ -60,20 +60,7 @@
     </footer>
 
     @push('css')
-    <style>
-        .footer {
-            background-color: #f8f9fa;
-            border-top: 1px solid #e9ecef;
-        }
-        
-        .footer-minimal {
-            padding: 0.5rem 0;
-        }
-        
-        .footer .copyright {
-            color: #6c757d;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/components/footer.css') }}">
     @endpush
 
 @else
@@ -92,15 +79,7 @@
 
     @if($variant === 'fixed')
     @push('css')
-    <style>
-        .bottom-footer {
-            bottom: 0;
-        }
-        
-        .z-index-1 {
-            z-index: 1;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/components/footer.css') }}">
     @endpush
     @endif
 @endif

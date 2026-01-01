@@ -114,38 +114,9 @@
         </div>
     </main>
     
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Auto refresh setelah form submit
-            const approveForms = document.querySelectorAll('form[action*="approve"]');
-            const rejectForms = document.querySelectorAll('form[action*="reject"]');
-            
-            const handleFormSubmit = function(e) {
-                const form = e.target;
-                const originalButton = form.querySelector('button[type="submit"]');
-                
-                if (originalButton) {
-                    originalButton.disabled = true;
-                    originalButton.innerHTML = 'Memproses...';
-                }
-            };
-            
-            approveForms.forEach(form => {
-                form.addEventListener('submit', handleFormSubmit);
-            });
-            
-            rejectForms.forEach(form => {
-                form.addEventListener('submit', handleFormSubmit);
-            });
-            
-            // Jika ada pesan sukses, refresh halaman setelah 2 detik
-            @if(session('success'))
-            setTimeout(function() {
-                window.location.reload();
-            }, 2000);
-            @endif
-        });
-    </script>
+    <x-slot:scripts>
+        <script src="{{ asset('js/admin/users/pending.js') }}"></script>
+    </x-slot:scripts>
     <x-admin.tutorial />
 
 </x-layouts.app>

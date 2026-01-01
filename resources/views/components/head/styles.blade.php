@@ -29,6 +29,12 @@
 <link href="{{ asset('css/components/forms.css') }}" rel="stylesheet">
 <link href="{{ asset('css/components/ui.css') }}" rel="stylesheet">
 <link href="{{ asset('css/components/loading-overlay.css') }}" rel="stylesheet">
+<link href="{{ asset('css/components/base-layout.css') }}" rel="stylesheet">
+
+{{-- Theme Layout Overrides --}}
+@if($theme === 'admin')
+    <link href="{{ asset('css/themes/admin-layout-overrides.css') }}" rel="stylesheet">
+@endif
 
 {{-- Additional styles slot --}}
 {{ $slot }}

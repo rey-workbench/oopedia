@@ -190,120 +190,11 @@
     </aside>
 
     @push('css')
-    <style>
-    /* Styling untuk dropdown menu */
-    #questionsMenu {
-        margin-left: 1rem;
-        transition: all 0.3s ease;
-    }
-
-    #questionsMenu .nav-link {
-        padding: 0.5rem 1rem;
-        margin: 0.25rem 0;
-        border-radius: 0.375rem;
-    }
-
-    #questionsMenu .nav-link:hover {
-        background-color: rgba(199, 199, 199, 0.2);
-    }
-
-    #questionsMenu .nav-link.active {
-        background: linear-gradient(195deg, #EC407A 0%, #D81B60 100%);
-    }
-
-    /* Animasi untuk icon dropdown */
-    [aria-expanded="true"] .material-icons.ms-auto {
-        transform: rotate(180deg);
-        transition: transform 0.3s ease;
-    }
-
-    [aria-expanded="false"] .material-icons.ms-auto {
-        transform: rotate(0deg);
-        transition: transform 0.3s ease;
-    }
-
-    /* Styling untuk item dropdown */
-    .sidenav-mini-icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 24px;
-        height: 24px;
-    }
-
-    .sidenav-normal {
-        font-size: 0.875rem;
-        font-weight: 400;
-    }
-
-    .material-icons.ms-auto::after {
-        display: none !important;
-        content: none !important;
-    }
-
-    .nav-link::after {
-        display: none !important;
-    }
-
-    .nav-item h6 {
-        margin: 0;
-        padding: 1rem 0;
-    }
-
-    .sidenav {
-        height: 100vh;
-        overflow-y: auto;
-        overflow-x: hidden;
-        padding-bottom: 100px;
-    }
-
-    .sidenav::-webkit-scrollbar {
-        width: 0;
-        display: none;
-    }
-
-    .sidenav {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
-
-    .sidenav .navbar-collapse {
-        height: auto;
-        min-height: calc(100vh - 100px);
-    }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/components/sidebar.css') }}">
     @endpush
 
     @push('scripts')
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Handle all dropdown toggles
-        const dropdownToggles = document.querySelectorAll('[data-bs-toggle="collapse"]');
-        
-        dropdownToggles.forEach(function(toggle) {
-            toggle.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                const targetMenu = document.querySelector(targetId);
-                
-                // Tutup semua dropdown yang terbuka kecuali yang sedang di-klik
-                dropdownToggles.forEach(function(otherToggle) {
-                    if (otherToggle !== toggle) {
-                        const otherId = otherToggle.getAttribute('href');
-                        const otherMenu = document.querySelector(otherId);
-                        otherToggle.setAttribute('aria-expanded', 'false');
-                        otherMenu?.classList.remove('show');
-                    }
-                });
-
-                // Toggle dropdown yang di-klik
-                const willExpand = !targetMenu.classList.contains('show');
-                this.setAttribute('aria-expanded', willExpand);
-                targetMenu.classList.toggle('show');
-            });
-        });
-    });
-    </script>
+    <script src="{{ asset('js/components/sidebar.js') }}"></script>
     @endpush
 
 @elseif($isStudentRole())
@@ -610,59 +501,10 @@
     </div>
 
     @push('css')
-    <style>
-        /* Sidebar close button */
-        .sidebar-close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: transparent;
-            border: none;
-            color: #777;
-            font-size: 1.2rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            display: none;
-            z-index: 10;
-        }
-        
-        @media (max-width: 991.98px) {
-            .sidebar-close {
-                display: block;
-            }
-        }
-
-        /* Disabled menu items */
-        .menu-item.disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        
-        .badge-login-required {
-            font-size: 0.7rem;
-            margin-left: 8px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/components/sidebar.css') }}">
     @endpush
 
     @push('scripts')
-    <script>
-        // Close sidebar button functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
-            const sidebar = document.querySelector('.sidebar');
-            const sidebarBackdrop = document.querySelector('.sidebar-backdrop');
-            
-            if (sidebarCloseBtn) {
-                sidebarCloseBtn.addEventListener('click', function() {
-                    sidebar.classList.remove('show');
-                    if (sidebarBackdrop) {
-                        sidebarBackdrop.classList.remove('show');
-                    }
-                    localStorage.setItem('sidebarOpen', false);
-                });
-            }
-        });
-    </script>
+    <script src="{{ asset('js/components/sidebar.js') }}"></script>
     @endpush
 @endif
