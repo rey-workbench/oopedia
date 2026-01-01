@@ -147,12 +147,12 @@
     <link href="{{ asset('css/loading-overlay.css') }}" rel="stylesheet">
 </head>
 <body>
-    <!-- Include Navbar Component -->
-    @include('mahasiswa.components.navbar')
+    <!-- Include Navbar Component (Unified) -->
+    <x-navigation.navbar titlePage="OOPEDIA" />
 
     <div class="container">
-        <!-- Include Sidebar Component -->
-        @include('mahasiswa.components.sidebar')
+        <!-- Include Sidebar Component (Unified) -->
+        <x-navigation.sidebar />
 
         <!-- Main Content -->
         <main class="main-content">
@@ -224,7 +224,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 
     <!-- Add Loading Overlay Component -->
-    <x-loading-overlay />
+    <x-ui.loading-overlay />
 
     <!-- Loading Overlay JavaScript -->
     <script>

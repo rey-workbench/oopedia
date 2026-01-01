@@ -1,15 +1,14 @@
-<x-layout bodyClass="g-sidenav-show bg-gray-200">
-    <x-navbars.sidebar activePage="ueq" :userName="$userName" :userRole="$userRole" />
+<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
+    <x-navigation.sidebar activePage="ueq" />
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navbars.navs.auth titlePage="UEQ Survey Results" />
+        <x-navigation.navbar titlePage="UEQ Survey Results" />
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
-                    <div class="card my-4">
-                        <br><br>
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <x-ui.card class="my-4">
+                        <x-slot:header>
                             <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
-                                <h6 class="text-white text-capitalize ps-3">Hasil Survey UEQ</h6>
+                                <h6 class="text-white text-capitalize ps-3 mb-0">Hasil Survey UEQ</h6>
                                 <div class="d-flex">
                                     <form method="GET" action="{{ route('admin.ueq.export') }}" class="me-2">
                                         <div class="input-group">
@@ -26,7 +25,8 @@
                                     </form>
                                 </div>
                             </div>
-                        </div>
+                        </x-slot:header>
+
                         <div class="card-body px-0 pb-2">
                             @if($surveys->isEmpty())
                                 <div class="text-center p-4">
@@ -36,11 +36,11 @@
                                 <!-- Filter berdasarkan kelas -->
                                 <div class="row mx-3 mb-4">
                                     <div class="col-md-12">
-                                        <div class="card">
-                                            <div class="card-header p-3">
+                                        <x-ui.card>
+                                            <x-slot:header>
                                                 <h6 class="mb-0">Filter Data</h6>
-                                            </div>
-                                            <div class="card-body p-3">
+                                            </x-slot:header>
+                                            <div class="p-3">
                                                 <form action="{{ route('admin.ueq.index') }}" method="GET" class="row">
                                                     <div class="col-md-4">
                                                         <div class="form-group">
@@ -56,33 +56,32 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4 d-flex align-items-end">
-                                                        <button type="submit" class="btn btn-sm btn-primary me-2">
-                                                            <i class="material-icons text-sm">filter_list</i> Filter
-                                                        </button>
-                                                        <a href="{{ route('admin.ueq.index') }}" class="btn btn-sm btn-outline-secondary">
-                                                            <i class="material-icons text-sm">clear</i> Reset
-                                                        </a>
+                                                        <x-ui.button type="submit" variant="primary" size="sm" icon="filter_list" class="me-2">
+                                                            Filter
+                                                        </x-ui.button>
+                                                        <x-ui.button variant="outline" size="sm" href="{{ route('admin.ueq.index') }}" icon="clear">
+                                                            Reset
+                                                        </x-ui.button>
                                                     </div>
                                                     <div class="col-md-4 d-flex align-items-end justify-content-end">
-                                                        <a href="{{ route('admin.ueq.export') }}{{ request('class') ? '?class='.request('class') : '' }}" 
-                                                           class="btn btn-sm btn-success me-3">
-                                                            <i class="material-icons text-sm">download</i> Export CSV
-                                                        </a>
+                                                        <x-ui.button variant="success" size="sm" href="{{ route('admin.ueq.export') }}{{ request('class') ? '?class='.request('class') : '' }}" icon="download" class="me-3">
+                                                            Export CSV
+                                                        </x-ui.button>
                                                     </div>
                                                 </form>
                                             </div>
-                                        </div>
+                                        </x-ui.card>
                                     </div>
                                 </div>
 
                                 <!-- UEQ Averages Summary -->
                                 <div class="row mx-3 mb-4">
                                     <div class="col-md-12">
-                                        <div class="card">
-                                            <div class="card-header p-3">
+                                        <x-ui.card>
+                                            <x-slot:header>
                                                 <h6 class="mb-0">UEQ Dimensions Average Scores</h6>
-                                            </div>
-                                            <div class="card-body p-3">
+                                            </x-slot:header>
+                                            <div class="p-3">
                                                 <div class="row">
                                                     @foreach($averages as $dimension => $score)
                                                         <div class="col-md-4 mb-3">
@@ -96,7 +95,7 @@
                                                     @endforeach
                                                 </div>
                                             </div>
-                                        </div>
+                                        </x-ui.card>
                                     </div>
                                 </div>
 
@@ -175,10 +174,10 @@
                                 </div>
 
                                 <!-- Add this after the UEQ dimensions summary -->
-                                <div class="card mt-4">
-                                    <div class="card-header">
+                                <x-ui.card class="mt-4">
+                                    <x-slot:header>
                                         <h6 class="mb-0">User Feedback Terbaru</h6>
-                                    </div>
+                                    </x-slot:header>
                                     <div class="card-body px-0 pb-2">
                                         <div class="table-responsive p-0">
                                             <table class="table align-items-center mb-0">
@@ -225,9 +224,9 @@
                                                             </span>
                                                         </td>
                                                         <td class="align-middle text-center">
-                                                            <a href="{{ route('admin.ueq.detail', $survey->user_id) }}" class="btn btn-sm btn-primary">
+                                                            <x-ui.button variant="primary" size="sm" href="{{ route('admin.ueq.detail', $survey->user_id) }}">
                                                                 Detail
-                                                            </a>
+                                                            </x-ui.button>
                                                         </td>
                                                     </tr>
                                                     @endforeach
@@ -235,13 +234,13 @@
                                             </table>
                                         </div>
                                     </div>
-                                </div>
+                                </x-ui.card>
                             @endif
                         </div>
-                    </div>
+                    </x-ui.card>
                 </div>
             </div>
         </div>
     </main>
     <x-admin.tutorial />
-</x-layout> 
+</x-layouts.app> 

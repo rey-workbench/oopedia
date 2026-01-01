@@ -1,8 +1,4 @@
-@extends('mahasiswa.layouts.app')
-
-@section('title', 'Profil Mahasiswa')
-
-@section('content')
+<x-layouts.app title="Profil Mahasiswa">
 <div class="container-fluid px-2 px-md-4">
     <!-- Header background dengan gambar -->
     <div class="page-header min-height-300 border-radius-xl mt-4"
@@ -10,7 +6,7 @@
         <span class="mask bg-gradient-primary opacity-6"></span>
     </div>
 
-    <div class="card card-body mx-3 mx-md-4 mt-n6">
+    <x-ui.card class="mx-3 mx-md-4 mt-n6">
         <!-- Profile info section -->
         <div class="row gx-4 mb-2">
             <div class="col-auto">
@@ -29,69 +25,53 @@
 
         <!-- Alert section -->
         @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <x-ui.alert type="success" dismissible="true">
                 {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+            </x-ui.alert>
         @endif
 
         <form method="POST" action="{{ route('mahasiswa.profile.update') }}">
             @csrf
             @method('PUT')
             
-            <div class="form-group">
-                <label class="form-label">Nama</label>
-                <input type="text" 
-                       class="form-control @error('name') is-invalid @enderror" 
-                       name="name" 
-                       value="{{ old('name', auth()->user()->name) }}"
-                       required>
-                @error('name')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+            <x-forms.form-group label="Nama" name="name" required="true">
+                <x-ui.input 
+                    name="name" 
+                    value="{{ old('name', auth()->user()->name) }}" 
+                    required />
+            </x-forms.form-group>
 
-            <div class="form-group">
-                <label class="form-label">Email</label>
-                <input type="email" 
-                       class="form-control @error('email') is-invalid @enderror" 
-                       name="email" 
-                       value="{{ old('email', auth()->user()->email) }}"
-                       required>
-                @error('email')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+            <x-forms.form-group label="Email" name="email" required="true">
+                <x-ui.input 
+                    type="email" 
+                    name="email" 
+                    value="{{ old('email', auth()->user()->email) }}" 
+                    required />
+            </x-forms.form-group>
 
-            <div class="password-section">
+            <div class="password-section mt-4">
                 <h5 class="mb-4">Ubah Password</h5>
                 
-                <div class="form-group">
-                    <label class="form-label">Password Baru</label>
-                    <input type="password" 
-                           class="form-control @error('password') is-invalid @enderror" 
-                           name="password">
-                    <small class="text-muted">Kosongkan jika tidak ingin mengubah password</small>
-                    @error('password')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
+                <x-forms.form-group label="Password Baru" name="password" help-text="Kosongkan jika tidak ingin mengubah password">
+                    <x-ui.input 
+                        type="password" 
+                        name="password" />
+                </x-forms.form-group>
 
-                <div class="form-group">
-                    <label class="form-label">Konfirmasi Password Baru</label>
-                    <input type="password" 
-                           class="form-control" 
-                           name="password_confirmation">
-                </div>
+                <x-forms.form-group label="Konfirmasi Password Baru" name="password_confirmation">
+                    <x-ui.input 
+                        type="password" 
+                        name="password_confirmation" />
+                </x-forms.form-group>
             </div>
 
             <div class="text-center mt-4">
-                <button type="submit" class="btn-update">
+                <x-ui.button type="submit" variant="primary">
                     <i class="fas fa-save me-2"></i>
                     Simpan Perubahan
-                </button>
+                </x-ui.button>
             </div>
         </form>
-    </div>
+    </x-ui.card>
 </div>
-@endsection
+</x-layouts.app>

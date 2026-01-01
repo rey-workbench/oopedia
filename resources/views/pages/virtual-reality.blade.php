@@ -1,8 +1,8 @@
-<x-layout bodyClass="g-sidenav-show  bg-gray-200 virtual-reality">
+<x-layouts.app bodyClass="g-sidenav-show  bg-gray-200 virtual-reality">
 
     <div class="mt-n3">
         <!-- Navbar -->
-        <x-navbars.navs.auth titlePage="Virtual Reality"></x-navbars.navs.auth>
+        <x-navigation.navbar />
         <!-- End Navbar -->
     </div>
     <div class="border-radius-xl mx-2 mx-md-3 position-relative"
@@ -184,4 +184,4 @@
     <x-footers.auth>
         </x-footer.auth>
         
-</x-layout>
+</x-layouts.app>

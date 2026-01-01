@@ -1,32 +1,29 @@
-<x-layout bodyClass="g-sidenav-show bg-gray-200">
-    <x-navbars.sidebar activePage="pending-users" :userName="auth()->user()->name" :userRole="auth()->user()->role->role_name" />
+<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
+    <x-navigation.sidebar activePage="pending-users" />
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navbars.navs.auth titlePage="Admin Pending" />
+        <x-navigation.navbar titlePage="Admin Pending" />
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
-                    <div class="card my-4">
-                    <br><br>
-
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <x-ui.card class="my-4">
+                        <x-slot:header>
                             <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                                <h6 class="text-white text-capitalize ps-3">Admin Menunggu Persetujuan</h6>
+                                <h6 class="text-white text-capitalize ps-3 mb-0">Admin Menunggu Persetujuan</h6>
                             </div>
-                        </div>
+                        </x-slot:header>
+
                         <div class="card-body px-0 pb-2">
                             <div class="p-4">
                                 @if(session('success'))
-                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <x-ui.alert type="success" dismissible>
                                         {{ session('success') }}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div>
+                                    </x-ui.alert>
                                 @endif
                                 
                                 @if(session('error'))
-                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <x-ui.alert type="danger" dismissible>
                                         {{ session('error') }}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div>
+                                    </x-ui.alert>
                                 @endif
                                 
                                 @if(count($pendingAdmins) > 0)
@@ -60,11 +57,15 @@
                                                         <div class="d-flex justify-content-center">
                                                             <form action="{{ route('admin.users.approve', $admin->id) }}" method="POST" class="me-2">
                                                                 @csrf
-                                                                <button type="submit" class="btn btn-sm btn-success">Setujui</button>
+                                                                <x-ui.button type="submit" variant="success" size="sm">
+                                                                    Setujui
+                                                                </x-ui.button>
                                                             </form>
                                                             <form action="{{ route('admin.users.reject', $admin->id) }}" method="POST">
                                                                 @csrf
-                                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menolak admin ini? Akun akan diubah menjadi mahasiswa.')">Tolak</button>
+                                                                <x-ui.button type="submit" variant="danger" size="sm" onclick="return confirm('Apakah Anda yakin ingin menolak admin ini? Akun akan diubah menjadi mahasiswa.')">
+                                                                    Tolak
+                                                                </x-ui.button>
                                                             </form>
                                                         </div>
                                                     </td>
@@ -74,13 +75,13 @@
                                         </table>
                                     </div>
                                 @else
-                                    <div class="alert alert-info">
+                                    <x-ui.alert type="info">
                                         Tidak ada admin yang menunggu persetujuan.
-                                    </div>
+                                    </x-ui.alert>
                                 @endif
                             </div>
                         </div>
-                    </div>
+                    </x-ui.card>
                 </div>
             </div>
         </div>
@@ -119,4 +120,4 @@
     </script>
     <x-admin.tutorial />
 
-</x-layout> 
+</x-layouts.app> 

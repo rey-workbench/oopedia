@@ -1,83 +1,74 @@
-<x-layout bodyClass="g-sidenav-show bg-gray-200">
+<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
     @push('head')
         <x-head.tinymce-config />
     @endpush
 
-    <x-navbars.sidebar activePage="questions" :userName="auth()->user()->name" :userRole="auth()->user()->role->role_name" />
+    <x-navigation.sidebar activePage="questions" />
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navbars.navs.auth titlePage="Tambah Soal" />
+        <x-navigation.navbar titlePage="Tambah Soal" />
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
-                    <div class="card my-4">
-                        <br><br>
-
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <x-ui.card class="my-4">
+                        <x-slot:header>
                             <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                                <h6 class="text-white text-capitalize ps-3">Tambah Soal Baru</h6>
+                                <h6 class="text-white text-capitalize ps-3 mb-0">Tambah Soal Baru</h6>
                             </div>
-                        </div>
+                        </x-slot:header>
+
                         <div class="card-body px-0 pb-2">
                             @if (isset($material))
                                 <form method="POST" action="{{ route('admin.materials.questions.store', $material) }}"
                                     class="p-4" id="questionForm">
-                                @else
-                                    <form method="POST" action="{{ route('admin.questions.store') }}" class="p-4"
-                                        id="questionForm">
+                            @else
+                                <form method="POST" action="{{ route('admin.questions.store') }}" class="p-4"
+                                    id="questionForm">
                             @endif
                             @csrf
 
                             @if ($errors->any())
-                                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                    @foreach ($errors->all() as $error)
-                                        {{ $error }}<br>
-                                    @endforeach
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
+                                <div class="mb-4">
+                                    <x-ui.alert type="warning" dismissible>
+                                        @foreach ($errors->all() as $error)
+                                            {{ $error }}<br>
+                                        @endforeach
+                                    </x-ui.alert>
                                 </div>
                             @endif
 
                             @if (session('warning'))
-                                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                    {{ session('warning') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
+                                <div class="mb-4">
+                                    <x-ui.alert type="warning" dismissible>
+                                        {{ session('warning') }}
+                                    </x-ui.alert>
                                 </div>
                             @endif
 
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="mb-3">
-                                        <label class="form-label">Material</label>
-                                        <div class="input-group input-group-outline">
-                                            @if (isset($material))
-                                                <input type="hidden" name="material_id" value="{{ $material->id }}">
-                                                <input type="text" class="form-control"
-                                                    value="{{ $material->title }}" disabled>
-                                            @else
-                                                <select name="material_id" id="material_id" class="form-control"
-                                                    required>
-                                                    <option value="">Pilih Material</option>
-                                                    @foreach ($materials as $material)
-                                                        <option value="{{ $material->id }}">{{ $material->title }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            @endif
-                                        </div>
-                                    </div>
+                                    <x-forms.form-group label="Material" name="material_id">
+                                        @if (isset($material))
+                                            <input type="hidden" name="material_id" value="{{ $material->id }}">
+                                            <input type="text" class="form-control" value="{{ $material->title }}" disabled>
+                                        @else
+                                            <select name="material_id" id="material_id" class="form-control" required>
+                                                <option value="">Pilih Material</option>
+                                                @foreach ($materials as $material)
+                                                    <option value="{{ $material->id }}">{{ $material->title }}</option>
+                                                @endforeach
+                                            </select>
+                                        @endif
+                                    </x-forms.form-group>
                                 </div>
                                 <div class="col-md-12">
-                                    <div class="mb-3">
-                                        <label class="form-label">Pertanyaan</label>
+                                    <x-forms.form-group label="Pertanyaan" name="question_text">
                                         <div class="my-3">
                                             <textarea id="content-editor" name="question_text">{{ old('question_text') }}</textarea>
                                         </div>
-                                    </div>
+                                    </x-forms.form-group>
                                 </div>
                                 <div class="col-md-12">
-                                    <div class="mb-3">
-                                        <label class="form-label">Tipe Soal</label>
+                                    <x-forms.form-group label="Tipe Soal" name="question_type">
                                         <div class="input-group input-group-outline">
                                             <select name="question_type" class="form-control" required>
                                                 <option value="fill_in_the_blank">Fill in the Blank</option>
@@ -85,11 +76,10 @@
                                                 <option value="drag_and_drop">Drag and Drop</option>
                                             </select>
                                         </div>
-                                    </div>
+                                    </x-forms.form-group>
                                 </div>
                                 <div class="col-md-12">
-                                    <div class="mb-3">
-                                        <label class="form-label">Tingkat Kesulitan</label>
+                                    <x-forms.form-group label="Tingkat Kesulitan" name="difficulty">
                                         <div class="input-group input-group-outline">
                                             <select name="difficulty" class="form-control" required>
                                                 <option value="beginner">Beginner</option>
@@ -97,7 +87,7 @@
                                                 <option value="hard">Hard</option>
                                             </select>
                                         </div>
-                                    </div>
+                                    </x-forms.form-group>
                                 </div>
                             </div>
 
@@ -107,14 +97,12 @@
                                     <div class="row">
                                         <div class="col-md-8">
                                             <div class="input-group input-group-outline">
-                                                <input type="text" name="answers[0][answer_text]"
-                                                    class="form-control" placeholder="Jawaban" required>
+                                                <input type="text" name="answers[0][answer_text]" class="form-control" placeholder="Jawaban" required>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="correct_answer"
-                                                    value="0">
+                                                <input class="form-check-input" type="radio" name="correct_answer" value="0">
                                                 <label class="form-check-label">Jawaban Benar</label>
                                                 <input type="hidden" name="answers[0][is_correct]" value="0">
                                             </div>
@@ -123,25 +111,23 @@
                                 </div>
                             </div>
 
-                            <button type="button" class="btn btn-outline-primary btn-sm mb-3" onclick="addAnswer()">
+                            <x-ui.button type="button" variant="outline" size="sm" class="mb-3" onclick="addAnswer()" id="add-answer-btn">
                                 Tambah Jawaban
-                            </button>
+                            </x-ui.button>
 
                             <div class="row">
-                                <div class="col-12">
-                                    <button type="submit" class="btn btn-primary" id="submitBtn">Simpan Soal</button>
+                                <div class="col-12 mt-3">
+                                    <x-ui.button type="submit" variant="primary" id="submitBtn">Simpan Soal</x-ui.button>
                                     @if (isset($material))
-                                        <a href="{{ route('admin.materials.questions.index', $material) }}"
-                                            class="btn btn-outline-secondary">Batal</a>
+                                        <x-ui.button variant="outline" href="{{ route('admin.materials.questions.index', $material) }}">Batal</x-ui.button>
                                     @else
-                                        <a href="{{ route('admin.questions.index') }}"
-                                            class="btn btn-outline-secondary">Batal</a>
+                                        <x-ui.button variant="outline" href="{{ route('admin.questions.index') }}">Batal</x-ui.button>
                                     @endif
                                 </div>
                             </div>
                             </form>
                         </div>
-                    </div>
+                    </x-ui.card>
                 </div>
             </div>
         </div>
@@ -291,4 +277,4 @@
         </script>
     @endpush
     <x-admin.tutorial />
-</x-layout>
+</x-layouts.app>

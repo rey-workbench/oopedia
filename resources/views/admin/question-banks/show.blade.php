@@ -1,46 +1,45 @@
-<x-layout bodyClass="g-sidenav-show bg-gray-200">
-    <x-navbars.sidebar activePage="question-banks" :userName="auth()->user()->name" :userRole="auth()->user()->role->role_name" />
+<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
+    <x-navigation.sidebar activePage="question-banks" />
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navbars.navs.auth titlePage="Detail Bank Soal" />
+        <x-navigation.navbar titlePage="Detail Bank Soal" />
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
-                    <div class="card my-4">
-                    <br><br>
+                    <x-ui.card class="my-4">
                         @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show mx-4" role="alert">
-                                {{ session('success') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <div class="px-4 pt-4">
+                                <x-ui.alert type="success" dismissible>
+                                    {{ session('success') }}
+                                </x-ui.alert>
                             </div>
                         @endif
 
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                        <x-slot:header>
                             <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
-                                <h6 class="text-white text-capitalize ps-3">Detail Bank Soal</h6>
+                                <h6 class="text-white text-capitalize ps-3 mb-0">Detail Bank Soal</h6>
                                 <div>
-                                    <a href="{{ route('admin.question-banks.manage-questions', $questionBank) }}" class="btn btn-sm btn-success me-2">
-                                        <i class="material-icons text-sm">question_answer</i>
-                                        <span>Kelola Soal</span>
-                                    </a>
-                                    <a href="{{ route('admin.question-banks.configure', $questionBank) }}" class="btn btn-sm btn-warning me-2">
-                                        <i class="material-icons text-sm">settings</i>
-                                        <span>Konfigurasi</span>
-                                    </a>
-                                    <a href="{{ route('admin.question-banks.index') }}" class="btn btn-sm btn-light me-3">
-                                        <i class="material-icons text-sm">arrow_back</i>
-                                        <span>Kembali</span>
-                                    </a>
+                                    <x-ui.button variant="success" size="sm" href="{{ route('admin.question-banks.manage-questions', $questionBank) }}" icon="question_answer" class="me-2">
+                                        Kelola Soal
+                                    </x-ui.button>
+                                    <x-ui.button variant="warning" size="sm" href="{{ route('admin.question-banks.configure', $questionBank) }}" icon="settings" class="me-2">
+                                        Konfigurasi
+                                    </x-ui.button>
+                                    <x-ui.button variant="light" size="sm" href="{{ route('admin.question-banks.index') }}" icon="arrow_back" class="me-3">
+                                        Kembali
+                                    </x-ui.button>
                                 </div>
                             </div>
-                        </div>
+                        </x-slot:header>
                         
                         <div class="card-body px-4 py-3">
                             <div class="row mb-4">
                                 <div class="col-md-12">
                                     <h4>{{ $questionBank->name }}</h4>
                                     <p class="text-muted">{{ $questionBank->description }}</p>
-                                    <p><strong>Dibuat oleh:</strong> {{ $questionBank->creator->name ?? 'Unknown' }}</p>
-                                    <p><strong>Tanggal dibuat:</strong> {{ $questionBank->created_at->format('d/m/Y H:i') }}</p>
+                                    <div class="d-flex gap-4">
+                                        <p class="mb-0"><strong>Dibuat oleh:</strong> {{ $questionBank->creator->name ?? 'Unknown' }}</p>
+                                        <p class="mb-0"><strong>Tanggal dibuat:</strong> {{ $questionBank->created_at->format('d/m/Y H:i') }}</p>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -50,31 +49,31 @@
                                     <h5 class="mb-3">Statistik Soal</h5>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="card bg-light">
-                                        <div class="card-body text-center">
-                                            <h6 class="card-title">Beginner</h6>
+                                    <x-ui.card class="bg-light shadow-none border">
+                                        <div class="card-body text-center p-3">
+                                            <h6 class="card-title text-success">Beginner</h6>
                                             <h3 class="mb-0">{{ $questionCounts['beginner'] }}</h3>
-                                            <p class="text-muted">soal</p>
+                                            <p class="text-muted mb-0">soal</p>
                                         </div>
-                                    </div>
+                                    </x-ui.card>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="card bg-light">
-                                        <div class="card-body text-center">
-                                            <h6 class="card-title">Medium</h6>
+                                    <x-ui.card class="bg-light shadow-none border">
+                                        <div class="card-body text-center p-3">
+                                            <h6 class="card-title text-warning">Medium</h6>
                                             <h3 class="mb-0">{{ $questionCounts['medium'] }}</h3>
-                                            <p class="text-muted">soal</p>
+                                            <p class="text-muted mb-0">soal</p>
                                         </div>
-                                    </div>
+                                    </x-ui.card>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="card bg-light">
-                                        <div class="card-body text-center">
-                                            <h6 class="card-title">Hard</h6>
+                                    <x-ui.card class="bg-light shadow-none border">
+                                        <div class="card-body text-center p-3">
+                                            <h6 class="card-title text-danger">Hard</h6>
                                             <h3 class="mb-0">{{ $questionCounts['hard'] }}</h3>
-                                            <p class="text-muted">soal</p>
+                                            <p class="text-muted mb-0">soal</p>
                                         </div>
-                                    </div>
+                                    </x-ui.card>
                                 </div>
                             </div>
                             
@@ -83,7 +82,7 @@
                                 <div class="col-md-12">
                                     <h5 class="mb-3">Daftar Soal ({{ $questionBank->questions->count() }} soal)</h5>
                                     <div class="table-responsive">
-                                        <table class="table table-hover">
+                                        <table class="table table-hover align-items-center mb-0">
                                             <thead>
                                                 <tr>
                                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Soal</th>
@@ -105,32 +104,30 @@
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <span class="badge bg-{{ $question->difficulty == 'beginner' ? 'success' : ($question->difficulty == 'medium' ? 'warning' : 'danger') }}">
+                                                        <x-ui.badge variant="{{ $question->difficulty == 'beginner' ? 'success' : ($question->difficulty == 'medium' ? 'warning' : 'danger') }}">
                                                             {{ ucfirst($question->difficulty) }}
-                                                        </span>
+                                                        </x-ui.badge>
                                                     </td>
-                                                    <td>
+                                                    <td class="text-sm">
                                                         {{ $question->formatted_type ?? ucfirst(str_replace('_', ' ', $question->question_type)) }}
                                                     </td>
                                                     <td>
                                                         <form action="{{ route('admin.question-banks.remove-question', ['questionBank' => $questionBank, 'question' => $question]) }}" method="POST">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus soal ini dari bank soal?')">
-                                                                <i class="material-icons text-sm">delete</i>
-                                                                <span>Hapus</span>
-                                                            </button>
+                                                            <x-ui.button type="submit" variant="danger" size="sm" icon="delete" onclick="return confirm('Apakah Anda yakin ingin menghapus soal ini dari bank soal?')">
+                                                                Hapus
+                                                            </x-ui.button>
                                                         </form>
                                                     </td>
                                                 </tr>
                                                 @empty
                                                 <tr>
-                                                    <td colspan="5" class="text-center">
-                                                        <p>Belum ada soal dalam bank soal ini.</p>
-                                                        <a href="{{ route('admin.question-banks.manage-questions', $questionBank) }}" class="btn btn-sm btn-primary mt-2">
-                                                            <i class="material-icons text-sm">add</i>
-                                                            <span>Tambahkan Soal</span>
-                                                        </a>
+                                                    <td colspan="4" class="text-center p-4">
+                                                        <p class="mb-3">Belum ada soal dalam bank soal ini.</p>
+                                                        <x-ui.button variant="primary" size="sm" href="{{ route('admin.question-banks.manage-questions', $questionBank) }}" icon="add">
+                                                            Tambahkan Soal
+                                                        </x-ui.button>
                                                     </td>
                                                 </tr>
                                                 @endforelse
@@ -140,11 +137,11 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </x-ui.card>
                 </div>
             </div>
         </div>
     </main>
     <x-admin.tutorial />
 
-</x-layout> 
+</x-layouts.app> 

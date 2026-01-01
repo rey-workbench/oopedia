@@ -438,7 +438,7 @@ class DashboardController extends Controller
             ];
         });
 
-        return view('mahasiswa.dashboard.complete', [
+        return view('mahasiswa.dashboard.completed', [
             'materialsWithStats' => $materialsWithStats
         ]);
     }

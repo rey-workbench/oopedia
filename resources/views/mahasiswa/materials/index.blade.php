@@ -1,8 +1,4 @@
-@extends('mahasiswa.layouts.app')
-
-@section('title', 'Materi Pembelajaran')
-
-@section('content')
+<x-layouts.app title="Materi Pembelajaran">
 @if(auth()->check() && auth()->user() === null)
 
 
@@ -114,7 +110,6 @@
     </div>
     @endforeach
 </div>
-@endsection
 
 @push('css')
 <style>
@@ -504,3 +499,4 @@
     }
 </style>
 @endpush
+</x-layouts.app>

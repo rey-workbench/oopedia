@@ -1,8 +1,4 @@
-@extends('mahasiswa.layouts.app')
-
-@section('title', 'Materi Sedang Dipelajari')
-
-@section('content')
+<x-layouts.app title="Materi Sedang Dipelajari">
 <div class="dashboard-header text-center">
     <h1 class="main-title">Materi Sedang Dipelajari</h1>
     <div class="title-underline"></div>
@@ -397,4 +393,4 @@
 }
 </style>
 @endpush
-@endsection
+</x-layouts.app>

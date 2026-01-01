@@ -1,60 +1,65 @@
-<x-layout bodyClass="g-sidenav-show bg-gray-200">
+<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
     @push('head')
         <x-head.tinymce-config />
     @endpush
 
-    <x-navbars.sidebar activePage="questions" :userName="auth()->user()->name" :userRole="auth()->user()->role->role_name" />
+    <x-navigation.sidebar activePage="questions" />
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navbars.navs.auth titlePage="Edit Soal" />
+        <x-navigation.navbar titlePage="Edit Soal" />
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
-                    <div class="card my-4">
-                    <br><br>
-
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <x-ui.card class="my-4">
+                        <x-slot:header>
                             <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                                <h6 class="text-white text-capitalize ps-3">Edit Soal</h6>
+                                <h6 class="text-white text-capitalize ps-3 mb-0">Edit Soal</h6>
                             </div>
-                        </div>
+                        </x-slot:header>
+
                         <div class="card-body px-0 pb-2">
                             <form method="POST" action="{{ $material 
                                 ? route('admin.materials.questions.update', ['material' => $material, 'question' => $question]) 
                                 : route('admin.questions.update', $question) }}" class="p-4" id="questionForm">
                                 @csrf
                                 @method('PUT')
+                                
+                                @if ($errors->any())
+                                    <div class="mb-4">
+                                        <x-ui.alert type="warning" dismissible>
+                                            @foreach ($errors->all() as $error)
+                                                {{ $error }}<br>
+                                            @endforeach
+                                        </x-ui.alert>
+                                    </div>
+                                @endif
+
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label class="form-label">Material</label>
-                                            <div class="input-group input-group-outline">
-                                                @if(isset($material))
-                                                    <input type="hidden" name="material_id" value="{{ $material->id }}">
-                                                    <input type="text" class="form-control" value="{{ $material->title }}" disabled>
-                                                @else
-                                                    <select name="material_id" id="material_id" class="form-control" required>
-                                                        <option value="">Pilih Material</option>
-                                                        @foreach($materials as $mat)
-                                                            <option value="{{ $mat->id }}" {{ $question->material_id == $mat->id ? 'selected' : '' }}>
-                                                                {{ $mat->title }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                @endif
-                                            </div>
-                                        </div>
+                                        <x-forms.form-group label="Material" name="material_id">
+                                            @if(isset($material))
+                                                <input type="hidden" name="material_id" value="{{ $material->id }}">
+                                                <input type="text" class="form-control" value="{{ $material->title }}" disabled>
+                                            @else
+                                                <select name="material_id" id="material_id" class="form-control" required>
+                                                    <option value="">Pilih Material</option>
+                                                    @foreach($materials as $mat)
+                                                        <option value="{{ $mat->id }}" {{ $question->material_id == $mat->id ? 'selected' : '' }}>
+                                                            {{ $mat->title }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            @endif
+                                        </x-forms.form-group>
                                     </div>
                                     <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label class="form-label">Pertanyaan</label>
+                                        <x-forms.form-group label="Pertanyaan" name="question_text">
                                             <div class="my-3">
                                                 <textarea id="content-editor" name="question_text">{{ $question->question_text }}</textarea>
                                             </div>
-                                        </div>
+                                        </x-forms.form-group>
                                     </div>
                                     <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label class="form-label">Tipe Soal</label>
+                                        <x-forms.form-group label="Tipe Soal" name="question_type">
                                             <div class="input-group input-group-outline">
                                                 <select name="question_type" class="form-control" required>
                                                     <option value="radio_button" {{ $question->question_type == 'radio_button' ? 'selected' : '' }}>Radio Button</option>
@@ -62,11 +67,10 @@
                                                     <option value="fill_in_the_blank" {{ $question->question_type == 'fill_in_the_blank' ? 'selected' : '' }}>Fill in the Blank</option>
                                                 </select>
                                             </div>
-                                        </div>
+                                        </x-forms.form-group>
                                     </div>
                                     <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label class="form-label">Tingkat Kesulitan</label>
+                                        <x-forms.form-group label="Tingkat Kesulitan" name="difficulty">
                                             <div class="input-group input-group-outline">
                                                 <select name="difficulty" class="form-control" required>
                                                     <option value="beginner" {{ $question->difficulty == 'beginner' ? 'selected' : '' }}>Beginner</option>
@@ -74,7 +78,7 @@
                                                     <option value="hard" {{ $question->difficulty == 'hard' ? 'selected' : '' }}>Hard</option>
                                                 </select>
                                             </div>
-                                        </div>
+                                        </x-forms.form-group>
                                     </div>
                                 </div>
 
@@ -91,7 +95,7 @@
                                                 <div class="col-md-4">
                                                     <div class="form-check">
                                                         @if($question->question_type === 'radio_button')
-                                                            <input class="form-check-input" type="radio" name="correct_answer" value="{{ $index }}" {{ $answer->is_correct ? 'checked' : '' }}>
+                                                            <input class="form-check-input correct-radio" type="radio" name="correct_answer" value="{{ $index }}" {{ $answer->is_correct ? 'checked' : '' }}>
                                                             <label class="form-check-label">Jawaban Benar</label>
                                                             <input type="hidden" name="answers[{{ $index }}][is_correct]" value="{{ $answer->is_correct ? '1' : '0' }}">
                                                         @else
@@ -105,23 +109,23 @@
                                     @endforeach
                                 </div>
 
-                                <button type="button" id="add-answer-btn" class="btn btn-outline-primary btn-sm mb-3" onclick="addAnswer()">
+                                <x-ui.button type="button" variant="outline" size="sm" class="mb-3" onclick="addAnswer()" id="add-answer-btn">
                                     Tambah Jawaban
-                                </button>
+                                </x-ui.button>
 
                                 <div class="row">
-                                    <div class="col-12">
-                                        <button type="submit" class="btn btn-primary" id="submitBtn">Simpan Perubahan</button>
+                                    <div class="col-12 mt-3">
+                                        <x-ui.button type="submit" variant="primary" id="submitBtn">Simpan Perubahan</x-ui.button>
                                         @if($material)
-                                            <a href="{{ route('admin.materials.questions.index', $material) }}" class="btn btn-outline-secondary">Batal</a>
+                                            <x-ui.button variant="outline" href="{{ route('admin.materials.questions.index', $material) }}">Batal</x-ui.button>
                                         @else
-                                            <a href="{{ route('admin.questions.index') }}" class="btn btn-outline-secondary">Batal</a>
+                                            <x-ui.button variant="outline" href="{{ route('admin.questions.index') }}">Batal</x-ui.button>
                                         @endif
                                     </div>
                                 </div>
                             </form>
                         </div>
-                    </div>
+                    </x-ui.card>
                 </div>
             </div>
         </div>
@@ -129,9 +133,31 @@
 
     @push('js')
     <script>
-        let answerCount = 1; // Mulai dari 1 karena sudah ada 1 jawaban awal
+        let answerCount = {{ count($question->answers) > 0 ? count($question->answers) : 1 }};
 
         function handleQuestionTypeChange() {
+            // Kita tidak mereset jawaban saat edit kecuali tipe soal benar-benar berubah yang membuat struktur tidak valid
+            // Namun untuk amannya di edit view, kita biarkan user manual mengubahnya atau hanya mereset jika user mengubah dropdown tipe soal
+            // Tapi karena ini edit, logic ini mungkin perlu disesuaikan agar tidak menghapus jawaban yang sudah ada saat page load.
+            // Function ini dipanggil saat change event.
+            
+            const questionType = document.querySelector('[name="question_type"]').value;
+            const answerContainer = document.getElementById('answers-container');
+            const addAnswerBtn = document.getElementById('add-answer-btn');
+            
+            if (questionType === 'fill_in_the_blank') {
+                if (addAnswerBtn) addAnswerBtn.style.display = 'none';
+                // Jika user mengubah ke fill in the blank, kita mungkin harus warn atau force reset
+            } else {
+                if (addAnswerBtn) addAnswerBtn.style.display = 'block';
+            }
+        }
+        
+        // Overwrite handleQuestionTypeChange listener to not reset everything implicitly on load, 
+        // but we need to attach it to change event.
+        // The original script had it reset everything on change. We should keep that behavior for explicit changes.
+
+        function resetAnswersForNewType() {
             const questionType = document.querySelector('[name="question_type"]').value;
             const answerContainer = document.getElementById('answers-container');
             const addAnswerBtn = document.getElementById('add-answer-btn');
@@ -256,27 +282,76 @@
             Array.from(entries).forEach((entry, index) => {
                 const hiddenInput = entry.querySelector('input[type="hidden"]');
                 if (hiddenInput) {
-                    hiddenInput.value = (index.toString() === selectedValue) ? '1' : '0';
+                    // Note: In edit view, index might not match value if we deleted rows, 
+                    // but here we just append so it likely matches count. 
+                    // To be safe in production one might use IDs, but sticking to existing logic.
+                    // Actually, the original logic used index of the iteration.
+                    
+                    // The value of radio is the answerCount at creation time.
+                    // But here we are iterating current DOM elements.
+                    // Wait, the original logic: hiddenInput.value = (index.toString() === selectedValue) ? '1' : '0';
+                    // The `selectedValue` comes from the radio value.
+                    // The radio value in PHP loop `value="{{ $index }}"`.
+                    // The radio value in JS addAnswer `value="${answerCount}"`.
+                    // This mix might be dangerous if we mix PHP-rendered and JS-added rows.
+                    // However, we shouldn't overcomplicate if it worked before.
+                    
+                    // Let's look at original logic:
+                    // value="{{ $index }}" for PHP loop.
+                    // value="${answerCount}" for JS. 
+                    // If we have 3 existing answers (indices 0, 1, 2). answerCount starts at 3?
+                    // Original script: let answerCount = 1; // Mulai dari 1 karena sudah ada 1 jawaban awal (in create).
+                    // In edit: answerCount was not explicitly set to count($answers).
+                    // Let's check original edit.blade.php
+                    
+                    // Original edit.blade.php:
+                    // let answerCount = 1; // This looks like a bug in original code if there are more than 1 answers?
+                    // or maybe it's fine because it just increments?
+                    // Actually if we have 3 answers (0, 1, 2) and we add one, it gets value 1. Conflict!
+                    // I will fix this by initializing answerCount correctly.
+                    
+                    // Fix logic: check the radio value of the entry to compare? 
+                    // No, the radio group name is shared.
+                    // We need to ensure that the value of the selected radio matches the "identifier" of the row.
+                    // In PHP loop, identifier is $index.
+                    // In JS, it is answerCount.
+                    
+                    // We need reliable matching.
+                    // Let's assume the radio value is the key.
+                    // We iterate all entries. inside each entry find the radio. check if it is checked.
+                    // If checked, set hidden input to 1. Else 0.
+                    
+                    const radio = entry.querySelector('input[type="radio"]');
+                    if (radio) {
+                        if (radio.checked) {
+                             if(hiddenInput) hiddenInput.value = '1';
+                        } else {
+                             if(hiddenInput) hiddenInput.value = '0';
+                        }
+                    } else {
+                        // If no radio (e.g. checkbox type), this function shouldn't strictly run or doesn't matter for hidden input of radio logic.
+                    }
                 }
             });
-            
-            console.log('Hidden inputs updated. Selected value:', selectedValue);
         }
 
         document.addEventListener('DOMContentLoaded', function() {
             const questionTypeSelect = document.querySelector('[name="question_type"]');
             
-            // Event listener untuk perubahan tipe soal
-            questionTypeSelect.addEventListener('change', handleQuestionTypeChange);
+            // Event listener untuk perubahan tipe soal - reset answers if type changes
+            questionTypeSelect.addEventListener('change', resetAnswersForNewType);
             
             // Setup radio button listeners for initial elements
             setupRadioButtonListeners();
             
-            // Inisialisasi tipe soal
-            handleQuestionTypeChange();
+            // Existing answers might need listeners
+            const existingRadios = document.querySelectorAll('input[name="correct_answer"]');
+            existingRadios.forEach(radio => {
+                radio.addEventListener('change', updateAllHiddenInputs);
+            });
         });
     </script>
     @endpush
     <x-admin.tutorial />
 
-</x-layout>
+</x-layouts.app>

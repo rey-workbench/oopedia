@@ -1,9 +1,9 @@
-<x-layout bodyClass="g-sidenav-show  bg-gray-200">
+<x-layouts.app bodyClass="g-sidenav-show  bg-gray-200">
 
     <x-navbars.sidebar activePage="notifications"></x-navbars.sidebar>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
-        <x-navbars.navs.auth titlePage="Notifications"></x-navbars.navs.auth>
+        <x-navigation.navbar />
         <!-- End Navbar -->
         <div class="container-fluid py-4">
             <div class="row">
@@ -185,9 +185,9 @@
                     </div>
                 </div>
             </div>
-            <x-footers.auth></x-footers.auth>
+            <x-navigation.footer />
         </div>
     </main>
     
 
-</x-layout>
+</x-layouts.app>

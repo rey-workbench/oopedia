@@ -1,71 +1,59 @@
-<x-layout bodyClass="g-sidenav-show bg-gray-200">
-    <x-navbars.sidebar activePage="question-banks" :userName="auth()->user()->name" :userRole="auth()->user()->role->role_name" />
+<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
+    <x-navigation.sidebar activePage="question-banks" />
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navbars.navs.auth titlePage="Edit Bank Soal" />
+        <x-navigation.navbar titlePage="Edit Bank Soal" />
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
-                    <div class="card my-4">
-                    <br><br>
-
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <x-ui.card class="my-4">
+                        <x-slot:header>
                             <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                                <h6 class="text-white text-capitalize ps-3">Edit Bank Soal</h6>
+                                <h6 class="text-white text-capitalize ps-3 mb-0">Edit Bank Soal</h6>
                             </div>
-                        </div>
+                        </x-slot:header>
+
                         <div class="card-body px-0 pb-2">
                             <form method="POST" action="{{ route('admin.question-banks.update', $questionBank) }}" class="p-4">
                                 @csrf
                                 @method('PUT')
                                 
                                 @if($errors->any())
-                                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                        @foreach($errors->all() as $error)
-                                            {{ $error }}<br>
-                                        @endforeach
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    <div class="mb-4">
+                                        <x-ui.alert type="warning" dismissible>
+                                            @foreach($errors->all() as $error)
+                                                {{ $error }}<br>
+                                            @endforeach
+                                        </x-ui.alert>
                                     </div>
                                 @endif
                                 
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label class="form-label">Nama Bank Soal</label>
-                                            <div class="input-group input-group-outline">
-                                                <input type="text" name="name" class="form-control" value="{{ old('name', $questionBank->name) }}" required>
-                                            </div>
-                                            @error('name')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
+                                        <x-forms.form-group label="Nama Bank Soal" name="name" required>
+                                            <x-ui.input name="name" value="{{ old('name', $questionBank->name) }}" required />
+                                        </x-forms.form-group>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label class="form-label">Deskripsi</label>
-                                            <div class="input-group input-group-outline">
-                                                <textarea name="description" class="form-control" rows="4">{{ old('description', $questionBank->description) }}</textarea>
-                                            </div>
-                                            @error('description')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
+                                        <x-forms.form-group label="Deskripsi" name="description">
+                                            <x-ui.input type="textarea" name="description" rows="4" value="{{ old('description', $questionBank->description) }}" />
+                                        </x-forms.form-group>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-12">
-                                        <button type="submit" class="btn btn-primary">Update</button>
-                                        <a href="{{ route('admin.question-banks.index') }}" class="btn btn-outline-secondary">Batal</a>
+                                    <div class="col-12 mt-3">
+                                        <x-ui.button type="submit" variant="primary">Update</x-ui.button>
+                                        <x-ui.button variant="outline" href="{{ route('admin.question-banks.index') }}">Batal</x-ui.button>
                                     </div>
                                 </div>
                             </form>
                         </div>
-                    </div>
+                    </x-ui.card>
                 </div>
             </div>
         </div>
     </main>
     <x-admin.tutorial />
 
-</x-layout> 
+</x-layouts.app> 

@@ -1,33 +1,31 @@
-<x-layout bodyClass="g-sidenav-show bg-gray-200">
-    <x-navbars.sidebar activePage="users" :userName="auth()->user()->name" :userRole="auth()->user()->role->role_name" />
+<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
+    <x-navigation.sidebar activePage="users" />
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navbars.navs.auth titlePage="Tambahkan Data Dosen" />
+        <x-navigation.navbar titlePage="Tambahkan Data Dosen" />
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
-                    <div class="card my-4">
-                        <br><br>
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <x-ui.card class="my-4">
+                        <x-slot:header>
                             <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                                <h6 class="text-white text-capitalize ps-3">Tambahkan Data Dosen</h6>
+                                <h6 class="text-white text-capitalize ps-3 mb-0">Tambahkan Data Dosen</h6>
                             </div>
-                        </div>
+                        </x-slot:header>
+
                         <div class="card-body px-0 pb-2">
                             <div class="p-4">
                                 @if(session('error'))
-                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <x-ui.alert type="danger" dismissible>
                                         {{ session('error') }}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div>
+                                    </x-ui.alert>
                                 @endif
 
                                 @if($errors->any())
-                                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                    <x-ui.alert type="warning" dismissible>
                                         @foreach($errors->all() as $error)
                                             {{ $error }}<br>
                                         @endforeach
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div>
+                                    </x-ui.alert>
                                 @endif
 
                                 <div class="mb-4">
@@ -39,9 +37,9 @@
                                     </ol>
                                     
                                     <div class="mt-3">
-                                        <a href="{{ route('admin.users.download-template') }}" class="btn btn-sm btn-info">
-                                            <i class="material-icons text-sm">download</i> Download Template
-                                        </a>
+                                        <x-ui.button variant="info" size="sm" href="{{ route('admin.users.download-template') }}" icon="download">
+                                            Download Template
+                                        </x-ui.button>
                                     </div>
                                 </div>
 
@@ -51,9 +49,9 @@
                                         <div class="col-md-12">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">File Excel/CSV</label>
-                                                <div class="input-group input-group-outline">
-                                                    <input type="file" name="excel_file" class="form-control" required accept=".xlsx,.xls,.csv">
-                                                </div>
+                                                <x-forms.input-group>
+                                                    <x-ui.input type="file" name="excel_file" class="form-control" required accept=".xlsx,.xls,.csv" />
+                                                </x-forms.input-group>
                                                 @error('excel_file')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
@@ -62,10 +60,10 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-12">
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="material-icons text-sm">upload_file</i> Tambahkan
-                                            </button>
-                                            <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">Batal</a>
+                                            <x-ui.button type="submit" variant="primary" icon="upload_file">
+                                                Tambahkan
+                                            </x-ui.button>
+                                            <x-ui.button variant="outline" href="{{ route('admin.users.index') }}">Batal</x-ui.button>
                                         </div>
                                     </div>
                                 </form>
@@ -78,11 +76,11 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </x-ui.card>
                 </div>
             </div>
         </div>
     </main>
     <x-admin.tutorial />
 
-</x-layout> 
+</x-layouts.app> 

@@ -19,16 +19,18 @@
     </div>
 
     @foreach($material->questions as $index => $question)
-        <div class="question-review">
-            <div class="question-header">
-                <span class="question-number">
-                    <i class="fas fa-question-circle"></i>
-                    Soal {{ $index + 1 }} dari {{ $material->questions->count() }}
-                </span>
-                <span class="badge bg-{{ $question->difficulty == 'beginner' ? 'success' : ($question->difficulty == 'medium' ? 'warning' : 'danger') }} ms-2">
-                    {{ ucfirst($question->difficulty) }}
-                </span>
-            </div>
+        <x-ui.card class="question-review mb-4" :hover="true">
+            <x-slot:header>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="question-number font-weight-bold">
+                        <i class="fas fa-question-circle me-1"></i>
+                        Soal {{ $index + 1 }} dari {{ $material->questions->count() }}
+                    </span>
+                    <x-ui.badge variant="{{ $question->difficulty == 'beginner' ? 'success' : ($question->difficulty == 'medium' ? 'warning' : 'danger') }}">
+                        {{ ucfirst($question->difficulty) }}
+                    </x-ui.badge>
+                </div>
+            </x-slot:header>
             
             <div class="question-content">
                 <h5 class="mb-3"><i class="fas fa-question me-2"></i>Pertanyaan</h5>
@@ -56,17 +58,17 @@
                     @endforeach
                 </div>
             </div>
-        </div>
+        </x-ui.card>
     @endforeach
 
     <div class="navigation-buttons">
-        <a href="{{ route('mahasiswa.materials.questions.index') }}" class="btn btn-primary me-2">
-            <i class="fas fa-list me-2"></i>Kembali ke Daftar Soal
-        </a>
+        <x-ui.button href="{{ route('mahasiswa.materials.questions.index') }}" variant="primary" icon="list" class="me-2">
+            Kembali ke Daftar Soal
+        </x-ui.button>
         @if(!auth()->check())
-            <a href="{{ route('mahasiswa.dashboard') }}" class="btn btn-info">
-                <i class="fas fa-home me-2"></i>Dashboard
-            </a>
+            <x-ui.button href="{{ route('mahasiswa.dashboard') }}" variant="info" icon="home">
+                Dashboard
+            </x-ui.button>
         @endif
     </div>
 </div>

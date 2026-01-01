@@ -1,21 +1,20 @@
-<x-layout bodyClass="g-sidenav-show bg-gray-200">
-    <x-navbars.sidebar activePage="ueq" :userName="auth()->user()->name" :userRole="auth()->user()->role->role_name" />
+<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
+    <x-navigation.sidebar activePage="ueq" />
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navbars.navs.auth titlePage="Detail UEQ Survey" />
+        <x-navigation.navbar titlePage="Detail UEQ Survey" />
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
-                    <div class="card my-4">
-                        <br><br>
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <x-ui.card class="my-4">
+                        <x-slot:header>
                             <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
-                                <h6 class="text-white text-capitalize ps-3">Detail Survey UEQ - {{ $user->name }}</h6>
-                                <a href="{{ route('admin.ueq.index') }}" class="btn btn-sm btn-light me-3">
-                                    <span class="btn-inner--icon"><i class="material-icons">arrow_back</i></span>
-                                    <span class="btn-inner--text">Kembali</span>
-                                </a>
+                                <h6 class="text-white text-capitalize ps-3 mb-0">Detail Survey UEQ - {{ $user->name }}</h6>
+                                <x-ui.button variant="light" size="sm" href="{{ route('admin.ueq.index') }}" icon="arrow_back" class="me-3">
+                                    Kembali
+                                </x-ui.button>
                             </div>
-                        </div>
+                        </x-slot:header>
+
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6">
@@ -103,19 +102,19 @@
                             <div class="row mt-4">
                                 <div class="col-md-6">
                                     <h5>Komentar</h5>
-                                    <div class="card">
+                                    <x-ui.card>
                                         <div class="card-body">
                                             {{ $survey->comments ?: 'Tidak ada komentar' }}
                                         </div>
-                                    </div>
+                                    </x-ui.card>
                                 </div>
                                 <div class="col-md-6">
                                     <h5>Saran</h5>
-                                    <div class="card">
+                                    <x-ui.card>
                                         <div class="card-body">
                                             {{ $survey->suggestions ?: 'Tidak ada saran' }}
                                         </div>
-                                    </div>
+                                    </x-ui.card>
                                 </div>
                             </div>
 
@@ -240,10 +239,10 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </x-ui.card>
                 </div>
             </div>
         </div>
     </main>
     <x-admin.tutorial />
-</x-layout> 
+</x-layouts.app> 
