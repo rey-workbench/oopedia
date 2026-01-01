@@ -1,9 +1,9 @@
-<x-layout bodyClass="bg-gray-200">
+<x-layouts.app :showNavbar="false" :showSidebar="false" bodyClass="bg-gray-200">
     <div class="container position-sticky z-index-sticky top-0">
         <div class="row">
             <div class="col-12">
                 <!-- Navbar -->
-                <x-navbars.navs.guest signin='login' signup='register'></x-navbars.navs.guest>
+                <x-navigation.navbar />
                 <!-- End Navbar -->
             </div>
         </div>
@@ -33,7 +33,7 @@
     <div class="modal-backdrop fade show"></div>
     @endif
 
-    <x-footers.guest></x-footers.guest>
+    <x-navigation.footer></x-navigation.footer>
 
     @push('js')
     <script>
@@ -45,4 +45,4 @@
         });
     </script>
     @endpush
-</x-layout>
+</x-layouts.app>

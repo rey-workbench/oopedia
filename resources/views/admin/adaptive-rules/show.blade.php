@@ -1,24 +1,25 @@
-<x-layout bodyClass="g-sidenav-show bg-gray-200">
-    <x-navbars.sidebar activePage="adaptive-rules" :userName="auth()->user()->name" :userRole="auth()->user()->role->role_name" />
+<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
+    <x-navigation.sidebar activePage="adaptive-rules" />
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navbars.navs.auth titlePage="Detail Rule" />
+        <x-navigation.navbar titlePage="Detail Rule" />
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
-                    <div class="card my-4">
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <x-ui.card class="my-4">
+                        <x-slot:header>
                             <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
                                 <h6 class="text-white text-capitalize ps-3 mb-0">Detail Adaptive Rule</h6>
                                 <div>
-                                    <a href="{{ route('admin.adaptive-rules.edit', $adaptiveRule) }}" class="btn btn-sm btn-warning me-2">
-                                        <i class="material-icons text-sm">edit</i>&nbsp;&nbsp;Edit
-                                    </a>
-                                    <a href="{{ route('admin.adaptive-rules.index') }}" class="btn btn-sm btn-light me-3">
-                                        <i class="material-icons text-sm">arrow_back</i>&nbsp;&nbsp;Kembali
-                                    </a>
+                                    <x-ui.button variant="warning" size="sm" href="{{ route('admin.adaptive-rules.edit', $adaptiveRule) }}" class="me-2" icon="edit">
+                                        Edit
+                                    </x-ui.button>
+                                    <x-ui.button variant="light" size="sm" href="{{ route('admin.adaptive-rules.index') }}" class="me-3" icon="arrow_back">
+                                        Kembali
+                                    </x-ui.button>
                                 </div>
                             </div>
-                        </div>
+                        </x-slot:header>
+                        
                         <div class="card-body pt-4">
                             <div class="row">
                                 <div class="col-md-6">
@@ -39,15 +40,15 @@
                                         <tr>
                                             <td class="text-sm font-weight-bold">Prioritas:</td>
                                             <td class="text-sm">
-                                                <span class="badge bg-info">{{ $adaptiveRule->priority }}</span>
+                                                <x-ui.badge variant="info">{{ $adaptiveRule->priority }}</x-ui.badge>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td class="text-sm font-weight-bold">Status:</td>
                                             <td class="text-sm">
-                                                <span class="badge bg-{{ $adaptiveRule->is_active ? 'success' : 'secondary' }}">
+                                                <x-ui.badge :variant="$adaptiveRule->is_active ? 'success' : 'secondary'">
                                                     {{ $adaptiveRule->is_active ? 'Aktif' : 'Nonaktif' }}
-                                                </span>
+                                                </x-ui.badge>
                                             </td>
                                         </tr>
                                         <tr>
@@ -100,9 +101,16 @@
                                                     <td class="text-xs font-weight-bold">Nilai Aksi:</td>
                                                     <td class="text-xs">
                                                         @if($adaptiveRule->action_type === 'change_difficulty')
-                                                            <span class="badge bg-{{ $adaptiveRule->action_value === 'hard' ? 'danger' : ($adaptiveRule->action_value === 'medium' ? 'warning' : 'success') }}">
+                                                            @php
+                                                                $difficultyVariant = match($adaptiveRule->action_value) {
+                                                                    'hard' => 'danger',
+                                                                    'medium' => 'warning',
+                                                                    default => 'success'
+                                                                };
+                                                            @endphp
+                                                            <x-ui.badge :variant="$difficultyVariant">
                                                                 {{ ucfirst($adaptiveRule->action_value) }}
-                                                            </span>
+                                                            </x-ui.badge>
                                                         @else
                                                             {{ $adaptiveRule->action_value }}
                                                         @endif
@@ -119,7 +127,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     <h6 class="mb-3">Contoh Penerapan Rule</h6>
-                                    <div class="alert alert-info">
+                                    <x-ui.alert type="info">
                                         <p class="mb-0 text-sm">
                                             <strong>IF</strong> {{ \App\Models\AdaptiveRule::CONDITION_TYPES[$adaptiveRule->condition_type] ?? $adaptiveRule->condition_type }} 
                                             {{ \App\Models\AdaptiveRule::OPERATORS[$adaptiveRule->condition_operator] ?? $adaptiveRule->condition_operator }} 
@@ -128,9 +136,9 @@
                                             <strong>THEN</strong> {{ \App\Models\AdaptiveRule::ACTION_TYPES[$adaptiveRule->action_type] ?? $adaptiveRule->action_type }}: 
                                             {{ $adaptiveRule->action_value }}
                                         </p>
-                                    </div>
+                                    </x-ui.alert>
                                     
-                                    <div class="alert alert-secondary">
+                                    <x-ui.alert type="secondary" class="text-white">
                                         <p class="mb-0 text-sm">
                                             <strong>Contoh Kasus:</strong><br>
                                             @if($adaptiveRule->condition_type === 'score_range' && $adaptiveRule->action_type === 'change_difficulty')
@@ -146,7 +154,7 @@
                                                 Rule ini akan mengevaluasi kondisi dan menjalankan aksi sesuai konfigurasi yang telah ditentukan.
                                             @endif
                                         </p>
-                                    </div>
+                                    </x-ui.alert>
                                 </div>
                             </div>
 
@@ -154,16 +162,16 @@
                                 <form action="{{ route('admin.adaptive-rules.destroy', $adaptiveRule) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus rule ini?')">
-                                        <i class="material-icons text-sm">delete</i>&nbsp;&nbsp;Hapus Rule
-                                    </button>
+                                    <x-ui.button type="submit" variant="danger" onclick="return confirm('Apakah Anda yakin ingin menghapus rule ini?')" icon="delete">
+                                        Hapus Rule
+                                    </x-ui.button>
                                 </form>
                             </div>
                         </div>
-                    </div>
+                    </x-ui.card>
                 </div>
             </div>
         </div>
     </main>
     <x-admin.tutorial />
-</x-layout>
+</x-layouts.app>

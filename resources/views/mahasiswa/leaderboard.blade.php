@@ -1,8 +1,4 @@
-@extends('mahasiswa.layouts.app')
-
-@section('title', 'Leaderboard')
-
-@section('content')
+<x-layouts.app title="Leaderboard">
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
@@ -157,7 +153,6 @@
         </div>
     </div>
 </div>
-@endsection
 
 @push('styles')
 <link href="{{ asset('css/mahasiswa.css') }}" rel="stylesheet">
@@ -262,4 +257,5 @@
         // Kode yang sudah dimodifikasi di atas
     }
 </script>
-@endpush 
+@endpush
+</x-layouts.app> 

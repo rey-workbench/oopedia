@@ -1,7 +1,7 @@
-<x-layout bodyClass="g-sidenav-show bg-gray-200">
-    <x-navbars.sidebar activePage="question-banks" :userName="auth()->user()->name" :userRole="auth()->user()->role->role_name" />
+<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
+    <x-navigation.sidebar activePage="question-banks" />
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navbars.navs.auth titlePage="Bank Soal" />
+        <x-navigation.navbar titlePage="Bank Soal" />
         <div class="container-fluid py-4">
             <!-- Search Form -->
             <form method="GET" action="{{ route('admin.question-banks.index') }}" class="mb-3">
@@ -16,31 +16,33 @@
 
             <div class="row">
                 <div class="col-12">
-                    <div class="card my-4">
-                    <br><br>
-                        @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show mx-4" role="alert">
-                                {{ session('success') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        @endif
-                        
-                        @if(session('error'))
-                            <div class="alert alert-danger alert-dismissible fade show mx-4" role="alert">
-                                {{ session('error') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        @endif
-
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <x-ui.card class="my-4">
+                        <x-slot:header>
                             <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
                                 <h6 class="text-white text-capitalize ps-3 mb-0">Daftar Bank Soal</h6>
-                                <a href="{{ route('admin.question-banks.create') }}" class="btn btn-sm btn-light me-3">
-                                    <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Tambah Bank Soal
-                                </a>
+                                <x-ui.button variant="light" size="sm" href="{{ route('admin.question-banks.create') }}" icon="add" class="me-3">
+                                    Tambah Bank Soal
+                                </x-ui.button>
                             </div>
-                        </div>
+                        </x-slot:header>
+
                         <div class="card-body px-0 pb-2">
+                            @if(session('success'))
+                                <div class="px-4">
+                                    <x-ui.alert type="success" dismissible>
+                                        {{ session('success') }}
+                                    </x-ui.alert>
+                                </div>
+                            @endif
+                            
+                            @if(session('error'))
+                                <div class="px-4">
+                                    <x-ui.alert type="danger" dismissible>
+                                        {{ session('error') }}
+                                    </x-ui.alert>
+                                </div>
+                            @endif
+
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
                                     <thead>
@@ -81,30 +83,22 @@
                                                 </div>
                                             </td>
                                             <td class="align-middle text-center">
-                                                <a href="{{ route('admin.question-banks.show', $bank) }}" class="btn btn-sm btn-info">
-                                                    <i class="material-icons text-sm">visibility</i>
-                                                    <span>Detail</span>
-                                                </a>
-                                                <a href="{{ route('admin.question-banks.manage-questions', $bank) }}" class="btn btn-sm btn-success">
-                                                    <i class="material-icons text-sm">question_answer</i>
-                                                    <span>Kelola Soal</span>
-                                                </a>
-                                                <a href="{{ route('admin.question-banks.configure', $bank) }}" class="btn btn-sm btn-warning">
-                                                    <i class="material-icons text-sm">settings</i>
-                                                    <span>Konfigurasi</span>
-                                                </a>
-                                                <a href="{{ route('admin.question-banks.edit', $bank) }}" class="btn btn-sm btn-primary">
-                                                    <i class="material-icons text-sm">edit</i>
-                                                    <span>Edit</span>
-                                                </a>
-                                                <form action="{{ route('admin.question-banks.destroy', $bank) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus bank soal ini?')">
-                                                        <i class="material-icons text-sm">delete</i>
-                                                        <span>Hapus</span>
-                                                    </button>
-                                                </form>
+                                                <!-- Action buttons -->
+                                                <div class="d-flex justify-content-center gap-1">
+                                                    <x-ui.button variant="info" size="sm" href="{{ route('admin.question-banks.show', $bank) }}" icon="visibility" title="Detail" />
+                                                    
+                                                    <x-ui.button variant="success" size="sm" href="{{ route('admin.question-banks.manage-questions', $bank) }}" icon="question_answer" title="Kelola Soal" />
+                                                    
+                                                    <x-ui.button variant="warning" size="sm" href="{{ route('admin.question-banks.configure', $bank) }}" icon="settings" title="Konfigurasi" />
+                                                    
+                                                    <x-ui.button variant="primary" size="sm" href="{{ route('admin.question-banks.edit', $bank) }}" icon="edit" title="Edit" />
+                                                    
+                                                    <form action="{{ route('admin.question-banks.destroy', $bank) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <x-ui.button type="submit" variant="danger" size="sm" icon="delete" title="Hapus" onclick="return confirm('Apakah Anda yakin ingin menghapus bank soal ini?')" />
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                         @empty
@@ -121,14 +115,14 @@
                                 {{ $questionBanks->links() }}
                             </div>
                         </div>
-                    </div>
+                    </x-ui.card>
                 </div>
             </div>
         </div>
     </main>
     <x-admin.tutorial />
 
-</x-layout>
+</x-layouts.app>
 
 @push('js')
 @endpush 

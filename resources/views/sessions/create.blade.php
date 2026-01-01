@@ -1,10 +1,10 @@
-<x-layout bodyClass="bg-gray-200">
+<x-layouts.guest bodyClass="bg-gray-200">
 
         <div class="container position-sticky z-index-sticky top-0">
             <div class="row">
                 <div class="col-12">
                     <!-- Navbar -->
-                    <x-navbars.navs.guest signin='login' signup='register'></x-navbars.navs.guest>
+                    {{-- <x-navbars.navs.guest signin='login' signup='register'></x-navbars.navs.guest> --}}
                     <!-- End Navbar -->
                 </div>
             </div>
@@ -76,7 +76,7 @@
                         </div>
                     </div>
                 </div>
-                <x-footers.guest></x-footers.guest>
+                {{-- <x-footers.guest></x-footers.guest> --}}
             </div>
         </main>
         @push('js')
@@ -94,4 +94,4 @@
 </script>
 @endpush
 <link rel="stylesheet" href="{{ asset('css/blue-theme.css') }}">
-</x-layout>
+</x-layouts.guest>

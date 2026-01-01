@@ -1,31 +1,29 @@
-<x-layout bodyClass="g-sidenav-show bg-gray-200">
-    <x-navbars.sidebar activePage="materials" :userName="auth()->user()->name" :userRole="auth()->user()->role->role_name" />
+<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
+    <x-navigation.sidebar activePage="materials" />
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navbars.navs.auth titlePage="Materi" />
+        <x-navigation.navbar titlePage="Materi" />
         <div class="container-fluid py-4">
             <!-- Search Form -->
             <form method="GET" action="{{ route('admin.materials.index') }}" class="mb-3">
-                <div class="input-group input-group-outline my-3">
-                    <input type="text" name="search" class="form-control" placeholder="Search" value="{{ request('search') }}" style="height: 50px;">
-                    <button class="btn btn-icon btn-3 btn-primary" type="submit" style="height: 50px;">
-                        <span class="btn-inner--icon"><i class="material-icons">search</i></span>
-                        <span class="btn-inner--text">Cari</span>
-                    </button>
-                </div>
+                <x-forms.input-group class="my-3">
+                    <x-ui.input name="search" placeholder="Search" value="{{ request('search') }}" style="height: 42px;" />
+                    <x-ui.button type="submit" variant="primary" icon="search" style="height: 42px; margin-bottom: 0;">
+                        Cari
+                    </x-ui.button>
+                </x-forms.input-group>
             </form>
             <div class="row">
                 <div class="col-12">
-                    <div class="card my-4">
-                    <br><br>
-
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <x-ui.card class="my-4">
+                        <x-slot:header>
                             <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
-                                <h6 class="text-white text-capitalize ps-3">Daftar Materi</h6>
-                                <a href="{{ route('admin.materials.create') }}" class="btn btn-sm btn-light me-3">
-                                    <i class="material-icons text-sm">add</i> Tambah Materi
-                                </a>
+                                <h6 class="text-white text-capitalize ps-3 mb-0">Daftar Materi</h6>
+                                <x-ui.button variant="light" size="sm" href="{{ route('admin.materials.create') }}" icon="add" class="me-3">
+                                    Tambah Materi
+                                </x-ui.button>
                             </div>
-                        </div>
+                        </x-slot:header>
+
                         <div class="card-body px-0 pb-2">
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
@@ -41,7 +39,6 @@
                                     <tbody>
                                         @foreach($materials as $material)
                                         <tr>
-                                            
                                             <td>
                                                 <div class="d-flex px-2 py-1">
                                                     <div class="d-flex flex-column justify-content-center">
@@ -66,25 +63,22 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                        <p class="text-xs font-weight-bold mb-0">
-                                                            {{ $material->creator ? $material->creator->name : 'Admin' }}
-                                                        </p>
-                                                    </td>
+                                                <p class="text-xs font-weight-bold mb-0">
+                                                    {{ $material->creator ? $material->creator->name : 'Admin' }}
+                                                </p>
+                                            </td>
                                             <td class="align-middle text-center">
                                                 <span class="text-secondary text-xs font-weight-bold">
                                                     {{ $material->created_at->format('d M Y') }}
                                                 </span>
                                             </td>
                                             <td class="align-middle text-center">
-                                                <a href="{{ route('admin.materials.edit', $material->id) }}" class="btn btn-sm btn-info">
-                                                    <i class="material-icons text-sm">edit</i>
-                                                </a>
+                                                <x-ui.button variant="info" size="sm" href="{{ route('admin.materials.edit', $material->id) }}" icon="edit" />
+                                                
                                                 <form action="{{ route('admin.materials.destroy', $material->id) }}" method="POST" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus materi ini?')">
-                                                        <i class="material-icons text-sm">delete</i>
-                                                    </button>
+                                                    <x-ui.button type="submit" variant="danger" size="sm" icon="delete" onclick="return confirm('Apakah Anda yakin ingin menghapus materi ini?')" />
                                                 </form>
                                             </td>
                                         </tr>
@@ -93,14 +87,14 @@
                                 </table>
                             </div>
                         </div>
-                    </div>
+                    </x-ui.card>
                 </div>
             </div>
         </div>
     </main>
     <x-admin.tutorial />
 
-</x-layout>
+</x-layouts.app>
 
 @push('js')
 @endpush

@@ -1,61 +1,63 @@
-<x-layout bodyClass="g-sidenav-show bg-gray-200">
-    <x-navbars.sidebar activePage="question-banks" :userName="auth()->user()->name" :userRole="auth()->user()->role->role_name" />
+<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
+    <x-navigation.sidebar activePage="question-banks" />
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navbars.navs.auth titlePage="Kelola Soal Bank" />
+        <x-navigation.navbar titlePage="Kelola Soal Bank" />
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
-                    <div class="card my-4">
-                    <br><br>
+                    <x-ui.card class="my-4">
                         @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show mx-4" role="alert">
-                                {{ session('success') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <div class="px-4 pt-4">
+                                <x-ui.alert type="success" dismissible>
+                                    {{ session('success') }}
+                                </x-ui.alert>
                             </div>
                         @endif
                         
                         @if(session('error'))
-                            <div class="alert alert-danger alert-dismissible fade show mx-4" role="alert">
-                                {{ session('error') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <div class="px-4 pt-4">
+                                <x-ui.alert type="danger" dismissible>
+                                    {{ session('error') }}
+                                </x-ui.alert>
                             </div>
                         @endif
 
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                        <x-slot:header>
                             <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
-                                <h6 class="text-white text-capitalize ps-3">Kelola Soal: {{ $questionBank->name }}</h6>
-                                <a href="{{ route('admin.question-banks.show', $questionBank) }}" class="btn btn-sm btn-light me-3">
-                                    <i class="material-icons text-sm">arrow_back</i>
-                                    <span>Kembali</span>
-                                </a>
+                                <h6 class="text-white text-capitalize ps-3 mb-0">Kelola Soal: {{ $questionBank->name }}</h6>
+                                <x-ui.button variant="light" size="sm" href="{{ route('admin.question-banks.show', $questionBank) }}" icon="arrow_back" class="me-3">
+                                    Kembali
+                                </x-ui.button>
                             </div>
-                        </div>
+                        </x-slot:header>
                         
-                        <div class="card-body pt-4">
+                        <div class="card-body px-4 pt-4">
                             <!-- Filter and search -->
-                            <div class="row mb-4">
-                                <div class="col-md-5">
-                                    <div class="input-group input-group-outline">
-                                        <input type="text" name="search" class="form-control" placeholder="Cari soal..." value="{{ request('search') }}">
+                            <form method="GET" action="{{ route('admin.question-banks.manage-questions', $questionBank) }}">
+                                <div class="row mb-4">
+                                    <div class="col-md-5">
+                                        <div class="input-group input-group-outline my-3">
+                                            <label class="form-label">Cari soal...</label>
+                                            <input type="text" name="search" class="form-control" value="{{ request('search') }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="input-group input-group-outline my-3">
+                                            <select name="difficulty" class="form-control">
+                                                <option value="">Semua Tingkat Kesulitan</option>
+                                                <option value="beginner" {{ request('difficulty') == 'beginner' ? 'selected' : '' }}>Beginner</option>
+                                                <option value="medium" {{ request('difficulty') == 'medium' ? 'selected' : '' }}>Medium</option>
+                                                <option value="hard" {{ request('difficulty') == 'hard' ? 'selected' : '' }}>Hard</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 d-flex align-items-center">
+                                        <x-ui.button type="submit" variant="primary" class="w-100 mt-3" icon="search">
+                                            Filter
+                                        </x-ui.button>
                                     </div>
                                 </div>
-                                <div class="col-md-5">
-                                    <div class="input-group input-group-outline">
-                                        <select name="difficulty" class="form-control">
-                                            <option value="">Semua Tingkat Kesulitan</option>
-                                            <option value="beginner" {{ request('difficulty') == 'beginner' ? 'selected' : '' }}>Beginner</option>
-                                            <option value="medium" {{ request('difficulty') == 'medium' ? 'selected' : '' }}>Medium</option>
-                                            <option value="hard" {{ request('difficulty') == 'hard' ? 'selected' : '' }}>Hard</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <button type="submit" class="btn btn-primary w-100">
-                                        <i class="material-icons text-sm">search</i>
-                                        <span>Filter</span>
-                                    </button>
-                                </div>
-                            </div>
+                            </form>
                             
                             <!-- Questions list -->
                             <div class="table-responsive">
@@ -85,20 +87,19 @@
                                                 {{ $question->material->title ?? 'Tidak ada materi' }}
                                             </td>
                                             <td>
-                                                <span class="badge bg-{{ $question->difficulty == 'beginner' ? 'success' : ($question->difficulty == 'medium' ? 'warning' : 'danger') }}">
+                                                <x-ui.badge variant="{{ $question->difficulty == 'beginner' ? 'success' : ($question->difficulty == 'medium' ? 'warning' : 'danger') }}">
                                                     {{ ucfirst($question->difficulty) }}
-                                                </span>
+                                                </x-ui.badge>
                                             </td>
-                                            <td>
+                                            <td class="text-sm">
                                                 {{ $question->formatted_type ?? ucfirst(str_replace('_', ' ', $question->question_type)) }}
                                             </td>
                                             <td class="align-middle text-center">
                                                 <form action="{{ route('admin.question-banks.add-question', ['questionBank' => $questionBank, 'question' => $question]) }}" method="POST">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-sm btn-success">
-                                                        <i class="material-icons text-sm">add</i>
-                                                        <span>Tambahkan ke Bank</span>
-                                                    </button>
+                                                    <x-ui.button type="submit" variant="success" size="sm" icon="add">
+                                                        Tambahkan ke Bank
+                                                    </x-ui.button>
                                                 </form>
                                             </td>
                                         </tr>
@@ -117,11 +118,11 @@
                                 {{ $questions->links() }}
                             </div>
                         </div>
-                    </div>
+                    </x-ui.card>
                 </div>
             </div>
         </div>
     </main>
     <x-admin.tutorial />
 
-</x-layout> 
+</x-layouts.app> 

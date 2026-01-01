@@ -16,12 +16,12 @@
         </div>
         
         <div class="feedback-actions mt-4 text-center">
-            <button id="tryAgainBtn" class="btn btn-warning" style="display: none;">
+            <x-ui.button id="tryAgainBtn" variant="warning" style="display: none;">
                 <i class="fas fa-redo me-2"></i>Coba Lagi
-            </button>
-            <button id="nextQuestionBtn" class="btn btn-success" style="display: none;">
+            </x-ui.button>
+            <x-ui.button id="nextQuestionBtn" variant="success" style="display: none;">
                 Lanjut ke Soal Berikutnya <i class="fas fa-arrow-right ms-2"></i>
-            </button>
+            </x-ui.button>
         </div>
     </div>
 </div> 

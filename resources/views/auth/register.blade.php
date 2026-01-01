@@ -1,10 +1,10 @@
-<x-layout bodyClass="auth-layout bg-gray-200">
+<x-layouts.guest bodyClass="auth-layout bg-gray-200">
     <div>
         <div class="container position-sticky z-index-sticky top-0">
             <div class="row">
                 <div class="col-12">
                     <!-- Navbar -->
-                    <x-navbars.navs.guest signin='login' signup='register'></x-navbars.navs.guest>
+                    <x-navigation.navbar />
                     <!-- End Navbar -->
                 </div>
             </div>
@@ -144,4 +144,4 @@
     </script>
     @endpush
     <link rel="stylesheet" href="{{ asset('css/blue-theme.css') }}">
-</x-layout>
+</x-layouts.guest>

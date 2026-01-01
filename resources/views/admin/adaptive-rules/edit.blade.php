@@ -1,234 +1,165 @@
-<x-layout bodyClass="g-sidenav-show bg-gray-200">
-    <x-navbars.sidebar activePage="adaptive-rules" :userName="auth()->user()->name" :userRole="auth()->user()->role->role_name" />
+<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
+    <x-navigation.sidebar activePage="adaptive-rules" />
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navbars.navs.auth titlePage="Edit Rule" />
+        <x-navigation.navbar titlePage="Edit Rule" />
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
-                    <div class="card my-4">
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <x-ui.card class="my-4">
+                        <x-slot:header>
                             <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
                                 <h6 class="text-white text-capitalize ps-3 mb-0">Edit Adaptive Rule</h6>
-                                <a href="{{ route('admin.adaptive-rules.index') }}" class="btn btn-sm btn-light me-3">
-                                    <i class="material-icons text-sm">arrow_back</i>&nbsp;&nbsp;Kembali
-                                </a>
+                                <x-ui.button variant="light" size="sm" href="{{ route('admin.adaptive-rules.index') }}" icon="arrow_back" class="me-3">
+                                    Kembali
+                                </x-ui.button>
                             </div>
-                        </div>
-                        <div class="card-body pt-4">
-                            @if(session('error'))
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    {{ session('error') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            @endif
+                        </x-slot:header>
+                        
+                        <x-ui.alert type="danger" :message="session('error')" />
+                        
+                        @if($errors->any())
+                            <x-ui.alert type="danger">
+                                <strong>Terjadi kesalahan:</strong>
+                                <ul class="mb-0">
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </x-ui.alert>
+                        @endif
                             
-                            @if($errors->any())
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <strong>Terjadi kesalahan:</strong>
-                                    <ul class="mb-0">
-                                        @foreach($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            @endif
+                        <form action="{{ route('admin.adaptive-rules.update', $adaptiveRule) }}" method="POST">
+                            @csrf
+                            @method('PUT')
                             
-                            <form action="{{ route('admin.adaptive-rules.update', $adaptiveRule) }}" method="POST">
-                                @csrf
-                                @method('PUT')
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <x-forms.form-group label="Nama Rule" name="name" required>
+                                        <x-ui.input name="name" :value="$adaptiveRule->name" required />
+                                    </x-forms.form-group>
+                                </div>
                                 
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="name" class="form-label">Nama Rule <span class="text-danger">*</span></label>
-                                            <div class="input-group input-group-outline focused is-focused">
-                                                <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $adaptiveRule->name) }}" required>
-                                            </div>
-                                            @error('name')
-                                                <div class="text-danger text-sm mt-1">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="material_id" class="form-label">Materi (Opsional)</label>
-                                            <div class="input-group input-group-outline focused is-focused">
-                                                <select name="material_id" id="material_id" class="form-control">
-                                                    <option value="">Semua Materi</option>
-                                                    @foreach($materials as $material)
-                                                        <option value="{{ $material->id }}" {{ old('material_id', $adaptiveRule->material_id) == $material->id ? 'selected' : '' }}>
-                                                            {{ $material->title }}
-                                                        </option>
-                                                    @endforeach
+                                <div class="col-md-6">
+                                    <x-forms.form-group label="Materi (Opsional)" name="material_id">
+                                        <x-forms.select 
+                                            name="material_id" 
+                                            :options="$materials->pluck('title', 'id')" 
+                                            :selected="$adaptiveRule->material_id"
+                                            placeholder="Semua Materi"
+                                        />
+                                    </x-forms.form-group>
+                                </div>
+                            </div>
+
+                            <x-forms.form-group label="Deskripsi" name="description" class="mb-3">
+                                <x-ui.input type="textarea" name="description" :value="$adaptiveRule->description" rows="3" />
+                            </x-forms.form-group>
+
+                            <hr class="my-4">
+                            <h6 class="mb-3">Kondisi (IF)</h6>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <x-forms.form-group label="Tipe Kondisi" name="condition_type" required>
+                                        <x-forms.select 
+                                            name="condition_type" 
+                                            :options="\App\Models\AdaptiveRule::CONDITION_TYPES" 
+                                            :selected="$adaptiveRule->condition_type"
+                                            placeholder="Pilih Tipe"
+                                            required
+                                        />
+                                    </x-forms.form-group>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <x-forms.form-group label="Operator" name="condition_operator" required>
+                                        <x-forms.select 
+                                            name="condition_operator" 
+                                            :options="\App\Models\AdaptiveRule::OPERATORS" 
+                                            :selected="$adaptiveRule->condition_operator"
+                                            placeholder="Pilih Operator"
+                                            required
+                                        />
+                                    </x-forms.form-group>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <x-forms.form-group label="Nilai" name="condition_value" required helpText="Untuk operator 'Antara', gunakan format: min-max (contoh: 60-80)">
+                                        <x-ui.input name="condition_value" :value="$adaptiveRule->condition_value" placeholder="Contoh: 70 atau 60-80" required />
+                                    </x-forms.form-group>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+                            <h6 class="mb-3">Aksi (THEN)</h6>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <x-forms.form-group label="Tipe Aksi" name="action_type" required>
+                                        <x-forms.select 
+                                            name="action_type" 
+                                            :options="\App\Models\AdaptiveRule::ACTION_TYPES" 
+                                            :selected="$adaptiveRule->action_type"
+                                            placeholder="Pilih Tipe Aksi"
+                                            required
+                                        />
+                                    </x-forms.form-group>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <x-forms.form-group label="Nilai Aksi" name="action_value" required>
+                                        <div id="action_value_container">
+                                            @if(old('action_type', $adaptiveRule->action_type) === 'change_difficulty')
+                                                <select name="action_value" id="action_value" class="form-control" required>
+                                                    <option value="">Pilih Tingkat Kesulitan</option>
+                                                    <option value="beginner" {{ old('action_value', $adaptiveRule->action_value) === 'beginner' ? 'selected' : '' }}>Beginner</option>
+                                                    <option value="medium" {{ old('action_value', $adaptiveRule->action_value) === 'medium' ? 'selected' : '' }}>Medium</option>
+                                                    <option value="hard" {{ old('action_value', $adaptiveRule->action_value) === 'hard' ? 'selected' : '' }}>Hard</option>
                                                 </select>
-                                            </div>
-                                            @error('material_id')
-                                                <div class="text-danger text-sm mt-1">{{ $message }}</div>
-                                            @enderror
+                                            @else
+                                                <x-ui.input name="action_value" :value="$adaptiveRule->action_value" placeholder="Masukkan nilai aksi" required />
+                                            @endif
+                                        </div>
+                                        <small class="text-muted" id="action_value_hint">Nilai tergantung tipe aksi yang dipilih</small>
+                                    </x-forms.form-group>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+                            <h6 class="mb-3">Pengaturan Lainnya</h6>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <x-forms.form-group label="Prioritas" name="priority" required helpText="Semakin tinggi angka, semakin tinggi prioritas">
+                                        <x-ui.input type="number" name="priority" :value="$adaptiveRule->priority" min="0" required />
+                                    </x-forms.form-group>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <div class="mt-4">
+                                            <x-forms.checkbox 
+                                                name="is_active" 
+                                                label="Aktifkan Rule" 
+                                                :checked="$adaptiveRule->is_active" 
+                                            />
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="mb-3">
-                                    <label for="description" class="form-label">Deskripsi</label>
-                                    <div class="input-group input-group-outline focused is-focused">
-                                        <textarea name="description" id="description" class="form-control" rows="3">{{ old('description', $adaptiveRule->description) }}</textarea>
-                                    </div>
-                                    @error('description')
-                                        <div class="text-danger text-sm mt-1">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <hr class="my-4">
-                                <h6 class="mb-3">Kondisi (IF)</h6>
-
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="condition_type" class="form-label">Tipe Kondisi <span class="text-danger">*</span></label>
-                                            <div class="input-group input-group-outline focused is-focused">
-                                                <select name="condition_type" id="condition_type" class="form-control" required>
-                                                    <option value="">Pilih Tipe</option>
-                                                    @foreach(\App\Models\AdaptiveRule::CONDITION_TYPES as $key => $label)
-                                                        <option value="{{ $key }}" {{ old('condition_type', $adaptiveRule->condition_type) == $key ? 'selected' : '' }}>
-                                                            {{ $label }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            @error('condition_type')
-                                                <div class="text-danger text-sm mt-1">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="condition_operator" class="form-label">Operator <span class="text-danger">*</span></label>
-                                            <div class="input-group input-group-outline focused is-focused">
-                                                <select name="condition_operator" id="condition_operator" class="form-control" required>
-                                                    <option value="">Pilih Operator</option>
-                                                    @foreach(\App\Models\AdaptiveRule::OPERATORS as $key => $label)
-                                                        <option value="{{ $key }}" {{ old('condition_operator', $adaptiveRule->condition_operator) == $key ? 'selected' : '' }}>
-                                                            {{ $label }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            @error('condition_operator')
-                                                <div class="text-danger text-sm mt-1">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="condition_value" class="form-label">Nilai <span class="text-danger">*</span></label>
-                                            <div class="input-group input-group-outline focused is-focused">
-                                                <input type="text" name="condition_value" id="condition_value" class="form-control" 
-                                                    value="{{ old('condition_value', $adaptiveRule->condition_value) }}" placeholder="Contoh: 70 atau 60-80" required>
-                                            </div>
-                                            <small class="text-muted">Untuk operator "Antara", gunakan format: min-max (contoh: 60-80)</small>
-                                            @error('condition_value')
-                                                <div class="text-danger text-sm mt-1">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <hr class="my-4">
-                                <h6 class="mb-3">Aksi (THEN)</h6>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="action_type" class="form-label">Tipe Aksi <span class="text-danger">*</span></label>
-                                            <div class="input-group input-group-outline focused is-focused">
-                                                <select name="action_type" id="action_type" class="form-control" required>
-                                                    <option value="">Pilih Tipe Aksi</option>
-                                                    @foreach(\App\Models\AdaptiveRule::ACTION_TYPES as $key => $label)
-                                                        <option value="{{ $key }}" {{ old('action_type', $adaptiveRule->action_type) == $key ? 'selected' : '' }}>
-                                                            {{ $label }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            @error('action_type')
-                                                <div class="text-danger text-sm mt-1">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="action_value" class="form-label">Nilai Aksi <span class="text-danger">*</span></label>
-                                            <div class="input-group input-group-outline focused is-focused" id="action_value_container">
-                                                @if(old('action_type', $adaptiveRule->action_type) === 'change_difficulty')
-                                                    <select name="action_value" id="action_value" class="form-control" required>
-                                                        <option value="">Pilih Tingkat Kesulitan</option>
-                                                        <option value="beginner" {{ old('action_value', $adaptiveRule->action_value) === 'beginner' ? 'selected' : '' }}>Beginner</option>
-                                                        <option value="medium" {{ old('action_value', $adaptiveRule->action_value) === 'medium' ? 'selected' : '' }}>Medium</option>
-                                                        <option value="hard" {{ old('action_value', $adaptiveRule->action_value) === 'hard' ? 'selected' : '' }}>Hard</option>
-                                                    </select>
-                                                @else
-                                                    <input type="text" name="action_value" id="action_value" class="form-control" 
-                                                        value="{{ old('action_value', $adaptiveRule->action_value) }}" placeholder="Masukkan nilai aksi" required>
-                                                @endif
-                                            </div>
-                                            <small class="text-muted" id="action_value_hint">Nilai tergantung tipe aksi yang dipilih</small>
-                                            @error('action_value')
-                                                <div class="text-danger text-sm mt-1">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <hr class="my-4">
-                                <h6 class="mb-3">Pengaturan Lainnya</h6>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="priority" class="form-label">Prioritas <span class="text-danger">*</span></label>
-                                            <div class="input-group input-group-outline focused is-focused">
-                                                <input type="number" name="priority" id="priority" class="form-control" 
-                                                    value="{{ old('priority', $adaptiveRule->priority) }}" min="0" required>
-                                            </div>
-                                            <small class="text-muted">Semakin tinggi angka, semakin tinggi prioritas</small>
-                                            @error('priority')
-                                                <div class="text-danger text-sm mt-1">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <div class="form-check mt-4">
-                                                <input class="form-check-input" type="checkbox" name="is_active" id="is_active" 
-                                                    {{ old('is_active', $adaptiveRule->is_active) ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="is_active">
-                                                    Aktifkan Rule
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex justify-content-end mt-4">
-                                    <a href="{{ route('admin.adaptive-rules.index') }}" class="btn btn-outline-secondary me-2">Batal</a>
-                                    <button type="submit" class="btn btn-primary">Perbarui Rule</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                            <div class="d-flex justify-content-end mt-4">
+                                <x-ui.button variant="outline" class="me-2" href="{{ route('admin.adaptive-rules.index') }}">Batal</x-ui.button>
+                                <x-ui.button type="submit" variant="primary">Perbarui Rule</x-ui.button>
+                            </div>
+                        </form>
+                    </x-ui.card>
                 </div>
             </div>
         </div>
     </main>
     <x-admin.tutorial />
-</x-layout>
+</x-layouts.app>
 
 @push('js')
 <script>

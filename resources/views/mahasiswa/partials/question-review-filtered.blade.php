@@ -7,12 +7,12 @@
     <div class="questions-list">
         @if(count($questions) > 0)
             @foreach($questions as $question)
-                <div class="question-card mb-4 p-4 bg-white rounded shadow-sm">
+                <x-ui.card class="question-card mb-4" :hover="true">
                     <div class="question-content">
                         <div class="question-header d-flex justify-content-between mb-3">
-                            <span class="badge bg-{{ $question->difficulty == 'beginner' ? 'success' : ($question->difficulty == 'medium' ? 'warning' : 'danger') }}">
+                            <x-ui.badge variant="{{ $question->difficulty == 'beginner' ? 'success' : ($question->difficulty == 'medium' ? 'warning' : 'danger') }}">
                                 {{ ucfirst($question->difficulty) }}
-                            </span>
+                            </x-ui.badge>
                             <span class="question-type text-muted">
                                 <i class="fas fa-question-circle me-1"></i>
                                 {{ ucfirst(str_replace('_', ' ', $question->question_type)) }}
@@ -44,13 +44,12 @@
                             @endforeach
                         </div>
                     </div>
-                </div>
+                </x-ui.card>
             @endforeach
         @else
-            <div class="alert alert-info">
-                <i class="fas fa-info-circle me-2"></i>
+            <x-ui.alert variant="info" :dismissible="false">
                 Tidak ada soal yang tersedia untuk ditampilkan.
-            </div>
+            </x-ui.alert>
         @endif
     </div>
 </div>

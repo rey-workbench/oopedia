@@ -1,7 +1,7 @@
-<x-layout bodyClass="g-sidenav-show bg-gray-200">
-    <x-navbars.sidebar activePage="adaptive-rules" :userName="auth()->user()->name" :userRole="auth()->user()->role->role_name" />
+<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
+    <x-navigation.sidebar activePage="adaptive-rules" />
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navbars.navs.auth titlePage="Rule-Based Kuis (Forward Chaining)" />
+        <x-navigation.navbar titlePage="Rule-Based Kuis (Forward Chaining)" />
         <div class="container-fluid py-4">
             <!-- Filter & Search Form -->
             <form method="GET" action="{{ route('admin.adaptive-rules.index') }}" class="mb-3">
@@ -24,40 +24,35 @@
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-icon btn-3 btn-primary w-100" type="submit" style="height: 50px;">
-                            <span class="btn-inner--icon"><i class="material-icons">search</i></span>
-                            <span class="btn-inner--text">Cari</span>
-                        </button>
+                        <div class="my-3">
+                            <x-ui.button type="submit" variant="primary" class="w-100" style="height: 50px;" icon="search">
+                                Cari
+                            </x-ui.button>
+                        </div>
                     </div>
                 </div>
             </form>
 
             <div class="row">
                 <div class="col-12">
-                    <div class="card my-4">
-                    <br><br>
-                        @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show mx-4" role="alert">
-                                {{ session('success') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <x-ui.card class="my-4">
+                        <x-slot:header>
+                            <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
+                                <h6 class="text-white text-capitalize ps-3 mb-0">Daftar Adaptive Rules</h6>
+                                <x-ui.button variant="light" size="sm" href="{{ route('admin.adaptive-rules.create') }}" icon="add" class="me-3">
+                                    Tambah Rule Baru
+                                </x-ui.button>
                             </div>
+                        </x-slot:header>
+
+                        @if(session('success'))
+                            <x-ui.alert type="success" class="mx-4 mt-3" :message="session('success')" />
                         @endif
                         
                         @if(session('error'))
-                            <div class="alert alert-danger alert-dismissible fade show mx-4" role="alert">
-                                {{ session('error') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
+                            <x-ui.alert type="danger" class="mx-4 mt-3" :message="session('error')" />
                         @endif
 
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                            <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
-                                <h6 class="text-white text-capitalize ps-3 mb-0">Daftar Adaptive Rules</h6>
-                                <a href="{{ route('admin.adaptive-rules.create') }}" class="btn btn-sm btn-light me-3">
-                                    <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Tambah Rule Baru
-                                </a>
-                            </div>
-                        </div>
                         <div class="card-body px-0 pb-2">
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
@@ -77,7 +72,7 @@
                                         <tr>
                                             <td>
                                                 <div class="d-flex px-2 py-1">
-                                                    <span class="badge bg-info">{{ $rule->priority }}</span>
+                                                    <x-ui.badge variant="info">{{ $rule->priority }}</x-ui.badge>
                                                 </div>
                                             </td>
                                             <td>
@@ -110,24 +105,19 @@
                                                 <form action="{{ route('admin.adaptive-rules.toggle-status', $rule) }}" method="POST" class="d-inline">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="submit" class="btn btn-sm btn-{{ $rule->is_active ? 'success' : 'secondary' }} mb-0">
+                                                    <x-ui.button type="submit" variant="{{ $rule->is_active ? 'success' : 'secondary' }}" size="sm" class="mb-0">
                                                         {{ $rule->is_active ? 'Aktif' : 'Nonaktif' }}
-                                                    </button>
+                                                    </x-ui.button>
                                                 </form>
                                             </td>
                                             <td class="align-middle text-center">
-                                                <a href="{{ route('admin.adaptive-rules.show', $rule) }}" class="btn btn-sm btn-info mb-1" title="Detail">
-                                                    <i class="material-icons text-sm">visibility</i>
-                                                </a>
-                                                <a href="{{ route('admin.adaptive-rules.edit', $rule) }}" class="btn btn-sm btn-primary mb-1" title="Edit">
-                                                    <i class="material-icons text-sm">edit</i>
-                                                </a>
+                                                <x-ui.button variant="info" size="sm" href="{{ route('admin.adaptive-rules.show', $rule) }}" class="mb-1" icon="visibility" />
+                                                <x-ui.button variant="primary" size="sm" href="{{ route('admin.adaptive-rules.edit', $rule) }}" class="mb-1" icon="edit" />
+                                                
                                                 <form action="{{ route('admin.adaptive-rules.destroy', $rule) }}" method="POST" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger mb-1" onclick="return confirm('Apakah Anda yakin ingin menghapus rule ini?')" title="Hapus">
-                                                        <i class="material-icons text-sm">delete</i>
-                                                    </button>
+                                                    <x-ui.button type="submit" variant="danger" size="sm" class="mb-1" icon="delete" onclick="return confirm('Apakah Anda yakin ingin menghapus rule ini?')" />
                                                 </form>
                                             </td>
                                         </tr>
@@ -145,23 +135,23 @@
                                 {{ $rules->links() }}
                             </div>
                         </div>
-                    </div>
+                    </x-ui.card>
                 </div>
             </div>
 
             <!-- Info Card -->
             <div class="row mt-4">
                 <div class="col-12">
-                    <div class="card">
+                    <x-ui.card>
                         <div class="card-body">
                             <h6 class="mb-3">Tentang Forward Chaining</h6>
                             <p class="text-sm mb-2">Forward chaining adalah metode inferensi yang dimulai dari fakta yang diketahui, kemudian menggunakan aturan untuk menarik kesimpulan baru.</p>
                             <p class="text-sm mb-0"><strong>Cara kerja:</strong> Sistem akan mengevaluasi kondisi (IF) berdasarkan performa mahasiswa, jika kondisi terpenuhi maka aksi (THEN) akan dijalankan. Rules dengan prioritas lebih tinggi akan dievaluasi terlebih dahulu.</p>
                         </div>
-                    </div>
+                    </x-ui.card>
                 </div>
             </div>
         </div>
     </main>
     <x-admin.tutorial />
-</x-layout>
+</x-layouts.app>

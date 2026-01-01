@@ -1,21 +1,20 @@
-<x-layout bodyClass="g-sidenav-show bg-gray-200">
-    <x-navbars.sidebar activePage="students" :userName="auth()->user()->name" :userRole="auth()->user()->role->role_name" />
+<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
+    <x-navigation.sidebar activePage="students" />
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navbars.navs.auth titlePage="Progress Mahasiswa" />
+        <x-navigation.navbar titlePage="Progress Mahasiswa" />
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
-                    <div class="card my-4">
-                    <br><br>
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <x-ui.card class="my-4">
+                        <x-slot:header>
                             <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
-                                <h6 class="text-white text-capitalize ps-3">Progress Mahasiswa: {{ $student->name }}</h6>
-                                <a href="{{ route('admin.students.index') }}" class="btn btn-sm btn-light me-3">
-                                    <span class="btn-inner--icon"><i class="material-icons">arrow_back</i></span>
-                                    <span class="btn-inner--text">Kembali</span>
-                                </a>
+                                <h6 class="text-white text-capitalize ps-3 mb-0">Progress Mahasiswa: {{ $student->name }}</h6>
+                                <x-ui.button variant="light" size="sm" href="{{ route('admin.students.index') }}" icon="arrow_back" class="me-3">
+                                    Kembali
+                                </x-ui.button>
                             </div>
-                        </div>
+                        </x-slot:header>
+
                         <div class="card-body px-0 pb-2">
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
@@ -53,11 +52,11 @@
                                             </td>
                                             <td>
                                                 @if(is_numeric($material->progress) && $material->progress == 100)
-                                                    <span class="badge bg-gradient-success">Selesai</span>
+                                                    <x-ui.badge variant="success">Selesai</x-ui.badge>
                                                 @elseif(is_numeric($material->progress) && $material->progress > 0)
-                                                    <span class="badge bg-gradient-warning">Sedang Dikerjakan</span>
+                                                    <x-ui.badge variant="warning">Sedang Dikerjakan</x-ui.badge>
                                                 @else
-                                                    <span class="badge bg-gradient-secondary">Belum Dimulai</span>
+                                                    <x-ui.badge variant="secondary">Belum Dimulai</x-ui.badge>
                                                 @endif
                                             </td>
                                             <td>
@@ -77,7 +76,7 @@
                                 </table>
                             </div>
                         </div>
-                    </div>
+                    </x-ui.card>
                 </div>
             </div>
         </div>
@@ -85,13 +84,13 @@
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
-                    <div class="card my-4">
-                        <br><br>
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <x-ui.card class="my-4">
+                        <x-slot:header>
                             <div class="bg-gradient-warning shadow-warning border-radius-lg pt-4 pb-3">
-                                <h6 class="text-white text-capitalize ps-3">Soal yang Belum Dijawab</h6>
+                                <h6 class="text-white text-capitalize ps-3 mb-0">Soal yang Belum Dijawab</h6>
                             </div>
-                        </div>
+                        </x-slot:header>
+
                         <div class="card-body px-0 pb-2">
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
@@ -112,7 +111,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <span class="badge bg-gradient-danger">{{ $item['missing_count'] }} soal</span>
+                                                <x-ui.badge variant="danger">{{ $item['missing_count'] }} soal</x-ui.badge>
                                             </td>
                                         </tr>
                                         @endforeach
@@ -120,15 +119,11 @@
                                 </table>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
+                    </x-ui.card>
     </main>
     <x-admin.tutorial />
 
-</x-layout>
+</x-layouts.app>
 
 @push('js')
 @endpush

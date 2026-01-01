@@ -40,7 +40,7 @@ class Material extends Model
     public function complete()
     {
         $materials = Material::all();
-        return view('mahasiswa.dashboard.completed', compact('materials'));
+        return view('[[mahasiswa.dashboard.completed', compact('materials'));
     }
     
     public function questionBankConfigs()

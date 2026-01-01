@@ -1,84 +1,79 @@
-<x-layout bodyClass="g-sidenav-show bg-gray-200">
-    <x-navbars.sidebar activePage="adaptive-rules" :userName="auth()->user()->name" :userRole="auth()->user()->role->role_name" />
+<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
+    <x-navigation.sidebar activePage="adaptive-rules" />
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navbars.navs.auth titlePage="Buat Rule Baru" />
+        <x-navigation.navbar titlePage="Buat Rule Baru" />
         <div class="container-fluid py-4">
             <div class="row justify-content-center">
                 <div class="col-lg-10">
-                    <div class="card shadow-lg">
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <x-ui.card class="shadow-lg">
+                        <x-slot:header>
                             <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
                                 <div class="d-flex justify-content-between align-items-center px-3">
                                     <h5 class="text-white mb-0">🎯 Buat Rule Baru</h5>
-                                    <a href="{{ route('admin.adaptive-rules.index') }}" class="btn btn-sm btn-light">
-                                        <i class="material-icons text-sm">arrow_back</i> Kembali
-                                    </a>
+                                    <x-ui.button variant="light" size="sm" href="{{ route('admin.adaptive-rules.index') }}" icon="arrow_back">
+                                        Kembali
+                                    </x-ui.button>
                                 </div>
                             </div>
-                        </div>
+                        </x-slot:header>
                         
-                        <div class="card-body p-4">
-                            @if(session('error'))
-                                <div class="alert alert-danger">{{ session('error') }}</div>
-                            @endif
+                        <x-ui.alert type="danger" :message="session('error')" />
                             
-                            <form action="{{ route('admin.adaptive-rules.store') }}" method="POST" id="ruleForm">
-                                @csrf
-                                
-                                <div class="mb-4">
-                                    <label class="form-label fw-bold">📝 Nama Rule</label>
-                                    <input type="text" name="name" class="form-control form-control-lg" 
-                                        placeholder="Contoh: Naikkan Kesulitan untuk Mahasiswa Pintar" required>
-                                </div>
+                        <form action="{{ route('admin.adaptive-rules.store') }}" method="POST" id="ruleForm">
+                            @csrf
+                            
+                            <x-forms.form-group label="📝 Nama Rule" name="name" required class="mb-4">
+                                <x-ui.input name="name" class="form-control-lg" placeholder="Contoh: Naikkan Kesulitan untuk Mahasiswa Pintar" required />
+                            </x-forms.form-group>
 
-                                <div class="rule-workspace p-4 mb-4">
-                                    <div class="rule-section if-section mb-4">
-                                        <h6 class="text-info mb-3"><i class="material-icons text-sm">arrow_forward</i> JIKA</h6>
-                                        <div class="rule-block mb-2" onclick="showModal('condition')">
-                                            <span class="block-icon">📊</span>
-                                            <span id="conditionText" class="block-text">Klik untuk pilih kondisi</span>
-                                        </div>
-                                        <div class="rule-block mb-2" onclick="showModal('operator')">
-                                            <span class="block-icon">⚖️</span>
-                                            <span id="operatorText" class="block-text">Klik untuk pilih operator</span>
-                                        </div>
-                                        <div class="rule-block input-block">
-                                            <span class="block-icon">🔢</span>
-                                            <input type="text" id="valueInput" class="form-control border-0" 
-                                                placeholder="Masukkan nilai (contoh: 80)">
-                                        </div>
+                            <div class="rule-workspace p-4 mb-4">
+                                <div class="rule-section if-section mb-4">
+                                    <h6 class="text-info mb-3"><i class="material-icons text-sm">arrow_forward</i> JIKA</h6>
+                                    <div class="rule-block mb-2" onclick="showModal('condition')">
+                                        <span class="block-icon">📊</span>
+                                        <span id="conditionText" class="block-text">Klik untuk pilih kondisi</span>
                                     </div>
-
-                                    <div class="rule-section then-section">
-                                        <h6 class="text-success mb-3"><i class="material-icons text-sm">check_circle</i> MAKA</h6>
-                                        <div class="rule-block mb-2" onclick="showModal('action')">
-                                            <span class="block-icon">⚡</span>
-                                            <span id="actionText" class="block-text">Klik untuk pilih aksi</span>
-                                        </div>
-                                        <div class="rule-block" onclick="showModal('actionValue')">
-                                            <span class="block-icon">🎯</span>
-                                            <span id="actionValueText" class="block-text">Klik untuk pilih detail</span>
-                                        </div>
+                                    <div class="rule-block mb-2" onclick="showModal('operator')">
+                                        <span class="block-icon">⚖️</span>
+                                        <span id="operatorText" class="block-text">Klik untuk pilih operator</span>
+                                    </div>
+                                    <div class="rule-block input-block">
+                                        <span class="block-icon">🔢</span>
+                                        <x-ui.input id="valueInput" class="border-0" placeholder="Masukkan nilai (contoh: 80)" />
                                     </div>
                                 </div>
 
-                                <input type="hidden" name="condition_type" id="condition_type">
-                                <input type="hidden" name="condition_operator" id="condition_operator">
-                                <input type="hidden" name="condition_value" id="condition_value">
-                                <input type="hidden" name="action_type" id="action_type">
-                                <input type="hidden" name="action_value" id="action_value">
-                                <input type="hidden" name="priority" value="10">
-                                <input type="hidden" name="is_active" value="1">
-
-                                <div class="d-flex justify-content-end gap-2">
-                                    <a href="{{ route('admin.adaptive-rules.index') }}" class="btn btn-outline-secondary btn-lg">Batal</a>
-                                    <button type="submit" class="btn btn-primary btn-lg">
-                                        <i class="material-icons text-sm">save</i> Simpan Rule
-                                    </button>
+                                <div class="rule-section then-section">
+                                    <h6 class="text-success mb-3"><i class="material-icons text-sm">check_circle</i> MAKA</h6>
+                                    <div class="rule-block mb-2" onclick="showModal('action')">
+                                        <span class="block-icon">⚡</span>
+                                        <span id="actionText" class="block-text">Klik untuk pilih aksi</span>
+                                    </div>
+                                    <div class="rule-block" onclick="showModal('actionValue')">
+                                        <span class="block-icon">🎯</span>
+                                        <span id="actionValueText" class="block-text">Klik untuk pilih detail</span>
+                                    </div>
                                 </div>
-                            </form>
-                        </div>
-                    </div>
+                            </div>
+
+                            <input type="hidden" name="condition_type" id="condition_type">
+                            <input type="hidden" name="condition_operator" id="condition_operator">
+                            <input type="hidden" name="condition_value" id="condition_value">
+                            <input type="hidden" name="action_type" id="action_type">
+                            <input type="hidden" name="action_value" id="action_value">
+                            <input type="hidden" name="priority" value="10">
+                            <input type="hidden" name="is_active" value="1">
+
+                            <div class="d-flex justify-content-end gap-2">
+                                <x-ui.button variant="outline" size="lg" href="{{ route('admin.adaptive-rules.index') }}">
+                                    Batal
+                                </x-ui.button>
+                                <x-ui.button type="submit" variant="primary" size="lg" icon="save">
+                                    Simpan Rule
+                                </x-ui.button>
+                            </div>
+                        </form>
+                    </x-ui.card>
                 </div>
             </div>
         </div>
@@ -95,7 +90,7 @@
             </div>
         </div>
     </div>
-</x-layout>
+</x-layouts.app>
 
 @push('css')
 <style>
