@@ -5,28 +5,9 @@
             <h1 class="main-title">Level Soal: {{ $material->title }}</h1>
             <div class="title-underline"></div>
             
-            <!-- Add difficulty selector -->
-            <div class="difficulty-selector mb-4">
-                <form method="GET" action="{{ route('mahasiswa.materials.questions.levels', $material) }}" class="d-flex justify-content-center align-items-center">
-                    <label class="me-2">Tingkat Kesulitan:</label>
-                    <select name="difficulty" class="form-select" onchange="this.form.submit()" style="width: auto;">
-                        <option value="beginner" {{ $difficulty == 'beginner' ? 'selected' : '' }}>Beginner</option>
-                        <option value="medium" {{ $difficulty == 'medium' ? 'selected' : '' }}>Medium</option>
-                        <option value="hard" {{ $difficulty == 'hard' ? 'selected' : '' }}>Hard</option>
-                    </select>
-                </form>
-            </div>
-
-            <!-- Display current difficulty if filtered -->
-            @if($difficulty != 'all')
-            <div class="difficulty-badge mb-4">
-                <i class="fas fa-signal me-2"></i>
-                <span>Menampilkan Soal: {{ ucfirst($difficulty) }}</span>
-            </div>
-            @endif
         </div>
 
-        <div class="level-container" data-is-guest="{{ (!auth()->check() || auth()->user()->role_id === 4) ? 'true' : 'false' }}">
+        <div class="level-container" data-is-guest="{{ !auth()->check() ? 'true' : 'false' }}">
             <!-- Tambahkan peringatan tentang sistem penilaian hanya untuk user mahasiswa (bukan tamu) -->
             @if(auth()->check() && auth()->user()->role_id === 3)
                 <div class="alert alert-info mb-4" role="alert">
@@ -97,17 +78,13 @@
                             @else
                                 <a href="{{ route('mahasiswa.materials.questions.show', [
                                     'material' => $material->id,
-                                    'question' => $level['question_id'],
-                                    'difficulty' => $difficulty
+                                    'question' => $level['question_id']
                                 ]) }}" class="level-link">
                                     <div class="level-circle unlocked">
                                         <span class="level-number">{{ $level['level'] }}</span>
                                     </div>
                                 </a>
                             @endif
-                            <div class="level-difficulty {{ $level['difficulty'] }}">
-                                {{ ucfirst($level['difficulty']) }}
-                            </div>
                         </div>
                     </div>
                 @endforeach

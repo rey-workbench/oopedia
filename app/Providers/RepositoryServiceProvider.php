@@ -40,6 +40,11 @@ class RepositoryServiceProvider extends ServiceProvider
             \App\Repositories\Interfaces\UeqSurveyRepositoryInterface::class,
             \App\Repositories\Eloquent\UeqSurveyRepository::class
         );
+
+        $this->app->bind(
+            \App\Repositories\Interfaces\QuestionBankRepositoryInterface::class,
+            \App\Repositories\Eloquent\QuestionBankRepository::class
+        );
     }
 
     /**

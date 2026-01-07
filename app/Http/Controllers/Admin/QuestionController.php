@@ -4,50 +4,33 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Question;
-use App\Models\Answer;
 use App\Models\Material;
 use Illuminate\Http\Request;
+use App\Services\QuestionService;
+use App\Services\MaterialService;
 
 class QuestionController extends Controller
 {
+    protected $questionService;
+    protected $materialService;
+
+    public function __construct(
+        QuestionService $questionService,
+        MaterialService $materialService
+    )
+    {
+        $this->questionService = $questionService;
+        $this->materialService = $materialService;
+    }
+
     public function index(Request $request, Material $material = null)
     {
         $user = auth()->user();
         $search = $request->input('search');
         $difficulty = $request->input('difficulty');
+        $materialId = $material ? $material->id : null;
 
-        $questions = Question::with(['createdBy', 'answers', 'material'])
-            ->when($search, function ($query) use ($search) {
-                return $query->where(function ($q) use ($search) {
-                    $q->where('question_text', 'like', "%{$search}%")
-                        ->orWhere('question_type', 'like', "%{$search}%")
-                        ->orWhereHas('createdBy', function ($userQuery) use ($search) {
-                            $userQuery->where('name', 'like', "%{$search}%");
-                        })
-                        ->orWhereHas('material', function ($materialQuery) use ($search) {
-                            $materialQuery->where('title', 'like', "%{$search}%");
-                        });
-                });
-            })
-            ->when($difficulty, function ($query) use ($difficulty) {
-                return $query->where('difficulty', $difficulty);
-            })
-            ->when($material, function ($query) use ($material) {
-                return $query->where('material_id', $material->id);
-            })
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        // Format question types for display
-        $questions->transform(function ($question) {
-            $question->formatted_type = match($question->question_type) {
-                'fill_in_the_blank' => 'Fill in the Blank',
-                'radio_button' => 'Radio Button',
-                'drag_and_drop' => 'Drag and Drop',
-                default => $question->question_type
-            };
-            return $question;
-        });
+        $questions = $this->questionService->getFilteredQuestions($search, $difficulty, $materialId);
 
         return view('admin.questions.index', [
             'questions' => $questions,
@@ -68,95 +51,92 @@ class QuestionController extends Controller
             return view('admin.questions.create', compact('materials', 'material'));
         } else {
             // Otherwise show all materials (for the general create route)
-            $materials = Material::all();
+            $materials = $this->materialService->getAllMaterials();
             return view('admin.questions.create', compact('materials'));
         }
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request, Material $material = null)
-{
-    // Validasi dasar untuk semua field kecuali answers
-    $baseValidation = [
-        'question_text' => 'required|string',
-        'question_type' => 'required|in:radio_button,drag_and_drop,fill_in_the_blank',
-        'difficulty' => 'required|in:beginner,medium,hard',
-        'material_id' => 'required|exists:materials,id',
-    ];
-    
-    // Validasi khusus untuk answers berdasarkan tipe soal
-    if ($request->question_type === 'fill_in_the_blank') {
-        $answersValidation = ['answers' => 'required|array|min:1'];
-    } else {
-        $answersValidation = ['answers' => 'required|array|min:2'];
-    }
-    
-    // Gabungkan validasi
-    $validationRules = array_merge($baseValidation, $answersValidation);
-    
-    // Tambahkan validasi untuk setiap jawaban
-    $validationRules['answers.*.answer_text'] = 'required|string';
-    
-    $request->validate($validationRules);
-
-    // Proses correct_answer untuk radio_button dan fill_in_the_blank
-    $answers = $request->answers;
-    
-    if (in_array($request->question_type, ['radio_button', 'fill_in_the_blank'])) {
-        if ($request->has('correct_answer')) {
-            $correctIndex = $request->correct_answer;
-            
-            // Create a new array instead of trying to modify by reference
-            $processedAnswers = [];
-            foreach ($answers as $index => $answer) {
-                $answer['is_correct'] = ($index == $correctIndex) ? 1 : 0;
-                $processedAnswers[] = $answer;
-            }
-            $answers = $processedAnswers;
-            
-            // Pastikan hanya ada 1 jawaban benar
-            $correctAnswersCount = collect($answers)->sum(function ($answer) {
-                return $answer['is_correct'];
-            });
-            
-            if ($correctAnswersCount !== 1) {
-                return redirect()->back()->withInput()->with('error', ucfirst(str_replace('_', ' ', $request->question_type)) . ' questions must have exactly one correct answer.');
-            }
+    {
+        // Validasi dasar untuk semua field kecuali answers
+        $baseValidation = [
+            'question_text' => 'required|string',
+            'question_type' => 'required|in:radio_button,drag_and_drop,fill_in_the_blank',
+            'difficulty' => 'required|in:beginner,medium,hard',
+            'material_id' => 'required|exists:materials,id',
+        ];
+        
+        // Validasi khusus untuk answers berdasarkan tipe soal
+        if ($request->question_type === 'fill_in_the_blank') {
+            $answersValidation = ['answers' => 'required|array|min:1'];
         } else {
-            return redirect()->back()->withInput()->with('error', 'Please select the correct answer.');
+            $answersValidation = ['answers' => 'required|array|min:2'];
+        }
+        
+        // Gabungkan validasi
+        $validationRules = array_merge($baseValidation, $answersValidation);
+        
+        // Tambahkan validasi untuk setiap jawaban
+        $validationRules['answers.*.answer_text'] = 'required|string';
+        
+        $request->validate($validationRules);
+
+        // Proses correct_answer untuk radio_button dan fill_in_the_blank
+        // Note: This pre-processing is still done here as it relates to request format adaptation before business logic
+        $answers = $request->answers;
+        
+        if (in_array($request->question_type, ['radio_button', 'fill_in_the_blank'])) {
+            if ($request->has('correct_answer')) {
+                $correctIndex = $request->correct_answer;
+                
+                // Create a new array instead of trying to modify by reference
+                $processedAnswers = [];
+                foreach ($answers as $index => $answer) {
+                    $answer['is_correct'] = ($index == $correctIndex) ? 1 : 0;
+                    $processedAnswers[] = $answer;
+                }
+                $answers = $processedAnswers;
+                
+                // Pastikan hanya ada 1 jawaban benar
+                $correctAnswersCount = collect($answers)->sum(function ($answer) {
+                    return $answer['is_correct'];
+                });
+                
+                if ($correctAnswersCount !== 1) {
+                    return redirect()->back()->withInput()->with('error', ucfirst(str_replace('_', ' ', $request->question_type)) . ' questions must have exactly one correct answer.');
+                }
+            } else {
+                return redirect()->back()->withInput()->with('error', 'Please select the correct answer.');
+            }
+        }
+
+        // Prepare data for service
+        $data = $request->only(['question_text', 'question_type', 'difficulty', 'material_id']);
+        $data['answers'] = $answers;
+
+        try {
+            $this->questionService->createQuestion($data);
+
+            if ($material) {
+                return redirect()
+                    ->route('admin.materials.questions.index', $material)
+                    ->with('success', 'Soal berhasil ditambahkan.');
+            }
+
+            return redirect()
+                ->route('admin.questions.index')
+                ->with('success', 'Soal berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal menambahkan soal: ' . $e->getMessage());
         }
     }
 
-    $question = Question::create([
-        'question_text' => $request->question_text,
-        'question_type' => $request->question_type,
-        'difficulty' => $request->difficulty,
-        'material_id' => $request->material_id,
-        'created_by' => auth()->id(),
-    ]);
-
-    foreach ($answers as $answer) {
-        Answer::create([
-            'question_id' => $question->id,
-            'answer_text' => $answer['answer_text'],
-            'is_correct' => $answer['is_correct'] ?? 0,
-            'explanation' => $answer['explanation'] ?? null,
-        ]);
-    }
-
-    if ($material) {
-        return redirect()
-            ->route('admin.materials.questions.index', $material)
-            ->with('success', 'Soal berhasil ditambahkan.');
-    }
-
-    return redirect()
-        ->route('admin.questions.index')
-        ->with('success', 'Soal berhasil ditambahkan.');
-}
-
-    public function edit(Material $material = null, Question $question)
+    public function edit(Material $material , Question $question)
     {
-        $materials = Material::all();
+        $materials = $this->materialService->getAllMaterials();
 
         $material = $question->material; // Get the question's material
         return view('admin.questions.edit', compact('question', 'materials', 'material'));
@@ -201,57 +181,44 @@ class QuestionController extends Controller
             }
         }
 
-        $question->update([
-            'question_text' => $request->question_text,
-            'question_type' => $request->question_type,
-            'difficulty' => $request->difficulty,
-            'material_id' => $request->material_id,
-        ]);
+        try {
+            $this->questionService->updateQuestion($question, $request->all());
 
-        // Delete existing answers
-        $question->answers()->delete();
+            $material = $question->material;
+            
+            if ($material) {
+                return redirect()
+                    ->route('admin.materials.questions.index', $material)
+                    ->with('success', 'Question updated successfully.');
+            }
 
-        // Create new answers
-        foreach ($request->answers as $answer) {
-            Answer::create([
-                'question_id' => $question->id,
-                'answer_text' => $answer['answer_text'],
-                'is_correct' => $answer['is_correct'],
-                'explanation' => $answer['explanation'] ?? null,
-                'drag_source' => $answer['drag_source'] ?? null,
-                'drag_target' => $answer['drag_target'] ?? null,
-                'blank_position' => $answer['blank_position'] ?? null
-            ]);
-        }
-
-        $material = $question->material;
-        
-        if ($material) {
             return redirect()
-                ->route('admin.materials.questions.index', $material)
+                ->route('admin.questions.index')
                 ->with('success', 'Question updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal memperbarui soal: ' . $e->getMessage());
         }
-
-        return redirect()
-            ->route('admin.questions.index')
-            ->with('success', 'Question updated successfully.');
     }
 
     public function destroy(Material $material = null, Question $question)
     {
         $material_id = $question->material_id;
-        $question->answers()->delete();
-        $question->delete();
+        
+        try {
+            $this->questionService->deleteQuestion($question);
 
-        if ($material) {
+            if ($material) {
+                return redirect()
+                    ->route('admin.materials.questions.index', $material)
+                    ->with('success', 'Soal berhasil dihapus.');
+            }
+
             return redirect()
-                ->route('admin.materials.questions.index', $material)
+                ->route('admin.questions.index')
                 ->with('success', 'Soal berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus soal: ' . $e->getMessage());
         }
-
-        return redirect()
-            ->route('admin.questions.index')
-            ->with('success', 'Soal berhasil dihapus.');
     }
 }
     

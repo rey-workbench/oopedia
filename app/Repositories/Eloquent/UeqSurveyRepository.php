@@ -32,4 +32,9 @@ class UeqSurveyRepository extends BaseRepository implements UeqSurveyRepositoryI
     {
         return $this->model->where('user_id', $userId)->firstOrFail();
     }
+
+    public function findSurveyByUser($userId)
+    {
+        return $this->model->where('user_id', $userId)->first();
+    }
 }

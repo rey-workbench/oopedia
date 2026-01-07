@@ -47,6 +47,11 @@ class MaterialRepository extends BaseRepository implements MaterialRepositoryInt
         return $material;
     }
 
+    public function findWithQuestionsAndAnswers($id)
+    {
+        return $this->model->with(['questions.answers'])->findOrFail($id);
+    }
+
     public function getMaterialsForAdmin($search = null, $sort = 'created_at', $direction = 'asc')
     {
         $query = $this->model->query();

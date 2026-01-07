@@ -7,4 +7,5 @@ interface UeqSurveyRepositoryInterface extends BaseRepositoryInterface
     public function getAllWithUser($class = null);
     public function getDistinctClasses();
     public function findByUserId($userId);
+    public function findSurveyByUser($userId);
 }

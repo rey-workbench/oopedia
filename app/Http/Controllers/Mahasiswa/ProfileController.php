@@ -4,14 +4,26 @@ namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Material;
+use App\Repositories\Interfaces\MaterialRepositoryInterface;
+use App\Services\UserService;
 
 class ProfileController extends Controller
 {
+    protected $materialRepo;
+    protected $userService;
+
+    public function __construct(
+        MaterialRepositoryInterface $materialRepo,
+        UserService $userService
+    ) {
+        $this->materialRepo = $materialRepo;
+        $this->userService = $userService;
+    }
+
     public function show()
     {
         $user = auth()->user();
-        $materials = Material::orderBy('created_at', 'asc')->get();
+        $materials = $this->materialRepo->getAllOrdered();
         return view('mahasiswa.profile.index', compact('materials', 'user'));
     }
 
@@ -31,10 +43,10 @@ class ProfileController extends Controller
         ];
 
         if ($request->filled('password')) {
-            $data['password'] = bcrypt($request->password);
+            $data['password'] = $request->password;
         }
 
-        $user->update($data);
+        $this->userService->updateProfile($user, $data);
 
         return back()->with('success', 'Profile berhasil diperbarui');
     }

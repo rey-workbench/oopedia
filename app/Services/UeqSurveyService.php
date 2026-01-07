@@ -28,6 +28,16 @@ class UeqSurveyService extends BaseService
         return $this->ueqRepo->findByUserId($userId);
     }
 
+    public function hasUserSubmitted($userId)
+    {
+        return $this->ueqRepo->findSurveyByUser($userId) !== null;
+    }
+
+    public function createSurvey(array $data)
+    {
+        return $this->ueqRepo->create($data);
+    }
+
     public function calculateAverages($surveys)
     {
         if ($surveys->isEmpty()) {
