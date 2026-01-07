@@ -9,13 +9,13 @@ class GuestAccess
 {
     public function handle(Request $request, Closure $next)
     {
-        // TAMBAHAN: Biarkan semua request lewat untuk route latihan soal
+        // Allow paths for question exercises (for both guests and authenticated users)
         $allowedPaths = [
             'mahasiswa/materials/questions',
             'mahasiswa/materials/*/questions',
+            'mahasiswa/materials/*/questions/*',
             'mahasiswa/materials/*/questions/levels',
-            'mahasiswa/materials/*/questions/review',
-            'questions/check-answer'
+            'mahasiswa/materials/*/questions/review'
         ];
         
         $currentPath = $request->path();
@@ -26,7 +26,7 @@ class GuestAccess
             }
         }
         
-        // Biarkan semua pengguna yang tidak login untuk mengakses semua route
+        // Allow all unauthenticated users to access routes
         if (!auth()->check()) {
             return $next($request);
         }
@@ -48,22 +48,17 @@ class GuestAccess
                     'mahasiswa.materials.questions.show',
                     'mahasiswa.materials.questions.review',
                     'mahasiswa.materials.questions.levels',
-                    'mahasiswa.questions.check-answer',
-                    'questions.check-answer',
-                    'mahasiswa.questions.show',
+                    'mahasiswa.materials.questions.check',
+                    'mahasiswa.materials.questions.attempts',
                     'mahasiswa.materials.reset',
                     'logout',
                     'login',
-                    'register'
+                    'register',
+                    'guest.logout'
                 ];
                 
-                // TAMBAHAN: Cetak route name untuk debugging
-                \Log::info('Current route: ' . $request->route()->getName());
-                \Log::info('Current path: ' . $request->path());
-                
-                // TAMBAHKAN KONDISI UNTUK PATH QUESTIONS
-                if (strpos($request->path(), 'materials/questions') !== false || 
-                    strpos($request->path(), 'questions/check-answer') !== false) {
+                // Allow questions path for guests
+                if (strpos($request->path(), 'materials/questions') !== false) {
                     return $next($request);
                 }
                 
@@ -76,4 +71,4 @@ class GuestAccess
 
         return $next($request);
     }
-} 
+}
