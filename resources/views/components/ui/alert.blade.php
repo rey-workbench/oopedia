@@ -30,9 +30,7 @@
 
 <div {{ $attributes->merge(['class' => $classes]) }} role="alert">
     @if($dismissible)
-        <button type="button" class="alert-component__close" onclick="this.parentElement.remove()" aria-label="Close">
-            <span class="material-icons alert-close-icon">close</span>
-        </button>
+        <x-ui.button type="button" class="alert-component__close" onclick="this.parentElement.remove()" aria-label="Close" icon="close" variant="link" />
     @endif
 
     <div class="alert-content-wrapper">

@@ -139,9 +139,9 @@
                 </div>
 
                 <div class="d-grid">
-                    <button type="submit" id="checkAnswerBtn" class="btn btn-primary py-2">
-                        <i class="fas fa-check-circle me-2"></i>Periksa Jawaban
-                    </button>
+                    <x-ui.button type="submit" id="checkAnswerBtn" variant="primary" class="py-2" icon="check-circle">
+                        Periksa Jawaban
+                    </x-ui.button>
                 </div>
             </form>
             @else
@@ -173,15 +173,15 @@
                     <p id="explanationText" class="mb-0"></p>
                 </div>
                 <div class="feedback-actions mt-4">
-                    <button id="tryAgainBtn" class="btn btn-outline-light px-4 py-2">
-                        <i class="fas fa-redo me-2"></i>Coba Lagi
-                    </button>
-                    <button id="nextQuestionBtn" class="btn btn-success px-4 py-2" style="display: none;">
+                    <x-ui.button id="tryAgainBtn" variant="outline-light" class="px-4 py-2" icon="redo">
+                        Coba Lagi
+                    </x-ui.button>
+                    <x-ui.button id="nextQuestionBtn" variant="success" class="px-4 py-2" style="display: none;">
                         Lanjut ke Soal Berikutnya <i class="fas fa-arrow-right ms-2"></i>
-                    </button>
-                     <a href="{{ route('mahasiswa.dashboard') }}" id="dashboardBtn" class="btn btn-secondary px-4 py-2" style="display: none;">
+                    </x-ui.button>
+                     <x-ui.button href="{{ route('mahasiswa.dashboard') }}" id="dashboardBtn" variant="secondary" class="px-4 py-2" style="display: none;" icon="home">
                         Dashboard
-                    </a>
+                    </x-ui.button>
                 </div>
             </div>
         </div>

@@ -15,10 +15,9 @@
                     <li class="nav-item d-flex align-items-center">
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit" class="nav-link px-3">
-                                <i class="material-icons opacity-10">logout</i>
+                            <x-ui.button type="submit" variant="link" class="nav-link px-3" icon="logout">
                                 <span class="nav-link-text ms-1">Logout</span>
-                            </button>
+                            </x-ui.button>
                         </form>
                     </li>
                     <li class="nav-item px-3 d-flex align-items-center">
@@ -54,9 +53,9 @@
             <!-- Left side group -->
             <div class="d-flex align-items-center h-100">
                 <!-- Sidebar Toggle Button - hanya muncul di mobile -->
-                <button id="sidebarToggleBtn" class="btn btn-icon d-lg-none me-2">
+                <x-ui.button id="sidebarToggleBtn" class="btn-icon d-lg-none me-2">
                     <i class="fas fa-bars"></i>
-                </button>
+                </x-ui.button>
                 
                 <!-- Navigation links -->
                 <div class="nav-links">
@@ -90,24 +89,24 @@
             <div class="d-flex align-items-center">
                 @guest
                     <div class="auth-buttons me-3 d-none d-md-flex">
-                        <a href="{{ route('login') }}" class="btn btn-primary btn-sm me-2" 
+                        <x-ui.button href="{{ route('login') }}" variant="primary" size="sm" class="me-2" 
                            data-bs-toggle="tooltip" 
                            data-bs-placement="bottom" 
-                           title="Login untuk akses semua soal latihan tanpa batasan">
-                            <i class="fas fa-sign-in-alt me-1"></i> Login
-                        </a>
-                        <a href="{{ route('register') }}" class="btn btn-primary btn-sm"
+                           title="Login untuk akses semua soal latihan tanpa batasan"
+                           icon="sign-in-alt">
+                           Login
+                        </x-ui.button>
+                        <x-ui.button href="{{ route('register') }}" variant="primary" size="sm"
                            data-bs-toggle="tooltip" 
                            data-bs-placement="bottom" 
-                           title="Buat akun baru untuk akses semua soal latihan tanpa batasan">
-                            <i class="fas fa-user-plus me-1"></i> Register
-                        </a>
+                           title="Buat akun baru untuk akses semua soal latihan tanpa batasan"
+                           icon="user-plus">
+                           Register
+                        </x-ui.button>
                     </div>
                     <!-- Tampilkan tombol kecil untuk login di mobile -->
                     <div class="d-md-none">
-                        <a href="{{ route('login') }}" class="btn btn-sm btn-icon">
-                            <i class="fas fa-sign-in-alt"></i>
-                        </a>
+                        <x-ui.button href="{{ route('login') }}" size="sm" class="btn-icon" icon="sign-in-alt" />
                     </div>
                 @endguest
                 
@@ -123,9 +122,9 @@
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="dropdown-item">
-                                    <span>Logout</span>
-                                </button>
+                                <x-ui.button type="submit" class="dropdown-item" variant="ghost" icon="logout">
+                                    Logout
+                                </x-ui.button>
                             </form>
                         </li>
                     </ul>
@@ -323,13 +322,13 @@
                 <img src="{{ asset('images/logo.png') }}" alt="OOPedia" height="50" class="me-2 navbar-logo">
                 <span class="logo-fallback">OOPedia</span>
             </a>
-            <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+            <x-ui.button type="button" class="navbar-toggler shadow-none ms-2" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation" variant="ghost">
                 <span class="navbar-toggler-icon mt-2">
                     <span class="navbar-toggler-bar bar1"></span>
                     <span class="navbar-toggler-bar bar2"></span>
                     <span class="navbar-toggler-bar bar3"></span>
                 </span>
-            </button>
+            </x-ui.button>
             <div class="collapse navbar-collapse" id="navigation">
                 <ul class="navbar-nav ms-auto">
                     @guest

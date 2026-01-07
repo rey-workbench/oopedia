@@ -22,8 +22,8 @@
                     <p>Oops! The request was well-formed but couldn't be processed.</p>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" onclick="location.reload();">Coba Lagi</button>
-                    <a href="{{ url('/') }}" class="btn btn-primary">Go Home</a>
+                    <x-ui.button variant="secondary" onclick="location.reload();">Coba Lagi</x-ui.button>
+                    <x-ui.button href="{{ url('/') }}" variant="primary">Go Home</x-ui.button>
                 </div>
             </div>
         </div>

@@ -225,9 +225,7 @@
     {{-- Mahasiswa/Guest Sidebar --}}
     <div class="sidebar">
         <!-- Close button for mobile -->
-        <button class="sidebar-close d-block d-lg-none" id="sidebarCloseBtn">
-            <i class="fas fa-times"></i>
-        </button>
+        <x-ui.button type="button" class="sidebar-close d-block d-lg-none" id="sidebarCloseBtn" variant="ghost" icon="close" />
 
         <!-- Logo Section -->
         <div class="text-center py-3">

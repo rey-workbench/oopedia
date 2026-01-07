@@ -36,7 +36,7 @@
                                 <small class="text-muted">
                                     IF <code>wrong_streak >= 3</code> THEN <code>INCREMENT hints_available BY 1</code>
                                 </small>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <x-ui.button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" />
                             </div>
 
                             <x-forms.form-group label="📝 Nama Rule" name="name" required class="mb-4">
@@ -67,9 +67,9 @@
                                         <span class="badge bg-gradient-info branch-label">IF</span>
                                         <div class="d-flex align-items-center ms-2">
                                             <span class="text-xs text-muted me-3">Kondisi yang harus terpenuhi</span>
-                                            <button type="button" class="btn btn-xs btn-outline-info mb-0" data-bs-toggle="modal" data-bs-target="#addAttributeModal">
-                                                <i class="material-icons text-sm">add</i> Atribut Baru
-                                            </button>
+                                            <x-ui.button type="button" size="xs" variant="outline" class="mb-0" data-bs-toggle="modal" data-bs-target="#addAttributeModal" icon="add">
+                                                Atribut Baru
+                                            </x-ui.button>
                                         </div>
                                     </div>
                                     <div class="branch-content">
@@ -123,16 +123,14 @@
                                                             </div>
                                                         </div>
                                                         
-                                                        <button type="button" class="btn-delete-rule remove-condition" disabled>
-                                                            <i class="material-icons text-sm">close</i>
-                                                        </button>
+                                                        <x-ui.button type="button" variant="ghost" class="btn-delete-rule remove-condition" disabled icon="close" />
                                                     </div>
                                                 </div>
 
                                                 <div class="group-actions">
-                                                    <button type="button" class="btn-add-rule" id="addCondition">
-                                                        <i class="material-icons text-sm">add</i> Add filter
-                                                    </button>
+                                                    <x-ui.button type="button" class="btn-add-rule" id="addCondition" icon="add">
+                                                         Add filter
+                                                    </x-ui.button>
                                                 </div>
                                             </div>
                                         </div>
@@ -185,16 +183,14 @@
                                                         
                                                         <input type="hidden" name="actions[0][type]" value="update_attribute">
                                                         
-                                                        <button type="button" class="btn-delete-rule remove-action" disabled>
-                                                            <i class="material-icons text-sm">close</i>
-                                                        </button>
+                                                        <x-ui.button type="button" variant="ghost" class="btn-delete-rule remove-action" disabled icon="close" />
                                                     </div>
                                                 </div>
 
                                                 <div class="group-actions">
-                                                    <button type="button" class="btn-add-rule" id="addAction">
-                                                        <i class="material-icons text-sm">add</i> Add action
-                                                    </button>
+                                                    <x-ui.button type="button" class="btn-add-rule" id="addAction" icon="add">
+                                                         Add action
+                                                    </x-ui.button>
                                                 </div>
                                             </div>
                                         </div>
@@ -237,7 +233,7 @@
             <div class="modal-content">
                 <div class="modal-header bg-gradient-info">
                     <h5 class="modal-title text-white">Tambah Atribut Baru</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <x-ui.button variant="link" data-bs-dismiss="modal" icon="close" />
                 </div>
                 <form id="addAttributeForm">
                     <div class="modal-body">
@@ -277,8 +273,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-info">Simpan Atribut</button>
+                        <x-ui.button type="button" variant="secondary" data-bs-dismiss="modal">Batal</x-ui.button>
+                        <x-ui.button type="submit" variant="info">Simpan Atribut</x-ui.button>
                     </div>
                 </form>
             </div>
@@ -390,9 +386,7 @@
                             </div>
                         </div>
                         
-                        <button type="button" class="btn-delete-rule remove-condition">
-                            <i class="material-icons text-sm">close</i>
-                        </button>
+                        <x-ui.button type="button" variant="ghost" class="btn-delete-rule remove-condition" icon="close" />
                     </div>
                 `;
                 
@@ -460,9 +454,7 @@
                         
                         <input type="hidden" name="actions[${actionIndex}][type]" value="update_attribute">
                         
-                        <button type="button" class="btn-delete-rule remove-action">
-                            <i class="material-icons text-sm">close</i>
-                        </button>
+                        <x-ui.button type="button" variant="ghost" class="btn-delete-rule remove-action" icon="close" />
                     </div>
                 `;
                 

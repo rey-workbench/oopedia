@@ -15,6 +15,8 @@
         'danger' => 'btn-component--danger',
         'success' => 'btn-component--success',
         'outline' => 'btn-component--outline',
+        'link' => 'btn-component--link',
+        'ghost' => 'btn-component--ghost',
     ];
 
     $sizes = [

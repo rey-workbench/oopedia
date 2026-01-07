@@ -33,10 +33,10 @@
                                         @if (Session::has('status'))
                                         <div class="alert alert-success alert-dismissible text-white" role="alert">
                                             <span class="text-sm">{{ Session::get('status') }}</span>
-                                            <button type="button" class="btn-close text-lg py-3 opacity-10"
-                                                data-bs-dismiss="alert" aria-label="Close">
+                                            <x-ui.button type="button" class="btn-close text-lg py-3 opacity-10"
+                                                data-bs-dismiss="alert" aria-label="Close" variant="ghost">
                                                 <span aria-hidden="true">&times;</span>
-                                            </button>
+                                            </x-ui.button>
                                         </div>
                                         @endif
                                         <div class="mb-3">
@@ -58,17 +58,15 @@
                                             @enderror
                                         </div>
                                         <div class="text-center">
-                                            <button type="submit" class="btn bg-gradient-primary w-100 my-4 mb-2">Login</button>
+                                            <x-ui.button type="submit" variant="primary" class="w-100 my-4 mb-2">Login</x-ui.button>
                                         </div>
                                         <p class="mt-4 text-sm text-center">
                                            Tidak memiliki akun?
-                                            <a href="{{ route('register') }}"
-                                                class="text-primary text-gradient font-weight-bold">Register</a>
+                                            <x-ui.button href="{{ route('register') }}" variant="link" class="text-primary text-gradient font-weight-bold p-0">Register</x-ui.button>
                                         </p>
                                         <p class="text-sm text-center">
                                             Masuk sebagai
-                                            <a href="{{ route('guest.login') }}" 
-                                               class="text-primary text-gradient font-weight-bold">tamu</a>
+                                            <x-ui.button href="{{ route('guest.login') }}" variant="link" class="text-primary text-gradient font-weight-bold p-0">tamu</x-ui.button>
                                         </p>
                                     </form>
                                 </div>
