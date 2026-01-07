@@ -13,4 +13,6 @@ interface ProgressRepositoryInterface
     public function getAttemptCount($userId, $materialId, $questionId);
     public function saveProgress(array $data);
     public function updateOrCreateProgress(array $conditions, array $values);
+    public function getAnsweredQuestionIds($userId, $materialId);
+    public function resetProgress($userId, $materialId);
 }
