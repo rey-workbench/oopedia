@@ -83,4 +83,24 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         
         return $this->create($data);
     }
+
+    public function getUsersByRoleAndApproval($roleId, $isApproved, $search = null, $perPage = 10)
+    {
+        $query = $this->model->where('role_id', $roleId)
+                             ->where('is_approved', $isApproved);
+        
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+        
+        return $query->paginate($perPage);
+    }
+
+    public function approveUser($userId)
+    {
+        return $this->update($userId, ['is_approved' => true]);
+    }
 }
