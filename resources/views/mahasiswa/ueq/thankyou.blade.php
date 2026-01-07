@@ -1,6 +1,6 @@
-<x-layouts.app title="Terima Kasih - UEQ Survey">
+<x-layouts.app title="Terima Kasih - UEQ Survey" theme="mahasiswa">
     <x-slot:styles>
-        <link href="{{ asset('css/mahasiswa.css') }}" rel="stylesheet">
+
     </x-slot:styles>
 
     <div class="container">

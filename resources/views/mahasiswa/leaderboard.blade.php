@@ -1,4 +1,4 @@
-<x-layouts.app title="Leaderboard">
+<x-layouts.app title="Leaderboard" theme="mahasiswa">
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
@@ -155,7 +155,7 @@
 </div>
 
 @push('styles')
-    <link href="{{ asset('css/mahasiswa.css') }}" rel="stylesheet">
+
     <link href="{{ asset('css/mahasiswa/leaderboard.css') }}" rel="stylesheet">
 @endpush
 

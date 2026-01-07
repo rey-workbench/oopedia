@@ -1,4 +1,4 @@
-<x-layouts.app title="Materi Sedang Dipelajari">
+<x-layouts.app title="Materi Sedang Dipelajari" theme="mahasiswa">
     <div class="dashboard-header text-center">
         <h1 class="main-title">Materi Sedang Dipelajari</h1>
         <div class="title-underline"></div>

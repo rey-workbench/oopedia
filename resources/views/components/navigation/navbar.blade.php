@@ -1,14 +1,3 @@
-{{--
-    Unified Navbar Component
-    
-    A role-aware navbar that adapts based on user role.
-    
-    Props:
-    - titlePage: Current page title for breadcrumb (admin)
-    - role: User role (superadmin/admin/mahasiswa/guest)
-    - variant: Navbar style variant
---}}
-
 @if($isAdminRole())
     {{-- Admin/Dosen Navbar --}}
     <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur"
@@ -57,9 +46,7 @@
 @elseif($isStudentRole())
     {{-- Mahasiswa/Guest Navbar --}}
     @push('css')
-    <link href="{{ asset('css/mahasiswa.css') }}" rel="stylesheet">
     <link href="https://unpkg.com/intro.js/minified/introjs.min.css" rel="stylesheet">
-    <link href="{{ asset('css/components/navbar.css') }}" rel="stylesheet">
     @endpush
 
     <nav class="navbar">

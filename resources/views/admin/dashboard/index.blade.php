@@ -1,4 +1,7 @@
 <x-layouts.app title="OOPEDIA" bodyClass="dashboard-layout g-sidenav-show">
+    <x-slot:styles>
+        <link href="{{ asset('css/admin/dashboard.css') }}" rel="stylesheet">
+    </x-slot:styles>
     <x-navigation.sidebar activePage="dashboard" />
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
         <!-- Navbar -->
@@ -88,7 +91,7 @@
                                 <tbody>
                                     @foreach($studentProgress as $student)
                                     <tr>
-                                        <td>
+                                        <td data-label="Mahasiswa">
                                             <div class="d-flex px-2 py-1">
                                                 <div class="avatar avatar-sm me-3 bg-gradient-primary rounded-circle">
                                                     <span class="text-white text-xs">{{ substr($student->name, 0, 1) }}</span>
@@ -99,10 +102,10 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="align-middle text-center">
+                                        <td class="align-middle text-center" data-label="Soal Diselesaikan">
                                             <span class="text-secondary text-xs font-weight-bold">{{ $student->completed_questions }}</span>
                                         </td>
-                                        <td class="align-middle">
+                                        <td class="align-middle" data-label="Progress Materi">
                                             <div class="d-flex align-items-center justify-content-center">
                                                 <span class="me-2 text-xs font-weight-bold">{{ $student->materials_progress }}%</span>
                                                 <div class="progress" style="width: 100px; height: 5px;">
@@ -115,10 +118,10 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="align-middle text-center">
+                                        <td class="align-middle text-center" data-label="Terakhir Aktif">
                                             <span class="text-secondary text-xs font-weight-bold">{{ $student->last_active ? $student->last_active->diffForHumans() : 'Belum pernah' }}</span>
                                         </td>
-                                        <td class="align-middle text-center">
+                                        <td class="align-middle text-center" data-label="Aksi">
                                             <x-ui.button variant="info" size="sm" href="{{ route('admin.students.progress', $student->id) }}" icon="assessment" />
                                         </td>
                                     </tr>

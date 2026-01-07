@@ -1,7 +1,5 @@
 <x-layouts.app title="Materi Pembelajaran" theme="mahasiswa">
     @if(auth()->check() && auth()->user() === null)
-
-
     <!-- Hidden forms for guest logout and redirect -->
     <form id="guest-logout-login-form" action="{{ route('guest.logout') }}" method="POST" style="display: none;">
         @csrf

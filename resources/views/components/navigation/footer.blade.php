@@ -59,9 +59,7 @@
         </div>
     </footer>
 
-    @push('css')
-    <link rel="stylesheet" href="{{ asset('css/components/footer.css') }}">
-    @endpush
+
 
 @else
     {{-- Guest Footer (for login/register pages) --}}
@@ -78,8 +76,5 @@
     </footer>
 
     @if($variant === 'fixed')
-    @push('css')
-    <link rel="stylesheet" href="{{ asset('css/components/footer.css') }}">
-    @endpush
     @endif
 @endif

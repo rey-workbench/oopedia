@@ -3,7 +3,6 @@
     
     A flexible, role-aware layout component that serves as the main entry point.
     Automatically detects user role and applies appropriate theme, navigation, etc.
-    Uses x-layouts.base for the HTML shell.
     
     Props:
     - title: Page title (default: 'OOPEDIA')
@@ -17,6 +16,7 @@
 @props([
     'title' => 'OOPEDIA',
     'theme' => null,
+    'meta' => [],
     'showNavbar' => null,
     'showSidebar' => null,
     'showFooter' => false,
@@ -64,11 +64,20 @@
     }
 @endphp
 
-<x-layouts.base :title="$title" :theme="$theme" :body-class="$bodyClass">
-    <x-slot:styles>
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <x-head.meta :title="$title" :meta="$meta">
+        {{ $head ?? '' }}
+        @stack('head')
+    </x-head.meta>
+    
+    <x-head.styles :theme="$theme">
         {{ $styles ?? '' }}
-    </x-slot:styles>
-
+        @stack('css')
+    </x-head.styles>
+</head>
+<body class="{{ $bodyClass }}">
     {{-- Navbar --}}
     @if($showNavbar)
         <x-navigation.navbar titlePage="{{ $title }}" />
@@ -144,8 +153,14 @@
     @if($showFooter)
         <x-navigation.footer />
     @endif
-    
-    <x-slot:scripts>
+
+    {{-- Loading Overlay Component --}}
+    <x-ui.loading-overlay />
+
+    <x-head.scripts :theme="$theme">
         {{ $scripts ?? '' }}
-    </x-slot:scripts>
-</x-layouts.base>
+        @stack('js')
+        @stack('scripts')
+    </x-head.scripts>
+</body>
+</html>

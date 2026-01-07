@@ -1,8 +1,7 @@
-<x-layouts.app :title="$material->title">
+<x-layouts.app :title="$material->title" theme="mahasiswa">
     <x-slot:styles>
-        <link href="{{ asset('css/mahasiswa.css') }}" rel="stylesheet">
-        <link rel="stylesheet" href="{{ asset('css/material-show.css') }}">
         <link rel="stylesheet" href="{{ asset('css/mahasiswa/materials/show.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/mahasiswa/materials/questionsindex.css') }}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
     </x-slot:styles>
 
@@ -57,13 +56,12 @@
             <x-ui.button 
                 href="{{ route('mahasiswa.materials.index') }}" 
                 variant="secondary"
-                icon="arrow-left"
+                icon="fas fa-arrow-left"
             >
                 Kembali ke Daftar Materi
             </x-ui.button>
             
-            <x-ui.button 
-                href="{{ route('mahasiswa.materials.questions.levels', ['material' => $material->id, 'difficulty' => 'beginner']) }}" 
+                href="{{ route('mahasiswa.materials.questions.levels', ['material' => $material->id]) }}" 
                 variant="primary"
             >
                 Latihan Soal <i class="fas fa-arrow-right ms-2"></i>

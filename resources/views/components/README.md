@@ -202,9 +202,9 @@ Untuk migrasi ke komponen unified, gunakan `<x-navigation.navbar />` dan `<x-nav
 
 **Sesudah:**
 ```blade
-<x-layouts.base title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
+<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
     <!-- Content -->
-</x-layouts.base>
+</x-layouts.app>
 ```
 
 ## CSS Files

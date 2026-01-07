@@ -1,0 +1,118 @@
+/* Dashboard Styles */
+
+.dashboard-header {
+    padding: 2rem 0 4rem;
+}
+
+.main-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: var(--color-1);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+}
+
+.title-underline {
+    width: 180px;
+    height: 5px;
+    background: linear-gradient(to right, var(--color-1), var(--color-2));
+    margin: 0 auto;
+    border-radius: 3px;
+}
+
+/* Progress Bar Enhancements */
+.progress-container {
+    margin: 1rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress {
+    height: 8px;
+    background: rgba(0, 78, 152, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.leaderboard-progress-bar {
+    position: relative;
+    height: 100%;
+    border-radius: 10px;
+    background: linear-gradient(45deg, #004e98, #0074d9);
+    animation: progressFill 1.5s ease-out forwards;
+}
+
+.leaderboard-progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0.2) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(255, 255, 255, 0.2) 50%,
+            rgba(255, 255, 255, 0.2) 75%,
+            transparent 75%,
+            transparent);
+    background-size: 20px 20px;
+    z-index: 1;
+}
+
+@keyframes progressFill {
+    from {
+        width: 0;
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.progress-percentage {
+    color: #004e98;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.progress-text {
+    color: #344767;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.progress-item-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.progress-item-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.progress-item-description {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .main-title {
+        font-size: 2rem;
+    }
+}
