@@ -30,6 +30,11 @@ class RepositoryServiceProvider extends ServiceProvider
             \App\Repositories\Interfaces\AnswerRepositoryInterface::class,
             \App\Repositories\Eloquent\AnswerRepository::class
         );
+
+        $this->app->bind(
+            \App\Repositories\Interfaces\UserRepositoryInterface::class,
+            \App\Repositories\Eloquent\UserRepository::class
+        );
     }
 
     /**

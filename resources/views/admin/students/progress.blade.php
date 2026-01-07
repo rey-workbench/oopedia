@@ -120,6 +120,10 @@
                             </div>
                         </div>
                     </x-ui.card>
+                </div>
+            </div>
+        </div>
+        @endif
     </main>
     <x-admin.tutorial />
 

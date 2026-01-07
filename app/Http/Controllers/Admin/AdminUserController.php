@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class AdminUserController extends Controller
+class AdminUserControllerntroller extends Controller
 {
     public function index(Request $request)
     {
