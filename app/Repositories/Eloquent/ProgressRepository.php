@@ -82,4 +82,44 @@ class ProgressRepository extends BaseRepository implements ProgressRepositoryInt
             ->groupBy('progress.material_id', 'questions.difficulty')
             ->get();
     }
+
+    public function getCorrectAnswersWithAttempts($roleId = 3)
+    {
+        return $this->model
+            ->join('questions', 'progress.question_id', '=', 'questions.id')
+            ->join('users', 'progress.user_id', '=', 'users.id')
+            ->select(
+                'progress.user_id',
+                'progress.question_id',
+                'questions.difficulty'
+            )
+            ->selectRaw('MIN(progress.attempt_number) as attempts_needed')
+            ->where('progress.is_correct', 1)
+            ->where('users.role_id', $roleId)
+            ->groupBy('progress.user_id', 'progress.question_id', 'questions.difficulty')
+            ->get();
+    }
+
+    public function getLeaderboardStats($roleId = 3)
+    {
+        return $this->model
+            ->join('users', 'progress.user_id', '=', 'users.id')
+            ->leftJoin('questions', 'progress.question_id', '=', 'questions.id')
+            ->select(
+                'users.id',
+                'users.name',
+                'users.email'
+            )
+            ->selectRaw('COUNT(DISTINCT CASE WHEN progress.is_correct = 1 THEN progress.question_id END) as total_correct_questions')
+            ->selectRaw('COUNT(DISTINCT progress.question_id) as total_attempted')
+            ->selectRaw('SUM(CASE WHEN progress.is_correct = 1 THEN 1 ELSE 0 END) as correct_answers')
+            ->selectRaw('MAX(progress.updated_at) as completion_date')
+            ->selectRaw('COUNT(DISTINCT CASE WHEN progress.is_correct = 1 AND questions.difficulty = "beginner" THEN progress.question_id END) as beginner_completed')
+            ->selectRaw('COUNT(DISTINCT CASE WHEN progress.is_correct = 1 AND questions.difficulty = "medium" THEN progress.question_id END) as medium_completed')
+            ->selectRaw('COUNT(DISTINCT CASE WHEN progress.is_correct = 1 AND questions.difficulty = "hard" THEN progress.question_id END) as hard_completed')
+            ->selectRaw('COUNT(progress.id) as total_attempts')
+            ->where('users.role_id', $roleId)
+            ->groupBy('users.id', 'users.name', 'users.email')
+            ->get();
+    }
 }

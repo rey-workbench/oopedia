@@ -21,4 +21,10 @@ class MaterialRepository extends BaseRepository implements MaterialRepositoryInt
     {
         return $this->model->with(['questions', 'questionBankConfigs'])->get();
     }
+
+    public function findBySlug($slug)
+    {
+        $title = str_replace('-', ' ', $slug);
+        return $this->model->where('title', $title)->firstOrFail();
+    }
 }
