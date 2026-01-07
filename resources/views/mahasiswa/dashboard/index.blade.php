@@ -1,7 +1,5 @@
 <x-layouts.app title="Dashboard" theme="mahasiswa">
-    <x-slot:styles>
-        <link href="{{ asset('style.css') }}" rel="stylesheet">
-    </x-slot:styles>
+
 
     <div id="dashboard-container">
         <div class="dashboard-header text-center compact-header">
@@ -41,7 +39,7 @@
                                     href="{{ route('mahasiswa.materials.index') }}" 
                                     variant="primary" 
                                     class="w-100"
-                                    icon="book"
+                                    icon="fas fa-book"
                                 >
                                     Lihat Semua Materi
                                 </x-ui.button>
@@ -81,7 +79,7 @@
                                     href="{{ route('mahasiswa.materials.questions.index') }}" 
                                     variant="primary" 
                                     class="w-100"
-                                    icon="question-circle"
+                                    icon="fas fa-question-circle"
                                 >
                                     Latihan Soal
                                 </x-ui.button>
