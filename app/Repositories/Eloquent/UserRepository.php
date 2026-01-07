@@ -103,4 +103,29 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     {
         return $this->update($userId, ['is_approved' => true]);
     }
+    public function getActiveStudentsCount($days)
+    {
+        return DB::table('users')
+            ->join('progress', 'users.id', '=', 'progress.user_id')
+            ->where('users.role_id', 3) // Student
+            ->where('progress.updated_at', '>=', now()->subDays($days))
+            ->distinct('users.id')
+            ->count('users.id');
+    }
+
+    public function getStudentProgressOverview($limit)
+    {
+        return $this->model->where('role_id', 3)
+            ->withCount(['progress as completed_questions' => function($query) {
+                $query->where('is_correct', true);
+            }])
+            ->with(['progress' => function($query) {
+                $query->where('is_correct', true)
+                      ->with('material:id,title');
+            }])
+            ->having('completed_questions', '>', 0)
+            ->orderByDesc('completed_questions')
+            ->limit($limit)
+            ->get();
+    }
 }

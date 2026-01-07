@@ -10,4 +10,6 @@ interface UserRepositoryInterface extends BaseRepositoryInterface
     public function getStudentsWithRole($roleId, $search = null, $perPage = 10);
     public function getUsersByRoleAndApproval($roleId, $isApproved, $search = null, $perPage = 10);
     public function approveUser($userId);
+    public function getActiveStudentsCount($days);
+    public function getStudentProgressOverview($limit);
 }

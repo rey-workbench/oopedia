@@ -177,4 +177,45 @@ class ProgressRepository extends BaseRepository implements ProgressRepositoryInt
             ->where('material_id', $materialId)
             ->max('updated_at');
     }
+
+    public function getRecentSystemProgress($limit)
+    {
+        return $this->model
+            ->with(['user', 'material', 'question'])
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get();
+    }
+
+    public function getMaterialPerformanceStats()
+    {
+        return $this->model
+            ->where('is_correct', true)
+            ->select('material_id', 'user_id', 'question_id')
+            ->get();
+    }
+
+    public function getPopularMaterials($limit)
+    {
+        return DB::table('materials')
+            ->leftJoin('progress', function($join) {
+                $join->on('materials.id', '=', 'progress.material_id')
+                    ->where('progress.is_correct', '=', true);
+            })
+            ->leftJoin('users', 'progress.user_id', '=', 'users.id')
+            ->select(
+                'materials.id',
+                'materials.title',
+                DB::raw('COUNT(DISTINCT progress.user_id) as students_count'),
+                DB::raw('ROUND(
+                    (COUNT(DISTINCT CASE WHEN progress.is_correct = 1 THEN progress.id ELSE NULL END) * 100.0) / 
+                    NULLIF(COUNT(DISTINCT progress.id), 0), 
+                    1
+                ) as completion_rate')
+            )
+            ->groupBy('materials.id', 'materials.title')
+            ->orderByDesc('students_count')
+            ->limit($limit)
+            ->get();
+    }
 }
