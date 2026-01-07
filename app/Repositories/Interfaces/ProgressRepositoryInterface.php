@@ -17,4 +17,7 @@ interface ProgressRepositoryInterface
     public function resetProgress($userId, $materialId);
     public function getStudentCountByMaterial();
     public function getLastAccessTime($userId, $materialId);
+    public function getRecentSystemProgress($limit);
+    public function getMaterialPerformanceStats();
+    public function getPopularMaterials($limit);
 }
