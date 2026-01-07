@@ -4,33 +4,25 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Material;
-use App\Models\Media;
+use App\Services\MaterialService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class MaterialController extends Controller
 {
+    protected $materialService;
+
+    public function __construct(MaterialService $materialService)
+    {
+        $this->materialService = $materialService;
+    }
+
     public function index(Request $request)
     {
-        $query = Material::query();
+        $search = $request->search;
+        $sort = $request->get('sort', 'created_at');
+        $direction = $request->get('direction', 'asc');
 
-        // Handle search
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->where('title', 'like', "%{$search}%");
-        }
-
-        // Handle sorting
-        $sort = $request->get('sort', 'created_at'); // default sort by created_at
-        $direction = $request->get('direction', 'asc'); // default direction ascending
-
-        // Validate sort field to prevent SQL injection
-        $allowedSortFields = ['title', 'created_at'];
-        if (in_array($sort, $allowedSortFields)) {
-            $query->orderBy($sort, $direction);
-        }
-
-        $materials = $query->with('creator')->get();
+        $materials = $this->materialService->getAllMaterials($search, $sort, $direction);
 
         return view('admin.materials.index', compact('materials'));
     }
@@ -50,24 +42,10 @@ class MaterialController extends Controller
                 'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
 
-            $material = Material::create([
-                'title' => $validated['title'],
-                'content' => $validated['content'],
-                'created_by' => $validated['created_by'],
-            ]);
-
-            // Handle cover image upload
-            if ($request->hasFile('cover_image')) {
-                // Simpan file ke direktori images
-                $path = $request->file('cover_image')->store('materials', 'images');
-                
-                Media::create([
-                    'material_id' => $material->id,
-                    'media_type' => 'image',
-                    'media_url' => '/images/' . $path,
-                    'media_description' => $request->title . ' - Cover Image'
-                ]);
-            }
+            $this->materialService->createMaterial(
+                $request->except('cover_image'), 
+                $request->file('cover_image')
+            );
 
             return redirect()->route('admin.materials.index')
                 ->with('success', 'Materi berhasil ditambahkan.');
@@ -93,47 +71,11 @@ class MaterialController extends Controller
                 'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
 
-            $material->update([
-                'title' => $request->title,
-                'content' => $request->content,
-            ]);
-
-            // Handle cover image replacement
-            if ($request->hasFile('cover_image')) {
-                // Delete existing cover image if any
-                $existingMedia = $material->media()->where('media_type', 'image')->first();
-                
-                if ($existingMedia) {
-                    // Delete file from storage
-                    $path = $existingMedia->media_url;
-                    
-                    if (str_starts_with($path, '/images/')) {
-                        $path = str_replace('/images/', '', $path);
-                        if (Storage::disk('images')->exists($path)) {
-                            Storage::disk('images')->delete($path);
-                        }
-                    } 
-                    elseif (str_starts_with($path, '/storage/')) {
-                        $path = str_replace('/storage/', '', $path);
-                        if (Storage::disk('public')->exists($path)) {
-                            Storage::disk('public')->delete($path);
-                        }
-                    }
-                    
-                    // Delete the media record
-                    $existingMedia->delete();
-                }
-                
-                // Upload new cover image
-                $path = $request->file('cover_image')->store('materials', 'images');
-                
-                Media::create([
-                    'material_id' => $material->id,
-                    'media_type' => 'image',
-                    'media_url' => '/images/' . $path,
-                    'media_description' => $request->title . ' - Cover Image'
-                ]);
-            }
+            $this->materialService->updateMaterial(
+                $material,
+                $request->except('cover_image'),
+                $request->file('cover_image')
+            );
 
             return redirect()->route('admin.materials.index')
                 ->with('success', 'Materi berhasil diperbarui.');
@@ -148,26 +90,7 @@ class MaterialController extends Controller
     public function destroy(Material $material)
     {
         try {
-            // First, handle question_banks related to this material
-            // Option 1: Delete the related question_banks records
-            $material->questionBanks()->delete();
-            // OR if you have a relationship for question bank configs
-            if (method_exists($material, 'questionBankConfigs')) {
-                $material->questionBankConfigs()->delete();
-            }
-            
-            // Delete associated media files
-            foreach($material->media as $media) {
-                // Remove 'storage/' from the beginning of the path
-                $path = str_replace('storage/', '', $media->media_url);
-                if (Storage::disk('public')->exists($path)) {
-                    Storage::disk('public')->delete($path);
-                }
-                $media->delete(); // Delete the media record explicitly
-            }
-            
-            // Now it's safe to delete the material
-            $material->delete();
+            $this->materialService->deleteMaterial($material);
 
             return redirect()->route('admin.materials.index')
                 ->with('success', 'Materi berhasil dihapus.');
@@ -180,29 +103,7 @@ class MaterialController extends Controller
     public function deleteMedia($id)
     {
         try {
-            $media = Media::findOrFail($id);
-            $materialId = $media->material_id;
-            
-            // Hapus file dari disk yang sesuai
-            $path = $media->media_url;
-            
-            // Jika URL dimulai dengan '/images/'
-            if (str_starts_with($path, '/images/')) {
-                $path = str_replace('/images/', '', $path);
-                if (Storage::disk('images')->exists($path)) {
-                    Storage::disk('images')->delete($path);
-                }
-            } 
-            // Jika URL dimulai dengan '/storage/'
-            else if (str_starts_with($path, '/storage/')) {
-                $path = str_replace('/storage/', '', $path);
-                if (Storage::disk('public')->exists($path)) {
-                    Storage::disk('public')->delete($path);
-                }
-            }
-            
-            // Hapus hanya record media, bukan materinya
-            $media->delete();
+            $materialId = $this->materialService->deleteMedia($id);
             
             return redirect()->route('admin.materials.edit', $materialId)
                 ->with('success', 'Media berhasil dihapus.');

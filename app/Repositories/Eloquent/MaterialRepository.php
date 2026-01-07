@@ -46,4 +46,24 @@ class MaterialRepository extends BaseRepository implements MaterialRepositoryInt
         
         return $material;
     }
+
+    public function getMaterialsForAdmin($search = null, $sort = 'created_at', $direction = 'asc')
+    {
+        $query = $this->model->query();
+
+        // Handle search
+        if ($search) {
+            $query->where('title', 'like', "%{$search}%");
+        }
+
+        // Validate sort field
+        $allowedSortFields = ['title', 'created_at'];
+        if (in_array($sort, $allowedSortFields)) {
+            $query->orderBy($sort, $direction);
+        } else {
+            $query->orderBy('created_at', 'asc');
+        }
+
+        return $query->with('creator')->get();
+    }
 }
