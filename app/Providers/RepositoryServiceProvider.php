@@ -20,6 +20,16 @@ class RepositoryServiceProvider extends ServiceProvider
             \App\Repositories\Interfaces\ProgressRepositoryInterface::class,
             \App\Repositories\Eloquent\ProgressRepository::class
         );
+
+        $this->app->bind(
+            \App\Repositories\Interfaces\QuestionRepositoryInterface::class,
+            \App\Repositories\Eloquent\QuestionRepository::class
+        );
+
+        $this->app->bind(
+            \App\Repositories\Interfaces\AnswerRepositoryInterface::class,
+            \App\Repositories\Eloquent\AnswerRepository::class
+        );
     }
 
     /**

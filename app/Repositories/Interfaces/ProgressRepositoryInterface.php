@@ -10,4 +10,7 @@ interface ProgressRepositoryInterface
     public function getRecentActivities($userId, $limit = 5);
     public function getCorrectAnswersWithAttempts($roleId = 3);
     public function getLeaderboardStats($roleId = 3);
+    public function getAttemptCount($userId, $materialId, $questionId);
+    public function saveProgress(array $data);
+    public function updateOrCreateProgress(array $conditions, array $values);
 }
