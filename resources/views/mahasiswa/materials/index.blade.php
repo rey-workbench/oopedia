@@ -66,7 +66,7 @@
                         <div class="stats-pill">
                             <i class="fas fa-question-circle"></i> 
                             @php
-                                $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4);
+                                $isGuest = !auth()->check();
                                 
                                 // Calculate configured question count
                                 if ($isGuest) {

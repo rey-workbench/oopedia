@@ -5,7 +5,7 @@
         <link href="https://unpkg.com/intro.js/minified/introjs.min.css" rel="stylesheet">
     </x-slot:styles>
 
-    @if(auth()->check() && auth()->user()->role_id === 4)
+    @if(!auth()->check())
     <form id="guest-logout-login-form" action="{{ route('guest.logout') }}" method="POST" style="display: none;">
         @csrf
         <input type="hidden" name="redirect" value="{{ route('login') }}">
@@ -17,7 +17,7 @@
     </form>
     @endif
 
-    @if(!auth()->check() || (auth()->check() && auth()->user()->role_id === 4))
+    @if(!auth()->check())
     <x-ui.alert variant="warning" class="mb-4" :dismissible="false">
         <strong>Mode Tamu Aktif!</strong> 
         Anda hanya dapat melihat sebagian materi dan hanya 3 soal latihan dari setiap tingkat kesulitan yang ditampilkan. 
@@ -83,7 +83,7 @@
                             
                             <div class="material-bottom-section">
                                 <!-- Progress Section -->
-                                @if(!auth()->check() || (auth()->check() && auth()->user()->role_id === 4))
+                                @if(!auth()->check())
                                     <!-- Guest Mode Display -->
                                     <div class="guest-limit-section">
                                         <div class="guest-info-icon">

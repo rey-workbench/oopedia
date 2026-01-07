@@ -3,49 +3,26 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
-use App\Models\UeqSurvey;
 use Illuminate\Http\Request;
-use App\Models\Material;
 use Illuminate\Support\Facades\Validator;
 
 class UeqSurveyController extends Controller
 {
+    protected $ueqService;
+
+    public function __construct(\App\Services\UeqSurveyService $ueqService)
+    {
+        $this->ueqService = $ueqService;
+    }
+
     public function create()
     {
         // Check if user has already submitted a survey
-        $existingSurvey = UeqSurvey::where('user_id', auth()->id())->first();
-        if ($existingSurvey) {
+        if ($this->ueqService->hasUserSubmitted(auth()->id())) {
             return redirect()->route('mahasiswa.ueq.thankyou');
         }
 
-        $aspects = [
-            ['name' => 'annoying_enjoyable'],
-            ['name' => 'not_understandable_understandable'],
-            ['name' => 'creative_dull'],
-            ['name' => 'easy_difficult'],
-            ['name' => 'valuable_inferior'],
-            ['name' => 'boring_exciting'],
-            ['name' => 'not_interesting_interesting'],
-            ['name' => 'unpredictable_predictable'],
-            ['name' => 'fast_slow'],
-            ['name' => 'inventive_conventional'],
-            ['name' => 'obstructive_supportive'],
-            ['name' => 'good_bad'],
-            ['name' => 'complicated_easy'],
-            ['name' => 'unlikable_pleasing'],
-            ['name' => 'usual_leading_edge'],
-            ['name' => 'unpleasant_pleasant'],
-            ['name' => 'secure_not_secure'],
-            ['name' => 'motivating_demotivating'],
-            ['name' => 'meets_expectations_does_not_meet'],
-            ['name' => 'inefficient_efficient'],
-            ['name' => 'clear_confusing'],
-            ['name' => 'impractical_practical'],
-            ['name' => 'organized_cluttered'],
-            ['name' => 'attractive_unattractive'],
-            ['name' => 'friendly_unfriendly'],
-            ['name' => 'conservative_innovative']
-        ];
+        $aspects = $this->getAspects();
         
         return view('mahasiswa.ueq.create', compact('aspects'));
     }
@@ -53,8 +30,7 @@ class UeqSurveyController extends Controller
     public function store(Request $request)
     {
         // Check if user has already submitted a survey
-        $existingSurvey = UeqSurvey::where('user_id', auth()->id())->first();
-        if ($existingSurvey) {
+        if ($this->ueqService->hasUserSubmitted(auth()->id())) {
             return redirect()->route('mahasiswa.ueq.thankyou');
         }
 
@@ -77,20 +53,10 @@ class UeqSurveyController extends Controller
         }
 
         // Buat record survey baru
-        $survey = new UeqSurvey();
-        $survey->user_id = auth()->id();
-        $survey->nim = $request->nim;
-        $survey->class = $request->class;
+        $data = $request->except(['_token']);
+        $data['user_id'] = auth()->id();
         
-        // Set semua aspek UEQ (kode yang sudah ada)
-        foreach ($this->getAspects() as $aspect) {
-            $name = $aspect['name'];
-            $survey->{$name} = $request->input($name);
-        }
-        
-        $survey->comments = $request->comments;
-        $survey->suggestions = $request->suggestions;
-        $survey->save();
+        $this->ueqService->createSurvey($data);
 
         return redirect()->route('mahasiswa.ueq.thankyou');
     }

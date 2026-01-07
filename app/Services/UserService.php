@@ -51,6 +51,17 @@ class UserService extends BaseService
         return $this->userRepo->update($user->id, $data);
     }
 
+    public function updateProfile($user, array $data)
+    {
+        if (isset($data['password']) && !empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
+        }
+
+        return $this->userRepo->update($user->id, $data);
+    }
+
     public function deleteAdmin($user)
     {
         // Don't allow deleting self or superadmin (role 1)

@@ -4,13 +4,28 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\QuestionBank;
-use App\Models\QuestionBankConfig;
 use App\Models\Question;
-use App\Models\Material;
+use App\Models\QuestionBankConfig;
 use Illuminate\Http\Request;
+use App\Services\QuestionBankService;
+use App\Services\MaterialService;
+use App\Services\QuestionService;
 
 class QuestionBankController extends Controller
 {
+    protected $questionBankService;
+    protected $materialService;
+    protected $questionService;
+
+    public function __construct(
+        QuestionBankService $questionBankService,
+        MaterialService $materialService,
+        QuestionService $questionService
+    ) {
+        $this->questionBankService = $questionBankService;
+        $this->materialService = $materialService;
+        $this->questionService = $questionService;
+    }
     /**
      * Display a listing of the question banks.
      */
@@ -22,16 +37,8 @@ class QuestionBankController extends Controller
                 ->with('error', 'Anda tidak memiliki akses ke bank soal');
         }
         
-        $query = QuestionBank::query()->with('creator');
-        
-        // Handle search
-        if ($request->has('search') && !empty($request->search)) {
-            $search = $request->search;
-            $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
-        }
-        
-        $questionBanks = $query->latest()->paginate(10);
+        $search = $request->input('search');
+        $questionBanks = $this->questionBankService->getAllQuestionBanks($search);
         
         return view('admin.question-banks.index', compact('questionBanks'));
     }
@@ -41,7 +48,7 @@ class QuestionBankController extends Controller
      */
     public function create()
     {
-        $materials = Material::all();
+        $materials = $this->materialService->getAllMaterials();
         return view('admin.question-banks.create', compact('materials'));
     }
 
@@ -119,7 +126,7 @@ class QuestionBankController extends Controller
      */
     public function destroy(QuestionBank $questionBank)
     {
-        $questionBank->delete();
+        $this->questionBankService->deleteQuestionBank($questionBank->id);
         
         return redirect()->route('admin.question-banks.index')
             ->with('success', 'Bank soal berhasil dihapus.');
@@ -136,21 +143,12 @@ class QuestionBankController extends Controller
         // Get existing question IDs in this bank
         $existingQuestionIds = $questionBank->questions->pluck('id')->toArray();
         
-        // Query to get questions not in the bank yet and from the same material
-        $questionsQuery = Question::with(['material', 'answers'])
-            ->where('material_id', $questionBank->material_id)
-            ->whereNotIn('id', $existingQuestionIds);
-            
-        // Apply filters
-        if ($search) {
-            $questionsQuery->where('question_text', 'like', "%{$search}%");
-        }
-        
-        if ($difficulty) {
-            $questionsQuery->where('difficulty', $difficulty);
-        }
-        
-        $questions = $questionsQuery->paginate(10);
+        $questions = $this->questionService->getAvailableQuestionsForBank(
+            $questionBank->material_id,
+            $existingQuestionIds,
+            $search,
+            $difficulty
+        );
         
         return view('admin.question-banks.manage-questions', compact(
             'questionBank', 
@@ -168,8 +166,9 @@ class QuestionBankController extends Controller
             return redirect()->back()->with('error', 'Soal tidak dapat ditambahkan karena tidak sesuai dengan materi bank soal.');
         }
         
-        if (!$questionBank->questions->contains($question->id)) {
-            $questionBank->questions()->attach($question->id);
+        $success = $this->questionBankService->addQuestionToBank($questionBank->id, $question->id);
+        
+        if ($success) {
             return redirect()->back()->with('success', 'Soal berhasil ditambahkan ke bank soal.');
         }
         
@@ -181,7 +180,7 @@ class QuestionBankController extends Controller
      */
     public function removeQuestion(QuestionBank $questionBank, Question $question)
     {
-        $questionBank->questions()->detach($question->id);
+        $this->questionBankService->removeQuestionFromBank($questionBank->id, $question->id);
         return redirect()->back()->with('success', 'Soal berhasil dihapus dari bank soal.');
     }
     
@@ -190,15 +189,13 @@ class QuestionBankController extends Controller
      */
     public function configureBank(QuestionBank $questionBank, Request $request)
     {
-        $materials = Material::all();
-        $configs = $questionBank->configs()->with('material')->get();
+        $materials = $this->materialService->getAllMaterials();
+        $configs = $this->questionBankService->getBankConfigs($questionBank);
         
         // Handle edit mode
         $editConfig = null;
         if ($request->has('edit')) {
-            $editConfig = QuestionBankConfig::where('id', $request->edit)
-                ->where('question_bank_id', $questionBank->id)
-                ->firstOrFail();
+            $editConfig = $this->questionBankService->getBankConfigById($request->edit, $questionBank->id);
         }
         
         return view('admin.question-banks.configure', compact('questionBank', 'materials', 'configs', 'editConfig'));
@@ -231,50 +228,15 @@ class QuestionBankController extends Controller
                 ->with('error', 'Total soal harus lebih dari 0');
         }
         
-        // Update atau create konfigurasi
-        if ($request->has('config_id')) {
-            // Update existing config
-            $config = QuestionBankConfig::findOrFail($request->config_id);
-            
-            // Verifikasi bahwa konfigurasi ini milik bank soal yang benar
-            if ($config->question_bank_id != $questionBank->id) {
-                return redirect()->back()
-                    ->with('error', 'Konfigurasi tidak ditemukan');
-            }
-            
-            $config->update([
-                'beginner_count' => $request->beginner_count,
-                'medium_count' => $request->medium_count,
-                'hard_count' => $request->hard_count,
-                'is_active' => $request->has('is_active'),
-            ]);
-            $message = 'Konfigurasi bank soal berhasil diperbarui.';
-        } else {
-            // Check if config already exists for this material
-            $existingConfig = QuestionBankConfig::where('question_bank_id', $questionBank->id)
-                ->where('material_id', $request->material_id)
-                ->first();
-                
-            if ($existingConfig) {
-                return redirect()->back()
-                    ->withInput()
-                    ->with('error', 'Konfigurasi untuk materi ini sudah ada.');
-            }
-            
-            // Create new config
-            QuestionBankConfig::create([
-                'question_bank_id' => $questionBank->id,
-                'material_id' => $request->material_id,
-                'beginner_count' => $request->beginner_count,
-                'medium_count' => $request->medium_count,
-                'hard_count' => $request->hard_count,
-                'is_active' => $request->has('is_active'),
-            ]);
-            $message = 'Konfigurasi bank soal berhasil ditambahkan.';
+        try {
+            $message = $this->questionBankService->storeBankConfig($questionBank, $request->all());
+            return redirect()->route('admin.question-banks.configure', $questionBank)
+                ->with('success', $message);
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $e->getMessage());
         }
-        
-        return redirect()->route('admin.question-banks.configure', $questionBank)
-            ->with('success', $message);
     }
     
     /**
@@ -283,7 +245,7 @@ class QuestionBankController extends Controller
     public function deleteConfig(QuestionBankConfig $config)
     {
         $questionBankId = $config->question_bank_id;
-        $config->delete();
+        $this->questionBankService->deleteBankConfig($config);
         
         return redirect()->route('admin.question-banks.configure', $questionBankId)
             ->with('success', 'Konfigurasi bank soal berhasil dihapus.');

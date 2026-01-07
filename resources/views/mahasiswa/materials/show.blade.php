@@ -77,7 +77,7 @@
             document.addEventListener('DOMContentLoaded', function() {
                 // Initialize form logic if applicable
                 const config = {
-                    isGuest: {{ auth()->check() ? (auth()->user()->role_id === 4 ? 'true' : 'false') : 'true' }},
+                    isGuest: {{ auth()->check() ? 'false' : 'true' }},
                     maxQuestionsForGuest: 3, // Default fallback
                     routes: {
                         levelsUrl: "{{ route('mahasiswa.materials.questions.levels', ['material' => $material->id, 'difficulty' => request()->query('difficulty', 'all')]) }}"

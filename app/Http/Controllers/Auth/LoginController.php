@@ -11,7 +11,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class SessionsController extends Controller
+class LoginController extends Controller
 {
     public function create()
     {
@@ -97,37 +97,35 @@ class SessionsController extends Controller
                     ? redirect()->route('login')->with('status', __($status))
                     : back()->withErrors(['email' => [__($status)]]);
     }
-
-    public function destroy(Request $request)
+    public function index()
     {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-        $isGuest = $user && $user->role_id === 4;
-        
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        
-        if ($isGuest) {
-            // Hapus user tamu dari database
-            $user->delete();
+        if (Auth::check()) {
+            $user = Auth::user();
+            
+            if ($user->role_id <= 2) {
+                return redirect()->route('admin.dashboard');
+            } else if ($user->role_id == 3) {
+                return redirect()->route('mahasiswa.dashboard');
+            }
         }
         
-        return redirect('/');
+        // Unauthenticated users are treated as guests
+        return redirect()->route('mahasiswa.materials.index');
     }
 
-    public function guestLogin()
+    public function fallback()
     {
-        // Create a temporary guest user
-        $guestUser = User::create([
-            'name' => 'Tamu_' . Str::random(8),
-            'email' => 'guest_' . Str::random(8) . '@temporary.com',
-            'password' => Hash::make(Str::random(16)),
-            'role_id' => 4 // Ubah dari 3 menjadi 4 jika ingin membedakan tamu, atau tetap 3 jika tamu dianggap mahasiswa
-        ]);
-
-        Auth::login($guestUser);
+        if (Auth::check()) {
+            $user = Auth::user();
+            
+            if ($user->role_id <= 2) {
+                return redirect()->route('admin.dashboard');
+            } else if ($user->role_id == 3) {
+                return redirect()->route('mahasiswa.dashboard');
+            }
+        }
         
+        // Guest users or unauthenticated users fall back to materials
         return redirect()->route('mahasiswa.materials.index');
     }
 } 

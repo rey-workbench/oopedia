@@ -15,7 +15,9 @@ use App\Services\MaterialQuestionService;
 use App\Services\QuestionAnswerService;
 use App\Repositories\Interfaces\MaterialRepositoryInterface;
 use App\Repositories\Interfaces\ProgressRepositoryInterface;
-
+use App\Repositories\Interfaces\QuestionRepositoryInterface;
+use App\Repositories\Interfaces\AnswerRepositoryInterface;
+use Illuminate\Support\Facades\Cookie;
 class MaterialQuestionController extends Controller
 {
     protected $adaptiveService;
@@ -23,27 +25,40 @@ class MaterialQuestionController extends Controller
     protected $questionAnswerService;
     protected $materialRepo;
     protected $progressRepo;
+    protected $questionRepo;
+    protected $answerRepo;
 
     public function __construct(
         AdaptiveQuizService $adaptiveService,
         MaterialQuestionService $materialQuestionService,
         QuestionAnswerService $questionAnswerService,
         MaterialRepositoryInterface $materialRepo,
-        ProgressRepositoryInterface $progressRepo
+        ProgressRepositoryInterface $progressRepo,
+        QuestionRepositoryInterface $questionRepo,
+        AnswerRepositoryInterface $answerRepo
     ) {
         $this->adaptiveService = $adaptiveService;
         $this->materialQuestionService = $materialQuestionService;
         $this->questionAnswerService = $questionAnswerService;
         $this->materialRepo = $materialRepo;
         $this->progressRepo = $progressRepo;
+        $this->questionRepo = $questionRepo;
+        $this->answerRepo = $answerRepo;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4);
         $userId = $isGuest ? session()->getId() : auth()->id();
+        
+        // Read guest progress from cookie
+        $guestProgress = [];
+        if ($isGuest) {
+            $guestProgressJson = $request->cookie('guest_progress', '[]');
+            $guestProgress = json_decode($guestProgressJson, true) ?? [];
+        }
 
-        $materials = $this->materialQuestionService->getMaterialsListWithStudentCount($userId, $isGuest);
+        $materials = $this->materialQuestionService->getMaterialsListWithStudentCount($userId, $isGuest, $guestProgress);
 
         return view('mahasiswa.materials.questions.index', compact('materials', 'isGuest'));
     }
@@ -55,6 +70,13 @@ class MaterialQuestionController extends Controller
         $difficulty = $isGuest ? $request->query('difficulty', 'beginner') : 'all';
         $questionId = $request->query('question');
 
+        // Read guest progress from cookie
+        $guestProgress = [];
+        if ($isGuest) {
+             $guestProgressJson = $request->cookie('guest_progress', '[]');
+             $guestProgress = json_decode($guestProgressJson, true) ?? [];
+        }
+
         // Get filtered questions
         $result = $this->materialQuestionService->getFilteredQuestions($material, $difficulty, $isGuest);
         $questions = $result['questions'];
@@ -63,7 +85,7 @@ class MaterialQuestionController extends Controller
         // Get answered questions
         $userId = $isGuest ? session()->getId() : auth()->id();
         $answeredQuestionIds = $isGuest
-            ? $this->materialQuestionService->getGuestAnsweredQuestionIds($material->id)
+            ? $this->materialQuestionService->getGuestAnsweredQuestionIds($material->id, $guestProgress)
             : collect($this->progressRepo->getAnsweredQuestionIds($userId, $material->id));
 
         // Get current question
@@ -88,12 +110,19 @@ class MaterialQuestionController extends Controller
     public function levels(Material $material, Request $request)
     {
         $materials = $this->materialRepo->getAllOrdered();
-        $difficulty = $request->query('difficulty', 'beginner');
+        $difficulty = 'all';
         $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4);
 
         $userId = auth()->id() ?? session()->getId();
+        
+        $guestProgress = [];
+        if ($isGuest) {
+             $guestProgressJson = $request->cookie('guest_progress', '[]');
+             $guestProgress = json_decode($guestProgressJson, true) ?? [];
+        }
+        
         $answeredQuestionIds = $isGuest
-            ? $this->materialQuestionService->getGuestAnsweredQuestionIds($material->id)
+            ? $this->materialQuestionService->getGuestAnsweredQuestionIds($material->id, $guestProgress)
             : collect($this->progressRepo->getAnsweredQuestionIds($userId, $material->id));
 
         $levels = $this->materialQuestionService->getLevelProgress($material, $difficulty, $answeredQuestionIds);
@@ -114,8 +143,14 @@ class MaterialQuestionController extends Controller
         $difficulty = $request->query('difficulty', 'all');
         $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4);
         $userId = auth()->id();
+        
+        $guestProgress = [];
+        if ($isGuest) {
+             $guestProgressJson = $request->cookie('guest_progress', '[]');
+             $guestProgress = json_decode($guestProgressJson, true) ?? [];
+        }
 
-        $questions = $this->materialQuestionService->getReviewQuestions($material, $difficulty, $userId, $isGuest);
+        $questions = $this->materialQuestionService->getReviewQuestions($material, $difficulty, $userId, $isGuest, $guestProgress);
 
         if ($request->ajax()) {
             return view('mahasiswa.partials.question-review-filtered', [
@@ -140,7 +175,9 @@ class MaterialQuestionController extends Controller
 
         if ($isGuest) {
             $progressKey = $material->id . '_' . $question->id;
-            $guestProgress = session('guest_progress', []);
+            $guestProgressJson = request()->cookie('guest_progress', '[]');
+            $guestProgress = json_decode($guestProgressJson, true) ?? [];
+            
             $attempts = isset($guestProgress[$progressKey]) ? $guestProgress[$progressKey]['attempt_number'] : 0;
         } else {
             $attempts = $this->progressRepo->getAttemptCount(auth()->id(), $material->id, $question->id);
@@ -192,19 +229,45 @@ class MaterialQuestionController extends Controller
             false
         );
 
-        // Create progress record
-        Progress::create([
-            'user_id' => $userId,
-            'material_id' => $material->id,
-            'question_id' => $question->id,
-            'is_correct' => $isCorrect,
-            'is_answered' => true,
-            'xp_earned' => $adaptiveResult['xp_earned'],
-            'points_earned' => $adaptiveResult['points_earned'],
-            'used_hint' => false
-        ]);
-
-        Cache::forget('leaderboard_data');
+        // Save progress (Cookie for Guest, DB for Authenticated)
+        if ($isGuest = !auth()->check()) {
+            // Read existing progress from cookie
+            $guestProgressJson = $request->cookie('guest_progress', '[]');
+            $guestProgress = json_decode($guestProgressJson, true) ?? [];
+            
+            $progressKey = $material->id . '_' . $question->id;
+            
+            // Update progress
+            $guestProgress[$progressKey] = [
+                'is_correct' => $isCorrect,
+                'xp_earned' => $adaptiveResult['xp_earned'],
+                'points_earned' => $adaptiveResult['points_earned'],
+                'attempt_number' => ($guestProgress[$progressKey]['attempt_number'] ?? 0) + 1,
+                'last_attempt_at' => now()->toDateTimeString()
+            ];
+            
+            // Encode back to JSON
+             $updatedCookieValue = json_encode($guestProgress);
+             
+             // Create cookie valid for 30 days (43200 minutes)
+             $cookie = cookie('guest_progress', $updatedCookieValue, 43200, null, null, false, false); // HttpOnly false so JS can read if needed
+             
+             // We don't need 'guest_progress.material_id' hierarchy anymore if we parse keys in service
+        } else {
+            // Create progress record in DB
+            Progress::create([
+                'user_id' => $userId,
+                'material_id' => $material->id,
+                'question_id' => $question->id,
+                'is_correct' => $isCorrect,
+                'is_answered' => true,
+                'xp_earned' => $adaptiveResult['xp_earned'],
+                'points_earned' => $adaptiveResult['points_earned'],
+                'used_hint' => false
+            ]);
+            
+            Cache::forget('leaderboard_data');
+        }
 
         // Prepare response
         $responseData = [
@@ -222,7 +285,14 @@ class MaterialQuestionController extends Controller
             ]);
         }
 
-        return response()->json($responseData);
+        $response = response()->json($responseData);
+        
+        // Attach cookie if guest
+        if (isset($cookie)) {
+            $response->withCookie($cookie);
+        }
+        
+        return $response;
     }
 
     protected function determineCorrectness($question, $request)

@@ -23,9 +23,9 @@ class MaterialQuestionService extends BaseService
         $this->questionRepo = $questionRepo;
     }
 
-    public function getMaterialsListWithStudentCount($userId, $isGuest)
+    public function getMaterialsListWithStudentCount($userId, $isGuest, $guestProgress = [])
     {
-        $progressStats = $this->progressRepo->getUserProgressStats($userId);
+        $progressStats = $isGuest ? collect([]) : $this->progressRepo->getUserProgressStats($userId);
         $allMaterials = $this->materialRepo->getAllWithQuestions();
 
         // Limit for guests
@@ -36,11 +36,23 @@ class MaterialQuestionService extends BaseService
         }
 
         $studentCounts = $this->progressRepo->getStudentCountByMaterial();
+        // $guestProgress passed from controller now
 
-        $materials = $allMaterials->map(function ($material) use ($progressStats, $isGuest, $studentCounts) {
+        $materials = $allMaterials->map(function ($material) use ($progressStats, $isGuest, $studentCounts, $guestProgress) {
             $configuredTotalQuestions = $this->calculateConfiguredQuestions($material, $isGuest);
-            $materialProgress = $progressStats->firstWhere('material_id', $material->id);
-            $correctAnswers = $materialProgress ? $materialProgress->correct_answers : 0;
+            
+            if ($isGuest) {
+                // Calculate correct answers from provided array
+                $correctAnswers = 0;
+                foreach ($guestProgress as $key => $progress) {
+                    if (strpos($key, $material->id . '_') === 0 && isset($progress['is_correct']) && $progress['is_correct']) {
+                        $correctAnswers++;
+                    }
+                }
+            } else {
+                $materialProgress = $progressStats->firstWhere('material_id', $material->id);
+                $correctAnswers = $materialProgress ? $materialProgress->correct_answers : 0;
+            }
 
             $progressPercentage = $configuredTotalQuestions > 0
                 ? min(100, round(($correctAnswers / $configuredTotalQuestions) * 100))
@@ -57,6 +69,47 @@ class MaterialQuestionService extends BaseService
         });
 
         return $materials;
+    }
+// ...
+    public function getReviewQuestions($material, $difficulty, $userId, $isGuest, $guestProgress = [])
+    {
+        $questions = $material->questions;
+
+        if ($difficulty && $difficulty !== 'all') {
+            $questions = $questions->where('difficulty', $difficulty);
+        }
+
+        if ($isGuest) {
+            $answeredQuestionIds = $this->getGuestAnsweredQuestionIds($material->id, $guestProgress);
+            $questions = $questions->whereIn('id', $answeredQuestionIds->toArray());
+        } else {
+            $answeredQuestionIds = $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
+            $questions = $questions->whereIn('id', $answeredQuestionIds);
+        }
+
+        return $questions;
+    }
+
+    public function getGuestAnsweredQuestionIds($materialId, $guestProgress = [])
+    {
+        $answeredQuestionIds = collect([]);
+
+        // guestProgress is now a flat array passed from controller
+        // It comes from cookie which is flat: "materialId_questionId" => data
+
+        foreach ($guestProgress as $key => $progress) {
+            if (is_array($progress) && (isset($progress['is_correct']) || isset($progress['attempt_number']))) {
+                 $parts = explode('_', $key);
+                 if (count($parts) >= 2 && $parts[0] == $materialId) {
+                     $questionId = (int)$parts[1];
+                     if (!$answeredQuestionIds->contains($questionId)) {
+                         $answeredQuestionIds->push($questionId);
+                     }
+                 }
+            }
+        }
+
+        return $answeredQuestionIds;
     }
 
     public function getFilteredQuestions($material, $difficulty, $isGuest, $config = null)
@@ -171,54 +224,7 @@ class MaterialQuestionService extends BaseService
         return $levels;
     }
 
-    public function getReviewQuestions($material, $difficulty, $userId, $isGuest)
-    {
-        $questions = $material->questions;
 
-        if ($difficulty && $difficulty !== 'all') {
-            $questions = $questions->where('difficulty', $difficulty);
-        }
-
-        if ($isGuest) {
-            $answeredQuestionIds = collect(session('guest_progress.' . $material->id, []));
-            $questions = $questions->whereIn('id', array_keys($answeredQuestionIds->toArray()));
-        } else {
-            $answeredQuestionIds = $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
-            $questions = $questions->whereIn('id', $answeredQuestionIds);
-        }
-
-        return $questions;
-    }
-
-    public function getGuestAnsweredQuestionIds($materialId)
-    {
-        $answeredQuestionIds = collect([]);
-
-        // Check both session formats
-        $guestProgress = session('guest_progress', []);
-        $materialProgress = session('guest_progress.' . $materialId, []);
-
-        if (is_array($materialProgress)) {
-            foreach (array_keys($materialProgress) as $questionId) {
-                $answeredQuestionIds->push((int)$questionId);
-            }
-        }
-
-        // Also check format 1
-        foreach ($guestProgress as $key => $progress) {
-            if (is_array($progress) && isset($progress['is_correct']) && $progress['is_correct']) {
-                $parts = explode('_', $key);
-                if (count($parts) >= 2 && $parts[0] == $materialId) {
-                    $questionId = (int)$parts[1];
-                    if (!$answeredQuestionIds->contains($questionId)) {
-                        $answeredQuestionIds->push($questionId);
-                    }
-                }
-            }
-        }
-
-        return $answeredQuestionIds;
-    }
 
     protected function calculateConfiguredQuestions($material, $isGuest)
     {

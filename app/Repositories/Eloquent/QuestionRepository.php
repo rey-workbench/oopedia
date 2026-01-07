@@ -27,4 +27,43 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
         
         return $query->get();
     }
+
+    public function getFilteredQuestions($search = null, $difficulty = null, $materialId = null)
+    {
+        return $this->model->with(['createdBy', 'answers', 'material'])
+            ->when($search, function ($query) use ($search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('question_text', 'like', "%{$search}%")
+                        ->orWhere('question_type', 'like', "%{$search}%")
+                        ->orWhereHas('createdBy', function ($userQuery) use ($search) {
+                            $userQuery->where('name', 'like', "%{$search}%");
+                        })
+                        ->orWhereHas('material', function ($materialQuery) use ($search) {
+                            $materialQuery->where('title', 'like', "%{$search}%");
+                        });
+                });
+            })
+            ->when($difficulty, function ($query) use ($difficulty) {
+                return $query->where('difficulty', $difficulty);
+            })
+            ->when($materialId, function ($query) use ($materialId) {
+                return $query->where('material_id', $materialId);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+    }
+
+    public function getQuestionsForBank($materialId, array $excludeIds, $search = null, $difficulty = null)
+    {
+        return $this->model->with(['material', 'answers'])
+            ->where('material_id', $materialId)
+            ->whereNotIn('id', $excludeIds)
+            ->when($search, function ($query) use ($search) {
+                $query->where('question_text', 'like', "%{$search}%");
+            })
+            ->when($difficulty, function ($query) use ($difficulty) {
+                $query->where('difficulty', $difficulty);
+            })
+            ->paginate(10);
+    }
 }

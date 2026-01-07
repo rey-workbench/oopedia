@@ -7,7 +7,7 @@
         
         <!-- Adaptive Stats Bar - Only for Logged In Users -->
         @if(!isset($isGuest) || !$isGuest)
-            @php $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4); @endphp
+            @php $isGuest = !auth()->check(); @endphp
         @endif
 
         @if(!$isGuest)

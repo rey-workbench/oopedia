@@ -24,10 +24,5 @@ class RoleSeeder extends Seeder
             ['id' => 3],
             ['role_name' => 'Mahasiswa']
         );
-        
-        Role::firstOrCreate(
-            ['id' => 4],
-            ['role_name' => 'Tamu']
-        );
     }
 } 

@@ -24,7 +24,7 @@
             </x-ui.alert>
         @endif
 
-        @if(auth()->check() && auth()->user()->role_id === 4)
+        @if(!auth()->check())
             <x-ui.alert variant="warning" class="mb-4">
                 <strong>Mode Tamu Aktif!</strong> 
                 Anda hanya dapat melihat sebagian dari soal latihan ini. Untuk akses penuh, silakan 
@@ -98,7 +98,7 @@
                 // Config variable for use in scripts
                 const config = {
                     materialId: '{{ $material->id }}',
-                    isGuest: {{ auth()->check() ? (auth()->user()->role_id === 4 ? 'true' : 'false') : 'true' }},
+                    isGuest: {{ auth()->check() ? 'false' : 'true' }},
                     currentQuestionNumber: {{ $currentQuestionNumber ?? 1 }},
                     routes: {
                         materialShow: "{{ route('mahasiswa.materials.show', $material->id) }}",

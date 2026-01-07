@@ -11,7 +11,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Validation\Rules;
 use Illuminate\Http\RedirectResponse;
 
-class RegisteredUserController extends Controller
+class RegisterController extends Controller
 {
     public function create()
     {
