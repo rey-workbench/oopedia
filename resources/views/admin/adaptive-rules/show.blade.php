@@ -24,7 +24,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <h6 class="mb-3">Informasi Umum</h6>
-                                    <table class="table table-borderless">
+                                    <x-ui.table tableClass="table-borderless">
                                         <tr>
                                             <td width="40%" class="text-sm font-weight-bold">Nama Rule:</td>
                                             <td class="text-sm">{{ $adaptiveRule->name }}</td>
@@ -59,7 +59,7 @@
                                             <td class="text-sm font-weight-bold">Tanggal Dibuat:</td>
                                             <td class="text-sm">{{ $adaptiveRule->created_at->format('d/m/Y H:i') }}</td>
                                         </tr>
-                                    </table>
+                                    </x-ui.table>
                                 </div>
 
                                 <div class="col-md-6">
@@ -77,7 +77,7 @@
                                                             @if($index > 0)
                                                                 <span class="badge bg-secondary text-xxs mb-1">AND</span>
                                                             @endif
-                                                            <table class="table table-sm table-borderless mb-0">
+                                                            <x-ui.table tableClass="table-sm table-borderless mb-0">
                                                                 <tr>
                                                                     <td width="40%" class="text-xs font-weight-bold">Atribut:</td>
                                                                     <td class="text-xs"><x-ui.badge variant="info">{{ $condition['key'] ?? $condition['type'] ?? 'N/A' }}</x-ui.badge></td>
@@ -90,7 +90,7 @@
                                                                     <td class="text-xs font-weight-bold">Nilai:</td>
                                                                     <td class="text-xs">{{ $condition['value'] ?? 'N/A' }}</td>
                                                                 </tr>
-                                                            </table>
+                                                            </x-ui.table>
                                                         </div>
                                                     @endforeach
                                                 </div>
@@ -105,7 +105,7 @@
                                             <h6 class="text-success mb-2">
                                                 <i class="material-icons text-sm">check_circle</i> THEN (Aksi)
                                             </h6>
-                                            <table class="table table-sm table-borderless mb-0">
+                                            <x-ui.table tableClass="table-sm table-borderless mb-0">
                                                 <tr>
                                                     <td width="40%" class="text-xs font-weight-bold">Tipe Aksi:</td>
                                                     <td class="text-xs">{{ \App\Models\AdaptiveRule::ACTION_TYPES[$adaptiveRule->action_type] ?? $adaptiveRule->action_type }}</td>
@@ -129,7 +129,7 @@
                                                         @endif
                                                     </td>
                                                 </tr>
-                                            </table>
+                                            </x-ui.table>
                                         </div>
                                     </div>
                                 </div>

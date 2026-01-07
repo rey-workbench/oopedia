@@ -100,78 +100,76 @@
                                 </div>
 
                                 <!-- UEQ Survey Responses Table -->
-                                <div class="table-responsive p-0">
-                                    <table class="table align-items-center mb-0">
-                                        <thead>
+                                <x-ui.table>
+                                    <thead>
+                                        <tr>
+                                            <x-ui.th>User</x-ui.th>
+                                            <x-ui.th class="ps-2">NIM</x-ui.th>
+                                            <x-ui.th class="ps-2">Kelas</x-ui.th>
+                                            <x-ui.th class="ps-2">Date</x-ui.th>
+                                            <x-ui.th class="ps-2">Attractiveness</x-ui.th>
+                                            <x-ui.th class="ps-2">Perspicuity</x-ui.th>
+                                            <x-ui.th class="ps-2">Efficiency</x-ui.th>
+                                            <x-ui.th class="ps-2">Dependability</x-ui.th>
+                                            <x-ui.th class="ps-2">Stimulation</x-ui.th>
+                                            <x-ui.th class="ps-2">Novelty</x-ui.th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($surveys as $survey)
                                             <tr>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">User</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">NIM</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Kelas</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Date</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Attractiveness</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Perspicuity</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Efficiency</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Dependability</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Stimulation</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Novelty</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($surveys as $survey)
-                                                <tr>
-                                                    <td>
-                                                        <div class="d-flex px-2 py-1">
-                                                            <div class="d-flex flex-column justify-content-center">
-                                                                <h6 class="mb-0 text-sm">{{ $survey->user->name }}</h6>
-                                                                <p class="text-xs text-secondary mb-0">{{ $survey->user->email }}</p>
-                                                            </div>
+                                                <td>
+                                                    <div class="d-flex px-2 py-1">
+                                                        <div class="d-flex flex-column justify-content-center">
+                                                            <h6 class="mb-0 text-sm">{{ $survey->user->name }}</h6>
+                                                            <p class="text-xs text-secondary mb-0">{{ $survey->user->email }}</p>
                                                         </div>
-                                                    </td>
-                                                    <td>
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $survey->nim }}</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $survey->class }}</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $survey->created_at->format('d M Y') }}</p>
-                                                        <p class="text-xs text-secondary mb-0">{{ $survey->created_at->format('H:i') }}</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="text-xs font-weight-bold mb-0">
-                                                            {{ number_format(($survey->annoying_enjoyable + $survey->good_bad + $survey->unlikable_pleasing + $survey->unpleasant_pleasant + $survey->attractive_unattractive + $survey->friendly_unfriendly) / 6, 2) }}
-                                                        </p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="text-xs font-weight-bold mb-0">
-                                                            {{ number_format(($survey->not_understandable_understandable + $survey->easy_difficult + $survey->complicated_easy + $survey->clear_confusing) / 4, 2) }}
-                                                        </p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="text-xs font-weight-bold mb-0">
-                                                            {{ number_format(($survey->fast_slow + $survey->inefficient_efficient + $survey->impractical_practical + $survey->organized_cluttered) / 4, 2) }}
-                                                        </p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="text-xs font-weight-bold mb-0">
-                                                            {{ number_format(($survey->unpredictable_predictable + $survey->obstructive_supportive + $survey->secure_not_secure + $survey->meets_expectations_does_not_meet) / 4, 2) }}
-                                                        </p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="text-xs font-weight-bold mb-0">
-                                                            {{ number_format(($survey->valuable_inferior + $survey->boring_exciting + $survey->not_interesting_interesting + $survey->motivating_demotivating) / 4, 2) }}
-                                                        </p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="text-xs font-weight-bold mb-0">
-                                                            {{ number_format(($survey->creative_dull + $survey->inventive_conventional + $survey->usual_leading_edge + $survey->conservative_innovative) / 4, 2) }}
-                                                        </p>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0">{{ $survey->nim }}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0">{{ $survey->class }}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0">{{ $survey->created_at->format('d M Y') }}</p>
+                                                    <p class="text-xs text-secondary mb-0">{{ $survey->created_at->format('H:i') }}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0">
+                                                        {{ number_format(($survey->annoying_enjoyable + $survey->good_bad + $survey->unlikable_pleasing + $survey->unpleasant_pleasant + $survey->attractive_unattractive + $survey->friendly_unfriendly) / 6, 2) }}
+                                                    </p>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0">
+                                                        {{ number_format(($survey->not_understandable_understandable + $survey->easy_difficult + $survey->complicated_easy + $survey->clear_confusing) / 4, 2) }}
+                                                    </p>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0">
+                                                        {{ number_format(($survey->fast_slow + $survey->inefficient_efficient + $survey->impractical_practical + $survey->organized_cluttered) / 4, 2) }}
+                                                    </p>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0">
+                                                        {{ number_format(($survey->unpredictable_predictable + $survey->obstructive_supportive + $survey->secure_not_secure + $survey->meets_expectations_does_not_meet) / 4, 2) }}
+                                                    </p>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0">
+                                                        {{ number_format(($survey->valuable_inferior + $survey->boring_exciting + $survey->not_interesting_interesting + $survey->motivating_demotivating) / 4, 2) }}
+                                                    </p>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0">
+                                                        {{ number_format(($survey->creative_dull + $survey->inventive_conventional + $survey->usual_leading_edge + $survey->conservative_innovative) / 4, 2) }}
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </x-ui.table>
 
                                 <!-- Add this after the UEQ dimensions summary -->
                                 <x-ui.card class="mt-4">
@@ -179,17 +177,16 @@
                                         <h6 class="mb-0">User Feedback Terbaru</h6>
                                     </x-slot:header>
                                     <div class="card-body px-0 pb-2">
-                                        <div class="table-responsive p-0">
-                                            <table class="table align-items-center mb-0">
+                                            <x-ui.table>
                                                 <thead>
                                                     <tr>
-                                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama Mahasiswa</th>
-                                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">NIM</th>
-                                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Kelas</th>
-                                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Komentar</th>
-                                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Saran</th>
-                                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tanggal</th>
-                                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Aksi</th>
+                                                        <x-ui.th>Nama Mahasiswa</x-ui.th>
+                                                        <x-ui.th class="ps-2">NIM</x-ui.th>
+                                                        <x-ui.th class="ps-2">Kelas</x-ui.th>
+                                                        <x-ui.th class="ps-2">Komentar</x-ui.th>
+                                                        <x-ui.th class="ps-2">Saran</x-ui.th>
+                                                        <x-ui.th class="text-center">Tanggal</x-ui.th>
+                                                        <x-ui.th class="text-center">Aksi</x-ui.th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -231,8 +228,7 @@
                                                     </tr>
                                                     @endforeach
                                                 </tbody>
-                                            </table>
-                                        </div>
+                                            </x-ui.table>
                                     </div>
                                 </x-ui.card>
                             @endif

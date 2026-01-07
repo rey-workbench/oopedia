@@ -13,64 +13,62 @@
                         </x-slot:header>
 
                         <div class="card-body px-0 pt-0 pb-2">
-                            <div class="table-responsive p-0">
-                                <table class="table align-items-center mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Atribut</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Tipe Data</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Sumber</th>
-                                            <th class="text-secondary opacity-7"></th>
+                            <x-ui.table>
+                                <thead>
+                                    <tr>
+                                        <x-ui.th>Atribut</x-ui.th>
+                                        <x-ui.th class="ps-2">Tipe Data</x-ui.th>
+                                        <x-ui.th class="text-center">Sumber</x-ui.th>
+                                        <x-ui.th></x-ui.th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($attributes as $groupName => $groupAttributes)
+                                        <tr class="bg-gray-100">
+                                            <td colspan="4" class="text-uppercase text-secondary text-xs font-weight-bolder px-4 py-2">
+                                                {{ $groupName }}
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($attributes as $groupName => $groupAttributes)
-                                            <tr class="bg-gray-100">
-                                                <td colspan="4" class="text-uppercase text-secondary text-xs font-weight-bolder px-4 py-2">
-                                                    {{ $groupName }}
-                                                </td>
-                                            </tr>
-                                            @foreach($groupAttributes as $attr)
-                                            <tr>
-                                                <td>
-                                                    <div class="d-flex px-3 py-1">
-                                                        <div class="d-flex flex-column justify-content-center">
-                                                            <h6 class="mb-0 text-sm">{{ $attr->label }}</h6>
-                                                            <p class="text-xs text-secondary mb-0 font-monospace">{{ $attr->key }}</p>
-                                                        </div>
+                                        @foreach($groupAttributes as $attr)
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-3 py-1">
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">{{ $attr->label }}</h6>
+                                                        <p class="text-xs text-secondary mb-0 font-monospace">{{ $attr->key }}</p>
                                                     </div>
-                                                </td>
-                                                <td>
-                                                    <span class="badge badge-sm bg-gradient-secondary">{{ $attr->type }}</span>
-                                                </td>
-                                                <td class="align-middle text-center text-sm">
-                                                    @if($attr->is_computed)
-                                                        <span class="badge badge-sm bg-gradient-info">
-                                                            <i class="material-icons text-xxs position-relative" style="top: 1px;">functions</i> Formula
-                                                        </span>
-                                                    @else
-                                                        <span class="badge badge-sm bg-gradient-success">
-                                                            <i class="material-icons text-xxs position-relative" style="top: 1px;">sensors</i> System
-                                                        </span>
-                                                    @endif
-                                                </td>
-                                                <td class="align-middle">
-                                                    <p class="text-xs text-secondary mb-0">
-                                                        {{ $attr->description ?? 'Tidak ada deskripsi' }}
-                                                    </p>
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                        @empty
-                                            <tr>
-                                                <td colspan="4" class="text-center py-4 text-secondary">
-                                                    Belum ada definisi atribut.
-                                                </td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-sm bg-gradient-secondary">{{ $attr->type }}</span>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                @if($attr->is_computed)
+                                                    <span class="badge badge-sm bg-gradient-info">
+                                                        <i class="material-icons text-xxs position-relative" style="top: 1px;">functions</i> Formula
+                                                    </span>
+                                                @else
+                                                    <span class="badge badge-sm bg-gradient-success">
+                                                        <i class="material-icons text-xxs position-relative" style="top: 1px;">sensors</i> System
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td class="align-middle">
+                                                <p class="text-xs text-secondary mb-0">
+                                                    {{ $attr->description ?? 'Tidak ada deskripsi' }}
+                                                </p>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" class="text-center py-4 text-secondary">
+                                                Belum ada definisi atribut.
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </x-ui.table>
                         </div>
                     </x-ui.card>
                     

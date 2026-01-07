@@ -164,58 +164,56 @@
                                 </x-ui.button>
                             </div>
                         </x-slot:header>
-                        <div class="table-responsive">
-                            <table class="table align-items-center mb-0">
-                                <thead>
-                                    <tr>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Mahasiswa</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Soal Diselesaikan</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Progress Materi</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Terakhir Aktif</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($studentProgress as $student)
-                                    <tr>
-                                        <td data-label="Mahasiswa">
-                                            <div class="d-flex px-2 py-1">
-                                                <div class="avatar avatar-sm me-3 bg-gradient-primary rounded-circle">
-                                                    <span class="text-white text-xs">{{ substr($student->name, 0, 1) }}</span>
-                                                </div>
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm">{{ $student->name }}</h6>
-                                                    <p class="text-xs text-secondary mb-0">{{ $student->email }}</p>
+                        <x-ui.table>
+                            <thead>
+                                <tr>
+                                    <x-ui.th>Mahasiswa</x-ui.th>
+                                    <x-ui.th class="text-center">Soal Diselesaikan</x-ui.th>
+                                    <x-ui.th class="text-center">Progress Materi</x-ui.th>
+                                    <x-ui.th class="text-center">Terakhir Aktif</x-ui.th>
+                                    <x-ui.th class="text-center">Aksi</x-ui.th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($studentProgress as $student)
+                                <tr>
+                                    <td data-label="Mahasiswa">
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="avatar avatar-sm me-3 bg-gradient-primary rounded-circle">
+                                                <span class="text-white text-xs">{{ substr($student->name, 0, 1) }}</span>
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">{{ $student->name }}</h6>
+                                                <p class="text-xs text-secondary mb-0">{{ $student->email }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle text-center" data-label="Soal Diselesaikan">
+                                        <span class="text-secondary text-xs font-weight-bold">{{ $student->completed_questions }}</span>
+                                    </td>
+                                    <td class="align-middle" data-label="Progress Materi">
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <span class="me-2 text-xs font-weight-bold">{{ $student->materials_progress }}%</span>
+                                            <div class="progress" style="width: 100px; height: 5px;">
+                                                <div class="progress-bar bg-gradient-info" role="progressbar" 
+                                                     aria-valuenow="{{ $student->materials_progress }}" 
+                                                     aria-valuemin="0" 
+                                                     aria-valuemax="100" 
+                                                     style="width: {{ $student->materials_progress }}%">
                                                 </div>
                                             </div>
-                                        </td>
-                                        <td class="align-middle text-center" data-label="Soal Diselesaikan">
-                                            <span class="text-secondary text-xs font-weight-bold">{{ $student->completed_questions }}</span>
-                                        </td>
-                                        <td class="align-middle" data-label="Progress Materi">
-                                            <div class="d-flex align-items-center justify-content-center">
-                                                <span class="me-2 text-xs font-weight-bold">{{ $student->materials_progress }}%</span>
-                                                <div class="progress" style="width: 100px; height: 5px;">
-                                                    <div class="progress-bar bg-gradient-info" role="progressbar" 
-                                                         aria-valuenow="{{ $student->materials_progress }}" 
-                                                         aria-valuemin="0" 
-                                                         aria-valuemax="100" 
-                                                         style="width: {{ $student->materials_progress }}%">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="align-middle text-center" data-label="Terakhir Aktif">
-                                            <span class="text-secondary text-xs font-weight-bold">{{ $student->last_active ? $student->last_active->diffForHumans() : 'Belum pernah' }}</span>
-                                        </td>
-                                        <td class="align-middle text-center" data-label="Aksi">
-                                            <x-ui.button variant="info" size="sm" href="{{ route('admin.students.progress', $student->id) }}" icon="assessment" />
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle text-center" data-label="Terakhir Aktif">
+                                        <span class="text-secondary text-xs font-weight-bold">{{ $student->last_active ? $student->last_active->diffForHumans() : 'Belum pernah' }}</span>
+                                    </td>
+                                    <td class="align-middle text-center" data-label="Aksi">
+                                        <x-ui.button variant="info" size="sm" href="{{ route('admin.students.progress', $student->id) }}" icon="assessment" />
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </x-ui.table>
                     </x-ui.card>
                 </div>
             </div>

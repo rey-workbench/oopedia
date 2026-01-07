@@ -107,43 +107,41 @@
                                         </div>
                                         <div class="card-body p-0">
                                             @if($configs->count() > 0)
-                                                <div class="table-responsive">
-                                                    <table class="table mb-0">
-                                                        <thead>
+                                                <x-ui.table>
+                                                    <thead>
+                                                        <tr>
+                                                            <x-ui.th class="ps-3">Materi</x-ui.th>
+                                                            <x-ui.th>B</x-ui.th>
+                                                            <x-ui.th>M</x-ui.th>
+                                                            <x-ui.th>H</x-ui.th>
+                                                            <x-ui.th>Status</x-ui.th>
+                                                            <x-ui.th class="ps-2">Aksi</x-ui.th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($configs as $config)
                                                             <tr>
-                                                                <th class="ps-3 text-secondary text-xs font-weight-bolder opacity-7">Materi</th>
-                                                                <th class="text-secondary text-xs font-weight-bolder opacity-7">B</th>
-                                                                <th class="text-secondary text-xs font-weight-bolder opacity-7">M</th>
-                                                                <th class="text-secondary text-xs font-weight-bolder opacity-7">H</th>
-                                                                <th class="text-secondary text-xs font-weight-bolder opacity-7">Status</th>
-                                                                <th class="text-secondary text-xs font-weight-bolder opacity-7 ps-2">Aksi</th>
+                                                                <td class="ps-3 text-sm">{{ $config->material ? $config->material->title : 'Tidak ada' }}</td>
+                                                                <td class="text-sm">{{ $config->beginner_count }}</td>
+                                                                <td class="text-sm">{{ $config->medium_count }}</td>
+                                                                <td class="text-sm">{{ $config->hard_count }}</td>
+                                                                <td>
+                                                                    <x-ui.badge variant="{{ $config->is_active ? 'success' : 'danger' }}">
+                                                                        {{ $config->is_active ? 'Aktif' : 'Nonaktif' }}
+                                                                    </x-ui.badge>
+                                                                </td>
+                                                                <td>
+                                                                    <x-ui.button variant="info" size="sm" href="{{ route('admin.question-banks.configure', ['questionBank' => $questionBank, 'edit' => $config->id]) }}" icon="edit" />
+                                                                    <form action="{{ route('admin.question-bank-configs.delete', $config) }}" method="POST" class="d-inline">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <x-ui.button type="submit" variant="danger" size="sm" icon="delete" onclick="return confirm('Apakah Anda yakin ingin menghapus konfigurasi ini?')" />
+                                                                    </form>
+                                                                </td>
                                                             </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach($configs as $config)
-                                                                <tr>
-                                                                    <td class="ps-3 text-sm">{{ $config->material ? $config->material->title : 'Tidak ada' }}</td>
-                                                                    <td class="text-sm">{{ $config->beginner_count }}</td>
-                                                                    <td class="text-sm">{{ $config->medium_count }}</td>
-                                                                    <td class="text-sm">{{ $config->hard_count }}</td>
-                                                                    <td>
-                                                                        <x-ui.badge variant="{{ $config->is_active ? 'success' : 'danger' }}">
-                                                                            {{ $config->is_active ? 'Aktif' : 'Nonaktif' }}
-                                                                        </x-ui.badge>
-                                                                    </td>
-                                                                    <td>
-                                                                        <x-ui.button variant="info" size="sm" href="{{ route('admin.question-banks.configure', ['questionBank' => $questionBank, 'edit' => $config->id]) }}" icon="edit" />
-                                                                        <form action="{{ route('admin.question-bank-configs.delete', $config) }}" method="POST" class="d-inline">
-                                                                            @csrf
-                                                                            @method('DELETE')
-                                                                            <x-ui.button type="submit" variant="danger" size="sm" icon="delete" onclick="return confirm('Apakah Anda yakin ingin menghapus konfigurasi ini?')" />
-                                                                        </form>
-                                                                    </td>
-                                                                </tr>
-                                                            @endforeach
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                                        @endforeach
+                                                    </tbody>
+                                                </x-ui.table>
                                             @else
                                                 <div class="p-3">
                                                     <x-ui.alert type="info" class="mb-0">

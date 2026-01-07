@@ -81,59 +81,57 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <h5 class="mb-3">Daftar Soal ({{ $questionBank->questions->count() }} soal)</h5>
-                                    <div class="table-responsive">
-                                        <table class="table table-hover align-items-center mb-0">
-                                            <thead>
-                                                <tr>
-                                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Soal</th>
-                                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Kesulitan</th>
-                                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tipe Soal</th>
-                                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Aksi</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @forelse($questionBank->questions as $question)
-                                                <tr>
-                                                    <td>
-                                                        <div class="d-flex px-2 py-1">
-                                                            <div class="d-flex flex-column justify-content-center">
-                                                                <div class="mb-0 text-sm">
-                                                                    {!! Str::limit(strip_tags($question->question_text), 100) !!}
-                                                                </div>
+                                    <x-ui.table>
+                                        <thead>
+                                            <tr>
+                                                <x-ui.th>Soal</x-ui.th>
+                                                <x-ui.th>Kesulitan</x-ui.th>
+                                                <x-ui.th>Tipe Soal</x-ui.th>
+                                                <x-ui.th>Aksi</x-ui.th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse($questionBank->questions as $question)
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex px-2 py-1">
+                                                        <div class="d-flex flex-column justify-content-center">
+                                                            <div class="mb-0 text-sm">
+                                                                {!! Str::limit(strip_tags($question->question_text), 100) !!}
                                                             </div>
                                                         </div>
-                                                    </td>
-                                                    <td>
-                                                        <x-ui.badge variant="{{ $question->difficulty == 'beginner' ? 'success' : ($question->difficulty == 'medium' ? 'warning' : 'danger') }}">
-                                                            {{ ucfirst($question->difficulty) }}
-                                                        </x-ui.badge>
-                                                    </td>
-                                                    <td class="text-sm">
-                                                        {{ $question->formatted_type ?? ucfirst(str_replace('_', ' ', $question->question_type)) }}
-                                                    </td>
-                                                    <td>
-                                                        <form action="{{ route('admin.question-banks.remove-question', ['questionBank' => $questionBank, 'question' => $question]) }}" method="POST">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <x-ui.button type="submit" variant="danger" size="sm" icon="delete" onclick="return confirm('Apakah Anda yakin ingin menghapus soal ini dari bank soal?')">
-                                                                Hapus
-                                                            </x-ui.button>
-                                                        </form>
-                                                    </td>
-                                                </tr>
-                                                @empty
-                                                <tr>
-                                                    <td colspan="4" class="text-center p-4">
-                                                        <p class="mb-3">Belum ada soal dalam bank soal ini.</p>
-                                                        <x-ui.button variant="primary" size="sm" href="{{ route('admin.question-banks.manage-questions', $questionBank) }}" icon="add">
-                                                            Tambahkan Soal
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <x-ui.badge variant="{{ $question->difficulty == 'beginner' ? 'success' : ($question->difficulty == 'medium' ? 'warning' : 'danger') }}">
+                                                        {{ ucfirst($question->difficulty) }}
+                                                    </x-ui.badge>
+                                                </td>
+                                                <td class="text-sm">
+                                                    {{ $question->formatted_type ?? ucfirst(str_replace('_', ' ', $question->question_type)) }}
+                                                </td>
+                                                <td>
+                                                    <form action="{{ route('admin.question-banks.remove-question', ['questionBank' => $questionBank, 'question' => $question]) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <x-ui.button type="submit" variant="danger" size="sm" icon="delete" onclick="return confirm('Apakah Anda yakin ingin menghapus soal ini dari bank soal?')">
+                                                            Hapus
                                                         </x-ui.button>
-                                                    </td>
-                                                </tr>
-                                                @endforelse
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            @empty
+                                            <tr>
+                                                <td colspan="4" class="text-center p-4">
+                                                    <p class="mb-3">Belum ada soal dalam bank soal ini.</p>
+                                                    <x-ui.button variant="primary" size="sm" href="{{ route('admin.question-banks.manage-questions', $questionBank) }}" icon="add">
+                                                        Tambahkan Soal
+                                                    </x-ui.button>
+                                                </td>
+                                            </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </x-ui.table>
                                 </div>
                             </div>
                         </div>
