@@ -13,9 +13,8 @@ class AdaptiveRule extends Model
         'name',
         'description',
         'material_id',
-        'condition_type',
-        'condition_operator',
-        'condition_value',
+        'conditions', // New JSON column
+        'actions',    // New JSON column for multiple actions
         'action_type',
         'action_value',
         'priority',
@@ -25,7 +24,9 @@ class AdaptiveRule extends Model
 
     protected $casts = [
         'is_active' => 'boolean',
-        'priority' => 'integer'
+        'priority' => 'integer',
+        'conditions' => 'array',
+        'actions' => 'array'
     ];
 
     // Relasi
@@ -96,5 +97,64 @@ class AdaptiveRule extends Model
             default:
                 return false;
         }
+    }
+
+    /**
+     * Get formatted actions (supports both new and legacy format)
+     */
+    public function getFormattedActions()
+    {
+        // If new format exists, use it
+        if (!empty($this->actions)) {
+            return $this->actions;
+        }
+        
+        // Convert legacy format to new format
+        return $this->convertLegacyAction();
+    }
+
+    /**
+     * Convert legacy action format to new actions array
+     */
+    private function convertLegacyAction()
+    {
+        $actions = [];
+        
+        if ($this->action_type === 'change_difficulty') {
+            $actions[] = [
+                'type' => 'update_attribute',
+                'key' => 'current_level',
+                'operator' => '=',
+                'value' => $this->action_value
+            ];
+            
+            // Reset counters on level change
+            $actions[] = ['type' => 'update_attribute', 'key' => 'current_streak', 'operator' => '=', 'value' => 0];
+            $actions[] = ['type' => 'update_attribute', 'key' => 'wrong_streak', 'operator' => '=', 'value' => 0];
+            $actions[] = ['type' => 'update_attribute', 'key' => 'level_correct_count', 'operator' => '=', 'value' => 0];
+            $actions[] = ['type' => 'update_attribute', 'key' => 'level_attempt_count', 'operator' => '=', 'value' => 0];
+        } 
+        elseif ($this->action_type === 'add_bonus') {
+            // Parse bonus type
+            $bonusMap = [
+                'high_accuracy_85' => ['xp' => 50, 'points' => 25],
+                'medium_accuracy_75' => ['xp' => 30, 'points' => 15],
+                'basic_accuracy_60' => ['xp' => 20, 'points' => 10],
+                'base_reward_correct' => ['xp' => 10, 'points' => 5]
+            ];
+            
+            if (isset($bonusMap[$this->action_value])) {
+                foreach ($bonusMap[$this->action_value] as $key => $value) {
+                    $actions[] = [
+                        'type' => 'update_attribute',
+                        'key' => $key,
+                        'operator' => '+',
+                        'value' => $value
+                    ];
+                }
+            }
+        }
+        
+        return $actions;
     }
 }

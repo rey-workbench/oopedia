@@ -50,7 +50,7 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
                 return $query->where('material_id', $materialId);
             })
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(15);
     }
 
     public function getQuestionsForBank($materialId, array $excludeIds, $search = null, $difficulty = null)

@@ -70,20 +70,33 @@
                                             <h6 class="text-primary mb-2">
                                                 <i class="material-icons text-sm">arrow_forward</i> IF (Kondisi)
                                             </h6>
-                                            <table class="table table-sm table-borderless mb-0">
-                                                <tr>
-                                                    <td width="40%" class="text-xs font-weight-bold">Tipe:</td>
-                                                    <td class="text-xs">{{ \App\Models\AdaptiveRule::CONDITION_TYPES[$adaptiveRule->condition_type] ?? $adaptiveRule->condition_type }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-xs font-weight-bold">Operator:</td>
-                                                    <td class="text-xs">{{ \App\Models\AdaptiveRule::OPERATORS[$adaptiveRule->condition_operator] ?? $adaptiveRule->condition_operator }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-xs font-weight-bold">Nilai:</td>
-                                                    <td class="text-xs">{{ $adaptiveRule->condition_value }}</td>
-                                                </tr>
-                                            </table>
+                                            @if(!empty($adaptiveRule->conditions) && is_array($adaptiveRule->conditions))
+                                                <div class="ps-3">
+                                                    @foreach($adaptiveRule->conditions as $index => $condition)
+                                                        <div class="mb-2">
+                                                            @if($index > 0)
+                                                                <span class="badge bg-secondary text-xxs mb-1">AND</span>
+                                                            @endif
+                                                            <table class="table table-sm table-borderless mb-0">
+                                                                <tr>
+                                                                    <td width="40%" class="text-xs font-weight-bold">Atribut:</td>
+                                                                    <td class="text-xs"><x-ui.badge variant="info">{{ $condition['key'] ?? $condition['type'] ?? 'N/A' }}</x-ui.badge></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-xs font-weight-bold">Operator:</td>
+                                                                    <td class="text-xs">{{ $condition['operator'] ?? 'N/A' }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-xs font-weight-bold">Nilai:</td>
+                                                                    <td class="text-xs">{{ $condition['value'] ?? 'N/A' }}</td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @else
+                                                <p class="text-xs text-muted mb-0">Tidak ada kondisi yang didefinisikan</p>
+                                            @endif
                                         </div>
                                     </div>
 

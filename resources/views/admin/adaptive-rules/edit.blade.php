@@ -3,8 +3,8 @@
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
         <x-navigation.navbar titlePage="Edit Rule" />
         <div class="container-fluid py-4">
-            <div class="row">
-                <div class="col-12">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
                     <x-ui.card class="my-4">
                         <x-slot:header>
                             <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
@@ -32,96 +32,193 @@
                             @csrf
                             @method('PUT')
                             
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <x-forms.form-group label="Nama Rule" name="name" required>
-                                        <x-ui.input name="name" :value="$adaptiveRule->name" required />
-                                    </x-forms.form-group>
-                                </div>
-                                
-                                <div class="col-md-6">
-                                    <x-forms.form-group label="Materi (Opsional)" name="material_id">
-                                        <x-forms.select 
-                                            name="material_id" 
-                                            :options="$materials->pluck('title', 'id')" 
-                                            :selected="$adaptiveRule->material_id"
-                                            placeholder="Semua Materi"
-                                        />
-                                    </x-forms.form-group>
-                                </div>
-                            </div>
-
-                            <x-forms.form-group label="Deskripsi" name="description" class="mb-3">
-                                <x-ui.input type="textarea" name="description" :value="$adaptiveRule->description" rows="3" />
+                            <x-forms.form-group label="Nama Rule" name="name" required class="mb-3">
+                                <x-ui.input name="name" :value="$adaptiveRule->name" required />
                             </x-forms.form-group>
 
-                            <hr class="my-4">
-                            <h6 class="mb-3">Kondisi (IF)</h6>
+                            <x-forms.form-group label="Deskripsi" name="description" class="mb-3">
+                                <x-ui.input type="textarea" name="description" :value="$adaptiveRule->description" rows="2" />
+                            </x-forms.form-group>
 
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <x-forms.form-group label="Tipe Kondisi" name="condition_type" required>
-                                        <x-forms.select 
-                                            name="condition_type" 
-                                            :options="\App\Models\AdaptiveRule::CONDITION_TYPES" 
-                                            :selected="$adaptiveRule->condition_type"
-                                            placeholder="Pilih Tipe"
-                                            required
-                                        />
-                                    </x-forms.form-group>
-                                </div>
+                            <x-forms.form-group label="Materi (Opsional)" name="material_id" class="mb-4">
+                                <select name="material_id" class="form-control">
+                                    <option value="">Semua Materi</option>
+                                    @foreach($materials as $material)
+                                        <option value="{{ $material->id }}" {{ $adaptiveRule->material_id == $material->id ? 'selected' : '' }}>
+                                            {{ $material->title }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </x-forms.form-group>
 
-                                <div class="col-md-4">
-                                    <x-forms.form-group label="Operator" name="condition_operator" required>
-                                        <x-forms.select 
-                                            name="condition_operator" 
-                                            :options="\App\Models\AdaptiveRule::OPERATORS" 
-                                            :selected="$adaptiveRule->condition_operator"
-                                            placeholder="Pilih Operator"
-                                            required
-                                        />
-                                    </x-forms.form-group>
-                                </div>
+                            <!-- Visual Query Builder UI -->
+                            <link rel="stylesheet" href="{{ asset('css/components/query-builder.css') }}">
 
-                                <div class="col-md-4">
-                                    <x-forms.form-group label="Nilai" name="condition_value" required helpText="Untuk operator 'Antara', gunakan format: min-max (contoh: 60-80)">
-                                        <x-ui.input name="condition_value" :value="$adaptiveRule->condition_value" placeholder="Contoh: 70 atau 60-80" required />
-                                    </x-forms.form-group>
-                                </div>
-                            </div>
-
-                            <hr class="my-4">
-                            <h6 class="mb-3">Aksi (THEN)</h6>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <x-forms.form-group label="Tipe Aksi" name="action_type" required>
-                                        <x-forms.select 
-                                            name="action_type" 
-                                            :options="\App\Models\AdaptiveRule::ACTION_TYPES" 
-                                            :selected="$adaptiveRule->action_type"
-                                            placeholder="Pilih Tipe Aksi"
-                                            required
-                                        />
-                                    </x-forms.form-group>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <x-forms.form-group label="Nilai Aksi" name="action_value" required>
-                                        <div id="action_value_container">
-                                            @if(old('action_type', $adaptiveRule->action_type) === 'change_difficulty')
-                                                <select name="action_value" id="action_value" class="form-control" required>
-                                                    <option value="">Pilih Tingkat Kesulitan</option>
-                                                    <option value="beginner" {{ old('action_value', $adaptiveRule->action_value) === 'beginner' ? 'selected' : '' }}>Beginner</option>
-                                                    <option value="medium" {{ old('action_value', $adaptiveRule->action_value) === 'medium' ? 'selected' : '' }}>Medium</option>
-                                                    <option value="hard" {{ old('action_value', $adaptiveRule->action_value) === 'hard' ? 'selected' : '' }}>Hard</option>
-                                                </select>
-                                            @else
-                                                <x-ui.input name="action_value" :value="$adaptiveRule->action_value" placeholder="Masukkan nilai aksi" required />
-                                            @endif
+                            <!-- Unified Logic Tree -->
+                            <div class="adaptive-logic-tree">
+                                <!-- Logic Branch: IF -->
+                                <div class="logic-branch if-branch">
+                                    <div class="branch-header">
+                                        <span class="badge bg-gradient-info branch-label">IF</span>
+                                        <div class="d-flex align-items-center ms-2">
+                                            <span class="text-xs text-muted me-3">Kondisi yang harus terpenuhi</span>
+                                            <button type="button" class="btn btn-xs btn-outline-info mb-0" data-bs-toggle="modal" data-bs-target="#addAttributeModal">
+                                                <i class="material-icons text-sm">add</i> Atribut Baru
+                                            </button>
                                         </div>
-                                        <small class="text-muted" id="action_value_hint">Nilai tergantung tipe aksi yang dipilih</small>
-                                    </x-forms.form-group>
+                                    </div>
+                                    <div class="branch-content">
+                                        <div class="query-builder">
+                                            <div class="query-group">
+                                                <div class="group-operator">AND</div>
+                                                
+                                                <div id="conditionsContainer">
+                                                    @php
+                                                        $existingConditions = !empty($adaptiveRule->conditions) && is_array($adaptiveRule->conditions) 
+                                                            ? $adaptiveRule->conditions 
+                                                            : [['key' => '', 'operator' => '', 'value' => '']];
+                                                    @endphp
+                    
+                                                    @foreach($existingConditions as $index => $condition)
+                                                        <div class="query-rule" id="condition_{{ $index }}">
+                                                            <div class="rule-input-group">
+                                                                <div style="flex: 2;">
+                                                                    <select name="conditions[{{ $index }}][key]" class="rule-select w-100 attribute-select" required>
+                                                                        <option value="">Select Attribute</option>
+                                                                        
+                                                                        @if($regularAttributes->count() > 0)
+                                                                        <optgroup label="📊 Data Mahasiswa (Regular)">
+                                                                            @foreach($regularAttributes as $attr)
+                                                                                <option value="{{ $attr->key }}" data-type="regular" {{ ($condition['key'] ?? $condition['type'] ?? '') == $attr->key ? 'selected' : '' }}>
+                                                                                    {{ $attr->label }}
+                                                                                </option>
+                                                                            @endforeach
+                                                                        </optgroup>
+                                                                        @endif
+                                                                        
+                                                                        @if($computedAttributes->count() > 0)
+                                                                        <optgroup label="🧮 Nilai Terhitung (Computed)">
+                                                                            @foreach($computedAttributes as $attr)
+                                                                                <option value="{{ $attr->key }}" data-type="computed" {{ ($condition['key'] ?? $condition['type'] ?? '') == $attr->key ? 'selected' : '' }}>
+                                                                                    {{ $attr->label }} ⚡
+                                                                                </option>
+                                                                            @endforeach
+                                                                        </optgroup>
+                                                                        @endif
+                                                                    </select>
+                                                                </div>
+                                                                
+                                                                <div style="flex: 1;">
+                                                                    <select name="conditions[{{ $index }}][operator]" class="rule-select w-100" required>
+                                                                        <option value=">">greater than</option>
+                                                                        <option value=">=" {{ ($condition['operator'] ?? '') == '>=' ? 'selected' : '' }}>greater/equal</option>
+                                                                        <option value="<" {{ ($condition['operator'] ?? '') == '<' ? 'selected' : '' }}>less than</option>
+                                                                        <option value="<=" {{ ($condition['operator'] ?? '') == '<=' ? 'selected' : '' }}>less/equal</option>
+                                                                        <option value="==" {{ ($condition['operator'] ?? '') == '==' ? 'selected' : '' }}>equals</option>
+                                                                        <option value="!=" {{ ($condition['operator'] ?? '') == '!=' ? 'selected' : '' }}>not equals</option>
+                                                                    </select>
+                                                                </div>
+                                                                
+                                                                <div style="flex: 1;">
+                                                                    <input type="text" name="conditions[{{ $index }}][value]" class="rule-input w-100" value="{{ $condition['value'] ?? '' }}" placeholder="Value" required>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <button type="button" class="btn-delete-rule remove-condition" {{ count($existingConditions) == 1 ? 'disabled' : '' }}>
+                                                                <i class="material-icons text-sm">close</i>
+                                                            </button>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+
+                                                <div class="group-actions">
+                                                    <button type="button" class="btn-add-rule" id="addCondition">
+                                                        <i class="material-icons text-sm">add</i> Add filter
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Logic Link -->
+                                <div class="logic-link">
+                                    <div class="link-line"></div>
+                                </div>
+
+                                <!-- Logic Branch: THEN -->
+                                <div class="logic-branch then-branch">
+                                    <div class="branch-header">
+                                        <span class="badge bg-gradient-success branch-label">THEN</span>
+                                        <span class="text-xs text-muted ms-2">Aksi yang akan dijalankan</span>
+                                    </div>
+                                    <div class="branch-content">
+                                        <div class="query-builder">
+                                            <div class="query-group then">
+                                                <div class="group-operator">AND</div>
+                                                
+                                                <div id="actionsContainer">
+                                                    @php
+                                                        $existingActions = !empty($adaptiveRule->actions) && is_array($adaptiveRule->actions) 
+                                                            ? $adaptiveRule->actions 
+                                                            : [];
+                                                        
+                                                        if (empty($existingActions) && $adaptiveRule->action_type) {
+                                                            if ($adaptiveRule->action_type == 'update_attribute') {
+                                                                 $existingActions = [['key' => '', 'operator' => '=', 'value' => '']];
+                                                            } else {
+                                                                $existingActions = [['key' => '', 'operator' => '=', 'value' => '']];
+                                                            }
+                                                        } elseif (empty($existingActions)) {
+                                                            $existingActions = [['key' => '', 'operator' => '=', 'value' => '']];
+                                                        }
+                                                    @endphp
+
+                                                    @foreach($existingActions as $index => $action)
+                                                        <div class="query-rule" id="action_{{ $index }}">
+                                                            <div class="rule-input-group">
+                                                                <div style="flex: 2;">
+                                                                    <select name="actions[{{ $index }}][key]" class="rule-select w-100" required>
+                                                                        <option value="">Select Attribute to Modify</option>
+                                                                        @foreach($regularAttributes->merge($computedAttributes) as $attr)
+                                                                            <option value="{{ $attr->key }}" {{ ($action['key'] ?? '') == $attr->key ? 'selected' : '' }}>
+                                                                                {{ $attr->label }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                                
+                                                                <div style="flex: 1;">
+                                                                    <select name="actions[{{ $index }}][operator]" class="rule-select w-100" required>
+                                                                        <option value="+">Tambah (+)</option>
+                                                                        <option value="-" {{ ($action['operator'] ?? '') == '-' ? 'selected' : '' }}>Kurang (-)</option>
+                                                                        <option value="*" {{ ($action['operator'] ?? '') == '*' ? 'selected' : '' }}>Kali (*)</option>
+                                                                        <option value="=" {{ ($action['operator'] ?? '') == '=' ? 'selected' : '' }}>Set (=)</option>
+                                                                    </select>
+                                                                </div>
+                                                                
+                                                                <div style="flex: 1;">
+                                                                    <input type="text" name="actions[{{ $index }}][value]" class="rule-input w-100" value="{{ $action['value'] ?? '' }}" placeholder="Value (e.g. 10)" required>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <input type="hidden" name="actions[{{ $index }}][type]" value="update_attribute">
+                                                            
+                                                            <button type="button" class="btn-delete-rule remove-action" {{ count($existingActions) == 1 ? 'disabled' : '' }}>
+                                                                <i class="material-icons text-sm">close</i>
+                                                            </button>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+
+                                                <div class="group-actions">
+                                                    <button type="button" class="btn-add-rule" id="addAction">
+                                                        <i class="material-icons text-sm">add</i> Add action
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -158,10 +255,150 @@
             </div>
         </div>
     </main>
-    <input type="hidden" id="current_action_value" value="{{ old('action_value', $adaptiveRule->action_value) }}">
     <x-admin.tutorial />
 </x-layouts.app>
 
 @push('scripts')
-    <script src="{{ asset('js/admin/adaptive-rules/edit.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- State Management ---
+        let conditionIndex = {{ count($existingConditions) }};
+        let actionIndex = {{ count($existingActions) }};
+
+        // Attribute Options
+        const regularOptions = `
+            @if($regularAttributes->count() > 0)
+            <optgroup label="📊 Data Mahasiswa (Regular)">
+                @foreach($regularAttributes as $attr)
+                    <option value="{{ $attr->key }}" data-type="regular">{{ $attr->label }}</option>
+                @endforeach
+            </optgroup>
+            @endif
+        `;
+
+        const computedOptions = `
+            @if($computedAttributes->count() > 0)
+            <optgroup label="🧮 Nilai Terhitung (Computed)">
+                @foreach($computedAttributes as $attr)
+                    <option value="{{ $attr->key }}" data-type="computed">{{ $attr->label }} ⚡</option>
+                @endforeach
+            </optgroup>
+            @endif
+        `;
+        
+        const allAttributeOptions = `
+            <option value="">Select Attribute</option>
+            ${regularOptions}
+            ${computedOptions}
+        `;
+
+        // --- Event Listeners ---
+
+        // Add Condition
+        document.getElementById('addCondition').addEventListener('click', () => {
+            const container = document.getElementById('conditionsContainer');
+            const newRowHtml = `
+                <div class="query-rule" id="condition_${conditionIndex}">
+                    <div class="rule-input-group">
+                        <div style="flex: 2;">
+                            <select name="conditions[${conditionIndex}][key]" class="rule-select w-100 attribute-select" required>
+                                ${allAttributeOptions}
+                            </select>
+                        </div>
+                        <div style="flex: 1;">
+                            <select name="conditions[${conditionIndex}][operator]" class="rule-select w-100" required>
+                                <option value=">">greater than</option>
+                                <option value=">=">greater/equal</option>
+                                <option value="<">less than</option>
+                                <option value="<=">less/equal</option>
+                                <option value="==">equals</option>
+                                <option value="!=">not equals</option>
+                            </select>
+                        </div>
+                        <div style="flex: 1;">
+                            <input type="text" name="conditions[${conditionIndex}][value]" class="rule-input w-100" placeholder="Value" required>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-delete-rule remove-condition">
+                        <i class="material-icons text-sm">close</i>
+                    </button>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', newRowHtml);
+            conditionIndex++;
+            updateRemoveButtons('remove-condition');
+        });
+
+        // Add Action
+        document.getElementById('addAction').addEventListener('click', () => {
+            const container = document.getElementById('actionsContainer');
+            const newRowHtml = `
+                <div class="query-rule" id="action_${actionIndex}">
+                    <div class="rule-input-group">
+                        <div style="flex: 2;">
+                            <select name="actions[${actionIndex}][key]" class="rule-select w-100" required>
+                                <option value="">Select Attribute to Modify</option>
+                                @foreach($regularAttributes->merge($computedAttributes) as $attr)
+                                    <option value="{{ $attr->key }}">{{ $attr->label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div style="flex: 1;">
+                            <select name="actions[${actionIndex}][operator]" class="rule-select w-100" required>
+                                <option value="+">Tambah (+)</option>
+                                <option value="-">Kurang (-)</option>
+                                <option value="*">Kali (*)</option>
+                                <option value="=">Set (=)</option>
+                            </select>
+                        </div>
+                        <div style="flex: 1;">
+                            <input type="text" name="actions[${actionIndex}][value]" class="rule-input w-100" placeholder="Value (e.g. 10)" required>
+                        </div>
+                    </div>
+                     <input type="hidden" name="actions[${actionIndex}][type]" value="update_attribute">
+                    <button type="button" class="btn-delete-rule remove-action">
+                        <i class="material-icons text-sm">close</i>
+                    </button>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', newRowHtml);
+            actionIndex++;
+            updateRemoveButtons('remove-action');
+        });
+
+        // Delegate Remove Events
+        document.addEventListener('click', function(e) {
+            // Remove Condition
+            if (e.target.closest('.remove-condition')) {
+                const row = e.target.closest('.query-rule');
+                // Ensure at least one remains
+                if (document.querySelectorAll('#conditionsContainer .query-rule').length > 1) {
+                    row.remove();
+                    updateRemoveButtons('remove-condition');
+                }
+            }
+            // Remove Action
+            if (e.target.closest('.remove-action')) {
+                const row = e.target.closest('.query-rule');
+                if (document.querySelectorAll('#actionsContainer .query-rule').length > 1) {
+                    row.remove();
+                    updateRemoveButtons('remove-action');
+                }
+            }
+        });
+
+        // Helper: Update state of remove buttons (disable if only 1 left)
+        function updateRemoveButtons(className) {
+            const buttons = document.querySelectorAll('.' + className);
+            const isDisabled = buttons.length === 1;
+            buttons.forEach(btn => btn.disabled = isDisabled);
+        }
+
+        // Initial check
+        updateRemoveButtons('remove-condition');
+        updateRemoveButtons('remove-action');
+    });
+</script>
 @endpush

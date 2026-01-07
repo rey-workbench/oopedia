@@ -88,11 +88,18 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex flex-column">
-                                                    <span class="text-xs"><strong>{{ \App\Models\AdaptiveRule::CONDITION_TYPES[$rule->condition_type] ?? $rule->condition_type }}</strong></span>
-                                                    <span class="text-xs text-secondary">
-                                                        {{ \App\Models\AdaptiveRule::OPERATORS[$rule->condition_operator] ?? $rule->condition_operator }} 
-                                                        {{ $rule->condition_value }}
-                                                    </span>
+                                                    @if(!empty($rule->conditions) && is_array($rule->conditions))
+                                                        @foreach($rule->conditions as $index => $condition)
+                                                            <span class="text-xs mb-1">
+                                                                @if($index > 0)<span class="text-secondary">AND</span> @endif
+                                                                <strong>{{ $condition['key'] ?? $condition['type'] ?? 'N/A' }}</strong>
+                                                                <span class="text-secondary">{{ $condition['operator'] ?? '' }}</span>
+                                                                {{ $condition['value'] ?? '' }}
+                                                            </span>
+                                                        @endforeach
+                                                    @else
+                                                        <span class="text-xs text-muted">Tidak ada kondisi</span>
+                                                    @endif
                                                 </div>
                                             </td>
                                             <td>

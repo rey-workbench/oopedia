@@ -64,6 +64,93 @@
                 </div>
             </div>
 
+            <!-- Adaptive System Statistics Row -->
+            <div class="row mt-4">
+                <div class="col-12 mb-3">
+                    <h6 class="text-uppercase text-xs font-weight-bolder opacity-7">Adaptive Learning System</h6>
+                </div>
+                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                    <div class="card">
+                        <div class="card-header p-3 pt-2">
+                            <div class="icon icon-lg icon-shape bg-gradient-warning shadow-warning text-center border-radius-xl">
+                                <i class="material-icons opacity-10">rule</i>
+                            </div>
+                            <div class="text-end pt-1">
+                                <p class="text-sm mb-0 text-capitalize">Adaptive Rules</p>
+                                <h4 class="mb-0">{{ $activeRules }}/{{ $totalRules }}</h4>
+                                <p class="text-xs text-secondary mb-0">Aktif/Total</p>
+                            </div>
+                        </div>
+                        <div class="card-footer p-3">
+                            <a href="{{ route('admin.adaptive-rules.index') }}" class="text-xs font-weight-bold">
+                                Kelola Rules <i class="material-icons text-xs">arrow_forward</i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                    <div class="card">
+                        <div class="card-header p-3 pt-2">
+                            <div class="icon icon-lg icon-shape bg-gradient-danger shadow-danger text-center border-radius-xl">
+                                <i class="material-icons opacity-10">functions</i>
+                            </div>
+                            <div class="text-end pt-1">
+                                <p class="text-sm mb-0 text-capitalize">Formulas</p>
+                                <h4 class="mb-0">{{ $activeFormulas }}/{{ $totalFormulas }}</h4>
+                                <p class="text-xs text-secondary mb-0">Aktif/Total</p>
+                            </div>
+                        </div>
+                        <div class="card-footer p-3">
+                            <a href="{{ route('admin.formulas.index') }}" class="text-xs font-weight-bold">
+                                Kelola Formulas <i class="material-icons text-xs">arrow_forward</i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                    <div class="card">
+                        <div class="card-header p-3 pt-2">
+                            <div class="icon icon-lg icon-shape bg-gradient-secondary shadow-secondary text-center border-radius-xl">
+                                <i class="material-icons opacity-10">settings</i>
+                            </div>
+                            <div class="text-end pt-1">
+                                <p class="text-sm mb-0 text-capitalize">Attributes</p>
+                                <h4 class="mb-0">{{ $totalAttributes }}</h4>
+                                <p class="text-xs text-secondary mb-0">Total Defined</p>
+                            </div>
+                        </div>
+                        <div class="card-footer p-3">
+                            <span class="text-xs text-secondary">System Attributes</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6">
+                    <div class="card">
+                        <div class="card-header p-3 pt-2">
+                            <div class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl">
+                                <i class="material-icons opacity-10">psychology</i>
+                            </div>
+                            <div class="text-end pt-1">
+                                <p class="text-sm mb-0 text-capitalize">System Status</p>
+                                <h4 class="mb-0">
+                                    @if($activeRules > 0 && $activeFormulas > 0)
+                                        <span class="text-success">Active</span>
+                                    @else
+                                        <span class="text-warning">Inactive</span>
+                                    @endif
+                                </h4>
+                                <p class="text-xs text-secondary mb-0">Adaptive Engine</p>
+                            </div>
+                        </div>
+                        <div class="card-footer p-3">
+                            <span class="text-xs {{ $activeRules > 0 ? 'text-success' : 'text-warning' }}">
+                                {{ $activeRules > 0 ? '✓ Rules Active' : '⚠ No Active Rules' }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Top Performing Students Section -->
             <div class="row mt-4">
                 <div class="col-lg-12 mb-4">
