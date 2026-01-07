@@ -67,66 +67,62 @@
                                 </div>
                             </div>
                             
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <!-- Header table tidak berubah -->
-                                    <thead>
-                                        <tr>
-                                            <th width="30%">Aspek</th>
-                                            <th colspan="7" class="text-center">Penilaian <span class="text-danger fw-bold">*</span></th>
-                                            <th width="30%">Aspek</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Untuk masing-masing baris pertanyaan, tambahkan logika untuk memarkah pertanyaan yang belum dijawab -->
-                                        @foreach([
-                                            ['name' => 'annoying_enjoyable', 'left' => 'Menyebalkan', 'right' => 'Menyenangkan'],
-                                            ['name' => 'not_understandable_understandable', 'left' => 'Tidak dapat dipahami', 'right' => 'Dapat dipahami'],
-                                            ['name' => 'creative_dull', 'left' => 'Kreatif', 'right' => 'Monoton'],
-                                            ['name' => 'easy_difficult', 'left' => 'Mudah', 'right' => 'Sulit'],
-                                            ['name' => 'valuable_inferior', 'left' => 'Bermanfaat', 'right' => 'Kurang bermanfaat'],
-                                            ['name' => 'boring_exciting', 'left' => 'Membosankan', 'right' => 'Menarik'],
-                                            ['name' => 'not_interesting_interesting', 'left' => 'Tidak menarik', 'right' => 'Menarik'],
-                                            ['name' => 'unpredictable_predictable', 'left' => 'Tidak dapat diprediksi', 'right' => 'Dapat diprediksi'],
-                                            ['name' => 'fast_slow', 'left' => 'Cepat', 'right' => 'Lambat'],
-                                            ['name' => 'inventive_conventional', 'left' => 'Inovatif', 'right' => 'Konvensional'],
-                                            ['name' => 'obstructive_supportive', 'left' => 'Menghambat', 'right' => 'Mendukung'],
-                                            ['name' => 'good_bad', 'left' => 'Baik', 'right' => 'Buruk'],
-                                            ['name' => 'complicated_easy', 'left' => 'Rumit', 'right' => 'Sederhana'],
-                                            ['name' => 'unlikable_pleasing', 'left' => 'Tidak disukai', 'right' => 'Menyenangkan'],
-                                            ['name' => 'usual_leading_edge', 'left' => 'Biasa saja', 'right' => 'Terdepan'],
-                                            ['name' => 'unpleasant_pleasant', 'left' => 'Tidak menyenangkan', 'right' => 'Menyenangkan'],
-                                            ['name' => 'secure_not_secure', 'left' => 'Aman', 'right' => 'Tidak aman'],
-                                            ['name' => 'motivating_demotivating', 'left' => 'Memotivasi', 'right' => 'Tidak memotivasi'],
-                                            ['name' => 'meets_expectations_does_not_meet', 'left' => 'Memenuhi ekspektasi', 'right' => 'Tidak memenuhi ekspektasi'],
-                                            ['name' => 'inefficient_efficient', 'left' => 'Tidak efisien', 'right' => 'Efisien'],
-                                            ['name' => 'clear_confusing', 'left' => 'Jelas', 'right' => 'Membingungkan'],
-                                            ['name' => 'impractical_practical', 'left' => 'Tidak praktis', 'right' => 'Praktis'],
-                                            ['name' => 'organized_cluttered', 'left' => 'Terorganisir', 'right' => 'Berantakan'],
-                                            ['name' => 'attractive_unattractive', 'left' => 'Menarik', 'right' => 'Tidak menarik'],
-                                            ['name' => 'friendly_unfriendly', 'left' => 'Ramah', 'right' => 'Tidak ramah'],
-                                            ['name' => 'conservative_innovative', 'left' => 'Konservatif', 'right' => 'Inovatif'],
-                                        ] as $question)
-                                        <tr class="ueq-row {{ in_array($question['name'], session('missingFields', [])) || $errors->has($question['name']) ? 'unanswered' : '' }}">
-                                            <td class="aspect-left">{{ $question['left'] }}</td>
-                                            @for ($i = 1; $i <= 7; $i++)
-                                                <td class="text-center radio-cell">
-                                                    <div class="radio-wrapper">
-                                                        <input type="radio" 
-                                                            name="{{ $question['name'] }}" 
-                                                            value="{{ $i }}" 
-                                                            {{ old($question['name']) == $i ? 'checked' : '' }} 
-                                                            required>
-                                                        <label>{{ $i }}</label>
-                                                    </div>
-                                                </td>
-                                            @endfor
-                                            <td class="aspect-right">{{ $question['right'] }}</td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                            <x-ui.table tableClass="table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th width="30%">Aspek</th>
+                                        <th colspan="7" class="text-center">Penilaian <span class="text-danger fw-bold">*</span></th>
+                                        <th width="30%">Aspek</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach([
+                                        ['name' => 'annoying_enjoyable', 'left' => 'Menyebalkan', 'right' => 'Menyenangkan'],
+                                        ['name' => 'not_understandable_understandable', 'left' => 'Tidak dapat dipahami', 'right' => 'Dapat dipahami'],
+                                        ['name' => 'creative_dull', 'left' => 'Kreatif', 'right' => 'Monoton'],
+                                        ['name' => 'easy_difficult', 'left' => 'Mudah', 'right' => 'Sulit'],
+                                        ['name' => 'valuable_inferior', 'left' => 'Bermanfaat', 'right' => 'Kurang bermanfaat'],
+                                        ['name' => 'boring_exciting', 'left' => 'Membosankan', 'right' => 'Menarik'],
+                                        ['name' => 'not_interesting_interesting', 'left' => 'Tidak menarik', 'right' => 'Menarik'],
+                                        ['name' => 'unpredictable_predictable', 'left' => 'Tidak dapat diprediksi', 'right' => 'Dapat diprediksi'],
+                                        ['name' => 'fast_slow', 'left' => 'Cepat', 'right' => 'Lambat'],
+                                        ['name' => 'inventive_conventional', 'left' => 'Inovatif', 'right' => 'Konvensional'],
+                                        ['name' => 'obstructive_supportive', 'left' => 'Menghambat', 'right' => 'Mendukung'],
+                                        ['name' => 'good_bad', 'left' => 'Baik', 'right' => 'Buruk'],
+                                        ['name' => 'complicated_easy', 'left' => 'Rumit', 'right' => 'Sederhana'],
+                                        ['name' => 'unlikable_pleasing', 'left' => 'Tidak disukai', 'right' => 'Menyenangkan'],
+                                        ['name' => 'usual_leading_edge', 'left' => 'Biasa saja', 'right' => 'Terdepan'],
+                                        ['name' => 'unpleasant_pleasant', 'left' => 'Tidak menyenangkan', 'right' => 'Menyenangkan'],
+                                        ['name' => 'secure_not_secure', 'left' => 'Aman', 'right' => 'Tidak aman'],
+                                        ['name' => 'motivating_demotivating', 'left' => 'Memotivasi', 'right' => 'Tidak memotivasi'],
+                                        ['name' => 'meets_expectations_does_not_meet', 'left' => 'Memenuhi ekspektasi', 'right' => 'Tidak memenuhi ekspektasi'],
+                                        ['name' => 'inefficient_efficient', 'left' => 'Tidak efisien', 'right' => 'Efisien'],
+                                        ['name' => 'clear_confusing', 'left' => 'Jelas', 'right' => 'Membingungkan'],
+                                        ['name' => 'impractical_practical', 'left' => 'Tidak praktis', 'right' => 'Praktis'],
+                                        ['name' => 'organized_cluttered', 'left' => 'Terorganisir', 'right' => 'Berantakan'],
+                                        ['name' => 'attractive_unattractive', 'left' => 'Menarik', 'right' => 'Tidak menarik'],
+                                        ['name' => 'friendly_unfriendly', 'left' => 'Ramah', 'right' => 'Tidak ramah'],
+                                        ['name' => 'conservative_innovative', 'left' => 'Konservatif', 'right' => 'Inovatif'],
+                                    ] as $question)
+                                    <tr class="ueq-row {{ in_array($question['name'], session('missingFields', [])) || $errors->has($question['name']) ? 'unanswered' : '' }}">
+                                        <td class="aspect-left">{{ $question['left'] }}</td>
+                                        @for ($i = 1; $i <= 7; $i++)
+                                            <td class="text-center radio-cell">
+                                                <div class="radio-wrapper">
+                                                    <input type="radio" 
+                                                        name="{{ $question['name'] }}" 
+                                                        value="{{ $i }}" 
+                                                        {{ old($question['name']) == $i ? 'checked' : '' }} 
+                                                        required>
+                                                    <label>{{ $i }}</label>
+                                                </div>
+                                            </td>
+                                        @endfor
+                                        <td class="aspect-right">{{ $question['right'] }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </x-ui.table>
     
                             <!-- Bagian komentar dan saran -->
                             <div class="mb-3 mt-4">

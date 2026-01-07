@@ -45,8 +45,7 @@
                             </div>
 
                             <h5 class="mt-4">Hasil Survey UEQ</h5>
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
+                                <x-ui.table tableClass="table-bordered">
                                     <thead>
                                         <tr>
                                             <th>Aspek</th>
@@ -96,8 +95,7 @@
                                             </tr>
                                         @endforeach
                                     </tbody>
-                                </table>
-                            </div>
+                                </x-ui.table>
 
                             <div class="row mt-4">
                                 <div class="col-md-6">
@@ -170,72 +168,68 @@
                             <div class="row mt-4">
                                 <div class="col-12">
                                     <h5>Rangkuman Dimensi UEQ</h5>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered">
-                                            <thead>
+                                    <x-ui.table tableClass="table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Dimensi</th>
+                                                <th>Skor Rata-rata</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($dimensionScores as $dimensionName => $score)
                                                 <tr>
-                                                    <th>Dimensi</th>
-                                                    <th>Skor Rata-rata</th>
+                                                    <td>{{ $dimensionName }}</td>
+                                                    <td>{{ number_format($score, 2) }}/7</td>
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($dimensionScores as $dimensionName => $score)
-                                                    <tr>
-                                                        <td>{{ $dimensionName }}</td>
-                                                        <td>{{ number_format($score, 2) }}/7</td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                            @endforeach
+                                        </tbody>
+                                    </x-ui.table>
                                 </div>
                             </div>
 
                             <div class="row mt-4">
                                 <div class="col-12">
                                     <h5>Rangkuman 6 Dimensi UEQ</h5>
-                                    <div class="table-responsive">
-                                        <table class="table align-items-center mb-0">
-                                            <thead>
-                                                <tr>
-                                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Attractiveness</th>
-                                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Perspicuity</th>
-                                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Efficiency</th>
-                                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Dependability</th>
-                                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Stimulation</th>
-                                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Novelty</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        {{ number_format(
-                                                            ($survey->annoying_enjoyable + $survey->good_bad + $survey->unlikable_pleasing + $survey->unpleasant_pleasant + $survey->attractive_unattractive + $survey->friendly_unfriendly) / 6, 2) }}
-                                                    </td>
-                                                    <td>
-                                                        {{ number_format(
-                                                            ($survey->not_understandable_understandable + $survey->easy_difficult + $survey->complicated_easy + $survey->clear_confusing) / 4, 2) }}
-                                                    </td>
-                                                    <td>
-                                                        {{ number_format(
-                                                            ($survey->fast_slow + $survey->inefficient_efficient + $survey->impractical_practical + $survey->organized_cluttered) / 4, 2) }}
-                                                    </td>
-                                                    <td>
-                                                        {{ number_format(
-                                                            ($survey->unpredictable_predictable + $survey->obstructive_supportive + $survey->secure_not_secure + $survey->meets_expectations_does_not_meet) / 4, 2) }}
-                                                    </td>
-                                                    <td>
-                                                        {{ number_format(
-                                                            ($survey->valuable_inferior + $survey->boring_exciting + $survey->not_interesting_interesting + $survey->motivating_demotivating) / 4, 2) }}
-                                                    </td>
-                                                    <td>
-                                                        {{ number_format(
-                                                            ($survey->creative_dull + $survey->inventive_conventional + $survey->usual_leading_edge + $survey->conservative_innovative) / 4, 2) }}
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    <x-ui.table>
+                                        <thead>
+                                            <tr>
+                                                <x-ui.th>Attractiveness</x-ui.th>
+                                                <x-ui.th>Perspicuity</x-ui.th>
+                                                <x-ui.th>Efficiency</x-ui.th>
+                                                <x-ui.th>Dependability</x-ui.th>
+                                                <x-ui.th>Stimulation</x-ui.th>
+                                                <x-ui.th>Novelty</x-ui.th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    {{ number_format(
+                                                        ($survey->annoying_enjoyable + $survey->good_bad + $survey->unlikable_pleasing + $survey->unpleasant_pleasant + $survey->attractive_unattractive + $survey->friendly_unfriendly) / 6, 2) }}
+                                                </td>
+                                                <td>
+                                                    {{ number_format(
+                                                        ($survey->not_understandable_understandable + $survey->easy_difficult + $survey->complicated_easy + $survey->clear_confusing) / 4, 2) }}
+                                                </td>
+                                                <td>
+                                                    {{ number_format(
+                                                        ($survey->fast_slow + $survey->inefficient_efficient + $survey->impractical_practical + $survey->organized_cluttered) / 4, 2) }}
+                                                </td>
+                                                <td>
+                                                    {{ number_format(
+                                                        ($survey->unpredictable_predictable + $survey->obstructive_supportive + $survey->secure_not_secure + $survey->meets_expectations_does_not_meet) / 4, 2) }}
+                                                </td>
+                                                <td>
+                                                    {{ number_format(
+                                                        ($survey->valuable_inferior + $survey->boring_exciting + $survey->not_interesting_interesting + $survey->motivating_demotivating) / 4, 2) }}
+                                                </td>
+                                                <td>
+                                                    {{ number_format(
+                                                        ($survey->creative_dull + $survey->inventive_conventional + $survey->usual_leading_edge + $survey->conservative_innovative) / 4, 2) }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </x-ui.table>
                                 </div>
                             </div>
                         </div>

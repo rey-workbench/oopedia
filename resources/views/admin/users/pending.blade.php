@@ -27,53 +27,51 @@
                                 @endif
                                 
                                 @if(count($pendingAdmins) > 0)
-                                    <div class="table-responsive">
-                                        <table class="table align-items-center mb-0">
-                                            <thead>
-                                                <tr>
-                                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama</th>
-                                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
-                                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Tanggal Daftar</th>
-                                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Aksi</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($pendingAdmins as $admin)
-                                                <tr>
-                                                    <td>
-                                                        <div class="d-flex px-2 py-1">
-                                                            <div class="d-flex flex-column justify-content-center">
-                                                                <h6 class="mb-0 text-sm">{{ $admin->name }}</h6>
-                                                            </div>
+                                    <x-ui.table>
+                                        <thead>
+                                            <tr>
+                                                <x-ui.th>Nama</x-ui.th>
+                                                <x-ui.th class="ps-2">Email</x-ui.th>
+                                                <x-ui.th class="ps-2">Tanggal Daftar</x-ui.th>
+                                                <x-ui.th class="text-center">Aksi</x-ui.th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($pendingAdmins as $admin)
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex px-2 py-1">
+                                                        <div class="d-flex flex-column justify-content-center">
+                                                            <h6 class="mb-0 text-sm">{{ $admin->name }}</h6>
                                                         </div>
-                                                    </td>
-                                                    <td>
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $admin->email }}</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $admin->created_at->format('d M Y H:i') }}</p>
-                                                    </td>
-                                                    <td class="align-middle text-center">
-                                                        <div class="d-flex justify-content-center">
-                                                            <form action="{{ route('admin.users.approve', $admin->id) }}" method="POST" class="me-2">
-                                                                @csrf
-                                                                <x-ui.button type="submit" variant="success" size="sm">
-                                                                    Setujui
-                                                                </x-ui.button>
-                                                            </form>
-                                                            <form action="{{ route('admin.users.reject', $admin->id) }}" method="POST">
-                                                                @csrf
-                                                                <x-ui.button type="submit" variant="danger" size="sm" onclick="return confirm('Apakah Anda yakin ingin menolak admin ini? Akun akan diubah menjadi mahasiswa.')">
-                                                                    Tolak
-                                                                </x-ui.button>
-                                                            </form>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0">{{ $admin->email }}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0">{{ $admin->created_at->format('d M Y H:i') }}</p>
+                                                </td>
+                                                <td class="align-middle text-center">
+                                                    <div class="d-flex justify-content-center">
+                                                        <form action="{{ route('admin.users.approve', $admin->id) }}" method="POST" class="me-2">
+                                                            @csrf
+                                                            <x-ui.button type="submit" variant="success" size="sm">
+                                                                Setujui
+                                                            </x-ui.button>
+                                                        </form>
+                                                        <form action="{{ route('admin.users.reject', $admin->id) }}" method="POST">
+                                                            @csrf
+                                                            <x-ui.button type="submit" variant="danger" size="sm" onclick="return confirm('Apakah Anda yakin ingin menolak admin ini? Akun akan diubah menjadi mahasiswa.')">
+                                                                Tolak
+                                                            </x-ui.button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </x-ui.table>
                                 @else
                                     <x-ui.alert type="info">
                                         Tidak ada admin yang menunggu persetujuan.

@@ -25,67 +25,65 @@
                         </x-slot:header>
 
                         <div class="card-body px-0 pb-2">
-                            <div class="table-responsive p-0">
-                                <table class="table align-items-center mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Materi</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Cover Materi</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Dibuat Oleh</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tanggal</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($materials as $material)
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">{{ $material->title }}</h6>
-                                                        <p class="text-xs text-secondary mb-0">
-                                                            {{ Str::limit(strip_tags($material->content), 50) }}
-                                                        </p>
-                                                    </div>
+                            <x-ui.table>
+                                <thead>
+                                    <tr>
+                                        <x-ui.th>Materi</x-ui.th>
+                                        <x-ui.th>Cover Materi</x-ui.th>
+                                        <x-ui.th class="ps-2">Dibuat Oleh</x-ui.th>
+                                        <x-ui.th class="text-center">Tanggal</x-ui.th>
+                                        <x-ui.th class="text-center">Aksi</x-ui.th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($materials as $material)
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex px-2 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-sm">{{ $material->title }}</h6>
+                                                    <p class="text-xs text-secondary mb-0">
+                                                        {{ Str::limit(strip_tags($material->content), 50) }}
+                                                    </p>
                                                 </div>
-                                            </td>
-                                            <td>
-                                                @if($material->media && $material->media->isNotEmpty())
-                                                    <div class="material-thumbnail-container">
-                                                        <img src="{{ asset($material->media->first()->media_url) }}" 
-                                                             alt="{{ $material->title }}" 
-                                                             class="material-cover-thumbnail">
-                                                    </div>
-                                                @else
-                                                    <div class="no-image-placeholder">
-                                                        <i class="fas fa-image"></i>
-                                                    </div>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $material->creator ? $material->creator->name : 'Admin' }}
-                                                </p>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <span class="text-secondary text-xs font-weight-bold">
-                                                    {{ $material->created_at->format('d M Y') }}
-                                                </span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <x-ui.button variant="info" size="sm" href="{{ route('admin.materials.edit', $material->id) }}" icon="edit" />
-                                                
-                                                <form action="{{ route('admin.materials.destroy', $material->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <x-ui.button type="submit" variant="danger" size="sm" icon="delete" onclick="return confirm('Apakah Anda yakin ingin menghapus materi ini?')" />
-                                                </form>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if($material->media && $material->media->isNotEmpty())
+                                                <div class="material-thumbnail-container">
+                                                    <img src="{{ asset($material->media->first()->media_url) }}" 
+                                                         alt="{{ $material->title }}" 
+                                                         class="material-cover-thumbnail">
+                                                </div>
+                                            @else
+                                                <div class="no-image-placeholder">
+                                                    <i class="fas fa-image"></i>
+                                                </div>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">
+                                                {{ $material->creator ? $material->creator->name : 'Admin' }}
+                                            </p>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <span class="text-secondary text-xs font-weight-bold">
+                                                {{ $material->created_at->format('d M Y') }}
+                                            </span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <x-ui.button variant="info" size="sm" href="{{ route('admin.materials.edit', $material->id) }}" icon="edit" />
+                                            
+                                            <form action="{{ route('admin.materials.destroy', $material->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <x-ui.button type="submit" variant="danger" size="sm" icon="delete" onclick="return confirm('Apakah Anda yakin ingin menghapus materi ini?')" />
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </x-ui.table>
                         </div>
                     </x-ui.card>
                 </div>

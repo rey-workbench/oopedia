@@ -77,102 +77,100 @@
                                 </div>
                             @endif
                             
-                            <div class="table-responsive p-0">
-                                <table class="table align-items-center mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Role</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if(auth()->user()->role_id == 1)
-                                            <!-- Tampilkan superadmin (role_id = 1) -->
-                                            @php
-                                                $superadmins = \App\Models\User::where('role_id', 1)->get();
-                                            @endphp
-                                            @foreach($superadmins as $superadmin)
-                                            <tr class="bg-light">
-                                                <td>
-                                                    <div class="d-flex px-2 py-1">
-                                                        <div class="d-flex flex-column justify-content-center">
-                                                            <h6 class="mb-0 text-sm">{{ $superadmin->name }}</h6>
-                                                            <x-ui.badge variant="dark">Superadmin</x-ui.badge>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <p class="text-xs font-weight-bold mb-0">{{ $superadmin->email }}</p>
-                                                </td>
-                                                <td>
-                                                    <p class="text-xs font-weight-bold mb-0">{{ $superadmin->role->role_name }}</p>
-                                                </td>
-                                                <td>
-                                                    <x-ui.badge variant="success">Aktif</x-ui.badge>
-                                                </td>
-                                                <td class="align-middle text-center">
-                                                    @if(auth()->id() == $superadmin->id)
-                                                        <x-ui.button variant="info" size="sm" href="{{ route('admin.users.edit', $superadmin->id) }}">
-                                                            Edit
-                                                        </x-ui.button>
-                                                        <x-ui.button variant="secondary" size="sm" disabled>
-                                                            Akun Anda
-                                                        </x-ui.button>
-                                                    @else
-                                                        <x-ui.button variant="info" size="sm" href="{{ route('admin.users.edit', $superadmin->id) }}">
-                                                            Edit
-                                                        </x-ui.button>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                        @endif
-
-                                        <!-- Tampilkan dosen (role_id = 2) -->
-                                        @foreach($users as $user)
-                                        <tr>
+                            <x-ui.table>
+                                <thead>
+                                    <tr>
+                                        <x-ui.th>Nama</x-ui.th>
+                                        <x-ui.th class="ps-2">Email</x-ui.th>
+                                        <x-ui.th class="ps-2">Role</x-ui.th>
+                                        <x-ui.th class="ps-2">Status</x-ui.th>
+                                        <x-ui.th class="text-center">Aksi</x-ui.th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(auth()->user()->role_id == 1)
+                                        <!-- Tampilkan superadmin (role_id = 1) -->
+                                        @php
+                                            $superadmins = \App\Models\User::where('role_id', 1)->get();
+                                        @endphp
+                                        @foreach($superadmins as $superadmin)
+                                        <tr class="bg-light">
                                             <td>
                                                 <div class="d-flex px-2 py-1">
                                                     <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">{{ $user->name }}</h6>
+                                                        <h6 class="mb-0 text-sm">{{ $superadmin->name }}</h6>
+                                                        <x-ui.badge variant="dark">Superadmin</x-ui.badge>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $user->email }}</p>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $superadmin->email }}</p>
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $user->role->role_name }}</p>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $superadmin->role->role_name }}</p>
                                             </td>
                                             <td>
-                                                @if($user->is_approved)
-                                                    <x-ui.badge variant="success">Disetujui</x-ui.badge>
-                                                @else
-                                                    <x-ui.badge variant="warning">Pending</x-ui.badge>
-                                                @endif
+                                                <x-ui.badge variant="success">Aktif</x-ui.badge>
                                             </td>
                                             <td class="align-middle text-center">
-                                                <x-ui.button variant="info" size="sm" href="{{ route('admin.users.edit', $user->id) }}">
-                                                    Edit
-                                                </x-ui.button>
-                                                @if(auth()->user()->role_id == 1 && auth()->id() != $user->id)
-                                                <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <x-ui.button type="submit" variant="danger" size="sm" onclick="return confirm('Apakah Anda yakin ingin menghapus dosen ini?')">
-                                                        Hapus
+                                                @if(auth()->id() == $superadmin->id)
+                                                    <x-ui.button variant="info" size="sm" href="{{ route('admin.users.edit', $superadmin->id) }}">
+                                                        Edit
                                                     </x-ui.button>
-                                                </form>
+                                                    <x-ui.button variant="secondary" size="sm" disabled>
+                                                        Akun Anda
+                                                    </x-ui.button>
+                                                @else
+                                                    <x-ui.button variant="info" size="sm" href="{{ route('admin.users.edit', $superadmin->id) }}">
+                                                        Edit
+                                                    </x-ui.button>
                                                 @endif
                                             </td>
                                         </tr>
                                         @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                                    @endif
+
+                                    <!-- Tampilkan dosen (role_id = 2) -->
+                                    @foreach($users as $user)
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex px-2 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-sm">{{ $user->name }}</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $user->email }}</p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $user->role->role_name }}</p>
+                                        </td>
+                                        <td>
+                                            @if($user->is_approved)
+                                                <x-ui.badge variant="success">Disetujui</x-ui.badge>
+                                            @else
+                                                <x-ui.badge variant="warning">Pending</x-ui.badge>
+                                            @endif
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <x-ui.button variant="info" size="sm" href="{{ route('admin.users.edit', $user->id) }}">
+                                                Edit
+                                            </x-ui.button>
+                                            @if(auth()->user()->role_id == 1 && auth()->id() != $user->id)
+                                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <x-ui.button type="submit" variant="danger" size="sm" onclick="return confirm('Apakah Anda yakin ingin menghapus dosen ini?')">
+                                                    Hapus
+                                                </x-ui.button>
+                                            </form>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </x-ui.table>
                             
                             <div class="d-flex justify-content-center mt-3">
                                 {{ $users->links() }}

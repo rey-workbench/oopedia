@@ -54,77 +54,75 @@
                         @endif
 
                         <div class="card-body px-0 pb-2">
-                            <div class="table-responsive p-0">
-                                <table class="table align-items-center mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Formula</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Expression</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Return Type</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Scope</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Status</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($formulas as $formula)
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">{{ $formula->name }}</h6>
-                                                        <p class="text-xs text-secondary mb-0">{{ $formula->key }}</p>
-                                                    </div>
+                            <x-ui.table>
+                                <thead>
+                                    <tr>
+                                        <x-ui.th>Formula</x-ui.th>
+                                        <x-ui.th>Expression</x-ui.th>
+                                        <x-ui.th class="text-center">Return Type</x-ui.th>
+                                        <x-ui.th class="text-center">Scope</x-ui.th>
+                                        <x-ui.th class="text-center">Status</x-ui.th>
+                                        <x-ui.th class="text-center">Aksi</x-ui.th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($formulas as $formula)
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex px-2 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-sm">{{ $formula->name }}</h6>
+                                                    <p class="text-xs text-secondary mb-0">{{ $formula->key }}</p>
                                                 </div>
-                                            </td>
-                                            <td>
-                                                <code class="text-xs">{{ Str::limit($formula->expression, 50) }}</code>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <span class="badge badge-sm bg-gradient-info">{{ $formula->return_type }}</span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <span class="badge badge-sm bg-gradient-secondary">{{ $formula->scope }}</span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                @if($formula->is_active)
-                                                    <span class="badge badge-sm bg-gradient-success">Aktif</span>
-                                                @else
-                                                    <span class="badge badge-sm bg-gradient-secondary">Nonaktif</span>
-                                                @endif
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <div class="d-flex justify-content-center gap-2">
-                                                    <x-ui.button variant="info" size="xs" href="{{ route('admin.formulas.edit', $formula) }}" icon="edit">
-                                                        Edit
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <code class="text-xs">{{ Str::limit($formula->expression, 50) }}</code>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <span class="badge badge-sm bg-gradient-info">{{ $formula->return_type }}</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <span class="badge badge-sm bg-gradient-secondary">{{ $formula->scope }}</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            @if($formula->is_active)
+                                                <span class="badge badge-sm bg-gradient-success">Aktif</span>
+                                            @else
+                                                <span class="badge badge-sm bg-gradient-secondary">Nonaktif</span>
+                                            @endif
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <x-ui.button variant="info" size="xs" href="{{ route('admin.formulas.edit', $formula) }}" icon="edit">
+                                                    Edit
+                                                </x-ui.button>
+                                                <form action="{{ route('admin.formulas.toggle-status', $formula) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <x-ui.button type="submit" variant="{{ $formula->is_active ? 'warning' : 'success' }}" size="xs">
+                                                        {{ $formula->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
                                                     </x-ui.button>
-                                                    <form action="{{ route('admin.formulas.toggle-status', $formula) }}" method="POST" class="d-inline">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        <x-ui.button type="submit" variant="{{ $formula->is_active ? 'warning' : 'success' }}" size="xs">
-                                                            {{ $formula->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
-                                                        </x-ui.button>
-                                                    </form>
-                                                    <form action="{{ route('admin.formulas.destroy', $formula) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus formula ini?')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <x-ui.button type="submit" variant="danger" size="xs" icon="delete">
-                                                            Hapus
-                                                        </x-ui.button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        @empty
-                                        <tr>
-                                            <td colspan="6" class="text-center py-4">
-                                                <p class="text-secondary mb-0">Belum ada formula</p>
-                                            </td>
-                                        </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
+                                                </form>
+                                                <form action="{{ route('admin.formulas.destroy', $formula) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus formula ini?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <x-ui.button type="submit" variant="danger" size="xs" icon="delete">
+                                                        Hapus
+                                                    </x-ui.button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4">
+                                            <p class="text-secondary mb-0">Belum ada formula</p>
+                                        </td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </x-ui.table>
                             
                             @if($formulas->hasPages())
                             <div class="d-flex justify-content-center mt-3">

@@ -68,27 +68,27 @@
                     
                     <div class="table-responsive p-0 mx-3">
                         <div class="animated-border-table">
-                            <table class="table leaderboard-table align-items-center mb-0">
+                            <x-ui.table tableClass="leaderboard-table">
                                 <thead>
                                     <tr>
-                                        <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-3">
+                                        <x-ui.th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-3">
                                             <i class="fas fa-medal me-2"></i>PERINGKAT
-                                        </th>
-                                        <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-3">
+                                        </x-ui.th>
+                                        <x-ui.th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-3">
                                             <i class="fas fa-user me-2"></i>MAHASISWA
-                                        </th>
-                                        <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-3">
+                                        </x-ui.th>
+                                        <x-ui.th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-3">
                                             <i class="fas fa-star me-2"></i>LEVEL
-                                        </th>
-                                        <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">
+                                        </x-ui.th>
+                                        <x-ui.th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">
                                             <i class="fas fa-calendar-check me-2"></i>TANGGAL SELESAI
-                                        </th>
-                                        <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">
+                                        </x-ui.th>
+                                        <x-ui.th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">
                                             <i class="fas fa-chart-line me-2"></i>PROGRESS
-                                        </th>
-                                        <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-3">
+                                        </x-ui.th>
+                                        <x-ui.th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-3">
                                             <i class="fas fa-dollar-sign me-2"></i>SKOR
-                                        </th>
+                                        </x-ui.th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -145,7 +145,7 @@
                                     @endif
                                     @endforeach
                                 </tbody>
-                            </table>
+                            </x-ui.table>
                         </div>
                     </div>
                 </div>

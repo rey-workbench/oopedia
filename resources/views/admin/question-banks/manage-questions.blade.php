@@ -60,59 +60,57 @@
                             </form>
                             
                             <!-- Questions list -->
-                            <div class="table-responsive">
-                                <table class="table align-items-center mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Soal</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Materi</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Kesulitan</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Tipe Soal</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-center">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($questions as $question)
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <div class="mb-0 text-sm">
-                                                            {!! Str::limit(strip_tags($question->question_text), 100) !!}
-                                                        </div>
+                            <x-ui.table>
+                                <thead>
+                                    <tr>
+                                        <x-ui.th>Soal</x-ui.th>
+                                        <x-ui.th class="ps-2">Materi</x-ui.th>
+                                        <x-ui.th class="ps-2">Kesulitan</x-ui.th>
+                                        <x-ui.th class="ps-2">Tipe Soal</x-ui.th>
+                                        <x-ui.th class="ps-2 text-center">Aksi</x-ui.th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($questions as $question)
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex px-2 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <div class="mb-0 text-sm">
+                                                        {!! Str::limit(strip_tags($question->question_text), 100) !!}
                                                     </div>
                                                 </div>
-                                            </td>
-                                            <td>
-                                                {{ $question->material->title ?? 'Tidak ada materi' }}
-                                            </td>
-                                            <td>
-                                                <x-ui.badge variant="{{ $question->difficulty == 'beginner' ? 'success' : ($question->difficulty == 'medium' ? 'warning' : 'danger') }}">
-                                                    {{ ucfirst($question->difficulty) }}
-                                                </x-ui.badge>
-                                            </td>
-                                            <td class="text-sm">
-                                                {{ $question->formatted_type ?? ucfirst(str_replace('_', ' ', $question->question_type)) }}
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <form action="{{ route('admin.question-banks.add-question', ['questionBank' => $questionBank, 'question' => $question]) }}" method="POST">
-                                                    @csrf
-                                                    <x-ui.button type="submit" variant="success" size="sm" icon="add">
-                                                        Tambahkan ke Bank
-                                                    </x-ui.button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                        @empty
-                                        <tr>
-                                            <td colspan="5" class="text-center py-4">
-                                                <p class="text-sm mb-0">Tidak ada soal yang tersedia untuk ditambahkan.</p>
-                                            </td>
-                                        </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {{ $question->material->title ?? 'Tidak ada materi' }}
+                                        </td>
+                                        <td>
+                                            <x-ui.badge variant="{{ $question->difficulty == 'beginner' ? 'success' : ($question->difficulty == 'medium' ? 'warning' : 'danger') }}">
+                                                {{ ucfirst($question->difficulty) }}
+                                            </x-ui.badge>
+                                        </td>
+                                        <td class="text-sm">
+                                            {{ $question->formatted_type ?? ucfirst(str_replace('_', ' ', $question->question_type)) }}
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <form action="{{ route('admin.question-banks.add-question', ['questionBank' => $questionBank, 'question' => $question]) }}" method="POST">
+                                                @csrf
+                                                <x-ui.button type="submit" variant="success" size="sm" icon="add">
+                                                    Tambahkan ke Bank
+                                                </x-ui.button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4">
+                                            <p class="text-sm mb-0">Tidak ada soal yang tersedia untuk ditambahkan.</p>
+                                        </td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </x-ui.table>
                             
                             <div class="d-flex justify-content-center mt-4">
                                 {{ $questions->links() }}

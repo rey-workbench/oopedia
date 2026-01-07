@@ -78,30 +78,28 @@
                                 @if(session('importErrors'))
                                     <div class="mt-4">
                                         <h5>Error pada baris:</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-sm table-bordered">
-                                                <thead>
+                                        <x-ui.table>
+                                            <thead>
+                                                <tr>
+                                                    <x-ui.th>Baris</x-ui.th>
+                                                    <x-ui.th>Error</x-ui.th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach(session('importErrors') as $error)
                                                     <tr>
-                                                        <th>Baris</th>
-                                                        <th>Error</th>
+                                                        <td>{{ $error['row'] }}</td>
+                                                        <td>
+                                                            <ul class="mb-0">
+                                                                @foreach($error['errors'] as $message)
+                                                                    <li>{{ $message }}</li>
+                                                                @endforeach
+                                                            </ul>
+                                                        </td>
                                                     </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach(session('importErrors') as $error)
-                                                        <tr>
-                                                            <td>{{ $error['row'] }}</td>
-                                                            <td>
-                                                                <ul class="mb-0">
-                                                                    @foreach($error['errors'] as $message)
-                                                                        <li>{{ $message }}</li>
-                                                                    @endforeach
-                                                                </ul>
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                                @endforeach
+                                            </tbody>
+                                        </x-ui.table>
                                     </div>
                                 @endif
                             </div>

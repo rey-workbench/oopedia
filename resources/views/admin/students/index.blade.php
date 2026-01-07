@@ -57,69 +57,67 @@
                         </x-slot:header>
 
                         <div class="card-body px-0 pb-2">
-                            <div class="table-responsive p-0">
-                                <table class="table align-items-center mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Soal Dijawab</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Progress Keseluruhan</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($students as $student)
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">{{ $student->name }}</h6>
-                                                    </div>
+                            <x-ui.table>
+                                <thead>
+                                    <tr>
+                                        <x-ui.th>Nama</x-ui.th>
+                                        <x-ui.th class="ps-2">Email</x-ui.th>
+                                        <x-ui.th class="text-center">Total Soal Dijawab</x-ui.th>
+                                        <x-ui.th class="text-center">Progress Keseluruhan</x-ui.th>
+                                        <x-ui.th class="text-center">Aksi</x-ui.th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($students as $student)
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex px-2 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-sm">{{ $student->name }}</h6>
                                                 </div>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $student->email }}</p>
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                <span class="text-xs font-weight-bold">{{ $student->total_answered_questions ?? 0 }}</span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <div class="progress" style="height: 8px; width: 80%; margin: 0 auto;">
-                                                    <div class="progress-bar bg-gradient-info" role="progressbar" 
-                                                         style="width: {{ $student->overall_progress }}%" 
-                                                         aria-valuenow="{{ $student->overall_progress }}" 
-                                                         aria-valuemin="0" 
-                                                         aria-valuemax="100">
-                                                    </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $student->email }}</p>
+                                        </td>
+                                        <td class="align-middle text-center text-sm">
+                                            <span class="text-xs font-weight-bold">{{ $student->total_answered_questions ?? 0 }}</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <div class="progress" style="height: 8px; width: 80%; margin: 0 auto;">
+                                                <div class="progress-bar bg-gradient-info" role="progressbar" 
+                                                     style="width: {{ $student->overall_progress }}%" 
+                                                     aria-valuenow="{{ $student->overall_progress }}" 
+                                                     aria-valuemin="0" 
+                                                     aria-valuemax="100">
                                                 </div>
-                                                <span class="text-xs font-weight-bold">{{ $student->overall_progress }}%</span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <div class="d-flex justify-content-center gap-2">
-                                                    <x-ui.button variant="info" size="sm" href="{{ route('admin.students.progress', $student) }}" icon="visibility">
-                                                        Detail
+                                            </div>
+                                            <span class="text-xs font-weight-bold">{{ $student->overall_progress }}%</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <x-ui.button variant="info" size="sm" href="{{ route('admin.students.progress', $student) }}" icon="visibility">
+                                                    Detail
+                                                </x-ui.button>
+                                                <form action="{{ route('admin.students.destroy', $student) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <x-ui.button type="submit" variant="danger" size="sm" icon="delete" onclick="return confirm('Apakah Anda yakin ingin menghapus mahasiswa ini?')">
+                                                        Hapus
                                                     </x-ui.button>
-                                                    <form action="{{ route('admin.students.destroy', $student) }}" method="POST" class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <x-ui.button type="submit" variant="danger" size="sm" icon="delete" onclick="return confirm('Apakah Anda yakin ingin menghapus mahasiswa ini?')">
-                                                            Hapus
-                                                        </x-ui.button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        @empty
-                                        <tr>
-                                            <td colspan="4" class="text-center py-4">
-                                                <p class="text-sm mb-0">Belum ada data mahasiswa</p>
-                                            </td>
-                                        </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center py-4">
+                                            <p class="text-sm mb-0">Belum ada data mahasiswa</p>
+                                        </td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </x-ui.table>
                             <div class="d-flex justify-content-center mt-3">
                                 {{ $students->links() }}
                             </div>
