@@ -84,10 +84,11 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return $this->create($data);
     }
 
-    public function getUsersByRoleAndApproval($roleId, $isApproved, $search = null, $perPage = 10)
+    public function getUsersByRoleAndApproval($roleId, $isApproved, $search = null, $perPage = 10, $sortBy = 'created_at', $sortOrder = 'desc')
     {
         $query = $this->model->where('role_id', $roleId)
-                             ->where('is_approved', $isApproved);
+                             ->where('is_approved', $isApproved)
+                             ->orderBy($sortBy, $sortOrder);
         
         if ($search) {
             $query->where(function($q) use ($search) {
@@ -96,7 +97,11 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
             });
         }
         
-        return $query->paginate($perPage);
+        if ($perPage) {
+            return $query->paginate($perPage);
+        }
+        
+        return $query->get();
     }
 
     public function approveUser($userId)
