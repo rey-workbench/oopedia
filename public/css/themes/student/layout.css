@@ -14,17 +14,20 @@ body {
     display: flex;
     min-height: calc(100vh - 70px);
     margin-top: 70px;
+    max-width: 100% !important;
+    width: 100%;
+    padding: 0;
 }
 
 .container-fluid {
-    padding: 2rem 4rem;
+    padding: 1.5rem 2rem;
 }
 
 .main-content {
     flex: 1;
     margin-left: 250px;
     padding: 2rem;
-    margin-top: 70px;
+    /* margin-top removed to avoid double spacing */
     min-height: calc(100vh - 70px);
     background-color: var(--color-bg-white);
     position: relative;
@@ -38,7 +41,9 @@ body {
     }
 
     .main-content {
-        margin-top: 60px;
+        margin-left: 0;
+        margin-top: 0;
+        padding: 1rem;
         min-height: calc(100vh - 60px);
     }
 

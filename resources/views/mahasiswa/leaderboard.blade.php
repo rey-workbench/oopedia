@@ -154,7 +154,7 @@
     </div>
 </div>
 
-@push('styles')
+@push('css')
 
     <link href="{{ asset('css/mahasiswa/leaderboard.css') }}" rel="stylesheet">
 @endpush
