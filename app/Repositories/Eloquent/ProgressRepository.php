@@ -122,4 +122,23 @@ class ProgressRepository extends BaseRepository implements ProgressRepositoryInt
             ->groupBy('users.id', 'users.name', 'users.email')
             ->get();
     }
+
+    public function getAttemptCount($userId, $materialId, $questionId)
+    {
+        return $this->model
+            ->where('user_id', $userId)
+            ->where('material_id', $materialId)
+            ->where('question_id', $questionId)
+            ->count();
+    }
+
+    public function saveProgress(array $data)
+    {
+        return $this->model->create($data);
+    }
+
+    public function updateOrCreateProgress(array $conditions, array $values)
+    {
+        return $this->model->updateOrCreate($conditions, $values);
+    }
 }
