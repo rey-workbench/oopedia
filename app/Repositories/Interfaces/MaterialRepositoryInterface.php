@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Interfaces;
 
-interface MaterialRepositoryInterface
+interface MaterialRepositoryInterface extends BaseRepositoryInterface
 {
     public function getAllWithQuestions();
     public function getAllWithQuestionsAndConfigs();

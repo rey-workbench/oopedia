@@ -24,7 +24,6 @@ use App\Http\Controllers\Mahasiswa\{
     DashboardController as MahasiswaDashboardController,
     MaterialController as MahasiswaMaterialController,
     ProfileController as MahasiswaProfileController,
-    QuestionController as MahasiswaQuestionController,
     MahasiswaController,
     MaterialQuestionController,
     UeqSurveyController as MahasiswaUeqSurveyController
@@ -202,10 +201,6 @@ Route::middleware('auth')->group(function () {
             }
         })->name('materials.reset');
         
-        // Questions
-        Route::post('/questions/check-answer', [MahasiswaQuestionController::class, 'checkAnswer'])
-            ->name('questions.check-answer');
-
         // Mahasiswa-specific routes
         Route::get('/leaderboard', [MahasiswaController::class, 'leaderboard'])->name('leaderboard');
 
@@ -250,10 +245,6 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
         ->name('materials.questions.check')
         ->withoutMiddleware('auth');
 });
-// Tambahkan route baru yang dapat diakses tanpa middleware
-Route::post('/questions/check-answer', [MahasiswaQuestionController::class, 'checkAnswer'])
-    ->name('questions.check-answer')
-    ->withoutMiddleware('auth');
 
 // UEQ Survey routes for mahasiswa - tambahkan middleware auth
 Route::prefix('mahasiswa')->name('mahasiswa.')->middleware(['auth'])->group(function () {
