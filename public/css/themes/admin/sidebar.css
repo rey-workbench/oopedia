@@ -1,0 +1,38 @@
+/* Sidebar Styles */
+
+/* Sidebar fixed positioning and size */
+.g-sidenav-show .sidenav {
+    z-index: 1009;
+    position: fixed;
+    top: 1rem;
+    bottom: 1rem;
+    left: 1rem;
+    display: block;
+    width: 250px !important;
+    max-width: 250px !important;
+    height: calc(100vh - 2rem) !important;
+    border-radius: var(--radius-lg);
+}
+
+/* Fix untuk sidebar scroll - inherits from components but ensures height */
+.sidenav {
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Sidebar active state color override using variable */
+.sidenav .nav-link.active {
+    background-color: var(--color-primary);
+    color: var(--color-text-light); 
+}
+
+/* Fix untuk dropdown menu */
+#questionsMenu {
+    position: relative;
+    background: transparent;
+}
+
+#questionsMenu .nav-link {
+    padding-left: 3rem;
+}

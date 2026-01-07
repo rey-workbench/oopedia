@@ -1,7 +1,6 @@
-<x-layouts.app title="Dashboard">
+<x-layouts.app title="Dashboard" theme="mahasiswa">
     <x-slot:styles>
-        <link href="{{ asset('css/mahasiswa.css') }}" rel="stylesheet">
-        <link href="{{ asset('css/mahasiswa/dashboard/index.css') }}" rel="stylesheet">
+        <link href="{{ asset('style.css') }}" rel="stylesheet">
     </x-slot:styles>
 
     <div id="dashboard-container">

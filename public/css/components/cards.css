@@ -1,0 +1,36 @@
+/* ==========================================================================
+   Card Component Styles
+   ========================================================================== */
+
+.card-component {
+    background-color: var(--color-bg-white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.card-component:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.card-component--no-hover:hover {
+    transform: none;
+    box-shadow: var(--shadow-md);
+}
+
+.card-component__header {
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.card-component__body {
+    padding: var(--spacing-lg);
+}
+
+.card-component__footer {
+    padding: var(--spacing-lg);
+    border-top: 1px solid var(--color-border-light);
+    background-color: var(--color-bg-light);
+}

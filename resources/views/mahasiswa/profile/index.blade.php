@@ -1,4 +1,4 @@
-<x-layouts.app title="Profil Mahasiswa">
+<x-layouts.app title="Profil Mahasiswa" theme="mahasiswa">
 <div class="container-fluid px-2 px-md-4">
     <!-- Header background dengan gambar -->
     <div class="page-header min-height-300 border-radius-xl mt-4"

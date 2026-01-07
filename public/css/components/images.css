@@ -1,0 +1,23 @@
+/* ==========================================================================
+   Image & Logo Component Styles
+   ========================================================================== */
+
+.logo-component {
+    max-height: 130px;
+    width: auto;
+}
+
+.logo-component--small {
+    max-height: 120px;
+    width: auto;
+}
+
+.img-preview {
+    max-height: 200px;
+    max-width: 100%;
+}
+
+.img-cover {
+    max-height: 200px;
+    border: 2px solid #e0e6ed;
+}

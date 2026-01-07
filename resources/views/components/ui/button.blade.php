@@ -40,11 +40,19 @@
         @if($disabled) aria-disabled="true" tabindex="-1" @endif
     >
         @if($icon && $iconPosition === 'left')
-            <span class="btn-component__icon material-icons">{{ $icon }}</span>
+            @if(Str::startsWith($icon, ['fa-', 'fas ', 'far ', 'fab ']))
+                <i class="btn-component__icon {{ $icon }}"></i>
+            @else
+                <span class="btn-component__icon material-icons">{{ $icon }}</span>
+            @endif
         @endif
         {{ $slot }}
         @if($icon && $iconPosition === 'right')
-            <span class="btn-component__icon btn-component__icon--right material-icons">{{ $icon }}</span>
+            @if(Str::startsWith($icon, ['fa-', 'fas ', 'far ', 'fab ']))
+                <i class="btn-component__icon btn-component__icon--right {{ $icon }}"></i>
+            @else
+                <span class="btn-component__icon btn-component__icon--right material-icons">{{ $icon }}</span>
+            @endif
         @endif
     </a>
 @else
@@ -54,11 +62,19 @@
         @if($disabled) disabled @endif
     >
         @if($icon && $iconPosition === 'left')
-            <span class="btn-component__icon material-icons">{{ $icon }}</span>
+            @if(Str::startsWith($icon, ['fa-', 'fas ', 'far ', 'fab ']))
+                <i class="btn-component__icon {{ $icon }}"></i>
+            @else
+                <span class="btn-component__icon material-icons">{{ $icon }}</span>
+            @endif
         @endif
         {{ $slot }}
         @if($icon && $iconPosition === 'right')
-            <span class="btn-component__icon btn-component__icon--right material-icons">{{ $icon }}</span>
+            @if(Str::startsWith($icon, ['fa-', 'fas ', 'far ', 'fab ']))
+                <i class="btn-component__icon btn-component__icon--right {{ $icon }}"></i>
+            @else
+                <span class="btn-component__icon btn-component__icon--right material-icons">{{ $icon }}</span>
+            @endif
         @endif
     </button>
 @endif

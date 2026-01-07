@@ -1,10 +1,11 @@
-<x-layouts.app :title="'Latihan Soal - ' . $material->title">
+<x-layouts.app :title="'Latihan Soal - ' . $material->title" theme="mahasiswa">
     <x-slot:styles>
-        <link href="{{ asset('css/mahasiswa.css') }}" rel="stylesheet">
+
         <link rel="stylesheet" href="{{ asset('css/material-show.css') }}">
         <link rel="stylesheet" href="{{ asset('css/question-review.css') }}">
         <link rel="stylesheet" href="{{ asset('css/mahasiswa/materials/questions/show.css') }}">
         <link rel="stylesheet" href="{{ asset('css/mahasiswa/partials/question.css') }}">
+        <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
     </x-slot:styles>
 
     <div class="container-fluid py-4">
@@ -88,6 +89,7 @@
     </div>
 
     <x-slot:scripts>
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
         <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
         <script src="{{ asset('js/mahasiswa/materials/questions/show.js') }}"></script>
         <script src="{{ asset('js/mahasiswa/partials/question.js') }}"></script>

@@ -1,4 +1,4 @@
-<x-layouts.app>
+<x-layouts.app theme="mahasiswa">
     <x-slot:title>Materi Selesai</x-slot:title>
 
     <div class="dashboard-header text-center">

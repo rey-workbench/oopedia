@@ -84,6 +84,6 @@
         <script src="{{ asset('js/auth/login.js') }}"></script>
     @endpush
     @push('css')
-        <link rel="stylesheet" href="{{ asset('css/blue-theme.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/themes/auth.css') }}">
     @endpush
 </x-layouts.guest>

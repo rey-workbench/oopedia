@@ -11,10 +11,18 @@
 
 {{-- Main Application JS --}}
 <script src="{{ asset('js/app.js') }}"></script>
+<script src="{{ asset('js/utils/http.js') }}"></script>
+<script src="{{ asset('js/utils/ui.js') }}"></script>
 
 {{-- Component JS --}}
-<script src="{{ asset('js/components/navigation.js') }}"></script>
-<script src="{{ asset('js/components/ui.js') }}"></script>
+{{-- Component JS --}}
+{{-- Fix: navigation.js and ui.js do not exist. Using navbar.js and sidebar.js --}}
+<script src="{{ asset('js/components/navbar.js') }}"></script>
+<script src="{{ asset('js/components/sidebar.js') }}"></script>
+{{-- <script src="{{ asset('js/components/ui.js') }}"></script> --}}
+
+{{-- TinyMCE Library (Required before init) --}}
+<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script src="{{ asset('js/components/tinymce-init.js') }}"></script>
 <script src="{{ asset('js/utils/scrollbar.js') }}"></script>
 

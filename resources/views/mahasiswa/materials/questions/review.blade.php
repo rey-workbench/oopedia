@@ -1,6 +1,5 @@
-<x-layouts.app :title="'Review Soal - ' . $material->title">
+<x-layouts.app :title="'Review Soal - ' . $material->title" theme="mahasiswa">
     <x-slot:styles>
-        <link href="{{ asset('css/mahasiswa.css') }}" rel="stylesheet">
         <link rel="stylesheet" href="{{ asset('css/material-show.css') }}">
         <link rel="stylesheet" href="{{ asset('css/question-review.css') }}">
         <link rel="stylesheet" href="{{ asset('css/mahasiswa/materials/questions/review.css') }}">

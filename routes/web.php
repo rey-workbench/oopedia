@@ -244,6 +244,11 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     Route::get('materials/{material}/questions/review', [MaterialQuestionController::class, 'review'])
         ->name('materials.questions.review')
         ->withoutMiddleware('auth');
+
+    // FIXED: Allow guests to submit answers
+    Route::post('materials/{material}/questions/{question}/check', [MaterialQuestionController::class, 'checkAnswer'])
+        ->name('materials.questions.check')
+        ->withoutMiddleware('auth');
 });
 // Tambahkan route baru yang dapat diakses tanpa middleware
 Route::post('/questions/check-answer', [MahasiswaQuestionController::class, 'checkAnswer'])

@@ -1,16 +1,3 @@
-{{--
-    Unified Sidebar Component
-    
-    A role-aware sidebar that adapts based on user role.
-    
-    Props:
-    - activePage: Current active page identifier
-    - role: User role (superadmin/admin/mahasiswa/guest)
-    - userName: User name for display
-    - userRole: User role label for display
-    - materials: Materials collection for menu
---}}
-
 @if($isAdminRole())
     {{-- Admin/Dosen Sidebar --}}
     <aside
@@ -355,7 +342,7 @@
             <ul class="nav-menu">
                 @foreach($getSidebarMaterials() as $materialItem)
                     <li>
-                        <a href="{{ route('mahasiswa.materials.questions.levels', ['material' => $materialItem->id, 'difficulty' => 'beginner']) }}"
+                        <a href="{{ route('mahasiswa.materials.questions.show', $materialItem->id) }}"
                            class="menu-item {{ request()->segment(3) == $materialItem->id ? 'active' : '' }}"
                            data-bs-toggle="tooltip"
                            data-bs-placement="right"
@@ -363,38 +350,6 @@
                             <i class="fas fa-folder-open"></i>
                             <span>{{ $materialItem->title }}</span>
                         </a>
-                        
-                        {{-- Sub-menu tingkat kesulitan --}}
-                        @if(request()->segment(3) == $materialItem->id)
-                            <div class="submenu">
-                                <a href="{{ route('mahasiswa.materials.questions.levels', ['material' => $materialItem->id, 'difficulty' => 'beginner']) }}"
-                                   class="menu-item sub-menu-item {{ request()->query('difficulty') == 'beginner' ? 'active' : '' }}"
-                                   data-bs-toggle="tooltip"
-                                   data-bs-placement="right"
-                                   title="Soal tingkat pemula">
-                                    <i class="fas fa-star beginner-star"></i>
-                                    <span>Beginner</span>
-                                </a>
-                                
-                                <a href="{{ route('mahasiswa.materials.questions.levels', ['material' => $materialItem->id, 'difficulty' => 'medium']) }}"
-                                   class="menu-item sub-menu-item {{ request()->query('difficulty') == 'medium' ? 'active' : '' }}"
-                                   data-bs-toggle="tooltip"
-                                   data-bs-placement="right"
-                                   title="Soal tingkat menengah">
-                                    <i class="fas fa-star medium-star"></i>
-                                    <span>Medium</span>
-                                </a>
-                                
-                                <a href="{{ route('mahasiswa.materials.questions.levels', ['material' => $materialItem->id, 'difficulty' => 'hard']) }}"
-                                   class="menu-item sub-menu-item {{ request()->query('difficulty') == 'hard' ? 'active' : '' }}"
-                                   data-bs-toggle="tooltip"
-                                   data-bs-placement="right"
-                                   title="Soal tingkat sulit">
-                                    <i class="fas fa-star hard-star"></i>
-                                    <span>Hard</span>
-                                </a>
-                            </div>
-                        @endif
                     </li>
                 @endforeach
             </ul>
@@ -499,11 +454,6 @@
             @endif
         @endif
     </div>
-
-    @push('css')
-    <link rel="stylesheet" href="{{ asset('css/components/sidebar.css') }}">
-    @endpush
-
     @push('scripts')
     <script src="{{ asset('js/components/sidebar.js') }}"></script>
     @endpush

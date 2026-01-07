@@ -1,6 +1,5 @@
-<x-layouts.app title="Latihan Soal PBO">
+<x-layouts.app title="Latihan Soal PBO" theme="mahasiswa">
     <x-slot:styles>
-        <link href="{{ asset('css/mahasiswa.css') }}" rel="stylesheet">
         <link href="{{ asset('css/mahasiswa/materials/questions/index.css') }}" rel="stylesheet">
         <!-- Intro.js CSS -->
         <link href="https://unpkg.com/intro.js/minified/introjs.min.css" rel="stylesheet">

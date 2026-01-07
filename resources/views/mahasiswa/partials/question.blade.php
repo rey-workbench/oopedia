@@ -4,104 +4,55 @@
 
 <div class="materi-card shadow-sm rounded">
     <div class="materi-card-body p-4">
+        
+        <!-- Adaptive Stats Bar - Only for Logged In Users -->
+        @if(!isset($isGuest) || !$isGuest)
+            @php $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4); @endphp
+        @endif
+
+        @if(!$isGuest)
+        <div class="difficulty-indicator mb-4 p-3 rounded bg-light d-flex justify-content-between align-items-center">
+            <div class="level-indicator">
+                <span class="text-muted small text-uppercase">Difficulty</span>
+                <h5 class="mb-0 fw-bold text-{{ $difficulty == 'hard' ? 'danger' : ($difficulty == 'medium' ? 'warning' : 'success') }}">
+                    {{ ucfirst($difficulty) }}
+                </h5>
+            </div>
+        </div>
+        @else
+        <div class="guest-stats-bar mb-4 p-3 rounded bg-light border-start border-4 border-warning">
+             <div class="d-flex align-items-center">
+                 <i class="fas fa-user-clock fa-2x text-warning me-3"></i>
+                 <div>
+                     <h5 class="mb-0 fw-bold">Mode Tamu / Preview</h5>
+                     <small class="text-muted">Login untuk fitur lengkap.</small>
+                 </div>
+             </div>
+        </div>
+        @endif
+        
+        <!-- Hidden Inputs for JS Context -->
+        <input type="hidden" id="currentLevel" value="{{ $difficulty }}">
+
         <div id="questionContainer">
+            @if($currentQuestion)
             <form id="questionForm"
-                action="{{ route('questions.check-answer', [
+                action="{{ route('mahasiswa.materials.questions.check', [
                     'material' => $material->id,
                     'question' => $currentQuestion->id,
-                    'difficulty' => $difficulty,
                 ]) }}"
                 method="POST">
                 @csrf
                 <input type="hidden" name="question_id" value="{{ $currentQuestion->id }}">
                 <input type="hidden" name="material_id" value="{{ $material->id }}">
-                <input type="hidden" name="difficulty" value="{{ $difficulty }}">
 
                 <div class="question-header mb-4">
                     <div class="d-flex align-items-center justify-content-between">
-                        <span class="badge bg-gradient-primary p-2 px-3">
-                            <i class="fas fa-question-circle me-2"></i>
-                            @php
-                                $difficulty = request()->query('difficulty', 'all');
-                                $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4);
-
-                                // Hitung jumlah soal berdasarkan konfigurasi
-                                if ($difficulty !== 'all') {
-                                    $difficultyQuestions = $material->questions->where('difficulty', $difficulty);
-
-                                    // Ambil konfigurasi
-                                    if ($isGuest) {
-                                        // Untuk guest, maksimal 3 soal
-                                        $configuredTotal = min(3, $difficultyQuestions->count());
-                                    } else {
-                                        // Untuk pengguna terdaftar, gunakan konfigurasi dari admin
-                                        $config = App\Models\QuestionBankConfig::where('material_id', $material->id)
-                                            ->where('is_active', true)
-                                            ->first();
-
-                                        if ($config) {
-                                            $countField = $difficulty . '_count';
-                                            $configuredTotal = $config->$countField;
-                                        } else {
-                                            $configuredTotal = $difficultyQuestions->count();
-                                        }
-                                    }
-                                } else {
-                                    // Jika all difficulty, hitung total dari semua tingkat kesulitan
-                                    if ($isGuest) {
-                                        // Untuk guest, maksimal 3 soal per tingkat
-                                        $beginnerCount = min(
-                                            3,
-                                            $material->questions->where('difficulty', 'beginner')->count(),
-                                        );
-                                        $mediumCount = min(
-                                            3,
-                                            $material->questions->where('difficulty', 'medium')->count(),
-                                        );
-                                        $hardCount = min(3, $material->questions->where('difficulty', 'hard')->count());
-                                        $configuredTotal = $beginnerCount + $mediumCount + $hardCount;
-                                    } else {
-                                        // Untuk pengguna terdaftar, gunakan konfigurasi dari admin
-                                        $config = App\Models\QuestionBankConfig::where('material_id', $material->id)
-                                            ->where('is_active', true)
-                                            ->first();
-
-                                        if ($config) {
-                                            $configuredTotal =
-                                                $config->beginner_count + $config->medium_count + $config->hard_count;
-                                        } else {
-                                            $configuredTotal = $material->questions->count();
-                                        }
-                                    }
-                                }
-
-                                // Calculate the current question number
-                                $answeredInDifficulty = App\Models\Progress::where(
-                                    'user_id',
-                                    auth()->id() ?? session()->getId(),
-                                )
-                                    ->where('material_id', $material->id)
-                                    ->where('is_correct', true);
-
-                                if ($difficulty !== 'all') {
-                                    $answeredInDifficulty = $answeredInDifficulty->whereIn(
-                                        'question_id',
-                                        $difficultyQuestions->pluck('id'),
-                                    );
-                                }
-
-                                $answeredCount = $answeredInDifficulty->count();
-                                $currentNumberInDifficulty = $answeredCount + 1;
-
-                                if ($currentNumberInDifficulty > $configuredTotal) {
-                                    $currentNumberInDifficulty = $configuredTotal;
-                                }
-                            @endphp
-                            Soal {{ $currentNumberInDifficulty }} dari {{ $configuredTotal }}
+                         <span class="badge bg-gradient-primary p-2 px-3">
+                            <i class="fas fa-question-circle me-2"></i> Soal
                         </span>
-                        <span
-                            class="badge bg-{{ $currentQuestion->difficulty == 'beginner' ? 'success' : ($currentQuestion->difficulty == 'medium' ? 'warning' : 'danger') }} p-2 px-3">
-                            {{ ucfirst($currentQuestion->difficulty) }}
+                        <span class="badge bg-secondary p-2 px-3">
+                             {{ ucfirst($currentQuestion->difficulty) }} Question
                         </span>
                     </div>
                 </div>
@@ -193,6 +144,13 @@
                     </button>
                 </div>
             </form>
+            @else
+                <div class="text-center p-5">
+                    <h4>Level Completed!</h4>
+                    <p>You have answered all questions in the {{ ucfirst($difficulty) }} level.</p>
+                    <p>Continue practicing to maintain your streak or wait for new content.</p>
+                </div>
+            @endif
         </div>
 
         <!-- Feedback container (initially hidden) -->
@@ -204,6 +162,12 @@
                 <div id="feedbackStatus">
                     <!-- Status will be inserted here by JS -->
                 </div>
+                
+                <!-- Adaptive Feedback Area -->
+                <div id="adaptiveFeedback" class="alert mt-3" style="display: none;">
+                    <!-- Adaptive messages (Level up, XP gain) go here -->
+                </div>
+
                 <div id="explanationBox" style="display: none;" class="explanation-box mt-4 p-3 bg-light rounded">
                     <h5><i class="fas fa-info-circle me-2"></i>Penjelasan</h5>
                     <p id="explanationText" class="mb-0"></p>
@@ -215,6 +179,9 @@
                     <button id="nextQuestionBtn" class="btn btn-success px-4 py-2" style="display: none;">
                         Lanjut ke Soal Berikutnya <i class="fas fa-arrow-right ms-2"></i>
                     </button>
+                     <a href="{{ route('mahasiswa.dashboard') }}" id="dashboardBtn" class="btn btn-secondary px-4 py-2" style="display: none;">
+                        Dashboard
+                    </a>
                 </div>
             </div>
         </div>

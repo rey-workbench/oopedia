@@ -11,9 +11,17 @@ use App\Models\QuestionBankConfig;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use App\Services\AdaptiveQuizService;
 
 class MaterialQuestionController extends Controller
 {
+    protected $adaptiveService;
+
+    public function __construct(AdaptiveQuizService $adaptiveService)
+    {
+        $this->adaptiveService = $adaptiveService;
+    }
     public function index()
     {
         $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4);
@@ -92,9 +100,15 @@ class MaterialQuestionController extends Controller
     public function show(Material $material, Request $request)
     {
         $materials = Material::orderBy('created_at', 'asc')->get();
-        $difficulty = $request->query('difficulty', 'beginner');
-        $questionId = $request->query('question');
         $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4);
+        
+        if (!$isGuest) {
+            $difficulty = 'all';
+        } else {
+            $difficulty = $request->query('difficulty', 'beginner');
+        }
+        
+        $questionId = $request->query('question');
         
         // Filter soal berdasarkan difficulty
         $questionsQuery = $material->questions();
@@ -407,65 +421,76 @@ class MaterialQuestionController extends Controller
     public function checkAnswer(Material $material, Question $question, Request $request)
     {
         try {
-            $difficulty = $request->input('difficulty', 'beginner');
             $userId = auth()->id() ?? session()->getId();
             $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4);
             
-            // Default messages
-            $successMessage = 'Jawaban benar!';
+            // Force difficulty 'all' for students (adaptive mode), allow selection for guests
+            if (!$isGuest) {
+                $difficulty = 'all';
+            } else {
+                $difficulty = $request->input('difficulty', 'beginner');
+            }
             
-            // Logic untuk mengecek jawaban
+            // Initialize variables
+            $successMessage = 'Jawaban benar!';
             $isCorrect = false;
+            $selectedAnswerText = '';
+            $correctAnswerText = '';
+            $explanation = '';
             $questionType = $question->question_type;
             
             // Check jawaban berdasarkan tipe soal
-            if ($questionType === 'multiple_choice') {
+            if ($questionType === 'multiple_choice' || $questionType === 'radio_button') {
                 $selectedAnswer = Answer::findOrFail($request->answer);
                 $isCorrect = $selectedAnswer->is_correct;
+                $selectedAnswerText = $selectedAnswer->answer_text;
+                $explanation = $selectedAnswer->explanation ?? '';
+                
+                if (!$isCorrect) {
+                    $correctAnswer = $question->answers->where('is_correct', true)->first();
+                    $correctAnswerText = $correctAnswer ? $correctAnswer->answer_text : '';
+                    if (!$explanation && $correctAnswer) {
+                        $explanation = $correctAnswer->explanation ?? '';
+                    }
+                }
             } elseif ($questionType === 'fill_in_the_blank') {
                 $answer = trim(strtolower($request->fill_in_the_blank_answer));
                 $correctAnswer = trim(strtolower($question->correct_answer));
                 $isCorrect = $answer === $correctAnswer;
+                $selectedAnswerText = $request->fill_in_the_blank_answer;
+                $correctAnswerText = $question->correct_answer;
             } elseif ($questionType === 'true_false') {
                 $selectedAnswer = ($request->answer === 'true');
                 $isCorrect = $selectedAnswer === $question->is_true;
+                $selectedAnswerText = $request->answer;
+                $correctAnswerText = $question->is_true ? 'true' : 'false';
             }
             
-            // Jika user auth, simpan progress ke database
+            // Jika user auth, simpan progress ke database dan proses adaptive logic
             if (auth()->check() && auth()->user()->role_id !== 4) {
-                // Cek jika soal ini sudah pernah dijawab benar
-                $existingCorrectProgress = Progress::where([
+                // Process with adaptive service
+                $adaptiveResult = $this->adaptiveService->processAttempt(
+                    $userId, 
+                    $material->id, 
+                    $question, 
+                    $isCorrect, 
+                    false // usedHint - you can add this as a request parameter if needed
+                );
+                
+                // Create progress record with adaptive data
+                Progress::create([
                     'user_id' => $userId,
                     'material_id' => $material->id,
                     'question_id' => $question->id,
-                    'is_correct' => true
-                ])->exists();
+                    'is_correct' => $isCorrect,
+                    'is_answered' => true,
+                    'xp_earned' => $adaptiveResult['xp_earned'],
+                    'points_earned' => $adaptiveResult['points_earned'],
+                    'used_hint' => false
+                ]);
                 
-                // Jika belum pernah dijawab benar atau jawaban saat ini salah, catat percobaan baru
-                if (!$existingCorrectProgress || !$isCorrect) {
-                    // Hitung jumlah percobaan sebelumnya
-                    $attemptsCount = Progress::where([
-                        'user_id' => $userId,
-                        'material_id' => $material->id,
-                        'question_id' => $question->id
-                    ])->count();
-                    
-                    // Fix attempt number logic
-                    $attemptNumber = $attemptsCount > 0 ? $attemptsCount + 1 : 1;
-                    
-                    // Buat record baru
-                    $newAttempt = Progress::create([
-                        'user_id' => $userId,
-                        'material_id' => $material->id,
-                        'question_id' => $question->id,
-                        'is_correct' => $isCorrect,
-                        'is_answered' => true,
-                        'attempt_number' => $attemptNumber
-                    ]);
-                    
-                    // Cache buster untuk memaksa refresh leaderboard
-                    Cache::forget('leaderboard_data');
-                }
+                // Cache buster
+                Cache::forget('leaderboard_data');
             } else {
                 // Untuk guest, simpan progress di session
                 $sessionKey = 'guest_progress';
@@ -481,37 +506,41 @@ class MaterialQuestionController extends Controller
                 session([$sessionKey => $guestProgress]);
             }
             
-            // Response sesuai hasil jawaban
-            if ($isCorrect) {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => $successMessage,
-                    'selectedAnswerText' => $selectedAnswerText,
-                    'correctAnswerText' => $correctAnswerText,
-                    'explanation' => $explanation,
-                    'hasNextQuestion' => false,
-                    'levelUrl' => route('mahasiswa.materials.questions.levels', [
-                        'material' => $material->id,
-                        'difficulty' => $request->input('difficulty')
-                    ])
-                ]);
+            // Prepare next URL params
+            $nextUrlParams = ['material' => $material->id];
+            
+            // Only add difficulty for guests (who are restricted)
+            // For registered users, we want adaptive behavior (difficulty='all') by default
+            if ($isGuest) {
+                $nextUrlParams['difficulty'] = $difficulty;
             } else {
-                // Jika jawaban salah, tetap di halaman soal yang sama
-                $nextUrl = route('mahasiswa.materials.questions.show', [
-                    'material' => $material->id,
-                    'difficulty' => $difficulty,
-                    'question' => $question->id
-                ]);
-                
-                $hasNextQuestion = true; // Tetap true untuk memastikan tombol "Coba Lagi" muncul
+                // Explicitly set to 'all' or leave empty (which defaults to 'all' in show method now)
+                // $nextUrlParams['difficulty'] = 'all'; 
+            }
+
+            if (!$isCorrect) {
+                $nextUrlParams['question'] = $question->id;
             }
             
-            return response()->json([
+            $nextUrl = route('mahasiswa.materials.questions.show', $nextUrlParams);
+            
+            // Prepare response data
+            $responseData = [
                 'status' => $isCorrect ? 'success' : 'error',
                 'message' => $isCorrect ? $successMessage : 'Jawaban salah, coba lagi.',
-                'hasNextQuestion' => $hasNextQuestion,
+                'selectedAnswerText' => $selectedAnswerText,
+                'correctAnswerText' => $correctAnswerText,
+                'explanation' => $explanation,
+                'hasNextQuestion' => true,
                 'nextUrl' => $nextUrl
-            ]);
+            ];
+            
+            // Add adaptive result for logged-in non-guest users
+            if (auth()->check() && auth()->user()->role_id !== 4 && isset($adaptiveResult)) {
+                $responseData['adaptiveResult'] = $adaptiveResult;
+            }
+            
+            return response()->json($responseData);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -649,8 +678,6 @@ class MaterialQuestionController extends Controller
         
         $configuredTotalQuestions = $configuredEasyQuestions + $configuredMediumQuestions + $configuredHardQuestions;
         
-        // Get other data you need for the dashboard...
-        
         return view('mahasiswa.dashboard.index', [
             'totalMaterials' => $totalMaterials,
             'configuredTotalQuestions' => $configuredTotalQuestions,
@@ -712,7 +739,7 @@ class MaterialQuestionController extends Controller
             $questionType = $question->question_type;
             
             // Check jawaban berdasarkan tipe soal
-            if ($questionType === 'multiple_choice') {
+            if ($questionType === 'multiple_choice' || $questionType === 'radio_button') {
                 $selectedAnswer = Answer::findOrFail($request->answer);
                 $isCorrect = $selectedAnswer->is_correct;
             } elseif ($questionType === 'fill_in_the_blank') {
@@ -763,7 +790,7 @@ class MaterialQuestionController extends Controller
             
             // Kode selanjutnya tetap sama
         } catch (\Exception $e) {
-            \Log::error("Error submit answer: " . $e->getMessage());
+            Log::error("Error submit answer: " . $e->getMessage());
             // Error handling
         }
     }

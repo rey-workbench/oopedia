@@ -1,6 +1,5 @@
-<x-layouts.app>
+<x-layouts.app theme="mahasiswa">
     <x-slot:title>Level Soal - {{ $material->title }}</x-slot:title>
-
     <div class="container-fluid">
         <div class="dashboard-header text-center">
             <h1 class="main-title">Level Soal: {{ $material->title }}</h1>
