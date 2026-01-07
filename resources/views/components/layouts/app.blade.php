@@ -1,18 +1,3 @@
-{{--
-    Main Application Layout - Entry Point (Role-Aware)
-    
-    A flexible, role-aware layout component that serves as the main entry point.
-    Automatically detects user role and applies appropriate theme, navigation, etc.
-    
-    Props:
-    - title: Page title (default: 'OOPEDIA')
-    - theme: Theme override ('admin', 'mahasiswa', or auto-detect)
-    - showNavbar: Whether to show navbar (default: auto based on role)
-    - showSidebar: Whether to show sidebar (default: auto based on role)
-    - showFooter: Whether to show footer (default: false)
-    - bodyClass: Additional CSS classes for body element
---}}
-
 @props([
     'title' => 'OOPEDIA',
     'theme' => null,

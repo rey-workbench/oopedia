@@ -9,4 +9,5 @@ interface MaterialRepositoryInterface extends BaseRepositoryInterface
     public function findBySlug($slug);
     public function getAllOrdered();
     public function findWithQuestionsShuffled($id);
+    public function getMaterialsForAdmin($search = null, $sort = 'created_at', $direction = 'asc');
 }
