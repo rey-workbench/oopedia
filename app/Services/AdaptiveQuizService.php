@@ -2,171 +2,202 @@
 
 namespace App\Services;
 
-use App\Models\StudentProgressState;
+use App\Models\AdaptiveRule;
+use App\Models\AttributeDefinition;
 use App\Models\Question;
 use App\Models\Progress;
 use Illuminate\Support\Facades\Log;
 
 class AdaptiveQuizService
 {
-    /**
-     * Process a student's attempt at a question and update their adaptive state.
-     * 
-     * @param int $userId
-     * @param int $materialId
-     * @param Question $question
-     * @param bool $isCorrect
-     * @param bool $usedHint
-     * @return array Result of the processing (xp, points, level changes)
-     */
+    protected $formulaEngine;
+    protected $attrManager;
+
+    public function __construct(FormulaEngine $formulaEngine, AttributeManager $attrManager)
+    {
+        $this->formulaEngine = $formulaEngine;
+        $this->attrManager = $attrManager;
+    }
+
     public function processAttempt($userId, $materialId, Question $question, $isCorrect, $usedHint = false)
     {
-        // 1. Get or Create Student State
-        $state = StudentProgressState::firstOrCreate(
-            ['user_id' => $userId, 'material_id' => $materialId],
-            ['current_level' => 'beginner']
-        );
+        // 1. Fetch Previous State
+        $latestProgress = Progress::where('user_id', $userId)
+            ->where('material_id', $materialId)
+            ->latest()
+            ->first();
+        
+        // Load attributes or initialize defaults
+        $currentAttributes = $latestProgress ? ($latestProgress->attributes ?? []) : [];
+        $state = $this->attrManager->mergeWithDefaults($currentAttributes);
 
-        $levelChanged = 'none'; // 'up', 'down', 'none'
-        $newLevel = $state->current_level;
+        // 2. Set context flags for rule evaluation
+        $state['is_correct'] = $isCorrect;
+        $state['used_hint'] = $usedHint;
+
+        // 3. Calculate Computed Attributes using Formulas
+        $computedAttrs = AttributeDefinition::where('is_computed', true)
+            ->where('is_active', true)
+            ->with('formula')
+            ->get();
+        
+        foreach ($computedAttrs as $attr) {
+            if ($attr->formula) {
+                $state[$attr->key] = $this->formulaEngine->evaluate(
+                    $attr->formula,
+                    $state,
+                    $userId,
+                    $materialId
+                );
+            }
+        }
+
+        // 4. Evaluate Dynamic Rules (ALL logic from database)
+        $rules = AdaptiveRule::where('is_active', true)
+            ->where(function($q) use ($materialId) {
+                $q->whereNull('material_id')->orWhere('material_id', $materialId);
+            })
+            ->orderBy('priority', 'desc')
+            ->get();
+
+        $actionsReport = [];
         $xpEarned = 0;
         $pointsEarned = 0;
-        $badgesEarned = [];
-        $message = '';
 
-        // 2. Update Basic Stats (Streaks)
-        if ($isCorrect) {
-            $state->current_streak++;
-            $state->wrong_streak = 0;
-            $state->level_correct_count++;
-        } else {
-            $state->current_streak = 0;
-            $state->wrong_streak++;
-        }
-        $state->level_attempt_count++;
-        $state->retry_count++; // Track activity on this level
-
-        // 3. Calculate Rewards (Table 3.9 - Rules 5, 6, 9, 10, 11)
-        if ($isCorrect) {
-            // Rule 5: Basic Correct Answer
-            $xpEarned += 10;
-            $pointsEarned += 5;
-            
-            // Rule 9, 10, 11: Accuracy Bonuses (Calculated after 5 questions)
-            if ($state->level_attempt_count >= 5) {
-                $accuracy = ($state->level_correct_count / $state->level_attempt_count) * 100;
+        foreach ($rules as $rule) {
+            // Check Conditions
+            if ($this->evaluateConditions($rule->conditions, $state)) {
+                // Apply Actions
+                $actions = $rule->getFormattedActions();
+                $report = $this->applyActions($actions, $state, $xpEarned, $pointsEarned);
+                $actionsReport = array_merge($actionsReport, $report);
                 
-                if ($accuracy >= 85) { // Rule 11
-                    $xpEarned += 50;
-                    $pointsEarned += 50;
-                    if (!in_array('Akurat', $state->badges ?? [])) {
-                        $badges = $state->badges ?? [];
-                        $badges[] = 'Akurat';
-                        $state->badges = $badges;
-                        $badgesEarned[] = 'Akurat';
-                    }
-                } elseif ($accuracy >= 75) { // Rule 10
-                    $xpEarned += 25;
-                    $pointsEarned += 25;
-                } elseif ($accuracy >= 60) { // Rule 9
-                    $xpEarned += 10;
-                }
-            }
-        } else {
-            // Rule 6: Wrong Answer
-            $xpEarned += 0;
-            $pointsEarned += 0;
-        }
-
-        // Rule 8: Hint Logic
-        if ($usedHint && $isCorrect) {
-            $xpEarned = floor($xpEarned * 0.5); // Reduce XP by 50%
-        }
-
-        // 4. Leveling Logic (Table 3.9 - Rules 1, 2, 3, 4)
-        $currentLevel = $state->current_level;
-        $accuracy = ($state->level_attempt_count > 0) 
-            ? ($state->level_correct_count / $state->level_attempt_count) * 100 
-            : 0;
-
-        // Determine Level Change
-        if ($currentLevel === 'beginner') {
-            // Rule 1: Beginner -> Medium
-            // IF correct streak >= 3 OR (total >= 5 AND correct streak >= 3 - Simplified interpreted from rule)
-            // Rule says: streak >= 3, total >= 5. Let's stick closer to rule 1: Correct >= 3 AND total >= 5? 
-            // The table says "benar berturut >= 3, total soal >= 5".
-            
-            if ($state->current_streak >= 3) {
-                 // Promote
-                 $newLevel = 'medium';
-                 $levelChanged = 'up';
-                 
-                 // Rewards for leveling up (Rule 1)
-                 $xpEarned += 100;
-                 $pointsEarned += 50;
-                 $message = 'Level Up! Welcome to Medium.';
-            }
-        } elseif ($currentLevel === 'medium') {
-            // Rule 2: Medium -> Hard
-            // IF streak >= 4 AND accuracy >= 75%
-            if ($state->current_streak >= 4 && $accuracy >= 75) {
-                $newLevel = 'hard';
-                $levelChanged = 'up';
-                
-                // Rewards (Rule 2)
-                $xpEarned += 150;
-                $pointsEarned += 75;
-                $message = 'Level Up! Prepare for Hard Mode.';
-            }
-            // Rule 4: Medium -> Beginner
-            // IF wrong streak >= 4 AND accuracy < 40%
-            elseif ($state->wrong_streak >= 4 && $accuracy < 40) {
-                $newLevel = 'beginner';
-                $levelChanged = 'down';
-                $state->retry_count++; // Penalty count? Rule 4 says retry count +1
-                $message = 'Let\'s reinforce the basics.';
-            }
-        } elseif ($currentLevel === 'hard') {
-            // Rule 3: Hard -> Medium
-            // IF wrong streak >= 3
-            if ($state->wrong_streak >= 3) {
-                $newLevel = 'medium';
-                $levelChanged = 'down';
-                $state->retry_count++; // Rule 3
-                $message = 'Reducing cognitive load. Back to Medium.';
+                Log::info("Rule applied: {$rule->name}", [
+                    'user_id' => $userId,
+                    'material_id' => $materialId,
+                    'rule_id' => $rule->id,
+                    'actions' => $report
+                ]);
             }
         }
 
-        // 5. Apply Level Change Updates
-        if ($levelChanged !== 'none') {
-            $state->current_level = $newLevel;
-            // Reset counters on level change (Rule 1, 2, 3, 4)
-            $state->current_streak = 0;
-            $state->wrong_streak = 0;
-            $state->level_correct_count = 0;
-            $state->level_attempt_count = 0;
-            $state->retry_count = 0;
-        }
-
-        // 6. Update Totals
-        $state->total_xp += $xpEarned;
-        $state->total_points += $pointsEarned;
-        $state->last_activity_at = now();
-        
-        $state->save();
-
+        // 5. Return results
         return [
             'status' => 'success',
             'is_correct' => $isCorrect,
             'xp_earned' => $xpEarned,
             'points_earned' => $pointsEarned,
-            'level_changed' => $levelChanged, // 'up', 'down', 'none'
-            'new_level' => $newLevel,
-            'previous_level' => $currentLevel,
-            'current_streak' => $state->current_streak,
-            'total_xp' => $state->total_xp,
-            'message' => $message,
-            'badges_earned' => $badgesEarned
+            'new_state' => $state,
+            'actions_applied' => $actionsReport,
+            'level_changed' => in_array('current_level', array_column($actionsReport, 'key'))
         ];
+    }
+
+    /**
+     * Evaluate conditions (AND logic)
+     */
+    private function evaluateConditions($conditions, $state)
+    {
+        if (empty($conditions)) return false;
+        
+        foreach ($conditions as $cond) {
+            // Support both 'key' and 'type' for backward compatibility
+            $key = $cond['key'] ?? $cond['type'] ?? null;
+            if (!$key) continue;
+            
+            $operator = $cond['operator'];
+            $expectedValue = $cond['value'];
+            
+            $currentValue = $state[$key] ?? null;
+            
+            if (!$this->compare($currentValue, $operator, $expectedValue)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    /**
+     * Compare values with operator
+     */
+    private function compare($a, $op, $b)
+    {
+        // Handle boolean string comparisons
+        if ($b === 'true') $b = true;
+        if ($b === 'false') $b = false;
+        if ($a === 'true') $a = true;
+        if ($a === 'false') $a = false;
+        
+        // Handle string comparisons
+        if (is_string($a) || is_string($b)) {
+            return match($op) {
+                '==' => $a == $b,
+                '!=' => $a != $b,
+                default => false
+            };
+        }
+        
+        // Numeric comparisons
+        return match($op) {
+            '>' => $a > $b,
+            '>=' => $a >= $b,
+            '<' => $a < $b,
+            '<=' => $a <= $b,
+            '==' => $a == $b,
+            '!=' => $a != $b,
+            default => false
+        };
+    }
+
+    /**
+     * Apply actions to state
+     */
+    private function applyActions($actions, &$state, &$xpEarned, &$pointsEarned)
+    {
+        $report = [];
+        
+        foreach ($actions as $action) {
+            if ($action['type'] === 'update_attribute') {
+                $key = $action['key'];
+                $operator = $action['operator'];
+                $value = $action['value'];
+                
+                $oldValue = $state[$key] ?? 0;
+                
+                switch ($operator) {
+                    case '+':
+                        $state[$key] = $oldValue + $value;
+                        break;
+                    case '-':
+                        $state[$key] = max(0, $oldValue - $value); // Prevent negative values
+                        break;
+                    case '*':
+                        $state[$key] = $oldValue * $value;
+                        break;
+                    case '=':
+                        $state[$key] = $value;
+                        break;
+                }
+                
+                // Track XP and points changes
+                if ($key === 'xp') {
+                    $diff = $state[$key] - $oldValue;
+                    $xpEarned += $diff;
+                } elseif ($key === 'points' || $key === 'coins') {
+                    $diff = $state[$key] - $oldValue;
+                    $pointsEarned += $diff;
+                }
+                
+                $report[] = [
+                    'key' => $key,
+                    'old_value' => $oldValue,
+                    'new_value' => $state[$key],
+                    'message' => "{$key}: {$oldValue} → {$state[$key]}"
+                ];
+            }
+        }
+        
+        return $report;
     }
 }

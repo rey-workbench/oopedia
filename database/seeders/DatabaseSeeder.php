@@ -21,7 +21,10 @@ class DatabaseSeeder extends Seeder
             AnswersSeeder::class,
             ProgressSeeder::class,
             UeqSurveysSeeder::class,
-            QuestionBanksSeeder::class
+            QuestionBanksSeeder::class,
+            AttributeDefinitionsSeeder::class,
+            // FormulasSeeder is now integrated into AttributeDefinitionsSeeder
+            AdaptiveRulesSeeder::class,
         ]);
     }
 }

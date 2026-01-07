@@ -1,4 +1,4 @@
-<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
+<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200" theme="admin">
     <x-navigation.sidebar activePage="adaptive-rules" />
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
         <x-navigation.navbar titlePage="Buat Rule Baru" />
@@ -21,50 +21,202 @@
                             
                         <form action="{{ route('admin.adaptive-rules.store') }}" method="POST" id="ruleForm">
                             @csrf
-                            
+                            <!-- Info Box -->
+                            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                <h6 class="alert-heading">
+                                    <i class="material-icons text-sm">info</i> Cara Kerja Adaptive Rules
+                                </h6>
+                                <p class="mb-2"><strong>Format:</strong> <code>IF [KONDISI] THEN [AKSI]</code></p>
+                                <hr>
+                                <p class="mb-1"><strong>Contoh 1:</strong> Naikkan Level</p>
+                                <small class="text-muted">
+                                    IF <code>accuracy >= 80</code> THEN <code>SET current_level = "medium"</code>
+                                </small>
+                                <p class="mb-1 mt-2"><strong>Contoh 2:</strong> Berikan Hint</p>
+                                <small class="text-muted">
+                                    IF <code>wrong_streak >= 3</code> THEN <code>INCREMENT hints_available BY 1</code>
+                                </small>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+
                             <x-forms.form-group label="📝 Nama Rule" name="name" required class="mb-4">
                                 <x-ui.input name="name" class="form-control-lg" placeholder="Contoh: Naikkan Kesulitan untuk Mahasiswa Pintar" required />
                             </x-forms.form-group>
 
-                            <div class="rule-workspace p-4 mb-4">
-                                <div class="rule-section if-section mb-4">
-                                    <h6 class="text-info mb-3"><i class="material-icons text-sm">arrow_forward</i> JIKA</h6>
-                                    <div class="rule-block mb-2" onclick="showModal('condition')">
-                                        <span class="block-icon">📊</span>
-                                        <span id="conditionText" class="block-text">Klik untuk pilih kondisi</span>
+                            <x-forms.form-group label="Deskripsi" name="description" class="mb-3">
+                                <x-ui.input type="textarea" name="description" rows="2" placeholder="Jelaskan tujuan rule ini..." />
+                            </x-forms.form-group>
+
+                            <x-forms.form-group label="Materi (Opsional)" name="material_id" class="mb-4">
+                                <select name="material_id" class="form-control">
+                                    <option value="">Semua Materi</option>
+                                    @foreach($materials as $material)
+                                        <option value="{{ $material->id }}">{{ $material->title }}</option>
+                                    @endforeach
+                                </select>
+                            </x-forms.form-group>
+
+                            <!-- Visual Query Builder UI -->
+                            <link rel="stylesheet" href="{{ asset('css/components/query-builder.css') }}">
+
+                            <!-- Unified Logic Tree -->
+                            <div class="adaptive-logic-tree">
+                                <!-- Logic Branch: IF -->
+                                <div class="logic-branch if-branch">
+                                    <div class="branch-header">
+                                        <span class="badge bg-gradient-info branch-label">IF</span>
+                                        <div class="d-flex align-items-center ms-2">
+                                            <span class="text-xs text-muted me-3">Kondisi yang harus terpenuhi</span>
+                                            <button type="button" class="btn btn-xs btn-outline-info mb-0" data-bs-toggle="modal" data-bs-target="#addAttributeModal">
+                                                <i class="material-icons text-sm">add</i> Atribut Baru
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div class="rule-block mb-2" onclick="showModal('operator')">
-                                        <span class="block-icon">⚖️</span>
-                                        <span id="operatorText" class="block-text">Klik untuk pilih operator</span>
-                                    </div>
-                                    <div class="rule-block input-block">
-                                        <span class="block-icon">🔢</span>
-                                        <x-ui.input id="valueInput" class="border-0" placeholder="Masukkan nilai (contoh: 80)" />
+                                    <div class="branch-content">
+                                        <div class="query-builder">
+                                            <div class="query-group">
+                                                <div class="group-operator">AND</div>
+                                                
+                                                <div id="conditionsContainer">
+                                                    <!-- Initial Rule -->
+                                                    <div class="query-rule" id="condition_0">
+                                                        <div class="rule-input-group">
+                                                            <div style="flex: 2;">
+                                                                <select name="conditions[0][key]" class="rule-select w-100 attribute-select" required>
+                                                                    <option value="">Select Attribute</option>
+                                                                    
+                                                                    @if($regularAttributes->count() > 0)
+                                                                    <optgroup label="📊 Data Mahasiswa (Regular)">
+                                                                        @foreach($regularAttributes as $attr)
+                                                                            <option value="{{ $attr->key }}" data-type="regular">
+                                                                                {{ $attr->label }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </optgroup>
+                                                                    @endif
+                                                                    
+                                                                    @if($computedAttributes->count() > 0)
+                                                                    <optgroup label="🧮 Nilai Terhitung (Computed)">
+                                                                        @foreach($computedAttributes as $attr)
+                                                                            <option value="{{ $attr->key }}" data-type="computed">
+                                                                                {{ $attr->label }} ⚡
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </optgroup>
+                                                                    @endif
+                                                                </select>
+                                                            </div>
+                                                            
+                                                            <div style="flex: 1;">
+                                                                <select name="conditions[0][operator]" class="rule-select w-100" required>
+                                                                    <option value=">">greater than</option>
+                                                                    <option value=">=">greater/equal</option>
+                                                                    <option value="<">less than</option>
+                                                                    <option value="<=">less/equal</option>
+                                                                    <option value="==">equals</option>
+                                                                    <option value="!=">not equals</option>
+                                                                </select>
+                                                            </div>
+                                                            
+                                                            <div style="flex: 1;">
+                                                                <input type="text" name="conditions[0][value]" class="rule-input w-100" placeholder="Value" required>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <button type="button" class="btn-delete-rule remove-condition" disabled>
+                                                            <i class="material-icons text-sm">close</i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="group-actions">
+                                                    <button type="button" class="btn-add-rule" id="addCondition">
+                                                        <i class="material-icons text-sm">add</i> Add filter
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="rule-section then-section">
-                                    <h6 class="text-success mb-3"><i class="material-icons text-sm">check_circle</i> MAKA</h6>
-                                    <div class="rule-block mb-2" onclick="showModal('action')">
-                                        <span class="block-icon">⚡</span>
-                                        <span id="actionText" class="block-text">Klik untuk pilih aksi</span>
+                                <!-- Logic Link -->
+                                <div class="logic-link">
+                                    <div class="link-line"></div>
+                                </div>
+
+                                <!-- Logic Branch: THEN -->
+                                <div class="logic-branch then-branch">
+                                    <div class="branch-header">
+                                        <span class="badge bg-gradient-success branch-label">THEN</span>
+                                        <span class="text-xs text-muted ms-2">Aksi yang akan dijalankan</span>
                                     </div>
-                                    <div class="rule-block" onclick="showModal('actionValue')">
-                                        <span class="block-icon">🎯</span>
-                                        <span id="actionValueText" class="block-text">Klik untuk pilih detail</span>
+                                    <div class="branch-content">
+                                        <!-- Actions Query Builder UI -->
+                                        <div class="query-builder">
+                                            <div class="query-group then">
+                                                <div class="group-operator">AND</div>
+                                                
+                                                <div id="actionsContainer">
+                                                    <!-- Initial Action -->
+                                                    <div class="query-rule" id="action_0">
+                                                        <div class="rule-input-group">
+                                                            <div style="flex: 2;">
+                                                                <select name="actions[0][key]" class="rule-select w-100" required>
+                                                                    <option value="">Select Attribute to Modify</option>
+                                                                    @foreach($regularAttributes->merge($computedAttributes) as $attr)
+                                                                        <option value="{{ $attr->key }}">{{ $attr->label }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            
+                                                            <div style="flex: 1;">
+                                                                <select name="actions[0][operator]" class="rule-select w-100" required>
+                                                                    <option value="+">Tambah (+)</option>
+                                                                    <option value="-">Kurang (-)</option>
+                                                                    <option value="*">Kali (*)</option>
+                                                                    <option value="=">Set (=)</option>
+                                                                </select>
+                                                            </div>
+                                                            
+                                                            <div style="flex: 1;">
+                                                                <input type="text" name="actions[0][value]" class="rule-input w-100" placeholder="Value (e.g. 10)" required>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <input type="hidden" name="actions[0][type]" value="update_attribute">
+                                                        
+                                                        <button type="button" class="btn-delete-rule remove-action" disabled>
+                                                            <i class="material-icons text-sm">close</i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="group-actions">
+                                                    <button type="button" class="btn-add-rule" id="addAction">
+                                                        <i class="material-icons text-sm">add</i> Add action
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <input type="hidden" name="condition_type" id="condition_type">
-                            <input type="hidden" name="condition_operator" id="condition_operator">
-                            <input type="hidden" name="condition_value" id="condition_value">
-                            <input type="hidden" name="action_type" id="action_type">
-                            <input type="hidden" name="action_value" id="action_value">
-                            <input type="hidden" name="priority" value="10">
-                            <input type="hidden" name="is_active" value="1">
+                            <hr class="my-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <x-forms.form-group label="Prioritas" name="priority" required helpText="Semakin tinggi angka, semakin tinggi prioritas">
+                                        <x-ui.input type="number" name="priority" value="10" min="0" required />
+                                    </x-forms.form-group>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mt-4">
+                                        <x-forms.checkbox name="is_active" label="Aktifkan Rule" checked />
+                                    </div>
+                                </div>
+                            </div>
 
-                            <div class="d-flex justify-content-end gap-2">
+                            <div class="d-flex justify-content-end gap-2 mt-4">
                                 <x-ui.button variant="outline" size="lg" href="{{ route('admin.adaptive-rules.index') }}">
                                     Batal
                                 </x-ui.button>
@@ -79,23 +231,268 @@
         </div>
     </main>
 
-    <div class="modal fade" id="optionModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+    {{-- Modal untuk Tambah Atribut Baru --}}
+    <div class="modal fade" id="addAttributeModal" tabindex="-1">
+        <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Pilih</h5>
+                <div class="modal-header bg-gradient-info">
+                    <h5 class="modal-title text-white">Tambah Atribut Baru</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body p-0" id="modalBody"></div>
+                <form id="addAttributeForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Key (Nama Teknis) <span class="text-danger">*</span></label>
+                            <input type="text" name="key" class="form-control" placeholder="Contoh: health, mana, karma" required>
+                            <small class="text-muted">Gunakan huruf kecil, tanpa spasi</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Label (Nama Tampilan) <span class="text-danger">*</span></label>
+                            <input type="text" name="label" class="form-control" placeholder="Contoh: Health Points" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tipe Data <span class="text-danger">*</span></label>
+                            <select name="type" class="form-control" required>
+                                <option value="integer">Integer (Angka Bulat)</option>
+                                <option value="float">Float (Angka Desimal)</option>
+                                <option value="string">String (Teks)</option>
+                                <option value="boolean">Boolean (True/False)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Nilai Default <span class="text-danger">*</span></label>
+                            <input type="text" name="default_value" class="form-control" placeholder="Contoh: 0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Kategori</label>
+                            <select name="category" class="form-control">
+                                <option value="progression">Progression (XP, Level)</option>
+                                <option value="gameplay">Gameplay (Streak, Attempts)</option>
+                                <option value="general">General</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Deskripsi</label>
+                            <textarea name="description" class="form-control" rows="2" placeholder="Jelaskan fungsi atribut ini..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-info">Simpan Atribut</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded, initializing adaptive rules form...');
+        
+        // Pre-load attributes data
+        const attributesData = @json($regularAttributes->merge($computedAttributes)->map(function($attr) {
+            return ['key' => $attr->key, 'label' => $attr->label];
+        }));
+        
+        console.log('Attributes loaded:', attributesData);
+        
+        function buildAttributeOptions() {
+            let options = '<option value="">Pilih Atribut</option>';
+            attributesData.forEach(attr => {
+                options += `<option value="${attr.key}">${attr.label} (${attr.key})</option>`;
+            });
+            return options;
+        }
+        
+        let conditionIndex = 1;
+        
+        // Check if elements exist
+        const addConditionBtn = document.getElementById('addCondition');
+        const addActionBtn = document.getElementById('addAction');
+        const conditionsContainer = document.getElementById('conditionsContainer');
+        const actionsContainer = document.getElementById('actionsContainer');
+        
+        console.log('Elements found:', {
+            addConditionBtn: !!addConditionBtn,
+            addActionBtn: !!addActionBtn,
+            conditionsContainer: !!conditionsContainer,
+            actionsContainer: !!actionsContainer
+        });
+        
+        // Handle attribute creation
+        const addAttributeForm = document.getElementById('addAttributeForm');
+        if (addAttributeForm) {
+            addAttributeForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                console.log('Submitting new attribute...');
+                const formData = new FormData(this);
+                
+                try {
+                    const response = await fetch('/admin/attribute-definitions', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(Object.fromEntries(formData))
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        console.log('Attribute created successfully');
+                        location.reload();
+                    } else {
+                        console.error('Error creating attribute:', data);
+                        alert('Error: ' + (data.message || 'Gagal menyimpan atribut'));
+                    }
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                    alert('Error: ' + error.message);
+                }
+            });
+        }
+        
+        // Add new condition (Visual Query Builder)
+        if (addConditionBtn) {
+            addConditionBtn.addEventListener('click', function() {
+                console.log('Add condition clicked, index:', conditionIndex);
+                const container = document.getElementById('conditionsContainer');
+                
+                // Get options from first select to clone
+                const firstSelect = document.querySelector('select[name="conditions[0][key]"]');
+                const optionsHtml = firstSelect ? firstSelect.innerHTML : buildAttributeOptions();
+                
+                const newCondition = `
+                    <div class="query-rule" id="condition_${conditionIndex}">
+                        <div class="rule-input-group">
+                            <div style="flex: 2;">
+                                <select name="conditions[${conditionIndex}][key]" class="rule-select w-100 attribute-select" required>
+                                    ${optionsHtml}
+                                </select>
+                            </div>
+                            
+                            <div style="flex: 1;">
+                                <select name="conditions[${conditionIndex}][operator]" class="rule-select w-100" required>
+                                    <option value=">">greater than</option>
+                                    <option value=">=">greater/equal</option>
+                                    <option value="<">less than</option>
+                                    <option value="<=">less/equal</option>
+                                    <option value="==">equals</option>
+                                    <option value="!=">not equals</option>
+                                </select>
+                            </div>
+                            
+                            <div style="flex: 1;">
+                                <input type="text" name="conditions[${conditionIndex}][value]" class="rule-input w-100" placeholder="Value" required>
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="btn-delete-rule remove-condition">
+                            <i class="material-icons text-sm">close</i>
+                        </button>
+                    </div>
+                `;
+                
+                container.insertAdjacentHTML('beforeend', newCondition);
+                conditionIndex++;
+                updateRemoveButtons();
+            });
+        } else {
+            console.error('addCondition button not found!');
+        }
+        
+        // Remove condition
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.remove-condition')) {
+                const ruleRow = e.target.closest('.query-rule');
+                if (document.querySelectorAll('.query-rule').length > 1) {
+                    ruleRow.remove();
+                    updateRemoveButtons();
+                }
+            }
+        });
+        
+        function updateRemoveButtons() {
+            const rules = document.querySelectorAll('.query-rule');
+            rules.forEach(rule => {
+                const btn = rule.querySelector('.remove-condition');
+                if(btn) btn.disabled = rules.length === 1;
+            });
+        }
+        
+        // Actions Builder (Visual Query Builder)
+        let actionIndex = 1;
+        
+        if (addActionBtn) {
+            addActionBtn.addEventListener('click', function() {
+                console.log('Add action clicked, index:', actionIndex);
+                const container = document.getElementById('actionsContainer');
+                
+                // Get options from first select
+                const firstSelect = document.querySelector('select[name="actions[0][key]"]');
+                const optionsHtml = firstSelect ? firstSelect.innerHTML : '';
+
+                const newAction = `
+                    <div class="query-rule" id="action_${actionIndex}">
+                        <div class="rule-input-group">
+                            <div style="flex: 2;">
+                                <select name="actions[${actionIndex}][key]" class="rule-select w-100" required>
+                                    ${optionsHtml}
+                                </select>
+                            </div>
+                            
+                            <div style="flex: 1;">
+                                <select name="actions[${actionIndex}][operator]" class="rule-select w-100" required>
+                                    <option value="+">Tambah (+)</option>
+                                    <option value="-">Kurang (-)</option>
+                                    <option value="*">Kali (*)</option>
+                                    <option value="=">Set (=)</option>
+                                </select>
+                            </div>
+                            
+                            <div style="flex: 1;">
+                                <input type="text" name="actions[${actionIndex}][value]" class="rule-input w-100" placeholder="Value (e.g. 10)" required>
+                            </div>
+                        </div>
+                        
+                        <input type="hidden" name="actions[${actionIndex}][type]" value="update_attribute">
+                        
+                        <button type="button" class="btn-delete-rule remove-action">
+                            <i class="material-icons text-sm">close</i>
+                        </button>
+                    </div>
+                `;
+                
+                container.insertAdjacentHTML('beforeend', newAction);
+                actionIndex++;
+                updateActionRemoveButtons();
+            });
+        }
+        
+        // Remove action
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.remove-action')) {
+                const ruleRow = e.target.closest('.query-rule');
+                if (document.querySelectorAll('#actionsContainer .query-rule').length > 1) {
+                    ruleRow.remove();
+                    updateActionRemoveButtons();
+                }
+            }
+        });
+        
+        function updateActionRemoveButtons() {
+            const actions = document.querySelectorAll('#actionsContainer .query-rule');
+            actions.forEach(action => {
+                const btn = action.querySelector('.remove-action');
+                if(btn) btn.disabled = actions.length === 1;
+            });
+        }
+        
+        console.log('Adaptive rules form initialization complete');
+    });
+    </script>
+    @endpush
 </x-layouts.app>
-
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/admin/adaptive-rules/create.css') }}">
-@endpush
-
-@push('scripts')
-    <script src="{{ asset('js/admin/adaptive-rules/create.js') }}"></script>
-@endpush

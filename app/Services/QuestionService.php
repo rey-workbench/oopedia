@@ -25,8 +25,7 @@ class QuestionService extends BaseService
     {
         $questions = $this->questionRepo->getFilteredQuestions($search, $difficulty, $materialId);
 
-        // Format question types for display
-        $questions->transform(function ($question) {
+        $questions->getCollection()->transform(function ($question) {
             $question->formatted_type = match($question->question_type) {
                 'fill_in_the_blank' => 'Fill in the Blank',
                 'radio_button' => 'Radio Button',

@@ -17,7 +17,28 @@ class Progress extends Model
         'is_answered',
         'answer_id',
         'attempt_number',
+        'attributes', // JSON Snapshot
     ];
+
+    protected $casts = [
+        'is_correct' => 'boolean',
+        'is_answered' => 'boolean',
+        'attributes' => 'array',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
+    ];
+
+    /**
+     * Get specific attribute value from JSON attributes column
+     */
+    public function getStateAttribute($key, $default = null)
+    {
+        $attrs = $this->attributes['attributes'] ?? '{}';
+        if (is_string($attrs)) {
+            $attrs = json_decode($attrs, true) ?? [];
+        }
+        return $attrs[$key] ?? $default;
+    }
 
     public function user()
     {

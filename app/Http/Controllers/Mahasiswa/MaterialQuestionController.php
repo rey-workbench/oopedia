@@ -237,7 +237,6 @@ class MaterialQuestionController extends Controller
             
             $progressKey = $material->id . '_' . $question->id;
             
-            // Update progress
             $guestProgress[$progressKey] = [
                 'is_correct' => $isCorrect,
                 'xp_earned' => $adaptiveResult['xp_earned'],
@@ -254,16 +253,15 @@ class MaterialQuestionController extends Controller
              
              // We don't need 'guest_progress.material_id' hierarchy anymore if we parse keys in service
         } else {
-            // Create progress record in DB
+            // Create progress record in DB with Snapshot
             Progress::create([
                 'user_id' => $userId,
                 'material_id' => $material->id,
                 'question_id' => $question->id,
                 'is_correct' => $isCorrect,
                 'is_answered' => true,
-                'xp_earned' => $adaptiveResult['xp_earned'],
-                'points_earned' => $adaptiveResult['points_earned'],
-                'used_hint' => false
+                'attempt_number' => 1, 
+                'attributes' => $adaptiveResult['new_state'] 
             ]);
             
             Cache::forget('leaderboard_data');

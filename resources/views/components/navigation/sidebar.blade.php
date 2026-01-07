@@ -19,7 +19,7 @@
             <span class="text-white ms-2">{{ $userRole }}</span>
         </div>
         <hr class="horizontal light mt-2 mb-2">
-        <div class="collapse navbar-collapse w-auto max-height-vh-100" id="sidenav-collapse-main">
+        <div class="w-auto max-height-vh-100" id="sidenav-collapse-main">
             <ul class="navbar-nav">
                 {{-- Menu Dashboard untuk Semua Role --}}
                 <li class="nav-item">
@@ -97,15 +97,52 @@
                 </li>
                 @endif
 
-                {{-- Menu Adaptive Rules hanya untuk Admin dan Superadmin --}}
+
+                {{-- Menu Adaptive System dengan Dropdown hanya untuk Admin dan Superadmin --}}
                 @if($isAuthenticated() && auth()->user()->role_id <= 2)
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ $activePage == 'adaptive-rules' ? 'active bg-gradient-primary' : '' }}" href="{{ route('admin.adaptive-rules.index') }}">
+                    <a class="nav-link text-white" 
+                       data-bs-toggle="collapse" 
+                       href="#adaptiveMenu" 
+                       role="button" 
+                       aria-expanded="{{ str_contains($activePage, 'adaptive') || str_contains($activePage, 'formulas') ? 'true' : 'false' }}">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons opacity-10">settings_suggest</i>
+                            <i class="material-icons opacity-10">psychology</i>
                         </div>
-                        <span class="nav-link-text ms-1">Adaptive Rules</span>
+                        <span class="nav-link-text ms-1">Adaptive System</span>
+                        <i class="material-icons ms-auto">keyboard_arrow_down</i>
                     </a>
+                    <div class="collapse {{ str_contains($activePage, 'adaptive') || str_contains($activePage, 'formulas') ? 'show' : '' }}" id="adaptiveMenu">
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a class="nav-link text-white {{ $activePage == 'adaptive-rules' ? 'active bg-gradient-primary' : '' }}" 
+                                   href="{{ route('admin.adaptive-rules.index') }}">
+                                    <span class="sidenav-mini-icon">
+                                        <i class="material-icons opacity-10">rule</i>
+                                    </span>
+                                    <span class="sidenav-normal ms-2">Adaptive Rules</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white {{ $activePage == 'formulas' ? 'active bg-gradient-primary' : '' }}" 
+                                   href="{{ route('admin.formulas.index') }}">
+                                    <span class="sidenav-mini-icon">
+                                        <i class="material-icons opacity-10">functions</i>
+                                    </span>
+                                    <span class="sidenav-normal ms-2">Formulas</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white {{ $activePage == 'attributes' ? 'active bg-gradient-primary' : '' }}" 
+                                   href="{{ route('admin.attribute-definitions.index') }}">
+                                    <span class="sidenav-mini-icon">
+                                        <i class="material-icons opacity-10">settings</i>
+                                    </span>
+                                    <span class="sidenav-normal ms-2">Attributes (View Only)</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
                 @endif
 
