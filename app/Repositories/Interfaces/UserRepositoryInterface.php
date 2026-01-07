@@ -8,4 +8,6 @@ interface UserRepositoryInterface extends BaseRepositoryInterface
     public function deleteStudentWithRelations($userId);
     public function createStudent(array $data);
     public function getStudentsWithRole($roleId, $search = null, $perPage = 10);
+    public function getUsersByRoleAndApproval($roleId, $isApproved, $search = null, $perPage = 10);
+    public function approveUser($userId);
 }
