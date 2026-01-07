@@ -24,7 +24,7 @@
     
         <div class="container-fluid">
             <div class="row g-4">
-                <!-- Material Overview (Modified) -->
+                <!-- Material Overview -->
                 <div class="col-md-6">
                     <x-ui.card class="h-100">
                         <h3 class="materi-title">Materi Pembelajaran</h3>
