@@ -29,63 +29,6 @@
                                     </div>
                                 @endif
 
-                                @if(auth()->user()->role_id == 1)
-                                <!-- Tampilan untuk superadmin -->
-                                <div class="table-responsive">
-                                    <table class="table align-items-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Tanggal Daftar</th>
-                                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Aksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @forelse($pendingAdmins as $admin)
-                                            <tr>
-                                                <td>
-                                                    <div class="d-flex px-2 py-1">
-                                                        <div class="d-flex flex-column justify-content-center">
-                                                            <h6 class="mb-0 text-sm">{{ $admin->name }}</h6>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <p class="text-xs font-weight-bold mb-0">{{ $admin->email }}</p>
-                                                </td>
-                                                <td>
-                                                    <p class="text-xs font-weight-bold mb-0">{{ $admin->created_at->format('d/m/Y H:i') }}</p>
-                                                </td>
-                                                <td class="text-center">
-                                                    <div class="d-flex justify-content-center align-items-center">
-                                                        <form action="{{ route('admin.users.approve', $admin->id) }}" method="POST" class="mx-1">
-                                                            @csrf
-                                                            <button type="submit" class="btn btn-success btn-sm px-3">
-                                                                Setujui
-                                                            </button>
-                                                        </form>
-                                                        <form action="{{ route('admin.users.reject', $admin->id) }}" method="POST" class="mx-1">
-                                                            @csrf
-                                                            <button type="submit" class="btn btn-danger btn-sm px-3" 
-                                                                    onclick="return confirm('Apakah Anda yakin ingin menolak admin ini?')">
-                                                                Tolak
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            @empty
-                                            <tr>
-                                                <td colspan="4" class="text-center py-4">
-                                                    <p class="text-sm mb-0">Tidak ada admin yang menunggu persetujuan</p>
-                                                </td>
-                                            </tr>
-                                            @endforelse
-                                        </tbody>
-                                    </table>
-                                </div>
-                                @else
                                 <!-- Tampilan untuk admin yang menunggu persetujuan -->
                                 <div class="container py-5">
                                     <div class="row justify-content-center">
@@ -105,7 +48,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                @endif
                             </div>
                         </div>
                     </div>

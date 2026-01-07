@@ -28,10 +28,6 @@ use App\Http\Controllers\Mahasiswa\{
     MaterialQuestionController,
     UeqSurveyController as MahasiswaUeqSurveyController
 };
-use App\Models\Material;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes

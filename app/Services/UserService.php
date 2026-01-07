@@ -20,6 +20,11 @@ class UserService extends BaseService
         $this->userRepo = $userRepo;
     }
 
+    public function getUserById($id)
+    {
+        return $this->userRepo->find($id);
+    }
+
     public function getAdmins($search = null, $perPage = 10)
     {
         // Role 2 is Admin
@@ -56,9 +61,11 @@ class UserService extends BaseService
         return $this->userRepo->delete($user->id);
     }
 
-    public function getPendingAdmins($perPage = 10)
+    public function getPendingAdmins($perPage = null)
     {
         // Get users with role 2 (admin) who are NOT approved
+        // Pass null for perPage to get all records if needed, but keeping perPage for flexibility
+        // Default sorting is created_at desc
         return $this->userRepo->getUsersByRoleAndApproval(2, false, null, $perPage);
     }
 
