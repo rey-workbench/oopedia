@@ -15,4 +15,5 @@ interface ProgressRepositoryInterface
     public function updateOrCreateProgress(array $conditions, array $values);
     public function getAnsweredQuestionIds($userId, $materialId);
     public function resetProgress($userId, $materialId);
+    public function getStudentCountByMaterial();
 }

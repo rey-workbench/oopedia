@@ -159,4 +159,14 @@ class ProgressRepository extends BaseRepository implements ProgressRepositoryInt
             ->where('material_id', $materialId)
             ->delete();
     }
+
+    public function getStudentCountByMaterial()
+    {
+        return $this->model
+            ->select('material_id')
+            ->selectRaw('COUNT(DISTINCT user_id) as student_count')
+            ->groupBy('material_id')
+            ->get()
+            ->keyBy('material_id');
+    }
 }
