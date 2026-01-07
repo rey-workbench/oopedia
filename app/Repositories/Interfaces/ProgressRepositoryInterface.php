@@ -16,4 +16,5 @@ interface ProgressRepositoryInterface
     public function getAnsweredQuestionIds($userId, $materialId);
     public function resetProgress($userId, $materialId);
     public function getStudentCountByMaterial();
+    public function getLastAccessTime($userId, $materialId);
 }

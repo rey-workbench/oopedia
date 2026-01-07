@@ -169,4 +169,12 @@ class ProgressRepository extends BaseRepository implements ProgressRepositoryInt
             ->get()
             ->keyBy('material_id');
     }
+
+    public function getLastAccessTime($userId, $materialId)
+    {
+        return $this->model
+            ->where('user_id', $userId)
+            ->where('material_id', $materialId)
+            ->max('updated_at');
+    }
 }
