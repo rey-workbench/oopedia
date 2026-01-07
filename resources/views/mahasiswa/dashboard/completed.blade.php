@@ -16,9 +16,9 @@
                 <p class="empty-state-description">
                     Anda belum menyelesaikan semua soal dari materi apapun.
                 </p>
-                <a href="{{ route('mahasiswa.materials.index') }}" class="btn btn-primary">
-                    <i class="fas fa-book me-2"></i>Lihat Daftar Materi
-                </a>
+                <x-ui.button href="{{ route('mahasiswa.materials.index') }}" variant="primary" icon="book">
+                    Lihat Daftar Materi
+                </x-ui.button>
             </div>
         @else
             <div class="row g-4">
@@ -98,10 +98,9 @@
                                 </div>
 
                                 <div class="material-actions">
-                                    <a href="{{ route('mahasiswa.materials.show', $material->id) }}" class="btn-view-green">
-                                        <i class="fas fa-book me-2"></i>
-                                        <span>Lihat Materi</span>
-                                    </a>
+                                    <x-ui.button href="{{ route('mahasiswa.materials.show', $material->id) }}" variant="success" class="btn-view-green" icon="book">
+                                        Lihat Materi
+                                    </x-ui.button>
                                 </div>
                             </div>
                         </div>

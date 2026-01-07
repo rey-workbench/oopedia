@@ -14,9 +14,9 @@
                 <p class="empty-state-description">
                     Anda belum memulai belajar materi apapun atau semua materi sudah selesai.
                 </p>
-                <a href="{{ route('mahasiswa.materials.index') }}" class="btn btn-primary">
-                    <i class="fas fa-book me-2"></i>Lihat Daftar Materi
-                </a>
+                <x-ui.button href="{{ route('mahasiswa.materials.index') }}" variant="primary" icon="book">
+                    Lihat Daftar Materi
+                </x-ui.button>
             </div>
         @else
             <div class="row g-4">
@@ -96,14 +96,12 @@
                                 </div>
 
                                 <div class="material-actions">
-                                    <a href="{{ route('mahasiswa.materials.show', $material->id) }}" class="btn-view-material">
-                                        <i class="fas fa-book me-2"></i>
-                                        <span>Lihat Materi</span>
-                                    </a>
-                                    <a href="{{ route('mahasiswa.materials.questions.show', $material->id) }}" class="btn-read-material">
-                                        <i class="fas fa-question-circle me-2"></i>
-                                        <span>Lanjut Latihan</span>
-                                    </a>
+                                    <x-ui.button href="{{ route('mahasiswa.materials.show', $material->id) }}" variant="secondary" class="btn-view-material" icon="book">
+                                        Lihat Materi
+                                    </x-ui.button>
+                                    <x-ui.button href="{{ route('mahasiswa.materials.questions.show', $material->id) }}" variant="primary" class="btn-read-material" icon="question-circle">
+                                        Lanjut Latihan
+                                    </x-ui.button>
                                 </div>
                             </div>
                         </div>

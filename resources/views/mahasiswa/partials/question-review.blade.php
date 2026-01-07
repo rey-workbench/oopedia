@@ -10,9 +10,9 @@
             <div class="action-buttons">
                 <form action="{{ route('mahasiswa.materials.reset', $material->id) }}" method="POST" class="d-inline">
                     @csrf
-                    <button type="submit" class="btn btn-warning">
-                        <i class="fas fa-redo me-2"></i>Kerjakan Ulang
-                    </button>
+                    <x-ui.button type="submit" variant="warning" icon="redo">
+                        Kerjakan Ulang
+                    </x-ui.button>
                 </form>
             </div>
         @endif

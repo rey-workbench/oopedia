@@ -100,9 +100,9 @@
                         
                     </div>
                     
-                    <a href="{{ route('mahasiswa.materials.show', $material->id) }}" class="material-link">
+                    <x-ui.button href="{{ route('mahasiswa.materials.show', $material->id) }}" variant="primary" class="w-100 mt-3 d-flex justify-content-between align-items-center">
                         Baca Materi <i class="fas fa-arrow-right"></i>
-                    </a>
+                    </x-ui.button>
                 </div>
             </div>
         </div>

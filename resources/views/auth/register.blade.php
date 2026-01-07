@@ -75,7 +75,7 @@
                                     </div>
 
                                     <div class="text-center">
-                                        <button type="submit" class="btn bg-gradient-primary w-100 my-4 mb-2">DAFTAR</button>
+                                        <x-ui.button type="submit" variant="primary" class="w-100 my-4 mb-2">DAFTAR</x-ui.button>
                                     </div>
                                     <p class="mt-4 text-sm text-center">
                                         Sudah memiliki akun?

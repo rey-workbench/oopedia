@@ -7,10 +7,10 @@
             <form method="GET" action="{{ route('admin.question-banks.index') }}" class="mb-3">
                 <div class="input-group input-group-outline my-3">
                     <input type="text" name="search" class="form-control" placeholder="Cari berdasarkan nama..." value="{{ request('search') }}" style="height: 50px;">
-                    <button class="btn btn-icon btn-3 btn-primary" type="submit" style="height: 50px;">
+                    <x-ui.button type="submit" variant="primary" class="btn-icon btn-3" style="height: 50px;">
                         <span class="btn-inner--icon"><i class="material-icons">search</i></span>
                         <span class="btn-inner--text">Cari</span>
-                    </button>
+                    </x-ui.button>
                 </div>
             </form>
 

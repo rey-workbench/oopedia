@@ -149,13 +149,13 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="fullQuestionModalLabel">Detail Pertanyaan</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <x-ui.button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" variant="ghost" />
                     </div>
                     <div class="modal-body" id="fullQuestionContent">
                         <!-- Question content will be loaded here -->
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <x-ui.button variant="secondary" data-bs-dismiss="modal">Tutup</x-ui.button>
                     </div>
                 </div>
             </div>

@@ -18,9 +18,9 @@
                                                     <option value="{{ $class }}">{{ $class }}</option>
                                                 @endforeach
                                             </select>
-                                            <button type="submit" class="btn btn-success">
-                                                <i class="fas fa-file-excel me-1"></i> Export
-                                            </button>
+                                            <x-ui.button type="submit" variant="success" icon="file-excel">
+                                                 Export
+                                            </x-ui.button>
                                         </div>
                                     </form>
                                 </div>
