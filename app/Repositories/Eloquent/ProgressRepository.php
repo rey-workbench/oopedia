@@ -141,4 +141,22 @@ class ProgressRepository extends BaseRepository implements ProgressRepositoryInt
     {
         return $this->model->updateOrCreate($conditions, $values);
     }
+
+    public function getAnsweredQuestionIds($userId, $materialId)
+    {
+        return $this->model
+            ->where('user_id', $userId)
+            ->where('material_id', $materialId)
+            ->where('is_correct', true)
+            ->pluck('question_id')
+            ->toArray();
+    }
+
+    public function resetProgress($userId, $materialId)
+    {
+        return $this->model
+            ->where('user_id', $userId)
+            ->where('material_id', $materialId)
+            ->delete();
+    }
 }

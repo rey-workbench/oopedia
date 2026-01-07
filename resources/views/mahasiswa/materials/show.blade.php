@@ -1,7 +1,7 @@
 <x-layouts.app :title="$material->title" theme="mahasiswa">
     <x-slot:styles>
         <link rel="stylesheet" href="{{ asset('css/mahasiswa/materials/show.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/mahasiswa/materials/questionsindex.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/mahasiswa/materials/questions.index.css') }}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
     </x-slot:styles>
 
@@ -61,6 +61,7 @@
                 Kembali ke Daftar Materi
             </x-ui.button>
             
+            <x-ui.button 
                 href="{{ route('mahasiswa.materials.questions.levels', ['material' => $material->id]) }}" 
                 variant="primary"
             >

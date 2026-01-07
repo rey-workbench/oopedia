@@ -27,4 +27,23 @@ class MaterialRepository extends BaseRepository implements MaterialRepositoryInt
         $title = str_replace('-', ' ', $slug);
         return $this->model->where('title', $title)->firstOrFail();
     }
+
+    public function getAllOrdered()
+    {
+        return $this->model->with(['questions', 'media'])->orderBy('created_at', 'asc')->get();
+    }
+
+    public function findWithQuestionsShuffled($id)
+    {
+        $material = $this->model->findOrFail($id);
+        
+        // Shuffle answers for each question
+        foreach ($material->questions as $question) {
+            if ($question->question_type !== 'fill_in_the_blank') {
+                $question->answers = $question->answers->shuffle();
+            }
+        }
+        
+        return $material;
+    }
 }
