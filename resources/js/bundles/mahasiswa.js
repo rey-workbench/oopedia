@@ -1,6 +1,7 @@
 // Mahasiswa Bundle Entry Point
 import '../utils/index.js';
 import '../components/notifications.js';
+import '../components/quill-init.js';
 
 // Import Page Logic
 import '../pages/mahasiswa/quiz.js';

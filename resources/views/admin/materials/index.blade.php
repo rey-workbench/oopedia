@@ -4,7 +4,7 @@
             title="Kurikulum Materi"
             subtitle="Otoritas manajemen konten dan modul pembelajaran Pemrograman Berorientasi Objek."
         >
-            <x-ui.button href="{{ route('admin.materials.create') }}" variant="primary" icon="fas fa-plus">Inject New Module</x-ui.button>
+            <x-ui.button href="{{ route('admin.materials.create') }}" variant="primary" icon="fas fa-plus">Tambah Modul Baru</x-ui.button>
         </x-ui.page-header>
 
         {{-- Statistics --}}
@@ -24,7 +24,7 @@
                 footer="Penambahan 30 hari terakhir"
             />
             <x-ui.stat-card 
-                title="Media Corpus" 
+                title="Korpus Media" 
                 value="{{ $materials->sum(fn($m) => $m->media->count()) }}" 
                 icon="fas fa-photo-film" 
                 variant="indigo"
@@ -35,7 +35,7 @@
         <x-ui.card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
             <x-slot:header>
                 <div class="flex flex-col md:flex-row justify-between items-center gap-6 w-full px-6 py-4">
-                    <h6 class="mb-0 font-bold uppercase tracking-widest text-[10px] text-slate-400">Content Inventory</h6>
+                    <h6 class="mb-0 font-bold uppercase tracking-widest text-[10px] text-slate-400">Inventaris Konten</h6>
                     <form method="GET" action="{{ route('admin.materials.index') }}" class="w-full md:w-auto">
                         <div class="relative group">
                             <i class="fas fa-dna absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors"></i>
@@ -54,11 +54,11 @@
             <x-ui.table>
                 <x-slot:thead>
                     <tr>
-                        <x-ui.th>Visual Preview</x-ui.th>
-                        <x-ui.th>Modul Identity</x-ui.th>
-                        <x-ui.th>Principal Author</x-ui.th>
-                        <x-ui.th class="text-center">Initial Sync</x-ui.th>
-                        <x-ui.th class="text-right">Operation</x-ui.th>
+                        <x-ui.th>Pratinjau Visual</x-ui.th>
+                        <x-ui.th>Identitas Modul</x-ui.th>
+                        <x-ui.th>Penulis Utama</x-ui.th>
+                        <x-ui.th class="text-center">Sinkronisasi Awal</x-ui.th>
+                        <x-ui.th class="text-right">Operasi</x-ui.th>
                     </tr>
                 </x-slot:thead>
                 <tbody>
@@ -101,6 +101,7 @@
                         </td>
                         <td class="px-6 py-6">
                             <div class="flex justify-end gap-3">
+                                <x-ui.button variant="ghost" size="sm" href="{{ route('admin.materials.questions.index', $material->id) }}" icon="fas fa-vial" class="text-indigo-500 hover:text-indigo-600" />
                                 <x-ui.button variant="ghost" size="sm" href="{{ route('admin.materials.edit', $material->id) }}" icon="fas fa-pen-nib" />
                                 <form action="{{ route('admin.materials.destroy', $material->id) }}" method="POST" class="inline">
                                     @csrf
@@ -116,9 +117,9 @@
                             <div class="w-24 h-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-inner">
                                 <i class="fas fa-box-open text-slate-200 text-4xl"></i>
                             </div>
-                            <h3 class="text-2xl font-bold tracking-tight text-slate-900 mb-2">Curriculum Null</h3>
+                            <h3 class="text-2xl font-bold tracking-tight text-slate-900 mb-2">Kurikulum Kosong</h3>
                             <p class="text-slate-400 text-sm max-w-xs mx-auto mb-8">Basis data materi instruksional kosong. Lakukan injeksi modul baru untuk memulai siklus pembelajaran.</p>
-                            <x-ui.button href="{{ route('admin.materials.create') }}" variant="primary" icon="fas fa-plus">Initialize Curriculum</x-ui.button>
+                            <x-ui.button href="{{ route('admin.materials.create') }}" variant="primary" icon="fas fa-plus">Inisialisasi Kurikulum</x-ui.button>
                         </td>
                     </tr>
                     @endforelse

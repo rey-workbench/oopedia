@@ -61,7 +61,11 @@
                 <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full -mr-32 -mt-32 pointer-events-none"></div>
                 
                 <article class="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-p:font-medium prose-p:text-slate-600 prose-p:leading-loose prose-img:rounded-[2rem] prose-img:shadow-2xl relative z-10">
-                    {!! $material->content !!}
+                    <div class="ql-snow">
+                        <div class="ql-editor !p-0">
+                            {!! $material->content !!}
+                        </div>
+                    </div>
                 </article>
 
                 {{-- Action Footer --}}

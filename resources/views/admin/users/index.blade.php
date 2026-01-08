@@ -11,7 +11,7 @@
                 @endphp
                 @if($pendingAdminsCount > 0)
                     <x-ui.button href="{{ route('admin.pending-admins') }}" variant="danger" icon="fas fa-clock">
-                        {{ $pendingAdminsCount }} Pending Requisition
+                        {{ $pendingAdminsCount }} Permintaan Menunggu
                     </x-ui.button>
                 @endif
                 <x-ui.button href="{{ route('admin.users.create') }}" variant="primary" icon="fas fa-plus">Tambah User</x-ui.button>
@@ -41,10 +41,10 @@
             <x-ui.table>
                 <thead>
                     <tr>
-                        <x-ui.th>Identity</x-ui.th>
-                        <x-ui.th>Email Authorization</x-ui.th>
-                        <x-ui.th class="text-center">System Role</x-ui.th>
-                        <x-ui.th class="text-center">Access Status</x-ui.th>
+                        <x-ui.th>Identitas</x-ui.th>
+                        <x-ui.th>Otorisasi Email</x-ui.th>
+                        <x-ui.th class="text-center">Peran Sistem</x-ui.th>
+                        <x-ui.th class="text-center">Status Akses</x-ui.th>
                         <x-ui.th class="text-right">Aksi</x-ui.th>
                     </tr>
                 </thead>
@@ -60,7 +60,7 @@
                                     </div>
                                     <div>
                                         <div class="font-bold text-slate-900 tracking-tight">{{ $superadmin->name }}</div>
-                                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">MASTER SYSTEM ADMIN</span>
+                                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">ADMIN SISTEM UTAMA</span>
                                     </div>
                                 </div>
                             </td>
@@ -73,7 +73,7 @@
                             <td class="px-6 py-6 text-center">
                                 <div class="flex items-center justify-center gap-2">
                                     <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                                    <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-600">UNRESTRICTED</span>
+                                    <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-600">TANPA BATAS</span>
                                 </div>
                             </td>
                             <td class="px-6 py-6">
@@ -109,7 +109,7 @@
                             <div class="flex items-center justify-center gap-2">
                                 <div class="w-2 h-2 rounded-full {{ $user->is_approved ? 'bg-emerald-500' : 'bg-amber-500' }}"></div>
                                 <span class="text-[10px] font-bold uppercase tracking-widest {{ $user->is_approved ? 'text-emerald-500' : 'text-amber-500' }}">
-                                    {{ $user->is_approved ? 'APPROVED' : 'PENDING' }}
+                                    {{ $user->is_approved ? 'DISETUJUI' : 'MENUNGGU' }}
                                 </span>
                             </div>
                         </td>

@@ -1,11 +1,11 @@
 <x-layouts.app title="Edit Materi" theme="admin">
     @push('head')
-        <x-head.tinymce-config />
+
     @endpush
 
     <div class="space-y-12">
         <x-ui.page-header
-            title="Curriculum Update"
+            title="Pembaruan Kurikulum"
             subtitle="Modifikasi konten instruksional dan optimasi media visual."
         >
             <x-ui.button href="{{ route('admin.materials.index') }}" variant="ghost" icon="fas fa-arrow-left">BATALKAN MODIFIKASI</x-ui.button>
@@ -15,13 +15,14 @@
             @csrf
             @method('PUT')
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                {{-- Master Data --}}
-                <div class="lg:col-span-2 space-y-8">
-                    <x-ui.card class="border-slate-100 shadow-2xl">
-                        <x-slot:header>Registry Update</x-slot:header>
-                        <div class="space-y-8">
-                            <x-forms.form-group label="Redesign Title" name="title" required>
+            <x-ui.card class="border-slate-100 shadow-2xl">
+                <x-slot:header>Sinkronisasi & Konten Modul</x-slot:header>
+                
+                <div class="space-y-10">
+                    {{-- Top Row: Title & Cover Image --}}
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                        <div class="lg:col-span-2 space-y-6">
+                            <x-forms.form-group label="Revisi Judul" name="title" required>
                                 <x-ui.input 
                                     name="title" 
                                     value="{{ old('title', $material->title) }}" 
@@ -30,25 +31,19 @@
                                 />
                             </x-forms.form-group>
 
-                            <x-forms.form-group label="Core Knowledge Base (WYSIWYG)" name="content">
-                                <div class="rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
-                                    <textarea id="content-editor" name="content" class="@error('content') is-invalid @enderror">{{ old('content', $material->content) }}</textarea>
+                            <x-ui.alert variant="primary" :dismissible="false" class="bg-indigo-50/50 border-indigo-100">
+                                <div class="flex gap-4">
+                                    <i class="fas fa-sync text-indigo-500 mt-1"></i>
+                                    <div class="text-[10px] font-bold text-slate-500 leading-relaxed uppercase tracking-widest">
+                                        Perubahan pada modul ini akan langsung disinkronkan ke seluruh direktori belajar mahasiswa secara real-time.
+                                    </div>
                                 </div>
-                            </x-forms.form-group>
+                            </x-ui.alert>
                         </div>
-                    </x-ui.card>
-                </div>
 
-                {{-- Visualization & Media --}}
-                <div class="lg:col-span-1 space-y-8">
-                    <x-ui.card class="bg-slate-900 border-0 shadow-2xl overflow-hidden relative">
-                        <div class="absolute right-0 top-0 w-32 h-32 bg-indigo-600/10 blur-3xl"></div>
-                        <x-slot:header class="border-slate-800">
-                            <span class="text-white font-black italic tracking-widest text-[10px] uppercase">Cover Synchronization</span>
-                        </x-slot:header>
-                        
-                        <div class="space-y-6">
-                            <div id="imagePreview" class="relative group aspect-video rounded-3xl bg-slate-800 border-2 border-solid border-slate-700 flex flex-col items-center justify-center overflow-hidden transition-all hover:border-blue-500/50">
+                        <div class="lg:col-span-1 space-y-4">
+                            <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 block">Sinkronisasi Sampul</label>
+                            <div id="imagePreview" class="relative group aspect-video rounded-2xl bg-slate-50 border-2 border-solid border-slate-200 flex flex-col items-center justify-center overflow-hidden transition-all hover:border-indigo-500/50">
                                 @php
                                     $coverMedia = $material->media->first();
                                 @endphp
@@ -57,35 +52,32 @@
                                      class="absolute inset-0 w-full h-full object-cover {{ $coverMedia ? '' : 'hidden' }}">
                                 
                                 <div id="preview_placeholder" class="text-center group-hover:scale-110 transition-transform {{ $coverMedia ? 'hidden' : '' }}">
-                                    <i class="fas fa-camera-retro text-slate-600 text-3xl mb-4"></i>
-                                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-500">Inject Identity Image</p>
+                                    <i class="fas fa-camera-retro text-slate-300 text-2xl mb-2"></i>
+                                    <p class="text-[9px] font-black uppercase tracking-widest text-slate-400">Masukkan Gambar</p>
                                 </div>
                                 <input type="file" name="cover_image" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewImage(this)">
                             </div>
-
-                            <div class="p-6 bg-slate-800/50 border border-slate-700 rounded-[2rem] text-center">
-                                <p class="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-2">Metadata Summary</p>
-                                <div class="text-[10px] text-white font-mono">
-                                    {{ $coverMedia ? 'FILENAME: '.basename($coverMedia->media_url) : 'STATUS: NO ASSET FOUND' }}
-                                </div>
-                            </div>
                         </div>
-                    </x-ui.card>
+                    </div>
 
-                    <x-ui.card class="border-indigo-100 shadow-xl p-8 bg-indigo-50/50">
-                        <div class="flex items-center gap-4 mb-6">
-                            <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                                <i class="fas fa-sync-alt text-xs animate-spin-slow"></i>
-                            </div>
-                            <h6 class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-900">Synchronize Cloud</h6>
+                    {{-- Middle Row: WYSIWYG Editor --}}
+                    <div class="space-y-4">
+                        <x-forms.form-group label="Basis Pengetahuan Utama (WYSIWYG)" name="content">
+                            <div class="quill-editor h-[500px] bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm" data-input="content"></div>
+                            <input type="hidden" id="content" name="content" value="{{ old('content', $material->content) }}">
+                        </x-forms.form-group>
+                    </div>
+
+                    {{-- Bottom Row: commit --}}
+                    <div class="pt-6 border-t border-slate-100 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-cloud-upload-alt text-indigo-500 text-xs animation-pulse"></i>
+                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Sinkronisasi Cloud: Terhubung & Siap</span>
                         </div>
-                        <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest leading-loose mb-8 italic">
-                            Semua perubahan konten dan media akan segera direplikasi ke direktori belajar mahasiswa.
-                        </p>
-                        <x-ui.button type="submit" variant="primary" size="lg" class="w-full shadow-2xl shadow-indigo-500/40 bg-indigo-600 hover:bg-indigo-700" icon="fas fa-cloud-upload-alt">COMMIT UPDATES</x-ui.button>
-                    </x-ui.card>
+                        <x-ui.button type="submit" variant="primary" size="lg" class="shadow-xl shadow-indigo-500/20 bg-indigo-600 hover:bg-indigo-700" icon="fas fa-cloud-upload-alt">SIMPAN PERUBAHAN</x-ui.button>
+                    </div>
                 </div>
-            </div>
+            </x-ui.card>
         </form>
     </div>
 

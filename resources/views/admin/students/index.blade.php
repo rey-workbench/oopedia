@@ -5,15 +5,15 @@
             subtitle="Pantau progres dan aktivitas belajar seluruh mahasiswa terdaftar."
         >
             <div class="flex flex-wrap items-center gap-4">
-                <x-ui.button @click="openModal = true" variant="primary" icon="fas fa-plus">Register Student</x-ui.button>
-                <x-ui.button href="{{ route('admin.students.import') }}" variant="success" icon="fas fa-file-excel">Import Excel</x-ui.button>
+                <x-ui.button @click="openModal = true" variant="primary" icon="fas fa-plus">Daftarkan Mahasiswa</x-ui.button>
+                <x-ui.button href="{{ route('admin.students.import') }}" variant="success" icon="fas fa-file-excel">Impor Excel</x-ui.button>
             </div>
         </x-ui.page-header>
 
         <x-ui.card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
             <x-slot:header>
                 <div class="flex flex-col md:flex-row justify-between items-center gap-6 w-full px-6 py-4">
-                    <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Subject Registry</h6>
+                    <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Registri Subjek</h6>
                     <form method="GET" action="{{ route('admin.students.index') }}" class="w-full md:w-auto">
                         <div class="relative group">
                             <i class="fas fa-user-tag absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors"></i>
@@ -32,8 +32,8 @@
             <x-ui.table>
                 <x-slot:thead>
                     <tr>
-                        <x-ui.th>Mahasiswa Identity</x-ui.th>
-                        <x-ui.th>Email Access</x-ui.th>
+                        <x-ui.th>Identitas Mahasiswa</x-ui.th>
+                        <x-ui.th>Akses Email</x-ui.th>
                         <x-ui.th class="text-center">Aktivitas Soal</x-ui.th>
                         <x-ui.th class="text-center">Integrasi Progres</x-ui.th>
                         <x-ui.th class="text-right">Aksi</x-ui.th>
@@ -62,7 +62,7 @@
                         <td class="px-6 py-6">
                             <div class="w-40 mx-auto space-y-2">
                                 <div class="flex justify-between items-center text-[9px] font-black uppercase italic tracking-widest text-slate-400 px-1">
-                                    <span>Sync Progres</span>
+                                    <span>Sinkronisasi Progres</span>
                                     <span>{{ $student->overall_progress }}%</span>
                                 </div>
                                 <x-ui.progress-bar :value="$student->overall_progress" size="xs" :showPercentage="false" variant="primary" />
@@ -85,11 +85,11 @@
                             <div class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
                                 <i class="fas fa-user-graduate text-slate-200 text-3xl"></i>
                             </div>
-                            <h3 class="text-xl font-black italic uppercase tracking-tighter text-slate-900 mb-2">No Registered Students</h3>
+                            <h3 class="text-xl font-black italic uppercase tracking-tighter text-slate-900 mb-2">Tidak Ada Mahasiswa Terdaftar</h3>
                             <p class="text-slate-400 text-sm max-w-xs mx-auto mb-8">Silakan daftarkan mahasiswa secara manual atau impor melalui protokol Excel.</p>
                             <div class="flex justify-center gap-4">
-                                <x-ui.button @click="openModal = true" variant="primary" icon="fas fa-plus">Register Individual</x-ui.button>
-                                <x-ui.button href="{{ route('admin.students.import') }}" variant="outline" icon="fas fa-file-excel">Upload Dataset</x-ui.button>
+                                <x-ui.button @click="openModal = true" variant="primary" icon="fas fa-plus">Daftar Individu</x-ui.button>
+                                <x-ui.button href="{{ route('admin.students.import') }}" variant="outline" icon="fas fa-file-excel">Unggah Dataset</x-ui.button>
                             </div>
                         </td>
                     </tr>
@@ -114,35 +114,35 @@
                         <div class="absolute right-8 top-10">
                             <button @click="openModal = false" class="text-blue-200 hover:text-white"><i class="fas fa-times"></i></button>
                         </div>
-                        <h6 class="text-xl font-bold tracking-tight mb-2 uppercase">Auth Initialization</h6>
-                        <p class="text-[10px] font-bold text-blue-100 uppercase tracking-widest">Register individual student entity</p>
+                        <h6 class="text-xl font-bold tracking-tight mb-2 uppercase">Inisialisasi Otentikasi</h6>
+                        <p class="text-[10px] font-bold text-blue-100 uppercase tracking-widest">Daftarkan entitas mahasiswa individu</p>
                     </div>
                     
                     <form action="{{ route('admin.students.store') }}" method="POST" class="p-8 space-y-6">
                         @csrf
                         <div class="space-y-4">
                             <div class="space-y-2">
-                                <label class="text-[10px] font-bold uppercase text-slate-400 font-poppins">Full Identity</label>
-                                <x-ui.input name="name" placeholder="Subject's full name" required />
+                                <label class="text-[10px] font-bold uppercase text-slate-400 font-poppins">Identitas Lengkap</label>
+                                <x-ui.input name="name" placeholder="Nama lengkap subjek" required />
                             </div>
                             <div class="space-y-2">
-                                <label class="text-[10px] font-black uppercase text-slate-400 italic font-poppins">Electronic Mail</label>
+                                <label class="text-[10px] font-black uppercase text-slate-400 italic font-poppins">Email Elektronik</label>
                                 <x-ui.input type="email" name="email" placeholder="mahasiswa@example.com" required />
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="space-y-2">
-                                    <label class="text-[10px] font-black uppercase text-slate-400 italic font-poppins">Security Key</label>
-                                    <x-ui.input type="password" name="password" placeholder="Min 8 chars" required />
+                                    <label class="text-[10px] font-black uppercase text-slate-400 italic font-poppins">Kunci Keamanan</label>
+                                    <x-ui.input type="password" name="password" placeholder="Minimal 8 karakter" required />
                                 </div>
                                 <div class="space-y-2">
-                                    <label class="text-[10px] font-black uppercase text-slate-400 italic font-poppins">Confirm Key</label>
-                                    <x-ui.input type="password" name="password_confirmation" placeholder="Verify key" required />
+                                    <label class="text-[10px] font-black uppercase text-slate-400 italic font-poppins">Konfirmasi Kunci</label>
+                                    <x-ui.input type="password" name="password_confirmation" placeholder="Verifikasi kunci" required />
                                 </div>
                             </div>
                         </div>
 
                         <div class="pt-4 flex gap-4">
-                            <x-ui.button type="submit" variant="primary" class="flex-1 py-4 shadow-xl shadow-blue-500/20" icon="fas fa-user-plus">Authorize Student</x-ui.button>
+                            <x-ui.button type="submit" variant="primary" class="flex-1 py-4 shadow-xl shadow-blue-500/20" icon="fas fa-user-plus">Otorisasi Mahasiswa</x-ui.button>
                         </div>
                     </form>
                 </div>

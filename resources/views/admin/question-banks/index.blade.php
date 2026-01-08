@@ -88,7 +88,7 @@
                             <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-[10px] font-bold">
                                 {{ substr($bank->creator ? $bank->creator->name : 'A', 0, 1) }}
                             </div>
-                            <span class="text-xs font-bold text-slate-600">{{ $bank->creator ? $bank->creator->name : 'Unknown' }}</span>
+                            <span class="text-xs font-bold text-slate-600">{{ $bank->creator ? $bank->creator->name : 'Tidak Diketahui' }}</span>
                         </div>
                     </td>
                     <td class="px-6 py-6">

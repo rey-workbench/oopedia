@@ -1,10 +1,10 @@
 <x-layouts.app title="Pending Requisitions" theme="admin">
     <div class="max-w-5xl mx-auto space-y-12">
         <x-ui.page-header
-            title="Access Requisitions"
+            title="Permohonan Akses"
             subtitle="Otorisasi permohonan akses administratif dari entitas eksternal."
         >
-            <x-ui.button href="{{ route('admin.users.index') }}" variant="ghost" icon="fas fa-arrow-left">BACK TO REPOSITORY</x-ui.button>
+            <x-ui.button href="{{ route('admin.users.index') }}" variant="ghost" icon="fas fa-arrow-left">KEMBALI KE REPOSITORI</x-ui.button>
         </x-ui.page-header>
 
         @if(count($pendingAdmins) > 0)
@@ -12,16 +12,16 @@
                 <x-slot:header>
                     <div class="flex items-center gap-4">
                         <div class="w-1.5 h-8 bg-amber-500 rounded-full animate-pulse"></div>
-                        <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Pending Authorization Queue</h6>
+                        <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Antrean Otorisasi Tertunda</h6>
                     </div>
                 </x-slot:header>
 
                 <x-ui.table>
                     <x-slot:thead>
                         <tr>
-                            <x-ui.th>Identity</x-ui.th>
-                            <x-ui.th>Email Source</x-ui.th>
-                            <x-ui.th class="text-center">Submission Date</x-ui.th>
+                            <x-ui.th>Identitas</x-ui.th>
+                            <x-ui.th>Sumber Email</x-ui.th>
+                            <x-ui.th class="text-center">Tanggal Pengajuan</x-ui.th>
                             <x-ui.th class="text-right">Aksi Otorisasi</x-ui.th>
                         </tr>
                     </x-slot:thead>
@@ -46,13 +46,13 @@
                                     <form action="{{ route('admin.users.approve', $admin->id) }}" method="POST">
                                         @csrf
                                         <x-ui.button type="submit" variant="success" size="sm" icon="fas fa-user-check" class="shadow-lg shadow-emerald-500/20">
-                                            APPROVE
+                                            SETUJUI
                                         </x-ui.button>
                                     </form>
                                     <form action="{{ route('admin.users.reject', $admin->id) }}" method="POST">
                                         @csrf
                                         <x-ui.button type="submit" variant="danger" size="sm" icon="fas fa-user-xmark" class="shadow-lg shadow-rose-500/20" onclick="return confirm('Apakah Anda yakin ingin menolak admin ini? Akun akan diubah menjadi mahasiswa.')">
-                                            REJECT
+                                            TOLAK
                                         </x-ui.button>
                                     </form>
                                 </div>
@@ -66,7 +66,7 @@
                 <div class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 text-slate-200">
                     <i class="fas fa-inbox text-3xl"></i>
                 </div>
-                <h3 class="text-lg font-black italic uppercase tracking-tighter text-slate-900 mb-2">Queue Zero</h3>
+                <h3 class="text-lg font-black italic uppercase tracking-tighter text-slate-900 mb-2">Antrean Kosong</h3>
                 <p class="text-slate-400 text-xs max-w-xs mx-auto">Tidak ada permohonan akses administratif yang menunggu otorisasi saat ini.</p>
             </x-ui.card>
         @endif
