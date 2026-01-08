@@ -114,8 +114,6 @@
     </div>
 
     <x-slot:scripts>
-        <script src="{{ asset('js/mahasiswa/partials/question.js') }}"></script>
-        <script src="{{ asset('js/mahasiswa/materials/questions/show.js') }}"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 // Config variable for use in scripts
@@ -130,9 +128,10 @@
                     }
                 };
 
-                // Initialize logic from show.js
-                initializeQuestionForm(config);
-                initializeTutorial();
+                // Initialize logic from mahasiswa bundle
+                if (typeof initializeQuestionForm === 'function') {
+                    initializeQuestionForm(config);
+                }
                 
                 // localStorage logic for levels
                  @if($currentQuestion)
@@ -141,7 +140,7 @@
                 @endif
             });
             
-            // Global redirect variable used by show.js in some contexts
+            // Global redirect variable
             const redirectUrl = "{{ route('mahasiswa.materials.show', $material->id) }}";
         </script>
     </x-slot:scripts>

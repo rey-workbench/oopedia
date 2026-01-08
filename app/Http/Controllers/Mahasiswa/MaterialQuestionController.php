@@ -10,7 +10,9 @@ use App\Models\Progress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use App\Services\AdaptiveQuizService;
+use App\Services\QuizRewardService;
+use App\Services\PersonalizationService;
+use App\Services\PersonalizationRulesService;
 use App\Services\MaterialQuestionService;
 use App\Services\QuestionAnswerService;
 use App\Repositories\Interfaces\MaterialRepositoryInterface;
@@ -20,7 +22,9 @@ use App\Repositories\Interfaces\AnswerRepositoryInterface;
 use Illuminate\Support\Facades\Cookie;
 class MaterialQuestionController extends Controller
 {
-    protected $adaptiveService;
+    protected $rewardService;
+    protected $personalizationService;
+    protected $rulesService;
     protected $materialQuestionService;
     protected $questionAnswerService;
     protected $materialRepo;
@@ -29,7 +33,9 @@ class MaterialQuestionController extends Controller
     protected $answerRepo;
 
     public function __construct(
-        AdaptiveQuizService $adaptiveService,
+        QuizRewardService $rewardService,
+        PersonalizationService $personalizationService,
+        PersonalizationRulesService $rulesService,
         MaterialQuestionService $materialQuestionService,
         QuestionAnswerService $questionAnswerService,
         MaterialRepositoryInterface $materialRepo,
@@ -37,7 +43,9 @@ class MaterialQuestionController extends Controller
         QuestionRepositoryInterface $questionRepo,
         AnswerRepositoryInterface $answerRepo
     ) {
-        $this->adaptiveService = $adaptiveService;
+        $this->rewardService = $rewardService;
+        $this->personalizationService = $personalizationService;
+        $this->rulesService = $rulesService;
         $this->materialQuestionService = $materialQuestionService;
         $this->questionAnswerService = $questionAnswerService;
         $this->materialRepo = $materialRepo;
@@ -219,53 +227,78 @@ class MaterialQuestionController extends Controller
     protected function checkAnswerWithAdaptive($material, $question, $request, $userId, $difficulty)
     {
         $isCorrect = $this->determineCorrectness($question, $request);
+        $usedHint = $request->boolean('used_hint', false);
+        $timeSpent = $request->integer('time_spent', 0);
 
-        // Process with adaptive service
-        $adaptiveResult = $this->adaptiveService->processAttempt(
-            $userId,
-            $material->id,
-            $question,
-            $isCorrect,
-            $request->boolean('used_hint', false)
-        );
+        // 1. Get current state from latest progress
+        $latestProgress = $this->progressRepo->getLatestProgress($userId);
+        $state = $latestProgress ? ($latestProgress->attributes ?? []) : [];
+        $state = $this->initializeDefaults($state);
 
-        // Save progress (Cookie for Guest, DB for Authenticated)
-        if ($isGuest = !auth()->check()) {
-            // Read existing progress from cookie
-            $guestProgressJson = $request->cookie('guest_progress', '[]');
-            $guestProgress = json_decode($guestProgressJson, true) ?? [];
-            
-            $progressKey = $material->id . '_' . $question->id;
-            
-            $guestProgress[$progressKey] = [
-                'is_correct' => $isCorrect,
-                'xp_earned' => $adaptiveResult['xp_earned'],
-                'points_earned' => $adaptiveResult['points_earned'],
-                'attempt_number' => ($guestProgress[$progressKey]['attempt_number'] ?? 0) + 1,
-                'last_attempt_at' => now()->toDateTimeString()
-            ];
-            
-            // Encode back to JSON
-             $updatedCookieValue = json_encode($guestProgress);
-             
-             // Create cookie valid for 30 days (43200 minutes)
-             $cookie = cookie('guest_progress', $updatedCookieValue, 43200, null, null, false, false); // HttpOnly false so JS can read if needed
-             
-             // We don't need 'guest_progress.material_id' hierarchy anymore if we parse keys in service
+        // 2. ORCHESTRATION IN CONTROLLER: Call each service independently
+        
+        // 2a. Calculate rewards (non-adaptive)
+        if ($isCorrect) {
+            $rewardResult = $this->rewardService->calculateCorrectAnswerReward($state, $usedHint);
         } else {
-            // Create progress record in DB with Snapshot
-            Progress::create([
-                'user_id' => $userId,
-                'material_id' => $material->id,
-                'question_id' => $question->id,
-                'is_correct' => $isCorrect,
-                'is_answered' => true,
-                'attempt_number' => 1, 
-                'attributes' => $adaptiveResult['new_state'] 
-            ]);
-            
-            Cache::forget('leaderboard_data');
+            $rewardResult = $this->rewardService->processWrongAnswer($state);
         }
+
+        // Apply reward updates to state
+        foreach ($rewardResult['updates'] as $key => $value) {
+            $state[$key] = $value;
+        }
+
+        // Check streak bonus
+        $streakBonus = $this->rewardService->checkStreakBonus($state);
+        if ($streakBonus) {
+            foreach ($streakBonus['updates'] as $key => $value) {
+                $state[$key] = $value;
+            }
+        }
+
+        // 2b. Update personalization metrics
+        $state['avg_time_spent'] = $this->personalizationService->calculateAverageTimeSpent($userId, $material->id);
+        $state['total_time_spent'] = $this->personalizationService->calculateTotalTimeSpent($userId, $material->id);
+
+        // 2c. Evaluate personalization rules (forward chaining)
+        $personalizationResult = $this->rulesService->evaluate($state, $isCorrect, $usedHint);
+
+        // Merge all results
+        $finalState = $personalizationResult['new_state'];
+
+        // 3. Save progress
+        $savedProgress = $this->progressRepo->saveProgress([
+            'user_id' => $userId,
+            'material_id' => $material->id,
+            'question_id' => $question->id,
+            'is_correct' => $isCorrect,
+            'is_answered' => true,
+            'attributes' => $finalState,
+        ]);
+
+        // Set time spent
+        if ($timeSpent > 0) {
+            $savedProgress->setTimeSpent($timeSpent);
+            $savedProgress->save();
+        }
+
+        Cache::forget('leaderboard_data');
+
+        // 4. Prepare response
+        $adaptiveResult = [
+            'status' => 'success',
+            'is_correct' => $isCorrect,
+            'xp_earned' => $rewardResult['xp_earned'] ?? 0,
+            'points_earned' => $rewardResult['points_earned'] ?? 0,
+            'streak_bonus' => $streakBonus ? $streakBonus['message'] : null,
+            'fast_track_active' => $finalState['fast_track_active'] ?? 0,
+            'show_fatigue_warning' => $finalState['show_fatigue_warning'] ?? 0,
+            'personalization_type' => $finalState['personalization_type'] ?? null,
+            'state_summary' => $this->rewardService->getStateSummary($finalState),
+            'triggered_rules' => $personalizationResult['triggered_rules'],
+            'new_state' => $finalState,
+        ];
 
         // Prepare response
         $responseData = [
@@ -283,14 +316,29 @@ class MaterialQuestionController extends Controller
             ]);
         }
 
-        $response = response()->json($responseData);
-        
-        // Attach cookie if guest
-        if (isset($cookie)) {
-            $response->withCookie($cookie);
-        }
-        
-        return $response;
+        return response()->json($responseData);
+    }
+
+    protected function initializeDefaults(array $state): array
+    {
+        $defaults = [
+            'xp' => 0,
+            'points' => 0,
+            'total_questions_answered' => 0,
+            'correct_count' => 0,
+            'wrong_count' => 0,
+            'current_streak' => 0,
+            'wrong_streak' => 0,
+            'hints_used' => 0,
+            'hints_available' => 0,
+            'avg_time_spent' => 0,
+            'total_time_spent' => 0,
+            'fast_track_active' => 0,
+            'show_fatigue_warning' => 0,
+            'personalization_type' => null,
+        ];
+
+        return array_merge($defaults, $state);
     }
 
     protected function determineCorrectness($question, $request)

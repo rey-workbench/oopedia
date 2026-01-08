@@ -218,4 +218,41 @@ class ProgressRepository extends BaseRepository implements ProgressRepositoryInt
             ->limit($limit)
             ->get();
     }
+
+    // ==================== PERSONALIZATION QUERIES ====================
+
+    public function getFirstProgress($userId, $materialId)
+    {
+        return $this->model
+            ->where('user_id', $userId)
+            ->where('material_id', $materialId)
+            ->oldest('created_at')
+            ->first();
+    }
+
+    public function getLatestProgress($userId)
+    {
+        return $this->model
+            ->where('user_id', $userId)
+            ->latest('created_at')
+            ->first();
+    }
+
+    public function getByUserAndMaterial($userId, $materialId)
+    {
+        return $this->model
+            ->where('user_id', $userId)
+            ->where('material_id', $materialId)
+            ->orderBy('created_at', 'asc')
+            ->get();
+    }
+
+    public function getWrongAnswers($userId, $materialId)
+    {
+        return $this->model
+            ->where('user_id', $userId)
+            ->where('material_id', $materialId)
+            ->where('is_correct', false)
+            ->get();
+    }
 }
