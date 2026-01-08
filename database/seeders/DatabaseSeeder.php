@@ -22,9 +22,7 @@ class DatabaseSeeder extends Seeder
             ProgressSeeder::class,
             UeqSurveysSeeder::class,
             QuestionBanksSeeder::class,
-            AttributeDefinitionsSeeder::class,
-            // FormulasSeeder is now integrated into AttributeDefinitionsSeeder
-            AdaptiveRulesSeeder::class,
         ]);
+
     }
 }

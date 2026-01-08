@@ -4,9 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\AdminDashboardService;
-use App\Models\AdaptiveRule;
-use App\Models\Formula;
-use App\Models\AttributeDefinition;
 
 class DashboardController extends Controller
 {
@@ -32,13 +29,6 @@ class DashboardController extends Controller
         $totalQuestions = $stats['totalQuestions'];
         $activeStudents = $stats['activeStudents'];
 
-        // Adaptive System Stats
-        $totalRules = AdaptiveRule::count();
-        $activeRules = AdaptiveRule::where('is_active', true)->count();
-        $totalFormulas = Formula::count();
-        $activeFormulas = Formula::where('is_active', true)->count();
-        $totalAttributes = AttributeDefinition::count();
-
         // Recent Student Progress
         $recentProgress = $this->adminDashboardService->getRecentProgress(10);
 
@@ -58,11 +48,6 @@ class DashboardController extends Controller
             'totalMaterials',
             'totalQuestions',
             'activeStudents',
-            'totalRules',
-            'activeRules',
-            'totalFormulas',
-            'activeFormulas',
-            'totalAttributes',
             'recentProgress',
             'studentProgress',
             'materialStats',
