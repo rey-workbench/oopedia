@@ -57,7 +57,6 @@
     </main>
     
     <x-slot:scripts>
-        <script src="{{ asset('js/admin/users/pending.js') }}"></script>
     </x-slot:scripts>
     <x-admin.tutorial />
 

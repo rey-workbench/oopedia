@@ -1,116 +1,138 @@
-<x-layouts.app theme="mahasiswa">
-    <x-slot:title>Level Soal - {{ $material->title }}</x-slot:title>
-    <div class="container-fluid">
-        <div class="dashboard-header text-center">
-            <h1 class="main-title">Level Soal: {{ $material->title }}</h1>
-            <div class="title-underline"></div>
-            
-        </div>
+<x-layouts.app :title="'Tantangan - ' . $material->title" theme="mahasiswa">
+    <div class="space-y-12">
+        <x-ui.page-header
+            title="Peta Tantangan"
+            subtitle="Modul: {{ $material->title }}"
+        >
+             <x-ui.button href="{{ route('mahasiswa.materials.index') }}" variant="ghost" icon="fas fa-chevron-left">Log Materi</x-ui.button>
+        </x-ui.page-header>
 
-        <div class="level-container" data-is-guest="{{ !auth()->check() ? 'true' : 'false' }}">
-            <!-- Tambahkan peringatan tentang sistem penilaian hanya untuk user mahasiswa (bukan tamu) -->
+        <div class="max-w-6xl mx-auto space-y-12">
             @if(auth()->check() && auth()->user()->role_id === 3)
-                <div class="alert alert-info mb-4" role="alert">
-                    <h5><i class="fas fa-info-circle"></i> Sistem Penilaian Pada Leaderboard</h5>
-                    <p>Perhatikan bahwa nilai Anda di leaderboard bergantung pada jumlah percobaan yang dibutuhkan untuk menjawab soal dengan benar:</p>
-                    
-                    <div class="mt-2 fw-bold text-danger">
-                        <i class="fas fa-exclamation-triangle"></i> Pastikan jawaban Anda sudah benar sebelum mengirim untuk mendapatkan nilai maksimal!
+                <x-ui.alert variant="primary" :dismissible="false">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-blue-600/10 rounded-2xl flex items-center justify-center shrink-0">
+                            <i class="fas fa-microchip text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h5 class="text-lg font-bold tracking-tight text-blue-900 mb-1">Mekanisme Poin Berbasis Akurasi</h5>
+                            <p class="text-sm font-medium text-blue-800 italic leading-relaxed">
+                                Sistem menghitung skor leaderboard berdasarkan efisiensi jawaban. Setiap percobaan yang salah akan mengurangi potensi poin maksimal. Fokuslah pada akurasi untuk mendaki peringkat teratas.
+                            </p>
+                        </div>
                     </div>
-                </div>
+                </x-ui.alert>
             @endif
 
-            <div class="level-legend mb-4">
-                <div class="legend-title mb-3">Keterangan:</div>
-                <div class="legend-items">
-                    <div class="legend-item">
-                        <div class="legend-icon" style="background: #2196F3;">
-                            <span class="text-white"></span>
+            {{-- Navigation Legend --}}
+            <x-ui.card padding="p-8" class="bg-slate-900 border-slate-800 shadow-2xl relative overflow-hidden">
+                <div class="absolute -right-10 -top-10 opacity-10">
+                    <i class="fas fa-map-marked-alt text-[150px] text-white"></i>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 relative z-10">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                            <i class="fas fa-bolt text-white"></i>
                         </div>
-                        <div class="legend-text">Soal yang bisa dikerjakan</div>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Tersedia</span>
                     </div>
-                    <div class="legend-item">
-                        <div class="legend-icon" style="background: #4CAF50;">
-                            <i class="fas fa-check text-white"></i>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                            <i class="fas fa-check-double text-white"></i>
                         </div>
-                        <div class="legend-text">Soal yang sudah dijawab benar</div>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Tuntas</span>
                     </div>
-                    <div class="legend-item">
-                        <div class="legend-icon" style="background: #e9ecef;">
-                            <span style="color: #6c757d;"></span>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center">
+                            <i class="fas fa-lock text-slate-600"></i>
                         </div>
-                        <div class="legend-text">Soal yang belum bisa diakses</div>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Terkunci</span>
                     </div>
-                    <div class="legend-item">
-                        <div class="legend-icon trophy-circle" style="background: #e9ecef;">
-                            <i class="fas fa-trophy" style="color: #adb5bd;"></i>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-500 flex items-center justify-center shadow-lg shadow-amber-500/20">
+                            <i class="fas fa-crown text-white"></i>
                         </div>
-                        <div class="legend-text">Penghargaan setelah menyelesaikan semua soal</div>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Mastery</span>
+                    </div>
+                </div>
+            </x-ui.card>
+
+            {{-- The Path --}}
+            <div class="relative py-20 overflow-hidden bg-slate-50/50 rounded-[3rem] border border-dashed border-slate-200">
+                <div class="absolute inset-0 opacity-[0.03] pattern-grid-lg"></div>
+                
+                <div class="max-w-xl mx-auto relative px-10">
+                    {{-- The Wire --}}
+                    <div class="absolute left-1/2 top-0 bottom-0 w-1 bg-slate-200 -translate-x-1/2 rounded-full hidden md:block"></div>
+
+                    <div class="flex justify-center mb-16 relative">
+                        <div class="px-6 py-2 bg-slate-900 text-white rounded-full text-[10px] font-bold uppercase tracking-widest shadow-xl z-20">Episode Start</div>
+                    </div>
+
+                    @foreach($levels as $index => $level)
+                        <div class="flex {{ $index % 2 == 0 ? 'justify-start' : 'justify-end' }} mb-20 relative">
+                            {{-- Step connector --}}
+                            <div class="absolute top-1/2 {{ $index % 2 == 0 ? 'left-1/2' : 'right-1/2' }} h-0.5 bg-slate-200 w-16 -translate-y-1/2 hidden md:block -z-0"></div>
+                            
+                            <div class="relative z-10 group">
+                                @if($level['status'] === 'locked')
+                                    <div class="w-20 h-20 rounded-[2rem] bg-slate-100 border-4 border-white flex items-center justify-center text-slate-300 font-bold text-2xl shadow-inner">
+                                        {{ $level['level'] }}
+                                    </div>
+                                @elseif($level['status'] === 'completed')
+                                    <div class="relative">
+                                        <div class="w-20 h-20 rounded-[2rem] bg-emerald-500 border-4 border-white flex items-center justify-center text-white font-bold text-2xl shadow-xl shadow-emerald-200 transition-transform group-hover:scale-110">
+                                            {{ $level['level'] }}
+                                        </div>
+                                        <div class="absolute -top-3 -right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-emerald-50 text-emerald-500">
+                                            <i class="fas fa-check-double text-xs"></i>
+                                        </div>
+                                    </div>
+                                @else
+                                    <a href="{{ route('mahasiswa.materials.questions.show', ['material' => $material->id, 'question' => $level['question_id']]) }}" class="relative block transform hover:scale-110 transition-all duration-500 group">
+                                        <div class="w-20 h-20 rounded-[2rem] bg-gradient-to-br from-blue-600 to-indigo-700 border-4 border-white flex items-center justify-center text-white font-bold text-2xl shadow-2xl shadow-blue-500/40">
+                                            {{ $level['level'] }}
+                                        </div>
+                                        <div class="absolute inset-0 rounded-[2rem] bg-blue-500 animate-ping opacity-20 -z-10"></div>
+                                        <div class="absolute -top-3 -right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-blue-50 text-blue-600">
+                                            <i class="fas fa-play text-[10px] ml-0.5"></i>
+                                        </div>
+                                    </a>
+                                @endif
+                                
+                                <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] font-black text-slate-400 uppercase tracking-widest italic opacity-0 group-hover:opacity-100 transition-all">
+                                    TANTANGAN {{ $level['level'] }}
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+
+                    <div class="flex justify-center mt-24">
+                        @php $allCompleted = count(array_filter($levels, function($level) { return $level['status'] !== 'completed'; })) === 0; @endphp
+                        <div class="relative">
+                            <div class="w-32 h-32 rounded-[3rem] {{ $allCompleted ? 'bg-gradient-to-br from-amber-400 to-orange-500 shadow-2xl shadow-amber-200' : 'bg-slate-100 border-4 border-white' }} flex items-center justify-center transition-all duration-1000 group">
+                                <i class="fas fa-trophy text-5xl {{ $allCompleted ? 'text-white animate-bounce' : 'text-slate-200' }}"></i>
+                                @if($allCompleted)
+                                    <div class="absolute inset-0 rounded-[3rem] bg-amber-400 animate-pulse opacity-20"></div>
+                                @endif
+                            </div>
+                            <div class="absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] font-black text-amber-600 uppercase tracking-[0.4em] italic {{ $allCompleted ? 'opacity-100 animate-pulse' : 'opacity-20' }}">MASTERY ZONE</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="level-header text-center mb-5">
-                <div class="start-text">
-                    <span>START</span>
-                    <div class="start-line"></div>
-                </div>
-            </div>
-            
-            <div class="level-map">
-                <!-- SVG untuk jalur -->
-                <svg class="level-paths" width="100%" height="100%" style="position: absolute; top: 0; left: 0; z-index: 0;">
-                    <!-- Jalur akan ditambahkan secara dinamis dengan JavaScript -->
-                </svg>
-                
-                @foreach($levels as $index => $level)
-                    <div class="level-row {{ $index % 3 == 0 ? 'center' : ($index % 3 == 1 ? 'left' : 'right') }}">
-                        <div class="level-item {{ $level['status'] }}" data-level="{{ $level['level'] }}" data-question-id="{{ $level['question_id'] }}" {{ $level['status'] === 'unlocked' ? 'id=unlockedLevel' : '' }}>
-                            @if($level['status'] === 'locked')
-                                <div class="level-circle">
-                                    <span class="level-number">{{ $level['level'] }}</span>
-                                </div>
-                            @elseif($level['status'] === 'completed')
-                                <div class="level-circle completed">
-                                    <span class="level-number">{{ $level['level'] }}</span>
-                                    <i class="fas fa-check-circle completed-icon"></i>
-                                </div>
-                            @else
-                                <a href="{{ route('mahasiswa.materials.questions.show', [
-                                    'material' => $material->id,
-                                    'question' => $level['question_id']
-                                ]) }}" class="level-link">
-                                    <div class="level-circle unlocked">
-                                        <span class="level-number">{{ $level['level'] }}</span>
-                                    </div>
-                                </a>
-                            @endif
-                        </div>
-                    </div>
-                @endforeach
-                
-                <div class="level-row center">
-                    <div class="level-item trophy {{ count(array_filter($levels, function($level) { return $level['status'] !== 'completed'; })) === 0 ? 'completed' : 'locked' }}">
-                        <div class="level-circle trophy-circle">
-                            <i class="fas fa-trophy trophy-icon"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="level-actions mt-4">
-                <a href="{{ route('mahasiswa.materials.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>Kembali ke Daftar Materi
-                </a>
+            <div class="flex justify-center">
+                <x-ui.button
+                    href="{{ route('mahasiswa.materials.index') }}"
+                    variant="ghost"
+                    size="lg"
+                    icon="fas fa-arrow-left"
+                    class="text-slate-400"
+                >
+                    Kembali ke Katalog
+                </x-ui.button>
             </div>
         </div>
     </div>
-
-    <x-slot:styles>
-        <link href="{{ asset('css/mahasiswa/levels.css') }}" rel="stylesheet">
-    </x-slot:styles>
-
-    <x-slot:scripts>
-        <script src="{{ asset('js/mahasiswa/levels.js') }}"></script>
-    </x-slot:scripts>
 </x-layouts.app>

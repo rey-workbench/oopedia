@@ -1,170 +1,162 @@
 <x-layouts.app title="UEQ Survey" theme="mahasiswa">
-    <x-slot:styles>
+    <div class="py-12">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            {{-- Header Section --}}
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl mb-6 shadow-inner">
+                    <i class="fas fa-poll-h text-2xl"></i>
+                </div>
+                <h1 class="text-4xl font-black text-gray-900 mb-4 tracking-tight italic uppercase">
+                    User Experience <span class="text-blue-600">Questionnaire</span>
+                </h1>
+                <p class="text-gray-500 text-lg max-w-2xl mx-auto font-medium italic">
+                    Bantu kami meningkatkan kualitas OOPEDIA dengan memberikan penilaian jujur Anda.
+                </p>
+            </div>
 
-        <link href="{{ asset('css/mahasiswa/ueq/create.css') }}" rel="stylesheet">
-    </x-slot:styles>
+            <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 overflow-hidden">
+                <div class="p-8 md:p-12 border-b border-gray-50 bg-gray-50/50">
+                    @if ($errors->any() || session('error'))
+                        <div class="mb-10 p-6 bg-rose-50 border border-rose-100 rounded-3xl flex items-start gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
+                            <div class="w-12 h-12 bg-rose-500 text-white rounded-2xl flex items-center justify-center shrink-0 shadow-lg shadow-rose-100">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-black text-rose-900 uppercase tracking-tight mb-1">Terjadi Kesalahan!</h5>
+                                <p class="text-rose-700 font-medium italic">
+                                    Ada {{ count(session('missingFields', [])) ?: $errors->count() }} pertanyaan yang belum dijawab. Mohon periksa kembali pilihan Anda.
+                                </p>
+                            </div>
+                        </div>
+                    @endif
 
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <x-ui.card>
-                    <div class="card-header bg-transparent border-bottom-0 pt-4 px-4 pb-0">
-                        <h4 class="mb-0">User Experience Questionnaire (UEQ)</h4>
-                    </div>
-                    <div class="card-body p-4">
-                        @if ($errors->any() || session('error'))
-                            <x-ui.alert variant="danger" dismissible="true">
-                                <div class="d-flex align-items-center">
-                                    <div class="me-3">
-                                        <i class="fas fa-exclamation-triangle fa-2x"></i>
-                                    </div>
-                                    <div>
-                                        <h5 class="mb-1">Perhatian!</h5>
-                                        <p class="mb-0">
-                                            Ada {{ count(session('missingFields', [])) ?: $errors->count() }} pertanyaan yang belum dijawab. Silakan isi semua pertanyaan.
-                                        </p>
-                                    </div>
+                    <form id="ueqForm" method="POST" action="{{ route('mahasiswa.ueq.store') }}" class="space-y-12">
+                        @csrf
+
+                        {{-- Identity Section --}}
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="group">
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 group-focus-within:text-blue-600 transition-colors">NIM Mahasiswa <span class="text-rose-500">*</span></label>
+                                <x-ui.input type="text" id="nim" name="nim" :value="old('nim')" class="rounded-2xl border-gray-200 bg-white py-4 font-bold focus:ring-blue-500/20" placeholder="Masukkan NIM Anda" required />
+                            </div>
+                            <div class="group">
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Nama Lengkap</label>
+                                <div class="w-full px-5 py-4 border border-gray-200 rounded-2xl bg-gray-100 font-bold text-gray-500 italic">
+                                    {{ auth()->check() ? auth()->user()->name : 'Guest User' }}
                                 </div>
-                            </x-ui.alert>
-                        @endif
-    
-                        <p class="mb-4">Silakan berikan penilaian Anda terhadap aplikasi pembelajaran OOPEDIA dengan memilih nilai pada skala berikut:</p>
-                        
-                        <form id="ueqForm" method="POST" action="{{ route('mahasiswa.ueq.store') }}">
-                            @csrf
-                            
-                            <!-- Tambahkan bagian form identitas mahasiswa -->
-                            <div class="row mb-4">
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="nim" class="form-label">NIM <span class="text-danger fw-bold">*</span></label>
-                                        <input type="text" class="form-control @error('nim') is-invalid @enderror" 
-                                            id="nim" name="nim" value="{{ old('nim') }}" required>
-                                        @error('nim')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
+                            </div>
+                            <div class="group">
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 group-focus-within:text-blue-600 transition-colors">Kelas <span class="text-rose-500">*</span></label>
+                                <x-ui.input type="text" id="class" name="class" :value="old('class')" class="rounded-2xl border-gray-200 bg-white py-4 font-bold focus:ring-blue-500/20" placeholder="Contoh: SIB2A" required />
+                            </div>
+                        </div>
+
+                        {{-- Questionnaire Section --}}
+                        <div class="space-y-6 pt-6 border-t border-gray-100">
+                            <div class="flex items-center gap-3 mb-8">
+                                <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 shadow-inner">
+                                    <i class="fas fa-list-ol text-sm"></i>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label">Nama Lengkap <span class="text-danger fw-bold">*</span></label>
-                                        <input type="text" class="form-control bg-light"
-                                            id="name" value="{{ auth()->check() ? auth()->user()->name : '' }}" readonly
-                                            style="cursor: not-allowed; opacity: 0.7;">
-                                        <small class="text-muted">Nama diambil dari data profil</small>
+                                <h4 class="text-lg font-black text-gray-900 italic tracking-tight uppercase">Penilaian Skala UEQ</h4>
+                            </div>
+
+                            <div class="overflow-x-auto -mx-8 px-8">
+                                <div class="min-w-[800px] pb-4">
+                                    <div class="flex items-center text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 px-4">
+                                        <div class="w-1/4">Negatif</div>
+                                        <div class="w-2/4 flex justify-between px-12">
+                                            @for($i=1; $i<=7; $i++)
+                                                <div class="w-8 text-center">{{ $i }}</div>
+                                            @endfor
+                                        </div>
+                                        <div class="w-1/4 text-right">Positif</div>
                                     </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="class" class="form-label">Kelas <span class="text-danger fw-bold">*</span></label>
-                                        <input type="text" class="form-control @error('class') is-invalid @enderror" 
-                                            id="class" name="class" value="{{ old('class') }}" 
-                                            placeholder="contoh: SIB2A" required>
-                                        @error('class')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+
+                                    <div class="space-y-3">
+                                        @foreach([
+                                            ['name' => 'annoying_enjoyable', 'left' => 'Menyebalkan', 'right' => 'Menyenangkan'],
+                                            ['name' => 'not_understandable_understandable', 'left' => 'Sulit dipahami', 'right' => 'Mudah dipahami'],
+                                            ['name' => 'creative_dull', 'left' => 'Kreatif', 'right' => 'Monoton'],
+                                            ['name' => 'easy_difficult', 'left' => 'Mudah', 'right' => 'Sulit'],
+                                            ['name' => 'valuable_inferior', 'left' => 'Bermanfaat', 'right' => 'Kurang bermanfaat'],
+                                            ['name' => 'boring_exciting', 'left' => 'Membosankan', 'right' => 'Menarik'],
+                                            ['name' => 'not_interesting_interesting', 'left' => 'Tidak menarik', 'right' => 'Menarik'],
+                                            ['name' => 'unpredictable_predictable', 'left' => 'Sulit diprediksi', 'right' => 'Dapat diprediksi'],
+                                            ['name' => 'fast_slow', 'left' => 'Cepat', 'right' => 'Lambat'],
+                                            ['name' => 'inventive_conventional', 'left' => 'Inovatif', 'right' => 'Konvensional'],
+                                            ['name' => 'obstructive_supportive', 'left' => 'Menghambat', 'right' => 'Mendukung'],
+                                            ['name' => 'good_bad', 'left' => 'Baik', 'right' => 'Buruk'],
+                                            ['name' => 'complicated_easy', 'left' => 'Rumit', 'right' => 'Sederhana'],
+                                            ['name' => 'unlikable_pleasing', 'left' => 'Tidak disukai', 'right' => 'Menyenangkan'],
+                                            ['name' => 'usual_leading_edge', 'left' => 'Biasa saja', 'right' => 'Terdepan'],
+                                            ['name' => 'unpleasant_pleasant', 'left' => 'Tidak menyenangkan', 'right' => 'Menyenangkan'],
+                                            ['name' => 'secure_not_secure', 'left' => 'Aman', 'right' => 'Tidak aman'],
+                                            ['name' => 'motivating_demotivating', 'left' => 'Memotivasi', 'right' => 'Tidak memotivasi'],
+                                            ['name' => 'meets_expectations_does_not_meet', 'left' => 'Sesuai ekspektasi', 'right' => 'Tidak sesuai'],
+                                            ['name' => 'inefficient_efficient', 'left' => 'Tidak efisien', 'right' => 'Efisien'],
+                                            ['name' => 'clear_confusing', 'left' => 'Jelas', 'right' => 'Membingungkan'],
+                                            ['name' => 'impractical_practical', 'left' => 'Tidak praktis', 'right' => 'Praktis'],
+                                            ['name' => 'organized_cluttered', 'left' => 'Terorganisir', 'right' => 'Berantakan'],
+                                            ['name' => 'attractive_unattractive', 'left' => 'Menarik', 'right' => 'Tidak menarik'],
+                                            ['name' => 'friendly_unfriendly', 'left' => 'Ramah', 'right' => 'Tidak ramah'],
+                                            ['name' => 'conservative_innovative', 'left' => 'Konservatif', 'right' => 'Inovatif'],
+                                        ] as $question)
+                                        <div class="ueq-row group p-4 rounded-2xl transition-all duration-300 flex items-center gap-2 {{ in_array($question['name'], session('missingFields', [])) || $errors->has($question['name']) ? 'bg-rose-50 ring-2 ring-rose-200' : 'bg-white hover:bg-blue-50/50' }}">
+                                            <div class="w-1/4 text-sm font-bold text-gray-500 italic">{{ $question['left'] }}</div>
+                                            <div class="w-2/4 flex justify-between px-10">
+                                                @for ($i = 1; $i <= 7; $i++)
+                                                    <label class="cursor-pointer relative flex flex-col items-center group/radio">
+                                                        <input type="radio" name="{{ $question['name'] }}" value="{{ $i }}" {{ old($question['name']) == $i ? 'checked' : '' }} class="peer hidden" required>
+                                                        <div class="w-8 h-8 rounded-full border-2 border-gray-200 bg-white peer-checked:border-blue-600 peer-checked:bg-blue-600 peer-checked:shadow-lg peer-checked:shadow-blue-200 transition-all group-hover/radio:border-blue-300"></div>
+                                                        <div class="absolute inset-x-0 -bottom-1 h-0.5 bg-blue-600 opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+                                                    </label>
+                                                @endfor
+                                            </div>
+                                            <div class="w-1/4 text-sm font-bold text-gray-500 italic text-right">{{ $question['right'] }}</div>
+                                        </div>
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>
-                            
-                            <x-ui.table tableClass="table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th width="30%">Aspek</th>
-                                        <th colspan="7" class="text-center">Penilaian <span class="text-danger fw-bold">*</span></th>
-                                        <th width="30%">Aspek</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach([
-                                        ['name' => 'annoying_enjoyable', 'left' => 'Menyebalkan', 'right' => 'Menyenangkan'],
-                                        ['name' => 'not_understandable_understandable', 'left' => 'Tidak dapat dipahami', 'right' => 'Dapat dipahami'],
-                                        ['name' => 'creative_dull', 'left' => 'Kreatif', 'right' => 'Monoton'],
-                                        ['name' => 'easy_difficult', 'left' => 'Mudah', 'right' => 'Sulit'],
-                                        ['name' => 'valuable_inferior', 'left' => 'Bermanfaat', 'right' => 'Kurang bermanfaat'],
-                                        ['name' => 'boring_exciting', 'left' => 'Membosankan', 'right' => 'Menarik'],
-                                        ['name' => 'not_interesting_interesting', 'left' => 'Tidak menarik', 'right' => 'Menarik'],
-                                        ['name' => 'unpredictable_predictable', 'left' => 'Tidak dapat diprediksi', 'right' => 'Dapat diprediksi'],
-                                        ['name' => 'fast_slow', 'left' => 'Cepat', 'right' => 'Lambat'],
-                                        ['name' => 'inventive_conventional', 'left' => 'Inovatif', 'right' => 'Konvensional'],
-                                        ['name' => 'obstructive_supportive', 'left' => 'Menghambat', 'right' => 'Mendukung'],
-                                        ['name' => 'good_bad', 'left' => 'Baik', 'right' => 'Buruk'],
-                                        ['name' => 'complicated_easy', 'left' => 'Rumit', 'right' => 'Sederhana'],
-                                        ['name' => 'unlikable_pleasing', 'left' => 'Tidak disukai', 'right' => 'Menyenangkan'],
-                                        ['name' => 'usual_leading_edge', 'left' => 'Biasa saja', 'right' => 'Terdepan'],
-                                        ['name' => 'unpleasant_pleasant', 'left' => 'Tidak menyenangkan', 'right' => 'Menyenangkan'],
-                                        ['name' => 'secure_not_secure', 'left' => 'Aman', 'right' => 'Tidak aman'],
-                                        ['name' => 'motivating_demotivating', 'left' => 'Memotivasi', 'right' => 'Tidak memotivasi'],
-                                        ['name' => 'meets_expectations_does_not_meet', 'left' => 'Memenuhi ekspektasi', 'right' => 'Tidak memenuhi ekspektasi'],
-                                        ['name' => 'inefficient_efficient', 'left' => 'Tidak efisien', 'right' => 'Efisien'],
-                                        ['name' => 'clear_confusing', 'left' => 'Jelas', 'right' => 'Membingungkan'],
-                                        ['name' => 'impractical_practical', 'left' => 'Tidak praktis', 'right' => 'Praktis'],
-                                        ['name' => 'organized_cluttered', 'left' => 'Terorganisir', 'right' => 'Berantakan'],
-                                        ['name' => 'attractive_unattractive', 'left' => 'Menarik', 'right' => 'Tidak menarik'],
-                                        ['name' => 'friendly_unfriendly', 'left' => 'Ramah', 'right' => 'Tidak ramah'],
-                                        ['name' => 'conservative_innovative', 'left' => 'Konservatif', 'right' => 'Inovatif'],
-                                    ] as $question)
-                                    <tr class="ueq-row {{ in_array($question['name'], session('missingFields', [])) || $errors->has($question['name']) ? 'unanswered' : '' }}">
-                                        <td class="aspect-left">{{ $question['left'] }}</td>
-                                        @for ($i = 1; $i <= 7; $i++)
-                                            <td class="text-center radio-cell">
-                                                <div class="radio-wrapper">
-                                                    <input type="radio" 
-                                                        name="{{ $question['name'] }}" 
-                                                        value="{{ $i }}" 
-                                                        {{ old($question['name']) == $i ? 'checked' : '' }} 
-                                                        required>
-                                                    <label>{{ $i }}</label>
-                                                </div>
-                                            </td>
-                                        @endfor
-                                        <td class="aspect-right">{{ $question['right'] }}</td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </x-ui.table>
-    
-                            <!-- Bagian komentar dan saran -->
-                            <div class="mb-3 mt-4">
-                                <label for="comments" class="form-label">Komentar <span class="text-danger">*</span></label>
-                                <textarea class="form-control @error('comments') is-invalid @enderror" 
-                                    id="comments" 
-                                    name="comments" 
-                                    rows="3" 
-                                    required
-                                    placeholder="Tulis komentar Anda mengenai pengalaman menggunakan web ini...">{{ old('comments') }}</textarea>
-                                @error('comments')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                        </div>
+
+                        {{-- Feedback Section --}}
+                        <div class="pt-12 border-t border-gray-100 space-y-8">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 shadow-inner">
+                                    <i class="fas fa-comment-alt text-sm"></i>
+                                </div>
+                                <h4 class="text-lg font-black text-gray-900 italic tracking-tight uppercase">Tanggapan Kualitatif</h4>
                             </div>
-                            
-                            <div class="mb-3">
-                                <label for="suggestions" class="form-label">Saran <span class="text-danger">*</span></label>
-                                <textarea class="form-control @error('suggestions') is-invalid @enderror" 
-                                    id="suggestions" 
-                                    name="suggestions" 
-                                    rows="3" 
-                                    required
-                                    placeholder="Tulis saran Anda untuk pengembangan atau perbaikan web ini...">{{ old('suggestions') }}</textarea>
-                                @error('suggestions')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <x-forms.form-group label="Komentar Anda" name="comments" required="true">
+                                    <textarea class="w-full px-5 py-4 border border-gray-200 rounded-2xl bg-gray-50/50 font-bold focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all placeholder:text-gray-300 italic min-h-[120px]"
+                                        id="comments" name="comments" required placeholder="Ceritakan pengalaman Anda menggunakan OOPEDIA...">{{ old('comments') }}</textarea>
+                                </x-forms.form-group>
+
+                                <x-forms.form-group label="Saran Pengembangan" name="suggestions" required="true">
+                                    <textarea class="w-full px-5 py-4 border border-gray-200 rounded-2xl bg-gray-50/50 font-bold focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all placeholder:text-gray-300 italic min-h-[120px]"
+                                        id="suggestions" name="suggestions" required placeholder="Apa yang sebaiknya kami tingkatkan selanjutnya?">{{ old('suggestions') }}</textarea>
+                                </x-forms.form-group>
                             </div>
-                            
-                            <div class="d-grid gap-2 mt-4">
-                                <x-ui.button type="submit" variant="primary" id="submitButton" class="w-100">
-                                    Kirim
-                                </x-ui.button>
-                            </div>
-                        </form>
-                    </div>
-                </x-ui.card>
+                        </div>
+
+                        <div class="pt-8 flex justify-center">
+                            <button type="submit" class="group relative px-16 py-5 bg-gray-900 text-white rounded-[2rem] font-black italic tracking-[0.2em] uppercase overflow-hidden hover:bg-blue-600 transition-all shadow-2xl hover:shadow-blue-200 scale-100 active:scale-95">
+                                <span class="relative z-10 flex items-center gap-3">
+                                    Kirim Kuesioner
+                                    <i class="fas fa-paper-plane group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform"></i>
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 
     <x-slot:scripts>
-        <script src="{{ asset('js/mahasiswa/ueq/create.js') }}"></script>
         <script>
             // Handle error scrolling
             document.addEventListener('DOMContentLoaded', function() {

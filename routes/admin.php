@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
         // Students management
         Route::controller(AdminStudentController::class)->group(function () {
             Route::get('students', 'index')->name('students.index');
+            Route::post('students', 'store')->name('students.store');
             Route::get('students/{student}/progress', 'progress')->name('students.progress');
             Route::delete('students/{student}', 'destroy')->name('students.destroy');
             Route::get('students/import', 'showImportForm')->name('students.import');
@@ -83,7 +84,7 @@ Route::middleware('auth')->group(function () {
         
         // Attribute Definitions routes
         Route::get('attribute-definitions', [AttributeDefinitionController::class, 'index'])->name('attribute-definitions.index');
-        Route::post('attribute-definitions', [AttributeDefinitionController::class, 'store']);
+        Route::post('attribute-definitions', [AttributeDefinitionController::class, 'store'])->name('attribute-definitions.store');
 
         // Media routes
         Route::get('/media/delete/{id}', [AdminMaterialController::class, 'deleteMedia'])

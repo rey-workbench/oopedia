@@ -1,6 +1,4 @@
 @push('js')
-<script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
-<link href="https://unpkg.com/intro.js/minified/introjs.min.css" rel="stylesheet">
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

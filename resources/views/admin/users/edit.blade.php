@@ -1,76 +1,61 @@
-<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
-    <x-navigation.sidebar activePage="users" />
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navigation.navbar titlePage="Edit Admin" />
-        <div class="container-fluid py-4">
-            <div class="row">
-                <div class="col-12">
-                    <x-ui.card class="my-4">
-                        <x-slot:header>
-                            <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                                <h6 class="text-white text-capitalize ps-3 mb-0">Edit Admin</h6>
-                            </div>
-                        </x-slot:header>
+<x-layouts.app title="Edit Admin" theme="admin">
+    <div class="max-w-4xl mx-auto space-y-12">
+        <x-ui.page-header
+            title="Administrator Reconfiguration"
+            subtitle="Modifikasi parameter akses dan profil untuk entitas {{ $user->name }}."
+        >
+            <x-ui.button href="{{ route('admin.users.index') }}" variant="ghost" icon="fas fa-arrow-left">BACK TO LIST</x-ui.button>
+        </x-ui.page-header>
 
-                        <div class="card-body px-0 pb-2">
-                            <form method="POST" action="{{ route('admin.users.update', $user->id) }}" class="p-4">
-                                @csrf
-                                @method('PUT')
-                                
-                                @if($errors->any())
-                                    <x-ui.alert type="warning" dismissible>
-                                        @foreach($errors->all() as $error)
-                                            {{ $error }}<br>
-                                        @endforeach
-                                    </x-ui.alert>
-                                @endif
-                                
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <x-forms.form-group label="Nama" name="name" required>
-                                            <x-ui.input name="name" value="{{ old('name', $user->name) }}" required />
-                                        </x-forms.form-group>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <x-forms.form-group label="Email" name="email" required>
-                                            <x-ui.input type="email" name="email" value="{{ old('email', $user->email) }}" required />
-                                        </x-forms.form-group>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <x-forms.form-group label="Password (kosongkan jika tidak ingin mengubah)" name="password">
-                                            <x-ui.input type="password" name="password" />
-                                        </x-forms.form-group>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <x-forms.form-group label="Konfirmasi Password" name="password_confirmation">
-                                            <x-ui.input type="password" name="password_confirmation" />
-                                        </x-forms.form-group>
-                                    </div>
-                                </div>
-                                @if(auth()->user()->role_id == 1)
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <x-forms.form-group label="Role" name="role_id" required>
-                                            <x-forms.select name="role_id" :options="$roles->pluck('role_name', 'id')" :selected="$user->role_id" required />
-                                        </x-forms.form-group>
-                                    </div>
-                                </div>
-                                @endif
-                                <div class="row">
-                                    <div class="col-12">
-                                        <x-ui.button type="submit" variant="primary">Update</x-ui.button>
-                                        <x-ui.button variant="outline" href="{{ route('admin.users.index') }}">Batal</x-ui.button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </x-ui.card>
+        <x-ui.card class="border-slate-100 shadow-2xl">
+            <x-slot:header>
+                <div class="flex items-center gap-4">
+                    <div class="w-1.5 h-8 bg-blue-600 rounded-full"></div>
+                    <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Security Parameters</h6>
                 </div>
-            </div>
-        </div>
-    </main>
-    <x-admin.tutorial />
+            </x-slot:header>
 
-</x-layouts.app> 
+            <form method="POST" action="{{ route('admin.users.update', $user->id) }}" class="space-y-10">
+                @csrf
+                @method('PUT')
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-4">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Global Identity</label>
+                        <x-ui.input name="name" value="{{ old('name', $user->name) }}" placeholder="Subject's full name" required />
+                    </div>
+                    <div class="space-y-4">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Auth Alias (Email)</label>
+                        <x-ui.input type="email" name="email" value="{{ old('email', $user->email) }}" placeholder="Subject's electronic mail" required />
+                    </div>
+                    <div class="space-y-4">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">New Security Key (Optional)</label>
+                        <x-ui.input type="password" name="password" placeholder="Leave blank to preserve current key" />
+                    </div>
+                    <div class="space-y-4">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Verify New Key</label>
+                        <x-ui.input type="password" name="password_confirmation" placeholder="Verify security key initialization" />
+                    </div>
+                    
+                    @if(auth()->user()->role_id == 1)
+                    <div class="md:col-span-2 space-y-4">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Authorization Rank</label>
+                        <select name="role_id" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-3xl text-xs font-black italic tracking-tighter outline-none focus:ring-4 focus:ring-blue-100 transition-all appearance-none cursor-pointer uppercase font-poppins" required>
+                            @foreach($roles as $role)
+                                <option value="{{ $role->id }}" {{ old('role_id', $user->role_id) == $role->id ? 'selected' : '' }}>{{ strtoupper($role->role_name) }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @endif
+                </div>
+
+                <div class="pt-10">
+                    <x-ui.button type="submit" variant="primary" class="w-full h-[60px] shadow-2xl shadow-blue-500/30" icon="fas fa-microchip">
+                        RECONFIGURE ENTITY
+                    </x-ui.button>
+                </div>
+            </form>
+        </x-ui.card>
+    </div>
+    <x-admin.tutorial />
+</x-layouts.app>

@@ -27,18 +27,36 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Close sidebar button functionality for student sidebar
+    // Toggle sidebar button functionality for student sidebar
+    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
     const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
     const sidebar = document.querySelector('.sidebar');
     const sidebarBackdrop = document.querySelector('.sidebar-backdrop');
 
-    if (sidebarCloseBtn) {
+    if (sidebarToggleBtn && sidebar) {
+        sidebarToggleBtn.addEventListener('click', function () {
+            sidebar.classList.add('show');
+            if (sidebarBackdrop) {
+                sidebarBackdrop.classList.add('show');
+            }
+        });
+    }
+
+    if (sidebarCloseBtn && sidebar) {
         sidebarCloseBtn.addEventListener('click', function () {
-            if (sidebar) sidebar.classList.remove('show');
+            sidebar.classList.remove('show');
             if (sidebarBackdrop) {
                 sidebarBackdrop.classList.remove('show');
             }
-            localStorage.setItem('sidebarOpen', false);
+        });
+    }
+
+    // Close on backdrop click
+    if (sidebarBackdrop && sidebar) {
+        sidebarBackdrop.addEventListener('click', function () {
+            sidebar.classList.remove('show');
+            sidebarBackdrop.classList.remove('show');
         });
     }
 });
+x

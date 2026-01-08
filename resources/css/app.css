@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+/* Custom theme configuration */
+@theme {
+  --color-primary-50: #e6f2ff;
+  --color-primary-100: #b3d9ff;
+  --color-primary-200: #80bfff;
+  --color-primary-300: #4da6ff;
+  --color-primary-400: #1a8cff;
+  --color-primary-500: #0066cc;
+  --color-primary-600: #004e98;
+  --color-primary-700: #003a75;
+  --color-primary-800: #002651;
+  --color-primary-900: #00132e;
+}
+
+
+/* Intro.js Custom Styling */
+.custom-tour {
+  border-radius: 1.5rem !important;
+  padding: 1rem !important;
+  border: none !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  max-width: 350px !important;
+}
+
+.custom-tour .introjs-tooltiptext {
+  font-family: 'Poppins', sans-serif !important;
+  color: #1e293b !important;
+  font-size: 0.95rem !important;
+  line-height: 1.6 !important;
+}
+
+.custom-tour .introjs-tooltip-title {
+  font-weight: 800 !important;
+  font-style: italic !important;
+  text-transform: uppercase !important;
+  letter-spacing: -0.025em !important;
+  color: #0f172a !important;
+  font-size: 1.1rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.custom-tour .introjs-bullets ul li a {
+  background: #e2e8f0 !important;
+}
+
+.custom-tour .introjs-bullets ul li a.active {
+  background: #3b82f6 !important;
+}
+
+.custom-tour .introjs-button {
+  text-shadow: none !important;
+  background-image: none !important;
+  border-radius: 0.75rem !important;
+  padding: 0.5rem 1rem !important;
+  font-weight: 700 !important;
+  font-size: 0.875rem !important;
+  transition: all 0.3s !important;
+  border: none !important;
+}
+
+.custom-tour .introjs-prevbutton {
+  color: #475569 !important;
+  background-color: #f1f5f9 !important;
+}
+
+.custom-tour .introjs-nextbutton,
+.custom-tour .introjs-donebutton {
+  color: #ffffff !important;
+  background-color: #0f172a !important;
+}
+
+.custom-tour .introjs-nextbutton:hover,
+.custom-tour .introjs-donebutton:hover {
+  background-color: #1e293b !important;
+  transform: translateY(-1px);
+}
+
+.custom-tour .introjs-arrow {
+  border: none !important;
+}
+
+.custom-highlight {
+  border-radius: 1rem !important;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.5) !important;
+}

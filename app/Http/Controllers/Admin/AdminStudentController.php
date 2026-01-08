@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use App\Services\StudentService;
 
 class AdminStudentController extends Controller
@@ -43,6 +44,38 @@ class AdminStudentController extends Controller
             'recent_activities' => $data['recent_activities'],
             'missingQuestionsByMaterial' => $data['missingQuestionsByMaterial']
         ]);
+    }
+
+    public function store(Request $request)
+    {
+        // Admin and superadmin access check
+        if (auth()->user()->role_id > 2) {
+            return redirect()->route('admin.dashboard')
+                ->with('error', 'Anda tidak memiliki akses untuk menambah mahasiswa');
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        try {
+            User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'role_id' => 3, // Role student
+                'is_approved' => true
+            ]);
+
+            return redirect()->route('admin.students.index')
+                ->with('success', 'Mahasiswa berhasil didaftarkan secara manual.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Gagal mendaftarkan mahasiswa: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     public function destroy(User $student)

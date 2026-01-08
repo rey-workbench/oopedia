@@ -6,51 +6,32 @@
     'showSidebar' => null,
     'showFooter' => false,
     'bodyClass' => '',
-    'fullWidth' => false  // For auth pages - no container wrapper
+    'fullWidth' => false
 ])
 
 @php
-    // Auto-detect user role and set appropriate defaults
     $isAuthenticated = auth()->check();
     $userRole = $isAuthenticated ? auth()->user()->role_id : null;
+    $isAdminRole = $isAuthenticated && in_array($userRole, [1, 2]);
+    $isStudentRole = $isAuthenticated && in_array($userRole, [3, 4]);
     
-    // Role detection helpers
-    $isAdminRole = $isAuthenticated && in_array($userRole, [1, 2]); // Superadmin & Admin
-    $isStudentRole = $isAuthenticated && in_array($userRole, [3, 4]); // Mahasiswa & Guest
-    $isGuest = !$isAuthenticated || $userRole === 4;
-    
-    // Auto-detect theme if not specified
     if (!$theme) {
-        if ($isAdminRole) {
-            $theme = 'admin';
-        } elseif ($isStudentRole) {
-            $theme = 'mahasiswa';
-        } else {
-            $theme = 'default';
-        }
+        $theme = $isAdminRole ? 'admin' : ($isStudentRole ? 'mahasiswa' : 'default');
     }
     
-    // Auto-detect navbar visibility if not specified
     if ($showNavbar === null) {
-        $showNavbar = $theme !== 'admin'; // Show navbar for all roles by default EXCEPT admin (who manage it manually)
+        $showNavbar = $theme !== 'admin';
     }
     
-    // Auto-detect sidebar visibility if not specified
     if ($showSidebar === null) {
-        $showSidebar = $theme !== 'admin'; // Show sidebar for all roles by default EXCEPT admin
+        $showSidebar = true;
     }
-    
-    // Add theme class to body
-    $bodyClass = trim("theme-{$theme} {$bodyClass}");
-    if ($isAdminRole) {
-        $bodyClass .= ' admin-layout';
-    } elseif ($isStudentRole) {
-        $bodyClass .= ' student-layout';
-    }
+
+    $finalBodyClass = "min-h-screen bg-gray-50 font-sans text-slate-900 antialiased {$bodyClass}";
 @endphp
 
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
 <head>
     <x-head.meta :title="$title" :meta="$meta">
         {{ $head ?? '' }}
@@ -62,84 +43,48 @@
         @stack('css')
     </x-head.styles>
 </head>
-<body class="{{ $bodyClass }}">
-    {{-- Navbar --}}
-    @if($showNavbar)
-        <x-navigation.navbar titlePage="{{ $title }}" />
-    @endif
-    
-    @if($fullWidth || $theme === 'admin')
-        {{-- Full Width Mode (Auth Pages) or Admin Layout - No Container Wrapper --}}
-        
-        {{-- Flash Messages Overlay for Admin/FullWidth --}}
-        @if(session('success'))
-            <div class="fixed-top mt-3 d-flex justify-content-center" style="z-index: 9999; pointer-events: none;">
-                <div class="col-10 col-md-6 col-lg-4" style="pointer-events: auto;">
-                    <x-ui.alert type="success">
-                        {{ session('success') }}
-                    </x-ui.alert>
-                </div>
-            </div>
-        @endif
-        
-        @if(session('error'))
-            <div class="fixed-top mt-3 d-flex justify-content-center" style="z-index: 9999; pointer-events: none; top: 60px;">
-                <div class="col-10 col-md-6 col-lg-4" style="pointer-events: auto;">
-                    <x-ui.alert type="danger">
-                        {{ session('error') }}
-                    </x-ui.alert>
-                </div>
-            </div>
+<body class="{{ $finalBodyClass }}">
+    <div id="app" class="relative flex min-h-screen">
+        {{-- Sidebar --}}
+        @if($showSidebar && ($isAdminRole || $isStudentRole))
+            <x-navigation.sidebar />
+            <div id="sidebar-overlay" class="fixed inset-0 z-40 bg-gray-900/50 backdrop-blur-sm lg:hidden hidden transition-opacity duration-300"></div>
         @endif
 
-        {{ $slot }}
-    @else
-        {{-- Standard Mode (App Pages) - With Container --}}
-        <div class="container">
-            {{-- Sidebar --}}
-            @if($showSidebar)
-                <x-navigation.sidebar />
-            @endif
+        {{-- Main Wrapper --}}
+        <div class="flex-1 flex flex-col min-w-0 transition-all duration-300 {{ ($showSidebar && ($isAdminRole || $isStudentRole)) ? 'lg:ml-64' : '' }}">
             
+            {{-- Navbar --}}
+            @if($showNavbar)
+                <x-navigation.navbar titlePage="{{ $title }}" />
+            @endif
+
+            {{-- Flash Messages --}}
+            <div class="fixed top-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none max-w-sm w-full">
+                @foreach(['success', 'error', 'info', 'warning'] as $type)
+                    @if(session($type))
+                        <div class="pointer-events-auto animate-in slide-in-from-right-full duration-500">
+                            <x-ui.alert :variant="$type === 'error' ? 'danger' : $type" :dismissible="true">
+                                {{ session($type) }}
+                            </x-ui.alert>
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+
             {{-- Main Content --}}
-            <main class="main-content">
-                {{-- Flash Messages Inline for Student Layout --}}
-                @if(session('success'))
-                    <x-ui.alert type="success">
-                        {{ session('success') }}
-                    </x-ui.alert>
-                @endif
-                
-                @if(session('error'))
-                    <x-ui.alert type="danger">
-                        {{ session('error') }}
-                    </x-ui.alert>
-                @endif
-                
-                @if(session('info'))
-                    <x-ui.alert type="info">
-                        {{ session('info') }}
-                    </x-ui.alert>
-                @endif
-                
-                @if(session('warning'))
-                    <x-ui.alert type="warning">
-                        {{ session('warning') }}
-                    </x-ui.alert>
-                @endif
-                
-                {{-- Page Content --}}
+            <main class="flex-1 w-full {{ $fullWidth ? '' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8' }}">
                 {{ $slot }}
             </main>
-        </div>
-    @endif
-    
-    {{-- Footer --}}
-    @if($showFooter)
-        <x-navigation.footer />
-    @endif
 
-    {{-- Loading Overlay Component --}}
+            {{-- Footer --}}
+            @if($showFooter)
+                <x-navigation.footer />
+            @endif
+        </div>
+    </div>
+
+    {{-- Universal UI Components --}}
     <x-ui.loading-overlay />
 
     <x-head.scripts :theme="$theme">

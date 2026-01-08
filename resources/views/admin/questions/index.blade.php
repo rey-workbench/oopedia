@@ -1,181 +1,116 @@
-<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
-    <x-navigation.sidebar activePage="questions" />
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navigation.navbar titlePage="{{ $material ? 'Soal untuk '.$material->title : 'Semua Soal' }}" />
-        <div class="container-fluid py-4">
-            <!-- Search Form -->
-            <form method="GET" action="{{ $material ? route('admin.materials.questions.index', $material) : route('admin.questions.index') }}" class="mb-3">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <x-forms.input-group>
-                            <x-ui.input name="search" placeholder="Cari berdasarkan soal, tipe soal, atau pembuat..." value="{{ request('search') }}" />
-                        </x-forms.input-group>
+<x-layouts.app title="Daftar Soal" theme="admin">
+    <div class="space-y-12">
+        <x-ui.page-header
+            title="{{ $material ? 'Module: ' . $material->title : 'Global Repository' }}"
+            subtitle="Daftar butir soal evaluasi yang terdaftar dalam sistem."
+        >
+            <x-ui.button 
+                href="{{ $material ? route('admin.materials.questions.create', $material) : route('admin.questions.create') }}" 
+                variant="primary" 
+                icon="fas fa-plus"
+            >
+                Insert New Question
+            </x-ui.button>
+        </x-ui.page-header>
+
+        {{-- Filter Hub --}}
+        <x-ui.card class="border-slate-100 shadow-xl">
+            <form method="GET" action="{{ $material ? route('admin.materials.questions.index', $material) : route('admin.questions.index') }}">
+                <div class="flex flex-col md:flex-row gap-6 items-end">
+                    <div class="flex-1 space-y-2">
+                        <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400 font-poppins">Query Search</label>
+                        <x-ui.input name="search" placeholder="Cari teks soal, tipe, atau pembuat..." value="{{ request('search') }}" />
                     </div>
-                    <div class="col-md-3">
-                        <x-forms.input-group>
-                            <select name="difficulty" class="form-control">
-                                <option value="">Semua Tingkat Kesulitan</option>
-                                <option value="beginner" {{ request('difficulty') == 'beginner' ? 'selected' : '' }}>Beginner</option>
-                                <option value="medium" {{ request('difficulty') == 'medium' ? 'selected' : '' }}>Medium</option>
-                                <option value="hard" {{ request('difficulty') == 'hard' ? 'selected' : '' }}>Hard</option>
-                            </select>
-                        </x-forms.input-group>
+                    <div class="w-full md:w-64 space-y-2">
+                        <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Complexity</label>
+                        <select name="difficulty" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold tracking-tight outline-none focus:ring-4 focus:ring-blue-100 transition-all appearance-none cursor-pointer uppercase font-poppins">
+                            <option value="">ALL LEVELS</option>
+                            <option value="beginner" {{ request('difficulty') == 'beginner' ? 'selected' : '' }}>BEGINNER</option>
+                            <option value="medium" {{ request('difficulty') == 'medium' ? 'selected' : '' }}>MEDIUM</option>
+                            <option value="hard" {{ request('difficulty') == 'hard' ? 'selected' : '' }}>HARD</option>
+                        </select>
                     </div>
-                    <div class="col-md-3">
-                        <x-ui.button type="submit" variant="primary" class="w-100 my-2" icon="search">
-                            Cari
-                        </x-ui.button>
-                    </div>
+                    <x-ui.button type="submit" variant="primary" class="h-[52px] px-8" icon="fas fa-search">Execute Search</x-ui.button>
                 </div>
             </form>
+        </x-ui.card>
 
-            <!-- Questions Table -->    
-            <div class="row">
-                <div class="col-12">
-                    <x-ui.card class="my-4">
-                        @if(session('success'))
-                            <div class="px-4 pt-4">
-                                <x-ui.alert type="success" dismissible>
-                                    {{ session('success') }}
-                                </x-ui.alert>
+        <x-ui.card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
+            <x-ui.table>
+                <x-slot:thead>
+                    <tr>
+                        <x-ui.th>Origin Module</x-ui.th>
+                        <x-ui.th>Question Insight</x-ui.th>
+                        <x-ui.th class="text-center">Evaluation Type</x-ui.th>
+                        <x-ui.th class="text-center">Complexity</x-ui.th>
+                        <x-ui.th class="text-right">Actions</x-ui.th>
+                    </tr>
+                </x-slot:thead>
+                @foreach($questions as $question)
+                <tr class="group hover:bg-slate-50 transition-colors border-b border-slate-50">
+                    <td class="px-6 py-8 align-top">
+                        <div class="flex items-center gap-3">
+                            <div class="w-1.5 h-8 bg-blue-600 rounded-full"></div>
+                            <span class="text-[10px] font-bold text-slate-900 uppercase tracking-widest">{{ $question->material->title }}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-8">
+                        <div class="space-y-4">
+                            <div class="text-xs font-medium text-slate-700 leading-relaxed line-clamp-2">
+                                {!! strip_tags($question->question_text) !!}
                             </div>
-                        @endif
-
-                        <x-slot:header>
-                            <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
-                                <h6 class="text-white text-capitalize ps-3 mb-0">
-                                    {{ $material ? 'Soal untuk Materi: ' . $material->title : 'Daftar Soal' }}
-                                </h6>
-                                @if($material)
-                                    <x-ui.button variant="light" size="sm" href="{{ route('admin.materials.questions.create', $material) }}" class="me-3">Tambah Soal</x-ui.button>
-                                @else
-                                    <x-ui.button variant="light" size="sm" href="{{ route('admin.questions.create') }}" class="me-3">Tambah Soal</x-ui.button>
-                                @endif
-                            </div>
-                        </x-slot:header>
-                        
-                        <div class="card-body px-0 pb-2">
-                            <x-ui.table>
-                                <thead>
-                                    <tr>
-                                        <x-ui.th>Materi</x-ui.th>
-                                        <x-ui.th>Pertanyaan</x-ui.th>
-                                        <x-ui.th class="ps-2">Tipe Soal</x-ui.th>
-                                        <x-ui.th class="ps-2">Kesulitan</x-ui.th>
-                                        <x-ui.th class="ps-2">Pembuat</x-ui.th>
-                                        <x-ui.th class="text-center">Aksi</x-ui.th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($questions as $question)
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex px-2 py-1">
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm">{{ $question->material->title }}</h6>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="align-middle">
-                                            <p class="text-sm mb-0">
-                                                {!! Str::limit(strip_tags($question->question_text), 100) !!}
-                                                @if(strlen(strip_tags($question->question_text)) > 100)
-                                                    <a href="#" onclick="viewFullQuestion({{ $question->id }})" class="text-info">Lihat selengkapnya</a>
-                                                @endif
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{ $question->formatted_type }}</p>
-                                        </td>
-                                        <td>
-                                            <x-ui.badge variant="{{ $question->difficulty == 'beginner' ? 'success' : ($question->difficulty == 'medium' ? 'warning' : 'danger') }}">
-                                                {{ ucfirst($question->difficulty) }}
-                                            </x-ui.badge>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{ $question->createdBy->name }}</p>
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            @if($material)
-                                                <x-ui.button variant="info" size="sm" href="{{ route('admin.materials.questions.edit', ['material' => $material, 'question' => $question]) }}">Edit</x-ui.button>
-                                                <form action="{{ route('admin.materials.questions.destroy', ['material' => $material, 'question' => $question]) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <x-ui.button type="submit" variant="danger" size="sm" onclick="return confirm('Apakah Anda yakin ingin menghapus soal ini?')">Hapus</x-ui.button>
-                                                </form>
-                                            @else
-                                                <x-ui.button variant="info" size="sm" href="{{ route('admin.questions.edit', $question) }}">Edit</x-ui.button>
-                                                <form action="{{ route('admin.questions.destroy', $question) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <x-ui.button type="submit" variant="danger" size="sm" onclick="return confirm('Apakah Anda yakin ingin menghapus soal ini?')">Hapus</x-ui.button>
-                                                </form>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    <!-- Answers Section -->
-                                    <tr>
-                                        <td colspan="6" class="border-bottom">
-                                            <div class="ms-4 mb-3">
-                                                <strong class="text-xs">Jawaban:</strong>
-                                                <ul class="list-unstyled ms-3 mb-0">
-                                                    @foreach($question->answers as $answer)
-                                                    <li class="text-xs {{ $answer->is_correct ? 'text-success' : '' }}">
-                                                        <strong>{{ $answer->answer_text }}</strong>
-                                                        @if($answer->is_correct)
-                                                            <x-ui.badge variant="success" size="sm">Benar</x-ui.badge>
-                                                        @endif
-                                                    </li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
+                            
+                            {{-- Integrated Answers Insight --}}
+                            <div class="p-4 bg-slate-900/5 rounded-2xl border border-slate-100 space-y-2">
+                                <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Answer Key Registry:</span>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    @foreach($question->answers as $answer)
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-1 h-1 rounded-full {{ $answer->is_correct ? 'bg-emerald-500' : 'bg-slate-300' }}"></div>
+                                            <span class="text-[9px] font-medium {{ $answer->is_correct ? 'text-emerald-600' : 'text-slate-500' }} truncate">{{ $answer->answer_text }}</span>
+                                        </div>
                                     @endforeach
-                                </tbody>
-                            </x-ui.table>
+                                </div>
+                            </div>
                         </div>
-                        <div class="px-3 pb-3">
-                            {{ $questions->links() }}
+                    </td>
+                    <td class="px-6 py-8 text-center align-top">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">{{ $question->formatted_type }}</span>
+                    </td>
+                    <td class="px-6 py-8 text-center align-top">
+                        @php
+                            $variant = $question->difficulty == 'beginner' ? 'success' : ($question->difficulty == 'medium' ? 'warning' : 'danger');
+                        @endphp
+                        <x-ui.badge :variant="$variant" size="xs">{{ strtoupper($question->difficulty) }}</x-ui.badge>
+                    </td>
+                    <td class="px-6 py-8 align-top">
+                        <div class="flex justify-end gap-2">
+                            @if($material)
+                                <x-ui.button variant="ghost" size="sm" href="{{ route('admin.materials.questions.edit', ['material' => $material, 'question' => $question]) }}" icon="fas fa-edit" />
+                                <form action="{{ route('admin.materials.questions.destroy', ['material' => $material, 'question' => $question]) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <x-ui.button type="submit" variant="ghost" size="sm" class="text-slate-300 hover:text-rose-500" icon="fas fa-trash-alt" onclick="return confirm('Hapus permanen soal ini?')" />
+                                </form>
+                            @else
+                                <x-ui.button variant="ghost" size="sm" href="{{ route('admin.questions.edit', $question) }}" icon="fas fa-edit" />
+                                <form action="{{ route('admin.questions.destroy', $question) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <x-ui.button type="submit" variant="ghost" size="sm" class="text-slate-300 hover:text-rose-500" icon="fas fa-trash-alt" onclick="return confirm('Hapus permanen soal ini?')" />
+                                </form>
+                            @endif
                         </div>
-                    </x-ui.card>
+                    </td>
+                </tr>
+                @endforeach
+            </x-ui.table>
+
+            @if($questions->hasPages())
+                <div class="p-8 border-t border-slate-100 bg-slate-50/30">
+                    {{ $questions->links() }}
                 </div>
-            </div>
-        </div>
-
-        <!-- Modal for displaying full question -->
-        <div class="modal fade" id="fullQuestionModal" tabindex="-1" aria-labelledby="fullQuestionModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="fullQuestionModalLabel">Detail Pertanyaan</h5>
-                        <x-ui.button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" variant="ghost" />
-                    </div>
-                    <div class="modal-body" id="fullQuestionContent">
-                        <!-- Question content will be loaded here -->
-                    </div>
-                    <div class="modal-footer">
-                        <x-ui.button variant="secondary" data-bs-dismiss="modal">Tutup</x-ui.button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    @push('js')
-    <script>
-        // Store questions data for use in JavaScript
-        const questionsData = [
-            @foreach($questions as $q)
-                {
-                    id: {{ $q->id }},
-                    text: {!! json_encode($q->question_text) !!}
-                },
-            @endforeach
-        ];
-    </script>
-    <script src="{{ asset('js/admin/questions/index.js') }}"></script>
-    @endpush
-    <x-admin.tutorial />
-
+            @endif
+        </x-ui.card>
+    </div>
 </x-layouts.app>

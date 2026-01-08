@@ -1,80 +1,22 @@
-{{--
-    Unified Footer Component
-    
-    A footer that adapts to authenticated and guest states.
-    
-    Props:
-    - variant: Footer style (default/minimal/fixed)
---}}
-
-@props([
-    'variant' => 'default'
-])
-
 @php
-    $isAuthenticated = auth()->check();
-    $isAdmin = $isAuthenticated && in_array(auth()->user()->role_id, [1, 2]);
-    $isStudent = $isAuthenticated && auth()->user()->role_id === 3;
     $currentYear = date('Y');
 @endphp
 
-@if($isAdmin)
-    {{-- Admin Footer --}}
-    <footer class="footer py-4">
-        <div class="container-fluid">
-            <div class="row align-items-center justify-content-lg-between">
-                <div class="col-lg-6 mb-lg-0 mb-4">
-                    <div class="copyright text-center text-sm text-muted text-lg-start">
-                        © {{ $currentYear }} <span class="font-weight-bold">OOPEDIA</span> - Sistem Pembelajaran OOP
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-                        <li class="nav-item">
-                            <a href="{{ route('admin.dashboard') }}" class="nav-link text-muted">Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('admin.materials.index') }}" class="nav-link text-muted">Materi</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('admin.students.index') }}" class="nav-link text-muted">Mahasiswa</a>
-                        </li>
-                    </ul>
-                </div>
+<footer class="mt-auto py-12 border-t border-slate-100 bg-white/50 backdrop-blur-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+            {{-- Brand Section --}}
+            <div class="flex items-center gap-3">
+                <img src="{{ asset('images/logo.png') }}" alt="OOPedia" class="h-8 w-auto opacity-80">
+                <p class="text-sm font-black italic tracking-tighter text-slate-400">OOPEDIA <span class="mx-2 font-normal text-slate-300">|</span> <span class="font-bold text-slate-500">SYSTEM</span></p>
+            </div>
+
+            {{-- Copyright Section --}}
+            <div class="text-center md:text-right">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                    &copy; {{ $currentYear }} <span class="text-slate-900 italic font-black">OOPEDIA TEAM</span>. SEMUA HAK DILINDUNGI.
+                </p>
             </div>
         </div>
-    </footer>
-
-@elseif($isStudent || $variant === 'student')
-    {{-- Student Footer --}}
-    <footer class="footer py-3 {{ $variant === 'minimal' ? 'footer-minimal' : '' }}">
-        <div class="container-fluid">
-            <div class="row align-items-center justify-content-center">
-                <div class="col-12 text-center">
-                    <div class="copyright text-sm text-muted">
-                        © {{ $currentYear }} <span class="font-weight-bold">OOPEDIA</span> - Platform Pembelajaran Object-Oriented Programming
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-
-
-@else
-    {{-- Guest Footer (for login/register pages) --}}
-    <footer class="footer {{ $variant === 'fixed' ? 'position-absolute bottom-footer' : '' }} py-2 w-100 {{ $variant === 'fixed' ? 'z-index-1' : '' }}">
-        <div class="container">
-            <div class="row align-items-center justify-content-center">
-                <div class="col-12 text-center">
-                    <div class="copyright text-sm {{ $variant === 'fixed' ? 'text-white' : 'text-muted' }}">
-                        © {{ $currentYear }} <span class="font-weight-bold">OOPEDIA</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    @if($variant === 'fixed')
-    @endif
-@endif
+    </div>
+</footer>
