@@ -1,59 +1,41 @@
 @props([
-    'theme' => null,  // 'admin', 'mahasiswa', or null for default
+    'theme' => null,
 ])
-<!-- Current Theme: {{ $theme ?? 'null' }} -->
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
-{{-- Bootstrap CSS --}}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-{{-- Font Awesome --}}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{{-- Google Fonts - Poppins (User Request) --}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
 {{-- Material Icons (for admin) --}}
 @if($theme === 'admin')
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 @endif
 
-{{-- Main Application CSS --}}
-<link href="{{ asset('css/app.css') }}" rel="stylesheet">
+{{-- Font Awesome --}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-{{-- Base CSS Components --}}
-<link href="{{ asset('css/components/variables.css') }}" rel="stylesheet">
-<link href="{{ asset('css/components/utils.css') }}" rel="stylesheet">
-
-{{-- Theme-specific CSS --}}
-@if($theme === 'admin')
-    {{-- Modular Admin Theme --}}
-    <link href="{{ asset('css/themes/admin/colors.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/themes/admin/layout.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/themes/admin/sidebar.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/themes/admin/dashboard.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/themes/admin/introjs.css') }}" rel="stylesheet">
-@elseif($theme === 'mahasiswa')
-    {{-- Modular Student Theme --}}
-    <link href="{{ asset('css/themes/student/layout.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/themes/student/navbar.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/themes/student/sidebar.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/themes/student/dashboard.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/themes/student/materials.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/themes/student/profile.css') }}" rel="stylesheet">
+{{-- IntroJS CSS --}}
+@if($theme === 'mahasiswa' || $theme === 'admin' || $theme === 'guest')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
 @endif
 
-{{-- Component CSS --}}
-<link href="{{ asset('css/components/buttons.css') }}" rel="stylesheet">
-<link href="{{ asset('css/components/forms.css') }}" rel="stylesheet">
-<link href="{{ asset('css/components/cards.css') }}" rel="stylesheet">
-<link href="{{ asset('css/components/alerts.css') }}" rel="stylesheet">
-<link href="{{ asset('css/components/badges.css') }}" rel="stylesheet">
-<link href="{{ asset('css/components/images.css') }}" rel="stylesheet">
-<link href="{{ asset('css/components/loading.css') }}" rel="stylesheet">
-<link href="{{ asset('css/components/base-layout.css') }}" rel="stylesheet">
-<link href="{{ asset('css/components/navbar.css') }}" rel="stylesheet">
-<link href="{{ asset('css/components/sidebar.css') }}" rel="stylesheet">
-<link href="{{ asset('css/components/footer.css') }}" rel="stylesheet">
+{{-- Tailwind CSS via Vite --}}
+@vite(['resources/css/app.css', 'resources/js/app.js'])
 
+{{-- Custom Style Tokens --}}
+<style>
+    :root {
+        --font-poppins: 'Poppins', sans-serif;
+    }
+    
+    body {
+        font-family: var(--font-poppins);
+    }
+    
+    h1, h2, h3, h4, h5, h6, .font-heading, .font-poppins {
+        font-family: var(--font-poppins);
+    }
+</style>
 
-
-{{-- Additional styles slot --}}
 {{ $slot }}

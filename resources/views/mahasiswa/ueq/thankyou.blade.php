@@ -1,32 +1,32 @@
-<x-layouts.app title="Terima Kasih - UEQ Survey" theme="mahasiswa">
-    <x-slot:styles>
-
-    </x-slot:styles>
-
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="ueq-thankyou-card">
-                    <div class="ueq-thankyou-icon">
-                        <i class="fas fa-check-circle"></i>
+    <div class="py-24 flex items-center justify-center min-h-[70vh]">
+        <div class="max-w-2xl mx-auto px-4 text-center">
+            <div class="bg-white rounded-[3rem] shadow-2xl border border-gray-100 overflow-hidden group">
+                <div class="bg-gradient-to-br from-blue-600 to-indigo-700 p-16 text-white relative">
+                    <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-1000"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="w-24 h-24 bg-white/20 backdrop-blur-md rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-xl border border-white/30 animate-in zoom-in-50 duration-700">
+                            <i class="fas fa-heart text-4xl animate-pulse"></i>
+                        </div>
+                        <h2 class="text-4xl font-black italic tracking-tight mb-4 uppercase">Terima Kasih!</h2>
+                        <p class="text-blue-100 text-lg font-medium italic">Feedback Anda sangat berharga bagi kami.</p>
                     </div>
-                    <h2 class="ueq-thankyou-title">Terima Kasih!</h2>
-                    <p class="ueq-thankyou-message">
-                        Kami sangat menghargai waktu dan masukan yang Anda berikan melalui survey UEQ ini. 
-                        Feedback Anda sangat berharga untuk pengembangan aplikasi OOPEDIA ke depannya.
+                </div>
+                
+                <div class="p-12">
+                    <p class="text-gray-500 text-lg mb-10 leading-relaxed font-medium">
+                        Kami sangat menghargai waktu yang Anda luangkan untuk mengisi survey UEQ ini. 
+                        Setiap masukan akan kami gunakan untuk menyempurnakan pengalaman belajar di <span class="text-blue-600 font-bold uppercase">OOPEDIA</span>.
                     </p>
-                    <div class="ueq-thankyou-decoration">
-                        <div class="ueq-decoration-item"></div>
-                        <div class="ueq-decoration-item"></div>
-                        <div class="ueq-decoration-item"></div>
-                    </div>
-                    <div class="ueq-thankyou-actions">
-                        <x-ui.button href="{{ route('mahasiswa.dashboard') }}" variant="primary">
-                            <i class="fas fa-home me-2"></i>Kembali ke Dashboard
-                        </x-ui.button>
+
+                    <div class="space-y-4">
+                        <a href="{{ route('mahasiswa.dashboard') }}" 
+                           class="inline-flex items-center justify-center gap-3 px-10 py-5 bg-gray-900 text-white rounded-2xl font-black italic uppercase tracking-widest hover:bg-blue-600 transition-all shadow-xl shadow-gray-200 hover:shadow-blue-200 group/btn">
+                            <i class="fas fa-home group-hover:-translate-y-1 transition-transform"></i>
+                            Kembali ke Dashboard
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</x-layouts.app>

@@ -1,98 +1,113 @@
 <x-layouts.app :title="'Latihan Soal - ' . $material->title" theme="mahasiswa">
     <x-slot:styles>
 
-        <link rel="stylesheet" href="{{ asset('css/material-show.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/question-review.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/mahasiswa/materials/questions/show.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/mahasiswa/partials/question.css') }}">
-        <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
     </x-slot:styles>
 
-    <div class="container-fluid py-4">
-        <h1 class="materi-heading">Latihan Soal: {{ $material->title }}</h1>
-        <div class="heading-underline mb-4"></div>
+    <div class="py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-10">
+                <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
+                    <i class="fas fa-edit text-blue-600"></i>
+                    Latihan Soal: {{ $material->title }}
+                </h1>
+                <div class="h-1.5 w-24 bg-blue-600 rounded-full mt-3"></div>
+            </div>
 
-        @if(session('success'))
-            <x-ui.alert variant="success" class="mb-4">
-                {{ session('success') }}
-            </x-ui.alert>
-        @endif
+            @if(session('success'))
+                <x-ui.alert variant="success" class="mb-6 shadow-sm border-l-4">
+                    {{ session('success') }}
+                </x-ui.alert>
+            @endif
 
-        @if(session('error'))
-            <x-ui.alert variant="danger" class="mb-4">
-                {{ session('error') }}
-            </x-ui.alert>
-        @endif
+            @if(session('error'))
+                <x-ui.alert variant="danger" class="mb-6 shadow-sm border-l-4">
+                    {{ session('error') }}
+                </x-ui.alert>
+            @endif
 
-        @if(!auth()->check())
-            <x-ui.alert variant="warning" class="mb-4">
-                <strong>Mode Tamu Aktif!</strong> 
-                Anda hanya dapat melihat sebagian dari soal latihan ini. Untuk akses penuh, silakan 
-                <a href="{{ route('login') }}" class="alert-link" onclick="event.preventDefault(); document.getElementById('guest-logout-login-form').submit();">login</a> 
-                atau 
-                <a href="{{ route('register') }}" class="alert-link" onclick="event.preventDefault(); document.getElementById('guest-logout-register-form').submit();">daftar</a> 
-                sebagai mahasiswa.
-            </x-ui.alert>
+            @if(!auth()->check())
+                <div class="mb-8 p-5 bg-amber-50 border border-amber-100 rounded-2xl shadow-sm flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
+                        <i class="fas fa-user-shield text-amber-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <strong class="text-amber-900 text-lg block mb-1">Mode Tamu Aktif!</strong>
+                        <p class="text-amber-800">
+                            Anda hanya dapat melihat sebagian dari soal latihan ini. Untuk akses penuh, silakan
+                            <a href="{{ route('login') }}" class="font-bold underline hover:text-amber-950 transition-colors" onclick="event.preventDefault(); document.getElementById('guest-logout-login-form').submit();">login</a>
+                            atau
+                            <a href="{{ route('register') }}" class="font-bold underline hover:text-amber-950 transition-colors" onclick="event.preventDefault(); document.getElementById('guest-logout-register-form').submit();">daftar</a>
+                            sebagai mahasiswa.
+                        </p>
+                    </div>
+                </div>
 
-            <!-- Hidden forms for guest logout and redirect -->
-            <form id="guest-logout-login-form" action="{{ route('guest.logout') }}" method="POST" style="display: none;">
-                @csrf
-                <input type="hidden" name="redirect" value="{{ route('login') }}">
-            </form>
+                <!-- Hidden forms for guest logout and redirect -->
+                <form id="guest-logout-login-form" action="{{ route('guest.logout') }}" method="POST" style="display: none;">
+                    @csrf
+                    <input type="hidden" name="redirect" value="{{ route('login') }}">
+                </form>
 
-            <form id="guest-logout-register-form" action="{{ route('guest.logout') }}" method="POST" style="display: none;">
-                @csrf
-                <input type="hidden" name="redirect" value="{{ route('register') }}">
-            </form>
-        @endif
+                <form id="guest-logout-register-form" action="{{ route('guest.logout') }}" method="POST" style="display: none;">
+                    @csrf
+                    <input type="hidden" name="redirect" value="{{ route('register') }}">
+                </form>
+            @endif
 
         @if($currentQuestion)
             @include('mahasiswa.partials.question')
         @else
-            <x-ui.card class="text-center py-5">
-                <div class="mb-4">
-                    <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
-                </div>
-                <h3 class="mb-3">Selamat! Semua Soal Telah Terjawab</h3>
-                <p class="text-muted mb-4">
-                    Anda telah menyelesaikan semua soal pada materi ini.
-                </p>
-                <div class="mt-4">
-                    <x-ui.button 
-                        href="{{ route('mahasiswa.materials.questions.levels', ['material' => $material->id, 'difficulty' => $difficulty]) }}" 
-                        variant="success" 
-                        class="me-2"
-                        icon="list-ol"
-                    >
-                        Kembali ke Level
-                    </x-ui.button>
+            <div class="max-w-3xl mx-auto">
+                <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+                    <div class="bg-gradient-to-br from-emerald-500 to-teal-600 p-12 text-center text-white relative">
+                        <div class="absolute top-0 right-0 p-8 opacity-10">
+                            <i class="fas fa-trophy text-9xl"></i>
+                        </div>
+                        <div class="relative z-10">
+                            <div class="w-24 h-24 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl border-4 border-white/30">
+                                <i class="fas fa-check text-4xl"></i>
+                            </div>
+                            <h2 class="text-4xl font-black mb-3 italic tracking-tight">LUAR BIASA!</h2>
+                            <p class="text-emerald-50 text-xl font-medium">Anda telah menyelesaikan semua soal pada materi ini.</p>
+                        </div>
+                    </div>
                     
-                    <x-ui.button 
-                        href="{{ route('mahasiswa.materials.show', $material->id) }}" 
-                        variant="primary" 
-                        class="me-2"
-                        icon="book"
-                    >
-                        Kembali ke Materi
-                    </x-ui.button>
-                    
-                    <x-ui.button 
-                        href="{{ route('mahasiswa.dashboard') }}" 
-                        variant="secondary"
-                        icon="home"
-                    >
-                        Dashboard
-                    </x-ui.button>
+                    <div class="p-10 bg-white">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <a href="{{ route('mahasiswa.materials.questions.levels', ['material' => $material->id, 'difficulty' => $difficulty]) }}" 
+                               class="group p-6 rounded-2xl bg-gray-50 border-2 border-transparent hover:border-emerald-200 hover:bg-emerald-50 transition-all text-center">
+                                <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                                    <i class="fas fa-list-ol"></i>
+                                </div>
+                                <span class="font-bold text-gray-700 block">Pilih Level</span>
+                            </a>
+
+                            <a href="{{ route('mahasiswa.materials.show', $material->id) }}" 
+                               class="group p-6 rounded-2xl bg-gray-50 border-2 border-transparent hover:border-blue-200 hover:bg-blue-50 transition-all text-center">
+                                <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <span class="font-bold text-gray-700 block">Baca Materi</span>
+                            </a>
+
+                            <a href="{{ route('mahasiswa.dashboard') }}" 
+                               class="group p-6 rounded-2xl bg-gray-50 border-2 border-transparent hover:border-indigo-200 hover:bg-indigo-50 transition-all text-center">
+                                <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                                    <i class="fas fa-home"></i>
+                                </div>
+                                <span class="font-bold text-gray-700 block">Dashboard</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-            </x-ui.card>
+            </div>
         @endif
+        </div>
     </div>
 
     <x-slot:scripts>
-        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-        <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
-        <script src="{{ asset('js/mahasiswa/materials/questions/show.js') }}"></script>
         <script src="{{ asset('js/mahasiswa/partials/question.js') }}"></script>
+        <script src="{{ asset('js/mahasiswa/materials/questions/show.js') }}"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 // Config variable for use in scripts

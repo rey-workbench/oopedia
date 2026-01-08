@@ -1,132 +1,153 @@
-<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
-    <x-navigation.sidebar activePage="students" />
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navigation.navbar titlePage="Data Mahasiswa" />
-        <div class="container-fluid py-4">
-            <!-- Search Form -->
-            <form method="GET" action="{{ route('admin.students.index') }}" class="mb-3">
-                <x-forms.input-group class="my-3">
-                    <x-ui.input name="search" placeholder="Cari berdasarkan nama..." value="{{ request('search') }}" style="height: 50px;" />
-                    <x-ui.button type="submit" variant="primary" icon="search" style="height: 50px;">
-                        Cari
-                    </x-ui.button>
-                </x-forms.input-group>
-            </form>
+<x-layouts.app title="Data Mahasiswa" theme="admin">
+    <div class="space-y-12" x-data="{ openModal: false }">
+        <x-ui.page-header
+            title="Database Mahasiswa"
+            subtitle="Pantau progres dan aktivitas belajar seluruh mahasiswa terdaftar."
+        >
+            <div class="flex flex-wrap items-center gap-4">
+                <x-ui.button @click="openModal = true" variant="primary" icon="fas fa-plus">Register Student</x-ui.button>
+                <x-ui.button href="{{ route('admin.students.import') }}" variant="success" icon="fas fa-file-excel">Import Excel</x-ui.button>
+            </div>
+        </x-ui.page-header>
 
-            <div class="row">
-                <div class="col-12">
-                    <x-ui.card class="my-4">
-                        @if(session('success'))
-                            <div class="pt-4 px-4">
-                                <x-ui.alert type="success" dismissible>
-                                    {{ session('success') }}
-                                </x-ui.alert>
-                            </div>
-                        @endif
-                        
-                        @if(session('error'))
-                            <div class="pt-4 px-4">
-                                <x-ui.alert type="danger" dismissible>
-                                    {{ session('error') }}
-                                </x-ui.alert>
-                            </div>
-                        @endif
-                        
-                        @if(session('importErrors'))
-                            <div class="pt-4 px-4">
-                                <x-ui.alert type="warning" dismissible>
-                                    <p>Beberapa baris tidak dapat diimpor:</p>
-                                    <ul>
-                                        @foreach(session('importErrors') as $error)
-                                            <li>Baris {{ $error['row'] }}: {{ implode(', ', $error['errors']) }}</li>
-                                        @endforeach
-                                    </ul>
-                                </x-ui.alert>
-                            </div>
-                        @endif
+        <x-ui.card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
+            <x-slot:header>
+                <div class="flex flex-col md:flex-row justify-between items-center gap-6 w-full px-6 py-4">
+                    <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Subject Registry</h6>
+                    <form method="GET" action="{{ route('admin.students.index') }}" class="w-full md:w-auto">
+                        <div class="relative group">
+                            <i class="fas fa-user-tag absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors"></i>
+                            <input 
+                                type="text" 
+                                name="search" 
+                                placeholder="Cari mahasiswa..." 
+                                value="{{ request('search') }}"
+                                class="w-full md:w-64 pl-12 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-600 transition-all outline-none"
+                            >
+                        </div>
+                    </form>
+                </div>
+            </x-slot:header>
 
-                        <x-slot:header>
-                            <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
-                                <h6 class="text-white text-capitalize ps-3 mb-0">Data Mahasiswa</h6>
-                                <div class="d-flex me-3">
-                                    <x-ui.button variant="success" size="sm" href="{{ route('admin.students.import') }}" icon="upload_file" class="me-2">
-                                        Tambah dengan Excel
-                                    </x-ui.button>
+            <x-ui.table>
+                <x-slot:thead>
+                    <tr>
+                        <x-ui.th>Mahasiswa Identity</x-ui.th>
+                        <x-ui.th>Email Access</x-ui.th>
+                        <x-ui.th class="text-center">Aktivitas Soal</x-ui.th>
+                        <x-ui.th class="text-center">Integrasi Progres</x-ui.th>
+                        <x-ui.th class="text-right">Aksi</x-ui.th>
+                    </tr>
+                </x-slot:thead>
+                <tbody>
+                    @forelse($students as $student)
+                    <tr class="group hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-6 border-l-4 border-transparent group-hover:border-blue-600">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold shadow-lg shadow-slate-200 uppercase text-xs">
+                                    {{ substr($student->name, 0, 1) }}
+                                </div>
+                                <div class="font-bold text-slate-900 tracking-tight">{{ $student->name }}</div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-6">
+                            <span class="text-xs font-bold text-slate-400 underline decoration-slate-200 underline-offset-4">{{ $student->email }}</span>
+                        </td>
+                        <td class="px-6 py-6 text-center">
+                            <div class="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full">
+                                <i class="fas fa-terminal text-[10px] text-blue-500"></i>
+                                <span class="text-[10px] font-bold text-slate-700">{{ $student->total_answered_questions ?? 0 }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-6">
+                            <div class="w-40 mx-auto space-y-2">
+                                <div class="flex justify-between items-center text-[9px] font-black uppercase italic tracking-widest text-slate-400 px-1">
+                                    <span>Sync Progres</span>
+                                    <span>{{ $student->overall_progress }}%</span>
+                                </div>
+                                <x-ui.progress-bar :value="$student->overall_progress" size="xs" :showPercentage="false" variant="primary" />
+                            </div>
+                        </td>
+                        <td class="px-6 py-6">
+                            <div class="flex justify-end gap-2">
+                                <x-ui.button variant="ghost" size="sm" href="{{ route('admin.students.progress', $student) }}" icon="fas fa-chart-line" />
+                                <form action="{{ route('admin.students.destroy', $student) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <x-ui.button type="submit" variant="ghost" size="sm" class="text-slate-300 hover:text-rose-500" icon="fas fa-user-minus" onclick="return confirm('Hapus data mahasiswa ini?')" />
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="p-20 text-center">
+                            <div class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
+                                <i class="fas fa-user-graduate text-slate-200 text-3xl"></i>
+                            </div>
+                            <h3 class="text-xl font-black italic uppercase tracking-tighter text-slate-900 mb-2">No Registered Students</h3>
+                            <p class="text-slate-400 text-sm max-w-xs mx-auto mb-8">Silakan daftarkan mahasiswa secara manual atau impor melalui protokol Excel.</p>
+                            <div class="flex justify-center gap-4">
+                                <x-ui.button @click="openModal = true" variant="primary" icon="fas fa-plus">Register Individual</x-ui.button>
+                                <x-ui.button href="{{ route('admin.students.import') }}" variant="outline" icon="fas fa-file-excel">Upload Dataset</x-ui.button>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </x-ui.table>
+
+            @if($students->hasPages())
+                <div class="p-6 border-t border-slate-100 bg-slate-50/30">
+                    {{ $students->links() }}
+                </div>
+            @endif
+        </x-ui.card>
+
+        {{-- Register Student Modal --}}
+        <div x-show="openModal" class="fixed inset-0 z-[999] overflow-y-auto" style="display: none;">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div @click="openModal = false" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"></div>
+                
+                <div class="relative bg-white rounded-[2.5rem] shadow-2xl max-w-lg w-full overflow-hidden border border-slate-100" x-show="openModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
+                    <div class="bg-blue-600 px-8 py-10 text-white relative">
+                        <div class="absolute right-8 top-10">
+                            <button @click="openModal = false" class="text-blue-200 hover:text-white"><i class="fas fa-times"></i></button>
+                        </div>
+                        <h6 class="text-xl font-bold tracking-tight mb-2 uppercase">Auth Initialization</h6>
+                        <p class="text-[10px] font-bold text-blue-100 uppercase tracking-widest">Register individual student entity</p>
+                    </div>
+                    
+                    <form action="{{ route('admin.students.store') }}" method="POST" class="p-8 space-y-6">
+                        @csrf
+                        <div class="space-y-4">
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-bold uppercase text-slate-400 font-poppins">Full Identity</label>
+                                <x-ui.input name="name" placeholder="Subject's full name" required />
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black uppercase text-slate-400 italic font-poppins">Electronic Mail</label>
+                                <x-ui.input type="email" name="email" placeholder="mahasiswa@example.com" required />
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black uppercase text-slate-400 italic font-poppins">Security Key</label>
+                                    <x-ui.input type="password" name="password" placeholder="Min 8 chars" required />
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black uppercase text-slate-400 italic font-poppins">Confirm Key</label>
+                                    <x-ui.input type="password" name="password_confirmation" placeholder="Verify key" required />
                                 </div>
                             </div>
-                        </x-slot:header>
-
-                        <div class="card-body px-0 pb-2">
-                            <x-ui.table>
-                                <thead>
-                                    <tr>
-                                        <x-ui.th>Nama</x-ui.th>
-                                        <x-ui.th class="ps-2">Email</x-ui.th>
-                                        <x-ui.th class="text-center">Total Soal Dijawab</x-ui.th>
-                                        <x-ui.th class="text-center">Progress Keseluruhan</x-ui.th>
-                                        <x-ui.th class="text-center">Aksi</x-ui.th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($students as $student)
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex px-2 py-1">
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm">{{ $student->name }}</h6>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{ $student->email }}</p>
-                                        </td>
-                                        <td class="align-middle text-center text-sm">
-                                            <span class="text-xs font-weight-bold">{{ $student->total_answered_questions ?? 0 }}</span>
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <div class="progress" style="height: 8px; width: 80%; margin: 0 auto;">
-                                                <div class="progress-bar bg-gradient-info" role="progressbar" 
-                                                     style="width: {{ $student->overall_progress }}%" 
-                                                     aria-valuenow="{{ $student->overall_progress }}" 
-                                                     aria-valuemin="0" 
-                                                     aria-valuemax="100">
-                                                </div>
-                                            </div>
-                                            <span class="text-xs font-weight-bold">{{ $student->overall_progress }}%</span>
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <div class="d-flex justify-content-center gap-2">
-                                                <x-ui.button variant="info" size="sm" href="{{ route('admin.students.progress', $student) }}" icon="visibility">
-                                                    Detail
-                                                </x-ui.button>
-                                                <form action="{{ route('admin.students.destroy', $student) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <x-ui.button type="submit" variant="danger" size="sm" icon="delete" onclick="return confirm('Apakah Anda yakin ingin menghapus mahasiswa ini?')">
-                                                        Hapus
-                                                    </x-ui.button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    @empty
-                                    <tr>
-                                        <td colspan="4" class="text-center py-4">
-                                            <p class="text-sm mb-0">Belum ada data mahasiswa</p>
-                                        </td>
-                                    </tr>
-                                    @endforelse
-                                </tbody>
-                            </x-ui.table>
-                            <div class="d-flex justify-content-center mt-3">
-                                {{ $students->links() }}
-                            </div>
                         </div>
-                    </x-ui.card>
+
+                        <div class="pt-4 flex gap-4">
+                            <x-ui.button type="submit" variant="primary" class="flex-1 py-4 shadow-xl shadow-blue-500/20" icon="fas fa-user-plus">Authorize Student</x-ui.button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
     <x-admin.tutorial />
-
 </x-layouts.app>

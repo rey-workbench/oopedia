@@ -1,190 +1,141 @@
-<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
-    <x-navigation.sidebar activePage="adaptive-rules" />
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navigation.navbar titlePage="Detail Rule" />
-        <div class="container-fluid py-4">
-            <div class="row">
-                <div class="col-12">
-                    <x-ui.card class="my-4">
-                        <x-slot:header>
-                            <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
-                                <h6 class="text-white text-capitalize ps-3 mb-0">Detail Adaptive Rule</h6>
-                                <div>
-                                    <x-ui.button variant="warning" size="sm" href="{{ route('admin.adaptive-rules.edit', $adaptiveRule) }}" class="me-2" icon="edit">
-                                        Edit
-                                    </x-ui.button>
-                                    <x-ui.button variant="light" size="sm" href="{{ route('admin.adaptive-rules.index') }}" class="me-3" icon="arrow_back">
-                                        Kembali
-                                    </x-ui.button>
-                                </div>
-                            </div>
-                        </x-slot:header>
-                        
-                        <div class="card-body pt-4">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h6 class="mb-3">Informasi Umum</h6>
-                                    <x-ui.table tableClass="table-borderless">
-                                        <tr>
-                                            <td width="40%" class="text-sm font-weight-bold">Nama Rule:</td>
-                                            <td class="text-sm">{{ $adaptiveRule->name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-sm font-weight-bold">Deskripsi:</td>
-                                            <td class="text-sm">{{ $adaptiveRule->description ?? '-' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-sm font-weight-bold">Materi:</td>
-                                            <td class="text-sm">{{ $adaptiveRule->material ? $adaptiveRule->material->title : 'Semua Materi' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-sm font-weight-bold">Prioritas:</td>
-                                            <td class="text-sm">
-                                                <x-ui.badge variant="info">{{ $adaptiveRule->priority }}</x-ui.badge>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-sm font-weight-bold">Status:</td>
-                                            <td class="text-sm">
-                                                <x-ui.badge :variant="$adaptiveRule->is_active ? 'success' : 'secondary'">
-                                                    {{ $adaptiveRule->is_active ? 'Aktif' : 'Nonaktif' }}
-                                                </x-ui.badge>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-sm font-weight-bold">Dibuat Oleh:</td>
-                                            <td class="text-sm">{{ $adaptiveRule->creator->name ?? 'Unknown' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-sm font-weight-bold">Tanggal Dibuat:</td>
-                                            <td class="text-sm">{{ $adaptiveRule->created_at->format('d/m/Y H:i') }}</td>
-                                        </tr>
-                                    </x-ui.table>
-                                </div>
+<x-layouts.app title="Detail Aturan Adaptif" theme="admin">
+    <div class="space-y-12">
+        <x-ui.page-header
+            title="Logic Logic Detail"
+            subtitle="Inspeksi mendalam konfigurasi dan alur kerja engine adaptif."
+        >
+            <div class="flex gap-4">
+                <x-ui.button href="{{ route('admin.adaptive-rules.edit', $adaptiveRule) }}" variant="primary" icon="fas fa-edit">EDIT ARCHITECTURE</x-ui.button>
+                <x-ui.button href="{{ route('admin.adaptive-rules.index') }}" variant="ghost" icon="fas fa-arrow-left">BACK TO FLEET</x-ui.button>
+            </div>
+        </x-ui.page-header>
 
-                                <div class="col-md-6">
-                                    <h6 class="mb-3">Rule Logic (Forward Chaining)</h6>
-                                    
-                                    <div class="card bg-light mb-3">
-                                        <div class="card-body">
-                                            <h6 class="text-primary mb-2">
-                                                <i class="material-icons text-sm">arrow_forward</i> IF (Kondisi)
-                                            </h6>
-                                            @if(!empty($adaptiveRule->conditions) && is_array($adaptiveRule->conditions))
-                                                <div class="ps-3">
-                                                    @foreach($adaptiveRule->conditions as $index => $condition)
-                                                        <div class="mb-2">
-                                                            @if($index > 0)
-                                                                <span class="badge bg-secondary text-xxs mb-1">AND</span>
-                                                            @endif
-                                                            <x-ui.table tableClass="table-sm table-borderless mb-0">
-                                                                <tr>
-                                                                    <td width="40%" class="text-xs font-weight-bold">Atribut:</td>
-                                                                    <td class="text-xs"><x-ui.badge variant="info">{{ $condition['key'] ?? $condition['type'] ?? 'N/A' }}</x-ui.badge></td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="text-xs font-weight-bold">Operator:</td>
-                                                                    <td class="text-xs">{{ $condition['operator'] ?? 'N/A' }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="text-xs font-weight-bold">Nilai:</td>
-                                                                    <td class="text-xs">{{ $condition['value'] ?? 'N/A' }}</td>
-                                                                </tr>
-                                                            </x-ui.table>
-                                                        </div>
-                                                    @endforeach
-                                                </div>
-                                            @else
-                                                <p class="text-xs text-muted mb-0">Tidak ada kondisi yang didefinisikan</p>
-                                            @endif
-                                        </div>
-                                    </div>
-
-                                    <div class="card bg-light">
-                                        <div class="card-body">
-                                            <h6 class="text-success mb-2">
-                                                <i class="material-icons text-sm">check_circle</i> THEN (Aksi)
-                                            </h6>
-                                            <x-ui.table tableClass="table-sm table-borderless mb-0">
-                                                <tr>
-                                                    <td width="40%" class="text-xs font-weight-bold">Tipe Aksi:</td>
-                                                    <td class="text-xs">{{ \App\Models\AdaptiveRule::ACTION_TYPES[$adaptiveRule->action_type] ?? $adaptiveRule->action_type }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-xs font-weight-bold">Nilai Aksi:</td>
-                                                    <td class="text-xs">
-                                                        @if($adaptiveRule->action_type === 'change_difficulty')
-                                                            @php
-                                                                $difficultyVariant = match($adaptiveRule->action_value) {
-                                                                    'hard' => 'danger',
-                                                                    'medium' => 'warning',
-                                                                    default => 'success'
-                                                                };
-                                                            @endphp
-                                                            <x-ui.badge :variant="$difficultyVariant">
-                                                                {{ ucfirst($adaptiveRule->action_value) }}
-                                                            </x-ui.badge>
-                                                        @else
-                                                            {{ $adaptiveRule->action_value }}
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            </x-ui.table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <hr class="my-4">
-
-                            <div class="row">
-                                <div class="col-12">
-                                    <h6 class="mb-3">Contoh Penerapan Rule</h6>
-                                    <x-ui.alert type="info">
-                                        <p class="mb-0 text-sm">
-                                            <strong>IF</strong> {{ \App\Models\AdaptiveRule::CONDITION_TYPES[$adaptiveRule->condition_type] ?? $adaptiveRule->condition_type }} 
-                                            {{ \App\Models\AdaptiveRule::OPERATORS[$adaptiveRule->condition_operator] ?? $adaptiveRule->condition_operator }} 
-                                            {{ $adaptiveRule->condition_value }}
-                                            <br>
-                                            <strong>THEN</strong> {{ \App\Models\AdaptiveRule::ACTION_TYPES[$adaptiveRule->action_type] ?? $adaptiveRule->action_type }}: 
-                                            {{ $adaptiveRule->action_value }}
-                                        </p>
-                                    </x-ui.alert>
-                                    
-                                    <x-ui.alert type="secondary" class="text-white">
-                                        <p class="mb-0 text-sm">
-                                            <strong>Contoh Kasus:</strong><br>
-                                            @if($adaptiveRule->condition_type === 'score_range' && $adaptiveRule->action_type === 'change_difficulty')
-                                                Jika mahasiswa mendapat skor {{ $adaptiveRule->condition_operator }} {{ $adaptiveRule->condition_value }}%, 
-                                                maka tingkat kesulitan soal akan diubah menjadi <strong>{{ ucfirst($adaptiveRule->action_value) }}</strong>.
-                                            @elseif($adaptiveRule->condition_type === 'consecutive_correct' && $adaptiveRule->action_type === 'skip_questions')
-                                                Jika mahasiswa menjawab benar {{ $adaptiveRule->condition_value }} soal berturut-turut, 
-                                                maka sistem akan melewati {{ $adaptiveRule->action_value }} soal berikutnya.
-                                            @elseif($adaptiveRule->condition_type === 'consecutive_wrong' && $adaptiveRule->action_type === 'show_hint')
-                                                Jika mahasiswa menjawab salah {{ $adaptiveRule->condition_value }} soal berturut-turut, 
-                                                maka sistem akan menampilkan petunjuk.
-                                            @else
-                                                Rule ini akan mengevaluasi kondisi dan menjalankan aksi sesuai konfigurasi yang telah ditentukan.
-                                            @endif
-                                        </p>
-                                    </x-ui.alert>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-end mt-4">
-                                <form action="{{ route('admin.adaptive-rules.destroy', $adaptiveRule) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <x-ui.button type="submit" variant="danger" onclick="return confirm('Apakah Anda yakin ingin menghapus rule ini?')" icon="delete">
-                                        Hapus Rule
-                                    </x-ui.button>
-                                </form>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            {{-- Technical Specs --}}
+            <div class="lg:col-span-1 space-y-8">
+                <x-ui.card padding="p-0" class="overflow-hidden shadow-2xl border-slate-100">
+                    <div class="p-6 bg-slate-900 text-white">
+                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Technical Specifications</span>
+                        <h4 class="text-xl font-black italic tracking-tighter uppercase mt-2">{{ $adaptiveRule->name }}</h4>
+                    </div>
+                    <div class="p-8 space-y-8">
+                        <div>
+                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-2">Operational Status</span>
+                            <x-ui.badge :variant="$adaptiveRule->is_active ? 'success' : 'secondary'" class="text-[10px] px-4 py-1.5">
+                                {{ $adaptiveRule->is_active ? 'RUNNING' : 'DISABLED' }}
+                            </x-ui.badge>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-2">Priority Index</span>
+                            <div class="text-3xl font-black italic tracking-tighter text-slate-900 border-l-4 border-blue-600 pl-4">{{ $adaptiveRule->priority }}</div>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-2">Scope Enforcement</span>
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-microchip text-blue-600"></i>
+                                <span class="font-bold text-slate-900 text-sm">{{ $adaptiveRule->material ? $adaptiveRule->material->title : 'Global Access' }}</span>
                             </div>
                         </div>
-                    </x-ui.card>
+                        <div class="pt-6 border-t border-slate-100 italic text-xs text-slate-400 font-medium">
+                            Synthesized on {{ $adaptiveRule->created_at->format('M d, Y') }} by {{ $adaptiveRule->creator->name ?? 'System' }}
+                        </div>
+                    </div>
+                </x-ui.card>
+
+                <x-ui.card class="bg-blue-600 text-white border-0 shadow-2xl shadow-blue-500/20 px-8 py-10 relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 opacity-20 transform rotate-12">
+                        <i class="fas fa-brain text-[150px]"></i>
+                    </div>
+                    <h5 class="text-lg font-black italic tracking-tighter uppercase mb-4 relative z-10">Logic Rationale</h5>
+                    <p class="text-xs font-bold leading-relaxed text-blue-50 italic relative z-10">
+                        "{{ $adaptiveRule->description ?? 'No formal documentation provided for this logic module.' }}"
+                    </p>
+                </x-ui.card>
+            </div>
+
+            {{-- Logic Execution Plan --}}
+            <div class="lg:col-span-2 space-y-12">
+                <div class="relative">
+                    <div class="absolute left-1/2 top-0 bottom-0 w-1 bg-slate-200 -translate-x-1/2"></div>
+                    
+                    <div class="space-y-24 relative z-10">
+                        {{-- IF BLOCK --}}
+                        <div class="flex flex-col items-center">
+                            <div class="px-8 py-2 bg-blue-600 text-white rounded-full text-[10px] font-black italic tracking-widest uppercase mb-8 shadow-xl">Trigger Logic</div>
+                            <x-ui.card padding="p-8" class="w-full border-blue-100 shadow-2xl bg-white">
+                                <div class="space-y-6">
+                                    @foreach($adaptiveRule->conditions ?? [] as $index => $condition)
+                                        <div class="flex items-center gap-6 p-6 bg-slate-50 rounded-[2rem] border border-slate-100 group hover:border-blue-200 transition-all">
+                                            <div class="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-blue-600 font-black italic text-xs">
+                                                {{ $index + 1 }}
+                                            </div>
+                                            <div class="flex-1 grid grid-cols-3 gap-8">
+                                                <div>
+                                                    <span class="text-[9px] font-black uppercase text-slate-400 block mb-1">Variable</span>
+                                                    <span class="font-black italic text-slate-900 border-b-2 border-blue-600">{{ $condition['key'] ?? 'N/A' }}</span>
+                                                </div>
+                                                <div>
+                                                    <span class="text-[9px] font-black uppercase text-slate-400 block mb-1">Operator</span>
+                                                    <span class="font-black italic text-blue-600">{{ $condition['operator'] ?? '==' }}</span>
+                                                </div>
+                                                <div>
+                                                    <span class="text-[9px] font-black uppercase text-slate-400 block mb-1">Threshold</span>
+                                                    <span class="font-black italic text-slate-900">{{ $condition['value'] ?? '0' }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </x-ui.card>
+                        </div>
+
+                        {{-- THEN BLOCK --}}
+                        <div class="flex flex-col items-center">
+                            <div class="px-8 py-2 bg-emerald-500 text-white rounded-full text-[10px] font-black italic tracking-widest uppercase mb-8 shadow-xl">Execution Action</div>
+                            <x-ui.card padding="p-8" class="w-full border-emerald-100 shadow-2xl bg-white">
+                                <div class="space-y-6">
+                                    @foreach($adaptiveRule->actions ?? [] as $index => $action)
+                                        <div class="flex items-center gap-6 p-6 bg-emerald-50/30 rounded-[2rem] border border-emerald-100 group hover:border-emerald-300 transition-all">
+                                            <i class="fas fa-bolt text-emerald-500"></i>
+                                            <div class="flex-1 grid grid-cols-3 gap-8">
+                                                <div>
+                                                    <span class="text-[9px] font-black uppercase text-slate-400 block mb-1">Target</span>
+                                                    <span class="font-black italic text-slate-900">{{ $action['key'] ?? 'N/A' }}</span>
+                                                </div>
+                                                <div>
+                                                    <span class="text-[9px] font-black uppercase text-slate-400 block mb-1">Operation</span>
+                                                    <span class="font-black italic text-emerald-600 uppercase">{{ $action['operator'] == '=' ? 'SET TO' : ($action['operator'] == '+' ? 'INCREMENT BY' : ($action['operator'] == '-' ? 'DECREMENT BY' : 'MULTIPLY BY')) }}</span>
+                                                </div>
+                                                <div>
+                                                    <span class="text-[9px] font-black uppercase text-slate-400 block mb-1">Impact Value</span>
+                                                    <span class="font-black italic text-slate-900">{{ $action['value'] ?? '0' }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </x-ui.card>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-10 bg-slate-50 rounded-[3rem] border border-dashed border-slate-200 mt-20">
+                    <div class="flex items-center gap-6">
+                        <div class="w-16 h-16 rounded-[2rem] bg-slate-900 text-white flex items-center justify-center">
+                            <i class="fas fa-shield-halved"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h6 class="text-sm font-black italic tracking-tight uppercase text-slate-900">Logic Decommissioning</h6>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Hapus modul ini secara permanen dari sistem inti.</p>
+                        </div>
+                        <form action="{{ route('admin.adaptive-rules.destroy', $adaptiveRule) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <x-ui.button type="submit" variant="danger" size="sm" onclick="return confirm('Initiate logic deletion?')">TERMINATE MODULE</x-ui.button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </main>
-    <x-admin.tutorial />
+    </div>
 </x-layouts.app>

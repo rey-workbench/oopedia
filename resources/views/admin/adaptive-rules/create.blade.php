@@ -1,280 +1,217 @@
-<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200" theme="admin">
-    <x-navigation.sidebar activePage="adaptive-rules" />
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navigation.navbar titlePage="Buat Rule Baru" />
-        <div class="container-fluid py-4">
-            <div class="row justify-content-center">
-                <div class="col-lg-10">
-                    <x-ui.card class="shadow-lg">
-                        <x-slot:header>
-                            <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                                <div class="d-flex justify-content-between align-items-center px-3">
-                                    <h5 class="text-white mb-0">🎯 Buat Rule Baru</h5>
-                                    <x-ui.button variant="light" size="sm" href="{{ route('admin.adaptive-rules.index') }}" icon="arrow_back">
-                                        Kembali
-                                    </x-ui.button>
-                                </div>
-                            </div>
-                        </x-slot:header>
+<x-layouts.app title="Buat Aturan Adaptif" theme="admin">
+    <div class="space-y-12">
+        <x-ui.page-header
+            title="Engine Logic Architect"
+            subtitle="Definisikan kecerdasan sistem untuk menyesuaikan pengalaman belajar secara dinamis."
+        >
+            <x-ui.button href="{{ route('admin.adaptive-rules.index') }}" variant="ghost" icon="fas fa-arrow-left">KEMBALI KE LIST</x-ui.button>
+        </x-ui.page-header>
+
+        <form action="{{ route('admin.adaptive-rules.store') }}" method="POST" id="ruleForm" class="space-y-12">
+            @csrf
+            
+            <x-ui.card class="border-slate-100 shadow-2xl">
+                <x-slot:header>General Identification</x-slot:header>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <x-forms.form-group label="Rule Designator" name="name" required>
+                            <x-ui.input name="name" placeholder="Misal: Akselerasi Kesulitan Mahasiswa High-Perform" required />
+                        </x-forms.form-group>
+
+                        <x-forms.form-group label="Target Modul (Scope)" name="material_id">
+                            <select name="material_id" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-600 transition-all outline-none appearance-none">
+                                <option value="">Global Enforcement (Semua Materi)</option>
+                                @foreach($materials as $material)
+                                    <option value="{{ $material->id }}">{{ $material->title }}</option>
+                                @endforeach
+                            </select>
+                        </x-forms.form-group>
+                    </div>
+
+                    <div class="space-y-6">
+                        <x-forms.form-group label="Logic Rationale" name="description">
+                            <x-ui.input type="textarea" name="description" rows="5" placeholder="Jelaskan secara teknis tujuan dari rule ini..." />
+                        </x-forms.form-group>
+                    </div>
+                </div>
+            </x-ui.card>
+
+            {{-- Logic Engine Builder --}}
+            <div class="relative">
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div class="w-1 h-full bg-gradient-to-b from-blue-500/20 via-blue-500/40 to-emerald-500/20 rounded-full"></div>
+                </div>
+
+                <div class="space-y-24 relative z-10">
+                    {{-- IF BRANCH --}}
+                    <div class="flex flex-col items-center">
+                        <div class="px-8 py-3 bg-blue-600 text-white rounded-full text-sm font-black italic tracking-widest shadow-xl shadow-blue-500/20 mb-8 border-4 border-white">IF CONDITION</div>
                         
-                        <x-ui.alert type="danger" :message="session('error')" />
-                            
-                        <form action="{{ route('admin.adaptive-rules.store') }}" method="POST" id="ruleForm">
-                            @csrf
-                            <!-- Info Box -->
-                            <div class="alert alert-info alert-dismissible fade show" role="alert">
-                                <h6 class="alert-heading">
-                                    <i class="material-icons text-sm">info</i> Cara Kerja Adaptive Rules
-                                </h6>
-                                <p class="mb-2"><strong>Format:</strong> <code>IF [KONDISI] THEN [AKSI]</code></p>
-                                <hr>
-                                <p class="mb-1"><strong>Contoh 1:</strong> Naikkan Level</p>
-                                <small class="text-muted">
-                                    IF <code>accuracy >= 80</code> THEN <code>SET current_level = "medium"</code>
-                                </small>
-                                <p class="mb-1 mt-2"><strong>Contoh 2:</strong> Berikan Hint</p>
-                                <small class="text-muted">
-                                    IF <code>wrong_streak >= 3</code> THEN <code>INCREMENT hints_available BY 1</code>
-                                </small>
-                                <x-ui.button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" />
-                            </div>
+                        <div class="w-full max-w-4xl">
+                            <x-ui.card padding="p-0" class="overflow-hidden border-blue-100 shadow-2xl">
+                                <div class="p-4 bg-blue-50/50 border-b border-blue-100 flex justify-between items-center">
+                                    <span class="text-[10px] font-black uppercase tracking-widest text-blue-600 italic">Conditional Triggers</span>
+                                    <x-ui.button type="button" size="xs" variant="ghost" data-bs-toggle="modal" data-bs-target="#addAttributeModal" icon="fas fa-plus-circle">NEW ATTRIBUTE</x-ui.button>
+                                </div>
+                                
+                                <div id="conditionsContainer" class="p-8 space-y-4">
+                                    <div class="query-rule flex gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 items-center group transition-all" id="condition_0">
+                                        <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <select name="conditions[0][key]" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold focus:ring-4 focus:ring-blue-100 outline-none" required>
+                                                <option value="">Select Attribute</option>
+                                                @if($regularAttributes->count() > 0)
+                                                <optgroup label="📊 REGULAR DATA">
+                                                    @foreach($regularAttributes as $attr)
+                                                        <option value="{{ $attr->key }}">{{ $attr->label }}</option>
+                                                    @endforeach
+                                                </optgroup>
+                                                @endif
+                                                @if($computedAttributes->count() > 0)
+                                                <optgroup label="🧮 COMPUTED VALUES">
+                                                    @foreach($computedAttributes as $attr)
+                                                        <option value="{{ $attr->key }}">{{ $attr->label }} ⚡</option>
+                                                    @endforeach
+                                                </optgroup>
+                                                @endif
+                                            </select>
 
-                            <x-forms.form-group label="📝 Nama Rule" name="name" required class="mb-4">
-                                <x-ui.input name="name" class="form-control-lg" placeholder="Contoh: Naikkan Kesulitan untuk Mahasiswa Pintar" required />
-                            </x-forms.form-group>
+                                            <select name="conditions[0][operator]" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-black italic uppercase italic focus:ring-4 focus:ring-blue-100 outline-none" required>
+                                                <option value=">">GREATER THAN</option>
+                                                <option value=">=">GREATER OR EQUAL</option>
+                                                <option value="<">LESS THAN</option>
+                                                <option value="<=">LESS OR EQUAL</option>
+                                                <option value="==">EQUALS</option>
+                                                <option value="!=">NOT EQUALS</option>
+                                            </select>
 
-                            <x-forms.form-group label="Deskripsi" name="description" class="mb-3">
-                                <x-ui.input type="textarea" name="description" rows="2" placeholder="Jelaskan tujuan rule ini..." />
-                            </x-forms.form-group>
-
-                            <x-forms.form-group label="Materi (Opsional)" name="material_id" class="mb-4">
-                                <select name="material_id" class="form-control">
-                                    <option value="">Semua Materi</option>
-                                    @foreach($materials as $material)
-                                        <option value="{{ $material->id }}">{{ $material->title }}</option>
-                                    @endforeach
-                                </select>
-                            </x-forms.form-group>
-
-                            <!-- Visual Query Builder UI -->
-                            <link rel="stylesheet" href="{{ asset('css/components/query-builder.css') }}">
-
-                            <!-- Unified Logic Tree -->
-                            <div class="adaptive-logic-tree">
-                                <!-- Logic Branch: IF -->
-                                <div class="logic-branch if-branch">
-                                    <div class="branch-header">
-                                        <span class="badge bg-gradient-info branch-label">IF</span>
-                                        <div class="d-flex align-items-center ms-2">
-                                            <span class="text-xs text-muted me-3">Kondisi yang harus terpenuhi</span>
-                                            <x-ui.button type="button" size="xs" variant="outline" class="mb-0" data-bs-toggle="modal" data-bs-target="#addAttributeModal" icon="add">
-                                                Atribut Baru
-                                            </x-ui.button>
+                                            <input type="text" name="conditions[0][value]" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold focus:ring-4 focus:ring-blue-100 outline-none" placeholder="Threshold Value" required>
                                         </div>
-                                    </div>
-                                    <div class="branch-content">
-                                        <div class="query-builder">
-                                            <div class="query-group">
-                                                <div class="group-operator">AND</div>
-                                                
-                                                <div id="conditionsContainer">
-                                                    <!-- Initial Rule -->
-                                                    <div class="query-rule" id="condition_0">
-                                                        <div class="rule-input-group">
-                                                            <div style="flex: 2;">
-                                                                <select name="conditions[0][key]" class="rule-select w-100 attribute-select" required>
-                                                                    <option value="">Select Attribute</option>
-                                                                    
-                                                                    @if($regularAttributes->count() > 0)
-                                                                    <optgroup label="📊 Data Mahasiswa (Regular)">
-                                                                        @foreach($regularAttributes as $attr)
-                                                                            <option value="{{ $attr->key }}" data-type="regular">
-                                                                                {{ $attr->label }}
-                                                                            </option>
-                                                                        @endforeach
-                                                                    </optgroup>
-                                                                    @endif
-                                                                    
-                                                                    @if($computedAttributes->count() > 0)
-                                                                    <optgroup label="🧮 Nilai Terhitung (Computed)">
-                                                                        @foreach($computedAttributes as $attr)
-                                                                            <option value="{{ $attr->key }}" data-type="computed">
-                                                                                {{ $attr->label }} ⚡
-                                                                            </option>
-                                                                        @endforeach
-                                                                    </optgroup>
-                                                                    @endif
-                                                                </select>
-                                                            </div>
-                                                            
-                                                            <div style="flex: 1;">
-                                                                <select name="conditions[0][operator]" class="rule-select w-100" required>
-                                                                    <option value=">">greater than</option>
-                                                                    <option value=">=">greater/equal</option>
-                                                                    <option value="<">less than</option>
-                                                                    <option value="<=">less/equal</option>
-                                                                    <option value="==">equals</option>
-                                                                    <option value="!=">not equals</option>
-                                                                </select>
-                                                            </div>
-                                                            
-                                                            <div style="flex: 1;">
-                                                                <input type="text" name="conditions[0][value]" class="rule-input w-100" placeholder="Value" required>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <x-ui.button type="button" variant="ghost" class="btn-delete-rule remove-condition" disabled icon="close" />
-                                                    </div>
-                                                </div>
-
-                                                <div class="group-actions">
-                                                    <x-ui.button type="button" class="btn-add-rule" id="addCondition" icon="add">
-                                                         Add filter
-                                                    </x-ui.button>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <x-ui.button type="button" variant="ghost" size="sm" class="remove-condition opacity-0 group-hover:opacity-100 transition-opacity text-slate-300 hover:text-rose-500" icon="fas fa-trash-alt" disabled />
                                     </div>
                                 </div>
 
-                                <!-- Logic Link -->
-                                <div class="logic-link">
-                                    <div class="link-line"></div>
+                                <div class="p-6 border-t border-slate-50 bg-slate-50/30 flex justify-center">
+                                    <x-ui.button type="button" id="addCondition" variant="ghost" size="sm" class="text-blue-600 font-black italic" icon="fas fa-plus">ADD FILTER CRITERIA</x-ui.button>
                                 </div>
-
-                                <!-- Logic Branch: THEN -->
-                                <div class="logic-branch then-branch">
-                                    <div class="branch-header">
-                                        <span class="badge bg-gradient-success branch-label">THEN</span>
-                                        <span class="text-xs text-muted ms-2">Aksi yang akan dijalankan</span>
-                                    </div>
-                                    <div class="branch-content">
-                                        <!-- Actions Query Builder UI -->
-                                        <div class="query-builder">
-                                            <div class="query-group then">
-                                                <div class="group-operator">AND</div>
-                                                
-                                                <div id="actionsContainer">
-                                                    <!-- Initial Action -->
-                                                    <div class="query-rule" id="action_0">
-                                                        <div class="rule-input-group">
-                                                            <div style="flex: 2;">
-                                                                <select name="actions[0][key]" class="rule-select w-100" required>
-                                                                    <option value="">Select Attribute to Modify</option>
-                                                                    @foreach($regularAttributes->merge($computedAttributes) as $attr)
-                                                                        <option value="{{ $attr->key }}">{{ $attr->label }}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                            
-                                                            <div style="flex: 1;">
-                                                                <select name="actions[0][operator]" class="rule-select w-100" required>
-                                                                    <option value="+">Tambah (+)</option>
-                                                                    <option value="-">Kurang (-)</option>
-                                                                    <option value="*">Kali (*)</option>
-                                                                    <option value="=">Set (=)</option>
-                                                                </select>
-                                                            </div>
-                                                            
-                                                            <div style="flex: 1;">
-                                                                <input type="text" name="actions[0][value]" class="rule-input w-100" placeholder="Value (e.g. 10)" required>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <input type="hidden" name="actions[0][type]" value="update_attribute">
-                                                        
-                                                        <x-ui.button type="button" variant="ghost" class="btn-delete-rule remove-action" disabled icon="close" />
-                                                    </div>
-                                                </div>
-
-                                                <div class="group-actions">
-                                                    <x-ui.button type="button" class="btn-add-rule" id="addAction" icon="add">
-                                                         Add action
-                                                    </x-ui.button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <hr class="my-4">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <x-forms.form-group label="Prioritas" name="priority" required helpText="Semakin tinggi angka, semakin tinggi prioritas">
-                                        <x-ui.input type="number" name="priority" value="10" min="0" required />
-                                    </x-forms.form-group>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mt-4">
-                                        <x-forms.checkbox name="is_active" label="Aktifkan Rule" checked />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-end gap-2 mt-4">
-                                <x-ui.button variant="outline" size="lg" href="{{ route('admin.adaptive-rules.index') }}">
-                                    Batal
-                                </x-ui.button>
-                                <x-ui.button type="submit" variant="primary" size="lg" icon="save">
-                                    Simpan Rule
-                                </x-ui.button>
-                            </div>
-                        </form>
-                    </x-ui.card>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    {{-- Modal untuk Tambah Atribut Baru --}}
-    <div class="modal fade" id="addAttributeModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-gradient-info">
-                    <h5 class="modal-title text-white">Tambah Atribut Baru</h5>
-                    <x-ui.button variant="link" data-bs-dismiss="modal" icon="close" />
-                </div>
-                <form id="addAttributeForm">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Key (Nama Teknis) <span class="text-danger">*</span></label>
-                            <input type="text" name="key" class="form-control" placeholder="Contoh: health, mana, karma" required>
-                            <small class="text-muted">Gunakan huruf kecil, tanpa spasi</small>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Label (Nama Tampilan) <span class="text-danger">*</span></label>
-                            <input type="text" name="label" class="form-control" placeholder="Contoh: Health Points" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Tipe Data <span class="text-danger">*</span></label>
-                            <select name="type" class="form-control" required>
-                                <option value="integer">Integer (Angka Bulat)</option>
-                                <option value="float">Float (Angka Desimal)</option>
-                                <option value="string">String (Teks)</option>
-                                <option value="boolean">Boolean (True/False)</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Nilai Default <span class="text-danger">*</span></label>
-                            <input type="text" name="default_value" class="form-control" placeholder="Contoh: 0" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Kategori</label>
-                            <select name="category" class="form-control">
-                                <option value="progression">Progression (XP, Level)</option>
-                                <option value="gameplay">Gameplay (Streak, Attempts)</option>
-                                <option value="general">General</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Deskripsi</label>
-                            <textarea name="description" class="form-control" rows="2" placeholder="Jelaskan fungsi atribut ini..."></textarea>
+                            </x-ui.card>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <x-ui.button type="button" variant="secondary" data-bs-dismiss="modal">Batal</x-ui.button>
-                        <x-ui.button type="submit" variant="info">Simpan Atribut</x-ui.button>
+
+                    {{-- THEN BRANCH --}}
+                    <div class="flex flex-col items-center">
+                        <div class="px-8 py-3 bg-emerald-500 text-white rounded-full text-sm font-black italic tracking-widest shadow-xl shadow-emerald-500/20 mb-8 border-4 border-white">THEN ACTION</div>
+                        
+                        <div class="w-full max-w-4xl">
+                            <x-ui.card padding="p-0" class="overflow-hidden border-emerald-100 shadow-2xl">
+                                <div class="p-4 bg-emerald-50/50 border-b border-emerald-100">
+                                    <span class="text-[10px] font-black uppercase tracking-widest text-emerald-600 italic">Engine Execution Plan</span>
+                                </div>
+                                
+                                <div id="actionsContainer" class="p-8 space-y-4">
+                                    <div class="query-rule flex gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 items-center group transition-all" id="action_0">
+                                        <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <select name="actions[0][key]" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold focus:ring-4 focus:ring-emerald-100 outline-none" required>
+                                                <option value="">Attribute to Modify</option>
+                                                @foreach($regularAttributes->merge($computedAttributes) as $attr)
+                                                    <option value="{{ $attr->key }}">{{ $attr->label }}</option>
+                                                @endforeach
+                                            </select>
+
+                                            <select name="actions[0][operator]" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-black italic uppercase focus:ring-4 focus:ring-emerald-100 outline-none" required>
+                                                <option value="+">INCREMENT (+)</option>
+                                                <option value="-">DECREMENT (-)</option>
+                                                <option value="*">MULTIPLY (*)</option>
+                                                <option value="=">SET VALUE (=)</option>
+                                            </select>
+
+                                            <input type="text" name="actions[0][value]" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold focus:ring-4 focus:ring-emerald-100 outline-none" placeholder="Target Value" required>
+                                        </div>
+                                        <input type="hidden" name="actions[0][type]" value="update_attribute">
+                                        <x-ui.button type="button" variant="ghost" size="sm" class="remove-action opacity-0 group-hover:opacity-100 transition-opacity text-slate-300 hover:text-rose-500" icon="fas fa-trash-alt" disabled />
+                                    </div>
+                                </div>
+
+                                <div class="p-6 border-t border-slate-50 bg-slate-50/30 flex justify-center">
+                                    <x-ui.button type="button" id="addAction" variant="ghost" size="sm" class="text-emerald-600 font-black italic" icon="fas fa-bolt">ADD EXECUTION STEP</x-ui.button>
+                                </div>
+                            </x-ui.card>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Controls --}}
+            <x-ui.card class="bg-slate-900 border-slate-800 text-white overflow-hidden relative">
+                <div class="absolute right-0 top-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10">
+                    <div class="space-y-6">
+                        <x-forms.form-group label="Priority Index" name="priority" required>
+                            <x-ui.input type="number" name="priority" value="10" min="0" required class="bg-slate-800 border-slate-700 text-white" />
+                            <p class="text-[10px] text-slate-500 italic mt-2">Semakin tinggi angka, semakin awal antrian eksekusi.</p>
+                        </x-forms.form-group>
+                    </div>
+                    <div class="flex flex-col justify-center gap-6">
+                        <div class="flex items-center gap-4 p-6 bg-slate-800/50 rounded-[2rem] border border-slate-700">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-500 flex items-center justify-center">
+                                <i class="fas fa-power-off"></i>
+                            </div>
+                            <div class="flex-1">
+                                <label class="text-xs font-black uppercase tracking-widest italic mb-1 block">Operational Status</label>
+                                <x-forms.checkbox name="is_active" label="Aktifkan Logic Engine" checked class="text-emerald-500" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-12 flex justify-end gap-4">
+                    <x-ui.button variant="ghost" href="{{ route('admin.adaptive-rules.index') }}" class="text-slate-400">CANCEL ARCHITECTURE</x-ui.button>
+                    <x-ui.button type="submit" variant="primary" size="lg" class="px-12 shadow-2xl shadow-blue-500/40" icon="fas fa-microchip">DEPLOY LOGIC RULE</x-ui.button>
+                </div>
+            </x-ui.card>
+        </form>
+    </div>
+
+    {{-- Modal --}}
+    <div class="modal fade" id="addAttributeModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-[2.5rem] shadow-2xl overflow-hidden">
+                <div class="p-8 bg-slate-900 text-white relative">
+                    <div class="absolute right-0 top-0 w-32 h-32 bg-blue-600/20 blur-2xl"></div>
+                    <h5 class="text-xl font-black italic tracking-tighter uppercase relative z-10">Register System Attribute</h5>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-2">Menambah variabel baru ke database adaptif</p>
+                </div>
+                <form id="addAttributeForm" class="p-8 space-y-6 bg-white">
+                    <div class="grid grid-cols-2 gap-4">
+                        <x-forms.form-group label="Key (Technical Name)" name="key" required>
+                            <x-ui.input name="key" placeholder="e.g. mastery_level" required />
+                        </x-forms.form-group>
+                        <x-forms.form-group label="Label (Display)" name="label" required>
+                            <x-ui.input name="label" placeholder="e.g. Tingkat Penguasaan" required />
+                        </x-forms.form-group>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <x-forms.form-group label="Data Type" name="type" required>
+                            <select name="type" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold outline-none" required>
+                                <option value="integer">Integer</option>
+                                <option value="float">Float</option>
+                                <option value="string">String</option>
+                                <option value="boolean">Boolean</option>
+                            </select>
+                        </x-forms.form-group>
+                        <x-forms.form-group label="Default Value" name="default_value" required>
+                            <x-ui.input name="default_value" value="0" required />
+                        </x-forms.form-group>
+                    </div>
+                    <x-forms.form-group label="Functional Category" name="category">
+                        <select name="category" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold outline-none">
+                            <option value="progression">Progression</option>
+                            <option value="gameplay">Gameplay</option>
+                            <option value="general">General</option>
+                        </select>
+                    </x-forms.form-group>
+                    <div class="flex flex-col gap-4 pt-4 border-t border-slate-100">
+                        <x-ui.button type="submit" variant="primary" icon="fas fa-save">REGISTER ATTRIBUTE</x-ui.button>
+                        <x-ui.button type="button" variant="ghost" data-bs-dismiss="modal">CLOSE</x-ui.button>
                     </div>
                 </form>
             </div>
@@ -284,46 +221,116 @@
     @push('scripts')
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM loaded, initializing adaptive rules form...');
-        
-        // Pre-load attributes data
         const attributesData = @json($regularAttributes->merge($computedAttributes)->map(function($attr) {
             return ['key' => $attr->key, 'label' => $attr->label];
         }));
         
-        console.log('Attributes loaded:', attributesData);
-        
         function buildAttributeOptions() {
-            let options = '<option value="">Pilih Atribut</option>';
+            let options = '<option value="">Select Attribute</option>';
             attributesData.forEach(attr => {
-                options += `<option value="${attr.key}">${attr.label} (${attr.key})</option>`;
+                options += `<option value="${attr.key}">${attr.label}</option>`;
             });
             return options;
         }
         
         let conditionIndex = 1;
-        
-        // Check if elements exist
+        let actionIndex = 1;
+
         const addConditionBtn = document.getElementById('addCondition');
         const addActionBtn = document.getElementById('addAction');
         const conditionsContainer = document.getElementById('conditionsContainer');
         const actionsContainer = document.getElementById('actionsContainer');
         
-        console.log('Elements found:', {
-            addConditionBtn: !!addConditionBtn,
-            addActionBtn: !!addActionBtn,
-            conditionsContainer: !!conditionsContainer,
-            actionsContainer: !!actionsContainer
+        // Add Condition
+        if (addConditionBtn) {
+            addConditionBtn.addEventListener('click', function() {
+                const firstSelect = document.querySelector('select[name="conditions[0][key]"]');
+                const optionsHtml = firstSelect ? firstSelect.innerHTML : buildAttributeOptions();
+                
+                const newCondition = `
+                    <div class="query-rule flex gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 items-center group animate-in slide-in-from-left-4 duration-300" id="condition_${conditionIndex}">
+                        <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <select name="conditions[${conditionIndex}][key]" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold focus:ring-4 focus:ring-blue-100 outline-none" required>
+                                ${optionsHtml}
+                            </select>
+                            <select name="conditions[${conditionIndex}][operator]" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-black italic uppercase focus:ring-4 focus:ring-blue-100 outline-none" required>
+                                <option value=">">GREATER THAN</option>
+                                <option value=">=">GREATER OR EQUAL</option>
+                                <option value="<">LESS THAN</option>
+                                <option value="<=">LESS OR EQUAL</option>
+                                <option value="==">EQUALS</option>
+                                <option value="!=">NOT EQUALS</option>
+                            </select>
+                            <input type="text" name="conditions[${conditionIndex}][value]" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold focus:ring-4 focus:ring-blue-100 outline-none" placeholder="Threshold Value" required>
+                        </div>
+                        <x-ui.button type="button" variant="ghost" size="sm" class="remove-condition opacity-0 group-hover:opacity-100 transition-opacity text-slate-300 hover:text-rose-500" icon="fas fa-trash-alt" />
+                    </div>
+                `;
+                conditionsContainer.insertAdjacentHTML('beforeend', newCondition);
+                conditionIndex++;
+                updateRemoveButtons('remove-condition');
+            });
+        }
+
+        // Add Action
+        if (addActionBtn) {
+            addActionBtn.addEventListener('click', function() {
+                const firstSelect = document.querySelector('select[name="actions[0][key]"]');
+                const optionsHtml = firstSelect ? firstSelect.innerHTML : '';
+                
+                const newAction = `
+                    <div class="query-rule flex gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 items-center group animate-in slide-in-from-left-4 duration-300" id="action_${actionIndex}">
+                        <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <select name="actions[${actionIndex}][key]" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold focus:ring-4 focus:ring-emerald-100 outline-none" required>
+                                ${optionsHtml}
+                            </select>
+                            <select name="actions[${actionIndex}][operator]" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-black italic uppercase focus:ring-4 focus:ring-emerald-100 outline-none" required>
+                                <option value="+">INCREMENT (+)</option>
+                                <option value="-">DECREMENT (-)</option>
+                                <option value="*">MULTIPLY (*)</option>
+                                <option value="=">SET VALUE (=)</option>
+                            </select>
+                            <input type="text" name="actions[${actionIndex}][value]" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold focus:ring-4 focus:ring-emerald-100 outline-none" placeholder="Target Value" required>
+                        </div>
+                        <input type="hidden" name="actions[${actionIndex}][type]" value="update_attribute">
+                        <x-ui.button type="button" variant="ghost" size="sm" class="remove-action opacity-0 group-hover:opacity-100 transition-opacity text-slate-300 hover:text-rose-500" icon="fas fa-trash-alt" />
+                    </div>
+                `;
+                actionsContainer.insertAdjacentHTML('beforeend', newAction);
+                actionIndex++;
+                updateRemoveButtons('remove-action');
+            });
+        }
+
+        // Remove handling
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.remove-condition')) {
+                const row = e.target.closest('.query-rule');
+                if (document.querySelectorAll('.remove-condition').length > 1) {
+                    row.remove();
+                    updateRemoveButtons('remove-condition');
+                }
+            }
+            if (e.target.closest('.remove-action')) {
+                const row = e.target.closest('.query-rule');
+                if (document.querySelectorAll('.remove-action').length > 1) {
+                    row.remove();
+                    updateRemoveButtons('remove-action');
+                }
+            }
         });
-        
-        // Handle attribute creation
+
+        function updateRemoveButtons(className) {
+            const buttons = document.querySelectorAll('.' + className);
+            buttons.forEach(btn => btn.disabled = buttons.length === 1);
+        }
+
+        // Attribute Creation Form
         const addAttributeForm = document.getElementById('addAttributeForm');
         if (addAttributeForm) {
             addAttributeForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
-                console.log('Submitting new attribute...');
                 const formData = new FormData(this);
-                
                 try {
                     const response = await fetch('/admin/attribute-definitions', {
                         method: 'POST',
@@ -334,156 +341,13 @@
                         },
                         body: JSON.stringify(Object.fromEntries(formData))
                     });
-                    
-                    const data = await response.json();
-                    
-                    if (response.ok) {
-                        console.log('Attribute created successfully');
-                        location.reload();
-                    } else {
-                        console.error('Error creating attribute:', data);
-                        alert('Error: ' + (data.message || 'Gagal menyimpan atribut'));
-                    }
+                    if (response.ok) location.reload();
+                    else alert('Gagal menyimpan atribut. Periksa kembali inputan Anda.');
                 } catch (error) {
-                    console.error('Fetch error:', error);
-                    alert('Error: ' + error.message);
+                    alert('Terjadi kesalahan koneksi.');
                 }
             });
         }
-        
-        // Add new condition (Visual Query Builder)
-        if (addConditionBtn) {
-            addConditionBtn.addEventListener('click', function() {
-                console.log('Add condition clicked, index:', conditionIndex);
-                const container = document.getElementById('conditionsContainer');
-                
-                // Get options from first select to clone
-                const firstSelect = document.querySelector('select[name="conditions[0][key]"]');
-                const optionsHtml = firstSelect ? firstSelect.innerHTML : buildAttributeOptions();
-                
-                const newCondition = `
-                    <div class="query-rule" id="condition_${conditionIndex}">
-                        <div class="rule-input-group">
-                            <div style="flex: 2;">
-                                <select name="conditions[${conditionIndex}][key]" class="rule-select w-100 attribute-select" required>
-                                    ${optionsHtml}
-                                </select>
-                            </div>
-                            
-                            <div style="flex: 1;">
-                                <select name="conditions[${conditionIndex}][operator]" class="rule-select w-100" required>
-                                    <option value=">">greater than</option>
-                                    <option value=">=">greater/equal</option>
-                                    <option value="<">less than</option>
-                                    <option value="<=">less/equal</option>
-                                    <option value="==">equals</option>
-                                    <option value="!=">not equals</option>
-                                </select>
-                            </div>
-                            
-                            <div style="flex: 1;">
-                                <input type="text" name="conditions[${conditionIndex}][value]" class="rule-input w-100" placeholder="Value" required>
-                            </div>
-                        </div>
-                        
-                        <x-ui.button type="button" variant="ghost" class="btn-delete-rule remove-condition" icon="close" />
-                    </div>
-                `;
-                
-                container.insertAdjacentHTML('beforeend', newCondition);
-                conditionIndex++;
-                updateRemoveButtons();
-            });
-        } else {
-            console.error('addCondition button not found!');
-        }
-        
-        // Remove condition
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.remove-condition')) {
-                const ruleRow = e.target.closest('.query-rule');
-                if (document.querySelectorAll('.query-rule').length > 1) {
-                    ruleRow.remove();
-                    updateRemoveButtons();
-                }
-            }
-        });
-        
-        function updateRemoveButtons() {
-            const rules = document.querySelectorAll('.query-rule');
-            rules.forEach(rule => {
-                const btn = rule.querySelector('.remove-condition');
-                if(btn) btn.disabled = rules.length === 1;
-            });
-        }
-        
-        // Actions Builder (Visual Query Builder)
-        let actionIndex = 1;
-        
-        if (addActionBtn) {
-            addActionBtn.addEventListener('click', function() {
-                console.log('Add action clicked, index:', actionIndex);
-                const container = document.getElementById('actionsContainer');
-                
-                // Get options from first select
-                const firstSelect = document.querySelector('select[name="actions[0][key]"]');
-                const optionsHtml = firstSelect ? firstSelect.innerHTML : '';
-
-                const newAction = `
-                    <div class="query-rule" id="action_${actionIndex}">
-                        <div class="rule-input-group">
-                            <div style="flex: 2;">
-                                <select name="actions[${actionIndex}][key]" class="rule-select w-100" required>
-                                    ${optionsHtml}
-                                </select>
-                            </div>
-                            
-                            <div style="flex: 1;">
-                                <select name="actions[${actionIndex}][operator]" class="rule-select w-100" required>
-                                    <option value="+">Tambah (+)</option>
-                                    <option value="-">Kurang (-)</option>
-                                    <option value="*">Kali (*)</option>
-                                    <option value="=">Set (=)</option>
-                                </select>
-                            </div>
-                            
-                            <div style="flex: 1;">
-                                <input type="text" name="actions[${actionIndex}][value]" class="rule-input w-100" placeholder="Value (e.g. 10)" required>
-                            </div>
-                        </div>
-                        
-                        <input type="hidden" name="actions[${actionIndex}][type]" value="update_attribute">
-                        
-                        <x-ui.button type="button" variant="ghost" class="btn-delete-rule remove-action" icon="close" />
-                    </div>
-                `;
-                
-                container.insertAdjacentHTML('beforeend', newAction);
-                actionIndex++;
-                updateActionRemoveButtons();
-            });
-        }
-        
-        // Remove action
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.remove-action')) {
-                const ruleRow = e.target.closest('.query-rule');
-                if (document.querySelectorAll('#actionsContainer .query-rule').length > 1) {
-                    ruleRow.remove();
-                    updateActionRemoveButtons();
-                }
-            }
-        });
-        
-        function updateActionRemoveButtons() {
-            const actions = document.querySelectorAll('#actionsContainer .query-rule');
-            actions.forEach(action => {
-                const btn = action.querySelector('.remove-action');
-                if(btn) btn.disabled = actions.length === 1;
-            });
-        }
-        
-        console.log('Adaptive rules form initialization complete');
     });
     </script>
     @endpush

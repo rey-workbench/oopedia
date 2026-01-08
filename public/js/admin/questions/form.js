@@ -95,50 +95,63 @@ function addAnswer() {
 
     if (questionType === 'radio_button') {
         innerHTML = `
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="input-group input-group-outline">
-                        <input type="text" name="answers[${answerCount}][answer_text]" class="form-control" placeholder="Jawaban" required>
-                    </div>
+            <div class="row items-center gap-4">
+                <div class="col-md-7">
+                    <input type="text" name="answers[${answerCount}][answer_text]" 
+                        class="w-full px-5 py-4 bg-white border border-slate-200 rounded-2xl text-xs font-bold italic focus:ring-4 focus:ring-blue-100 transition-all outline-none" 
+                        placeholder="Type answer choice..." required>
                 </div>
                 <div class="col-md-4">
-                    <div class="form-check">
-                        <input class="form-check-input correct-radio" type="radio" name="correct_answer" value="${answerCount}">
-                        <label class="form-check-label">Jawaban Benar</label>
+                    <label class="flex items-center gap-3 cursor-pointer group">
+                        <div class="relative">
+                            <input type="radio" name="correct_answer" value="${answerCount}" class="correct-radio peer sr-only">
+                            <div class="w-6 h-6 rounded-full border-2 border-slate-200 peer-checked:border-blue-600 peer-checked:bg-blue-600 transition-all flex items-center justify-center text-white text-[10px]">
+                                <i class="fas fa-check scale-0 peer-checked:scale-100 transition-transform"></i>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-900 transition-colors">Mark Correct</span>
                         <input type="hidden" name="answers[${answerCount}][is_correct]" value="0">
-                    </div>
+                    </label>
                 </div>
             </div>
         `;
     } else if (questionType === 'drag_and_drop') {
         innerHTML = `
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="input-group input-group-outline">
-                        <input type="text" name="answers[${answerCount}][answer_text]" class="form-control" placeholder="Jawaban" required>
-                    </div>
+            <div class="row items-center gap-4">
+                <div class="col-md-7">
+                    <input type="text" name="answers[${answerCount}][answer_text]" 
+                        class="w-full px-5 py-4 bg-white border border-slate-200 rounded-2xl text-xs font-bold italic focus:ring-4 focus:ring-blue-100 transition-all outline-none" 
+                        placeholder="Type answer choice..." required>
                 </div>
                 <div class="col-md-4">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="answers[${answerCount}][is_correct]" value="1">
-                        <label class="form-check-label">Jawaban Benar</label>
-                    </div>
+                    <label class="flex items-center gap-3 cursor-pointer group">
+                        <div class="relative">
+                            <input type="checkbox" name="answers[${answerCount}][is_correct]" value="1" class="peer sr-only">
+                            <div class="w-6 h-6 rounded-lg border-2 border-slate-200 peer-checked:border-emerald-600 peer-checked:bg-emerald-600 transition-all flex items-center justify-center text-white text-[10px]">
+                                <i class="fas fa-check scale-0 peer-checked:scale-100 transition-transform"></i>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-900 transition-colors">Correct Item</span>
+                    </label>
                 </div>
             </div>
         `;
     } else if (questionType === 'fill_in_the_blank') {
         innerHTML = `
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="input-group input-group-outline">
-                        <input type="text" name="answers[${answerCount}][answer_text]" class="form-control" placeholder="Jawaban" required>
-                    </div>
+            <div class="row items-center gap-4">
+                <div class="col-md-7">
+                    <input type="text" name="answers[${answerCount}][answer_text]" 
+                        class="w-full px-5 py-8 bg-blue-50/50 border-2 border-dashed border-blue-200 rounded-[2rem] text-center text-sm font-black italic tracking-tighter text-blue-900 focus:ring-0 focus:border-blue-600 transition-all outline-none uppercase" 
+                        placeholder="Type the expected keyword..." required>
                 </div>
                 <div class="col-md-4">
-                    <div class="form-check">
-                        <input class="form-check-input correct-radio" type="radio" name="correct_answer" value="${answerCount}" checked>
-                        <label class="form-check-label">Jawaban Benar</label>
+                    <div class="flex items-center gap-3 opacity-50">
+                        <div class="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white text-[10px]">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-blue-600">Primary Key</span>
                         <input type="hidden" name="answers[${answerCount}][is_correct]" value="1">
+                        <input type="radio" name="correct_answer" value="${answerCount}" checked class="sr-only">
                     </div>
                 </div>
             </div>

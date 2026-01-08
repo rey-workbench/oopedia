@@ -1,126 +1,121 @@
-<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
-    <x-navigation.sidebar activePage="students" />
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navigation.navbar titlePage="Progress Mahasiswa" />
-        <div class="container-fluid py-4">
-            <div class="row">
-                <div class="col-12">
-                    <x-ui.card class="my-4">
-                        <x-slot:header>
-                            <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
-                                <h6 class="text-white text-capitalize ps-3 mb-0">Progress Mahasiswa: {{ $student->name }}</h6>
-                                <x-ui.button variant="light" size="sm" href="{{ route('admin.students.index') }}" icon="arrow_back" class="me-3">
-                                    Kembali
-                                </x-ui.button>
-                            </div>
-                        </x-slot:header>
+<x-layouts.app title="Progress Mahasiswa" theme="admin">
+    <div class="space-y-12">
+        <x-ui.page-header
+            title="Silo Performance Insight"
+            subtitle="Analisis trajectory pembelajaran untuk entitas {{ $student->name }}."
+        >
+            <x-ui.button href="{{ route('admin.students.index') }}" variant="ghost" icon="fas fa-arrow-left">BACK TO LIST</x-ui.button>
+        </x-ui.page-header>
 
-                        <div class="card-body px-0 pb-2">
-                            <x-ui.table>
-                                <thead>
-                                    <tr>
-                                        <x-ui.th>Materi</x-ui.th>
-                                        <x-ui.th class="ps-2">Progress</x-ui.th>
-                                        <x-ui.th class="ps-2">Status</x-ui.th>
-                                        <x-ui.th class="ps-2">Terakhir Dikerjakan</x-ui.th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($materials as $material)
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex px-2 py-1">
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm">{{ $material->title }}</h6>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="progress me-2" style="height: 8px; width: 200px;">
-                                                    <div class="progress-bar bg-gradient-success"
-                                                            role="progressbar"
-                                                            style="width: {{ is_numeric($material->progress) ? $material->progress : 0 }}%;"
-                                                            aria-valuenow="{{ is_numeric($material->progress) ? $material->progress : 0 }}"
-                                                            aria-valuemin="0"
-                                                            aria-valuemax="100">
-                                                    </div>
-                                                </div>
-                                                <span class="text-xs font-weight-bold">{{ is_numeric($material->progress) ? $material->progress : 0 }}%</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            @if(is_numeric($material->progress) && $material->progress == 100)
-                                                <x-ui.badge variant="success">Selesai</x-ui.badge>
-                                            @elseif(is_numeric($material->progress) && $material->progress > 0)
-                                                <x-ui.badge variant="warning">Sedang Dikerjakan</x-ui.badge>
-                                            @else
-                                                <x-ui.badge variant="secondary">Belum Dimulai</x-ui.badge>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <span class="text-xs font-weight-bold">
-                                                {{ $material->last_accessed ? $material->last_accessed->format('d M Y H:i') : '-' }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    @empty
-                                    <tr>
-                                        <td colspan="4" class="text-center py-4">
-                                            <p class="text-sm mb-0">Belum ada data materi</p>
-                                        </td>
-                                    </tr>
-                                    @endforelse
-                                </tbody>
-                            </x-ui.table>
-                        </div>
-                    </x-ui.card>
-                </div>
-            </div>
+        {{-- Summary Cards --}}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <x-ui.stat-card 
+                title="Learning Trajectory" 
+                value="{{ number_format($materials->avg('progress') ?? 0, 1) }}%" 
+                icon="fas fa-chart-line" 
+                variant="primary"
+                footer="Average module completion"
+            />
+            <x-ui.stat-card 
+                title="Modules Fully Deciphered" 
+                value="{{ $materials->where('progress', 100)->count() }} / {{ $materials->count() }}" 
+                icon="fas fa-check-double" 
+                variant="success"
+                footer="100% completion reached"
+            />
+            <x-ui.stat-card 
+                title="Remaining Challenge Units" 
+                value="{{ array_sum(array_column($missingQuestionsByMaterial, 'missing_count')) }}" 
+                icon="fas fa-bolt" 
+                variant="danger"
+                footer="Correct answers pending"
+            />
         </div>
+
+        <x-ui.card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
+            <x-slot:header>
+                <div class="flex items-center gap-4">
+                    <div class="w-1.5 h-8 bg-blue-600 rounded-full"></div>
+                    <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Content Mastery Matrix</h6>
+                </div>
+            </x-slot:header>
+
+            <x-ui.table>
+                <x-slot:thead>
+                    <tr>
+                        <x-ui.th>Module Schema</x-ui.th>
+                        <x-ui.th>Mastery Level</x-ui.th>
+                        <x-ui.th class="text-center">Protocol Status</x-ui.th>
+                        <x-ui.th class="text-right">Last Interaction</x-ui.th>
+                    </tr>
+                </x-slot:thead>
+                @forelse($materials as $material)
+                <tr class="group hover:bg-slate-50 transition-colors">
+                    <td class="px-6 py-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-1.5 h-8 bg-slate-900 rounded-full"></div>
+                            <span class="text-[10px] font-black italic text-slate-900 uppercase tracking-tighter">{{ $material->title }}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-6">
+                        <div class="flex flex-col gap-2 min-w-[150px]">
+                            <div class="flex justify-between text-[8px] font-black uppercase italic tracking-widest text-slate-400">
+                                <span>Mastery</span>
+                                <span>{{ is_numeric($material->progress) ? (int)$material->progress : 0 }}%</span>
+                            </div>
+                            <x-ui.progress-bar :value="is_numeric($material->progress) ? $material->progress : 0" size="xs" :showPercentage="false" />
+                        </div>
+                    </td>
+                    <td class="px-6 py-6 text-center">
+                        @if(is_numeric($material->progress) && $material->progress == 100)
+                            <x-ui.badge variant="success" size="xs">STABILIZED</x-ui.badge>
+                        @elseif(is_numeric($material->progress) && $material->progress > 0)
+                            <x-ui.badge variant="warning" size="xs">PROCESSING</x-ui.badge>
+                        @else
+                            <x-ui.badge variant="secondary" size="xs">INACTIVE</x-ui.badge>
+                        @endif
+                    </td>
+                    <td class="px-6 py-6 text-right">
+                        <span class="text-[10px] font-black italic text-slate-400 uppercase tracking-widest">
+                            {{ $material->last_accessed ? $material->last_accessed->diffForHumans() : 'No Logs Found' }}
+                        </span>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="4" class="p-20 text-center text-slate-400 italic text-xs uppercase font-black tracking-widest">No Interaction Logs Found</td>
+                </tr>
+                @endforelse
+            </x-ui.table>
+        </x-ui.card>
+
         @if(count($missingQuestionsByMaterial) > 0)
-        <div class="container-fluid py-4">
-            <div class="row">
-                <div class="col-12">
-                    <x-ui.card class="my-4">
-                        <x-slot:header>
-                            <div class="bg-gradient-warning shadow-warning border-radius-lg pt-4 pb-3">
-                                <h6 class="text-white text-capitalize ps-3 mb-0">Soal yang Belum Dijawab</h6>
-                            </div>
-                        </x-slot:header>
-
-                        <div class="card-body px-0 pb-2">
-                            <x-ui.table>
-                                <thead>
-                                    <tr>
-                                        <x-ui.th>Materi</x-ui.th>
-                                        <x-ui.th class="ps-2">Jumlah Soal Belum Dijawab Benar</x-ui.th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($missingQuestionsByMaterial as $item)
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex px-2 py-1">
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm">{{ $item['material_title'] }}</h6>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <x-ui.badge variant="danger">{{ $item['missing_count'] }} soal</x-ui.badge>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </x-ui.table>
-                        </div>
-                    </x-ui.card>
+        <x-ui.card padding="p-0" class="overflow-hidden border-rose-100 shadow-2xl bg-rose-50/5">
+            <x-slot:header>
+                <div class="flex items-center gap-4">
+                    <div class="w-1.5 h-8 bg-rose-500 rounded-full"></div>
+                    <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-rose-500">Unresolved Challenge Units</h6>
                 </div>
-            </div>
-        </div>
-        @endif
-    </main>
-    <x-admin.tutorial />
+            </x-slot:header>
 
+            <x-ui.table>
+                <x-slot:thead>
+                    <tr>
+                        <x-ui.th>Critical Module</x-ui.th>
+                        <x-ui.th class="text-right">Anomaly Count</x-ui.th>
+                    </tr>
+                </x-slot:thead>
+                @foreach($missingQuestionsByMaterial as $item)
+                <tr class="group hover:bg-rose-50/50 transition-colors">
+                    <td class="px-6 py-6 font-black italic text-rose-900 text-xs tracking-tighter uppercase">{{ $item['material_title'] }}</td>
+                    <td class="px-6 py-6 text-right">
+                        <x-ui.badge variant="danger" size="xs">{{ $item['missing_count'] }} PENDING</x-ui.badge>
+                    </td>
+                </tr>
+                @endforeach
+            </x-ui.table>
+        </x-ui.card>
+        @endif
+    </div>
+    <x-admin.tutorial />
 </x-layouts.app>

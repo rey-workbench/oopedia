@@ -1,144 +1,115 @@
-<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200" theme="admin">
-    <x-navigation.sidebar activePage="formulas" />
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navigation.navbar titlePage="Buat Formula Baru" />
-        <div class="container-fluid py-4">
-            <div class="row min-vh-80">
-                <div class="col-12">
-                    <x-ui.card class="shadow-lg h-100">
-                        <x-slot:header>
-                            <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                                <h6 class="text-white text-capitalize ps-3">Buat Formula Baru</h6>
-                            </div>
-                        </x-slot:header>
+<x-layouts.app title="Buat Formula" theme="admin">
+    <div class="space-y-12">
+        <x-ui.page-header
+            title="Logic Formula Architect"
+            subtitle="Definisikan ekspresi matematika untuk transformasi data dan metrik adaptif."
+        >
+            <x-ui.button href="{{ route('admin.formulas.index') }}" variant="ghost" icon="fas fa-arrow-left">BATALKAN ARSITEKTUR</x-ui.button>
+        </x-ui.page-header>
 
-                        <form action="{{ route('admin.formulas.store') }}" method="POST">
-                            @csrf
+        <form action="{{ route('admin.formulas.store') }}" method="POST" class="space-y-12">
+            @csrf
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <x-forms.form-group label="Nama Formula" name="name" required>
-                                        <x-ui.input name="name" placeholder="Contoh: Calculate Accuracy" value="{{ old('name') }}" required />
-                                    </x-forms.form-group>
-                                </div>
-                                <div class="col-md-6">
-                                    <x-forms.form-group label="Key (Unique)" name="key" required helpText="Lowercase, underscore only">
-                                        <x-ui.input name="key" placeholder="Contoh: accuracy" value="{{ old('key') }}" pattern="[a-z_]+" required />
-                                    </x-forms.form-group>
-                                </div>
-                            </div>
-
-                            <x-forms.form-group label="Deskripsi" name="description">
-                                <textarea name="description" class="form-control" rows="2" placeholder="Deskripsi formula">{{ old('description') }}</textarea>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                {{-- Configuration Left --}}
+                <div class="lg:col-span-1 space-y-8">
+                    <x-ui.card class="border-slate-100 shadow-2xl">
+                        <x-slot:header>Identity Specs</x-slot:header>
+                        <div class="space-y-6">
+                            <x-forms.form-group label="Formula Name" name="name" required>
+                                <x-ui.input name="name" placeholder="e.g. Master Accuracy Rank" value="{{ old('name') }}" required />
+                            </x-forms.form-group>
+                            
+                            <x-forms.form-group label="Technical Key" name="key" required>
+                                <x-ui.input name="key" placeholder="e.g. accuracy_metric" value="{{ old('key') }}" pattern="[a-z_]+" required />
+                                <p class="text-[9px] text-slate-400 mt-2 font-bold uppercase tracking-widest italic">Pattern: lowercase, underscore only</p>
                             </x-forms.form-group>
 
-                            <x-forms.form-group label="Expression" name="expression" required helpText="Gunakan fungsi: PERCENTAGE, IF, ROUND, MIN, MAX, dll">
-                                <textarea name="expression" class="form-control font-monospace" rows="3" placeholder="Contoh: PERCENTAGE(correct_count, total_count)" required>{{ old('expression') }}</textarea>
-                            </x-forms.form-group>
-
-                            <div class="alert alert-info">
-                                <strong>📚 Fungsi yang tersedia:</strong><br>
-                                <code>PERCENTAGE(a, b)</code> - (a/b)*100<br>
-                                <code>IF(condition, true_val, false_val)</code> - Kondisi<br>
-                                <code>ROUND(value, decimals)</code> - Pembulatan<br>
-                                <code>MIN(a, b)</code>, <code>MAX(a, b)</code> - Min/Max<br>
-                                <code>ABS(value)</code> - Nilai absolut
-                            </div>
-
-                            <div class="alert alert-success">
-                                <strong>📋 Available Fields (Attributes):</strong>
-                                <div class="row mt-2">
-                                    @foreach($attributes as $category => $attrs)
-                                    <div class="col-md-6 mb-3">
-                                        <small class="d-block"><strong>{{ ucfirst($category) }} Scope:</strong></small>
-                                        @foreach($attrs as $attr)
-                                        <code class="text-xs">{{ $attr->key }}</code> - {{ $attr->label }}<br>
-                                        @endforeach
-                                    </div>
+                            <x-forms.form-group label="Operational Scope" name="scope" required>
+                                <select name="scope" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold outline-none ring-offset-2 focus:ring-4 focus:ring-blue-100 transition-all">
+                                    @foreach(\App\Models\Formula::SCOPES as $key => $label)
+                                        <option value="{{ $key }}" {{ old('scope', 'material') == $key ? 'selected' : '' }}>{{ strtoupper($label) }}</option>
                                     @endforeach
-                                </div>
-                                <hr>
-                                <strong>💡 Contoh Formula:</strong><br>
-                                <code class="text-xs">PERCENTAGE(correct_count, total_count)</code> - Akurasi<br>
-                                <code class="text-xs">IF(current_streak >= 5, 1, 0)</code> - High performer check<br>
-                                <code class="text-xs">ROUND(wrong_count / total_count * 100, 2)</code> - Wrong rate
-                            </div>
+                                </select>
+                            </x-forms.form-group>
 
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <x-forms.form-group label="Return Type" name="return_type" required>
-                                        <select name="return_type" class="form-control" required>
-                                            @foreach(\App\Models\Formula::RETURN_TYPES as $key => $label)
-                                                <option value="{{ $key }}" {{ old('return_type') == $key ? 'selected' : '' }}>{{ $label }}</option>
-                                            @endforeach
-                                        </select>
-                                    </x-forms.form-group>
-                                </div>
-                                <div class="col-md-4">
-                                    <x-forms.form-group label="Scope" name="scope" required>
-                                        <select name="scope" class="form-control" required>
-                                            @foreach(\App\Models\Formula::SCOPES as $key => $label)
-                                                <option value="{{ $key }}" {{ old('scope', 'material') == $key ? 'selected' : '' }}>{{ $label }}</option>
-                                            @endforeach
-                                        </select>
-                                    </x-forms.form-group>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="mt-4">
-                                        <x-forms.checkbox name="is_active" label="Aktifkan Formula" checked />
-                                    </div>
-                                </div>
-                            </div>
+                            <x-forms.form-group label="Return Signature" name="return_type" required>
+                                <select name="return_type" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold outline-none ring-offset-2 focus:ring-4 focus:ring-blue-100 transition-all">
+                                    @foreach(\App\Models\Formula::RETURN_TYPES as $key => $label)
+                                        <option value="{{ $key }}" {{ old('return_type') == $key ? 'selected' : '' }}>{{ strtoupper($label) }}</option>
+                                    @endforeach
+                                </select>
+                            </x-forms.form-group>
+                        </div>
+                    </x-ui.card>
 
-                            <div class="d-flex justify-content-end gap-2 mt-4">
-                                <x-ui.button variant="outline" size="lg" href="{{ route('admin.formulas.index') }}">
-                                    Batal
-                                </x-ui.button>
-                                <x-ui.button type="submit" variant="primary" size="lg" icon="save">
-                                    Simpan Formula
-                                </x-ui.button>
+                    <x-ui.card class="bg-slate-900 border-0 shadow-2xl overflow-hidden relative group">
+                        <div class="absolute right-0 top-0 w-32 h-32 bg-blue-600/20 blur-3xl group-hover:bg-blue-600/40 transition-colors"></div>
+                        <div class="relative z-10 flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-500 flex items-center justify-center">
+                                <i class="fas fa-power-off"></i>
                             </div>
-                        </form>
+                            <div class="flex-1">
+                                <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 block mb-1">Operational State</label>
+                                <x-forms.checkbox name="is_active" label="Mark as System Active" checked class="text-white" />
+                            </div>
+                        </div>
                     </x-ui.card>
                 </div>
-            </div>
-        </div>
-    </main>
 
-    @push('css')
-    <link rel="stylesheet" href="{{ asset('css/components/formula-autocomplete.css') }}">
-    @endpush
+                {{-- Expression Central --}}
+                <div class="lg:col-span-2 space-y-8">
+                    <x-ui.card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl flex flex-col h-full">
+                        <div class="p-6 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                            <h6 class="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Logic Expression Editor</h6>
+                            <div class="flex gap-2">
+                                <div class="w-2 h-2 rounded-full bg-rose-400"></div>
+                                <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+                                <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-h-[400px] flex flex-col">
+                            <textarea 
+                                name="expression" 
+                                class="flex-1 w-full p-8 bg-slate-900 text-emerald-400 font-mono text-lg outline-none selection:bg-emerald-400/20" 
+                                placeholder="f(x) = PERCENTAGE(correct_count, total_count)" 
+                                required>{{ old('expression') }}</textarea>
+                        </div>
+                        <div class="p-6 bg-slate-900 border-t border-slate-800 flex flex-wrap gap-4">
+                            <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest mr-2">Available Operators:</span>
+                            @foreach(['PERCENTAGE', 'IF', 'ROUND', 'MIN', 'MAX', 'ABS'] as $func)
+                                <code class="px-2 py-1 bg-slate-800 text-emerald-500 rounded border border-slate-700 text-[10px] font-bold cursor-pointer hover:bg-slate-700 transition-colors">{{ $func }}</code>
+                            @endforeach
+                        </div>
+                    </x-ui.card>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        @foreach($attributes as $category => $attrs)
+                            <x-ui.card class="bg-slate-50 border-slate-200">
+                                <h6 class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">{{ $category }} VARIABLES</h6>
+                                <div class="flex flex-wrap gap-2">
+                                    @foreach($attrs as $attr)
+                                        <div class="px-2 py-1 bg-white border border-slate-200 rounded-md text-[9px] font-bold text-slate-600 font-mono hover:bg-blue-50 hover:border-blue-200 cursor-help transition-all" title="{{ $attr->label }}">
+                                            {{ $attr->key }}
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </x-ui.card>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end pt-12">
+                <x-ui.button type="submit" variant="primary" size="lg" class="px-16 shadow-2xl shadow-blue-500/40" icon="fas fa-save">LEGALIZE ARCHITECTURE</x-ui.button>
+            </div>
+        </form>
+    </div>
 
     @push('scripts')
-    <script src="{{ asset('js/components/formula-autocomplete.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Flatten attributes for autocomplete
-            const attributesData = [
-                @foreach($attributes as $category => $attrs)
-                    @foreach($attrs as $attr)
-                        {
-                            key: '{{ $attr->key }}',
-                            label: '{{ $attr->label }}',
-                            type: '{{ $attr->is_computed ? "computed" : "regular" }}'
-                        },
-                    @endforeach
-                @endforeach
-                { key: 'PERCENTAGE', label: 'Percentage', type: 'function', snippet: 'PERCENTAGE(a, b)' },
-                { key: 'IF', label: 'If Condition', type: 'function', snippet: 'IF(condition, true_val, false_val)' },
-                { key: 'ROUND', label: 'Round', type: 'function', snippet: 'ROUND(value, decimals)' },
-                { key: 'MIN', label: 'Minimum', type: 'function', snippet: 'MIN(a, b)' },
-                { key: 'MAX', label: 'Maximum', type: 'function', snippet: 'MAX(a, b)' },
-                { key: 'ABS', label: 'Absolute', type: 'function', snippet: 'ABS(value)' }
-            ];
-
-            // Initialize autocomplete on expression textarea
-            const expressionInput = document.querySelector('textarea[name="expression"]');
-            if(expressionInput) {
-                // Ensure ID
-                if(!expressionInput.id) expressionInput.id = 'expressionInput';
-                new FormulaAutocomplete('expressionInput', attributesData);
-            }
+            // Formula autocomplete logic could go here
         });
     </script>
     @endpush

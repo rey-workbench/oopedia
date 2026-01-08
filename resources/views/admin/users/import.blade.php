@@ -1,86 +1,79 @@
-<x-layouts.app title="OOPEDIA" bodyClass="g-sidenav-show bg-gray-200">
-    <x-navigation.sidebar activePage="users" />
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <x-navigation.navbar titlePage="Tambahkan Data Dosen" />
-        <div class="container-fluid py-4">
-            <div class="row">
-                <div class="col-12">
-                    <x-ui.card class="my-4">
-                        <x-slot:header>
-                            <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                                <h6 class="text-white text-capitalize ps-3 mb-0">Tambahkan Data Dosen</h6>
-                            </div>
-                        </x-slot:header>
+<x-layouts.app title="Import Dosen" theme="admin">
+    <div class="max-w-4xl mx-auto space-y-12">
+        <x-ui.page-header
+            title="Faculty Ingestion"
+            subtitle="Massal injeksi data dosen melalui protokol file spreadsheet."
+        >
+            <x-ui.button href="{{ route('admin.users.index') }}" variant="ghost" icon="fas fa-arrow-left">BACK TO LIST</x-ui.button>
+        </x-ui.page-header>
 
-                        <div class="card-body px-0 pb-2">
-                            <div class="p-4">
-                                @if(session('error'))
-                                    <x-ui.alert type="danger" dismissible>
-                                        {{ session('error') }}
-                                    </x-ui.alert>
-                                @endif
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {{-- Protocol Info --}}
+            <div class="space-y-6">
+                <x-ui.card class="border-slate-100 bg-slate-900 text-white">
+                    <h6 class="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-4 italic">Faculty Protocol</h6>
+                    <ul class="space-y-4">
+                        <li class="flex gap-3">
+                            <i class="fas fa-file-excel text-indigo-400 mt-1"></i>
+                            <span class="text-xs font-bold leading-relaxed">Format: .xlsx, .xls, .csv</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <i class="fas fa-table-list text-indigo-400 mt-1"></i>
+                            <span class="text-xs font-bold leading-relaxed">Columns: name, email, password</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <i class="fas fa-user-shield text-indigo-400 mt-1"></i>
+                            <span class="text-xs font-bold leading-relaxed">Privileged access granted</span>
+                        </li>
+                    </ul>
+                    <div class="mt-8 pt-6 border-t border-slate-800">
+                        <x-ui.button variant="primary" size="sm" href="{{ route('admin.users.download-template') }}" icon="fas fa-download" class="w-full">DOWNLOAD TEMPLATE</x-ui.button>
+                    </div>
+                </x-ui.card>
 
-                                @if($errors->any())
-                                    <x-ui.alert type="warning" dismissible>
-                                        @foreach($errors->all() as $error)
-                                            {{ $error }}<br>
-                                        @endforeach
-                                    </x-ui.alert>
-                                @endif
-
-                                <div class="mb-4">
-                                    <h5>Petunjuk Tambah Data:</h5>
-                                    <ol>
-                                        <li>File harus dalam format Excel (.xlsx, .xls) atau CSV (.csv)</li>
-                                        <li>File harus memiliki kolom: name, email, password</li>
-                                        <li>Dosen yang ditambahkan akan otomatis disetujui</li>
-                                    </ol>
-                                    
-                                    <div class="mt-3">
-                                        <x-ui.button variant="info" size="sm" href="{{ route('admin.users.download-template') }}" icon="download">
-                                            Download Template
-                                        </x-ui.button>
-                                    </div>
-                                </div>
-
-                                <form method="POST" action="{{ route('admin.users.process-import') }}" enctype="multipart/form-data">
-                                    @csrf
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">File Excel/CSV</label>
-                                                <x-forms.input-group>
-                                                    <x-ui.input type="file" name="excel_file" class="form-control" required accept=".xlsx,.xls,.csv" />
-                                                </x-forms.input-group>
-                                                @error('excel_file')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <x-ui.button type="submit" variant="primary" icon="upload_file">
-                                                Tambahkan
-                                            </x-ui.button>
-                                            <x-ui.button variant="outline" href="{{ route('admin.users.index') }}">Batal</x-ui.button>
-                                        </div>
-                                    </div>
-                                </form>
-
-                                <div class="mt-4">
-                                    <h5>Informasi File:</h5>
-                                    <ul>
-                                        <li>Maksimal Ukuran File: {{ (int)(ini_get('upload_max_filesize')) }} MB</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </x-ui.card>
+                <div class="p-6 rounded-3xl bg-indigo-50 border border-indigo-100 italic">
+                    <p class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1">Upload Integrity</p>
+                    <p class="text-xs font-bold text-indigo-900">Verified system roles only.</p>
                 </div>
             </div>
-        </div>
-    </main>
-    <x-admin.tutorial />
 
-</x-layouts.app> 
+            {{-- Import Form --}}
+            <div class="lg:col-span-2">
+                <x-ui.card class="border-slate-100 shadow-2xl">
+                    <x-slot:header>
+                        <div class="flex items-center gap-4">
+                            <div class="w-1.5 h-8 bg-indigo-600 rounded-full"></div>
+                            <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Transmission Portal</h6>
+                        </div>
+                    </x-slot:header>
+
+                    <form method="POST" action="{{ route('admin.users.process-import') }}" enctype="multipart/form-data" class="space-y-8">
+                        @csrf
+                        
+                        <div class="space-y-4">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Upload Faculty Payload</label>
+                            <label class="relative flex flex-col items-center justify-center w-full h-48 px-4 transition bg-slate-50 border-2 border-slate-200 border-dashed rounded-[2rem] appearance-none cursor-pointer hover:border-indigo-400 focus:outline-none group">
+                                <span class="flex items-center space-x-2">
+                                    <i class="fas fa-upload text-slate-300 text-3xl group-hover:text-indigo-500 transition-colors"></i>
+                                    <span class="text-sm font-black italic text-slate-400 group-hover:text-slate-900 transition-colors uppercase tracking-tighter">Choose File to Inject</span>
+                                </span>
+                                <input type="file" name="excel_file" class="hidden" required accept=".xlsx,.xls,.csv" onchange="document.getElementById('file-chosen').textContent = this.files[0].name">
+                                <span id="file-chosen" class="mt-2 text-[10px] font-bold text-indigo-600 truncate max-w-xs"></span>
+                            </label>
+                             @error('excel_file')
+                                <p class="text-[10px] font-black text-rose-500 uppercase italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="pt-4">
+                            <x-ui.button type="submit" variant="primary" icon="fas fa-microchip" class="w-full h-[60px] shadow-2xl shadow-indigo-500/30">
+                                INITIALIZE INGESTION
+                            </x-ui.button>
+                        </div>
+                    </form>
+                </x-ui.card>
+            </div>
+        </div>
+    </div>
+    <x-admin.tutorial />
+</x-layouts.app>

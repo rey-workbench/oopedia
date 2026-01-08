@@ -1,37 +1,52 @@
-{{-- Scripts Component - Centralized JavaScript loading --}}
 @props([
     'theme' => null,
 ])
 
-{{-- jQuery (optional - only if needed) --}}
+{{-- Alpine.js is assumed to be in app.js via Vite, otherwise add it here --}}
+
+{{-- jQuery (Minimized usage) --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-{{-- Bootstrap JS --}}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-{{-- Main Application JS --}}
-<script src="{{ asset('js/app.js') }}"></script>
-<script src="{{ asset('js/utils/http.js') }}"></script>
-<script src="{{ asset('js/utils/ui.js') }}"></script>
-
-{{-- Component JS --}}
-{{-- Component JS --}}
-{{-- Fix: navigation.js and ui.js do not exist. Using navbar.js and sidebar.js --}}
-<script src="{{ asset('js/components/navbar.js') }}"></script>
-<script src="{{ asset('js/components/sidebar.js') }}"></script>
-{{-- <script src="{{ asset('js/components/ui.js') }}"></script> --}}
-
-{{-- TinyMCE Library (Required before init) --}}
-<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-<script src="{{ asset('js/components/tinymce-init.js') }}"></script>
-<script src="{{ asset('js/utils/scrollbar.js') }}"></script>
-
-{{-- Theme-specific scripts --}}
-@if($theme === 'admin')
-    {{-- Admin-specific scripts --}}
-@elseif($theme === 'mahasiswa')
-    {{-- Mahasiswa-specific scripts --}}
+{{-- IntroJS --}}
+@if($theme === 'mahasiswa' || $theme === 'admin' || $theme === 'guest')
+<script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/intro.min.js"></script>
 @endif
 
-{{-- Additional scripts slot --}}
+{{-- Confetti --}}
+@if($theme === 'mahasiswa')
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+@endif
+
+{{-- Utilities & Components --}}
+<script src="{{ asset('js/utils/http.js') }}"></script>
+<script src="{{ asset('js/utils/ui.js') }}"></script>
+<script src="{{ asset('js/utils/tour.js') }}"></script>
+
+{{-- Navbar/Sidebar Logic --}}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sidebar = document.querySelector('aside');
+        const overlay = document.getElementById('sidebar-overlay');
+        const toggles = document.querySelectorAll('[data-sidebar-toggle]');
+        
+        const toggleSidebar = () => {
+            if (sidebar) {
+                sidebar.classList.toggle('-translate-x-full');
+                if (overlay) overlay.classList.toggle('hidden');
+            }
+        };
+
+        toggles.forEach(btn => btn.addEventListener('click', toggleSidebar));
+        if (overlay) overlay.addEventListener('click', toggleSidebar);
+    });
+</script>
+
+{{-- Theme-specific Scripts --}}
+@if($theme === 'admin')
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="{{ asset('js/admin.js') }}"></script>
+@elseif($theme === 'mahasiswa')
+    <script src="{{ asset('js/mahasiswa.js') }}"></script>
+@endif
+
 {{ $slot }}
