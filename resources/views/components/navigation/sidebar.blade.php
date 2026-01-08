@@ -50,17 +50,6 @@
             <div class="space-y-6">
                 <div class="px-4 text-[10px] font-bold uppercase tracking-widest text-slate-500 flex items-center gap-3">
                     <span class="w-2 h-0.5 bg-indigo-500/50"></span>
-                    Sistem Adaptif
-                </div>
-                <div class="space-y-2">
-                    <x-navigation.sidebar-link href="{{ route('admin.adaptive-rules.index') }}" icon="fas fa-microchip" :active="request()->routeIs('admin.adaptive-rules.*')">Aturan Adaptif</x-navigation.sidebar-link>
-                    <x-navigation.sidebar-link href="{{ route('admin.formulas.index') }}" icon="fas fa-square-root-variable" :active="request()->routeIs('admin.formulas.*')">Formula Skor</x-navigation.sidebar-link>
-                </div>
-            </div>
-
-            <div class="space-y-6">
-                <div class="px-4 text-[10px] font-bold uppercase tracking-widest text-slate-500 flex items-center gap-3">
-                    <span class="w-2 h-0.5 bg-indigo-500/50"></span>
                     Manajemen
                 </div>
                 <div class="space-y-2">

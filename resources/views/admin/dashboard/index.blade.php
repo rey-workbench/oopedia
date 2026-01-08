@@ -37,63 +37,6 @@
             />
         </div>
 
-        {{-- Adaptive System Section --}}
-        <div class="space-y-8">
-            <div class="flex items-center gap-4">
-                <div class="h-1.5 w-12 bg-blue-600 rounded-full"></div>
-                <h3 class="text-xl font-bold tracking-tight text-slate-900">Neural Logic Core</h3>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <x-ui.stat-card 
-                    title="Adaptive Logic" 
-                    :value="$activeRules . '/' . $totalRules" 
-                    icon="fas fa-robot" 
-                    variant="primary"
-                >
-                    <x-slot:footer>
-                        <div class="flex items-center justify-between w-full">
-                            <a href="{{ route('admin.adaptive-rules.index') }}" class="font-bold uppercase tracking-widest text-[9px] hover:text-blue-600">Manage Rules &rarr;</a>
-                            <a href="{{ route('admin.adaptive-rules.create') }}" class="font-bold uppercase tracking-widest text-[9px] text-blue-600 hover:text-blue-700">+ Add Rule</a>
-                        </div>
-                    </x-slot:footer>
-                </x-ui.stat-card>
-                <x-ui.stat-card 
-                    title="Math Calculus" 
-                    :value="$activeFormulas . '/' . $totalFormulas" 
-                    icon="fas fa-calculator" 
-                    variant="success"
-                >
-                    <x-slot:footer>
-                        <div class="flex items-center justify-between w-full">
-                            <a href="{{ route('admin.formulas.index') }}" class="font-bold uppercase tracking-widest text-[9px] hover:text-blue-600">Manage Formulas &rarr;</a>
-                            <a href="{{ route('admin.formulas.create') }}" class="font-bold uppercase tracking-widest text-[9px] text-blue-600 hover:text-blue-700">+ Add Formula</a>
-                        </div>
-                    </x-slot:footer>
-                </x-ui.stat-card>
-                <x-ui.stat-card 
-                    title="Core Sync Status" 
-                    :value="($activeRules > 0 && $activeFormulas > 0) ? 'OPERATIONAL' : 'OFFLINE'" 
-                    icon="fas fa-square-rss" 
-                    :variant="($activeRules > 0 && $activeFormulas > 0) ? 'success' : 'danger'"
-                    footer="Engine synchronization"
-                />
-                <x-ui.stat-card 
-                    title="Kamus Atribut" 
-                    :value="$totalAttributes" 
-                    icon="fas fa-rectangle-list" 
-                    variant="primary"
-                >
-                    <x-slot:footer>
-                        <div class="flex items-center justify-between w-full">
-                            <a href="{{ route('admin.attribute-definitions.index') }}" class="font-bold uppercase tracking-widest text-[9px] hover:text-blue-600">Registry &rarr;</a>
-                            <a href="{{ route('admin.attribute-definitions.index') }}?open_create_modal=true" class="font-bold uppercase tracking-widest text-[9px] text-blue-600 hover:text-blue-700">+ Add Attribute</a>
-                        </div>
-                    </x-slot:footer>
-                </x-ui.stat-card>
-            </div>
-        </div>
-
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {{-- Top Students Table --}}
             <div class="lg:col-span-2">

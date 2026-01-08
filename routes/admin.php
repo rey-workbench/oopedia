@@ -9,10 +9,7 @@ use App\Http\Controllers\Admin\{
     AdminUserController,
     PendingApprovalController,
     UeqSurveyController,
-    QuestionBankController,
-    AdaptiveRuleController,
-    FormulaController,
-    AttributeDefinitionController
+    QuestionBankController
 };
 use App\Http\Controllers\Auth\LogoutController;
 
@@ -72,19 +69,6 @@ Route::middleware('auth')->group(function () {
             ->name('question-banks.store-config');
         Route::delete('question-bank-configs/{config}', [QuestionBankController::class, 'deleteConfig'])
             ->name('question-bank-configs.delete');
-
-        // Adaptive Rules routes
-        Route::resource('adaptive-rules', AdaptiveRuleController::class);
-        Route::patch('adaptive-rules/{adaptiveRule}/toggle-status', [AdaptiveRuleController::class, 'toggleStatus'])
-            ->name('adaptive-rules.toggle-status');
-        
-        Route::resource('formulas', FormulaController::class);
-        Route::patch('formulas/{formula}/toggle-status', [FormulaController::class, 'toggleStatus'])
-            ->name('formulas.toggle-status');
-        
-        // Attribute Definitions routes
-        Route::get('attribute-definitions', [AttributeDefinitionController::class, 'index'])->name('attribute-definitions.index');
-        Route::post('attribute-definitions', [AttributeDefinitionController::class, 'store'])->name('attribute-definitions.store');
 
         // Media routes
         Route::get('/media/delete/{id}', [AdminMaterialController::class, 'deleteMedia'])
