@@ -78,7 +78,7 @@ class AdaptiveQuizService
                     'rule_id' => $rule->id,
                     'actions' => $report
                 ]);
-            }
+                }
         }
 
         // 5. Return results

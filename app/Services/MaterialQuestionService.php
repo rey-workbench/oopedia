@@ -171,18 +171,17 @@ class MaterialQuestionService extends BaseService
 
     public function getCurrentQuestion($questions, $answeredQuestionIds, $questionId = null)
     {
-        $currentQuestion = null;
+        // STRICT MODE:
+        // Always return the first unanswered question to enforce sequence.
+        // We ignore $questionId parameter for security, preventing URL manipulation.
+        // Exception: If reviewing (handled separately), but for 'show' flow, it must be strict.
 
-        if ($questionId) {
-            $currentQuestion = $questions->firstWhere('id', $questionId);
-        }
+        $currentQuestion = $questions->reject(function ($question) use ($answeredQuestionIds) {
+            return $answeredQuestionIds->contains($question->id);
+        })->first();
 
-        if (!$currentQuestion) {
-            $currentQuestion = $questions->reject(function ($question) use ($answeredQuestionIds) {
-                return $answeredQuestionIds->contains($question->id);
-            })->first();
-        }
-
+        // If all questions are answered, just return null (Controller handles completion)
+        
         // Shuffle answers if needed
         if ($currentQuestion && $currentQuestion->question_type !== 'fill_in_the_blank') {
             if (!$currentQuestion->relationLoaded('answers')) {

@@ -42,7 +42,7 @@ class Base extends Component
      * @param array<string, string> $meta
      */
     public function __construct(
-        string $title = 'OOPEDIA',
+        string $title = 'OOPEDIAv2',
         string $bodyClass = '',
         array $meta = [],
         ?string $role = null

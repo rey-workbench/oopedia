@@ -1,77 +1,76 @@
 function redirectAfterCompletion() {
+    if (document.fullscreenElement) {
+        document.exitFullscreen().catch(() => { });
+    }
     if (typeof redirectUrl !== 'undefined') {
         window.location.href = redirectUrl;
     }
 }
 
-// Confetti animation for celebrations
-function triggerConfetti() {
-    const duration = 3 * 1000;
-    const animationEnd = Date.now() + duration;
-    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+/**
+ * SECURITY LAYER & HAPTIC FEEDBACK
+ */
 
-    function randomInRange(min, max) {
-        return Math.random() * (max - min) + min;
-    }
+function setupSecurity() {
+    const quizArea = document.querySelector('main');
 
-    const interval = setInterval(function () {
-        const timeLeft = animationEnd - Date.now();
-
-        if (timeLeft <= 0) {
-            return clearInterval(interval);
+    // Disable copy/paste/keyboard shortcuts
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+        // Disable F12, Ctrl+Shift+I, Ctrl+U, Ctrl+C, Ctrl+V, etc.
+        if (
+            e.key === 'F12' ||
+            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) ||
+            (e.ctrlKey && (e.key === 'u' || e.key === 'c' || e.key === 'v' || e.key === 's'))
+        ) {
+            e.preventDefault();
+            UI.notify('danger', 'Fitur ini dinonaktifkan demi keamanan ujian.');
         }
+    });
 
-        const particleCount = 50 * (timeLeft / duration);
+    // Anti-text selection
+    document.body.style.userSelect = 'none';
+    document.body.style.webkitUserSelect = 'none';
 
-        confetti(Object.assign({}, defaults, {
-            particleCount,
-            origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
-        }));
-        confetti(Object.assign({}, defaults, {
-            particleCount,
-            origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
-        }));
-    }, 250);
+    // Tab switch detection
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            UI.notify('warning', 'Peringatan: Jangan meninggalkan tab ujian!');
+        }
+    });
+
+    // Auto-fullscreen on first interaction
+    document.addEventListener('click', function enterFS() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.log('Fullscreen failed');
+            });
+        }
+        document.removeEventListener('click', enterFS);
+    }, { once: true });
 }
 
-// Animated number counting
-function animateValue(element, start, end, duration) {
-    let startTimestamp = null;
-    const step = (timestamp) => {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        const value = Math.floor(progress * (end - start) + start);
-        element.textContent = value;
-        if (progress < 1) {
-            window.requestAnimationFrame(step);
-        }
-    };
-    window.requestAnimationFrame(step);
-}
+function triggerHapticFeedback(isSuccess) {
+    const feedbackOverlay = document.querySelector('.exercise-feedback');
+    const hapticLayer = document.getElementById('hapticLayer');
+    const contentBox = document.querySelector('.feedback-content-box');
 
-// Create floating XP/Points animation
-function createFloatingReward(text, color, delay = 0) {
+    feedbackOverlay.classList.remove('hidden');
+
+    // Set color based on result
+    const color = isSuccess ? 'rgba(34, 197, 94, 0.4)' : 'rgba(225, 29, 72, 0.4)';
+    hapticLayer.style.backgroundColor = color;
+    hapticLayer.style.opacity = '1';
+
+    // Popup animation
     setTimeout(() => {
-        const reward = document.createElement('div');
-        reward.className = 'floating-reward';
-        reward.style.cssText = `
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: ${color};
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            z-index: 10000;
-            animation: floatUp 2s ease-out forwards;
-            pointer-events: none;
-        `;
-        reward.textContent = text;
-        document.body.appendChild(reward);
+        contentBox.classList.add('scale-100', 'opacity-100');
+    }, 100);
 
-        setTimeout(() => reward.remove(), 2000);
-    }, delay);
+    // Vibration feedback if available
+    if (navigator.vibrate) {
+        navigator.vibrate(isSuccess ? [200] : [100, 50, 100]);
+    }
 }
 
 function initializeQuestionForm(config) {
@@ -81,17 +80,45 @@ function initializeQuestionForm(config) {
     const routes = config.routes;
 
     if (questionForm) {
+        setupSecurity();
+
+        // Hint Button Logic
+        const hintBtn = document.getElementById('hintBtn');
+        if (hintBtn) {
+            hintBtn.addEventListener('click', () => {
+                UI.confirm('Gunakan Hint?', 'Poin akan dikurangi jika Anda menggunakan hint.', 'Ya, Gunakan', () => {
+                    // Logic to show hint (mockup for now as hint text comes from backend usually or is static)
+                    // Since we don't have a dedicated API for just fetching hint text yet without submitting, 
+                    // we might need to rely on what's available or just show a fast alert for now.
+                    // Assuming hint is available in front-end or we just deduct count visually?
+                    // For 'Secure Mode', maybe we just show a generic helpful tip or reveal first letter?
+                    // Let's just show a simulated hint for now as placeholder or if backend provided it.
+
+                    // In a real scenario, we'd hit an endpoint like /hint. 
+                    // For now, let's just show a notification.
+                    UI.notify('info', 'Hint: Coba ingat kembali konsep dasar materi ini.');
+
+                    // Set hidden input flag for backend processing
+                    const usedHintInput = document.getElementById('usedHintInput');
+                    if (usedHintInput) usedHintInput.value = 'true';
+
+                    // Decrement visually
+                    const countEl = document.getElementById('hintsCount');
+                    if (countEl) countEl.textContent = Math.max(0, parseInt(countEl.textContent) - 1);
+                });
+            });
+        }
         questionForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
             if (checkAnswerBtn) {
                 checkAnswerBtn.disabled = true;
-                checkAnswerBtn.innerHTML = '<i class="fas fa-spinner fa-pulse me-2"></i>Memeriksa...';
+                checkAnswerBtn.innerHTML = '<i class="fas fa-spinner fa-pulse me-2"></i>Mengevaluasi...';
             }
 
             Http.postForm(this.action, this)
                 .then(data => {
-                    UI.hideLoading(); // Ensure any global loader is closed
+                    UI.hideLoading();
                     showFeedback(data, routes);
                 })
                 .catch(error => {
@@ -119,212 +146,181 @@ function initializeQuestionForm(config) {
             }
         });
     });
+
+    // Initialize Drag and Drop if elements exist
+    if (document.querySelector('.draggable')) {
+        initializeDragAndDrop();
+    }
+}
+
+function initializeDragAndDrop() {
+    const draggables = document.querySelectorAll('.draggable');
+    const dropZones = document.querySelectorAll('.drop-zone');
+    const hiddenInput = document.getElementById('dragAndDropAnswers');
+
+    let draggedItem = null;
+
+    draggables.forEach(draggable => {
+        draggable.addEventListener('dragstart', () => {
+            draggedItem = draggable;
+            draggable.classList.add('opacity-50');
+        });
+
+        draggable.addEventListener('dragend', () => {
+            draggedItem = null;
+            draggable.classList.remove('opacity-50');
+        });
+    });
+
+    dropZones.forEach(zone => {
+        zone.addEventListener('dragover', e => {
+            e.preventDefault(); // Allow drop
+            zone.classList.add('bg-blue-100', 'border-blue-400');
+        });
+
+        zone.addEventListener('dragleave', () => {
+            zone.classList.remove('bg-blue-100', 'border-blue-400');
+        });
+
+        zone.addEventListener('drop', () => {
+            zone.classList.remove('bg-blue-100', 'border-blue-400');
+            if (draggedItem) {
+                // Determine if zone is already occupied
+                if (zone.hasChildNodes()) {
+                    // Start swap logic or return to pool? 
+                    // Simple logic: clear zone first or swap? 
+                    // Let's assume replace:
+                    const existing = zone.firstChild;
+                    if (existing) {
+                        document.querySelector('.drag-items').appendChild(existing);
+                    }
+                }
+
+                zone.textContent = draggedItem.dataset.value;
+                zone.dataset.userAnswer = draggedItem.dataset.value;
+
+                // Visuals for dropped item in zone (e.g. clone styling)
+                // Actually, let's just move the text content or a clone?
+                // The simpler way for text drag and drop:
+                zone.textContent = draggedItem.textContent.trim();
+                zone.dataset.userAnswer = draggedItem.dataset.value;
+
+                // Note: Real drag and drop often moves the element. 
+                // Given the screenshot, it looks like "filling the blanks".
+                // We'll update style to look "filled".
+                zone.classList.add('filled', 'bg-blue-50', 'text-blue-700', 'font-bold', 'px-2', 'border', 'border-blue-300', 'rounded');
+
+                updateDragAndDropInput();
+            }
+        });
+
+        // Allow removing answer by clicking
+        zone.addEventListener('click', () => {
+            if (zone.textContent) {
+                zone.textContent = '';
+                zone.dataset.userAnswer = '';
+                zone.classList.remove('filled', 'bg-blue-50', 'text-blue-700', 'font-bold', 'px-2', 'border', 'border-blue-300', 'rounded');
+                updateDragAndDropInput();
+                // Ideally, we should make the source option draggable again if we disabled it.
+            }
+        });
+    });
+
+    function updateDragAndDropInput() {
+        if (!hiddenInput) return;
+
+        const answers = {};
+        dropZones.forEach(zone => {
+            const index = zone.dataset.zone;
+            const value = zone.dataset.userAnswer || '';
+            if (value) {
+                answers[index] = value;
+            }
+        });
+        hiddenInput.value = JSON.stringify(answers);
+    }
 }
 
 function showFeedback(data, routes) {
-    const feedbackElement = document.querySelector('.exercise-feedback');
+    const feedbackOverlay = document.querySelector('.exercise-feedback');
     const feedbackStatus = document.getElementById('feedbackStatus');
     const feedbackIcon = document.getElementById('feedbackIcon');
     const tryAgainBtn = document.getElementById('tryAgainBtn');
     const nextQuestionBtn = document.getElementById('nextQuestionBtn');
-    const dashboardBtn = document.getElementById('dashboardBtn');
-    const questionForm = document.getElementById('questionForm');
     const explanationBox = document.getElementById('explanationBox');
     const explanationText = document.getElementById('explanationText');
-    const adaptiveFeedback = document.getElementById('adaptiveFeedback');
+    const contentBox = document.querySelector('.feedback-content-box');
 
-    // Close SweetAlert loader if present
-    UI.hideLoading();
+    const isSuccess = data.status === 'success';
 
-    // Add entrance animation to feedback
-    if (feedbackElement) {
-        feedbackElement.style.display = 'block';
-        feedbackElement.style.animation = 'slideInUp 0.5s ease-out';
+    // Trigger haptic & background color
+    triggerHapticFeedback(isSuccess);
+
+    // Update Status
+    if (feedbackStatus) {
+        feedbackStatus.textContent = isSuccess ? 'Jawaban Benar!' : 'Jawaban Salah!';
+        feedbackStatus.className = `text-4xl font-black mb-8 italic uppercase tracking-tight ${isSuccess ? 'text-emerald-600' : 'text-rose-600'}`;
     }
 
-    // Update Stats Bar if adaptive result exists
-    if (data.adaptiveResult) {
-        const ar = data.adaptiveResult;
-
-        // Update Stats Values with animation
-        const levelEl = document.querySelector('.level-indicator h5');
+    // Update Top Stats if adaptive result is present
+    if (data.adaptiveResult && data.adaptiveResult.new_state) {
+        const state = data.adaptiveResult.new_state;
         const xpEl = document.querySelector('.xp-indicator h5');
         const streakEl = document.querySelector('.streak-indicator h5');
+        const hintsCountEl = document.getElementById('hintsCount');
+        const hintBtn = document.getElementById('hintBtn');
 
-        if (levelEl && ar.level_changed !== 'none') {
-            levelEl.textContent = ar.new_level.charAt(0).toUpperCase() + ar.new_level.slice(1);
-            levelEl.className = 'mb-0 fw-bold ' +
-                (ar.new_level === 'hard' ? 'text-danger' : (ar.new_level === 'medium' ? 'text-warning' : 'text-success'));
-            levelEl.style.animation = 'pulse 0.6s ease-in-out';
-        }
+        if (xpEl) xpEl.innerHTML = `<i class="fas fa-star text-amber-400 text-sm"></i> ${state.xp}`;
+        if (streakEl) streakEl.innerHTML = `<i class="fas fa-fire text-orange-500 text-sm"></i> ${state.current_streak}`;
 
-        if (xpEl) {
-            const currentXP = parseInt(xpEl.textContent);
-            const newXP = ar.total_xp;
-            animateValue(xpEl, currentXP, newXP, 1000);
-            xpEl.innerHTML = `<span>${newXP}</span> XP`;
-        }
-
-        if (streakEl) {
-            streakEl.innerHTML = `<i class="fas fa-fire text-danger"></i> ${ar.current_streak}`;
-            if (ar.current_streak > 0) {
-                streakEl.style.animation = 'bounce 0.5s ease';
+        if (hintsCountEl) hintsCountEl.textContent = state.hints_available;
+        if (hintBtn) {
+            hintBtn.disabled = state.hints_available <= 0;
+            if (state.hints_available <= 0) {
+                hintBtn.classList.add('opacity-50', 'cursor-not-allowed');
             }
-        }
-
-        // Show Enhanced Adaptive Feedback
-        if (adaptiveFeedback) {
-            let feedbackHtml = '<div class="adaptive-rewards">';
-
-            // Level Change with special effects
-            if (ar.level_changed === 'up') {
-                feedbackHtml += `
-                    <div class="level-up-banner alert alert-success border-0 shadow-lg mb-3">
-                        <div class="d-flex align-items-center">
-                            <div class="level-up-icon me-3">
-                                <i class="fas fa-trophy fa-3x text-warning"></i>
-                            </div>
-                            <div>
-                                <h4 class="mb-0 fw-bold"><i class="fas fa-arrow-up me-2"></i>LEVEL UP!</h4>
-                                <p class="mb-0">${ar.message}</p>
-                                <small class="text-muted">${ar.previous_level} → ${ar.new_level}</small>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                // Trigger confetti for level up!
-                if (typeof confetti !== 'undefined') {
-                    triggerConfetti();
-                }
-            } else if (ar.level_changed === 'down') {
-                feedbackHtml += `
-                    <div class="alert alert-warning border-0 shadow mb-3">
-                        <i class="fas fa-arrow-down me-2"></i><strong>${ar.message}</strong>
-                    </div>
-                `;
-            }
-
-            // XP & Points with animation
-            feedbackHtml += '<div class="rewards-container d-flex flex-wrap gap-2 mb-3">';
-
-            if (ar.xp_earned > 0) {
-                feedbackHtml += `
-                    <div class="reward-badge xp-badge">
-                        <i class="fas fa-star me-1"></i>
-                        <span class="reward-value">+${ar.xp_earned}</span> XP
-                    </div>
-                `;
-                createFloatingReward(`+${ar.xp_earned} XP`, '#FFD700', 200);
-            }
-
-            if (ar.points_earned > 0) {
-                feedbackHtml += `
-                    <div class="reward-badge points-badge">
-                        <i class="fas fa-coins me-1"></i>
-                        <span class="reward-value">+${ar.points_earned}</span> Points
-                    </div>
-                `;
-                createFloatingReward(`+${ar.points_earned} Points`, '#FF6B6B', 400);
-            }
-
-            // Badges with special styling
-            if (ar.badges_earned && ar.badges_earned.length > 0) {
-                ar.badges_earned.forEach((badge, index) => {
-                    feedbackHtml += `
-                        <div class="reward-badge badge-earned" style="animation-delay: ${index * 0.2}s">
-                            <i class="fas fa-medal me-1"></i>${badge}
-                        </div>
-                    `;
-                });
-            }
-
-            feedbackHtml += '</div></div>';
-
-            adaptiveFeedback.innerHTML = feedbackHtml;
-            adaptiveFeedback.className = 'adaptive-feedback-box mt-3';
-            adaptiveFeedback.style.display = 'block';
         }
     }
 
-    // Enhanced Status Display
-    if (feedbackStatus) {
-        const statusClass = data.status === 'success' ? 'text-success' : 'text-danger';
-        const icon = data.status === 'success' ? 'fas fa-check-circle' : 'fas fa-times-circle';
-        feedbackStatus.innerHTML = `
-            <div class="feedback-message">
-                <i class="${icon} me-2"></i>
-                <span>${data.message}</span>
-            </div>
-        `;
-        feedbackStatus.className = statusClass;
-    }
-
+    // Update Icon
     if (feedbackIcon) {
-        const isSuccess = data.status === 'success';
-        feedbackIcon.className = `feedback-icon ${isSuccess ? 'success' : 'error'}`;
-        feedbackIcon.innerHTML = `
-            <i class="fas ${isSuccess ? 'fa-check-circle' : 'fa-times-circle'} fa-4x"></i>
-        `;
-        feedbackIcon.style.animation = 'scaleIn 0.5s ease-out';
+        feedbackIcon.innerHTML = isSuccess ? '<i class="fas fa-check-circle text-emerald-500"></i>' : '<i class="fas fa-times-circle text-rose-500"></i>';
     }
 
-    // Show explanation with better styling
+    // Explanation
     if (explanationBox && explanationText && data.explanation) {
-        explanationBox.style.display = 'block';
-        explanationBox.className = 'explanation-box mt-4 p-4 bg-light border-start border-4 border-info rounded shadow-sm';
-        explanationText.innerHTML = `
-            <h5 class="mb-3"><i class="fas fa-lightbulb me-2 text-warning"></i>Penjelasan</h5>
-            <p class="mb-0">${data.explanation}</p>
-        `;
-    } else if (explanationBox) {
-        explanationBox.style.display = 'none';
+        explanationBox.classList.remove('hidden');
+        explanationText.textContent = data.explanation;
+    } else {
+        explanationBox.classList.add('hidden');
     }
 
-    // Button handling
-    if (data.status === 'success') {
-        if (tryAgainBtn) tryAgainBtn.style.display = 'none';
-        if (nextQuestionBtn) {
-            if (data.hasNextQuestion) {
-                nextQuestionBtn.style.display = 'inline-block';
-                nextQuestionBtn.className = 'btn btn-success btn-lg shadow';
-                nextQuestionBtn.innerHTML = '<i class="fas fa-arrow-right me-2"></i>Soal Berikutnya';
-                nextQuestionBtn.onclick = () => window.location.href = data.nextUrl;
-            } else {
-                nextQuestionBtn.style.display = 'none';
-                if (dashboardBtn) {
-                    dashboardBtn.style.display = 'inline-block';
-                    dashboardBtn.className = 'btn btn-primary btn-lg shadow';
-                }
-            }
+    // Buttons
+    if (isSuccess) {
+        tryAgainBtn.classList.add('hidden');
+        nextQuestionBtn.classList.remove('hidden');
+        if (data.hasNextQuestion) {
+            nextQuestionBtn.innerHTML = 'Lanjut <i class="fas fa-arrow-right ml-2"></i>';
+            nextQuestionBtn.onclick = () => window.location.href = data.nextUrl;
+        } else {
+            nextQuestionBtn.innerHTML = 'Tuntas <i class="fas fa-flag-checkered ml-2"></i>';
+            nextQuestionBtn.onclick = () => redirectAfterCompletion();
         }
     } else {
-        if (tryAgainBtn) {
-            tryAgainBtn.style.display = 'inline-block';
-            tryAgainBtn.className = 'btn btn-warning btn-lg shadow';
-            tryAgainBtn.innerHTML = '<i class="fas fa-redo me-2"></i>Coba Lagi';
-        }
-        if (nextQuestionBtn) nextQuestionBtn.style.display = 'none';
-        if (dashboardBtn) dashboardBtn.style.display = 'none';
-
-        if (tryAgainBtn) {
-            tryAgainBtn.onclick = () => {
-                if (feedbackElement) {
-                    feedbackElement.style.animation = 'slideOutDown 0.3s ease-in';
-                    setTimeout(() => feedbackElement.style.display = 'none', 300);
+        tryAgainBtn.classList.remove('hidden');
+        nextQuestionBtn.classList.add('hidden');
+        tryAgainBtn.onclick = () => {
+            contentBox.classList.remove('scale-100', 'opacity-100');
+            setTimeout(() => {
+                feedbackOverlay.classList.add('hidden');
+                const btn = document.getElementById('checkAnswerBtn');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Periksa Jawaban';
                 }
-                if (questionForm) questionForm.style.display = 'block';
-                if (adaptiveFeedback) adaptiveFeedback.style.display = 'none';
-
-                const checkAnswerBtn = document.getElementById('checkAnswerBtn');
-                if (checkAnswerBtn) {
-                    checkAnswerBtn.disabled = false;
-                    checkAnswerBtn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Periksa Jawaban';
-                }
-            };
-        }
+            }, 300);
+        };
     }
-
-    if (questionForm) questionForm.style.display = 'none';
 }
 
 function showErrorAlert(message) {

@@ -5,12 +5,20 @@
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mb-10">
-                <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
-                    <i class="fas fa-edit text-blue-600"></i>
-                    Latihan Soal: {{ $material->title }}
+            <div class="mb-10 text-center">
+                <h1 class="text-4xl font-black text-gray-900 italic tracking-tighter uppercase flex items-center justify-center gap-4">
+                    <i class="fas fa-terminal text-blue-600"></i>
+                    Evaluasi: {{ $material->title }}
                 </h1>
-                <div class="h-1.5 w-24 bg-blue-600 rounded-full mt-3"></div>
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-[0.3em] mt-3 italic">Mode Ujian Terkendali & Aman</p>
+                <div class="h-1 w-32 bg-gray-200 mx-auto mt-6 rounded-full overflow-hidden">
+                    @php
+                        $progressWidth = ($material->questions_count > 0) 
+                            ? ($currentQuestionNumber / $material->questions_count) * 100 
+                            : 0;
+                    @endphp
+                    <div class="h-full bg-blue-600 transition-all duration-1000" style="width: {{ $progressWidth }}%"></div>
+                </div>
             </div>
 
             @if(session('success'))

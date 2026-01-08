@@ -147,12 +147,13 @@ class AdaptiveRulesSeeder extends Seeder
                 'name' => 'Penalty: Hint Digunakan',
                 'description' => 'Menjaga keadilan penilaian (XP dikurangi 50%)',
                 'conditions' => [
-                    ['type' => 'used_hint', 'operator' => '==', 'value' => 'true']
+                    ['type' => 'used_hint', 'operator' => '==', 'value' => 'true'],
+                    ['type' => 'is_correct', 'operator' => '==', 'value' => 'true']
                 ],
                 'actions' => [
                     ['type' => 'update_attribute', 'key' => 'hints_used', 'operator' => '+', 'value' => 1],
                     ['type' => 'update_attribute', 'key' => 'hints_available', 'operator' => '-', 'value' => 1],
-                    // Note: XP reduction 50% will be handled in frontend/controller
+                    ['type' => 'update_attribute', 'key' => 'xp', 'operator' => '-', 'value' => 5], // 50% Penalty from base 10
                 ],
                 'priority' => 900
             ],

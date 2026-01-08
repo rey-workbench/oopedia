@@ -1,5 +1,5 @@
 @props([
-    'title' => 'OOPEDIA',
+    'title' => 'OOPEDIAV2',
     'theme' => null,
     'meta' => [],
     'showNavbar' => null,
