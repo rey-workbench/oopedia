@@ -1,61 +1,101 @@
-<x-layouts.app title="Edit Admin" theme="admin">
-    <div class="max-w-4xl mx-auto space-y-12">
+    <div class="space-y-12">
         <x-ui.page-header
-            title="Administrator Reconfiguration"
+            title="Rekonfigurasi Administrator"
             subtitle="Modifikasi parameter akses dan profil untuk entitas {{ $user->name }}."
         >
-            <x-ui.button href="{{ route('admin.users.index') }}" variant="ghost" icon="fas fa-arrow-left">BACK TO LIST</x-ui.button>
+            <x-ui.button href="{{ route('admin.users.index') }}" variant="ghost" icon="fas fa-arrow-left">KEMBALI KE DAFTAR</x-ui.button>
         </x-ui.page-header>
 
         <x-ui.card class="border-slate-100 shadow-2xl">
-            <x-slot:header>
-                <div class="flex items-center gap-4">
-                    <div class="w-1.5 h-8 bg-blue-600 rounded-full"></div>
-                    <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Security Parameters</h6>
-                </div>
-            </x-slot:header>
+            <x-slot:header>Registri & Logika Optimasi</x-slot:header>
 
             <form method="POST" action="{{ route('admin.users.update', $user->id) }}" class="space-y-10">
                 @csrf
                 @method('PUT')
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="space-y-4">
-                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Global Identity</label>
-                        <x-ui.input name="name" value="{{ old('name', $user->name) }}" placeholder="Subject's full name" required />
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                    {{-- Identity & Rank --}}
+                    <div class="lg:col-span-2 space-y-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <x-forms.form-group label="Identitas Global" name="name" required>
+                                <x-ui.input 
+                                    name="name" 
+                                    value="{{ old('name', $user->name) }}" 
+                                    placeholder="Nama lengkap subjek" 
+                                    class="text-lg font-black italic tracking-tighter"
+                                    required 
+                                />
+                            </x-forms.form-group>
+
+                            <x-forms.form-group label="Auth Alias (Email)" name="email" required>
+                                <x-ui.input 
+                                    type="email" 
+                                    name="email" 
+                                    value="{{ old('email', $user->email) }}" 
+                                    placeholder="Email elektronik subjek" 
+                                    class="text-lg font-black italic tracking-tighter"
+                                    required 
+                                />
+                            </x-forms.form-group>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <x-forms.form-group label="Kunci Keamanan Baru (Opsional)" name="password">
+                                <x-ui.input type="password" name="password" placeholder="Kosongkan untuk tetap menggunakan kunci saat ini" />
+                            </x-forms.form-group>
+
+                            <x-forms.form-group label="Verifikasi Kunci Baru" name="password_confirmation">
+                                <x-ui.input type="password" name="password_confirmation" placeholder="Verifikasi inisialisasi kunci keamanan" />
+                            </x-forms.form-group>
+                        </div>
+
+                        @if(auth()->user()->role_id == 1)
+                        <x-forms.form-group label="Peringkat Otorisasi" name="role_id" required>
+                            <select name="role_id" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-black italic tracking-tighter outline-none focus:ring-4 focus:ring-blue-100 transition-all appearance-none cursor-pointer uppercase" required>
+                                @foreach($roles as $role)
+                                    <option value="{{ $role->id }}" {{ old('role_id', $user->role_id) == $role->id ? 'selected' : '' }}>{{ strtoupper($role->role_name) }}</option>
+                                @endforeach
+                            </select>
+                        </x-forms.form-group>
+                        @endif
                     </div>
-                    <div class="space-y-4">
-                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Auth Alias (Email)</label>
-                        <x-ui.input type="email" name="email" value="{{ old('email', $user->email) }}" placeholder="Subject's electronic mail" required />
+
+                    {{-- Security Parameters --}}
+                    <div class="lg:col-span-1">
+                        <div class="h-full p-8 bg-indigo-950 rounded-[2rem] relative overflow-hidden flex flex-col justify-center">
+                            <div class="absolute right-0 top-0 w-32 h-32 bg-indigo-600/10 blur-3xl"></div>
+                            <div class="relative z-10 text-center">
+                                <div class="w-16 h-16 mx-auto rounded-3xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center mb-6">
+                                    <i class="fas fa-fingerprint text-2xl font-black"></i>
+                                </div>
+                                <h4 class="text-white text-xs font-black uppercase tracking-widest mb-4 italic">Parameter Keamanan</h4>
+                                <p class="text-[10px] font-bold text-indigo-300 leading-relaxed uppercase tracking-wider">
+                                    Perubahan parameter keamanan akan segera di sinkronisasi dengan database otentikasi utama.
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="space-y-4">
-                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">New Security Key (Optional)</label>
-                        <x-ui.input type="password" name="password" placeholder="Leave blank to preserve current key" />
-                    </div>
-                    <div class="space-y-4">
-                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Verify New Key</label>
-                        <x-ui.input type="password" name="password_confirmation" placeholder="Verify security key initialization" />
-                    </div>
-                    
-                    @if(auth()->user()->role_id == 1)
-                    <div class="md:col-span-2 space-y-4">
-                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Authorization Rank</label>
-                        <select name="role_id" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-3xl text-xs font-black italic tracking-tighter outline-none focus:ring-4 focus:ring-blue-100 transition-all appearance-none cursor-pointer uppercase font-poppins" required>
-                            @foreach($roles as $role)
-                                <option value="{{ $role->id }}" {{ old('role_id', $user->role_id) == $role->id ? 'selected' : '' }}>{{ strtoupper($role->role_name) }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @endif
                 </div>
 
-                <div class="pt-10">
-                    <x-ui.button type="submit" variant="primary" class="w-full h-[60px] shadow-2xl shadow-blue-500/30" icon="fas fa-microchip">
-                        RECONFIGURE ENTITY
-                    </x-ui.button>
+                <div class="pt-10 border-t border-slate-100 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <i class="fas fa-sync-alt text-xs"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-[10px] font-black uppercase tracking-widest text-slate-900 italic mb-0">Sinkronisasi Persistensi</h6>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1 mb-0">Siap merekonfigurasi status entitas</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4">
+                        <x-ui.button variant="ghost" href="{{ route('admin.users.index') }}" class="text-slate-400 font-black italic uppercase text-[10px] tracking-widest">BATALKAN</x-ui.button>
+                        <x-ui.button type="submit" variant="primary" size="lg" class="shadow-xl shadow-indigo-500/30 bg-indigo-600 hover:bg-indigo-700 font-black italic tracking-tighter" icon="fas fa-cloud-upload-alt">REKONFIGURASI ENTITAS</x-ui.button>
+                    </div>
                 </div>
             </form>
         </x-ui.card>
     </div>
+
     <x-admin.tutorial />
 </x-layouts.app>

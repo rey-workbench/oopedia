@@ -43,6 +43,7 @@
                 </div>
                 <div class="space-y-2">
                     <x-navigation.sidebar-link href="{{ route('admin.materials.index') }}" icon="fas fa-book" :active="request()->routeIs('admin.materials.*')">Kelola Materi</x-navigation.sidebar-link>
+                    <x-navigation.sidebar-link href="{{ route('admin.questions.index') }}" icon="fas fa-vial" :active="request()->routeIs('admin.questions.*')">Kelola Soal</x-navigation.sidebar-link>
                     <x-navigation.sidebar-link href="{{ route('admin.question-banks.index') }}" icon="fas fa-database" :active="request()->routeIs('admin.question-banks.*')">Bank Soal</x-navigation.sidebar-link>
                 </div>
             </div>

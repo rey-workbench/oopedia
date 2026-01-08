@@ -3,7 +3,7 @@
     $userRole = $isAuthenticated ? auth()->user()->role_id : null;
     $isAdminRole = $isAuthenticated && in_array($userRole, [1, 2]);
     $isStudentRole = $isAuthenticated && in_array($userRole, [3, 4]);
-    $userName = $isAuthenticated ? auth()->user()->name : 'Guest';
+    $userName = $isAuthenticated ? auth()->user()->name : 'Tamu';
 @endphp
 
 <nav class="sticky top-0 z-40 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 sm:px-6 lg:px-8">
@@ -18,7 +18,7 @@
                 <nav class="flex text-sm" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-3">
                         <li class="inline-flex items-center">
-                            <span class="text-slate-400 font-medium">Pages</span>
+                            <span class="text-slate-400 font-medium">Halaman</span>
                         </li>
                         <li>
                             <div class="flex items-center">
@@ -78,7 +78,7 @@
                 </div>
             @else
                 <div class="flex items-center gap-2">
-                    <a href="{{ route('login') }}" class="px-6 py-2.5 text-sm font-black italic uppercase tracking-widest text-slate-600 hover:text-blue-600 transition-all">Login</a>
+                    <a href="{{ route('login') }}" class="px-6 py-2.5 text-sm font-black italic uppercase tracking-widest text-slate-600 hover:text-blue-600 transition-all">Masuk</a>
                     <a href="{{ route('register') }}" class="px-6 py-2.5 bg-slate-900 text-white text-sm font-black italic uppercase tracking-widest rounded-xl hover:bg-blue-600 transition-all shadow-lg shadow-slate-200">Daftar</a>
                 </div>
             @endauth

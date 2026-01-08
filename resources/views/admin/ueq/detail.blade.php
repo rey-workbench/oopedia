@@ -1,10 +1,10 @@
 <x-layouts.app title="Detail UEQ Survey" theme="admin">
     <div class="max-w-6xl mx-auto space-y-12">
         <x-ui.page-header
-            title="UEQ Research Dossier"
+            title="Dokumen Riset UEQ"
             subtitle="Analisis psikometrik pengalaman pengguna untuk entitas {{ $user->name }}."
         >
-            <x-ui.button href="{{ route('admin.ueq.index') }}" variant="ghost" icon="fas fa-arrow-left">BACK TO LIST</x-ui.button>
+            <x-ui.button href="{{ route('admin.ueq.index') }}" variant="ghost" icon="fas fa-arrow-left">KEMBALI KE DAFTAR</x-ui.button>
         </x-ui.page-header>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -14,7 +14,7 @@
                     <x-slot:header>
                         <div class="flex items-center gap-4">
                             <div class="w-1.5 h-8 bg-blue-600 rounded-full"></div>
-                            <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Subject Profile</h6>
+                            <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Profil Subjek</h6>
                         </div>
                     </x-slot:header>
                     
@@ -31,12 +31,12 @@
 
                         <div class="pt-6 border-t border-slate-100 grid grid-cols-2 gap-4">
                             <div>
-                                <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Class</p>
+                                <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Kelas</p>
                                 <p class="text-xs font-bold text-slate-900">{{ $survey->class }}</p>
                             </div>
                             <div>
                                 <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Status</p>
-                                <x-ui.badge variant="success" size="xs">STABILIZED</x-ui.badge>
+                                <x-ui.badge variant="success" size="xs">STABIL</x-ui.badge>
                             </div>
                         </div>
 
@@ -57,17 +57,17 @@
                     <x-slot:header>
                         <div class="flex items-center gap-4">
                             <div class="w-1.5 h-8 bg-emerald-500 rounded-full"></div>
-                            <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Metric Aggregation</h6>
+                            <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Agregasi Metrik</h6>
                         </div>
                     </x-slot:header>
                     @php
                         $dimensions = [
-                            'Attractiveness' => ($survey->annoying_enjoyable + $survey->good_bad + $survey->unlikable_pleasing + $survey->unpleasant_pleasant + $survey->attractive_unattractive + $survey->friendly_unfriendly) / 6,
-                            'Perspicuity' => ($survey->not_understandable_understandable + $survey->easy_difficult + $survey->complicated_easy + $survey->clear_confusing) / 4,
-                            'Efficiency' => ($survey->fast_slow + $survey->inefficient_efficient + $survey->impractical_practical + $survey->organized_cluttered) / 4,
-                            'Dependability' => ($survey->unpredictable_predictable + $survey->obstructive_supportive + $survey->secure_not_secure + $survey->meets_expectations_does_not_meet) / 4,
-                            'Stimulation' => ($survey->valuable_inferior + $survey->boring_exciting + $survey->not_interesting_interesting + $survey->motivating_demotivating) / 4,
-                            'Novelty' => ($survey->creative_dull + $survey->inventive_conventional + $survey->usual_leading_edge + $survey->conservative_innovative) / 4,
+                            'Daya Tarik' => ($survey->annoying_enjoyable + $survey->good_bad + $survey->unlikable_pleasing + $survey->unpleasant_pleasant + $survey->attractive_unattractive + $survey->friendly_unfriendly) / 6,
+                            'Kejelasan' => ($survey->not_understandable_understandable + $survey->easy_difficult + $survey->complicated_easy + $survey->clear_confusing) / 4,
+                            'Efisiensi' => ($survey->fast_slow + $survey->inefficient_efficient + $survey->impractical_practical + $survey->organized_cluttered) / 4,
+                            'Keandalan' => ($survey->unpredictable_predictable + $survey->obstructive_supportive + $survey->secure_not_secure + $survey->meets_expectations_does_not_meet) / 4,
+                            'Stimulasi' => ($survey->valuable_inferior + $survey->boring_exciting + $survey->not_interesting_interesting + $survey->motivating_demotivating) / 4,
+                            'Kebaruan' => ($survey->creative_dull + $survey->inventive_conventional + $survey->usual_leading_edge + $survey->conservative_innovative) / 4,
                         ];
                     @endphp
                     <div class="divide-y divide-slate-100">
@@ -92,18 +92,18 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <x-ui.card class="border-amber-100 bg-amber-50/10">
                         <h6 class="text-[10px] font-black uppercase tracking-widest text-amber-600 mb-4 flex items-center gap-2 italic">
-                            <i class="fas fa-comment-nodes"></i> Qualitative Commentary
+                            <i class="fas fa-comment-nodes"></i> Komentar Kualitatif
                         </h6>
                         <p class="text-xs font-bold text-slate-700 italic leading-relaxed">
-                            "{{ $survey->comments ?: 'No qualitative input recorded for this subject.' }}"
+                            "{{ $survey->comments ?: 'Tidak ada masukan kualitatif yang tercatat untuk subjek ini.' }}"
                         </p>
                     </x-ui.card>
                     <x-ui.card class="border-blue-100 bg-blue-50/10">
                         <h6 class="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-4 flex items-center gap-2 italic">
-                            <i class="fas fa-lightbulb"></i> Optimization Proposals
+                            <i class="fas fa-lightbulb"></i> Proposal Optimalisasi
                         </h6>
                         <p class="text-xs font-bold text-slate-700 italic leading-relaxed">
-                            "{{ $survey->suggestions ?: 'Subject provided no optimization proposals.' }}"
+                            "{{ $survey->suggestions ?: 'Subjek tidak memberikan proposal optimalisasi.' }}"
                         </p>
                     </x-ui.card>
                 </div>
@@ -113,7 +113,7 @@
                     <x-slot:header>
                         <div class="flex items-center gap-4">
                             <div class="w-1.5 h-8 bg-slate-900 rounded-full"></div>
-                            <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Psychometric Distribution Matrix</h6>
+                            <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Matriks Distribusi Psikometrik</h6>
                         </div>
                     </x-slot:header>
                     @php
@@ -149,9 +149,9 @@
                     <x-ui.table>
                         <x-slot:thead>
                             <tr>
-                                <x-ui.th>Aspect Identification</x-ui.th>
-                                <x-ui.th class="text-center">Scalar Map (1-7)</x-ui.th>
-                                <x-ui.th class="text-right">Semantic Range</x-ui.th>
+                                <x-ui.th>Identifikasi Aspek</x-ui.th>
+                                <x-ui.th class="text-center">Peta Skalar (1-7)</x-ui.th>
+                                <x-ui.th class="text-right">Rentang Semantik</x-ui.th>
                             </tr>
                         </x-slot:thead>
                         @foreach($aspects as $aspect)
@@ -172,7 +172,7 @@
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex flex-col items-end">
-                                        <span class="text-[8px] font-black uppercase text-slate-400 italic mb-1">Semantic Pair:</span>
+                                        <span class="text-[8px] font-black uppercase text-slate-400 italic mb-1">Pasangan Semantik:</span>
                                         <div class="text-[10px] font-bold text-slate-600">
                                             <span class="{{ $val <= 3 ? 'text-blue-600' : '' }}">{{ $aspect['left'] }}</span>
                                             <span class="mx-2 text-slate-200">|</span>

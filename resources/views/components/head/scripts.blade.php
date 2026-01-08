@@ -2,15 +2,6 @@
     'theme' => null,
 ])
 
-{{-- Vite Bundles --}}
-@if($theme === 'admin')
-    @vite(['resources/css/app.css', 'resources/js/admin.js'])
-@elseif($theme === 'mahasiswa')
-    @vite(['resources/css/app.css', 'resources/js/mahasiswa.js'])
-@else
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-@endif
-
 {{-- jQuery (Minimized usage) --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -24,9 +15,9 @@
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 @endif
 
-{{-- TinyMCE for Admin --}}
+{{-- Quill JS is now bundled via Vite in admin.js --}}
 @if($theme === 'admin')
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    {{-- Admin specific scripts if any --}}
 @endif
 
 {{-- Navbar/Sidebar Logic --}}

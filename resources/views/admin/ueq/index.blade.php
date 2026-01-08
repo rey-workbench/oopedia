@@ -1,7 +1,7 @@
 <x-layouts.app title="UEQ Results" theme="admin">
     <div class="space-y-12">
         <x-ui.page-header
-            title="User Experience Analysis"
+            title="Analisis Pengalaman Pengguna"
             subtitle="Hasil survei User Experience Questionnaire (UEQ) dari mahasiswa terdaftar."
         >
             <div class="flex items-center gap-3">
@@ -14,7 +14,7 @@
                 <div class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 text-slate-200">
                     <i class="fas fa-chart-column text-3xl"></i>
                 </div>
-                <h3 class="text-lg font-bold tracking-tight text-slate-900 mb-2">No Survey Data Yet</h3>
+                <h3 class="text-lg font-bold tracking-tight text-slate-900 mb-2">Belum Ada Data Survei</h3>
                 <p class="text-slate-400 text-sm max-w-xs mx-auto">Mahasiswa belum mengisi survey UEQ. Data akan muncul secara otomatis setelah survey diselesaikan.</p>
             </x-ui.card>
         @else
@@ -37,8 +37,8 @@
                             </select>
                         </div>
                         <div class="flex gap-4">
-                            <x-ui.button type="submit" variant="primary" class="flex-1 py-3.5 shadow-lg shadow-blue-500/20">Apply Filter</x-ui.button>
-                            <x-ui.button variant="ghost" href="{{ route('admin.ueq.index') }}" class="px-6 py-3.5 text-slate-400">Reset</x-ui.button>
+                            <x-ui.button type="submit" variant="primary" class="flex-1 py-3.5 shadow-lg shadow-blue-500/20">Terapkan Filter</x-ui.button>
+                            <x-ui.button variant="ghost" href="{{ route('admin.ueq.index') }}" class="px-6 py-3.5 text-slate-400">Atur Ulang</x-ui.button>
                         </div>
                     </div>
                 </form>

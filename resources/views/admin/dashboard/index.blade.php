@@ -1,7 +1,7 @@
 <x-layouts.app title="Admin Dashboard" theme="admin">
     <div class="space-y-12">
         <x-ui.page-header
-            title="Strategic Command"
+            title="Dashboard"
             subtitle="Pusat kendali operasional dan visualisasi data sistem OOPedia."
         />
 
@@ -15,7 +15,7 @@
                 footer="Entitas terdaftar"
             />
             <x-ui.stat-card 
-                title="Active Nodes" 
+                title="Node Aktif" 
                 :value="$activeStudents" 
                 icon="fas fa-signal" 
                 variant="success"
@@ -29,7 +29,7 @@
                 footer="Konten aktif"
             />
             <x-ui.stat-card 
-                title="Evaluation Corpus" 
+                title="Korpus Evaluasi" 
                 :value="$totalQuestions" 
                 icon="fas fa-microchip" 
                 variant="success"
@@ -43,17 +43,17 @@
                 <x-ui.card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
                     <x-slot:header>
                         <div class="flex items-center justify-between w-full px-6 py-4">
-                            <h6 class="mb-0 font-bold uppercase tracking-widest text-[10px] text-slate-400">Top Performance Matrices</h6>
-                            <x-ui.button variant="ghost" size="sm" :href="route('admin.students.index')" icon="fas fa-arrow-right">GLOBAL DATA</x-ui.button>
+                            <h6 class="mb-0 font-bold uppercase tracking-widest text-[10px] text-slate-400">Matriks Performa Utama</h6>
+                            <x-ui.button variant="ghost" size="sm" :href="route('admin.students.index')" icon="fas fa-arrow-right">DATA GLOBAL</x-ui.button>
                         </div>
                     </x-slot:header>
                     <x-ui.table>
                         <x-slot:thead>
                             <tr>
-                                <x-ui.th>Subject Identity</x-ui.th>
-                                <x-ui.th class="text-center">Evaluation Count</x-ui.th>
-                                <x-ui.th class="text-center">Sync Progress</x-ui.th>
-                                <x-ui.th class="text-right">Action</x-ui.th>
+                                <x-ui.th>Identitas Subjek</x-ui.th>
+                                <x-ui.th class="text-center">Jumlah Evaluasi</x-ui.th>
+                                <x-ui.th class="text-center">Progres Sinkronisasi</x-ui.th>
+                                <x-ui.th class="text-right">Aksi</x-ui.th>
                             </tr>
                         </x-slot:thead>
                         @foreach($studentProgress as $student)
@@ -75,7 +75,7 @@
                                 <td class="px-6 py-4">
                                     <div class="flex flex-col gap-2">
                                         <div class="flex justify-between text-[8px] font-black uppercase italic tracking-widest text-slate-400">
-                                            <span>Progress</span>
+                                            <span>Progres</span>
                                             <span>{{ $student->materials_progress }}%</span>
                                         </div>
                                         <x-ui.progress-bar :value="$student->materials_progress" size="xs" :showPercentage="false" variant="primary" />
@@ -94,7 +94,7 @@
             <div>
                 <x-ui.card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
                     <x-slot:header>
-                         <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400 px-6 py-4">Content Heatmap</h6>
+                         <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400 px-6 py-4">Heatmap Konten</h6>
                     </x-slot:header>
                     <div class="space-y-4 p-6 bg-slate-50/50">
                         @foreach($popularMaterials as $material)
@@ -104,7 +104,7 @@
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <h5 class="text-xs font-bold tracking-tight text-slate-900 truncate mb-1">{{ $material->title }}</h5>
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ $material->students_count }} Subjects</p>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ $material->students_count }} Subjek</p>
                                 </div>
                                 <span class="text-xs font-black italic text-blue-600">{{ $material->completion_rate }}%</span>
                             </div>
@@ -117,7 +117,7 @@
         {{-- Recent Activity Timeline --}}
         <x-ui.card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
             <x-slot:header>
-                 <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400 px-6 py-4">Operations Log (Live)</h6>
+                 <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400 px-6 py-4">Log Operasi (Langsung)</h6>
             </x-slot:header>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-8">
                 @foreach($recentProgress as $progress)
@@ -134,12 +134,12 @@
                                     <i class="fas {{ $progress->is_correct ? 'fa-check' : 'fa-hourglass-start' }}"></i>
                                 </div>
                                 <div class="font-black italic text-slate-900 uppercase tracking-tighter text-xs">
-                                    {{ optional($progress->user)->name ?? 'ENT-UNK' }}
+                                    {{ optional($progress->user)->name ?? 'ENT-TIDAK DIKETAHUI' }}
                                 </div>
                             </div>
                             
                             <p class="text-[11px] font-bold text-slate-500 leading-relaxed italic">
-                                {{ $progress->is_correct ? 'Successfully decrypted' : 'Analyzing' }} module <span class="text-slate-900 underline decoration-blue-200 underline-offset-4">{{ optional($progress->material)->title ?? '-' }}</span>
+                                {{ $progress->is_correct ? 'Berhasil mendekripsi' : 'Menganalisis' }} modul <span class="text-slate-900 underline decoration-blue-200 underline-offset-4">{{ optional($progress->material)->title ?? '-' }}</span>
                             </p>
                             
                             <div class="pt-4 border-t border-slate-200 flex justify-between items-center text-[9px] font-black text-slate-300 uppercase tracking-[0.2em] italic">
