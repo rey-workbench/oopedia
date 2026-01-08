@@ -20,4 +20,10 @@ interface ProgressRepositoryInterface
     public function getRecentSystemProgress($limit);
     public function getMaterialPerformanceStats();
     public function getPopularMaterials($limit);
+    
+    // Personalization queries
+    public function getFirstProgress($userId, $materialId);
+    public function getLatestProgress($userId);
+    public function getByUserAndMaterial($userId, $materialId);
+    public function getWrongAnswers($userId, $materialId);
 }

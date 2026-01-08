@@ -2,7 +2,14 @@
     'theme' => null,
 ])
 
-{{-- Alpine.js is assumed to be in app.js via Vite, otherwise add it here --}}
+{{-- Vite Bundles --}}
+@if($theme === 'admin')
+    @vite(['resources/css/app.css', 'resources/js/admin.js'])
+@elseif($theme === 'mahasiswa')
+    @vite(['resources/css/app.css', 'resources/js/mahasiswa.js'])
+@else
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+@endif
 
 {{-- jQuery (Minimized usage) --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -17,10 +24,10 @@
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 @endif
 
-{{-- Utilities & Components --}}
-<script src="{{ asset('js/utils/http.js') }}"></script>
-<script src="{{ asset('js/utils/ui.js') }}"></script>
-<script src="{{ asset('js/utils/tour.js') }}"></script>
+{{-- TinyMCE for Admin --}}
+@if($theme === 'admin')
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+@endif
 
 {{-- Navbar/Sidebar Logic --}}
 <script>
@@ -40,13 +47,5 @@
         if (overlay) overlay.addEventListener('click', toggleSidebar);
     });
 </script>
-
-{{-- Theme-specific Scripts --}}
-@if($theme === 'admin')
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-    <script src="{{ asset('js/admin.js') }}"></script>
-@elseif($theme === 'mahasiswa')
-    <script src="{{ asset('js/mahasiswa.js') }}"></script>
-@endif
 
 {{ $slot }}
