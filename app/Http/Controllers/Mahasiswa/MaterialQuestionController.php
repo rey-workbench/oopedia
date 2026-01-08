@@ -68,7 +68,7 @@ class MaterialQuestionController extends Controller
         $materials = $this->materialRepo->getAllOrdered();
         $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4);
         $difficulty = $isGuest ? $request->query('difficulty', 'beginner') : 'all';
-        $questionId = $request->query('question');
+        $questionId = null;
 
         // Read guest progress from cookie
         $guestProgress = [];
@@ -226,7 +226,7 @@ class MaterialQuestionController extends Controller
             $material->id,
             $question,
             $isCorrect,
-            false
+            $request->boolean('used_hint', false)
         );
 
         // Save progress (Cookie for Guest, DB for Authenticated)

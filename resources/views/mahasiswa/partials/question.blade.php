@@ -8,36 +8,60 @@
             @php $isGuest = !auth()->check(); @endphp
         @endif
 
-        @if(!$isGuest)
+        {{-- Restoring Stats Bar (Hints, XP, Streak) as per user request --}}
+        @php
+            // Fetch latest progress to get current stats
+            $latestProgress = \App\Models\Progress::where('user_id', auth()->id())
+                ->where('material_id', $material->id)
+                ->latest()
+                ->first();
+            
+            $attributes = $latestProgress ? ($latestProgress->attributes ?? []) : [];
+            $xp = $attributes['xp'] ?? 0;
+            $streak = $attributes['current_streak'] ?? 0;
+            $points = $attributes['points'] ?? 0;
+            $hintsAvailable = $attributes['hints_available'] ?? 3; // Default to 3 if not set
+        @endphp
+
         <div class="mb-8 p-1 bg-gray-50 rounded-2xl flex items-center gap-1 shadow-inner">
             <div class="flex-1 px-6 py-3 rounded-xl bg-white shadow-sm flex items-center justify-between">
-                <div>
-                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-0.5">Tingkat Kesulitan</span>
-                    <h5 class="text-lg font-black {{ $difficulty == 'hard' ? 'text-rose-600' : ($difficulty == 'medium' ? 'text-amber-600' : 'text-emerald-600') }}">
-                        {{ ucfirst($difficulty) }}
-                    </h5>
+                <div class="flex items-center gap-6">
+                    {{-- Difficulty --}}
+                    <div>
+                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-0.5">Kesulitan</span>
+                        <h5 class="text-lg font-black {{ $difficulty == 'hard' ? 'text-rose-600' : ($difficulty == 'medium' ? 'text-amber-600' : 'text-emerald-600') }}">
+                            {{ ucfirst($difficulty) }}
+                        </h5>
+                    </div>
+                    
+                    {{-- XP Indicator --}}
+                    <div class="xp-indicator">
+                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-0.5">XP</span>
+                        <h5 class="text-lg font-black text-blue-600 flex items-center gap-1">
+                            <i class="fas fa-star text-amber-400 text-sm"></i> {{ $xp }}
+                        </h5>
+                    </div>
+
+                    {{-- Streak Indicator --}}
+                    <div class="streak-indicator">
+                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-0.5">Streak</span>
+                        <h5 class="text-lg font-black text-orange-600 flex items-center gap-1">
+                            <i class="fas fa-fire text-orange-500 text-sm"></i> {{ $streak }}
+                        </h5>
+                    </div>
                 </div>
-                <div class="flex gap-1">
-                    <div class="w-2 h-6 rounded-full {{ $difficulty == 'beginner' || $difficulty == 'medium' || $difficulty == 'hard' ? 'bg-emerald-500' : 'bg-gray-200' }}"></div>
-                    <div class="w-2 h-6 rounded-full {{ $difficulty == 'medium' || $difficulty == 'hard' ? 'bg-amber-500' : 'bg-gray-200' }}"></div>
-                    <div class="w-2 h-6 rounded-full {{ $difficulty == 'hard' ? 'bg-rose-500' : 'bg-gray-200' }}"></div>
+
+                {{-- Hint Button --}}
+                <div>
+                     <button type="button" id="hintBtn" class="group flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 transition-all font-bold text-sm" {{ $hintsAvailable <= 0 ? 'disabled' : '' }}>
+                        <div class="w-6 h-6 rounded-lg bg-indigo-200 group-hover:bg-indigo-300 flex items-center justify-center transition-colors">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <span>Hint (<span id="hintsCount">{{ $hintsAvailable }}</span>)</span>
+                    </button>
                 </div>
             </div>
         </div>
-        @else
-        <div class="mb-8 p-5 bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl border border-amber-100 shadow-sm flex items-center gap-5">
-             <div class="w-12 h-12 rounded-xl bg-amber-500 flex items-center justify-center shrink-0 shadow-lg shadow-amber-200">
-                 <i class="fas fa-user-clock text-white text-xl"></i>
-             </div>
-             <div>
-                 <h5 class="font-bold text-amber-900 mb-0.5">Mode Tamu / Preview</h5>
-                 <p class="text-amber-700 text-sm">Login untuk menyimpan progres dan fitur lengkap.</p>
-             </div>
-        </div>
-        @endif
-
-        <!-- Hidden Inputs for JS Context -->
-        <input type="hidden" id="currentLevel" value="{{ $difficulty }}">
 
         <div id="questionContainer">
             @if($currentQuestion)
@@ -48,6 +72,7 @@
                 ]) }}"
                 method="POST">
                 @csrf
+                <input type="hidden" name="used_hint" id="usedHintInput" value="false">
                 <input type="hidden" name="question_id" value="{{ $currentQuestion->id }}">
                 <input type="hidden" name="material_id" value="{{ $material->id }}">
 
@@ -182,33 +207,28 @@
             @endif
         </div>
 
-        <div class="exercise-feedback hidden">
-            <div class="p-8 rounded-2xl text-center">
-                <div id="feedbackIcon" class="text-7xl mb-6">
-                </div>
-                <div id="feedbackStatus" class="text-3xl font-black mb-4">
-                </div>
+        {{-- Simplified Feedback Layer --}}
+        <div class="exercise-feedback hidden fixed inset-0 z-[100] flex items-center justify-center pointer-events-none transition-all duration-300">
+            <div id="hapticLayer" class="absolute inset-0 opacity-0 transition-opacity duration-300"></div>
+            
+            <div class="relative z-10 p-12 rounded-[3rem] text-center bg-white shadow-2xl scale-90 opacity-0 feedback-content-box transition-all duration-500 pointer-events-auto">
+                <div id="feedbackIcon" class="text-8xl mb-6"></div>
+                <div id="feedbackStatus" class="text-4xl font-black mb-8 italic uppercase tracking-tight"></div>
 
-                <div id="adaptiveFeedback" class="hidden mt-6 p-5 rounded-xl text-left">
-                </div>
-
-                <div id="explanationBox" class="hidden mt-6 p-6 bg-blue-50 rounded-2xl border-l-8 border-blue-400 text-left shadow-sm">
-                    <h5 class="font-bold text-xl mb-3 text-blue-900 flex items-center gap-2">
-                        <i class="fas fa-lightbulb text-blue-500"></i>
+                <div id="explanationBox" class="hidden max-w-lg mx-auto mt-6 p-6 bg-slate-50 rounded-2xl border-l-8 border-blue-500 text-left">
+                    <h5 class="font-bold text-lg mb-2 text-slate-900 flex items-center gap-2">
+                        <i class="fas fa-lightbulb text-amber-500"></i>
                         Penjelasan
                     </h5>
-                    <p id="explanationText" class="mb-0 text-blue-800 leading-relaxed"></p>
+                    <p id="explanationText" class="text-slate-600 leading-relaxed"></p>
                 </div>
 
-                <div class="flex flex-col sm:flex-row flex-wrap gap-4 justify-center mt-10">
-                    <x-ui.button id="tryAgainBtn" variant="outline" class="px-8 py-3 rounded-xl font-bold">
-                        <i class="fas fa-redo mr-2"></i>Coba Lagi
+                <div class="flex flex-col sm:flex-row gap-4 justify-center mt-10">
+                    <x-ui.button id="tryAgainBtn" variant="outline" class="px-10 py-4 rounded-2xl font-black italic uppercase tracking-widest text-sm">
+                        <i class="fas fa-redo mr-2"></i> Coba Lagi
                     </x-ui.button>
-                    <x-ui.button id="nextQuestionBtn" variant="success" class="px-8 py-3 rounded-xl font-bold hidden shadow-lg shadow-green-100">
-                        Lanjut ke Soal Berikutnya <i class="fas fa-arrow-right ml-2"></i>
-                    </x-ui.button>
-                     <x-ui.button href="{{ route('mahasiswa.dashboard') }}" id="dashboardBtn" variant="secondary" class="px-8 py-3 rounded-xl font-bold hidden">
-                        <i class="fas fa-home mr-2"></i>Dashboard
+                    <x-ui.button id="nextQuestionBtn" variant="primary" class="px-10 py-4 rounded-2xl font-black italic uppercase tracking-widest text-sm hidden">
+                        Lanjut <i class="fas fa-arrow-right ml-2"></i>
                     </x-ui.button>
                 </div>
             </div>
