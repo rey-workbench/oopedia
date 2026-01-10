@@ -139,7 +139,7 @@
                             </div>
                             
                             <p class="text-[11px] font-bold text-slate-500 leading-relaxed italic">
-                                {{ $progress->is_correct ? 'Berhasil mendekripsi' : 'Menganalisis' }} modul <span class="text-slate-900 underline decoration-blue-200 underline-offset-4">{{ optional($progress->material)->title ?? '-' }}</span>
+                                {{ $progress->is_correct ? 'Berhasil mendekripsi' : 'Menganalisis' }} modul <span class="text-slate-900 underline decoration-blue-200 underline-offset-4">{{ optional($progress->question->material)->title ?? '-' }}</span>
                             </p>
                             
                             <div class="pt-4 border-t border-slate-200 flex justify-between items-center text-[9px] font-black text-slate-300 uppercase tracking-[0.2em] italic">

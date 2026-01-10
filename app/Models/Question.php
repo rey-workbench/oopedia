@@ -34,14 +34,20 @@ class Question extends Model
         return $this->hasMany(Answer::class);
     }
 
+    public function parentQuestion()
+    {
+        return $this->belongsTo(Question::class, 'question_id'); // Assuming self-referential
+    }
+
     public function questions()
     {
         return $this->hasMany(Question::class);
     }
 
-    public function progress()
+    // Replace progress() with quizAttempts()
+    public function quizAttempts()
     {
-        return $this->hasMany(Progress::class);
+        return $this->hasMany(QuizAttempt::class);
     }
 
     public function questionBanks()

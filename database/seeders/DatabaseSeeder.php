@@ -19,7 +19,6 @@ class DatabaseSeeder extends Seeder
             MaterialsSeeder::class,
             QuestionsSeeder::class,
             AnswersSeeder::class,
-            ProgressSeeder::class,
             UeqSurveysSeeder::class,
             QuestionBanksSeeder::class,
         ]);

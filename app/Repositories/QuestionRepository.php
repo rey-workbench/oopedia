@@ -1,25 +1,63 @@
 <?php
 
-namespace App\Repositories\Eloquent;
+namespace App\Repositories;
 
-use App\Repositories\Interfaces\QuestionRepositoryInterface;
 use App\Models\Question;
 
-class QuestionRepository extends BaseRepository implements QuestionRepositoryInterface
+class QuestionRepository
 {
-    public function __construct(Question $model)
+    public function all()
     {
-        parent::__construct($model);
+        return Question::all();
+    }
+
+    public function find($id)
+    {
+        return Question::find($id);
+    }
+
+    public function create(array $data)
+    {
+        return Question::create($data);
+    }
+
+    public function update($id, array $data)
+    {
+        $question = Question::find($id);
+        if ($question) {
+            $question->update($data);
+            return $question;
+        }
+        return null;
+    }
+
+    public function delete($id)
+    {
+        $question = Question::find($id);
+        if ($question) {
+            return $question->delete();
+        }
+        return false;
+    }
+
+    public function paginate($perPage = 15)
+    {
+        return Question::paginate($perPage);
+    }
+
+    public function countAll()
+    {
+        return Question::count();
     }
 
     public function findWithAnswers($id)
     {
-        return $this->model->with('answers')->findOrFail($id);
+        return Question::with('answers')->findOrFail($id);
     }
 
     public function getByMaterialAndDifficulty($materialId, $difficulty = null)
     {
-        $query = $this->model->where('material_id', $materialId);
+        $query = Question::where('material_id', $materialId);
         
         if ($difficulty && $difficulty !== 'all') {
             $query->where('difficulty', $difficulty);
@@ -30,7 +68,7 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
 
     public function getFilteredQuestions($search = null, $difficulty = null, $materialId = null)
     {
-        return $this->model->with(['createdBy', 'answers', 'material'])
+        return Question::with(['createdBy', 'answers', 'material'])
             ->when($search, function ($query) use ($search) {
                 return $query->where(function ($q) use ($search) {
                     $q->where('question_text', 'like', "%{$search}%")
@@ -55,7 +93,7 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
 
     public function getQuestionsForBank($materialId, array $excludeIds, $search = null, $difficulty = null)
     {
-        return $this->model->with(['material', 'answers'])
+        return Question::with(['material', 'answers'])
             ->where('material_id', $materialId)
             ->whereNotIn('id', $excludeIds)
             ->when($search, function ($query) use ($search) {

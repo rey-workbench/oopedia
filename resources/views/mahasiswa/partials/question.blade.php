@@ -1,5 +1,6 @@
 @php
-    use App\Models\Progress;
+    use App\Models\StudentState;
+    use App\Models\QuizAttempt;
 @endphp
 
 <div class="bg-white rounded-xl shadow-md p-6">
@@ -10,17 +11,20 @@
 
         {{-- Restoring Stats Bar (Hints, XP, Streak) as per user request --}}
         @php
-            // Fetch latest progress to get current stats
-            $latestProgress = \App\Models\Progress::where('user_id', auth()->id())
-                ->where('material_id', $material->id)
-                ->latest()
-                ->first();
-            
-            $attributes = $latestProgress ? ($latestProgress->attributes ?? []) : [];
-            $xp = $attributes['xp'] ?? 0;
-            $streak = $attributes['current_streak'] ?? 0;
-            $points = $attributes['points'] ?? 0;
-            $hintsAvailable = $attributes['hints_available'] ?? 3; // Default to 3 if not set
+            if (!$isGuest) {
+                // Fetch student state for gamification stats
+                $studentState = StudentState::where('user_id', auth()->id())->first();
+                
+                $xp = $studentState ? $studentState->global_xp : 0;
+                // Badges/attributes are now in JSON, extracting if needed
+                $attributes = $studentState ? ($studentState->badges ?? []) : [];
+                $streak = $attributes['current_streak'] ?? 0; // Assuming streak is stored in badges/extra json or adding to StudentState
+                $hintsAvailable = $attributes['hints_available'] ?? 3;
+            } else {
+                $xp = 0;
+                $streak = 0;
+                $hintsAvailable = 3;
+            }
         @endphp
 
         <div class="mb-8 p-1 bg-gray-50 rounded-2xl flex items-center gap-1 shadow-inner">
@@ -38,7 +42,8 @@
                     <div class="xp-indicator">
                         <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-0.5">XP</span>
                         <h5 class="text-lg font-black text-blue-600 flex items-center gap-1">
-                            <i class="fas fa-star text-amber-400 text-sm"></i> {{ $xp }}
+                            <i class="fas fa-star text-amber-400 text-sm"></i> 
+                            <span id="xpDisplay">{{ $xp }}</span>
                         </h5>
                     </div>
 
@@ -46,7 +51,8 @@
                     <div class="streak-indicator">
                         <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-0.5">Streak</span>
                         <h5 class="text-lg font-black text-orange-600 flex items-center gap-1">
-                            <i class="fas fa-fire text-orange-500 text-sm"></i> {{ $streak }}
+                            <i class="fas fa-fire text-orange-500 text-sm"></i> 
+                            <span id="streakDisplay">{{ $streak }}</span>
                         </h5>
                     </div>
                 </div>
@@ -73,6 +79,7 @@
                 method="POST">
                 @csrf
                 <input type="hidden" name="used_hint" id="usedHintInput" value="false">
+                <input type="hidden" name="time_spent" id="timeSpentInput" value="0">
                 <input type="hidden" name="question_id" value="{{ $currentQuestion->id }}">
                 <input type="hidden" name="material_id" value="{{ $material->id }}">
 
@@ -234,4 +241,30 @@
             </div>
         </div>
     </div>
+
+    {{-- Adaptive Debug Panel --}}
+    @if(config('app.debug') || auth()->check()) 
+    <div class="mt-8 border border-gray-200 rounded-xl overflow-hidden bg-slate-900 text-slate-300 font-mono text-sm shadow-lg">
+        <div class="flex items-center justify-between p-4 bg-slate-800 border-b border-slate-700 cursor-pointer" onclick="document.getElementById('debugContent').classList.toggle('hidden')">
+            <h5 class="font-bold text-slate-100 flex items-center gap-2">
+                <i class="fas fa-bug text-rose-500"></i> Adaptive Logic Debugger
+            </h5>
+            <i class="fas fa-chevron-down text-slate-400"></i>
+        </div>
+        <div id="debugContent" class="hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x divide-slate-700">
+                <div class="p-4">
+                    <h6 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">Triggered Rules</h6>
+                    <ul id="debugRulesList" class="space-y-2">
+                        <li class="text-slate-500 italic">No rules triggered yet...</li>
+                    </ul>
+                </div>
+                <div class="p-4">
+                    <h6 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">Current State</h6>
+                    <div id="debugStateJson" class="text-xs overflow-x-auto whitespace-pre-wrap text-emerald-400 font-mono bg-slate-950 p-2 rounded">Waiting for interaction...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>

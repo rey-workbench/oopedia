@@ -2,21 +2,21 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\MaterialRepositoryInterface;
-use App\Repositories\Interfaces\ProgressRepositoryInterface;
-use App\Repositories\Interfaces\QuestionRepositoryInterface;
+use App\Repositories\MaterialRepository;
+use App\Repositories\ProgressRepository;
+use App\Repositories\QuestionRepository;
 use App\Models\QuestionBankConfig;
 
-class MaterialQuestionService extends BaseService
+class MaterialQuestionService
 {
     protected $materialRepo;
     protected $progressRepo;
     protected $questionRepo;
 
     public function __construct(
-        MaterialRepositoryInterface $materialRepo,
-        ProgressRepositoryInterface $progressRepo,
-        QuestionRepositoryInterface $questionRepo
+        MaterialRepository $materialRepo,
+        ProgressRepository $progressRepo,
+        QuestionRepository $questionRepo
     ) {
         $this->materialRepo = $materialRepo;
         $this->progressRepo = $progressRepo;

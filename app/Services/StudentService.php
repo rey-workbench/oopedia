@@ -2,24 +2,24 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\UserRepositoryInterface;
-use App\Repositories\Interfaces\MaterialRepositoryInterface;
-use App\Repositories\Interfaces\ProgressRepositoryInterface;
+use App\Repositories\UserRepository;
+use App\Repositories\MaterialRepository;
+use App\Repositories\ProgressRepository;
 use App\Models\QuestionBankConfig;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class StudentService extends BaseService
+class StudentService
 {
     protected $userRepo;
     protected $materialRepo;
     protected $progressRepo;
 
     public function __construct(
-        UserRepositoryInterface $userRepo,
-        MaterialRepositoryInterface $materialRepo,
-        ProgressRepositoryInterface $progressRepo
+        UserRepository $userRepo,
+        MaterialRepository $materialRepo,
+        ProgressRepository $progressRepo
     ) {
         $this->userRepo = $userRepo;
         $this->materialRepo = $materialRepo;
@@ -54,10 +54,7 @@ class StudentService extends BaseService
     public function getStudentProgressDetail($student)
     {
         // Get all materials with questions and configs
-        $materials = $this->materialRepo->all();
-        $materials->load(['questions', 'questionBankConfigs' => function($query) {
-            $query->where('is_active', true);
-        }]);
+        $materials = $this->materialRepo->getAllWithQuestionsAndActiveConfigs();
         
         // Get progress data for this student
         $progressStats = $this->progressRepo->getUserMaterialProgress($student->id);

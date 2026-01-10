@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\Repositories\UserRepository;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class UserService extends BaseService
+class UserService
 {
     protected $userRepo;
 
-    public function __construct(UserRepositoryInterface $userRepo)
+    public function __construct(UserRepository $userRepo)
     {
         $this->userRepo = $userRepo;
     }

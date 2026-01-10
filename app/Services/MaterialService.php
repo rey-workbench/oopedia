@@ -2,17 +2,17 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\MaterialRepositoryInterface;
+use App\Repositories\MaterialRepository;
 use App\Models\Media;
 use App\Models\Material;
 use Illuminate\Support\Facades\Storage;
 use Exception;
 
-class MaterialService extends BaseService
+class MaterialService
 {
     protected $materialRepo;
 
-    public function __construct(MaterialRepositoryInterface $materialRepo)
+    public function __construct(MaterialRepository $materialRepo)
     {
         $this->materialRepo = $materialRepo;
     }

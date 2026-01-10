@@ -2,19 +2,19 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\QuestionRepositoryInterface;
+use App\Repositories\QuestionRepository;
 use App\Models\Question;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class QuestionService extends BaseService
+class QuestionService
 {
     protected $questionRepo;
     protected $answerRepo;
 
     public function __construct(
-        QuestionRepositoryInterface $questionRepo,
-        \App\Repositories\Interfaces\AnswerRepositoryInterface $answerRepo
+        QuestionRepository $questionRepo,
+        \App\Repositories\Interfaces\AnswerRepository $answerRepo
     )
     {
         $this->questionRepo = $questionRepo;

@@ -2,36 +2,37 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\UserRepositoryInterface;
-use App\Repositories\Interfaces\MaterialRepositoryInterface;
-use App\Repositories\Interfaces\ProgressRepositoryInterface;
-use App\Models\User;
-use App\Models\Material;
-use App\Models\Question;
+use App\Repositories\UserRepository;
+use App\Repositories\MaterialRepository;
+use App\Repositories\ProgressRepository;
+use App\Repositories\QuestionRepository;
 use Carbon\Carbon;
 
-class AdminDashboardService extends BaseService
+class AdminDashboardService
 {
     protected $userRepo;
     protected $materialRepo;
     protected $progressRepo;
+    protected $questionRepo;
 
     public function __construct(
-        UserRepositoryInterface $userRepo,
-        MaterialRepositoryInterface $materialRepo,
-        ProgressRepositoryInterface $progressRepo
+        UserRepository $userRepo,
+        MaterialRepository $materialRepo,
+        ProgressRepository $progressRepo,
+        QuestionRepository $questionRepo
     ) {
         $this->userRepo = $userRepo;
         $this->materialRepo = $materialRepo;
         $this->progressRepo = $progressRepo;
+        $this->questionRepo = $questionRepo;
     }
 
     public function getDashboardStats()
     {
         return [
-            'totalStudents' => User::where('role_id', 3)->count(),
-            'totalMaterials' => Material::count(),
-            'totalQuestions' => Question::count(),
+            'totalStudents' => $this->userRepo->countByRole(3),
+            'totalMaterials' => $this->materialRepo->countAll(),
+            'totalQuestions' => $this->questionRepo->countAll(),
             'activeStudents' => $this->userRepo->getActiveStudentsCount(7)
         ];
     }
@@ -45,9 +46,7 @@ class AdminDashboardService extends BaseService
     {
         $students = $this->userRepo->getStudentProgressOverview($limit);
         
-        // Get all materials/config once to avoid N+1 inside loop if possible, 
-        // but calculation below is complex per student.
-        // Optimization: Fetch all materials with active config
+        // Get all materials/config once to avoid N+1 inside loop
         $materials = $this->materialRepo->getAllWithQuestionsAndConfigs();
         
         return $students->map(function($student) use ($materials) {
@@ -63,14 +62,15 @@ class AdminDashboardService extends BaseService
             }
             
             // Calculate progress percentage based on configured questions
-            $correctAnswers = $student->progress->where('is_correct', true)->count(); // This relies on eager loaded progress from repo
+            // student->quizAttempts loaded in repo with proper filtering
+            $uniqueCorrectQuestions = $student->quizAttempts->where('is_correct', true)->pluck('question_id')->unique()->count();
             
             $student->materials_progress = $totalConfiguredQuestions > 0 
-                ? round(($correctAnswers / $totalConfiguredQuestions) * 100) 
+                ? round(($uniqueCorrectQuestions / $totalConfiguredQuestions) * 100) 
                 : 0;
             
             // Add last active timestamp
-            $lastActivity = $student->progress->max('created_at');
+            $lastActivity = $student->quizAttempts->max('created_at');
             $student->last_active = $lastActivity ? Carbon::parse($lastActivity) : null;
             
             return $student;
@@ -95,6 +95,7 @@ class AdminDashboardService extends BaseService
             }
             
             // Filter progress data for this material
+            // progressData contains objects with material_id (from join in repo)
             $materialProgress = $progressData->where('material_id', $material->id);
             
             // Count unique users who have answered questions in this material
