@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Repositories\Interfaces\MaterialRepositoryInterface;
+use App\Repositories\MaterialRepository;
 use App\Services\UserService;
 
 class ProfileController extends Controller
@@ -13,7 +13,7 @@ class ProfileController extends Controller
     protected $userService;
 
     public function __construct(
-        MaterialRepositoryInterface $materialRepo,
+        MaterialRepository $materialRepo,
         UserService $userService
     ) {
         $this->materialRepo = $materialRepo;

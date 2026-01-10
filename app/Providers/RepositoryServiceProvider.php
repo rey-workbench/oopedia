@@ -3,6 +3,13 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\MaterialRepository;
+use App\Repositories\ProgressRepository;
+use App\Repositories\QuestionRepository;
+use App\Repositories\AnswerRepository;
+use App\Repositories\UserRepository;
+use App\Repositories\UeqSurveyRepository;
+use App\Repositories\QuestionBankRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -11,40 +18,14 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(
-            \App\Repositories\Interfaces\MaterialRepositoryInterface::class,
-            \App\Repositories\Eloquent\MaterialRepository::class
-        );
-
-        $this->app->bind(
-            \App\Repositories\Interfaces\ProgressRepositoryInterface::class,
-            \App\Repositories\Eloquent\ProgressRepository::class
-        );
-
-        $this->app->bind(
-            \App\Repositories\Interfaces\QuestionRepositoryInterface::class,
-            \App\Repositories\Eloquent\QuestionRepository::class
-        );
-
-        $this->app->bind(
-            \App\Repositories\Interfaces\AnswerRepositoryInterface::class,
-            \App\Repositories\Eloquent\AnswerRepository::class
-        );
-
-        $this->app->bind(
-            \App\Repositories\Interfaces\UserRepositoryInterface::class,
-            \App\Repositories\Eloquent\UserRepository::class
-        );
-
-        $this->app->bind(
-            \App\Repositories\Interfaces\UeqSurveyRepositoryInterface::class,
-            \App\Repositories\Eloquent\UeqSurveyRepository::class
-        );
-
-        $this->app->bind(
-            \App\Repositories\Interfaces\QuestionBankRepositoryInterface::class,
-            \App\Repositories\Eloquent\QuestionBankRepository::class
-        );
+        // Register repositories as singletons
+        $this->app->singleton(MaterialRepository::class);
+        $this->app->singleton(ProgressRepository::class);
+        $this->app->singleton(QuestionRepository::class);
+        $this->app->singleton(AnswerRepository::class);
+        $this->app->singleton(UserRepository::class);
+        $this->app->singleton(UeqSurveyRepository::class);
+        $this->app->singleton(QuestionBankRepository::class);
     }
 
     /**

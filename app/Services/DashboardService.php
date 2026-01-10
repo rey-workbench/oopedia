@@ -2,18 +2,18 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\MaterialRepositoryInterface;
-use App\Repositories\Interfaces\ProgressRepositoryInterface;
+use App\Repositories\MaterialRepository;
+use App\Repositories\ProgressRepository;
 use App\Models\QuestionBankConfig;
 
-class DashboardService extends BaseService
+class DashboardService
 {
     protected $materialRepo;
     protected $progressRepo;
 
     public function __construct(
-        MaterialRepositoryInterface $materialRepo,
-        ProgressRepositoryInterface $progressRepo
+        MaterialRepository $materialRepo,
+        ProgressRepository $progressRepo
     ) {
         $this->materialRepo = $materialRepo;
         $this->progressRepo = $progressRepo;
@@ -69,6 +69,7 @@ class DashboardService extends BaseService
                 $totalQuestions = $material->questions->count();
             }
 
+            // progressStats is a Collection of objects with material_id, correct_answers
             $materialProgress = $progressStats->firstWhere('material_id', $material->id);
             $correctAnswers = $materialProgress ? $materialProgress->correct_answers : 0;
 
@@ -147,6 +148,7 @@ class DashboardService extends BaseService
 
         $materials = $this->materialRepo->getAllWithQuestions()
             ->filter(function ($material) use ($materialProgress, $isGuest) {
+                // Ensure materialProgress objects have material_id and correct_answers
                 $progress = $materialProgress->firstWhere('material_id', $material->id);
 
                 if ($progress) {

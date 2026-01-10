@@ -17,25 +17,19 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function progress()
+    public function quizAttempts()
     {
-        return $this->hasMany(Progress::class);
+        return $this->hasMany(QuizAttempt::class);
     }
 
-    public function materials()
+    public function studentState()
     {
-        return $this->belongsToMany(Material::class, 'progress', 'user_id', 'material_id')
-            ->distinct();
-    }
-
-    public function materialProgress()
-    {
-        return $this->hasMany(Progress::class, 'user_id');
+        return $this->hasOne(StudentState::class);
     }
 
     public function answeredQuestions()
     {
-        return $this->hasMany(Progress::class)->where('is_answered', true);
+        return $this->hasMany(QuizAttempt::class)->where('score', '>', 0); // Or distinct question_id
     }
 
     public function hasRole($role)

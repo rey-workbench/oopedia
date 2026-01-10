@@ -2,18 +2,18 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\MaterialRepositoryInterface;
-use App\Repositories\Interfaces\ProgressRepositoryInterface;
+use App\Repositories\MaterialRepository;
+use App\Repositories\ProgressRepository;
 use App\Models\QuestionBankConfig;
 
-class MaterialViewService extends BaseService
+class MaterialViewService
 {
     protected $materialRepo;
     protected $progressRepo;
 
     public function __construct(
-        MaterialRepositoryInterface $materialRepo,
-        ProgressRepositoryInterface $progressRepo
+        MaterialRepository $materialRepo,
+        ProgressRepository $progressRepo
     ) {
         $this->materialRepo = $materialRepo;
         $this->progressRepo = $progressRepo;
@@ -33,6 +33,8 @@ class MaterialViewService extends BaseService
 
         $materials = $allMaterials->map(function ($material) use ($progressStats, $isGuest) {
             $configuredTotalQuestions = $this->calculateConfiguredQuestions($material, $isGuest);
+            
+            // progressStats is a Collection of objects with material_id, correct_answers
             $materialProgress = $progressStats->firstWhere('material_id', $material->id);
             $correctAnswers = $materialProgress ? $materialProgress->correct_answers : 0;
 

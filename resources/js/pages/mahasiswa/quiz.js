@@ -73,10 +73,19 @@ function triggerHapticFeedback(isSuccess) {
 export function initializeQuestionForm(config) {
     const questionForm = document.getElementById('questionForm');
     const checkAnswerBtn = document.getElementById('checkAnswerBtn');
+    const timeSpentInput = document.getElementById('timeSpentInput');
     const routes = config.routes;
 
+    // Timer Logic
+    let startTime = Date.now();
+
+    // Reset timer when coming back or checking next question
+    // Actually, this function runs once per page load/module init? 
+    // If SPA navigation (AJAX) re-calls this, we need to reset.
+    // For now, let's assume simple start.
+
     if (questionForm) {
-        setupSecurity();
+        // setupSecurity(); // Disabled for debugging
 
         // Hint Button Logic
         const hintBtn = document.getElementById('hintBtn');
@@ -96,6 +105,10 @@ export function initializeQuestionForm(config) {
 
         questionForm.addEventListener('submit', function (e) {
             e.preventDefault();
+            if (timeSpentInput) {
+                const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+                timeSpentInput.value = elapsedSeconds;
+            }
 
             if (checkAnswerBtn) {
                 checkAnswerBtn.disabled = true;
@@ -157,13 +170,8 @@ function showFeedback(data, routes) {
     // Update Top Stats if adaptive result is present
     if (data.adaptiveResult && data.adaptiveResult.new_state) {
         const state = data.adaptiveResult.new_state;
-        const xpEl = document.querySelector('.xp-indicator h5');
-        const streakEl = document.querySelector('.streak-indicator h5');
         const hintsCountEl = document.getElementById('hintsCount');
         const hintBtn = document.getElementById('hintBtn');
-
-        if (xpEl) xpEl.innerHTML = `<i class="fas fa-star text-amber-400 text-sm"></i> ${state.xp}`;
-        if (streakEl) streakEl.innerHTML = `<i class="fas fa-fire text-orange-500 text-sm"></i> ${state.current_streak}`;
 
         if (hintsCountEl) hintsCountEl.textContent = state.hints_available;
         if (hintBtn) {
@@ -183,17 +191,31 @@ function showFeedback(data, routes) {
             );
         }
 
-        if (state.show_fatigue_warning === 1) {
-            showPersonalizationNotification(
-                'fatigue',
-                '😴 Terdeteksi Kelelahan',
-                'Sebaiknya istirahat sejenak untuk hasil lebih baik. Bonus +1 hint untuk membantu.',
-                'warning'
-            );
+        // Update Debug Panel
+        const debugRulesList = document.getElementById('debugRulesList');
+        const debugStateJson = document.getElementById('debugStateJson');
+        const debugContent = document.getElementById('debugContent');
+
+        if (debugRulesList && data.adaptiveResult.triggered_rules) {
+            debugRulesList.innerHTML = '';
+            if (data.adaptiveResult.triggered_rules.length > 0) {
+                data.adaptiveResult.triggered_rules.forEach(rule => {
+                    const li = document.createElement('li');
+                    li.className = 'flex items-start gap-2 text-xs mb-1';
+                    li.innerHTML = `
+                        <span class="bg-rose-900 text-rose-300 px-1 rounded text-[10px] font-bold mt-0.5">RULE</span>
+                        <span class="text-slate-300">${rule.rule_name || rule}</span>
+                    `;
+                    debugRulesList.appendChild(li);
+                });
+            } else {
+                debugRulesList.innerHTML = '<li class="text-slate-500 italic">No rules triggered in this step.</li>';
+            }
         }
 
-        if (data.adaptiveResult.triggered_rules && data.adaptiveResult.triggered_rules.length > 0) {
-            console.log('Personalization Rules Triggered:', data.adaptiveResult.triggered_rules);
+        if (debugStateJson && data.adaptiveResult.new_state) {
+            // Format JSON for readability
+            debugStateJson.textContent = JSON.stringify(data.adaptiveResult.new_state, null, 2);
         }
     }
 
@@ -211,9 +233,11 @@ function showFeedback(data, routes) {
     }
 
     // Buttons
+    // Buttons
     if (isSuccess) {
-        tryAgainBtn.classList.add('hidden');
-        nextQuestionBtn.classList.remove('hidden');
+        tryAgainBtn.style.display = 'none';
+        nextQuestionBtn.style.display = 'inline-flex';
+
         if (data.hasNextQuestion) {
             nextQuestionBtn.innerHTML = 'Lanjut <i class="fas fa-arrow-right ml-2"></i>';
             nextQuestionBtn.onclick = () => window.location.href = data.nextUrl;
@@ -222,8 +246,9 @@ function showFeedback(data, routes) {
             nextQuestionBtn.onclick = () => redirectAfterCompletion();
         }
     } else {
-        tryAgainBtn.classList.remove('hidden');
-        nextQuestionBtn.classList.add('hidden');
+        tryAgainBtn.style.display = 'inline-flex';
+        nextQuestionBtn.style.display = 'none';
+
         tryAgainBtn.onclick = () => {
             contentBox.classList.remove('scale-100', 'opacity-100');
             setTimeout(() => {

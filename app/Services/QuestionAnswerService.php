@@ -2,21 +2,21 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\QuestionRepositoryInterface;
-use App\Repositories\Interfaces\AnswerRepositoryInterface;
-use App\Repositories\Interfaces\ProgressRepositoryInterface;
+use App\Repositories\QuestionRepository;
+use App\Repositories\AnswerRepository;
+use App\Repositories\ProgressRepository;
 use Illuminate\Support\Facades\Log;
 
-class QuestionAnswerService extends BaseService
+class QuestionAnswerService
 {
     protected $questionRepo;
     protected $answerRepo;
     protected $progressRepo;
 
     public function __construct(
-        QuestionRepositoryInterface $questionRepo,
-        AnswerRepositoryInterface $answerRepo,
-        ProgressRepositoryInterface $progressRepo
+        QuestionRepository $questionRepo,
+        AnswerRepository $answerRepo,
+        ProgressRepository $progressRepo
     ) {
         $this->questionRepo = $questionRepo;
         $this->answerRepo = $answerRepo;
@@ -110,7 +110,7 @@ class QuestionAnswerService extends BaseService
 
         $this->progressRepo->saveProgress([
             'user_id' => $userId,
-            'material_id' => $data['material_id'],
+            'material_id' => $data['material_id'], // Repos uses question_id to link to material via Question model, but we pass it anyway
             'question_id' => $question->id,
             'is_correct' => $isCorrect,
             'is_answered' => true,
@@ -176,7 +176,7 @@ class QuestionAnswerService extends BaseService
             $this->progressRepo->updateOrCreateProgress(
                 [
                     'user_id' => $userId,
-                    'material_id' => $materialId,
+                    'material_id' => $materialId, // Handled safely by Repo
                     'question_id' => $questionId
                 ],
                 [

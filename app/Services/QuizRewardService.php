@@ -2,8 +2,7 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\ProgressRepositoryInterface;
-use Illuminate\Support\Facades\Log;
+use App\Repositories\ProgressRepository;
 
 /**
  * QuizRewardService
@@ -18,7 +17,7 @@ class QuizRewardService
 {
     protected $progressRepo;
 
-    public function __construct(ProgressRepositoryInterface $progressRepo)
+    public function __construct(ProgressRepository $progressRepo)
     {
         $this->progressRepo = $progressRepo;
     }

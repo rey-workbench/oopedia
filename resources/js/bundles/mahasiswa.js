@@ -1,5 +1,4 @@
 // Mahasiswa Bundle Entry Point
-import '../utils/index.js';
 import '../components/notifications.js';
 import '../components/quill-init.js';
 

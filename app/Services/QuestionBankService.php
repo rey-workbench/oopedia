@@ -2,15 +2,15 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\QuestionBankRepositoryInterface;
+use App\Repositories\QuestionBankRepository;
 use App\Models\QuestionBankConfig;
 use Illuminate\Support\Facades\DB;
 
-class QuestionBankService extends BaseService
+class QuestionBankService
 {
     protected $questionBankRepo;
 
-    public function __construct(QuestionBankRepositoryInterface $questionBankRepo)
+    public function __construct(QuestionBankRepository $questionBankRepo)
     {
         $this->questionBankRepo = $questionBankRepo;
     }

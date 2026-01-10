@@ -40,7 +40,7 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
         ->name('materials.questions.show');
 
     
-    Route::get('materials/{material}/questions/levels', [MaterialQuestionController::class, 'showLevels'])
+    Route::get('materials/{material}/questions/levels', [MaterialQuestionController::class, 'levels'])
         ->name('materials.questions.levels');
     
     Route::get('materials/{material}/questions/review', [MaterialQuestionController::class, 'review'])

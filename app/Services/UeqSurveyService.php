@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\UeqSurveyRepositoryInterface;
+use App\Repositories\UeqSurveyRepository;
 
-class UeqSurveyService extends BaseService
+class UeqSurveyService
 {
     protected $ueqRepo;
 
-    public function __construct(UeqSurveyRepositoryInterface $ueqRepo)
+    public function __construct(UeqSurveyRepository $ueqRepo)
     {
         $this->ueqRepo = $ueqRepo;
     }

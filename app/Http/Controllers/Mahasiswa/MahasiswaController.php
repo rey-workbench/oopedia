@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\Interfaces\MaterialRepositoryInterface;
+use App\Repositories\MaterialRepository;
 use App\Services\LeaderboardService;
 
 class MahasiswaController extends Controller
@@ -12,7 +12,7 @@ class MahasiswaController extends Controller
     protected $leaderboardService;
 
     public function __construct(
-        MaterialRepositoryInterface $materialRepo,
+        MaterialRepository $materialRepo,
         LeaderboardService $leaderboardService
     ) {
         $this->materialRepo = $materialRepo;

@@ -2,17 +2,17 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\MaterialRepositoryInterface;
-use App\Repositories\Interfaces\ProgressRepositoryInterface;
+use App\Repositories\MaterialRepository;
+use App\Repositories\ProgressRepository;
 
-class LeaderboardService extends BaseService
+class LeaderboardService
 {
     protected $materialRepo;
     protected $progressRepo;
 
     public function __construct(
-        MaterialRepositoryInterface $materialRepo,
-        ProgressRepositoryInterface $progressRepo
+        MaterialRepository $materialRepo,
+        ProgressRepository $progressRepo
     ) {
         $this->materialRepo = $materialRepo;
         $this->progressRepo = $progressRepo;
@@ -45,6 +45,8 @@ class LeaderboardService extends BaseService
         );
 
         // Find current user rank
+        // Repository returns collection of objects (stdClass or arrays converted to collection)
+        // Access 'id' property
         $currentUserRank = $leaderboardData->firstWhere('id', $currentUserId);
 
         return [
@@ -86,6 +88,7 @@ class LeaderboardService extends BaseService
 
         foreach ($correctAnswers as $answer) {
             $userId = $answer->user_id;
+            // Repository query alias: 'attempts_needed'
             $attempts = (int)$answer->attempts_needed;
 
             if (!isset($userScores[$userId])) {
