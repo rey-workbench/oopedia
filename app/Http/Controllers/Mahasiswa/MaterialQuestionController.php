@@ -86,7 +86,7 @@ class MaterialQuestionController extends Controller
     {
         $materials = $this->materialRepo->getAllOrdered();
         $isGuest = $this->isGuestUser();
-        $difficulty = $isGuest ? $request->query('difficulty', 'beginner') : 'all';
+        $difficulty = $request->query('difficulty', $isGuest ? 'beginner' : 'all');
         $guestProgress = $this->getGuestProgress($request);
         $userId = $this->getUserId();
 
@@ -216,15 +216,15 @@ class MaterialQuestionController extends Controller
 
     protected function checkAnswerWithAdaptive($material, $question, $request, $userId, $difficulty)
     {
-        $isCorrect = $this->determineCorrectness($question, $request);
+        $isCorrect = $this->questionAnswerService->determineCorrectness($question, $request->all());
         $usedHint = $request->boolean('used_hint', false);
         $timeSpent = $request->integer('time_spent', 0);
 
         // 1. Get current state via Service (Strict Service Layer)
-        $studentState = $this->personalizationService->updateStudentPerformance($userId, $isCorrect, $timeSpent);
+        $studentState = $this->personalizationService->updateStudentPerformance($userId, $isCorrect, $timeSpent, $usedHint);
         
-        // Prepare state for Rules Engine
-        $state = $studentState->toArray();
+        // Prepare state for Rules Engine - use attributes directly 
+        $state = $studentState->getAttributes();
         
         // 2. ORCHESTRATION IN CONTROLLER: Call each service independently
         
@@ -260,14 +260,18 @@ class MaterialQuestionController extends Controller
             $usedHint, 
             $isCorrect ? 100 : 0, // Score
             $timeSpent,
-            $difficulty,
+            $question->difficulty,
             'quiz' // materialType default
         );
 
         // Merge all results
         $finalState = $personalizationResult['new_state'];
+        
+        // 3. Save final state to persistence
+        $studentState->fill($finalState);
+        $studentState->save();
 
-        // 3. Save progress
+        // Save question progress log
         $savedProgress = $this->progressRepo->saveProgress([
             'user_id' => $userId,
             'material_id' => $material->id,
@@ -277,31 +281,44 @@ class MaterialQuestionController extends Controller
             'attributes' => $finalState,
         ]);
 
-        // Set time spent
+        // Set time spent on log
         if ($timeSpent > 0) {
             $savedProgress->setTimeSpent($timeSpent);
             $savedProgress->save();
         }
 
+        // 5. RESOLVE DYNAMIC NEXT ACTION (Database Aware)
+        $nextActionData = $this->resolveDynamicNextAction($finalState['next_action'] ?? 'NEXT_QUESTION', $material);
+        $nextUrl = $nextActionData['url'];
+
         // 4. Prepare response
         $adaptiveResult = [
             'status' => 'success',
             'is_correct' => $isCorrect,
-            'xp_earned' => $rewardResult['xp_earned'] ?? 0,
-            'points_earned' => $rewardResult['points_earned'] ?? 0,
+            'global_xp_earned' => $rewardResult['global_xp_earned'] ?? 0,
             'streak_bonus' => $streakBonus ? $streakBonus['message'] : null,
             'fast_track_active' => $finalState['fast_track_active'] ?? 0,
             'state_summary' => $this->rewardService->getStateSummary($finalState),
             'triggered_rules' => $personalizationResult['triggered_rules'],
-            'new_state' => \Illuminate\Support\Arr::only($finalState, [
-                'xp', 'points', 'current_level', 
-                'total_questions_answered', 'correct_count', 'wrong_count', 
-                'current_streak', 'wrong_streak', 
-                'hints_used', 'hints_available', 
-                'avg_time_spent', 'total_time_spent', 
-                'fast_track_active',
-                'recommendation', 'next_action', 'message', 'certification' // Dynamic fields from rules
-            ]),
+            'new_state' => [
+                'global_xp' => (int)($finalState['global_xp'] ?? 0),
+                'current_level' => $finalState['current_level'] ?? 'Pemula',
+                'total_questions_answered' => (int)($finalState['total_questions_answered'] ?? 0),
+                'correct_count' => (int)($finalState['correct_count'] ?? 0),
+                'wrong_count' => (int)($finalState['wrong_count'] ?? 0),
+                'current_streak' => (int)($finalState['current_streak'] ?? 0),
+                'wrong_streak' => (int)($finalState['wrong_streak'] ?? 0),
+                'hints_used_count' => (int)($finalState['hints_used_count'] ?? 0),
+                'hints_available' => (int)($finalState['hints_available'] ?? 3),
+                'avg_time_spent' => $finalState['avg_time_spent'] ?? 0,
+                'total_time_spent' => $finalState['total_time_spent'] ?? 0,
+                'fast_track_active' => $finalState['fast_track_active'] ?? 0,
+                'recommendation' => $finalState['recommendation'] ?? null,
+                'next_action_data' => $nextActionData, 
+                'next_action' => $nextActionData['label'], // For backward-compat with simple string if needed
+                'message' => $finalState['message'] ?? null,
+                'certification' => $finalState['certification'] ?? null
+            ],
         ];
 
         // Prepare response
@@ -309,11 +326,11 @@ class MaterialQuestionController extends Controller
             'status' => $isCorrect ? 'success' : 'error',
             'message' => $isCorrect ? 'Jawaban benar!' : 'Jawaban salah, coba lagi.',
             'hasNextQuestion' => true,
-            'nextUrl' => route('mahasiswa.materials.questions.show', ['material' => $material->id]),
+            'nextUrl' => $nextUrl,
             'adaptiveResult' => $adaptiveResult
         ];
 
-        if (!$isCorrect) {
+        if (!$isCorrect && ($finalState['next_action'] ?? null) !== 'STUDY_MATERIAL' && ($finalState['next_action'] ?? null) !== 'REDUCE_DIFFICULTY') {
             $responseData['nextUrl'] = route('mahasiswa.materials.questions.show', [
                 'material' => $material->id,
                 'question' => $question->id
@@ -323,21 +340,65 @@ class MaterialQuestionController extends Controller
         return response()->json($responseData);
     }
 
-    protected function determineCorrectness($question, $request)
+    /**
+     * Resolve a dynamic next action command into real DB-based data.
+     */
+    protected function resolveDynamicNextAction($actionCommand, $material)
     {
-        if ($question->question_type === 'multiple_choice' || $question->question_type === 'radio_button') {
-            $selectedAnswer = Answer::findOrFail($request->answer);
-            return $selectedAnswer->is_correct;
-        } elseif ($question->question_type === 'fill_in_the_blank') {
-            $answer = trim(strtolower($request->fill_in_the_blank_answer));
-            $correctAnswer = trim(strtolower($question->correct_answer));
-            return $answer === $correctAnswer;
-        } elseif ($question->question_type === 'true_false') {
-            $selectedAnswer = ($request->answer === 'true');
-            return $selectedAnswer === $question->is_true;
-        }
+        $materialId = $material->id;
 
-        return false;
+        switch ($actionCommand) {
+            case 'STUDY_MATERIAL':
+                return [
+                    'label' => 'Ulas Materi: ' . $material->title,
+                    'url' => route('mahasiswa.materials.show', $materialId),
+                    'type' => 'material'
+                ];
+            
+            case 'REDUCE_DIFFICULTY':
+                $hasBeginner = Question::where('material_id', $materialId)->where('difficulty', 'beginner')->exists();
+                return [
+                    'label' => $hasBeginner ? 'Coba Soal Pemula' : 'Ulas Materi Dasar',
+                    'url' => $hasBeginner 
+                        ? route('mahasiswa.materials.questions.show', ['material' => $materialId, 'difficulty' => 'beginner'])
+                        : route('mahasiswa.materials.show', $materialId),
+                    'type' => $hasBeginner ? 'question' : 'material'
+                ];
+                
+            case 'INCREASE_DIFFICULTY':
+                 $hasHard = Question::where('material_id', $materialId)->where('difficulty', 'hard')->exists();
+                 return [
+                    'label' => $hasHard ? 'Tantangan Menantang' : 'Lanjut ke Materi Baru',
+                    'url' => $hasHard
+                        ? route('mahasiswa.materials.questions.show', ['material' => $materialId, 'difficulty' => 'hard'])
+                        : route('mahasiswa.dashboard'),
+                    'type' => $hasHard ? 'question' : 'navigation'
+                ];
+
+            case 'FINISH_MATERIAL':
+                return [
+                    'label' => 'Selesaikan Modul',
+                    'url' => route('mahasiswa.dashboard'),
+                    'type' => 'navigation'
+                ];
+
+            case 'ISSUE_CERTIFICATE':
+                return [
+                    'label' => 'Klaim Sertifikat',
+                    'url' => route('mahasiswa.dashboard'), 
+                    'type' => 'certificate'
+                ];
+
+            case 'NEXT_QUESTION':
+            default:
+                return [
+                    'label' => 'Soal Berikutnya',
+                    'url' => route('mahasiswa.materials.questions.show', ['material' => $materialId]),
+                    'type' => 'question'
+                ];
+        }
     }
+
+
 
 }

@@ -30,19 +30,16 @@ return new class extends Migration
             
             // Adaptive State
             $table->json('adaptive_variables')->nullable(); // Temporary storage for adaptive engine
-            
-            // Achievements
+                
             $table->json('badges')->nullable(); // ["badge_1", "badge_2"]
-            $table->json('unlocked_modules')->nullable(); // [1, 2, 3]
-            
-            // Performance Counters (Added for real-time tracking)
+            $table->json('unlocked_modules')->nullable(); // [1, 2, 3]            
             $table->integer('total_questions_answered')->default(0);
             $table->integer('correct_count')->default(0);
             $table->integer('wrong_count')->default(0);
             $table->integer('wrong_streak')->default(0);
             $table->integer('hints_used_count')->default(0);
+            $table->integer('hints_available')->default(3); // Number of hints available to use
 
-            // Activity
             $table->timestamp('last_active_at')->nullable();
             $table->timestamps();
             

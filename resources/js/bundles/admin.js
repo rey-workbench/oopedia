@@ -1,7 +1,14 @@
-// Admin Bundle Entry Point
-import '../components/quill-init.js'; // Quill Editor
+/**
+ * Admin Bundle Entry Point
+ * Loads all admin-specific components and utilities
+ */
 
-// Import Page Logic
-// - None active currently (all handled by utils/components)
+// Import utilities
+import '../utils/index.js';
+
+// Import components
+import '../components/quill-init.js';
+import '../components/sidebar.js';
+import '../components/navbar.js';
 
 console.log('Admin bundle loaded');

@@ -1,17 +1,30 @@
+/**
+ * Quill Editor Initialization Component
+ * Rich text editor setup with YouTube video embed support
+ */
+
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 
 /**
  * Initialize Quill Editor
- * @param {string} selector - CSS selector for the editor container
- * @param {string} inputSelector - CSS selector for the hidden input to sync with
+ * @param {string|Element} selector - CSS selector or element for the editor container
+ * @param {string|Element} inputSelector - CSS selector or element for the hidden input to sync with
+ * @param {Object} options - Additional Quill options
+ * @returns {Quill|null} Quill instance or null if element not found
  */
-export function initQuill(selector = '#editor', inputSelector = '#content') {
-    const element = typeof selector === 'string' ? document.querySelector(selector) : selector;
-    if (!element) return;
+export function initQuill(selector = '#editor', inputSelector = '#content', options = {}) {
+    const element = typeof selector === 'string'
+        ? document.querySelector(selector)
+        : selector;
+
+    if (!element) {
+        console.warn('Quill editor element not found:', selector);
+        return null;
+    }
 
     // Default Toolbar Options
-    const toolbarOptions = [
+    const defaultToolbarOptions = [
         ['bold', 'italic', 'underline'],
         [{ 'header': [1, 2, false] }],
         [{ 'list': 'ordered' }, { 'list': 'bullet' }],
@@ -19,112 +32,32 @@ export function initQuill(selector = '#editor', inputSelector = '#content') {
         ['clean']
     ];
 
-    const quill = new Quill(selector, {
+    const quillOptions = {
         theme: 'snow',
         modules: {
             toolbar: {
-                container: toolbarOptions,
+                container: options.toolbar || defaultToolbarOptions,
                 handlers: {
-                    video: function (value) {
-                        if (value) {
-                            const href = prompt('Enter Video/YouTube URL:');
-                            if (href) {
-                                let videoUrl = href;
-                                // Convert regular youtube links to embed links if necessary
-                                if (href.includes('youtube.com/watch?v=')) {
-                                    videoUrl = href.replace('watch?v=', 'embed/');
-                                    if (videoUrl.includes('&')) videoUrl = videoUrl.split('&')[0];
-                                } else if (href.includes('youtu.be/')) {
-                                    const id = href.split('/').pop().split('?')[0];
-                                    videoUrl = `https://www.youtube.com/embed/${id}`;
-                                } else if (href.includes('youtube.com/embed/')) {
-                                    videoUrl = href;
-                                }
-
-                                const range = this.quill.getSelection(true);
-                                this.quill.insertEmbed(range.index, 'video', videoUrl);
-                                this.quill.setSelection(range.index + 1);
-                            }
-                        }
-                    }
+                    video: videoHandler
                 }
             },
             clipboard: {
                 matchers: [
-                    // Match linked URLs
-                    ['A', (node, delta) => {
-                        const href = node.getAttribute('href');
-                        if (href) {
-                            let isVideo = false;
-                            let videoUrl = href;
-
-                            if (href.includes('youtube.com/') || href.includes('youtu.be/')) {
-                                isVideo = true;
-                                if (href.includes('watch?v=')) {
-                                    videoUrl = href.replace('watch?v=', 'embed/');
-                                    if (videoUrl.includes('&')) videoUrl = videoUrl.split('&')[0];
-                                } else if (href.includes('youtu.be/')) {
-                                    const id = href.split('/').pop().split('?')[0];
-                                    videoUrl = `https://www.youtube.com/embed/${id}`;
-                                }
-                            } else if (href.includes('embed')) {
-                                isVideo = true;
-                            }
-
-                            if (isVideo) {
-                                return new (Quill.import('delta'))().insert({ video: videoUrl });
-                            }
-                        }
-                        return delta;
-                    }],
-                    // Match plain text URLs
-                    [Node.TEXT_NODE, (node, delta) => {
-                        const urlRegex = /(https?:\/\/[^\s]+)/g;
-                        if (typeof node.data === 'string' && node.data.match(urlRegex)) {
-                            const matches = node.data.match(urlRegex);
-                            const Delta = Quill.import('delta');
-                            let newDelta = new Delta();
-                            let lastIndex = 0;
-
-                            matches.forEach(match => {
-                                let isVideo = false;
-                                let videoUrl = match;
-
-                                if (match.includes('youtube.com/watch?v=') || match.includes('youtu.be/') || match.includes('youtube.com/embed/')) {
-                                    isVideo = true;
-                                    if (match.includes('watch?v=')) {
-                                        videoUrl = match.replace('watch?v=', 'embed/');
-                                        if (videoUrl.includes('&')) videoUrl = videoUrl.split('&')[0];
-                                    } else if (match.includes('youtu.be/')) {
-                                        const id = match.split('/').pop().split('?')[0];
-                                        videoUrl = `https://www.youtube.com/embed/${id}`;
-                                    }
-                                } else if (match.includes('embed')) {
-                                    isVideo = true;
-                                }
-
-                                if (isVideo) {
-                                    const index = node.data.indexOf(match, lastIndex);
-                                    newDelta.insert(node.data.substring(lastIndex, index));
-                                    newDelta.insert({ video: videoUrl });
-                                    lastIndex = index + match.length;
-                                }
-                            });
-
-                            if (lastIndex > 0) {
-                                newDelta.insert(node.data.substring(lastIndex));
-                                return newDelta;
-                            }
-                        }
-                        return delta;
-                    }]
+                    ['A', linkMatcher],
+                    [Node.TEXT_NODE, textNodeMatcher]
                 ]
             }
-        }
-    });
+        },
+        ...options
+    };
 
-    // Validasi form data sync
-    const input = document.querySelector(inputSelector);
+    const quill = new Quill(selector, quillOptions);
+
+    // Sync with hidden input
+    const input = typeof inputSelector === 'string'
+        ? document.querySelector(inputSelector)
+        : inputSelector;
+
     if (input) {
         // Set initial content if any
         if (input.value) {
@@ -140,12 +73,103 @@ export function initQuill(selector = '#editor', inputSelector = '#content') {
     return quill;
 }
 
-// Auto-init for specific classes if found
+/**
+ * Video handler for Quill toolbar
+ */
+function videoHandler(value) {
+    if (value) {
+        const href = prompt('Enter Video/YouTube URL:');
+        if (href) {
+            const videoUrl = convertToEmbedUrl(href);
+            const range = this.quill.getSelection(true);
+            this.quill.insertEmbed(range.index, 'video', videoUrl);
+            this.quill.setSelection(range.index + 1);
+        }
+    }
+}
+
+/**
+ * Convert YouTube URL to embed format
+ * @param {string} url - YouTube URL
+ * @returns {string} Embed URL
+ */
+function convertToEmbedUrl(url) {
+    let videoUrl = url;
+
+    if (url.includes('youtube.com/watch?v=')) {
+        videoUrl = url.replace('watch?v=', 'embed/');
+        if (videoUrl.includes('&')) {
+            videoUrl = videoUrl.split('&')[0];
+        }
+    } else if (url.includes('youtu.be/')) {
+        const id = url.split('/').pop().split('?')[0];
+        videoUrl = `https://www.youtube.com/embed/${id}`;
+    }
+
+    return videoUrl;
+}
+
+/**
+ * Check if URL is a video URL
+ * @param {string} url - URL to check
+ * @returns {boolean} True if video URL
+ */
+function isVideoUrl(url) {
+    return url.includes('youtube.com/') ||
+        url.includes('youtu.be/') ||
+        url.includes('embed');
+}
+
+/**
+ * Link matcher for clipboard
+ */
+function linkMatcher(node, delta) {
+    const href = node.getAttribute('href');
+    if (href && isVideoUrl(href)) {
+        const videoUrl = convertToEmbedUrl(href);
+        return new (Quill.import('delta'))().insert({ video: videoUrl });
+    }
+    return delta;
+}
+
+/**
+ * Text node matcher for clipboard
+ */
+function textNodeMatcher(node, delta) {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+    if (typeof node.data === 'string' && node.data.match(urlRegex)) {
+        const matches = node.data.match(urlRegex);
+        const Delta = Quill.import('delta');
+        let newDelta = new Delta();
+        let lastIndex = 0;
+
+        matches.forEach(match => {
+            if (isVideoUrl(match)) {
+                const videoUrl = convertToEmbedUrl(match);
+                const index = node.data.indexOf(match, lastIndex);
+                newDelta.insert(node.data.substring(lastIndex, index));
+                newDelta.insert({ video: videoUrl });
+                lastIndex = index + match.length;
+            }
+        });
+
+        if (lastIndex > 0) {
+            newDelta.insert(node.data.substring(lastIndex));
+            return newDelta;
+        }
+    }
+
+    return delta;
+}
+
+/**
+ * Auto-initialize Quill editors on DOM ready
+ */
 document.addEventListener('DOMContentLoaded', () => {
-    // Cari elemen dengan class .quill-editor
     const editors = document.querySelectorAll('.quill-editor');
-    editors.forEach((editor, index) => {
-        // Asumsi ada hidden input dengan ID yang sesuai atau atribut data-input
+
+    editors.forEach((editor) => {
         const inputId = editor.dataset.input || editor.nextElementSibling?.id;
 
         if (inputId) {
@@ -156,3 +180,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// Make globally available
+if (typeof window !== 'undefined') {
+    window.initQuill = initQuill;
+}

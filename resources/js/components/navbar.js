@@ -1,25 +1,44 @@
+/**
+ * Navbar Component
+ * Handles navbar interactions and tutorial reset functionality
+ */
+
+import { UI } from '../utils/ui.js';
+
+/**
+ * Reset all tutorial progress
+ */
 function resetAllTutorials() {
-    // Hapus semua tutorial keys dari localStorage
+    // Remove all tutorial keys from localStorage
     for (let key in localStorage) {
         if (key.includes('tutorial_complete') || key === 'skip_admin_tour') {
             localStorage.removeItem(key);
         }
     }
 
-    Swal.fire({
-        title: 'Tutorial Direset',
-        text: 'Tutorial akan dimulai ulang',
-        icon: 'success',
-        confirmButtonText: 'OK'
-    }).then(() => {
-        // Langsung jalankan tutorial setelah reset
-        // Note: we can't easily get route name here without passing it via data attr or similar variables
-        // But the original code relied on Blade injection. We should make this generic or rely on global func.
-
-        if (typeof startAdminTutorial === 'function') {
-            startAdminTutorial();
-        } else {
-            window.location.reload();
-        }
-    });
+    if (window.Swal) {
+        window.Swal.fire({
+            title: 'Tutorial Direset',
+            text: 'Tutorial akan dimulai ulang',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        }).then(() => {
+            // Start tutorial if function exists
+            if (typeof startAdminTutorial === 'function') {
+                startAdminTutorial();
+            } else {
+                window.location.reload();
+            }
+        });
+    } else {
+        UI.success('Tutorial direset. Halaman akan dimuat ulang.');
+        setTimeout(() => window.location.reload(), 1000);
+    }
 }
+
+// Make globally available if needed
+if (typeof window !== 'undefined') {
+    window.resetAllTutorials = resetAllTutorials;
+}
+
+export { resetAllTutorials };
