@@ -276,6 +276,7 @@ class MaterialQuestionController extends Controller
             'user_id' => $userId,
             'material_id' => $material->id,
             'question_id' => $question->id,
+            'answer_id' => $request->answer, // Capture which option was selected
             'is_correct' => $isCorrect,
             'is_answered' => true,
             'attributes' => $finalState,

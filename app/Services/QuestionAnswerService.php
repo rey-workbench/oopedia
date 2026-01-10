@@ -105,8 +105,9 @@ class QuestionAnswerService
 
         $this->progressRepo->saveProgress([
             'user_id' => $userId,
-            'material_id' => $data['material_id'], // Repos uses question_id to link to material via Question model, but we pass it anyway
+            'material_id' => $data['material_id'], 
             'question_id' => $question->id,
+            'answer_id' => $data['answer'] ?? null,
             'is_correct' => $isCorrect,
             'is_answered' => true,
             'attempt_number' => $attemptNumber
