@@ -40,8 +40,6 @@ class QuizRewardService
                 'global_xp' => ($state['global_xp'] ?? 0) + $xpEarned,
                 'current_streak' => ($state['current_streak'] ?? 0) + 1,
                 'wrong_streak' => 0,
-                'total_questions_answered' => ($state['total_questions_answered'] ?? 0) + 1,
-                'correct_count' => ($state['correct_count'] ?? 0) + 1,
             ]
         ];
     }
@@ -56,8 +54,6 @@ class QuizRewardService
             'updates' => [
                 'current_streak' => 0,
                 'wrong_streak' => ($state['wrong_streak'] ?? 0) + 1,
-                'total_questions_answered' => ($state['total_questions_answered'] ?? 0) + 1,
-                'wrong_count' => ($state['wrong_count'] ?? 0) + 1,
             ]
         ];
     }
