@@ -1,4 +1,15 @@
-// Personalization Notifications
+/**
+ * Personalization Notifications Component
+ * Custom notification system for adaptive learning feedback
+ */
+
+/**
+ * Show personalization notification
+ * @param {string} type - Notification type identifier
+ * @param {string} title - Notification title
+ * @param {string} message - Notification message
+ * @param {string} variant - Visual variant: 'success', 'warning', 'info'
+ */
 export function showPersonalizationNotification(type, title, message, variant = 'info') {
     const notification = document.createElement('div');
     notification.className = `personalization-notification ${variant}`;
@@ -21,7 +32,7 @@ export function showPersonalizationNotification(type, title, message, variant = 
     }, 5000);
 }
 
-// Add CSS for notifications
+// Inject CSS styles for notifications
 const style = document.createElement('style');
 style.textContent = `
     .personalization-notification {
@@ -54,9 +65,21 @@ style.textContent = `
         color: white;
     }
     
-    .notification-content { flex: 1; }
-    .notification-title { font-size: 1.1rem; font-weight: bold; margin: 0 0 4px 0; }
-    .notification-message { font-size: 0.9rem; margin: 0; opacity: 0.95; }
+    .notification-content { 
+        flex: 1; 
+    }
+    
+    .notification-title { 
+        font-size: 1.1rem; 
+        font-weight: bold; 
+        margin: 0 0 4px 0; 
+    }
+    
+    .notification-message { 
+        font-size: 0.9rem; 
+        margin: 0; 
+        opacity: 0.95; 
+    }
     
     .notification-close {
         background: rgba(255,255,255,0.2);
@@ -72,8 +95,13 @@ style.textContent = `
         transition: background 0.2s;
     }
     
-    .notification-close:hover { background: rgba(255,255,255,0.3); }
-    .personalization-notification.fade-out { animation: slideOutRight 0.3s ease-in forwards; }
+    .notification-close:hover { 
+        background: rgba(255,255,255,0.3); 
+    }
+    
+    .personalization-notification.fade-out { 
+        animation: slideOutRight 0.3s ease-in forwards; 
+    }
     
     @keyframes slideInRight {
         from { transform: translateX(400px); opacity: 0; }
@@ -86,3 +114,8 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// Make globally available
+if (typeof window !== 'undefined') {
+    window.showPersonalizationNotification = showPersonalizationNotification;
+}

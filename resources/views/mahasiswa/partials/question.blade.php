@@ -14,12 +14,9 @@
             if (!$isGuest) {
                 // Fetch student state for gamification stats
                 $studentState = StudentState::where('user_id', auth()->id())->first();
-                
                 $xp = $studentState ? $studentState->global_xp : 0;
-                // Badges/attributes are now in JSON, extracting if needed
-                $attributes = $studentState ? ($studentState->badges ?? []) : [];
-                $streak = $attributes['current_streak'] ?? 0; // Assuming streak is stored in badges/extra json or adding to StudentState
-                $hintsAvailable = $attributes['hints_available'] ?? 3;
+                $streak = $studentState ? $studentState->current_streak : 0;
+                $hintsAvailable = $studentState ? $studentState->hints_available : 3;
             } else {
                 $xp = 0;
                 $streak = 0;
@@ -59,7 +56,10 @@
 
                 {{-- Hint Button --}}
                 <div>
-                     <button type="button" id="hintBtn" class="group flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 transition-all font-bold text-sm" {{ $hintsAvailable <= 0 ? 'disabled' : '' }}>
+                     <button type="button" id="hintBtn" 
+                        class="group flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 transition-all font-bold text-sm" 
+                        data-hint="{{ $currentQuestion->hint ?? 'Coba ingat kembali konsep dasar materi ini.' }}"
+                        {{ $hintsAvailable <= 0 ? 'disabled' : '' }}>
                         <div class="w-6 h-6 rounded-lg bg-indigo-200 group-hover:bg-indigo-300 flex items-center justify-center transition-colors">
                             <i class="fas fa-lightbulb"></i>
                         </div>

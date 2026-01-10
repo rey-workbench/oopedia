@@ -1,9 +1,31 @@
-// Auth Module - Consolidated
-// Login + Register form enhancements
+/**
+ * Auth Module
+ * Login and Register form enhancements
+ */
 
-document.addEventListener('DOMContentLoaded', () => {
+import { DOM } from '../../utils/dom.js';
+
+/**
+ * Update filled state for input group
+ * @param {Element} input - Input element
+ */
+function updateFilledState(input) {
+    const group = input.closest('.input-group');
+    if (!group) return;
+
+    if (input.value !== '') {
+        group.classList.add('is-filled');
+    } else {
+        group.classList.remove('is-filled');
+    }
+}
+
+/**
+ * Initialize auth page functionality
+ */
+function initAuth() {
     // Input group filled state management
-    const inputGroups = document.querySelectorAll('.input-group input');
+    const inputGroups = DOM.$$('.input-group input');
 
     inputGroups.forEach(input => {
         // Check on page load
@@ -17,19 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
         input.addEventListener('input', () => updateFilledState(input));
     });
 
-    function updateFilledState(input) {
-        const group = input.closest('.input-group');
-        if (!group) return;
-
-        if (input.value !== '') {
-            group.classList.add('is-filled');
-        } else {
-            group.classList.remove('is-filled');
-        }
-    }
-
     // Register button animation
-    const registerBtn = document.querySelector('.register-btn');
+    const registerBtn = DOM.$('.register-btn');
     if (registerBtn) {
         registerBtn.addEventListener('mouseenter', () => {
             registerBtn.classList.add('btn-pulse');
@@ -38,4 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
             registerBtn.classList.remove('btn-pulse');
         });
     }
-});
+}
+
+// Initialize on DOM ready
+DOM.ready(initAuth);
+
+export { initAuth };

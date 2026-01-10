@@ -28,7 +28,6 @@ class QuizRewardService
     public function calculateCorrectAnswerReward(array $state, bool $usedHint = false): array
     {
         $xpEarned = 10;
-        $pointsEarned = 5;
 
         // Penalty for using hint
         if ($usedHint) {
@@ -36,11 +35,9 @@ class QuizRewardService
         }
 
         return [
-            'xp_earned' => max(0, $xpEarned),
-            'points_earned' => $pointsEarned,
+            'global_xp_earned' => max(0, $xpEarned),
             'updates' => [
-                'xp' => ($state['xp'] ?? 0) + $xpEarned,
-                'points' => ($state['points'] ?? 0) + $pointsEarned,
+                'global_xp' => ($state['global_xp'] ?? 0) + $xpEarned,
                 'current_streak' => ($state['current_streak'] ?? 0) + 1,
                 'wrong_streak' => 0,
                 'total_questions_answered' => ($state['total_questions_answered'] ?? 0) + 1,
@@ -55,8 +52,7 @@ class QuizRewardService
     public function processWrongAnswer(array $state): array
     {
         return [
-            'xp_earned' => 0,
-            'points_earned' => 0,
+            'global_xp_earned' => 0,
             'updates' => [
                 'current_streak' => 0,
                 'wrong_streak' => ($state['wrong_streak'] ?? 0) + 1,
@@ -84,7 +80,7 @@ class QuizRewardService
             'success' => true,
             'message' => 'Hint digunakan',
             'updates' => [
-                'hints_used' => ($state['hints_used'] ?? 0) + 1,
+                'hints_used_count' => ($state['hints_used_count'] ?? 0) + 1,
                 'hints_available' => $hintsAvailable - 1,
             ]
         ];
@@ -132,8 +128,7 @@ class QuizRewardService
     public function getStateSummary(array $state): array
     {
         return [
-            'xp' => $state['xp'] ?? 0,
-            'points' => $state['points'] ?? 0,
+            'global_xp' => $state['global_xp'] ?? 0,
             'total_questions' => $state['total_questions_answered'] ?? 0,
             'correct' => $state['correct_count'] ?? 0,
             'wrong' => $state['wrong_count'] ?? 0,

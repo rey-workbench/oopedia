@@ -155,11 +155,20 @@ class ProgressRepository
     {
         $state = StudentState::firstOrNew(['user_id' => $userId]);
         
-        // Map attributes to columns
-        if (isset($attributes['xp'])) $state->global_xp = $attributes['xp'];
-        // Use logic from user requirements for Level/Style if present
-        // For now, persist what we can. 
-        // Note: badges and unlocked_modules might need handling
+        // Strict mapping using current column names
+        $state->global_xp = $attributes['global_xp'] ?? $state->global_xp;
+        $state->current_level = $attributes['current_level'] ?? $state->current_level;
+        $state->current_streak = $attributes['current_streak'] ?? $state->current_streak;
+        $state->max_streak = $attributes['max_streak'] ?? $state->max_streak;
+        $state->learning_style = $attributes['learning_style'] ?? $state->learning_style;
+        
+        $state->total_questions_answered = $attributes['total_questions_answered'] ?? $state->total_questions_answered;
+        $state->correct_count = $attributes['correct_count'] ?? $state->correct_count;
+        $state->wrong_count = $attributes['wrong_count'] ?? $state->wrong_count;
+        $state->wrong_streak = $attributes['wrong_streak'] ?? $state->wrong_streak;
+        
+        $state->hints_used_count = $attributes['hints_used_count'] ?? $state->hints_used_count;
+        $state->hints_available = $attributes['hints_available'] ?? $state->hints_available;
         
         $state->last_active_at = now();
         $state->save();
@@ -271,38 +280,7 @@ class ProgressRepository
 
     public function getLatestProgress($userId)
     {
-        // This is tricky. Old code returned Progress model with 'attributes'.
-        // New code should return StudentState?
-        // But the controller calls this method specifically name 'Progress'.
-        // We will fetch StudentState and wrap it if needed or return State directly.
-        // For strict refactor: let's return StudentState.
-        
-        $state = StudentState::where('user_id', $userId)->first();
-        
-        if ($state) {
-            // Emulate old structure: return object with 'attributes' property
-            // containing the state data, so controller $progress->attributes works?
-            // Or better yet, return an object that HAS attributes.
-            $wrapper = new \stdClass();
-            
-            // Map state columns to "attributes" array for compatibility
-            $wrapper->attributes = [
-                'xp' => $state->global_xp,
-                'level' => $state->current_level,
-                'style' => $state->learning_style,
-                // Add more as needed from JSON columns
-            ];
-            if ($state->badges) {
-                 $wrapper->attributes = array_merge($wrapper->attributes, $state->badges); // assuming badges is array
-            }
-             if ($state->unlocked_modules) {
-                 $wrapper->attributes = array_merge($wrapper->attributes, ['unlocked' => $state->unlocked_modules]); 
-            }
-            
-            return $wrapper;
-        }
-        
-        return null;
+        return StudentState::where('user_id', $userId)->first();
     }
 
     public function getByUserAndMaterial($userId, $materialId)

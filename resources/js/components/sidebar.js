@@ -1,24 +1,36 @@
-document.addEventListener('DOMContentLoaded', function () {
+/**
+ * Sidebar Component
+ * Handles sidebar navigation, dropdown menus, and mobile toggle
+ */
+
+import { DOM } from '../utils/dom.js';
+
+/**
+ * Initialize sidebar functionality
+ */
+function initSidebar() {
     // Handle all dropdown toggles within sidebar
-    const dropdownToggles = document.querySelectorAll('#sidenav-main [data-bs-toggle="collapse"]');
+    const dropdownToggles = DOM.$$('#sidenav-main [data-bs-toggle="collapse"]');
 
     dropdownToggles.forEach(function (toggle) {
         toggle.addEventListener('click', function (e) {
             e.preventDefault();
             const targetId = this.getAttribute('href');
-            const targetMenu = document.querySelector(targetId);
+            const targetMenu = DOM.$(targetId);
 
-            // Tutup semua dropdown yang terbuka kecuali yang sedang di-klik
+            // Close all other dropdowns
             dropdownToggles.forEach(function (otherToggle) {
                 if (otherToggle !== toggle) {
                     const otherId = otherToggle.getAttribute('href');
-                    const otherMenu = document.querySelector(otherId);
+                    const otherMenu = DOM.$(otherId);
                     otherToggle.setAttribute('aria-expanded', 'false');
-                    if (otherMenu) otherMenu.classList.remove('show');
+                    if (otherMenu) {
+                        otherMenu.classList.remove('show');
+                    }
                 }
             });
 
-            // Toggle dropdown yang di-klik
+            // Toggle current dropdown
             if (targetMenu) {
                 const willExpand = !targetMenu.classList.contains('show');
                 this.setAttribute('aria-expanded', willExpand);
@@ -28,10 +40,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Toggle sidebar button functionality for student sidebar
-    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
-    const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
-    const sidebar = document.querySelector('.sidebar');
-    const sidebarBackdrop = document.querySelector('.sidebar-backdrop');
+    const sidebarToggleBtn = DOM.$('#sidebarToggleBtn');
+    const sidebarCloseBtn = DOM.$('#sidebarCloseBtn');
+    const sidebar = DOM.$('.sidebar');
+    const sidebarBackdrop = DOM.$('.sidebar-backdrop');
 
     if (sidebarToggleBtn && sidebar) {
         sidebarToggleBtn.addEventListener('click', function () {
@@ -58,5 +70,9 @@ document.addEventListener('DOMContentLoaded', function () {
             sidebarBackdrop.classList.remove('show');
         });
     }
-});
-x
+}
+
+// Initialize on DOM ready
+DOM.ready(initSidebar);
+
+export { initSidebar };

@@ -11,15 +11,27 @@ class StudentState extends Model
 
     protected $fillable = [
         'user_id',
-        'current_level',
-        'learning_style',
         'global_xp',
+        'current_level',
+        'current_streak',
+        'max_streak',
+        'learning_style',
+        'mastery_levels',
+        'adaptive_variables',
         'badges',
         'unlocked_modules',
+        'total_questions_answered',
+        'correct_count',
+        'wrong_count',
+        'wrong_streak',
+        'hints_used_count',
+        'hints_available',
         'last_active_at',
     ];
 
     protected $casts = [
+        'mastery_levels' => 'array',
+        'adaptive_variables' => 'array',
         'badges' => 'array',
         'unlocked_modules' => 'array',
         'last_active_at' => 'datetime',
@@ -49,9 +61,14 @@ class StudentState extends Model
     /**
      * Update performance counters based on answer result.
      */
-    public function updatePerformance(bool $isCorrect, int $timeSpent = 0)
+    public function updatePerformance(bool $isCorrect, int $timeSpent = 0, bool $usedHint = false)
     {
         $this->total_questions_answered++;
+        
+        if ($usedHint) {
+            $this->hints_used_count++;
+            $this->hints_available = max(0, $this->hints_available - 1);
+        }
         
         if ($isCorrect) {
             $this->correct_count++;
@@ -69,8 +86,6 @@ class StudentState extends Model
         }
 
         $this->last_active_at = now();
-        // Note: We don't save here, caller must save. 
-        // Or we can save. Let's save to be safe and simple.
         $this->save();
         
         return $this;

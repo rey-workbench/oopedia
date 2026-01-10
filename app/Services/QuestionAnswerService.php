@@ -32,20 +32,15 @@ class QuestionAnswerService
         $explanation = null;
 
         // Check answer based on question type
+        $isCorrect = $this->determineCorrectness($question, $data);
+        $correctAnswers = $question->answers()->where('is_correct', true)->get();
+
         if ($question->question_type === 'fill_in_the_blank') {
-            $userAnswer = trim(strtolower($data['fill_in_the_blank_answer']));
-            $correctAnswer = trim(strtolower($question->correct_answer));
-            $isCorrect = $userAnswer === $correctAnswer;
-            $selectedAnswerText = $data['fill_in_the_blank_answer'];
-            $correctAnswerText = $question->correct_answer;
-        } elseif ($question->question_type === 'true_false') {
-            $userAnswer = $data['answer'] === 'true';
-            $isCorrect = $userAnswer === $question->is_true;
-            $selectedAnswerText = $userAnswer ? 'Benar' : 'Salah';
-            $correctAnswerText = $question->is_true ? 'Benar' : 'Salah';
+            $selectedAnswerText = $data['fill_in_the_blank_answer'] ?? '';
+            $correctAnswerText = $correctAnswers->first()->answer_text ?? null;
         } else {
-            // Multiple choice
-            if (!isset($data['answer'])) {
+            // Multiple choice / Radio button
+            if (!isset($data['answer']) && $question->question_type !== 'drag_and_drop') {
                 return [
                     'status' => 'error',
                     'message' => 'Pilih salah satu jawaban.',
@@ -53,16 +48,16 @@ class QuestionAnswerService
                 ];
             }
 
-            $selectedAnswer = $this->answerRepo->find($data['answer']);
-            $isCorrect = $selectedAnswer->is_correct;
-            $selectedAnswerText = $selectedAnswer->answer_text;
-
-            if (!$isCorrect) {
-                $correctAnswer = $this->answerRepo->getCorrectAnswer($question->id);
-                $correctAnswerText = $correctAnswer->answer_text ?? null;
+            if ($question->question_type === 'drag_and_drop') {
+                $selectedAnswerText = 'Drag & Drop Answer'; // Placeholder
+                $correctAnswerText = 'Correct Arrangement';
+            } else {
+                $selectedAnswer = $this->answerRepo->find($data['answer']);
+                $selectedAnswerText = $selectedAnswer->answer_text ?? 'N/A';
+                $correctAnswerText = $correctAnswers->first()->answer_text ?? null;
             }
 
-            $explanation = $selectedAnswer->explanation;
+            $explanation = $correctAnswers->first()->explanation ?? null;
         }
 
         // Save progress
@@ -211,5 +206,40 @@ class QuestionAnswerService
             'totalQuestions' => $totalQuestions,
             'nextUrl' => route('mahasiswa.dashboard')
         ];
+    }
+
+    /**
+     * Determine if the provided answer data is correct for the given question.
+     */
+    public function determineCorrectness($question, array $data): bool
+    {
+        if ($question->question_type === 'multiple_choice' || $question->question_type === 'radio_button') {
+            if (!isset($data['answer'])) return false;
+            
+            $selectedAnswer = $question->answers()
+                ->where('id', $data['answer'])
+                ->first();
+                
+            return $selectedAnswer && $selectedAnswer->is_correct;
+        } 
+        
+        if ($question->question_type === 'fill_in_the_blank') {
+            $answer = trim(strtolower($data['fill_in_the_blank_answer'] ?? ''));
+            if (empty($answer)) return false;
+
+            return $question->answers()
+                ->where('is_correct', true)
+                ->get()
+                ->contains(function ($ans) use ($answer) {
+                    return trim(strtolower($ans->answer_text)) === $answer;
+                });
+        } 
+        
+        if ($question->question_type === 'drag_and_drop') {
+            // Placeholder for drag and drop logic
+            return false;
+        }
+
+        return false;
     }
 }

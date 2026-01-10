@@ -148,14 +148,13 @@ class PersonalizationRulesService
             $triggeredRules[] = $match;
             
             // Apply Effects to State
-            $newState = $this->applyAction($newState, $match['action']);
+            $newState = $this->applyAction($newState, $match['action'], $isCorrect);
         } else {
-             // Default Fallback (Rule 11ish or keep going)
-             // If Score Critical but no specific rule matched (e.g. Time Slow)?
-             if ($this->hasFact($facts, self::G01_SCORE_CRITICAL)) {
-                 $triggeredRules[] = ['id' => 'Rule 11', 'name' => 'General Intervention', 'action' => self::H01_CRISIS_VISUAL];
-                 // No implicit fatigue warning in spec
-             }
+             // Rule 11: General Fallback
+             // If nothing matches, we provide a standard response based on correctness
+             $match = ['id' => 'Rule 11', 'name' => 'General Fallback', 'action' => self::H05_STANDARD_PROMOTION_REAL];
+             $triggeredRules[] = $match;
+             $newState = $this->applyAction($newState, $match['action'], $isCorrect);
         }
 
         return [
@@ -232,28 +231,54 @@ class PersonalizationRulesService
         return true;
     }
 
-    protected function applyAction(array $state, string $action): array
+    protected function applyAction(array $state, string $action, bool $isCorrect): array
     {
         // Mutate state based on Action
         switch ($action) {
             case self::H01_CRISIS_VISUAL:
-                $state['recommendation'] = 'Visual Remediation';
-                $state['next_action'] = 'remedial';
+            case self::H02_CRISIS_TEXTUAL:
+                $state['recommendation'] = ($action === self::H01_CRISIS_VISUAL) ? 'Materi Visual' : 'Materi Tekstual';
+                $state['next_action'] = 'STUDY_MATERIAL'; // Instruksi untuk kembali ke materi
+                $state['message'] = 'Performa Anda menurun. Mari ulas kembali materi ini dengan format ' . $state['recommendation'] . '.';
                 break;
+
+            case self::H03_SYNTAX_RECOVERY:
+                $state['recommendation'] = 'Latihan Sintaksis';
+                $state['next_action'] = 'REDUCE_DIFFICULTY'; // Turunkan tingkat kesulitan
+                $state['message'] = 'Sepertinya Anda butuh penguatan dasar. Mari coba soal yang lebih mudah.';
+                break;
+
+            case self::H05_STANDARD_PROMOTION_REAL:
+                $state['next_action'] = 'NEXT_QUESTION'; // Progres normal
+                $state['message'] = $isCorrect 
+                    ? 'Jawaban tepat! Mari lanjut ke soal berikutnya.' 
+                    : 'Jawaban kurang tepat. Mari coba lagi atau ulas kembali materi jika kesulitan.';
+                break;
+
             case self::H06_ACCELERATED_JUMP:
                 $state['fast_track_active'] = 1;
-                $state['xp'] = ($state['xp'] ?? 0) + 50; // Bonus
-                $state['message'] = 'Genius Jump Activated!';
+                $state['global_xp'] = ($state['global_xp'] ?? 0) + 50;
+                $state['next_action'] = 'INCREASE_DIFFICULTY'; // Lompat tingkat kesulitan
+                $state['message'] = 'Luar biasa! Akurasi Anda tinggi, kami memberikan pertanyaan yang lebih menantang.';
                 break;
+
             case self::H07_BACKTRACKING:
-                $state['status'] = 'downgrade_level';
-                $state['xp'] = max(0, ($state['xp'] ?? 0) - 10);
+                $state['recommendation'] = 'Review Dasar';
+                $state['next_action'] = 'REDUCE_DIFFICULTY'; 
+                $state['message'] = 'Soal ini sepertinya terlalu sulit sekarang. Mari turunkan tingkat kesulitan.';
                 break;
+
+            case self::H08_MODULE_GRADUATION:
+                $state['next_action'] = 'FINISH_MATERIAL'; // Selesai modul
+                $state['message'] = 'Selamat! Anda telah menguasai seluruh materi ini.';
+                break;
+
             case self::H09_GOLD_CERT:
-                $state['certification'] = 'Gold';
-                $state['xp'] += 500;
+            case self::H10_SILVER_CERT:
+            case self::H11_BRONZE_CERT:
+                $state['next_action'] = 'ISSUE_CERTIFICATE';
+                $state['message'] = 'Proyek Selesai! Anda layak mendapatkan sertifikat.';
                 break;
-            // ... Add others
         }
         return $state;
     }

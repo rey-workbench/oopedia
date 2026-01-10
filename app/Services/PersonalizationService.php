@@ -51,10 +51,10 @@ class PersonalizationService
     /**
      * Update student performance counters (Strict Service Layer).
      */
-    public function updateStudentPerformance($userId, bool $isCorrect, int $timeSpent = 0)
+    public function updateStudentPerformance($userId, bool $isCorrect, int $timeSpent = 0, bool $usedHint = false)
     {
         $state = $this->progressRepo->getStudentState($userId);
-        $state->updatePerformance($isCorrect, $timeSpent);
+        $state->updatePerformance($isCorrect, $timeSpent, $usedHint);
         return $state;
     }
 
