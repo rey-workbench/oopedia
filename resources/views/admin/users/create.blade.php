@@ -21,7 +21,7 @@
                                     name="name" 
                                     value="{{ old('name') }}" 
                                     placeholder="Nama lengkap subjek" 
-                                    class="text-lg font-black italic tracking-tighter"
+                                    class="text-lg font-bold tracking-widest"
                                     required 
                                 />
                             </x-forms.form-group>
@@ -32,7 +32,7 @@
                                     name="email" 
                                     value="{{ old('email') }}" 
                                     placeholder="Email elektronik subjek" 
-                                    class="text-lg font-black italic tracking-tighter"
+                                    class="text-lg font-bold tracking-widest"
                                     required 
                                 />
                             </x-forms.form-group>
@@ -49,7 +49,7 @@
                         </div>
 
                         <x-forms.form-group label="Otorisasi Peran Sistem" name="role_id" required>
-                            <select name="role_id" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-black italic tracking-tighter outline-none focus:ring-4 focus:ring-blue-100 transition-all appearance-none cursor-pointer uppercase" required>
+                            <select name="role_id" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold tracking-widest outline-none focus:ring-4 focus:ring-blue-100 transition-all appearance-none cursor-pointer uppercase" required>
                                 @foreach($roles as $role)
                                     <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>{{ strtoupper($role->role_name) }}</option>
                                 @endforeach
@@ -65,7 +65,7 @@
                                 <div class="w-16 h-16 mx-auto rounded-3xl bg-blue-600/20 text-blue-500 flex items-center justify-center mb-6">
                                     <i class="fas fa-user-shield text-2xl"></i>
                                 </div>
-                                <h4 class="text-white text-xs font-black uppercase tracking-widest mb-4 italic">Protokol Keamanan</h4>
+                                <h4 class="text-white text-xs font-bold uppercase tracking-widest mb-4 ">Protokol Keamanan</h4>
                                 <p class="text-[10px] font-bold text-slate-500 leading-relaxed uppercase tracking-wider">
                                     Pastikan identitas dan level otorisasi sesuai dengan kebijakan keamanan data OOPEDIA.
                                 </p>
@@ -80,14 +80,14 @@
                             <i class="fas fa-microchip text-xs"></i>
                         </div>
                         <div>
-                            <h6 class="text-[10px] font-black uppercase tracking-widest text-slate-900 italic mb-0">Otorisasi Utama</h6>
+                            <h6 class="text-[10px] font-bold uppercase tracking-widest text-slate-900  mb-0">Otorisasi Utama</h6>
                             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1 mb-0">Siap mengotorisasi entitas baru</p>
                         </div>
                     </div>
                     
                     <div class="flex gap-4">
-                        <x-ui.button variant="ghost" href="{{ route('admin.users.index') }}" class="text-slate-400 font-black italic uppercase text-[10px] tracking-widest">BATAL</x-ui.button>
-                        <x-ui.button type="submit" variant="primary" size="lg" class="shadow-xl shadow-blue-500/30 font-black italic tracking-tighter" icon="fas fa-user-plus">OTORISASI ENTITAS</x-ui.button>
+                        <x-ui.button variant="ghost" href="{{ route('admin.users.index') }}" class="text-slate-400 font-bold uppercase text-[10px] tracking-widest">BATAL</x-ui.button>
+                        <x-ui.button type="submit" variant="primary" size="lg" class="shadow-xl shadow-blue-500/30 font-bold tracking-widest" icon="fas fa-user-plus">OTORISASI ENTITAS</x-ui.button>
                     </div>
                 </div>
             </form>

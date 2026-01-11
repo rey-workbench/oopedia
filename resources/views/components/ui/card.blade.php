@@ -16,7 +16,7 @@
 <div {{ $attributes->merge(['class' => $classes]) }}>
     @isset($header)
         <div class="px-8 py-6 border-b border-slate-50 flex items-center justify-between">
-            <div class="font-black italic uppercase tracking-tighter text-slate-800">
+            <div class="w-full">
                 {{ $header }}
             </div>
         </div>

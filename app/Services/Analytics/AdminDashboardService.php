@@ -107,4 +107,40 @@ class AdminDashboardService
     {
         return $this->progressRepo->getPopularMaterials($limit);
     }
+
+    public function getStudentAnalytics()
+    {
+        $allStudents = $this->userRepo->getUsersByRoleAndApproval(3, true, null, null);
+        $materials = $this->materialRepo->getAllWithQuestionsAndConfigs();
+        $totalConfiguredQuestions = $materials->sum(fn($m) => $m->questions->count());
+
+        $distribution = [
+            '0%' => 0,
+            '1-25%' => 0,
+            '26-50%' => 0,
+            '51-75%' => 0,
+            '76-100%' => 0
+        ];
+
+        foreach ($allStudents as $student) {
+            $correctCount = $student->quizAttempts->where('is_correct', true)->pluck('question_id')->unique()->count();
+            $progress = $totalConfiguredQuestions > 0 ? ($correctCount / $totalConfiguredQuestions) * 100 : 0;
+
+            if ($progress == 0) $distribution['0%']++;
+            elseif ($progress <= 25) $distribution['1-25%']++;
+            elseif ($progress <= 50) $distribution['26-50%']++;
+            elseif ($progress <= 75) $distribution['51-75%']++;
+            else $distribution['76-100%']++;
+        }
+
+        $moduleStats = $this->getMaterialStatistics();
+
+        return [
+            'distribution' => $distribution,
+            'modulePerformance' => [
+                'labels' => $moduleStats->pluck('title'),
+                'data' => $moduleStats->pluck('completion_rate')
+            ]
+        ];
+    }
 }

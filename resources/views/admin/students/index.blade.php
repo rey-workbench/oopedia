@@ -13,7 +13,7 @@
         <x-ui.card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
             <x-slot:header>
                 <div class="flex flex-col md:flex-row justify-between items-center gap-6 w-full px-6 py-4">
-                    <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Registri Subjek</h6>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Registri Subjek</p>
                     <form method="GET" action="{{ route('admin.students.index') }}" class="w-full md:w-auto">
                         <div class="relative group">
                             <i class="fas fa-user-tag absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors"></i>
@@ -47,7 +47,7 @@
                                 <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold shadow-lg shadow-slate-200 uppercase text-xs">
                                     {{ substr($student->name, 0, 1) }}
                                 </div>
-                                <div class="font-bold text-slate-900 tracking-tight">{{ $student->name }}</div>
+                                <div class="font-bold text-slate-900 tracking-widest">{{ $student->name }}</div>
                             </div>
                         </td>
                         <td class="px-6 py-6">
@@ -61,7 +61,7 @@
                         </td>
                         <td class="px-6 py-6">
                             <div class="w-40 mx-auto space-y-2">
-                                <div class="flex justify-between items-center text-[9px] font-black uppercase italic tracking-widest text-slate-400 px-1">
+                                <div class="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-slate-400 px-1">
                                     <span>Sinkronisasi Progres</span>
                                     <span>{{ $student->overall_progress }}%</span>
                                 </div>
@@ -85,7 +85,7 @@
                             <div class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
                                 <i class="fas fa-user-graduate text-slate-200 text-3xl"></i>
                             </div>
-                            <h3 class="text-xl font-black italic uppercase tracking-tighter text-slate-900 mb-2">Tidak Ada Mahasiswa Terdaftar</h3>
+                            <h3 class="text-xl font-bold uppercase tracking-widest text-slate-900 mb-2">Tidak Ada Mahasiswa Terdaftar</h3>
                             <p class="text-slate-400 text-sm max-w-xs mx-auto mb-8">Silakan daftarkan mahasiswa secara manual atau impor melalui protokol Excel.</p>
                             <div class="flex justify-center gap-4">
                                 <x-ui.button @click="openModal = true" variant="primary" icon="fas fa-plus">Daftar Individu</x-ui.button>
@@ -114,8 +114,8 @@
                         <div class="absolute right-8 top-10">
                             <button @click="openModal = false" class="text-blue-200 hover:text-white"><i class="fas fa-times"></i></button>
                         </div>
-                        <h6 class="text-xl font-bold tracking-tight mb-2 uppercase">Inisialisasi Otentikasi</h6>
-                        <p class="text-[10px] font-bold text-blue-100 uppercase tracking-widest">Daftarkan entitas mahasiswa individu</p>
+                        <h6 class="text-xl font-bold tracking-widest mb-1 uppercase">Inisialisasi Otentikasi</h6>
+                        <p class="text-[10px] font-bold text-blue-100/60 uppercase tracking-widest">Daftarkan entitas mahasiswa individu</p>
                     </div>
                     
                     <form action="{{ route('admin.students.store') }}" method="POST" class="p-8 space-y-6">
@@ -126,16 +126,16 @@
                                 <x-ui.input name="name" placeholder="Nama lengkap subjek" required />
                             </div>
                             <div class="space-y-2">
-                                <label class="text-[10px] font-black uppercase text-slate-400 italic font-poppins">Email Elektronik</label>
+                                <label class="text-[10px] font-bold uppercase text-slate-400  font-poppins">Email Elektronik</label>
                                 <x-ui.input type="email" name="email" placeholder="mahasiswa@example.com" required />
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="space-y-2">
-                                    <label class="text-[10px] font-black uppercase text-slate-400 italic font-poppins">Kunci Keamanan</label>
+                                    <label class="text-[10px] font-bold uppercase text-slate-400  font-poppins">Kunci Keamanan</label>
                                     <x-ui.input type="password" name="password" placeholder="Minimal 8 karakter" required />
                                 </div>
                                 <div class="space-y-2">
-                                    <label class="text-[10px] font-black uppercase text-slate-400 italic font-poppins">Konfirmasi Kunci</label>
+                                    <label class="text-[10px] font-bold uppercase text-slate-400  font-poppins">Konfirmasi Kunci</label>
                                     <x-ui.input type="password" name="password_confirmation" placeholder="Verifikasi kunci" required />
                                 </div>
                             </div>

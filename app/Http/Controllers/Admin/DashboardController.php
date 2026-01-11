@@ -41,6 +41,9 @@ class DashboardController extends Controller
         // Popular Materials
         $popularMaterials = $this->adminDashboardService->getPopularMaterials(5);
 
+        // Student Analytics for Charts
+        $studentAnalytics = $this->adminDashboardService->getStudentAnalytics();
+
         return view('admin.dashboard.index', compact(
             'userName',
             'userRole',
@@ -51,7 +54,8 @@ class DashboardController extends Controller
             'recentProgress',
             'studentProgress',
             'materialStats',
-            'popularMaterials'
+            'popularMaterials',
+            'studentAnalytics'
         ));
     }
 }

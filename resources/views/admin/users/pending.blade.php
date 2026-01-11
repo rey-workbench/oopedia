@@ -12,7 +12,7 @@
                 <x-slot:header>
                     <div class="flex items-center gap-4">
                         <div class="w-1.5 h-8 bg-amber-500 rounded-full animate-pulse"></div>
-                        <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Antrean Otorisasi Tertunda</h6>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Antrean Otorisasi Tertunda</p>
                     </div>
                 </x-slot:header>
 
@@ -29,17 +29,17 @@
                         <tr class="group hover:bg-slate-50 transition-colors">
                             <td class="px-6 py-6">
                                 <div class="flex items-center gap-4">
-                                    <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center font-black italic shadow-sm uppercase text-xs">
+                                    <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center font-bold shadow-sm uppercase text-xs">
                                         {{ substr($admin->name, 0, 1) }}
                                     </div>
-                                    <div class="font-bold text-slate-900 uppercase italic tracking-tighter">{{ $admin->name }}</div>
+                                    <div class="font-bold text-slate-900 uppercase tracking-widest">{{ $admin->name }}</div>
                                 </div>
                             </td>
                             <td class="px-6 py-6">
-                                <span class="text-xs font-bold text-slate-400 italic underline decoration-slate-200 underline-offset-4">{{ $admin->email }}</span>
+                                <span class="text-xs font-bold text-slate-400 underline decoration-slate-200 underline-offset-4">{{ $admin->email }}</span>
                             </td>
                             <td class="px-6 py-6 text-center">
-                                <span class="text-[10px] font-black italic text-slate-400 uppercase tracking-widest">{{ $admin->created_at->format('d M Y H:i') }}</span>
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ $admin->created_at->format('d M Y H:i') }}</span>
                             </td>
                             <td class="px-6 py-6">
                                 <div class="flex justify-end gap-3">
@@ -66,7 +66,7 @@
                 <div class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 text-slate-200">
                     <i class="fas fa-inbox text-3xl"></i>
                 </div>
-                <h3 class="text-lg font-black italic uppercase tracking-tighter text-slate-900 mb-2">Antrean Kosong</h3>
+                <h3 class="text-lg font-bold uppercase tracking-widest text-slate-900 mb-2">Antrean Kosong</h3>
                 <p class="text-slate-400 text-xs max-w-xs mx-auto">Tidak ada permohonan akses administratif yang menunggu otorisasi saat ini.</p>
             </x-ui.card>
         @endif

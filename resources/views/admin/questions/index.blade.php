@@ -8,7 +8,7 @@
                 href="{{ $material ? route('admin.materials.questions.create', $material) : route('admin.questions.create') }}" 
                 variant="primary" 
                 icon="fas fa-plus"
-                class="shadow-xl shadow-blue-500/30 font-black italic tracking-tighter"
+                class="shadow-xl shadow-blue-500/30 font-bold tracking-widest"
             >
                 TAMBAH SOAL BARU
             </x-ui.button>
@@ -21,13 +21,13 @@
                 <form method="GET" action="{{ $material ? route('admin.materials.questions.index', $material) : route('admin.questions.index') }}">
                     <div class="flex flex-col lg:flex-row gap-6 items-end">
                         <div class="flex-1 space-y-2">
-                            <label class="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 italic pl-1">Pencarian Kueri</label>
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2 block">Pencarian Kueri</label>
                             <x-ui.input name="search" placeholder="Cari teks soal, tipe, atau pembuat..." value="{{ request('search') }}" class="bg-white" />
                         </div>
                         <div class="w-full lg:w-64 space-y-2">
-                            <label class="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 italic pl-1">Tingkat Kesulitan</label>
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2 block">Tingkat Kesulitan</label>
                             <div class="relative">
-                                <select name="difficulty" class="w-full px-5 py-3.5 bg-white border border-slate-200 rounded-2xl text-xs font-black italic tracking-tighter outline-none focus:ring-4 focus:ring-blue-500/10 transition-all appearance-none cursor-pointer uppercase">
+                                <select name="difficulty" class="w-full px-5 py-3.5 bg-white border border-slate-200 rounded-2xl text-xs font-bold tracking-widest outline-none focus:ring-4 focus:ring-blue-500/10 transition-all appearance-none cursor-pointer uppercase">
                                     <option value="">SEMUA TINGKAT</option>
                                     <option value="beginner" {{ request('difficulty') == 'beginner' ? 'selected' : '' }}>BEGINNER</option>
                                     <option value="medium" {{ request('difficulty') == 'medium' ? 'selected' : '' }}>MEDIUM</option>
@@ -38,7 +38,7 @@
                                 </div>
                             </div>
                         </div>
-                        <x-ui.button type="submit" variant="primary" class="h-[52px] px-10 shadow-lg shadow-blue-500/20 font-black italic tracking-tighter" icon="fas fa-search">JALANKAN PENCARIAN</x-ui.button>
+                        <x-ui.button type="submit" variant="primary" class="h-[52px] px-10 shadow-lg shadow-blue-500/20 font-bold tracking-widest" icon="fas fa-search">JALANKAN PENCARIAN</x-ui.button>
                     </div>
                 </form>
             </div>
@@ -59,27 +59,27 @@
                         <div class="flex items-center gap-3">
                             <div class="w-1.5 h-8 bg-blue-600 rounded-full"></div>
                             <div>
-                                <span class="text-[10px] font-black text-slate-900 uppercase tracking-widest italic block">{{ $question->material->title }}</span>
+                                <span class="text-[10px] font-bold text-slate-900 uppercase tracking-widest block">{{ $question->material->title }}</span>
                                 @if($question->subMaterial)
-                                    <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest italic block mt-1">Sub: {{ $question->subMaterial->title }}</span>
+                                    <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest block mt-1">SUB: {{ $question->subMaterial->title }}</span>
                                 @endif
                             </div>
                         </div>
                     </td>
                     <td class="px-8 py-8">
                         <div class="space-y-6">
-                            <div class="text-[11px] font-bold text-slate-700 leading-relaxed italic line-clamp-3">
+                            <div class="text-[11px] font-bold text-slate-700 leading-relaxed  line-clamp-3">
                                 {!! strip_tags($question->question_text) !!}
                             </div>
                             
                             {{-- Integrated Answers Insight --}}
                             <div class="p-5 bg-slate-950 rounded-[1.5rem] border border-slate-800 shadow-inner">
-                                <span class="text-[8px] font-black uppercase tracking-[0.2em] text-slate-500 block mb-3">Registri Kunci Jawaban:</span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-3">Registri Kunci Jawaban</span>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     @foreach($question->answers as $answer)
                                         <div class="flex items-center gap-2">
                                             <div class="w-1.5 h-1.5 rounded-full {{ $answer->is_correct ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-slate-700' }}"></div>
-                                            <span class="text-[10px] font-black italic {{ $answer->is_correct ? 'text-emerald-400' : 'text-slate-400' }} truncate uppercase tracking-tighter">{{ $answer->answer_text }}</span>
+                                            <span class="text-[10px] font-bold {{ $answer->is_correct ? 'text-emerald-400' : 'text-slate-400' }} truncate uppercase tracking-widest">{{ $answer->answer_text }}</span>
                                         </div>
                                     @endforeach
                                 </div>
@@ -87,13 +87,13 @@
                         </div>
                     </td>
                     <td class="px-8 py-8 text-center align-top">
-                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest italic whitespace-nowrap">{{ $question->formatted_type }}</span>
+                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap">{{ $question->formatted_type }}</span>
                     </td>
                     <td class="px-8 py-8 text-center align-top">
                         @php
                             $variant = $question->difficulty == 'beginner' ? 'success' : ($question->difficulty == 'medium' ? 'warning' : 'danger');
                         @endphp
-                        <x-ui.badge :variant="$variant" size="xs" class="font-black italic px-3 py-1">{{ strtoupper($question->difficulty) }}</x-ui.badge>
+                        <x-ui.badge :variant="$variant" size="xs" class="font-bold px-3 py-1">{{ strtoupper($question->difficulty) }}</x-ui.badge>
                     </td>
                     <td class="px-8 py-8 align-top">
                         <div class="flex justify-end gap-2">
@@ -116,7 +116,7 @@
                         <div class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
                             <i class="fas fa-folder-open text-slate-200 text-2xl"></i>
                         </div>
-                        <h3 class="text-lg font-black italic uppercase tracking-tighter text-slate-900 mb-2">Tidak Ada Soal Ditemukan</h3>
+                        <h3 class="text-lg font-bold uppercase tracking-widest text-slate-900 mb-2">Tidak Ada Soal Ditemukan</h3>
                         <p class="text-slate-400 text-[10px] uppercase tracking-widest font-bold">Basis data soal kosong atau filter terlalu spesifik.</p>
                     </td>
                 </tr>

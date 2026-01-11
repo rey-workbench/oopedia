@@ -29,11 +29,11 @@
                         <x-forms.form-group label="Modul Asal" name="material_id" required>
                             @if (isset($material))
                                 <input type="hidden" name="material_id" id="material_id" value="{{ $material->id }}">
-                                <div class="px-6 py-4 bg-blue-50/50 border border-blue-100 rounded-2xl text-sm font-black italic text-blue-900 border-l-4 border-l-blue-600 uppercase">
+                                <div class="px-6 py-4 bg-blue-50/50 border border-blue-100 rounded-2xl text-xs font-bold text-blue-800 border-l-4 border-l-blue-600 uppercase tracking-widest">
                                     {{ $material->title }}
                                 </div>
                             @else
-                                <select name="material_id" id="material_id" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-black italic tracking-tighter outline-none focus:ring-4 focus:ring-blue-100 transition-all appearance-none cursor-pointer uppercase" required onchange="fetchSubMaterials(this.value)">
+                                <select name="material_id" id="material_id" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold tracking-widest outline-none focus:ring-4 focus:ring-blue-100 transition-all appearance-none cursor-pointer uppercase" required onchange="fetchSubMaterials(this.value)">
                                     <option value="">PILIH MODUL</option>
                                     @foreach ($materials as $mat)
                                         <option value="{{ $mat->id }}">{{ $mat->title }}</option>
@@ -43,7 +43,7 @@
                         </x-forms.form-group>
 
                         <x-forms.form-group label="Sub-materi (Opsional)" name="sub_material_id">
-                            <select name="sub_material_id" id="sub_material_id" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-black italic tracking-tighter outline-none focus:ring-4 focus:ring-blue-100 transition-all appearance-none cursor-pointer uppercase">
+                            <select name="sub_material_id" id="sub_material_id" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold tracking-widest outline-none focus:ring-4 focus:ring-blue-100 transition-all appearance-none cursor-pointer uppercase">
                                 <option value="">PILIH SUB-MATERI</option>
                                 @foreach ($subMaterials as $sub)
                                     <option value="{{ $sub->id }}" {{ old('sub_material_id') == $sub->id ? 'selected' : '' }}>{{ $sub->title }}</option>
@@ -52,7 +52,7 @@
                         </x-forms.form-group>
 
                         <x-forms.form-group label="Tingkat Kesulitan" name="difficulty" required>
-                            <select name="difficulty" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-black italic tracking-tighter outline-none focus:ring-4 focus:ring-blue-100 transition-all appearance-none cursor-pointer uppercase" required>
+                            <select name="difficulty" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold tracking-widest outline-none focus:ring-4 focus:ring-blue-100 transition-all appearance-none cursor-pointer uppercase" required>
                                 <option value="beginner">BEGINNER</option>
                                 <option value="medium">MEDIUM</option>
                                 <option value="hard">HARD</option>
@@ -61,7 +61,7 @@
 
                         <div class="md:col-span-2">
                             <x-forms.form-group label="Skema Evaluasi" name="question_type" required>
-                                <select name="question_type" id="question_type_select" onchange="resetAnswersForNewType()" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-black italic tracking-tighter outline-none focus:ring-4 focus:ring-blue-100 transition-all appearance-none cursor-pointer uppercase" required>
+                                <select name="question_type" id="question_type_select" onchange="resetAnswersForNewType()" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold tracking-widest outline-none focus:ring-4 focus:ring-blue-100 transition-all appearance-none cursor-pointer uppercase" required>
                                     <option value="radio_button">TOMBOL RADIO (PILIHAN TUNGGAL)</option>
                                     <option value="drag_and_drop">SERET DAN LEPAS (PILIHAN GANDA)</option>
                                     <option value="fill_in_the_blank">ISIAN SINGKAT (COCOK KATA KUNCI)</option>
@@ -78,7 +78,7 @@
                                 <div class="w-16 h-16 rounded-3xl bg-blue-600/20 text-blue-500 flex items-center justify-center mb-4">
                                     <i class="fas fa-microchip text-2xl"></i>
                                 </div>
-                                <h4 class="text-white text-xs font-black uppercase tracking-widest mb-2 italic">Neural Logic Engine</h4>
+                                <h4 class="text-white text-[10px] font-bold uppercase tracking-widest mb-2">Neural Logic Engine</h4>
                                 <p class="text-[9px] font-bold text-slate-400 leading-relaxed uppercase tracking-wider">
                                     Setiap soal dipetakan ke dalam graf pengetahuan sistem untuk optimasi pembelajaran adaptif.
                                 </p>
@@ -100,9 +100,9 @@
                     <div class="flex items-center justify-between mb-8">
                         <div class="flex items-center gap-4">
                             <i class="fas fa-tasks text-blue-500 text-xs"></i>
-                            <h6 class="mb-0 italic font-black uppercase tracking-widest text-[10px] text-slate-400">Registri Jawaban</h6>
+                            <h6 class="mb-0  font-bold uppercase tracking-widest text-[10px] text-slate-400">Registri Jawaban</h6>
                         </div>
-                        <x-ui.button type="button" id="add-answer-btn" onclick="addAnswer()" variant="ghost" size="sm" class="text-blue-600 font-black italic uppercase tracking-widest" icon="fas fa-plus">
+                        <x-ui.button type="button" id="add-answer-btn" onclick="addAnswer()" variant="ghost" size="sm" class="text-blue-600 font-bold uppercase tracking-widest" icon="fas fa-plus">
                             TAMBAH PILIHAN
                         </x-ui.button>
                     </div>
@@ -115,7 +115,7 @@
                 <div class="pt-10 border-t border-slate-100 flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <i class="fas fa-shield-check text-emerald-500 text-xs"></i>
-                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Status Validasi: Semua parameter dioptimalkan</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Status Validasi: Semua parameter dioptimalkan</span>
                     </div>
                     <x-ui.button type="submit" variant="primary" size="lg" class="shadow-xl shadow-blue-500/20" icon="fas fa-save">
                         BUAT SOAL SEKARANG
@@ -184,7 +184,7 @@
                     <div class="flex items-center gap-4 bg-slate-50/50 p-4 rounded-2xl border border-slate-100 transition-all hover:border-blue-200">
                         <div class="flex-1">
                             <input type="text" name="answers[${index}][answer_text]" 
-                                class="w-full px-5 py-3 bg-white border border-slate-200 rounded-xl text-xs font-bold italic focus:ring-4 focus:ring-blue-100 transition-all outline-none" 
+                                class="w-full px-5 py-3 bg-white border border-slate-200 rounded-xl text-xs font-bold  focus:ring-4 focus:ring-blue-100 transition-all outline-none" 
                                 placeholder="Ketik pilihan jawaban..." required>
                         </div>
                         <div class="flex items-center gap-6">
@@ -193,7 +193,7 @@
                                 <div class="w-6 h-6 rounded-full border-2 border-slate-200 peer-checked:bg-blue-600 peer-checked:border-blue-600 flex items-center justify-center text-white text-[10px] transition-all">
                                     <i class="fas fa-check scale-0 peer-checked:scale-100 transition-transform"></i>
                                 </div>
-                                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400 peer-checked:text-blue-600">Tandai Benar</span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 peer-checked:text-blue-600">Tandai Benar</span>
                                 <input type="hidden" name="answers[${index}][is_correct]" value="0" class="is-correct-hidden">
                             </label>
                             <button type="button" onclick="this.closest('.answer-entry').remove()" class="text-slate-300 hover:text-red-500 transition-colors">
@@ -207,7 +207,7 @@
                     <div class="flex items-center gap-4 bg-slate-50/50 p-4 rounded-2xl border border-slate-100 transition-all hover:border-emerald-200">
                         <div class="flex-1">
                             <input type="text" name="answers[${index}][answer_text]" 
-                                class="w-full px-5 py-3 bg-white border border-slate-200 rounded-xl text-xs font-bold italic focus:ring-4 focus:ring-emerald-100 transition-all outline-none" 
+                                class="w-full px-5 py-3 bg-white border border-slate-200 rounded-xl text-xs font-bold  focus:ring-4 focus:ring-emerald-100 transition-all outline-none" 
                                 placeholder="Ketik pilihan jawaban..." required>
                         </div>
                         <div class="flex items-center gap-6">
@@ -216,7 +216,7 @@
                                 <div class="w-6 h-6 rounded-lg border-2 border-slate-200 peer-checked:bg-emerald-600 peer-checked:border-emerald-600 flex items-center justify-center text-white text-[10px] transition-all">
                                     <i class="fas fa-check scale-0 peer-checked:scale-100 transition-transform"></i>
                                 </div>
-                                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400 peer-checked:text-emerald-600">Item Benar</span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 peer-checked:text-emerald-600">Item Benar</span>
                             </label>
                             <button type="button" onclick="this.closest('.answer-entry').remove()" class="text-slate-300 hover:text-red-500 transition-colors">
                                 <i class="fas fa-times-circle"></i>
@@ -227,9 +227,9 @@
             } else {
                 html = `
                     <div class="bg-blue-50/30 p-10 rounded-[2.5rem] border-2 border-dashed border-blue-100 text-center">
-                        <p class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400 mb-6">Deteksi Frasa Kunci Target</p>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-400 mb-6">Deteksi Frasa Kunci Target</p>
                         <input type="text" name="answers[${index}][answer_text]" 
-                            class="w-full max-w-md mx-auto px-8 py-6 bg-white border-2 border-blue-100 rounded-[2rem] text-center text-xl font-black italic tracking-tighter text-blue-900 focus:ring-8 focus:ring-blue-50 focus:border-blue-600 transition-all outline-none uppercase" 
+                            class="w-full max-w-md mx-auto px-8 py-6 bg-white border-2 border-blue-100 rounded-[2rem] text-center text-xl font-bold tracking-widest text-blue-900 focus:ring-8 focus:ring-blue-50 focus:border-blue-600 transition-all outline-none uppercase" 
                             placeholder="Masukkan kata kunci..." required>
                         <input type="hidden" name="answers[${index}][is_correct]" value="1">
                         <input type="hidden" name="correct_answer" value="${index}">

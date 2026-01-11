@@ -26,7 +26,7 @@
                                 <x-ui.input 
                                     name="title" 
                                     value="{{ old('title', $material->title) }}" 
-                                    class="text-lg font-black italic tracking-tighter"
+                                    class="text-lg font-bold tracking-widest"
                                     required 
                                 />
                             </x-forms.form-group>
@@ -42,7 +42,7 @@
                         </div>
 
                         <div class="lg:col-span-1 space-y-4">
-                            <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 block">Sinkronisasi Sampul</label>
+                            <label class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 block">Sinkronisasi Sampul</label>
                             <div id="imagePreview" class="relative group aspect-video rounded-2xl bg-slate-50 border-2 border-solid border-slate-200 flex flex-col items-center justify-center overflow-hidden transition-all hover:border-indigo-500/50">
                                 @php
                                     $coverMedia = $material->media->first();
@@ -53,7 +53,7 @@
                                 
                                 <div id="preview_placeholder" class="text-center group-hover:scale-110 transition-transform {{ $coverMedia ? 'hidden' : '' }}">
                                     <i class="fas fa-camera-retro text-slate-300 text-2xl mb-2"></i>
-                                    <p class="text-[9px] font-black uppercase tracking-widest text-slate-400">Masukkan Gambar</p>
+                                    <p class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Masukkan Gambar</p>
                                 </div>
                                 <input type="file" name="cover_image" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewImage(this)">
                             </div>
@@ -72,7 +72,7 @@
                     <div class="pt-6 border-t border-slate-100 flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <i class="fas fa-cloud-upload-alt text-indigo-500 text-xs animation-pulse"></i>
-                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Sinkronisasi Cloud: Terhubung & Siap</span>
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Sinkronisasi Cloud: Terhubung & Siap</span>
                         </div>
                         <x-ui.button type="submit" variant="primary" size="lg" class="shadow-xl shadow-indigo-500/20 bg-indigo-600 hover:bg-indigo-700" icon="fas fa-cloud-upload-alt">SIMPAN PERUBAHAN</x-ui.button>
                     </div>

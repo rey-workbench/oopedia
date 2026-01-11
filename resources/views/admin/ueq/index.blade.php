@@ -14,7 +14,7 @@
                 <div class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 text-slate-200">
                     <i class="fas fa-chart-column text-3xl"></i>
                 </div>
-                <h3 class="text-lg font-bold tracking-tight text-slate-900 mb-2">Belum Ada Data Survei</h3>
+                <h3 class="text-lg font-bold tracking-widest text-slate-900 mb-2">Belum Ada Data Survei</h3>
                 <p class="text-slate-400 text-sm max-w-xs mx-auto">Mahasiswa belum mengisi survey UEQ. Data akan muncul secara otomatis setelah survey diselesaikan.</p>
             </x-ui.card>
         @else
@@ -49,7 +49,7 @@
                 @foreach($averages as $dimension => $score)
                     <x-ui.card padding="p-6" class="text-center group hover:border-blue-200 transition-all border-slate-100">
                         <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2 block">{{ $dimension }}</span>
-                        <div class="text-2xl font-bold tracking-tight text-slate-900 mb-2">{{ number_format($score, 2) }}</div>
+                        <div class="text-2xl font-bold tracking-widest text-slate-900 mb-2">{{ number_format($score, 2) }}</div>
                         <x-ui.progress-bar :value="($score/7)*100" size="xs" :showPercentage="false" variant="{{ $score >= 5 ? 'success' : ($score >= 3 ? 'orange' : 'danger') }}" />
                     </x-ui.card>
                 @endforeach
@@ -82,7 +82,7 @@
                                             {{ substr($survey->user->name, 0, 1) }}
                                         </div>
                                         <div>
-                                            <div class="text-[11px] font-bold text-slate-900 tracking-tight">{{ $survey->user->name }}</div>
+                                            <div class="text-[11px] font-bold text-slate-900 tracking-widest">{{ $survey->user->name }}</div>
                                             <div class="text-[9px] font-medium text-slate-400">{{ $survey->nim }}</div>
                                         </div>
                                     </div>
@@ -100,7 +100,7 @@
                                         elseif($dim == 'stimulation') $val = ($survey->valuable_inferior + $survey->boring_exciting + $survey->not_interesting_interesting + $survey->motivating_demotivating) / 4;
                                         elseif($dim == 'novelty') $val = ($survey->creative_dull + $survey->inventive_conventional + $survey->usual_leading_edge + $survey->conservative_innovative) / 4;
                                     @endphp
-                                    <td class="px-6 py-5 text-center font-black italic text-xs {{ $val >= 5 ? 'text-emerald-500' : ($val >= 3 ? 'text-orange-500' : 'text-slate-300') }}">
+                                    <td class="px-6 py-5 text-center font-bold text-xs {{ $val >= 5 ? 'text-emerald-500' : ($val >= 3 ? 'text-orange-500' : 'text-slate-300') }}">
                                         {{ number_format($val, 1) }}
                                     </td>
                                 @endforeach
@@ -122,7 +122,7 @@
                                 <div class="w-8 h-8 rounded-xl bg-white shadow-sm flex items-center justify-center text-blue-600">
                                     <i class="fas fa-comment-dots text-xs"></i>
                                 </div>
-                                <div class="font-bold text-[11px] tracking-tight text-slate-900">{{ $survey->user->name }}</div>
+                                <div class="font-bold text-[11px] tracking-widest text-slate-900">{{ $survey->user->name }}</div>
                             </div>
                             <div class="space-y-4">
                                 <div>
@@ -136,7 +136,7 @@
                                 </div>
                                 @endif
                             </div>
-                            <div class="mt-6 pt-4 border-t border-slate-200 flex justify-between items-center text-[9px] font-black text-slate-300 uppercase tracking-widest">
+                            <div class="mt-6 pt-4 border-t border-slate-200 flex justify-between items-center text-[9px] font-bold text-slate-300 uppercase tracking-widest">
                                 <span>{{ $survey->created_at->format('d M Y') }}</span>
                                 <x-ui.button variant="ghost" size="sm" href="{{ route('admin.ueq.detail', $survey->user_id) }}" icon="fas fa-arrow-right" />
                             </div>

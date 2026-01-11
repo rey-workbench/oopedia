@@ -36,7 +36,7 @@
             <x-slot:header>
                 <div class="flex items-center gap-4">
                     <div class="w-1.5 h-8 bg-blue-600 rounded-full"></div>
-                    <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Matriks Penguasaan Konten</h6>
+                    <h6 class="mb-0  font-bold uppercase tracking-widest text-xs text-slate-400">Matriks Penguasaan Konten</h6>
                 </div>
             </x-slot:header>
 
@@ -54,12 +54,12 @@
                     <td class="px-6 py-6">
                         <div class="flex items-center gap-3">
                             <div class="w-1.5 h-8 bg-slate-900 rounded-full"></div>
-                            <span class="text-[10px] font-black italic text-slate-900 uppercase tracking-tighter">{{ $material->title }}</span>
+                            <span class="text-[10px] font-bold text-slate-900 uppercase tracking-widest">{{ $material->title }}</span>
                         </div>
                     </td>
                     <td class="px-6 py-6">
                         <div class="flex flex-col gap-2 min-w-[150px]">
-                            <div class="flex justify-between text-[8px] font-black uppercase italic tracking-widest text-slate-400">
+                            <div class="flex justify-between text-[8px] font-bold uppercase  tracking-widest text-slate-400">
                                 <span>Penguasaan</span>
                                 <span>{{ is_numeric($material->progress) ? (int)$material->progress : 0 }}%</span>
                             </div>
@@ -76,14 +76,14 @@
                         @endif
                     </td>
                     <td class="px-6 py-6 text-right">
-                        <span class="text-[10px] font-black italic text-slate-400 uppercase tracking-widest">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                             {{ $material->last_accessed ? $material->last_accessed->diffForHumans() : 'Tidak Ada Log Ditemukan' }}
                         </span>
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="4" class="p-20 text-center text-slate-400 italic text-xs uppercase font-black tracking-widest">Tidak Ada Log Interaksi Ditemukan</td>
+                    <td colspan="4" class="p-20 text-center text-slate-400  text-xs uppercase font-bold tracking-widest">Tidak Ada Log Interaksi Ditemukan</td>
                 </tr>
                 @endforelse
             </x-ui.table>
@@ -94,7 +94,7 @@
             <x-slot:header>
                 <div class="flex items-center gap-4">
                     <div class="w-1.5 h-8 bg-rose-500 rounded-full"></div>
-                    <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-rose-500">Unit Tantangan Belum Terpecahkan</h6>
+                    <h6 class="mb-0  font-bold uppercase tracking-widest text-xs text-rose-500">Unit Tantangan Belum Terpecahkan</h6>
                 </div>
             </x-slot:header>
 
@@ -107,7 +107,7 @@
                 </x-slot:thead>
                 @foreach($missingQuestionsByMaterial as $item)
                 <tr class="group hover:bg-rose-50/50 transition-colors">
-                    <td class="px-6 py-6 font-black italic text-rose-900 text-xs tracking-tighter uppercase">{{ $item['material_title'] }}</td>
+                    <td class="px-6 py-6 font-bold text-rose-900 text-xs tracking-widest uppercase">{{ $item['material_title'] }}</td>
                     <td class="px-6 py-6 text-right">
                         <x-ui.badge variant="danger" size="xs">{{ $item['missing_count'] }} MENUNGGU</x-ui.badge>
                     </td>

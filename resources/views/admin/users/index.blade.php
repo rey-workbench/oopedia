@@ -22,7 +22,7 @@
         <x-ui.card padding="p-0" class="overflow-hidden">
             <x-slot:header>
                 <div class="flex flex-col md:flex-row justify-between items-center gap-6 w-full">
-                    <h6 class="mb-0">Direktori Pengguna Sistem</h6>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Direktori Pengguna Sistem</p>
                     <form method="GET" action="{{ route('admin.users.index') }}" class="w-full md:w-auto">
                         <div class="relative group">
                             <i class="fas fa-shield-halved absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors"></i>
@@ -59,8 +59,8 @@
                                         {{ substr($superadmin->name, 0, 1) }}
                                     </div>
                                     <div>
-                                        <div class="font-bold text-slate-900 tracking-tight">{{ $superadmin->name }}</div>
-                                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">ADMIN SISTEM UTAMA</span>
+                                        <div class="font-bold text-slate-900 tracking-widest">{{ $superadmin->name }}</div>
+                                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ADMIN SISTEM UTAMA</span>
                                     </div>
                                 </div>
                             </td>

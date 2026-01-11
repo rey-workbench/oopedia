@@ -14,34 +14,34 @@
                     <x-slot:header>
                         <div class="flex items-center gap-4">
                             <div class="w-1.5 h-8 bg-blue-600 rounded-full"></div>
-                            <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Profil Subjek</h6>
+                            <h6 class="mb-0  font-bold uppercase tracking-widest text-xs text-slate-400">Profil Subjek</h6>
                         </div>
                     </x-slot:header>
                     
                     <div class="space-y-6">
                         <div class="flex items-center gap-4">
-                            <div class="w-16 h-16 rounded-[2rem] bg-slate-900 text-white flex items-center justify-center text-xl font-black italic shadow-2xl">
+                            <div class="w-16 h-16 rounded-[2rem] bg-slate-900 text-white flex items-center justify-center text-xl font-bold shadow-2xl">
                                 {{ substr($user->name, 0, 1) }}
                             </div>
                             <div>
-                                <h4 class="text-lg font-black italic tracking-tighter text-slate-900 uppercase leading-none mb-1">{{ $user->name }}</h4>
+                                <h4 class="text-lg font-bold tracking-widest text-slate-900 uppercase leading-none mb-1">{{ $user->name }}</h4>
                                 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">ID: {{ $survey->nim }}</p>
                             </div>
                         </div>
 
                         <div class="pt-6 border-t border-slate-100 grid grid-cols-2 gap-4">
                             <div>
-                                <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Kelas</p>
+                                <p class="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Kelas</p>
                                 <p class="text-xs font-bold text-slate-900">{{ $survey->class }}</p>
                             </div>
                             <div>
-                                <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Status</p>
+                                <p class="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Status</p>
                                 <x-ui.badge variant="success" size="xs">STABIL</x-ui.badge>
                             </div>
                         </div>
 
                         <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                            <p class="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-2">Timestamp Log</p>
+                            <p class="text-[8px] font-bold uppercase tracking-widest text-slate-400 mb-2">Timestamp Log</p>
                             <div class="flex items-center gap-2 text-xs font-bold text-slate-600">
                                 <i class="fas fa-calendar-check text-blue-500"></i>
                                 {{ $survey->created_at->format('d M Y') }}
@@ -57,7 +57,7 @@
                     <x-slot:header>
                         <div class="flex items-center gap-4">
                             <div class="w-1.5 h-8 bg-emerald-500 rounded-full"></div>
-                            <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Agregasi Metrik</h6>
+                            <h6 class="mb-0  font-bold uppercase tracking-widest text-xs text-slate-400">Agregasi Metrik</h6>
                         </div>
                     </x-slot:header>
                     @php
@@ -73,12 +73,12 @@
                     <div class="divide-y divide-slate-100">
                         @foreach($dimensions as $name => $score)
                             <div class="px-6 py-4 flex items-center justify-between group hover:bg-slate-50 transition-colors">
-                                <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">{{ $name }}</span>
+                                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{{ $name }}</span>
                                 <div class="flex items-center gap-3">
                                     <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                                         <div class="h-full bg-blue-600 rounded-full" style="width: {{ ($score/7)*100 }}%"></div>
                                     </div>
-                                    <span class="text-sm font-black italic text-slate-900">{{ number_format($score, 2) }}</span>
+                                    <span class="text-sm font-bold text-slate-900">{{ number_format($score, 2) }}</span>
                                 </div>
                             </div>
                         @endforeach
@@ -91,18 +91,18 @@
                 {{-- Qualitative Feedback --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <x-ui.card class="border-amber-100 bg-amber-50/10">
-                        <h6 class="text-[10px] font-black uppercase tracking-widest text-amber-600 mb-4 flex items-center gap-2 italic">
+                        <h6 class="text-[10px] font-bold uppercase tracking-widest text-amber-600 mb-4 flex items-center gap-2 ">
                             <i class="fas fa-comment-nodes"></i> Komentar Kualitatif
                         </h6>
-                        <p class="text-xs font-bold text-slate-700 italic leading-relaxed">
+                        <p class="text-xs font-bold text-slate-700  leading-relaxed">
                             "{{ $survey->comments ?: 'Tidak ada masukan kualitatif yang tercatat untuk subjek ini.' }}"
                         </p>
                     </x-ui.card>
                     <x-ui.card class="border-blue-100 bg-blue-50/10">
-                        <h6 class="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-4 flex items-center gap-2 italic">
+                        <h6 class="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-4 flex items-center gap-2 ">
                             <i class="fas fa-lightbulb"></i> Proposal Optimalisasi
                         </h6>
-                        <p class="text-xs font-bold text-slate-700 italic leading-relaxed">
+                        <p class="text-xs font-bold text-slate-700  leading-relaxed">
                             "{{ $survey->suggestions ?: 'Subjek tidak memberikan proposal optimalisasi.' }}"
                         </p>
                     </x-ui.card>
@@ -113,7 +113,7 @@
                     <x-slot:header>
                         <div class="flex items-center gap-4">
                             <div class="w-1.5 h-8 bg-slate-900 rounded-full"></div>
-                            <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Matriks Distribusi Psikometrik</h6>
+                            <h6 class="mb-0  font-bold uppercase tracking-widest text-xs text-slate-400">Matriks Distribusi Psikometrik</h6>
                         </div>
                     </x-slot:header>
                     @php
@@ -158,12 +158,12 @@
                             @php $val = $survey->{$aspect['name']}; @endphp
                             <tr class="group hover:bg-slate-50 transition-colors">
                                 <td class="px-6 py-4">
-                                    <span class="text-[10px] font-black italic text-slate-900 uppercase tracking-tighter">{{ str_replace('_', ' ', $aspect['name']) }}</span>
+                                    <span class="text-[10px] font-bold text-slate-900 uppercase tracking-widest">{{ str_replace('_', ' ', $aspect['name']) }}</span>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center justify-center gap-2">
                                         @for($i=1; $i<=7; $i++)
-                                            <div class="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black transition-all
+                                            <div class="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all
                                                 {{ $val == $i ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30 scale-110' : 'bg-slate-100 text-slate-300' }}">
                                                 {{ $i }}
                                             </div>
@@ -172,7 +172,7 @@
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex flex-col items-end">
-                                        <span class="text-[8px] font-black uppercase text-slate-400 italic mb-1">Pasangan Semantik:</span>
+                                        <span class="text-[8px] font-bold uppercase text-slate-400  mb-1">Pasangan Semantik:</span>
                                         <div class="text-[10px] font-bold text-slate-600">
                                             <span class="{{ $val <= 3 ? 'text-blue-600' : '' }}">{{ $aspect['left'] }}</span>
                                             <span class="mx-2 text-slate-200">|</span>

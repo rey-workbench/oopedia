@@ -35,7 +35,7 @@
         <x-ui.card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
             <x-slot:header>
                 <div class="flex flex-col md:flex-row justify-between items-center gap-6 w-full px-6 py-4">
-                    <h6 class="mb-0 font-bold uppercase tracking-widest text-[10px] text-slate-400">Inventaris Konten</h6>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Inventaris Konten</p>
                     <form method="GET" action="{{ route('admin.materials.index') }}" class="w-full md:w-auto">
                         <div class="relative group">
                             <i class="fas fa-dna absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors"></i>
@@ -77,7 +77,7 @@
                         </td>
                         <td class="px-6 py-6 border-l-4 border-transparent group-hover:border-blue-600">
                             <div>
-                                <div class="font-bold text-slate-900 tracking-tight mb-1">{{ $material->title }}</div>
+                                <div class="font-bold text-slate-900 tracking-widest mb-1">{{ $material->title }}</div>
                                 <div class="flex items-center gap-2">
                                     <span class="text-[9px] font-bold bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full uppercase tracking-widest">MOD-{{ str_pad($material->id, 3, '0', STR_PAD_LEFT) }}</span>
                                     <span class="text-[9px] font-bold bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full uppercase tracking-widest">{{ $material->subMaterials->count() }} SUB-MATERI</span>
@@ -92,11 +92,11 @@
                                 <div class="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center text-[10px] font-bold shadow-lg shadow-slate-200">
                                     {{ substr($material->creator ? $material->creator->name : 'S', 0, 1) }}
                                 </div>
-                                <span class="text-[11px] font-bold text-slate-600 uppercase tracking-tight">{{ $material->creator ? $material->creator->name : 'System Admin' }}</span>
+                                <span class="text-[11px] font-bold text-slate-600 uppercase tracking-widest">{{ $material->creator ? $material->creator->name : 'System Admin' }}</span>
                             </div>
                         </td>
                         <td class="px-6 py-6 text-center">
-                            <span class="text-[10px] font-black italic text-slate-400 uppercase tracking-widest">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                                 {{ $material->created_at->format('d.m.Y') }}
                             </span>
                         </td>
@@ -119,7 +119,7 @@
                             <div class="w-24 h-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-inner">
                                 <i class="fas fa-box-open text-slate-200 text-4xl"></i>
                             </div>
-                            <h3 class="text-2xl font-bold tracking-tight text-slate-900 mb-2">Kurikulum Kosong</h3>
+                            <h3 class="text-2xl font-bold tracking-widest text-slate-900 mb-2">Kurikulum Kosong</h3>
                             <p class="text-slate-400 text-sm max-w-xs mx-auto mb-8">Basis data materi instruksional kosong. Lakukan injeksi modul baru untuk memulai siklus pembelajaran.</p>
                             <x-ui.button href="{{ route('admin.materials.create') }}" variant="primary" icon="fas fa-plus">Inisialisasi Kurikulum</x-ui.button>
                         </td>

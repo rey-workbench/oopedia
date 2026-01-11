@@ -11,7 +11,7 @@
             {{-- Protocol Info --}}
             <div class="space-y-6">
                 <x-ui.card class="border-slate-100 bg-slate-900 text-white">
-                    <h6 class="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-4 italic">Protokol Fakultas</h6>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-indigo-400 mb-4">Protokol Fakultas</p>
                     <ul class="space-y-4">
                         <li class="flex gap-3">
                             <i class="fas fa-file-excel text-indigo-400 mt-1"></i>
@@ -31,8 +31,8 @@
                     </div>
                 </x-ui.card>
 
-                <div class="p-6 rounded-3xl bg-indigo-50 border border-indigo-100 italic">
-                    <p class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1">Integritas Unggahan</p>
+                <div class="p-6 rounded-3xl bg-indigo-50 border border-indigo-100 ">
+                    <p class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest mb-1">Integritas Unggahan</p>
                     <p class="text-xs font-bold text-indigo-900">Hanya untuk peran sistem yang terverifikasi.</p>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                     <x-slot:header>
                         <div class="flex items-center gap-4">
                             <div class="w-1.5 h-8 bg-indigo-600 rounded-full"></div>
-                            <h6 class="mb-0 italic font-black uppercase tracking-widest text-xs text-slate-400">Portal Transmisi</h6>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Portal Transmisi</p>
                         </div>
                     </x-slot:header>
 
@@ -51,17 +51,17 @@
                         @csrf
                         
                         <div class="space-y-4">
-                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Unggah Muatan Fakultas</label>
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2 block">Unggah Muatan Fakultas</label>
                             <label class="relative flex flex-col items-center justify-center w-full h-48 px-4 transition bg-slate-50 border-2 border-slate-200 border-dashed rounded-[2rem] appearance-none cursor-pointer hover:border-indigo-400 focus:outline-none group">
                                 <span class="flex items-center space-x-2">
                                     <i class="fas fa-upload text-slate-300 text-3xl group-hover:text-indigo-500 transition-colors"></i>
-                                    <span class="text-sm font-black italic text-slate-400 group-hover:text-slate-900 transition-colors uppercase tracking-tighter">Pilih File untuk Diinjeksi</span>
+                                    <span class="text-sm font-bold text-slate-400 group-hover:text-slate-900 transition-colors uppercase tracking-widest">Pilih File untuk Diinjeksi</span>
                                 </span>
                                 <input type="file" name="excel_file" class="hidden" required accept=".xlsx,.xls,.csv" onchange="document.getElementById('file-chosen').textContent = this.files[0].name">
                                 <span id="file-chosen" class="mt-2 text-[10px] font-bold text-indigo-600 truncate max-w-xs"></span>
                             </label>
                              @error('excel_file')
-                                <p class="text-[10px] font-black text-rose-500 uppercase italic">{{ $message }}</p>
+                                <p class="text-[10px] font-bold text-rose-500 uppercase">{{ $message }}</p>
                             @enderror
                         </div>
 
