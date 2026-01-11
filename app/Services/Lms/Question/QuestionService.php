@@ -52,6 +52,7 @@ class QuestionService
                 'question_type' => $data['question_type'],
                 'difficulty' => $data['difficulty'],
                 'material_id' => $data['material_id'],
+                'sub_material_id' => $data['sub_material_id'] ?? null,
                 'created_by' => auth()->id(),
             ]);
 
@@ -69,6 +70,7 @@ class QuestionService
                 'question_type' => $data['question_type'],
                 'difficulty' => $data['difficulty'],
                 'material_id' => $data['material_id'],
+                'sub_material_id' => $data['sub_material_id'] ?? null,
             ]);
 
             // Delete existing answers

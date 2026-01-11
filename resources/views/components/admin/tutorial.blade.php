@@ -103,95 +103,6 @@ function getTutorialSteps(page) {
                 intro: "Klik untuk menyimpan perubahan materi."
             }
         ],
-        'admin.question-banks.index': [
-            {
-                intro: "Selamat datang di halaman Bank Soal!"
-            },
-            {
-                element: '.input-group',
-                intro: "Gunakan form pencarian ini untuk menemukan bank soal."
-            },
-            {
-                element: 'a[href*="question-banks/create"]',
-                intro: "Klik tombol ini untuk menambahkan bank soal baru."
-            },
-            {
-                element: '.table',
-                intro: "Tabel ini menampilkan semua bank soal yang tersedia."
-            }
-        ],
-        'admin.question-banks.create': [
-            {
-                intro: "Selamat datang di halaman Tambah Bank Soal!"
-            },
-            {
-                element: '.input-group input[name="name"]',
-                intro: "Masukkan nama bank soal di sini."
-            },
-            {
-                element: '.input-group textarea[name="description"]',
-                intro: "Berikan deskripsi untuk bank soal ini."
-            },
-        ],
-        'admin.question-banks.configure': [
-            {
-                intro: "Selamat datang di halaman Konfigurasi Bank Soal!"
-            },
-            {
-                element: 'select[name="material_id"]',
-                intro: "Pilih materi yang terkait dengan bank soal ini."
-            },
-            {
-                element: '#beginner_count',
-                intro: "Tentukan jumlah soal untuk tingkat Beginner."
-            },
-            {
-                element: '#medium_count',
-                intro: "Tentukan jumlah soal untuk tingkat Medium."
-            },
-            {
-                element: '#hard_count',
-                intro: "Tentukan jumlah soal untuk tingkat Hard."
-            }
-        ],
-        'admin.question-banks.manage-questions': [
-            {
-                intro: "Selamat datang di halaman Kelola Soal!"
-            },
-            {
-                element: 'input[name="search"]',
-                intro: "Cari soal berdasarkan teks pertanyaan."
-            },
-            {
-                element: 'select[name="difficulty"]',
-                intro: "Filter soal berdasarkan tingkat kesulitan."
-            },
-            {
-                element: 'select[name="material_id"]',
-                intro: "Filter soal berdasarkan materi."
-            },
-            {
-                element: '.table',
-                intro: "Pilih soal yang ingin ditambahkan ke bank soal."
-            }
-        ],
-        'admin.question-banks.show': [
-            {
-                intro: "Selamat datang di halaman Detail Bank Soal!"
-            },
-            {
-                element: '.card-body h4',
-                intro: "Informasi detail bank soal ditampilkan di sini."
-            },
-            {
-                element: '.row.mb-4 .col-md-4',
-                intro: "Statistik jumlah soal berdasarkan tingkat kesulitan."
-            },
-            {
-                element: '.table',
-                intro: "Daftar soal yang ada dalam bank soal ini."
-            }
-        ],
         'admin.ueq.index': [
             {
                 intro: "Selamat datang di halaman Hasil Survey UEQ!"
@@ -329,8 +240,8 @@ function getTutorialSteps(page) {
                 intro: "Selamat datang di halaman Tambah Soal!"
             },
             {
-                element: 'select[name="question_bank_id"]',
-                intro: "Pilih bank soal untuk menyimpan soal ini."
+                element: 'select[name="material_id"]',
+                intro: "Pilih modul asal untuk soal ini.",
             },
             {
                 element: '.tox-tinymce',
@@ -398,23 +309,6 @@ function getTutorialSteps(page) {
             {
                 element: '.explanation',
                 intro: "Penjelasan mengapa jawaban tersebut benar."
-            }
-        ],
-        'admin.question-banks.edit': [
-            {
-                intro: "Selamat datang di halaman Edit Bank Soal!"
-            },
-            {
-                element: 'input[name="name"]',
-                intro: "Ubah nama bank soal di sini."
-            },
-            {
-                element: 'textarea[name="description"]',
-                intro: "Perbarui deskripsi bank soal jika diperlukan."
-            },
-            {
-                element: 'button[type="submit"]',
-                intro: "Simpan perubahan yang telah dilakukan."
             }
         ],
         'admin.users.edit': [

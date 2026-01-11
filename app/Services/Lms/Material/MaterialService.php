@@ -57,21 +57,11 @@ class MaterialService
 
     public function deleteMaterial(Material $material)
     {
-        // Delete related question_banks records
-        $material->questionBanks()->delete();
-        
-        // Delete related question bank configs
-        if (method_exists($material, 'questionBankConfigs')) {
-            $material->questionBankConfigs()->delete();
-        }
-        
-        // Delete associated media files
         foreach($material->media as $media) {
             $this->removeMediaFile($media->media_url);
             $media->delete(); 
         }
-        
-        // Delete the material
+                
         return $this->materialRepo->delete($material->id);
     }
 

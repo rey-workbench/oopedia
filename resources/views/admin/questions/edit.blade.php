@@ -31,18 +31,27 @@
                     <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
                         <x-forms.form-group label="Modul Asal" name="material_id" required>
                             @if (isset($material))
-                                <input type="hidden" name="material_id" value="{{ $material->id }}">
+                                <input type="hidden" name="material_id" id="material_id" value="{{ $material->id }}">
                                 <div class="px-6 py-4 bg-indigo-50/50 border border-indigo-100 rounded-2xl text-sm font-black italic text-indigo-900 border-l-4 border-l-indigo-600 uppercase">
                                     {{ $material->title }}
                                 </div>
                             @else
-                                <select name="material_id" id="material_id" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-black italic tracking-tighter outline-none focus:ring-4 focus:ring-blue-100 transition-all appearance-none cursor-pointer uppercase" required>
+                                <select name="material_id" id="material_id" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-black italic tracking-tighter outline-none focus:ring-4 focus:ring-blue-100 transition-all appearance-none cursor-pointer uppercase" required onchange="fetchSubMaterials(this.value)">
                                     <option value="">PILIH MODUL</option>
                                     @foreach ($materials as $mat)
                                         <option value="{{ $mat->id }}" {{ $question->material_id == $mat->id ? 'selected' : '' }}>{{ $mat->title }}</option>
                                     @endforeach
                                 </select>
                             @endif
+                        </x-forms.form-group>
+
+                        <x-forms.form-group label="Sub-materi (Opsional)" name="sub_material_id">
+                            <select name="sub_material_id" id="sub_material_id" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-black italic tracking-tighter outline-none focus:ring-4 focus:ring-blue-100 transition-all appearance-none cursor-pointer uppercase">
+                                <option value="">PILIH SUB-MATERI</option>
+                                @foreach ($subMaterials as $sub)
+                                    <option value="{{ $sub->id }}" {{ $question->sub_material_id == $sub->id ? 'selected' : '' }}>{{ $sub->title }}</option>
+                                @endforeach
+                            </select>
                         </x-forms.form-group>
 
                         <x-forms.form-group label="Tingkat Kesulitan" name="difficulty" required>
@@ -177,6 +186,27 @@
     @push('scripts')
     <script>
         let answerCount = {{ count($question->answers) }};
+
+        async function fetchSubMaterials(materialId) {
+            const subMaterialSelect = document.getElementById('sub_material_id');
+            subMaterialSelect.innerHTML = '<option value="">PILIH SUB-MATERI</option>';
+            
+            if (!materialId) return;
+
+            try {
+                const response = await fetch(`/admin/materials/${materialId}/submaterials/json`);
+                const data = await response.json();
+                
+                data.forEach(sub => {
+                    const option = document.createElement('option');
+                    option.value = sub.id;
+                    option.textContent = sub.title;
+                    subMaterialSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error fetching sub-materials:', error);
+            }
+        }
 
         function resetAnswersForNewType() {
             if (!confirm('Mengubah tipe soal akan menghapus semua jawaban yang ada. Lanjutkan?')) {

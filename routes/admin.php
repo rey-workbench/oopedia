@@ -9,7 +9,7 @@ use App\Http\Controllers\Admin\{
     AdminUserController,
     PendingApprovalController,
     UeqSurveyController,
-    QuestionBankController
+    SubMaterialController
 };
 use App\Http\Controllers\Auth\LogoutController;
 
@@ -25,6 +25,8 @@ Route::middleware('auth')->group(function () {
         
         // Materials & Questions
         Route::resource('materials', AdminMaterialController::class);
+        Route::get('materials/{material}/submaterials/json', [SubMaterialController::class, 'getJson'])->name('materials.submaterials.json');
+        Route::resource('materials.submaterials', SubMaterialController::class);
         Route::resource('questions', AdminQuestionController::class);
         Route::resource('materials.questions', AdminQuestionController::class)->except(['show']);
         
@@ -54,12 +56,6 @@ Route::middleware('auth')->group(function () {
             // User management
             Route::resource('users', AdminUserController::class)->except(['show']);
         });
-
-        // Question Banks routes
-        // Question banks routes removed - feature deprecated
-        Route::delete('question-bank-configs/{config}', [QuestionBankController::class, 'deleteConfig'])
-            ->name('question-bank-configs.delete');
-
         // Media routes
         Route::get('/media/delete/{id}', [AdminMaterialController::class, 'deleteMedia'])
             ->name('media.delete');

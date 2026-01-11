@@ -44,11 +44,13 @@ class QuestionController extends Controller
         if ($material) {
             // If material is provided, only show that material
             $materials = collect([$material]);
-            return view('admin.questions.create', compact('materials', 'material'));
+            $subMaterials = $material->subMaterials()->orderBy('order')->get();
+            return view('admin.questions.create', compact('materials', 'material', 'subMaterials'));
         } else {
             // Otherwise show all materials (for the general create route)
             $materials = $this->materialService->getAllMaterials();
-            return view('admin.questions.create', compact('materials'));
+            $subMaterials = collect(); // Will be populated by JS
+            return view('admin.questions.create', compact('materials', 'subMaterials'));
         }
     }
 
@@ -63,6 +65,7 @@ class QuestionController extends Controller
             'question_type' => 'required|in:radio_button,drag_and_drop,fill_in_the_blank',
             'difficulty' => 'required|in:beginner,medium,hard',
             'material_id' => 'required|exists:materials,id',
+            'sub_material_id' => 'nullable|exists:sub_materials,id',
         ];
         
         // Validasi khusus untuk answers berdasarkan tipe soal
@@ -110,7 +113,7 @@ class QuestionController extends Controller
         }
 
         // Prepare data for service
-        $data = $request->only(['question_text', 'question_type', 'difficulty', 'material_id']);
+        $data = $request->only(['question_text', 'question_type', 'difficulty', 'material_id', 'sub_material_id']);
         $data['answers'] = $answers;
 
         try {
@@ -135,7 +138,9 @@ class QuestionController extends Controller
         $materials = $this->materialService->getAllMaterials();
 
         $material = $question->material; // Get the question's material
-        return view('admin.questions.edit', compact('question', 'materials', 'material'));
+        $subMaterials = $material ? $material->subMaterials()->orderBy('order')->get() : collect();
+        
+        return view('admin.questions.edit', compact('question', 'materials', 'material', 'subMaterials'));
     }
 
     public function update(Request $request, Material $material = null, Question $question)
@@ -146,6 +151,7 @@ class QuestionController extends Controller
             'question_type' => 'required|in:radio_button,drag_and_drop,fill_in_the_blank',
             'difficulty' => 'required|in:beginner,medium,hard',
             'material_id' => 'required|exists:materials,id',
+            'sub_material_id' => 'nullable|exists:sub_materials,id',
         ];
         
         // Validasi khusus untuk answers berdasarkan tipe soal

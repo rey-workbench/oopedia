@@ -80,6 +80,7 @@
                                 <div class="font-bold text-slate-900 tracking-tight mb-1">{{ $material->title }}</div>
                                 <div class="flex items-center gap-2">
                                     <span class="text-[9px] font-bold bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full uppercase tracking-widest">MOD-{{ str_pad($material->id, 3, '0', STR_PAD_LEFT) }}</span>
+                                    <span class="text-[9px] font-bold bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full uppercase tracking-widest">{{ $material->subMaterials->count() }} SUB-MATERI</span>
                                     <p class="text-[10px] font-medium text-slate-400 line-clamp-1 max-w-sm">
                                         {{ Str::limit(strip_tags($material->content), 60) }}
                                     </p>
@@ -101,7 +102,8 @@
                         </td>
                         <td class="px-6 py-6">
                             <div class="flex justify-end gap-3">
-                                <x-ui.button variant="ghost" size="sm" href="{{ route('admin.materials.questions.index', $material->id) }}" icon="fas fa-vial" class="text-indigo-500 hover:text-indigo-600" />
+                                <x-ui.button variant="ghost" size="sm" href="{{ route('admin.materials.submaterials.index', $material->id) }}" icon="fas fa-list-ul" class="text-emerald-500 hover:text-emerald-600" title="Kelola Sub-materi" />
+                                <x-ui.button variant="ghost" size="sm" href="{{ route('admin.materials.questions.index', $material->id) }}" icon="fas fa-vial" class="text-indigo-500 hover:text-indigo-600" title="Kelola Soal" />
                                 <x-ui.button variant="ghost" size="sm" href="{{ route('admin.materials.edit', $material->id) }}" icon="fas fa-pen-nib" />
                                 <form action="{{ route('admin.materials.destroy', $material->id) }}" method="POST" class="inline">
                                     @csrf

@@ -114,6 +114,6 @@ class MaterialRepository
             $query->orderBy('created_at', 'asc');
         }
 
-        return $query->with('creator')->get();
+        return $query->with(['creator', 'subMaterials', 'media'])->get();
     }
 }

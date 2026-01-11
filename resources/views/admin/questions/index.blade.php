@@ -58,7 +58,12 @@
                     <td class="px-8 py-8 align-top">
                         <div class="flex items-center gap-3">
                             <div class="w-1.5 h-8 bg-blue-600 rounded-full"></div>
-                            <span class="text-[10px] font-black text-slate-900 uppercase tracking-widest italic">{{ $question->material->title }}</span>
+                            <div>
+                                <span class="text-[10px] font-black text-slate-900 uppercase tracking-widest italic block">{{ $question->material->title }}</span>
+                                @if($question->subMaterial)
+                                    <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest italic block mt-1">Sub: {{ $question->subMaterial->title }}</span>
+                                @endif
+                            </div>
                         </div>
                     </td>
                     <td class="px-8 py-8">

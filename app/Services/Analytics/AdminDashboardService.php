@@ -48,10 +48,12 @@ class AdminDashboardService
         
         $materials = $this->materialRepo->getAllWithQuestionsAndConfigs();
         
-        return $students->map(function($student) use ($materials) {
-            foreach ($materials as $material) {
-                $totalConfiguredQuestions += $material->questions->count();
-            }
+        $totalConfiguredQuestions = 0;
+        foreach ($materials as $material) {
+            $totalConfiguredQuestions += $material->questions->count();
+        }
+
+        return $students->map(function($student) use ($totalConfiguredQuestions) {
             
             $uniqueCorrectQuestions = $student->quizAttempts->where('is_correct', true)->pluck('question_id')->unique()->count();
             
