@@ -270,7 +270,7 @@ class MaterialQuestionController extends Controller
             'user_id' => $userId,
             'material_id' => $material->id,
             'question_id' => $question->id,
-            'answer_id' => $data['answer_id'] ?? null,
+            'answer_id' => $data['answer'] ?? ($data['answer_id'] ?? null),
             'is_correct' => $isCorrect,
             'is_answered' => true,
             'attributes' => $finalState,

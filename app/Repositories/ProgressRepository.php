@@ -136,7 +136,7 @@ class ProgressRepository
         $attempt = QuizAttempt::create([
             'user_id' => $data['user_id'],
             'question_id' => $data['question_id'],
-            'answer_id' => $data['answer_id'] ?? null,
+            'answer_id' => $data['answer_id'] ?? ($data['answer'] ?? null),
             'is_correct' => $data['is_correct'] ?? false,
             'score' => $data['score'] ?? ($data['is_correct'] ? 100 : 0),
             'attempt_number' => $data['attempt_number'],
