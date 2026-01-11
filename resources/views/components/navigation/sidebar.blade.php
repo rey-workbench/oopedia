@@ -86,7 +86,7 @@
         </div>
         <div class="space-y-2">
           <x-navigation.sidebar-link href="{{ route('mahasiswa.dashboard') }}" icon="fas fa-shapes" :active="request()->routeIs('mahasiswa.dashboard*')">Dashboard</x-navigation.sidebar-link>
-          <x-navigation.sidebar-link href="{{ route('mahasiswa.materials.index') }}" icon="fas fa-book-open-reader" :active="request()->routeIs('mahasiswa.materials.*')">Materi PBO</x-navigation.sidebar-link>
+          <x-navigation.sidebar-link href="{{ route('mahasiswa.materials.index') }}" icon="fas fa-book-open-reader" :active="(request()->routeIs('mahasiswa.materials.*') || request()->routeIs('mahasiswa.submaterials.*')) && !request()->routeIs('mahasiswa.materials.questions.*')">Materi PBO</x-navigation.sidebar-link>
           <x-navigation.sidebar-link href="{{ route('mahasiswa.materials.questions.index') }}" icon="fas fa-vial-circle-check" :active="request()->routeIs('mahasiswa.materials.questions.*')">Latihan Soal</x-navigation.sidebar-link>
         </div>
       </div>
