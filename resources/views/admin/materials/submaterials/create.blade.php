@@ -31,7 +31,8 @@
                 </x-forms.form-group>
 
                 <x-forms.form-group label="Isi Materi" name="content" required>
-                    <textarea name="content" rows="12" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-600 transition-all outline-none" placeholder="Tuliskan isi materi atau link video/gambar di sini..." required>{{ old('content') }}</textarea>
+                    <div class="quill-editor h-[400px] bg-white border border-slate-200 rounded-2xl overflow-hidden" data-input="content"></div>
+                    <input type="hidden" id="content" name="content" value="{{ old('content') }}">
                 </x-forms.form-group>
 
                 <div class="pt-6 border-t border-slate-100 flex justify-end">
