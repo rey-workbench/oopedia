@@ -1,5 +1,5 @@
 @props([
-    'theme' => null,
+  'theme' => null,
 ])
 
 {{-- jQuery (Minimized usage) --}}
@@ -17,26 +17,26 @@
 
 {{-- Quill JS is now bundled via Vite in admin.js --}}
 @if($theme === 'admin')
-    {{-- Admin specific scripts if any --}}
+  {{-- Admin specific scripts if any --}}
 @endif
 
 {{-- Navbar/Sidebar Logic --}}
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const sidebar = document.querySelector('aside');
-        const overlay = document.getElementById('sidebar-overlay');
-        const toggles = document.querySelectorAll('[data-sidebar-toggle]');
-        
-        const toggleSidebar = () => {
-            if (sidebar) {
-                sidebar.classList.toggle('-translate-x-full');
-                if (overlay) overlay.classList.toggle('hidden');
-            }
-        };
+  document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.querySelector('aside');
+    const overlay = document.getElementById('sidebar-overlay');
+    const toggles = document.querySelectorAll('[data-sidebar-toggle]');
+    
+    const toggleSidebar = () => {
+      if (sidebar) {
+        sidebar.classList.toggle('-translate-x-full');
+        if (overlay) overlay.classList.toggle('hidden');
+      }
+    };
 
-        toggles.forEach(btn => btn.addEventListener('click', toggleSidebar));
-        if (overlay) overlay.addEventListener('click', toggleSidebar);
-    });
+    toggles.forEach(btn => btn.addEventListener('click', toggleSidebar));
+    if (overlay) overlay.addEventListener('click', toggleSidebar);
+  });
 </script>
 
 {{ $slot }}

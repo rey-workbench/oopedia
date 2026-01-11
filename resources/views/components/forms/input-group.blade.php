@@ -1,7 +1,7 @@
 @props([
-    'classes' => '',
+  'classes' => '',
 ])
 
 <div {{ $attributes->merge(['class' => 'input-group input-group-outline ' . $classes]) }}>
-    {{ $slot }}
+  {{ $slot }}
 </div>

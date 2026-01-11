@@ -1,13 +1,13 @@
 @props([
-    'theme' => null,
+  'theme' => null,
 ])
 
 @php
-    $jsBundle = match($theme) {
-        'admin' => 'resources/js/bundles/admin.js',
-        'mahasiswa' => 'resources/js/bundles/mahasiswa.js',
-        default => 'resources/js/app.js',
-    };
+  $jsBundle = match($theme) {
+    'admin' => 'resources/js/bundles/admin.js',
+    'mahasiswa' => 'resources/js/bundles/mahasiswa.js',
+    default => 'resources/js/app.js',
+  };
 @endphp
 
 {{-- 1. Typography & Icons --}}
@@ -17,12 +17,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 @if($theme === 'admin')
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 @endif
 
 {{-- 2. Vendor CSS --}}
 @if(in_array($theme, ['mahasiswa', 'admin', 'guest']))
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
 @endif
 
 {{-- 3. Core Framework & App Assets --}}
@@ -30,17 +30,17 @@
 
 {{-- 4. Custom Design tokens --}}
 <style>
-    :root {
-        --font-poppins: 'Poppins', sans-serif;
-    }
-    
-    body {
-        font-family: var(--font-poppins);
-    }
-    
-    h1, h2, h3, h4, h5, h6, .font-heading, .font-poppins {
-        font-family: var(--font-poppins);
-    }
+  :root {
+    --font-poppins: 'Poppins', sans-serif;
+  }
+  
+  body {
+    font-family: var(--font-poppins);
+  }
+  
+  h1, h2, h3, h4, h5, h6, .font-heading, .font-poppins {
+    font-family: var(--font-poppins);
+  }
 </style>
 
 {{ $slot }}

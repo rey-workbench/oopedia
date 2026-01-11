@@ -1,8 +1,8 @@
 @props([
-    'title' => 'OOPEDIA',
-    'description' => 'OOPEDIA - Platform Pembelajaran Object-Oriented Programming',
-    'keywords' => 'OOP, Programming, Learning, Java, PHP',
-    'author' => 'OOPEDIA Team'
+  'title' => 'OOPEDIA',
+  'description' => 'OOPEDIA - Platform Pembelajaran Object-Oriented Programming',
+  'keywords' => 'OOP, Programming, Learning, Java, PHP',
+  'author' => 'OOPEDIA Team'
 ])
 
 <meta charset="UTF-8">
