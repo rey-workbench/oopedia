@@ -282,7 +282,7 @@ class MaterialQuestionController extends Controller
         }
         
         // 7. Resolve next action
-        $nextActionData = $this->resolveDynamicNextAction($finalState['next_action'] ?? 'NEXT_QUESTION', $material);
+        $nextActionData = $this->resolveDynamicNextAction($finalState['next_action'] ?? 'NEXT_QUESTION', $material, $question);
         
         return [
             'status' => $isCorrect ? 'success' : 'error',
@@ -308,15 +308,17 @@ class MaterialQuestionController extends Controller
     /**
      * Resolve dynamic next action command into URL and metadata.
      */
-    protected function resolveDynamicNextAction(string $actionCommand, Material $material): array
+    protected function resolveDynamicNextAction(string $actionCommand, Material $material, Question $question): array
     {
         return match ($actionCommand) {
             'STUDY_MATERIAL' => [
-                'label' => 'Ulas Materi: ' . $material->title,
-                'url' => route('mahasiswa.materials.show', $material->id),
+                'label' => 'Ulas Materi: ' . ($question->subMaterial->title ?? $material->title),
+                'url' => $question->sub_material_id 
+                    ? route('mahasiswa.submaterials.show', ['material' => $material->id, 'submaterial' => $question->sub_material_id])
+                    : route('mahasiswa.materials.show', $material->id),
                 'type' => 'material'
             ],
-            'REDUCE_DIFFICULTY' => $this->resolveReduceDifficulty($material),
+            'REDUCE_DIFFICULTY' => $this->resolveReduceDifficulty($material, $question),
             'INCREASE_DIFFICULTY' => $this->resolveIncreaseDifficulty($material),
             'FINISH_MATERIAL' => [
                 'label' => 'Selesaikan Modul',
@@ -336,7 +338,7 @@ class MaterialQuestionController extends Controller
         };
     }
 
-    protected function resolveReduceDifficulty(Material $material): array
+    protected function resolveReduceDifficulty(Material $material, Question $question): array
     {
         $hasBeginner = Question::where('material_id', $material->id)
             ->where('difficulty', 'beginner')
@@ -346,7 +348,9 @@ class MaterialQuestionController extends Controller
             'label' => $hasBeginner ? 'Coba Soal Pemula' : 'Ulas Materi Dasar',
             'url' => $hasBeginner 
                 ? route('mahasiswa.materials.questions.show', ['material' => $material->id, 'difficulty' => 'beginner'])
-                : route('mahasiswa.materials.show', $material->id),
+                : ($question->sub_material_id 
+                    ? route('mahasiswa.submaterials.show', ['material' => $material->id, 'submaterial' => $question->sub_material_id])
+                    : route('mahasiswa.materials.show', $material->id)),
             'type' => $hasBeginner ? 'question' : 'material'
         ];
     }
