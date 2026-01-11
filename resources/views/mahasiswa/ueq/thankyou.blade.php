@@ -8,8 +8,8 @@
                         <div class="w-24 h-24 bg-white/20 backdrop-blur-md rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-xl border border-white/30 animate-in zoom-in-50 duration-700">
                             <i class="fas fa-heart text-4xl animate-pulse"></i>
                         </div>
-                        <h2 class="text-4xl font-black italic tracking-tight mb-4 uppercase">Terima Kasih!</h2>
-                        <p class="text-blue-100 text-lg font-medium italic">Feedback Anda sangat berharga bagi kami.</p>
+                        <h2 class="text-4xl font-bold  tracking-widest mb-4 uppercase">Terima Kasih!</h2>
+                        <p class="text-blue-100 text-lg font-medium ">Feedback Anda sangat berharga bagi kami.</p>
                     </div>
                 </div>
                 
@@ -21,7 +21,7 @@
 
                     <div class="space-y-4">
                         <a href="{{ route('mahasiswa.dashboard') }}" 
-                           class="inline-flex items-center justify-center gap-3 px-10 py-5 bg-gray-900 text-white rounded-2xl font-black italic uppercase tracking-widest hover:bg-blue-600 transition-all shadow-xl shadow-gray-200 hover:shadow-blue-200 group/btn">
+                           class="inline-flex items-center justify-center gap-3 px-10 py-5 bg-gray-900 text-white rounded-2xl font-bold  uppercase tracking-widest hover:bg-blue-600 transition-all shadow-xl shadow-gray-200 hover:shadow-blue-200 group/btn">
                             <i class="fas fa-home group-hover:-translate-y-1 transition-transform"></i>
                             Kembali ke Dashboard
                         </a>

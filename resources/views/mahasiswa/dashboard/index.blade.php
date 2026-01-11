@@ -18,7 +18,7 @@
                 
                 <div class="text-center md:text-left">
                     <p class="text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-3">Selamat Datang Kembali</p>
-                    <h2 class="text-5xl font-extrabold tracking-tight mb-4 text-white">{{ auth()->user()->name }}</h2>
+                    <h2 class="text-5xl font-bold tracking-widest mb-4 text-white">{{ auth()->user()->name }}</h2>
                     <p class="text-slate-400 font-medium text-lg max-w-xl">Lanjutkan perjalanan belajar Anda hari ini dan kuasai konsep <span class="text-white">Object-Oriented Programming</span> dengan cara yang menyenangkan!</p>
                 </div>
             </div>
@@ -60,7 +60,7 @@
             {{-- Quick Actions --}}
             <div class="lg:col-span-2 space-y-8">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-xl font-bold tracking-tight text-slate-900">Aktivitas Terbaru</h3>
+                    <h3 class="text-xl font-bold tracking-widest text-slate-900">Aktivitas Terbaru</h3>
                     <x-ui.button variant="ghost" size="sm">Lihat Semua</x-ui.button>
                 </div>
 
@@ -77,7 +77,7 @@
                                 <div class="flex-1">
                                     <div class="flex justify-between items-start">
                                         <div>
-                                            <h4 class="font-bold text-slate-900 tracking-tight text-sm uppercase">
+                                            <h4 class="font-bold text-slate-900 tracking-widest text-sm uppercase">
                                                 @if($activity->type === 'achievement') Pencapaian Baru! @elseif($activity->type === 'milestone') Milestone Tercapai! @else Progres Belajar @endif
                                             </h4>
                                             <p class="text-slate-500 text-sm font-medium mt-1 leading-relaxed">
@@ -90,7 +90,7 @@
                                                 @endif
                                             </p>
                                         </div>
-                                        <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest">{{ \Carbon\Carbon::parse($activity->created_at)->diffForHumans() }}</span>
+                                        <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">{{ \Carbon\Carbon::parse($activity->created_at)->diffForHumans() }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -103,12 +103,12 @@
 
             {{-- Sidebar Dashboard --}}
             <div class="space-y-8">
-                <h3 class="text-xl font-bold tracking-tight text-slate-900">Materi Unggulan</h3>
+                <h3 class="text-xl font-bold tracking-widest text-slate-900">Materi Unggulan</h3>
                 
                 <div class="space-y-6">
                     <x-ui.card padding="p-8" class="bg-gradient-to-br from-blue-600 to-blue-700 text-white border-none shadow-xl">
                         <i class="fas fa-code text-3xl mb-6 opacity-50"></i>
-                        <h4 class="text-lg font-bold tracking-tight mb-2">PBO Dasar: Class & Object</h4>
+                        <h4 class="text-lg font-bold tracking-widest mb-2">PBO Dasar: Class & Object</h4>
                         <p class="text-blue-100 text-sm font-medium mb-8 leading-relaxed">Pahami anatomi dasar dari pemrograman berorientasi objek.</p>
                         <x-ui.button variant="secondary" size="sm" class="w-full" :href="route('mahasiswa.materials.index')">Pelajari Sekarang</x-ui.button>
                     </x-ui.card>

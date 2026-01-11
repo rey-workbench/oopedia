@@ -47,10 +47,10 @@
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"></div>
                     
                     <div class="absolute bottom-6 left-6 right-6 flex justify-between items-center">
-                        <div class="px-4 py-2 bg-white/10 backdrop-blur-md rounded-2xl text-white text-[10px] font-black uppercase tracking-widest border border-white/20">
+                        <div class="px-4 py-2 bg-white/10 backdrop-blur-md rounded-2xl text-white text-[10px] font-bold uppercase tracking-widest border border-white/20">
                             {{ $material->updated_at->format('M Y') }}
                         </div>
-                        <div class="flex items-center gap-2 px-4 py-2 bg-blue-600 rounded-2xl text-white text-[10px] font-black uppercase tracking-widest shadow-xl shadow-blue-500/20">
+                        <div class="flex items-center gap-2 px-4 py-2 bg-blue-600 rounded-2xl text-white text-[10px] font-bold uppercase tracking-widest shadow-xl shadow-blue-500/20">
                             <i class="fas fa-puzzle-piece"></i>
                             {{ $configuredTotalQuestions }} Tantangan
                         </div>
@@ -60,14 +60,14 @@
                 {{-- Content Section --}}
                 <div class="p-8 flex-1 flex flex-col">
                     <div class="mb-6">
-                        <h2 class="text-2xl font-black text-slate-900 leading-tight mb-3 group-hover:text-blue-600 transition-colors italic uppercase tracking-tighter">
+                        <h2 class="text-2xl font-bold text-slate-900 leading-tight mb-3 group-hover:text-blue-600 transition-colors  uppercase tracking-widest">
                             {{ $material->title }}
                         </h2>
                         <div class="flex items-center gap-3 text-slate-400">
                             <div class="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-xs text-slate-500 shadow-inner">
                                 <i class="fas fa-chalkboard-user"></i>
                             </div>
-                            <span class="text-[10px] font-black uppercase tracking-widest">{{ $material->creator ? $material->creator->name : 'Admin System' }}</span>
+                            <span class="text-[10px] font-bold uppercase tracking-widest">{{ $material->creator ? $material->creator->name : 'Admin System' }}</span>
                         </div>
                     </div>
 
@@ -77,7 +77,7 @@
                                 <i class="fas fa-ghost"></i>
                             </div>
                             <div>
-                                <span class="text-[10px] font-black text-amber-800 uppercase tracking-widest block mb-1italic">Mode Tamu</span>
+                                <span class="text-[10px] font-bold text-amber-800 uppercase tracking-widest block mb-1">Mode Tamu</span>
                                 <p class="text-xs text-amber-700 font-medium leading-relaxed">Akses terbatas ke materi & soal-soal pilihan.</p>
                             </div>
                         </div>

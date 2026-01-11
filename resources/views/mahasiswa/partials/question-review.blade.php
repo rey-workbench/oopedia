@@ -6,7 +6,7 @@
                 <i class="fas fa-clipboard-check text-2xl"></i>
             </div>
             <div>
-                <h3 class="text-2xl font-black text-gray-900 italic tracking-tight uppercase">
+                <h3 class="text-2xl font-bold text-gray-900  tracking-widest uppercase">
                     Review Semua Soal
                     @if(!auth()->check())
                         <span class="text-blue-600 ml-2">(MODE TAMU)</span>
@@ -19,7 +19,7 @@
         @if(!auth()->check())
             <form action="{{ route('mahasiswa.materials.reset', $material->id) }}" method="POST">
                 @csrf
-                <button type="submit" class="flex items-center gap-3 px-8 py-4 bg-amber-500 text-white rounded-2xl font-black italic uppercase tracking-widest hover:bg-amber-600 transition-all shadow-xl shadow-amber-100 active:scale-95">
+                <button type="submit" class="flex items-center gap-3 px-8 py-4 bg-amber-500 text-white rounded-2xl font-bold  uppercase tracking-widest hover:bg-amber-600 transition-all shadow-xl shadow-amber-100 active:scale-95">
                     <i class="fas fa-redo"></i>
                     Kerjakan Ulang
                 </button>
@@ -34,10 +34,10 @@
                 <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-500">
                     <div class="p-8 border-b border-gray-50 bg-gray-50/30 flex justify-between items-center">
                         <div class="flex items-center gap-4">
-                            <span class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center font-black italic shadow-lg">
+                            <span class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center font-bold  shadow-lg">
                                 {{ $index + 1 }}
                             </span>
-                            <span class="text-sm font-black text-gray-400 uppercase tracking-widest italic">
+                            <span class="text-sm font-bold text-gray-400 uppercase tracking-widest ">
                                 Soal {{ $index + 1 }} / {{ $material->questions->count() }}
                             </span>
                         </div>
@@ -45,7 +45,7 @@
                             @php
                                 $diffColor = $question->difficulty == 'hard' ? 'rose' : ($question->difficulty == 'medium' ? 'amber' : 'emerald');
                             @endphp
-                            <div class="px-4 py-1.5 rounded-full bg-{{ $diffColor }}-50 text-{{ $diffColor }}-600 text-[10px] font-black uppercase tracking-[0.2em] border border-{{ $diffColor }}-100 shadow-sm">
+                            <div class="px-4 py-1.5 rounded-full bg-{{ $diffColor }}-50 text-{{ $diffColor }}-600 text-[10px] font-bold uppercase tracking-[0.2em] border border-{{ $diffColor }}-100 shadow-sm">
                                 {{ $question->difficulty }}
                             </div>
                         </div>
@@ -53,17 +53,17 @@
                     
                     <div class="p-8 md:p-10">
                         <div class="mb-10">
-                            <h5 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <h5 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
                                 <i class="fas fa-question text-blue-500 text-xs"></i>
                                 Pertanyaan
                             </h5>
-                            <div class="text-xl font-bold text-gray-800 leading-relaxed italic">
+                            <div class="text-xl font-bold text-gray-800 leading-relaxed ">
                                 {!! $question->question_text !!}
                             </div>
                         </div>
 
                         <div>
-                            <h5 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                            <h5 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-2">
                                 <i class="fas fa-list-ul text-blue-500 text-xs"></i>
                                 Pilihan Jawaban
                             </h5>
@@ -84,7 +84,7 @@
                                                     {!! $answer->answer_text !!}
                                                 </div>
                                                 @if($answer->explanation)
-                                                    <div class="mt-4 p-4 rounded-2xl bg-white/60 border border-emerald-100/50 text-sm font-medium text-emerald-800 italic flex gap-3">
+                                                    <div class="mt-4 p-4 rounded-2xl bg-white/60 border border-emerald-100/50 text-sm font-medium text-emerald-800  flex gap-3">
                                                         <i class="fas fa-lightbulb shrink-0 mt-1 opacity-50"></i>
                                                         <div>{!! $answer->explanation !!}</div>
                                                     </div>
@@ -104,13 +104,13 @@
     {{-- Footer Actions --}}
     <div class="flex flex-col sm:flex-row justify-center gap-4 mt-12 pb-12">
         <a href="{{ route('mahasiswa.materials.questions.index') }}" 
-           class="flex items-center justify-center gap-3 px-10 py-5 bg-gray-900 text-white rounded-2xl font-black italic uppercase tracking-widest hover:bg-blue-600 transition-all shadow-xl shadow-gray-200">
+           class="flex items-center justify-center gap-3 px-10 py-5 bg-gray-900 text-white rounded-2xl font-bold  uppercase tracking-widest hover:bg-blue-600 transition-all shadow-xl shadow-gray-200">
             <i class="fas fa-list"></i>
             Kembali ke Daftar Soal
         </a>
         @if(!auth()->check())
             <a href="{{ route('mahasiswa.dashboard') }}" 
-               class="flex items-center justify-center gap-3 px-10 py-5 bg-white text-gray-900 border-2 border-gray-100 rounded-2xl font-black italic uppercase tracking-widest hover:bg-gray-50 transition-all">
+               class="flex items-center justify-center gap-3 px-10 py-5 bg-white text-gray-900 border-2 border-gray-100 rounded-2xl font-bold  uppercase tracking-widest hover:bg-gray-50 transition-all">
                 <i class="fas fa-home"></i>
                 Dashboard
             </a>

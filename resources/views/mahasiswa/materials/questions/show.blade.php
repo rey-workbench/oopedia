@@ -6,11 +6,11 @@
     <div class="py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="mb-10 text-center">
-                <h1 class="text-4xl font-black text-gray-900 italic tracking-tighter uppercase flex items-center justify-center gap-4">
+                <h1 class="text-4xl font-bold text-gray-900  tracking-widest uppercase flex items-center justify-center gap-4">
                     <i class="fas fa-terminal text-blue-600"></i>
                     Evaluasi: {{ $material->title }}
                 </h1>
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-[0.3em] mt-3 italic">Mode Ujian Terkendali & Aman</p>
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-[0.3em] mt-3 ">Mode Ujian Terkendali & Aman</p>
                 <div class="h-1 w-32 bg-gray-200 mx-auto mt-6 rounded-full overflow-hidden">
                     @php
                         $progressWidth = ($material->questions_count > 0) 
@@ -75,7 +75,7 @@
                             <div class="w-24 h-24 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl border-4 border-white/30">
                                 <i class="fas fa-check text-4xl"></i>
                             </div>
-                            <h2 class="text-4xl font-black mb-3 italic tracking-tight">LUAR BIASA!</h2>
+                            <h2 class="text-4xl font-bold mb-3  tracking-widest">LUAR BIASA!</h2>
                             <p class="text-emerald-50 text-xl font-medium">Anda telah menyelesaikan semua soal pada materi ini.</p>
                         </div>
                     </div>

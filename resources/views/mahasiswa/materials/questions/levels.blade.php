@@ -15,8 +15,8 @@
                             <i class="fas fa-microchip text-blue-600"></i>
                         </div>
                         <div>
-                            <h5 class="text-lg font-bold tracking-tight text-blue-900 mb-1">Mekanisme Poin Berbasis Akurasi</h5>
-                            <p class="text-sm font-medium text-blue-800 italic leading-relaxed">
+                            <h5 class="text-lg font-bold tracking-widest text-blue-900 mb-1">Mekanisme Poin Berbasis Akurasi</h5>
+                            <p class="text-sm font-medium text-blue-800  leading-relaxed">
                                 Sistem menghitung skor leaderboard berdasarkan efisiensi jawaban. Setiap percobaan yang salah akan mengurangi potensi poin maksimal. Fokuslah pada akurasi untuk mendaki peringkat teratas.
                             </p>
                         </div>
@@ -40,19 +40,19 @@
                         <div class="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
                             <i class="fas fa-check-double text-white"></i>
                         </div>
-                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Tuntas</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Tuntas</span>
                     </div>
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center">
                             <i class="fas fa-lock text-slate-600"></i>
                         </div>
-                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Terkunci</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Terkunci</span>
                     </div>
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 rounded-2xl bg-amber-500 flex items-center justify-center shadow-lg shadow-amber-500/20">
                             <i class="fas fa-crown text-white"></i>
                         </div>
-                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Mastery</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Mastery</span>
                     </div>
                 </div>
             </x-ui.card>
@@ -100,7 +100,7 @@
                                     </a>
                                 @endif
                                 
-                                <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] font-black text-slate-400 uppercase tracking-widest italic opacity-0 group-hover:opacity-100 transition-all">
+                                <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] font-bold text-slate-400 uppercase tracking-widest  opacity-0 group-hover:opacity-100 transition-all">
                                     TANTANGAN {{ $level['level'] }}
                                 </div>
                             </div>
@@ -116,7 +116,7 @@
                                     <div class="absolute inset-0 rounded-[3rem] bg-amber-400 animate-pulse opacity-20"></div>
                                 @endif
                             </div>
-                            <div class="absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] font-black text-amber-600 uppercase tracking-[0.4em] italic {{ $allCompleted ? 'opacity-100 animate-pulse' : 'opacity-20' }}">MASTERY ZONE</div>
+                            <div class="absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] font-bold text-amber-600 uppercase tracking-[0.4em]  {{ $allCompleted ? 'opacity-100 animate-pulse' : 'opacity-20' }}">MASTERY ZONE</div>
                         </div>
                     </div>
                 </div>

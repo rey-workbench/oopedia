@@ -1,16 +1,16 @@
 <x-layouts.app theme="mahasiswa">
     <x-slot:title>Materi Selesai</x-slot:title>
 
-    <x-ui.page-header
-        title="Materi Selesai"
-    />
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <x-ui.page-header
-                title="Materi Selesai"
-                subtitle="Semua materi yang telah Anda kuasai sepenuhnya"
-            />
+        <x-ui.page-header
+            title="Materi Selesai"
+            subtitle="Semua materi yang telah Anda kuasai sepenuhnya."
+        >
+            <x-slot:actions>
+                <x-ui.button href="{{ route('mahasiswa.dashboard') }}" variant="ghost" icon="fas fa-arrow-left">
+                    Dashboard
+                </x-ui.button>
+            </x-slot:actions>
+        </x-ui.page-header>
 
             <div class="mt-10">
                 @if(count($materialsWithStats) == 0)
@@ -18,11 +18,11 @@
                         <div class="w-24 h-24 bg-emerald-50 text-emerald-500 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-inner">
                             <i class="fas fa-check-circle text-5xl"></i>
                         </div>
-                        <h3 class="text-3xl font-black text-gray-900 mb-4 italic uppercase tracking-tight">Belum Ada Materi Selesai</h3>
+                        <h3 class="text-3xl font-bold text-gray-900 mb-4  uppercase tracking-widest">Belum Ada Materi Selesai</h3>
                         <p class="text-gray-500 mb-10 max-w-md mx-auto font-medium">
                             Ayo tantang diri Anda dan selesaikan semua tingkatan soal untuk melihat progres Anda di sini!
                         </p>
-                        <x-ui.button href="{{ route('mahasiswa.materials.index') }}" variant="primary" class="px-10 py-4 rounded-2xl font-black italic uppercase transition-all shadow-xl shadow-blue-100" icon="fa-book">
+                        <x-ui.button href="{{ route('mahasiswa.materials.index') }}" variant="primary" class="px-10 py-4 rounded-2xl font-bold  uppercase transition-all shadow-xl shadow-blue-100" icon="fa-book">
                             Cari Materi Baru
                         </x-ui.button>
                     </div>
@@ -44,8 +44,8 @@
                                                 <i class="fas fa-check-double text-2xl"></i>
                                             </div>
                                             <div>
-                                                <div class="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-100 mb-1">Mastered Material</div>
-                                                <h4 class="text-2xl font-black italic tracking-tight">{{ $material->title }}</h4>
+                                                <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-100 mb-1">Mastered Material</div>
+                                                <h4 class="text-2xl font-bold  tracking-widest">{{ $material->title }}</h4>
                                             </div>
                                         </div>
                                     </div>
@@ -54,11 +54,11 @@
                                         <!-- Overall Stats Header -->
                                         <div class="flex items-end justify-between mb-8">
                                             <div>
-                                                <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Soal Terjawab</div>
-                                                <div class="text-3xl font-black text-gray-900 italic">{{ $stats['overall']['correct'] }}<span class="text-sm text-gray-400 not-italic ml-2">/ {{ $stats['overall']['total'] }} SOAL</span></div>
+                                                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Total Soal Terjawab</div>
+                                                <div class="text-3xl font-bold text-gray-900 ">{{ $stats['overall']['correct'] }}<span class="text-sm text-gray-400 not- ml-2">/ {{ $stats['overall']['total'] }} SOAL</span></div>
                                             </div>
                                             <div class="text-right">
-                                                <div class="text-4xl font-black text-emerald-600 italic">100%</div>
+                                                <div class="text-4xl font-bold text-emerald-600 ">100%</div>
                                             </div>
                                         </div>
 
@@ -66,8 +66,8 @@
                                             {{-- Beginner --}}
                                             <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100 group-hover:bg-blue-50/50 group-hover:border-blue-100 transition-colors">
                                                 <div class="flex justify-between items-center mb-2">
-                                                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest group-hover:text-blue-600">Beginner Mastery</span>
-                                                    <span class="text-xs font-black text-gray-900 italic">{{ $stats['beginner']['correct'] }}/{{ $stats['beginner']['configured_total'] }}</span>
+                                                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest group-hover:text-blue-600">Beginner Mastery</span>
+                                                    <span class="text-xs font-bold text-gray-900 ">{{ $stats['beginner']['correct'] }}/{{ $stats['beginner']['configured_total'] }}</span>
                                                 </div>
                                                 <div class="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
                                                     <div class="h-full bg-blue-500 rounded-full" style="width: 100%"></div>
@@ -77,8 +77,8 @@
                                             {{-- Medium --}}
                                             <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100 group-hover:bg-amber-50/50 group-hover:border-amber-100 transition-colors">
                                                 <div class="flex justify-between items-center mb-2">
-                                                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest group-hover:text-amber-600">Medium Mastery</span>
-                                                    <span class="text-xs font-black text-gray-900 italic">{{ $stats['medium']['correct'] }}/{{ $stats['medium']['configured_total'] }}</span>
+                                                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest group-hover:text-amber-600">Medium Mastery</span>
+                                                    <span class="text-xs font-bold text-gray-900 ">{{ $stats['medium']['correct'] }}/{{ $stats['medium']['configured_total'] }}</span>
                                                 </div>
                                                 <div class="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
                                                     <div class="h-full bg-amber-500 rounded-full" style="width: 100%"></div>
@@ -88,8 +88,8 @@
                                             {{-- Hard --}}
                                             <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100 group-hover:bg-rose-50/50 group-hover:border-rose-100 transition-colors">
                                                 <div class="flex justify-between items-center mb-2">
-                                                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest group-hover:text-rose-600">Hard Mastery</span>
-                                                    <span class="text-xs font-black text-gray-900 italic">{{ $stats['hard']['correct'] }}/{{ $stats['hard']['configured_total'] }}</span>
+                                                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest group-hover:text-rose-600">Hard Mastery</span>
+                                                    <span class="text-xs font-bold text-gray-900 ">{{ $stats['hard']['correct'] }}/{{ $stats['hard']['configured_total'] }}</span>
                                                 </div>
                                                 <div class="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
                                                     <div class="h-full bg-rose-500 rounded-full" style="width: 100%"></div>
@@ -97,7 +97,7 @@
                                             </div>
                                         </div>
 
-                                        <x-ui.button href="{{ route('mahasiswa.materials.show', $material->id) }}" variant="secondary" class="w-full py-4 rounded-2xl font-black italic uppercase outline outline-2 outline-gray-100 group-hover:outline-emerald-200 group-hover:bg-emerald-50 transition-all" icon="fa-book">
+                                        <x-ui.button href="{{ route('mahasiswa.materials.show', $material->id) }}" variant="secondary" class="w-full py-4 rounded-2xl font-bold  uppercase outline outline-2 outline-gray-100 group-hover:outline-emerald-200 group-hover:bg-emerald-50 transition-all" icon="fa-book">
                                             Review Materi
                                         </x-ui.button>
                                     </div>

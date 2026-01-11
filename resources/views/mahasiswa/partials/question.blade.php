@@ -29,16 +29,16 @@
                 <div class="flex items-center gap-6">
                     {{-- Difficulty --}}
                     <div>
-                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-0.5">Kesulitan</span>
-                        <h5 class="text-lg font-black {{ $difficulty == 'hard' ? 'text-rose-600' : ($difficulty == 'medium' ? 'text-amber-600' : 'text-emerald-600') }}">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-0.5">Kesulitan</span>
+                        <h5 class="text-lg font-bold {{ $difficulty == 'hard' ? 'text-rose-600' : ($difficulty == 'medium' ? 'text-amber-600' : 'text-emerald-600') }}">
                             {{ ucfirst($difficulty) }}
                         </h5>
                     </div>
                     
                     {{-- XP Indicator --}}
                     <div class="xp-indicator">
-                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-0.5">XP</span>
-                        <h5 class="text-lg font-black text-blue-600 flex items-center gap-1">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-0.5">XP</span>
+                        <h5 class="text-lg font-bold text-blue-600 flex items-center gap-1">
                             <i class="fas fa-star text-amber-400 text-sm"></i> 
                             <span id="xpDisplay">{{ $xp }}</span>
                         </h5>
@@ -46,8 +46,8 @@
 
                     {{-- Streak Indicator --}}
                     <div class="streak-indicator">
-                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-0.5">Streak</span>
-                        <h5 class="text-lg font-black text-orange-600 flex items-center gap-1">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-0.5">Streak</span>
+                        <h5 class="text-lg font-bold text-orange-600 flex items-center gap-1">
                             <i class="fas fa-fire text-orange-500 text-sm"></i> 
                             <span id="streakDisplay">{{ $streak }}</span>
                         </h5>
@@ -220,7 +220,7 @@
             
             <div class="relative z-10 p-12 rounded-[3rem] text-center bg-white shadow-2xl scale-90 opacity-0 feedback-content-box transition-all duration-500 pointer-events-auto">
                 <div id="feedbackIcon" class="text-8xl mb-6"></div>
-                <div id="feedbackStatus" class="text-4xl font-black mb-8 italic uppercase tracking-tight"></div>
+                <div id="feedbackStatus" class="text-4xl font-bold mb-8  uppercase tracking-widest"></div>
 
                 <div id="explanationBox" class="hidden max-w-lg mx-auto mt-6 p-6 bg-slate-50 rounded-2xl border-l-8 border-blue-500 text-left">
                     <h5 class="font-bold text-lg mb-2 text-slate-900 flex items-center gap-2">
@@ -231,10 +231,10 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center mt-10">
-                    <x-ui.button id="tryAgainBtn" variant="outline" class="px-10 py-4 rounded-2xl font-black italic uppercase tracking-widest text-sm">
+                    <x-ui.button id="tryAgainBtn" variant="outline" class="px-10 py-4 rounded-2xl font-bold  uppercase tracking-widest text-sm">
                         <i class="fas fa-redo mr-2"></i> Coba Lagi
                     </x-ui.button>
-                    <x-ui.button id="nextQuestionBtn" variant="primary" class="px-10 py-4 rounded-2xl font-black italic uppercase tracking-widest text-sm hidden">
+                    <x-ui.button id="nextQuestionBtn" variant="primary" class="px-10 py-4 rounded-2xl font-bold  uppercase tracking-widest text-sm hidden">
                         Lanjut <i class="fas fa-arrow-right ml-2"></i>
                     </x-ui.button>
                 </div>
@@ -256,7 +256,7 @@
                 <div class="p-4">
                     <h6 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">Triggered Rules</h6>
                     <ul id="debugRulesList" class="space-y-2">
-                        <li class="text-slate-500 italic">No rules triggered yet...</li>
+                        <li class="text-slate-500 ">No rules triggered yet...</li>
                     </ul>
                 </div>
                 <div class="p-4">

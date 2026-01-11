@@ -6,10 +6,10 @@
                 <i class="fas fa-filter text-2xl"></i>
             </div>
             <div>
-                <h3 class="text-2xl font-black text-gray-900 italic tracking-tight uppercase">
+                <h3 class="text-2xl font-bold text-gray-900  tracking-widest uppercase">
                     Review Soal: <span class="text-blue-600">{{ $difficulty !== 'all' ? ucfirst($difficulty) : 'Semua Tingkat' }}</span>
                 </h3>
-                <p class="text-gray-400 font-bold text-[10px] uppercase tracking-widest italic">Tinjau kembali progres belajar Anda</p>
+                <p class="text-gray-400 font-bold text-[10px] uppercase tracking-widest ">Tinjau kembali progres belajar Anda</p>
             </div>
         </div>
     </div>
@@ -21,17 +21,17 @@
                     <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-500">
                         <div class="p-8 border-b border-gray-50 bg-gray-50/30 flex justify-between items-center">
                             <div class="flex items-center gap-4">
-                                <span class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center font-black italic shadow-lg">
+                                <span class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center font-bold  shadow-lg">
                                     {{ $index + 1 }}
                                 </span>
                                 <div class="flex items-center gap-3">
                                     @php
                                         $diffColor = $question->difficulty == 'hard' ? 'rose' : ($question->difficulty == 'medium' ? 'amber' : 'emerald');
                                     @endphp
-                                    <div class="px-4 py-1.5 rounded-full bg-{{ $diffColor }}-50 text-{{ $diffColor }}-600 text-[10px] font-black uppercase tracking-[0.2em] border border-{{ $diffColor }}-100 shadow-sm">
+                                    <div class="px-4 py-1.5 rounded-full bg-{{ $diffColor }}-50 text-{{ $diffColor }}-600 text-[10px] font-bold uppercase tracking-[0.2em] border border-{{ $diffColor }}-100 shadow-sm">
                                         {{ $question->difficulty }}
                                     </div>
-                                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                                         {{ ucfirst(str_replace('_', ' ', $question->question_type)) }}
                                     </span>
                                 </div>
@@ -40,17 +40,17 @@
 
                         <div class="p-8 md:p-10">
                             <div class="mb-10">
-                                <h5 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <h5 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
                                     <i class="fas fa-question text-blue-500 text-xs"></i>
                                     Pertanyaan
                                 </h5>
-                                <div class="text-xl font-bold text-gray-800 leading-relaxed italic bg-gray-50/50 p-6 rounded-3xl border border-gray-50">
+                                <div class="text-xl font-bold text-gray-800 leading-relaxed  bg-gray-50/50 p-6 rounded-3xl border border-gray-50">
                                     {!! $question->question_text !!}
                                 </div>
                             </div>
 
                             <div>
-                                <h5 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <h5 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-2">
                                     <i class="fas fa-list-ul text-blue-500 text-xs"></i>
                                     Pilihan Jawaban
                                 </h5>
@@ -71,10 +71,10 @@
                                                         {!! $answer->answer_text !!}
                                                     </div>
                                                     @if($answer->is_correct && $answer->explanation)
-                                                        <div class="mt-4 p-4 rounded-2xl bg-white/60 border border-emerald-100/50 text-sm font-medium text-emerald-800 italic flex gap-3">
+                                                        <div class="mt-4 p-4 rounded-2xl bg-white/60 border border-emerald-100/50 text-sm font-medium text-emerald-800  flex gap-3">
                                                             <i class="fas fa-lightbulb shrink-0 mt-1 opacity-50"></i>
                                                             <div>
-                                                                <strong class="uppercase text-[10px] tracking-widest not-italic block mb-1 opacity-60">Penjelasan:</strong>
+                                                                <strong class="uppercase text-[10px] tracking-widest not- block mb-1 opacity-60">Penjelasan:</strong>
                                                                 {!! $answer->explanation !!}
                                                             </div>
                                                         </div>
@@ -94,8 +94,8 @@
                 <div class="w-20 h-20 bg-blue-50 text-blue-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-inner">
                     <i class="fas fa-info-circle text-3xl"></i>
                 </div>
-                <h3 class="text-2xl font-black text-gray-900 mb-2 italic uppercase tracking-tight">Tidak Ada Data</h3>
-                <p class="text-gray-500 font-medium italic">Tidak ada soal yang tersedia untuk ditampilkan.</p>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2  uppercase tracking-widest">Tidak Ada Data</h3>
+                <p class="text-gray-500 font-medium ">Tidak ada soal yang tersedia untuk ditampilkan.</p>
             </div>
         @endif
     </div>

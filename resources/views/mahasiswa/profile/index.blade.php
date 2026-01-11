@@ -19,9 +19,9 @@
                             </div>
                         </div>
                         <div class="text-center md:text-left flex-1">
-                            <h3 class="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-1">Akun Terverifikasi</h3>
-                            <h2 class="text-3xl font-black text-gray-900 italic tracking-tight mb-1">{{ auth()->user()->name }}</h2>
-                            <p class="text-sm font-bold text-gray-500 italic uppercase">Mahasiswa Terdaftar</p>
+                            <h3 class="text-[10px] font-bold text-blue-600 uppercase tracking-[0.2em] mb-1">Akun Terverifikasi</h3>
+                            <h2 class="text-3xl font-bold text-gray-900  tracking-widest mb-1">{{ auth()->user()->name }}</h2>
+                            <p class="text-sm font-bold text-gray-500  uppercase">Mahasiswa Terdaftar</p>
                         </div>
                     </div>
                 </div>
@@ -34,7 +34,7 @@
                         <div class="w-10 h-10 bg-emerald-500 text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-emerald-100">
                             <i class="fas fa-check text-sm"></i>
                         </div>
-                        <p class="text-emerald-800 font-bold italic">{{ session('success') }}</p>
+                        <p class="text-emerald-800 font-bold ">{{ session('success') }}</p>
                     </div>
                 @endif
 
@@ -66,7 +66,7 @@
                             <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 shadow-inner">
                                 <i class="fas fa-lock text-sm"></i>
                             </div>
-                            <h4 class="text-lg font-black text-gray-900 italic tracking-tight uppercase">Keamanan Akun</h4>
+                            <h4 class="text-lg font-bold text-gray-900  tracking-widest uppercase">Keamanan Akun</h4>
                         </div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -77,7 +77,7 @@
                                     class="rounded-2xl border-gray-100 bg-gray-50/50 py-4 font-bold"
                                     placeholder="••••••••" />
                                 <x-slot:helpText>
-                                    <span class="text-[10px] font-bold text-gray-400 italic">Kosongkan jika tidak ingin mengubah password</span>
+                                    <span class="text-[10px] font-bold text-gray-400 ">Kosongkan jika tidak ingin mengubah password</span>
                                 </x-slot:helpText>
                             </x-forms.form-group>
 
@@ -92,7 +92,7 @@
                     </div>
 
                     <div class="pt-8 flex justify-end">
-                        <button type="submit" class="w-full md:w-auto px-12 py-4 bg-gray-900 text-white rounded-2xl font-black italic uppercase tracking-widest hover:bg-blue-600 transition-all shadow-xl shadow-gray-200 hover:shadow-blue-200 flex items-center justify-center gap-3">
+                        <button type="submit" class="w-full md:w-auto px-12 py-4 bg-gray-900 text-white rounded-2xl font-bold  uppercase tracking-widest hover:bg-blue-600 transition-all shadow-xl shadow-gray-200 hover:shadow-blue-200 flex items-center justify-center gap-3">
                             <i class="fas fa-save"></i>
                             Simpan Perubahan
                         </button>

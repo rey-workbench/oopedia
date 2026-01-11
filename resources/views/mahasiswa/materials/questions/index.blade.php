@@ -20,7 +20,7 @@
         @if(!auth()->check())
         <x-ui.alert variant="warning" :dismissible="false">
             <div class="flex flex-col gap-2">
-                <span class="font-bold text-lg tracking-tight">Mode Tamu Aktif!</span>
+                <span class="font-bold text-lg tracking-widest">Mode Tamu Aktif!</span>
                 <p class="text-sm">Anda hanya dapat melihat sebagian materi dan hanya 3 soal latihan dari setiap tingkat kesulitan. Untuk akses penuh, silakan login atau daftar.</p>
                 <div class="flex gap-4 mt-2">
                     <x-ui.button href="{{ route('login') }}" variant="primary" size="sm">Login Sekarang</x-ui.button>
@@ -56,7 +56,7 @@
                         <div>
                             <div class="flex justify-between items-start gap-6">
                                 <div>
-                                    <h2 class="text-3xl font-bold text-slate-900 leading-tight mb-3 group-hover:text-blue-600 transition-colors tracking-tight">
+                                    <h2 class="text-3xl font-bold text-slate-900 leading-tight mb-3 group-hover:text-blue-600 transition-colors tracking-widest">
                                         {{ $material->title }}
                                     </h2>
                                     <div class="flex flex-wrap items-center gap-6">
@@ -64,13 +64,13 @@
                                             <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center text-xs shadow-inner">
                                                 <i class="fas fa-users"></i>
                                             </div>
-                                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">{{ $material->student_count }} Mahasiswa</span>
+                                            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">{{ $material->student_count }} Mahasiswa</span>
                                         </div>
                                         <div class="flex items-center gap-2.5">
                                             <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-500 flex items-center justify-center text-xs shadow-inner">
                                                 <i class="fas fa-puzzle-piece"></i>
                                             </div>
-                                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">{{ $material->total_questions }} Soal Latihan</span>
+                                            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">{{ $material->total_questions }} Soal Latihan</span>
                                         </div>
                                     </div>
                                 </div>
@@ -85,7 +85,7 @@
                                         <i class="fas fa-lock"></i>
                                     </div>
                                     <div>
-                                        <span class="text-[10px] font-black text-amber-800 uppercase tracking-widest block mb-1">Akses Terbatas</span>
+                                        <span class="text-[10px] font-bold text-amber-800 uppercase tracking-widest block mb-1">Akses Terbatas</span>
                                         <p class="text-xs text-amber-700 font-medium">Selesaikan pendaftaran untuk membuka semua level soal.</p>
                                     </div>
                                 </div>
@@ -93,10 +93,10 @@
                                 <div class="mt-8 space-y-4">
                                     <div class="flex justify-between items-center px-1">
                                         <div class="flex items-center gap-3">
-                                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">Progress Mastery</span>
+                                            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 ">Progress Mastery</span>
                                             <x-ui.badge variant="success" size="xs">{{ $material->progress_percentage }}%</x-ui.badge>
                                         </div>
-                                        <span class="text-[10px] font-black text-slate-300 uppercase italic">{{ $material->completed_questions }}/{{ $material->total_questions }} SOAL</span>
+                                        <span class="text-[10px] font-bold text-slate-300 uppercase ">{{ $material->completed_questions }}/{{ $material->total_questions }} SOAL</span>
                                     </div>
                                     <x-ui.progress-bar :value="$material->progress_percentage" size="sm" :showPercentage="false" variant="success" />
                                 </div>

@@ -78,7 +78,7 @@
                                                     <i class="fas fa-question-circle text-blue-400"></i>
                                                     Pertanyaan
                                                 </h5>
-                                                <div class="p-5 bg-gray-50 rounded-xl text-gray-800 leading-relaxed border border-gray-100 italic">
+                                                <div class="p-5 bg-gray-50 rounded-xl text-gray-800 leading-relaxed border border-gray-100 ">
                                                     {!! $question->question_text !!}
                                                 </div>
                                             </div>

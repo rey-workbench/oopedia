@@ -1,45 +1,46 @@
 <x-layouts.app title="{{ $material->title }}" theme="mahasiswa">
     <div class="space-y-12">
         {{-- Header Section --}}
-        <div class="relative overflow-hidden rounded-[3rem] bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 p-12 shadow-2xl">
-            <div class="absolute inset-0 bg-[url('/images/pattern.svg')] opacity-10"></div>
-            <div class="relative z-10">
+        <x-ui.page-header
+            title="{{ $material->title }}"
+            subtitle="Kuasai konsep fondasi hingga tingkat lanjut Pemrograman Berorientasi Objek."
+        >
+            <x-slot:actions>
                 <x-ui.button 
                     href="{{ route('mahasiswa.materials.index') }}" 
                     variant="ghost" 
-                    class="mb-6 text-white/80 hover:text-white"
                     icon="fas fa-arrow-left"
                 >
                     Kembali ke Materi
                 </x-ui.button>
-                
-                <h1 class="text-5xl font-black text-white mb-4 tracking-tight">
-                    {{ $material->title }}
-                </h1>
-                
-                <div class="flex items-center gap-4 text-white/80">
-                    <div class="flex items-center gap-2">
-                        <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center">
-                            <i class="fas fa-chalkboard-user text-white"></i>
-                        </div>
-                        <span class="text-sm font-bold">{{ $material->creator ? $material->creator->name : 'Admin System' }}</span>
+            </x-slot:actions>
+
+            <div class="flex flex-wrap items-center gap-6 mt-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 shadow-inner">
+                        <i class="fas fa-chalkboard-user"></i>
                     </div>
-                    
-                    <div class="flex items-center gap-2">
-                        <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center">
-                            <i class="fas fa-layer-group text-white"></i>
-                        </div>
-                        <span class="text-sm font-bold">{{ $material->subMaterials->count() }} Sub-Materi</span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                        {{ $material->creator ? $material->creator->name : 'Admin System' }}
+                    </span>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 shadow-inner">
+                        <i class="fas fa-layer-group"></i>
                     </div>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                        {{ $material->subMaterials->count() }} Sub-Materi
+                    </span>
                 </div>
             </div>
-        </div>
+        </x-ui.page-header>
 
         {{-- Sub-Materials Grid --}}
         <div>
             <div class="flex items-center justify-between mb-8">
                 <div>
-                    <h2 class="text-3xl font-black text-slate-900 tracking-tight mb-2">Daftar Sub-Materi</h2>
+                    <h2 class="text-3xl font-bold text-slate-900 tracking-widest mb-2">Daftar Sub-Materi</h2>
                     <p class="text-slate-500 font-medium">Pilih sub-materi untuk memulai pembelajaran</p>
                 </div>
             </div>
@@ -49,7 +50,7 @@
                     <div class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
                         <i class="fas fa-book-open text-slate-200 text-3xl"></i>
                     </div>
-                    <h3 class="text-xl font-bold tracking-tight text-slate-900 mb-2">Belum Ada Sub-Materi</h3>
+                    <h3 class="text-xl font-bold tracking-widest text-slate-900 mb-2">Belum Ada Sub-Materi</h3>
                     <p class="text-slate-400 text-sm max-w-xs mx-auto">Sub-materi untuk topik ini sedang dalam pengembangan.</p>
                 </x-ui.card>
             @else
@@ -64,7 +65,7 @@
                                         <i class="fas fa-{{ $subMaterial->jenis_konten === 'sintaks' ? 'code' : 'book' }} text-3xl text-white"></i>
                                     </div>
                                     <div class="px-4 py-1.5 bg-white/20 backdrop-blur-sm rounded-full inline-block">
-                                        <span class="text-xs font-black text-white uppercase tracking-wider">
+                                        <span class="text-xs font-bold text-white uppercase tracking-wider">
                                             {{ $subMaterial->jenis_konten === 'sintaks' ? 'Sintaks' : 'Teori' }}
                                         </span>
                                     </div>
@@ -72,13 +73,13 @@
                                 
                                 {{-- Order Badge --}}
                                 <div class="absolute top-4 left-4 w-10 h-10 bg-white rounded-xl shadow-lg flex items-center justify-center">
-                                    <span class="text-lg font-black text-{{ $subMaterial->jenis_konten === 'sintaks' ? 'emerald' : 'blue' }}-600">{{ $subMaterial->order }}</span>
+                                    <span class="text-lg font-bold text-{{ $subMaterial->jenis_konten === 'sintaks' ? 'emerald' : 'blue' }}-600">{{ $subMaterial->order }}</span>
                                 </div>
                             </div>
 
                             {{-- Content --}}
                             <div class="p-6">
-                                <h3 class="text-xl font-black text-slate-900 mb-3 group-hover:text-{{ $subMaterial->jenis_konten === 'sintaks' ? 'emerald' : 'blue' }}-600 transition-colors line-clamp-2">
+                                <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-{{ $subMaterial->jenis_konten === 'sintaks' ? 'emerald' : 'blue' }}-600 transition-colors line-clamp-2">
                                     {{ $subMaterial->title }}
                                 </h3>
                                 
@@ -118,7 +119,7 @@
         @if($material->content)
             <x-ui.card>
                 <div class="prose prose-slate max-w-none">
-                    <h3 class="text-2xl font-black text-slate-900 mb-4">Tentang Materi Ini</h3>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Tentang Materi Ini</h3>
                     <div class="text-slate-600 leading-relaxed">
                         {!! nl2br(e($material->content)) !!}
                     </div>

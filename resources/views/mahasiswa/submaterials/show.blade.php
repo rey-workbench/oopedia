@@ -13,45 +13,46 @@
             <span class="text-slate-900 font-bold">{{ $subMaterial->title }}</span>
         </div>
 
-        {{-- Header Section --}}
-        <div class="relative overflow-hidden rounded-[3rem] bg-gradient-to-br from-{{ $subMaterial->jenis_konten === 'sintaks' ? 'emerald' : 'blue' }}-600 via-{{ $subMaterial->jenis_konten === 'sintaks' ? 'teal' : 'indigo' }}-700 to-{{ $subMaterial->jenis_konten === 'sintaks' ? 'cyan' : 'purple' }}-800 p-12 shadow-2xl">
-            <div class="absolute inset-0 bg-[url('/images/pattern.svg')] opacity-10"></div>
-            <div class="relative z-10">
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-2xl">
-                        <span class="text-xs font-black text-white uppercase tracking-wider">
+        <x-ui.page-header
+            title="{{ $subMaterial->title }}"
+            subtitle="Bagian {{ $subMaterial->order }} dari modul {{ $material->title }}."
+        >
+            <x-slot:actions>
+                <div class="flex items-center gap-4">
+                    <div class="px-4 py-2 bg-{{ $subMaterial->jenis_konten === 'sintaks' ? 'emerald' : 'blue' }}-50 border border-{{ $subMaterial->jenis_konten === 'sintaks' ? 'emerald' : 'blue' }}-100 rounded-2xl">
+                        <span class="text-[10px] font-bold text-{{ $subMaterial->jenis_konten === 'sintaks' ? 'emerald' : 'blue' }}-600 uppercase tracking-widest">
                             {{ $subMaterial->jenis_konten === 'sintaks' ? 'Sintaks' : 'Teori' }}
                         </span>
                     </div>
-                    <div class="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-2xl">
-                        <span class="text-xs font-black text-white uppercase tracking-wider">
-                            Bagian {{ $subMaterial->order }}
-                        </span>
+                </div>
+            </x-slot:actions>
+
+            <div class="flex flex-wrap items-center gap-6 mt-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 shadow-inner">
+                        <i class="fas fa-puzzle-piece"></i>
                     </div>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                        {{ $subMaterial->questions->count() }} Soal Latihan
+                    </span>
                 </div>
                 
-                <h1 class="text-5xl font-black text-white mb-4 tracking-tight">
-                    {{ $subMaterial->title }}
-                </h1>
-                
-                <div class="flex items-center gap-6 text-white/80">
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-puzzle-piece"></i>
-                        <span class="text-sm font-bold">{{ $subMaterial->questions->count() }} Soal Latihan</span>
-                    </div>
-                    <div class="flex items-center gap-2">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 shadow-inner">
                         <i class="fas fa-clock"></i>
-                        <span class="text-sm font-bold">~{{ $subMaterial->questions->count() * 2 }} menit</span>
                     </div>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                        ~{{ $subMaterial->questions->count() * 2 }} Menit
+                    </span>
                 </div>
             </div>
-        </div>
+        </x-ui.page-header>
 
         {{-- Content Section --}}
         <x-ui.card class="p-10 md:p-16">
             <article class="prose prose-lg prose-slate max-w-none">
                 <div class="mb-8">
-                    <h2 class="text-3xl font-black text-slate-900 mb-4">Materi Pembelajaran</h2>
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4">Materi Pembelajaran</h2>
                     <div class="h-1 w-20 bg-gradient-to-r from-{{ $subMaterial->jenis_konten === 'sintaks' ? 'emerald' : 'blue' }}-600 to-{{ $subMaterial->jenis_konten === 'sintaks' ? 'teal' : 'indigo' }}-600 rounded-full"></div>
                 </div>
                 
@@ -67,7 +68,7 @@
                         <i class="fas fa-check-double"></i>
                     </div>
                     <div>
-                        <p class="text-xs font-black uppercase tracking-widest text-slate-400">Siap untuk latihan?</p>
+                        <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Siap untuk latihan?</p>
                         <p class="text-sm font-bold text-slate-600">{{ $subMaterial->questions->count() }} soal menanti Anda</p>
                     </div>
                 </div>
@@ -87,14 +88,14 @@
         {{-- Navigation to Other Sub-Materials --}}
         @if($material->subMaterials->count() > 1)
             <x-ui.card>
-                <h3 class="text-2xl font-black text-slate-900 mb-6">Sub-Materi Lainnya</h3>
+                <h3 class="text-2xl font-bold text-slate-900 mb-6">Sub-Materi Lainnya</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     @foreach($material->subMaterials->where('id', '!=', $subMaterial->id) as $otherSub)
                         <a href="{{ route('mahasiswa.submaterials.show', ['material' => $material->id, 'submaterial' => $otherSub->id]) }}" 
                            class="group p-6 rounded-2xl border-2 border-slate-100 hover:border-{{ $otherSub->jenis_konten === 'sintaks' ? 'emerald' : 'blue' }}-500 hover:shadow-lg transition-all">
                             <div class="flex items-start gap-4">
                                 <div class="w-12 h-12 rounded-xl bg-{{ $otherSub->jenis_konten === 'sintaks' ? 'emerald' : 'blue' }}-50 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                                    <span class="text-lg font-black text-{{ $otherSub->jenis_konten === 'sintaks' ? 'emerald' : 'blue' }}-600">{{ $otherSub->order }}</span>
+                                    <span class="text-lg font-bold text-{{ $otherSub->jenis_konten === 'sintaks' ? 'emerald' : 'blue' }}-600">{{ $otherSub->order }}</span>
                                 </div>
                                 <div class="flex-1">
                                     <h4 class="font-bold text-slate-900 mb-1 group-hover:text-{{ $otherSub->jenis_konten === 'sintaks' ? 'emerald' : 'blue' }}-600 transition-colors">

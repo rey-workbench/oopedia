@@ -1,12 +1,16 @@
 <x-layouts.app title="Materi Sedang Dipelajari" theme="mahasiswa">
-    <x-ui.page-header title="Materi Sedang Dipelajari" />
-
     <div class="py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <x-ui.page-header
                 title="Materi Sedang Dipelajari"
-                subtitle="Terus asah kemampuan Anda dan selesaikan tantangan yang ada"
-            />
+                subtitle="Terus asah kemampuan Anda dan selesaikan tantangan yang ada."
+            >
+                <x-slot:actions>
+                    <x-ui.button href="{{ route('mahasiswa.dashboard') }}" variant="ghost" icon="fas fa-arrow-left">
+                        Dashboard
+                    </x-ui.button>
+                </x-slot:actions>
+            </x-ui.page-header>
 
             <div class="mt-10">
                 @if(count($materialsWithStats) == 0)
@@ -14,11 +18,11 @@
                         <div class="w-24 h-24 bg-blue-50 text-blue-500 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-inner">
                             <i class="fas fa-book-open text-5xl"></i>
                         </div>
-                        <h3 class="text-3xl font-black text-gray-900 mb-4 italic uppercase tracking-tight">Belum Ada Progres</h3>
+                        <h3 class="text-3xl font-bold text-gray-900 mb-4  uppercase tracking-widest">Belum Ada Progres</h3>
                         <p class="text-gray-500 mb-10 max-w-md mx-auto font-medium">
                             Anda belum memulai materi apapun. Pilih materi yang Anda minati dan mulai petualangan belajar Anda sekarang!
                         </p>
-                        <x-ui.button href="{{ route('mahasiswa.materials.index') }}" variant="primary" class="px-10 py-4 rounded-2xl font-black italic uppercase transition-all shadow-xl shadow-blue-100" icon="fa-rocket">
+                        <x-ui.button href="{{ route('mahasiswa.materials.index') }}" variant="primary" class="px-10 py-4 rounded-2xl font-bold  uppercase transition-all shadow-xl shadow-blue-100" icon="fa-rocket">
                             Mulai Belajar
                         </x-ui.button>
                     </div>
@@ -41,8 +45,8 @@
                                                 <i class="fas fa-spinner animate-spin-slow text-2xl"></i>
                                             </div>
                                             <div>
-                                                <div class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-100 mb-1">Learning in Progress</div>
-                                                <h4 class="text-2xl font-black italic tracking-tight">{{ $material->title }}</h4>
+                                                <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-100 mb-1">Learning in Progress</div>
+                                                <h4 class="text-2xl font-bold  tracking-widest">{{ $material->title }}</h4>
                                             </div>
                                         </div>
                                     </div>
@@ -51,11 +55,11 @@
                                         <!-- Overall Stats Header -->
                                         <div class="flex items-end justify-between mb-8">
                                             <div>
-                                                <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Status Progres</div>
-                                                <div class="text-3xl font-black text-gray-900 italic">{{ $stats['overall']['correct'] }}<span class="text-sm text-gray-400 not-italic ml-2">/ {{ $stats['overall']['total'] }} SELESAI</span></div>
+                                                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Status Progres</div>
+                                                <div class="text-3xl font-bold text-gray-900 ">{{ $stats['overall']['correct'] }}<span class="text-sm text-gray-400 not- ml-2">/ {{ $stats['overall']['total'] }} SELESAI</span></div>
                                             </div>
                                             <div class="text-right">
-                                                <div class="text-4xl font-black text-blue-600 italic">{{ $overallPercent }}%</div>
+                                                <div class="text-4xl font-bold text-blue-600 ">{{ $overallPercent }}%</div>
                                             </div>
                                         </div>
 
@@ -63,8 +67,8 @@
                                             {{-- Beginner --}}
                                             <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100 transition-colors">
                                                 <div class="flex justify-between items-center mb-2">
-                                                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Beginner Level</span>
-                                                    <span class="text-xs font-black text-gray-900 italic">{{ $stats['beginner']['correct'] }}/{{ $stats['beginner']['configured_total'] }}</span>
+                                                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Beginner Level</span>
+                                                    <span class="text-xs font-bold text-gray-900 ">{{ $stats['beginner']['correct'] }}/{{ $stats['beginner']['configured_total'] }}</span>
                                                 </div>
                                                 <div class="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
                                                     <div class="h-full bg-emerald-500 rounded-full transition-all duration-1000" style="width: {{ $stats['beginner']['percentage'] }}%"></div>
@@ -74,8 +78,8 @@
                                             {{-- Medium --}}
                                             <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100 transition-colors">
                                                 <div class="flex justify-between items-center mb-2">
-                                                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Medium Level</span>
-                                                    <span class="text-xs font-black text-gray-900 italic">{{ $stats['medium']['correct'] }}/{{ $stats['medium']['configured_total'] }}</span>
+                                                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Medium Level</span>
+                                                    <span class="text-xs font-bold text-gray-900 ">{{ $stats['medium']['correct'] }}/{{ $stats['medium']['configured_total'] }}</span>
                                                 </div>
                                                 <div class="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
                                                     <div class="h-full bg-amber-500 rounded-full transition-all duration-1000" style="width: {{ $stats['medium']['percentage'] }}%"></div>
@@ -85,8 +89,8 @@
                                             {{-- Hard --}}
                                             <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100 transition-colors">
                                                 <div class="flex justify-between items-center mb-2">
-                                                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Hard Level</span>
-                                                    <span class="text-xs font-black text-gray-900 italic">{{ $stats['hard']['correct'] }}/{{ $stats['hard']['configured_total'] }}</span>
+                                                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Hard Level</span>
+                                                    <span class="text-xs font-bold text-gray-900 ">{{ $stats['hard']['correct'] }}/{{ $stats['hard']['configured_total'] }}</span>
                                                 </div>
                                                 <div class="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
                                                     <div class="h-full bg-rose-500 rounded-full transition-all duration-1000" style="width: {{ $stats['hard']['percentage'] }}%"></div>
@@ -95,11 +99,11 @@
                                         </div>
 
                                         <div class="grid grid-cols-2 gap-4">
-                                            <a href="{{ route('mahasiswa.materials.show', $material->id) }}" class="flex items-center justify-center gap-2 py-4 rounded-2xl font-black italic uppercase text-xs border-2 border-gray-100 hover:bg-gray-50 transition-all text-gray-600">
+                                            <a href="{{ route('mahasiswa.materials.show', $material->id) }}" class="flex items-center justify-center gap-2 py-4 rounded-2xl font-bold  uppercase text-xs border-2 border-gray-100 hover:bg-gray-50 transition-all text-gray-600">
                                                 <i class="fas fa-book"></i>
                                                 Materi
                                             </a>
-                                            <a href="{{ route('mahasiswa.materials.questions.levels', $material->id) }}" class="flex items-center justify-center gap-2 py-4 rounded-2xl font-black italic uppercase text-xs bg-gray-900 text-white hover:bg-blue-600 transition-all shadow-lg shadow-gray-200 hover:shadow-blue-200">
+                                            <a href="{{ route('mahasiswa.materials.questions.levels', $material->id) }}" class="flex items-center justify-center gap-2 py-4 rounded-2xl font-bold  uppercase text-xs bg-gray-900 text-white hover:bg-blue-600 transition-all shadow-lg shadow-gray-200 hover:shadow-blue-200">
                                                 <i class="fas fa-play"></i>
                                                 Lanjut
                                             </a>
