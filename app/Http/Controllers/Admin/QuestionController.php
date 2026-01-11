@@ -6,22 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\Question;
 use App\Models\Material;
 use Illuminate\Http\Request;
-use App\Services\QuestionService;
-use App\Services\MaterialService;
+use App\Services\Lms\Question\QuestionListingService;
+use App\Services\Lms\Question\QuestionService;
+use App\Services\Lms\Material\MaterialService;
 
 class QuestionController extends Controller
 {
-    protected $questionService;
-    protected $materialService;
 
     public function __construct(
-        QuestionService $questionService,
-        MaterialService $materialService
-    )
-    {
-        $this->questionService = $questionService;
-        $this->materialService = $materialService;
-    }
+        protected QuestionListingService $questionListingService,
+        protected QuestionService $questionService,
+        protected MaterialService $materialService
+    ) {}
 
     public function index(Request $request, Material $material = null)
     {
@@ -59,7 +55,7 @@ class QuestionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, Material $material = null)
+    public function store(Request $request)
     {
         // Validasi dasar untuk semua field kecuali answers
         $baseValidation = [

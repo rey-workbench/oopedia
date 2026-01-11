@@ -14,8 +14,8 @@ class UeqSurveyController extends Controller
     protected $materialService;
 
     public function __construct(
-        \App\Services\UeqSurveyService $ueqService,
-        \App\Services\MaterialService $materialService
+        \App\Services\Analytics\UeqSurveyService $ueqService,
+        \App\Services\Lms\MaterialService $materialService
     )
     {
         $this->ueqService = $ueqService;

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Material;
-use App\Services\MaterialService;
+use App\Services\Lms\Material\MaterialService;
 use Illuminate\Http\Request;
 
 class MaterialController extends Controller

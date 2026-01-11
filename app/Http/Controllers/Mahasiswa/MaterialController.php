@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
-use App\Services\MaterialViewService;
+use App\Services\Lms\Material\MaterialViewService;
 
 class MaterialController extends Controller
 {
@@ -12,6 +12,15 @@ class MaterialController extends Controller
     public function __construct(MaterialViewService $materialViewService)
     {
         $this->materialViewService = $materialViewService;
+    }
+
+    public function showSubMaterial($materialId, $subMaterialId)
+    {
+        $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4);
+        
+        $data = $this->materialViewService->getSubMaterialDetail($materialId, $subMaterialId, $isGuest);
+        
+        return view('mahasiswa.submaterials.show', $data);
     }
 
     public function show($id)

@@ -9,7 +9,7 @@ class PendingApprovalController extends Controller
 {
     protected $userService;
 
-    public function __construct(\App\Services\UserService $userService)
+    public function __construct(\App\Services\User\UserService $userService)
     {
         $this->userService = $userService;
     }

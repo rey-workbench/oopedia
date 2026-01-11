@@ -17,10 +17,10 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             MahasiswaSeeder::class,
             MaterialsSeeder::class,
+            SubMaterialsSeeder::class, // NEW
             QuestionsSeeder::class,
             AnswersSeeder::class,
             UeqSurveysSeeder::class,
-            QuestionBanksSeeder::class,
         ]);
 
     }

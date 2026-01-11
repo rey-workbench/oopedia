@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Services\UserService;
+use App\Services\User\UserService;
 use Illuminate\Http\Request;
 
 class AdminUserController extends Controller

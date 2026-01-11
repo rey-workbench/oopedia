@@ -57,17 +57,14 @@ class MaterialRepository
 
     public function getAllWithQuestionsAndConfigs()
     {
-        return Material::with(['questions', 'questionBankConfigs'])->get();
+        // QuestionBankConfigs removed - just return with questions
+        return Material::with(['questions'])->get();
     }
 
     public function getAllWithQuestionsAndActiveConfigs()
     {
-        return Material::with([
-            'questions', 
-            'questionBankConfigs' => function($query) {
-                $query->where('is_active', true);
-            }
-        ])->get();
+        // QuestionBankConfigs removed - just return with questions
+        return Material::with(['questions'])->get();
     }
 
     public function findBySlug($slug)

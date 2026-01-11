@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Services\StudentService;
+use App\Services\User\StudentService;
 
 class AdminStudentController extends Controller
 {

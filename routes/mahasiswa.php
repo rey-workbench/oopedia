@@ -35,6 +35,9 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     Route::get('materials', [MahasiswaMaterialController::class, 'index'])->name('materials.index');
     Route::get('materials/{material}', [MahasiswaMaterialController::class, 'show'])->name('materials.show');
     
+    // Sub-Material Detail
+    Route::get('materials/{material}/submaterials/{submaterial}', [MahasiswaMaterialController::class, 'showSubMaterial'])->name('submaterials.show');
+    
     Route::get('materials/{material}/questions', [MaterialQuestionController::class, 'show'])
         ->middleware(\App\Http\Middleware\BlockQuestionParameter::class)
         ->name('materials.questions.show');

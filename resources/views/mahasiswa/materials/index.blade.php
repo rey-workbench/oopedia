@@ -30,15 +30,7 @@
                     $hardCount = min(3, $material->questions->where('difficulty', 'hard')->count());
                     $configuredTotalQuestions = $beginnerCount + $mediumCount + $hardCount;
                 } else {
-                    $config = App\Models\QuestionBankConfig::where('material_id', $material->id)
-                        ->where('is_active', true)
-                        ->first();
-
-                    if ($config) {
-                        $configuredTotalQuestions = $config->beginner_count + $config->medium_count + $config->hard_count;
-                    } else {
-                        $configuredTotalQuestions = $material->questions->count();
-                    }
+                    $configuredTotalQuestions = $material->questions->count();
                 }
             @endphp
 

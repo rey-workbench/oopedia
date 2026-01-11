@@ -155,20 +155,28 @@ class ProgressRepository
     {
         $state = StudentState::firstOrNew(['user_id' => $userId]);
         
-        // Strict mapping using current column names
-        $state->global_xp = $attributes['global_xp'] ?? $state->global_xp;
-        $state->current_level = $attributes['current_level'] ?? $state->current_level;
-        $state->current_streak = $attributes['current_streak'] ?? $state->current_streak;
-        $state->max_streak = $attributes['max_streak'] ?? $state->max_streak;
-        $state->learning_style = $attributes['learning_style'] ?? $state->learning_style;
+        // 1. Update Gamification Data
+        $gamification = $state->gamification_data ?? [];
+        $gamification['global_xp'] = $attributes['global_xp'] ?? ($gamification['global_xp'] ?? 0);
+        $gamification['current_level'] = $attributes['current_level'] ?? ($gamification['current_level'] ?? 'Pemula');
+        $gamification['current_streak'] = $attributes['current_streak'] ?? ($gamification['current_streak'] ?? 0);
+        $gamification['max_streak'] = $attributes['max_streak'] ?? ($gamification['max_streak'] ?? 0);
+        $state->gamification_data = $gamification;
         
-        $state->total_questions_answered = $attributes['total_questions_answered'] ?? $state->total_questions_answered;
-        $state->correct_count = $attributes['correct_count'] ?? $state->correct_count;
-        $state->wrong_count = $attributes['wrong_count'] ?? $state->wrong_count;
-        $state->wrong_streak = $attributes['wrong_streak'] ?? $state->wrong_streak;
-        
-        $state->hints_used_count = $attributes['hints_used_count'] ?? $state->hints_used_count;
-        $state->hints_available = $attributes['hints_available'] ?? $state->hints_available;
+        // 2. Update Performance Metrics
+        $metrics = $state->performance_metrics ?? [];
+        $metrics['total_questions_answered'] = $attributes['total_questions_answered'] ?? ($metrics['total_questions_answered'] ?? 0);
+        $metrics['correct_count'] = $attributes['correct_count'] ?? ($metrics['correct_count'] ?? 0);
+        $metrics['wrong_count'] = $attributes['wrong_count'] ?? ($metrics['wrong_count'] ?? 0);
+        $metrics['wrong_streak'] = $attributes['wrong_streak'] ?? ($metrics['wrong_streak'] ?? 0);
+        $metrics['hints_used_count'] = $attributes['hints_used_count'] ?? ($metrics['hints_used_count'] ?? 0);
+        $metrics['hints_available'] = $attributes['hints_available'] ?? ($metrics['hints_available'] ?? 3);
+        $state->performance_metrics = $metrics;
+
+        // 3. Update Learning Profile
+        $profile = $state->learning_profile ?? [];
+        $profile['learning_style'] = $attributes['learning_style'] ?? ($profile['learning_style'] ?? 'visual');
+        $state->learning_profile = $profile;
         
         $state->last_active_at = now();
         $state->save();
@@ -190,8 +198,7 @@ class ProgressRepository
             ->where('questions.material_id', $materialId)
             ->where('quiz_attempts.is_correct', true)
             ->distinct()
-            ->pluck('quiz_attempts.question_id')
-            ->toArray();
+            ->pluck('quiz_attempts.question_id');
     }
 
     public function resetProgress($userId, $materialId)
@@ -309,5 +316,45 @@ class ProgressRepository
     public function getStudentState($userId)
     {
         return StudentState::firstOrCreate(['user_id' => $userId]);
+    }
+
+    // ==================== ADAPTIVE FACT GATHERING ====================
+
+    /**
+     * Get consecutive failures for a question (for G22 - Persistent Fail).
+     * Returns count of consecutive wrong attempts.
+     */
+    public function getConsecutiveFailures(int $userId, int $questionId): int
+    {
+        $attempts = QuizAttempt::where('user_id', $userId)
+            ->where('question_id', $questionId)
+            ->orderBy('created_at', 'desc')
+            ->take(10) // Check last 10 attempts
+            ->get();
+        
+        $consecutiveFails = 0;
+        foreach ($attempts as $attempt) {
+            if ($attempt->is_correct) {
+                break; // Stop counting if we hit a correct answer
+            }
+            $consecutiveFails++;
+        }
+        
+        return $consecutiveFails;
+    }
+
+    /**
+     * Get error type from latest attempt (for G09/G10).
+     * Returns 'syntax', 'logic', or null.
+     */
+    public function getLatestErrorType(int $userId, int $questionId): ?string
+    {
+        $attempt = QuizAttempt::where('user_id', $userId)
+            ->where('question_id', $questionId)
+            ->where('is_correct', false)
+            ->latest()
+            ->first();
+        
+        return $attempt?->error_type ?? 'logic'; // Default to logic error
     }
 }

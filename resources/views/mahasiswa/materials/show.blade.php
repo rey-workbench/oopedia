@@ -1,93 +1,129 @@
-<x-layouts.app :title="$material->title" theme="mahasiswa">
+<x-layouts.app title="{{ $material->title }}" theme="mahasiswa">
     <div class="space-y-12">
-        {{-- Custom Page Header --}}
-        <div>
-            <a href="{{ route('mahasiswa.materials.index') }}" class="group inline-flex items-center gap-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-blue-600 transition-all mb-8 bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-100">
-                <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
-                Katalog Materi
-            </a>
-            
-            <div class="relative">
-                <div class="absolute -top-10 left-0 opacity-[0.03] text-[120px] font-bold select-none pointer-events-none uppercase tracking-tight">MODUL</div>
-                <h1 class="text-4xl md:text-6xl font-black text-slate-900 tracking-tight mb-6 max-w-4xl leading-[0.9]">{{ $material->title }}</h1>
-                <div class="flex items-center gap-4">
-                    <div class="h-2 w-24 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full"></div>
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Durasi Baca ~10 Min</span>
+        {{-- Header Section --}}
+        <div class="relative overflow-hidden rounded-[3rem] bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 p-12 shadow-2xl">
+            <div class="absolute inset-0 bg-[url('/images/pattern.svg')] opacity-10"></div>
+            <div class="relative z-10">
+                <x-ui.button 
+                    href="{{ route('mahasiswa.materials.index') }}" 
+                    variant="ghost" 
+                    class="mb-6 text-white/80 hover:text-white"
+                    icon="fas fa-arrow-left"
+                >
+                    Kembali ke Materi
+                </x-ui.button>
+                
+                <h1 class="text-5xl font-black text-white mb-4 tracking-tight">
+                    {{ $material->title }}
+                </h1>
+                
+                <div class="flex items-center gap-4 text-white/80">
+                    <div class="flex items-center gap-2">
+                        <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center">
+                            <i class="fas fa-chalkboard-user text-white"></i>
+                        </div>
+                        <span class="text-sm font-bold">{{ $material->creator ? $material->creator->name : 'Admin System' }}</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center">
+                            <i class="fas fa-layer-group text-white"></i>
+                        </div>
+                        <span class="text-sm font-bold">{{ $material->subMaterials->count() }} Sub-Materi</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        @if(session('success'))
-            <x-ui.alert variant="success" :message="session('success')" />
-        @endif
-
-        @if(session('error'))
-            <x-ui.alert variant="danger" :message="session('error')" />
-        @endif
-
-        @guest
-            <x-ui.card class="bg-gradient-to-br from-amber-500 to-orange-600 border-0 shadow-2xl shadow-amber-200">
-                <div class="flex flex-col md:flex-row items-center gap-8 p-4">
-                    <div class="w-20 h-20 bg-white/20 backdrop-blur-md text-white rounded-[2rem] flex items-center justify-center shrink-0 border border-white/30 shadow-xl">
-                        <i class="fas fa-lock-open text-3xl"></i>
-                    </div>
-                    <div class="text-center md:text-left">
-                        <h4 class="text-white font-bold tracking-tight text-2xl mb-2">Guest Access Mode</h4>
-                        <p class="text-white/80 font-bold text-sm leading-relaxed">
-                            Anda sedang membaca dalam mode terbatas. Harap login untuk mengakses seluruh submateri, video penjelasan, dan bank soal adaptif.
-                        </p>
-                        <div class="flex flex-wrap justify-center md:justify-start gap-4 mt-6">
-                            <x-ui.button variant="white" size="sm" onclick="document.getElementById('guest-logout-login-form').submit();">Login Mahasiswa</x-ui.button>
-                            <x-ui.button variant="ghost" size="sm" class="text-white border-white/40 hover:bg-white/10" onclick="document.getElementById('guest-logout-register-form').submit();">Daftar Baru</x-ui.button>
-                        </div>
-                    </div>
+        {{-- Sub-Materials Grid --}}
+        <div>
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h2 class="text-3xl font-black text-slate-900 tracking-tight mb-2">Daftar Sub-Materi</h2>
+                    <p class="text-slate-500 font-medium">Pilih sub-materi untuk memulai pembelajaran</p>
                 </div>
+            </div>
 
-                <form id="guest-logout-login-form" action="{{ route('guest.logout') }}" method="POST" style="display: none;">
-                    @csrf
-                    <input type="hidden" name="redirect" value="{{ route('login') }}">
-                </form>
-
-                <form id="guest-logout-register-form" action="{{ route('guest.logout') }}" method="POST" style="display: none;">
-                    @csrf
-                    <input type="hidden" name="redirect" value="{{ route('register') }}">
-                </form>
-            </x-ui.card>
-        @endguest
-
-        {{-- Content Area --}}
-        <div class="max-w-5xl mx-auto">
-            <x-ui.card padding="p-10 md:p-20" class="shadow-2xl border-slate-50 relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full -mr-32 -mt-32 pointer-events-none"></div>
-                
-                <article class="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-p:font-medium prose-p:text-slate-600 prose-p:leading-loose prose-img:rounded-[2rem] prose-img:shadow-2xl relative z-10">
-                    <div class="ql-snow">
-                        <div class="ql-editor !p-0">
-                            {!! $material->content !!}
-                        </div>
+            @if($material->subMaterials->isEmpty())
+                <x-ui.card class="p-20 text-center">
+                    <div class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-book-open text-slate-200 text-3xl"></i>
                     </div>
-                </article>
+                    <h3 class="text-xl font-bold tracking-tight text-slate-900 mb-2">Belum Ada Sub-Materi</h3>
+                    <p class="text-slate-400 text-sm max-w-xs mx-auto">Sub-materi untuk topik ini sedang dalam pengembangan.</p>
+                </x-ui.card>
+            @else
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    @foreach($material->subMaterials as $index => $subMaterial)
+                        <x-ui.card padding="p-0" class="group hover:shadow-2xl transition-all duration-300 overflow-hidden">
+                            {{-- Header with Icon --}}
+                            <div class="relative h-32 bg-gradient-to-br from-{{ $subMaterial->jenis_konten === 'sintaks' ? 'emerald' : 'blue' }}-500 to-{{ $subMaterial->jenis_konten === 'sintaks' ? 'teal' : 'indigo' }}-600 flex items-center justify-center">
+                                <div class="absolute inset-0 bg-black/10"></div>
+                                <div class="relative z-10 text-center">
+                                    <div class="w-16 h-16 mx-auto bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                        <i class="fas fa-{{ $subMaterial->jenis_konten === 'sintaks' ? 'code' : 'book' }} text-3xl text-white"></i>
+                                    </div>
+                                    <div class="px-4 py-1.5 bg-white/20 backdrop-blur-sm rounded-full inline-block">
+                                        <span class="text-xs font-black text-white uppercase tracking-wider">
+                                            {{ $subMaterial->jenis_konten === 'sintaks' ? 'Sintaks' : 'Teori' }}
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                {{-- Order Badge --}}
+                                <div class="absolute top-4 left-4 w-10 h-10 bg-white rounded-xl shadow-lg flex items-center justify-center">
+                                    <span class="text-lg font-black text-{{ $subMaterial->jenis_konten === 'sintaks' ? 'emerald' : 'blue' }}-600">{{ $subMaterial->order }}</span>
+                                </div>
+                            </div>
 
-                {{-- Action Footer --}}
-                <div class="mt-20 pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div class="flex items-center gap-4 text-slate-400">
-                        <div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center">
-                            <i class="fas fa-check-double text-xs"></i>
-                        </div>
-                        <span class="text-[10px] font-bold uppercase tracking-widest">Selesai Mempelajari Materi?</span>
-                    </div>
-                    
-                    <x-ui.button 
-                        href="{{ route('mahasiswa.materials.questions.levels', ['material' => $material->id]) }}" 
-                        variant="primary" 
-                        size="xl"
-                        icon="fas fa-arrow-right"
-                        class="w-full md:w-auto shadow-2xl shadow-blue-500/20"
-                    >
-                        Ke Latihan Soal
-                    </x-ui.button>
+                            {{-- Content --}}
+                            <div class="p-6">
+                                <h3 class="text-xl font-black text-slate-900 mb-3 group-hover:text-{{ $subMaterial->jenis_konten === 'sintaks' ? 'emerald' : 'blue' }}-600 transition-colors line-clamp-2">
+                                    {{ $subMaterial->title }}
+                                </h3>
+                                
+                                <p class="text-sm text-slate-600 mb-6 line-clamp-3 leading-relaxed">
+                                    {{ $subMaterial->content }}
+                                </p>
+
+                                {{-- Stats --}}
+                                <div class="flex items-center gap-4 mb-6 pb-6 border-b border-slate-100">
+                                    <div class="flex items-center gap-2 text-slate-500">
+                                        <i class="fas fa-puzzle-piece text-xs"></i>
+                                        <span class="text-xs font-bold">{{ $subMaterial->questions->count() }} Soal</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-slate-500">
+                                        <i class="fas fa-clock text-xs"></i>
+                                        <span class="text-xs font-bold">~{{ $subMaterial->questions->count() * 2 }} menit</span>
+                                    </div>
+                                </div>
+
+                                {{-- Action Button --}}
+                                <x-ui.button 
+                                    href="{{ route('mahasiswa.submaterials.show', ['material' => $material->id, 'submaterial' => $subMaterial->id]) }}" 
+                                    variant="primary" 
+                                    class="w-full"
+                                    icon="fas fa-book-open"
+                                >
+                                    Lihat Materi
+                                </x-ui.button>
+                            </div>
+                        </x-ui.card>
+                    @endforeach
                 </div>
-            </x-ui.card>
+            @endif
         </div>
+
+        {{-- Material Content Section (Optional) --}}
+        @if($material->content)
+            <x-ui.card>
+                <div class="prose prose-slate max-w-none">
+                    <h3 class="text-2xl font-black text-slate-900 mb-4">Tentang Materi Ini</h3>
+                    <div class="text-slate-600 leading-relaxed">
+                        {!! nl2br(e($material->content)) !!}
+                    </div>
+                </div>
+            </x-ui.card>
+        @endif
     </div>
 </x-layouts.app>

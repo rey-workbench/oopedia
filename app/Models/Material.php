@@ -9,42 +9,58 @@ class Material extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'content', 'created_by'];
+    protected $fillable = [
+        'title',
+        'content',
+        'module_id',
+        'created_by'
+    ];
 
+    protected $casts = [
+        'module_id' => 'integer',
+    ];
+
+    // ==================== RELATIONSHIPS ====================
+
+    /**
+     * Material has many SubMaterials.
+     */
+    public function subMaterials()
+    {
+        return $this->hasMany(SubMaterial::class)->ordered();
+    }
+
+    /**
+     * Material has many Questions (legacy, prefer subMaterials->questions).
+     */
     public function questions()
     {
         return $this->hasMany(Question::class);
     }
 
+    /**
+     * Material has many Media.
+     */
     public function media()
     {
         return $this->hasMany(Media::class);
     }
 
+    /**
+     * Material belongs to User (creator).
+     */
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function inProgress()
-    {
-        $materials = Material::all();
-        return view('mahasiswa.dashboard.in-progress', compact('materials'));
-    }
+    // ==================== SCOPES ====================
 
-    public function complete()
+    /**
+     * Scope to filter by module.
+     */
+    public function scopeByModule($query, int $moduleId)
     {
-        $materials = Material::all();
-        return view('[[mahasiswa.dashboard.completed', compact('materials'));
-    }
-    
-    public function questionBankConfigs()
-    {
-        return $this->hasMany(QuestionBankConfig::class);
-    }
-
-    public function questionBanks()
-    {
-        return $this->hasMany(QuestionBank::class);
+        return $query->where('module_id', $moduleId);
     }
 }

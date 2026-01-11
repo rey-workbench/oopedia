@@ -10,7 +10,7 @@ class UeqSurveyController extends Controller
 {
     protected $ueqService;
 
-    public function __construct(\App\Services\UeqSurveyService $ueqService)
+    public function __construct(\App\Services\Analytics\UeqSurveyService $ueqService)
     {
         $this->ueqService = $ueqService;
     }

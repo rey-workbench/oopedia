@@ -118,28 +118,72 @@ function updateDebugPanel(adaptiveResult) {
     const debugRulesList = DOM.$('#debugRulesList');
     const debugStateJson = DOM.$('#debugStateJson');
 
-    if (debugRulesList && adaptiveResult.triggered_rules) {
+    // Update triggered rules section
+    if (debugRulesList) {
         debugRulesList.innerHTML = '';
 
-        if (adaptiveResult.triggered_rules.length > 0) {
-            adaptiveResult.triggered_rules.forEach(rule => {
-                const li = document.createElement('li');
-                li.className = 'flex items-start gap-2 text-xs mb-1';
-                li.innerHTML = `
-                    <span class="bg-rose-900 text-rose-300 px-1 rounded text-[10px] font-bold mt-0.5">RULE</span>
-                    <span class="text-slate-300">${rule.rule_name || rule}</span>
+        if (adaptiveResult.triggered_rule) {
+            const rule = adaptiveResult.triggered_rule;
+            const li = document.createElement('li');
+            li.className = 'space-y-2';
+            li.innerHTML = `
+                <div class="flex items-start gap-2">
+                    <span class="bg-rose-900 text-rose-300 px-2 py-0.5 rounded text-[10px] font-bold mt-0.5">${rule.id}</span>
+                    <div class="flex-1">
+                        <div class="text-slate-200 font-bold text-sm">${rule.name}</div>
+                        <div class="text-slate-400 text-xs mt-1">
+                            <span class="text-emerald-400">Action:</span> ${rule.action}
+                            <span class="text-slate-600 mx-2">|</span>
+                            <span class="text-amber-400">Priority:</span> ${rule.priority}
+                        </div>
+                    </div>
+                </div>
+            `;
+            debugRulesList.appendChild(li);
+
+            // Add facts section
+            if (adaptiveResult.facts && adaptiveResult.facts.length > 0) {
+                const factsLi = document.createElement('li');
+                factsLi.className = 'mt-3 pt-3 border-t border-slate-700';
+                factsLi.innerHTML = `
+                    <div class="text-xs">
+                        <div class="text-slate-500 font-bold uppercase tracking-widest mb-2">Facts Gathered</div>
+                        <div class="flex flex-wrap gap-1">
+                            ${adaptiveResult.facts.map(fact => `
+                                <span class="bg-blue-900 text-blue-300 px-2 py-0.5 rounded text-[10px] font-mono">${fact}</span>
+                            `).join('')}
+                        </div>
+                    </div>
                 `;
-                debugRulesList.appendChild(li);
-            });
+                debugRulesList.appendChild(factsLi);
+            }
         } else {
-            debugRulesList.innerHTML = '<li class="text-slate-500 italic">No rules triggered in this step.</li>';
+            debugRulesList.innerHTML = '<li class="text-slate-500 italic text-xs">No rules triggered (fallback used)</li>';
         }
     }
 
+    // Update state JSON section
     if (debugStateJson && adaptiveResult.new_state) {
-        debugStateJson.textContent = JSON.stringify(adaptiveResult.new_state, null, 2);
+        const state = adaptiveResult.new_state;
+        const stateDisplay = {
+            xp: state.global_xp,
+            level: state.current_level,
+            streak: state.current_streak,
+            wrong_streak: state.wrong_streak,
+            questions_answered: state.total_questions_answered,
+            correct: state.correct_count,
+            wrong: state.wrong_count,
+            hints_available: state.hints_available,
+            fast_track: state.fast_track_active,
+            next_action: state.next_action,
+            recommendation: state.recommendation,
+            certification: state.certification
+        };
+
+        debugStateJson.textContent = JSON.stringify(stateDisplay, null, 2);
     }
 }
+
 
 /**
  * Show feedback after answer submission

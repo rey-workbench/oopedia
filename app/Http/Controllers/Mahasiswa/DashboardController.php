@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
-use App\Services\DashboardService;
+use App\Services\Analytics\DashboardService;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
