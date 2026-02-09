@@ -10,12 +10,13 @@ use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Inertia\Inertia;
 
 class LoginController extends Controller
 {
     public function create()
     {
-        return view('auth.login');
+        return Inertia::render('Auth/Login');
     }
 
     public function store(Request $request)

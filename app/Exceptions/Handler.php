@@ -23,8 +23,12 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->renderable(function (\Symfony\Component\HttpKernel\Exception\HttpException $e, $request) {
+            if ($request->inertia()) {
+                return \Inertia\Inertia::render('Error', [
+                    'status' => $e->getStatusCode(),
+                ])->toResponse($request)->setStatusCode($e->getStatusCode());
+            }
         });
     }
 }

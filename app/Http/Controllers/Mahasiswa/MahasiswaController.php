@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mahasiswa;
 use App\Http\Controllers\Controller;
 use App\Repositories\MaterialRepository;
 use App\Services\Analytics\LeaderboardService;
+use Inertia\Inertia;
 
 class MahasiswaController extends Controller
 {
@@ -33,6 +34,6 @@ class MahasiswaController extends Controller
         $currentUserId = auth()->id();
         $data = $this->leaderboardService->getLeaderboardData($currentUserId);
 
-        return view('mahasiswa.leaderboard', $data);
+        return Inertia::render('Mahasiswa/Leaderboard/Index', $data);
     }
 }

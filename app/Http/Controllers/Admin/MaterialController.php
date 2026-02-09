@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Material;
 use App\Services\Lms\Material\MaterialService;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class MaterialController extends Controller
 {
@@ -24,12 +25,12 @@ class MaterialController extends Controller
 
         $materials = $this->materialService->getAllMaterials($search, $sort, $direction);
 
-        return view('admin.materials.index', compact('materials'));
+        return Inertia::render('Admin/Materials/Index', compact('materials'));
     }
 
     public function create()
     {
-        return view('admin.materials.create');
+        return Inertia::render('Admin/Materials/Create');
     }
 
     public function store(Request $request)
@@ -59,7 +60,8 @@ class MaterialController extends Controller
 
     public function edit(Material $material)
     {
-        return view('admin.materials.edit', compact('material'));
+        $material->load('media'); // Ensure media is loaded
+        return Inertia::render('Admin/Materials/Edit', compact('material'));
     }
 
     public function update(Request $request, Material $material)

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\UeqSurveyExport;
+use Inertia\Inertia;
 
 class UeqSurveyController extends Controller
 {
@@ -47,14 +48,11 @@ class UeqSurveyController extends Controller
         // Untuk sidebar materials dropdown
         $materials = $this->materialService->getAllMaterials();
         
-        return view('admin.ueq.index', [
+        return Inertia::render('Admin/Ueq/Index', [
             'surveys' => $surveys,
             'averages' => $averages,
-            'materials' => $materials,
             'classes' => $classes,
-            'activePage' => 'ueq',
-            'userName' => auth()->user()->name,
-            'userRole' => auth()->user()->role->role_name
+            'activeClass' => $class
         ]);
     }
 
@@ -164,6 +162,6 @@ class UeqSurveyController extends Controller
         $survey = $this->ueqService->getStudentDetail($userId);
         $user = $survey->user;
 
-        return view('admin.ueq.detail', compact('survey', 'user'));
+        return Inertia::render('Admin/Ueq/Detail', compact('survey', 'user'));
     }
 } 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
 use App\Services\Lms\Material\MaterialViewService;
+use Inertia\Inertia;
 
 class MaterialController extends Controller
 {
@@ -20,7 +21,7 @@ class MaterialController extends Controller
         
         $data = $this->materialViewService->getSubMaterialDetail($materialId, $subMaterialId, $isGuest);
         
-        return view('mahasiswa.submaterials.show', $data);
+        return Inertia::render('Mahasiswa/SubMaterials/Show', $data);
     }
 
     public function show($id)
@@ -30,7 +31,7 @@ class MaterialController extends Controller
 
         $data = $this->materialViewService->getMaterialDetail($id, $userId, $isGuest);
 
-        return view('mahasiswa.materials.show', $data);
+        return Inertia::render('Mahasiswa/Materials/Show', $data);
     }
 
     public function index()
@@ -40,7 +41,10 @@ class MaterialController extends Controller
 
         $materials = $this->materialViewService->getMaterialsList($userId, $isGuest);
 
-        return view('mahasiswa.materials.index', compact('materials'));
+        return Inertia::render('Mahasiswa/Materials/Index', [
+            'materials' => $materials,
+            'isGuest' => $isGuest
+        ]);
     }
 
     public function reset($id)

@@ -63,7 +63,6 @@ class MaterialRepository
 
     public function getAllWithQuestionsAndActiveConfigs()
     {
-        // QuestionBankConfigs removed - just return with questions
         return Material::with(['questions'])->get();
     }
 
@@ -75,12 +74,12 @@ class MaterialRepository
 
     public function getAllOrdered()
     {
-        return Material::with(['questions', 'media'])->orderBy('created_at', 'asc')->get();
+        return Material::with(['questions', 'media', 'creator'])->orderBy('created_at', 'asc')->get();
     }
 
     public function findWithQuestionsShuffled($id)
     {
-        $material = Material::findOrFail($id);
+        $material = Material::with(['subMaterials.questions', 'creator', 'media'])->findOrFail($id);
         
         // Shuffle answers for each question
         foreach ($material->questions as $question) {

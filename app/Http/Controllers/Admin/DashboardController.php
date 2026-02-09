@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\Analytics\AdminDashboardService;
+use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
@@ -44,7 +45,7 @@ class DashboardController extends Controller
         // Student Analytics for Charts
         $studentAnalytics = $this->adminDashboardService->getStudentAnalytics();
 
-        return view('admin.dashboard.index', compact(
+        return Inertia::render('Admin/Dashboard/Index', compact(
             'userName',
             'userRole',
             'totalStudents',

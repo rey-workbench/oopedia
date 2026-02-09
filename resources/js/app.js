@@ -1,20 +1,15 @@
-/**
- * App Bundle & Orchestrator
- * Main entry point for the application
- * Loads all necessary utilities, components, and page-specific logic
- */
+import { createInertiaApp } from '@inertiajs/svelte'
+import { mount } from 'svelte'
 
-// Bootstrap dependencies
-import './bootstrap';
+// Import global styles if needed
+import '../css/app.css';
 
-// Core utilities (makes Http, UI, Tour, DOM, Scrollbar globally available)
-import './utils/index.js';
-
-// Auth pages
-import './pages/auth/index.js';
-
-// Bundles (these will load their own dependencies)
-import './bundles/mahasiswa.js';
-import './bundles/admin.js';
-
-console.log('App bundle loaded');
+createInertiaApp({
+    resolve: name => {
+        const pages = import.meta.glob('./pages/**/*.svelte', { eager: true })
+        return pages[`./pages/${name}.svelte`]
+    },
+    setup({ el, App, props }) {
+        mount(App, { target: el, props })
+    },
+})

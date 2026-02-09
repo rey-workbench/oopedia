@@ -15,6 +15,7 @@ use App\Services\Gamification\StreakService;
 use App\Services\User\PerformanceService;
 use App\Services\Adaptive\FactGatheringService;
 use App\Services\Adaptive\AdaptiveEngineService;
+use Inertia\Inertia;
 
 class MaterialQuestionController extends Controller
 {
@@ -65,7 +66,7 @@ class MaterialQuestionController extends Controller
 
         $materials = $this->materialQuestionService->getMaterialsListWithStudentCount($userId, $isGuest, $guestProgress);
 
-        return view('mahasiswa.materials.questions.index', compact('materials', 'isGuest'));
+        return Inertia::render('Mahasiswa/Materials/Questions/Index', compact('materials', 'isGuest'));
     }
 
     /**
@@ -80,7 +81,7 @@ class MaterialQuestionController extends Controller
 
         $data = $this->materialQuestionService->getQuizData($material, $difficulty, $userId, $isGuest, $guestProgress);
 
-        return view('mahasiswa.materials.questions.show', $data);
+        return Inertia::render('Mahasiswa/Materials/Questions/Show', $data);
     }
 
     /**
@@ -100,7 +101,7 @@ class MaterialQuestionController extends Controller
 
         $levels = $this->materialQuestionService->getLevelProgress($material, $difficulty, $answeredQuestionIds);
 
-        return view('mahasiswa.materials.questions.levels', compact(
+        return Inertia::render('Mahasiswa/Materials/Questions/Levels', compact(
             'material',
             'materials',
             'levels',
@@ -123,15 +124,8 @@ class MaterialQuestionController extends Controller
 
         $questions = $this->materialQuestionService->getReviewQuestions($material, $difficulty, $userId, $isGuest, $guestProgress);
 
-        if ($request->ajax()) {
-            return view('mahasiswa.partials.question-review-filtered', [
-                'material' => $material,
-                'questions' => $questions,
-                'difficulty' => $difficulty
-            ])->render();
-        }
 
-        return view('mahasiswa.materials.questions.review', [
+        return Inertia::render('Mahasiswa/Materials/Questions/Review', [
             'material' => $material,
             'materials' => $materials,
             'questions' => $questions,

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Repositories\MaterialRepository;
 use App\Services\User\UserService;
+use Inertia\Inertia;
 
 class ProfileController extends Controller
 {
@@ -24,7 +25,7 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
         $materials = $this->materialRepo->getAllOrdered();
-        return view('mahasiswa.profile.index', compact('materials', 'user'));
+        return Inertia::render('Mahasiswa/Profile/Index', compact('materials', 'user'));
     }
 
     public function update(Request $request)

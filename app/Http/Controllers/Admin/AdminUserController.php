@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\User\UserService;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class AdminUserController extends Controller
 {
@@ -27,7 +28,9 @@ class AdminUserController extends Controller
         $search = $request->search;
         $users = $this->userService->getAdmins($search);
         
-        return view('admin.users.index', compact('users'));
+        $pendingAdminsCount = \App\Models\User::where('role_id', 2)->where('is_approved', false)->count();
+
+        return Inertia::render('Admin/Users/Index', compact('users', 'pendingAdminsCount'));
     }
 
     public function create()
@@ -38,7 +41,8 @@ class AdminUserController extends Controller
                 ->with('error', 'Anda tidak memiliki akses');
         }
         
-        return view('admin.users.create');
+        $roles = \App\Models\Role::all();
+        return Inertia::render('Admin/Users/Create', compact('roles'));
     }
 
     public function store(Request $request)
@@ -79,7 +83,7 @@ class AdminUserController extends Controller
                 ->with('error', 'User bukan admin');
         }
         
-        return view('admin.users.edit', compact('user'));
+        return Inertia::render('Admin/Users/Edit', compact('user'));
     }
 
     public function update(Request $request, User $user)
@@ -135,7 +139,7 @@ class AdminUserController extends Controller
         
         $pendingAdmins = $this->userService->getPendingAdmins();
         
-        return view('admin.users.pending', compact('pendingAdmins'));
+        return Inertia::render('Admin/Users/Pending', compact('pendingAdmins'));
     }
 
     public function approveAdmin(User $user)
@@ -183,7 +187,7 @@ class AdminUserController extends Controller
                 ->with('error', 'Anda tidak memiliki akses');
         }
         
-        return view('admin.users.import');
+        return Inertia::render('Admin/Users/Import');
     }
     
     public function processImport(Request $request)

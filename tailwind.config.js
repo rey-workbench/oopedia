@@ -4,6 +4,7 @@ export default {
     "./resources/**/*.blade.php",
     "./resources/**/*.js",
     "./resources/**/*.vue",
+    "./resources/**/*.svelte",
   ],
   theme: {
     extend: {
@@ -36,7 +37,8 @@ export default {
         'gradient-vibrant': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       },
       fontFamily: {
-        sans: ['Roboto', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        display: ['Poppins', 'Inter', 'sans-serif'],
       },
     },
   },

@@ -6,17 +6,25 @@
         "build": "vite build"
     },
     "devDependencies": {
+        "@inertiajs/svelte": "^2.3.13",
+        "@sveltejs/vite-plugin-svelte": "^6.2.4",
         "@tailwindcss/postcss": "^4.1.18",
         "autoprefixer": "^10.4.23",
         "axios": "^1.6.4",
         "laravel-vite-plugin": "^1.0.0",
         "postcss": "^8.5.6",
+        "svelte": "^5.50.0",
         "tailwindcss": "^4.1.18",
         "vite": "^6.4.1"
     },
     "dependencies": {
+        "@inertiajs/vue3": "^2.3.13",
         "@tailwindcss/vite": "^4.1.18",
+        "@vitejs/plugin-vue": "^6.0.4",
+        "apexcharts": "^5.3.6",
         "lodash": "^4.17.21",
-        "quill": "^2.0.3"
+        "lucide-svelte": "^0.563.0",
+        "quill": "^2.0.3",
+        "vue": "^3.5.27"
     }
 }

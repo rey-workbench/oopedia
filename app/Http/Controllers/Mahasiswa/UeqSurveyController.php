@@ -24,7 +24,7 @@ class UeqSurveyController extends Controller
 
         $aspects = $this->getAspects();
         
-        return view('mahasiswa.ueq.create', compact('aspects'));
+        return \Inertia\Inertia::render('Mahasiswa/Ueq-Survey/Create', compact('aspects'));
     }
 
     public function store(Request $request)
@@ -230,7 +230,7 @@ class UeqSurveyController extends Controller
     
     public function thankyou()
     {
-        return view('mahasiswa.ueq.thankyou');
+        return \Inertia\Inertia::render('Mahasiswa/Ueq-Survey/ThankYou');
     }
 
     /**

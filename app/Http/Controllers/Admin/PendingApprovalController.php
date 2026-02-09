@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class PendingApprovalController extends Controller
 {
@@ -33,7 +34,7 @@ class PendingApprovalController extends Controller
                 return redirect()->route('admin.dashboard');
             }
             
-            return view('admin.users.pending-approval');
+            return Inertia::render('Admin/Users/PendingApproval');
         }
         
         // Jika bukan superadmin atau admin yang belum diapprove, redirect sesuai role

@@ -106,7 +106,7 @@ class MaterialViewService
 
     public function getSubMaterialDetail($materialId, $subMaterialId, $isGuest)
     {
-        $material = \App\Models\Material::with(['subMaterials', 'creator'])->findOrFail($materialId);
+        $material = \App\Models\Material::with(['subMaterials.questions', 'creator'])->findOrFail($materialId);
         $subMaterial = \App\Models\SubMaterial::with(['questions'])->findOrFail($subMaterialId);
         
         return [

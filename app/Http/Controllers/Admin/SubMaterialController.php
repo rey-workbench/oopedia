@@ -6,18 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Models\Material;
 use App\Models\SubMaterial;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class SubMaterialController extends Controller
 {
     public function index(Material $material)
     {
         $subMaterials = $material->subMaterials()->orderBy('order')->get();
-        return view('admin.materials.submaterials.index', compact('material', 'subMaterials'));
+        return Inertia::render('Admin/Materials/Submaterials/Index', compact('material', 'subMaterials'));
     }
 
     public function create(Material $material)
     {
-        return view('admin.materials.submaterials.create', compact('material'));
+        return Inertia::render('Admin/Materials/Submaterials/Create', compact('material'));
     }
 
     public function store(Request $request, Material $material)
@@ -37,7 +38,7 @@ class SubMaterialController extends Controller
 
     public function edit(Material $material, SubMaterial $submaterial)
     {
-        return view('admin.materials.submaterials.edit', compact('material', 'submaterial'));
+        return Inertia::render('Admin/Materials/Submaterials/Edit', compact('material', 'submaterial'));
     }
 
     public function update(Request $request, Material $material, SubMaterial $submaterial)

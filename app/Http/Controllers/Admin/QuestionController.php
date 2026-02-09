@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Services\Lms\Question\QuestionListingService;
 use App\Services\Lms\Question\QuestionService;
 use App\Services\Lms\Material\MaterialService;
+use Inertia\Inertia;
 
 class QuestionController extends Controller
 {
@@ -21,17 +22,14 @@ class QuestionController extends Controller
 
     public function index(Request $request, Material $material = null)
     {
-        $user = auth()->user();
         $search = $request->input('search');
         $difficulty = $request->input('difficulty');
         $materialId = $material ? $material->id : null;
 
-        $questions = $this->questionService->getFilteredQuestions($search, $difficulty, $materialId);
+        $questions = $this->questionService->getFilteredQuestions($search, $difficulty, $materialId, 10);
 
-        return view('admin.questions.index', [
+        return Inertia::render('Admin/Questions/Index', [
             'questions' => $questions,
-            'userName' => $user->name,
-            'userRole' => $user->role->role_name,
             'material' => $material,
             'search' => $search,
             'difficulty' => $difficulty
@@ -42,16 +40,14 @@ class QuestionController extends Controller
     public function create(Material $material = null)
     {
         if ($material) {
-            // If material is provided, only show that material
             $materials = collect([$material]);
             $subMaterials = $material->subMaterials()->orderBy('order')->get();
-            return view('admin.questions.create', compact('materials', 'material', 'subMaterials'));
         } else {
-            // Otherwise show all materials (for the general create route)
             $materials = $this->materialService->getAllMaterials();
-            $subMaterials = collect(); // Will be populated by JS
-            return view('admin.questions.create', compact('materials', 'subMaterials'));
+            $subMaterials = collect();
         }
+
+        return Inertia::render('Admin/Questions/Create', compact('materials', 'material', 'subMaterials'));
     }
 
     /**
@@ -133,14 +129,15 @@ class QuestionController extends Controller
         }
     }
 
-    public function edit(Material $material , Question $question)
+    public function edit(Material $material = null, Question $question)
     {
         $materials = $this->materialService->getAllMaterials();
-
-        $material = $question->material; // Get the question's material
+        $question->load('answers');
+        
+        $material = $question->material;
         $subMaterials = $material ? $material->subMaterials()->orderBy('order')->get() : collect();
         
-        return view('admin.questions.edit', compact('question', 'materials', 'material', 'subMaterials'));
+        return Inertia::render('Admin/Questions/Edit', compact('question', 'materials', 'material', 'subMaterials'));
     }
 
     public function update(Request $request, Material $material = null, Question $question)

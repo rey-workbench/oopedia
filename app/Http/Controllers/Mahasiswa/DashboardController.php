@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mahasiswa;
 use App\Http\Controllers\Controller;
 use App\Services\Analytics\DashboardService;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
@@ -22,7 +23,7 @@ class DashboardController extends Controller
 
         $data = $this->dashboardService->getDashboardIndexData($userId, $isGuest);
 
-        return view('mahasiswa.dashboard.index', $data);
+        return Inertia::render('Mahasiswa/Dashboard/Index', $data);
     }
 
     public function inProgress()
@@ -32,7 +33,7 @@ class DashboardController extends Controller
 
         $materialsWithStats = $this->dashboardService->getInProgressData($userId, $isGuest);
 
-        return view('mahasiswa.dashboard.in-progress', [
+        return Inertia::render('Mahasiswa/Dashboard/InProgress', [
             'materialsWithStats' => $materialsWithStats
         ]);
     }
@@ -44,7 +45,7 @@ class DashboardController extends Controller
 
         $materialsWithStats = $this->dashboardService->getCompletedData($userId, $isGuest);
 
-        return view('mahasiswa.dashboard.completed', [
+        return Inertia::render('Mahasiswa/Dashboard/Completed', [
             'materialsWithStats' => $materialsWithStats
         ]);
     }
@@ -52,6 +53,6 @@ class DashboardController extends Controller
     public function completed()
     {
         $materials = $this->dashboardService->getAllMaterials();
-        return view('mahasiswa.dashboard.completed', compact('materials'));
+        return Inertia::render('Mahasiswa/Dashboard/Completed', compact('materials'));
     }
 }

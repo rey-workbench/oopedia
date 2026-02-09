@@ -23,6 +23,10 @@ use App\Http\Controllers\Auth\LoginController;
 // Redirect root to login or materials page based on authentication
 Route::get('/', [LoginController::class, 'index']);
 
+Route::get('/test-inertia', function () {
+    return inertia('Welcome', ['title' => 'Inertia World']);
+});
+
 // Fallback route for 404 errors
 Route::fallback([LoginController::class, 'fallback']);
 

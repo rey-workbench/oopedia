@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Services\User\StudentService;
+use Inertia\Inertia;
 
 class AdminStudentController extends Controller
 {
@@ -28,7 +29,7 @@ class AdminStudentController extends Controller
         $search = $request->search;
         $students = $this->studentService->getStudentsWithProgress($search, 10);
         
-        return view('admin.students.index', compact('students'));
+        return Inertia::render('Admin/Students/Index', compact('students'));
     }
 
     public function progress(User $student)
@@ -38,7 +39,7 @@ class AdminStudentController extends Controller
     
         $data = $this->studentService->getStudentProgressDetail($student);
 
-        return view('admin.students.progress', [
+        return Inertia::render('Admin/Students/Progress', [
             'student' => $student,
             'materials' => $data['materials'],
             'recent_activities' => $data['recent_activities'],
@@ -105,7 +106,7 @@ class AdminStudentController extends Controller
                 ->with('error', 'Anda tidak memiliki akses untuk fitur ini');
         }
         
-        return view('admin.students.import');
+        return Inertia::render('Admin/Students/Import');
     }
     
     public function processImport(Request $request)
@@ -151,15 +152,6 @@ class AdminStudentController extends Controller
 
     public function show(User $student)
     {
-        if ($student->role_id !== 3) {
-            abort(404);
-        }
-
-        $data = $this->studentService->getStudentProgressDetail($student);
-
-        return view('admin.students.show', [
-            'student' => $student,
-            'materials' => $data['materials']
-        ]);
+        return redirect()->route('admin.students.progress', $student);
     }
 }
