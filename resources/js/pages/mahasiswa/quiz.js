@@ -9,64 +9,62 @@ import { DOM } from '../../utils/dom.js';
 import { showPersonalizationNotification } from '../../components/notifications.js';
 
 /**
- * Redirect after quiz completion
+ * Multimedia Controller
  */
-function redirectAfterCompletion() {
-    if (document.fullscreenElement) {
-        document.exitFullscreen().catch(() => { });
+const Multimedia = {
+    backsound: null,
+    correctSound: null,
+    wrongSound: null,
+
+    init() {
+        this.backsound = DOM.$('#audioBacksound');
+        this.correctSound = DOM.$('#audioCorrect');
+        this.wrongSound = DOM.$('#audioWrong');
+
+        // Set low volume for backsound
+        if (this.backsound) {
+            this.backsound.volume = 0.2;
+        }
+
+        // Start backsound on first interaction (browser requirement)
+        const startAudio = () => {
+            if (this.backsound) {
+                this.backsound.play().catch(err => console.log('Autoplay blocked:', err));
+            }
+            document.removeEventListener('click', startAudio);
+        };
+        document.addEventListener('click', startAudio);
+    },
+
+    playCorrect() {
+        if (this.correctSound) {
+            this.correctSound.currentTime = 0;
+            this.correctSound.play().catch(() => { });
+        }
+    },
+
+    playWrong() {
+        if (this.wrongSound) {
+            this.wrongSound.currentTime = 0;
+            this.wrongSound.play().catch(() => { });
+        }
     }
-    if (typeof redirectUrl !== 'undefined') {
-        window.location.href = redirectUrl;
-    }
-}
-
-/**
- * Setup security measures for quiz
- */
-function setupSecurity() {
-    // Disable copy/paste/keyboard shortcuts
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    document.addEventListener('keydown', e => {
-        if (
-            e.key === 'F12' ||
-            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) ||
-            (e.ctrlKey && (e.key === 'u' || e.key === 'c' || e.key === 'v' || e.key === 's'))
-        ) {
-            e.preventDefault();
-            UI.warning('Fitur ini dinonaktifkan demi keamanan ujian.');
-        }
-    });
-
-    // Anti-text selection
-    document.body.style.userSelect = 'none';
-    document.body.style.webkitUserSelect = 'none';
-
-    // Tab switch detection
-    document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-            UI.warning('Peringatan: Jangan meninggalkan tab ujian!');
-        }
-    });
-
-    // Auto-fullscreen on first interaction
-    document.addEventListener('click', function enterFS() {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(err => {
-                console.log('Fullscreen failed:', err);
-            });
-        }
-        document.removeEventListener('click', enterFS);
-    }, { once: true });
-}
+};
 
 /**
  * Trigger haptic feedback overlay
  * @param {boolean} isSuccess - Whether answer was correct
  */
-function triggerHapticFeedback(isSuccess) {
+function triggerFeedbackUI(isSuccess, data, routes) {
     const feedbackOverlay = DOM.$('.exercise-feedback');
     const hapticLayer = DOM.$('#hapticLayer');
     const contentBox = DOM.$('.feedback-content-box');
+    const feedbackStatus = DOM.$('#feedbackStatus');
+    const feedbackIcon = DOM.$('#feedbackIcon');
+    const tryAgainBtn = DOM.$('#tryAgainBtn');
+    const nextQuestionBtn = DOM.$('#nextQuestionBtn');
+    const explanationBox = DOM.$('#explanationBox');
+    const explanationText = DOM.$('#explanationText');
 
     if (!feedbackOverlay || !hapticLayer || !contentBox) return;
 
@@ -77,12 +75,73 @@ function triggerHapticFeedback(isSuccess) {
     hapticLayer.style.backgroundColor = color;
     hapticLayer.style.opacity = '1';
 
+    // Update Status & Icon
+    if (feedbackStatus) {
+        feedbackStatus.textContent = isSuccess ? 'Jawaban Benar!' : 'Jawaban Salah!';
+        feedbackStatus.className = `text-4xl font-bold mb-8 uppercase tracking-widest ${isSuccess ? 'text-emerald-600' : 'text-rose-600'}`;
+    }
+    if (feedbackIcon) {
+        feedbackIcon.innerHTML = isSuccess
+            ? '<i class="fas fa-check-circle text-emerald-500"></i>'
+            : '<i class="fas fa-times-circle text-rose-500"></i>';
+    }
+
+    // Update adaptive state if present
+    if (data.adaptiveResult && data.adaptiveResult.new_state) {
+        const state = data.adaptiveResult.new_state;
+        updateAdaptiveState(state);
+
+        if (state.fast_track_active === 1) {
+            showPersonalizationNotification('fast-track', '🚀 Fast Learner!', 'Kecepatan luar biasa! Bonus +30 XP', 'success');
+        }
+        updateDebugPanel(data.adaptiveResult);
+    }
+
+    // Explanation
+    if (explanationBox && explanationText && data.explanation) {
+        explanationBox.classList.remove('hidden');
+        explanationText.textContent = data.explanation;
+    } else if (explanationBox) {
+        explanationBox.classList.add('hidden');
+    }
+
+    // Buttons logic
+    const nextAction = data.adaptiveResult?.new_state?.next_action_data;
+    const hasSpecificRecommendation = nextAction && nextAction.type !== 'question';
+
+    if (isSuccess || hasSpecificRecommendation) {
+        if (tryAgainBtn) tryAgainBtn.style.display = 'none';
+        if (nextQuestionBtn) {
+            nextQuestionBtn.style.display = 'inline-flex';
+            const btnLabel = nextAction?.label || 'Lanjut';
+            const btnIcon = nextAction?.type === 'material' ? 'fa-book-open' : 'fa-arrow-right';
+            nextQuestionBtn.innerHTML = `${btnLabel} <i class="fas ${btnIcon} ml-2"></i>`;
+            nextQuestionBtn.onclick = () => window.location.href = data.nextUrl || routes.dashboard;
+        }
+    } else {
+        if (tryAgainBtn) {
+            tryAgainBtn.style.display = 'inline-flex';
+            tryAgainBtn.onclick = () => {
+                contentBox.classList.remove('scale-100', 'opacity-100');
+                setTimeout(() => {
+                    feedbackOverlay.classList.add('hidden');
+                    const btn = DOM.$('#checkAnswerBtn');
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Periksa Jawaban';
+                    }
+                }, 300);
+            };
+        }
+        if (nextQuestionBtn) nextQuestionBtn.style.display = 'none';
+    }
+
     // Popup animation
     setTimeout(() => {
         contentBox.classList.add('scale-100', 'opacity-100');
     }, 100);
 
-    // Vibration feedback if available
+    // Vibration
     if (navigator.vibrate) {
         navigator.vibrate(isSuccess ? [200] : [100, 50, 100]);
     }
@@ -191,100 +250,17 @@ function updateDebugPanel(adaptiveResult) {
  * @param {Object} routes - Route configuration
  */
 function showFeedback(data, routes) {
-    const feedbackOverlay = DOM.$('.exercise-feedback');
-    const feedbackStatus = DOM.$('#feedbackStatus');
-    const feedbackIcon = DOM.$('#feedbackIcon');
-    const tryAgainBtn = DOM.$('#tryAgainBtn');
-    const nextQuestionBtn = DOM.$('#nextQuestionBtn');
-    const explanationBox = DOM.$('#explanationBox');
-    const explanationText = DOM.$('#explanationText');
-    const contentBox = DOM.$('.feedback-content-box');
-
     const isSuccess = data.status === 'success';
 
-    // Trigger haptic & background color
-    triggerHapticFeedback(isSuccess);
-
-    // Update Status
-    if (feedbackStatus) {
-        feedbackStatus.textContent = isSuccess ? 'Jawaban Benar!' : 'Jawaban Salah!';
-        feedbackStatus.className = `text-4xl font-black mb-8 italic uppercase tracking-tight ${isSuccess ? 'text-emerald-600' : 'text-rose-600'}`;
-    }
-
-    // Update adaptive state if present
-    if (data.adaptiveResult && data.adaptiveResult.new_state) {
-        const state = data.adaptiveResult.new_state;
-        updateAdaptiveState(state);
-
-        // Show personalization notifications
-        if (state.fast_track_active === 1) {
-            showPersonalizationNotification(
-                'fast-track',
-                '🚀 Fast Learner Detected!',
-                'Kecepatan dan akurasi Anda luar biasa! Bonus +30 XP',
-                'success'
-            );
-        }
-
-        // Update debug panel
-        updateDebugPanel(data.adaptiveResult);
-    }
-
-    // Update Icon
-    if (feedbackIcon) {
-        feedbackIcon.innerHTML = isSuccess
-            ? '<i class="fas fa-check-circle text-emerald-500"></i>'
-            : '<i class="fas fa-times-circle text-rose-500"></i>';
-    }
-
-    // Show explanation if available
-    if (explanationBox && explanationText && data.explanation) {
-        explanationBox.classList.remove('hidden');
-        explanationText.textContent = data.explanation;
-    } else if (explanationBox) {
-        explanationBox.classList.add('hidden');
-    }
-
-    // Configure action buttons
-    const nextAction = data.adaptiveResult?.new_state?.next_action_data;
-    const hasSpecificRecommendation = nextAction && nextAction.type !== 'question';
-
-    if (isSuccess || hasSpecificRecommendation) {
-        if (tryAgainBtn) tryAgainBtn.style.display = isSuccess ? 'none' : 'inline-flex';
-        if (nextQuestionBtn) {
-            nextQuestionBtn.style.display = 'inline-flex';
-
-            const btnLabel = nextAction?.label || 'Lanjut';
-            const btnIcon = nextAction?.type === 'material' ? 'fa-book-open' :
-                nextAction?.type === 'navigation' ? 'fa-home' :
-                    nextAction?.type === 'certificate' ? 'fa-medal' : 'fa-arrow-right';
-
-            if (data.hasNextQuestion || nextAction?.url) {
-                nextQuestionBtn.innerHTML = `${btnLabel} <i class="fas ${btnIcon} ml-2"></i>`;
-                nextQuestionBtn.onclick = () => window.location.href = data.nextUrl;
-            } else {
-                nextQuestionBtn.innerHTML = 'Tuntas <i class="fas fa-flag-checkered ml-2"></i>';
-                nextQuestionBtn.onclick = () => redirectAfterCompletion();
-            }
-        }
+    // Multimedia Feedback
+    if (isSuccess) {
+        Multimedia.playCorrect();
     } else {
-        if (tryAgainBtn) tryAgainBtn.style.display = 'inline-flex';
-        if (nextQuestionBtn) nextQuestionBtn.style.display = 'none';
-
-        if (tryAgainBtn) {
-            tryAgainBtn.onclick = () => {
-                contentBox.classList.remove('scale-100', 'opacity-100');
-                setTimeout(() => {
-                    feedbackOverlay.classList.add('hidden');
-                    const btn = DOM.$('#checkAnswerBtn');
-                    if (btn) {
-                        btn.disabled = false;
-                        btn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Periksa Jawaban';
-                    }
-                }, 300);
-            };
-        }
+        Multimedia.playWrong();
     }
+
+    // Show UI immediately
+    triggerFeedbackUI(isSuccess, data, routes);
 }
 
 /**
@@ -298,6 +274,9 @@ export function initializeQuestionForm(config) {
     const routes = config.routes;
 
     if (!questionForm) return;
+
+    // Initialize Multimedia
+    Multimedia.init();
 
     // Timer Logic
     let startTime = Date.now();

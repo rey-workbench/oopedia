@@ -43,7 +43,10 @@ class MaterialsSeeder extends Seeder
         ];
 
         foreach ($materials as $material) {
-            Material::create($material);
+            Material::firstOrCreate(
+                ['title' => $material['title']],
+                $material
+            );
         }
     }
 }

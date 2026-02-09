@@ -79,7 +79,10 @@ class UeqSurveysSeeder extends Seeder
         ];
 
         foreach ($surveys as $survey) {
-            UeqSurvey::create($survey);
+            UeqSurvey::firstOrCreate(
+                ['user_id' => $survey['user_id']],
+                $survey
+            );
         }
     }
 }

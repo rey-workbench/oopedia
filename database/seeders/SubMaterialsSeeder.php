@@ -120,7 +120,10 @@ class SubMaterialsSeeder extends Seeder
         ];
 
         foreach ($subMaterials as $subMaterial) {
-            SubMaterial::create($subMaterial);
+            SubMaterial::firstOrCreate(
+                ['material_id' => $subMaterial['material_id'], 'title' => $subMaterial['title']],
+                $subMaterial
+            );
         }
     }
 }

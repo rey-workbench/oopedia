@@ -4,19 +4,12 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
-use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 
 class DosenSeeder extends Seeder
 {
     public function run(): void
     {
-        // Create or ensure Dosen role exists
-        $roleDosen = Role::firstOrCreate(
-            ['id' => 1],
-            ['role_name' => 'Dosen']
-        );
-
         // Create dosen users
         $dosenList = [
             [
@@ -37,12 +30,15 @@ class DosenSeeder extends Seeder
         ];
 
         foreach ($dosenList as $dosen) {
-            User::create([
-                'name' => $dosen['name'],
-                'email' => $dosen['email'],
-                'password' => Hash::make($dosen['password']),
-                'role_id' => $roleDosen->id,
-            ]);
+            User::firstOrCreate(
+                ['email' => $dosen['email']],
+                [
+                    'name' => $dosen['name'],
+                    'password' => Hash::make($dosen['password']),
+                    'role_id' => 2,
+                    'is_approved' => true
+                ]
+            );
         }
     }
 } 

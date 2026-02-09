@@ -267,4 +267,21 @@
     </div>
   </div>
   @endif
+  {{-- Multimedia Feedback Elements --}}
+  <div class="multimedia-assets hidden">
+    {{-- Background Music --}}
+    <audio id="audioBacksound" loop preload="auto">
+      <source src="{{ asset('assets/audio/backsound.mp4') }}" type="audio/mpeg" >
+    </audio>
+    
+    {{-- Correct Answer Sound --}}
+    <audio id="audioCorrect" preload="auto">
+      <source src="{{ asset('assets/audio/correct.mp3') }}" type="audio/mpeg">
+    </audio>
+
+    {{-- Wrong Answer Sound --}}
+    <audio id="audioWrong" preload="auto">
+      <source src="{{ asset('assets/audio/wrong.mp3') }}" type="audio/mpeg">
+    </audio>
+  </div>
 </div>

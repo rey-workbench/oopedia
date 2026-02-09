@@ -338,7 +338,7 @@ class QuestionsSeeder extends Seeder
             
             // ==================== Material 5: Encapsulation ====================
             // Sub-material 12: Encapsulation Principles
-            [
+            [   
                 'material_id' => 5,
                 'sub_material_id' => 12,
                 'question_text' => 'What is encapsulation?',
@@ -355,7 +355,7 @@ class QuestionsSeeder extends Seeder
                 'question_type' => 'radio_button',
                 'type' => 'teori',
                 'difficulty' => 'beginner',
-                'hint' => 'Think about protecting data and hiding implementation',
+                'hint' => 'Think about protecting data and hidingphp implementation',
                 'created_by' => 2,
             ],
             [
@@ -415,7 +415,10 @@ class QuestionsSeeder extends Seeder
         ];
 
         foreach ($questions as $question) {
-            Question::create($question);
+            Question::firstOrCreate(
+                ['question_text' => $question['question_text'], 'material_id' => $question['material_id'],'sub_material_id' => $question['sub_material_id']],
+                $question
+            );
         }
     }
 }

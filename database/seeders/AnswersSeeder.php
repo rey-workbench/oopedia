@@ -181,7 +181,10 @@ class AnswersSeeder extends Seeder
         ];
 
         foreach ($answers as $answer) {
-            Answer::create($answer);
+            Answer::firstOrCreate(
+                ['question_id' => $answer['question_id'], 'answer_text' => $answer['answer_text']],
+                $answer
+            );
         }
     }
 }
