@@ -7,6 +7,7 @@
     import ProgressBar from "../../../components/ui/ProgressBar.svelte";
     import Modal from "../../../components/ui/Modal.svelte";
     import { router, useForm } from "@inertiajs/svelte";
+    import { confirmDelete } from "../../../utils/confirmDelete";
     import {
         UserPlus,
         FileSpreadsheet,
@@ -40,9 +41,7 @@
     }
 
     function handleDelete(id) {
-        if (confirm("Hapus data mahasiswa ini?")) {
-            router.delete(`/admin/students/${id}`);
-        }
+        confirmDelete(`/admin/students/${id}`, "Hapus data mahasiswa ini?");
     }
 
     function handleSubmit() {

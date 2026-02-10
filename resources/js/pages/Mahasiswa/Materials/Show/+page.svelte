@@ -4,48 +4,20 @@
     import Card from "../../../../components/ui/Card.svelte";
     import Button from "../../../../components/ui/Button.svelte";
     import { Link } from "@inertiajs/svelte";
+    import { ArrowLeft, BookOpen, Layers, Puzzle } from "lucide-svelte";
     import {
-        Code,
-        Book,
-        ArrowLeft,
-        BookOpen,
-        Layers,
-        Puzzle,
-    } from "lucide-svelte";
+        getGradientClass,
+        getTextClass,
+        getBgClass,
+        getShadowClass,
+        getIcon,
+        getBadgeLabel,
+    } from "../../../../utils/contentTypeStyles";
 
     export let material = {};
 
     // Handling subMaterials properly if it comes as an array or object
     $: subMaterials = material.sub_materials || [];
-
-    // Helper for gradients and colors based on content type
-    function getGradientClass(type) {
-        return type === "sintaks"
-            ? "from-emerald-500 to-teal-600"
-            : "from-blue-500 to-indigo-600";
-    }
-
-    function getTextClass(type) {
-        return type === "sintaks" ? "text-emerald-600" : "text-blue-600";
-    }
-
-    function getBgClass(type) {
-        return type === "sintaks" ? "bg-emerald-600" : "bg-blue-600";
-    }
-
-    function getShadowClass(type) {
-        return type === "sintaks"
-            ? "shadow-emerald-900/20"
-            : "shadow-blue-900/20";
-    }
-
-    function getIcon(type) {
-        return type === "sintaks" ? Code : Book;
-    }
-
-    function getBadgeLabel(type) {
-        return type === "sintaks" ? "Sintaks" : "Teori";
-    }
 </script>
 
 <App title={material.title}>

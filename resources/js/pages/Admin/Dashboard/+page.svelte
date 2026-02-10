@@ -8,7 +8,7 @@
     import ProgressBar from "../../../components/ui/ProgressBar.svelte";
     import Chart from "../../../components/ui/Chart.svelte";
     import { onMount } from "svelte";
-    import { Link } from "@inertiajs/svelte";
+    import { relativeTime } from "../../../utils/formatters";
     import {
         Users,
         Signal,
@@ -24,15 +24,12 @@
         Zap,
     } from "lucide-svelte";
 
-    export let userName;
-    export let userRole;
     export let totalStudents;
     export let totalMaterials;
     export let totalQuestions;
     export let activeStudents;
     export let recentProgress;
     export let studentProgress;
-    export let materialStats;
     export let popularMaterials;
     export let studentAnalytics;
 
@@ -142,21 +139,6 @@
                 },
             };
         }
-    }
-
-    function relativeTime(isoDate) {
-        if (!isoDate) return "";
-        const date = new Date(isoDate);
-        const now = new Date();
-        const diff = Math.floor((now - date) / 1000); // seconds
-
-        if (diff < 60) return `${diff} detik yang lalu`;
-        const min = Math.floor(diff / 60);
-        if (min < 60) return `${min} menit yang lalu`;
-        const hour = Math.floor(min / 60);
-        if (hour < 24) return `${hour} jam yang lalu`;
-        const day = Math.floor(hour / 24);
-        return `${day} hari yang lalu`;
     }
 </script>
 

@@ -5,6 +5,7 @@
     import Button from "../../../components/ui/Button.svelte";
     import Badge from "../../../components/ui/Badge.svelte";
     import { router } from "@inertiajs/svelte";
+    import { confirmDelete } from "../../../utils/confirmDelete";
     import { page } from "@inertiajs/svelte";
     import {
         Clock,
@@ -34,9 +35,7 @@
     }
 
     function handleDelete(id) {
-        if (confirm("Hapus akses admin ini?")) {
-            router.delete(`/admin/users/${id}`);
-        }
+        confirmDelete(`/admin/users/${id}`, "Hapus akses admin ini?");
     }
 
     $: authUser = $page.props.auth.user;

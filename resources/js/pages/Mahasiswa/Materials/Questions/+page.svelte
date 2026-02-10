@@ -7,15 +7,10 @@
     import ProgressBar from "../../../../components/ui/ProgressBar.svelte";
     import { Link } from "@inertiajs/svelte";
     import { Shapes, Users, Puzzle, Play, Lock } from "lucide-svelte";
+    import GuestBanner from "../../../../components/ui/GuestBanner.svelte";
 
     export let materials = [];
     export let isGuest = false;
-
-    function handleGuestLogout(redirectRoute) {
-        if (isGuest) {
-            // Implement logout logic if needed, or link to login/register
-        }
-    }
 </script>
 
 <App title="Latihan Soal PBO">
@@ -26,26 +21,12 @@
         />
 
         {#if isGuest}
-            <div
-                class="p-4 bg-amber-50 border border-amber-100 rounded-lg flex flex-col gap-2"
-            >
-                <span class="font-bold text-lg tracking-widest text-amber-900"
-                    >Mode Tamu Aktif!</span
-                >
-                <p class="text-sm text-amber-800">
-                    Anda hanya dapat melihat sebagian materi dan hanya 3 soal
-                    latihan dari setiap tingkat kesulitan. Untuk akses penuh,
-                    silakan login atau daftar.
-                </p>
-                <div class="flex gap-4 mt-2">
-                    <Button href="/login" variant="primary" size="sm"
-                        >Login Sekarang</Button
-                    >
-                    <Button href="/register" variant="ghost" size="sm"
-                        >Daftar Akun</Button
-                    >
-                </div>
-            </div>
+            <GuestBanner
+                show={isGuest}
+                variant="banner"
+                title="Mode Tamu Aktif!"
+                message="Anda hanya dapat melihat sebagian materi dan hanya 3 soal latihan dari setiap tingkat kesulitan. Untuk akses penuh, silakan login atau daftar."
+            />
         {/if}
 
         <div class="grid grid-cols-1 gap-10">

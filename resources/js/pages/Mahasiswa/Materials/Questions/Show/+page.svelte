@@ -27,6 +27,7 @@
         ArrowRight,
     } from "lucide-svelte";
     import axios from "axios"; // Assuming axios is available, otherwise usage might need adjustment
+    import GuestBanner from "../../../../../components/ui/GuestBanner.svelte";
 
     export let material = {};
     export let currentQuestion = null;
@@ -182,36 +183,16 @@
 
             <!-- Guest Warning -->
             {#if isGuest}
-                <div
-                    class="mb-8 p-5 bg-amber-50 border border-amber-100 rounded-2xl shadow-sm flex items-start gap-4"
+                <GuestBanner
+                    show={isGuest}
+                    variant="inline"
+                    title="Mode Tamu Aktif!"
+                    message="Anda hanya dapat melihat sebagian dari soal latihan ini."
                 >
-                    <div
-                        class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center shrink-0"
-                    >
+                    <svelte:fragment slot="icon">
                         <UserCheck size={24} class="text-amber-600" />
-                    </div>
-                    <div>
-                        <strong class="text-amber-900 text-lg block mb-1"
-                            >Mode Tamu Aktif!</strong
-                        >
-                        <p class="text-amber-800">
-                            Anda hanya dapat melihat sebagian dari soal latihan
-                            ini. Untuk akses penuh, silakan
-                            <a
-                                href="/login"
-                                class="font-bold underline hover:text-amber-950 transition-colors"
-                                >login</a
-                            >
-                            atau
-                            <a
-                                href="/register"
-                                class="font-bold underline hover:text-amber-950 transition-colors"
-                                >daftar</a
-                            >
-                            sebagai mahasiswa.
-                        </p>
-                    </div>
-                </div>
+                    </svelte:fragment>
+                </GuestBanner>
             {/if}
 
             {#if currentQuestion}

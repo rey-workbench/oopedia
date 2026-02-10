@@ -20,7 +20,6 @@
     export let materials = [];
     export let questions = []; // This seems to be a collection of questions with answers loaded
     export let difficulty = "all";
-    export let isGuest = false;
 
     function filterDifficulty(d) {
         router.get(

@@ -5,6 +5,7 @@
     import Button from "../../../components/ui/Button.svelte";
     import Badge from "../../../components/ui/Badge.svelte";
     import { router, Link } from "@inertiajs/svelte";
+    import { confirmDelete } from "../../../utils/confirmDelete";
     import {
         Plus,
         ArrowLeft,
@@ -41,13 +42,10 @@
     }
 
     function handleDelete(id) {
-        if (confirm("Hapus soal ini?")) {
-            router.delete(
-                material
-                    ? `/admin/materials/${material.id}/questions/${id}`
-                    : `/admin/questions/${id}`,
-            );
-        }
+        const url = material
+            ? `/admin/materials/${material.id}/questions/${id}`
+            : `/admin/questions/${id}`;
+        confirmDelete(url, "Hapus soal ini?");
     }
 
     function getDifficultyColor(diff) {

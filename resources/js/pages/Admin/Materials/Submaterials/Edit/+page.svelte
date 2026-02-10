@@ -93,10 +93,11 @@
                     </div>
 
                     <div class="space-y-2">
-                        <label
+                        <span
                             class="text-[10px] font-bold uppercase text-slate-400 font-poppins"
-                            >Jenis Konten Utama</label
+                            >Jenis Konten Utama</span
                         >
+
                         <div class="grid grid-cols-3 gap-4">
                             {#each ["teori", "sintaks", "mixed"] as type}
                                 <button
@@ -112,10 +113,11 @@
                     </div>
 
                     <div class="space-y-2">
-                        <label
+                        <span
                             class="text-[10px] font-bold uppercase text-slate-400 font-poppins"
-                            >Materi Pembelajaran (Rich Text)</label
+                            >Materi Pembelajaran (Rich Text)</span
                         >
+
                         <QuillEditor
                             bind:content={$form.content}
                             placeholder="Tuliskan materi pembelajaran secara detail di sini..."

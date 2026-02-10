@@ -7,11 +7,6 @@
     import { UserCircle, Check, Lock, Loader2, Save } from "lucide-svelte";
 
     export let user;
-    // materials are passed but not seemingly used in the blade view's main content,
-    // though they might be used in the sidebar or layout.
-    // The layout App.svelte likely handles navigation.
-    // We'll keep it available if needed.
-    export let materials = [];
 
     let form = useForm({
         name: user.name,

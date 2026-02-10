@@ -19,7 +19,6 @@
 
     export let material = {};
     export let levels = [];
-    export let isGuest = false;
 
     $: allCompleted =
         levels.filter((l) => l.status !== "completed").length === 0;

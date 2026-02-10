@@ -183,10 +183,11 @@
                             />
                         </div>
                         <div class="space-y-3">
-                            <label
+                            <span
                                 class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-4"
-                                >Identitas Akun</label
+                                >Identitas Akun</span
                             >
+
                             <div
                                 class="w-full px-6 py-4 border-2 border-slate-50 rounded-[1.5rem] bg-slate-50 font-bold text-slate-400 uppercase tracking-widest text-xs"
                             >

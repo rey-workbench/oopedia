@@ -14,7 +14,10 @@
         "laravel-vite-plugin": "^1.0.0",
         "postcss": "^8.5.6",
         "svelte": "^5.50.0",
+        "svelte-check": "^4.3.6",
         "tailwindcss": "^4.1.18",
+        "tslib": "^2.8.1",
+        "typescript": "^5.9.3",
         "vite": "^6.4.1"
     },
     "dependencies": {

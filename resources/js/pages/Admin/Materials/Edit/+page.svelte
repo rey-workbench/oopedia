@@ -8,6 +8,7 @@
     import QuillEditor from "../../../../components/ui/QuillEditor.svelte";
     import { useForm } from "@inertiajs/svelte";
     import { ArrowLeft, RefreshCw, Camera, CloudUpload } from "lucide-svelte";
+    import { handleImagePreview } from "../../../../utils/imagePreview";
 
     export let material;
 
@@ -22,18 +23,6 @@
         content: material.content,
         cover_image: null,
     });
-
-    function handleImageChange(e) {
-        const file = e.target.files[0];
-        if (file) {
-            $form.cover_image = file;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                coverPreview = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    }
 
     function handleSubmit() {
         $form.post(`/admin/materials/${material.id}`, {
@@ -138,7 +127,13 @@
                                     type="file"
                                     accept="image/*"
                                     class="absolute inset-0 opacity-0 cursor-pointer"
-                                    on:change={handleImageChange}
+                                    on:change={(e) =>
+                                        handleImagePreview(
+                                            e,
+                                            $form,
+                                            "cover_image",
+                                            (url) => (coverPreview = url),
+                                        )}
                                 />
                             </div>
                             {#if $form.errors.cover_image}

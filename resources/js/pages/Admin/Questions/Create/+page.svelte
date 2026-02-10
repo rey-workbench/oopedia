@@ -108,10 +108,11 @@
 
                     <div class="p-8 space-y-8">
                         <div class="space-y-2">
-                            <label
+                            <span
                                 class="text-[10px] font-bold uppercase text-slate-400 font-poppins"
-                                >Teks Pertanyaan (Rich Text)</label
+                                >Teks Pertanyaan (Rich Text)</span
                             >
+
                             <QuillEditor
                                 bind:content={$form.question_text}
                                 placeholder="Deskripsikan problematik pemrograman di sini..."
@@ -127,10 +128,11 @@
 
                         <div class="space-y-6">
                             <div class="flex items-center justify-between">
-                                <label
+                                <span
                                     class="text-[10px] font-bold uppercase text-slate-400 font-poppins"
-                                    >Konfigurasi Opsi Jawaban</label
+                                    >Konfigurasi Opsi Jawaban</span
                                 >
+
                                 <Button
                                     type="button"
                                     on:click={addAnswer}
@@ -252,10 +254,11 @@
                         </div>
 
                         <div class="space-y-2">
-                            <label
+                            <span
                                 class="text-[10px] font-bold uppercase text-slate-400 font-poppins"
-                                >Tipe Algoritma</label
+                                >Tipe Algoritma</span
                             >
+
                             <div class="grid grid-cols-1 gap-2">
                                 {#each ["radio_button", "fill_in_the_blank", "drag_and_drop"] as type}
                                     <button
@@ -275,10 +278,11 @@
                         </div>
 
                         <div class="space-y-2">
-                            <label
+                            <span
                                 class="text-[10px] font-bold uppercase text-slate-400 font-poppins"
-                                >Level Kesulitan</label
+                                >Level Kesulitan</span
                             >
+
                             <div class="flex gap-2">
                                 {#each ["beginner", "medium", "hard"] as diff}
                                     <button

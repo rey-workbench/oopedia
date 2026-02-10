@@ -6,6 +6,7 @@
     import Button from "../../../components/ui/Button.svelte";
     import Badge from "../../../components/ui/Badge.svelte";
     import { Link, router } from "@inertiajs/svelte";
+    import { confirmDelete } from "../../../utils/confirmDelete";
     import { onMount } from "svelte";
     import {
         Plus,
@@ -39,9 +40,10 @@
     }
 
     function handleDelete(id) {
-        if (confirm("Hapus materi ini secara permanen dari basis data?")) {
-            router.delete(`/admin/materials/${id}`);
-        }
+        confirmDelete(
+            `/admin/materials/${id}`,
+            "Hapus materi ini secara permanen dari basis data?",
+        );
     }
 
     // Derive stats

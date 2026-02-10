@@ -126,7 +126,11 @@
             <div
                 class="draggable px-4 py-2 bg-white border-2 border-blue-200 text-blue-600 rounded-lg font-medium cursor-grab active:cursor-grabbing hover:bg-blue-50 hover:border-blue-400 transition-all shadow-sm select-none"
                 draggable="true"
+                role="button"
+                tabindex="0"
                 on:dragstart={(e) => handleDragStart(e, answer.answer_text)}
+                on:keydown={(e) =>
+                    e.key === "Enter" && handleDragStart(e, answer.answer_text)}
             >
                 {answer.answer_text}
             </div>

@@ -5,6 +5,7 @@
     import Button from "../../../../components/ui/Button.svelte";
     import { router } from "@inertiajs/svelte";
     import { ArrowLeft, UserCheck, UserX, Inbox } from "lucide-svelte";
+    import { formatDate } from "../../../../utils/formatters";
 
     export let pendingAdmins = [];
 
@@ -20,17 +21,6 @@
         ) {
             router.post(`/admin/users/${id}/reject`);
         }
-    }
-
-    function formatDate(dateString) {
-        if (!dateString) return "-";
-        return new Date(dateString).toLocaleDateString("id-ID", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-        });
     }
 </script>
 
@@ -116,9 +106,10 @@
                                     <td class="px-6 py-6 text-center">
                                         <span
                                             class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"
-                                            >{formatDate(
-                                                admin.created_at,
-                                            )}</span
+                                            >{formatDate(admin.created_at, {
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                            }) || "-"}</span
                                         >
                                     </td>
                                     <td class="px-6 py-6">

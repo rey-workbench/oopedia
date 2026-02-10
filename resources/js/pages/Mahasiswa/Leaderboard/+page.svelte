@@ -8,7 +8,6 @@
     import { Crown } from "lucide-svelte";
 
     export let leaderboardData = [];
-    export let currentUserRank = null;
 
     // Derive top 3
     $: top3 = [null, null, null];

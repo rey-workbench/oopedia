@@ -13,6 +13,15 @@
         Play,
         ArrowRight,
     } from "lucide-svelte";
+    import {
+        getGradientClass,
+        getBorderClass,
+        getBgClass,
+        getSubMaterialBg,
+        getSubMaterialText,
+        getHoverBorderClass,
+        getCtaShadowClass as getShadowClass,
+    } from "../../../../utils/contentTypeStyles";
 
     export let material = {};
     export let subMaterial = {};
@@ -27,40 +36,6 @@
     $: otherSubMaterials = material.sub_materials
         ? material.sub_materials.filter((sm) => sm.id !== subMaterial.id)
         : [];
-
-    function getGradientClass(type) {
-        return type === "sintaks"
-            ? "from-emerald-600 to-teal-600"
-            : "from-blue-600 to-indigo-600";
-    }
-
-    function getBorderClass(type) {
-        return type === "sintaks" ? "border-emerald-100" : "border-blue-100";
-    }
-
-    function getBgClass(type) {
-        return type === "sintaks" ? "bg-emerald-50" : "bg-blue-50";
-    }
-
-    function getSubMaterialBg(type) {
-        return type === "sintaks" ? "bg-emerald-50" : "bg-blue-50";
-    }
-
-    function getSubMaterialText(type) {
-        return type === "sintaks" ? "text-emerald-600" : "text-blue-600";
-    }
-
-    function getHoverBorderClass(type) {
-        return type === "sintaks"
-            ? "hover:border-emerald-500"
-            : "hover:border-blue-500";
-    }
-
-    function getShadowClass(type) {
-        return type === "sintaks"
-            ? "shadow-emerald-500/20"
-            : "shadow-blue-500/20";
-    }
 </script>
 
 <App title={subMaterial.title}>

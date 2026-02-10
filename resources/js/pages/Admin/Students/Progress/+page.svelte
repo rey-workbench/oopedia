@@ -10,7 +10,6 @@
 
     export let student;
     export let materials = []; // Collection of materials with calculated stats
-    export let recent_activities = [];
     export let missingQuestionsByMaterial = [];
 
     // Derive stats
@@ -38,19 +37,7 @@
         0,
     );
 
-    function relativeTime(isoDate) {
-        if (!isoDate) return "Tidak Ada Log Ditemukan";
-        const date = new Date(isoDate);
-        const now = new Date();
-        // Assuming we want a simple string like '2 days ago' or relying on a library.
-        // Native Intl.RelativeTimeFormat could act, but diffForHumans logic is complex to replicate exactly.
-        // For now simple date string or "x days ago".
-        return date.toLocaleDateString("id-ID", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-        });
-    }
+    import { relativeTime } from "../../../../utils/formatters";
 </script>
 
 <App title="Progress Mahasiswa">

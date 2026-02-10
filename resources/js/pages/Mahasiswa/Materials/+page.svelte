@@ -3,26 +3,11 @@
     import PageHeader from "../../../components/ui/PageHeader.svelte";
     import Card from "../../../components/ui/Card.svelte";
     import Button from "../../../components/ui/Button.svelte";
-    import { router } from "@inertiajs/svelte";
     import { Code, Puzzle, BookOpen, Ghost, ArrowRight } from "lucide-svelte";
+    import { formatDate } from "../../../utils/formatters";
 
     export let materials = [];
     export let isGuest = false;
-
-    function handleGuestLogout(redirectRoute) {
-        if (isGuest) {
-            router.post("/guest/logout", { redirect: redirectRoute });
-        }
-    }
-
-    function formatDate(dateString) {
-        if (!dateString) return "";
-        const date = new Date(dateString);
-        return date.toLocaleDateString("id-ID", {
-            year: "numeric",
-            month: "short",
-        });
-    }
 </script>
 
 <App title="Materi Pembelajaran">
@@ -68,7 +53,10 @@
                             <div
                                 class="px-4 py-2 bg-white/10 backdrop-blur-md rounded-2xl text-white text-[10px] font-bold uppercase tracking-widest border border-white/20"
                             >
-                                {formatDate(material.updated_at)}
+                                {formatDate(material.updated_at, {
+                                    year: "numeric",
+                                    month: "short",
+                                })}
                             </div>
                             <div
                                 class="flex items-center gap-2 px-4 py-2 bg-blue-600 rounded-2xl text-white text-[10px] font-bold uppercase tracking-widest shadow-xl shadow-blue-500/20"

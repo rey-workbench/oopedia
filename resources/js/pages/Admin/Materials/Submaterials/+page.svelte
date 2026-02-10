@@ -6,14 +6,16 @@
     import Badge from "../../../../components/ui/Badge.svelte";
     import { router, Link } from "@inertiajs/svelte";
     import { Plus, ArrowLeft, Layers, Edit2, Trash2 } from "lucide-svelte";
+    import { confirmDelete } from "../../../../utils/confirmDelete";
 
     export let material;
     export let subMaterials = [];
 
     function handleDelete(id) {
-        if (confirm("Hapus sub-materi ini?")) {
-            router.delete(`/admin/materials/${material.id}/submaterials/${id}`);
-        }
+        confirmDelete(
+            `/admin/materials/${material.id}/submaterials/${id}`,
+            "Hapus sub-materi ini?",
+        );
     }
 </script>
 

@@ -7,6 +7,7 @@
     import Alert from "../../../../components/ui/Alert.svelte";
     import QuillEditor from "../../../../components/ui/QuillEditor.svelte";
     import { useForm } from "@inertiajs/svelte";
+    import { handleImagePreview } from "../../../../utils/imagePreview";
 
     let coverPreview = null;
 
@@ -33,18 +34,6 @@
         CheckCheck,
     } from "lucide-svelte";
     $: $form.created_by = $page.props.auth.user.id;
-
-    function handleImageChange(e) {
-        const file = e.target.files[0];
-        if (file) {
-            $form.cover_image = file;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                coverPreview = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    }
 
     function handleSubmit() {
         $form.post("/admin/materials", {
@@ -150,7 +139,13 @@
                                     type="file"
                                     accept="image/*"
                                     class="absolute inset-0 opacity-0 cursor-pointer"
-                                    on:change={handleImageChange}
+                                    on:change={(e) =>
+                                        handleImagePreview(
+                                            e,
+                                            $form,
+                                            "cover_image",
+                                            (url) => (coverPreview = url),
+                                        )}
                                 />
                             </div>
                             {#if $form.errors.cover_image}
