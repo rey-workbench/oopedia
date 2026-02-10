@@ -13,7 +13,7 @@
     let showMobileSidebar = false;
 
     // Handle flash messages
-    $: flash = $page.props.flash || {};
+    $: flash = ($page && $page.props && $page.props.flash) || {};
 
     function toggleSidebar() {
         showMobileSidebar = !showMobileSidebar;
@@ -37,7 +37,7 @@
         }
     });
 
-    $: auth = $page.props.auth || {};
+    $: auth = ($page && $page.props && $page.props.auth) || {};
     $: user = auth.user;
     $: isAuthenticated = !!user;
     $: userRole = user ? user.role_id : null;
@@ -57,7 +57,6 @@
 </svelte:head>
 
 <div
-    id="app"
     class="relative flex min-h-screen bg-gray-50 font-sans text-slate-900 antialiased"
 >
     {#if showSidebarRender}
@@ -65,8 +64,12 @@
         {#if showMobileSidebar}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <div
+                role="button"
+                tabindex="0"
+                aria-label="Close sidebar"
                 class="fixed inset-0 z-40 bg-gray-900/50 backdrop-blur-sm lg:hidden transition-opacity duration-300"
                 on:click={toggleSidebar}
+                on:keydown={(e) => e.key === "Escape" && toggleSidebar()}
             ></div>
         {/if}
     {/if}

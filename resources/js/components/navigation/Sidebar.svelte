@@ -77,6 +77,7 @@
         </Link>
         <button
             on:click={toggleSidebar}
+            aria-label="Close sidebar"
             class="lg:hidden p-2 rounded-xl {isAdminRole
                 ? 'text-slate-400 hover:text-white bg-slate-800'
                 : 'text-slate-400 hover:text-slate-900 bg-slate-100'}"

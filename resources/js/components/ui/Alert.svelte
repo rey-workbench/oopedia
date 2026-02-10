@@ -45,6 +45,7 @@
             <button
                 on:click={dismiss}
                 type="button"
+                aria-label="Dismiss alert"
                 class="ml-auto -mx-1.5 -my-1.5 rounded-lg p-1.5 inline-flex h-8 w-8 hover:bg-white/20 transition-colors items-center justify-center"
             >
                 <i class="fas fa-times text-sm"></i>

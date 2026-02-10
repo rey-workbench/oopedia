@@ -27,6 +27,7 @@
         <div class="flex items-center gap-4">
             <button
                 on:click={toggleSidebar}
+                aria-label="Toggle Sidebar"
                 class="lg:hidden p-2 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
             >
                 <i class="fas fa-bars-staggered text-xl"></i>
@@ -74,6 +75,7 @@
 
                 <button
                     id="start-page-tour"
+                    aria-label="Start Page Tour"
                     class="p-2 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all group relative"
                     title="Mulai Tutorial"
                     data-intro="Klik tombol ini kapan saja jika kamu butuh bantuan atau ingin mengulang tutorial di halaman ini."
@@ -96,6 +98,7 @@
                     data-step="5"
                 >
                     <button
+                        aria-label="Open project menu"
                         class="flex items-center gap-2 p-1 rounded-2xl border-2 border-transparent hover:border-blue-100 transition-all duration-300 group"
                     >
                         <div

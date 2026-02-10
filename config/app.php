@@ -161,6 +161,7 @@ return [
          */
         // Hapus atau komentari baris SailServiceProvider ini
         // Laravel\Sail\SailServiceProvider::class,
+        Inertia\ServiceProvider::class,
         
         /*
          * Application Service Providers...

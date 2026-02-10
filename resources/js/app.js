@@ -1,3 +1,4 @@
+import './bootstrap';
 import { createInertiaApp } from '@inertiajs/svelte'
 import { mount } from 'svelte'
 
@@ -5,11 +6,19 @@ import { mount } from 'svelte'
 import '../css/app.css';
 
 createInertiaApp({
-    resolve: name => {
-        const pages = import.meta.glob('./pages/**/*.svelte', { eager: true })
-        return pages[`./pages/${name}.svelte`]
+    resolve: (name) => {
+        const pages = import.meta.glob("./pages/**/*.svelte");
+        const page = pages[`./pages/${name}.svelte`];
+        if (!page) {
+            throw new Error(`Component "${name}" not found.`);
+        }
+        return page();
     },
     setup({ el, App, props }) {
-        mount(App, { target: el, props })
+        if (el) {
+            mount(App, { target: el, props });
+        } else {
+            console.error("Inertia target element not found");
+        }
     },
-})
+});

@@ -111,6 +111,7 @@
 
                         <div class="lg:col-span-1 space-y-4">
                             <label
+                                for="cover_image"
                                 class="text-[10px] font-bold uppercase tracking-widest text-slate-400 block"
                                 >Visualisasi Sampul</label
                             >
@@ -120,6 +121,7 @@
                                 {#if coverPreview}
                                     <img
                                         src={coverPreview}
+                                        alt="Preview Sampul"
                                         class="absolute inset-0 w-full h-full object-cover"
                                     />
                                 {:else}
@@ -137,6 +139,7 @@
                                     </div>
                                 {/if}
                                 <input
+                                    id="cover_image"
                                     type="file"
                                     accept="image/*"
                                     class="absolute inset-0 opacity-0 cursor-pointer"
@@ -153,15 +156,19 @@
 
                     <!-- Middle Row: WYSIWYG Editor -->
                     <div class="space-y-4">
-                        <label class="block text-sm font-bold text-slate-700"
+                        <label
+                            for="content-editor"
+                            class="block text-sm font-bold text-slate-700"
                             >Konten Instruksional <span class="text-rose-500"
                                 >*</span
                             ></label
                         >
-                        <QuillEditor
-                            bind:value={$form.content}
-                            height="500px"
-                        />
+                        <div id="content-editor">
+                            <QuillEditor
+                                bind:value={$form.content}
+                                height="500px"
+                            />
+                        </div>
                         {#if $form.errors.content}
                             <p class="text-rose-500 text-xs mt-1">
                                 {$form.errors.content}
