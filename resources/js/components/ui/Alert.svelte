@@ -1,6 +1,13 @@
 <script>
     import { createEventDispatcher } from "svelte";
     import { fade } from "svelte/transition";
+    import {
+        Info,
+        CheckCircle2,
+        AlertTriangle,
+        AlertCircle,
+        X,
+    } from "lucide-svelte";
 
     export let variant = "info"; // info, success, warning, danger
     export let dismissible = false;
@@ -18,11 +25,11 @@
     };
 
     const icons = {
-        info: "fas fa-info-circle",
-        success: "fas fa-check-circle",
-        warning: "fas fa-exclamation-triangle",
-        danger: "fas fa-exclamation-circle",
-        primary: "fas fa-info-circle",
+        info: Info,
+        success: CheckCircle2,
+        warning: AlertTriangle,
+        danger: AlertCircle,
+        primary: Info,
     };
 
     function dismiss() {
@@ -37,7 +44,11 @@
         class={`flex items-center p-4 border rounded-2xl ${variants[variant] || variants.info} ${className}`}
         role="alert"
     >
-        <i class={`${icons[variant] || icons.info} mr-3 text-lg`}></i>
+        <svelte:component
+            this={icons[variant] || icons.info}
+            size={20}
+            class="mr-3"
+        />
         <div class="flex-1 text-xs font-bold uppercase tracking-widest">
             <slot />
         </div>
@@ -48,7 +59,7 @@
                 aria-label="Dismiss alert"
                 class="ml-auto -mx-1.5 -my-1.5 rounded-lg p-1.5 inline-flex h-8 w-8 hover:bg-white/20 transition-colors items-center justify-center"
             >
-                <i class="fas fa-times text-sm"></i>
+                <X size={16} />
             </button>
         {/if}
     </div>

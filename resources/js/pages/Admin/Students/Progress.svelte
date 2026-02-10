@@ -6,6 +6,7 @@
     import Badge from "../../../components/ui/Badge.svelte";
     import StatCard from "../../../components/ui/StatCard.svelte";
     import ProgressBar from "../../../components/ui/ProgressBar.svelte";
+    import { ArrowLeft, LineChart, CheckCheck, Zap } from "lucide-svelte";
 
     export let student;
     export let materials = []; // Collection of materials with calculated stats
@@ -59,10 +60,8 @@
             subtitle={`Analisis trajectory pembelajaran untuk entitas ${student.name}.`}
         >
             <div slot="actions">
-                <Button
-                    href="/admin/students"
-                    variant="ghost"
-                    icon="fas fa-arrow-left">KEMBALI KE DAFTAR</Button
+                <Button href="/admin/students" variant="ghost" icon={ArrowLeft}
+                    >KEMBALI KE DAFTAR</Button
                 >
             </div>
         </PageHeader>
@@ -72,21 +71,21 @@
             <StatCard
                 title="Lintasan Pembelajaran"
                 value={`${avgProgress}%`}
-                icon="fas fa-chart-line"
+                icon={LineChart}
                 variant="primary"
                 footer="Rata-rata penyelesaian modul"
             />
             <StatCard
                 title="Modul Berhasil Diselesaikan"
                 value={`${completedModules} / ${totalModules}`}
-                icon="fas fa-check-double"
+                icon={CheckCheck}
                 variant="success"
                 footer="Penyelesaian 100% tercapai"
             />
             <StatCard
                 title="Sisa Unit Tantangan"
                 value={missingQuestions}
-                icon="fas fa-bolt"
+                icon={Zap}
                 variant="danger"
                 footer="Jawaban benar tertunda"
             />

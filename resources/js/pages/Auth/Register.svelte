@@ -5,6 +5,7 @@
     import Input from "../../components/ui/Input.svelte";
     import Alert from "../../components/ui/Alert.svelte";
     import { useForm, Link } from "@inertiajs/svelte";
+    import { Loader2, UserPlus } from "lucide-svelte";
 
     let form = useForm({
         name: "",
@@ -128,9 +129,9 @@
                     disabled={$form.processing}
                 >
                     {#if $form.processing}
-                        <i class="fas fa-spinner fa-spin mr-3"></i> MEMPROSES...
+                        <Loader2 size={18} class="mr-3 animate-spin" /> MEMPROSES...
                     {:else}
-                        DAFTAR SEKARANG <i class="fas fa-user-plus ml-3"></i>
+                        DAFTAR SEKARANG <UserPlus size={18} class="ml-3" />
                     {/if}
                 </Button>
             </div>

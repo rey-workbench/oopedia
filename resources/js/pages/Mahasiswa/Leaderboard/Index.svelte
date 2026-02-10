@@ -5,6 +5,7 @@
     import Badge from "../../../components/ui/Badge.svelte";
     import ProgressBar from "../../../components/ui/ProgressBar.svelte";
     import { page } from "@inertiajs/svelte";
+    import { Crown } from "lucide-svelte";
 
     export let leaderboardData = [];
     export let currentUserRank = null;
@@ -90,9 +91,10 @@
                                     <div
                                         class="absolute -top-14 left-1/2 -translate-x-1/2"
                                     >
-                                        <i
-                                            class="fas fa-crown text-amber-400 text-5xl animate-bounce drop-shadow-[0_0_15px_rgba(251,191,36,0.5)]"
-                                        ></i>
+                                        <Crown
+                                            size={48}
+                                            class="text-amber-400 animate-bounce drop-shadow-[0_0_15px_rgba(251,191,36,0.5)]"
+                                        />
                                     </div>
                                     <div class="relative mb-6">
                                         <div

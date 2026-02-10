@@ -1,5 +1,13 @@
 <script>
     import Button from "../components/ui/Button.svelte";
+    import {
+        Compass,
+        ShieldAlert,
+        Server,
+        Wrench,
+        AlertTriangle,
+        Home,
+    } from "lucide-svelte";
 
     export let status;
 
@@ -21,11 +29,11 @@
 
     const illustration =
         {
-            404: "fas fa-map-signs",
-            403: "fas fa-shield-alt",
-            500: "fas fa-server",
-            503: "fas fa-tools",
-        }[status] || "fas fa-exclamation-triangle";
+            404: Compass,
+            403: ShieldAlert,
+            500: Server,
+            503: Wrench,
+        }[status] || AlertTriangle;
 </script>
 
 <svelte:head>
@@ -51,7 +59,11 @@
         <div
             class="w-32 h-32 bg-white rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-slate-200 mx-auto mb-8 relative z-10"
         >
-            <i class={`${illustration} text-6xl text-slate-300`}></i>
+            <svelte:component
+                this={illustration}
+                size={64}
+                class="text-slate-300"
+            />
         </div>
 
         <h1 class="text-6xl font-black text-slate-900 tracking-widest mb-2">
@@ -74,7 +86,7 @@
                 href="/"
                 variant="primary"
                 size="lg"
-                icon="fas fa-home"
+                icon={Home}
                 class="shadow-xl shadow-blue-500/20"
             >
                 KEMBALI KE BERANDA

@@ -2,6 +2,7 @@
     import App from "../../../layouts/App.svelte";
     import Card from "../../../components/ui/Card.svelte";
     import Button from "../../../components/ui/Button.svelte";
+    import { Heart, Home } from "lucide-svelte";
 </script>
 
 <App title="Terima Kasih">
@@ -22,7 +23,7 @@
                         <div
                             class="w-24 h-24 bg-white/20 backdrop-blur-md rounded-[2.5rem] flex items-center justify-center mx-auto shadow-2xl border border-white/30 transform rotate-12 transition-transform group-hover:rotate-0 duration-500"
                         >
-                            <i class="fas fa-heart text-4xl text-white"></i>
+                            <Heart size={48} class="text-white fill-current" />
                         </div>
                         <div class="space-y-4">
                             <h2
@@ -54,7 +55,7 @@
                             href="/mahasiswa/dashboard"
                             variant="primary"
                             class="px-12 py-5 shadow-xl shadow-blue-500/20"
-                            icon="fas fa-home"
+                            icon={Home}
                         >
                             KEMBALI KE DASHBOARD
                         </Button>

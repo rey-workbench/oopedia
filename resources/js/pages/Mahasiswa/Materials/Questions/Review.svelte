@@ -5,6 +5,16 @@
     import Badge from "../../../../components/ui/Badge.svelte";
     import Alert from "../../../../components/ui/Alert.svelte";
     import { Link, router } from "@inertiajs/svelte";
+    import {
+        Book,
+        FileText,
+        HelpCircle,
+        List,
+        Check,
+        X,
+        Lightbulb,
+        ArrowLeft,
+    } from "lucide-svelte";
 
     export let material = {};
     export let materials = [];
@@ -33,7 +43,7 @@
                 <Card class="sticky top-4">
                     <div class="mb-4">
                         <h5 class="font-bold text-lg text-slate-900">
-                            <i class="fas fa-book mr-2"></i>Daftar Materi
+                            <Book size={18} class="mr-2" />Daftar Materi
                         </h5>
                     </div>
                     <ul class="space-y-2">
@@ -43,8 +53,7 @@
                                     href={`/mahasiswa/materials/${m.id}`}
                                     class={`block p-3 rounded-lg transition-colors ${m.id === material.id ? "bg-blue-600 text-white" : "text-slate-700 hover:bg-slate-100"}`}
                                 >
-                                    <i class="fas fa-file-alt mr-2"
-                                    ></i>{m.title}
+                                    <FileText size={16} class="mr-2" />{m.title}
                                 </Link>
                             </li>
                         {/each}
@@ -160,9 +169,10 @@
                                             <h5
                                                 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2"
                                             >
-                                                <i
-                                                    class="fas fa-question-circle text-blue-400"
-                                                ></i>
+                                                <HelpCircle
+                                                    size={16}
+                                                    class="text-blue-400"
+                                                />
                                                 Pertanyaan
                                             </h5>
                                             <div
@@ -177,9 +187,10 @@
                                             <h5
                                                 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2"
                                             >
-                                                <i
-                                                    class="fas fa-list-ul text-indigo-400"
-                                                ></i>
+                                                <List
+                                                    size={16}
+                                                    class="text-indigo-400"
+                                                />
                                                 Pilihan Jawaban
                                             </h5>
                                             <div class="grid grid-cols-1 gap-3">
@@ -191,17 +202,19 @@
                                                             <div
                                                                 class="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5"
                                                             >
-                                                                <i
-                                                                    class="fas fa-check text-white text-xs"
-                                                                ></i>
+                                                                <Check
+                                                                    size={14}
+                                                                    class="text-white"
+                                                                />
                                                             </div>
                                                         {:else}
                                                             <div
                                                                 class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center shrink-0 mt-0.5"
                                                             >
-                                                                <i
-                                                                    class="fas fa-times text-slate-300 text-xs"
-                                                                ></i>
+                                                                <X
+                                                                    size={14}
+                                                                    class="text-slate-300"
+                                                                />
                                                             </div>
                                                         {/if}
                                                         <div
@@ -217,9 +230,10 @@
                                                             <div
                                                                 class="flex items-center gap-2 font-bold text-blue-900 mb-1"
                                                             >
-                                                                <i
-                                                                    class="fas fa-lightbulb text-blue-500"
-                                                                ></i>
+                                                                <Lightbulb
+                                                                    size={16}
+                                                                    class="text-blue-500"
+                                                                />
                                                                 Penjelasan:
                                                             </div>
                                                             <div
@@ -247,7 +261,7 @@
                         <Button
                             href={`/mahasiswa/materials/${material.id}/questions?difficulty=${difficulty}`}
                             variant="primary"
-                            icon="fas fa-arrow-left"
+                            icon={ArrowLeft}
                         >
                             Kembali ke Soal
                         </Button>
@@ -255,7 +269,7 @@
                         <Button
                             href={`/mahasiswa/materials/${material.id}`}
                             variant="secondary"
-                            icon="fas fa-book"
+                            icon={Book}
                         >
                             Kembali ke Materi
                         </Button>

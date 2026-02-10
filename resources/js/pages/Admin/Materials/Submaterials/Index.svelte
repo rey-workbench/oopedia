@@ -5,6 +5,7 @@
     import Button from "../../../../components/ui/Button.svelte";
     import Badge from "../../../../components/ui/Badge.svelte";
     import { router, Link } from "@inertiajs/svelte";
+    import { Plus, ArrowLeft, Layers, Edit2, Trash2 } from "lucide-svelte";
 
     export let material;
     export let subMaterials = [];
@@ -26,12 +27,10 @@
                 <Button
                     href={`/admin/materials/${material.id}/submaterials/create`}
                     variant="primary"
-                    icon="fas fa-plus">Tambah Sub-Materi</Button
+                    icon={Plus}>Tambah Sub-Materi</Button
                 >
-                <Button
-                    href="/admin/materials"
-                    variant="ghost"
-                    icon="fas fa-arrow-left">KEMBALI KE MATERI</Button
+                <Button href="/admin/materials" variant="ghost" icon={ArrowLeft}
+                    >KEMBALI KE MATERI</Button
                 >
             </div>
         </PageHeader>
@@ -82,9 +81,11 @@
                                     <div
                                         class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6"
                                     >
-                                        <i
-                                            class="fas fa-layer-group text-slate-200 text-3xl"
-                                        ></i>
+                                        <Layers
+                                            size={32}
+                                            strokeWidth={1.5}
+                                            class="text-slate-200"
+                                        />
                                     </div>
                                     <h3
                                         class="text-xl font-bold uppercase tracking-widest text-slate-900 mb-2"
@@ -100,8 +101,7 @@
                                     <Button
                                         href={`/admin/materials/${material.id}/submaterials/create`}
                                         variant="primary"
-                                        icon="fas fa-plus"
-                                        >Buat Unit Pertama</Button
+                                        icon={Plus}>Buat Unit Pertama</Button
                                     >
                                 </td>
                             </tr>
@@ -143,14 +143,17 @@
                                                 variant="ghost"
                                                 size="sm"
                                                 href={`/admin/materials/${material.id}/submaterials/${sub.id}/edit`}
-                                                icon="fas fa-edit"
+                                                icon={Edit2}
                                             />
                                             <button
                                                 on:click={() =>
                                                     handleDelete(sub.id)}
                                                 class="p-2 rounded-xl font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 hover:bg-slate-100 text-slate-300 hover:text-rose-500 text-xs"
                                             >
-                                                <i class="fas fa-trash-alt"></i>
+                                                <Trash2
+                                                    size={18}
+                                                    strokeWidth={2.5}
+                                                />
                                             </button>
                                         </div>
                                     </td>

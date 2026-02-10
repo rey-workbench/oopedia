@@ -5,6 +5,17 @@
     import Button from "../../../../components/ui/Button.svelte";
     import Alert from "../../../../components/ui/Alert.svelte"; // Assuming we have Alert component, need to create or check
     import { Link } from "@inertiajs/svelte";
+    import {
+        ChevronLeft,
+        Map,
+        Bolt,
+        CheckCheck,
+        Lock,
+        Crown,
+        Play,
+        Trophy,
+        ArrowLeft,
+    } from "lucide-svelte";
 
     export let material = {};
     export let levels = [];
@@ -24,7 +35,7 @@
                 <Button
                     href="/mahasiswa/materials"
                     variant="ghost"
-                    icon="fas fa-chevron-left">Log Materi</Button
+                    icon={ChevronLeft}>Log Materi</Button
                 >
             </div>
         </PageHeader>
@@ -39,8 +50,7 @@
                 class="bg-slate-900 border-slate-800 shadow-2xl relative overflow-hidden"
             >
                 <div class="absolute -right-10 -top-10 opacity-10">
-                    <i class="fas fa-map-marked-alt text-[150px] text-white"
-                    ></i>
+                    <Map size={150} class="text-white" />
                 </div>
                 <div
                     class="grid grid-cols-2 md:grid-cols-4 gap-8 relative z-10"
@@ -49,7 +59,7 @@
                         <div
                             class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20"
                         >
-                            <i class="fas fa-bolt text-white"></i>
+                            <Bolt size={20} class="text-white fill-current" />
                         </div>
                         <span
                             class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
@@ -60,7 +70,7 @@
                         <div
                             class="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/20"
                         >
-                            <i class="fas fa-check-double text-white"></i>
+                            <CheckCheck size={20} class="text-white" />
                         </div>
                         <span
                             class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
@@ -71,7 +81,7 @@
                         <div
                             class="w-12 h-12 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center"
                         >
-                            <i class="fas fa-lock text-slate-600"></i>
+                            <Lock size={20} class="text-slate-600" />
                         </div>
                         <span
                             class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
@@ -82,7 +92,7 @@
                         <div
                             class="w-12 h-12 rounded-2xl bg-amber-500 flex items-center justify-center shadow-lg shadow-amber-500/20"
                         >
-                            <i class="fas fa-crown text-white"></i>
+                            <Crown size={20} class="text-white fill-current" />
                         </div>
                         <span
                             class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
@@ -140,9 +150,10 @@
                                         <div
                                             class="absolute -top-3 -right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-emerald-50 text-emerald-500"
                                         >
-                                            <i
-                                                class="fas fa-check-double text-xs"
-                                            ></i>
+                                            <CheckCheck
+                                                size={14}
+                                                class="text-emerald-500"
+                                            />
                                         </div>
                                     </div>
                                 {:else}
@@ -161,9 +172,10 @@
                                         <div
                                             class="absolute -top-3 -right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-blue-50 text-blue-600"
                                         >
-                                            <i
-                                                class="fas fa-play text-[10px] ml-0.5"
-                                            ></i>
+                                            <Play
+                                                size={12}
+                                                class="ml-0.5 fill-current"
+                                            />
                                         </div>
                                     </Link>
                                 {/if}
@@ -182,9 +194,10 @@
                             <div
                                 class={`w-32 h-32 rounded-[3rem] ${allCompleted ? "bg-gradient-to-br from-amber-400 to-orange-500 shadow-2xl shadow-amber-200" : "bg-slate-100 border-4 border-white"} flex items-center justify-center transition-all duration-1000 group`}
                             >
-                                <i
-                                    class={`fas fa-trophy text-5xl ${allCompleted ? "text-white animate-bounce" : "text-slate-200"}`}
-                                ></i>
+                                <Trophy
+                                    size={48}
+                                    class={`${allCompleted ? "text-white animate-bounce" : "text-slate-200"}`}
+                                />
                                 {#if allCompleted}
                                     <div
                                         class="absolute inset-0 rounded-[3rem] bg-amber-400 animate-pulse opacity-20"
@@ -206,7 +219,7 @@
                     href="/mahasiswa/materials"
                     variant="ghost"
                     size="lg"
-                    icon="fas fa-arrow-left"
+                    icon={ArrowLeft}
                     class="text-slate-400"
                 >
                     Kembali ke Katalog

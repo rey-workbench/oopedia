@@ -3,6 +3,7 @@
     import Card from "../../../components/ui/Card.svelte";
     import Button from "../../../components/ui/Button.svelte";
     import { router } from "@inertiajs/svelte";
+    import { Clock, LogOut } from "lucide-svelte";
 
     function handleLogout() {
         router.post("/admin/logout");
@@ -23,7 +24,7 @@
                     <div
                         class="w-24 h-24 bg-amber-50 rounded-[2rem] flex items-center justify-center shadow-lg shadow-amber-100"
                     >
-                        <i class="fas fa-clock text-4xl text-amber-500"></i>
+                        <Clock size={48} class="text-amber-500" />
                     </div>
 
                     <div class="space-y-2">
@@ -56,7 +57,7 @@
                         <Button
                             on:click={handleLogout}
                             variant="danger"
-                            icon="fas fa-sign-out-alt"
+                            icon={LogOut}
                             class="shadow-xl shadow-rose-500/10"
                         >
                             LOGOUT DARI SISTEM

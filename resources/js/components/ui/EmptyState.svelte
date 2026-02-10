@@ -1,8 +1,9 @@
 <script>
+    import { FolderOpen } from "lucide-svelte";
     export let title = "Data Tidak Ditemukan";
     export let description =
         "Maaf, kami tidak dapat menemukan data yang Anda cari saat ini.";
-    export let icon = "fas fa-folder-open";
+    export let icon = FolderOpen;
     let className = "";
     export { className as class };
 </script>
@@ -13,7 +14,11 @@
     <div
         class="w-24 h-24 bg-slate-50 rounded-[2rem] flex items-center justify-center text-slate-200 text-4xl mb-8 shadow-inner"
     >
-        <i class={icon}></i>
+        {#if typeof icon === "string"}
+            <i class={icon}></i>
+        {:else if icon}
+            <svelte:component this={icon} size={48} strokeWidth={1.5} />
+        {/if}
     </div>
 
     <h3

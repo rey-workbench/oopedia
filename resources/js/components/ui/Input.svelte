@@ -1,4 +1,5 @@
 <script>
+    import { AlertCircle } from "lucide-svelte";
     /**
      * @file Input.svelte
      * @description A premium reusable input component for the Oopedia platform.
@@ -60,7 +61,7 @@
             <div
                 class="absolute right-6 top-1/2 -translate-y-1/2 text-rose-500 animate-pulse"
             >
-                <i class="fas fa-circle-exclamation"></i>
+                <AlertCircle size={20} />
             </div>
         {/if}
     </div>

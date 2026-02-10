@@ -5,6 +5,7 @@
     import Button from "../../../components/ui/Button.svelte";
     import Badge from "../../../components/ui/Badge.svelte";
     import ProgressBar from "../../../components/ui/ProgressBar.svelte";
+    import { ArrowLeft, Cpu, MessageSquare, Lightbulb } from "lucide-svelte";
 
     export let user;
     export let survey;
@@ -142,7 +143,7 @@
                 <Button
                     href="/admin/ueq-survey"
                     variant="ghost"
-                    icon="fas fa-arrow-left">KEMBALI KE DAFTAR</Button
+                    icon={ArrowLeft}>KEMBALI KE DAFTAR</Button
                 >
             </div>
         </PageHeader>
@@ -213,7 +214,7 @@
                             <div
                                 class="flex items-center gap-3 text-sm font-bold text-indigo-900"
                             >
-                                <i class="fas fa-microchip"></i>
+                                <Cpu size={14} />
                                 {new Date(survey.created_at).toLocaleString(
                                     "id-ID",
                                     {
@@ -282,7 +283,7 @@
                         <h6
                             class="text-[10px] font-bold uppercase tracking-widest text-amber-600 mb-4 flex items-center gap-2"
                         >
-                            <i class="fas fa-comment-nodes"></i> Feedback Subjektif
+                            <MessageSquare size={14} /> Feedback Subjektif
                         </h6>
                         <p
                             class="text-xs font-bold text-slate-700 leading-relaxed italic"
@@ -297,7 +298,7 @@
                         <h6
                             class="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-4 flex items-center gap-2"
                         >
-                            <i class="fas fa-lightbulb"></i> Rekomendasi Fitur
+                            <Lightbulb size={14} /> Rekomendasi Fitur
                         </h6>
                         <p
                             class="text-xs font-bold text-slate-700 leading-relaxed uppercase"

@@ -1,5 +1,6 @@
 <script>
     import { createEventDispatcher, onMount } from "svelte";
+    import { HelpCircle, List } from "lucide-svelte";
 
     export let question;
     export let dragAndDropAnswers = {};
@@ -87,8 +88,8 @@
 </script>
 
 <div class="question-content">
-    <h5 class="mb-2 font-semibold">
-        <i class="fas fa-question me-2"></i>Pertanyaan
+    <h5 class="mb-2 font-semibold flex items-center">
+        <HelpCircle size={18} class="mr-2" />Pertanyaan
     </h5>
 
     <!-- Container for the question text with drop zones -->
@@ -110,8 +111,10 @@
         value={JSON.stringify(dragAndDropAnswers)}
     />
 
-    <h5 class="mt-6 mb-3 text-lg font-semibold text-slate-800">
-        <i class="fas fa-list-ul mr-2"></i>Pilihan Jawaban
+    <h5
+        class="mt-6 mb-3 text-lg font-semibold text-slate-800 flex items-center"
+    >
+        <List size={20} class="mr-2" />Pilihan Jawaban
     </h5>
     <p class="text-xs text-slate-500 mb-2">
         Geser jawaban ke bagian kosong yang sesuai. Klik pada jawaban yang sudah

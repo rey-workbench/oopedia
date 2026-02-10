@@ -5,6 +5,7 @@
     import Input from "../../components/ui/Input.svelte";
     import Alert from "../../components/ui/Alert.svelte";
     import { useForm, Link } from "@inertiajs/svelte";
+    import { Loader2, ArrowRight, Ghost } from "lucide-svelte";
 
     let form = useForm({
         email: "",
@@ -77,9 +78,9 @@
                     disabled={$form.processing}
                 >
                     {#if $form.processing}
-                        <i class="fas fa-spinner fa-spin mr-3"></i> MEMPROSES...
+                        <Loader2 size={18} class="mr-3 animate-spin" /> MEMPROSES...
                     {:else}
-                        MASUK SEKARANG <i class="fas fa-arrow-right ml-3"></i>
+                        MASUK SEKARANG <ArrowRight size={18} class="ml-3" />
                     {/if}
                 </Button>
             </div>
@@ -109,7 +110,7 @@
                     href="/guest-login"
                     class="flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors"
                 >
-                    <i class="fas fa-ghost"></i>
+                    <Ghost size={14} />
                     Masuk Sebagai Tamu
                 </Link>
             </div>

@@ -8,6 +8,24 @@
     import DragAndDrop from "../../../../components/quiz/DragAndDrop.svelte";
     import { router, page } from "@inertiajs/svelte";
     import { onMount } from "svelte";
+    import {
+        Terminal,
+        UserCheck,
+        Star,
+        Flame,
+        Lightbulb,
+        HelpCircle,
+        Loader2,
+        CheckCircle2,
+        Trophy,
+        Check,
+        ListOrdered,
+        Book,
+        Home,
+        XCircle,
+        RotateCcw,
+        ArrowRight,
+    } from "lucide-svelte";
     import axios from "axios"; // Assuming axios is available, otherwise usage might need adjustment
 
     export let material = {};
@@ -145,7 +163,7 @@
                 <h1
                     class="text-4xl font-bold text-slate-900 tracking-widest uppercase flex items-center justify-center gap-4"
                 >
-                    <i class="fas fa-terminal text-blue-600"></i>
+                    <Terminal size={32} class="text-blue-600" />
                     Evaluasi: {material.title}
                 </h1>
                 <p
@@ -170,8 +188,7 @@
                     <div
                         class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center shrink-0"
                     >
-                        <i class="fas fa-user-shield text-amber-600 text-xl"
-                        ></i>
+                        <UserCheck size={24} class="text-amber-600" />
                     </div>
                     <div>
                         <strong class="text-amber-900 text-lg block mb-1"
@@ -233,9 +250,10 @@
                                         <h5
                                             class="text-lg font-bold text-blue-600 flex items-center gap-1"
                                         >
-                                            <i
-                                                class="fas fa-star text-amber-400 text-sm"
-                                            ></i>
+                                            <Star
+                                                size={14}
+                                                class="text-amber-400 fill-current"
+                                            />
                                             <span>{xp}</span>
                                         </h5>
                                     </div>
@@ -249,9 +267,10 @@
                                         <h5
                                             class="text-lg font-bold text-orange-600 flex items-center gap-1"
                                         >
-                                            <i
-                                                class="fas fa-fire text-orange-500 text-sm"
-                                            ></i>
+                                            <Flame
+                                                size={14}
+                                                class="text-orange-500 fill-current"
+                                            />
                                             <span>{streak}</span>
                                         </h5>
                                     </div>
@@ -267,7 +286,7 @@
                                     <div
                                         class="w-6 h-6 rounded-lg bg-indigo-200 group-hover:bg-indigo-300 flex items-center justify-center transition-colors"
                                     >
-                                        <i class="fas fa-lightbulb"></i>
+                                        <Lightbulb size={16} />
                                     </div>
                                     <span>Hint ({hintsAvailable})</span>
                                 </button>
@@ -279,7 +298,7 @@
                     <div class="mb-6">
                         <div class="flex items-center justify-between mb-6">
                             <Badge variant="primary" size="lg"
-                                ><i class="fas fa-question-circle mr-2"></i> Soal</Badge
+                                ><HelpCircle size={18} class="mr-2" /> Soal</Badge
                             >
                             <Badge variant="secondary" size="lg"
                                 >{currentQuestion.difficulty
@@ -323,10 +342,9 @@
                             on:click={submitAnswer}
                         >
                             {#if isSubmitting}
-                                <i class="fas fa-spinner fa-spin mr-2"></i> Memeriksa...
+                                <Loader2 size={18} class="mr-2 animate-spin" /> Memeriksa...
                             {:else}
-                                <i class="fas fa-check-circle mr-2"></i> Periksa
-                                Jawaban
+                                <CheckCircle2 size={18} class="mr-2" /> Periksa Jawaban
                             {/if}
                         </Button>
                     </div>
@@ -341,13 +359,13 @@
                             class="bg-gradient-to-br from-emerald-500 to-teal-600 p-12 text-center text-white relative"
                         >
                             <div class="absolute top-0 right-0 p-8 opacity-10">
-                                <i class="fas fa-trophy text-9xl"></i>
+                                <Trophy size={96} class="text-white" />
                             </div>
                             <div class="relative z-10">
                                 <div
                                     class="w-24 h-24 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl border-4 border-white/30"
                                 >
-                                    <i class="fas fa-check text-4xl"></i>
+                                    <Check size={48} class="text-white" />
                                 </div>
                                 <h2
                                     class="text-4xl font-bold mb-3 tracking-widest"
@@ -370,7 +388,7 @@
                                     <div
                                         class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform"
                                     >
-                                        <i class="fas fa-list-ol"></i>
+                                        <ListOrdered size={24} />
                                     </div>
                                     <span class="font-bold text-slate-700 block"
                                         >Pilih Level</span
@@ -384,7 +402,7 @@
                                     <div
                                         class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform"
                                     >
-                                        <i class="fas fa-book"></i>
+                                        <Book size={24} />
                                     </div>
                                     <span class="font-bold text-slate-700 block"
                                         >Baca Materi</span
@@ -398,7 +416,7 @@
                                     <div
                                         class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform"
                                     >
-                                        <i class="fas fa-home"></i>
+                                        <Home size={24} />
                                     </div>
                                     <span class="font-bold text-slate-700 block"
                                         >Dashboard</span
@@ -422,9 +440,12 @@
             >
                 <div class="text-8xl mb-6">
                     {#if feedbackData.status === "success"}
-                        <i class="fas fa-check-circle text-emerald-500"></i>
+                        <CheckCircle2
+                            size={96}
+                            class="text-emerald-500 mx-auto"
+                        />
                     {:else}
-                        <i class="fas fa-times-circle text-rose-500"></i>
+                        <XCircle size={96} class="text-rose-500 mx-auto" />
                     {/if}
                 </div>
 
@@ -445,7 +466,7 @@
                             on:click={handleTryAgain}
                             class="px-8 py-3 uppercase tracking-widest text-sm font-bold"
                         >
-                            <i class="fas fa-redo mr-2"></i> Coba Lagi
+                            <RotateCcw size={18} class="mr-2" /> Coba Lagi
                         </Button>
                     {:else}
                         <Button
@@ -453,7 +474,7 @@
                             on:click={handleNext}
                             class="px-8 py-3 uppercase tracking-widest text-sm font-bold"
                         >
-                            Lanjut <i class="fas fa-arrow-right ml-2"></i>
+                            Lanjut <ArrowRight size={18} class="ml-2" />
                         </Button>
                     {/if}
                 </div>

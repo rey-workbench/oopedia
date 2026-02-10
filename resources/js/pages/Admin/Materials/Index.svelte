@@ -7,6 +7,19 @@
     import Badge from "../../../components/ui/Badge.svelte";
     import { Link, router } from "@inertiajs/svelte";
     import { onMount } from "svelte";
+    import {
+        Plus,
+        Layers,
+        CalendarCheck,
+        Video,
+        Search,
+        Inbox,
+        FileText,
+        List,
+        FlaskConical,
+        Edit2,
+        Trash2,
+    } from "lucide-svelte";
 
     export let materials = []; // The original blade passed a collection, Inertia will serialize it to array
     // If paginated, structure will differ. Assuming getAllMaterials returns a collection or simple array based on controller.
@@ -55,7 +68,7 @@
                 <Button
                     href="/admin/materials/create"
                     variant="primary"
-                    icon="fas fa-plus">Tambah Modul Baru</Button
+                    icon={Plus}>Tambah Modul Baru</Button
                 >
             </div>
         </PageHeader>
@@ -65,21 +78,21 @@
             <StatCard
                 title="Total Modul"
                 value={totalMaterials}
-                icon="fas fa-layer-group"
+                icon={Layers}
                 variant="primary"
                 footer="Modul instruksional aktif"
             />
             <StatCard
                 title="Materi Baru"
                 value={recentMaterials}
-                icon="fas fa-calendar-check"
+                icon={CalendarCheck}
                 variant="success"
                 footer="Penambahan 30 hari terakhir"
             />
             <StatCard
                 title="Korpus Media"
                 value={totalMedia}
-                icon="fas fa-photo-film"
+                icon={Video}
                 variant="indigo"
                 footer="Total aset multimedia"
             />
@@ -96,9 +109,11 @@
                 </p>
                 <div class="w-full md:w-auto">
                     <div class="relative group">
-                        <i
-                            class="fas fa-dna absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors"
-                        ></i>
+                        <Search
+                            size={18}
+                            strokeWidth={2.5}
+                            class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors"
+                        />
                         <input
                             type="text"
                             bind:value={search}
@@ -143,9 +158,11 @@
                                     <div
                                         class="w-24 h-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-inner"
                                     >
-                                        <i
-                                            class="fas fa-box-open text-slate-200 text-4xl"
-                                        ></i>
+                                        <Inbox
+                                            size={48}
+                                            strokeWidth={1.5}
+                                            class="text-slate-200"
+                                        />
                                     </div>
                                     <h3
                                         class="text-2xl font-bold tracking-widest text-slate-900 mb-2"
@@ -162,7 +179,7 @@
                                     <Button
                                         href="/admin/materials/create"
                                         variant="primary"
-                                        icon="fas fa-plus"
+                                        icon={Plus}
                                         >Inisialisasi Kurikulum</Button
                                     >
                                 </td>
@@ -189,9 +206,11 @@
                                             <div
                                                 class="w-20 h-14 rounded-xl bg-slate-100 flex items-center justify-center text-slate-300 border border-dashed border-slate-200"
                                             >
-                                                <i
-                                                    class="fas fa-cube text-xl opacity-30"
-                                                ></i>
+                                                <FileText
+                                                    size={24}
+                                                    strokeWidth={2}
+                                                    class="opacity-30"
+                                                />
                                             </div>
                                         {/if}
                                     </td>
@@ -265,7 +284,7 @@
                                                 variant="ghost"
                                                 size="sm"
                                                 href={`/admin/materials/${material.id}/submaterials`}
-                                                icon="fas fa-list-ul"
+                                                icon={List}
                                                 class="text-emerald-500 hover:text-emerald-600"
                                                 title="Kelola Sub-materi"
                                             />
@@ -273,7 +292,7 @@
                                                 variant="ghost"
                                                 size="sm"
                                                 href={`/admin/materials/${material.id}/questions`}
-                                                icon="fas fa-vial"
+                                                icon={FlaskConical}
                                                 class="text-indigo-500 hover:text-indigo-600"
                                                 title="Kelola Soal"
                                             />
@@ -281,14 +300,17 @@
                                                 variant="ghost"
                                                 size="sm"
                                                 href={`/admin/materials/${material.id}/edit`}
-                                                icon="fas fa-pen-nib"
+                                                icon={Edit2}
                                             />
                                             <button
                                                 on:click={() =>
                                                     handleDelete(material.id)}
                                                 class="p-2 rounded-xl font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 hover:bg-slate-100 text-slate-300 hover:text-rose-500 text-xs"
                                             >
-                                                <i class="fas fa-trash-can"></i>
+                                                <Trash2
+                                                    size={18}
+                                                    strokeWidth={2.5}
+                                                />
                                             </button>
                                         </div>
                                     </td>

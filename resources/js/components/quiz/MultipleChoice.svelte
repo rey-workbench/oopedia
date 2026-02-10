@@ -1,5 +1,6 @@
 <script>
     import { createEventDispatcher } from "svelte";
+    import { HelpCircle, Code, CheckSquare } from "lucide-svelte";
 
     export let question;
     export let selectedAnswerId = null;
@@ -16,14 +17,14 @@
     <h5
         class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2"
     >
-        <i class="fas fa-question-circle text-blue-500"></i>
+        <HelpCircle size={16} class="text-blue-500" />
         Pertanyaan
     </h5>
     <div
         class="p-6 bg-slate-900 rounded-2xl shadow-xl border-4 border-slate-800 text-slate-100 font-mono text-lg leading-relaxed relative overflow-hidden"
     >
         <div class="absolute top-0 right-0 p-4 opacity-10">
-            <i class="fas fa-code text-6xl"></i>
+            <Code size={64} />
         </div>
         <div class="relative z-10">
             {@html question.question_text}
@@ -34,7 +35,7 @@
 <h5
     class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2"
 >
-    <i class="fas fa-tasks text-indigo-500"></i>
+    <CheckSquare size={16} class="text-indigo-500" />
     Pilih Jawaban
 </h5>
 <div class="grid grid-cols-1 gap-4">

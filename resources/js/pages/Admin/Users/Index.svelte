@@ -6,6 +6,15 @@
     import Badge from "../../../components/ui/Badge.svelte";
     import { router } from "@inertiajs/svelte";
     import { page } from "@inertiajs/svelte";
+    import {
+        Clock,
+        UserPlus,
+        ShieldCheck,
+        Settings,
+        Edit3,
+        Edit2,
+        UserX,
+    } from "lucide-svelte";
 
     export let users = []; // Paginator object
     export let pendingAdminsCount = 0;
@@ -47,7 +56,7 @@
                             <Button
                                 href="/admin/pending-admins"
                                 variant="danger"
-                                icon="fas fa-clock"
+                                icon={Clock}
                             >
                                 {pendingAdminsCount} Permintaan Menunggu
                             </Button>
@@ -55,7 +64,7 @@
                         <Button
                             href="/admin/users/create"
                             variant="primary"
-                            icon="fas fa-plus">Tambah User</Button
+                            icon={UserPlus}>Tambah User</Button
                         >
                     </div>
                 {/if}
@@ -73,9 +82,10 @@
                 </p>
                 <div class="w-full md:w-auto">
                     <div class="relative group">
-                        <i
-                            class="fas fa-shield-halved absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors"
-                        ></i>
+                        <ShieldCheck
+                            size={18}
+                            class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors"
+                        />
                         <input
                             type="text"
                             bind:value={search}
@@ -195,10 +205,10 @@
                                             href={`/admin/users/${user.id}/edit`}
                                             icon={user.role_id === 1 &&
                                             authUser.id === user.id
-                                                ? "fas fa-user-gear"
+                                                ? Settings
                                                 : user.role_id === 1
-                                                  ? "fas fa-pen-nib"
-                                                  : "fas fa-pen-fancy"}
+                                                  ? Edit3
+                                                  : Edit2}
                                         />
 
                                         {#if isSuperAdmin && authUser.id !== user.id}
@@ -207,8 +217,10 @@
                                                     handleDelete(user.id)}
                                                 class="p-2 rounded-xl font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 hover:bg-slate-100 text-slate-300 hover:text-rose-500 text-xs"
                                             >
-                                                <i class="fas fa-user-xmark"
-                                                ></i>
+                                                <UserX
+                                                    size={18}
+                                                    strokeWidth={2.5}
+                                                />
                                             </button>
                                         {/if}
                                     </div>

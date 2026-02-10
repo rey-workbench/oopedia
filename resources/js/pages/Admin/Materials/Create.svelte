@@ -25,6 +25,13 @@
     // We can get it from page props if shared.
     // For now let's assume backend helps or we use page prop.
     import { page } from "@inertiajs/svelte";
+    import {
+        ArrowLeft,
+        Info,
+        CloudUpload,
+        Rocket,
+        CheckCheck,
+    } from "lucide-svelte";
     $: $form.created_by = $page.props.auth.user.id;
 
     function handleImageChange(e) {
@@ -53,10 +60,8 @@
             subtitle="Publikasikan modul pembelajaran baru dengan visualisasi premium."
         >
             <div slot="actions">
-                <Button
-                    href="/admin/materials"
-                    variant="ghost"
-                    icon="fas fa-arrow-left">BATALKAN PUBLIKASI</Button
+                <Button href="/admin/materials" variant="ghost" icon={ArrowLeft}
+                    >BATALKAN PUBLIKASI</Button
                 >
             </div>
         </PageHeader>
@@ -95,9 +100,10 @@
                                 class="bg-blue-50/50 border-blue-100"
                             >
                                 <div class="flex gap-4">
-                                    <i
-                                        class="fas fa-circle-info text-blue-500 mt-1"
-                                    ></i>
+                                    <Info
+                                        size={16}
+                                        class="text-blue-500 mt-1"
+                                    />
                                     <div
                                         class="text-[10px] font-bold text-slate-500 leading-relaxed uppercase tracking-widest"
                                     >
@@ -128,9 +134,10 @@
                                     <div
                                         class="text-center group-hover:scale-110 transition-transform"
                                     >
-                                        <i
-                                            class="fas fa-cloud-arrow-up text-slate-300 text-2xl mb-2"
-                                        ></i>
+                                        <CloudUpload
+                                            size={24}
+                                            class="text-slate-300 mb-2"
+                                        />
                                         <p
                                             class="text-[9px] font-bold uppercase tracking-widest text-slate-400"
                                         >
@@ -181,7 +188,7 @@
                         class="pt-6 border-t border-slate-100 flex items-center justify-between"
                     >
                         <div class="flex items-center gap-3">
-                            <i class="fas fa-rocket text-blue-500 text-xs"></i>
+                            <Rocket size={14} class="text-blue-500" />
                             <span
                                 class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
                                 >Status Kesiapan: Siap Dipublikasikan</span
@@ -192,7 +199,7 @@
                             variant="primary"
                             size="lg"
                             class="shadow-xl shadow-blue-500/20"
-                            icon="fas fa-check-double"
+                            icon={CheckCheck}
                             disabled={$form.processing}
                         >
                             {#if $form.processing}

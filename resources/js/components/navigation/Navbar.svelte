@@ -1,5 +1,12 @@
 <script>
     import { Link, page, router } from "@inertiajs/svelte";
+    import {
+        Menu,
+        ChevronRight,
+        CircleHelp,
+        User,
+        LogOut,
+    } from "lucide-svelte";
 
     export let titlePage = "";
 
@@ -30,7 +37,7 @@
                 aria-label="Toggle Sidebar"
                 class="lg:hidden p-2 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
             >
-                <i class="fas fa-bars-staggered text-xl"></i>
+                <Menu size={20} strokeWidth={2.5} />
             </button>
 
             <div
@@ -47,9 +54,11 @@
                         </li>
                         <li>
                             <div class="flex items-center">
-                                <i
-                                    class="fas fa-chevron-right text-[10px] text-slate-300 mx-2"
-                                ></i>
+                                <ChevronRight
+                                    size={10}
+                                    strokeWidth={3}
+                                    class="text-slate-300 mx-2"
+                                />
                                 <span
                                     class="text-slate-900 font-bold tracking-widest uppercase"
                                     >{titlePage}</span
@@ -81,7 +90,7 @@
                     data-intro="Klik tombol ini kapan saja jika kamu butuh bantuan atau ingin mengulang tutorial di halaman ini."
                     data-step="4"
                 >
-                    <i class="fas fa-question-circle text-xl"></i>
+                    <CircleHelp size={20} strokeWidth={2.5} />
                     <span class="absolute -top-1 -right-1 flex h-3 w-3">
                         <span
                             class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"
@@ -128,7 +137,7 @@
                             href="/mahasiswa/profile"
                             class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
                         >
-                            <i class="fas fa-user-circle w-5"></i>
+                            <User size={18} strokeWidth={2.5} class="w-5" />
                             Profil Saya
                         </Link>
 
@@ -137,7 +146,11 @@
                                 type="submit"
                                 class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
                             >
-                                <i class="fas fa-sign-out-alt w-5"></i>
+                                <LogOut
+                                    size={18}
+                                    strokeWidth={2.5}
+                                    class="w-5"
+                                />
                                 Keluar
                             </button>
                         </form>

@@ -4,6 +4,15 @@
     import Card from "../../../components/ui/Card.svelte";
     import Button from "../../../components/ui/Button.svelte";
     import { Link } from "@inertiajs/svelte";
+    import {
+        Home,
+        ChevronRight,
+        Puzzle,
+        Clock,
+        CheckCheck,
+        Play,
+        ArrowRight,
+    } from "lucide-svelte";
 
     export let material = {};
     export let subMaterial = {};
@@ -62,16 +71,16 @@
                 href="/mahasiswa/materials"
                 class="text-slate-400 hover:text-blue-600 font-bold transition-colors"
             >
-                <i class="fas fa-home"></i> Materi
+                <Home size={14} class="mr-1" /> Materi
             </Link>
-            <i class="fas fa-chevron-right text-slate-300 text-xs"></i>
+            <ChevronRight size={12} class="text-slate-300" />
             <Link
                 href={`/mahasiswa/materials/${material.id}`}
                 class="text-slate-400 hover:text-blue-600 font-bold transition-colors"
             >
                 {material.title}
             </Link>
-            <i class="fas fa-chevron-right text-slate-300 text-xs"></i>
+            <ChevronRight size={12} class="text-slate-300" />
             <span class="text-slate-900 font-bold">{subMaterial.title}</span>
         </div>
 
@@ -101,7 +110,7 @@
                     <div
                         class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 shadow-inner"
                     >
-                        <i class="fas fa-puzzle-piece"></i>
+                        <Puzzle size={16} />
                     </div>
                     <span
                         class="text-[10px] font-bold uppercase tracking-widest text-slate-500"
@@ -116,7 +125,7 @@
                     <div
                         class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 shadow-inner"
                     >
-                        <i class="fas fa-clock"></i>
+                        <Clock size={16} />
                     </div>
                     <span
                         class="text-[10px] font-bold uppercase tracking-widest text-slate-500"
@@ -154,7 +163,7 @@
                     <div
                         class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center"
                     >
-                        <i class="fas fa-check-double"></i>
+                        <CheckCheck size={24} />
                     </div>
                     <div>
                         <p
@@ -174,7 +183,7 @@
                     href={`/mahasiswa/materials/${material.id}/questions?sub_material=${subMaterial.id}`}
                     variant="primary"
                     size="xl"
-                    icon="fas fa-play"
+                    icon={Play}
                     class={`w-full md:w-auto shadow-2xl ${getShadowClass(subMaterial.jenis_konten)}`}
                 >
                     Mulai Latihan Soal
@@ -219,9 +228,10 @@
                                             : 0} Soal
                                     </p>
                                 </div>
-                                <i
-                                    class={`fas fa-arrow-right text-slate-300 group-hover:${getSubMaterialText(otherSub.jenis_konten).replace("text-", "")} group-hover:translate-x-1 transition-all`}
-                                ></i>
+                                <ArrowRight
+                                    size={16}
+                                    class={`text-slate-300 group-hover:${getSubMaterialText(otherSub.jenis_konten).replace("text-", "")} group-hover:translate-x-1 transition-all`}
+                                />
                             </div>
                         </Link>
                     {/each}

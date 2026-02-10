@@ -4,6 +4,7 @@
     import Card from "../../../components/ui/Card.svelte";
     import Button from "../../../components/ui/Button.svelte";
     import { router } from "@inertiajs/svelte";
+    import { ArrowLeft, UserCheck, UserX, Inbox } from "lucide-svelte";
 
     export let pendingAdmins = [];
 
@@ -40,10 +41,8 @@
             subtitle="Otorisasi permohonan akses administratif dari entitas eksternal."
         >
             <div slot="actions">
-                <Button
-                    href="/admin/users"
-                    variant="ghost"
-                    icon="fas fa-arrow-left">KEMBALI KE REPOSITORI</Button
+                <Button href="/admin/users" variant="ghost" icon={ArrowLeft}
+                    >KEMBALI KE REPOSITORI</Button
                 >
             </div>
         </PageHeader>
@@ -129,7 +128,7 @@
                                                     handleApprove(admin.id)}
                                                 variant="success"
                                                 size="sm"
-                                                icon="fas fa-user-check"
+                                                icon={UserCheck}
                                                 class="shadow-lg shadow-emerald-500/20"
                                             >
                                                 SETUJUI
@@ -139,7 +138,7 @@
                                                     handleReject(admin.id)}
                                                 variant="danger"
                                                 size="sm"
-                                                icon="fas fa-user-xmark"
+                                                icon={UserX}
                                                 class="shadow-lg shadow-rose-500/20"
                                             >
                                                 TOLAK
@@ -157,7 +156,7 @@
                 <div
                     class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 text-slate-200"
                 >
-                    <i class="fas fa-inbox text-3xl"></i>
+                    <Inbox size={32} />
                 </div>
                 <h3
                     class="text-lg font-bold uppercase tracking-widest text-slate-900 mb-2"

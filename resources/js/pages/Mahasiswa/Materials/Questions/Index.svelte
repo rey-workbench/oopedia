@@ -6,6 +6,7 @@
     import Badge from "../../../../components/ui/Badge.svelte";
     import ProgressBar from "../../../../components/ui/ProgressBar.svelte";
     import { Link } from "@inertiajs/svelte";
+    import { Shapes, Users, Puzzle, Play, Lock } from "lucide-svelte";
 
     export let materials = [];
     export let isGuest = false;
@@ -71,9 +72,10 @@
                                 <div
                                     class="h-60 md:h-full bg-gradient-to-br from-indigo-600 to-blue-700 flex items-center justify-center"
                                 >
-                                    <i
-                                        class="fas fa-shapes text-8xl text-white/10 group-hover:rotate-6 transition-transform"
-                                    ></i>
+                                    <Shapes
+                                        size={96}
+                                        class="text-white/10 group-hover:rotate-6 transition-transform"
+                                    />
                                 </div>
                             {/if}
                             <div class="absolute top-6 left-6">
@@ -106,7 +108,7 @@
                                                 <div
                                                     class="w-8 h-8 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center text-xs shadow-inner"
                                                 >
-                                                    <i class="fas fa-users"></i>
+                                                    <Users size={14} />
                                                 </div>
                                                 <span
                                                     class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
@@ -120,9 +122,7 @@
                                                 <div
                                                     class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-500 flex items-center justify-center text-xs shadow-inner"
                                                 >
-                                                    <i
-                                                        class="fas fa-puzzle-piece"
-                                                    ></i>
+                                                    <Puzzle size={14} />
                                                 </div>
                                                 <span
                                                     class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
@@ -135,7 +135,10 @@
                                     <div
                                         class="hidden sm:flex w-14 h-14 rounded-2xl bg-slate-50 text-slate-900 items-center justify-center shadow-inner group-hover:bg-blue-600 group-hover:text-white transition-all"
                                     >
-                                        <i class="fas fa-play ml-1"></i>
+                                        <Play
+                                            size={20}
+                                            class="ml-1 fill-current"
+                                        />
                                     </div>
                                 </div>
 
@@ -146,7 +149,7 @@
                                         <div
                                             class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-amber-200"
                                         >
-                                            <i class="fas fa-lock"></i>
+                                            <Lock size={20} />
                                         </div>
                                         <div>
                                             <span
@@ -201,7 +204,7 @@
                                 <Button
                                     variant="primary"
                                     class="w-full"
-                                    icon="fas fa-play">Mulai Latihan</Button
+                                    icon={Play}>Mulai Latihan</Button
                                 >
                             </div>
                         </div>

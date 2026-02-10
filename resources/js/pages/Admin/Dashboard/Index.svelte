@@ -9,6 +9,20 @@
     import Chart from "../../../components/ui/Chart.svelte";
     import { onMount } from "svelte";
     import { Link } from "@inertiajs/svelte";
+    import {
+        Users,
+        Signal,
+        FolderTree,
+        Cpu,
+        ScanEye,
+        Activity,
+        ArrowRight,
+        Search,
+        Layers,
+        Check,
+        Clock,
+        Zap,
+    } from "lucide-svelte";
 
     export let userName;
     export let userRole;
@@ -158,28 +172,28 @@
             <StatCard
                 title="Total Mahasiswa"
                 value={totalStudents}
-                icon="fas fa-users-viewfinder"
+                icon={Users}
                 variant="primary"
                 footer="Entitas terdaftar"
             />
             <StatCard
                 title="Node Aktif"
                 value={activeStudents}
-                icon="fas fa-signal"
+                icon={Signal}
                 variant="success"
                 footer="Sesi aktif hari ini"
             />
             <StatCard
                 title="Modul Instruksional"
                 value={totalMaterials}
-                icon="fas fa-folder-tree"
+                icon={FolderTree}
                 variant="primary"
                 footer="Konten aktif"
             />
             <StatCard
                 title="Korpus Evaluasi"
                 value={totalQuestions}
-                icon="fas fa-microchip"
+                icon={Cpu}
                 variant="success"
                 footer="Total butir evaluasi"
             />
@@ -198,7 +212,7 @@
                         <div
                             class="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-inner"
                         >
-                            <i class="fas fa-users-rays text-xl"></i>
+                            <ScanEye size={24} strokeWidth={2.5} />
                         </div>
                         <p
                             class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-0"
@@ -231,7 +245,7 @@
                         <div
                             class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 shadow-inner"
                         >
-                            <i class="fas fa-spider text-xl"></i>
+                            <Activity size={24} strokeWidth={2.5} />
                         </div>
                         <p
                             class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-0"
@@ -273,7 +287,7 @@
                             variant="ghost"
                             size="sm"
                             href="/admin/students"
-                            icon="fas fa-arrow-right">DATA GLOBAL</Button
+                            icon={ArrowRight}>DATA GLOBAL</Button
                         >
                     </div>
 
@@ -357,7 +371,7 @@
                                                 variant="ghost"
                                                 size="sm"
                                                 href={`/admin/students/${student.id}/progress`}
-                                                icon="fas fa-microscope"
+                                                icon={Search}
                                             />
                                         </td>
                                     </tr>
@@ -389,7 +403,7 @@
                                 <div
                                     class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center shadow-lg text-white transition-transform group-hover:scale-110"
                                 >
-                                    <i class="fas fa-layer-group text-xs"></i>
+                                    <Layers size={20} strokeWidth={2.5} />
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <h5
@@ -446,9 +460,13 @@
                                 <div
                                     class={`w-8 h-8 rounded-lg ${progress.is_correct ? "bg-emerald-500" : "bg-amber-500"} text-white flex items-center justify-center text-[10px] shadow-lg shadow-emerald-500/20`}
                                 >
-                                    <i
-                                        class={`fas ${progress.is_correct ? "fa-check" : "fa-hourglass-start"}`}
-                                    ></i>
+                                    <svelte:component
+                                        this={progress.is_correct
+                                            ? Check
+                                            : Clock}
+                                        size={14}
+                                        strokeWidth={3}
+                                    />
                                 </div>
                                 <div
                                     class="font-bold text-slate-900 uppercase tracking-widest text-xs"
@@ -475,8 +493,11 @@
                                 class="pt-4 border-t border-slate-200 flex justify-between items-center text-[9px] font-bold text-slate-300 uppercase tracking-widest"
                             >
                                 <span>{relativeTime(progress.created_at)}</span>
-                                <i class="fas fa-bolt text-blue-500 opacity-20"
-                                ></i>
+                                <Zap
+                                    size={12}
+                                    strokeWidth={3}
+                                    class="text-blue-500 opacity-20"
+                                />
                             </div>
                         </div>
                     </div>

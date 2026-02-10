@@ -4,6 +4,7 @@
     import Input from "../../../components/ui/Input.svelte";
     import { useForm, page } from "@inertiajs/svelte";
     import { onMount } from "svelte";
+    import { UserCircle, Check, Lock, Loader2, Save } from "lucide-svelte";
 
     export let user;
     // materials are passed but not seemingly used in the blade view's main content,
@@ -52,14 +53,12 @@
                                 class="w-24 h-24 rounded-2xl overflow-hidden border-4 border-white shadow-lg shrink-0 flex items-center justify-center bg-indigo-100"
                             >
                                 <!-- Fallback avatar or image -->
-                                <i
-                                    class="fas fa-user-circle text-6xl text-indigo-300"
-                                ></i>
+                                <UserCircle size={64} class="text-indigo-300" />
                             </div>
                             <div
                                 class="absolute -bottom-2 -right-2 w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center text-white border-2 border-white shadow-lg"
                             >
-                                <i class="fas fa-check text-[10px]"></i>
+                                <Check size={14} class="text-white" />
                             </div>
                         </div>
                         <div class="text-center md:text-left flex-1">
@@ -94,7 +93,7 @@
                         <div
                             class="w-10 h-10 bg-emerald-500 text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-emerald-100"
                         >
-                            <i class="fas fa-check text-sm"></i>
+                            <Check size={18} class="text-white" />
                         </div>
                         <p class="text-emerald-800 font-bold">
                             {flash.success}
@@ -146,7 +145,7 @@
                             <div
                                 class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 shadow-inner"
                             >
-                                <i class="fas fa-lock text-sm"></i>
+                                <Lock size={18} class="text-amber-600" />
                             </div>
                             <h4
                                 class="text-lg font-bold text-slate-900 tracking-widest uppercase"
@@ -201,9 +200,9 @@
                             disabled={$form.processing}
                         >
                             {#if $form.processing}
-                                <i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...
+                                <Loader2 size={18} class="mr-2 animate-spin" /> Menyimpan...
                             {:else}
-                                <i class="fas fa-save mr-2"></i> Simpan Perubahan
+                                <Save size={18} class="mr-2" /> Simpan Perubahan
                             {/if}
                         </Button>
                     </div>

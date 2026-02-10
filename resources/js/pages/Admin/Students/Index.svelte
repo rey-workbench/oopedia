@@ -7,6 +7,16 @@
     import ProgressBar from "../../../components/ui/ProgressBar.svelte";
     import Modal from "../../../components/ui/Modal.svelte";
     import { router, useForm } from "@inertiajs/svelte";
+    import {
+        UserPlus,
+        FileSpreadsheet,
+        Search,
+        GraduationCap,
+        Terminal,
+        LineChart,
+        UserMinus,
+        X,
+    } from "lucide-svelte";
 
     export let students = {}; // paginated object
 
@@ -55,12 +65,12 @@
                 <Button
                     on:click={() => (openModal = true)}
                     variant="primary"
-                    icon="fas fa-plus">Daftarkan Mahasiswa</Button
+                    icon={UserPlus}>Daftarkan Mahasiswa</Button
                 >
                 <Button
                     href="/admin/students/import"
                     variant="success"
-                    icon="fas fa-file-excel">Impor Excel</Button
+                    icon={FileSpreadsheet}>Impor Excel</Button
                 >
             </div>
         </PageHeader>
@@ -76,9 +86,10 @@
                 </p>
                 <div class="w-full md:w-auto">
                     <div class="relative group">
-                        <i
-                            class="fas fa-user-tag absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors"
-                        ></i>
+                        <Search
+                            size={18}
+                            class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors"
+                        />
                         <input
                             type="text"
                             bind:value={search}
@@ -123,9 +134,11 @@
                                     <div
                                         class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6"
                                     >
-                                        <i
-                                            class="fas fa-user-graduate text-slate-200 text-3xl"
-                                        ></i>
+                                        <GraduationCap
+                                            size={32}
+                                            strokeWidth={1.5}
+                                            class="text-slate-200"
+                                        />
                                     </div>
                                     <h3
                                         class="text-xl font-bold uppercase tracking-widest text-slate-900 mb-2"
@@ -143,13 +156,13 @@
                                         <Button
                                             on:click={() => (openModal = true)}
                                             variant="primary"
-                                            icon="fas fa-plus"
+                                            icon={UserPlus}
                                             >Daftar Individu</Button
                                         >
                                         <Button
                                             href="/admin/students/import"
                                             variant="outline"
-                                            icon="fas fa-file-excel"
+                                            icon={FileSpreadsheet}
                                             >Unggah Dataset</Button
                                         >
                                     </div>
@@ -186,9 +199,10 @@
                                         <div
                                             class="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full"
                                         >
-                                            <i
-                                                class="fas fa-terminal text-[10px] text-blue-500"
-                                            ></i>
+                                            <Terminal
+                                                size={10}
+                                                class="text-blue-500"
+                                            />
                                             <span
                                                 class="text-[10px] font-bold text-slate-700"
                                                 >{student.total_answered_questions ??
@@ -220,15 +234,17 @@
                                                 variant="ghost"
                                                 size="sm"
                                                 href={`/admin/students/${student.id}/progress`}
-                                                icon="fas fa-chart-line"
+                                                icon={LineChart}
                                             />
                                             <button
                                                 on:click={() =>
                                                     handleDelete(student.id)}
                                                 class="p-2 rounded-xl font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 hover:bg-slate-100 text-slate-300 hover:text-rose-500 text-xs"
                                             >
-                                                <i class="fas fa-user-minus"
-                                                ></i>
+                                                <UserMinus
+                                                    size={18}
+                                                    strokeWidth={2.5}
+                                                />
                                             </button>
                                         </div>
                                     </td>
@@ -278,8 +294,9 @@
                     <button
                         on:click={() => (openModal = false)}
                         class="text-blue-200 hover:text-white"
-                        ><i class="fas fa-times"></i></button
                     >
+                        <X size={20} />
+                    </button>
                 </div>
                 <h6 class="text-xl font-bold tracking-widest mb-1 uppercase">
                     Inisialisasi Otentikasi
@@ -356,7 +373,7 @@
                         type="submit"
                         variant="primary"
                         class="flex-1 py-4 shadow-xl shadow-blue-500/20"
-                        icon="fas fa-user-plus"
+                        icon={UserPlus}
                         disabled={$form.processing}
                     >
                         {#if $form.processing}Mengotorisasi...{:else}Otorisasi

@@ -5,6 +5,14 @@
     import Button from "../../../components/ui/Button.svelte";
     import Badge from "../../../components/ui/Badge.svelte";
     import { router, Link } from "@inertiajs/svelte";
+    import {
+        Plus,
+        ArrowLeft,
+        Search,
+        FlaskConical,
+        Edit2,
+        Trash2,
+    } from "lucide-svelte";
     import { debounce } from "lodash";
 
     export let questions = { data: [] };
@@ -63,13 +71,13 @@
                         ? `/admin/materials/${material.id}/questions/create`
                         : "/admin/questions/create"}
                     variant="primary"
-                    icon="fas fa-plus">TAMBAH INSTRUMEN</Button
+                    icon={Plus}>TAMBAH INSTRUMEN</Button
                 >
                 {#if material}
                     <Button
                         href="/admin/materials"
                         variant="ghost"
-                        icon="fas fa-arrow-left">KEMBALI</Button
+                        icon={ArrowLeft}>KEMBALI</Button
                     >
                 {/if}
             </div>
@@ -91,9 +99,11 @@
                         placeholder="Cari teks soal atau identitas..."
                         class="w-full bg-white border-2 border-slate-100 rounded-[2rem] px-8 py-4 text-xs font-bold uppercase tracking-widest text-slate-900 group-hover:border-blue-400 focus:border-blue-600 focus:outline-none transition-all duration-300 shadow-xl shadow-slate-100"
                     />
-                    <i
-                        class="fas fa-search absolute right-8 top-1/2 -translate-y-1/2 text-slate-300 group-hover:text-blue-500 transition-colors"
-                    ></i>
+                    <Search
+                        size={20}
+                        strokeWidth={2.5}
+                        class="absolute right-8 top-1/2 -translate-y-1/2 text-slate-300 group-hover:text-blue-500 transition-colors"
+                    />
                 </div>
             </div>
 
@@ -156,9 +166,11 @@
                                     <div
                                         class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6"
                                     >
-                                        <i
-                                            class="fas fa-vial text-slate-200 text-3xl"
-                                        ></i>
+                                        <FlaskConical
+                                            size={32}
+                                            strokeWidth={1.5}
+                                            class="text-slate-200"
+                                        />
                                     </div>
                                     <h3
                                         class="text-lg font-bold uppercase tracking-widest text-slate-900 mb-2"
@@ -227,14 +239,17 @@
                                                 href={material
                                                     ? `/admin/materials/${material.id}/questions/${question.id}/edit`
                                                     : `/admin/questions/${question.id}/edit`}
-                                                icon="fas fa-edit"
+                                                icon={Edit2}
                                             />
                                             <button
                                                 on:click={() =>
                                                     handleDelete(question.id)}
                                                 class="p-2 rounded-xl font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 hover:bg-slate-100 text-slate-300 hover:text-rose-500 text-xs"
                                             >
-                                                <i class="fas fa-trash-alt"></i>
+                                                <Trash2
+                                                    size={18}
+                                                    strokeWidth={2.5}
+                                                />
                                             </button>
                                         </div>
                                     </td>

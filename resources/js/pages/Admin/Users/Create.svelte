@@ -5,6 +5,13 @@
     import Button from "../../../components/ui/Button.svelte";
     import Input from "../../../components/ui/Input.svelte";
     import { useForm } from "@inertiajs/svelte";
+    import {
+        ArrowLeft,
+        ChevronDown,
+        Shield,
+        Cpu,
+        UserPlus,
+    } from "lucide-svelte";
 
     // We should pass roles from controller if we want to be dynamic,
     // or hardcode based on Blade: @foreach($roles as $role)
@@ -31,10 +38,8 @@
             subtitle="Otorisasi entitas baru ke dalam pusat kendali sistem."
         >
             <div slot="actions">
-                <Button
-                    href="/admin/users"
-                    variant="ghost"
-                    icon="fas fa-arrow-left">KEMBALI KE DAFTAR</Button
+                <Button href="/admin/users" variant="ghost" icon={ArrowLeft}
+                    >KEMBALI KE DAFTAR</Button
                 >
             </div>
         </PageHeader>
@@ -150,7 +155,7 @@
                                 <div
                                     class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-slate-500"
                                 >
-                                    <i class="fas fa-chevron-down text-xs"></i>
+                                    <ChevronDown size={14} />
                                 </div>
                             </div>
                             {#if $form.errors.role_id}
@@ -172,7 +177,7 @@
                                 <div
                                     class="w-16 h-16 mx-auto rounded-3xl bg-blue-600/20 text-blue-500 flex items-center justify-center mb-6"
                                 >
-                                    <i class="fas fa-user-shield text-2xl"></i>
+                                    <Shield size={24} />
                                 </div>
                                 <h4
                                     class="text-white text-xs font-bold uppercase tracking-widest mb-4"
@@ -198,7 +203,7 @@
                         <div
                             class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center"
                         >
-                            <i class="fas fa-microchip text-xs"></i>
+                            <Cpu size={14} />
                         </div>
                         <div>
                             <h6
@@ -226,7 +231,7 @@
                             variant="primary"
                             size="lg"
                             class="shadow-xl shadow-blue-500/30 font-bold tracking-widest"
-                            icon="fas fa-user-plus"
+                            icon={UserPlus}
                             disabled={$form.processing}
                         >
                             {#if $form.processing}

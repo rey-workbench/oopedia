@@ -4,6 +4,14 @@
     import Card from "../../../components/ui/Card.svelte";
     import Button from "../../../components/ui/Button.svelte";
     import { Link } from "@inertiajs/svelte";
+    import {
+        Code,
+        Book,
+        ArrowLeft,
+        BookOpen,
+        Layers,
+        Puzzle,
+    } from "lucide-svelte";
 
     export let material = {};
 
@@ -32,7 +40,7 @@
     }
 
     function getIcon(type) {
-        return type === "sintaks" ? "fas fa-code" : "fas fa-book";
+        return type === "sintaks" ? Code : Book;
     }
 
     function getBadgeLabel(type) {
@@ -51,7 +59,7 @@
                 <Button
                     href="/mahasiswa/materials"
                     variant="ghost"
-                    icon="fas fa-arrow-left"
+                    icon={ArrowLeft}
                 >
                     Kembali ke Materi
                 </Button>
@@ -62,7 +70,7 @@
                     <div
                         class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 shadow-inner"
                     >
-                        <i class="fas fa-chalkboard-user"></i>
+                        <BookOpen size={16} />
                     </div>
                     <span
                         class="text-[10px] font-bold uppercase tracking-widest text-slate-500"
@@ -77,7 +85,7 @@
                     <div
                         class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 shadow-inner"
                     >
-                        <i class="fas fa-layer-group"></i>
+                        <Layers size={16} />
                     </div>
                     <span
                         class="text-[10px] font-bold uppercase tracking-widest text-slate-500"
@@ -108,7 +116,7 @@
                     <div
                         class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6"
                     >
-                        <i class="fas fa-book-open text-slate-200 text-3xl"></i>
+                        <BookOpen size={48} class="text-slate-200" />
                     </div>
                     <h3
                         class="text-xl font-bold tracking-widest text-slate-900 mb-2"
@@ -139,9 +147,11 @@
 
                                 <!-- Center Icon -->
                                 <div class="relative z-10">
-                                    <i
-                                        class={`${getIcon(subMaterial.jenis_konten)} text-6xl text-white/20 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}
-                                    ></i>
+                                    <svelte:component
+                                        this={getIcon(subMaterial.jenis_konten)}
+                                        size={64}
+                                        class="text-white/20 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500"
+                                    />
                                 </div>
 
                                 <!-- Order Badge (Top Left) -->
@@ -168,7 +178,7 @@
                                     <div
                                         class={`flex items-center gap-2 px-3 py-1.5 ${getBgClass(subMaterial.jenis_konten)} rounded-xl text-white text-[9px] font-bold uppercase tracking-widest shadow-xl ${getShadowClass(subMaterial.jenis_konten)}`}
                                     >
-                                        <i class="fas fa-puzzle-piece"></i>
+                                        <Puzzle size={14} />
                                         {subMaterial.questions
                                             ? subMaterial.questions.length
                                             : 0} Soal
@@ -201,7 +211,7 @@
                                         href={`/mahasiswa/materials/${material.id}/submaterials/${subMaterial.id}`}
                                         variant="primary"
                                         class="w-full"
-                                        icon="fas fa-book-open"
+                                        icon={BookOpen}
                                     >
                                         Lihat Materi
                                     </Button>

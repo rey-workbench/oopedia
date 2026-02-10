@@ -7,6 +7,7 @@
     import Alert from "../../../components/ui/Alert.svelte";
     import QuillEditor from "../../../components/ui/QuillEditor.svelte";
     import { useForm } from "@inertiajs/svelte";
+    import { ArrowLeft, RefreshCw, Camera, CloudUpload } from "lucide-svelte";
 
     export let material;
 
@@ -48,10 +49,8 @@
             subtitle="Modifikasi konten instruksional dan optimasi media visual."
         >
             <div slot="actions">
-                <Button
-                    href="/admin/materials"
-                    variant="ghost"
-                    icon="fas fa-arrow-left">BATALKAN MODIFIKASI</Button
+                <Button href="/admin/materials" variant="ghost" icon={ArrowLeft}
+                    >BATALKAN MODIFIKASI</Button
                 >
             </div>
         </PageHeader>
@@ -89,8 +88,10 @@
                                 class="bg-indigo-50/50 border-indigo-100"
                             >
                                 <div class="flex gap-4">
-                                    <i class="fas fa-sync text-indigo-500 mt-1"
-                                    ></i>
+                                    <RefreshCw
+                                        size={16}
+                                        class="text-indigo-500 mt-1"
+                                    />
                                     <div
                                         class="text-[10px] font-bold text-slate-500 leading-relaxed uppercase tracking-widest"
                                     >
@@ -121,9 +122,10 @@
                                     <div
                                         class="text-center group-hover:scale-110 transition-transform"
                                     >
-                                        <i
-                                            class="fas fa-camera-retro text-slate-300 text-2xl mb-2"
-                                        ></i>
+                                        <Camera
+                                            size={24}
+                                            class="text-slate-300 mb-2"
+                                        />
                                         <p
                                             class="text-[9px] font-bold uppercase tracking-widest text-slate-400"
                                         >
@@ -174,9 +176,10 @@
                         class="pt-6 border-t border-slate-100 flex items-center justify-between"
                     >
                         <div class="flex items-center gap-3">
-                            <i
-                                class="fas fa-cloud-upload-alt text-indigo-500 text-xs animate-pulse"
-                            ></i>
+                            <CloudUpload
+                                size={14}
+                                class="text-indigo-500 animate-pulse"
+                            />
                             <span
                                 class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
                                 >Sinkronisasi Cloud: Terhubung & Siap</span
@@ -187,7 +190,7 @@
                             variant="primary"
                             size="lg"
                             class="shadow-xl shadow-indigo-500/20 bg-indigo-600 hover:bg-indigo-700"
-                            icon="fas fa-cloud-upload-alt"
+                            icon={CloudUpload}
                             disabled={$form.processing}
                         >
                             {#if $form.processing}

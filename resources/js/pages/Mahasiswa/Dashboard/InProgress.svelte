@@ -4,6 +4,15 @@
     import Button from "../../../components/ui/Button.svelte";
     import EmptyState from "../../../components/ui/EmptyState.svelte"; // Assuming exists or fallback
     import { Link } from "@inertiajs/svelte";
+    import {
+        ArrowLeft,
+        BookOpen,
+        Rocket,
+        Activity,
+        Loader2,
+        Book,
+        Play,
+    } from "lucide-svelte";
 
     export let materialsWithStats = [];
 
@@ -24,7 +33,7 @@
                     <Button
                         href="/mahasiswa/dashboard"
                         variant="ghost"
-                        icon="fas fa-arrow-left"
+                        icon={ArrowLeft}
                     >
                         Dashboard
                     </Button>
@@ -39,7 +48,7 @@
                         <div
                             class="w-24 h-24 bg-blue-50 text-blue-500 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-inner"
                         >
-                            <i class="fas fa-book-open text-5xl"></i>
+                            <BookOpen size={48} strokeWidth={2} />
                         </div>
                         <h3
                             class="text-3xl font-bold text-slate-900 mb-4 uppercase tracking-widest"
@@ -57,7 +66,7 @@
                             href="/mahasiswa/materials"
                             variant="primary"
                             class="px-10 py-4 rounded-2xl font-bold uppercase transition-all shadow-xl shadow-blue-100"
-                            icon="fas fa-rocket"
+                            icon={Rocket}
                         >
                             Mulai Belajar
                         </Button>
@@ -73,21 +82,22 @@
                                     <div
                                         class="p-8 bg-gradient-to-br from-blue-600 to-indigo-700 relative overflow-hidden text-white"
                                     >
-                                        <div
-                                            class="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity"
-                                        >
-                                            <i class="fas fa-running text-8xl"
-                                            ></i>
-                                        </div>
+                                        <Activity
+                                            size={96}
+                                            strokeWidth={1}
+                                            class="opacity-10 group-hover:opacity-20 transition-opacity"
+                                        />
                                         <div
                                             class="relative z-10 flex items-center gap-6"
                                         >
                                             <div
                                                 class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-inner border border-white/30 group-hover:scale-110 transition-transform duration-500"
                                             >
-                                                <i
-                                                    class="fas fa-spinner animate-spin-slow text-2xl"
-                                                ></i>
+                                                <Loader2
+                                                    size={32}
+                                                    strokeWidth={2.5}
+                                                    class="animate-spin"
+                                                />
                                             </div>
                                             <div
                                                 class="min-h-[4.5rem] flex flex-col justify-center"
@@ -241,14 +251,20 @@
                                                 href={`/mahasiswa/materials/${materialData.material.id}`}
                                                 class="flex items-center justify-center gap-2 py-4 rounded-2xl font-bold uppercase text-xs border-2 border-slate-100 hover:bg-slate-50 transition-all text-slate-600"
                                             >
-                                                <i class="fas fa-book"></i>
+                                                <Book
+                                                    size={14}
+                                                    strokeWidth={2.5}
+                                                />
                                                 Materi
                                             </Link>
                                             <Link
                                                 href={`/mahasiswa/materials/${materialData.material.id}/questions/levels`}
                                                 class="flex items-center justify-center gap-2 py-4 rounded-2xl font-bold uppercase text-xs bg-slate-900 text-white hover:bg-blue-600 transition-all shadow-lg shadow-slate-200 hover:shadow-blue-200"
                                             >
-                                                <i class="fas fa-play"></i>
+                                                <Play
+                                                    size={14}
+                                                    strokeWidth={2.5}
+                                                />
                                                 Lanjut
                                             </Link>
                                         </div>

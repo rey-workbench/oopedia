@@ -4,6 +4,12 @@
     import Card from "../../../components/ui/Card.svelte";
     import Button from "../../../components/ui/Button.svelte";
     import { useForm } from "@inertiajs/svelte";
+    import {
+        ArrowLeft,
+        FileSpreadsheet,
+        Upload,
+        Download,
+    } from "lucide-svelte";
 
     const form = useForm({
         excel_file: null,
@@ -25,10 +31,8 @@
             subtitle="Unggah dataset admin melalui berkas Excel untuk otorisasi massal."
         >
             <div slot="actions">
-                <Button
-                    href="/admin/users"
-                    variant="ghost"
-                    icon="fas fa-arrow-left">KEMBALI KE DAFTAR</Button
+                <Button href="/admin/users" variant="ghost" icon={ArrowLeft}
+                    >KEMBALI KE DAFTAR</Button
                 >
             </div>
         </PageHeader>
@@ -96,9 +100,11 @@
                                         for="excel_file"
                                         class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-slate-200 rounded-[2.5rem] bg-slate-50 hover:bg-slate-100/50 hover:border-blue-400 cursor-pointer transition-all group"
                                     >
-                                        <i
-                                            class="fas fa-file-excel text-4xl text-slate-200 group-hover:text-blue-500 mb-4 transition-colors"
-                                        ></i>
+                                        <FileSpreadsheet
+                                            size={48}
+                                            strokeWidth={1.5}
+                                            class="text-slate-200 group-hover:text-blue-500 mb-4 transition-colors"
+                                        />
                                         <span
                                             class="text-xs font-bold text-slate-400 group-hover:text-slate-900"
                                         >
@@ -123,7 +129,7 @@
                                 type="submit"
                                 variant="primary"
                                 class="flex-1 py-4 shadow-xl shadow-blue-500/20"
-                                icon="fas fa-upload"
+                                icon={Upload}
                                 disabled={$form.processing}
                             >
                                 {#if $form.processing}PROSES UNGGAH...{:else}MULAI
@@ -133,7 +139,7 @@
                                 href="/admin/users/download-template"
                                 variant="outline"
                                 class="py-4"
-                                icon="fas fa-download"
+                                icon={Download}
                             >
                                 UNDUH TEMPLATE
                             </Button>

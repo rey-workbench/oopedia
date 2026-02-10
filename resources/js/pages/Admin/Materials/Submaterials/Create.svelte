@@ -6,6 +6,7 @@
     import Input from "../../../../components/ui/Input.svelte";
     import QuillEditor from "../../../../components/ui/QuillEditor.svelte";
     import { useForm } from "@inertiajs/svelte";
+    import { ArrowLeft, Save } from "lucide-svelte";
 
     export let material;
 
@@ -31,7 +32,7 @@
                 <Button
                     href={`/admin/materials/${material.id}/submaterials`}
                     variant="ghost"
-                    icon="fas fa-arrow-left">KEMBALI KE DAFTAR</Button
+                    icon={ArrowLeft}>KEMBALI KE DAFTAR</Button
                 >
             </div>
         </PageHeader>
@@ -130,7 +131,7 @@
                             type="submit"
                             variant="primary"
                             class="w-full py-4 shadow-xl shadow-blue-500/20"
-                            icon="fas fa-save"
+                            icon={Save}
                             disabled={$form.processing}
                         >
                             {#if $form.processing}MENYIMPAN...{:else}PUBLIKASIKAN

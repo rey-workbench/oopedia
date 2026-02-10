@@ -6,6 +6,7 @@
     import Badge from "../../../components/ui/Badge.svelte";
     import ProgressBar from "../../../components/ui/ProgressBar.svelte";
     import { router } from "@inertiajs/svelte";
+    import { FileDown, Eye } from "lucide-svelte";
 
     export let surveys = [];
     export let averages = {};
@@ -38,7 +39,7 @@
                 <Button
                     on:click={exportResults}
                     variant="success"
-                    icon="fas fa-file-export">EKSPOR CSV</Button
+                    icon={FileDown}>EKSPOR CSV</Button
                 >
             </div>
         </PageHeader>
@@ -187,7 +188,7 @@
                                         variant="ghost"
                                         size="sm"
                                         href={`/admin/ueq-survey/${survey.user_id}`}
-                                        icon="fas fa-eye"
+                                        icon={Eye}
                                     />
                                 </td>
                             </tr>

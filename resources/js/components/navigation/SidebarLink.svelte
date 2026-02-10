@@ -1,8 +1,9 @@
 <script>
     import { Link, page } from "@inertiajs/svelte";
+    import { ChevronRight, Link2 } from "lucide-svelte";
 
     export let href = "#";
-    export let icon = "fas fa-link";
+    export let icon = Link2;
     export let active = false;
 
     const baseClasses =
@@ -36,6 +37,6 @@
     <span class="flex-1"><slot /></span>
 
     {#if active}
-        <i class="fas fa-chevron-right text-[10px] opacity-50"></i>
+        <ChevronRight size={14} class="opacity-50" />
     {/if}
 </Link>

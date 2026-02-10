@@ -5,6 +5,7 @@
     import Button from "../../../components/ui/Button.svelte";
     import Input from "../../../components/ui/Input.svelte";
     import { useForm } from "@inertiajs/svelte";
+    import { ArrowLeft, Lock, RefreshCw, Save } from "lucide-svelte";
 
     export let user;
 
@@ -51,10 +52,8 @@
             subtitle="Modifikasi data identitas dan kunci keamanan entitas."
         >
             <div slot="actions">
-                <Button
-                    href="/admin/users"
-                    variant="ghost"
-                    icon="fas fa-arrow-left">KEMBALI KE DAFTAR</Button
+                <Button href="/admin/users" variant="ghost" icon={ArrowLeft}
+                    >KEMBALI KE DAFTAR</Button
                 >
             </div>
         </PageHeader>
@@ -152,7 +151,7 @@
                                 <div
                                     class="w-16 h-16 mx-auto rounded-3xl bg-indigo-600/20 text-indigo-500 flex items-center justify-center mb-6"
                                 >
-                                    <i class="fas fa-user-lock text-2xl"></i>
+                                    <Lock size={24} />
                                 </div>
                                 <h4
                                     class="text-white text-xs font-bold uppercase tracking-widest mb-4"
@@ -177,7 +176,7 @@
                         <div
                             class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center"
                         >
-                            <i class="fas fa-sync text-xs"></i>
+                            <RefreshCw size={14} />
                         </div>
                         <div>
                             <h6
@@ -205,7 +204,7 @@
                             variant="primary"
                             size="lg"
                             class="shadow-xl shadow-indigo-500/30 bg-indigo-600 hover:bg-indigo-700 font-bold tracking-widest"
-                            icon="fas fa-save"
+                            icon={Save}
                             disabled={$form.processing}
                         >
                             {#if $form.processing}

@@ -70,7 +70,7 @@
             aria-label="Close sidebar"
             class="lg:hidden p-2 rounded-xl text-slate-400 hover:text-slate-900 bg-slate-100"
         >
-            <i class="fas fa-xmark"></i>
+            <X size={20} />
         </button>
     </div>
 

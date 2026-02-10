@@ -1,6 +1,7 @@
 <script>
     import { createEventDispatcher } from "svelte";
     import Input from "../ui/Input.svelte";
+    import { HelpCircle } from "lucide-svelte";
 
     export let question;
     export let answerText = "";
@@ -14,8 +15,8 @@
 </script>
 
 <div class="mb-6">
-    <h5 class="text-lg font-semibold mb-3">
-        <i class="fas fa-question mr-2"></i>Pertanyaan
+    <h5 class="text-lg font-semibold mb-3 flex items-center">
+        <HelpCircle size={18} class="mr-2" />Pertanyaan
     </h5>
     <div
         class="whitespace-pre-wrap bg-slate-50 p-4 rounded-lg font-medium text-slate-700"

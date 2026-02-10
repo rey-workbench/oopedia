@@ -6,6 +6,14 @@
     import Input from "../../../components/ui/Input.svelte";
     import QuillEditor from "../../../components/ui/QuillEditor.svelte";
     import { useForm, router } from "@inertiajs/svelte";
+    import {
+        ArrowLeft,
+        Edit2,
+        Plus,
+        X,
+        CheckCircle2,
+        Save,
+    } from "lucide-svelte";
     import { onMount } from "svelte";
 
     export let materials = [];
@@ -75,7 +83,7 @@
                         ? `/admin/materials/${material.id}/questions`
                         : "/admin/questions"}
                     variant="ghost"
-                    icon="fas fa-arrow-left">BATALKAN</Button
+                    icon={ArrowLeft}>BATALKAN</Button
                 >
             </div>
         </PageHeader>
@@ -90,7 +98,7 @@
                         slot="header"
                         class="bg-blue-600 px-8 py-6 text-white flex items-center gap-3"
                     >
-                        <i class="fas fa-edit"></i>
+                        <Edit2 size={18} />
                         <h6
                             class="text-sm font-bold tracking-widest uppercase mb-0 text-white"
                         >
@@ -128,7 +136,7 @@
                                     on:click={addAnswer}
                                     variant="ghost"
                                     size="xs"
-                                    icon="fas fa-plus">TAMBAH OPSI</Button
+                                    icon={Plus}>TAMBAH OPSI</Button
                                 >
                             </div>
 
@@ -174,7 +182,7 @@
                                                         removeAnswer(i)}
                                                     class="p-2 text-slate-300 hover:text-rose-500 transition-colors"
                                                 >
-                                                    <i class="fas fa-times"></i>
+                                                    <X size={18} />
                                                 </button>
                                             {/if}
                                         </div>
@@ -258,9 +266,9 @@
                         ${$form.question_type === type ? "border-blue-600 bg-blue-50 text-blue-600" : "border-slate-50 bg-slate-50 text-slate-400"}`}
                                     >
                                         {type.replace(/_/g, " ")}
-                                        {#if $form.question_type === type}<i
-                                                class="fas fa-check-circle"
-                                            ></i>{/if}
+                                        {#if $form.question_type === type}
+                                            <CheckCircle2 size={16} />
+                                        {/if}
                                     </button>
                                 {/each}
                             </div>
@@ -292,7 +300,7 @@
                             on:click={handleSubmit}
                             variant="primary"
                             class="w-full py-4 shadow-xl shadow-blue-500/20"
-                            icon="fas fa-save"
+                            icon={Save}
                             disabled={$form.processing}
                         >
                             {#if $form.processing}SINGKRONISASI...{:else}SIMPAN

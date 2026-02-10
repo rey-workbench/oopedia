@@ -4,6 +4,7 @@
     import Card from "../../../components/ui/Card.svelte";
     import Button from "../../../components/ui/Button.svelte";
     import { router } from "@inertiajs/svelte";
+    import { Code, Puzzle, BookOpen, Ghost, ArrowRight } from "lucide-svelte";
 
     export let materials = [];
     export let isGuest = false;
@@ -51,9 +52,10 @@
                             <div
                                 class="w-full h-full bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center"
                             >
-                                <i
-                                    class="fas fa-code text-7xl text-white/10 group-hover:rotate-12 transition-transform"
-                                ></i>
+                                <Code
+                                    size={96}
+                                    class="text-white/10 group-hover:rotate-12 transition-transform"
+                                />
                             </div>
                         {/if}
                         <div
@@ -71,7 +73,7 @@
                             <div
                                 class="flex items-center gap-2 px-4 py-2 bg-blue-600 rounded-2xl text-white text-[10px] font-bold uppercase tracking-widest shadow-xl shadow-blue-500/20"
                             >
-                                <i class="fas fa-puzzle-piece"></i>
+                                <Puzzle size={14} />
                                 {material.total_questions} Tantangan
                             </div>
                         </div>
@@ -92,7 +94,7 @@
                                 <div
                                     class="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-xs text-slate-500 shadow-inner"
                                 >
-                                    <i class="fas fa-chalkboard-user"></i>
+                                    <BookOpen size={14} />
                                 </div>
                                 <span
                                     class="text-[10px] font-bold uppercase tracking-widest"
@@ -110,7 +112,7 @@
                                 <div
                                     class="w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-amber-200"
                                 >
-                                    <i class="fas fa-ghost"></i>
+                                    <Ghost size={24} />
                                 </div>
                                 <div>
                                     <span
@@ -136,7 +138,7 @@
                                 variant="primary"
                                 class="w-full"
                                 size="lg"
-                                icon="fas fa-arrow-right"
+                                icon={ArrowRight}
                                 data-intro="Klik tombol ini untuk masuk ke dalam modul dan melihat materi serta tantangan di dalamnya."
                                 data-step="7"
                             >
