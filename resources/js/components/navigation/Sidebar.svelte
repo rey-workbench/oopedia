@@ -33,11 +33,6 @@
     }
 
     function toggleSidebar() {
-        // Dispatch event or strictly control via parent,
-        // but for now relying on parent to handle overlay logic or local toggle
-        // A simple global custom event or prop callback would work.
-        // Let's assume a prop for class toggling is passed or we emit.
-        // For direct port, we might use a dispatcher.
         const event = new CustomEvent("toggle-sidebar");
         window.dispatchEvent(event);
     }
@@ -45,23 +40,20 @@
 
 <aside
     id="sidebar"
-    class="fixed left-0 top-0 z-50 h-screen w-72 transition-transform duration-500 overflow-y-auto
-  {isAdminRole
-        ? 'glass-dark border-r border-white/5'
-        : 'glass border-r border-slate-100'}
+    class="fixed left-0 top-0 z-50 h-screen w-64 transition-transform duration-500 overflow-y-auto glass border-r border-slate-100
   {showSidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}"
 >
     <div
-        class="px-8 py-10 flex items-center justify-between"
+        class="px-6 py-6 flex items-center justify-between"
         data-intro="Ini adalah Logo OOPEDIA. Kamu bisa kembali ke dashboard dengan mengklik logo ini."
         data-step="1"
     >
         <Link
             href={isAdminRole ? "/admin/dashboard" : "/mahasiswa/dashboard"}
-            class="flex items-center gap-4 group"
+            class="flex items-center gap-3 group"
         >
             <div
-                class="w-10 h-10 bg-white rounded-2xl flex items-center justify-center shadow-lg p-2 group-hover:rotate-12 transition-transform"
+                class="w-8 h-8 bg-white rounded-xl flex items-center justify-center shadow-lg p-1.5 group-hover:rotate-12 transition-transform"
             >
                 <img
                     src="/images/logo.png"
@@ -69,25 +61,21 @@
                     class="w-full h-auto"
                 />
             </div>
-            <span
-                class="text-2xl font-bold tracking-widest {isAdminRole
-                    ? 'text-white'
-                    : 'text-slate-900'}">OOPEDIA</span
+            <span class="text-lg font-bold tracking-widest text-slate-900"
+                >OOPEDIA</span
             >
         </Link>
         <button
             on:click={toggleSidebar}
             aria-label="Close sidebar"
-            class="lg:hidden p-2 rounded-xl {isAdminRole
-                ? 'text-slate-400 hover:text-white bg-slate-800'
-                : 'text-slate-400 hover:text-slate-900 bg-slate-100'}"
+            class="lg:hidden p-2 rounded-xl text-slate-400 hover:text-slate-900 bg-slate-100"
         >
             <i class="fas fa-xmark"></i>
         </button>
     </div>
 
     <nav
-        class="px-5 space-y-10 pb-10"
+        class="px-5 space-y-6 pb-6"
         data-intro="Gunakan menu navigasi ini untuk menjelajahi fitur-fitur yang tesedia di OOPEDIA."
         data-step="2"
     >
@@ -96,15 +84,15 @@
                 <div
                     class="px-4 text-[10px] font-bold uppercase tracking-tight text-slate-500 flex items-center gap-3"
                 >
-                    <span class="w-2 h-0.5 bg-indigo-500/50"></span>
+                    <span class="w-2 h-0.5 bg-blue-500/50"></span>
                     Utama
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
                         href="/admin/dashboard"
-                        icon="fas fa-chart-line"
+                        icon={LayoutDashboard}
                         active={isActive("/admin/dashboard")}
-                        isAdmin={true}>Dashboard</SidebarLink
+                        >Dashboard</SidebarLink
                     >
                 </div>
             </div>
@@ -113,21 +101,21 @@
                 <div
                     class="px-4 text-[10px] font-bold uppercase tracking-tight text-slate-500 flex items-center gap-3"
                 >
-                    <span class="w-2 h-0.5 bg-indigo-500/50"></span>
+                    <span class="w-2 h-0.5 bg-blue-500/50"></span>
                     Kurikulum
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
                         href="/admin/materials"
-                        icon="fas fa-book"
+                        icon={BookOpen}
                         active={$page.url.startsWith("/admin/materials")}
-                        isAdmin={true}>Kelola Materi</SidebarLink
+                        >Kelola Materi</SidebarLink
                     >
                     <SidebarLink
                         href="/admin/questions"
-                        icon="fas fa-vial"
+                        icon={SquareActivity}
                         active={$page.url.startsWith("/admin/questions")}
-                        isAdmin={true}>Kelola Soal</SidebarLink
+                        >Kelola Soal</SidebarLink
                     >
                 </div>
             </div>
@@ -136,34 +124,34 @@
                 <div
                     class="px-4 text-[10px] font-bold uppercase tracking-tight text-slate-500 flex items-center gap-3"
                 >
-                    <span class="w-2 h-0.5 bg-indigo-500/50"></span>
+                    <span class="w-2 h-0.5 bg-blue-500/50"></span>
                     Manajemen
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
                         href="/admin/students"
-                        icon="fas fa-user-graduate"
+                        icon={GraduationCap}
                         active={$page.url.startsWith("/admin/students")}
-                        isAdmin={true}>Data Mahasiswa</SidebarLink
+                        >Data Mahasiswa</SidebarLink
                     >
                     {#if userRole === 1}
                         <SidebarLink
                             href="/admin/users"
-                            icon="fas fa-users-gear"
+                            icon={Settings}
                             active={$page.url.startsWith("/admin/users")}
-                            isAdmin={true}>Daftar Admin</SidebarLink
+                            >Daftar Admin</SidebarLink
                         >
                     {/if}
                     <SidebarLink
                         href="/admin/ueq"
-                        icon="fas fa-poll-h"
+                        icon={MessageSquareQuote}
                         active={$page.url.startsWith("/admin/ueq")}
-                        isAdmin={true}>Survey UEQ</SidebarLink
+                        >Survey UEQ</SidebarLink
                     >
                 </div>
             </div>
 
-            <div class="space-y-6 pt-10 border-t border-slate-800/50">
+            <div class="space-y-6 pt-10 border-t border-slate-100">
                 <div
                     class="px-4 text-[10px] font-bold uppercase tracking-tight text-slate-500 flex items-center gap-3"
                 >
@@ -174,12 +162,16 @@
                     <form on:submit|preventDefault={logout}>
                         <button
                             type="submit"
-                            class="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold tracking-tight transition-all duration-300 group text-slate-500 hover:text-rose-500 hover:bg-slate-800/50"
+                            class="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold tracking-tight transition-all duration-300 group text-slate-500 hover:text-rose-600 hover:bg-rose-50"
                         >
                             <div
-                                class="w-8 h-8 rounded-xl flex items-center justify-center bg-slate-800 group-hover:bg-rose-500/20 transition-colors duration-300"
+                                class="w-8 h-8 rounded-xl flex items-center justify-center bg-gray-100 group-hover:bg-rose-100 transition-colors duration-300"
                             >
-                                <svelte:component this={LogOut} size={18} strokeWidth={2.5} />
+                                <svelte:component
+                                    this={LogOut}
+                                    size={18}
+                                    strokeWidth={2.5}
+                                />
                             </div>
                             <span class="flex-1 text-left">Keluar Sistem</span>
                         </button>
@@ -197,13 +189,13 @@
                 <div class="space-y-2">
                     <SidebarLink
                         href="/mahasiswa/dashboard"
-                        icon="fas fa-shapes"
+                        icon={LayoutDashboard}
                         active={$page.url.startsWith("/mahasiswa/dashboard")}
                         >Dashboard</SidebarLink
                     >
                     <SidebarLink
                         href="/mahasiswa/materials"
-                        icon="fas fa-book-open-reader"
+                        icon={Shapes}
                         active={($page.url.startsWith("/mahasiswa/materials") ||
                             $page.url.startsWith("/mahasiswa/submaterials")) &&
                             !$page.url.includes("/questions")}
@@ -212,7 +204,7 @@
                     </SidebarLink>
                     <SidebarLink
                         href="/mahasiswa/materials/questions"
-                        icon="fas fa-vial-circle-check"
+                        icon={SquareActivity}
                         active={$page.url.includes("/materials/questions")}
                         >Latihan Soal</SidebarLink
                     >
@@ -229,7 +221,7 @@
                 <div class="space-y-2">
                     <SidebarLink
                         href="/mahasiswa/leaderboard"
-                        icon="fas fa-trophy"
+                        icon={Trophy}
                         active={$page.url.startsWith("/mahasiswa/leaderboard")}
                         >Leaderboard</SidebarLink
                     >
@@ -246,7 +238,7 @@
                 <div class="space-y-2">
                     <SidebarLink
                         href="/mahasiswa/profile"
-                        icon="fas fa-user-astronaut"
+                        icon={UserRound}
                         active={$page.url.startsWith("/mahasiswa/profile")}
                         >Profil Saya</SidebarLink
                     >
@@ -269,7 +261,11 @@
                             <div
                                 class="w-8 h-8 rounded-xl flex items-center justify-center bg-gray-100 group-hover:bg-rose-100 transition-colors duration-300"
                             >
-                                <svelte:component this={LogOut} size={18} strokeWidth={2.5} />
+                                <svelte:component
+                                    this={LogOut}
+                                    size={18}
+                                    strokeWidth={2.5}
+                                />
                             </div>
                             <span class="flex-1 text-left">Keluar Sistem</span>
                         </button>

@@ -24,7 +24,9 @@
     class="bg-white rounded-3xl p-6 shadow-xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300"
 >
     <div
-        class={`absolute top-0 right-0 p-4 opacity-10 ${variants[variant].replace("bg-", "text-")}`}
+        class={`absolute top-0 right-0 p-4 opacity-10 ${(
+            variants[variant] || variants.primary
+        ).replace("bg-", "text-")}`}
     >
         {#if typeof icon === "string"}
             <i
@@ -41,7 +43,9 @@
 
     <div class="relative z-10">
         <div
-            class={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 glass shadow-sm ${iconVariants[variant]}`}
+            class={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 glass shadow-sm ${
+                iconVariants[variant] || iconVariants.primary
+            }`}
         >
             {#if typeof icon === "string"}
                 <i class={`${icon} text-xl`}></i>
@@ -64,7 +68,12 @@
         {#if footer}
             <div class="flex items-center gap-2">
                 <div
-                    class={`w-1.5 h-1.5 rounded-full ${variants[variant].replace("bg-", "bg-").split(" ")[0].replace("50", "500")}`}
+                    class={`w-1.5 h-1.5 rounded-full ${(
+                        variants[variant] || variants.primary
+                    )
+                        .replace("bg-", "bg-")
+                        .split(" ")[0]
+                        .replace("50", "500")}`}
                 ></div>
                 <p
                     class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"

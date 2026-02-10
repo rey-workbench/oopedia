@@ -12,31 +12,31 @@
     export { className as class };
 
     const baseClasses =
-        "inline-flex items-center justify-center font-bold tracking-tight transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:pointer-events-none rounded-2xl";
+        "inline-flex items-center justify-center font-bold tracking-tight transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:pointer-events-none rounded-xl";
 
     const variants = {
         primary:
-            "bg-slate-900 text-white shadow-xl shadow-slate-200/50 hover:bg-blue-600 hover:shadow-blue-600/20",
+            "bg-slate-900 text-white shadow-lg shadow-slate-200/50 hover:bg-blue-600 hover:shadow-blue-600/20",
         secondary:
             "bg-white text-slate-900 border-2 border-slate-100 hover:border-blue-600 hover:text-blue-600 shadow-sm",
         gradient:
-            "bg-gradient-to-tr from-primary-600 to-primary-400 text-white shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 hover:-translate-y-0.5",
+            "bg-gradient-to-tr from-primary-600 to-primary-400 text-white shadow-md shadow-primary-500/25 hover:shadow-primary-500/40 hover:-translate-y-0.5",
         glass: "glass text-primary-700 hover:bg-white/50 shadow-sm hover:shadow-md",
-        danger: "bg-rose-500 text-white shadow-xl shadow-rose-500/20 hover:bg-rose-600",
+        danger: "bg-rose-500 text-white shadow-lg shadow-rose-500/20 hover:bg-rose-600",
         success:
-            "bg-emerald-500 text-white shadow-xl shadow-emerald-500/20 hover:bg-emerald-600",
+            "bg-emerald-500 text-white shadow-lg shadow-emerald-500/20 hover:bg-emerald-600",
         warning:
-            "bg-amber-400 text-amber-950 shadow-xl shadow-amber-400/20 hover:bg-amber-500",
+            "bg-amber-400 text-amber-950 shadow-lg shadow-amber-400/20 hover:bg-amber-500",
         ghost: "text-slate-500 hover:text-blue-600 hover:bg-blue-50",
         outline:
             "bg-transparent border-2 border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white",
     };
 
     const sizes = {
-        sm: "px-5 py-2.5 text-[11px]",
-        md: "px-8 py-3.5 text-xs",
-        lg: "px-10 py-5 text-sm",
-        xl: "px-12 py-6 text-base",
+        sm: "px-4 py-2 text-[10px]",
+        md: "px-6 py-2.5 text-xs",
+        lg: "px-8 py-3.5 text-sm",
+        xl: "px-10 py-4 text-base",
     };
 
     $: classes = `${baseClasses} ${variants[variant] || variants.primary} ${sizes[size] || sizes.md} ${className}`;

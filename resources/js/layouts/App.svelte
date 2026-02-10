@@ -57,7 +57,7 @@
 </svelte:head>
 
 <div
-    class="relative flex min-h-screen bg-gray-50 font-sans text-slate-900 antialiased"
+    class="relative flex min-h-screen bg-gray-50 font-sans text-slate-900 antialiased overflow-x-hidden"
 >
     {#if showSidebarRender}
         <Sidebar showSidebar={showMobileSidebar} />
@@ -67,7 +67,7 @@
                 role="button"
                 tabindex="0"
                 aria-label="Close sidebar"
-                class="fixed inset-0 z-40 bg-gray-900/50 backdrop-blur-sm lg:hidden transition-opacity duration-300"
+                class="fixed inset-0 z-[45] bg-gray-900/50 backdrop-blur-sm lg:hidden transition-opacity duration-300"
                 on:click={toggleSidebar}
                 on:keydown={(e) => e.key === "Escape" && toggleSidebar()}
             ></div>

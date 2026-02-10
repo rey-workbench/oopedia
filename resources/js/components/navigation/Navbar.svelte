@@ -23,7 +23,7 @@
 <nav
     class="sticky top-0 z-40 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 sm:px-6 lg:px-8"
 >
-    <div class="flex h-20 items-center justify-between">
+    <div class="flex h-16 items-center justify-between">
         <div class="flex items-center gap-4">
             <button
                 on:click={toggleSidebar}

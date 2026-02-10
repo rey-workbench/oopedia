@@ -2,12 +2,12 @@
     export let variant = "default";
     export let shadow = true;
     export let hover = true;
-    export let padding = "p-8";
+    export let padding = "p-6";
     let className = "";
     export { className as class }; // support custom classes
 
     const baseClasses =
-        "rounded-[2.5rem] transition-all duration-500 overflow-hidden";
+        "rounded-2xl transition-all duration-300 overflow-hidden";
 
     $: variantClasses =
         variant === "glass" ? "glass" : "bg-white border border-slate-100";
@@ -23,7 +23,7 @@
 <div class={classes} {...$$restProps}>
     {#if $$slots.header}
         <div
-            class="px-8 py-6 border-b border-slate-50 flex items-center justify-between"
+            class="px-6 py-4 border-b border-slate-50 flex items-center justify-between"
         >
             <div class="w-full">
                 <slot name="header" />
@@ -36,7 +36,7 @@
     </div>
 
     {#if $$slots.footer}
-        <div class="px-8 py-6 bg-slate-50 border-t border-slate-100">
+        <div class="px-6 py-4 bg-slate-50 border-t border-slate-100">
             <slot name="footer" />
         </div>
     {/if}

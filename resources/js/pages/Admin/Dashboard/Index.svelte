@@ -154,7 +154,7 @@
         />
 
         <!-- Main Stats -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <StatCard
                 title="Total Mahasiswa"
                 value={totalStudents}
@@ -186,10 +186,10 @@
         </div>
 
         <!-- Analytics Section -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Progress Distribution Chart -->
             <div
-                class="bg-white/50 backdrop-blur-xl rounded-[2.5rem] p-0 shadow-xl border border-slate-100 relative overflow-hidden"
+                class="bg-white/50 backdrop-blur-xl rounded-2xl p-0 shadow-xl border border-slate-100 relative overflow-hidden"
             >
                 <div
                     class="flex items-center justify-between w-full px-8 py-6 bg-white/80 border-b border-slate-50"
@@ -222,7 +222,7 @@
 
             <!-- Module Performance Radar Chart -->
             <div
-                class="bg-white/50 backdrop-blur-xl rounded-[2.5rem] p-0 shadow-xl border border-slate-100 relative overflow-hidden"
+                class="bg-white/50 backdrop-blur-xl rounded-2xl p-0 shadow-xl border border-slate-100 relative overflow-hidden"
             >
                 <div
                     class="flex items-center justify-between w-full px-8 py-6 bg-white/80 border-b border-slate-50"
@@ -254,7 +254,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Top Students Table -->
             <div class="lg:col-span-2">
                 <Card
@@ -277,90 +277,94 @@
                         >
                     </div>
 
-                    <table class="w-full text-left">
-                        <thead>
-                            <tr>
-                                <th
-                                    class="p-6 text-xs font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50"
-                                    >Identitas Subjek</th
-                                >
-                                <th
-                                    class="p-6 text-center text-xs font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50"
-                                    >Jumlah Evaluasi</th
-                                >
-                                <th
-                                    class="p-6 text-center text-xs font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50"
-                                    >Progres Sinkronisasi</th
-                                >
-                                <th
-                                    class="p-6 text-right text-xs font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50"
-                                    >Aksi</th
-                                >
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {#each studentProgress as student (student.id)}
-                                <tr
-                                    class="group hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
-                                >
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center gap-4">
-                                            <div
-                                                class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold shadow-lg shadow-slate-200 uppercase text-xs"
-                                            >
-                                                {student.name.charAt(0)}
-                                            </div>
-                                            <div>
-                                                <div
-                                                    class="font-bold text-slate-900 tracking-widest leading-none mb-1"
-                                                >
-                                                    {student.name}
-                                                </div>
-                                                <div
-                                                    class="text-[9px] font-bold text-slate-400 uppercase tracking-widest"
-                                                >
-                                                    {student.email}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 text-center">
-                                        <span
-                                            class="text-sm font-bold text-slate-900"
-                                            >{student.completed_questions}</span
-                                        >
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div
-                                            class="flex flex-col gap-2 w-32 mx-auto"
-                                        >
-                                            <div
-                                                class="flex justify-between text-[8px] font-bold uppercase tracking-widest text-slate-400"
-                                            >
-                                                <span>Progres</span>
-                                                <span
-                                                    >{student.materials_progress}%</span
-                                                >
-                                            </div>
-                                            <ProgressBar
-                                                value={student.materials_progress}
-                                                size="xs"
-                                                color="bg-blue-600"
-                                            />
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 text-right">
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            href={`/admin/students/${student.id}/progress`}
-                                            icon="fas fa-microscope"
-                                        />
-                                    </td>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr>
+                                    <th
+                                        class="p-6 text-xs font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50"
+                                        >Identitas Subjek</th
+                                    >
+                                    <th
+                                        class="p-6 text-center text-xs font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50"
+                                        >Jumlah Evaluasi</th
+                                    >
+                                    <th
+                                        class="p-6 text-center text-xs font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50"
+                                        >Progres Sinkronisasi</th
+                                    >
+                                    <th
+                                        class="p-6 text-right text-xs font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50"
+                                        >Aksi</th
+                                    >
                                 </tr>
-                            {/each}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {#each studentProgress as student (student.id)}
+                                    <tr
+                                        class="group hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
+                                    >
+                                        <td class="px-6 py-4">
+                                            <div
+                                                class="flex items-center gap-4"
+                                            >
+                                                <div
+                                                    class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold shadow-lg shadow-slate-200 uppercase text-xs"
+                                                >
+                                                    {student.name.charAt(0)}
+                                                </div>
+                                                <div>
+                                                    <div
+                                                        class="font-bold text-slate-900 tracking-widest leading-none mb-1"
+                                                    >
+                                                        {student.name}
+                                                    </div>
+                                                    <div
+                                                        class="text-[9px] font-bold text-slate-400 uppercase tracking-widest"
+                                                    >
+                                                        {student.email}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            <span
+                                                class="text-sm font-bold text-slate-900"
+                                                >{student.completed_questions}</span
+                                            >
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div
+                                                class="flex flex-col gap-2 w-32 mx-auto"
+                                            >
+                                                <div
+                                                    class="flex justify-between text-[8px] font-bold uppercase tracking-widest text-slate-400"
+                                                >
+                                                    <span>Progres</span>
+                                                    <span
+                                                        >{student.materials_progress}%</span
+                                                    >
+                                                </div>
+                                                <ProgressBar
+                                                    value={student.materials_progress}
+                                                    size="xs"
+                                                    color="bg-blue-600"
+                                                />
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-right">
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                href={`/admin/students/${student.id}/progress`}
+                                                icon="fas fa-microscope"
+                                            />
+                                        </td>
+                                    </tr>
+                                {/each}
+                            </tbody>
+                        </table>
+                    </div>
                 </Card>
             </div>
 
@@ -423,7 +427,7 @@
             >
                 {#each recentProgress as progress}
                     <div
-                        class="relative p-6 rounded-[2.5rem] bg-slate-50 border border-slate-100 group hover:bg-white transition-colors"
+                        class="relative p-6 rounded-2xl bg-slate-50 border border-slate-100 group hover:bg-white transition-colors"
                     >
                         <div class="absolute top-6 right-6">
                             <Badge
