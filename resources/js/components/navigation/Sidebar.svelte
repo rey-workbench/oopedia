@@ -40,7 +40,7 @@
 
 <aside
     id="sidebar"
-    class="fixed left-0 top-0 z-50 h-screen w-64 transition-transform duration-500 overflow-y-auto glass border-r border-slate-100
+    class="fixed left-0 top-0 z-50 h-screen w-64 transition-transform duration-500 overflow-y-auto glass border-r border-slate-100 no-scrollbar
   {showSidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}"
 >
     <div

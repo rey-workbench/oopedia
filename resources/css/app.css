@@ -44,6 +44,15 @@
   box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.1);
 }
 
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 
 /* Intro.js Custom Styling */
 .custom-tour {
