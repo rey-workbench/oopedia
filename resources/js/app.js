@@ -8,7 +8,18 @@ import '../css/app.css';
 createInertiaApp({
     resolve: (name) => {
         const pages = import.meta.glob("./pages/**/*.svelte");
-        const page = pages[`./pages/${name}.svelte`];
+        let path = `./pages/${name}/+page.svelte`;
+
+        if (!pages[path] && name.endsWith('/Index')) {
+            path = `./pages/${name.replace(/\/Index$/, '')}/+page.svelte`;
+        }
+
+        if (!pages[path]) {
+            path = `./pages/${name}.svelte`;
+        }
+
+        const page = pages[path];
+
         if (!page) {
             throw new Error(`Component "${name}" not found.`);
         }
