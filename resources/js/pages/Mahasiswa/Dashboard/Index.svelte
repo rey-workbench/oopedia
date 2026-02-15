@@ -37,10 +37,10 @@
             class="relative overflow-hidden rounded-[3rem] bg-slate-900 p-12 text-white shadow-2xl shadow-slate-200"
         >
             <div
-                class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-600/20 to-transparent"
+                class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-indigo-600/20 to-transparent"
             ></div>
             <div
-                class="absolute -bottom-24 -right-24 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px]"
+                class="absolute -bottom-24 -right-24 w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px]"
             ></div>
 
             <div
@@ -58,7 +58,7 @@
 
                 <div class="text-center md:text-left">
                     <p
-                        class="text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-3"
+                        class="text-[10px] font-bold uppercase tracking-widest text-indigo-400 mb-3"
                     >
                         Selamat Datang Kembali
                     </p>

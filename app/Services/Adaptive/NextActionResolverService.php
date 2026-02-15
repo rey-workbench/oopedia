@@ -5,6 +5,8 @@ namespace App\Services\Adaptive;
 use App\Models\Material;
 use App\Models\Question;
 use App\Contracts\Services\QuestionServiceInterface;
+use App\Contracts\Services\ProgressServiceInterface;
+use App\Contracts\Repositories\QuestionRepositoryInterface;
 
 /**
  * Service to resolve adaptive next action commands into URLs and metadata.
@@ -12,13 +14,15 @@ use App\Contracts\Services\QuestionServiceInterface;
 class NextActionResolverService
 {
     public function __construct(
-        protected QuestionServiceInterface $questionService
+        protected QuestionServiceInterface $questionService,
+        protected ProgressServiceInterface $progressService,
+        protected QuestionRepositoryInterface $questionRepo
     ) {}
 
     /**
      * Resolve dynamic next action command into URL and metadata.
      */
-    public function resolve(string $actionCommand, Material $material, Question $question): array
+    public function resolve(string $actionCommand, Material $material, Question $question, ?int $userId = null): array
     {
         return match ($actionCommand) {
             'STUDY_MATERIAL' => [
@@ -26,8 +30,9 @@ class NextActionResolverService
                 'url' => route('mahasiswa.materials.show', $material->id),
                 'type' => 'material'
             ],
-            'REDUCE_DIFFICULTY' => $this->reduceDifficulty($material, $question),
-            'INCREASE_DIFFICULTY' => $this->increaseDifficulty($material),
+            'REDUCE_DIFFICULTY' => $this->reduceDifficulty($material, $question, $userId),
+            'INCREASE_DIFFICULTY' => $this->increaseDifficulty($material, $userId),
+            'NEXT_MATERIAL' => $this->jumpToNextMaterial($material),
             'FINISH_MATERIAL' => [
                 'label' => 'Selesaikan Modul',
                 'url' => route('mahasiswa.dashboard'),
@@ -51,39 +56,55 @@ class NextActionResolverService
         };
     }
 
-    protected function reduceDifficulty(Material $material, Question $question): array
+    protected function reduceDifficulty(Material $material, Question $question, ?int $userId = null): array
     {
         $hasBeginner = $this->questionService->existsByMaterialAndDifficulty($material->id, 'beginner');
         
-        // Store difficulty preference in session
-        if ($hasBeginner) {
+        // Check if there are unanswered beginner questions
+        $hasUnansweredBeginner = false;
+        if ($hasBeginner && $userId) {
+            $answeredIds = $this->progressService->getAnsweredQuestionIds($userId, $material->id);
+            $beginnerQuestions = $this->questionRepo->getByMaterialAndDifficulty($material->id, 'beginner');
+            $hasUnansweredBeginner = $beginnerQuestions->whereNotIn('id', $answeredIds->toArray())->isNotEmpty();
+        }
+        
+        // Store difficulty preference in session only if there are unanswered questions
+        if ($hasUnansweredBeginner) {
             session(['quiz_difficulty' => 'beginner']);
         }
         
         return [
-            'label' => $hasBeginner ? 'Coba Soal Pemula' : 'Ulas Materi Dasar',
-            'url' => $hasBeginner 
+            'label' => $hasUnansweredBeginner ? 'Coba Soal Pemula' : 'Ulas Materi Dasar',
+            'url' => $hasUnansweredBeginner 
                 ? route('mahasiswa.materials.questions.show', ['material' => $material->id])
                 : route('mahasiswa.materials.show', $material->id),
-            'type' => $hasBeginner ? 'question' : 'material'
+            'type' => $hasUnansweredBeginner ? 'question' : 'material'
         ];
     }
 
-    protected function increaseDifficulty(Material $material): array
+    protected function increaseDifficulty(Material $material, ?int $userId = null): array
     {
         $hasHard = $this->questionService->existsByMaterialAndDifficulty($material->id, 'hard');
         
-        // Store difficulty preference in session
-        if ($hasHard) {
+        // Check if there are unanswered hard questions
+        $hasUnansweredHard = false;
+        if ($hasHard && $userId) {
+            $answeredIds = $this->progressService->getAnsweredQuestionIds($userId, $material->id);
+            $hardQuestions = $this->questionRepo->getByMaterialAndDifficulty($material->id, 'hard');
+            $hasUnansweredHard = $hardQuestions->whereNotIn('id', $answeredIds->toArray())->isNotEmpty();
+        }
+        
+        // Store difficulty preference in session only if there are unanswered questions
+        if ($hasUnansweredHard) {
             session(['quiz_difficulty' => 'hard']);
         }
         
         return [
-            'label' => $hasHard ? 'Tantangan Menantang' : 'Ulas Materi Lagi',
-            'url' => $hasHard
+            'label' => $hasUnansweredHard ? 'Tantangan Menantang' : 'Ulas Materi Lagi',
+            'url' => $hasUnansweredHard
                 ? route('mahasiswa.materials.questions.show', ['material' => $material->id])
                 : route('mahasiswa.materials.show', $material->id),
-            'type' => $hasHard ? 'question' : 'material'
+            'type' => $hasUnansweredHard ? 'question' : 'material'
         ];
     }
 
@@ -104,6 +125,29 @@ class NextActionResolverService
                 ? route('mahasiswa.submaterials.show', ['material' => $material->id, 'submaterial' => $subMaterial->id])
                 : route('mahasiswa.materials.show', $material->id),
             'type' => 'material'
+        ];
+    }
+
+    /**
+     * Jump to next material in sequence (accelerated jump / fast-track).
+     */
+    protected function jumpToNextMaterial(Material $currentMaterial): array
+    {
+        $nextMaterial = $currentMaterial->getNextMaterial();
+
+        if ($nextMaterial) {
+            return [
+                'label' => 'Lanjut ke: ' . $nextMaterial->title,
+                'url' => route('mahasiswa.materials.show', $nextMaterial->id),
+                'type' => 'material'
+            ];
+        }
+
+        // No more materials - completed all modules
+        return [
+            'label' => 'Selesai! Kembali ke Dashboard',
+            'url' => route('mahasiswa.dashboard'),
+            'type' => 'navigation'
         ];
     }
 }

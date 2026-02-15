@@ -90,13 +90,33 @@ class DashboardService implements DashboardServiceInterface
         $questionProgressPercentage = $configuredTotalQuestions > 0 ? round(($totalCorrectQuestions / $configuredTotalQuestions) * 100) : 0;
 
         // Get recent activities
-        $recentActivities = $this->progressRepo->getRecentActivities($userId, 5);
+        $recentActivities = $this->progressRepo->getRecentActivities($userId, 10);
 
         // Transform recent activities to add type
         $recentActivities = $recentActivities->map(function ($activity) {
             $activity->type = $this->determineActivityType($activity);
             return $activity;
         });
+        
+        // Deduplicate milestones and achievements by material to prevent spam
+        $seenMilestones = [];
+        $seenAchievements = [];
+        $recentActivities = $recentActivities->filter(function ($activity) use (&$seenMilestones, &$seenAchievements) {
+            if ($activity->type === 'milestone') {
+                $key = $activity->material_id . '_milestone';
+                if (in_array($key, $seenMilestones)) {
+                    return false; // Skip duplicate milestone for same material
+                }
+                $seenMilestones[] = $key;
+            } elseif ($activity->type === 'achievement') {
+                $key = $activity->material_id . '_achievement';
+                if (in_array($key, $seenAchievements)) {
+                    return false; // Skip duplicate achievement for same material
+                }
+                $seenAchievements[] = $key;
+            }
+            return true;
+        })->take(5)->values(); // Take only 5 after deduplication
 
         return [
             'totalMaterials' => $totalMaterials,
@@ -287,12 +307,17 @@ class DashboardService implements DashboardServiceInterface
 
     protected function determineActivityType($activity)
     {
+        // Achievement: completing 5 or more questions in a material
         if ($activity->total_correct >= 5) {
             return 'achievement';
-        } elseif ($activity->difficulty === 'hard' && $activity->is_correct) {
-            return 'milestone';
-        } else {
-            return 'progress';
         }
+        
+        // Milestone: FIRST TIME completing a hard question in this material
+        if ($activity->difficulty === 'hard' && $activity->is_correct && $activity->previous_hard_count === 0) {
+            return 'milestone';
+        }
+        
+        // Regular progress
+        return 'progress';
     }
 }

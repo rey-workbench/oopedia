@@ -12,5 +12,5 @@ interface QuestionListingServiceInterface
     
     public function getGuestAnsweredQuestionIds($materialId, $guestProgress = []);
     
-    public function getLevelProgress($material, $difficulty, $answeredQuestionIds);
+    public function getLevelProgress($material, $difficulty, $answeredQuestionIds, $isGuest = false);
 }

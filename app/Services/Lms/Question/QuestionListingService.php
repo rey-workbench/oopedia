@@ -27,7 +27,7 @@ class QuestionListingService implements QuestionListingServiceInterface
 
         $currentQuestion = $this->getCurrentQuestion($questions, $answeredQuestionIds);
         
-        $levelProgress = $this->getLevelProgress($material, $difficulty, $answeredQuestionIds);
+        $levelProgress = $this->getLevelProgress($material, $difficulty, $answeredQuestionIds, $isGuest);
 
         return [
             'material' => $material,
@@ -142,14 +142,8 @@ class QuestionListingService implements QuestionListingServiceInterface
             $totalFilteredQuestions = $questions->count();
         }
 
-        if ($difficulty === 'all') {
-            $beginnerShuffled = $questions->where('difficulty', 'beginner')->shuffle();
-            $mediumShuffled = $questions->where('difficulty', 'medium')->shuffle();
-            $hardShuffled = $questions->where('difficulty', 'hard')->shuffle();
-            $questions = $beginnerShuffled->concat($mediumShuffled)->concat($hardShuffled);
-        } else {
-            $questions = $questions->shuffle();
-        }
+        // Sequential progression: questions are presented in order, not shuffled
+        // This ensures consistency with the levels system where progress must be linear
 
         return [
             'questions' => $questions,
@@ -173,9 +167,22 @@ class QuestionListingService implements QuestionListingServiceInterface
         return $currentQuestion;
     }
 
-    public function getLevelProgress($material, $difficulty, $answeredQuestionIds)
+    public function getLevelProgress($material, $difficulty, $answeredQuestionIds, $isGuest = false)
     {
         $questions = $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty);
+        
+        // Apply guest filtering - same logic as getFilteredQuestions
+        if ($isGuest) {
+            if ($difficulty === 'all') {
+                $beginnerQuestions = $questions->where('difficulty', 'beginner')->take(3);
+                $mediumQuestions = $questions->where('difficulty', 'medium')->take(3);
+                $hardQuestions = $questions->where('difficulty', 'hard')->take(3);
+                $questions = $beginnerQuestions->concat($mediumQuestions)->concat($hardQuestions);
+            } else {
+                $questions = $questions->take(3);
+            }
+        }
+        
         $levels = [];
 
         foreach ($questions as $index => $question) {
@@ -186,10 +193,15 @@ class QuestionListingService implements QuestionListingServiceInterface
                 $status = 'completed';
             } elseif ($questionIndex === 1) {
                 $status = 'unlocked';
-            } elseif ($index > 0 && $answeredQuestionIds->contains($questions[$index - 1]->id)) {
-                $status = 'unlocked';
             } else {
-                $status = 'locked';
+                $allPreviousAnswered = true;
+                for ($i = 0; $i < $index; $i++) {
+                    if (!$answeredQuestionIds->contains($questions[$i]->id)) {
+                        $allPreviousAnswered = false;
+                        break;
+                    }
+                }
+                $status = $allPreviousAnswered ? 'unlocked' : 'locked';
             }
 
             $levels[] = [

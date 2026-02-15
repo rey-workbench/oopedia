@@ -122,7 +122,7 @@ class MaterialQuestionController extends Controller
             ? $this->questionListingService->getGuestAnsweredQuestionIds($material->id, $guestProgress)
             : $this->progressService->getAnsweredQuestionIds($userId, $material->id);
 
-        $levels = $this->questionListingService->getLevelProgress($material, $difficulty, $answeredQuestionIds);
+        $levels = $this->questionListingService->getLevelProgress($material, $difficulty, $answeredQuestionIds, $isGuest);
 
         return Inertia::render('Mahasiswa/Materials/Questions/Levels/Index', compact(
             'material',
@@ -325,7 +325,7 @@ class MaterialQuestionController extends Controller
         }
         
         // 7. Resolve next action
-        $nextActionData = $this->nextActionResolver->resolve($finalState['next_action'] ?? 'NEXT_QUESTION', $material, $question);
+        $nextActionData = $this->nextActionResolver->resolve($finalState['next_action'] ?? 'NEXT_QUESTION', $material, $question, $userId);
         
         return [
             'status' => $isCorrect ? 'success' : 'error',

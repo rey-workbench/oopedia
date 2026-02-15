@@ -16,9 +16,19 @@
         User,
         ShieldCheck,
         Mail,
+        Brain,
+        Eye,
+        Zap,
+        Trophy,
+        Target,
+        Flame,
+        CheckCircle,
+        XCircle,
+        Lightbulb,
     } from "lucide-svelte";
 
     export let user;
+    export let personalization = {};
 
     let form = useForm({
         name: user.name,
@@ -41,18 +51,6 @@
 
 <App title="Profil Mahasiswa">
     <div class="space-y-12">
-        <!-- Breadcrumb Navigation -->
-        <div class="flex items-center gap-3 text-sm">
-            <Link
-                href="/mahasiswa/dashboard"
-                class="text-slate-400 hover:text-blue-600 font-bold transition-colors"
-            >
-                <Home size={14} class="mr-1" /> Dashboard
-            </Link>
-            <ChevronRight size={12} class="text-slate-300" />
-            <span class="text-slate-900 font-bold">Profil Saya</span>
-        </div>
-
         <!-- Header -->
         <PageHeader
             title="Profil Saya"
@@ -76,10 +74,10 @@
             class="relative overflow-hidden rounded-[3rem] bg-slate-900 p-8 md:p-12 text-white shadow-2xl"
         >
             <div
-                class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-600/20 to-transparent"
+                class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-indigo-600/20 to-transparent"
             ></div>
             <div
-                class="absolute -bottom-24 -right-24 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px]"
+                class="absolute -bottom-24 -right-24 w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px]"
             ></div>
 
             <div
@@ -100,7 +98,7 @@
 
                 <div class="text-center md:text-left">
                     <p
-                        class="text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-2"
+                        class="text-[10px] font-bold uppercase tracking-widest text-indigo-400 mb-2"
                     >
                         MEMBER SINCE {new Date(user.created_at).getFullYear()}
                     </p>
@@ -115,18 +113,305 @@
                         <div
                             class="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-xs font-bold uppercase tracking-wider"
                         >
-                            <Mail size={14} class="text-blue-400" />
+                            <Mail size={14} class="text-indigo-400" />
                             {user.email}
                         </div>
                         <div
                             class="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-xs font-bold uppercase tracking-wider"
                         >
-                            <User size={14} class="text-blue-400" />
+                            <User size={14} class="text-indigo-400" />
                             Mahasiswa
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Personalization Section -->
+        <div class="space-y-8">
+            <h3
+                class="text-xl font-bold tracking-widest text-slate-900 uppercase"
+            >
+                Data Personalisasi Pembelajaran
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Learning Style Card -->
+                <Card
+                    padding="p-8"
+                    class="bg-gradient-to-br from-purple-50 to-white border-purple-100 shadow-lg shadow-purple-100/50"
+                >
+                    <div class="space-y-4">
+                        <div
+                            class="w-14 h-14 bg-purple-500 text-white rounded-[1.5rem] flex items-center justify-center shadow-xl shadow-purple-200"
+                        >
+                            {#if personalization.learning_style === "visual"}
+                                <Eye size={28} />
+                            {:else if personalization.learning_style === "auditory"}
+                                <Brain size={28} />
+                            {:else}
+                                <Zap size={28} />
+                            {/if}
+                        </div>
+                        <div>
+                            <p
+                                class="text-[9px] font-bold text-purple-400 uppercase tracking-widest mb-1"
+                            >
+                                Gaya Belajar
+                            </p>
+                            <p
+                                class="text-2xl font-bold text-purple-900 tracking-widest uppercase"
+                            >
+                                {personalization.learning_style || "Visual"}
+                            </p>
+                        </div>
+                    </div>
+                </Card>
+
+                <!-- Current Level Card -->
+                <Card
+                    padding="p-8"
+                    class="bg-gradient-to-br from-blue-50 to-white border-blue-100 shadow-lg shadow-blue-100/50"
+                >
+                    <div class="space-y-4">
+                        <div
+                            class="w-14 h-14 bg-blue-500 text-white rounded-[1.5rem] flex items-center justify-center shadow-xl shadow-blue-200"
+                        >
+                            <Trophy size={28} />
+                        </div>
+                        <div>
+                            <p
+                                class="text-[9px] font-bold text-blue-400 uppercase tracking-widest mb-1"
+                            >
+                                Level Saat Ini
+                            </p>
+                            <p
+                                class="text-2xl font-bold text-blue-900 tracking-widest uppercase"
+                            >
+                                {personalization.current_level || "Pemula"}
+                            </p>
+                            <p
+                                class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mt-2"
+                            >
+                                {personalization.global_xp || 0} XP
+                            </p>
+                        </div>
+                    </div>
+                </Card>
+
+                <!-- Accuracy Card -->
+                <Card
+                    padding="p-8"
+                    class="bg-gradient-to-br from-emerald-50 to-white border-emerald-100 shadow-lg shadow-emerald-100/50"
+                >
+                    <div class="space-y-4">
+                        <div
+                            class="w-14 h-14 bg-emerald-500 text-white rounded-[1.5rem] flex items-center justify-center shadow-xl shadow-emerald-200"
+                        >
+                            <Target size={28} />
+                        </div>
+                        <div>
+                            <p
+                                class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest mb-1"
+                            >
+                                Akurasi
+                            </p>
+                            <p
+                                class="text-2xl font-bold text-emerald-900 tracking-widest"
+                            >
+                                {personalization.accuracy || 0}%
+                            </p>
+                            <p
+                                class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mt-2"
+                            >
+                                {personalization.correct_count ||
+                                    0}/{personalization.total_questions_answered ||
+                                    0} Benar
+                            </p>
+                        </div>
+                    </div>
+                </Card>
+
+                <!-- Streak Card -->
+                <Card
+                    padding="p-8"
+                    class="bg-gradient-to-br from-orange-50 to-white border-orange-100 shadow-lg shadow-orange-100/50"
+                >
+                    <div class="space-y-4">
+                        <div
+                            class="w-14 h-14 bg-orange-500 text-white rounded-[1.5rem] flex items-center justify-center shadow-xl shadow-orange-200"
+                        >
+                            <Flame size={28} />
+                        </div>
+                        <div>
+                            <p
+                                class="text-[9px] font-bold text-orange-400 uppercase tracking-widest mb-1"
+                            >
+                                Streak
+                            </p>
+                            <p
+                                class="text-2xl font-bold text-orange-900 tracking-widest"
+                            >
+                                {personalization.current_streak || 0} 🔥
+                            </p>
+                            <p
+                                class="text-[10px] font-bold text-orange-400 uppercase tracking-widest mt-2"
+                            >
+                                Max: {personalization.max_streak || 0}
+                            </p>
+                        </div>
+                    </div>
+                </Card>
+            </div>
+
+            <!-- Detailed Stats -->
+            <Card
+                padding="p-8 md:p-12"
+                class="bg-gradient-to-br from-slate-50 to-white border-slate-100"
+            >
+                <h4
+                    class="text-sm font-bold text-slate-900 uppercase tracking-widest mb-8"
+                >
+                    Statistik Pembelajaran Detail
+                </h4>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Questions Answered -->
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center"
+                            >
+                                <CheckCircle size={24} />
+                            </div>
+                            <div>
+                                <p
+                                    class="text-[9px] font-bold text-slate-400 uppercase tracking-widest"
+                                >
+                                    Total Soal Dijawab
+                                </p>
+                                <p
+                                    class="text-3xl font-bold text-slate-900 tracking-widest"
+                                >
+                                    {personalization.total_questions_answered ||
+                                        0}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Correct Answers -->
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center"
+                            >
+                                <CheckCircle size={24} />
+                            </div>
+                            <div>
+                                <p
+                                    class="text-[9px] font-bold text-slate-400 uppercase tracking-widest"
+                                >
+                                    Jawaban Benar
+                                </p>
+                                <p
+                                    class="text-3xl font-bold text-emerald-600 tracking-widest"
+                                >
+                                    {personalization.correct_count || 0}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wrong Answers -->
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-12 h-12 bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center"
+                            >
+                                <XCircle size={24} />
+                            </div>
+                            <div>
+                                <p
+                                    class="text-[9px] font-bold text-slate-400 uppercase tracking-widest"
+                                >
+                                    Jawaban Salah
+                                </p>
+                                <p
+                                    class="text-3xl font-bold text-rose-600 tracking-widest"
+                                >
+                                    {personalization.wrong_count || 0}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="mt-8 pt-8 border-t border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-8"
+                >
+                    <!-- Hints Usage -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-10 h-10 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center"
+                            >
+                                <Lightbulb size={20} />
+                            </div>
+                            <div>
+                                <p
+                                    class="text-[9px] font-bold text-slate-400 uppercase tracking-widest"
+                                >
+                                    Hints Digunakan
+                                </p>
+                                <p
+                                    class="text-xl font-bold text-slate-900 tracking-widest"
+                                >
+                                    {personalization.hints_used_count || 0}
+                                </p>
+                            </div>
+                        </div>
+                        <div
+                            class="px-4 py-2 bg-amber-50 text-amber-600 rounded-xl border border-amber-100"
+                        >
+                            <p
+                                class="text-[10px] font-bold uppercase tracking-widest"
+                            >
+                                {personalization.hints_available || 3} Tersisa
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Fast Track Status -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-10 h-10 {personalization.fast_track_active
+                                    ? 'bg-purple-100 text-purple-600'
+                                    : 'bg-slate-100 text-slate-400'} rounded-xl flex items-center justify-center"
+                            >
+                                <Zap size={20} />
+                            </div>
+                            <div>
+                                <p
+                                    class="text-[9px] font-bold text-slate-400 uppercase tracking-widest"
+                                >
+                                    Status Fast Track
+                                </p>
+                                <p
+                                    class="text-xl font-bold {personalization.fast_track_active
+                                        ? 'text-purple-600'
+                                        : 'text-slate-400'} tracking-widest uppercase"
+                                >
+                                    {personalization.fast_track_active
+                                        ? "Aktif"
+                                        : "Tidak Aktif"}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Card>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">

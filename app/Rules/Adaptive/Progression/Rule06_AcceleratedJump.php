@@ -28,8 +28,8 @@ class Rule06_AcceleratedJump extends BaseAdaptiveRule
     {
         $state['fast_track_active'] = true;
         $state['global_xp'] = ($state['global_xp'] ?? 0) + 50; // Bonus XP
-        $state['next_action'] = 'INCREASE_DIFFICULTY';
-        $state['message'] = 'Luar biasa! Akurasi dan kecepatan Anda tinggi. Kami memberikan pertanyaan yang lebih menantang.';
+        $state['next_action'] = 'NEXT_MATERIAL';
+        $state['message'] = 'Luar biasa! Akurasi dan kecepatan Anda tinggi. Anda siap melanjutkan ke materi berikutnya.';
         
         return $state;
     }

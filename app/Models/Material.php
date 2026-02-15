@@ -63,4 +63,26 @@ class Material extends Model
     {
         return $query->where('module_id', $moduleId);
     }
+
+    // ==================== METHODS ====================
+
+    /**
+     * Get the next material in sequence (based on module_id).
+     */
+    public function getNextMaterial()
+    {
+        return self::where('module_id', '>', $this->module_id)
+            ->orderBy('module_id', 'asc')
+            ->first();
+    }
+
+    /**
+     * Get the previous material in sequence (based on module_id).
+     */
+    public function getPreviousMaterial()
+    {
+        return self::where('module_id', '<', $this->module_id)
+            ->orderBy('module_id', 'desc')
+            ->first();
+    }
 }

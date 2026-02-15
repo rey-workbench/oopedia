@@ -64,7 +64,8 @@ class QuestionRepository implements QuestionRepositoryInterface
             $query->where('difficulty', $difficulty);
         }
         
-        return $query->get();
+        // Order by ID for consistent sequential progression in levels system
+        return $query->orderBy('id')->get();
     }
 
     public function getFilteredQuestions($search = null, $difficulty = null, $materialId = null)

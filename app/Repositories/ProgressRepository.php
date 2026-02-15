@@ -44,15 +44,32 @@ class ProgressRepository implements ProgressRepositoryInterface
             ->orderBy('created_at', 'desc')
             ->take($limit)
             ->get()
-            ->map(function ($attempt) {
+            ->map(function ($attempt) use ($userId) {
+                $materialId = $attempt->question->material_id ?? 0;
+                $difficulty = $attempt->question->difficulty;
+                
+                // Count how many hard questions completed in this material BEFORE this attempt
+                $previousHardCount = 0;
+                if ($difficulty === 'hard') {
+                    $previousHardCount = QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
+                        ->where('quiz_attempts.user_id', $userId)
+                        ->where('questions.material_id', $materialId)
+                        ->where('questions.difficulty', 'hard')
+                        ->where('quiz_attempts.is_correct', true)
+                        ->where('quiz_attempts.created_at', '<', $attempt->created_at)
+                        ->distinct('quiz_attempts.question_id')
+                        ->count();
+                }
+                
                 return (object)[
                     'material_title' => $attempt->question->material->title ?? 'Unknown',
-                    'material_id' => $attempt->question->material_id ?? 0,
+                    'material_id' => $materialId,
                     'difficulty' => $attempt->question->difficulty,
                     'created_at' => $attempt->created_at,
                     'is_correct' => $attempt->is_correct,
+                    'previous_hard_count' => $previousHardCount,
                     // Total correct count calculation might be expensive per row, simplified here
-                    'total_correct' => $this->getMaterialCorrectCount($attempt->user_id, $attempt->question->material_id ?? 0)
+                    'total_correct' => $this->getMaterialCorrectCount($attempt->user_id, $materialId)
                 ];
             });
     }
