@@ -13,6 +13,7 @@ class QuizAttempt extends Model
         'user_id',
         'question_id',
         'answer_id',
+        'user_response',
         'is_correct',
         'score',
         'attempt_number',

@@ -17,14 +17,14 @@
     export let material = {};
 
     // Handling subMaterials properly if it comes as an array or object
-    $: subMaterials = material.sub_materials || [];
+    $: subMaterials = material.subMaterials || material.sub_materials || [];
 </script>
 
-<App title={material.title}>
+<App title={material?.title || "Material"}>
     <div class="space-y-12">
         <!-- Header Section -->
         <PageHeader
-            title={material.title}
+            title={material?.title || "Loading..."}
             subtitle="Kuasai konsep fondasi hingga tingkat lanjut Pemrograman Berorientasi Objek."
         >
             <div slot="actions">
@@ -47,9 +47,7 @@
                     <span
                         class="text-[10px] font-bold uppercase tracking-widest text-slate-500"
                     >
-                        {material.creator
-                            ? material.creator.name
-                            : "Admin System"}
+                        {material?.creator?.name || "Admin System"}
                     </span>
                 </div>
 
@@ -207,7 +205,7 @@
                  If simple text, use white-space: pre-wrap. If HTML, use {@html}. 
                  Blade used {!! nl2br(e($material->content)) !!} which escapes then converts nl to br.
                  So it's safe text with line breaks. -->
-                        {#each material.content.split("\n") as paragraph}
+                        {#each (material.content || "").split("\n") as paragraph}
                             <p class="mb-2">{paragraph}</p>
                         {/each}
                     </div>

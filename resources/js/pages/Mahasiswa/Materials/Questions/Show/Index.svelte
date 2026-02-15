@@ -132,7 +132,8 @@
         } catch (error) {
             console.error("Error submitting answer:", error);
             alert(
-                "Terjadi kesalahan saat memeriksa jawaban. Silakan coba lagi.",
+                error.response?.data?.message ||
+                    "Terjadi kesalahan saat memeriksa jawaban. Silakan coba lagi.",
             );
         } finally {
             isSubmitting = false;

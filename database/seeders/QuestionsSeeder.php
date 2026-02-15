@@ -10,413 +10,450 @@ class QuestionsSeeder extends Seeder
     public function run(): void
     {
         $questions = [
-            // ==================== Material 1: Introduction to OOP ====================
-            // Sub-material 1: What is OOP?
+            // ==================== Material 1: Pengenalan PBO ====================
+            // Sub-material 1: Apa itu PBO?
             [
+                'id' => 1,
                 'material_id' => 1,
                 'sub_material_id' => 1,
-                'question_text' => 'What is Object-Oriented Programming?',
+                'question_text' => 'Apa yang dimaksud dengan Pemrograman Berorientasi Objek (PBO)?',
                 'question_type' => 'radio_button',
                 'type' => 'teori',
                 'difficulty' => 'beginner',
-                'hint' => 'Think about a programming paradigm that uses objects and classes',
+                'hint' => 'Pikirkan tentang paradigma pemrograman yang menggunakan objek dan kelas',
                 'created_by' => 2,
             ],
             [
+                'id' => 2,
                 'material_id' => 1,
                 'sub_material_id' => 1,
-                'question_text' => 'What does OOP stand for?',
+                'question_text' => 'Apa kepanjangan dari OOP?',
                 'question_type' => 'radio_button',
                 'type' => 'teori',
                 'difficulty' => 'beginner',
-                'hint' => 'It\'s an acronym for a programming paradigm',
+                'hint' => 'Ini adalah akronim bahasa Inggris untuk PBO',
                 'created_by' => 2,
             ],
-            
-            // Sub-material 2: OOP Principles
+
+            // Sub-material 2: Prinsip-Prinsip PBO
             [
+                'id' => 3,
                 'material_id' => 1,
                 'sub_material_id' => 2,
-                'question_text' => 'Which of the following is NOT a principle of OOP?',
+                'question_text' => 'Manakah yang BUKAN merupakan prinsip dari PBO?',
                 'question_type' => 'radio_button',
                 'type' => 'teori',
                 'difficulty' => 'beginner',
-                'hint' => 'Remember the four main pillars: Encapsulation, Inheritance, Polymorphism, and Abstraction',
+                'hint' => 'Ingat empat pilar utama: Enkapsulasi, Pewarisan, Polimorfisme, dan Abstraksi',
                 'created_by' => 2,
             ],
             [
+                'id' => 4,
                 'material_id' => 1,
                 'sub_material_id' => 2,
-                'question_text' => 'OOP helps in organizing code by grouping related data and _____ together.',
+                'question_text' => 'PBO membantu mengorganisir kode dengan mengelompokkan data dan _____ yang terkait bersama-sama.',
                 'question_type' => 'fill_in_the_blank',
                 'type' => 'teori',
                 'difficulty' => 'beginner',
-                'hint' => 'What do we call the actions or behaviors in OOP?',
+                'hint' => 'Apa sebutan untuk tindakan atau perilaku dalam PBO?',
                 'created_by' => 2,
             ],
             [
+                'id' => 5,
                 'material_id' => 1,
                 'sub_material_id' => 2,
-                'question_text' => 'Which programming languages support OOP?',
+                'question_text' => 'Bahasa pemrograman mana yang mendukung PBO?',
                 'question_type' => 'radio_button',
                 'type' => 'teori',
                 'difficulty' => 'medium',
-                'hint' => 'Most modern programming languages support OOP',
+                'hint' => 'Sebagian besar bahasa pemrograman modern mendukung PBO',
                 'created_by' => 2,
             ],
             [
+                'id' => 6,
                 'material_id' => 1,
                 'sub_material_id' => 2,
-                'question_text' => 'The four main principles of OOP are: Encapsulation, Abstraction, Inheritance, and _____.',
+                'question_text' => 'Empat prinsip utama PBO adalah: Enkapsulasi, Abstraksi, Pewarisan, dan _____.',
                 'question_type' => 'fill_in_the_blank',
                 'type' => 'teori',
                 'difficulty' => 'medium',
-                'hint' => 'This principle allows objects to take many forms',
+                'hint' => 'Prinsip ini memungkinkan objek mengambil banyak bentuk',
                 'created_by' => 2,
             ],
-            
-            // ==================== Material 2: Classes and Objects ====================
-            // Sub-material 3: Understanding Classes
+
+            // ==================== Material 2: Kelas dan Objek ====================
+            // Sub-material 3: Memahami Kelas
             [
+                'id' => 7,
                 'material_id' => 2,
                 'sub_material_id' => 3,
-                'question_text' => 'What is a class in OOP?',
+                'question_text' => 'Apa itu kelas dalam PBO?',
                 'question_type' => 'radio_button',
                 'type' => 'teori',
                 'difficulty' => 'beginner',
-                'hint' => 'Think of it as a blueprint or template',
+                'hint' => 'Pikirkan tentang cetak biru atau template',
                 'created_by' => 2,
             ],
             [
+                'id' => 8,
                 'material_id' => 2,
                 'sub_material_id' => 3,
-                'question_text' => 'A class is a _____ for creating objects.',
+                'question_text' => 'Sebuah kelas adalah _____ untuk membuat objek.',
                 'question_type' => 'fill_in_the_blank',
                 'type' => 'teori',
                 'difficulty' => 'beginner',
-                'hint' => 'Think of architectural plans for building houses',
+                'hint' => 'Pikirkan tentang rencana arsitektur untuk membangun rumah',
                 'created_by' => 2,
             ],
-            
-            // Sub-material 4: Creating Objects
+
+            // Sub-material 4: Membuat Objek
             [
+                'id' => 9,
                 'material_id' => 2,
                 'sub_material_id' => 4,
-                'question_text' => 'What is an object in OOP?',
+                'question_text' => 'Apa itu objek dalam PBO?',
                 'question_type' => 'radio_button',
                 'type' => 'teori',
                 'difficulty' => 'beginner',
-                'hint' => 'It\'s an instance created from a class',
+                'hint' => 'Ini adalah perwujudan yang dibuat dari sebuah kelas',
                 'created_by' => 2,
             ],
             [
+                'id' => 10,
                 'material_id' => 2,
                 'sub_material_id' => 4,
-                'question_text' => 'Which keyword is used to create a new object in Java?',
+                'question_text' => 'Kata kunci mana yang digunakan untuk membuat objek baru di Java?',
                 'question_type' => 'radio_button',
                 'type' => 'sintaks',
                 'difficulty' => 'beginner',
-                'hint' => 'It\'s a three-letter keyword',
+                'hint' => 'Kata kunci bahasa Inggris yang berarti "baru"',
                 'created_by' => 2,
             ],
             [
+                'id' => 11,
                 'material_id' => 2,
                 'sub_material_id' => 4,
-                'question_text' => 'Arrange the steps to create and use an object: [zone], [zone], [zone]',
+                'question_text' => 'Urutkan langkah-langkah untuk membuat dan menggunakan objek: [zone], [zone], [zone]',
                 'question_type' => 'drag_and_drop',
                 'type' => 'sintaks',
                 'difficulty' => 'medium',
-                'hint' => 'First define, then create, finally use',
+                'hint' => 'Pertama definisikan, lalu buat, akhirnya gunakan',
                 'created_by' => 2,
             ],
             [
+                'id' => 12,
                 'material_id' => 2,
                 'sub_material_id' => 4,
-                'question_text' => 'Can a class have multiple objects?',
+                'question_text' => 'Dapatkah sebuah kelas memiliki banyak objek?',
                 'question_type' => 'radio_button',
                 'type' => 'teori',
                 'difficulty' => 'beginner',
-                'hint' => 'Think about how many houses can be built from one blueprint',
+                'hint' => 'Pikirkan tentang berapa banyak rumah yang bisa dibangun dari satu cetak biru',
                 'created_by' => 2,
             ],
-            
-            // Sub-material 5: Constructors and Methods
+
+            // Sub-material 5: Konstruktor dan Metode
             [
+                'id' => 13,
                 'material_id' => 2,
                 'sub_material_id' => 5,
-                'question_text' => 'What is a constructor?',
+                'question_text' => 'Apa itu konstruktor?',
                 'question_type' => 'radio_button',
                 'type' => 'teori',
                 'difficulty' => 'medium',
-                'hint' => 'It\'s a special method that initializes objects',
+                'hint' => 'Ini adalah metode khusus yang menginisialisasi objek',
                 'created_by' => 2,
             ],
             [
+                'id' => 14,
                 'material_id' => 2,
                 'sub_material_id' => 5,
-                'question_text' => 'The _____ method is called automatically when an object is created.',
+                'question_text' => 'Metode _____ dipanggil secara otomatis saat sebuah objek dibuat.',
                 'question_type' => 'fill_in_the_blank',
                 'type' => 'sintaks',
                 'difficulty' => 'medium',
-                'hint' => 'It has the same name as the class',
+                'hint' => 'Memiliki nama yang sama dengan kelasnya',
                 'created_by' => 2,
             ],
             [
+                'id' => 15,
                 'material_id' => 2,
                 'sub_material_id' => 5,
-                'question_text' => 'What are attributes in a class?',
+                'question_text' => 'Apa itu atribut dalam sebuah kelas?',
                 'question_type' => 'radio_button',
                 'type' => 'teori',
                 'difficulty' => 'medium',
-                'hint' => 'They represent the state or properties of an object',
+                'hint' => 'Mereka merepresentasikan status atau properti dari sebuah objek',
                 'created_by' => 2,
             ],
-            
-            // ==================== Material 3: Inheritance ====================
-            // Sub-material 6: Inheritance Basics
+
+            // ==================== Material 3: Pewarisan ====================
+            // Sub-material 6: Dasar-Dasar Pewarisan
             [
+                'id' => 16,
                 'material_id' => 3,
                 'sub_material_id' => 6,
-                'question_text' => 'What is inheritance in OOP?',
+                'question_text' => 'Apa itu pewarisan dalam PBO?',
                 'question_type' => 'radio_button',
                 'type' => 'teori',
                 'difficulty' => 'beginner',
-                'hint' => 'Think about how children inherit traits from parents',
+                'hint' => 'Pikirkan tentang bagaimana anak mewarisi sifat dari orang tua',
                 'created_by' => 2,
             ],
             [
+                'id' => 17,
                 'material_id' => 3,
                 'sub_material_id' => 6,
-                'question_text' => 'A class that inherits from another class is called a _____ class.',
+                'question_text' => 'Kelas yang mewarisi dari kelas lain disebut kelas _____.',
                 'question_type' => 'fill_in_the_blank',
                 'type' => 'teori',
                 'difficulty' => 'beginner',
-                'hint' => 'It\'s also called a derived or child class',
+                'hint' => 'Juga disebut sebagai subclass atau child class',
                 'created_by' => 2,
             ],
             [
+                'id' => 18,
                 'material_id' => 3,
                 'sub_material_id' => 6,
-                'question_text' => 'What is the parent class also known as?',
+                'question_text' => 'Kelas induk juga dikenal dengan sebutan apa?',
                 'question_type' => 'radio_button',
                 'type' => 'teori',
                 'difficulty' => 'beginner',
-                'hint' => 'It can be called base class or another term starting with "super"',
+                'hint' => 'Dapat disebut base class atau istilah lain yang dimulai dengan "super"',
                 'created_by' => 2,
             ],
-            
-            // Sub-material 7: Implementing Inheritance
+
+            // Sub-material 7: Mengimplementasikan Pewarisan
             [
+                'id' => 19,
                 'material_id' => 3,
                 'sub_material_id' => 7,
-                'question_text' => 'What keyword is used in Java to inherit from a parent class?',
-                'question_type' => 'fill_in_the_blank',
-                'type' => 'sintaks',
-                'difficulty' => 'beginner',
-                'hint' => 'It\'s a keyword that means "to expand" or "to enlarge"',
-                'created_by' => 2,
-            ],
-            [
-                'material_id' => 3,
-                'sub_material_id' => 7,
-                'question_text' => 'The _____ keyword is used to call a parent class constructor.',
+                'question_text' => 'Kata kunci apa yang digunakan di Java untuk mewarisi dari kelas induk?',
                 'question_type' => 'fill_in_the_blank',
                 'type' => 'sintaks',
-                'difficulty' => 'medium',
-                'hint' => 'It\'s the same keyword used to refer to the parent class',
+                'difficulty' => 'beginner',
+                'hint' => 'Kata kunci bahasa Inggris yang berarti "memperluas"',
                 'created_by' => 2,
             ],
             [
+                'id' => 20,
                 'material_id' => 3,
                 'sub_material_id' => 7,
-                'question_text' => 'Can a subclass access private members of its superclass?',
+                'question_text' => 'Kata kunci _____ digunakan untuk memanggil konstruktor kelas induk.',
+                'question_type' => 'fill_in_the_blank',
+                'type' => 'sintaks',
+                'difficulty' => 'medium',
+                'hint' => 'Kata kunci yang sama digunakan untuk merujuk ke parent class',
+                'created_by' => 2,
+            ],
+            [
+                'id' => 21,
+                'material_id' => 3,
+                'sub_material_id' => 7,
+                'question_text' => 'Dapatkah subclass mengakses anggota privat dari superclass-nya?',
                 'question_type' => 'radio_button',
                 'type' => 'teori',
                 'difficulty' => 'medium',
-                'hint' => 'Private means completely hidden from outside',
+                'hint' => 'Privat berarti sepenuhnya tersembunyi dari luar',
                 'created_by' => 2,
             ],
-            
-            // Sub-material 8: Types of Inheritance
+
+            // Sub-material 8: Jenis-Jenis Pewarisan
             [
+                'id' => 22,
                 'material_id' => 3,
                 'sub_material_id' => 8,
-                'question_text' => 'Arrange inheritance hierarchy: [zone], [zone], [zone]',
+                'question_text' => 'Urutkan hierarki pewarisan: [zone], [zone], [zone]',
                 'question_type' => 'drag_and_drop',
                 'type' => 'teori',
                 'difficulty' => 'medium',
-                'hint' => 'Start from the most general to the most specific',
+                'hint' => 'Mulai dari yang paling umum ke yang paling spesifik',
                 'created_by' => 2,
             ],
             [
+                'id' => 23,
                 'material_id' => 3,
                 'sub_material_id' => 8,
-                'question_text' => 'What type of inheritance does Java NOT support directly?',
+                'question_text' => 'Jenis pewarisan apa yang TIDAK didukung Java secara langsung?',
                 'question_type' => 'radio_button',
                 'type' => 'teori',
                 'difficulty' => 'hard',
-                'hint' => 'Java doesn\'t allow a class to inherit from multiple classes',
+                'hint' => 'Java tidak mengizinkan sebuah kelas mewarisi dari banyak kelas sekaligus',
                 'created_by' => 2,
             ],
-            
-            // ==================== Material 4: Polymorphism ====================
-            // Sub-material 9: Polymorphism Concept
+
+            // ==================== Material 4: Polimorfisme ====================
+            // Sub-material 9: Konsep Polimorfisme
             [
+                'id' => 24,
                 'material_id' => 4,
                 'sub_material_id' => 9,
-                'question_text' => 'What is polymorphism?',
+                'question_text' => 'Apa itu polimorfisme?',
                 'question_type' => 'radio_button',
                 'type' => 'teori',
                 'difficulty' => 'beginner',
-                'hint' => 'The word means "many forms" in Greek',
+                'hint' => 'Kata tersebut berarti "banyak bentuk" dalam bahasa Yunani',
                 'created_by' => 2,
             ],
             [
+                'id' => 25,
                 'material_id' => 4,
                 'sub_material_id' => 9,
-                'question_text' => 'Polymorphism allows objects of different classes to be treated as objects of a common _____ class.',
+                'question_text' => 'Polimorfisme memungkinkan objek dari kelas yang berbeda diperlakukan sebagai objek dari kelas _____ yang sama.',
                 'question_type' => 'fill_in_the_blank',
                 'type' => 'teori',
                 'difficulty' => 'hard',
-                'hint' => 'Think about the class hierarchy - what\'s above?',
+                'hint' => 'Pikirkan tentang hierarki kelas - apa yang ada di atasnya?',
                 'created_by' => 2,
             ],
-            
+
             // Sub-material 10: Method Overloading
             [
+                'id' => 26,
                 'material_id' => 4,
                 'sub_material_id' => 10,
-                'question_text' => 'Which type of polymorphism is resolved at compile time?',
+                'question_text' => 'Jenis polimorfisme mana yang diselesaikan pada waktu kompilasi?',
                 'question_type' => 'radio_button',
                 'type' => 'teori',
                 'difficulty' => 'medium',
-                'hint' => 'It happens during compilation, not at runtime',
+                'hint' => 'Terjadi selama kompilasi, bukan saat program berjalan',
                 'created_by' => 2,
             ],
             [
+                'id' => 27,
                 'material_id' => 4,
                 'sub_material_id' => 10,
-                'question_text' => 'Method _____ allows multiple methods with the same name but different parameters.',
+                'question_text' => 'Method _____ memungkinkan beberapa metode dengan nama yang sama tetapi parameter berbeda.',
                 'question_type' => 'fill_in_the_blank',
                 'type' => 'sintaks',
                 'difficulty' => 'medium',
-                'hint' => 'It\'s about having too much of something',
+                'hint' => 'Istilah bahasa Inggris yang berarti membebani secara berlebihan',
                 'created_by' => 2,
             ],
-            
+
             // Sub-material 11: Method Overriding
             [
+                'id' => 28,
                 'material_id' => 4,
                 'sub_material_id' => 11,
-                'question_text' => 'What is method overriding?',
+                'question_text' => 'Apa itu method overriding?',
                 'question_type' => 'radio_button',
                 'type' => 'teori',
                 'difficulty' => 'medium',
-                'hint' => 'A subclass provides a new implementation of a parent\'s method',
+                'hint' => 'Subclass menyediakan implementasi baru dari metode induknya',
                 'created_by' => 2,
             ],
             [
+                'id' => 29,
                 'material_id' => 4,
                 'sub_material_id' => 11,
-                'question_text' => 'Which annotation is used for method overriding in Java?',
+                'question_text' => 'Anotasi mana yang digunakan untuk overriding metode di Java?',
                 'question_type' => 'radio_button',
                 'type' => 'sintaks',
                 'difficulty' => 'medium',
-                'hint' => 'It starts with @ and indicates you\'re replacing a method',
+                'hint' => 'Dimulai dengan @ dan menunjukkan Anda mengganti sebuah metode',
                 'created_by' => 2,
             ],
             [
+                'id' => 30,
                 'material_id' => 4,
                 'sub_material_id' => 11,
-                'question_text' => 'Arrange polymorphism concepts by execution time: [zone], [zone]',
+                'question_text' => 'Urutkan konsep polimorfisme berdasarkan waktu eksekusi: [zone], [zone]',
                 'question_type' => 'drag_and_drop',
                 'type' => 'teori',
                 'difficulty' => 'hard',
-                'hint' => 'One happens at compile time, one at runtime',
+                'hint' => 'Satu terjadi pada waktu kompilasi, satu pada waktu jalan (runtime)',
                 'created_by' => 2,
             ],
-            
-            // ==================== Material 5: Encapsulation ====================
-            // Sub-material 12: Encapsulation Principles
-            [   
+
+            // ==================== Material 5: Enkapsulasi ====================
+            // Sub-material 12: Prinsip Enkapsulasi
+            [
+                'id' => 31,
                 'material_id' => 5,
                 'sub_material_id' => 12,
-                'question_text' => 'What is encapsulation?',
+                'question_text' => 'Apa itu enkapsulasi?',
                 'question_type' => 'radio_button',
                 'type' => 'teori',
                 'difficulty' => 'beginner',
-                'hint' => 'It\'s about bundling data and methods together',
+                'hint' => 'Ini tentang membungkus data dan metode bersama-sama',
                 'created_by' => 2,
             ],
             [
+                'id' => 32,
                 'material_id' => 5,
                 'sub_material_id' => 12,
-                'question_text' => 'What is the main benefit of encapsulation?',
+                'question_text' => 'Apa manfaat utama dari enkapsulasi?',
                 'question_type' => 'radio_button',
                 'type' => 'teori',
                 'difficulty' => 'beginner',
-                'hint' => 'Think about protecting data and hidingphp implementation',
+                'hint' => 'Pikirkan tentang melindungi data dan menyembunyikan implementasi',
                 'created_by' => 2,
             ],
             [
+                'id' => 33,
                 'material_id' => 5,
                 'sub_material_id' => 12,
-                'question_text' => 'Encapsulation is also known as data _____.',
+                'question_text' => 'Enkapsulasi juga dikenal sebagai data _____.',
                 'question_type' => 'fill_in_the_blank',
                 'type' => 'teori',
                 'difficulty' => 'medium',
-                'hint' => 'It\'s about keeping data safe and hidden',
+                'hint' => 'Tentang menjaga data tetap aman dan tersembunyi',
                 'created_by' => 2,
             ],
-            
-            // Sub-material 13: Access Modifiers
+
+            // Sub-material 13: Modifier Akses
             [
+                'id' => 34,
                 'material_id' => 5,
                 'sub_material_id' => 13,
-                'question_text' => 'The _____ access modifier makes a variable accessible only within its own class.',
+                'question_text' => 'Modifier akses _____ membuat variabel hanya dapat diakses dalam kelasnya sendiri.',
                 'question_type' => 'fill_in_the_blank',
                 'type' => 'sintaks',
                 'difficulty' => 'beginner',
-                'hint' => 'It\'s the most restrictive access modifier',
+                'hint' => 'Ini adalah modifier akses yang paling ketat',
                 'created_by' => 2,
             ],
             [
+                'id' => 35,
                 'material_id' => 5,
                 'sub_material_id' => 13,
-                'question_text' => 'Which access modifier provides the most restriction?',
+                'question_text' => 'Modifier akses mana yang memberikan pembatasan paling besar?',
                 'question_type' => 'radio_button',
                 'type' => 'sintaks',
                 'difficulty' => 'medium',
-                'hint' => 'It completely hides members from outside the class',
+                'hint' => 'Benar-benar menyembunyikan anggota dari luar kelas',
                 'created_by' => 2,
             ],
             [
+                'id' => 36,
                 'material_id' => 5,
                 'sub_material_id' => 13,
-                'question_text' => 'Arrange access modifiers from most to least restrictive: [zone], [zone], [zone], [zone]',
+                'question_text' => 'Urutkan modifier akses dari yang paling ketat ke paling longgar: [zone], [zone], [zone], [zone]',
                 'question_type' => 'drag_and_drop',
                 'type' => 'sintaks',
                 'difficulty' => 'hard',
                 'hint' => 'private, default, protected, public',
                 'created_by' => 2,
             ],
-            
-            // Sub-material 14: Getters and Setters
+
+            // Sub-material 14: Getter dan Setter
             [
+                'id' => 37,
                 'material_id' => 5,
                 'sub_material_id' => 14,
-                'question_text' => 'What are getter and setter methods used for?',
+                'question_text' => 'Metode getter dan setter digunakan untuk apa?',
                 'question_type' => 'radio_button',
                 'type' => 'sintaks',
                 'difficulty' => 'medium',
-                'hint' => 'They provide controlled access to private variables',
+                'hint' => 'Mereka menyediakan akses terkontrol ke variabel privat',
                 'created_by' => 2,
             ],
         ];
 
         foreach ($questions as $question) {
-            Question::firstOrCreate(
-                ['question_text' => $question['question_text'], 'material_id' => $question['material_id'],'sub_material_id' => $question['sub_material_id']],
+            Question::updateOrCreate(
+            ['id' => $question['id']],
                 $question
             );
         }

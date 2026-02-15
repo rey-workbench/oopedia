@@ -80,15 +80,15 @@ class MaterialRepository implements MaterialRepositoryInterface
 
     public function findWithQuestionsShuffled($id)
     {
-        $material = Material::with(['subMaterials.questions', 'creator', 'media'])->findOrFail($id);
-        
+        $material = Material::with(['questions.answers', 'subMaterials.questions', 'creator', 'media'])->findOrFail($id);
+
         // Shuffle answers for each question
         foreach ($material->questions as $question) {
             if ($question->question_type !== 'fill_in_the_blank') {
                 $question->answers = $question->answers->shuffle();
             }
         }
-        
+
         return $material;
     }
 
@@ -110,7 +110,8 @@ class MaterialRepository implements MaterialRepositoryInterface
         $allowedSortFields = ['title', 'created_at'];
         if (in_array($sort, $allowedSortFields)) {
             $query->orderBy($sort, $direction);
-        } else {
+        }
+        else {
             $query->orderBy('created_at', 'asc');
         }
 
@@ -120,11 +121,11 @@ class MaterialRepository implements MaterialRepositoryInterface
     public function findWithRelations($id, array $relations = [])
     {
         $query = Material::query();
-        
+
         if (!empty($relations)) {
             $query->with($relations);
         }
-        
+
         return $query->findOrFail($id);
     }
 }

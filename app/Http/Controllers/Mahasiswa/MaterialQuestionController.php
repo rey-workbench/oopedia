@@ -284,11 +284,27 @@ class MaterialQuestionController extends Controller
         $studentState->save();
         
         // 6. Save progress log
+        // Handle answer_id based on question type
+        $answerId = null;
+        $userResponse = null;
+        
+        if ($question->question_type === 'multiple_choice' || $question->question_type === 'radio_button') {
+            // For MC/Radio: answer_id is the selected option ID
+            $answerId = $data['answer'] ?? null;
+        } elseif ($question->question_type === 'fill_in_the_blank') {
+            // For fill-in-the-blank: store text response, not answer_id
+            $userResponse = $data['fill_in_the_blank_answer'] ?? null;
+        } elseif ($question->question_type === 'drag_and_drop') {
+            // For drag-and-drop: store arrangement data
+            $userResponse = $data['drag_and_drop_answers'] ?? null;
+        }
+        
         $savedProgress = $this->progressService->saveProgress([
             'user_id' => $userId,
             'material_id' => $material->id,
             'question_id' => $question->id,
-            'answer_id' => $data['answer'] ?? ($data['answer_id'] ?? null),
+            'answer_id' => $answerId,
+            'user_response' => $userResponse,
             'is_correct' => $isCorrect,
             'is_answered' => true,
             'attributes' => $finalState,

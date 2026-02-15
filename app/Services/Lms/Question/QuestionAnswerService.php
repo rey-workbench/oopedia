@@ -96,11 +96,24 @@ class QuestionAnswerService implements QuestionAnswerServiceInterface
 
         $attemptNumber = $attemptsCount > 0 ? $attemptsCount + 1 : 1;
 
+        // Handle answer_id vs user_response based on question type
+        $answerId = null;
+        $userResponse = null;
+        
+        if ($question->question_type === 'multiple_choice' || $question->question_type === 'radio_button') {
+            $answerId = $data['answer'] ?? null;
+        } elseif ($question->question_type === 'fill_in_the_blank') {
+            $userResponse = $data['fill_in_the_blank_answer'] ?? null;
+        } elseif ($question->question_type === 'drag_and_drop') {
+            $userResponse = $data['drag_and_drop_answers'] ?? null;
+        }
+
         $this->progressRepo->saveProgress([
             'user_id' => $userId,
             'material_id' => $data['material_id'], 
             'question_id' => $question->id,
-            'answer_id' => $data['answer'] ?? null,
+            'answer_id' => $answerId,
+            'user_response' => $userResponse,
             'is_correct' => $isCorrect,
             'is_answered' => true,
             'attempt_number' => $attemptNumber

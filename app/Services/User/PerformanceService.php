@@ -24,26 +24,26 @@ class PerformanceService
 
     public function getUserInitialLevel($userId, $materialId): ?string
     {
-        $state = $this->progressRepo->getStudentState($userId);
+        $state = $this->progressRepo->getOrCreateStudentState($userId);
         return $state->current_level;
     }
 
     public function setUserInitialLevel($userId, $materialId, string $level): void
     {
-        $state = $this->progressRepo->getStudentState($userId);
+        $state = $this->progressRepo->getOrCreateStudentState($userId);
         $state->current_level = $level;
         $state->save();
     }
 
     public function getUserLearningStyle($userId, $materialId): ?string
     {
-        $state = $this->progressRepo->getStudentState($userId);
+        $state = $this->progressRepo->getOrCreateStudentState($userId);
         return $state->learning_style;
     }
 
     public function setUserLearningStyle($userId, $materialId, string $style): void
     {
-        $state = $this->progressRepo->getStudentState($userId);
+        $state = $this->progressRepo->getOrCreateStudentState($userId);
         $state->learning_style = $style;
         $state->save();
     }
@@ -53,7 +53,7 @@ class PerformanceService
      */
     public function updateStudentPerformance($userId, bool $isCorrect, int $timeSpent = 0, bool $usedHint = false)
     {
-        $state = $this->progressRepo->getStudentState($userId);
+        $state = $this->progressRepo->getOrCreateStudentState($userId);
         $state->updatePerformance($isCorrect, $timeSpent, $usedHint);
         return $state;
     }
@@ -108,7 +108,7 @@ class PerformanceService
         foreach ($wrongAttempts as $attempt) {
             // Temporary: Use difficulty as 'topic' to show *something*
             $tag = 'General';
-            
+
             $topicFrequency[$tag] = ($topicFrequency[$tag] ?? 0) + 1;
         }
 
@@ -143,13 +143,13 @@ class PerformanceService
 
     public function getCompletedMaterials($userId): array
     {
-        $state = $this->progressRepo->getStudentState($userId);
+        $state = $this->progressRepo->getOrCreateStudentState($userId);
         return $state ? ($state->unlocked_modules ?? []) : [];
     }
 
     public function markMaterialCompleted($userId, $materialId): void
     {
-        $state = $this->progressRepo->getStudentState($userId);
+        $state = $this->progressRepo->getOrCreateStudentState($userId);
         $completed = $state->unlocked_modules ?? [];
         if (!in_array($materialId, $completed)) {
             $completed[] = $materialId;

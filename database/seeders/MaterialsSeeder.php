@@ -11,40 +11,40 @@ class MaterialsSeeder extends Seeder
     {
         $materials = [
             [
-                'title' => 'Introduction to Object-Oriented Programming',
-                'content' => 'Object-oriented programming (OOP) is a programming paradigm based on the concept of "objects", which can contain data and code: data in the form of fields (often known as attributes or properties), and code, in the form of procedures (often known as methods).',
+                'title' => 'Pengenalan Pemrograman Berorientasi Objek',
+                'content' => 'Pemrograman berorientasi objek (PBO/OOP) adalah paradigma pemrograman yang didasarkan pada konsep "objek", yang dapat berisi data dan kode: data dalam bentuk field (sering dikenal sebagai atribut atau properti), dan kode, dalam bentuk prosedur (sering dikenal sebagai metode atau method).',
                 'module_id' => 1, // Foundation
                 'created_by' => 2,
             ],
             [
-                'title' => 'Classes and Objects',
-                'content' => 'A class is a blueprint for creating objects. An object is an instance of a class. Classes define the properties and behaviors that objects of that class will have.',
+                'title' => 'Kelas dan Objek',
+                'content' => 'Kelas adalah cetak biru (blueprint) untuk membuat objek. Objek adalah perwujudan (instance) dari sebuah kelas. Kelas mendefinisikan properti dan perilaku yang akan dimiliki oleh objek dari kelas tersebut.',
                 'module_id' => 1, // Foundation
                 'created_by' => 2,
             ],
             [
-                'title' => 'Inheritance',
-                'content' => 'Inheritance is a mechanism in which one class acquires the property of another class. For example, a child class inherits the properties and methods of its parent class.',
+                'title' => 'Pewarisan (Inheritance)',
+                'content' => 'Pewarisan adalah mekanisme di mana satu kelas memperoleh properti dari kelas lain. Contohnya, kelas anak (child class) mewarisi properti dan metode dari kelas induknya (parent class).',
                 'module_id' => 3, // Inheritance
                 'created_by' => 2,
             ],
             [
-                'title' => 'Polymorphism',
-                'content' => 'Polymorphism allows objects of different classes to be treated as objects of a common super class. It is the ability of an object to take on many forms.',
+                'title' => 'Polimorfisme',
+                'content' => 'Polimorfisme memungkinkan objek dari kelas yang berbeda diperlakukan sebagai objek dari kelas super yang sama. Ini adalah kemampuan suatu objek untuk mengambil banyak bentuk.',
                 'module_id' => 4, // Polymorphism
                 'created_by' => 2,
             ],
             [
-                'title' => 'Encapsulation',
-                'content' => 'Encapsulation is the bundling of data and methods that operate on that data within a single unit, or object, and restricting access to some of the object\'s components.',
+                'title' => 'Enkapsulasi',
+                'content' => 'Enkapsulasi adalah penggabungan data dan metode yang beroperasi pada data tersebut dalam satu unit tunggal atau objek, serta membatasi akses ke beberapa komponen objek tersebut.',
                 'module_id' => 2, // Encapsulation
                 'created_by' => 2,
             ],
         ];
 
         foreach ($materials as $material) {
-            Material::firstOrCreate(
-                ['title' => $material['title']],
+            Material::updateOrCreate(
+            ['title' => $material['title']],
                 $material
             );
         }

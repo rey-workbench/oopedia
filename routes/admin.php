@@ -25,8 +25,9 @@ Route::middleware('auth')->group(function () {
         Route::resource('materials', AdminMaterialController::class);
         Route::get('materials/{material}/submaterials/json', [SubMaterialController::class, 'getJson'])->name('materials.submaterials.json');
         Route::resource('materials.submaterials', SubMaterialController::class);
+        
+        // Questions - standalone resource (simplified, no nested routes)
         Route::resource('questions', AdminQuestionController::class);
-        Route::resource('materials.questions', AdminQuestionController::class)->except(['show']);
         
         // Students management
         Route::controller(AdminStudentController::class)->group(function () {
