@@ -11,8 +11,8 @@ use App\Http\Controllers\Mahasiswa\{
     MaterialController
 };
 
-// Mahasiswa Routes (role 3)
-Route::middleware(['auth', 'role:3'])->name('mahasiswa.')->prefix('mahasiswa')->group(function () {
+// Private Mahasiswa Routes (authenticated role 3 only - using 'role.mahasiswa' alias)
+Route::middleware(['auth', 'role.mahasiswa'])->name('mahasiswa.')->prefix('mahasiswa')->group(function () {
     // Dashboard
     Route::get('dashboard', [MahasiswaDashboardController::class, 'index'])->name('dashboard');
     Route::get('dashboard/in-progress', [MahasiswaDashboardController::class, 'inProgress'])->name('dashboard.in-progress');
@@ -24,13 +24,16 @@ Route::middleware(['auth', 'role:3'])->name('mahasiswa.')->prefix('mahasiswa')->
     
     // Leaderboard
     Route::get('/leaderboard', [MahasiswaController::class, 'leaderboard'])->name('leaderboard');
+
+    // UEQ Survey routes
+    Route::get('/ueq-survey', [MahasiswaUeqSurveyController::class, 'create'])->name('ueq.create');
+    Route::post('/ueq-survey', [MahasiswaUeqSurveyController::class, 'store'])->name('ueq.store');
+    Route::get('/ueq-survey/thankyou', [MahasiswaUeqSurveyController::class, 'thankyou'])->name('ueq.thankyou');
 });
 
-// Publicly accessible material routes (for Guests and Mahasiswa)
-Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
-    // Questions Routes
-    Route::get('materials/questions', [MaterialQuestionController::class, 'index'])->name('materials.questions.index');
-
+// Features accessible by Guests (role 4) and Authenticated Students (role 3)
+// We use 'guest.access' to manage these permissions
+Route::middleware(['guest.access'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     // Materials Index & Show
     Route::get('materials', [MahasiswaMaterialController::class, 'index'])->name('materials.index');
     Route::get('materials/{material}', [MahasiswaMaterialController::class, 'show'])->name('materials.show');
@@ -38,38 +41,21 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     // Sub-Material Detail
     Route::get('materials/{material}/submaterials/{submaterial}', [MahasiswaMaterialController::class, 'showSubMaterial'])->name('submaterials.show');
     
+    // Questions Features
+    Route::get('materials/questions', [MaterialQuestionController::class, 'index'])->name('materials.questions.index');
+    
     Route::get('materials/{material}/questions', [MaterialQuestionController::class, 'show'])
         ->middleware(\App\Http\Middleware\BlockQuestionParameter::class)
         ->name('materials.questions.show');
-
     
-    Route::get('materials/{material}/questions/levels', [MaterialQuestionController::class, 'levels'])
-        ->name('materials.questions.levels');
-    
-    Route::get('materials/{material}/questions/review', [MaterialQuestionController::class, 'review'])
-        ->name('materials.questions.review');
+    Route::get('materials/{material}/questions/levels', [MaterialQuestionController::class, 'levels'])->name('materials.questions.levels');
+    Route::get('materials/{material}/questions/review', [MaterialQuestionController::class, 'review'])->name('materials.questions.review');
+    Route::post('materials/{material}/questions/{question}/check', [MaterialQuestionController::class, 'checkAnswer'])->name('materials.questions.check');
+    Route::get('materials/{material}/questions/{question}/attempts', [MaterialQuestionController::class, 'getAttempts'])->name('materials.questions.attempts');
 
-    Route::post('materials/{material}/questions/{question}/check', [MaterialQuestionController::class, 'checkAnswer'])
-        ->name('materials.questions.check');
-        
-    Route::get('materials/{material}/questions/{question}/attempts', [MaterialQuestionController::class, 'getAttempts'])
-        ->name('materials.questions.attempts');
-
-    // Reset Progress (Accessible by both Auth & Guest)
+    // Reset Progress (Logic inside controller handles Auth vs Guest)
     Route::post('materials/{material}/reset', function($material) {
         $controller = app()->make(MaterialController::class);
-        
-        if (auth()->check()) {
-            return $controller->reset($material);
-        } else {
-            return $controller->guestReset($material);
-        }
+        return auth()->check() ? $controller->reset($material) : $controller->guestReset($material);
     })->name('materials.reset');
-});
-
-// UEQ Survey routes for mahasiswa
-Route::prefix('mahasiswa')->name('mahasiswa.')->middleware(['auth'])->group(function () {
-    Route::get('/ueq-survey', [MahasiswaUeqSurveyController::class, 'create'])->name('ueq.create');
-    Route::post('/ueq-survey', [MahasiswaUeqSurveyController::class, 'store'])->name('ueq.store');
-    Route::get('/ueq-survey/thankyou', [MahasiswaUeqSurveyController::class, 'thankyou'])->name('ueq.thankyou');
 });

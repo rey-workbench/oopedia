@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Inertia\Inertia;
 
 class CheckRole
 {
@@ -18,7 +18,6 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, $role)
     {
-        // Update role checking logic
         if (!auth()->check()) {
             return redirect('login');
         }
@@ -27,7 +26,10 @@ class CheckRole
         $roles = explode('|', $role);
         
         if (!in_array(auth()->user()->role_id, $roles)) {
-            abort(403, 'Unauthorized action.');
+            return Inertia::render('Error', [
+                'status' => 403,
+                'message' => 'Anda tidak memiliki akses untuk halaman ini'
+            ])->toResponse($request)->setStatusCode(403);
         }
 
         return $next($request);

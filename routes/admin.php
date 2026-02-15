@@ -11,15 +11,14 @@ use App\Http\Controllers\Admin\{
     UeqSurveyController,
     SubMaterialController
 };
-use App\Http\Controllers\Auth\LogoutController;
 
 Route::middleware('auth')->group(function () {
     // Pending Approval Route - accessible by any authenticated user
     Route::get('admin/pending-approval', [PendingApprovalController::class, 'index'])
         ->name('admin.pending-approval');
         
-    // Admin Routes (role 1 = superadmin, role 2 = admin)
-    Route::middleware(['role:1|2', 'admin.approved'])->name('admin.')->prefix('admin')->group(function () {
+    // Admin Routes (using 'role.admin' alias from Kernel: role 1 or 2 + approval check)
+    Route::middleware(['role.admin', 'admin.approved'])->name('admin.')->prefix('admin')->group(function () {
         // Dashboard
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         
@@ -41,8 +40,8 @@ Route::middleware('auth')->group(function () {
             Route::get('students/download-template', 'downloadTemplate')->name('students.download-template');
         });
 
-        // Admin management routes (only for superadmin - role 1)
-        Route::middleware(['superadmin'])->group(function () {
+        // Admin management routes (only for superadmin - using 'role.superadmin' alias)
+        Route::middleware(['role.superadmin'])->group(function () {
             // Admin approval
             Route::get('/pending-admins', [AdminUserController::class, 'pendingAdmins'])->name('pending-admins');
             Route::post('/users/{user}/approve', [AdminUserController::class, 'approveAdmin'])->name('users.approve');
@@ -55,14 +54,15 @@ Route::middleware('auth')->group(function () {
             
             // User management
             Route::resource('users', AdminUserController::class)->except(['show']);
+
+            // Admin UEQ Survey routes
+            Route::get('/ueq-survey', [UeqSurveyController::class, 'index'])->name('ueq.index');
+            Route::get('/ueq-survey/export', [UeqSurveyController::class, 'export'])->name('ueq.export');
+            Route::get('/ueq/{user}/detail', [UeqSurveyController::class, 'detail'])->name('ueq.detail');
         });
+
         // Media routes
         Route::get('/media/delete/{id}', [AdminMaterialController::class, 'deleteMedia'])
             ->name('media.delete');
-            
-        // Admin UEQ Survey routes
-        Route::get('/ueq-survey', [UeqSurveyController::class, 'index'])->name('ueq.index');
-        Route::get('/ueq-survey/export', [UeqSurveyController::class, 'export'])->name('ueq.export');
-        Route::get('/ueq/{user}/detail', [UeqSurveyController::class, 'detail'])->name('ueq.detail');
     });
 });

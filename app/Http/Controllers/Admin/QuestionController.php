@@ -50,12 +50,8 @@ class QuestionController extends Controller
         return Inertia::render('Admin/Questions/Create', compact('materials', 'material', 'subMaterials'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        // Validasi dasar untuk semua field kecuali answers
         $baseValidation = [
             'question_text' => 'required|string',
             'question_type' => 'required|in:radio_button,drag_and_drop,fill_in_the_blank',
@@ -64,17 +60,14 @@ class QuestionController extends Controller
             'sub_material_id' => 'nullable|exists:sub_materials,id',
         ];
         
-        // Validasi khusus untuk answers berdasarkan tipe soal
         if ($request->question_type === 'fill_in_the_blank') {
             $answersValidation = ['answers' => 'required|array|min:1'];
         } else {
             $answersValidation = ['answers' => 'required|array|min:2'];
         }
         
-        // Gabungkan validasi
         $validationRules = array_merge($baseValidation, $answersValidation);
         
-        // Tambahkan validasi untuk setiap jawaban
         $validationRules['answers.*.answer_text'] = 'required|string';
         
         $request->validate($validationRules);

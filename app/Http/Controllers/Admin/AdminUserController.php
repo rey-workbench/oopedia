@@ -19,12 +19,6 @@ class AdminUserController extends Controller
 
     public function index(Request $request)
     {
-        // Check superadmin access
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses untuk melihat daftar admin');
-        }
-        
         $search = $request->search;
         $users = $this->userService->getAdmins($search);
         
@@ -35,24 +29,12 @@ class AdminUserController extends Controller
 
     public function create()
     {
-        // Check superadmin access
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
-        }
-        
         $roles = \App\Models\Role::all();
         return Inertia::render('Admin/Users/Create', compact('roles'));
     }
 
     public function store(Request $request)
     {
-        // Check superadmin access
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
-        }
-        
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -71,12 +53,6 @@ class AdminUserController extends Controller
 
     public function edit(User $user)
     {
-        // Check superadmin access
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
-        }
-        
         // Ensure editable user is admin
         if ($user->role_id != 2) {
             return redirect()->route('admin.users.index')
@@ -88,12 +64,6 @@ class AdminUserController extends Controller
 
     public function update(Request $request, User $user)
     {
-        // Check superadmin access
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
-        }
-        
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
@@ -112,12 +82,6 @@ class AdminUserController extends Controller
 
     public function destroy(User $user)
     {
-        // Check superadmin access
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
-        }
-        
         try {
             $this->userService->deleteAdmin($user);
             
@@ -131,12 +95,6 @@ class AdminUserController extends Controller
 
     public function pendingAdmins()
     {
-        // Check superadmin access
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
-        }
-        
         $pendingAdmins = $this->userService->getPendingAdmins();
         
         return Inertia::render('Admin/Users/Pending', compact('pendingAdmins'));
@@ -144,12 +102,6 @@ class AdminUserController extends Controller
 
     public function approveAdmin(User $user)
     {
-        // Check superadmin access
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
-        }
-        
         try {
             $this->userService->approveAdmin($user);
             
@@ -163,12 +115,6 @@ class AdminUserController extends Controller
 
     public function rejectAdmin(User $user)
     {
-        // Check superadmin access
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
-        }
-
         try {
             $this->userService->rejectAdmin($user);
             
@@ -182,21 +128,11 @@ class AdminUserController extends Controller
     
     public function showImportForm()
     {
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
-        }
-        
         return Inertia::render('Admin/Users/Import');
     }
     
     public function processImport(Request $request)
     {
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
-        }
-        
         $request->validate([
             'excel_file' => 'required|file|mimes:xlsx,xls,csv,txt|max:2048',
         ]);
@@ -219,11 +155,6 @@ class AdminUserController extends Controller
     
     public function downloadTemplate()
     {
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
-        }
-        
         $template = $this->userService->generateImportTemplate();
         
         return response()->stream($template['callback'], 200, $template['headers']);

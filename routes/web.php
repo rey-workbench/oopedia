@@ -1,32 +1,26 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LoginController;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
-// Load separated route files
+// Redirect root to login page (Controller handles internal logic)
+Route::get('/', [LoginController::class, 'index']);
+
+// Load separated logic modules
 require __DIR__.'/auth.php';
 require __DIR__.'/admin.php';
 require __DIR__.'/mahasiswa.php';
 
-use App\Http\Controllers\Auth\LoginController;
-
-// Redirect root to login or materials page based on authentication
-Route::get('/', [LoginController::class, 'index']);
-
+// Development/Testing routes
 Route::get('/test-inertia', function () {
     return inertia('Welcome', ['title' => 'Inertia World']);
 });
 
-// Fallback route for 404 errors
+// Fallback route for 404 errors (Handles UI consistency)
 Route::fallback([LoginController::class, 'fallback']);
-

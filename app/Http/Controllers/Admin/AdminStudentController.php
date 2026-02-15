@@ -20,12 +20,6 @@ class AdminStudentController extends Controller
 
     public function index(Request $request)
     {
-        // Admin and superadmin access check
-        if (auth()->user()->role_id > 2) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses untuk melihat daftar mahasiswa');
-        }
-        
         $search = $request->search;
         $students = $this->studentService->getStudentsWithProgress($search, 10);
         
@@ -49,12 +43,6 @@ class AdminStudentController extends Controller
 
     public function store(Request $request)
     {
-        // Admin and superadmin access check
-        if (auth()->user()->role_id > 2) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses untuk menambah mahasiswa');
-        }
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -81,12 +69,6 @@ class AdminStudentController extends Controller
 
     public function destroy(User $student)
     {
-        // Admin and superadmin access check
-        if (auth()->user()->role_id > 2) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses untuk menghapus mahasiswa');
-        }
-        
         try {
             $this->studentService->deleteStudent($student);
             
@@ -100,23 +82,11 @@ class AdminStudentController extends Controller
     
     public function showImportForm()
     {
-        // Admin and superadmin access check
-        if (auth()->user()->role_id > 2) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses untuk fitur ini');
-        }
-        
         return Inertia::render('Admin/Students/Import');
     }
     
     public function processImport(Request $request)
     {
-        // Admin and superadmin access check
-        if (auth()->user()->role_id > 2) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses untuk fitur ini');
-        }
-        
         $request->validate([
             'excel_file' => 'required|file|mimes:xlsx,xls,csv,txt|max:2048',
         ]);
@@ -139,12 +109,6 @@ class AdminStudentController extends Controller
     
     public function downloadTemplate()
     {
-        // Admin and superadmin access check
-        if (auth()->user()->role_id > 2) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses untuk fitur ini');
-        }
-        
         $template = $this->studentService->generateImportTemplate();
         
         return response()->stream($template['callback'], 200, $template['headers']);

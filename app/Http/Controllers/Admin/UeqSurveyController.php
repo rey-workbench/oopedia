@@ -16,30 +16,19 @@ class UeqSurveyController extends Controller
 
     public function __construct(
         \App\Services\Analytics\UeqSurveyService $ueqService,
-        \App\Services\Lms\MaterialService $materialService
+        \App\Services\Lms\Material\MaterialService $materialService
     )
     {
         $this->ueqService = $ueqService;
         $this->materialService = $materialService;
-
-        // Tambahkan middleware untuk memastikan hanya admin dan superadmin yang bisa mengakses
-        $this->middleware(function ($request, $next) {
-            if (auth()->user()->role_id > 2) {
-                return redirect()->route('admin.dashboard')
-                    ->with('error', 'Anda tidak memiliki akses untuk melihat hasil UEQ Survey');
-            }
-            return $next($request);
-        });
     }
 
     public function index(Request $request)
     {
         $class = $request->input('class');
         
-        // Ambil semua data survey dengan relasi user
         $surveys = $this->ueqService->getAllSurveys($class);
         
-        // Daftar kelas unik untuk filter dropdown
         $classes = $this->ueqService->getDistinctClasses();
         
         // Hitung rata-rata untuk setiap dimensi UEQ

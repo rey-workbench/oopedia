@@ -142,12 +142,14 @@
                             >Daftar Admin</SidebarLink
                         >
                     {/if}
-                    <SidebarLink
-                        href="/admin/ueq"
-                        icon={MessageSquareQuote}
-                        active={$page.url.startsWith("/admin/ueq")}
-                        >Survey UEQ</SidebarLink
-                    >
+                    {#if userRole === 1}
+                        <SidebarLink
+                            href="/admin/ueq-survey"
+                            icon={MessageSquareQuote}
+                            active={$page.url.startsWith("/admin/ueq-survey")}
+                            >Survey UEQ</SidebarLink
+                        >
+                    {/if}
                 </div>
             </div>
 

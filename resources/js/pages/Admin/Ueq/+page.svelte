@@ -187,7 +187,7 @@
                                     <Button
                                         variant="ghost"
                                         size="sm"
-                                        href={`/admin/ueq-survey/${survey.user_id}`}
+                                        href={`/admin/ueq/${survey.user_id}/detail`}
                                         icon={Eye}
                                     />
                                 </td>
