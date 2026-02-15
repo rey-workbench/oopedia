@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Role;
 use App\Services\User\UserService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -22,15 +22,15 @@ class AdminUserController extends Controller
         $search = $request->search;
         $users = $this->userService->getAdmins($search);
         
-        $pendingAdminsCount = \App\Models\User::where('role_id', 2)->where('is_approved', false)->count();
+        $pendingAdminsCount = $this->userService->getPendingAdminsCount();
 
         return Inertia::render('Admin/Users/Index', compact('users', 'pendingAdminsCount'));
     }
 
     public function create()
     {
-        $roles = \App\Models\Role::all();
-        return Inertia::render('Admin/Users/Create', compact('roles'));
+        $roles = Role::all();
+        return Inertia::render('Admin/Users/Create/Index', compact('roles'));
     }
 
     public function store(Request $request)
@@ -59,7 +59,7 @@ class AdminUserController extends Controller
                 ->with('error', 'User bukan admin');
         }
         
-        return Inertia::render('Admin/Users/Edit', compact('user'));
+        return Inertia::render('Admin/Users/Edit/Index', compact('user'));
     }
 
     public function update(Request $request, User $user)
@@ -97,7 +97,7 @@ class AdminUserController extends Controller
     {
         $pendingAdmins = $this->userService->getPendingAdmins();
         
-        return Inertia::render('Admin/Users/Pending', compact('pendingAdmins'));
+        return Inertia::render('Admin/Users/Pending/Index', compact('pendingAdmins'));
     }
 
     public function approveAdmin(User $user)
@@ -128,7 +128,7 @@ class AdminUserController extends Controller
     
     public function showImportForm()
     {
-        return Inertia::render('Admin/Users/Import');
+        return Inertia::render('Admin/Users/Import/Index');
     }
     
     public function processImport(Request $request)

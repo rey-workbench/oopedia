@@ -18,7 +18,7 @@ class SubMaterialController extends Controller
 
     public function create(Material $material)
     {
-        return Inertia::render('Admin/Materials/Submaterials/Create', compact('material'));
+        return Inertia::render('Admin/Materials/Submaterials/Create/Index', compact('material'));
     }
 
     public function store(Request $request, Material $material)
@@ -38,7 +38,7 @@ class SubMaterialController extends Controller
 
     public function edit(Material $material, SubMaterial $submaterial)
     {
-        return Inertia::render('Admin/Materials/Submaterials/Edit', compact('material', 'submaterial'));
+        return Inertia::render('Admin/Materials/Submaterials/Edit/Index', compact('material', 'submaterial'));
     }
 
     public function update(Request $request, Material $material, SubMaterial $submaterial)
@@ -58,7 +58,7 @@ class SubMaterialController extends Controller
 
     public function destroy(Material $material, SubMaterial $submaterial)
     {
-        $submaterial->delete();
+        $submaterial->delete($submaterial->id);
         return redirect()->route('admin.materials.submaterials.index', $material)
             ->with('success', 'Sub-materi berhasil dihapus.');
     }

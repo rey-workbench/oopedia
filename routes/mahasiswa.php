@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\BlockQuestionParameter;
 use App\Http\Controllers\Mahasiswa\{
     DashboardController as MahasiswaDashboardController,
     MaterialController as MahasiswaMaterialController,
@@ -10,9 +11,8 @@ use App\Http\Controllers\Mahasiswa\{
     UeqSurveyController as MahasiswaUeqSurveyController,
     MaterialController
 };
-
-// Private Mahasiswa Routes (authenticated role 3 only - using 'role.mahasiswa' alias)
-Route::middleware(['auth', 'role.mahasiswa'])->name('mahasiswa.')->prefix('mahasiswa')->group(function () {
+// Private Mahasiswa Routes (authenticated role 3 only - using 'role:3')
+Route::middleware(['auth', 'role:3'])->name('mahasiswa.')->prefix('mahasiswa')->group(function () {
     // Dashboard
     Route::get('dashboard', [MahasiswaDashboardController::class, 'index'])->name('dashboard');
     Route::get('dashboard/in-progress', [MahasiswaDashboardController::class, 'inProgress'])->name('dashboard.in-progress');
@@ -34,6 +34,8 @@ Route::middleware(['auth', 'role.mahasiswa'])->name('mahasiswa.')->prefix('mahas
 // Features accessible by Guests (role 4) and Authenticated Students (role 3)
 // We use 'guest.access' to manage these permissions
 Route::middleware(['guest.access'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
+    Route::get('materials/questions', [MaterialQuestionController::class, 'index'])->name('materials.questions.index');
+
     // Materials Index & Show
     Route::get('materials', [MahasiswaMaterialController::class, 'index'])->name('materials.index');
     Route::get('materials/{material}', [MahasiswaMaterialController::class, 'show'])->name('materials.show');
@@ -41,11 +43,8 @@ Route::middleware(['guest.access'])->prefix('mahasiswa')->name('mahasiswa.')->gr
     // Sub-Material Detail
     Route::get('materials/{material}/submaterials/{submaterial}', [MahasiswaMaterialController::class, 'showSubMaterial'])->name('submaterials.show');
     
-    // Questions Features
-    Route::get('materials/questions', [MaterialQuestionController::class, 'index'])->name('materials.questions.index');
-    
     Route::get('materials/{material}/questions', [MaterialQuestionController::class, 'show'])
-        ->middleware(\App\Http\Middleware\BlockQuestionParameter::class)
+        ->middleware(BlockQuestionParameter::class)
         ->name('materials.questions.show');
     
     Route::get('materials/{material}/questions/levels', [MaterialQuestionController::class, 'levels'])->name('materials.questions.levels');

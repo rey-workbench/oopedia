@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
 use App\Models\Material;
 
@@ -23,6 +26,14 @@ class AppServiceProvider extends ServiceProvider
     {
         View::composer('components.navbars.sidebar', function ($view) {
             $view->with('materials', Material::orderBy('created_at', 'asc')->get());
+        });
+
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
+        });
+
+        RateLimiter::for('guest', function (Request $request) {
+            return Limit::perMinute(30)->by($request->ip());
         });
     }
 }

@@ -81,7 +81,7 @@ class MaterialQuestionController extends Controller
 
         $data = $this->materialQuestionService->getQuizData($material, $difficulty, $userId, $isGuest, $guestProgress);
 
-        return Inertia::render('Mahasiswa/Materials/Questions/Show', $data);
+        return Inertia::render('Mahasiswa/Materials/Questions/Show/Index', $data);
     }
 
     /**
@@ -101,7 +101,7 @@ class MaterialQuestionController extends Controller
 
         $levels = $this->materialQuestionService->getLevelProgress($material, $difficulty, $answeredQuestionIds);
 
-        return Inertia::render('Mahasiswa/Materials/Questions/Levels', compact(
+        return Inertia::render('Mahasiswa/Materials/Questions/Levels/Index', compact(
             'material',
             'materials',
             'levels',
@@ -125,7 +125,7 @@ class MaterialQuestionController extends Controller
         $questions = $this->materialQuestionService->getReviewQuestions($material, $difficulty, $userId, $isGuest, $guestProgress);
 
 
-        return Inertia::render('Mahasiswa/Materials/Questions/Review', [
+        return Inertia::render('Mahasiswa/Materials/Questions/Review/Index', [
             'material' => $material,
             'materials' => $materials,
             'questions' => $questions,
@@ -334,7 +334,8 @@ class MaterialQuestionController extends Controller
 
     protected function resolveReduceDifficulty(Material $material, Question $question): array
     {
-        $hasBeginner = Question::where('material_id', $material->id)
+        $hasBeginner = Question::query()
+            ->where('material_id', $material->id)
             ->where('difficulty', 'beginner')
             ->exists();
         
@@ -351,7 +352,8 @@ class MaterialQuestionController extends Controller
 
     protected function resolveIncreaseDifficulty(Material $material): array
     {
-        $hasHard = Question::where('material_id', $material->id)
+        $hasHard = Question::query()
+            ->where('material_id', $material->id)
             ->where('difficulty', 'hard')
             ->exists();
         

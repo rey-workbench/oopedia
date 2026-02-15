@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mahasiswa;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Inertia\Inertia;
 
 class UeqSurveyController extends Controller
 {
@@ -24,7 +25,7 @@ class UeqSurveyController extends Controller
 
         $aspects = $this->getAspects();
         
-        return \Inertia\Inertia::render('Mahasiswa/Ueq-Survey/Create', compact('aspects'));
+        return Inertia::render('Mahasiswa/Ueq/Create/Index', compact('aspects'));
     }
 
     public function store(Request $request)
@@ -230,7 +231,7 @@ class UeqSurveyController extends Controller
     
     public function thankyou()
     {
-        return \Inertia\Inertia::render('Mahasiswa/Ueq-Survey/ThankYou');
+        return Inertia::render('Mahasiswa/Ueq/ThankYou/Index');
     }
 
     /**

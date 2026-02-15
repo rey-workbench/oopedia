@@ -30,7 +30,7 @@ class MaterialController extends Controller
 
     public function create()
     {
-        return Inertia::render('Admin/Materials/Create');
+        return Inertia::render('Admin/Materials/Create/Index');
     }
 
     public function store(Request $request)
@@ -61,7 +61,7 @@ class MaterialController extends Controller
     public function edit(Material $material)
     {
         $material->load('media'); // Ensure media is loaded
-        return Inertia::render('Admin/Materials/Edit', compact('material'));
+        return Inertia::render('Admin/Materials/Edit/Index', compact('material'));
     }
 
     public function update(Request $request, Material $material)

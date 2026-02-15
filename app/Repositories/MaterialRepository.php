@@ -47,7 +47,7 @@ class MaterialRepository
 
     public function countAll()
     {
-        return Material::count();
+        return Material::count('*');
     }
 
     public function getAllWithQuestions()

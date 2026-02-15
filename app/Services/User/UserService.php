@@ -74,10 +74,12 @@ class UserService
 
     public function getPendingAdmins($perPage = null)
     {
-        // Get users with role 2 (admin) who are NOT approved
-        // Pass null for perPage to get all records if needed, but keeping perPage for flexibility
-        // Default sorting is created_at desc
         return $this->userRepo->getUsersByRoleAndApproval(2, false, null, $perPage);
+    }
+
+    public function getPendingAdminsCount()
+    {
+        return $this->userRepo->getUsersByRoleAndApproval(2, false, null, null)->count();
     }
 
     public function approveAdmin($user)

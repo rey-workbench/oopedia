@@ -8,15 +8,22 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
+use App\Services\User\UserService;
 
 class LoginController extends Controller
 {
+    protected $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public function create()
     {
-        return Inertia::render('Auth/Login');
+        return Inertia::render('Auth/Login/Index');
     }
 
     public function store(Request $request)
@@ -31,7 +38,7 @@ class LoginController extends Controller
             $user = Auth::user();
             
             // Refresh user data dari database
-            $user = User::find($user->id);
+            $user = $this->userService->getUserById($user->id);
             
             // Cek role dan status approval
             if ($user->role_id == 1) {

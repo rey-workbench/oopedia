@@ -33,7 +33,7 @@ class AdminStudentController extends Controller
     
         $data = $this->studentService->getStudentProgressDetail($student);
 
-        return Inertia::render('Admin/Students/Progress', [
+        return Inertia::render('Admin/Students/Progress/Index', [
             'student' => $student,
             'materials' => $data['materials'],
             'recent_activities' => $data['recent_activities'],
@@ -82,7 +82,7 @@ class AdminStudentController extends Controller
     
     public function showImportForm()
     {
-        return Inertia::render('Admin/Students/Import');
+        return Inertia::render('Admin/Students/Import/Index');
     }
     
     public function processImport(Request $request)

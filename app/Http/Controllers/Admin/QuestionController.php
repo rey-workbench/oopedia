@@ -47,10 +47,10 @@ class QuestionController extends Controller
             $subMaterials = collect();
         }
 
-        return Inertia::render('Admin/Questions/Create', compact('materials', 'material', 'subMaterials'));
+        return Inertia::render('Admin/Questions/Create/Index', compact('materials', 'material', 'subMaterials'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request, Material $material = null)
     {
         $baseValidation = [
             'question_text' => 'required|string',
@@ -130,7 +130,7 @@ class QuestionController extends Controller
         $material = $question->material;
         $subMaterials = $material ? $material->subMaterials()->orderBy('order')->get() : collect();
         
-        return Inertia::render('Admin/Questions/Edit', compact('question', 'materials', 'material', 'subMaterials'));
+        return Inertia::render('Admin/Questions/Edit/Index', compact('question', 'materials', 'material', 'subMaterials'));
     }
 
     public function update(Request $request, Material $material = null, Question $question)

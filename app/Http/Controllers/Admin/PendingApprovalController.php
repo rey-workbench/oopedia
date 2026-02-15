@@ -34,7 +34,7 @@ class PendingApprovalController extends Controller
                 return redirect()->route('admin.dashboard');
             }
             
-            return Inertia::render('Admin/Users/PendingApproval');
+            return Inertia::render('Admin/Users/PendingApproval/Index');
         }
         
         // Jika bukan superadmin atau admin yang belum diapprove, redirect sesuai role

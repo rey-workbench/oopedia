@@ -17,8 +17,7 @@ Route::middleware('auth')->group(function () {
     Route::get('admin/pending-approval', [PendingApprovalController::class, 'index'])
         ->name('admin.pending-approval');
         
-    // Admin Routes (using 'role.admin' alias from Kernel: role 1 or 2 + approval check)
-    Route::middleware(['role.admin', 'admin.approved'])->name('admin.')->prefix('admin')->group(function () {
+    Route::middleware(['role:1|2', 'admin.approved'])->name('admin.')->prefix('admin')->group(function () {
         // Dashboard
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         
@@ -40,8 +39,8 @@ Route::middleware('auth')->group(function () {
             Route::get('students/download-template', 'downloadTemplate')->name('students.download-template');
         });
 
-        // Admin management routes (only for superadmin - using 'role.superadmin' alias)
-        Route::middleware(['role.superadmin'])->group(function () {
+        // Admin management routes (only for superadmin - using 'role:1')
+        Route::middleware(['role:1'])->group(function () {
             // Admin approval
             Route::get('/pending-admins', [AdminUserController::class, 'pendingAdmins'])->name('pending-admins');
             Route::post('/users/{user}/approve', [AdminUserController::class, 'approveAdmin'])->name('users.approve');

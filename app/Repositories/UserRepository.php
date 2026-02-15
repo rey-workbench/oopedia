@@ -49,7 +49,7 @@ class UserRepository
 
     public function countAll()
     {
-        return User::count();
+        return User::count('*');
     }
 
     public function getStudentsList($search = null, $perPage = 10)
@@ -176,6 +176,6 @@ class UserRepository
 
     public function countByRole($roleId)
     {
-        return User::where('role_id', $roleId)->count();
+        return User::where('role_id', $roleId)->count('*');
     }
 }

@@ -21,7 +21,7 @@ class MaterialController extends Controller
         
         $data = $this->materialViewService->getSubMaterialDetail($materialId, $subMaterialId, $isGuest);
         
-        return Inertia::render('Mahasiswa/SubMaterials/Show', $data);
+        return Inertia::render('Mahasiswa/SubMaterials/Show/Index', $data);
     }
 
     public function show($id)
@@ -31,7 +31,7 @@ class MaterialController extends Controller
 
         $data = $this->materialViewService->getMaterialDetail($id, $userId, $isGuest);
 
-        return Inertia::render('Mahasiswa/Materials/Show', $data);
+        return Inertia::render('Mahasiswa/Materials/Show/Index', $data);
     }
 
     public function index()

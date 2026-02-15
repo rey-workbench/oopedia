@@ -151,6 +151,6 @@ class UeqSurveyController extends Controller
         $survey = $this->ueqService->getStudentDetail($userId);
         $user = $survey->user;
 
-        return Inertia::render('Admin/Ueq/Detail', compact('survey', 'user'));
+        return Inertia::render('Admin/Ueq/Detail/Index', compact('survey', 'user'));
     }
 } 
