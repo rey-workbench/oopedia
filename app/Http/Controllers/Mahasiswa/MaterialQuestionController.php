@@ -85,7 +85,14 @@ class MaterialQuestionController extends Controller
         }
         
         $isGuest = $this->isGuestUser();
-        $difficulty = $request->query('difficulty', $isGuest ? 'beginner' : 'all');
+        
+        // Get difficulty from session, fallback to default based on user type
+        $defaultDifficulty = $isGuest ? 'beginner' : 'all';
+        $difficulty = session('quiz_difficulty', $defaultDifficulty);
+        
+        // Clear session after reading to prevent persistence across different materials
+        session()->forget('quiz_difficulty');
+        
         $guestProgress = $this->getGuestProgress($request);
         $userId = $this->getUserId();
 

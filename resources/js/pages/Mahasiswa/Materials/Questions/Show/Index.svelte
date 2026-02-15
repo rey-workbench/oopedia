@@ -376,7 +376,7 @@
                         <div class="p-10 bg-white">
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <a
-                                    href={`/mahasiswa/materials/${material.id}/questions/levels?difficulty=${difficulty}`}
+                                    href={`/mahasiswa/materials/${material.id}/questions/levels`}
                                     class="group p-6 rounded-2xl bg-slate-50 border-2 border-transparent hover:border-emerald-200 hover:bg-emerald-50 transition-all text-center"
                                 >
                                     <div

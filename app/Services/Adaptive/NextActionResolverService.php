@@ -55,10 +55,15 @@ class NextActionResolverService
     {
         $hasBeginner = $this->questionService->existsByMaterialAndDifficulty($material->id, 'beginner');
         
+        // Store difficulty preference in session
+        if ($hasBeginner) {
+            session(['quiz_difficulty' => 'beginner']);
+        }
+        
         return [
             'label' => $hasBeginner ? 'Coba Soal Pemula' : 'Ulas Materi Dasar',
             'url' => $hasBeginner 
-                ? route('mahasiswa.materials.questions.show', ['material' => $material->id, 'difficulty' => 'beginner'])
+                ? route('mahasiswa.materials.questions.show', ['material' => $material->id])
                 : route('mahasiswa.materials.show', $material->id),
             'type' => $hasBeginner ? 'question' : 'material'
         ];
@@ -68,12 +73,17 @@ class NextActionResolverService
     {
         $hasHard = $this->questionService->existsByMaterialAndDifficulty($material->id, 'hard');
         
+        // Store difficulty preference in session
+        if ($hasHard) {
+            session(['quiz_difficulty' => 'hard']);
+        }
+        
         return [
-            'label' => $hasHard ? 'Tantangan Menantang' : 'Lanjut ke Materi Baru',
+            'label' => $hasHard ? 'Tantangan Menantang' : 'Ulas Materi Lagi',
             'url' => $hasHard
-                ? route('mahasiswa.materials.questions.show', ['material' => $material->id, 'difficulty' => 'hard'])
-                : route('mahasiswa.dashboard'),
-            'type' => $hasHard ? 'question' : 'navigation'
+                ? route('mahasiswa.materials.questions.show', ['material' => $material->id])
+                : route('mahasiswa.materials.show', $material->id),
+            'type' => $hasHard ? 'question' : 'material'
         ];
     }
 

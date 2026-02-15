@@ -258,7 +258,7 @@
                     <!-- Footer Actions -->
                     <div class="mt-6 flex gap-3 justify-center">
                         <Button
-                            href={`/mahasiswa/materials/${material.id}/questions?difficulty=${difficulty}`}
+                            href={`/mahasiswa/materials/${material.id}/questions`}
                             variant="primary"
                             icon={ArrowLeft}
                         >

@@ -32,11 +32,13 @@
 
     const dispatch = createEventDispatcher();
 
-    // Parse adaptive result
+    // Parse adaptive result with fallbacks
     $: actionCode = feedbackData.adaptiveResult?.triggered_rule?.action || null;
     $: nextAction =
         feedbackData.adaptiveResult?.new_state?.next_action_data?.label ||
-        "Lanjut";
+        (feedbackData.status === "success" ? "Lanjut" : "Lihat Materi");
+    $: nextActionType =
+        feedbackData.adaptiveResult?.new_state?.next_action_data?.type || "question";
     $: recommendation =
         feedbackData.adaptiveResult?.new_state?.recommendation || null;
     $: triggeredRule = feedbackData.adaptiveResult?.triggered_rule || null;
@@ -49,11 +51,22 @@
     $: fastTrackActive =
         feedbackData.adaptiveResult?.new_state?.fast_track_active || false;
 
-    // Determine modal variant based on action code
+    // Determine modal variant based on action code and intervention type
     function getModalVariant() {
         if (certification) return "certificate"; // H09, H10, H11
+        
+        // Check intervention type first (crisis/recovery/persistent) - these should NEVER show "Try Again"
+        if (interventionType?.includes("crisis") || 
+            interventionType?.includes("recovery") || 
+            interventionType?.includes("persistent") || 
+            interventionType?.includes("project_revision") ||
+            interventionType?.includes("safety"))
+            return "intervention";
+            
+        // Also check by action code
         if (["H01", "H02", "H03", "H04"].includes(actionCode))
             return "intervention"; // Crisis/Recovery
+            
         if (actionCode === "H06") return "acceleration"; // Accelerated Jump
         if (actionCode === "H07") return "backtrack"; // Critical Backtracking
         if (actionCode === "H08") return "graduation"; // Module Graduation
@@ -648,7 +661,7 @@
                     <div
                         class="flex flex-col sm:flex-row gap-4 justify-center"
                     >
-                        {#if feedbackData.status === "error"}
+                        {#if feedbackData.status === "error" && nextActionType !== "material" && !recommendation}
                             <Button
                                 variant="outline"
                                 on:click={handleTryAgain}
@@ -662,9 +675,7 @@
                             on:click={handleNext}
                             class="px-8 py-3 uppercase tracking-widest text-sm font-bold"
                         >
-                            {feedbackData.status === "success"
-                                ? "Lanjut"
-                                : "Lihat Materi"}
+                            {nextAction}
                             <ArrowRight size={18} class="ml-2" />
                         </Button>
                     </div>

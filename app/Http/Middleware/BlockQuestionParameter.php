@@ -15,8 +15,13 @@ class BlockQuestionParameter
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Block any attempt to pass 'question' query parameter
-        if ($request->has('question')) {
+        // Block any attempt to pass 'question' or 'difficulty' query parameters
+        if ($request->has('question') || $request->has('difficulty')) {
+            // Store difficulty in session if provided before blocking
+            if ($request->has('difficulty')) {
+                $request->session()->put('quiz_difficulty', $request->query('difficulty'));
+            }
+            
             return redirect()->to($request->url());
         }
 

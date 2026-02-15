@@ -3,8 +3,8 @@
     import PageHeader from "../../../../components/ui/PageHeader.svelte";
     import Card from "../../../../components/ui/Card.svelte";
     import Button from "../../../../components/ui/Button.svelte";
-    import { Link } from "@inertiajs/svelte";
-    import { ArrowLeft, BookOpen, Layers, Puzzle } from "lucide-svelte";
+    import { Link, page } from "@inertiajs/svelte";
+    import { ArrowLeft, BookOpen, Layers, Puzzle, Info, ArrowRight } from "lucide-svelte";
     import {
         getGradientClass,
         getTextClass,
@@ -18,6 +18,9 @@
 
     // Handling subMaterials properly if it comes as an array or object
     $: subMaterials = material.subMaterials || material.sub_materials || [];
+    
+    // Check if user was redirected from adaptive system
+    $: fromAdaptive = $page.props?.flash?.from_adaptive || false;
 </script>
 
 <App title={material?.title || "Material"}>
@@ -66,6 +69,28 @@
             </div>
         </PageHeader>
 
+        <!-- Adaptive System Alert -->
+        {#if fromAdaptive}
+            <Card class="border-l-4 border-blue-500 bg-blue-50">
+                <div class="flex items-start gap-4">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center shrink-0"
+                    >
+                        <Info size={24} class="text-blue-600" />
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-bold text-blue-900 mb-1">
+                            Rekomendasi Sistem Adaptif
+                        </h3>
+                        <p class="text-sm text-blue-700 leading-relaxed">
+                            Sistem merekomendasikan Anda untuk mengulas kembali materi ini. 
+                            Pilih sub-materi yang ingin dipelajari untuk memperkuat pemahaman.
+                        </p>
+                    </div>
+                </div>
+            </Card>
+        {/if}
+
         <!-- Sub-Materials Grid -->
         <div>
             <div class="flex items-center justify-between mb-8">
@@ -93,9 +118,17 @@
                     >
                         Belum Ada Sub-Materi
                     </h3>
-                    <p class="text-slate-400 text-sm max-w-xs mx-auto">
+                    <p class="text-slate-400 text-sm max-w-xs mx-auto mb-6">
                         Sub-materi untuk topik ini sedang dalam pengembangan.
                     </p>
+                    <Button
+                        href="/mahasiswa/materials"
+                        variant="outline"
+                        icon={ArrowLeft}
+                        class="mx-auto"
+                    >
+                        Kembali ke Daftar Materi
+                    </Button>
                 </Card>
             {:else}
                 <div

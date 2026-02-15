@@ -125,9 +125,25 @@
                     ></div>
                 </div>
 
-                <div class="text-slate-700 leading-relaxed whitespace-pre-line">
-                    {subMaterial.content || ""}
-                </div>
+                {#if subMaterial.content && subMaterial.content.trim()}
+                    <div class="text-slate-700 leading-relaxed whitespace-pre-line">
+                        {subMaterial.content}
+                    </div>
+                {:else}
+                    <div class="text-center py-12">
+                        <div
+                            class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                        >
+                            <BookOpen size={32} class="text-slate-300" />
+                        </div>
+                        <p class="text-slate-400 font-medium">
+                            Konten materi sedang dalam pengembangan.
+                        </p>
+                        <p class="text-sm text-slate-300 mt-2">
+                            Silakan lanjutkan ke latihan soal atau sub-materi lainnya.
+                        </p>
+                    </div>
+                {/if}
             </article>
 
             <!-- Action Footer -->
