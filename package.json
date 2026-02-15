@@ -6,28 +6,30 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "@inertiajs/svelte": "^2.3.13",
+        "@inertiajs/svelte": "^2.3.15",
         "@sveltejs/vite-plugin-svelte": "^6.2.4",
         "@tailwindcss/postcss": "^4.1.18",
-        "autoprefixer": "^10.4.23",
-        "axios": "^1.6.4",
-        "laravel-vite-plugin": "^1.0.0",
+        "@types/lodash": "^4.17.23",
+        "@types/node": "^25.2.3",
+        "autoprefixer": "^10.4.24",
+        "axios": "^1.13.5",
+        "laravel-vite-plugin": "^1.3.0",
         "postcss": "^8.5.6",
-        "svelte": "^5.50.0",
-        "svelte-check": "^4.3.6",
+        "svelte": "^5.51.1",
+        "svelte-check": "^4.4.0",
         "tailwindcss": "^4.1.18",
         "tslib": "^2.8.1",
         "typescript": "^5.9.3",
         "vite": "^6.4.1"
     },
     "dependencies": {
-        "@inertiajs/vue3": "^2.3.13",
+        "@inertiajs/vue3": "^2.3.15",
         "@tailwindcss/vite": "^4.1.18",
         "@vitejs/plugin-vue": "^6.0.4",
-        "apexcharts": "^5.3.6",
-        "lodash": "^4.17.21",
+        "apexcharts": "^5.4.0",
+        "lodash": "^4.17.23",
         "lucide-svelte": "^0.563.0",
         "quill": "^2.0.3",
-        "vue": "^3.5.27"
+        "vue": "^3.5.28"
     }
 }
