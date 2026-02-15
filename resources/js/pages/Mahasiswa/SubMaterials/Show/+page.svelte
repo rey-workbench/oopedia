@@ -67,10 +67,10 @@
             <div slot="actions">
                 <div class="flex items-center gap-4">
                     <div
-                        class={`px-4 py-2 ${getBgClass(subMaterial.jenis_konten)} border ${getBorderClass(subMaterial.jenis_konten)} rounded-2xl`}
+                        class={`px-4 py-2 ${getBgClass(subMaterial.jenis_konten)} rounded-2xl flex items-center justify-center`}
                     >
                         <span
-                            class={`text-[10px] font-bold ${getSubMaterialText(subMaterial.jenis_konten)} uppercase tracking-widest`}
+                            class="text-[10px] font-bold text-white uppercase tracking-widest"
                         >
                             {subMaterial.jenis_konten === "sintaks"
                                 ? "Sintaks"
