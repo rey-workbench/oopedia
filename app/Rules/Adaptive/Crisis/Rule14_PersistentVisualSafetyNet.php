@@ -17,22 +17,22 @@ class Rule14_PersistentVisualSafetyNet extends BaseAdaptiveRule
     protected string $ruleName = 'Persistent Visual Safety Net';
     protected string $actionCode = 'H01';
     protected int $priority = 5; // Highest priority (persistent failure)
-    
+
     public function evaluate(array $facts): bool
     {
         return $this->hasAnyFact($facts, ['G01', 'G02'])
             && $this->hasFact($facts, 'G22')
             && $this->hasFact($facts, 'G07');
     }
-    
+
     public function apply(array $state, array $context): array
     {
-        $state['recommendation'] = 'Bantuan Visual Intensif';
+        $state['recommendation'] = 'Bantuan Komprehensif';
         $state['next_action'] = 'STUDY_MATERIAL';
-        $state['message'] = 'Anda mengalami kesulitan pada materi ini. Mari kita ulas dengan Video Tutorial step-by-step.';
+        $state['message'] = 'Anda mengalami kesulitan signifikan. Mari kita ulas materi secara menyeluruh.';
         $state['intervention_type'] = 'persistent_visual_safety';
         $state['force_material_review'] = true;
-        
+
         return $state;
     }
 }

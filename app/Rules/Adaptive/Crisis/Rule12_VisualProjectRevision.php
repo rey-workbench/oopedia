@@ -16,21 +16,21 @@ class Rule12_VisualProjectRevision extends BaseAdaptiveRule
     protected string $ruleName = 'Visual Project Revision';
     protected string $actionCode = 'H01';
     protected int $priority = 15; // High priority (project failure)
-    
+
     public function evaluate(array $facts): bool
     {
         return $this->hasFact($facts, 'G18')
             && $this->hasAnyFact($facts, ['G01', 'G02'])
             && $this->hasFact($facts, 'G07');
     }
-    
+
     public function apply(array $state, array $context): array
     {
-        $state['recommendation'] = 'Revisi Proyek - Materi Visual';
+        $state['recommendation'] = 'Revisi Proyek - Ulas Materi';
         $state['next_action'] = 'STUDY_MATERIAL';
-        $state['message'] = 'Proyek Anda perlu perbaikan. Mari ulas kembali konsep dengan Video Tutorial.';
+        $state['message'] = 'Proyek Anda perlu perbaikan. Mari ulas kembali konsep fundamental.';
         $state['intervention_type'] = 'visual_project_revision';
-        
+
         return $state;
     }
 }

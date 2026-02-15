@@ -17,22 +17,22 @@ class Rule15_PersistentTextualSafetyNet extends BaseAdaptiveRule
     protected string $ruleName = 'Persistent Textual Safety Net';
     protected string $actionCode = 'H02';
     protected int $priority = 5; // Highest priority (persistent failure)
-    
+
     public function evaluate(array $facts): bool
     {
         return $this->hasAnyFact($facts, ['G01', 'G02'])
             && $this->hasFact($facts, 'G22')
             && $this->hasFact($facts, 'G08');
     }
-    
+
     public function apply(array $state, array $context): array
     {
-        $state['recommendation'] = 'Bantuan Tekstual Intensif';
+        $state['recommendation'] = 'Bantuan Komprehensif';
         $state['next_action'] = 'STUDY_MATERIAL';
-        $state['message'] = 'Anda mengalami kesulitan pada materi ini. Mari kita ulas dengan Penjelasan Tertulis yang detail.';
+        $state['message'] = 'Anda mengalami kesulitan signifikan. Mari kita ulas materi secara menyeluruh.';
         $state['intervention_type'] = 'persistent_textual_safety';
         $state['force_material_review'] = true;
-        
+
         return $state;
     }
 }

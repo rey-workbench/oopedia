@@ -11,6 +11,7 @@ class SubMaterial extends Model
         'title',
         'content',
         'jenis_konten',
+        'learning_style',
         'order',
     ];
 
@@ -52,5 +53,13 @@ class SubMaterial extends Model
     public function scopeByJenis($query, string $jenis)
     {
         return $query->where('jenis_konten', $jenis);
+    }
+
+    /**
+     * Scope to filter by learning_style.
+     */
+    public function scopeByLearningStyle($query, string $style)
+    {
+        return $query->where('learning_style', $style);
     }
 }

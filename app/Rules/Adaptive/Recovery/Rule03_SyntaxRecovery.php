@@ -17,19 +17,19 @@ class Rule03_SyntaxRecovery extends BaseAdaptiveRule
     protected string $ruleName = 'Syntax Recovery';
     protected string $actionCode = 'H03';
     protected int $priority = 20; // Medium-high priority
-    
+
     public function evaluate(array $facts): bool
     {
         return $this->hasAllFacts($facts, ['G02', 'G09', 'G16', 'G12']);
     }
-    
+
     public function apply(array $state, array $context): array
     {
         $state['recommendation'] = 'Latihan Sintaksis';
-        $state['next_action'] = 'REDUCE_DIFFICULTY';
-        $state['message'] = 'Sepertinya Anda butuh penguatan sintaks dasar. Mari coba soal yang lebih mudah dengan fokus pada penulisan kode.';
+        $state['next_action'] = 'STUDY_SYNTAX';
+        $state['message'] = 'Sepertinya Anda butuh penguatan sintaks. Mari pelajari contoh kode secara mendalam.';
         $state['recovery_type'] = 'syntax';
-        
+
         return $state;
     }
 }

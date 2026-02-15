@@ -17,20 +17,20 @@ class Rule01_VisualCrisisIntervention extends BaseAdaptiveRule
     protected string $ruleName = 'Visual Crisis Intervention';
     protected string $actionCode = 'H01';
     protected int $priority = 10; // High priority (crisis)
-    
+
     public function evaluate(array $facts): bool
     {
         return $this->hasAllFacts($facts, ['G01', 'G07', 'G15'])
             && $this->notHasFact($facts, 'G22');
     }
-    
+
     public function apply(array $state, array $context): array
     {
-        $state['recommendation'] = 'Materi Visual';
+        $state['recommendation'] = 'Ulas Materi';
         $state['next_action'] = 'STUDY_MATERIAL';
-        $state['message'] = 'Performa Anda menurun. Mari ulas kembali materi dengan format Video/Diagram UML.';
+        $state['message'] = 'Performa Anda menurun. Mari ulas kembali materi untuk memperkuat pemahaman.';
         $state['intervention_type'] = 'visual_crisis';
-        
+
         return $state;
     }
 }

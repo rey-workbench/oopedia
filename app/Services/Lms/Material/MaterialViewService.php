@@ -17,7 +17,8 @@ class MaterialViewService
         MaterialRepository $materialRepo,
         ProgressRepository $progressRepo,
         SubMaterialRepository $subMaterialRepo
-    ) {
+        )
+    {
         $this->materialRepo = $materialRepo;
         $this->progressRepo = $progressRepo;
         $this->subMaterialRepo = $subMaterialRepo;
@@ -37,7 +38,7 @@ class MaterialViewService
 
         $materials = $allMaterials->map(function ($material) use ($progressStats, $isGuest) {
             $configuredTotalQuestions = $this->calculateConfiguredQuestions($material, $isGuest);
-            
+
             // progressStats is a Collection of objects with material_id, correct_answers
             $materialProgress = $progressStats->firstWhere('material_id', $material->id);
             $correctAnswers = $materialProgress ? $materialProgress->correct_answers : 0;
@@ -73,7 +74,8 @@ class MaterialViewService
             $totalMaterials = $allMaterials->count();
             $materialsToShow = ceil($totalMaterials / 2);
             $materials = $allMaterials->take($materialsToShow);
-        } else {
+        }
+        else {
             $materials = $allMaterials;
         }
 
@@ -119,7 +121,7 @@ class MaterialViewService
         if (!$subMaterial) {
             abort(404, 'SubMaterial not found');
         }
-        
+
         return [
             'material' => $material,
             'subMaterial' => $subMaterial,
@@ -139,7 +141,8 @@ class MaterialViewService
             $mediumCount = min(3, $material->questions->where('difficulty', 'medium')->count());
             $hardCount = min(3, $material->questions->where('difficulty', 'hard')->count());
             return $beginnerCount + $mediumCount + $hardCount;
-        } else {
+        }
+        else {
             return $material->questions->count();
         }
     }

@@ -6,6 +6,8 @@
     import MultipleChoice from "../../../../../components/quiz/MultipleChoice.svelte";
     import FillInTheBlank from "../../../../../components/quiz/FillInTheBlank.svelte";
     import DragAndDrop from "../../../../../components/quiz/DragAndDrop.svelte";
+    import AdaptiveFeedbackModal from "../../../../../components/adaptive/AdaptiveFeedbackModal.svelte";
+    import AdaptiveIndicator from "../../../../../components/adaptive/AdaptiveIndicator.svelte";
     import { router, page } from "@inertiajs/svelte";
     import { onMount } from "svelte";
     import {
@@ -22,9 +24,6 @@
         ListOrdered,
         Book,
         Home,
-        XCircle,
-        RotateCcw,
-        ArrowRight,
     } from "lucide-svelte";
     import axios from "axios"; // Assuming axios is available, otherwise usage might need adjustment
     import GuestBanner from "../../../../../components/ui/GuestBanner.svelte";
@@ -63,6 +62,11 @@
 
     let usedHint = false;
     let startTime = Date.now();
+
+    // Adaptive UI State
+    let showAdaptiveIndicator = false;
+    let adaptiveFacts = [];
+    let adaptiveTriggeredRule = null;
 
     // Calculate Progress
     $: progressPercentage =
@@ -120,6 +124,14 @@
                 nextUrl: data.nextUrl,
                 adaptiveResult: data.adaptiveResult,
             };
+
+            // Update adaptive indicator with facts and rule
+            if (data.adaptiveResult) {
+                adaptiveFacts = data.adaptiveResult.facts || [];
+                adaptiveTriggeredRule =
+                    data.adaptiveResult.triggered_rule || null;
+                showAdaptiveIndicator = true;
+            }
 
             // Update local stats from adaptive result if available
             if (data.adaptiveResult?.new_state?.gamification_data) {
@@ -412,55 +424,21 @@
         </div>
     </div>
 
-    <!-- Feedback Modal -->
-    {#if showFeedback}
-        <div
-            class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm transition-all duration-300"
-        >
-            <div
-                class="bg-white rounded-3xl p-12 text-center shadow-2xl max-w-lg w-full mx-4 transform scale-100 transition-all"
-            >
-                <div class="text-8xl mb-6">
-                    {#if feedbackData.status === "success"}
-                        <CheckCircle2
-                            size={96}
-                            class="text-emerald-500 mx-auto"
-                        />
-                    {:else}
-                        <XCircle size={96} class="text-rose-500 mx-auto" />
-                    {/if}
-                </div>
+    <!-- Adaptive Feedback Modal -->
+    <AdaptiveFeedbackModal
+        show={showFeedback}
+        {feedbackData}
+        on:next={handleNext}
+        on:tryAgain={handleTryAgain}
+    />
 
-                <h2
-                    class={`text-4xl font-bold mb-4 uppercase tracking-widest ${feedbackData.status === "success" ? "text-emerald-600" : "text-rose-600"}`}
-                >
-                    {feedbackData.status === "success" ? "BENAR!" : "SALAH!"}
-                </h2>
-
-                <p class="text-lg text-slate-600 mb-8">
-                    {feedbackData.message}
-                </p>
-
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    {#if feedbackData.status === "error"}
-                        <Button
-                            variant="outline"
-                            on:click={handleTryAgain}
-                            class="px-8 py-3 uppercase tracking-widest text-sm font-bold"
-                        >
-                            <RotateCcw size={18} class="mr-2" /> Coba Lagi
-                        </Button>
-                    {:else}
-                        <Button
-                            variant="primary"
-                            on:click={handleNext}
-                            class="px-8 py-3 uppercase tracking-widest text-sm font-bold"
-                        >
-                            Lanjut <ArrowRight size={18} class="ml-2" />
-                        </Button>
-                    {/if}
-                </div>
-            </div>
-        </div>
+    <!-- Adaptive Indicator (Debug/Info Panel) -->
+    {#if !isGuest}
+        <AdaptiveIndicator
+            show={showAdaptiveIndicator}
+            facts={adaptiveFacts}
+            triggeredRule={adaptiveTriggeredRule}
+            isProcessing={isSubmitting}
+        />
     {/if}
 </App>
