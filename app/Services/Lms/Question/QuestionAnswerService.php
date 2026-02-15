@@ -2,26 +2,19 @@
 
 namespace App\Services\Lms\Question;
 
-use App\Repositories\QuestionRepository;
-use App\Repositories\AnswerRepository;
-use App\Repositories\ProgressRepository;
+use App\Contracts\Repositories\QuestionRepositoryInterface;
+use App\Contracts\Repositories\AnswerRepositoryInterface;
+use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Contracts\Services\QuestionAnswerServiceInterface;
 use Illuminate\Support\Facades\Log;
 
-class QuestionAnswerService
+class QuestionAnswerService implements QuestionAnswerServiceInterface
 {
-    protected $questionRepo;
-    protected $answerRepo;
-    protected $progressRepo;
-
     public function __construct(
-        QuestionRepository $questionRepo,
-        AnswerRepository $answerRepo,
-        ProgressRepository $progressRepo
-    ) {
-        $this->questionRepo = $questionRepo;
-        $this->answerRepo = $answerRepo;
-        $this->progressRepo = $progressRepo;
-    }
+        protected QuestionRepositoryInterface $questionRepo,
+        protected AnswerRepositoryInterface $answerRepo,
+        protected ProgressRepositoryInterface $progressRepo
+    ) {}
 
     public function checkAnswer($data, $userId, $isGuest)
     {

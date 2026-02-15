@@ -3,28 +3,29 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Question;
-use App\Models\Material;
 use Illuminate\Http\Request;
-use App\Services\Lms\Question\QuestionListingService;
-use App\Services\Lms\Question\QuestionService;
-use App\Services\Lms\Material\MaterialService;
+use App\Contracts\Services\QuestionServiceInterface;
+use App\Contracts\Services\MaterialServiceInterface;
+use App\Contracts\Repositories\MaterialRepositoryInterface;
 use Inertia\Inertia;
 
 class QuestionController extends Controller
 {
-
     public function __construct(
-        protected QuestionListingService $questionListingService,
-        protected QuestionService $questionService,
-        protected MaterialService $materialService
+        protected QuestionServiceInterface $questionService,
+        protected MaterialServiceInterface $materialService,
+        protected MaterialRepositoryInterface $materialRepo
     ) {}
 
-    public function index(Request $request, Material $material = null)
+    public function index(Request $request, int $materialId = null)
     {
         $search = $request->input('search');
         $difficulty = $request->input('difficulty');
-        $materialId = $material ? $material->id : null;
+        
+        $material = null;
+        if ($materialId) {
+            $material = $this->materialRepo->find($materialId);
+        }
 
         $questions = $this->questionService->getFilteredQuestions($search, $difficulty, $materialId, 10);
 
@@ -37,20 +38,28 @@ class QuestionController extends Controller
     }
 
 
-    public function create(Material $material = null)
+    public function create(int $materialId = null)
     {
-        if ($material) {
-            $materials = collect([$material]);
-            $subMaterials = $material->subMaterials()->orderBy('order')->get();
+        $material = null;
+        $subMaterials = collect();
+        
+        if ($materialId) {
+            $material = $this->materialRepo->find($materialId);
+            if ($material) {
+                $materials = collect([$material]);
+                $subMaterials = $material->subMaterials()->orderBy('order')->get();
+            } else {
+                return redirect()->route('admin.questions.index')
+                    ->with('error', 'Material tidak ditemukan');
+            }
         } else {
             $materials = $this->materialService->getAllMaterials();
-            $subMaterials = collect();
         }
 
         return Inertia::render('Admin/Questions/Create/Index', compact('materials', 'material', 'subMaterials'));
     }
 
-    public function store(Request $request, Material $material = null)
+    public function store(Request $request, int $materialId = null)
     {
         $baseValidation = [
             'question_text' => 'required|string',
@@ -107,33 +116,31 @@ class QuestionController extends Controller
 
         try {
             $this->questionService->createQuestion($data);
-
-            if ($material) {
-                return redirect()
-                    ->route('admin.materials.questions.index', $material)
-                    ->with('success', 'Soal berhasil ditambahkan.');
-            }
-
-            return redirect()
-                ->route('admin.questions.index')
+            
+            return redirect()->route('admin.questions.index', $materialId ? ['material' => $materialId] : [])
                 ->with('success', 'Soal berhasil ditambahkan.');
         } catch (\Exception $e) {
-            return redirect()->back()->withInput()->with('error', 'Gagal menambahkan soal: ' . $e->getMessage());
+            return back()->withInput()->withErrors(['error' => $e->getMessage()]);
         }
     }
 
-    public function edit(Material $material = null, Question $question)
+    public function edit(int $materialId = null, int $questionId)
     {
-        $materials = $this->materialService->getAllMaterials();
-        $question->load('answers');
+        $question = $this->questionService->getQuestionById($questionId);
         
-        $material = $question->material;
+        if (!$question) {
+            return redirect()->route('admin.questions.index')
+                ->with('error', 'Soal tidak ditemukan');
+        }
+        
+        $materials = $this->materialService->getAllMaterials();
+        $material = $this->materialRepo->find($question->material_id);
         $subMaterials = $material ? $material->subMaterials()->orderBy('order')->get() : collect();
         
         return Inertia::render('Admin/Questions/Edit/Index', compact('question', 'materials', 'material', 'subMaterials'));
     }
 
-    public function update(Request $request, Material $material = null, Question $question)
+    public function update(Request $request, int $materialId = null, int $questionId)
     {
         // Validasi dasar untuk semua field kecuali answers
         $baseValidation = [
@@ -173,44 +180,30 @@ class QuestionController extends Controller
             }
         }
 
+        $data = $request->only(['question_text', 'question_type', 'difficulty', 'material_id', 'sub_material_id']);
+        $data['answers'] = $request->answers;
+
         try {
-            $this->questionService->updateQuestion($question, $request->all());
-
-            $material = $question->material;
+            $this->questionService->updateQuestion($questionId, $data);
             
-            if ($material) {
-                return redirect()
-                    ->route('admin.materials.questions.index', $material)
-                    ->with('success', 'Question updated successfully.');
-            }
-
-            return redirect()
-                ->route('admin.questions.index')
-                ->with('success', 'Question updated successfully.');
+            return redirect()->route('admin.questions.index', $materialId ? ['material' => $materialId] : [])
+                ->with('success', 'Soal berhasil diperbarui.');
         } catch (\Exception $e) {
-            return redirect()->back()->withInput()->with('error', 'Gagal memperbarui soal: ' . $e->getMessage());
+            return back()->withInput()->withErrors(['error' => $e->getMessage()]);
         }
     }
 
-    public function destroy(Material $material = null, Question $question)
+    public function destroy(int $materialId = null, int $questionId)
     {
-        $material_id = $question->material_id;
-        
         try {
-            $this->questionService->deleteQuestion($question);
-
-            if ($material) {
-                return redirect()
-                    ->route('admin.materials.questions.index', $material)
-                    ->with('success', 'Soal berhasil dihapus.');
-            }
-
-            return redirect()
-                ->route('admin.questions.index')
+            $this->questionService->deleteQuestion($questionId);
+            
+            return redirect()->route('admin.questions.index', $materialId ? ['material' => $materialId] : [])
                 ->with('success', 'Soal berhasil dihapus.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menghapus soal: ' . $e->getMessage());
+            return redirect()->route('admin.questions.index', $materialId ? ['material' => $materialId] : [])
+                ->with('error', 'Gagal menghapus soal: ' . $e->getMessage());
         }
     }
 }
-    
+                

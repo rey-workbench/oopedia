@@ -2,9 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Contracts\Repositories\UeqSurveyRepositoryInterface;
 use App\Models\UeqSurvey;
 
-class UeqSurveyRepository
+class UeqSurveyRepository implements UeqSurveyRepositoryInterface
 {
     public function all()
     {

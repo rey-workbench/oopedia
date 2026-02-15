@@ -2,11 +2,12 @@
 
 namespace App\Repositories;
 
+use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class UserRepository
+class UserRepository implements UserRepositoryInterface
 {
     public function all()
     {
@@ -80,39 +81,66 @@ class UserRepository
         return $query->paginate($perPage);
     }
 
+    public function deleteStudentData($userId)
+    {
+        // Pure data deletion, no transaction (handled in service)
+        // Delete related data
+        if (Schema::hasTable('user_ranks')) {
+            DB::table('user_ranks')->where('user_id', $userId)->delete();
+        }
+        
+        if (Schema::hasTable('student_states')) {
+            DB::table('student_states')->where('user_id', $userId)->delete();
+        }
+        
+        if (Schema::hasTable('student_answers')) {
+            DB::table('student_answers')->where('student_id', $userId)->delete();
+        }
+        
+        if (Schema::hasTable('quiz_attempts')) {
+            DB::table('quiz_attempts')->where('user_id', $userId)->delete();
+        }
+        
+        // Delete the user
+        $user = User::find($userId);
+        if ($user) {
+            return $user->delete();
+        }
+        
+        return false;
+    }
+
     public function deleteStudentWithRelations($userId)
     {
+        // Deprecated: Use deleteStudentData() instead, transaction should be in service
+        // Keeping for backward compatibility
         DB::beginTransaction();
         
         try {
-            // Delete related data using Eloquent relationships where possible
-            if (Schema::hasTable('user_ranks')) {
-                DB::table('user_ranks')->where('user_id', $userId)->delete();
-            }
-            
-            // Progress table is gone, check student_states
-            if (Schema::hasTable('student_states')) {
-                DB::table('student_states')->where('user_id', $userId)->delete();
-            }
-            
-            if (Schema::hasTable('student_answers')) {
-                DB::table('student_answers')->where('student_id', $userId)->delete();
-            }
-            
-            if (Schema::hasTable('quiz_attempts')) {
-                DB::table('quiz_attempts')->where('user_id', $userId)->delete();
-            }
-            
-            // Delete the user
-            $user = User::find($userId);
-            $user->delete();
-            
+            $result = $this->deleteStudentData($userId);
             DB::commit();
-            return true;
+            return $result;
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
         }
+    }
+
+    public function findByEmail($email)
+    {
+        return User::where('email', $email)->first();
+    }
+
+    public function getUnapprovedStudents()
+    {
+        return User::where('role_id', 3)
+            ->where('is_approved', false)
+            ->get();
+    }
+
+    public function approveStudent($userId)
+    {
+        return $this->update($userId, ['is_approved' => true]);
     }
 
     public function createStudent(array $data)

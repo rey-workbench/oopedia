@@ -2,7 +2,8 @@
 
 namespace App\Services\User;
 
-use App\Repositories\UserRepository;
+use App\Contracts\Repositories\UserRepositoryInterface;
+use App\Contracts\Services\UserServiceInterface;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -10,12 +11,13 @@ use App\Mail\AdminApproved;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Exception;
 
-class UserService
+class UserService implements UserServiceInterface
 {
     protected $userRepo;
 
-    public function __construct(UserRepository $userRepo)
+    public function __construct(UserRepositoryInterface $userRepo)
     {
         $this->userRepo = $userRepo;
     }
@@ -40,7 +42,7 @@ class UserService
         return $this->userRepo->create($data);
     }
 
-    public function updateAdmin($user, array $data)
+    public function updateAdmin($userId, array $data)
     {
         if (isset($data['password']) && !empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
@@ -48,10 +50,10 @@ class UserService
             unset($data['password']);
         }
         
-        return $this->userRepo->update($user->id, $data);
+        return $this->userRepo->update($userId, $data);
     }
 
-    public function updateProfile($user, array $data)
+    public function updateProfile($userId, array $data)
     {
         if (isset($data['password']) && !empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
@@ -59,14 +61,19 @@ class UserService
             unset($data['password']);
         }
 
-        return $this->userRepo->update($user->id, $data);
+        return $this->userRepo->update($userId, $data);
     }
 
-    public function deleteAdmin($user)
+    public function deleteAdmin($userId)
     {
+        $user = $this->userRepo->find($userId);
+        if (!$user) {
+            throw new Exception('User not found');
+        }
+
         // Don't allow deleting self or superadmin (role 1)
         if ($user->id === auth()->id() || $user->role_id === 1) {
-            throw new \Exception('Tidak dapat menghapus user ini');
+            throw new Exception('Tidak dapat menghapus user ini');
         }
         
         return $this->userRepo->delete($user->id);
@@ -82,8 +89,13 @@ class UserService
         return $this->userRepo->getUsersByRoleAndApproval(2, false, null, null)->count();
     }
 
-    public function approveAdmin($user)
+    public function approveAdmin($userId)
     {
+        $user = $this->userRepo->find($userId);
+        if (!$user) {
+            throw new Exception('User not found');
+        }
+
         DB::beginTransaction();
         try {
             $this->userRepo->approveUser($user->id);            
@@ -97,10 +109,38 @@ class UserService
         }
     }
 
-    public function rejectAdmin($user)
+    public function rejectAdmin($userId)
     {
         // Simply delete the user request
-        return $this->userRepo->delete($user->id);
+        return $this->userRepo->delete($userId);
+    }
+
+    public function registerUser(array $data)
+    {
+        // Hash password
+        $data['password'] = Hash::make($data['password']);
+        
+        // Determine role_id based on email domain or provided role_id
+        if (!isset($data['role_id'])) {
+            $data['role_id'] = str_ends_with($data['email'], '@admin.oopedia.com') ? 2 : 3;
+        }
+        
+        // Admin auto-approved, students need approval
+        if (!isset($data['is_approved'])) {
+            $data['is_approved'] = ($data['role_id'] === 2);
+        }
+        
+        return $this->userRepo->create($data);
+    }
+
+    public function createStudent(array $data)
+    {
+        // Hash password
+        $data['password'] = Hash::make($data['password']);
+        $data['role_id'] = 3; // Student role
+        $data['is_approved'] = true; // Admin-created students are auto-approved
+        
+        return $this->userRepo->create($data);
     }
 
     public function importAdminsFromFile($file)

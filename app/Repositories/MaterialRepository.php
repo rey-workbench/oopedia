@@ -2,9 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Models\Material;
 
-class MaterialRepository
+class MaterialRepository implements MaterialRepositoryInterface
 {
     public function all()
     {
@@ -114,5 +115,16 @@ class MaterialRepository
         }
 
         return $query->with(['creator', 'subMaterials', 'media'])->get();
+    }
+
+    public function findWithRelations($id, array $relations = [])
+    {
+        $query = Material::query();
+        
+        if (!empty($relations)) {
+            $query->with($relations);
+        }
+        
+        return $query->findOrFail($id);
     }
 }

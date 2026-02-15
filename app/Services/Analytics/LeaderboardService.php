@@ -2,21 +2,16 @@
 
 namespace App\Services\Analytics;
 
-use App\Repositories\MaterialRepository;
-use App\Repositories\ProgressRepository;
+use App\Contracts\Repositories\MaterialRepositoryInterface;
+use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Contracts\Services\LeaderboardServiceInterface;
 
-class LeaderboardService
+class LeaderboardService implements LeaderboardServiceInterface
 {
-    protected $materialRepo;
-    protected $progressRepo;
-
     public function __construct(
-        MaterialRepository $materialRepo,
-        ProgressRepository $progressRepo
-    ) {
-        $this->materialRepo = $materialRepo;
-        $this->progressRepo = $progressRepo;
-    }
+        protected MaterialRepositoryInterface $materialRepo,
+        protected ProgressRepositoryInterface $progressRepo
+    ) {}
 
     public function getLeaderboardData($currentUserId)
     {

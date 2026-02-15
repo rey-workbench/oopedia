@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Contracts\Services\UserServiceInterface;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Validation\Rules;
 use Illuminate\Http\RedirectResponse;
@@ -14,6 +14,13 @@ use Inertia\Inertia;
 
 class RegisterController extends Controller
 {
+    protected $userService;
+
+    public function __construct(UserServiceInterface $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public function create()
     {
         return Inertia::render('Auth/Register/Index');
@@ -33,10 +40,10 @@ class RegisterController extends Controller
         // Admin baru perlu approval, mahasiswa langsung approved
         $is_approved = $role_id == 3;
 
-        $user = User::create([
+        $user = $this->userService->registerUser([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => $request->password, // Will be hashed in service
             'role_id' => $role_id,
             'is_approved' => $is_approved,
         ]);

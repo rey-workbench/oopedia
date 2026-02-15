@@ -9,16 +9,10 @@ use Inertia\Inertia;
 
 class MahasiswaController extends Controller
 {
-    protected $materialRepo;
-    protected $leaderboardService;
-
     public function __construct(
-        MaterialRepository $materialRepo,
-        LeaderboardService $leaderboardService
-    ) {
-        $this->materialRepo = $materialRepo;
-        $this->leaderboardService = $leaderboardService;
-    }
+        protected \App\Contracts\Repositories\MaterialRepositoryInterface $materialRepo,
+        protected \App\Contracts\Services\LeaderboardServiceInterface $leaderboardService
+    ) {}
 
     public function materi($slug = null)
     {

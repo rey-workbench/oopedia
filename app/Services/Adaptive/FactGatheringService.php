@@ -4,6 +4,7 @@ namespace App\Services\Adaptive;
 
 use App\Models\StudentState;
 use App\Repositories\ProgressRepository;
+use App\Repositories\QuestionRepository;
 
 /**
  * FactGatheringService
@@ -14,7 +15,8 @@ use App\Repositories\ProgressRepository;
 class FactGatheringService
 {
     public function __construct(
-        protected ProgressRepository $progressRepo
+        protected ProgressRepository $progressRepo,
+        protected QuestionRepository $questionRepo
     ) {}
     
     /**
@@ -119,7 +121,7 @@ class FactGatheringService
         }
         
         // Get question type from database
-        $question = \App\Models\Question::find($questionId);
+        $question = $this->questionRepo->find($questionId);
         $questionType = $question?->type ?? 'teori';
         
         // Syntax questions → G09, Theory/Logic questions → G10

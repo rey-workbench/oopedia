@@ -10,16 +10,10 @@ use Inertia\Inertia;
 
 class ProfileController extends Controller
 {
-    protected $materialRepo;
-    protected $userService;
-
     public function __construct(
-        MaterialRepository $materialRepo,
-        UserService $userService
-    ) {
-        $this->materialRepo = $materialRepo;
-        $this->userService = $userService;
-    }
+        protected \App\Contracts\Repositories\MaterialRepositoryInterface $materialRepo,
+        protected \App\Contracts\Services\UserServiceInterface $userService
+    ) {}
 
     public function show()
     {

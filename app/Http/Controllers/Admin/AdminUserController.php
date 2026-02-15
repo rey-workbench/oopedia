@@ -3,19 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Role;
-use App\Services\User\UserService;
+use App\Contracts\Services\UserServiceInterface;
+use App\Contracts\Repositories\RoleRepositoryInterface;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class AdminUserController extends Controller
 {
-    protected $userService;
-
-    public function __construct(UserService $userService)
-    {
-        $this->userService = $userService;
-    }
+    public function __construct(
+        protected UserServiceInterface $userService,
+        protected RoleRepositoryInterface $roleRepo
+    ) {}
 
     public function index(Request $request)
     {
@@ -29,7 +27,7 @@ class AdminUserController extends Controller
 
     public function create()
     {
-        $roles = Role::all();
+        $roles = $this->roleRepo->all();
         return Inertia::render('Admin/Users/Create/Index', compact('roles'));
     }
 
@@ -51,8 +49,15 @@ class AdminUserController extends Controller
         }
     }
 
-    public function edit(User $user)
+    public function edit(int $userId)
     {
+        $user = $this->userService->getUserById($userId);
+        
+        if (!$user) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'User tidak ditemukan');
+        }
+        
         // Ensure editable user is admin
         if ($user->role_id != 2) {
             return redirect()->route('admin.users.index')
@@ -62,16 +67,23 @@ class AdminUserController extends Controller
         return Inertia::render('Admin/Users/Edit/Index', compact('user'));
     }
 
-    public function update(Request $request, User $user)
+    public function update(Request $request, int $userId)
     {
+        $user = $this->userService->getUserById($userId);
+        
+        if (!$user) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'User tidak ditemukan');
+        }
+        
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'email' => 'required|string|email|max:255|unique:users,email,' . $userId,
             'password' => 'nullable|string|min:8|confirmed',
         ]);
         
         try {
-            $this->userService->updateAdmin($user, $request->all());
+            $this->userService->updateAdmin($userId, $request->all());
             
             return redirect()->route('admin.users.index')
                 ->with('success', 'Data admin berhasil diperbarui');
@@ -80,10 +92,10 @@ class AdminUserController extends Controller
         }
     }
 
-    public function destroy(User $user)
+    public function destroy(int $userId)
     {
         try {
-            $this->userService->deleteAdmin($user);
+            $this->userService->deleteAdmin($userId);
             
             return redirect()->route('admin.users.index')
                 ->with('success', 'Admin berhasil dihapus');
@@ -100,10 +112,10 @@ class AdminUserController extends Controller
         return Inertia::render('Admin/Users/Pending/Index', compact('pendingAdmins'));
     }
 
-    public function approveAdmin(User $user)
+    public function approveAdmin(int $userId)
     {
         try {
-            $this->userService->approveAdmin($user);
+            $this->userService->approveAdmin($userId);
             
             return redirect()->route('admin.pending-admins')
                 ->with('success', 'Admin berhasil disetujui');
@@ -113,10 +125,10 @@ class AdminUserController extends Controller
         }
     }
 
-    public function rejectAdmin(User $user)
+    public function rejectAdmin(int $userId)
     {
         try {
-            $this->userService->rejectAdmin($user);
+            $this->userService->rejectAdmin($userId);
             
             return redirect()->route('admin.pending-admins')
                 ->with('success', 'Permintaan admin ditolak');

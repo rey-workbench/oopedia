@@ -6,29 +6,31 @@ use App\Http\Controllers\Controller;
 use App\Models\Material;
 use App\Models\Question;
 use Illuminate\Http\Request;
-use App\Services\Lms\Question\QuestionListingService;
-use App\Services\Lms\Question\QuestionAnswerService;
-use App\Repositories\MaterialRepository;
-use App\Repositories\ProgressRepository;
+use App\Contracts\Services\MaterialServiceInterface;
+use App\Contracts\Services\QuestionServiceInterface;
+use App\Contracts\Services\QuestionAnswerServiceInterface;
+use App\Contracts\Services\QuestionListingServiceInterface;
+use App\Contracts\Services\ProgressServiceInterface;
+use App\Contracts\Services\AdaptiveEngineServiceInterface;
 use App\Services\Gamification\QuizRewardService;
 use App\Services\Gamification\StreakService;
 use App\Services\User\PerformanceService;
 use App\Services\Adaptive\FactGatheringService;
-use App\Services\Adaptive\AdaptiveEngineService;
 use Inertia\Inertia;
 
 class MaterialQuestionController extends Controller
 {
     public function __construct(
-        protected QuestionListingService $materialQuestionService,
-        protected QuestionAnswerService $questionAnswerService,
+        protected MaterialServiceInterface $materialService,
+        protected QuestionServiceInterface $questionService,
+        protected QuestionListingServiceInterface $questionListingService,
+        protected QuestionAnswerServiceInterface $questionAnswerService,
+        protected ProgressServiceInterface $progressService,
         protected QuizRewardService $rewardService,
         protected StreakService $streakService,
         protected PerformanceService $performanceService,
         protected FactGatheringService $factGathering,
-        protected AdaptiveEngineService $adaptiveEngine,
-        protected MaterialRepository $materialRepo,
-        protected ProgressRepository $progressRepo
+        protected AdaptiveEngineServiceInterface $adaptiveEngine
     ) {}
 
     // ==================== HELPER METHODS ====================
@@ -64,7 +66,7 @@ class MaterialQuestionController extends Controller
         $userId = $this->getUserId();
         $guestProgress = $this->getGuestProgress($request);
 
-        $materials = $this->materialQuestionService->getMaterialsListWithStudentCount($userId, $isGuest, $guestProgress);
+        $materials = $this->questionListingService->getMaterialsListWithStudentCount($userId, $isGuest, $guestProgress);
 
         return Inertia::render('Mahasiswa/Materials/Questions/Index', compact('materials', 'isGuest'));
     }
@@ -72,14 +74,20 @@ class MaterialQuestionController extends Controller
     /**
      * Display questions for a specific material.
      */
-    public function show(Material $material, Request $request)
+    public function show(int $materialId, Request $request  )
     {
+        $material = $this->materialService->getMaterialById($materialId);
+        if (!$material) {
+            return redirect()->route('mahasiswa.materials.questions.index')
+                ->with('error', 'Material tidak ditemukan');
+        }
+        
         $isGuest = $this->isGuestUser();
         $difficulty = $request->query('difficulty', $isGuest ? 'beginner' : 'all');
         $guestProgress = $this->getGuestProgress($request);
         $userId = $this->getUserId();
 
-        $data = $this->materialQuestionService->getQuizData($material, $difficulty, $userId, $isGuest, $guestProgress);
+        $data = $this->questionListingService->getQuizData($material, $difficulty, $userId, $isGuest, $guestProgress);
 
         return Inertia::render('Mahasiswa/Materials/Questions/Show/Index', $data);
     }
@@ -87,19 +95,25 @@ class MaterialQuestionController extends Controller
     /**
      * Display difficulty levels progress for a material.
      */
-    public function levels(Material $material, Request $request)
+    public function levels(int $materialId, Request $request)
     {
-        $materials = $this->materialRepo->getAllOrdered();
+        $material = $this->materialService->getMaterialById($materialId);
+        if (!$material) {
+            return redirect()->route('mahasiswa.materials.questions.index')
+                ->with('error', 'Material tidak ditemukan');
+        }
+        
+        $materials = $this->materialService->getAllOrdered();
         $difficulty = 'all';
         $isGuest = $this->isGuestUser();
         $userId = $this->getUserId();
         $guestProgress = $this->getGuestProgress($request);
         
         $answeredQuestionIds = $isGuest
-            ? $this->materialQuestionService->getGuestAnsweredQuestionIds($material->id, $guestProgress)
-            : $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
+            ? $this->questionListingService->getGuestAnsweredQuestionIds($material->id, $guestProgress)
+            : $this->progressService->getAnsweredQuestionIds($userId, $material->id);
 
-        $levels = $this->materialQuestionService->getLevelProgress($material, $difficulty, $answeredQuestionIds);
+        $levels = $this->questionListingService->getLevelProgress($material, $difficulty, $answeredQuestionIds);
 
         return Inertia::render('Mahasiswa/Materials/Questions/Levels/Index', compact(
             'material',
@@ -115,14 +129,14 @@ class MaterialQuestionController extends Controller
      */
     public function review($id, Request $request)
     {
-        $material = Material::with(['questions.answers'])->findOrFail($id);
-        $materials = $this->materialRepo->getAllOrdered();
+        $material = $this->materialService->getMaterialWithQuestionsAndAnswers($id);
+        $materials = $this->materialService->getAllOrdered();
         $difficulty = $request->query('difficulty', 'all');
         $isGuest = $this->isGuestUser();
         $userId = $this->getUserId();
         $guestProgress = $this->getGuestProgress($request);
 
-        $questions = $this->materialQuestionService->getReviewQuestions($material, $difficulty, $userId, $isGuest, $guestProgress);
+        $questions = $this->questionListingService->getReviewQuestions($material, $difficulty, $userId, $isGuest, $guestProgress);
 
 
         return Inertia::render('Mahasiswa/Materials/Questions/Review/Index', [
@@ -137,16 +151,16 @@ class MaterialQuestionController extends Controller
     /**
      * Get attempt count for a specific question.
      */
-    public function getAttempts(Material $material, Question $question, Request $request)
+    public function getAttempts(int $materialId, int $questionId, Request $request)
     {
         $isGuest = $this->isGuestUser();
 
         if ($isGuest) {
-            $progressKey = $material->id . '_' . $question->id;
+            $progressKey = $materialId . '_' . $questionId;
             $guestProgress = $this->getGuestProgress($request);
             $attempts = isset($guestProgress[$progressKey]) ? $guestProgress[$progressKey]['attempt_number'] : 0;
         } else {
-            $attempts = $this->progressRepo->getAttemptCount(auth()->id(), $material->id, $question->id);
+            $attempts = $this->progressService->getAttemptCount(auth()->id(), $materialId, $questionId);
         }
 
         return response()->json(['attempts' => $attempts]);
@@ -155,9 +169,19 @@ class MaterialQuestionController extends Controller
     /**
      * Check answer submission.
      */
-    public function checkAnswer(Material $material, Question $question, Request $request)
+    public function checkAnswer(int $materialId, int $questionId, Request $request)
     {
         try {
+            $material = $this->materialService->getMaterialById($materialId);
+            $question = $this->questionService->getQuestionById($questionId);
+            
+            if (!$material || !$question) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Material atau soal tidak ditemukan'
+                ], 404);
+            }
+            
             $userId = $this->getUserId();
             $isGuest = $this->isGuestUser();
 
@@ -169,7 +193,7 @@ class MaterialQuestionController extends Controller
             
             // Guests: simple answer checking
             $result = $this->questionAnswerService->checkAnswer(
-                array_merge($request->all(), ['material_id' => $material->id]),
+                array_merge($request->all(), ['material_id' => $materialId]),
                 $userId,
                 $isGuest
             );
@@ -260,7 +284,7 @@ class MaterialQuestionController extends Controller
         $studentState->save();
         
         // 6. Save progress log
-        $savedProgress = $this->progressRepo->saveProgress([
+        $savedProgress = $this->progressService->saveProgress([
             'user_id' => $userId,
             'material_id' => $material->id,
             'question_id' => $question->id,
@@ -334,10 +358,7 @@ class MaterialQuestionController extends Controller
 
     protected function resolveReduceDifficulty(Material $material, Question $question): array
     {
-        $hasBeginner = Question::query()
-            ->where('material_id', $material->id)
-            ->where('difficulty', 'beginner')
-            ->exists();
+        $hasBeginner = $this->questionService->existsByMaterialAndDifficulty($material->id, 'beginner');
         
         return [
             'label' => $hasBeginner ? 'Coba Soal Pemula' : 'Ulas Materi Dasar',
@@ -352,10 +373,7 @@ class MaterialQuestionController extends Controller
 
     protected function resolveIncreaseDifficulty(Material $material): array
     {
-        $hasHard = Question::query()
-            ->where('material_id', $material->id)
-            ->where('difficulty', 'hard')
-            ->exists();
+        $hasHard = $this->questionService->existsByMaterialAndDifficulty($material->id, 'hard');
         
         return [
             'label' => $hasHard ? 'Tantangan Menantang' : 'Lanjut ke Materi Baru',

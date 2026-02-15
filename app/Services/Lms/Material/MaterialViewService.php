@@ -4,19 +4,23 @@ namespace App\Services\Lms\Material;
 
 use App\Repositories\MaterialRepository;
 use App\Repositories\ProgressRepository;
+use App\Repositories\SubMaterialRepository;
 
 
 class MaterialViewService
 {
     protected $materialRepo;
     protected $progressRepo;
+    protected $subMaterialRepo;
 
     public function __construct(
         MaterialRepository $materialRepo,
-        ProgressRepository $progressRepo
+        ProgressRepository $progressRepo,
+        SubMaterialRepository $subMaterialRepo
     ) {
         $this->materialRepo = $materialRepo;
         $this->progressRepo = $progressRepo;
+        $this->subMaterialRepo = $subMaterialRepo;
     }
 
     public function getMaterialsList($userId, $isGuest)
@@ -106,8 +110,15 @@ class MaterialViewService
 
     public function getSubMaterialDetail($materialId, $subMaterialId, $isGuest)
     {
-        $material = \App\Models\Material::with(['subMaterials.questions', 'creator'])->findOrFail($materialId);
-        $subMaterial = \App\Models\SubMaterial::with(['questions'])->findOrFail($subMaterialId);
+        $material = $this->materialRepo->find($materialId);
+        if (!$material) {
+            abort(404, 'Material not found');
+        }
+
+        $subMaterial = $this->subMaterialRepo->findWithQuestions($subMaterialId);
+        if (!$subMaterial) {
+            abort(404, 'SubMaterial not found');
+        }
         
         return [
             'material' => $material,

@@ -8,12 +8,9 @@ use Inertia\Inertia;
 
 class PendingApprovalController extends Controller
 {
-    protected $userService;
-
-    public function __construct(\App\Services\User\UserService $userService)
-    {
-        $this->userService = $userService;
-    }
+    public function __construct(
+        protected \App\Contracts\Services\UserServiceInterface $userService
+    ) {}
 
     public function index()
     {

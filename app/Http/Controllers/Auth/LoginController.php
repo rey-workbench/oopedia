@@ -14,12 +14,9 @@ use App\Services\User\UserService;
 
 class LoginController extends Controller
 {
-    protected $userService;
-
-    public function __construct(UserService $userService)
-    {
-        $this->userService = $userService;
-    }
+    public function __construct(
+        protected \App\Contracts\Services\UserServiceInterface $userService
+    ) {}
 
     public function create()
     {

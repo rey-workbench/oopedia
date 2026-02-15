@@ -3,19 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Material;
-use App\Services\Lms\Material\MaterialService;
+use App\Contracts\Services\MaterialServiceInterface;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class MaterialController extends Controller
 {
-    protected $materialService;
-
-    public function __construct(MaterialService $materialService)
-    {
-        $this->materialService = $materialService;
-    }
+    public function __construct(
+        protected MaterialServiceInterface $materialService
+    ) {}
 
     public function index(Request $request)
     {
@@ -58,13 +54,19 @@ class MaterialController extends Controller
         }
     }
 
-    public function edit(Material $material)
+    public function edit(int $materialId)
     {
-        $material->load('media'); // Ensure media is loaded
+        $material = $this->materialService->getMaterialById($materialId);
+        
+        if (!$material) {
+            return redirect()->route('admin.materials.index')
+                ->with('error', 'Material tidak ditemukan');
+        }
+        
         return Inertia::render('Admin/Materials/Edit/Index', compact('material'));
     }
 
-    public function update(Request $request, Material $material)
+    public function update(Request $request, int $materialId)
     {
         try {
             $request->validate([
@@ -74,7 +76,7 @@ class MaterialController extends Controller
             ]);
 
             $this->materialService->updateMaterial(
-                $material,
+                $materialId,
                 $request->except('cover_image'),
                 $request->file('cover_image')
             );
@@ -89,10 +91,10 @@ class MaterialController extends Controller
         }
     }
 
-    public function destroy(Material $material)
+    public function destroy(int $materialId)
     {
         try {
-            $this->materialService->deleteMaterial($material);
+            $this->materialService->deleteMaterial($materialId);
 
             return redirect()->route('admin.materials.index')
                 ->with('success', 'Materi berhasil dihapus.');

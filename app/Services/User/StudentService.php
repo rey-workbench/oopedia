@@ -2,23 +2,26 @@
 
 namespace App\Services\User;
 
-use App\Repositories\UserRepository;
-use App\Repositories\MaterialRepository;
-use App\Repositories\ProgressRepository;
+use App\Contracts\Repositories\UserRepositoryInterface;
+use App\Contracts\Repositories\MaterialRepositoryInterface;
+use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Contracts\Services\StudentServiceInterface;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use Exception;
 
-class StudentService
+class StudentService implements StudentServiceInterface
 {
     protected $userRepo;
     protected $materialRepo;
     protected $progressRepo;
 
     public function __construct(
-        UserRepository $userRepo,
-        MaterialRepository $materialRepo,
-        ProgressRepository $progressRepo
+        UserRepositoryInterface $userRepo,
+        MaterialRepositoryInterface $materialRepo,
+        ProgressRepositoryInterface $progressRepo
     ) {
         $this->userRepo = $userRepo;
         $this->materialRepo = $materialRepo;
@@ -48,6 +51,70 @@ class StudentService
         }
         
         return $students;
+    }
+
+    public function getStudentsList($search = null, $perPage = 10)
+    {
+        return $this->userRepo->getStudentsList($search, $perPage);
+    }
+
+    public function getStudentById($id)
+    {
+        return $this->userRepo->find($id);
+    }
+
+    public function createStudent(array $data)
+    {
+        // Hash password
+        $data['password'] = Hash::make($data['password']);
+        $data['role_id'] = 3; // Student role
+        $data['is_approved'] = true; // Admin-created students are auto-approved
+        
+        return $this->userRepo->create($data);
+    }
+
+    public function updateStudent($studentId, array $data)
+    {
+        if (isset($data['password']) && !empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
+        }
+        
+        return $this->userRepo->update($studentId, $data);
+    }
+
+    public function deleteStudent($studentId)
+    {
+        $student = $this->userRepo->find($studentId);
+        if (!$student) {
+            throw new Exception('Student not found');
+        }
+
+        DB::beginTransaction();
+        try {
+            $this->userRepo->deleteStudentData($studentId);
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    public function getPendingStudents($perPage = null)
+    {
+        return $this->userRepo->getUsersByRoleAndApproval(3, false, null, $perPage);
+    }
+
+    public function approveStudent($studentId)
+    {
+        return $this->userRepo->approveStudent($studentId);
+    }
+
+    public function rejectStudent($studentId)
+    {
+        return $this->userRepo->delete($studentId);
     }
 
     public function getStudentProgressDetail($student)
@@ -107,20 +174,6 @@ class StudentService
             'recent_activities' => $recentActivities,
             'missingQuestionsByMaterial' => $missingQuestionsByMaterial
         ];
-    }
-
-    public function deleteStudent($student)
-    {
-        if ($student->role_id != 3) {
-            throw new \Exception('User ini bukan mahasiswa');
-        }
-        
-        try {
-            $this->userRepo->deleteStudentWithRelations($student->id);
-            return true;
-        } catch (\Exception $e) {
-            throw new \Exception('Terjadi kesalahan: ' . $e->getMessage());
-        }
     }
 
     public function importStudentsFromFile($file)

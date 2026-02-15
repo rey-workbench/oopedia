@@ -2,6 +2,7 @@
 
 namespace App\Services\Adaptive;
 
+use App\Contracts\Services\AdaptiveEngineServiceInterface;
 use App\Rules\Adaptive\RuleRegistry;
 use Illuminate\Support\Facades\Log;
 
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Log;
  * Main orchestrator for the adaptive learning system.
  * Evaluates rules using forward chaining and returns appropriate actions.
  */
-class AdaptiveEngineService
+class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 {
     protected RuleRegistry $ruleRegistry;
     

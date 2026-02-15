@@ -2,20 +2,22 @@
 
 namespace App\Services\Lms\Question;
 
-use App\Repositories\QuestionRepository;
+use App\Contracts\Repositories\QuestionRepositoryInterface;
+use App\Contracts\Repositories\AnswerRepositoryInterface;
+use App\Contracts\Services\QuestionServiceInterface;
 use App\Models\Question;
-use App\Repositories\AnswerRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Exception;
 
-class QuestionService
+class QuestionService implements QuestionServiceInterface
 {
     protected $questionRepo;
     protected $answerRepo;
 
     public function __construct(
-        QuestionRepository $questionRepo,
-        AnswerRepository $answerRepo
+        QuestionRepositoryInterface $questionRepo,
+        AnswerRepositoryInterface $answerRepo
     )
     {
         $this->questionRepo = $questionRepo;
@@ -44,6 +46,21 @@ class QuestionService
         return $this->questionRepo->getQuestionsForBank($materialId, $excludeIds, $search, $difficulty);
     }
 
+    public function getQuestionById($id)
+    {
+        return $this->questionRepo->find($id);
+    }
+
+    public function getQuestionWithAnswers($id)
+    {
+        return $this->questionRepo->findWithAnswers($id);
+    }
+
+    public function existsByMaterialAndDifficulty($materialId, $difficulty)
+    {
+        return $this->questionRepo->existsByMaterialAndDifficulty($materialId, $difficulty);
+    }
+
     public function createQuestion(array $data)
     {
         return DB::transaction(function () use ($data) {
@@ -62,10 +79,15 @@ class QuestionService
         });
     }
 
-    public function updateQuestion(Question $question, array $data)
+    public function updateQuestion($questionId, array $data)
     {
+        $question = $this->questionRepo->find($questionId);
+        if (!$question) {
+            throw new Exception("Question not found");
+        }
+
         return DB::transaction(function () use ($question, $data) {
-            $question->update([
+            $this->questionRepo->update($question->id, [
                 'question_text' => $data['question_text'],
                 'question_type' => $data['question_type'],
                 'difficulty' => $data['difficulty'],
@@ -73,21 +95,26 @@ class QuestionService
                 'sub_material_id' => $data['sub_material_id'] ?? null,
             ]);
 
-            // Delete existing answers
-            $question->answers()->delete();
+            // Delete existing answers via repository
+            $this->answerRepo->deleteByQuestionId($question->id);
 
             // Create new answers
             $this->createAnswers($question->id, $data['answers']);
 
-            return $question;
+            return $question->fresh();
         });
     }
 
-    public function deleteQuestion(Question $question)
+    public function deleteQuestion($questionId)
     {
+        $question = $this->questionRepo->find($questionId);
+        if (!$question) {
+            throw new Exception("Question not found");
+        }
+
         return DB::transaction(function () use ($question) {
-            $question->answers()->delete();
-            $question->delete();
+            $this->answerRepo->deleteByQuestionId($question->id);
+            $this->questionRepo->delete($question->id);
             return true;
         });
     }

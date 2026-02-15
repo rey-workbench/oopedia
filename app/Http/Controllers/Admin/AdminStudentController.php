@@ -3,20 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use App\Services\User\StudentService;
+use App\Contracts\Services\StudentServiceInterface;
 use Inertia\Inertia;
 
 class AdminStudentController extends Controller
 {
-    protected $studentService;
-
-    public function __construct(StudentService $studentService)
-    {
-        $this->studentService = $studentService;
-    }
+    public function __construct(
+        protected StudentServiceInterface $studentService
+    ) {}
 
     public function index(Request $request)
     {
@@ -26,10 +21,14 @@ class AdminStudentController extends Controller
         return Inertia::render('Admin/Students/Index', compact('students'));
     }
 
-    public function progress(User $student)
+    public function progress(int $studentId)
     {
-        // Ensure we're looking at a student
-        abort_if($student->role_id != 3, 404);
+        $student = $this->studentService->getStudentById($studentId);
+        
+        if (!$student || $student->role_id != 3) {
+            return redirect()->route('admin.students.index')
+                ->with('error', 'Mahasiswa tidak ditemukan');
+        }
     
         $data = $this->studentService->getStudentProgressDetail($student);
 
@@ -50,12 +49,10 @@ class AdminStudentController extends Controller
         ]);
 
         try {
-            User::create([
+            $this->studentService->createStudent([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
-                'password' => Hash::make($validated['password']),
-                'role_id' => 3, // Role student
-                'is_approved' => true
+                'password' => $validated['password'], // Will be hashed in service
             ]);
 
             return redirect()->route('admin.students.index')
@@ -67,10 +64,10 @@ class AdminStudentController extends Controller
         }
     }
 
-    public function destroy(User $student)
+    public function destroy(int $studentId)
     {
         try {
-            $this->studentService->deleteStudent($student);
+            $this->studentService->deleteStudent($studentId);
             
             return redirect()->route('admin.students.index')
                 ->with('success', 'Data mahasiswa telah berhasil dihapus dari sistem');
@@ -114,8 +111,8 @@ class AdminStudentController extends Controller
         return response()->stream($template['callback'], 200, $template['headers']);
     }
 
-    public function show(User $student)
+    public function show(int $studentId)
     {
-        return redirect()->route('admin.students.progress', $student);
+        return redirect()->route('admin.students.progress', $studentId);
     }
 }

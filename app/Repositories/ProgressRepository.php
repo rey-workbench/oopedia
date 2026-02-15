@@ -2,12 +2,13 @@
 
 namespace App\Repositories;
 
+use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Models\QuizAttempt;
 use App\Models\StudentState;
 use App\Models\Question;
 use Illuminate\Support\Facades\DB;
 
-class ProgressRepository
+class ProgressRepository implements ProgressRepositoryInterface
 {
 
     public function getUserProgressStats($userId)
@@ -151,7 +152,7 @@ class ProgressRepository
         return $attempt;
     }
 
-    protected function updateStudentState($userId, array $attributes)
+    public function updateStudentState($userId, array $attributes)
     {
         $state = StudentState::firstOrNew(['user_id' => $userId]);
         
@@ -313,10 +314,6 @@ class ProgressRepository
             ->select('quiz_attempts.*')
             ->get();
     }
-    public function getStudentState($userId)
-    {
-        return StudentState::firstOrCreate(['user_id' => $userId]);
-    }
 
     // ==================== ADAPTIVE FACT GATHERING ====================
 
@@ -356,5 +353,35 @@ class ProgressRepository
             ->first();
         
         return $attempt?->error_type ?? 'logic'; // Default to logic error
+    }
+
+    public function getStudentState($userId)
+    {
+        // StudentState is global per user, not per material
+        // Return user's global state
+        return StudentState::where('user_id', $userId)->first();
+    }
+
+    public function getOrCreateStudentState($userId)
+    {
+        // StudentState is global per user
+        return StudentState::firstOrCreate(['user_id' => $userId], [
+            'gamification_data' => [],
+            'learning_profile' => [],
+            'performance_metrics' => [],
+            'adaptive_state' => [],
+            'last_active_at' => now(),
+        ]);
+    }
+
+    public function getUserMaterialProgressWithState($userId, $materialId)
+    {
+        $state = $this->getOrCreateStudentState($userId);
+        $progress = $this->getUserMaterialProgress($userId);
+        
+        return [
+            'state' => $state,
+            'progress' => $progress,
+        ];
     }
 }

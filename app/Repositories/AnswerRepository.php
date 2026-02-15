@@ -2,9 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Contracts\Repositories\AnswerRepositoryInterface;
 use App\Models\Answer;
 
-class AnswerRepository
+class AnswerRepository implements AnswerRepositoryInterface
 {
     /**
      * Get all answers
@@ -73,5 +74,13 @@ class AnswerRepository
         return Answer::where('question_id', $questionId)
             ->where('is_correct', true)
             ->get();
+    }
+
+    /**
+     * Delete all answers for a question
+     */
+    public function deleteByQuestionId($questionId)
+    {
+        return Answer::where('question_id', $questionId)->delete();
     }
 }

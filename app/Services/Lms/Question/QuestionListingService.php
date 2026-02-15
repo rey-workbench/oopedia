@@ -2,26 +2,18 @@
 
 namespace App\Services\Lms\Question;
 
-use App\Repositories\MaterialRepository;
-use App\Repositories\ProgressRepository;
-use App\Repositories\QuestionRepository;
+use App\Contracts\Repositories\MaterialRepositoryInterface;
+use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Contracts\Repositories\QuestionRepositoryInterface;
+use App\Contracts\Services\QuestionListingServiceInterface;
 
-
-class QuestionListingService
+class QuestionListingService implements QuestionListingServiceInterface
 {
-    protected $materialRepo;
-    protected $progressRepo;
-    protected $questionRepo;
-
     public function __construct(
-        MaterialRepository $materialRepo,
-        ProgressRepository $progressRepo,
-        QuestionRepository $questionRepo
-    ) {
-        $this->materialRepo = $materialRepo;
-        $this->progressRepo = $progressRepo;
-        $this->questionRepo = $questionRepo;
-    }
+        protected MaterialRepositoryInterface $materialRepo,
+        protected ProgressRepositoryInterface $progressRepo,
+        protected QuestionRepositoryInterface $questionRepo
+    ) {}
 
     public function getQuizData($material, $difficulty, $userId, $isGuest, $guestProgress = [])
     {

@@ -2,9 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Models\Question;
 
-class QuestionRepository
+class QuestionRepository implements QuestionRepositoryInterface
 {
     public function all()
     {
@@ -103,5 +104,19 @@ class QuestionRepository
                 $query->where('difficulty', $difficulty);
             })
             ->paginate(10);
+    }
+
+    public function countByMaterialAndDifficulty($materialId, $difficulty)
+    {
+        return Question::where('material_id', $materialId)
+            ->where('difficulty', $difficulty)
+            ->count();
+    }
+
+    public function existsByMaterialAndDifficulty($materialId, $difficulty)
+    {
+        return Question::where('material_id', $materialId)
+            ->where('difficulty', $difficulty)
+            ->exists();
     }
 }

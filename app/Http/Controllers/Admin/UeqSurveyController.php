@@ -11,17 +11,10 @@ use Inertia\Inertia;
 
 class UeqSurveyController extends Controller
 {
-    protected $ueqService;
-    protected $materialService;
-
     public function __construct(
-        \App\Services\Analytics\UeqSurveyService $ueqService,
-        \App\Services\Lms\Material\MaterialService $materialService
-    )
-    {
-        $this->ueqService = $ueqService;
-        $this->materialService = $materialService;
-    }
+        protected \App\Services\Analytics\UeqSurveyService $ueqService,
+        protected \App\Contracts\Services\MaterialServiceInterface $materialService
+    ) {}
 
     public function index(Request $request)
     {

@@ -2,20 +2,25 @@
 
 namespace App\Services\Analytics;
 
-use App\Repositories\MaterialRepository;
-use App\Repositories\ProgressRepository;
+use App\Contracts\Repositories\MaterialRepositoryInterface;
+use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Contracts\Repositories\QuestionRepositoryInterface;
+use App\Contracts\Services\DashboardServiceInterface;
 
-class DashboardService
+class DashboardService implements DashboardServiceInterface
 {
     protected $materialRepo;
     protected $progressRepo;
+    protected $questionRepo;
 
     public function __construct(
-        MaterialRepository $materialRepo,
-        ProgressRepository $progressRepo
+        MaterialRepositoryInterface $materialRepo,
+        ProgressRepositoryInterface $progressRepo,
+        QuestionRepositoryInterface $questionRepo
     ) {
         $this->materialRepo = $materialRepo;
         $this->progressRepo = $progressRepo;
+        $this->questionRepo = $questionRepo;
     }
 
     public function getAllMaterials()
@@ -153,6 +158,10 @@ class DashboardService
         // For completed, we force 100% stats
         return $materials->map(function ($material) use ($isGuest) {
              $counts = $this->calculateConfiguredQuestions($material, $isGuest);
+             $beginnerTotal = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'beginner');
+             $mediumTotal = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'medium');
+             $hardTotal = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'hard');
+             
              return [
                 'material' => $material,
                 'stats' => [
@@ -163,19 +172,19 @@ class DashboardService
                     ],
                     'beginner' => [
                         'correct' => $counts['easy'],
-                        'total' => $material->questions->where('difficulty', 'beginner')->count(),
+                        'total' => $beginnerTotal,
                         'configured_total' => $counts['easy'],
                         'percentage' => 100
                     ],
                     'medium' => [
                         'correct' => $counts['medium'],
-                        'total' => $material->questions->where('difficulty', 'medium')->count(),
+                        'total' => $mediumTotal,
                         'configured_total' => $counts['medium'],
                         'percentage' => 100
                     ],
                     'hard' => [
                         'correct' => $counts['hard'],
-                        'total' => $material->questions->where('difficulty', 'hard')->count(),
+                        'total' => $hardTotal,
                         'configured_total' => $counts['hard'],
                         'percentage' => 100
                     ]
@@ -196,14 +205,14 @@ class DashboardService
         $hard = 0;
 
         if ($isGuest) {
-            $easy = min(3, $material->questions->where('difficulty', 'beginner')->count());
-            $medium = min(3, $material->questions->where('difficulty', 'medium')->count());
-            $hard = min(3, $material->questions->where('difficulty', 'hard')->count());
+            $easy = min(3, $this->questionRepo->countByMaterialAndDifficulty($material->id, 'beginner'));
+            $medium = min(3, $this->questionRepo->countByMaterialAndDifficulty($material->id, 'medium'));
+            $hard = min(3, $this->questionRepo->countByMaterialAndDifficulty($material->id, 'hard'));
         } else {
             // For logged-in users: use all available questions
-            $easy = $material->questions->where('difficulty', 'beginner')->count();
-            $medium = $material->questions->where('difficulty', 'medium')->count();
-            $hard = $material->questions->where('difficulty', 'hard')->count();
+            $easy = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'beginner');
+            $medium = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'medium');
+            $hard = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'hard');
         }
 
         return [
@@ -225,9 +234,9 @@ class DashboardService
         return $materials->map(function ($material) use ($progressStats, $isGuest) {
             $counts = $this->calculateConfiguredQuestions($material, $isGuest);
 
-            $beginnerQuestions = $material->questions->where('difficulty', 'beginner');
-            $mediumQuestions = $material->questions->where('difficulty', 'medium');
-            $hardQuestions = $material->questions->where('difficulty', 'hard');
+            $beginnerTotal = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'beginner');
+            $mediumTotal = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'medium');
+            $hardTotal = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'hard');
 
             // Stats
             $beginnerStats = $progressStats->where('material_id', $material->id)->where('difficulty', 'beginner')->first();
@@ -255,19 +264,19 @@ class DashboardService
                     ],
                     'beginner' => [
                         'correct' => $beginnerCorrect,
-                        'total' => $beginnerQuestions->count(),
+                        'total' => $beginnerTotal,
                         'configured_total' => $counts['easy'],
                         'percentage' => $beginnerPercentage
                     ],
                     'medium' => [
                         'correct' => $mediumCorrect,
-                        'total' => $mediumQuestions->count(),
+                        'total' => $mediumTotal,
                         'configured_total' => $counts['medium'],
                         'percentage' => $mediumPercentage
                     ],
                     'hard' => [
                         'correct' => $hardCorrect,
-                        'total' => $hardQuestions->count(),
+                        'total' => $hardTotal,
                         'configured_total' => $counts['hard'],
                         'percentage' => $hardPercentage
                     ]
