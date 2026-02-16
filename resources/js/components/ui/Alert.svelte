@@ -17,11 +17,11 @@
     let visible = true;
 
     const variants = {
-        info: "bg-blue-50 text-blue-800 border-blue-100",
+        info: "bg-primary-50 text-primary-800 border-primary-100",
         success: "bg-emerald-50 text-emerald-800 border-emerald-100",
         warning: "bg-amber-50 text-amber-800 border-amber-100",
         danger: "bg-rose-50 text-rose-800 border-rose-100",
-        primary: "bg-blue-50 text-blue-800 border-blue-100",
+        primary: "bg-primary-50 text-primary-800 border-primary-100",
     };
 
     const icons = {

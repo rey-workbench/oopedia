@@ -204,15 +204,15 @@
                         </div>
 
                         <div
-                            class="bg-indigo-50/50 p-6 rounded-3xl border border-indigo-100"
+                            class="bg-primary-50/50 p-6 rounded-3xl border border-primary-100"
                         >
                             <p
-                                class="text-[9px] font-bold uppercase tracking-widest text-indigo-400 mb-3"
+                                class="text-[9px] font-bold uppercase tracking-widest text-primary-600 mb-3"
                             >
                                 Timestamp Akusisi
                             </p>
                             <div
-                                class="flex items-center gap-3 text-sm font-bold text-indigo-900"
+                                class="flex items-center gap-3 text-sm font-bold text-primary-900"
                             >
                                 <Cpu size={14} />
                                 {new Date(survey.created_at).toLocaleString(
@@ -293,10 +293,10 @@
                         </p>
                     </Card>
                     <Card
-                        class="border-blue-100 bg-blue-50/20 rounded-[2.5rem] shadow-xl"
+                        class="border-primary-100 bg-primary-50/20 rounded-[2.5rem] shadow-xl"
                     >
                         <h6
-                            class="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-4 flex items-center gap-2"
+                            class="text-[10px] font-bold uppercase tracking-widest text-primary-600 mb-4 flex items-center gap-2"
                         >
                             <Lightbulb size={14} /> Rekomendasi Fitur
                         </h6>
@@ -363,7 +363,7 @@
                                                 {#each Array(7) as _, i}
                                                     <div
                                                         class={`w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all
-                            ${val == i + 1 ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30 scale-110" : "bg-slate-100 text-slate-300"}`}
+                            ${val == i + 1 ? "bg-primary-600 text-white shadow-lg shadow-primary-900/20 scale-110" : "bg-slate-100 text-slate-300"}`}
                                                     >
                                                         {i + 1}
                                                     </div>
@@ -383,7 +383,7 @@
                                                 >
                                                     <span
                                                         class={val <= 3
-                                                            ? "text-blue-600"
+                                                            ? "text-primary-600"
                                                             : ""}
                                                         >{aspect.left}</span
                                                     >
@@ -392,7 +392,7 @@
                                                     ></span>
                                                     <span
                                                         class={val >= 5
-                                                            ? "text-blue-600"
+                                                            ? "text-primary-600"
                                                             : ""}
                                                         >{aspect.right}</span
                                                     >

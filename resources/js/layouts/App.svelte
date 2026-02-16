@@ -57,7 +57,7 @@
 </svelte:head>
 
 <div
-    class="relative flex min-h-screen bg-gray-50 font-sans text-slate-900 antialiased overflow-x-hidden"
+    class="relative flex min-h-screen bg-slate-50 font-sans text-slate-900 antialiased overflow-x-hidden"
 >
     {#if showSidebarRender}
         <Sidebar showSidebar={showMobileSidebar} />

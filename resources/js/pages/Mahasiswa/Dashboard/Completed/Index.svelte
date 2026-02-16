@@ -63,7 +63,7 @@
                 {#each materials as material}
                     <Card
                         padding="p-8"
-                        class="hover:border-blue-400 border-slate-100 shadow-xl transition-all group relative overflow-hidden"
+                        class="hover:border-primary-400 border-slate-100 shadow-xl transition-all group relative overflow-hidden"
                     >
                         <div
                             class="absolute -top-6 -right-6 w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all"
@@ -73,7 +73,7 @@
 
                         <div class="space-y-6">
                             <div
-                                class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-blue-600 transition-colors group-hover:bg-blue-600 group-hover:text-white"
+                                class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-primary-600 transition-colors group-hover:bg-primary-600 group-hover:text-white"
                             >
                                 <Book size={24} strokeWidth={2.5} />
                             </div>

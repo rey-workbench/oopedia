@@ -13,7 +13,7 @@
 <App title="OOPedia - Menunggu Persetujuan" showSidebar={false}>
     <div class="max-w-4xl mx-auto py-12">
         <Card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
-            <div slot="header" class="bg-blue-600 px-8 py-6 text-white">
+            <div slot="header" class="bg-primary-600 px-8 py-6 text-white">
                 <h6 class="text-lg font-bold tracking-widest uppercase mb-0">
                     Dosen Menunggu Persetujuan
                 </h6>

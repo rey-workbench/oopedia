@@ -84,7 +84,7 @@
                 slot="header"
                 class="px-6 py-4 border-b border-slate-50 flex items-center gap-4"
             >
-                <div class="w-1.5 h-8 bg-blue-600 rounded-full"></div>
+                <div class="w-1.5 h-8 bg-primary-600 rounded-full"></div>
                 <h6
                     class="mb-0 font-bold uppercase tracking-widest text-xs text-slate-400"
                 >
@@ -158,7 +158,7 @@
                                                     material.progress || 0,
                                                 )}
                                                 size="xs"
-                                                color="bg-blue-600"
+                                                color="bg-primary-600"
                                             />
                                         </div>
                                     </td>

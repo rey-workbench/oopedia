@@ -16,7 +16,9 @@
             ? "shadow-premium"
             : "shadow-soft"
         : "";
-    $: hoverClasses = hover ? "hover:shadow-premium hover:-translate-y-1" : "";
+    $: hoverClasses = hover
+        ? "hover:shadow-premium hover:shadow-accent-950/10 hover:-translate-y-1"
+        : "";
     $: classes = `${baseClasses} ${variantClasses} ${shadowClasses} ${hoverClasses} ${className}`;
 </script>
 

@@ -87,14 +87,14 @@
                     <div class="relative group">
                         <Search
                             size={18}
-                            class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors"
+                            class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary-600 transition-colors"
                         />
                         <input
                             type="text"
                             bind:value={search}
                             on:input={handleSearch}
                             placeholder="Cari mahasiswa..."
-                            class="w-full md:w-64 pl-12 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-600 transition-all outline-none"
+                            class="w-full md:w-64 pl-12 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-primary-100 focus:border-primary-600 transition-all outline-none"
                         />
                     </div>
                 </div>
@@ -173,7 +173,7 @@
                                     class="group hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
                                 >
                                     <td
-                                        class="px-6 py-6 border-l-4 border-transparent group-hover:border-blue-600"
+                                        class="px-6 py-6 border-l-4 border-transparent group-hover:border-primary-600"
                                     >
                                         <div class="flex items-center gap-4">
                                             <div
@@ -200,7 +200,7 @@
                                         >
                                             <Terminal
                                                 size={10}
-                                                class="text-blue-500"
+                                                class="text-primary-600"
                                             />
                                             <span
                                                 class="text-[10px] font-bold text-slate-700"
@@ -223,7 +223,7 @@
                                             <ProgressBar
                                                 value={student.overall_progress}
                                                 size="xs"
-                                                color="bg-blue-600"
+                                                color="bg-primary-600"
                                             />
                                         </div>
                                     </td>
@@ -288,11 +288,11 @@
 
         <!-- Modal manually implemented or use reusable Modal component -->
         <Modal bind:show={openModal} on:close={() => (openModal = false)}>
-            <div class="bg-blue-600 px-8 py-10 text-white relative">
+            <div class="bg-primary-600 px-8 py-10 text-white relative">
                 <div class="absolute right-8 top-10">
                     <button
                         on:click={() => (openModal = false)}
-                        class="text-blue-200 hover:text-white"
+                        class="text-primary-200 hover:text-white"
                     >
                         <X size={20} />
                     </button>
@@ -371,7 +371,7 @@
                     <Button
                         type="submit"
                         variant="primary"
-                        class="flex-1 py-4 shadow-xl shadow-blue-500/20"
+                        class="flex-1 py-4 shadow-xl shadow-primary-900/20"
                         icon={UserPlus}
                         disabled={$form.processing}
                     >

@@ -33,9 +33,7 @@
         <div class="space-y-12">
             <Card padding="p-0" hover={false} class="overflow-hidden">
                 <!-- Podium Section -->
-                <div
-                    class="bg-gradient-to-b from-slate-50 to-white pt-20 pb-12 px-8"
-                >
+                <div class="bg-slate-50 pt-20 pb-12 px-8">
                     <div
                         class="flex justify-center items-end gap-4 md:gap-12 max-w-5xl mx-auto"
                     >
@@ -61,13 +59,13 @@
                                         {top3[1].name}
                                     </h5>
                                     <div
-                                        class="text-blue-600 font-bold tracking-widest text-sm"
+                                        class="text-primary-600 font-bold tracking-widest text-sm"
                                     >
                                         {top3[1].formatted_score} PTS
                                     </div>
                                 </div>
                                 <div
-                                    class="w-full h-40 md:h-48 bg-gradient-to-t from-slate-300 to-slate-200 rounded-t-[2rem] shadow-inner flex items-center justify-center relative overflow-hidden"
+                                    class="w-full h-40 md:h-48 bg-slate-200 rounded-t-[2rem] shadow-inner flex items-center justify-center relative overflow-hidden"
                                 >
                                     <div
                                         class="absolute inset-x-0 top-0 h-1 bg-white/20"
@@ -119,7 +117,7 @@
                                     </div>
                                 </div>
                                 <div
-                                    class="w-full h-56 md:h-64 bg-gradient-to-t from-amber-500 to-amber-400 rounded-t-[3rem] shadow-2xl shadow-amber-200/50 flex items-center justify-center relative overflow-hidden"
+                                    class="w-full h-56 md:h-64 bg-amber-400 rounded-t-[3rem] shadow-2xl shadow-amber-200/50 flex items-center justify-center relative overflow-hidden"
                                 >
                                     <div
                                         class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white/30 to-transparent"
@@ -158,13 +156,13 @@
                                         {top3[2].name}
                                     </h5>
                                     <div
-                                        class="text-blue-600 font-bold tracking-widest text-sm"
+                                        class="text-primary-600 font-bold tracking-widest text-sm"
                                     >
                                         {top3[2].formatted_score} PTS
                                     </div>
                                 </div>
                                 <div
-                                    class="w-full h-32 md:h-40 bg-gradient-to-t from-rose-400 to-rose-300 rounded-t-[2rem] shadow-inner flex items-center justify-center relative overflow-hidden"
+                                    class="w-full h-32 md:h-40 bg-rose-300 rounded-t-[2rem] shadow-inner flex items-center justify-center relative overflow-hidden"
                                 >
                                     <div
                                         class="absolute inset-x-0 top-0 h-1 bg-white/20"
@@ -211,7 +209,7 @@
                             <tbody>
                                 {#each leaderboardData as data (data.id)}
                                     <tr
-                                        class={`group hover:bg-slate-50 transition-all ${data.id === authUserId ? "bg-blue-50/50" : ""}`}
+                                        class={`group hover:bg-slate-50 transition-all ${data.id === authUserId ? "bg-primary-50/50" : ""}`}
                                     >
                                         <td
                                             class="px-6 py-6 border-b border-slate-50"
@@ -295,7 +293,7 @@
                                             class="px-6 py-6 border-b border-slate-50 text-right"
                                         >
                                             <div
-                                                class="font-bold text-blue-600 text-xl tracking-widest"
+                                                class="font-bold text-primary-600 text-xl tracking-widest"
                                             >
                                                 {data.formatted_score}
                                                 <span

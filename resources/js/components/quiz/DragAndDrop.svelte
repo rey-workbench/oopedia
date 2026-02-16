@@ -28,7 +28,7 @@
                 // Note: Svelte @html doesn't easily bind events to inner HTML elements.
                 // We might need a different approach or manual event delegation.
                 // For simplicity, we'll use a data-attribute approach and delegate events on the container.
-                return `<span class="drop-zone inline-block min-w-[80px] h-8 border-b-2 border-slate-400 mx-1 align-middle text-center text-blue-600 font-bold bg-slate-100 rounded px-2" data-zone="${currentZoneId}">${currentAnswer}</span>`;
+                return `<span class="drop-zone inline-block min-w-[80px] h-8 border-b-2 border-slate-400 mx-1 align-middle text-center text-primary-600 font-bold bg-slate-100 rounded px-2" data-zone="${currentZoneId}">${currentAnswer}</span>`;
             });
 
             // Update dropZones based on count
@@ -45,20 +45,26 @@
         event.preventDefault();
         event.dataTransfer.dropEffect = "copy";
         if (event.target.classList.contains("drop-zone")) {
-            event.target.classList.add("bg-blue-100", "border-blue-500");
+            event.target.classList.add("bg-primary-50", "border-primary-500");
         }
     }
 
     function handleDragLeave(event) {
         if (event.target.classList.contains("drop-zone")) {
-            event.target.classList.remove("bg-blue-100", "border-blue-500");
+            event.target.classList.remove(
+                "bg-primary-50",
+                "border-primary-500",
+            );
         }
     }
 
     function handleDrop(event) {
         event.preventDefault();
         if (event.target.classList.contains("drop-zone")) {
-            event.target.classList.remove("bg-blue-100", "border-blue-500");
+            event.target.classList.remove(
+                "bg-primary-50",
+                "border-primary-500",
+            );
             const answerText = event.dataTransfer.getData("text/plain");
             const zoneId = event.target.dataset.zone;
 
@@ -124,7 +130,7 @@
     <div class="drag-items flex flex-wrap gap-3 mt-2">
         {#each question.answers as answer (answer.id)}
             <div
-                class="draggable px-4 py-2 bg-white border-2 border-blue-200 text-blue-600 rounded-lg font-medium cursor-grab active:cursor-grabbing hover:bg-blue-50 hover:border-blue-400 transition-all shadow-sm select-none"
+                class="draggable px-4 py-2 bg-white border-2 border-primary-100 text-primary-600 rounded-lg font-medium cursor-grab active:cursor-grabbing hover:bg-primary-50 hover:border-primary-400 transition-all shadow-sm select-none"
                 draggable="true"
                 role="button"
                 tabindex="0"

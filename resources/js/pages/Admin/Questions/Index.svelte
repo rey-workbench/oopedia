@@ -95,12 +95,12 @@
                         bind:value={searchQuery}
                         on:input={handleSearch}
                         placeholder="Cari teks soal atau identitas..."
-                        class="w-full bg-white border-2 border-slate-100 rounded-[2rem] px-8 py-4 text-xs font-bold uppercase tracking-widest text-slate-900 group-hover:border-blue-400 focus:border-blue-600 focus:outline-none transition-all duration-300 shadow-xl shadow-slate-100"
+                        class="w-full bg-white border-2 border-slate-100 rounded-[2rem] px-8 py-4 text-xs font-bold uppercase tracking-widest text-slate-900 group-hover:border-primary-400 focus:border-primary-600 focus:outline-none transition-all duration-300 shadow-xl shadow-slate-100"
                     />
                     <Search
                         size={20}
                         strokeWidth={2.5}
-                        class="absolute right-8 top-1/2 -translate-y-1/2 text-slate-300 group-hover:text-blue-500 transition-colors"
+                        class="absolute right-8 top-1/2 -translate-y-1/2 text-slate-300 group-hover:text-primary-600 transition-colors"
                     />
                 </div>
             </div>
@@ -115,7 +115,7 @@
                     id="difficulty"
                     bind:value={difficultyFilter}
                     on:change={handleDifficultyChange}
-                    class="w-full bg-white border-2 border-slate-100 rounded-[1.5rem] px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-900 focus:border-blue-600 focus:outline-none transition-all cursor-pointer shadow-xl shadow-slate-100"
+                    class="w-full bg-white border-2 border-slate-100 rounded-[1.5rem] px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-900 focus:border-primary-600 focus:outline-none transition-all cursor-pointer shadow-xl shadow-slate-100"
                 >
                     <option value="">SEMUA LEVEL</option>
                     <option value="beginner">BEGINNER</option>
@@ -222,7 +222,7 @@
                                     {#if !material}
                                         <td class="px-6 py-6">
                                             <div
-                                                class="text-[10px] font-bold text-blue-600 uppercase tracking-widest"
+                                                class="text-[10px] font-bold text-primary-600 uppercase tracking-widest"
                                             >
                                                 {question.material?.title ||
                                                     "GENERAL"}

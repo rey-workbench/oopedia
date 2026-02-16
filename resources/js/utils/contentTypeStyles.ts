@@ -8,22 +8,22 @@ type ContentType = string; // "sintaks" | "teori" — kept loose for flexibility
  */
 export function getGradientClass(type: ContentType): string {
     return type === "sintaks"
-        ? "from-emerald-500 to-teal-600"
-        : "from-blue-500 to-indigo-600";
+        ? "bg-emerald-600"
+        : "bg-primary-600";
 }
 
 /**
  * Text color for content-type labels.
  */
 export function getTextClass(type: ContentType): string {
-    return type === "sintaks" ? "text-emerald-600" : "text-blue-600";
+    return type === "sintaks" ? "text-emerald-600" : "text-primary-600";
 }
 
 /**
  * Solid background color for badges / pills.
  */
 export function getBgClass(type: ContentType): string {
-    return type === "sintaks" ? "bg-emerald-600" : "bg-blue-600";
+    return type === "sintaks" ? "bg-emerald-600" : "bg-primary-600";
 }
 
 /**
@@ -32,7 +32,7 @@ export function getBgClass(type: ContentType): string {
 export function getShadowClass(type: ContentType): string {
     return type === "sintaks"
         ? "shadow-emerald-900/20"
-        : "shadow-blue-900/20";
+        : "shadow-primary-900/20";
 }
 
 /**
@@ -55,14 +55,14 @@ export function getBadgeLabel(type: ContentType): string {
  * Light background for sub-material cards.
  */
 export function getSubMaterialBg(type: ContentType): string {
-    return type === "sintaks" ? "bg-emerald-50" : "bg-blue-50";
+    return type === "sintaks" ? "bg-emerald-50" : "bg-primary-50";
 }
 
 /**
  * Text color for sub-material cards.
  */
 export function getSubMaterialText(type: ContentType): string {
-    return type === "sintaks" ? "text-emerald-600" : "text-blue-600";
+    return type === "sintaks" ? "text-emerald-600" : "text-primary-600";
 }
 
 /**
@@ -71,14 +71,14 @@ export function getSubMaterialText(type: ContentType): string {
 export function getHoverBorderClass(type: ContentType): string {
     return type === "sintaks"
         ? "hover:border-emerald-500"
-        : "hover:border-blue-500";
+        : "hover:border-primary-500";
 }
 
 /**
  * Border color for content sections.
  */
 export function getBorderClass(type: ContentType): string {
-    return type === "sintaks" ? "border-emerald-100" : "border-blue-100";
+    return type === "sintaks" ? "border-emerald-100" : "border-primary-100";
 }
 
 /**
@@ -87,5 +87,5 @@ export function getBorderClass(type: ContentType): string {
 export function getCtaShadowClass(type: ContentType): string {
     return type === "sintaks"
         ? "shadow-emerald-500/20"
-        : "shadow-blue-500/20";
+        : "shadow-primary-500/20";
 }

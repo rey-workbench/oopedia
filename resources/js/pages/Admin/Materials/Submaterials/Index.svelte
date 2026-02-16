@@ -48,7 +48,7 @@
                     Hierarki Pembelajaran
                 </p>
                 <div
-                    class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-bold uppercase tracking-widest"
+                    class="px-3 py-1 bg-primary-50 text-primary-600 rounded-full text-[10px] font-bold uppercase tracking-widest"
                 >
                     {subMaterials.length} UNIT TOTAL
                 </div>

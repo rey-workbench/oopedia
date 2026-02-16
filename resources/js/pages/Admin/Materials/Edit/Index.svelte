@@ -74,12 +74,12 @@
 
                             <Alert
                                 variant="primary"
-                                class="bg-indigo-50/50 border-indigo-100"
+                                class="bg-primary-50/50 border-primary-100"
                             >
                                 <div class="flex gap-4">
                                     <RefreshCw
                                         size={16}
-                                        class="text-indigo-500 mt-1"
+                                        class="text-primary-600 mt-1"
                                     />
                                     <div
                                         class="text-[10px] font-bold text-slate-500 leading-relaxed uppercase tracking-widest"
@@ -99,7 +99,7 @@
                                 >Sinkronisasi Sampul</label
                             >
                             <div
-                                class={`relative group aspect-video rounded-2xl bg-slate-50 border-2 ${coverPreview ? "border-solid border-blue-500/30" : "border-dashed border-slate-200"} flex flex-col items-center justify-center overflow-hidden transition-all hover:border-indigo-500/50`}
+                                class={`relative group aspect-video rounded-2xl bg-slate-50 border-2 ${coverPreview ? "border-solid border-primary-500/30" : "border-dashed border-slate-200"} flex flex-col items-center justify-center overflow-hidden transition-all hover:border-primary-500/50`}
                             >
                                 {#if coverPreview}
                                     <img
@@ -173,7 +173,7 @@
                         <div class="flex items-center gap-3">
                             <CloudUpload
                                 size={14}
-                                class="text-indigo-500 animate-pulse"
+                                class="text-primary-600 animate-pulse"
                             />
                             <span
                                 class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
@@ -184,7 +184,7 @@
                             type="submit"
                             variant="primary"
                             size="lg"
-                            class="shadow-xl shadow-indigo-500/20 bg-indigo-600 hover:bg-indigo-700"
+                            class="shadow-xl shadow-primary-900/20 bg-primary-600 hover:bg-primary-700"
                             icon={CloudUpload}
                             disabled={$form.processing}
                         >

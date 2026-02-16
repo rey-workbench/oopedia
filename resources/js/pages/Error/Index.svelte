@@ -46,10 +46,10 @@
     <!-- Decorative Background -->
     <div class="absolute top-0 left-0 w-full h-full">
         <div
-            class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/5 rounded-full blur-[120px]"
+            class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-600/5 rounded-full blur-[120px]"
         ></div>
         <div
-            class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/5 rounded-full blur-[120px]"
+            class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary-600/5 rounded-full blur-[120px]"
         ></div>
     </div>
 
@@ -87,7 +87,7 @@
                 variant="primary"
                 size="lg"
                 icon={Home}
-                class="shadow-xl shadow-blue-500/20"
+                class="shadow-xl shadow-primary-900/20"
             >
                 KEMBALI KE BERANDA
             </Button>

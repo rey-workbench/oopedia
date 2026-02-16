@@ -74,10 +74,10 @@
             class="relative overflow-hidden rounded-[3rem] bg-slate-900 p-8 md:p-12 text-white shadow-2xl"
         >
             <div
-                class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-indigo-600/20 to-transparent"
+                class="absolute top-0 right-0 w-1/2 h-full bg-primary-600/10"
             ></div>
             <div
-                class="absolute -bottom-24 -right-24 w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px]"
+                class="absolute -bottom-24 -right-24 w-96 h-96 bg-primary-500/10 rounded-full blur-[100px]"
             ></div>
 
             <div
@@ -98,7 +98,7 @@
 
                 <div class="text-center md:text-left">
                     <p
-                        class="text-[10px] font-bold uppercase tracking-widest text-indigo-400 mb-2"
+                        class="text-[10px] font-bold uppercase tracking-widest text-primary-400 mb-2"
                     >
                         MEMBER SINCE {new Date(user.created_at).getFullYear()}
                     </p>
@@ -113,13 +113,13 @@
                         <div
                             class="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-xs font-bold uppercase tracking-wider"
                         >
-                            <Mail size={14} class="text-indigo-400" />
+                            <Mail size={14} class="text-primary-400" />
                             {user.email}
                         </div>
                         <div
                             class="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-xs font-bold uppercase tracking-wider"
                         >
-                            <User size={14} class="text-indigo-400" />
+                            <User size={14} class="text-primary-400" />
                             Mahasiswa
                         </div>
                     </div>
@@ -139,7 +139,7 @@
                 <!-- Learning Style Card -->
                 <Card
                     padding="p-8"
-                    class="bg-gradient-to-br from-purple-50 to-white border-purple-100 shadow-lg shadow-purple-100/50"
+                    class="bg-purple-50 border-purple-100 shadow-lg shadow-purple-100/50"
                 >
                     <div class="space-y-4">
                         <div
@@ -171,27 +171,27 @@
                 <!-- Current Level Card -->
                 <Card
                     padding="p-8"
-                    class="bg-gradient-to-br from-blue-50 to-white border-blue-100 shadow-lg shadow-blue-100/50"
+                    class="bg-accent-50 border-accent-100 shadow-lg shadow-accent-100/50"
                 >
                     <div class="space-y-4">
                         <div
-                            class="w-14 h-14 bg-blue-500 text-white rounded-[1.5rem] flex items-center justify-center shadow-xl shadow-blue-200"
+                            class="w-14 h-14 bg-primary-500 text-white rounded-[1.5rem] flex items-center justify-center shadow-xl shadow-primary-200"
                         >
                             <Trophy size={28} />
                         </div>
                         <div>
                             <p
-                                class="text-[9px] font-bold text-blue-400 uppercase tracking-widest mb-1"
+                                class="text-[9px] font-bold text-primary-400 uppercase tracking-widest mb-1"
                             >
                                 Level Saat Ini
                             </p>
                             <p
-                                class="text-2xl font-bold text-blue-900 tracking-widest uppercase"
+                                class="text-2xl font-bold text-primary-900 tracking-widest uppercase"
                             >
                                 {personalization.current_level || "Pemula"}
                             </p>
                             <p
-                                class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mt-2"
+                                class="text-[10px] font-bold text-primary-400 uppercase tracking-widest mt-2"
                             >
                                 {personalization.global_xp || 0} XP
                             </p>
@@ -202,7 +202,7 @@
                 <!-- Accuracy Card -->
                 <Card
                     padding="p-8"
-                    class="bg-gradient-to-br from-emerald-50 to-white border-emerald-100 shadow-lg shadow-emerald-100/50"
+                    class="bg-emerald-50 border-emerald-100 shadow-lg shadow-emerald-100/50"
                 >
                     <div class="space-y-4">
                         <div
@@ -235,7 +235,7 @@
                 <!-- Streak Card -->
                 <Card
                     padding="p-8"
-                    class="bg-gradient-to-br from-orange-50 to-white border-orange-100 shadow-lg shadow-orange-100/50"
+                    class="bg-orange-50 border-orange-100 shadow-lg shadow-orange-100/50"
                 >
                     <div class="space-y-4">
                         <div
@@ -265,10 +265,7 @@
             </div>
 
             <!-- Detailed Stats -->
-            <Card
-                padding="p-8 md:p-12"
-                class="bg-gradient-to-br from-slate-50 to-white border-slate-100"
-            >
+            <Card padding="p-8 md:p-12" class="bg-slate-50 border-slate-100">
                 <h4
                     class="text-sm font-bold text-slate-900 uppercase tracking-widest mb-8"
                 >
@@ -280,7 +277,7 @@
                     <div class="space-y-4">
                         <div class="flex items-center gap-4">
                             <div
-                                class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center"
+                                class="w-12 h-12 bg-primary-100 text-primary-600 rounded-xl flex items-center justify-center"
                             >
                                 <CheckCircle size={24} />
                             </div>
@@ -426,7 +423,7 @@
                 <Card padding="p-8" class="space-y-6">
                     <div class="flex items-start gap-4">
                         <div
-                            class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0"
+                            class="w-10 h-10 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center shrink-0"
                         >
                             <ShieldCheck size={20} />
                         </div>
@@ -470,10 +467,10 @@
                 </Card>
 
                 <div
-                    class="p-8 rounded-[2rem] bg-gradient-to-br from-slate-800 to-slate-900 text-white relative overflow-hidden group"
+                    class="p-8 rounded-[2rem] bg-slate-900 text-white relative overflow-hidden group"
                 >
                     <div
-                        class="absolute -top-10 -right-10 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl transition-transform duration-1000"
+                        class="absolute -top-10 -right-10 w-32 h-32 bg-primary-500/10 rounded-full blur-2xl transition-transform duration-1000"
                     ></div>
                     <h4
                         class="text-lg font-bold tracking-widest mb-4 uppercase"

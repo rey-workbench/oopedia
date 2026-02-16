@@ -51,7 +51,7 @@
                                 </div>
                             {:else}
                                 <div
-                                    class="h-60 md:h-full bg-gradient-to-br from-indigo-600 to-blue-700 flex items-center justify-center"
+                                    class="h-60 md:h-full bg-primary-600 flex items-center justify-center"
                                 >
                                     <Shapes
                                         size={96}
@@ -76,7 +76,7 @@
                                 >
                                     <div>
                                         <h2
-                                            class="text-3xl font-bold text-slate-900 leading-tight mb-3 group-hover:text-blue-600 transition-colors tracking-widest"
+                                            class="text-3xl font-bold text-slate-900 leading-tight mb-3 group-hover:text-primary-600 transition-colors tracking-widest"
                                         >
                                             {material.title}
                                         </h2>
@@ -87,7 +87,7 @@
                                                 class="flex items-center gap-2.5"
                                             >
                                                 <div
-                                                    class="w-8 h-8 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center text-xs shadow-inner"
+                                                    class="w-8 h-8 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center text-xs shadow-inner"
                                                 >
                                                     <Users size={14} />
                                                 </div>
@@ -101,7 +101,7 @@
                                                 class="flex items-center gap-2.5"
                                             >
                                                 <div
-                                                    class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-500 flex items-center justify-center text-xs shadow-inner"
+                                                    class="w-8 h-8 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center text-xs shadow-inner"
                                                 >
                                                     <Puzzle size={14} />
                                                 </div>
@@ -114,7 +114,7 @@
                                         </div>
                                     </div>
                                     <div
-                                        class="hidden sm:flex w-14 h-14 rounded-2xl bg-slate-50 text-slate-900 items-center justify-center shadow-inner group-hover:bg-blue-600 group-hover:text-white transition-all"
+                                        class="hidden sm:flex w-14 h-14 rounded-2xl bg-slate-50 text-slate-900 items-center justify-center shadow-inner group-hover:bg-primary-600 group-hover:text-white transition-all"
                                     >
                                         <Play
                                             size={20}
@@ -184,7 +184,7 @@
                             <div class="mt-10 md:hidden">
                                 <Button
                                     variant="primary"
-                                    class="w-full"
+                                    class="w-full shadow-lg shadow-primary-900/20"
                                     icon={Play}>Mulai Latihan</Button
                                 >
                             </div>

@@ -145,11 +145,11 @@
                             class="h-full p-8 bg-slate-900 rounded-[2rem] relative overflow-hidden flex flex-col justify-center text-center"
                         >
                             <div
-                                class="absolute right-0 top-0 w-32 h-32 bg-indigo-600/10 blur-3xl"
+                                class="absolute right-0 top-0 w-32 h-32 bg-primary-600/10 blur-3xl"
                             ></div>
                             <div class="relative z-10 text-center">
                                 <div
-                                    class="w-16 h-16 mx-auto rounded-3xl bg-indigo-600/20 text-indigo-500 flex items-center justify-center mb-6"
+                                    class="w-16 h-16 mx-auto rounded-3xl bg-primary-600/20 text-primary-600 flex items-center justify-center mb-6"
                                 >
                                     <Lock size={24} />
                                 </div>
@@ -174,7 +174,7 @@
                 >
                     <div class="flex items-center gap-4">
                         <div
-                            class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center"
+                            class="w-10 h-10 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center"
                         >
                             <RefreshCw size={14} />
                         </div>
@@ -203,7 +203,7 @@
                             type="submit"
                             variant="primary"
                             size="lg"
-                            class="shadow-xl shadow-indigo-500/30 bg-indigo-600 hover:bg-indigo-700 font-bold tracking-widest"
+                            class="shadow-xl shadow-primary-900/30 bg-primary-600 hover:bg-primary-700 font-bold tracking-widest"
                             icon={Save}
                             disabled={$form.processing}
                         >

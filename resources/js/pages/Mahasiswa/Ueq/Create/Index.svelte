@@ -133,14 +133,16 @@
     <div class="space-y-12 pb-20">
         <div class="text-center space-y-6">
             <div
-                class="inline-flex items-center justify-center w-20 h-20 bg-blue-100 text-blue-600 rounded-[2rem] shadow-inner"
+                class="inline-flex items-center justify-center w-20 h-20 bg-primary-50 text-primary-600 rounded-[2rem] shadow-inner"
             >
                 <ClipboardList size={32} />
             </div>
             <h1
                 class="text-4xl font-bold text-slate-900 tracking-[0.2em] uppercase"
             >
-                User Experience <span class="text-blue-600">Questionnaire</span>
+                User Experience <span class="text-primary-600"
+                    >Questionnaire</span
+                >
             </h1>
             <p class="text-slate-500 text-lg max-w-2xl mx-auto font-medium">
                 Kami mengundang Anda untuk memberikan evaluasi objektif terhadap
@@ -216,7 +218,7 @@
                     <div class="space-y-8 pt-12 border-t border-slate-50">
                         <div class="flex items-center gap-4 mb-8">
                             <div
-                                class="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-blue-200"
+                                class="w-10 h-10 bg-primary-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-primary-900/20"
                             >
                                 <CheckSquare size={20} />
                             </div>
@@ -279,7 +281,7 @@
                                                             required
                                                         />
                                                         <div
-                                                            class="w-10 h-10 rounded-xl border-2 border-slate-100 bg-white peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-checked:shadow-xl peer-checked:shadow-blue-200 transition-all flex items-center justify-center text-[10px] font-bold text-transparent peer-checked:text-white group-hover/item:border-blue-300"
+                                                            class="w-10 h-10 rounded-xl border-2 border-slate-100 bg-white peer-checked:bg-primary-600 peer-checked:border-primary-600 peer-checked:shadow-xl peer-checked:shadow-primary-900/20 transition-all flex items-center justify-center text-[10px] font-bold text-transparent peer-checked:text-white group-hover/item:border-primary-300"
                                                         >
                                                             {i + 1}
                                                         </div>
@@ -325,7 +327,7 @@
                                 <textarea
                                     id="comments"
                                     bind:value={$form.comments}
-                                    class="w-full px-8 py-6 border-2 border-slate-50 rounded-[2rem] bg-slate-50 font-bold focus:ring-8 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all placeholder:text-slate-300 text-xs min-h-[160px] uppercase tracking-wider"
+                                    class="w-full px-8 py-6 border-2 border-slate-50 rounded-[2rem] bg-slate-50 font-bold focus:ring-8 focus:ring-primary-50 focus:border-primary-500 outline-none transition-all placeholder:text-slate-300 text-xs min-h-[160px] uppercase tracking-wider"
                                     placeholder="Bagaimana perasaan Anda saat belajar menggunakan OOPEDIA?"
                                     required
                                 ></textarea>
@@ -349,7 +351,7 @@
                                 <textarea
                                     id="suggestions"
                                     bind:value={$form.suggestions}
-                                    class="w-full px-8 py-6 border-2 border-slate-50 rounded-[2rem] bg-slate-50 font-bold focus:ring-8 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all placeholder:text-slate-300 text-xs min-h-[160px] uppercase tracking-wider"
+                                    class="w-full px-8 py-6 border-2 border-slate-50 rounded-[2rem] bg-slate-50 font-bold focus:ring-8 focus:ring-primary-50 focus:border-primary-500 outline-none transition-all placeholder:text-slate-300 text-xs min-h-[160px] uppercase tracking-wider"
                                     placeholder="Apa satu hal yang paling ingin Anda tingkatkan dari sistem ini?"
                                     required
                                 ></textarea>
@@ -368,7 +370,7 @@
                         <Button
                             type="submit"
                             variant="primary"
-                            class="px-20 py-6 text-sm shadow-2xl shadow-blue-500/20"
+                            class="px-20 py-6 text-sm shadow-2xl shadow-primary-900/20"
                             icon={Send}
                             disabled={$form.processing}
                         >

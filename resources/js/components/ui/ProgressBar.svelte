@@ -7,7 +7,7 @@
     $: percentage = Math.min(100, Math.max(0, (value / max) * 100));
 
     const colors = {
-        blue: "bg-blue-600",
+        blue: "bg-primary-600",
         emerald: "bg-emerald-600",
         amber: "bg-amber-500",
         rose: "bg-rose-500",

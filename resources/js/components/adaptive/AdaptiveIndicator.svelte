@@ -105,7 +105,7 @@
     >
         <!-- Header / Toggle Bar -->
         <button
-            class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-2 text-white flex items-center justify-between hover:from-indigo-700 hover:to-purple-700 transition-all cursor-pointer"
+            class="w-full bg-primary-600 px-6 py-2 text-white flex items-center justify-between hover:bg-primary-700 transition-all cursor-pointer"
             on:click={toggleCollapse}
         >
             <div class="flex items-center gap-4">
@@ -238,7 +238,7 @@
 
                             {#if triggeredRule}
                                 <div
-                                    class="flex-1 p-5 bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl flex flex-col justify-center"
+                                    class="flex-1 p-5 bg-emerald-50 border border-emerald-200 rounded-xl flex flex-col justify-center"
                                     transition:fade={{ duration: 300 }}
                                 >
                                     <div class="flex items-start gap-4">
@@ -270,7 +270,7 @@
                                                     ID: {triggeredRule.id}
                                                 </span>
                                                 <span
-                                                    class="px-2 py-0.5 rounded bg-blue-100 text-blue-700 font-mono font-bold border border-blue-200"
+                                                    class="px-2 py-0.5 rounded bg-primary-100 text-primary-700 font-mono font-bold border border-primary-200"
                                                 >
                                                     ACTION: {triggeredRule.action}
                                                 </span>
@@ -324,7 +324,7 @@
                             ><Target size={10} /> First Match Conflict Resolution</span
                         >
                     </div>
-                    <div class="text-indigo-400">
+                    <div class="text-primary-400">
                         Adaptive Engine v2 • Stable
                     </div>
                 </div>

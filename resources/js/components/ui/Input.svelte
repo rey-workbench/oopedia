@@ -52,7 +52,7 @@
         ${
             error
                 ? "border-rose-100 bg-rose-50/30 text-rose-900 focus:border-rose-500 focus:ring-4 focus:ring-rose-50"
-                : "border-slate-50 border-slate-100 hover:border-blue-200 focus:border-blue-600 focus:ring-8 focus:ring-blue-50"
+                : "border-slate-50 border-slate-100 hover:border-primary-200 focus:border-primary-600 focus:ring-8 focus:ring-primary-50"
         }
       `}
         />

@@ -61,7 +61,13 @@
                         dataLabels: { position: "top" },
                     },
                 },
-                colors: ["#6366f1", "#10b981", "#f59e0b", "#3b82f6", "#8b5cf6"],
+                colors: [
+                    "#004e98",
+                    "#10b981",
+                    "#f59e0b",
+                    "#004e98CC",
+                    "#8b5cf6",
+                ],
                 legend: { show: false },
                 grid: {
                     borderColor: "#f1f5f9",
@@ -106,13 +112,13 @@
                     fontFamily: "Poppins, sans-serif",
                     dropShadow: { enabled: true, blur: 8, opacity: 0.1 },
                 },
-                colors: ["#4f46e5"],
+                colors: ["#004e98"],
                 fill: { opacity: 0.4 },
-                stroke: { show: true, width: 3, colors: ["#4f46e5"] },
+                stroke: { show: true, width: 3, colors: ["#004e98"] },
                 markers: {
                     size: 6,
                     colors: ["#fff"],
-                    strokeColors: "#4f46e5",
+                    strokeColors: "#004e98",
                     strokeWidth: 3,
                 },
                 xaxis: {
@@ -192,7 +198,7 @@
                 >
                     <div class="flex items-center gap-5">
                         <div
-                            class="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-inner"
+                            class="w-12 h-12 rounded-2xl bg-primary-50 flex items-center justify-center text-primary-600 shadow-inner"
                         >
                             <ScanEye size={24} strokeWidth={2.5} />
                         </div>
@@ -212,7 +218,7 @@
                     />
                 </div>
                 <div
-                    class="absolute -bottom-24 -right-24 w-80 h-80 bg-indigo-50/40 rounded-full blur-[100px] -z-10"
+                    class="absolute -bottom-24 -right-24 w-80 h-80 bg-primary-50/40 rounded-full blur-[100px] -z-10"
                 ></div>
             </div>
 
@@ -344,7 +350,7 @@
                                                 <ProgressBar
                                                     value={student.materials_progress}
                                                     size="xs"
-                                                    color="bg-blue-600"
+                                                    color="bg-primary-600"
                                                 />
                                             </div>
                                         </td>
@@ -380,7 +386,7 @@
                     <div class="space-y-4 p-6 bg-slate-50/50 h-full">
                         {#each popularMaterials as material}
                             <div
-                                class="flex items-center gap-4 p-4 rounded-3xl bg-white border border-slate-100 group hover:border-blue-200 transition-all shadow-sm"
+                                class="flex items-center gap-4 p-4 rounded-3xl bg-white border border-slate-100 group hover:border-primary-200 transition-all shadow-sm"
                             >
                                 <div
                                     class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center shadow-lg text-white transition-transform group-hover:scale-110"
@@ -399,7 +405,7 @@
                                         {material.students_count} Subjek
                                     </p>
                                 </div>
-                                <span class="text-xs font-bold text-blue-600"
+                                <span class="text-xs font-bold text-primary-600"
                                     >{material.completion_rate}%</span
                                 >
                             </div>
@@ -465,7 +471,7 @@
                                     ? "Berhasil mendekripsi"
                                     : "Menganalisis"} modul
                                 <span
-                                    class="text-slate-900 underline decoration-blue-200 underline-offset-4"
+                                    class="text-slate-900 underline decoration-primary-200 underline-offset-4"
                                 >
                                     {progress.question?.material?.title || "-"}
                                 </span>
@@ -478,7 +484,7 @@
                                 <Zap
                                     size={12}
                                     strokeWidth={3}
-                                    class="text-blue-500 opacity-20"
+                                    class="text-primary-500 opacity-20"
                                 />
                             </div>
                         </div>

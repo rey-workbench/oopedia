@@ -141,7 +141,7 @@
                                 <select
                                     id="role_id"
                                     bind:value={$form.role_id}
-                                    class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold tracking-widest outline-none focus:ring-4 focus:ring-blue-100 transition-all appearance-none cursor-pointer uppercase"
+                                    class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold tracking-widest outline-none focus:ring-4 focus:ring-primary-100 transition-all appearance-none cursor-pointer uppercase"
                                 >
                                     <option value="" disabled selected
                                         >Pilih Peran</option
@@ -171,11 +171,11 @@
                             class="h-full p-8 bg-slate-900 rounded-[2rem] relative overflow-hidden flex flex-col justify-center text-center"
                         >
                             <div
-                                class="absolute right-0 top-0 w-32 h-32 bg-blue-600/10 blur-3xl"
+                                class="absolute right-0 top-0 w-32 h-32 bg-primary-600/10 blur-3xl"
                             ></div>
                             <div class="relative z-10 text-center">
                                 <div
-                                    class="w-16 h-16 mx-auto rounded-3xl bg-blue-600/20 text-blue-500 flex items-center justify-center mb-6"
+                                    class="w-16 h-16 mx-auto rounded-3xl bg-primary-600/20 text-primary-600 flex items-center justify-center mb-6"
                                 >
                                     <Shield size={24} />
                                 </div>
@@ -201,7 +201,7 @@
                 >
                     <div class="flex items-center gap-4">
                         <div
-                            class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center"
+                            class="w-10 h-10 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center"
                         >
                             <Cpu size={14} />
                         </div>
@@ -230,7 +230,7 @@
                             type="submit"
                             variant="primary"
                             size="lg"
-                            class="shadow-xl shadow-blue-500/30 font-bold tracking-widest"
+                            class="shadow-xl shadow-primary-900/30 font-bold tracking-widest"
                             icon={UserPlus}
                             disabled={$form.processing}
                         >

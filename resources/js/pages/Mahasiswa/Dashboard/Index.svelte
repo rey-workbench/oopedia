@@ -37,10 +37,10 @@
             class="relative overflow-hidden rounded-[3rem] bg-slate-900 p-12 text-white shadow-2xl shadow-slate-200"
         >
             <div
-                class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-indigo-600/20 to-transparent"
+                class="absolute top-0 right-0 w-1/2 h-full bg-primary-600/10"
             ></div>
             <div
-                class="absolute -bottom-24 -right-24 w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px]"
+                class="absolute -bottom-24 -right-24 w-96 h-96 bg-primary-500/10 rounded-full blur-[100px]"
             ></div>
 
             <div
@@ -58,7 +58,7 @@
 
                 <div class="text-center md:text-left">
                     <p
-                        class="text-[10px] font-bold uppercase tracking-widest text-indigo-400 mb-3"
+                        class="text-[10px] font-bold uppercase tracking-widest text-primary-400 mb-3"
                     >
                         Selamat Datang Kembali
                     </p>
@@ -123,7 +123,7 @@
                     {#each recentActivities as activity}
                         <Card
                             padding="p-0"
-                            class="hover:border-blue-400 transition-all border-slate-100 shadow-xl overflow-hidden group"
+                            class="hover:border-primary-400 transition-all border-slate-100 shadow-xl overflow-hidden group"
                         >
                             <div class="p-8 flex gap-8 items-center">
                                 <div
@@ -133,7 +133,7 @@
                           ? "bg-emerald-50 text-emerald-500"
                           : activity.type === "milestone"
                             ? "bg-amber-50 text-amber-500"
-                            : "bg-blue-50 text-blue-500"
+                            : "bg-primary-50 text-primary-500"
                   }`}
                                 >
                                     <svelte:component
@@ -187,7 +187,7 @@
                                                     >
                                                 {:else}
                                                     Mengerjakan soal <span
-                                                        class="capitalize font-bold text-blue-500"
+                                                        class="capitalize font-bold text-primary-500"
                                                         >{activity.difficulty}</span
                                                     >
                                                     di materi
@@ -240,7 +240,7 @@
                 <div class="space-y-6">
                     <Card
                         padding="p-8"
-                        class="bg-gradient-to-br from-blue-600 to-blue-700 text-white border-none shadow-2xl relative overflow-hidden group"
+                        class="bg-primary-600 text-white border-none shadow-2xl relative overflow-hidden group"
                     >
                         <div
                             class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000"
@@ -258,7 +258,7 @@
                             Dasar PBO: Class & Object
                         </h4>
                         <p
-                            class="text-blue-100 text-sm font-medium mb-8 leading-relaxed"
+                            class="text-primary-100 text-sm font-medium mb-8 leading-relaxed"
                         >
                             Fundamental utama pemrograman berorientasi objek
                             yang harus dikuasai.
@@ -274,14 +274,14 @@
 
                     <Card
                         padding="p-8"
-                        class="border-2 border-dashed border-slate-200 shadow-none hover:border-blue-400 hover:bg-blue-50/20 transition-all cursor-pointer group"
+                        class="border-2 border-dashed border-slate-200 shadow-none hover:border-primary-400 hover:bg-primary-50/20 transition-all cursor-pointer group"
                     >
                         <Link
                             href="/mahasiswa/materials"
                             class="flex flex-col items-center text-center"
                         >
                             <div
-                                class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition-all"
+                                class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center mb-4 group-hover:bg-primary-600 group-hover:text-white transition-all"
                             >
                                 <svelte:component
                                     this={Plus}
@@ -290,12 +290,12 @@
                                 />
                             </div>
                             <h4
-                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-blue-600"
+                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-primary-600"
                             >
                                 Eksplorasi Katalog Materi
                             </h4>
                             <p
-                                class="mt-2 text-[9px] font-bold text-blue-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity"
+                                class="mt-2 text-[9px] font-bold text-primary-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity"
                             >
                                 LIHAT SEMUA
                             </p>

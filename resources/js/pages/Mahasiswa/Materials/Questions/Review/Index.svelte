@@ -50,7 +50,7 @@
                             <li>
                                 <Link
                                     href={`/mahasiswa/materials/${m.id}`}
-                                    class={`block p-3 rounded-lg transition-colors ${m.id === material.id ? "bg-blue-600 text-white" : "text-slate-700 hover:bg-slate-100"}`}
+                                    class={`block p-3 rounded-lg transition-colors ${m.id === material.id ? "bg-primary-600 text-white" : "text-slate-700 hover:bg-slate-100"}`}
                                 >
                                     <FileText size={16} class="mr-2" />{m.title}
                                 </Link>
@@ -140,7 +140,7 @@
                                             class="inline-flex items-center gap-2 font-bold text-slate-700"
                                         >
                                             <div
-                                                class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-sm"
+                                                class="w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center text-sm"
                                             >
                                                 {index + 1}
                                             </div>
@@ -170,7 +170,7 @@
                                             >
                                                 <HelpCircle
                                                     size={16}
-                                                    class="text-blue-400"
+                                                    class="text-primary-600"
                                                 />
                                                 Pertanyaan
                                             </h5>
@@ -188,7 +188,7 @@
                                             >
                                                 <List
                                                     size={16}
-                                                    class="text-indigo-400"
+                                                    class="text-primary-600"
                                                 />
                                                 Pilihan Jawaban
                                             </h5>
@@ -224,19 +224,19 @@
                                                     </div>
                                                     {#if answer.is_correct && answer.explanation}
                                                         <div
-                                                            class="mt-2 p-5 bg-blue-50/50 border-l-4 border-blue-400 rounded-r-xl"
+                                                            class="mt-2 p-5 bg-primary-50 border-l-4 border-primary-600 rounded-r-xl"
                                                         >
                                                             <div
-                                                                class="flex items-center gap-2 font-bold text-blue-900 mb-1"
+                                                                class="flex items-center gap-2 font-bold text-primary-900 mb-1"
                                                             >
                                                                 <Lightbulb
                                                                     size={16}
-                                                                    class="text-blue-500"
+                                                                    class="text-primary-600"
                                                                 />
                                                                 Penjelasan:
                                                             </div>
                                                             <div
-                                                                class="text-blue-800 text-sm leading-relaxed"
+                                                                class="text-primary-800 text-sm leading-relaxed"
                                                             >
                                                                 {@html answer.explanation}
                                                             </div>

@@ -84,7 +84,7 @@
                 <div
                     class="px-4 text-[10px] font-bold uppercase tracking-tight text-slate-500 flex items-center gap-3"
                 >
-                    <span class="w-2 h-0.5 bg-blue-500/50"></span>
+                    <span class="w-2 h-0.5 bg-primary-500/50"></span>
                     Utama
                 </div>
                 <div class="space-y-2">
@@ -101,7 +101,7 @@
                 <div
                     class="px-4 text-[10px] font-bold uppercase tracking-tight text-slate-500 flex items-center gap-3"
                 >
-                    <span class="w-2 h-0.5 bg-blue-500/50"></span>
+                    <span class="w-2 h-0.5 bg-primary-500/50"></span>
                     Kurikulum
                 </div>
                 <div class="space-y-2">
@@ -124,7 +124,7 @@
                 <div
                     class="px-4 text-[10px] font-bold uppercase tracking-tight text-slate-500 flex items-center gap-3"
                 >
-                    <span class="w-2 h-0.5 bg-blue-500/50"></span>
+                    <span class="w-2 h-0.5 bg-primary-500/50"></span>
                     Manajemen
                 </div>
                 <div class="space-y-2">
@@ -185,7 +185,7 @@
                 <div
                     class="px-4 text-[10px] font-bold uppercase tracking-tight text-slate-500 flex items-center gap-3"
                 >
-                    <span class="w-2 h-0.5 bg-blue-500/50"></span>
+                    <span class="w-2 h-0.5 bg-primary-500/50"></span>
                     Belajar
                 </div>
                 <div class="space-y-2">
@@ -217,7 +217,7 @@
                 <div
                     class="px-4 text-[10px] font-bold uppercase tracking-tight text-slate-500 flex items-center gap-3"
                 >
-                    <span class="w-2 h-0.5 bg-blue-500/50"></span>
+                    <span class="w-2 h-0.5 bg-primary-500/50"></span>
                     Pencapaian
                 </div>
                 <div class="space-y-2">
@@ -234,7 +234,7 @@
                 <div
                     class="px-4 text-[10px] font-bold uppercase tracking-tight text-slate-500 flex items-center gap-3"
                 >
-                    <span class="w-2 h-0.5 bg-blue-500/50"></span>
+                    <span class="w-2 h-0.5 bg-primary-500/50"></span>
                     Akun
                 </div>
                 <div class="space-y-2">

@@ -110,7 +110,7 @@
                     type="checkbox"
                     id="register_as_admin"
                     bind:checked={$form.register_as_admin}
-                    class="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 transition-colors cursor-pointer"
+                    class="w-5 h-5 rounded border-slate-300 text-primary-600 focus:ring-primary-500 transition-colors cursor-pointer"
                 />
                 <label
                     for="register_as_admin"

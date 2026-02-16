@@ -46,7 +46,7 @@
                         class="text-center py-24 bg-white rounded-[2.5rem] shadow-sm border border-slate-100"
                     >
                         <div
-                            class="w-24 h-24 bg-blue-50 text-blue-500 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-inner"
+                            class="w-24 h-24 bg-primary-50 text-primary-500 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-inner"
                         >
                             <BookOpen size={48} strokeWidth={2} />
                         </div>
@@ -65,7 +65,7 @@
                         <Button
                             href="/mahasiswa/materials"
                             variant="primary"
-                            class="px-10 py-4 rounded-2xl font-bold uppercase transition-all shadow-xl shadow-blue-100"
+                            class="px-10 py-4 rounded-2xl font-bold uppercase transition-all shadow-xl shadow-primary-900/10"
                             icon={Rocket}
                         >
                             Mulai Belajar
@@ -80,7 +80,7 @@
                                 >
                                     <!-- Header Card -->
                                     <div
-                                        class="p-8 bg-gradient-to-br from-blue-600 to-indigo-700 relative overflow-hidden text-white"
+                                        class="p-8 bg-primary-600 relative overflow-hidden text-white"
                                     >
                                         <Activity
                                             size={96}
@@ -103,7 +103,7 @@
                                                 class="min-h-[4.5rem] flex flex-col justify-center"
                                             >
                                                 <div
-                                                    class="text-[10px] font-bold uppercase tracking-widest text-blue-100 mb-1"
+                                                    class="text-[10px] font-bold uppercase tracking-widest text-primary-100 mb-1"
                                                 >
                                                     Learning in Progress
                                                 </div>
@@ -142,7 +142,7 @@
                                             </div>
                                             <div class="text-right">
                                                 <div
-                                                    class="text-4xl font-bold text-blue-600"
+                                                    class="text-4xl font-bold text-primary-600"
                                                 >
                                                     {materialData.stats.overall
                                                         .percentage}%
@@ -259,7 +259,7 @@
                                             </Link>
                                             <Link
                                                 href={`/mahasiswa/materials/${materialData.material.id}/questions/levels`}
-                                                class="flex items-center justify-center gap-2 py-4 rounded-2xl font-bold uppercase text-xs bg-slate-900 text-white hover:bg-blue-600 transition-all shadow-lg shadow-slate-200 hover:shadow-blue-200"
+                                                class="flex items-center justify-center gap-2 py-4 rounded-2xl font-bold uppercase text-xs bg-slate-900 text-white hover:bg-primary-600 transition-all shadow-lg shadow-slate-200 hover:shadow-primary-900/20"
                                             >
                                                 <Play
                                                     size={14}

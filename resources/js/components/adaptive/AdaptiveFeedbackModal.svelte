@@ -38,7 +38,8 @@
         feedbackData.adaptiveResult?.new_state?.next_action_data?.label ||
         (feedbackData.status === "success" ? "Lanjut" : "Lihat Materi");
     $: nextActionType =
-        feedbackData.adaptiveResult?.new_state?.next_action_data?.type || "question";
+        feedbackData.adaptiveResult?.new_state?.next_action_data?.type ||
+        "question";
     $: recommendation =
         feedbackData.adaptiveResult?.new_state?.recommendation || null;
     $: triggeredRule = feedbackData.adaptiveResult?.triggered_rule || null;
@@ -54,19 +55,21 @@
     // Determine modal variant based on action code and intervention type
     function getModalVariant() {
         if (certification) return "certificate"; // H09, H10, H11
-        
+
         // Check intervention type first (crisis/recovery/persistent) - these should NEVER show "Try Again"
-        if (interventionType?.includes("crisis") || 
-            interventionType?.includes("recovery") || 
-            interventionType?.includes("persistent") || 
+        if (
+            interventionType?.includes("crisis") ||
+            interventionType?.includes("recovery") ||
+            interventionType?.includes("persistent") ||
             interventionType?.includes("project_revision") ||
-            interventionType?.includes("safety"))
+            interventionType?.includes("safety")
+        )
             return "intervention";
-            
+
         // Also check by action code
         if (["H01", "H02", "H03", "H04"].includes(actionCode))
             return "intervention"; // Crisis/Recovery
-            
+
         if (actionCode === "H06") return "acceleration"; // Accelerated Jump
         if (actionCode === "H07") return "backtrack"; // Critical Backtracking
         if (actionCode === "H08") return "graduation"; // Module Graduation
@@ -114,7 +117,7 @@
             case "H04":
                 return "text-purple-500";
             case "H06":
-                return "text-blue-500";
+                return "text-primary-500";
             case "H07":
                 return "text-rose-500";
             case "H08":
@@ -137,7 +140,7 @@
         switch (certification) {
             case "gold":
                 return {
-                    color: "bg-gradient-to-br from-yellow-400 to-amber-500",
+                    color: "bg-amber-400",
                     textColor: "text-yellow-600",
                     title: "SERTIFIKAT EMAS",
                     badge: "🥇",
@@ -145,7 +148,7 @@
                 };
             case "silver":
                 return {
-                    color: "bg-gradient-to-br from-slate-300 to-slate-400",
+                    color: "bg-slate-300",
                     textColor: "text-slate-600",
                     title: "SERTIFIKAT PERAK",
                     badge: "🥈",
@@ -153,7 +156,7 @@
                 };
             case "bronze":
                 return {
-                    color: "bg-gradient-to-br from-orange-400 to-orange-600",
+                    color: "bg-orange-400",
                     textColor: "text-orange-600",
                     title: "SERTIFIKAT PERUNGGU",
                     badge: "🥉",
@@ -192,9 +195,7 @@
                 <div
                     class={`${certDetails.color} p-16 text-center text-white relative overflow-hidden`}
                 >
-                    <div
-                        class="absolute -top-10 -right-10 text-9xl opacity-10"
-                    >
+                    <div class="absolute -top-10 -right-10 text-9xl opacity-10">
                         {certDetails.badge}
                     </div>
                     <div class="relative z-10">
@@ -250,11 +251,10 @@
                 <!-- Acceleration Variant -->
             {:else if variant === "acceleration"}
                 <div
-                    class="bg-gradient-to-br from-blue-500 to-indigo-600 p-12 text-center text-white relative overflow-hidden"
+                    class="bg-primary-600 p-12 text-center text-white relative overflow-hidden"
                 >
                     <div
                         class="absolute top-0 left-0 w-full h-full opacity-10"
-                        style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 20px 20px;"
                     ></div>
                     <div class="relative z-10">
                         <div
@@ -276,7 +276,7 @@
                         <h2 class="text-4xl font-bold mb-3 tracking-widest">
                             PERCEPATAN!
                         </h2>
-                        <p class="text-blue-50 text-lg font-medium">
+                        <p class="text-primary-50 text-lg font-medium">
                             {feedbackData.message}
                         </p>
                     </div>
@@ -284,16 +284,14 @@
                 <div class="p-10 bg-white">
                     {#if xpEarned > 0}
                         <div
-                            class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl"
+                            class="mb-6 p-4 bg-primary-50 border border-primary-200 rounded-xl"
                         >
-                            <div
-                                class="flex items-center justify-center gap-3"
-                            >
+                            <div class="flex items-center justify-center gap-3">
                                 <Star
                                     size={20}
                                     class="text-blue-500 fill-current"
                                 />
-                                <span class="text-lg font-bold text-blue-700"
+                                <span class="text-lg font-bold text-primary-700"
                                     >Bonus: +{xpEarned} XP</span
                                 >
                             </div>
@@ -314,9 +312,10 @@
                     <Button
                         variant="primary"
                         on:click={handleNext}
-                        class="w-full py-4 uppercase tracking-widest text-base font-bold bg-blue-600 hover:bg-blue-700"
+                        class="w-full py-4 uppercase tracking-widest text-base font-bold bg-primary-600 hover:bg-primary-700"
                     >
-                        {nextAction} <ArrowRight size={20} class="ml-2" />
+                        {nextAction}
+                        <ArrowRight size={20} class="ml-2" />
                     </Button>
                 </div>
 
@@ -362,25 +361,28 @@
                     <!-- Recommendation Box -->
                     {#if recommendation}
                         <div
-                            class="mb-8 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl"
+                            class="mb-8 p-6 bg-primary-50 border-2 border-primary-200 rounded-2xl"
                         >
                             <div
-                                class="flex items-start gap-4 mb-4 pb-4 border-b border-blue-200"
+                                class="flex items-start gap-4 mb-4 pb-4 border-b border-primary-200"
                             >
                                 <div
-                                    class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0"
+                                    class="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center flex-shrink-0"
                                 >
-                                    <BookOpen size={20} class="text-blue-600" />
+                                    <BookOpen
+                                        size={20}
+                                        class="text-primary-600"
+                                    />
                                 </div>
                                 <div class="flex-1">
                                     <h3
-                                        class="text-lg font-bold text-blue-900 mb-1"
+                                        class="text-lg font-bold text-primary-900 mb-1"
                                     >
                                         Rekomendasi Pembelajaran
                                     </h3>
-                                    <p class="text-sm text-blue-700">
-                                        Sistem merekomendasikan metode berikut untuk
-                                        meningkatkan pemahaman Anda
+                                    <p class="text-sm text-primary-700">
+                                        Sistem merekomendasikan metode berikut
+                                        untuk meningkatkan pemahaman Anda
                                     </p>
                                 </div>
                             </div>
@@ -394,7 +396,7 @@
                                 {:else if actionCode === "H02"}
                                     <FileText
                                         size={24}
-                                        class="text-indigo-600"
+                                        class="text-primary-600"
                                     />
                                     <span
                                         class="text-base font-bold text-slate-800"
@@ -407,13 +409,16 @@
                                         >{recommendation}</span
                                     >
                                 {:else if actionCode === "H04"}
-                                    <Brain size={24} class="text-indigo-600" />
+                                    <Brain size={24} class="text-primary-600" />
                                     <span
                                         class="text-base font-bold text-slate-800"
                                         >{recommendation}</span
                                     >
                                 {:else}
-                                    <Target size={24} class="text-blue-600" />
+                                    <Target
+                                        size={24}
+                                        class="text-primary-600"
+                                    />
                                     <span
                                         class="text-base font-bold text-slate-800"
                                         >{recommendation}</span
@@ -442,7 +447,7 @@
                                     <Badge
                                         variant="secondary"
                                         size="sm"
-                                        class="bg-blue-100 text-blue-700"
+                                        class="bg-primary-100 text-primary-700"
                                         >{triggeredRule.action}</Badge
                                     >
                                     <span class="text-xs text-slate-500"
@@ -458,7 +463,8 @@
                         on:click={handleNext}
                         class="w-full py-4 uppercase tracking-widest text-base font-bold"
                     >
-                        {nextAction} <ArrowRight size={20} class="ml-2" />
+                        {nextAction}
+                        <ArrowRight size={20} class="ml-2" />
                     </Button>
                 </div>
 
@@ -496,8 +502,7 @@
                         >
                             <div class="flex items-center justify-center gap-3">
                                 <BookOpen size={24} class="text-rose-600" />
-                                <span
-                                    class="text-base font-bold text-slate-800"
+                                <span class="text-base font-bold text-slate-800"
                                     >{recommendation}</span
                                 >
                             </div>
@@ -519,14 +524,15 @@
                         on:click={handleNext}
                         class="w-full py-4 uppercase tracking-widest text-base font-bold bg-rose-600 hover:bg-rose-700"
                     >
-                        {nextAction} <ArrowRight size={20} class="ml-2" />
+                        {nextAction}
+                        <ArrowRight size={20} class="ml-2" />
                     </Button>
                 </div>
 
                 <!-- Graduation Variant -->
             {:else if variant === "graduation"}
                 <div
-                    class="bg-gradient-to-br from-emerald-500 to-teal-600 p-12 text-center text-white relative overflow-hidden"
+                    class="bg-emerald-600 p-12 text-center text-white relative overflow-hidden"
                 >
                     <div
                         class="absolute top-0 right-0 p-8 opacity-10 animate-bounce"
@@ -568,8 +574,7 @@
                                     size={20}
                                     class="text-emerald-500 fill-current"
                                 />
-                                <span
-                                    class="text-lg font-bold text-emerald-700"
+                                <span class="text-lg font-bold text-emerald-700"
                                     >+{xpEarned} XP</span
                                 >
                             </div>
@@ -580,7 +585,8 @@
                         on:click={handleNext}
                         class="w-full py-4 uppercase tracking-widest text-base font-bold bg-emerald-600 hover:bg-emerald-700"
                     >
-                        {nextAction} <ArrowRight size={20} class="ml-2" />
+                        {nextAction}
+                        <ArrowRight size={20} class="ml-2" />
                     </Button>
                 </div>
 
@@ -598,7 +604,9 @@
                     <h2
                         class={`text-4xl font-bold mb-4 uppercase tracking-widest ${feedbackData.status === "success" ? "text-emerald-600" : "text-rose-600"}`}
                     >
-                        {feedbackData.status === "success" ? "BENAR!" : "SALAH!"}
+                        {feedbackData.status === "success"
+                            ? "BENAR!"
+                            : "SALAH!"}
                     </h2>
 
                     <p class="text-lg text-slate-600 mb-8">
@@ -610,17 +618,17 @@
                         <div class="mb-8 space-y-3">
                             {#if xpEarned > 0}
                                 <div
-                                    class="p-4 bg-blue-50 border border-blue-200 rounded-xl"
+                                    class="p-4 bg-primary-50 border border-primary-200 rounded-xl"
                                 >
                                     <div
                                         class="flex items-center justify-center gap-2"
                                     >
                                         <Star
                                             size={20}
-                                            class="text-blue-500 fill-current"
+                                            class="text-primary-500 fill-current"
                                         />
                                         <span
-                                            class="text-lg font-bold text-blue-700"
+                                            class="text-lg font-bold text-primary-700"
                                             >+{xpEarned} XP</span
                                         >
                                     </div>
@@ -658,9 +666,7 @@
                         </div>
                     {/if}
 
-                    <div
-                        class="flex flex-col sm:flex-row gap-4 justify-center"
-                    >
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
                         {#if feedbackData.status === "error" && nextActionType !== "material" && !recommendation}
                             <Button
                                 variant="outline"

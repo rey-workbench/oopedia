@@ -86,12 +86,12 @@
 
                             <Alert
                                 variant="primary"
-                                class="bg-blue-50/50 border-blue-100"
+                                class="bg-primary-50/50 border-primary-100"
                             >
                                 <div class="flex gap-4">
                                     <Info
                                         size={16}
-                                        class="text-blue-500 mt-1"
+                                        class="text-primary-600 mt-1"
                                     />
                                     <div
                                         class="text-[10px] font-bold text-slate-500 leading-relaxed uppercase tracking-widest"
@@ -111,7 +111,7 @@
                                 >Visualisasi Sampul</label
                             >
                             <div
-                                class={`relative group aspect-video rounded-2xl bg-slate-50 border-2 ${coverPreview ? "border-solid border-blue-500/30" : "border-dashed border-slate-200"} flex flex-col items-center justify-center overflow-hidden transition-all hover:border-blue-500/50`}
+                                class={`relative group aspect-video rounded-2xl bg-slate-50 border-2 ${coverPreview ? "border-solid border-primary-500/30" : "border-dashed border-slate-200"} flex flex-col items-center justify-center overflow-hidden transition-all hover:border-primary-500/50`}
                             >
                                 {#if coverPreview}
                                     <img
@@ -183,7 +183,7 @@
                         class="pt-6 border-t border-slate-100 flex items-center justify-between"
                     >
                         <div class="flex items-center gap-3">
-                            <Rocket size={14} class="text-blue-500" />
+                            <Rocket size={14} class="text-primary-600" />
                             <span
                                 class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
                                 >Status Kesiapan: Siap Dipublikasikan</span
@@ -193,7 +193,7 @@
                             type="submit"
                             variant="primary"
                             size="lg"
-                            class="shadow-xl shadow-blue-500/20"
+                            class="shadow-xl shadow-primary-900/20"
                             icon={CheckCheck}
                             disabled={$form.processing}
                         >

@@ -42,7 +42,7 @@
                 padding="p-0"
                 class="overflow-hidden border-slate-100 shadow-2xl"
             >
-                <div slot="header" class="bg-blue-600 px-8 py-6 text-white">
+                <div slot="header" class="bg-primary-600 px-8 py-6 text-white">
                     <h6
                         class="text-lg font-bold tracking-widest uppercase mb-0"
                     >
@@ -98,12 +98,12 @@
                                     />
                                     <label
                                         for="excel_file"
-                                        class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-slate-200 rounded-[2.5rem] bg-slate-50 hover:bg-slate-100/50 hover:border-blue-400 cursor-pointer transition-all group"
+                                        class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-slate-200 rounded-[2.5rem] bg-slate-50 hover:bg-slate-100/50 hover:border-primary-400 cursor-pointer transition-all group"
                                     >
                                         <FileSpreadsheet
                                             size={48}
                                             strokeWidth={1.5}
-                                            class="text-slate-200 group-hover:text-blue-500 mb-4 transition-colors"
+                                            class="text-slate-200 group-hover:text-primary-600 mb-4 transition-colors"
                                         />
                                         <span
                                             class="text-xs font-bold text-slate-400 group-hover:text-slate-900"
@@ -128,7 +128,7 @@
                             <Button
                                 type="submit"
                                 variant="primary"
-                                class="flex-1 py-4 shadow-xl shadow-blue-500/20"
+                                class="flex-1 py-4 shadow-xl shadow-primary-900/20"
                                 icon={Upload}
                                 disabled={$form.processing}
                             >

@@ -177,7 +177,7 @@
                 <h1
                     class="text-4xl font-bold text-slate-900 tracking-widest uppercase flex items-center justify-center gap-4"
                 >
-                    <Terminal size={32} class="text-blue-600" />
+                    <Terminal size={32} class="text-primary-600" />
                     Evaluasi: {material.title}
                 </h1>
                 <p
@@ -188,7 +188,7 @@
                 <div class="mt-6 max-w-xl mx-auto">
                     <ProgressBar
                         value={progressPercentage}
-                        color="blue"
+                        color="primary"
                         height="h-1"
                     />
                 </div>
@@ -242,7 +242,7 @@
                                             >XP</span
                                         >
                                         <h5
-                                            class="text-lg font-bold text-blue-600 flex items-center gap-1"
+                                            class="text-lg font-bold text-primary-600 flex items-center gap-1"
                                         >
                                             <Star
                                                 size={14}
@@ -273,12 +273,12 @@
                                 <!-- Hint Button -->
                                 <button
                                     type="button"
-                                    class="group flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 transition-all font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                                    class="group flex items-center gap-2 px-4 py-2 rounded-xl bg-primary-50 text-primary-600 hover:bg-primary-100 hover:text-primary-700 transition-all font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                                     on:click={useHint}
                                     disabled={hintsAvailable <= 0}
                                 >
                                     <div
-                                        class="w-6 h-6 rounded-lg bg-indigo-200 group-hover:bg-indigo-300 flex items-center justify-center transition-colors"
+                                        class="w-6 h-6 rounded-lg bg-primary-200 group-hover:bg-primary-300 flex items-center justify-center transition-colors"
                                     >
                                         <Lightbulb size={16} />
                                     </div>
@@ -350,7 +350,7 @@
                         class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100"
                     >
                         <div
-                            class="bg-gradient-to-br from-emerald-500 to-teal-600 p-12 text-center text-white relative"
+                            class="bg-emerald-600 p-12 text-center text-white relative"
                         >
                             <div class="absolute top-0 right-0 p-8 opacity-10">
                                 <Trophy size={96} class="text-white" />
@@ -391,10 +391,10 @@
 
                                 <a
                                     href={`/mahasiswa/materials/${material.id}`}
-                                    class="group p-6 rounded-2xl bg-slate-50 border-2 border-transparent hover:border-blue-200 hover:bg-blue-50 transition-all text-center"
+                                    class="group p-6 rounded-2xl bg-slate-50 border-2 border-transparent hover:border-primary-200 hover:bg-primary-50 transition-all text-center"
                                 >
                                     <div
-                                        class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform"
+                                        class="w-12 h-12 bg-primary-100 text-primary-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform"
                                     >
                                         <Book size={24} />
                                     </div>
@@ -405,10 +405,10 @@
 
                                 <a
                                     href="/mahasiswa/dashboard"
-                                    class="group p-6 rounded-2xl bg-slate-50 border-2 border-transparent hover:border-indigo-200 hover:bg-indigo-50 transition-all text-center"
+                                    class="group p-6 rounded-2xl bg-slate-50 border-2 border-transparent hover:border-primary-200 hover:bg-primary-50 transition-all text-center"
                                 >
                                     <div
-                                        class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform"
+                                        class="w-12 h-12 bg-primary-100 text-primary-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform"
                                     >
                                         <Home size={24} />
                                     </div>

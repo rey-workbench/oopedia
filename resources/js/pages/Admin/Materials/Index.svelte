@@ -95,7 +95,7 @@
                 title="Korpus Media"
                 value={totalMedia}
                 icon={Video}
-                variant="indigo"
+                variant="primary"
                 footer="Total aset multimedia"
             />
         </div>
@@ -114,14 +114,14 @@
                         <Search
                             size={18}
                             strokeWidth={2.5}
-                            class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors"
+                            class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary-600 transition-colors"
                         />
                         <input
                             type="text"
                             bind:value={search}
                             on:input={handleSearch}
                             placeholder="Pindai materi..."
-                            class="w-full md:w-64 pl-12 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-600 transition-all outline-none"
+                            class="w-full md:w-64 pl-12 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-primary-100 focus:border-primary-600 transition-all outline-none"
                         />
                     </div>
                 </div>
@@ -192,7 +192,7 @@
                                     class="group hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
                                 >
                                     <td
-                                        class="px-6 py-6 border-l-4 border-transparent group-hover:border-blue-600"
+                                        class="px-6 py-6 border-l-4 border-transparent group-hover:border-primary-600"
                                     >
                                         {#if material.media && material.media.length > 0}
                                             <div
@@ -217,7 +217,7 @@
                                         {/if}
                                     </td>
                                     <td
-                                        class="px-6 py-6 border-l-4 border-transparent group-hover:border-blue-600"
+                                        class="px-6 py-6 border-l-4 border-transparent group-hover:border-primary-600"
                                     >
                                         <div>
                                             <div
@@ -229,7 +229,7 @@
                                                 class="flex items-center gap-2 flex-wrap"
                                             >
                                                 <span
-                                                    class="text-[9px] font-bold bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full uppercase tracking-widest"
+                                                    class="text-[9px] font-bold bg-primary-50 text-primary-600 px-2 py-0.5 rounded-full uppercase tracking-widest"
                                                     >MOD-{String(
                                                         material.id,
                                                     ).padStart(3, "0")}</span
@@ -295,7 +295,7 @@
                                                 size="sm"
                                                 href={`/admin/materials/${material.id}/questions`}
                                                 icon={FlaskConical}
-                                                class="text-indigo-500 hover:text-indigo-600"
+                                                class="text-primary-500 hover:text-primary-600"
                                                 title="Kelola Soal"
                                             />
                                             <Button

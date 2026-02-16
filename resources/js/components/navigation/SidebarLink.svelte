@@ -10,16 +10,16 @@
         "flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold tracking-tight transition-all duration-300 group";
 
     $: themeClasses = active
-        ? "bg-blue-600 text-white shadow-xl shadow-blue-100 "
-        : "text-slate-500 hover:text-blue-600 hover:bg-blue-50";
+        ? "bg-primary-600 text-white shadow-xl shadow-accent-500/20 "
+        : "text-slate-500 hover:text-accent-600 hover:bg-accent-50";
 
     $: iconContainerClasses = active
-        ? "bg-white/20"
-        : "bg-gray-100 group-hover:bg-blue-100";
+        ? "bg-accent-500/20 shadow-[0_0_15px_rgba(124,58,237,0.3)]"
+        : "bg-gray-100 group-hover:bg-accent-100";
 
     $: iconClasses = active
-        ? "text-white"
-        : "text-slate-400 group-hover:text-blue-600";
+        ? "text-accent-400"
+        : "text-slate-400 group-hover:text-accent-600";
 </script>
 
 <Link {href} class="{baseClasses} {themeClasses}" {...$$restProps}>

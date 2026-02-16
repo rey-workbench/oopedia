@@ -4,7 +4,14 @@
     import Card from "../../../../components/ui/Card.svelte";
     import Button from "../../../../components/ui/Button.svelte";
     import { Link, page } from "@inertiajs/svelte";
-    import { ArrowLeft, BookOpen, Layers, Puzzle, Info, ArrowRight } from "lucide-svelte";
+    import {
+        ArrowLeft,
+        BookOpen,
+        Layers,
+        Puzzle,
+        Info,
+        ArrowRight,
+    } from "lucide-svelte";
     import {
         getGradientClass,
         getTextClass,
@@ -14,13 +21,35 @@
         getBadgeLabel,
     } from "../../../../utils/contentTypeStyles";
 
+    import { onMount, tick } from "svelte";
+    import { enhanceCodeBlocks } from "../../../../utils/codeBlockEnhancer";
+    import ContentDisplay from "../../../../components/ui/ContentDisplay.svelte";
+
     export let material = {};
+
+    let contentContainer;
+
+    onMount(async () => {
+        await tick();
+        if (contentContainer) enhanceCodeBlocks(contentContainer);
+    });
+
+    // Re-run if material content changes (e.g. navigation)
+    $: if (material && contentContainer) {
+        tick().then(() => enhanceCodeBlocks(contentContainer));
+    }
 
     // Handling subMaterials properly if it comes as an array or object
     $: subMaterials = material.subMaterials || material.sub_materials || [];
-    
+
     // Check if user was redirected from adaptive system
     $: fromAdaptive = $page.props?.flash?.from_adaptive || false;
+
+    const stripHtml = (html) => {
+        if (!html) return "";
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        return doc.body.textContent || "";
+    };
 </script>
 
 <App title={material?.title || "Material"}>
@@ -71,20 +100,21 @@
 
         <!-- Adaptive System Alert -->
         {#if fromAdaptive}
-            <Card class="border-l-4 border-blue-500 bg-blue-50">
+            <Card class="border-l-4 border-primary-500 bg-primary-50">
                 <div class="flex items-start gap-4">
                     <div
-                        class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center shrink-0"
+                        class="w-12 h-12 rounded-xl bg-primary-100 flex items-center justify-center shrink-0"
                     >
-                        <Info size={24} class="text-blue-600" />
+                        <Info size={24} class="text-primary-600" />
                     </div>
                     <div class="flex-1">
-                        <h3 class="text-lg font-bold text-blue-900 mb-1">
+                        <h3 class="text-lg font-bold text-primary-900 mb-1">
                             Rekomendasi Sistem Adaptif
                         </h3>
-                        <p class="text-sm text-blue-700 leading-relaxed">
-                            Sistem merekomendasikan Anda untuk mengulas kembali materi ini. 
-                            Pilih sub-materi yang ingin dipelajari untuk memperkuat pemahaman.
+                        <p class="text-sm text-primary-700 leading-relaxed">
+                            Sistem merekomendasikan Anda untuk mengulas kembali
+                            materi ini. Pilih sub-materi yang ingin dipelajari
+                            untuk memperkuat pemahaman.
                         </p>
                     </div>
                 </div>
@@ -141,11 +171,11 @@
                         >
                             <!-- Header with Icon -->
                             <div
-                                class={`relative h-48 bg-gradient-to-br ${getGradientClass(subMaterial.jenis_konten)} flex items-center justify-center shrink-0`}
+                                class={`relative h-48 ${getBgClass(subMaterial.jenis_konten)} flex items-center justify-center shrink-0`}
                             >
                                 <div class="absolute inset-0 bg-black/10"></div>
                                 <div
-                                    class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"
+                                    class="absolute inset-x-0 bottom-0 h-1/2 bg-black/20"
                                 ></div>
 
                                 <!-- Center Icon -->
@@ -205,7 +235,7 @@
                                     <p
                                         class="text-sm text-slate-600 line-clamp-3 leading-relaxed"
                                     >
-                                        {subMaterial.content || ""}
+                                        {stripHtml(subMaterial.content)}
                                     </p>
                                 </div>
 
@@ -229,18 +259,12 @@
         <!-- Material Content Section (Optional) -->
         {#if material.content}
             <Card>
-                <div class="prose prose-slate max-w-none">
+                <div class="prose max-w-none">
                     <h3 class="text-2xl font-bold text-slate-900 mb-4">
                         Tentang Materi Ini
                     </h3>
-                    <div class="text-slate-600 leading-relaxed">
-                        <!-- Render HTML content safely needed? Assuming material.content is safe HTML or plain text. 
-                 If simple text, use white-space: pre-wrap. If HTML, use {@html}. 
-                 Blade used {!! nl2br(e($material->content)) !!} which escapes then converts nl to br.
-                 So it's safe text with line breaks. -->
-                        {#each (material.content || "").split("\n") as paragraph}
-                            <p class="mb-2">{paragraph}</p>
-                        {/each}
+                    <div class="leading-relaxed">
+                        <ContentDisplay content={material.content || ""} />
                     </div>
                 </div>
             </Card>

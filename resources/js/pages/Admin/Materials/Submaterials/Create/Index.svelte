@@ -44,7 +44,7 @@
             >
                 <div
                     slot="header"
-                    class="bg-blue-600 px-8 py-6 text-white text-center"
+                    class="bg-primary-600 px-8 py-6 text-white text-center"
                 >
                     <h6
                         class="text-lg font-bold tracking-widest uppercase mb-0"
@@ -101,7 +101,7 @@
                                     type="button"
                                     on:click={() => ($form.jenis_konten = type)}
                                     class={`py-3 px-4 rounded-2xl border-2 font-bold uppercase tracking-widest text-[10px] transition-all
-                    ${$form.jenis_konten === type ? "border-blue-600 bg-blue-50 text-blue-600" : "border-slate-100 bg-slate-50 text-slate-400"}`}
+                    ${$form.jenis_konten === type ? "border-primary-600 bg-primary-50 text-primary-600" : "border-slate-100 bg-slate-50 text-slate-400"}`}
                                 >
                                     {type}
                                 </button>
@@ -116,7 +116,7 @@
                         >
 
                         <QuillEditor
-                            bind:content={$form.content}
+                            bind:value={$form.content}
                             placeholder="Tuliskan materi pembelajaran secara detail di sini..."
                         />
                         {#if $form.errors.content}
@@ -132,7 +132,7 @@
                         <Button
                             type="submit"
                             variant="primary"
-                            class="w-full py-4 shadow-xl shadow-blue-500/20"
+                            class="w-full py-4 shadow-xl shadow-primary-900/20"
                             icon={Save}
                             disabled={$form.processing}
                         >

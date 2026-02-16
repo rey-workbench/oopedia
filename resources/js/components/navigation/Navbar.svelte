@@ -85,7 +85,7 @@
                 <button
                     id="start-page-tour"
                     aria-label="Start Page Tour"
-                    class="p-2 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all group relative"
+                    class="p-2 rounded-xl text-slate-500 hover:bg-accent-50 hover:text-accent-600 transition-all group relative"
                     title="Mulai Tutorial"
                     data-intro="Klik tombol ini kapan saja jika kamu butuh bantuan atau ingin mengulang tutorial di halaman ini."
                     data-step="4"
@@ -93,10 +93,10 @@
                     <CircleHelp size={20} strokeWidth={2.5} />
                     <span class="absolute -top-1 -right-1 flex h-3 w-3">
                         <span
-                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"
+                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-400 opacity-75"
                         ></span>
                         <span
-                            class="relative inline-flex rounded-full h-3 w-3 bg-blue-500"
+                            class="relative inline-flex rounded-full h-3 w-3 bg-accent-500"
                         ></span>
                     </span>
                 </button>
@@ -108,10 +108,10 @@
                 >
                     <button
                         aria-label="Open project menu"
-                        class="flex items-center gap-2 p-1 rounded-2xl border-2 border-transparent hover:border-blue-100 transition-all duration-300 group"
+                        class="flex items-center gap-2 p-1 rounded-2xl border-2 border-transparent hover:border-accent-100 transition-all duration-300 group"
                     >
                         <div
-                            class="w-10 h-10 rounded-xl overflow-hidden shadow-inner ring-2 ring-white group-hover:ring-blue-50 transition-all"
+                            class="w-10 h-10 rounded-xl overflow-hidden shadow-inner ring-2 ring-white group-hover:ring-accent-50 transition-all"
                         >
                             <img
                                 src="/images/profile.gif"
@@ -135,7 +135,7 @@
 
                         <Link
                             href="/mahasiswa/profile"
-                            class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
+                            class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-slate-600 hover:text-accent-600 hover:bg-accent-50 rounded-xl transition-all"
                         >
                             <User size={18} strokeWidth={2.5} class="w-5" />
                             Profil Saya
@@ -160,12 +160,12 @@
                 <div class="flex items-center gap-2">
                     <Link
                         href="/login"
-                        class="px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-slate-600 hover:text-blue-600 transition-all"
+                        class="px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-slate-600 hover:text-accent-600 transition-all"
                         >Masuk</Link
                     >
                     <Link
                         href="/register"
-                        class="px-6 py-2.5 bg-slate-900 text-white text-sm font-bold uppercase tracking-widest rounded-xl hover:bg-blue-600 transition-all shadow-lg shadow-slate-200"
+                        class="px-6 py-2.5 bg-slate-900 text-white text-sm font-bold uppercase tracking-widest rounded-xl hover:bg-accent-600 transition-all shadow-lg shadow-slate-200"
                         >Daftar</Link
                     >
                 </div>

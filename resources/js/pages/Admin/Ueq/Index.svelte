@@ -107,7 +107,7 @@
                 <div class="flex items-center gap-4 w-full md:w-auto">
                     <select
                         on:change={handleFilterChange}
-                        class="pl-4 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-600 transition-all appearance-none outline-none cursor-pointer"
+                        class="pl-4 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold focus:ring-4 focus:ring-primary-100 focus:border-primary-600 transition-all appearance-none outline-none cursor-pointer"
                         value={activeClass}
                     >
                         <option value="">Semua Kelas</option>

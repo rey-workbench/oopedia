@@ -101,7 +101,9 @@
                     class="text-center text-xs font-bold text-slate-500 uppercase tracking-wider"
                 >
                     Tidak memiliki akun?
-                    <Link href="/register" class="text-blue-600 hover:underline"
+                    <Link
+                        href="/register"
+                        class="text-primary-600 hover:underline"
                         >Daftar Gratis</Link
                     >
                 </p>

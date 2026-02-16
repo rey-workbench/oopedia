@@ -35,7 +35,7 @@
                             />
                         {:else}
                             <div
-                                class="w-full h-full bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center"
+                                class="w-full h-full bg-primary-600 flex items-center justify-center"
                             >
                                 <Code
                                     size={96}
@@ -43,9 +43,7 @@
                                 />
                             </div>
                         {/if}
-                        <div
-                            class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"
-                        ></div>
+                        <div class="absolute inset-0 bg-slate-900/40"></div>
 
                         <div
                             class="absolute bottom-6 left-6 right-6 flex justify-between items-center"
@@ -59,7 +57,7 @@
                                 })}
                             </div>
                             <div
-                                class="flex items-center gap-2 px-4 py-2 bg-blue-600 rounded-2xl text-white text-[10px] font-bold uppercase tracking-widest shadow-xl shadow-blue-500/20"
+                                class="flex items-center gap-2 px-4 py-2 bg-primary-600 rounded-2xl text-white text-[10px] font-bold uppercase tracking-widest shadow-xl shadow-primary-500/20"
                             >
                                 <Puzzle size={14} />
                                 {material.total_questions} Tantangan
@@ -71,7 +69,7 @@
                     <div class="p-8 flex-1 flex flex-col">
                         <div class="mb-4 min-h-[4.5rem] flex items-start">
                             <h2
-                                class="text-2xl font-bold text-slate-900 leading-tight group-hover:text-blue-600 transition-colors uppercase tracking-widest"
+                                class="text-2xl font-bold text-slate-900 leading-tight group-hover:text-primary-600 transition-colors uppercase tracking-widest"
                             >
                                 {material.title}
                             </h2>

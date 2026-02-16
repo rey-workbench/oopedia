@@ -113,7 +113,7 @@
             return { color: "#f59e0b", label: "Medium", bg: "amber" };
         if (d === "hard")
             return { color: "#ef4444", label: "Hard", bg: "rose" };
-        return { color: "#6366f1", label: "Level", bg: "indigo" };
+        return { color: "#004e98", label: "Level", bg: "primary" };
     }
 </script>
 
@@ -175,7 +175,7 @@
                         >
                             <div class="flex items-center gap-2.5">
                                 <div
-                                    class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white shadow-md shadow-blue-200 flex-shrink-0"
+                                    class="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-white shadow-md shadow-primary-900/20 flex-shrink-0"
                                 >
                                     <span class="text-xs font-black">1</span>
                                 </div>
@@ -338,12 +338,12 @@
                                             class="absolute inset-0 flex items-start justify-center"
                                         >
                                             <div
-                                                class="w-28 h-28 rounded-full bg-blue-400/25 animate-ping"
+                                                class="w-28 h-28 rounded-full bg-primary-400/25 animate-ping"
                                                 style="animation-duration: 2s;"
                                             ></div>
                                         </div>
                                         <div
-                                            class="w-[5.5rem] h-[5.5rem] rounded-full bg-blue-500 border-4 border-white ring-4 ring-blue-100 flex items-center justify-center relative shadow-xl shadow-blue-300 group-hover:scale-110 group-hover:bg-blue-600 transition-all duration-300 z-10"
+                                            class="w-[5.5rem] h-[5.5rem] rounded-full bg-primary-600 border-4 border-white ring-4 ring-primary-100 flex items-center justify-center relative shadow-xl shadow-primary-900/20 group-hover:scale-110 group-hover:bg-primary-700 transition-all duration-300 z-10"
                                         >
                                             <span
                                                 class="text-3xl font-black text-white drop-shadow-sm"
@@ -355,7 +355,7 @@
                                             >Play</span
                                         >
                                         <span
-                                            class="mt-1.5 text-[10px] font-bold text-blue-500 uppercase tracking-widest z-10"
+                                            class="mt-1.5 text-[10px] font-bold text-primary-600 uppercase tracking-widest z-10"
                                             >{ds.label}</span
                                         >
                                     </Link>
@@ -369,7 +369,7 @@
                             style="left: {tPctX}%; top: {tPctY}%; transform: translate(-50%, -50%);"
                         >
                             <div
-                                class={`w-28 h-28 rounded-full border-4 border-white flex items-center justify-center shadow-xl transition-all duration-700 ${allCompleted ? "bg-gradient-to-br from-amber-400 to-orange-500 shadow-amber-200 scale-110" : "bg-slate-50 shadow-slate-200"}`}
+                                class={`w-28 h-28 rounded-full border-4 border-white flex items-center justify-center shadow-xl transition-all duration-700 ${allCompleted ? "bg-amber-400 shadow-amber-200 scale-110" : "bg-slate-50 shadow-slate-200"}`}
                             >
                                 <Trophy
                                     size={48}

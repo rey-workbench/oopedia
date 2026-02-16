@@ -96,7 +96,7 @@
                 >
                     <div
                         slot="header"
-                        class="bg-blue-600 px-8 py-6 text-white flex items-center gap-3"
+                        class="bg-primary-600 px-8 py-6 text-white flex items-center gap-3"
                     >
                         <Edit2 size={18} />
                         <h6
@@ -114,7 +114,7 @@
                             >
 
                             <QuillEditor
-                                bind:content={$form.question_text}
+                                bind:value={$form.question_text}
                                 placeholder="Deskripsikan problematik pemrograman di sini..."
                             />
                             {#if $form.errors.question_text}
@@ -156,7 +156,7 @@
                                                     bind:group={
                                                         $form.correct_answer
                                                     }
-                                                    class="w-5 h-5 text-blue-600 focus:ring-blue-500 border-slate-300 transition-all cursor-pointer"
+                                                    class="w-5 h-5 text-primary-600 focus:ring-primary-500 border-slate-300 transition-all cursor-pointer"
                                                 />
                                             </div>
                                             <div class="flex-1 space-y-2">
@@ -166,7 +166,7 @@
                                                         answer.answer_text
                                                     }
                                                     placeholder={`Opsi Jawaban #${i + 1}`}
-                                                    class="w-full bg-white border-2 border-slate-100 rounded-2xl px-6 py-3 text-xs font-bold uppercase tracking-widest text-slate-900 focus:border-blue-600 focus:outline-none transition-all"
+                                                    class="w-full bg-white border-2 border-slate-100 rounded-2xl px-6 py-3 text-xs font-bold uppercase tracking-widest text-slate-900 focus:border-primary-600 focus:outline-none transition-all"
                                                 />
                                                 <input
                                                     type="text"
@@ -174,7 +174,7 @@
                                                         answer.explanation
                                                     }
                                                     placeholder="Penjelasan/Feedback (Opsional)"
-                                                    class="w-full bg-white/50 border border-slate-100 rounded-xl px-4 py-2 text-[10px] font-bold text-slate-500 focus:border-blue-400 focus:outline-none transition-all"
+                                                    class="w-full bg-white/50 border border-slate-100 rounded-xl px-4 py-2 text-[10px] font-bold text-slate-500 focus:border-primary-400 focus:outline-none transition-all"
                                                 />
                                             </div>
                                             {#if $form.answers.length > 1}
@@ -218,7 +218,7 @@
                                 id="material"
                                 bind:value={$form.material_id}
                                 on:change={handleMaterialChange}
-                                class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-900 focus:border-blue-600 focus:outline-none transition-all cursor-pointer"
+                                class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-900 focus:border-primary-600 focus:outline-none transition-all cursor-pointer"
                             >
                                 <option value="">PILIH MODUL</option>
                                 {#each materials as m}
@@ -243,7 +243,7 @@
                             <select
                                 id="sub_material"
                                 bind:value={$form.sub_material_id}
-                                class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-900 focus:border-blue-600 focus:outline-none transition-all cursor-pointer disabled:opacity-50"
+                                class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-900 focus:border-primary-600 focus:outline-none transition-all cursor-pointer disabled:opacity-50"
                                 disabled={!$form.material_id}
                             >
                                 <option value="">TAG UNIT TERKAIT</option>
@@ -266,7 +266,7 @@
                                         on:click={() =>
                                             ($form.question_type = type)}
                                         class={`py-4 px-6 rounded-2xl border-2 font-bold uppercase tracking-widest text-[10px] text-left transition-all flex items-center justify-between
-                        ${$form.question_type === type ? "border-blue-600 bg-blue-50 text-blue-600" : "border-slate-50 bg-slate-50 text-slate-400"}`}
+                        ${$form.question_type === type ? "border-primary-600 bg-primary-50 text-primary-600" : "border-slate-50 bg-slate-50 text-slate-400"}`}
                                     >
                                         {type.replace(/_/g, " ")}
                                         {#if $form.question_type === type}
@@ -290,7 +290,7 @@
                                         on:click={() =>
                                             ($form.difficulty = diff)}
                                         class={`flex-1 py-3 px-2 rounded-xl border-2 font-bold uppercase tracking-widest text-[9px] transition-all
-                        ${$form.difficulty === diff ? "border-indigo-600 bg-indigo-50 text-indigo-600" : "border-slate-50 bg-slate-50 text-slate-400"}`}
+                        ${$form.difficulty === diff ? "border-primary-600 bg-primary-50 text-primary-600" : "border-slate-50 bg-slate-50 text-slate-400"}`}
                                     >
                                         {diff}
                                     </button>
@@ -303,7 +303,7 @@
                         <Button
                             on:click={handleSubmit}
                             variant="primary"
-                            class="w-full py-4 shadow-xl shadow-blue-500/20"
+                            class="w-full py-4 shadow-xl shadow-primary-900/20"
                             icon={Save}
                             disabled={$form.processing}
                         >

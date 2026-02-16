@@ -23,8 +23,23 @@
         getCtaShadowClass as getShadowClass,
     } from "../../../../utils/contentTypeStyles";
 
+    import { onMount, tick } from "svelte";
+    import { enhanceCodeBlocks } from "../../../../utils/codeBlockEnhancer";
+    import ContentDisplay from "../../../../components/ui/ContentDisplay.svelte";
+
     export let material = {};
     export let subMaterial = {};
+
+    let contentContainer;
+
+    onMount(async () => {
+        await tick();
+        if (contentContainer) enhanceCodeBlocks(contentContainer);
+    });
+
+    $: if (subMaterial && contentContainer) {
+        tick().then(() => enhanceCodeBlocks(contentContainer));
+    }
 
     // Format content for display (replace newlines with <br> inside p tag context or similar)
     // Blade used {!! nl2br(e($subMaterial->content)) !!}
@@ -44,14 +59,14 @@
         <div class="flex items-center gap-3 text-sm">
             <Link
                 href="/mahasiswa/materials"
-                class="text-slate-400 hover:text-blue-600 font-bold transition-colors"
+                class="text-slate-400 hover:text-primary-600 font-bold transition-colors"
             >
                 <Home size={14} class="mr-1" /> Materi
             </Link>
             <ChevronRight size={12} class="text-slate-300" />
             <Link
                 href={`/mahasiswa/materials/${material.id}`}
-                class="text-slate-400 hover:text-blue-600 font-bold transition-colors"
+                class="text-slate-400 hover:text-primary-600 font-bold transition-colors"
             >
                 {material.title}
             </Link>
@@ -115,36 +130,39 @@
 
         <!-- Content Section -->
         <Card class="p-10 md:p-16">
-            <article class="prose prose-lg prose-slate max-w-none">
-                <div class="mb-8">
-                    <h2 class="text-3xl font-bold text-slate-900 mb-4">
-                        Materi Pembelajaran
-                    </h2>
+            <div class="mb-10">
+                <h2
+                    class="text-3xl font-extrabold tracking-tight text-slate-900 font-display mb-4"
+                >
+                    Materi Pembelajaran
+                </h2>
+                <div class="flex items-center gap-2 mt-3" role="presentation">
                     <div
-                        class={`h-1 w-20 bg-gradient-to-r ${getGradientClass(subMaterial.jenis_konten)} rounded-full`}
+                        class={`h-1.5 w-12 ${getBgClass(subMaterial.jenis_konten)} rounded-full shadow-sm`}
                     ></div>
+                    <div class="h-1.5 w-4 bg-slate-200 rounded-full"></div>
+                    <div class="h-1.5 w-2 bg-slate-100 rounded-full"></div>
                 </div>
+            </div>
 
-                {#if subMaterial.content && subMaterial.content.trim()}
-                    <div class="text-slate-700 leading-relaxed whitespace-pre-line">
-                        {subMaterial.content}
+            {#if subMaterial.content && subMaterial.content.trim()}
+                <ContentDisplay content={subMaterial.content} />
+            {:else}
+                <div class="text-center py-12">
+                    <div
+                        class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                    >
+                        <BookOpen size={32} class="text-slate-300" />
                     </div>
-                {:else}
-                    <div class="text-center py-12">
-                        <div
-                            class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4"
-                        >
-                            <BookOpen size={32} class="text-slate-300" />
-                        </div>
-                        <p class="text-slate-400 font-medium">
-                            Konten materi sedang dalam pengembangan.
-                        </p>
-                        <p class="text-sm text-slate-300 mt-2">
-                            Silakan lanjutkan ke latihan soal atau sub-materi lainnya.
-                        </p>
-                    </div>
-                {/if}
-            </article>
+                    <p class="text-slate-400 font-medium">
+                        Konten materi sedang dalam pengembangan.
+                    </p>
+                    <p class="text-sm text-slate-300 mt-2">
+                        Silakan lanjutkan ke latihan soal atau sub-materi
+                        lainnya.
+                    </p>
+                </div>
+            {/if}
 
             <!-- Action Footer -->
             <div
