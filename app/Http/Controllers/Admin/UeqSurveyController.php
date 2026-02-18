@@ -132,9 +132,9 @@ class UeqSurveyController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
-    public function detail(int $userId): Response
+    public function show(int|string $userId): Response
     {
-        $survey = $this->ueqService->getStudentDetail($userId);
+        $survey = $this->ueqService->getStudentDetail((int) $userId);
         $user = $survey->user;
 
         return Inertia::render('Admin/Ueq/Detail/Index', compact('survey', 'user'));

@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Contracts\Repositories\UserRepositoryInterface;
+use App\Models\QuizAttempt;
+use App\Models\StudentState;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
@@ -95,20 +97,15 @@ class UserRepository implements UserRepositoryInterface
             DB::table('user_ranks')->where('user_id', $userId)->delete();
         }
 
-        if (Schema::hasTable('student_states')) {
-            DB::table('student_states')->where('user_id', $userId)->delete();
-        }
+        StudentState::where('user_id', $userId)->delete();
 
         if (Schema::hasTable('student_answers')) {
             DB::table('student_answers')->where('student_id', $userId)->delete();
         }
 
-        if (Schema::hasTable('quiz_attempts')) {
-            DB::table('quiz_attempts')->where('user_id', $userId)->delete();
-        }
+        QuizAttempt::where('user_id', $userId)->delete();
 
-        $user = User::find($userId);
-        $user?->delete();
+        User::find($userId)?->delete();
     }
 
     public function findByEmail(string $email): ?User
@@ -159,12 +156,11 @@ class UserRepository implements UserRepositoryInterface
 
     public function getActiveStudentsCount(int $days): int
     {
-        return DB::table('users')
-            ->join('quiz_attempts', 'users.id', '=', 'quiz_attempts.user_id')
-            ->where('users.role_id', 3)
-            ->where('quiz_attempts.created_at', '>=', now()->subDays($days))
-            ->distinct('users.id')
-            ->count('users.id');
+        return User::where('role_id', 3)
+            ->whereHas('quizAttempts', function ($query) use ($days) {
+                $query->where('created_at', '>=', now()->subDays($days));
+            })
+            ->count();
     }
 
     public function getStudentProgressOverview(int $limit): Collection

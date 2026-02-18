@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Auth;
 
 use App\Contracts\Services\UserServiceInterface;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\ResetPasswordRequest;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -38,21 +41,20 @@ class LoginController extends Controller
         $request->session()->regenerate();
         $user = $this->userService->getUserById(Auth::id());
 
+        $clearGuest = Cookie::forget('is_guest');
+        $clearProgress = Cookie::forget('guest_progress');
+
         return match (true) {
-            $user->role_id == 1 => redirect()->intended('admin/dashboard'),
-            $user->role_id == 2 && $user->is_approved => redirect()->intended('admin/dashboard'),
-            $user->role_id == 2 => redirect()->route('admin.pending-approval'),
-            $user->role_id == 3 => redirect()->intended('mahasiswa/dashboard'),
-            default => redirect()->intended('mahasiswa/materials'),
+            $user->role_id == 1 => redirect()->intended('admin/dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
+            $user->role_id == 2 && $user->is_approved => redirect()->intended('admin/dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
+            $user->role_id == 2 => redirect()->route('admin.pending-approval')->withCookie($clearGuest)->withCookie($clearProgress),
+            $user->role_id == 3 => redirect()->intended('mahasiswa/dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
+            default => redirect()->intended('mahasiswa/materials')->withCookie($clearGuest)->withCookie($clearProgress),
         };
     }
 
-    public function show(Request $request): RedirectResponse
+    public function show(ForgotPasswordRequest $request): RedirectResponse
     {
-        $request->validate([
-            'email' => 'required|email',
-        ]);
-
         $status = Password::sendResetLink($request->only('email'));
 
         return $status === Password::RESET_LINK_SENT
@@ -60,14 +62,8 @@ class LoginController extends Controller
             : back()->withErrors(['email' => __($status)]);
     }
 
-    public function update(Request $request): RedirectResponse
+    public function update(ResetPasswordRequest $request): RedirectResponse
     {
-        $request->validate([
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|min:8|confirmed',
-        ]);
-
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
@@ -86,24 +82,7 @@ class LoginController extends Controller
             : back()->withErrors(['email' => [__($status)]]);
     }
 
-    public function index(): RedirectResponse
-    {
-        if (Auth::check()) {
-            $user = Auth::user();
-
-            if ($user->role_id <= 2) {
-                return redirect()->route('admin.dashboard');
-            }
-
-            if ($user->role_id == 3) {
-                return redirect()->route('mahasiswa.dashboard');
-            }
-        }
-
-        return redirect()->route('mahasiswa.materials.index');
-    }
-
-    public function fallback(): RedirectResponse
+    public function home(): RedirectResponse
     {
         if (Auth::check()) {
             $user = Auth::user();

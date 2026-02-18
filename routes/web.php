@@ -10,17 +10,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Redirect root to login page (Controller handles internal logic)
-Route::get('/', [LoginController::class, 'index']);
+Route::get('/', [LoginController::class, 'home']);
 
 // Load separated logic modules
 require __DIR__ . '/auth.php';
 require __DIR__ . '/admin.php';
 require __DIR__ . '/mahasiswa.php';
 
-// Development/Testing routes
-Route::get('/test-inertia', function () {
-    return inertia('Welcome', ['title' => 'Inertia World']);
-});
 
 // Fallback route for 404 errors (Handles UI consistency)
-Route::fallback([LoginController::class, 'fallback']);
+Route::fallback([LoginController::class, 'home']);

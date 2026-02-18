@@ -19,7 +19,7 @@ class UeqSurveyController extends Controller
     public function create(): Response|RedirectResponse
     {
         if ($this->ueqService->hasUserSubmitted(Auth::id())) {
-            return redirect()->route('mahasiswa.ueq.thankyou');
+            return redirect()->route('mahasiswa.ueq-survey.thankyou');
         }
 
         $aspects = $this->getAspects();
@@ -30,17 +30,17 @@ class UeqSurveyController extends Controller
     public function store(StoreUeqSurveyRequest $request): RedirectResponse
     {
         if ($this->ueqService->hasUserSubmitted(Auth::id())) {
-            return redirect()->route('mahasiswa.ueq.thankyou');
+            return redirect()->route('mahasiswa.ueq-survey.thankyou');
         }
 
         $data = array_merge($request->validated(), ['user_id' => Auth::id()]);
 
         $this->ueqService->createSurvey($data);
 
-        return redirect()->route('mahasiswa.ueq.thankyou');
+        return redirect()->route('mahasiswa.ueq-survey.thankyou');
     }
 
-    public function thankyou(): Response
+    public function show(): Response
     {
         return Inertia::render('Mahasiswa/Ueq/ThankYou/Index');
     }

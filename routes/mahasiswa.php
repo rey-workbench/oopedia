@@ -1,14 +1,11 @@
 <?php
 
 use App\Http\Controllers\Mahasiswa\DashboardController as MahasiswaDashboardController;
-use App\Http\Controllers\Mahasiswa\MahasiswaController;
-use App\Http\Controllers\Mahasiswa\MaterialController;
 use App\Http\Controllers\Mahasiswa\MaterialController as MahasiswaMaterialController;
 use App\Http\Controllers\Mahasiswa\MaterialQuestionController;
 use App\Http\Controllers\Mahasiswa\ProfileController as MahasiswaProfileController;
 use App\Http\Controllers\Mahasiswa\UeqSurveyController as MahasiswaUeqSurveyController;
 use App\Http\Middleware\BlockQuestionParameter;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // Private Mahasiswa Routes (authenticated role 3 only - using 'role:3')
@@ -17,48 +14,36 @@ Route::middleware(['auth', 'role:3'])->name('mahasiswa.')->prefix('mahasiswa')->
     Route::get('dashboard', [MahasiswaDashboardController::class, 'index'])->name('dashboard');
     Route::get('dashboard/in-progress', [MahasiswaDashboardController::class, 'inProgress'])->name('dashboard.in-progress');
     Route::get('dashboard/completed', [MahasiswaDashboardController::class, 'complete'])->name('dashboard.completed');
+    Route::get('leaderboard', [MahasiswaDashboardController::class, 'leaderboard'])->name('leaderboard');
 
-    // Profile
-    Route::get('profile', [MahasiswaProfileController::class, 'show'])->name('profile');
-    Route::put('profile', [MahasiswaProfileController::class, 'update'])->name('profile.update');
+    // Profile (singleton: no ID needed, single user)
+    Route::singleton('profile', MahasiswaProfileController::class)->only(['show', 'update']);
 
-    // Leaderboard
-    Route::get('/leaderboard', [MahasiswaController::class, 'leaderboard'])->name('leaderboard');
-
-    // UEQ Survey routes
-    Route::get('/ueq-survey', [MahasiswaUeqSurveyController::class, 'create'])->name('ueq.create');
-    Route::post('/ueq-survey', [MahasiswaUeqSurveyController::class, 'store'])->name('ueq.store');
-    Route::get('/ueq-survey/thankyou', [MahasiswaUeqSurveyController::class, 'thankyou'])->name('ueq.thankyou');
+    // UEQ Survey (resource)
+    Route::resource('ueq-survey', MahasiswaUeqSurveyController::class)->only(['create', 'store', 'show']);
 });
 
 // Features accessible by Guests (role 4) and Authenticated Students (role 3)
 // We use 'guest.access' to manage these permissions
 Route::middleware(['guest.access'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
+    // Questions (must be before resource to avoid {material} catching 'questions')
     Route::get('materials/questions', [MaterialQuestionController::class, 'index'])->name('materials.questions.index');
 
-    // Materials Index & Show
-    Route::get('materials', [MahasiswaMaterialController::class, 'index'])->name('materials.index');
-    Route::get('materials/{material}', [MahasiswaMaterialController::class, 'show'])->name('materials.show');
+    // Materials (resource: index + show only)
+    Route::resource('materials', MahasiswaMaterialController::class)->only(['index', 'show']);
 
     // Sub-Material Detail
     Route::get('materials/{material}/submaterials/{submaterial}', [MahasiswaMaterialController::class, 'showSubMaterial'])->name('submaterials.show');
 
+    // Reset Progress (Controller method handles Auth vs Guest internally)
+    Route::post('materials/{material}/reset', [MahasiswaMaterialController::class, 'reset'])->name('materials.reset');
+
+    // Questions (nested under material)
     Route::get('materials/{material}/questions', [MaterialQuestionController::class, 'show'])
         ->middleware(BlockQuestionParameter::class)
         ->name('materials.questions.show');
-
     Route::get('materials/{material}/questions/levels', [MaterialQuestionController::class, 'levels'])->name('materials.questions.levels');
     Route::get('materials/{material}/questions/review', [MaterialQuestionController::class, 'review'])->name('materials.questions.review');
     Route::post('materials/{material}/questions/{question}/check', [MaterialQuestionController::class, 'checkAnswer'])->name('materials.questions.check');
     Route::get('materials/{material}/questions/{question}/attempts', [MaterialQuestionController::class, 'getAttempts'])->name('materials.questions.attempts');
-
-    // Reset Progress (Logic inside controller handles Auth vs Guest)
-    Route::post(
-        'materials/{material}/reset',
-        function ($material) {
-            $controller = app()->make(MaterialController::class);
-
-            return Auth::check() ? $controller->reset($material) : $controller->guestReset($material);
-        },
-    )->name('materials.reset');
 });

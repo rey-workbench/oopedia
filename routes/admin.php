@@ -4,7 +4,6 @@ use App\Http\Controllers\Admin\AdminStudentController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\MaterialController as AdminMaterialController;
-use App\Http\Controllers\Admin\PendingApprovalController;
 use App\Http\Controllers\Admin\QuestionController as AdminQuestionController;
 use App\Http\Controllers\Admin\SubMaterialController;
 use App\Http\Controllers\Admin\UeqSurveyController;
@@ -12,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
     // Pending Approval Route - accessible by any authenticated user
-    Route::get('admin/pending-approval', [PendingApprovalController::class, 'index'])
+    Route::get('admin/pending-approval', [AdminUserController::class, 'pendingApproval'])
         ->name('admin.pending-approval');
 
     Route::middleware(['role:1|2', 'admin.approved'])->name('admin.')->prefix('admin')->group(function () {
@@ -27,15 +26,10 @@ Route::middleware('auth')->group(function () {
         Route::resource('questions', AdminQuestionController::class);
 
         // Students management
-        Route::controller(AdminStudentController::class)->group(function () {
-            Route::get('students', 'index')->name('students.index');
-            Route::post('students', 'store')->name('students.store');
-            Route::get('students/{student}/progress', 'progress')->name('students.progress');
-            Route::delete('students/{student}', 'destroy')->name('students.destroy');
-            Route::get('students/import', 'showImportForm')->name('students.import');
-            Route::post('students/import', 'processImport')->name('students.process-import');
-            Route::get('students/download-template', 'downloadTemplate')->name('students.download-template');
-        });
+        Route::get('students/import', [AdminStudentController::class, 'showImportForm'])->name('students.import');
+        Route::post('students/import', [AdminStudentController::class, 'processImport'])->name('students.process-import');
+        Route::get('students/download-template', [AdminStudentController::class, 'downloadTemplate'])->name('students.download-template');
+        Route::resource('students', AdminStudentController::class)->only(['index', 'store', 'show', 'destroy']);
 
         // Admin management routes (only for superadmin - using 'role:1')
         Route::middleware(['role:1'])->group(function () {
@@ -53,9 +47,8 @@ Route::middleware('auth')->group(function () {
             Route::resource('users', AdminUserController::class)->except(['show']);
 
             // Admin UEQ Survey routes
-            Route::get('/ueq-survey', [UeqSurveyController::class, 'index'])->name('ueq.index');
-            Route::get('/ueq-survey/export', [UeqSurveyController::class, 'export'])->name('ueq.export');
-            Route::get('/ueq/{user}/detail', [UeqSurveyController::class, 'detail'])->name('ueq.detail');
+            Route::get('ueq-survey/export', [UeqSurveyController::class, 'export'])->name('ueq-survey.export');
+            Route::resource('ueq-survey', UeqSurveyController::class)->only(['index', 'show']);
         });
 
         // Media routes

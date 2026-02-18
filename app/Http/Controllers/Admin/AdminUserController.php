@@ -9,6 +9,7 @@ use App\Http\Requests\User\StoreAdminRequest;
 use App\Http\Requests\User\UpdateAdminRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -44,9 +45,9 @@ class AdminUserController extends Controller
             ->with('success', 'Admin berhasil ditambahkan');
     }
 
-    public function edit(int $userId): Response|RedirectResponse
+    public function edit(int|string $userId): Response|RedirectResponse
     {
-        $user = $this->userService->getUserById($userId);
+        $user = $this->userService->getUserById((int) $userId);
 
         if (! $user) {
             return redirect()->route('admin.users.index')
@@ -61,27 +62,52 @@ class AdminUserController extends Controller
         return Inertia::render('Admin/Users/Edit/Index', compact('user'));
     }
 
-    public function update(UpdateAdminRequest $request, int $userId): RedirectResponse
+    public function update(UpdateAdminRequest $request, int|string $userId): RedirectResponse
     {
-        $user = $this->userService->getUserById($userId);
+        $user = $this->userService->getUserById((int) $userId);
 
         if (! $user) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'User tidak ditemukan');
         }
 
-        $this->userService->updateAdmin($userId, $request->validated());
+        $this->userService->updateAdmin((int) $userId, $request->validated());
 
         return redirect()->route('admin.users.index')
             ->with('success', 'Data admin berhasil diperbarui');
     }
 
-    public function destroy(int $userId): RedirectResponse
+    public function destroy(int|string $userId): RedirectResponse
     {
-        $this->userService->deleteAdmin($userId);
+        $this->userService->deleteAdmin((int) $userId);
 
         return redirect()->route('admin.users.index')
             ->with('success', 'Admin berhasil dihapus');
+    }
+
+    public function pendingApproval(): Response|RedirectResponse
+    {
+        $user = Auth::user();
+
+        if ($user->role_id == 1) {
+            return redirect()->route('admin.pending-admins');
+        }
+
+        if ($user->role_id == 2 && ! $user->is_approved) {
+            $freshUser = $this->userService->getUserById($user->id);
+
+            if ($freshUser && $freshUser->is_approved) {
+                return redirect()->route('admin.dashboard');
+            }
+
+            return Inertia::render('Admin/Users/PendingApproval/Index');
+        }
+
+        if ($user->role_id == 2 && $user->is_approved) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        return redirect()->route('mahasiswa.materials.index');
     }
 
     public function pendingAdmins(): Response
@@ -91,17 +117,17 @@ class AdminUserController extends Controller
         return Inertia::render('Admin/Users/Pending/Index', compact('pendingAdmins'));
     }
 
-    public function approveAdmin(int $userId): RedirectResponse
+    public function approveAdmin(int|string $userId): RedirectResponse
     {
-        $this->userService->approveAdmin($userId);
+        $this->userService->approveAdmin((int) $userId);
 
         return redirect()->route('admin.pending-admins')
             ->with('success', 'Admin berhasil disetujui');
     }
 
-    public function rejectAdmin(int $userId): RedirectResponse
+    public function rejectAdmin(int|string $userId): RedirectResponse
     {
-        $this->userService->rejectAdmin($userId);
+        $this->userService->rejectAdmin((int) $userId);
 
         return redirect()->route('admin.pending-admins')
             ->with('success', 'Permintaan admin ditolak');

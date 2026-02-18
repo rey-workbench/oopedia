@@ -25,9 +25,9 @@ class AdminStudentController extends Controller
         return Inertia::render('Admin/Students/Index', compact('students'));
     }
 
-    public function progress(int $studentId): Response|RedirectResponse
+    public function show(int|string $studentId): Response|RedirectResponse
     {
-        $student = $this->studentService->getStudentById($studentId);
+        $student = $this->studentService->getStudentById((int) $studentId);
 
         if (! $student || $student->role_id != 3) {
             return redirect()->route('admin.students.index')
@@ -52,9 +52,9 @@ class AdminStudentController extends Controller
             ->with('success', 'Mahasiswa berhasil didaftarkan secara manual.');
     }
 
-    public function destroy(int $studentId): RedirectResponse
+    public function destroy(int|string $studentId): RedirectResponse
     {
-        $this->studentService->deleteStudent($studentId);
+        $this->studentService->deleteStudent((int) $studentId);
 
         return redirect()->route('admin.students.index')
             ->with('success', 'Data mahasiswa telah berhasil dihapus dari sistem');
@@ -88,10 +88,5 @@ class AdminStudentController extends Controller
         $template = $this->studentService->generateImportTemplate();
 
         return response()->stream($template['callback'], 200, $template['headers']);
-    }
-
-    public function show(int $studentId): RedirectResponse
-    {
-        return redirect()->route('admin.students.progress', $studentId);
     }
 }

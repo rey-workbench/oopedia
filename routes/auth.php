@@ -1,8 +1,6 @@
 <?php
 
-use App\Http\Controllers\Auth\GuestLoginController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use Illuminate\Support\Facades\Route;
 
@@ -12,13 +10,10 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'store']);
     Route::get('/register', [RegisterController::class, 'create'])->name('register');
     Route::post('/register', [RegisterController::class, 'store']);
-
-    // Guest login
-    Route::get('/guest-login', [GuestLoginController::class, 'login'])->name('guest.login');
 });
 
-// Logout routes (for all authenticated users)
-Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
-Route::post('/mahasiswa/logout', [LogoutController::class, 'logout'])->name('mahasiswa.logout');
-Route::post('/admin/logout', [LogoutController::class, 'logout'])->name('admin.logout');
-Route::post('/guest-logout', [LogoutController::class, 'logout'])->name('guest.logout');
+// Guest login (accessible to everyone, including already authenticated users)
+Route::get('/guest-login', [LoginController::class, 'guestLogin'])->name('guest.login');
+
+// Logout route (for all authenticated users including guests)
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');

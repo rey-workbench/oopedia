@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Models\Material;
 use App\Models\Question;
 use App\Models\QuizAttempt;
 use App\Models\StudentState;
@@ -116,7 +117,8 @@ class ProgressRepository implements ProgressRepositoryInterface
     }
 
     /** @return array<int, mixed> */
-    public function getLeaderboardStats(int $roleId = 3): array
+    /** @return \Illuminate\Database\Eloquent\Collection<int, mixed> */
+    public function getLeaderboardStats(int $roleId = 3): \Illuminate\Database\Eloquent\Collection
     {
         return QuizAttempt::join('users', 'quiz_attempts.user_id', '=', 'users.id')
             ->leftJoin('questions', 'quiz_attempts.question_id', '=', 'questions.id')
@@ -274,8 +276,7 @@ class ProgressRepository implements ProgressRepositoryInterface
 
     public function getPopularMaterials(int $limit): \Illuminate\Database\Eloquent\Collection
     {
-        // Refactored to use quiz_attempts
-        return DB::table('materials')
+        return Material::query()
             ->leftJoin('questions', 'materials.id', '=', 'questions.material_id')
             ->leftJoin('quiz_attempts', function ($join) {
                 $join->on('questions.id', '=', 'quiz_attempts.question_id')
@@ -286,8 +287,8 @@ class ProgressRepository implements ProgressRepositoryInterface
                 'materials.title',
                 DB::raw('COUNT(DISTINCT quiz_attempts.user_id) as students_count'),
                 DB::raw('ROUND(
-                    (COUNT(DISTINCT CASE WHEN quiz_attempts.is_correct = 1 THEN quiz_attempts.id ELSE NULL END) * 100.0) / 
-                    NULLIF(COUNT(DISTINCT quiz_attempts.id), 0), 
+                    (COUNT(DISTINCT CASE WHEN quiz_attempts.is_correct = 1 THEN quiz_attempts.id ELSE NULL END) * 100.0) /
+                    NULLIF(COUNT(DISTINCT quiz_attempts.id), 0),
                     1
                 ) as completion_rate'),
             )

@@ -202,7 +202,7 @@ class Sidebar extends Component
             return 'Dashboard';
         }
 
-        if ($this->isRouteActive('mahasiswa.profile')) {
+        if ($this->isRouteActive('mahasiswa.profile.show')) {
             return 'Profil';
         }
 
@@ -214,7 +214,7 @@ class Sidebar extends Component
             return 'Latihan Soal';
         }
 
-        if ($this->isRouteActive('mahasiswa.ueq.create') || $this->isRouteActive('mahasiswa.ueq.thankyou')) {
+        if ($this->isRouteActive('mahasiswa.ueq-survey.create') || $this->isRouteActive('mahasiswa.ueq-survey.show')) {
             return 'User Experience Questionnaire';
         }
 

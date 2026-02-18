@@ -6,7 +6,7 @@
     import { Clock, LogOut } from "lucide-svelte";
 
     function handleLogout() {
-        router.post("/admin/logout");
+        router.post("/logout");
     }
 </script>
 

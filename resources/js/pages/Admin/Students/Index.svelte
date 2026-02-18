@@ -232,7 +232,7 @@
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
-                                                href={`/admin/students/${student.id}/progress`}
+                                                href={`/admin/students/${student.id}`}
                                                 icon={LineChart}
                                             />
                                             <button

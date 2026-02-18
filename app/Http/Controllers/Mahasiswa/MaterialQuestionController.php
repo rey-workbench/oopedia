@@ -44,7 +44,7 @@ class MaterialQuestionController extends Controller
 
     protected function isGuestUser(): bool
     {
-        return ! Auth::check() || Auth::user()->role_id === 4;
+        return $this->isGuest();
     }
 
     protected function getUserId(): string|int
@@ -83,9 +83,9 @@ class MaterialQuestionController extends Controller
     /**
      * Display questions for a specific material.
      */
-    public function show(int $materialId, Request $request): Response|RedirectResponse
+    public function show(int|string $materialId, Request $request): Response|RedirectResponse
     {
-        $material = $this->materialService->getMaterialById($materialId);
+        $material = $this->materialService->getMaterialById((int) $materialId);
         if (! $material) {
             return redirect()->route('mahasiswa.materials.questions.index')
                 ->with('error', 'Material tidak ditemukan');
@@ -141,9 +141,9 @@ class MaterialQuestionController extends Controller
     /**
      * Display difficulty levels progress for a material.
      */
-    public function levels(int $materialId, Request $request): Response|RedirectResponse
+    public function levels(int|string $materialId, Request $request): Response|RedirectResponse
     {
-        $material = $this->materialService->getMaterialById($materialId);
+        $material = $this->materialService->getMaterialById((int) $materialId);
         if (! $material) {
             return redirect()->route('mahasiswa.materials.questions.index')
                 ->with('error', 'Material tidak ditemukan');
@@ -173,9 +173,9 @@ class MaterialQuestionController extends Controller
     /**
      * Display review page for answered questions.
      */
-    public function review(int $id, Request $request): Response
+    public function review(int|string $id, Request $request): Response
     {
-        $material = $this->materialService->getMaterialWithQuestionsAndAnswers($id);
+        $material = $this->materialService->getMaterialWithQuestionsAndAnswers((int) $id);
         $materials = $this->materialService->getAllOrdered();
         $difficulty = $request->query('difficulty', 'all');
         $isGuest = $this->isGuestUser();
@@ -196,7 +196,7 @@ class MaterialQuestionController extends Controller
     /**
      * Get attempt count for a specific question.
      */
-    public function getAttempts(int $materialId, int $questionId, Request $request): JsonResponse
+    public function getAttempts(int|string $materialId, int|string $questionId, Request $request): JsonResponse
     {
         $isGuest = $this->isGuestUser();
 
@@ -205,7 +205,7 @@ class MaterialQuestionController extends Controller
             $guestProgress = $this->getGuestProgress($request);
             $attempts = isset($guestProgress[$progressKey]) ? $guestProgress[$progressKey]['attempt_number'] : 0;
         } else {
-            $attempts = $this->progressService->getAttemptCount(Auth::id(), $materialId, $questionId);
+            $attempts = $this->progressService->getAttemptCount(Auth::id(), (int) $materialId, (int) $questionId);
         }
 
         return response()->json(['attempts' => $attempts]);
@@ -214,10 +214,10 @@ class MaterialQuestionController extends Controller
     /**
      * Check answer submission.
      */
-    public function checkAnswer(int $materialId, int $questionId, Request $request): JsonResponse
+    public function checkAnswer(int|string $materialId, int|string $questionId, Request $request): JsonResponse
     {
-        $material = $this->materialService->getMaterialById($materialId);
-        $question = $this->questionService->getQuestionById($questionId);
+        $material = $this->materialService->getMaterialById((int) $materialId);
+        $question = $this->questionService->getQuestionById((int) $questionId);
 
         if (! $material || ! $question) {
             return response()->json([

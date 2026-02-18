@@ -27,8 +27,8 @@ interface ProgressRepositoryInterface
     /** @return Collection<int, mixed> */
     public function getCorrectAnswersWithAttempts(int $roleId = 3): Collection;
 
-    /** @return array<int, mixed> */
-    public function getLeaderboardStats(int $roleId = 3): array;
+    /** @return \Illuminate\Database\Eloquent\Collection<int, mixed> */
+    public function getLeaderboardStats(int $roleId = 3): \Illuminate\Database\Eloquent\Collection;
 
     public function getAttemptCount(int|string $userId, int $materialId, int $questionId): int;
 
