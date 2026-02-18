@@ -10,10 +10,11 @@ class LeaderboardService implements LeaderboardServiceInterface
 {
     public function __construct(
         protected MaterialRepositoryInterface $materialRepo,
-        protected ProgressRepositoryInterface $progressRepo
+        protected ProgressRepositoryInterface $progressRepo,
     ) {}
 
-    public function getLeaderboardData($currentUserId)
+    /** @return array<string, mixed> */
+    public function getLeaderboardData(int $currentUserId): array
     {
         // Get difficulty question counts from active configurations
         $difficultyCount = $this->calculateDifficultyTotals();
@@ -36,7 +37,7 @@ class LeaderboardService implements LeaderboardServiceInterface
             $leaderboardData,
             $userScores,
             $totalConfiguredQuestions,
-            $difficultyCount
+            $difficultyCount,
         );
 
         // Find current user rank
@@ -46,7 +47,7 @@ class LeaderboardService implements LeaderboardServiceInterface
 
         return [
             'leaderboardData' => $leaderboardData,
-            'currentUserRank' => $currentUserRank
+            'currentUserRank' => $currentUserRank,
         ];
     }
 
@@ -55,7 +56,7 @@ class LeaderboardService implements LeaderboardServiceInterface
         $totals = [
             'beginner' => 0,
             'medium' => 0,
-            'hard' => 0
+            'hard' => 0,
         ];
 
         $materials = $this->materialRepo->getAllWithQuestionsAndConfigs();
@@ -77,9 +78,9 @@ class LeaderboardService implements LeaderboardServiceInterface
         foreach ($correctAnswers as $answer) {
             $userId = $answer->user_id;
             // Repository query alias: 'attempts_needed'
-            $attempts = (int)$answer->attempts_needed;
+            $attempts = (int) $answer->attempts_needed;
 
-            if (!isset($userScores[$userId])) {
+            if (! isset($userScores[$userId])) {
                 $userScores[$userId] = 0;
             }
 
@@ -88,7 +89,7 @@ class LeaderboardService implements LeaderboardServiceInterface
                 'beginner' => 5,
                 'medium' => 10,
                 'hard' => 15,
-                default => 0  
+                default => 0
             };
 
             // Attempt multiplier
@@ -158,8 +159,8 @@ class LeaderboardService implements LeaderboardServiceInterface
             return ['name' => 'Medium', 'color' => 'warning'];
         } elseif ($data->beginner_completed >= $difficultyCount['beginner'] && $difficultyCount['beginner'] > 0) {
             return ['name' => 'Beginner', 'color' => 'success'];
-        } else {
-            return ['name' => 'Learner', 'color' => 'secondary'];
         }
+
+        return ['name' => 'Learner', 'color' => 'secondary'];
     }
 }

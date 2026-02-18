@@ -2,26 +2,26 @@
 
 namespace App\Services\Adaptive;
 
+use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Contracts\Repositories\QuestionRepositoryInterface;
+use App\Contracts\Services\FactGatheringServiceInterface;
+use App\Models\Material;
 use App\Models\StudentState;
-use App\Repositories\ProgressRepository;
-use App\Repositories\QuestionRepository;
+use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
 /**
  * FactGatheringService
- * 
+ *
  * Responsible for gathering facts (G01-G25) from student state and context.
  * Facts are used by adaptive rules for decision making.
  */
-class FactGatheringService
+class FactGatheringService implements FactGatheringServiceInterface
 {
     public function __construct(
-        protected ProgressRepository $progressRepo,
-        protected QuestionRepository $questionRepo
+        protected ProgressRepositoryInterface $progressRepo,
+        protected QuestionRepositoryInterface $questionRepo,
     ) {}
-    
-    /**
-     * Gather all facts (G01-G25) from student state and context.
-     */
+
     public function gatherFacts(
         StudentState $studentState,
         bool $isCorrect,
@@ -31,49 +31,54 @@ class FactGatheringService
         string $difficulty,
         int $questionId,
         int $materialId,
-        ?int $moduleId = null
+        ?int $moduleId = null,
     ): array {
         $facts = [];
-        
+
         // G01-G04: Score Facts
         $facts = array_merge($facts, $this->getScoreFacts($score, $isCorrect));
-        
+
         // G05-G06: Time Facts
-        $facts = array_merge($facts, $this->getTimeFacts($timeSpent));
-        
+        $facts = array_merge($facts, $this->getTimeFacts($timeSpent, $difficulty));
+
         // G07-G08: Learning Style Facts
         $facts = array_merge($facts, $this->getLearningStyleFacts($studentState));
-        
+
         // G09-G10: Error Type Facts
         $facts = array_merge($facts, $this->getErrorTypeFacts($studentState, $questionId, $isCorrect));
-        
+
         // G11-G12: Hint Facts
-        $facts[] = $usedHint ? 'G12' : 'G11';
-        
+        $facts[] = $usedHint ? AdaptiveConstants::FACT_HINT_USED : AdaptiveConstants::FACT_HINT_NONE;
+
         // G13-G25: Module Facts
         if ($moduleId) {
             $facts[] = $this->getModuleFact($moduleId);
         }
-        
+
         // G15-G17: Difficulty Facts
         $facts[] = $this->getDifficultyFact($difficulty);
-        
+
         // G18: Final Project (check difficulty='final')
         if ($difficulty === 'final') {
-            $facts[] = 'G18';
+            $facts[] = AdaptiveConstants::FACT_IS_FINAL_PROJECT;
         }
-        
+
         // G19-G21: Unlock Status Facts
         $facts = array_merge($facts, $this->getUnlockStatusFacts($studentState, $materialId));
-        
+
         // G22: Persistent Fail
         if ($this->isPersistentFail($studentState->user_id, $questionId)) {
-            $facts[] = 'G22';
+            $facts[] = AdaptiveConstants::FACT_PERSISTENT_FAIL;
         }
-        
+
+        // G26: Satisfactory Progress (>= 60% of current difficulty questions completed)
+        if ($this->hasSatisfactoryProgress($studentState->user_id, $materialId, $difficulty)) {
+            $facts[] = AdaptiveConstants::FACT_SATISFACTORY_PROGRESS;
+        }
+
         return array_unique($facts);
     }
-    
+
     /**
      * Get score-based facts (G01-G04).
      */
@@ -81,115 +86,154 @@ class FactGatheringService
     {
         // Normalize score: correct answers get at least 70, wrong get max 69
         $finalScore = $isCorrect ? max($score, 70) : min($score, 69);
-        
-        if ($finalScore < 40) return ['G01']; // Critical
-        if ($finalScore < 70) return ['G02']; // Remedial
-        if ($finalScore < 90) return ['G03']; // Standard
-        return ['G04']; // Mastery
+
+        if ($finalScore < 40) {
+            return [AdaptiveConstants::FACT_SCORE_CRITICAL];
+        }
+        if ($finalScore < 70) {
+            return [AdaptiveConstants::FACT_SCORE_REMEDIAL];
+        }
+        if ($finalScore < 90) {
+            return [AdaptiveConstants::FACT_SCORE_STANDARD];
+        }
+
+        return [AdaptiveConstants::FACT_SCORE_MASTERY];
     }
-    
+
     /**
      * Get time-based facts (G05-G06).
      */
-    protected function getTimeFacts(int $timeSpent): array
+    protected function getTimeFacts(int $timeSpent, string $difficulty = 'beginner'): array
     {
-        // Default allocated time: 60 seconds
-        // TODO: Get from question metadata if available
-        $allocatedTime = 60;
+        // Allocation based on difficulty
+        $allocatedTimeMap = [
+            'beginner' => 45,
+            'medium' => 90,
+            'hard' => 150,
+            'final' => 300,
+        ];
+
+        $allocatedTime = $allocatedTimeMap[$difficulty] ?? 60;
         $percentage = ($timeSpent / $allocatedTime) * 100;
-        
-        return $percentage < 50 ? ['G05'] : ['G06']; // Fast : Normal
+
+        return $percentage < 50 ? [AdaptiveConstants::FACT_TIME_FAST] : [AdaptiveConstants::FACT_TIME_NORMAL];
     }
-    
+
     /**
      * Get learning style facts (G07-G08).
      */
     protected function getLearningStyleFacts(StudentState $state): array
     {
-        $style = $state->learning_style ?? 'visual';
-        return $style === 'visual' ? ['G07'] : ['G08'];
+        // Use accessor from model
+        $style = $state->learning_style;
+
+        return $style === 'visual' ? [AdaptiveConstants::FACT_STYLE_VISUAL] : [AdaptiveConstants::FACT_STYLE_TEXTUAL];
     }
-    
+
     /**
      * Get error type facts (G09-G10).
-     * Uses question_type from database.
      */
     protected function getErrorTypeFacts(StudentState $state, int $questionId, bool $isCorrect): array
     {
         if ($isCorrect) {
             return [];
         }
-        
+
         // Get question type from database
         $question = $this->questionRepo->find($questionId);
         $questionType = $question?->type ?? 'teori';
-        
+
         // Syntax questions → G09, Theory/Logic questions → G10
-        return $questionType === 'sintaks' ? ['G09'] : ['G10'];
+        return $questionType === 'sintaks' ? [AdaptiveConstants::FACT_ERROR_SYNTAX] : [AdaptiveConstants::FACT_ERROR_LOGIC];
     }
-    
+
     /**
      * Get module fact (G13-G25).
      */
     protected function getModuleFact(int $moduleId): string
     {
         $moduleMap = [
-            1 => 'G13', // Foundation
-            2 => 'G14', // Encapsulation
-            3 => 'G23', // Inheritance
-            4 => 'G24', // Polymorphism
-            5 => 'G25', // Abstraction
+            1 => AdaptiveConstants::FACT_MODULE_FOUNDATION,
+            2 => AdaptiveConstants::FACT_MODULE_ENCAPSULATION,
+            3 => AdaptiveConstants::FACT_MODULE_INHERITANCE,
+            4 => AdaptiveConstants::FACT_MODULE_POLYMORPHISM,
+            5 => AdaptiveConstants::FACT_MODULE_ABSTRACTION,
         ];
-        
-        return $moduleMap[$moduleId] ?? 'G13';
+
+        return $moduleMap[$moduleId] ?? AdaptiveConstants::FACT_MODULE_FOUNDATION;
     }
-    
+
     /**
      * Get difficulty fact (G15-G17).
      */
     protected function getDifficultyFact(string $difficulty): string
     {
         $difficultyMap = [
-            'beginner' => 'G15',
-            'medium' => 'G16',
-            'hard' => 'G17',
+            'beginner' => AdaptiveConstants::FACT_DIFF_BEGINNER,
+            'medium' => AdaptiveConstants::FACT_DIFF_MEDIUM,
+            'hard' => AdaptiveConstants::FACT_DIFF_HARD,
         ];
-        
-        return $difficultyMap[$difficulty] ?? 'G15';
+
+        return $difficultyMap[$difficulty] ?? AdaptiveConstants::FACT_DIFF_BEGINNER;
     }
-    
+
     /**
      * Get unlock status facts (G19-G21).
      */
     protected function getUnlockStatusFacts(StudentState $state, int $materialId): array
     {
         $facts = [];
-        
-        // Check if next material is locked
-        $unlockedModules = $state->unlocked_modules ?? [];
-        $nextMaterialId = $materialId + 1;
-        
-        if (!in_array($nextMaterialId, $unlockedModules)) {
-            $facts[] = 'G19'; // Next Locked
+
+        // Use model navigation logic instead of ID math
+        $currentMaterial = Material::find($materialId);
+        if (! $currentMaterial) {
+            return [AdaptiveConstants::FACT_NEXT_LOCKED];
+        }
+
+        $nextMaterial = $currentMaterial->getNextMaterial();
+        $prevMaterial = $currentMaterial->getPreviousMaterial();
+
+        $unlockedModules = $state->learning_profile['unlocked_modules'] ?? [];
+
+        // Check if next material's module is locked
+        if ($nextMaterial && ! in_array($nextMaterial->module_id, $unlockedModules)) {
+            $facts[] = AdaptiveConstants::FACT_NEXT_LOCKED;
         } else {
-            $facts[] = 'G20'; // Next Unlocked
+            $facts[] = AdaptiveConstants::FACT_NEXT_UNLOCKED;
         }
-        
-        // Check if previous material is unlocked
-        $prevMaterialId = $materialId - 1;
-        if ($prevMaterialId > 0 && in_array($prevMaterialId, $unlockedModules)) {
-            $facts[] = 'G21'; // Prev Unlocked
+
+        // Check if previous material's module is unlocked
+        if ($prevMaterial && in_array($prevMaterial->module_id, $unlockedModules)) {
+            $facts[] = AdaptiveConstants::FACT_PREV_UNLOCKED;
         }
-        
+
         return $facts;
     }
-    
+
     /**
      * Check if student has persistent failures (G22).
      */
     protected function isPersistentFail(int $userId, int $questionId): bool
     {
         $consecutiveFails = $this->progressRepo->getConsecutiveFailures($userId, $questionId);
+
         return $consecutiveFails >= 3;
+    }
+
+    /**
+     * Check if student has satisfied enough questions in the material (G26).
+     */
+    protected function hasSatisfactoryProgress(int $userId, int $materialId): bool
+    {
+        $answeredCount = $this->progressRepo->getAnsweredQuestionIds($userId, $materialId)->count();
+        $totalQuestions = $this->questionRepo->countByMaterial($materialId);
+
+        if ($totalQuestions === 0) {
+            return true;
+        }
+
+        $percentage = ($answeredCount / $totalQuestions) * 100;
+
+        return $percentage >= 60; // 60% threshold for "almost done" skip logic
     }
 }

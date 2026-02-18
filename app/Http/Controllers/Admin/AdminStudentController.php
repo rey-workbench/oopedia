@@ -2,116 +2,95 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Contracts\Services\StudentServiceInterface;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Student\StoreStudentRequest;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminStudentController extends Controller
 {
     public function __construct(
-        protected StudentServiceInterface $studentService
+        protected StudentServiceInterface $studentService,
     ) {}
 
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $search = $request->search;
         $students = $this->studentService->getStudentsWithProgress($search, 10);
-        
+
         return Inertia::render('Admin/Students/Index', compact('students'));
     }
 
-    public function progress(int $studentId)
+    public function progress(int $studentId): Response|RedirectResponse
     {
         $student = $this->studentService->getStudentById($studentId);
-        
-        if (!$student || $student->role_id != 3) {
+
+        if (! $student || $student->role_id != 3) {
             return redirect()->route('admin.students.index')
                 ->with('error', 'Mahasiswa tidak ditemukan');
         }
-    
+
         $data = $this->studentService->getStudentProgressDetail($student);
 
         return Inertia::render('Admin/Students/Progress/Index', [
             'student' => $student,
             'materials' => $data['materials'],
             'recent_activities' => $data['recent_activities'],
-            'missingQuestionsByMaterial' => $data['missingQuestionsByMaterial']
+            'missingQuestionsByMaterial' => $data['missingQuestionsByMaterial'],
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreStudentRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
+        $this->studentService->createStudent($request->validated());
 
-        try {
-            $this->studentService->createStudent([
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'password' => $validated['password'], // Will be hashed in service
-            ]);
-
-            return redirect()->route('admin.students.index')
-                ->with('success', 'Mahasiswa berhasil didaftarkan secara manual.');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Gagal mendaftarkan mahasiswa: ' . $e->getMessage())
-                ->withInput();
-        }
+        return redirect()->route('admin.students.index')
+            ->with('success', 'Mahasiswa berhasil didaftarkan secara manual.');
     }
 
-    public function destroy(int $studentId)
+    public function destroy(int $studentId): RedirectResponse
     {
-        try {
-            $this->studentService->deleteStudent($studentId);
-            
-            return redirect()->route('admin.students.index')
-                ->with('success', 'Data mahasiswa telah berhasil dihapus dari sistem');
-        } catch (\Exception $e) {
-            return redirect()->route('admin.students.index')
-                ->with('error', $e->getMessage());
-        }
+        $this->studentService->deleteStudent($studentId);
+
+        return redirect()->route('admin.students.index')
+            ->with('success', 'Data mahasiswa telah berhasil dihapus dari sistem');
     }
-    
-    public function showImportForm()
+
+    public function showImportForm(): Response
     {
         return Inertia::render('Admin/Students/Import/Index');
     }
-    
-    public function processImport(Request $request)
+
+    public function processImport(Request $request): RedirectResponse
     {
         $request->validate([
             'excel_file' => 'required|file|mimes:xlsx,xls,csv,txt|max:2048',
         ]);
-        
-        try {
-            $result = $this->studentService->importStudentsFromFile($request->file('excel_file'));
-            
-            $message = "Berhasil menambahkan {$result['success_count']} mahasiswa.";
-            if (!empty($result['error_rows'])) {
-                $message .= " Terdapat " . count($result['error_rows']) . " baris dengan error.";
-            }
-            
-            return redirect()->route('admin.students.index')
-                ->with('success', $message)
-                ->with('importErrors', $result['error_rows']);
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', $e->getMessage());
+
+        $result = $this->studentService->importStudentsFromFile($request->file('excel_file'));
+
+        $message = "Berhasil menambahkan {$result['success_count']} mahasiswa.";
+        if (! empty($result['error_rows'])) {
+            $message .= ' Terdapat ' . count($result['error_rows']) . ' baris dengan error.';
         }
+
+        return redirect()->route('admin.students.index')
+            ->with('success', $message)
+            ->with('importErrors', $result['error_rows']);
     }
-    
-    public function downloadTemplate()
+
+    public function downloadTemplate(): StreamedResponse
     {
         $template = $this->studentService->generateImportTemplate();
-        
+
         return response()->stream($template['callback'], 200, $template['headers']);
     }
 
-    public function show(int $studentId)
+    public function show(int $studentId): RedirectResponse
     {
         return redirect()->route('admin.students.progress', $studentId);
     }

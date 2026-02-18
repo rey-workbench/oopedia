@@ -3,7 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int $id
+ * @property int $material_id
+ * @property string $title
+ * @property string $content
+ * @property string $jenis_konten
+ * @property string|null $learning_style
+ * @property int $order
+ */
 class SubMaterial extends Model
 {
     protected $fillable = [
@@ -16,48 +27,34 @@ class SubMaterial extends Model
     ];
 
     protected $casts = [
+        'material_id' => 'integer',
         'order' => 'integer',
     ];
 
     // ==================== RELATIONSHIPS ====================
 
-    /**
-     * SubMaterial belongs to Material.
-     */
-    public function material()
+    public function material(): BelongsTo
     {
         return $this->belongsTo(Material::class);
     }
 
-    /**
-     * SubMaterial has many Questions.
-     */
-    public function questions()
+    public function questions(): HasMany
     {
         return $this->hasMany(Question::class);
     }
 
     // ==================== SCOPES ====================
 
-    /**
-     * Scope to order by display order.
-     */
     public function scopeOrdered($query)
     {
         return $query->orderBy('order');
     }
 
-    /**
-     * Scope to filter by jenis_konten.
-     */
     public function scopeByJenis($query, string $jenis)
     {
         return $query->where('jenis_konten', $jenis);
     }
 
-    /**
-     * Scope to filter by learning_style.
-     */
     public function scopeByLearningStyle($query, string $style)
     {
         return $query->where('learning_style', $style);

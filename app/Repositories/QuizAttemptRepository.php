@@ -4,26 +4,27 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\QuizAttemptRepositoryInterface;
 use App\Models\QuizAttempt;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class QuizAttemptRepository implements QuizAttemptRepositoryInterface
 {
-    public function create(array $data)
+    public function create(array $data): QuizAttempt
     {
-        // Calculate attempt number if not provided
-        if (!isset($data['attempt_number'])) {
+        if (! isset($data['attempt_number'])) {
             $data['attempt_number'] = $this->countAttempts($data['user_id'], $data['question_id']) + 1;
         }
 
         return QuizAttempt::create($data);
     }
 
-    public function find($id)
+    public function find(int $id): ?QuizAttempt
     {
         return QuizAttempt::find($id);
     }
 
-    public function getByUser($userId)
+    /** @return Collection<int, QuizAttempt> */
+    public function getByUser(int $userId): Collection
     {
         return QuizAttempt::where('user_id', $userId)
             ->with(['question', 'answer'])
@@ -31,7 +32,8 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
             ->get();
     }
 
-    public function getByUserAndQuestion($userId, $questionId)
+    /** @return Collection<int, QuizAttempt> */
+    public function getByUserAndQuestion(int $userId, int $questionId): Collection
     {
         return QuizAttempt::where('user_id', $userId)
             ->where('question_id', $questionId)
@@ -39,7 +41,8 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
             ->get();
     }
 
-    public function getByMaterial($materialId)
+    /** @return Collection<int, QuizAttempt> */
+    public function getByMaterial(int $materialId): Collection
     {
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->where('questions.material_id', $materialId)
@@ -48,7 +51,7 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
             ->get();
     }
 
-    public function getBestAttempt($userId, $questionId)
+    public function getBestAttempt(int $userId, int $questionId): ?QuizAttempt
     {
         return QuizAttempt::where('user_id', $userId)
             ->where('question_id', $questionId)
@@ -58,7 +61,7 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
             ->first();
     }
 
-    public function getLatestAttempt($userId, $questionId)
+    public function getLatestAttempt(int $userId, int $questionId): ?QuizAttempt
     {
         return QuizAttempt::where('user_id', $userId)
             ->where('question_id', $questionId)
@@ -66,14 +69,15 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
             ->first();
     }
 
-    public function countAttempts($userId, $questionId)
+    public function countAttempts(int $userId, int $questionId): int
     {
         return QuizAttempt::where('user_id', $userId)
             ->where('question_id', $questionId)
             ->count();
     }
 
-    public function getCorrectAttempts($userId)
+    /** @return Collection<int, QuizAttempt> */
+    public function getCorrectAttempts(int $userId): Collection
     {
         return QuizAttempt::where('user_id', $userId)
             ->where('is_correct', true)
@@ -81,14 +85,15 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
             ->get();
     }
 
-    public function getUserStats($userId)
+    /** @return array<string, mixed> */
+    public function getUserStats(int $userId): array
     {
-        return QuizAttempt::select(
+        return (array) QuizAttempt::select(
             DB::raw('COUNT(DISTINCT question_id) as total_attempted'),
             DB::raw('SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) as total_correct'),
-            DB::raw('COUNT(*) as total_attempts')
+            DB::raw('COUNT(*) as total_attempts'),
         )
-        ->where('user_id', $userId)
-        ->first();
+            ->where('user_id', $userId)
+            ->first();
     }
 }

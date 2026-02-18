@@ -2,173 +2,138 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Contracts\Services\UserServiceInterface;
 use App\Contracts\Repositories\RoleRepositoryInterface;
+use App\Contracts\Services\UserServiceInterface;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\User\StoreAdminRequest;
+use App\Http\Requests\User\UpdateAdminRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminUserController extends Controller
 {
     public function __construct(
         protected UserServiceInterface $userService,
-        protected RoleRepositoryInterface $roleRepo
+        protected RoleRepositoryInterface $roleRepo,
     ) {}
 
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $search = $request->search;
         $users = $this->userService->getAdmins($search);
-        
         $pendingAdminsCount = $this->userService->getPendingAdminsCount();
 
         return Inertia::render('Admin/Users/Index', compact('users', 'pendingAdminsCount'));
     }
 
-    public function create()
+    public function create(): Response
     {
         $roles = $this->roleRepo->all();
+
         return Inertia::render('Admin/Users/Create/Index', compact('roles'));
     }
 
-    public function store(Request $request)
+    public function store(StoreAdminRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-        
-        try {
-            $this->userService->createAdmin($request->all());
-            
-            return redirect()->route('admin.users.index')
-                ->with('success', 'Admin berhasil ditambahkan');
-        } catch (\Exception $e) {
-            return back()->withInput()->with('error', 'Gagal menambahkan admin: ' . $e->getMessage());
-        }
+        $this->userService->createAdmin($request->validated());
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Admin berhasil ditambahkan');
     }
 
-    public function edit(int $userId)
+    public function edit(int $userId): Response|RedirectResponse
     {
         $user = $this->userService->getUserById($userId);
-        
-        if (!$user) {
+
+        if (! $user) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'User tidak ditemukan');
         }
-        
-        // Ensure editable user is admin
+
         if ($user->role_id != 2) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'User bukan admin');
         }
-        
+
         return Inertia::render('Admin/Users/Edit/Index', compact('user'));
     }
 
-    public function update(Request $request, int $userId)
+    public function update(UpdateAdminRequest $request, int $userId): RedirectResponse
     {
         $user = $this->userService->getUserById($userId);
-        
-        if (!$user) {
+
+        if (! $user) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'User tidak ditemukan');
         }
-        
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $userId,
-            'password' => 'nullable|string|min:8|confirmed',
-        ]);
-        
-        try {
-            $this->userService->updateAdmin($userId, $request->all());
-            
-            return redirect()->route('admin.users.index')
-                ->with('success', 'Data admin berhasil diperbarui');
-        } catch (\Exception $e) {
-            return back()->withInput()->with('error', 'Gagal memperbarui admin: ' . $e->getMessage());
-        }
+
+        $this->userService->updateAdmin($userId, $request->validated());
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Data admin berhasil diperbarui');
     }
 
-    public function destroy(int $userId)
+    public function destroy(int $userId): RedirectResponse
     {
-        try {
-            $this->userService->deleteAdmin($userId);
-            
-            return redirect()->route('admin.users.index')
-                ->with('success', 'Admin berhasil dihapus');
-        } catch (\Exception $e) {
-            return redirect()->route('admin.users.index')
-                ->with('error', $e->getMessage());
-        }
+        $this->userService->deleteAdmin($userId);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Admin berhasil dihapus');
     }
 
-    public function pendingAdmins()
+    public function pendingAdmins(): Response
     {
         $pendingAdmins = $this->userService->getPendingAdmins();
-        
+
         return Inertia::render('Admin/Users/Pending/Index', compact('pendingAdmins'));
     }
 
-    public function approveAdmin(int $userId)
+    public function approveAdmin(int $userId): RedirectResponse
     {
-        try {
-            $this->userService->approveAdmin($userId);
-            
-            return redirect()->route('admin.pending-admins')
-                ->with('success', 'Admin berhasil disetujui');
-        } catch (\Exception $e) {
-            return redirect()->route('admin.pending-admins')
-                ->with('error', 'Gagal menyetujui admin: ' . $e->getMessage());
-        }
+        $this->userService->approveAdmin($userId);
+
+        return redirect()->route('admin.pending-admins')
+            ->with('success', 'Admin berhasil disetujui');
     }
 
-    public function rejectAdmin(int $userId)
+    public function rejectAdmin(int $userId): RedirectResponse
     {
-        try {
-            $this->userService->rejectAdmin($userId);
-            
-            return redirect()->route('admin.pending-admins')
-                ->with('success', 'Permintaan admin ditolak');
-        } catch (\Exception $e) {
-            return redirect()->route('admin.pending-admins')
-                ->with('error', 'Gagal menolak permintaan: ' . $e->getMessage());
-        }
+        $this->userService->rejectAdmin($userId);
+
+        return redirect()->route('admin.pending-admins')
+            ->with('success', 'Permintaan admin ditolak');
     }
-    
-    public function showImportForm()
+
+    public function showImportForm(): Response
     {
         return Inertia::render('Admin/Users/Import/Index');
     }
-    
-    public function processImport(Request $request)
+
+    public function processImport(Request $request): RedirectResponse
     {
         $request->validate([
             'excel_file' => 'required|file|mimes:xlsx,xls,csv,txt|max:2048',
         ]);
-        
-        try {
-            $result = $this->userService->importAdminsFromFile($request->file('excel_file'));
-            
-            $message = "Berhasil menambahkan {$result['success_count']} admin.";
-            if (!empty($result['error_rows'])) {
-                $message .= " Terdapat " . count($result['error_rows']) . " baris dengan error.";
-            }
-            
-            return redirect()->route('admin.users.index')
-                ->with('success', $message)
-                ->with('importErrors', $result['error_rows']);
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', $e->getMessage());
+
+        $result = $this->userService->importAdminsFromFile($request->file('excel_file'));
+
+        $message = "Berhasil menambahkan {$result['success_count']} admin.";
+        if (! empty($result['error_rows'])) {
+            $message .= ' Terdapat ' . count($result['error_rows']) . ' baris dengan error.';
         }
+
+        return redirect()->route('admin.users.index')
+            ->with('success', $message)
+            ->with('importErrors', $result['error_rows']);
     }
-    
-    public function downloadTemplate()
+
+    public function downloadTemplate(): StreamedResponse
     {
         $template = $this->userService->generateImportTemplate();
-        
+
         return response()->stream($template['callback'], 200, $template['headers']);
     }
 }

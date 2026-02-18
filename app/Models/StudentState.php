@@ -4,7 +4,29 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property array<string,mixed> $gamification_data
+ * @property array<string,mixed> $learning_profile
+ * @property array<string,mixed> $performance_metrics
+ * @property array<string,mixed> $adaptive_state
+ * @property \Carbon\Carbon|null $last_active_at
+ * @property-read int            $global_xp
+ * @property-read string         $current_level
+ * @property-read int            $current_streak
+ * @property-read int            $max_streak
+ * @property-read int            $total_questions_answered
+ * @property-read int            $correct_count
+ * @property-read int            $wrong_count
+ * @property-read int            $wrong_streak
+ * @property-read int            $hints_used_count
+ * @property-read int            $hints_available
+ * @property-read string         $learning_style
+ * @property-read array<int,mixed> $unlocked_modules
+ */
 class StudentState extends Model
 {
     use HasFactory;
@@ -60,8 +82,8 @@ class StudentState extends Model
     ];
 
     // ==================== RELATIONSHIPS ====================
-    
-    public function user()
+
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -69,25 +91,70 @@ class StudentState extends Model
     // ==================== ACCESSORS ====================
 
     // Gamification Data (Transparent Access)
-    public function getGlobalXpAttribute() { return $this->gamification_data['global_xp'] ?? 0; }
-    public function getCurrentLevelAttribute() { return $this->gamification_data['current_level'] ?? 'Pemula'; }
-    public function getCurrentStreakAttribute() { return $this->gamification_data['current_streak'] ?? 0; }
-    public function getMaxStreakAttribute() { return $this->gamification_data['max_streak'] ?? 0; }
-    
+    public function getGlobalXpAttribute()
+    {
+        return $this->gamification_data['global_xp'] ?? 0;
+    }
+
+    public function getCurrentLevelAttribute()
+    {
+        return $this->gamification_data['current_level'] ?? 'Pemula';
+    }
+
+    public function getCurrentStreakAttribute()
+    {
+        return $this->gamification_data['current_streak'] ?? 0;
+    }
+
+    public function getMaxStreakAttribute()
+    {
+        return $this->gamification_data['max_streak'] ?? 0;
+    }
+
     // Performance Metrics (Transparent Access)
-    public function getTotalQuestionsAnsweredAttribute() { return $this->performance_metrics['total_questions_answered'] ?? 0; }
-    public function getCorrectCountAttribute() { return $this->performance_metrics['correct_count'] ?? 0; }
-    public function getWrongCountAttribute() { return $this->performance_metrics['wrong_count'] ?? 0; }
-    public function getWrongStreakAttribute() { return $this->performance_metrics['wrong_streak'] ?? 0; }
-    public function getHintsUsedCountAttribute() { return $this->performance_metrics['hints_used_count'] ?? 0; }
-    public function getHintsAvailableAttribute() { return $this->performance_metrics['hints_available'] ?? 3; }
+    public function getTotalQuestionsAnsweredAttribute()
+    {
+        return $this->performance_metrics['total_questions_answered'] ?? 0;
+    }
+
+    public function getCorrectCountAttribute()
+    {
+        return $this->performance_metrics['correct_count'] ?? 0;
+    }
+
+    public function getWrongCountAttribute()
+    {
+        return $this->performance_metrics['wrong_count'] ?? 0;
+    }
+
+    public function getWrongStreakAttribute()
+    {
+        return $this->performance_metrics['wrong_streak'] ?? 0;
+    }
+
+    public function getHintsUsedCountAttribute()
+    {
+        return $this->performance_metrics['hints_used_count'] ?? 0;
+    }
+
+    public function getHintsAvailableAttribute()
+    {
+        return $this->performance_metrics['hints_available'] ?? 3;
+    }
 
     // Learning Profile
-    public function getLearningStyleAttribute() { return $this->learning_profile['learning_style'] ?? 'visual'; }
-    public function getUnlockedModulesAttribute() { return $this->learning_profile['unlocked_modules'] ?? []; }
+    public function getLearningStyleAttribute()
+    {
+        return $this->learning_profile['learning_style'] ?? 'visual';
+    }
+
+    public function getUnlockedModulesAttribute()
+    {
+        return $this->learning_profile['unlocked_modules'] ?? [];
+    }
 
     // ==================== HELPER METHODS ====================
-    
+
     /**
      * Update performance counters based on answer result.
      * No need for custom accessors/mutators - Laravel handles JSON casting automatically
@@ -97,21 +164,21 @@ class StudentState extends Model
         // Get current metrics (already decoded by Laravel)
         $metrics = $this->performance_metrics ?? [];
         $gamification = $this->gamification_data ?? [];
-        
+
         // Update counters
         $metrics['total_questions_answered'] = ($metrics['total_questions_answered'] ?? 0) + 1;
-        
+
         if ($usedHint) {
             $metrics['hints_used_count'] = ($metrics['hints_used_count'] ?? 0) + 1;
             $metrics['hints_available'] = max(0, ($metrics['hints_available'] ?? 3) - 1);
         }
-        
+
         if ($isCorrect) {
             $metrics['correct_count'] = ($metrics['correct_count'] ?? 0) + 1;
             $gamification['current_streak'] = ($gamification['current_streak'] ?? 0) + 1;
             $gamification['max_streak'] = max(
                 $gamification['max_streak'] ?? 0,
-                $gamification['current_streak'] ?? 0
+                $gamification['current_streak'] ?? 0,
             );
             $metrics['wrong_streak'] = 0;
         } else {
@@ -119,13 +186,13 @@ class StudentState extends Model
             $metrics['wrong_streak'] = ($metrics['wrong_streak'] ?? 0) + 1;
             $gamification['current_streak'] = 0;
         }
-        
+
         // Save back (Laravel will encode automatically)
         $this->performance_metrics = $metrics;
         $this->gamification_data = $gamification;
         $this->last_active_at = now();
         $this->save();
-        
+
         return $this;
     }
 }

@@ -51,7 +51,7 @@ class Sidebar extends Component
         ?string $role = null,
         string $userName = '',
         string $userRole = '',
-        $materials = null
+        $materials = null,
     ) {
         $this->activePage = $activePage;
         $this->role = $role ?? $this->detectRole();
@@ -66,7 +66,7 @@ class Sidebar extends Component
      */
     protected function detectRole(): string
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return 'guest';
         }
 
@@ -86,7 +86,7 @@ class Sidebar extends Component
      */
     protected function getRoleLabel(): string
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return 'Guest';
         }
 
@@ -138,7 +138,7 @@ class Sidebar extends Component
      */
     public function isGuest(): bool
     {
-        return !Auth::check() || (Auth::check() && Auth::user()->role_id === 4);
+        return ! Auth::check() || (Auth::check() && Auth::user()->role_id === 4);
     }
 
     /**
@@ -154,7 +154,7 @@ class Sidebar extends Component
      */
     public function getDashboardRoute(): string
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return 'mahasiswa.dashboard';
         }
 
@@ -166,7 +166,7 @@ class Sidebar extends Component
      */
     public function getPendingAdminsCount(): int
     {
-        if (!Auth::check() || Auth::user()->role_id !== 1) {
+        if (! Auth::check() || Auth::user()->role_id !== 1) {
             return 0;
         }
 
@@ -206,7 +206,7 @@ class Sidebar extends Component
             return 'Profil';
         }
 
-        if ($this->isRouteActive('mahasiswa.materials*') && !$this->isRouteActive('mahasiswa.materials.questions*')) {
+        if ($this->isRouteActive('mahasiswa.materials*') && ! $this->isRouteActive('mahasiswa.materials.questions*')) {
             return 'Daftar Materi';
         }
 

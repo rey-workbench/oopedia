@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Question;
+use Illuminate\Database\Seeder;
 
 class QuestionsSeeder extends Seeder
 {
@@ -453,8 +453,8 @@ class QuestionsSeeder extends Seeder
 
         foreach ($questions as $question) {
             Question::updateOrCreate(
-            ['id' => $question['id']],
-                $question
+                ['id' => $question['id']],
+                $question,
             );
         }
     }

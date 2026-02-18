@@ -6,18 +6,22 @@ use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Services\QuestionListingServiceInterface;
+use App\Models\Material;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 
 class QuestionListingService implements QuestionListingServiceInterface
 {
     public function __construct(
         protected MaterialRepositoryInterface $materialRepo,
         protected ProgressRepositoryInterface $progressRepo,
-        protected QuestionRepositoryInterface $questionRepo
+        protected QuestionRepositoryInterface $questionRepo,
     ) {}
 
-    public function getQuizData($material, $difficulty, $userId, $isGuest, $guestProgress = [])
+    /** @return array<string, mixed> */
+    public function getQuizData(Material $material, string $difficulty, int|string|null $userId, bool $isGuest, array $guestProgress = []): array
     {
-        $answeredQuestionIds = $isGuest 
+        $answeredQuestionIds = $isGuest
             ? $this->getGuestAnsweredQuestionIds($material->id, $guestProgress)
             : $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
 
@@ -26,21 +30,28 @@ class QuestionListingService implements QuestionListingServiceInterface
         $totalFilteredQuestions = $filteredData['totalFilteredQuestions'];
 
         $currentQuestion = $this->getCurrentQuestion($questions, $answeredQuestionIds);
-        
+
         $levelProgress = $this->getLevelProgress($material, $difficulty, $answeredQuestionIds, $isGuest);
+
+        // Calculate answeredCount relative ONLY to the currently filtered question set
+        $answeredCount = $questions->filter(function ($q) use ($answeredQuestionIds) {
+            return $answeredQuestionIds->contains($q->id);
+        })->count();
 
         return [
             'material' => $material,
             'questions' => $questions,
             'currentQuestion' => $currentQuestion,
+            'currentQuestionNumber' => $answeredCount + 1,
             'totalQuestions' => $totalFilteredQuestions,
-            'answeredCount' => $answeredQuestionIds->count(),
+            'answeredCount' => $answeredCount,
             'levelProgress' => $levelProgress,
-            'difficulty' => $difficulty
+            'difficulty' => $difficulty,
         ];
     }
 
-    public function getMaterialsListWithStudentCount($userId, $isGuest, $guestProgress = [])
+    /** @return Collection<int, Material> */
+    public function getMaterialsListWithStudentCount(int|string|null $userId, bool $isGuest, array $guestProgress = []): Collection
     {
         $progressStats = $isGuest ? collect([]) : $this->progressRepo->getUserProgressStats($userId);
         $allMaterials = $this->materialRepo->getAllWithQuestions();
@@ -55,7 +66,7 @@ class QuestionListingService implements QuestionListingServiceInterface
 
         $materials = $allMaterials->map(function ($material) use ($progressStats, $isGuest, $studentCounts, $guestProgress) {
             $configuredTotalQuestions = $this->calculateConfiguredQuestions($material, $isGuest);
-            
+
             if ($isGuest) {
                 $correctAnswers = 0;
                 foreach ($guestProgress as $key => $progress) {
@@ -85,45 +96,76 @@ class QuestionListingService implements QuestionListingServiceInterface
         return $materials;
     }
 
-    public function getReviewQuestions($material, $difficulty, $userId, $isGuest, $guestProgress = [])
+    /** @return Collection<int, \App\Models\Question> */
+    public function getReviewQuestions(Material $material, ?string $difficulty, int|string|null $userId, bool $isGuest, array $guestProgress = []): Collection
     {
         $questions = $material->questions;
 
         if ($difficulty && $difficulty !== 'all') {
-            $questions = $questions->where('difficulty', $difficulty);
+            // Normalize difficulty: 'advanced' from UI mapping to 'hard' in DB
+            $dbDifficulty = ($difficulty === 'advanced') ? 'hard' : $difficulty;
+            $questions = $questions->where('difficulty', $dbDifficulty);
         }
 
         if ($isGuest) {
             $answeredQuestionIds = $this->getGuestAnsweredQuestionIds($material->id, $guestProgress);
             $questions = $questions->whereIn('id', $answeredQuestionIds->toArray());
+
+            // Map guest attempts
+            foreach ($questions as $question) {
+                $key = $material->id . '_' . $question->id;
+                if (isset($guestProgress[$key])) {
+                    $question->user_attempt = $guestProgress[$key];
+                }
+            }
         } else {
             $answeredQuestionIds = $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
             $questions = $questions->whereIn('id', $answeredQuestionIds);
+
+            // Load latest attempt for each question for authenticated users
+            foreach ($questions as $question) {
+                $latestAttempt = \App\Models\QuizAttempt::where('user_id', $userId)
+                    ->where('question_id', $question->id)
+                    ->latest()
+                    ->first();
+
+                if ($latestAttempt) {
+                    $question->user_attempt = [
+                        'score' => $latestAttempt->score,
+                        'is_correct' => $latestAttempt->is_correct,
+                        'answer_id' => $latestAttempt->answer_id,
+                        'user_response' => $latestAttempt->user_response,
+                        'attempt_number' => $latestAttempt->attempt_number,
+                        'time_spent' => $latestAttempt->time_spent,
+                    ];
+                }
+            }
         }
 
         return $questions;
     }
 
-    public function getGuestAnsweredQuestionIds($materialId, $guestProgress = [])
+    public function getGuestAnsweredQuestionIds(int $materialId, array $guestProgress = []): SupportCollection
     {
         $answeredQuestionIds = collect([]);
 
         foreach ($guestProgress as $key => $progress) {
             if (is_array($progress) && (isset($progress['is_correct']) || isset($progress['attempt_number']))) {
-                 $parts = explode('_', $key);
-                 if (count($parts) >= 2 && $parts[0] == $materialId) {
-                      $questionId = (int)$parts[1];
-                      if (!$answeredQuestionIds->contains($questionId)) {
-                           $answeredQuestionIds->push($questionId);
-                      }
-                 }
+                $parts = explode('_', $key);
+                if (count($parts) >= 2 && $parts[0] == $materialId) {
+                    $questionId = (int) $parts[1];
+                    if (! $answeredQuestionIds->contains($questionId)) {
+                        $answeredQuestionIds->push($questionId);
+                    }
+                }
             }
         }
 
         return $answeredQuestionIds;
     }
 
-    public function getFilteredQuestions($material, $difficulty, $isGuest)
+    /** @return array<string, mixed> */
+    public function getFilteredQuestions(Material $material, string $difficulty, bool $isGuest): array
     {
         $questions = $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty);
 
@@ -142,35 +184,37 @@ class QuestionListingService implements QuestionListingServiceInterface
             $totalFilteredQuestions = $questions->count();
         }
 
-        // Sequential progression: questions are presented in order, not shuffled
-        // This ensures consistency with the levels system where progress must be linear
+        // Shuffle questions for randomness as requested by user
+        $questions = $questions->shuffle();
 
         return [
             'questions' => $questions,
-            'totalFilteredQuestions' => $totalFilteredQuestions
+            'totalFilteredQuestions' => $totalFilteredQuestions,
         ];
     }
 
-    public function getCurrentQuestion($questions, $answeredQuestionIds)
+    public function getCurrentQuestion(Collection $questions, SupportCollection $answeredQuestionIds): ?\App\Models\Question
     {
         $currentQuestion = $questions->reject(function ($question) use ($answeredQuestionIds) {
             return $answeredQuestionIds->contains($question->id);
         })->first();
 
         if ($currentQuestion && $currentQuestion->question_type !== 'fill_in_the_blank') {
-            if (!$currentQuestion->relationLoaded('answers')) {
+            if (! $currentQuestion->relationLoaded('answers')) {
                 $currentQuestion->load('answers');
             }
+            // Ensure answers are always shuffled when loaded
             $currentQuestion->setRelation('answers', $currentQuestion->answers->shuffle());
         }
 
         return $currentQuestion;
     }
 
-    public function getLevelProgress($material, $difficulty, $answeredQuestionIds, $isGuest = false)
+    /** @return array<int, array<string, mixed>> */
+    public function getLevelProgress(Material $material, string $difficulty, SupportCollection $answeredQuestionIds, bool $isGuest = false): array
     {
         $questions = $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty);
-        
+
         // Apply guest filtering - same logic as getFilteredQuestions
         if ($isGuest) {
             if ($difficulty === 'all') {
@@ -182,7 +226,7 @@ class QuestionListingService implements QuestionListingServiceInterface
                 $questions = $questions->take(3);
             }
         }
-        
+
         $levels = [];
 
         foreach ($questions as $index => $question) {
@@ -196,7 +240,7 @@ class QuestionListingService implements QuestionListingServiceInterface
             } else {
                 $allPreviousAnswered = true;
                 for ($i = 0; $i < $index; $i++) {
-                    if (!$answeredQuestionIds->contains($questions[$i]->id)) {
+                    if (! $answeredQuestionIds->contains($questions[$i]->id)) {
                         $allPreviousAnswered = false;
                         break;
                     }
@@ -208,22 +252,23 @@ class QuestionListingService implements QuestionListingServiceInterface
                 'level' => $questionIndex,
                 'question_id' => $question->id,
                 'status' => $status,
-                'difficulty' => $question->difficulty
+                'difficulty' => $question->difficulty,
             ];
         }
 
         return $levels;
     }
 
-    protected function calculateConfiguredQuestions($material, $isGuest)
+    protected function calculateConfiguredQuestions(\App\Models\Material $material, bool $isGuest): int
     {
         if ($isGuest) {
             $beginnerCount = min(3, $material->questions->where('difficulty', 'beginner')->count());
             $mediumCount = min(3, $material->questions->where('difficulty', 'medium')->count());
             $hardCount = min(3, $material->questions->where('difficulty', 'hard')->count());
+
             return $beginnerCount + $mediumCount + $hardCount;
-        } else {
-            return $material->questions->count();
         }
+
+        return $material->questions->count();
     }
 }

@@ -40,7 +40,7 @@ class Navbar extends Component
     public function __construct(
         string $titlePage = '',
         ?string $role = null,
-        string $variant = 'default'
+        string $variant = 'default',
     ) {
         $this->titlePage = $titlePage;
         $this->role = $role ?? $this->detectRole();
@@ -54,7 +54,7 @@ class Navbar extends Component
      */
     protected function detectRole(): string
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return 'guest';
         }
 
@@ -127,7 +127,7 @@ class Navbar extends Component
             'pattern' => 'mahasiswa.materials*',
             'excludePattern' => 'mahasiswa.materials.questions*',
             'tooltip' => 'Kumpulan materi pembelajaran',
-            'badge' => !$this->isAuthenticated() ? 'Terbatas' : null,
+            'badge' => ! $this->isAuthenticated() ? 'Terbatas' : null,
             'badgeClass' => 'bg-warning text-dark',
         ];
 
@@ -137,7 +137,7 @@ class Navbar extends Component
             'label' => 'Latihan Soal',
             'pattern' => 'mahasiswa.materials.questions*',
             'tooltip' => 'Latihan soal untuk menguji pemahaman',
-            'badge' => !$this->isAuthenticated() ? 'Terbatas' : null,
+            'badge' => ! $this->isAuthenticated() ? 'Terbatas' : null,
             'badgeClass' => 'bg-warning text-dark',
         ];
 
@@ -147,7 +147,7 @@ class Navbar extends Component
             'label' => 'Peringkat',
             'pattern' => 'mahasiswa.leaderboard*',
             'tooltip' => 'Papan peringkat pengguna berdasarkan skor',
-            'badge' => !$this->isAuthenticated() ? 'Perlu Login' : null,
+            'badge' => ! $this->isAuthenticated() ? 'Perlu Login' : null,
             'badgeClass' => 'bg-danger text-white',
         ];
 

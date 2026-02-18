@@ -14,7 +14,7 @@ readonly class SubMaterialDTO
         public string $jenis_konten,
         public int $order,
         public ?string $created_at = null,
-        public ?string $updated_at = null
+        public ?string $updated_at = null,
     ) {}
 
     public static function fromModel(SubMaterial $subMaterial): self
@@ -27,7 +27,7 @@ readonly class SubMaterialDTO
             jenis_konten: $subMaterial->jenis_konten,
             order: $subMaterial->order,
             created_at: $subMaterial->created_at?->toDateTimeString(),
-            updated_at: $subMaterial->updated_at?->toDateTimeString()
+            updated_at: $subMaterial->updated_at?->toDateTimeString(),
         );
     }
 
@@ -39,7 +39,7 @@ readonly class SubMaterialDTO
             title: $data['title'],
             content: $data['content'],
             jenis_konten: $data['jenis_konten'],
-            order: $data['order']
+            order: $data['order'],
         );
     }
 

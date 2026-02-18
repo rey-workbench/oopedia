@@ -10,12 +10,12 @@ class GuestAccess
     public function handle(Request $request, Closure $next)
     {
         // Allow unauthenticated users (actual guests)
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return $next($request);
         }
-        
+
         $user = auth()->user();
-        
+
         // Only restrict role 4 (Authenticated Guest)
         if ($user->role_id === 4) {
             $allowedRoutes = [
@@ -32,10 +32,10 @@ class GuestAccess
                 'logout',
                 'login',
             ];
-            
+
             $routeName = $request->route() ? $request->route()->getName() : null;
-            
-            if ($routeName && !in_array($routeName, $allowedRoutes)) {
+
+            if ($routeName && ! in_array($routeName, $allowedRoutes)) {
                 return redirect()->route('mahasiswa.materials.index')
                     ->with('info', 'Fitur ini hanya tersedia untuk mahasiswa terdaftar.');
             }

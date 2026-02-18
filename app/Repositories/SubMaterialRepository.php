@@ -4,67 +4,74 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\SubMaterialRepositoryInterface;
 use App\Models\SubMaterial;
+use Illuminate\Database\Eloquent\Collection;
 
 class SubMaterialRepository implements SubMaterialRepositoryInterface
 {
-    public function all()
+    /** @return Collection<int, SubMaterial> */
+    public function all(): Collection
     {
         return SubMaterial::all();
     }
 
-    public function find($id)
+    public function find(int $id): ?SubMaterial
     {
         return SubMaterial::find($id);
     }
 
-    public function create(array $data)
+    public function create(array $data): SubMaterial
     {
         return SubMaterial::create($data);
     }
 
-    public function update($id, array $data)
+    public function update(int $id, array $data): bool
     {
         $subMaterial = $this->find($id);
-        if ($subMaterial) {
-            $subMaterial->update($data);
-            return $subMaterial;
+
+        if (! $subMaterial) {
+            return false;
         }
-        return null;
+
+        return (bool) $subMaterial->update($data);
     }
 
-    public function delete($id)
+    public function delete(int $id): bool
     {
         $subMaterial = $this->find($id);
+
         if ($subMaterial) {
-            return $subMaterial->delete();
+            $result = $subMaterial->delete();
+
+            return $result === true;
         }
+
         return false;
     }
 
-    public function getAllByMaterial($materialId)
+    /** @return Collection<int, SubMaterial> */
+    public function getAllByMaterial(int $materialId): Collection
     {
         return SubMaterial::where('material_id', $materialId)
             ->ordered()
             ->get();
     }
 
-    public function findByMaterial($materialId)
+    /** @return Collection<int, SubMaterial> */
+    public function findByMaterial(int $materialId): Collection
     {
         return $this->getAllByMaterial($materialId);
     }
 
-    public function reorder($materialId, array $orderData)
+    public function reorder(int $materialId, array $orderData): void
     {
         foreach ($orderData as $order => $subMaterialId) {
             SubMaterial::where('id', $subMaterialId)
                 ->where('material_id', $materialId)
                 ->update(['order' => $order + 1]);
         }
-        
-        return true;
     }
 
-    public function findWithQuestions($id)
+    public function findWithQuestions(int $id): SubMaterial
     {
         return SubMaterial::with('questions')->findOrFail($id);
     }

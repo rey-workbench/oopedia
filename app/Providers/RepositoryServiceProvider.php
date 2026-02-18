@@ -2,33 +2,31 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-
+use App\Contracts\Repositories\AnswerRepositoryInterface;
 // Repository Interfaces
 use App\Contracts\Repositories\MaterialRepositoryInterface;
+use App\Contracts\Repositories\MediaRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\QuestionRepositoryInterface;
-use App\Contracts\Repositories\AnswerRepositoryInterface;
-use App\Contracts\Repositories\UserRepositoryInterface;
-use App\Contracts\Repositories\UeqSurveyRepositoryInterface;
-use App\Contracts\Repositories\MediaRepositoryInterface;
-use App\Contracts\Repositories\SubMaterialRepositoryInterface;
-use App\Contracts\Repositories\RoleRepositoryInterface;
 use App\Contracts\Repositories\QuizAttemptRepositoryInterface;
+use App\Contracts\Repositories\RoleRepositoryInterface;
 use App\Contracts\Repositories\StudentStateRepositoryInterface;
-
+use App\Contracts\Repositories\SubMaterialRepositoryInterface;
+use App\Contracts\Repositories\UeqSurveyRepositoryInterface;
+use App\Contracts\Repositories\UserRepositoryInterface;
+use App\Repositories\AnswerRepository;
 // Repository Implementations
 use App\Repositories\MaterialRepository;
+use App\Repositories\MediaRepository;
 use App\Repositories\ProgressRepository;
 use App\Repositories\QuestionRepository;
-use App\Repositories\AnswerRepository;
-use App\Repositories\UserRepository;
-use App\Repositories\UeqSurveyRepository;
-use App\Repositories\MediaRepository;
-use App\Repositories\SubMaterialRepository;
-use App\Repositories\RoleRepository;
 use App\Repositories\QuizAttemptRepository;
+use App\Repositories\RoleRepository;
 use App\Repositories\StudentStateRepository;
+use App\Repositories\SubMaterialRepository;
+use App\Repositories\UeqSurveyRepository;
+use App\Repositories\UserRepository;
+use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
 {

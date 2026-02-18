@@ -24,28 +24,30 @@
         ListOrdered,
         Book,
         Home,
+        X,
+        Target,
+        BarChart3,
+        Clock,
+        Zap,
     } from "lucide-svelte";
-    import axios from "axios"; // Assuming axios is available, otherwise usage might need adjustment
+    import axios from "axios";
     import GuestBanner from "../../../../../components/ui/GuestBanner.svelte";
 
+    // Props from controller
     export let material = {};
     export let currentQuestion = null;
     export let currentQuestionNumber = 1;
+    export let totalQuestions = 0;
+    export let answeredCount = 0;
     export let difficulty = "beginner";
     export let isGuest = false;
-    // Stats passed from controller or computed
-    // Note: Controller doesn't pass 'xp', 'streak', 'hintsAvailable' explicitly in the $data array
-    // We might need to fetch them or pass them if they are in shared props.
-    // The blade view fetched them using PHP directly in the view.
-    // For now, we'll try to use $page.props.auth.user if available, or just defaults.
-    // If needed we can update the controller to pass these.
+    export let studentState = {};
 
-    export let studentState = {}; // From controller
-
-    let xp = studentState?.gamification?.global_xp || 0;
-    let streak = studentState?.gamification?.current_streak || 0;
-    let level = studentState?.gamification?.current_level || "Pemula";
-    let hintsAvailable = studentState?.performance?.hints_available ?? 3;
+    // Derive stats from studentState reactively
+    $: xp = studentState?.gamification?.global_xp || 0;
+    $: streak = studentState?.gamification?.current_streak || 0;
+    $: level = studentState?.gamification?.current_level || "Pemula";
+    $: hintsAvailable = studentState?.performance?.hints_available ?? 3;
 
     // Question State
     let fillInTheBlankAnswer = "";
@@ -55,10 +57,10 @@
     // UI State
     let isSubmitting = false;
     let showFeedback = false;
+    let showHint = false;
     let feedbackData = {
-        status: "success", // or 'error'
+        status: "success",
         message: "",
-        explanation: "", // Not in JSON response currently, maybe need to add?
         nextUrl: "",
         adaptiveResult: {},
     };
@@ -71,20 +73,40 @@
     let adaptiveFacts = [];
     let adaptiveTriggeredRule = null;
 
-    // Calculate Progress
+    // Calculate Progress using controller-provided data
     $: progressPercentage =
-        material.questions_count > 0
-            ? (currentQuestionNumber / material.questions_count) * 100
-            : 0;
+        totalQuestions > 0 ? (answeredCount / totalQuestions) * 100 : 0;
+
+    // Difficulty display helpers
+    function getDifficultyLabel(diff) {
+        const labels = {
+            beginner: "Pemula",
+            medium: "Menengah",
+            hard: "Sulit",
+        };
+        return labels[diff] || diff;
+    }
+
+    function getDifficultyColor(diff) {
+        const colors = {
+            beginner: "text-emerald-600 bg-emerald-50",
+            medium: "text-amber-600 bg-amber-50",
+            hard: "text-rose-600 bg-rose-50",
+        };
+        return colors[diff] || "text-slate-600 bg-slate-50";
+    }
 
     // Hint Logic
     function useHint() {
-        if (hintsAvailable > 0 && currentQuestion.hint) {
-            alert(currentQuestion.hint); // Simple alert for now, could be a modal or UI element
+        if (hintsAvailable > 0 && currentQuestion?.hint) {
             usedHint = true;
+            showHint = true;
             hintsAvailable--;
-            // In a real app we might want to sync this decrement with backend or just trust the next backend response
         }
+    }
+
+    function closeHint() {
+        showHint = false;
     }
 
     // Answer Submission
@@ -102,11 +124,12 @@
             material_id: material.id,
             used_hint: usedHint,
             time_spent: timeSpent,
+            difficulty: difficulty, // Send current difficulty for guest XP matching
         };
 
         if (currentQuestion.question_type === "fill_in_the_blank") {
             payload.fill_in_the_blank_answer = fillInTheBlankAnswer;
-            payload.answer = fillInTheBlankAnswer; // Backup/Alias
+            payload.answer = fillInTheBlankAnswer;
         } else if (currentQuestion.question_type === "drag_and_drop") {
             payload.drag_and_drop_answers = JSON.stringify(dragAndDropAnswers);
         } else {
@@ -126,9 +149,10 @@
                 message: data.message,
                 nextUrl: data.nextUrl,
                 adaptiveResult: data.adaptiveResult,
+                score: data.score,
             };
 
-            // Update adaptive indicator with facts and rule
+            // Update adaptive indicator
             if (data.adaptiveResult) {
                 adaptiveFacts = data.adaptiveResult.facts || [];
                 adaptiveTriggeredRule =
@@ -136,20 +160,24 @@
                 showAdaptiveIndicator = true;
             }
 
-            // Update local stats from adaptive result if available
-            if (data.adaptiveResult?.new_state?.gamification_data) {
-                const gData = data.adaptiveResult.new_state.gamification_data;
-                xp = gData.global_xp || xp;
-                // Streak updates might need parsing logic or just rely on page reload next time
+            // Update local stats by updating studentState
+            if (data.adaptiveResult?.new_state) {
+                studentState = data.adaptiveResult.new_state;
             }
 
+            showHint = false;
             showFeedback = true;
         } catch (error) {
             console.error("Error submitting answer:", error);
-            alert(
-                error.response?.data?.message ||
-                    "Terjadi kesalahan saat memeriksa jawaban. Silakan coba lagi.",
-            );
+            feedbackData = {
+                status: "error",
+                message:
+                    error.response?.data?.message ||
+                    "Terjadi kesalahan saat memeriksa jawaban.",
+                nextUrl: "",
+                adaptiveResult: null,
+            };
+            showFeedback = true;
         } finally {
             isSubmitting = false;
         }
@@ -157,6 +185,7 @@
 
     function handleNext() {
         showFeedback = false;
+        showHint = false;
         if (feedbackData.nextUrl) {
             router.visit(feedbackData.nextUrl);
         }
@@ -164,7 +193,7 @@
 
     function handleTryAgain() {
         showFeedback = false;
-        // Reset inputs?
+        showHint = false;
         fillInTheBlankAnswer = "";
         selectedMultipleChoiceAnswer = null;
         dragAndDropAnswers = {};
@@ -189,10 +218,18 @@
                     Mode Ujian Terkendali & Aman
                 </p>
                 <div class="mt-6 max-w-xl mx-auto">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-slate-500"
+                            >Soal {currentQuestionNumber} / {totalQuestions}</span
+                        >
+                        <span class="text-xs font-bold text-primary-600"
+                            >{Math.round(progressPercentage)}%</span
+                        >
+                    </div>
                     <ProgressBar
                         value={progressPercentage}
                         color="primary"
-                        height="h-1"
+                        height="h-1.5"
                     />
                 </div>
             </div>
@@ -228,14 +265,11 @@
                                             class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5"
                                             >Kesulitan</span
                                         >
-                                        <h5
-                                            class={`text-lg font-bold ${difficulty === "hard" ? "text-rose-600" : difficulty === "medium" ? "text-amber-600" : "text-emerald-600"}`}
+                                        <span
+                                            class={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-sm font-bold ${getDifficultyColor(difficulty)}`}
                                         >
-                                            {difficulty
-                                                .charAt(0)
-                                                .toUpperCase() +
-                                                difficulty.slice(1)}
-                                        </h5>
+                                            {getDifficultyLabel(difficulty)}
+                                        </span>
                                     </div>
 
                                     <!-- Level -->
@@ -291,7 +325,8 @@
                                     type="button"
                                     class="group flex items-center gap-2 px-4 py-2 rounded-xl bg-primary-50 text-primary-600 hover:bg-primary-100 hover:text-primary-700 transition-all font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                                     on:click={useHint}
-                                    disabled={hintsAvailable <= 0}
+                                    disabled={hintsAvailable <= 0 ||
+                                        !currentQuestion?.hint}
                                 >
                                     <div
                                         class="w-6 h-6 rounded-lg bg-primary-200 group-hover:bg-primary-300 flex items-center justify-center transition-colors"
@@ -304,18 +339,60 @@
                         </div>
                     {/if}
 
+                    <!-- Hint Display -->
+                    {#if showHint && currentQuestion?.hint}
+                        <div
+                            class="mb-6 p-5 bg-amber-50 border-2 border-amber-200 rounded-2xl relative animate-fadeIn"
+                        >
+                            <button
+                                type="button"
+                                class="absolute top-3 right-3 w-6 h-6 rounded-full bg-amber-200 hover:bg-amber-300 flex items-center justify-center transition-colors"
+                                on:click={closeHint}
+                            >
+                                <X size={14} class="text-amber-700" />
+                            </button>
+                            <div class="flex items-start gap-3">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-amber-200 flex items-center justify-center flex-shrink-0"
+                                >
+                                    <Lightbulb
+                                        size={20}
+                                        class="text-amber-700"
+                                    />
+                                </div>
+                                <div>
+                                    <h4
+                                        class="text-sm font-bold text-amber-800 mb-1"
+                                    >
+                                        Petunjuk
+                                    </h4>
+                                    <p class="text-sm text-amber-700">
+                                        {currentQuestion.hint}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {/if}
+
                     <!-- Question Content -->
                     <div class="mb-6">
                         <div class="flex items-center justify-between mb-6">
                             <Badge variant="primary" size="lg"
                                 ><HelpCircle size={18} class="mr-2" /> Soal</Badge
                             >
-                            <Badge variant="secondary" size="lg"
-                                >{currentQuestion.difficulty
-                                    .charAt(0)
-                                    .toUpperCase() +
-                                    currentQuestion.difficulty.slice(1)} Question</Badge
-                            >
+                            {#if currentQuestion.difficulty}
+                                <Badge
+                                    variant="outline"
+                                    size="sm"
+                                    class={getDifficultyColor(
+                                        currentQuestion.difficulty,
+                                    )}
+                                >
+                                    {getDifficultyLabel(
+                                        currentQuestion.difficulty,
+                                    )}
+                                </Badge>
+                            {/if}
                         </div>
 
                         {#if currentQuestion.question_type === "fill_in_the_blank"}
@@ -389,7 +466,85 @@
                             </div>
                         </div>
 
-                        <div class="p-10 bg-white text-center">
+                        <!-- Stats Summary -->
+                        {#if !isGuest}
+                            <div
+                                class="grid grid-cols-3 gap-0 border-b border-slate-100"
+                            >
+                                <div
+                                    class="p-6 text-center border-r border-slate-100"
+                                >
+                                    <div
+                                        class="w-10 h-10 bg-primary-50 rounded-xl flex items-center justify-center mx-auto mb-2"
+                                    >
+                                        <Target
+                                            size={20}
+                                            class="text-primary-600"
+                                        />
+                                    </div>
+                                    <div
+                                        class="text-2xl font-bold text-slate-800"
+                                    >
+                                        {answeredCount}
+                                    </div>
+                                    <div
+                                        class="text-[10px] font-bold text-slate-400 uppercase tracking-wider"
+                                    >
+                                        Soal Dijawab
+                                    </div>
+                                </div>
+                                <div
+                                    class="p-6 text-center border-r border-slate-100"
+                                >
+                                    <div
+                                        class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center mx-auto mb-2"
+                                    >
+                                        <Star
+                                            size={20}
+                                            class="text-amber-500"
+                                        />
+                                    </div>
+                                    <div
+                                        class="text-2xl font-bold text-slate-800"
+                                    >
+                                        {xp}
+                                    </div>
+                                    <div
+                                        class="text-[10px] font-bold text-slate-400 uppercase tracking-wider"
+                                    >
+                                        Total XP
+                                    </div>
+                                </div>
+                                <div class="p-6 text-center">
+                                    <div
+                                        class="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center mx-auto mb-2"
+                                    >
+                                        <Flame
+                                            size={20}
+                                            class="text-orange-500"
+                                        />
+                                    </div>
+                                    <div
+                                        class="text-2xl font-bold text-slate-800"
+                                    >
+                                        {streak}
+                                    </div>
+                                    <div
+                                        class="text-[10px] font-bold text-slate-400 uppercase tracking-wider"
+                                    >
+                                        Streak
+                                    </div>
+                                </div>
+                            </div>
+                        {/if}
+
+                        <div class="p-10 bg-white text-center space-y-4">
+                            <a
+                                href={`/mahasiswa/materials/${material.id}/questions/review`}
+                                class="inline-flex items-center justify-center font-bold tracking-tight transition-all duration-300 active:scale-95 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 px-8 py-3.5 text-sm uppercase mr-3"
+                            >
+                                <BarChart3 size={18} class="mr-2" /> Review Jawaban
+                            </a>
                             <a
                                 href={`/mahasiswa/materials/${material.id}`}
                                 class="inline-flex items-center justify-center font-bold tracking-tight transition-all duration-300 active:scale-95 rounded-xl bg-primary-600 text-white shadow-lg shadow-accent-950/20 hover:scale-[1.02] hover:shadow-accent-600/30 px-8 py-3.5 text-sm uppercase"
@@ -424,3 +579,19 @@
         />
     {/if}
 </App>
+
+<style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    :global(.animate-fadeIn) {
+        animation: fadeIn 0.3s ease-out;
+    }
+</style>

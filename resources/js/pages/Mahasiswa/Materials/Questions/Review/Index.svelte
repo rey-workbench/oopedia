@@ -113,16 +113,16 @@
                             </Button>
 
                             <Button
-                                variant={difficulty === "advanced"
+                                variant={difficulty === "hard"
                                     ? "danger"
                                     : "outline"}
-                                on:click={() => filterDifficulty("advanced")}
+                                on:click={() => filterDifficulty("hard")}
                                 size="sm"
-                                class={difficulty === "advanced"
+                                class={difficulty === "hard"
                                     ? ""
                                     : "text-rose-600 border-rose-600 hover:bg-rose-50"}
                             >
-                                Advanced
+                                Hard
                             </Button>
                         </div>
                     </div>
@@ -134,18 +134,48 @@
                                     class="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"
                                 >
                                     <div
-                                        class="flex justify-between items-center mb-6"
+                                        class="flex justify-between items-start mb-6"
                                     >
-                                        <span
-                                            class="inline-flex items-center gap-2 font-bold text-slate-700"
-                                        >
-                                            <div
-                                                class="w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center text-sm"
+                                        <div class="flex flex-col gap-1">
+                                            <span
+                                                class="inline-flex items-center gap-2 font-bold text-slate-700"
                                             >
-                                                {index + 1}
-                                            </div>
-                                            Soal dari {questions.length}
-                                        </span>
+                                                <div
+                                                    class="w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center text-sm"
+                                                >
+                                                    {index + 1}
+                                                </div>
+                                                Soal dari {questions.length}
+                                            </span>
+                                            {#if question.user_attempt}
+                                                <div
+                                                    class="flex items-center gap-2 ml-10 mt-1"
+                                                >
+                                                    <Badge
+                                                        variant={question
+                                                            .user_attempt
+                                                            .is_correct
+                                                            ? "success"
+                                                            : "danger"}
+                                                        size="sm"
+                                                    >
+                                                        {question.user_attempt
+                                                            .is_correct
+                                                            ? "Benar"
+                                                            : "Salah"}
+                                                    </Badge>
+                                                    <span
+                                                        class="text-[10px] font-bold text-slate-400 uppercase tracking-wider"
+                                                    >
+                                                        Percobaan #{question
+                                                            .user_attempt
+                                                            .attempt_number} • Skor:
+                                                        {question.user_attempt
+                                                            .score}
+                                                    </span>
+                                                </div>
+                                            {/if}
+                                        </div>
                                         <Badge
                                             variant={question.difficulty ===
                                             "beginner"
@@ -155,10 +185,12 @@
                                                   ? "warning"
                                                   : "danger"}
                                         >
-                                            {question.difficulty
-                                                .charAt(0)
-                                                .toUpperCase() +
-                                                question.difficulty.slice(1)}
+                                            {question.difficulty === "hard"
+                                                ? "Hard"
+                                                : question.difficulty
+                                                      .charAt(0)
+                                                      .toUpperCase() +
+                                                  question.difficulty.slice(1)}
                                         </Badge>
                                     </div>
 
@@ -195,13 +227,31 @@
                                             <div class="grid grid-cols-1 gap-3">
                                                 {#each question.answers as answer}
                                                     <div
-                                                        class={`p-4 rounded-xl flex items-start gap-4 transition-all ${answer.is_correct ? "bg-emerald-50 border-2 border-emerald-200 shadow-sm" : "bg-white border-2 border-slate-50 text-slate-500"}`}
+                                                        class={`p-4 rounded-xl flex items-start gap-4 transition-all ${
+                                                            answer.is_correct
+                                                                ? "bg-emerald-50 border-2 border-emerald-200 shadow-sm"
+                                                                : question
+                                                                        .user_attempt
+                                                                        ?.answer_id ===
+                                                                    answer.id
+                                                                  ? "bg-rose-50 border-2 border-rose-200 shadow-sm text-rose-700"
+                                                                  : "bg-white border-2 border-slate-50 text-slate-500"
+                                                        }`}
                                                     >
                                                         {#if answer.is_correct}
                                                             <div
                                                                 class="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5"
                                                             >
                                                                 <Check
+                                                                    size={14}
+                                                                    class="text-white"
+                                                                />
+                                                            </div>
+                                                        {:else if question.user_attempt?.answer_id === answer.id}
+                                                            <div
+                                                                class="w-6 h-6 rounded-full bg-rose-500 flex items-center justify-center shrink-0 mt-0.5"
+                                                            >
+                                                                <X
                                                                     size={14}
                                                                     class="text-white"
                                                                 />
@@ -220,6 +270,14 @@
                                                             class="flex-1 font-medium"
                                                         >
                                                             {answer.answer_text}
+                                                            {#if question.user_attempt?.answer_id === answer.id}
+                                                                <span
+                                                                    class="ml-2 text-[10px] font-bold uppercase tracking-tight opacity-70"
+                                                                >
+                                                                    (Pilihan
+                                                                    Anda)
+                                                                </span>
+                                                            {/if}
                                                         </div>
                                                     </div>
                                                     {#if answer.is_correct && answer.explanation}

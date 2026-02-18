@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\SubMaterial;
 use App\Models\Material;
+use App\Models\SubMaterial;
+use Illuminate\Database\Seeder;
 
 class SubMaterialsSeeder extends Seeder
 {
@@ -20,7 +20,7 @@ class SubMaterialsSeeder extends Seeder
                     <p>Pemrograman Berorientasi Objek (PBO) adalah sebuah paradigma pemrograman yang berorientasi kepada objek. Semua data dan fungsi di dalam paradigma ini dibungkus dalam kelas-kelas atau objek-objek. Setiap objek dapat menerima pesan, memproses data, dan mengirim pesan ke objek lainnya.</p>
                     <p>Berbeda dengan pemrograman prosedural yang membagi program menjadi unit-unit kecil fungis, PBO membagi program berdasarkan entitas (Objek) yang memiliki data dan perilaku sendiri.</p>
                     <h4>Analogi Nyata</h4>
-                    <p>Bayangkan sebuah mobil. Mobil adalah sebuah objek. Mobil memiliki atribut (warna, merk, kecepatan) dan perilaku (maju, mundur, klakson). Dalam PBO, kita memodelkan sistem perangkat lunak seperti kita melihat benda-benda di dunia nyata.</p>'
+                    <p>Bayangkan sebuah mobil. Mobil adalah sebuah objek. Mobil memiliki atribut (warna, merk, kecepatan) dan perilaku (maju, mundur, klakson). Dalam PBO, kita memodelkan sistem perangkat lunak seperti kita melihat benda-benda di dunia nyata.</p>',
                 ],
                 [
                     'title' => 'Sintaks Dasar Objek',
@@ -43,7 +43,7 @@ class SubMaterialsSeeder extends Seeder
                         <div class="ql-code-block">$budi->nama = "Budi";</div>
                         <div class="ql-code-block">echo $budi->bicara(); // Output: Halo, nama saya Budi</div>
                     </div>
-                    <p>Kata kunci <code>new</code> digunakan untuk mengalokasikan memori bagi objek baru di sistem.</p>'
+                    <p>Kata kunci <code>new</code> digunakan untuk mengalokasikan memori bagi objek baru di sistem.</p>',
                 ],
                 [
                     'title' => 'Analisis Sistem PBO',
@@ -55,7 +55,7 @@ class SubMaterialsSeeder extends Seeder
                         <li><strong>Kelas:</strong> Kategori umum (Contoh: Mahasiswa, Buku, Transaksi).</li>
                         <li><strong>Objek:</strong> Entitas spesifik (Contoh: Budi, Buku "Laskar Pelangi", Transaksi ID #102).</li>
                     </ul>
-                    <p><strong>Latihan:</strong> Jika kita membangun sistem ATM, identifikasilah minimal 3 objek yang terlibat! (Nasabah, Kartu, Mesin ATM).</p>'
+                    <p><strong>Latihan:</strong> Jika kita membangun sistem ATM, identifikasilah minimal 3 objek yang terlibat! (Nasabah, Kartu, Mesin ATM).</p>',
                 ],
             ],
             2 => [ // Kelas dan Objek
@@ -65,7 +65,7 @@ class SubMaterialsSeeder extends Seeder
                     'style' => 'textual',
                     'content' => '<h3>Kelas sebagai Blueprint</h3>
                     <p>Kelas bukan merupakan objek itu sendiri, melainkan sketsa atau cetakan. Kelas menentukan data apa yang akan dimiliki oleh objek (Atribut) dan fungsi apa yang bisa dijalankan (Method).</p>
-                    <p>Satu kelas dapat digunakan untuk menciptakan ribuan objek yang berbeda-beda nilainya namun memiliki struktur yang sama.</p>'
+                    <p>Satu kelas dapat digunakan untuk menciptakan ribuan objek yang berbeda-beda nilainya namun memiliki struktur yang sama.</p>',
                 ],
                 [
                     'title' => 'Deklarasi Class & Instansiasi',
@@ -92,7 +92,7 @@ class SubMaterialsSeeder extends Seeder
                         <div class="ql-code-block"></div>
                         <div class="ql-code-block">// Instansiasi dengan parameter</div>
                         <div class="ql-code-block">$laptop = new Produk("LP01", 15000000);</div>
-                    </div>'
+                    </div>',
                 ],
                 [
                     'title' => 'Latihan Pembuatan Objek',
@@ -105,7 +105,7 @@ class SubMaterialsSeeder extends Seeder
                         <div class="ql-code-block">$civic = new Mobil("Hitam", "Honda");</div>
                         <div class="ql-code-block">$ferrari = new Mobil("Merah", "Ferrari");</div>
                     </div>
-                    <p>Ketiganya berasal dari Blueprint yang sama, namun masing-masing berdiri sendiri di memori komputer dengan data yang berbeda.</p>'
+                    <p>Ketiganya berasal dari Blueprint yang sama, namun masing-masing berdiri sendiri di memori komputer dengan data yang berbeda.</p>',
                 ],
             ],
             3 => [ // Atribut dan Method
@@ -119,7 +119,7 @@ class SubMaterialsSeeder extends Seeder
                         <li><strong>State (Atribut):</strong> Apa yang dimiliki atau diketahui objek. Contoh: Saldo bank, Judul buku.</li>
                         <li><strong>Behavior (Method):</strong> Apa yang bisa dilakukan objek. Contoh: Tarik tunai, Baca buku.</li>
                     </ol>
-                    <p>State biasanya berupa variabel, sedangkan Behavior berupa fungsi/prosedur.</p>'
+                    <p>State biasanya berupa variabel, sedangkan Behavior berupa fungsi/prosedur.</p>',
                 ],
                 [
                     'title' => 'Definisi Field & Fungsi',
@@ -139,7 +139,7 @@ class SubMaterialsSeeder extends Seeder
                         <div class="ql-code-block">    }</div>
                         <div class="ql-code-block">}</div>
                     </div>
-                    <p>Method seringkali mengubah nilai dari Atribut (State) objek itu sendiri menggunakan keyword <code>this</code>.</p>'
+                    <p>Method seringkali mengubah nilai dari Atribut (State) objek itu sendiri menggunakan keyword <code>this</code>.</p>',
                 ],
                 [
                     'title' => 'Interaksi Antar Objek',
@@ -147,7 +147,7 @@ class SubMaterialsSeeder extends Seeder
                     'style' => 'mixed',
                     'content' => '<h3>Objek Berbicara dengan Objek Lain</h3>
                     <p>Dalam aplikasi nyata, objek jarang bekerja sendirian. Mereka saling memanggil method satu sama lain.</p>
-                    <p>Contoh: Objek <code>Penjual</code> memanggil method <code>terimaPesanan()</code> milik objek <code>Kurir</code> untuk mengirimkan barang.</p>'
+                    <p>Contoh: Objek <code>Penjual</code> memanggil method <code>terimaPesanan()</code> milik objek <code>Kurir</code> untuk mengirimkan barang.</p>',
                 ],
             ],
             4 => [ // Enkapsulasi
@@ -157,7 +157,7 @@ class SubMaterialsSeeder extends Seeder
                     'style' => 'textual',
                     'content' => '<h3>Melindungi Integritas Data</h3>
                     <p>Enkapsulasi memastikan bahwa data sensitif di dalam objek tidak bisa diubah secara sembarangan dari luar. Ini disebut <em>Information Hiding</em>.</p>
-                    <p>Tanpa enkapsulasi, siapapun bisa mengubah saldo bank seseorang menjadi 1 Milyar tanpa melalui proses validasi yang benar.</p>'
+                    <p>Tanpa enkapsulasi, siapapun bisa mengubah saldo bank seseorang menjadi 1 Milyar tanpa melalui proses validasi yang benar.</p>',
                 ],
                 [
                     'title' => 'Getter, Setter & Modifier',
@@ -181,7 +181,7 @@ class SubMaterialsSeeder extends Seeder
                         <div class="ql-code-block">        return "Rp " . number_format($this->saldo);</div>
                         <div class="ql-code-block">    }</div>
                         <div class="ql-code-block">}</div>
-                    </div>'
+                    </div>',
                 ],
                 [
                     'title' => 'Keamanan Data Objek',
@@ -194,7 +194,7 @@ class SubMaterialsSeeder extends Seeder
                         <div class="ql-code-block">    if($u < 0) throw new Exception("Umur tidak boleh negatif!");</div>
                         <div class="ql-code-block">    $this->umur = $u;</div>
                         <div class="ql-code-block">}</div>
-                    </div>'
+                    </div>',
                 ],
             ],
             5 => [ // Pewarisan
@@ -204,7 +204,7 @@ class SubMaterialsSeeder extends Seeder
                     'style' => 'textual',
                     'content' => '<h3>Konsep Reusability</h3>
                     <p>Pewarisan (Inheritance) memungkinkan kita untuk membuat kelas baru berdasarkan kelas yang sudah ada. Kelas yang mewarisi disebut <strong>Child Class</strong>, dan yang diwarisi disebut <strong>Parent Class</strong>.</p>
-                    <p>Keuntungan utamanya adalah kita tidak perlu menulis ulang kode yang sama untuk kelas-kelas yang memiliki sifat serupa.</p>'
+                    <p>Keuntungan utamanya adalah kita tidak perlu menulis ulang kode yang sama untuk kelas-kelas yang memiliki sifat serupa.</p>',
                 ],
                 [
                     'title' => 'Keyword Extends & Super',
@@ -225,14 +225,14 @@ class SubMaterialsSeeder extends Seeder
                         <div class="ql-code-block"></div>
                         <div class="ql-code-block">$mio = new Motor();</div>
                         <div class="ql-code-block">echo $mio->klakson(); // Hasil: Beep! (Warisan dari Kendaraan)</div>
-                    </div>'
+                    </div>',
                 ],
                 [
                     'title' => 'Reusability dengan Inheritance',
                     'jenis' => 'mixed',
                     'style' => 'mixed',
                     'content' => '<h3>Membangun Struktur Organisasi</h3>
-                    <p>Dalam sistem kampus, kita bisa punya Parent Class <code>CivitasAkademika</code>. Lalu Child Class-nya adalah <code>Dosen</code> dan <code>Mahasiswa</code>. Keduanya mewarisi atribut <code>nama</code> dan <code>NIM/NIDN</code> dari parent, tapi punya perilaku unik masing-masing.</p>'
+                    <p>Dalam sistem kampus, kita bisa punya Parent Class <code>CivitasAkademika</code>. Lalu Child Class-nya adalah <code>Dosen</code> dan <code>Mahasiswa</code>. Keduanya mewarisi atribut <code>nama</code> dan <code>NIM/NIDN</code> dari parent, tapi punya perilaku unik masing-masing.</p>',
                 ],
             ],
             6 => [ // Polimorfisme
@@ -241,7 +241,7 @@ class SubMaterialsSeeder extends Seeder
                     'jenis' => 'teori',
                     'style' => 'textual',
                     'content' => '<h3>Satu Antarmuka, Banyak Aksi</h3>
-                    <p>Polimorfisme berasal dari bahasa Yunani yang berarti "banyak bentuk". Dalam PBO, ini berarti satu nama method bisa memiliki cara kerja yang berbeda-beda tergantung objek yang memanggilnya.</p>'
+                    <p>Polimorfisme berasal dari bahasa Yunani yang berarti "banyak bentuk". Dalam PBO, ini berarti satu nama method bisa memiliki cara kerja yang berbeda-beda tergantung objek yang memanggilnya.</p>',
                 ],
                 [
                     'title' => 'Override vs Overload',
@@ -261,7 +261,7 @@ class SubMaterialsSeeder extends Seeder
                         <div class="ql-code-block">class Kucing extends Hewan {</div>
                         <div class="ql-code-block">    public function suara() { return "Meong!"; }</div>
                         <div class="ql-code-block">}</div>
-                    </div>'
+                    </div>',
                 ],
                 [
                     'title' => 'Dynamic Dispatching',
@@ -274,7 +274,7 @@ class SubMaterialsSeeder extends Seeder
                         <div class="ql-code-block">foreach($hewan_peliharaan as $h) {</div>
                         <div class="ql-code-block">    echo $h->suara(); // Menghasilkan suara yang berbeda sesuai jenisnya</div>
                         <div class="ql-code-block">}</div>
-                    </div>'
+                    </div>',
                 ],
             ],
             7 => [ // Abstraksi
@@ -284,7 +284,7 @@ class SubMaterialsSeeder extends Seeder
                     'style' => 'textual',
                     'content' => '<h3>Fokus pada Esensi</h3>
                     <p>Abstraksi adalah proses menyembunyikan detail implementasi yang rumit dan hanya memperlihatkan fitur penting kepada pengguna. Tujuannya adalah mengurangi kompleksitas.</p>
-                    <p>Contoh: Saat menyetir mobil, Anda hanya perlu tahu cara menginjak pedal gas, bukan bagaimana cara bensin terbakar di ruang mesin.</p>'
+                    <p>Contoh: Saat menyetir mobil, Anda hanya perlu tahu cara menginjak pedal gas, bukan bagaimana cara bensin terbakar di ruang mesin.</p>',
                 ],
                 [
                     'title' => 'Abstract Class & Interface',
@@ -307,35 +307,37 @@ class SubMaterialsSeeder extends Seeder
                         <div class="ql-code-block">        // Logika bayar lewat transfer</div>
                         <div class="ql-code-block">    }</div>
                         <div class="ql-code-block">}</div>
-                    </div>'
+                    </div>',
                 ],
                 [
                     'title' => 'Desain Arsitektur OOP',
                     'jenis' => 'mixed',
                     'style' => 'mixed',
                     'content' => '<h3>Best Practice Abstraksi</h3>
-                    <p>Selalulah membuat program yang bergantung pada <strong>Abstraksi</strong> (Interface), bukan pada <strong>Implementasi</strong> (Class konkret). Ini akan membuat kode Anda sangat mudah diganti-ganti teknologinya di masa depan tanpa merusak sistem utama.</p>'
+                    <p>Selalulah membuat program yang bergantung pada <strong>Abstraksi</strong> (Interface), bukan pada <strong>Implementasi</strong> (Class konkret). Ini akan membuat kode Anda sangat mudah diganti-ganti teknologinya di masa depan tanpa merusak sistem utama.</p>',
                 ],
             ],
         ];
 
         foreach ($materialTopicMap as $moduleId => $subTopics) {
             $material = Material::where('module_id', $moduleId)->first();
-            
-            if (!$material) continue;
+
+            if (! $material) {
+                continue;
+            }
 
             foreach ($subTopics as $index => $topic) {
                 SubMaterial::updateOrCreate(
                     [
                         'material_id' => $material->id,
-                        'title' => $topic['title']
+                        'title' => $topic['title'],
                     ],
                     [
                         'content' => $topic['content'],
                         'jenis_konten' => $topic['jenis'],
                         'learning_style' => $topic['style'],
                         'order' => $index + 1,
-                    ]
+                    ],
                 );
             }
         }

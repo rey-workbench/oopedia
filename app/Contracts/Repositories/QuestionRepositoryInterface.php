@@ -2,31 +2,42 @@
 
 namespace App\Contracts\Repositories;
 
+use App\Models\Question;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
+
+/**
+ * Contract for Question data access.
+ */
 interface QuestionRepositoryInterface
 {
-    public function all();
-    
-    public function find($id);
-    
-    public function create(array $data);
-    
-    public function update($id, array $data);
-    
-    public function delete($id);
-    
-    public function paginate($perPage = 15);
-    
-    public function countAll();
-    
-    public function findWithAnswers($id);
-    
-    public function getByMaterialAndDifficulty($materialId, $difficulty = null);
-    
-    public function getFilteredQuestions($search = null, $difficulty = null, $materialId = null);
-    
-    public function getQuestionsForBank($materialId, array $excludeIds, $search = null, $difficulty = null);
-    
-    public function countByMaterialAndDifficulty($materialId, $difficulty);
-    
-    public function existsByMaterialAndDifficulty($materialId, $difficulty);
+    /** @return Collection<int, Question> */
+    public function all(): Collection;
+
+    public function find(int $id): ?Question;
+
+    public function create(array $data): Question;
+
+    public function update(int $id, array $data): ?Question;
+
+    public function delete(int $id): bool;
+
+    public function paginate(int $perPage = 15): LengthAwarePaginator;
+
+    public function countAll(): int;
+
+    public function findWithAnswers(int $id): Question;
+
+    /** @return Collection<int, Question> */
+    public function getByMaterialAndDifficulty(int $materialId, ?string $difficulty = null): Collection;
+
+    public function getFilteredQuestions(?string $search = null, ?string $difficulty = null, ?int $materialId = null): LengthAwarePaginator;
+
+    public function getQuestionsForBank(int $materialId, array $excludeIds, ?string $search = null, ?string $difficulty = null): LengthAwarePaginator;
+
+    public function countByMaterialAndDifficulty(int $materialId, string $difficulty): int;
+
+    public function existsByMaterialAndDifficulty(int $materialId, string $difficulty): bool;
+
+    public function countByMaterial(int $materialId): int;
 }

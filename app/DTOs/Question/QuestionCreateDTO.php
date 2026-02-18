@@ -35,18 +35,18 @@ readonly class QuestionCreateDTO
         $questionType = $request->input('question_type');
 
         // Process correct_answer for radio_button and fill_in_the_blank
-        if (in_array($questionType, ['radio_button', 'fill_in_the_blank']) 
+        if (in_array($questionType, ['radio_button', 'fill_in_the_blank'])
             && $request->has('correct_answer')) {
             $correctIndex = $request->input('correct_answer');
             $processedAnswers = [];
-            
+
             foreach ($answers as $index => $answer) {
                 $processedAnswers[] = [
                     'answer_text' => $answer['answer_text'] ?? $answer,
                     'is_correct' => ($index == $correctIndex) ? 1 : 0,
                 ];
             }
-            
+
             return $processedAnswers;
         }
 

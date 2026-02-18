@@ -2,27 +2,37 @@
 
 namespace App\Contracts\Repositories;
 
+use App\Models\UeqSurvey;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
+
+/**
+ * Contract for UeqSurvey data access.
+ */
 interface UeqSurveyRepositoryInterface
 {
-    public function all();
-    
-    public function find($id);
-    
-    public function create(array $data);
-    
-    public function update($id, array $data);
-    
-    public function delete($id);
-    
-    public function paginate($perPage = 15);
-    
-    public function countAll();
-    
-    public function getAllWithUser($class = null);
-    
-    public function getDistinctClasses();
-    
-    public function findByUserId($userId);
-    
-    public function findSurveyByUser($userId);
+    /** @return Collection<int, UeqSurvey> */
+    public function all(): Collection;
+
+    public function find(int $id): ?UeqSurvey;
+
+    public function create(array $data): UeqSurvey;
+
+    public function update(int $id, array $data): ?UeqSurvey;
+
+    public function delete(int $id): bool;
+
+    public function paginate(int $perPage = 15): LengthAwarePaginator;
+
+    public function countAll(): int;
+
+    /** @return Collection<int, UeqSurvey> */
+    public function getAllWithUser(?string $class = null): Collection;
+
+    /** @return array<string> */
+    public function getDistinctClasses(): array;
+
+    public function findByUserId(int $userId): ?UeqSurvey;
+
+    public function findSurveyByUser(int $userId): ?UeqSurvey;
 }

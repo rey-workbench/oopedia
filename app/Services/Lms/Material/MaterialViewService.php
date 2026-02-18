@@ -2,29 +2,24 @@
 
 namespace App\Services\Lms\Material;
 
-use App\Repositories\MaterialRepository;
-use App\Repositories\ProgressRepository;
-use App\Repositories\SubMaterialRepository;
+use App\Contracts\Repositories\MaterialRepositoryInterface;
+use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Contracts\Repositories\SubMaterialRepositoryInterface;
+use App\Contracts\Services\MaterialViewServiceInterface;
+use App\Exceptions\Domain\MaterialNotFoundException;
+use App\Exceptions\Domain\SubMaterialNotFoundException;
+use Illuminate\Database\Eloquent\Collection;
 
-
-class MaterialViewService
+class MaterialViewService implements MaterialViewServiceInterface
 {
-    protected $materialRepo;
-    protected $progressRepo;
-    protected $subMaterialRepo;
-
     public function __construct(
-        MaterialRepository $materialRepo,
-        ProgressRepository $progressRepo,
-        SubMaterialRepository $subMaterialRepo
-        )
-    {
-        $this->materialRepo = $materialRepo;
-        $this->progressRepo = $progressRepo;
-        $this->subMaterialRepo = $subMaterialRepo;
-    }
+        protected MaterialRepositoryInterface $materialRepo,
+        protected ProgressRepositoryInterface $progressRepo,
+        protected SubMaterialRepositoryInterface $subMaterialRepo,
+    ) {}
 
-    public function getMaterialsList($userId, $isGuest)
+    /** @return Collection<int, \App\Models\Material> */
+    public function getMaterialsList(int|string|null $userId, bool $isGuest): Collection
     {
         $progressStats = $this->progressRepo->getUserProgressStats($userId);
         $allMaterials = $this->materialRepo->getAllOrdered();
@@ -52,7 +47,7 @@ class MaterialViewService
             $material->completed_questions = $correctAnswers;
 
             // Ensure media is loaded
-            if (!$material->relationLoaded('media')) {
+            if (! $material->relationLoaded('media')) {
                 $material->load('media');
             }
 
@@ -62,7 +57,8 @@ class MaterialViewService
         return $materials;
     }
 
-    public function getMaterialDetail($materialId, $userId, $isGuest)
+    /** @return array<string, mixed> */
+    public function getMaterialDetail(int $materialId, int|string|null $userId, bool $isGuest): array
     {
         $material = $this->materialRepo->findWithQuestionsShuffled($materialId);
 
@@ -74,8 +70,7 @@ class MaterialViewService
             $totalMaterials = $allMaterials->count();
             $materialsToShow = ceil($totalMaterials / 2);
             $materials = $allMaterials->take($materialsToShow);
-        }
-        else {
+        } else {
             $materials = $allMaterials;
         }
 
@@ -92,7 +87,7 @@ class MaterialViewService
             ->whereNotIn('id', $answeredQuestionIds)
             ->first();
 
-        if (!$currentQuestion && $material->questions->count() > 0) {
+        if (! $currentQuestion && $material->questions->count() > 0) {
             $currentQuestion = $material->questions->first();
         }
 
@@ -100,50 +95,53 @@ class MaterialViewService
         $currentQuestionNumber = $answeredCount + 1;
 
         if ($answeredCount >= $material->questions->count()) {
-            $currentQuestionNumber = "Review";
+            $currentQuestionNumber = 'Review';
         }
 
         return [
             'material' => $material,
             'materials' => $materials,
-            'currentQuestionNumber' => $currentQuestionNumber
+            'currentQuestionNumber' => $currentQuestionNumber,
         ];
     }
 
-    public function getSubMaterialDetail($materialId, $subMaterialId, $isGuest)
+    /** @return array<string, mixed> */
+    public function getSubMaterialDetail(int $materialId, int $subMaterialId, bool $isGuest): array
     {
         $material = $this->materialRepo->find($materialId);
-        if (!$material) {
-            abort(404, 'Material not found');
+
+        if (! $material) {
+            throw new MaterialNotFoundException($materialId);
         }
 
         $subMaterial = $this->subMaterialRepo->findWithQuestions($subMaterialId);
-        if (!$subMaterial) {
-            abort(404, 'SubMaterial not found');
+
+        if (! $subMaterial) {
+            throw new SubMaterialNotFoundException($subMaterialId);
         }
 
         return [
             'material' => $material,
             'subMaterial' => $subMaterial,
-            'isGuest' => $isGuest
+            'isGuest' => $isGuest,
         ];
     }
 
-    public function resetMaterialProgress($userId, $materialId)
+    public function resetMaterialProgress(int|string $userId, int $materialId): void
     {
-        return $this->progressRepo->resetProgress($userId, $materialId);
+        $this->progressRepo->resetProgress($userId, $materialId);
     }
 
-    protected function calculateConfiguredQuestions($material, $isGuest)
+    protected function calculateConfiguredQuestions(\App\Models\Material $material, bool $isGuest): int
     {
         if ($isGuest) {
             $beginnerCount = min(3, $material->questions->where('difficulty', 'beginner')->count());
             $mediumCount = min(3, $material->questions->where('difficulty', 'medium')->count());
             $hardCount = min(3, $material->questions->where('difficulty', 'hard')->count());
+
             return $beginnerCount + $mediumCount + $hardCount;
         }
-        else {
-            return $material->questions->count();
-        }
+
+        return $material->questions->count();
     }
 }

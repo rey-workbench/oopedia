@@ -37,6 +37,7 @@
         "nunomaduro/collision": "^8.1",
         "phpunit/phpunit": "^12.0",
         "spatie/laravel-ignition": "^2.4",
-        "jcf/boost-for-kiro-ide": "^1.0"
+        "jcf/boost-for-kiro-ide": "^1.0",
+        "laravel/pint": "^1.27"
     }
 }

@@ -3,31 +3,33 @@
 namespace App\Rules\Adaptive\Crisis;
 
 use App\Rules\Adaptive\BaseAdaptiveRule;
+use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
 /**
  * Rule 12: Visual Project Revision
- * IF (G18 AND (G01 OR G02) AND G07) THEN H01
- * 
- * Triggers when student fails final project and is a visual learner.
+ * IF (G01 AND G07 AND G18) THEN H12
+ *
+ * Triggers when visual learner has CRITICAL score on final project.
+ * Remedial scores go to Bronze Certificate instead.
  */
 class Rule12_VisualProjectRevision extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_12';
     protected string $ruleName = 'Visual Project Revision';
-    protected string $actionCode = 'H01';
-    protected int $priority = 15; // High priority (project failure)
+    protected string $actionCode = AdaptiveConstants::ACTION_VISUAL_CRISIS_INTERVENTION;
+    protected int $priority = 15; // High priority
 
     public function evaluate(array $facts): bool
     {
-        return $this->hasFact($facts, 'G18')
-            && $this->hasAnyFact($facts, ['G01', 'G02'])
-            && $this->hasFact($facts, 'G07');
+        return $this->hasAnyFact($facts, [AdaptiveConstants::FACT_SCORE_CRITICAL, AdaptiveConstants::FACT_SCORE_REMEDIAL])
+            && $this->hasFact($facts, AdaptiveConstants::FACT_STYLE_VISUAL)
+            && $this->hasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT);
     }
 
     public function apply(array $state, array $context): array
     {
         $state['recommendation'] = 'Revisi Proyek - Ulas Materi';
-        $state['next_action'] = 'STUDY_MATERIAL';
+        $state['next_action'] = 'STUDY_VISUAL';
         $state['message'] = 'Proyek Anda perlu perbaikan. Mari ulas kembali konsep fundamental.';
         $state['intervention_type'] = 'visual_project_revision';
 

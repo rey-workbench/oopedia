@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Question;
 use App\Models\Answer;
+use App\Models\Question;
 use App\Models\SubMaterial;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class ComprehensiveQuestionsSeeder extends Seeder
@@ -23,11 +23,13 @@ class ComprehensiveQuestionsSeeder extends Seeder
 
         if ($subMaterials->isEmpty()) {
             echo "Warning: No submaterials found. Please run SubMaterialsSeeder first.\n";
+
             return;
         }
 
-        if (!$admin) {
+        if (! $admin) {
             echo "Warning: No admin/dosen found. Please run SuperadminSeeder/DosenSeeder first.\n";
+
             return;
         }
 
@@ -53,16 +55,15 @@ class ComprehensiveQuestionsSeeder extends Seeder
                         $qType,
                         $difficulty,
                         'Pilih jawaban yang bertuliskan "ini benar"',
-                    [
-                        ['ini jawaban benar', true, 'Benar!'],
-                        ['ini jawaban salah (1)', false, 'Salah.'],
-                        ['ini jawaban salah (2)', false, 'Salah.'],
-                        ['ini jawaban salah (3)', false, 'Salah.']
-                    ],
-                        $admin->id
+                        [
+                            ['ini jawaban benar', true, 'Benar!'],
+                            ['ini jawaban salah (1)', false, 'Salah.'],
+                            ['ini jawaban salah (2)', false, 'Salah.'],
+                            ['ini jawaban salah (3)', false, 'Salah.'],
+                        ],
+                        $admin->id,
                     );
-                }
-                elseif ($questionType === 'fill_in_the_blank') {
+                } elseif ($questionType === 'fill_in_the_blank') {
                     $this->createFillBlankQuestion(
                         $subMaterial->material_id,
                         $subMaterial->id,
@@ -70,14 +71,13 @@ class ComprehensiveQuestionsSeeder extends Seeder
                         $qType,
                         $difficulty,
                         'Isi dengan: benar',
-                    [
-                        ['benar', 'Bagus!'],
-                        ['Benar', 'Bagus!']
-                    ],
-                        $admin->id
+                        [
+                            ['benar', 'Bagus!'],
+                            ['Benar', 'Bagus!'],
+                        ],
+                        $admin->id,
                     );
-                }
-                else {
+                } else {
                     $this->createDragDropQuestion(
                         $subMaterial->material_id,
                         $subMaterial->id,
@@ -85,19 +85,19 @@ class ComprehensiveQuestionsSeeder extends Seeder
                         $qType,
                         $difficulty,
                         'Urutkan 1, 2, kemudian 3',
-                    [
-                        ['Elemen ke-1 (ini benar)', '1', 'Tepat!'],
-                        ['Elemen ke-2 (ini benar)', '2', 'Tepat!'],
-                        ['Elemen ke-3 (ini benar)', '3', 'Tepat!']
-                    ],
-                        $admin->id
+                        [
+                            ['Elemen ke-1 (ini benar)', '1', 'Tepat!'],
+                            ['Elemen ke-2 (ini benar)', '2', 'Tepat!'],
+                            ['Elemen ke-3 (ini benar)', '3', 'Tepat!'],
+                        ],
+                        $admin->id,
                     );
                 }
                 $totalCreated++;
             }
         }
 
-        echo "Total questions created: " . $totalCreated . "\n";
+        echo 'Total questions created: ' . $totalCreated . "\n";
     }
 
     // ==================== HELPER METHODS ====================

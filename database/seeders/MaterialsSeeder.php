@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Material;
+use Illuminate\Database\Seeder;
 
 class MaterialsSeeder extends Seeder
 {
@@ -89,9 +89,8 @@ Mobil mobilSaya = new Mobil();</code></pre>',
         foreach ($materials as $material) {
             Material::updateOrCreate(
                 ['title' => $material['title']],
-                $material
+                $material,
             );
         }
     }
 }
-

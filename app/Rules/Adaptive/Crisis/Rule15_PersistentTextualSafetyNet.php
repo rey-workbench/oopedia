@@ -3,32 +3,30 @@
 namespace App\Rules\Adaptive\Crisis;
 
 use App\Rules\Adaptive\BaseAdaptiveRule;
+use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
 /**
  * Rule 15: Persistent Textual Safety Net
- * IF ((G01 OR G02) AND G22 AND G08) THEN H02
- * 
- * Triggers when student has failed ≥3 times and is a textual learner.
- * This is a safety net to prevent students from getting stuck.
+ * IF (G22 AND G08) THEN H15
  */
 class Rule15_PersistentTextualSafetyNet extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_15';
     protected string $ruleName = 'Persistent Textual Safety Net';
-    protected string $actionCode = 'H02';
-    protected int $priority = 5; // Highest priority (persistent failure)
+    protected string $actionCode = AdaptiveConstants::ACTION_TEXTUAL_REMEDIATION;
+    protected int $priority = 5; // Highest priority
 
     public function evaluate(array $facts): bool
     {
-        return $this->hasAnyFact($facts, ['G01', 'G02'])
-            && $this->hasFact($facts, 'G22')
-            && $this->hasFact($facts, 'G08');
+        return $this->hasAnyFact($facts, [AdaptiveConstants::FACT_SCORE_CRITICAL, AdaptiveConstants::FACT_SCORE_REMEDIAL])
+            && $this->hasFact($facts, AdaptiveConstants::FACT_PERSISTENT_FAIL)
+            && $this->hasFact($facts, AdaptiveConstants::FACT_STYLE_TEXTUAL);
     }
 
     public function apply(array $state, array $context): array
     {
         $state['recommendation'] = 'Bantuan Komprehensif';
-        $state['next_action'] = 'STUDY_MATERIAL';
+        $state['next_action'] = 'STUDY_TEXTUAL';
         $state['message'] = 'Anda mengalami kesulitan signifikan. Mari kita ulas materi secara menyeluruh.';
         $state['intervention_type'] = 'persistent_textual_safety';
         $state['force_material_review'] = true;

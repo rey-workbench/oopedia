@@ -24,6 +24,6 @@ readonly class MaterialUpdateDTO
         return array_filter([
             'title' => $this->title,
             'description' => $this->description,
-        ], fn($value) => $value !== null);
+        ], fn ($value) => $value !== null);
     }
 }

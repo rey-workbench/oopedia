@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,9 +13,9 @@ use App\Http\Controllers\Auth\LoginController;
 Route::get('/', [LoginController::class, 'index']);
 
 // Load separated logic modules
-require __DIR__.'/auth.php';
-require __DIR__.'/admin.php';
-require __DIR__.'/mahasiswa.php';
+require __DIR__ . '/auth.php';
+require __DIR__ . '/admin.php';
+require __DIR__ . '/mahasiswa.php';
 
 // Development/Testing routes
 Route::get('/test-inertia', function () {

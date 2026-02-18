@@ -2,43 +2,41 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Contracts\Services\UserServiceInterface;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class PendingApprovalController extends Controller
 {
     public function __construct(
-        protected \App\Contracts\Services\UserServiceInterface $userService
+        protected UserServiceInterface $userService,
     ) {}
 
-    public function index()
+    public function index(): Response|RedirectResponse
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
-        // Jika user adalah superadmin, redirect ke halaman management pending admin
         if ($user->role_id == 1) {
             return redirect()->route('admin.pending-admins');
         }
-        
-        // Jika user adalah admin yang belum diapprove, tampilkan halaman menunggu persetujuan
-        if ($user->role_id == 2 && !$user->is_approved) {
-            // Refresh user data from DB to check latest status
+
+        if ($user->role_id == 2 && ! $user->is_approved) {
             $freshUser = $this->userService->getUserById($user->id);
-            
-            // Double check apakah user sudah diapprove
+
             if ($freshUser && $freshUser->is_approved) {
                 return redirect()->route('admin.dashboard');
             }
-            
+
             return Inertia::render('Admin/Users/PendingApproval/Index');
         }
-        
-        // Jika bukan superadmin atau admin yang belum diapprove, redirect sesuai role
+
         if ($user->role_id == 2 && $user->is_approved) {
             return redirect()->route('admin.dashboard');
-        } else {
-            return redirect()->route('mahasiswa.dashboard');
         }
+
+        return redirect()->route('mahasiswa.dashboard');
     }
-} 
+}

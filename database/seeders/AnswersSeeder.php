@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Answer;
+use Illuminate\Database\Seeder;
 
 class AnswersSeeder extends Seeder
 {
@@ -188,8 +188,8 @@ class AnswersSeeder extends Seeder
 
         foreach ($answers as $answer) {
             Answer::updateOrCreate(
-            ['question_id' => $answer['question_id'], 'answer_text' => $answer['answer_text']],
-                $answer
+                ['question_id' => $answer['question_id'], 'answer_text' => $answer['answer_text']],
+                $answer,
             );
         }
     }

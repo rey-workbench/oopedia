@@ -4,83 +4,62 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\AnswerRepositoryInterface;
 use App\Models\Answer;
+use Illuminate\Database\Eloquent\Collection;
 
 class AnswerRepository implements AnswerRepositoryInterface
 {
-    /**
-     * Get all answers
-     */
-    public function all()
+    /** @return Collection<int, Answer> */
+    public function all(): Collection
     {
         return Answer::all();
     }
 
-    /**
-     * Find answer by ID
-     */
-    public function find($id)
+    public function find(int $id): ?Answer
     {
         return Answer::find($id);
     }
 
-    /**
-     * Find answer by ID or fail
-     */
-    public function findOrFail($id)
+    public function findOrFail(int $id): Answer
     {
         return Answer::findOrFail($id);
     }
 
-    /**
-     * Create new answer
-     */
-    public function create(array $data)
+    public function create(array $data): Answer
     {
         return Answer::create($data);
     }
 
-    /**
-     * Update answer
-     */
-    public function update($id, array $data)
+    public function update(int $id, array $data): ?Answer
     {
         $answer = $this->findOrFail($id);
         $answer->update($data);
+
         return $answer;
     }
 
-    /**
-     * Delete answer
-     */
-    public function delete($id)
+    public function delete(int $id): bool
     {
         $answer = $this->findOrFail($id);
-        return $answer->delete();
+
+        return (bool) $answer->delete();
     }
 
-    /**
-     * Get all answers for a question
-     */
-    public function getByQuestionId($questionId)
+    /** @return Collection<int, Answer> */
+    public function getByQuestionId(int $questionId): Collection
     {
         return Answer::where('question_id', $questionId)->get();
     }
 
-    /**
-     * Get correct answers for a question (multiple correct answers possible)
-     */
-    public function getCorrectAnswers($questionId)
+    /** @return Collection<int, Answer> */
+    public function getCorrectAnswers(int $questionId): Collection
     {
         return Answer::where('question_id', $questionId)
             ->where('is_correct', true)
             ->get();
     }
 
-    /**
-     * Delete all answers for a question
-     */
-    public function deleteByQuestionId($questionId)
+    public function deleteByQuestionId(int $questionId): bool
     {
-        return Answer::where('question_id', $questionId)->delete();
+        return (bool) Answer::where('question_id', $questionId)->delete();
     }
 }

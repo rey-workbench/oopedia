@@ -1,33 +1,31 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminStudentController;
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\MaterialController as AdminMaterialController;
+use App\Http\Controllers\Admin\PendingApprovalController;
+use App\Http\Controllers\Admin\QuestionController as AdminQuestionController;
+use App\Http\Controllers\Admin\SubMaterialController;
+use App\Http\Controllers\Admin\UeqSurveyController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\{
-    DashboardController as AdminDashboardController,
-    MaterialController as AdminMaterialController,
-    AdminStudentController,
-    QuestionController as AdminQuestionController,
-    AdminUserController,
-    PendingApprovalController,
-    UeqSurveyController,
-    SubMaterialController
-};
 
 Route::middleware('auth')->group(function () {
     // Pending Approval Route - accessible by any authenticated user
     Route::get('admin/pending-approval', [PendingApprovalController::class, 'index'])
         ->name('admin.pending-approval');
-        
+
     Route::middleware(['role:1|2', 'admin.approved'])->name('admin.')->prefix('admin')->group(function () {
         // Dashboard
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-        
+
         // Materials & Questions
         Route::resource('materials', AdminMaterialController::class);
         Route::get('materials/{material}/submaterials/json', [SubMaterialController::class, 'getJson'])->name('materials.submaterials.json');
         Route::resource('materials.submaterials', SubMaterialController::class);
-        
+
         Route::resource('questions', AdminQuestionController::class);
-        
+
         // Students management
         Route::controller(AdminStudentController::class)->group(function () {
             Route::get('students', 'index')->name('students.index');
@@ -45,12 +43,12 @@ Route::middleware('auth')->group(function () {
             Route::get('/pending-admins', [AdminUserController::class, 'pendingAdmins'])->name('pending-admins');
             Route::post('/users/{user}/approve', [AdminUserController::class, 'approveAdmin'])->name('users.approve');
             Route::post('/users/{user}/reject', [AdminUserController::class, 'rejectAdmin'])->name('users.reject');
-            
+
             // User import
             Route::get('/users/import', [AdminUserController::class, 'showImportForm'])->name('users.import');
             Route::post('/users/import', [AdminUserController::class, 'processImport'])->name('users.process-import');
             Route::get('/users/download-template', [AdminUserController::class, 'downloadTemplate'])->name('users.download-template');
-            
+
             // User management
             Route::resource('users', AdminUserController::class)->except(['show']);
 

@@ -23,6 +23,5 @@ class DatabaseSeeder extends Seeder
             // AnswersSeeder::class,   // OLD: Now integrated in comprehensive seeder
             UeqSurveysSeeder::class,
         ]);
-
     }
 }

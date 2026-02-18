@@ -11,24 +11,23 @@ class CheckRole
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @param  string  $role
+     * @param string $role
+     *
      * @return mixed
      */
     public function handle(Request $request, Closure $next, $role)
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return redirect('login');
         }
 
         // Convert role parameter to array for multiple role support
         $roles = explode('|', $role);
-        
-        if (!in_array(auth()->user()->role_id, $roles)) {
+
+        if (! in_array(auth()->user()->role_id, $roles)) {
             return Inertia::render('Error', [
                 'status' => 403,
-                'message' => 'Anda tidak memiliki akses untuk halaman ini'
+                'message' => 'Anda tidak memiliki akses untuk halaman ini',
             ])->toResponse($request)->setStatusCode(403);
         }
 

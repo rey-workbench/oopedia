@@ -2,11 +2,33 @@
 
 namespace App\Contracts\Services;
 
+use App\Models\Question;
+
+/**
+ * Contract for checking and processing answers to quiz questions.
+ */
 interface QuestionAnswerServiceInterface
 {
-    public function checkAnswer($data, $userId, $isGuest);
-    
-    public function checkAllAnswers($data, $userId);
-    
-    public function determineCorrectness($question, array $data): bool;
+    /**
+     * Check a single answer submission.
+     *
+     * @param array<string, mixed> $data
+     *
+     * @return array<string, mixed>
+     */
+    public function checkAnswer(array $data, int|string $userId, bool $isGuest): array;
+
+    /**
+     * Check all answers for a completed quiz session.
+     *
+     * @param array<string, mixed> $data
+     *
+     * @return array<string, mixed>
+     */
+    public function checkAllAnswers(array $data, int $userId): array;
+
+    /**
+     * Determine if a given answer for a question is correct.
+     */
+    public function determineCorrectness(Question $question, array $data): bool;
 }

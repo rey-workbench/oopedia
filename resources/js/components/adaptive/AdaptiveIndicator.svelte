@@ -49,7 +49,9 @@
         difficulty: facts.filter((f) =>
             ["G15", "G16", "G17", "G18"].includes(f),
         ),
-        status: facts.filter((f) => ["G19", "G20", "G21", "G22"].includes(f)),
+        status: facts.filter((f) =>
+            ["G19", "G20", "G21", "G22", "G26"].includes(f),
+        ),
     };
 
     function getFactLabel(factCode) {
@@ -79,6 +81,7 @@
             G20: "Next Unlocked",
             G21: "Prev Unlocked",
             G22: "Persistent Fail (≥3x)",
+            G26: "Satisfactory Progress (≥60%)",
         };
         return labels[factCode] || factCode;
     }
@@ -100,7 +103,7 @@
 
 {#if showDebug}
     <div
-        class="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200 bg-white shadow-2xl transition-all duration-300"
+        class="fixed bottom-0 left-0 right-0 z-[110] border-t border-slate-200 bg-white shadow-2xl transition-all duration-300"
         transition:scale={{ duration: 300, start: 0.95 }}
     >
         <!-- Header / Toggle Bar -->

@@ -9,26 +9,20 @@ use App\Contracts\Services\DashboardServiceInterface;
 
 class DashboardService implements DashboardServiceInterface
 {
-    protected $materialRepo;
-    protected $progressRepo;
-    protected $questionRepo;
-
     public function __construct(
-        MaterialRepositoryInterface $materialRepo,
-        ProgressRepositoryInterface $progressRepo,
-        QuestionRepositoryInterface $questionRepo
-    ) {
-        $this->materialRepo = $materialRepo;
-        $this->progressRepo = $progressRepo;
-        $this->questionRepo = $questionRepo;
-    }
+        protected MaterialRepositoryInterface $materialRepo,
+        protected ProgressRepositoryInterface $progressRepo,
+        protected QuestionRepositoryInterface $questionRepo,
+    ) {}
 
-    public function getAllMaterials()
+    /** @return \Illuminate\Database\Eloquent\Collection<int, \App\Models\Material> */
+    public function getAllMaterials(): \Illuminate\Database\Eloquent\Collection
     {
         return $this->materialRepo->getAllWithQuestions();
     }
 
-    public function getDashboardIndexData($userId, $isGuest)
+    /** @return array<string, mixed> */
+    public function getDashboardIndexData(int|string|null $userId, bool $isGuest): array
     {
         // Get all materials
         $allMaterials = $this->materialRepo->getAllWithQuestions();
@@ -73,13 +67,13 @@ class DashboardService implements DashboardServiceInterface
                 ? min(100, round(($correctAnswers / $totalQuestions) * 100))
                 : 0;
 
-            return (object)[
+            return (object) [
                 'id' => $material->id,
                 'title' => $material->title,
                 'description' => $material->description ?? '',
                 'progress_percentage' => $progressPercentage,
                 'total_questions' => $totalQuestions,
-                'completed_questions' => $correctAnswers
+                'completed_questions' => $correctAnswers,
             ];
         });
 
@@ -95,9 +89,10 @@ class DashboardService implements DashboardServiceInterface
         // Transform recent activities to add type
         $recentActivities = $recentActivities->map(function ($activity) {
             $activity->type = $this->determineActivityType($activity);
+
             return $activity;
         });
-        
+
         // Deduplicate milestones and achievements by material to prevent spam
         $seenMilestones = [];
         $seenAchievements = [];
@@ -115,6 +110,7 @@ class DashboardService implements DashboardServiceInterface
                 }
                 $seenAchievements[] = $key;
             }
+
             return true;
         })->take(5)->values(); // Take only 5 after deduplication
 
@@ -132,11 +128,12 @@ class DashboardService implements DashboardServiceInterface
             'totalAnsweredQuestions' => $totalAnsweredQuestions,
             'totalCorrectQuestions' => $totalCorrectQuestions,
             'recentActivities' => $recentActivities,
-            'allMaterials' => $materials
+            'allMaterials' => $materials,
         ];
     }
 
-    public function getInProgressData($userId, $isGuest)
+    /** @return array<int, array<string, mixed>> */
+    public function getInProgressData(int|string|null $userId, bool $isGuest): array
     {
         $progressStats = $this->progressRepo->getDetailedUserProgress($userId);
         $materialProgress = $this->progressRepo->getUserMaterialProgress($userId);
@@ -148,6 +145,7 @@ class DashboardService implements DashboardServiceInterface
 
                 if ($progress && $totalQuestions > 0) {
                     $correctAnswers = $progress->correct_answers;
+
                     return $correctAnswers > 0 && $correctAnswers < $totalQuestions;
                 }
 
@@ -157,7 +155,8 @@ class DashboardService implements DashboardServiceInterface
         return $this->processMaterialsWithStats($materials, $progressStats, $isGuest);
     }
 
-    public function getCompletedData($userId, $isGuest)
+    /** @return array<int, array<string, mixed>> */
+    public function getCompletedData(int|string|null $userId, bool $isGuest): array
     {
         $progressStats = $this->progressRepo->getDetailedUserProgress($userId);
         $materialProgress = $this->progressRepo->getUserMaterialProgress($userId);
@@ -169,6 +168,7 @@ class DashboardService implements DashboardServiceInterface
                 if ($progress) {
                     $correctAnswers = $progress->correct_answers;
                     $configuredTotalQuestions = $this->calculateConfiguredTotalQuestions($material, $isGuest);
+
                     return $correctAnswers >= $configuredTotalQuestions;
                 }
 
@@ -177,40 +177,40 @@ class DashboardService implements DashboardServiceInterface
 
         // For completed, we force 100% stats
         return $materials->map(function ($material) use ($isGuest) {
-             $counts = $this->calculateConfiguredQuestions($material, $isGuest);
-             $beginnerTotal = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'beginner');
-             $mediumTotal = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'medium');
-             $hardTotal = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'hard');
-             
-             return [
+            $counts = $this->calculateConfiguredQuestions($material, $isGuest);
+            $beginnerTotal = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'beginner');
+            $mediumTotal = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'medium');
+            $hardTotal = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'hard');
+
+            return [
                 'material' => $material,
                 'stats' => [
                     'overall' => [
                         'correct' => $counts['total'],
                         'total' => $counts['total'],
-                        'percentage' => 100
+                        'percentage' => 100,
                     ],
                     'beginner' => [
                         'correct' => $counts['easy'],
                         'total' => $beginnerTotal,
                         'configured_total' => $counts['easy'],
-                        'percentage' => 100
+                        'percentage' => 100,
                     ],
                     'medium' => [
                         'correct' => $counts['medium'],
                         'total' => $mediumTotal,
                         'configured_total' => $counts['medium'],
-                        'percentage' => 100
+                        'percentage' => 100,
                     ],
                     'hard' => [
                         'correct' => $counts['hard'],
                         'total' => $hardTotal,
                         'configured_total' => $counts['hard'],
-                        'percentage' => 100
-                    ]
-                ]
+                        'percentage' => 100,
+                    ],
+                ],
             ];
-        });
+        })->values()->all();
     }
 
     /**
@@ -239,13 +239,14 @@ class DashboardService implements DashboardServiceInterface
             'easy' => $easy,
             'medium' => $medium,
             'hard' => $hard,
-            'total' => $easy + $medium + $hard
+            'total' => $easy + $medium + $hard,
         ];
     }
 
     protected function calculateConfiguredTotalQuestions($material, $isGuest)
     {
         $counts = $this->calculateConfiguredQuestions($material, $isGuest);
+
         return $counts['total'];
     }
 
@@ -280,29 +281,29 @@ class DashboardService implements DashboardServiceInterface
                     'overall' => [
                         'correct' => $totalCorrect,
                         'total' => $counts['total'],
-                        'percentage' => $overallPercentage
+                        'percentage' => $overallPercentage,
                     ],
                     'beginner' => [
                         'correct' => $beginnerCorrect,
                         'total' => $beginnerTotal,
                         'configured_total' => $counts['easy'],
-                        'percentage' => $beginnerPercentage
+                        'percentage' => $beginnerPercentage,
                     ],
                     'medium' => [
                         'correct' => $mediumCorrect,
                         'total' => $mediumTotal,
                         'configured_total' => $counts['medium'],
-                        'percentage' => $mediumPercentage
+                        'percentage' => $mediumPercentage,
                     ],
                     'hard' => [
                         'correct' => $hardCorrect,
                         'total' => $hardTotal,
                         'configured_total' => $counts['hard'],
-                        'percentage' => $hardPercentage
-                    ]
-                ]
+                        'percentage' => $hardPercentage,
+                    ],
+                ],
             ];
-        });
+        })->values()->all();
     }
 
     protected function determineActivityType($activity)
@@ -311,12 +312,12 @@ class DashboardService implements DashboardServiceInterface
         if ($activity->total_correct >= 5) {
             return 'achievement';
         }
-        
+
         // Milestone: FIRST TIME completing a hard question in this material
         if ($activity->difficulty === 'hard' && $activity->is_correct && $activity->previous_hard_count === 0) {
             return 'milestone';
         }
-        
+
         // Regular progress
         return 'progress';
     }

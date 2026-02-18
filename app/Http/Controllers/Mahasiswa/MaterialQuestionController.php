@@ -2,22 +2,27 @@
 
 namespace App\Http\Controllers\Mahasiswa;
 
+use App\Contracts\Services\AdaptiveEngineServiceInterface;
+use App\Contracts\Services\FactGatheringServiceInterface;
+use App\Contracts\Services\MaterialServiceInterface;
+use App\Contracts\Services\NextActionResolverServiceInterface;
+use App\Contracts\Services\PerformanceServiceInterface;
+use App\Contracts\Services\ProgressServiceInterface;
+use App\Contracts\Services\QuestionAnswerServiceInterface;
+use App\Contracts\Services\QuestionListingServiceInterface;
+use App\Contracts\Services\QuestionServiceInterface;
+use App\Contracts\Services\QuizRewardServiceInterface;
+use App\Contracts\Services\StreakServiceInterface;
 use App\Http\Controllers\Controller;
 use App\Models\Material;
 use App\Models\Question;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use App\Contracts\Services\MaterialServiceInterface;
-use App\Contracts\Services\QuestionServiceInterface;
-use App\Contracts\Services\QuestionAnswerServiceInterface;
-use App\Contracts\Services\QuestionListingServiceInterface;
-use App\Contracts\Services\ProgressServiceInterface;
-use App\Contracts\Services\AdaptiveEngineServiceInterface;
-use App\Services\Gamification\QuizRewardService;
-use App\Services\Gamification\StreakService;
-use App\Services\User\PerformanceService;
-use App\Services\Adaptive\FactGatheringService;
-use App\Services\Adaptive\NextActionResolverService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class MaterialQuestionController extends Controller
 {
@@ -27,33 +32,35 @@ class MaterialQuestionController extends Controller
         protected QuestionListingServiceInterface $questionListingService,
         protected QuestionAnswerServiceInterface $questionAnswerService,
         protected ProgressServiceInterface $progressService,
-        protected QuizRewardService $rewardService,
-        protected StreakService $streakService,
-        protected PerformanceService $performanceService,
-        protected FactGatheringService $factGathering,
+        protected QuizRewardServiceInterface $rewardService,
+        protected StreakServiceInterface $streakService,
+        protected PerformanceServiceInterface $performanceService,
+        protected FactGatheringServiceInterface $factGathering,
         protected AdaptiveEngineServiceInterface $adaptiveEngine,
-        protected NextActionResolverService $nextActionResolver
+        protected NextActionResolverServiceInterface $nextActionResolver,
     ) {}
 
     // ==================== HELPER METHODS ====================
 
     protected function isGuestUser(): bool
     {
-        return !auth()->check() || (auth()->check() && auth()->user()->role_id === 4);
+        return ! Auth::check() || Auth::user()->role_id === 4;
     }
 
     protected function getUserId(): string|int
     {
-        return $this->isGuestUser() ? session()->getId() : auth()->id();
+        return $this->isGuestUser() ? Session::getId() : Auth::id();
     }
 
+    /** @return array<string, mixed> */
     protected function getGuestProgress(Request $request): array
     {
-        if (!$this->isGuestUser()) {
+        if (! $this->isGuestUser()) {
             return [];
         }
-        
+
         $guestProgressJson = $request->cookie('guest_progress', '[]');
+
         return json_decode($guestProgressJson, true) ?? [];
     }
 
@@ -62,7 +69,7 @@ class MaterialQuestionController extends Controller
     /**
      * Display list of all materials with progress.
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $isGuest = $this->isGuestUser();
         $userId = $this->getUserId();
@@ -76,23 +83,23 @@ class MaterialQuestionController extends Controller
     /**
      * Display questions for a specific material.
      */
-    public function show(int $materialId, Request $request  )
+    public function show(int $materialId, Request $request): Response|RedirectResponse
     {
         $material = $this->materialService->getMaterialById($materialId);
-        if (!$material) {
+        if (! $material) {
             return redirect()->route('mahasiswa.materials.questions.index')
                 ->with('error', 'Material tidak ditemukan');
         }
-        
+
         $isGuest = $this->isGuestUser();
-        
-        // Get difficulty from session, fallback to default based on user type
-        $defaultDifficulty = $isGuest ? 'beginner' : 'all';
-        $difficulty = session('quiz_difficulty', $defaultDifficulty);
-        
+
+        // Get difficulty from session, fallback to beginner for all users
+        // 'all' is not valid for the adaptive engine which needs a specific difficulty
+        $difficulty = session('quiz_difficulty', 'beginner');
+
         // Clear session after reading to prevent persistence across different materials
-        session()->forget('quiz_difficulty');
-        
+        // session()->forget('quiz_difficulty');
+
         $guestProgress = $this->getGuestProgress($request);
         $userId = $this->getUserId();
 
@@ -100,7 +107,7 @@ class MaterialQuestionController extends Controller
 
         // Fetch student state for detailed stats
         $studentStateData = [];
-        if (!$isGuest) {
+        if (! $isGuest) {
             $studentState = $this->performanceService->getStudentState($userId);
             if ($studentState) {
                 $studentStateData = [
@@ -109,30 +116,45 @@ class MaterialQuestionController extends Controller
                     'learning_profile' => $studentState->learning_profile,
                 ];
             }
+        } else {
+            // Mock state for guests from session to ensure continuity
+            $studentStateData = [
+                'gamification' => [
+                    'global_xp' => session('guest_xp', 0),
+                    'current_streak' => session('guest_streak', 0),
+                    'current_level' => 'Tamu',
+                ],
+                'performance' => [
+                    'hints_available' => 3,
+                    'total_questions_answered' => count(session('guest_progress', [])),
+                ],
+                'learning_profile' => [],
+            ];
         }
 
         return Inertia::render('Mahasiswa/Materials/Questions/Show/Index', array_merge($data, [
-            'studentState' => $studentStateData
+            'isGuest' => $isGuest,
+            'studentState' => $studentStateData,
         ]));
     }
 
     /**
      * Display difficulty levels progress for a material.
      */
-    public function levels(int $materialId, Request $request)
+    public function levels(int $materialId, Request $request): Response|RedirectResponse
     {
         $material = $this->materialService->getMaterialById($materialId);
-        if (!$material) {
+        if (! $material) {
             return redirect()->route('mahasiswa.materials.questions.index')
                 ->with('error', 'Material tidak ditemukan');
         }
-        
+
         $materials = $this->materialService->getAllOrdered();
         $difficulty = 'all';
         $isGuest = $this->isGuestUser();
         $userId = $this->getUserId();
         $guestProgress = $this->getGuestProgress($request);
-        
+
         $answeredQuestionIds = $isGuest
             ? $this->questionListingService->getGuestAnsweredQuestionIds($material->id, $guestProgress)
             : $this->progressService->getAnsweredQuestionIds($userId, $material->id);
@@ -144,14 +166,14 @@ class MaterialQuestionController extends Controller
             'materials',
             'levels',
             'difficulty',
-            'isGuest'
+            'isGuest',
         ));
     }
 
     /**
      * Display review page for answered questions.
      */
-    public function review($id, Request $request)
+    public function review(int $id, Request $request): Response
     {
         $material = $this->materialService->getMaterialWithQuestionsAndAnswers($id);
         $materials = $this->materialService->getAllOrdered();
@@ -162,20 +184,19 @@ class MaterialQuestionController extends Controller
 
         $questions = $this->questionListingService->getReviewQuestions($material, $difficulty, $userId, $isGuest, $guestProgress);
 
-
         return Inertia::render('Mahasiswa/Materials/Questions/Review/Index', [
             'material' => $material,
             'materials' => $materials,
             'questions' => $questions,
             'difficulty' => $difficulty,
-            'isGuest' => $isGuest
+            'isGuest' => $isGuest,
         ]);
     }
 
     /**
      * Get attempt count for a specific question.
      */
-    public function getAttempts(int $materialId, int $questionId, Request $request)
+    public function getAttempts(int $materialId, int $questionId, Request $request): JsonResponse
     {
         $isGuest = $this->isGuestUser();
 
@@ -184,7 +205,7 @@ class MaterialQuestionController extends Controller
             $guestProgress = $this->getGuestProgress($request);
             $attempts = isset($guestProgress[$progressKey]) ? $guestProgress[$progressKey]['attempt_number'] : 0;
         } else {
-            $attempts = $this->progressService->getAttemptCount(auth()->id(), $materialId, $questionId);
+            $attempts = $this->progressService->getAttemptCount(Auth::id(), $materialId, $questionId);
         }
 
         return response()->json(['attempts' => $attempts]);
@@ -193,145 +214,110 @@ class MaterialQuestionController extends Controller
     /**
      * Check answer submission.
      */
-    public function checkAnswer(int $materialId, int $questionId, Request $request)
+    public function checkAnswer(int $materialId, int $questionId, Request $request): JsonResponse
     {
-        try {
-            $material = $this->materialService->getMaterialById($materialId);
-            $question = $this->questionService->getQuestionById($questionId);
-            
-            if (!$material || !$question) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Material atau soal tidak ditemukan'
-                ], 404);
-            }
-            
-            $userId = $this->getUserId();
-            $isGuest = $this->isGuestUser();
+        $material = $this->materialService->getMaterialById($materialId);
+        $question = $this->questionService->getQuestionById($questionId);
 
-            if (!$isGuest) {
-                // Authenticated users: use adaptive system
-                $result = $this->handleAdaptiveCheck($material, $question, $userId, $request->all());
-                return response()->json($result);
-            }
-            
-            // Guests: simple answer checking
-            $result = $this->questionAnswerService->checkAnswer(
-                array_merge($request->all(), ['material_id' => $materialId]),
-                $userId,
-                $isGuest
-            );
-
-            return response()->json($result);
-        } catch (\Exception $e) {
+        if (! $material || ! $question) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
+                'message' => 'Material atau soal tidak ditemukan',
+            ], 404);
         }
+
+        $userId = $this->getUserId();
+        $isGuest = $this->isGuestUser();
+
+        if (! $isGuest) {
+            $result = $this->handleAdaptiveCheck($material, $question, $userId, $request->all());
+
+            return response()->json($result);
+        }
+
+        $result = $this->questionAnswerService->checkAnswer(
+            array_merge($request->all(), ['material_id' => $materialId]),
+            $userId,
+            $isGuest,
+        );
+
+        return response()->json($result);
     }
 
     /**
-     * Handle the complete adaptive quiz checking flow. (Previously in QuizOrchestratorService)
+     * Handle the complete adaptive quiz checking flow.
      */
+    /** @return array<string, mixed> */
     protected function handleAdaptiveCheck(Material $material, Question $question, int $userId, array $data): array
     {
         $isCorrect = $this->questionAnswerService->determineCorrectness($question, $data);
-        $usedHint = $data['used_hint'] ?? false;
-        $timeSpent = $data['time_spent'] ?? 0;
+        $usedHint = (bool) ($data['used_hint'] ?? false);
+        $timeSpent = (int) ($data['time_spent'] ?? 0);
 
         // 1. Update student performance
         $studentState = $this->performanceService->updateStudentPerformance($userId, $isCorrect, $timeSpent, $usedHint);
-        
+
         // 1.5 Update Learning Style based on Real-time Interaction
-        // This tracks time spent on different question types (visual vs textual)
-        // and automatically updates the user's dominant learning style in the DB.
         $this->performanceService->updateLearningStyleFromInteraction(
-            $userId, 
-            $question->type ?? 'teori', // Fallback to 'teori' (textual) if type is missing
-            $timeSpent
+            $userId,
+            $question->type ?? 'teori',
+            $timeSpent,
         );
-        
-        // 2. Calculate rewards
+
+        // 2. Calculate score with nuance (not just binary 100/0)
+        $score = $this->performanceService->calculateScore($isCorrect, $usedHint, $timeSpent, $question->difficulty);
+
+        // 3. Calculate rewards
         $rewardResult = $isCorrect
-            ? $this->rewardService->calculateCorrectAnswerReward($studentState->toArray(), $usedHint)
+            ? $this->rewardService->calculateCorrectAnswerReward($studentState->toArray(), $usedHint, $question->difficulty ?? 'beginner', $timeSpent)
             : $this->rewardService->processWrongAnswer($studentState->toArray());
-        
-        // Apply rewards
-        $gamification = $studentState->gamification_data;
-        $gamification['global_xp'] = $rewardResult['updates']['global_xp'] ?? ($gamification['global_xp'] ?? 0);
+
+        $baseXpEarned = $rewardResult['global_xp_earned'] ?? 0;
+
+        // Apply base rewards
+        $gamification = $studentState->gamification_data ?? [];
+        $gamification['global_xp'] = ($gamification['global_xp'] ?? 0) + $baseXpEarned;
         $studentState->gamification_data = $gamification;
-        
-        // Check streak bonus
+
+        // 3.5 Calculate and apply additional streak XP bonus
+        $streakXpBonus = 0;
+        if ($isCorrect) {
+            $streakXpBonus = $this->streakService->calculateStreakBonusXP($studentState->current_streak);
+
+            if ($streakXpBonus > 0) {
+                $gamification = $studentState->gamification_data ?? [];
+                $gamification['global_xp'] = ($gamification['global_xp'] ?? 0) + $streakXpBonus;
+                $studentState->gamification_data = $gamification;
+            }
+        }
+
+        $totalXpEarned = $baseXpEarned + $streakXpBonus;
+
+        // 3.6 Check and apply streak milestones (like hint bonuses)
         $streakBonus = $this->streakService->checkStreakBonus($studentState->toArray());
-        if ($streakBonus) {
-            $gamification = $studentState->gamification_data;
-            $gamification['global_xp'] = ($gamification['global_xp'] ?? 0) + ($streakBonus['updates']['global_xp'] ?? 0);
-            $studentState->gamification_data = $gamification;
+        if ($streakBonus && isset($streakBonus['updates'])) {
+            // Apply updates (e.g., hints_available)
+            $metrics = $studentState->performance_metrics ?? [];
+            foreach ($streakBonus['updates'] as $key => $value) {
+                $metrics[$key] = $value;
+            }
+            $studentState->performance_metrics = $metrics;
         }
 
-        // 2.5 Update student state
         $studentState->save();
-        
-        // 3. Gather facts
-        $facts = $this->factGathering->gatherFacts(
-            studentState: $studentState,
-            isCorrect: $isCorrect,
-            usedHint: $usedHint,
-            score: $isCorrect ? 100 : 0,
-            timeSpent: $timeSpent,
-            difficulty: $question->difficulty,
-            questionId: $question->id,
-            materialId: $material->id,
-            moduleId: $material->module_id ?? null
-        );
 
-        // 4. Evaluate adaptive rules
-        $adaptiveResult = $this->adaptiveEngine->evaluate($facts, $studentState->toArray(), [
-            'is_correct' => $isCorrect,
-            'used_hint' => $usedHint,
-            'score' => $isCorrect ? 100 : 0,
-            'time_spent' => $timeSpent,
-            'difficulty' => $question->difficulty,
-            'question_id' => $question->id,
-            'material_id' => $material->id,
-            'module_id' => $material->module_id ?? null,
-        ]);
-
-        // 5. Apply adaptive state changes
-        $finalState = $adaptiveResult['new_state'] ?? [];
-        $studentState->fill($finalState);
-        
-        // Add time metrics to adaptive state
-        $adaptiveState = $studentState->adaptive_state;
-        if (is_string($adaptiveState)) {
-            $adaptiveState = json_decode($adaptiveState, true) ?? [];
-        }
-        $adaptiveState = $adaptiveState ?? [];
-        
-        $adaptiveState['time_metrics'] = [
-            'avg_time_per_question' => $this->performanceService->calculateAverageTimeSpent($userId, $material->id),
-            'total_time_spent' => $this->performanceService->calculateTotalTimeSpent($userId, $material->id),
-        ];
-        $studentState->adaptive_state = $adaptiveState;
-        $studentState->save();
-        
-        // 6. Save progress log
-        // Handle answer_id based on question type
+        // 4. Save progress log (MANDATORY BEFORE GATHERING FACTS)
         $answerId = null;
         $userResponse = null;
-        
+
         if ($question->question_type === 'multiple_choice' || $question->question_type === 'radio_button') {
-            // For MC/Radio: answer_id is the selected option ID
             $answerId = $data['answer'] ?? null;
         } elseif ($question->question_type === 'fill_in_the_blank') {
-            // For fill-in-the-blank: store text response, not answer_id
             $userResponse = $data['fill_in_the_blank_answer'] ?? null;
         } elseif ($question->question_type === 'drag_and_drop') {
-            // For drag-and-drop: store arrangement data
             $userResponse = $data['drag_and_drop_answers'] ?? null;
         }
-        
+
         $savedProgress = $this->progressService->saveProgress([
             'user_id' => $userId,
             'material_id' => $material->id,
@@ -340,35 +326,92 @@ class MaterialQuestionController extends Controller
             'user_response' => $userResponse,
             'is_correct' => $isCorrect,
             'is_answered' => true,
-            'attributes' => $finalState,
+            'attributes' => [
+                'score' => $score,
+                'difficulty' => $question->difficulty ?? 'beginner',
+                'used_hint' => $usedHint,
+                'time_spent' => $timeSpent,
+            ],
         ]);
-        
+
         if ($timeSpent > 0) {
-            $savedProgress->setTimeSpent($timeSpent);
-            $savedProgress->save();
+            $savedProgress?->setTimeSpent($timeSpent);
+            $savedProgress?->save();
         }
-        
-        // 7. Resolve next action
-        $nextActionData = $this->nextActionResolver->resolve($finalState['next_action'] ?? 'NEXT_QUESTION', $material, $question, $userId);
-        
+
+        // 5. Gather facts for adaptive engine (Uses updated progress)
+        $facts = $this->factGathering->gatherFacts(
+            studentState: $studentState,
+            isCorrect: $isCorrect,
+            usedHint: $usedHint,
+            score: $score,
+            timeSpent: $timeSpent,
+            difficulty: $question->difficulty ?? 'beginner',
+            questionId: $question->id,
+            materialId: $material->id,
+            moduleId: $material->module_id ?? null,
+        );
+
+        // 6. Evaluate adaptive rules (forward chaining)
+        $adaptiveResult = $this->adaptiveEngine->evaluate($facts, $studentState->toArray(), [
+            'is_correct' => $isCorrect,
+            'used_hint' => $usedHint,
+            'score' => $score,
+            'time_spent' => $timeSpent,
+            'difficulty' => $question->difficulty ?? 'beginner',
+            'question_id' => $question->id,
+            'material_id' => $material->id,
+            'module_id' => $material->module_id ?? null,
+        ]);
+
+        // 7. Apply adaptive state changes
+        $ruleOutput = $adaptiveResult['new_state'] ?? [];
+        $adaptiveState = $studentState->adaptive_state;
+        if (is_string($adaptiveState)) {
+            $adaptiveState = json_decode($adaptiveState, true) ?? [];
+        }
+        $adaptiveState = $adaptiveState ?? [];
+
+        $adaptiveState['last_rule'] = $adaptiveResult['triggered_rule'] ?? null;
+        $adaptiveState['last_action'] = $ruleOutput['next_action'] ?? 'NEXT_QUESTION';
+        $adaptiveState['time_metrics'] = [
+            'avg_time_per_question' => $this->performanceService->calculateAverageTimeSpent($userId, $material->id),
+            'total_time_spent' => $this->performanceService->calculateTotalTimeSpent($userId, $material->id),
+        ];
+        $studentState->adaptive_state = $adaptiveState;
+        $studentState->save();
+
+        // 8. Resolve next action
+        $nextActionData = $this->nextActionResolver->resolve($ruleOutput['next_action'] ?? 'NEXT_QUESTION', $material, $question, $userId);
+
+        // Sync response structure with frontend expectations
+        $mappedState = [
+            'gamification' => $studentState->gamification_data,
+            'performance' => $studentState->performance_metrics,
+            'learning_profile' => $studentState->learning_profile,
+            'adaptive_state' => $studentState->adaptive_state,
+        ];
+
         return [
             'status' => $isCorrect ? 'success' : 'error',
-            'message' => $finalState['message'] ?? ($isCorrect ? 'Jawaban benar!' : 'Jawaban salah, coba lagi.'),
+            'message' => $ruleOutput['message'] ?? ($isCorrect ? 'Jawaban benar!' : 'Jawaban salah, coba lagi.'),
+            'score' => $score,
             'hasNextQuestion' => true,
             'nextUrl' => $nextActionData['url'],
             'adaptiveResult' => [
                 'triggered_rule' => $adaptiveResult['triggered_rule'],
                 'facts' => $adaptiveResult['facts'],
-                'global_xp_earned' => $rewardResult['global_xp_earned'] ?? 0,
+                'global_xp_earned' => $totalXpEarned,
                 'streak_bonus' => $streakBonus ? $streakBonus['message'] : null,
-                'new_state' => array_merge($studentState->toArray(), [
-                    'recommendation' => $finalState['recommendation'] ?? null,
+                'new_state' => array_merge($mappedState, [
+                    'recommendation' => $ruleOutput['recommendation'] ?? null,
                     'next_action' => $nextActionData['label'],
                     'next_action_data' => $nextActionData,
-                    'message' => $finalState['message'] ?? null,
-                    'certification' => $finalState['certification'] ?? null,
+                    'message' => $ruleOutput['message'] ?? null,
+                    'certification' => $ruleOutput['certification'] ?? null,
+                    'intervention_type' => $ruleOutput['intervention_type'] ?? null,
                 ]),
             ],
         ];
     }
-} 
+}

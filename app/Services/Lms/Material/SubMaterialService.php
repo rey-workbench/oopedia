@@ -2,16 +2,18 @@
 
 namespace App\Services\Lms\Material;
 
-use App\Contracts\Repositories\SubMaterialRepositoryInterface;
 use App\Contracts\Repositories\MaterialRepositoryInterface;
+use App\Contracts\Repositories\SubMaterialRepositoryInterface;
 use App\Contracts\Services\SubMaterialServiceInterface;
+use App\Exceptions\Domain\MaterialNotFoundException;
+use App\Models\SubMaterial;
 use Illuminate\Database\Eloquent\Collection;
 
 class SubMaterialService implements SubMaterialServiceInterface
 {
     public function __construct(
         protected SubMaterialRepositoryInterface $subMaterialRepo,
-        protected MaterialRepositoryInterface $materialRepo
+        protected MaterialRepositoryInterface $materialRepo,
     ) {}
 
     /**
@@ -27,15 +29,16 @@ class SubMaterialService implements SubMaterialServiceInterface
      */
     public function createSubMaterial(int $materialId, array $data): int
     {
-        // Ensure material exists
         $material = $this->materialRepo->find($materialId);
-        if (!$material) {
-            throw new \Exception('Material not found');
+
+        if (! $material) {
+            throw new MaterialNotFoundException($materialId);
         }
 
         $data['material_id'] = $materialId;
-        
+
         $subMaterial = $this->subMaterialRepo->create($data);
+
         return $subMaterial->id;
     }
 
@@ -58,7 +61,7 @@ class SubMaterialService implements SubMaterialServiceInterface
     /**
      * Get sub-material by ID
      */
-    public function getSubMaterialById(int $subMaterialId)
+    public function getSubMaterialById(int $subMaterialId): ?SubMaterial
     {
         return $this->subMaterialRepo->find($subMaterialId);
     }
@@ -69,11 +72,11 @@ class SubMaterialService implements SubMaterialServiceInterface
     public function getSubMaterialsSimple(int $materialId): array
     {
         $subMaterials = $this->subMaterialRepo->findByMaterial($materialId);
-        
-        return $subMaterials->map(function($sub) {
+
+        return $subMaterials->map(function ($sub) {
             return [
                 'id' => $sub->id,
-                'title' => $sub->title
+                'title' => $sub->title,
             ];
         })->toArray();
     }

@@ -3,33 +3,35 @@
 namespace App\Rules\Adaptive\Progression;
 
 use App\Rules\Adaptive\BaseAdaptiveRule;
+use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
 /**
  * Rule 7: Critical Backtracking
- * IF ((G01 AND G16) OR (G01 AND G17)) THEN H07
- * 
- * Triggers when student has critical score on medium or advanced level.
- * Forces student to go back to easier material.
+ * IF (G01 AND (G16 OR G17) AND NOT G22) THEN H07
+ *
+ * Triggers when student has critical score on medium or advanced level,
+ * but hasn't reached persistent failure. Forces a difficulty reduction.
+ * If persistent failure (G22), Safety Net rules (R14/R15) take over instead.
  */
 class Rule07_CriticalBacktracking extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_07';
     protected string $ruleName = 'Critical Backtracking';
-    protected string $actionCode = 'H07';
+    protected string $actionCode = AdaptiveConstants::ACTION_CRITICAL_BACKTRACKING;
     protected int $priority = 25; // Medium-high priority
-    
+
     public function evaluate(array $facts): bool
     {
-        return $this->hasFact($facts, 'G01')
-            && $this->hasAnyFact($facts, ['G16', 'G17']);
+        return $this->hasFact($facts, AdaptiveConstants::FACT_SCORE_CRITICAL)
+            && $this->hasAnyFact($facts, [AdaptiveConstants::FACT_DIFF_MEDIUM, AdaptiveConstants::FACT_DIFF_HARD]);
     }
-    
+
     public function apply(array $state, array $context): array
     {
         $state['recommendation'] = 'Review Dasar';
         $state['next_action'] = 'REDUCE_DIFFICULTY';
         $state['message'] = 'Soal ini sepertinya terlalu sulit sekarang. Mari turunkan tingkat kesulitan dan perkuat fondasi Anda.';
-        
+
         return $state;
     }
 }

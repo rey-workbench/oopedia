@@ -2,21 +2,29 @@
 
 namespace App\Contracts\Repositories;
 
+use App\Models\Media;
+use Illuminate\Database\Eloquent\Collection;
+
+/**
+ * Contract for Media file data access.
+ */
 interface MediaRepositoryInterface
 {
-    public function all();
-    
-    public function find($id);
-    
-    public function create(array $data);
-    
-    public function update($id, array $data);
-    
-    public function delete($id);
-    
-    public function getByMaterial($materialId);
-    
-    public function deleteByMaterial($materialId);
-    
-    public function findByMaterialAndType($materialId, $mediaType);
+    /** @return Collection<int, Media> */
+    public function all(): Collection;
+
+    public function find(int $id): ?Media;
+
+    public function create(array $data): Media;
+
+    public function update(int $id, array $data): ?Media;
+
+    public function delete(int $id): bool;
+
+    /** @return Collection<int, Media> */
+    public function getByMaterial(int $materialId): Collection;
+
+    public function deleteByMaterial(int $materialId): bool;
+
+    public function findByMaterialAndType(int $materialId, string $mediaType): ?Media;
 }
