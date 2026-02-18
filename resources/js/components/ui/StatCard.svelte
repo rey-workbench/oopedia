@@ -55,7 +55,7 @@
         </div>
 
         <h3
-            class="text-slate-400 font-bold text-[10px] uppercase tracking-wider mb-2"
+            class="text-slate-600 font-bold text-[10px] uppercase tracking-wider mb-2"
         >
             {title}
         </h3>
@@ -76,7 +76,7 @@
                         .replace("50", "500")}`}
                 ></div>
                 <p
-                    class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"
                 >
                     {footer}
                 </p>

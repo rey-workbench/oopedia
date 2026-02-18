@@ -199,7 +199,7 @@
                                             </p>
                                         </div>
                                         <span
-                                            class="text-[10px] font-bold text-slate-300 uppercase tracking-widest"
+                                            class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"
                                             >{activity.time_ago ||
                                                 "Baru saja"}</span
                                         >
@@ -221,7 +221,7 @@
                                 />
                             </div>
                             <p
-                                class="text-xs font-bold uppercase tracking-widest text-slate-400"
+                                class="text-xs font-bold uppercase tracking-widest text-slate-500"
                             >
                                 Belum ada aktivitas tercatat untuk akun ini.
                             </p>
@@ -240,12 +240,12 @@
                 <div class="space-y-6">
                     <Card
                         padding="p-8"
-                        class="bg-primary-600 text-white border-none shadow-2xl relative overflow-hidden group"
+                        class="bg-white border border-slate-100 shadow-2xl relative overflow-hidden group"
                     >
                         <div
-                            class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000"
+                            class="absolute -top-10 -right-10 w-32 h-32 bg-primary-100/50 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000"
                         ></div>
-                        <div class="mb-6 opacity-30">
+                        <div class="mb-6 text-primary-600">
                             <svelte:component
                                 this={Code2}
                                 size={32}
@@ -253,18 +253,18 @@
                             />
                         </div>
                         <h4
-                            class="text-lg font-bold tracking-widest mb-2 uppercase"
+                            class="text-lg font-bold tracking-widest mb-2 uppercase text-slate-900"
                         >
                             Dasar PBO: Class & Object
                         </h4>
                         <p
-                            class="text-primary-100 text-sm font-medium mb-8 leading-relaxed"
+                            class="text-slate-500 text-sm font-medium mb-8 leading-relaxed"
                         >
                             Fundamental utama pemrograman berorientasi objek
                             yang harus dikuasai.
                         </p>
                         <Button
-                            variant="secondary"
+                            variant="primary"
                             size="sm"
                             class="w-full py-4 uppercase font-bold tracking-widest"
                             href="/mahasiswa/materials"
@@ -281,7 +281,7 @@
                             class="flex flex-col items-center text-center"
                         >
                             <div
-                                class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center mb-4 group-hover:bg-primary-600 group-hover:text-white transition-all"
+                                class="w-12 h-12 rounded-xl bg-slate-100/50 text-slate-500 flex items-center justify-center mb-4 group-hover:bg-primary-600 group-hover:text-white transition-all"
                             >
                                 <svelte:component
                                     this={Plus}
@@ -290,7 +290,7 @@
                                 />
                             </div>
                             <h4
-                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-primary-600"
+                                class="text-[10px] font-bold text-slate-600 uppercase tracking-widest group-hover:text-primary-600"
                             >
                                 Eksplorasi Katalog Materi
                             </h4>
