@@ -8,6 +8,7 @@ use App\Http\Controllers\Mahasiswa\MaterialQuestionController;
 use App\Http\Controllers\Mahasiswa\ProfileController as MahasiswaProfileController;
 use App\Http\Controllers\Mahasiswa\UeqSurveyController as MahasiswaUeqSurveyController;
 use App\Http\Middleware\BlockQuestionParameter;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // Private Mahasiswa Routes (authenticated role 3 only - using 'role:3')
@@ -57,7 +58,7 @@ Route::middleware(['guest.access'])->prefix('mahasiswa')->name('mahasiswa.')->gr
         function ($material) {
             $controller = app()->make(MaterialController::class);
 
-            return auth()->check() ? $controller->reset($material) : $controller->guestReset($material);
+            return Auth::check() ? $controller->reset($material) : $controller->guestReset($material);
         },
     )->name('materials.reset');
 });
