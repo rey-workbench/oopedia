@@ -271,7 +271,7 @@
                             size="lg"
                             class="mb-4 bg-white/20 text-white border-white/30"
                         >
-                            <Zap size={16} class="mr-1" /> FAST-TRACK AKTIF
+                            <Zap size={16} class="mr-1" /> LOMPATAN KESULITAN
                         </Badge>
                         <h2 class="text-4xl font-bold mb-3 tracking-widest">
                             PERCEPATAN!

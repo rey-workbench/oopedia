@@ -22,6 +22,11 @@ class PerformanceService
 
     // ==================== PROFILE MANAGEMENT ====================
 
+    public function getStudentState($userId)
+    {
+        return $this->progressRepo->getOrCreateStudentState($userId);
+    }
+
     public function getUserInitialLevel($userId, $materialId): ?string
     {
         $state = $this->progressRepo->getOrCreateStudentState($userId);
@@ -44,8 +49,45 @@ class PerformanceService
     public function setUserLearningStyle($userId, $materialId, string $style): void
     {
         $state = $this->progressRepo->getOrCreateStudentState($userId);
-        $state->learning_style = $style;
+        $profile = $state->learning_profile ?? [];
+        $profile['learning_style'] = $style;
+        $state->learning_profile = $profile;
         $state->save();
+    }
+
+    /**
+     * Update learning style based on real-time interaction
+     */
+    public function updateLearningStyleFromInteraction($userId, $questionType, $timeSpent)
+    {
+        $state = $this->progressRepo->getOrCreateStudentState($userId);
+        $profile = $state->learning_profile ?? [];
+
+        // Initialize time distribution if not exists
+        if (!isset($profile['time_distribution'])) {
+            $profile['time_distribution'] = ['visual' => 0, 'textual' => 0];
+        }
+
+        // Map question type to learning style category
+        // Teori -> Textual
+        // Studi Kasus, Sintaks -> Visual (Diagrams, Code Structures)
+        $category = ($questionType === 'teori') ? 'textual' : 'visual';
+
+        // Update time
+        $profile['time_distribution'][$category] += $timeSpent;
+
+        // Recalculate dominant style
+        $visualTime = $profile['time_distribution']['visual'];
+        $textualTime = $profile['time_distribution']['textual'];
+
+        $newStyle = ($visualTime > $textualTime) ? 'visual' : 'textual';
+
+        // Update profile
+        $profile['learning_style'] = $newStyle;
+        $state->learning_profile = $profile;
+        $state->save();
+
+        return $newStyle;
     }
 
     /**

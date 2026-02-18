@@ -98,7 +98,22 @@ class MaterialQuestionController extends Controller
 
         $data = $this->questionListingService->getQuizData($material, $difficulty, $userId, $isGuest, $guestProgress);
 
-        return Inertia::render('Mahasiswa/Materials/Questions/Show/Index', $data);
+        // Fetch student state for detailed stats
+        $studentStateData = [];
+        if (!$isGuest) {
+            $studentState = $this->performanceService->getStudentState($userId);
+            if ($studentState) {
+                $studentStateData = [
+                    'gamification' => $studentState->gamification_data,
+                    'performance' => $studentState->performance_metrics,
+                    'learning_profile' => $studentState->learning_profile,
+                ];
+            }
+        }
+
+        return Inertia::render('Mahasiswa/Materials/Questions/Show/Index', array_merge($data, [
+            'studentState' => $studentStateData
+        ]));
     }
 
     /**
@@ -228,6 +243,15 @@ class MaterialQuestionController extends Controller
         // 1. Update student performance
         $studentState = $this->performanceService->updateStudentPerformance($userId, $isCorrect, $timeSpent, $usedHint);
         
+        // 1.5 Update Learning Style based on Real-time Interaction
+        // This tracks time spent on different question types (visual vs textual)
+        // and automatically updates the user's dominant learning style in the DB.
+        $this->performanceService->updateLearningStyleFromInteraction(
+            $userId, 
+            $question->type ?? 'teori', // Fallback to 'teori' (textual) if type is missing
+            $timeSpent
+        );
+        
         // 2. Calculate rewards
         $rewardResult = $isCorrect
             ? $this->rewardService->calculateCorrectAnswerReward($studentState->toArray(), $usedHint)
@@ -347,4 +371,4 @@ class MaterialQuestionController extends Controller
             ],
         ];
     }
-}
+} 

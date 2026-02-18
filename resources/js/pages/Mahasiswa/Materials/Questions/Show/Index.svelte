@@ -40,9 +40,12 @@
     // For now, we'll try to use $page.props.auth.user if available, or just defaults.
     // If needed we can update the controller to pass these.
 
-    let xp = 0;
-    let streak = 0;
-    let hintsAvailable = 3;
+    export let studentState = {}; // From controller
+
+    let xp = studentState?.gamification?.global_xp || 0;
+    let streak = studentState?.gamification?.current_streak || 0;
+    let level = studentState?.gamification?.current_level || "Pemula";
+    let hintsAvailable = studentState?.performance?.hints_available ?? 3;
 
     // Question State
     let fillInTheBlankAnswer = "";
@@ -235,6 +238,19 @@
                                         </h5>
                                     </div>
 
+                                    <!-- Level -->
+                                    <div>
+                                        <span
+                                            class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5"
+                                            >Level</span
+                                        >
+                                        <h5
+                                            class="text-lg font-bold text-slate-700"
+                                        >
+                                            {level}
+                                        </h5>
+                                    </div>
+
                                     <!-- XP -->
                                     <div>
                                         <span
@@ -364,59 +380,25 @@
                                 <h2
                                     class="text-4xl font-bold mb-3 tracking-widest"
                                 >
-                                    LUAR BIASA!
+                                    HEBAT!
                                 </h2>
                                 <p class="text-emerald-50 text-xl font-medium">
-                                    Anda telah menyelesaikan semua soal pada
-                                    materi ini.
+                                    Kamu sudah menjawab semua soal di materi ini
+                                    dengan baik.
                                 </p>
                             </div>
                         </div>
 
-                        <div class="p-10 bg-white">
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <a
-                                    href={`/mahasiswa/materials/${material.id}/questions/levels`}
-                                    class="group p-6 rounded-2xl bg-slate-50 border-2 border-transparent hover:border-emerald-200 hover:bg-emerald-50 transition-all text-center"
-                                >
-                                    <div
-                                        class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform"
-                                    >
-                                        <ListOrdered size={24} />
-                                    </div>
-                                    <span class="font-bold text-slate-700 block"
-                                        >Pilih Level</span
-                                    >
-                                </a>
-
-                                <a
-                                    href={`/mahasiswa/materials/${material.id}`}
-                                    class="group p-6 rounded-2xl bg-slate-50 border-2 border-transparent hover:border-primary-200 hover:bg-primary-50 transition-all text-center"
-                                >
-                                    <div
-                                        class="w-12 h-12 bg-primary-100 text-primary-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform"
-                                    >
-                                        <Book size={24} />
-                                    </div>
-                                    <span class="font-bold text-slate-700 block"
-                                        >Baca Materi</span
-                                    >
-                                </a>
-
-                                <a
-                                    href="/mahasiswa/dashboard"
-                                    class="group p-6 rounded-2xl bg-slate-50 border-2 border-transparent hover:border-primary-200 hover:bg-primary-50 transition-all text-center"
-                                >
-                                    <div
-                                        class="w-12 h-12 bg-primary-100 text-primary-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform"
-                                    >
-                                        <Home size={24} />
-                                    </div>
-                                    <span class="font-bold text-slate-700 block"
-                                        >Dashboard</span
-                                    >
-                                </a>
-                            </div>
+                        <div class="p-10 bg-white text-center">
+                            <a
+                                href={`/mahasiswa/materials/${material.id}`}
+                                class="inline-flex items-center justify-center font-bold tracking-tight transition-all duration-300 active:scale-95 rounded-xl bg-primary-600 text-white shadow-lg shadow-accent-950/20 hover:scale-[1.02] hover:shadow-accent-600/30 px-8 py-3.5 text-sm uppercase"
+                            >
+                                Kembali ke Materi <Home
+                                    size={18}
+                                    class="ml-2"
+                                />
+                            </a>
                         </div>
                     </div>
                 </div>
