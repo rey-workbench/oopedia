@@ -108,13 +108,17 @@
                     >
                 </p>
 
-                <Link
-                    href="/guest-login"
-                    class="flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors"
+                <button
+                    type="button"
+                    on:click={() =>
+                        $form
+                            .transform((data) => ({ ...data, is_guest: true }))
+                            .post("/login")}
+                    class="flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors w-full"
                 >
                     <Ghost size={14} />
                     Masuk Sebagai Tamu
-                </Link>
+                </button>
             </div>
         </form>
     </Card>

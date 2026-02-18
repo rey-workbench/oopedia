@@ -58,7 +58,7 @@ class DashboardService implements DashboardServiceInterface
 
         $materials = $allMaterials->map(function ($material) use ($progressStats, $isGuest) {
             // Calculate total questions (all available for logged-in, limited for guests)
-            $totalQuestions = $this->calculateConfiguredTotalQuestions($material, $isGuest);
+            $totalQuestions = $this->calculateConfiguredQuestions($material, $isGuest)['total'];
 
             $materialProgress = $progressStats->firstWhere('material_id', $material->id);
             $correctAnswers = $materialProgress ? $materialProgress->correct_answers : 0;
@@ -167,7 +167,7 @@ class DashboardService implements DashboardServiceInterface
 
                 if ($progress) {
                     $correctAnswers = $progress->correct_answers;
-                    $configuredTotalQuestions = $this->calculateConfiguredTotalQuestions($material, $isGuest);
+                    $configuredTotalQuestions = $this->calculateConfiguredQuestions($material, $isGuest)['total'];
 
                     return $correctAnswers >= $configuredTotalQuestions;
                 }
@@ -241,13 +241,6 @@ class DashboardService implements DashboardServiceInterface
             'hard' => $hard,
             'total' => $easy + $medium + $hard,
         ];
-    }
-
-    protected function calculateConfiguredTotalQuestions($material, $isGuest)
-    {
-        $counts = $this->calculateConfiguredQuestions($material, $isGuest);
-
-        return $counts['total'];
     }
 
     protected function processMaterialsWithStats($materials, $progressStats, $isGuest)

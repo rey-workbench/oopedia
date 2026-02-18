@@ -4,16 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Contracts\Services\UserServiceInterface;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\Auth\ResetPasswordRequest;
-use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -30,7 +25,18 @@ class LoginController extends Controller
 
     public function store(LoginRequest $request): RedirectResponse
     {
-        $credentials = $request->validated();
+        // Handle Guest Login
+        if ($request->has('is_guest')) {
+            if (Auth::check()) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+            }
+            return redirect()->route('mahasiswa.materials.index');
+        }
+
+        // Handle Standard Login
+        $credentials = $request->only('email', 'password');
 
         if (! Auth::attempt($credentials)) {
             return back()->withErrors([
@@ -53,33 +59,15 @@ class LoginController extends Controller
         };
     }
 
-    public function show(ForgotPasswordRequest $request): RedirectResponse
+    public function logout(Request $request): RedirectResponse
     {
-        $status = Password::sendResetLink($request->only('email'));
+        Auth::logout();
 
-        return $status === Password::RESET_LINK_SENT
-            ? back()->with(['status' => __($status)])
-            : back()->withErrors(['email' => __($status)]);
-    }
+        $request->session()->invalidate();
 
-    public function update(ResetPasswordRequest $request): RedirectResponse
-    {
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user, $password) {
-                $user->forceFill([
-                    'password' => ($password),
-                ])->setRememberToken(Str::random(60));
+        $request->session()->regenerateToken();
 
-                $user->save();
-
-                event(new PasswordReset($user));
-            },
-        );
-
-        return $status === Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('status', __($status))
-            : back()->withErrors(['email' => [__($status)]]);
+        return redirect('/');
     }
 
     public function home(): RedirectResponse

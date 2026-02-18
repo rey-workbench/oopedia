@@ -123,7 +123,6 @@ class MaterialService implements MaterialServiceInterface
             'material_id' => $material->id,
             'media_type' => 'image',
             'media_url' => '/images/' . $path,
-            'media_description' => $title . ' - Cover Image',
         ]);
     }
 

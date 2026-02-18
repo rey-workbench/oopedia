@@ -7,11 +7,14 @@ use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Services\QuestionListingServiceInterface;
 use App\Models\Material;
+use App\Traits\CalculatesConfiguredQuestions;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as SupportCollection;
 
 class QuestionListingService implements QuestionListingServiceInterface
 {
+    use CalculatesConfiguredQuestions;
+
     public function __construct(
         protected MaterialRepositoryInterface $materialRepo,
         protected ProgressRepositoryInterface $progressRepo,
@@ -257,18 +260,5 @@ class QuestionListingService implements QuestionListingServiceInterface
         }
 
         return $levels;
-    }
-
-    protected function calculateConfiguredQuestions(\App\Models\Material $material, bool $isGuest): int
-    {
-        if ($isGuest) {
-            $beginnerCount = min(3, $material->questions->where('difficulty', 'beginner')->count());
-            $mediumCount = min(3, $material->questions->where('difficulty', 'medium')->count());
-            $hardCount = min(3, $material->questions->where('difficulty', 'hard')->count());
-
-            return $beginnerCount + $mediumCount + $hardCount;
-        }
-
-        return $material->questions->count();
     }
 }

@@ -11,14 +11,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $material_id
  * @property string $media_type
  * @property string $media_url
- * @property string|null $media_description
  * @property-read string $full_url
  */
 class Media extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['material_id', 'media_type', 'media_url', 'media_description'];
+    protected $fillable = ['material_id', 'media_type', 'media_url'];
 
     protected $casts = [
         'material_id' => 'integer',

@@ -28,7 +28,6 @@ class User extends Authenticatable
 
     protected $casts = [
         'is_approved' => 'boolean',
-        'email_verified_at' => 'datetime',
     ];
 
     public function role(): BelongsTo

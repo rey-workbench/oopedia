@@ -63,27 +63,61 @@ class NextActionResolverService implements NextActionResolverServiceInterface
 
     protected function reduceDifficulty(Material $material, Question $question, ?int $userId = null): array
     {
-        $hasBeginner = $this->questionService->existsByMaterialAndDifficulty($material->id, 'beginner');
+        $currentDifficulty = $question->difficulty ?? 'beginner';
+        
+        // Determine target difficulty (Stepwise reduction)
+        $targetDifficulty = match ($currentDifficulty) {
+            'hard' => 'medium',
+            'medium' => 'beginner',
+            default => 'beginner',
+        };
 
-        // Check if there are unanswered beginner questions
-        $hasUnansweredBeginner = false;
-        if ($hasBeginner && $userId) {
-            $answeredIds = $this->progressService->getAnsweredQuestionIds($userId, $material->id);
-            $beginnerQuestions = $this->questionRepo->getByMaterialAndDifficulty($material->id, 'beginner');
-            $hasUnansweredBeginner = $beginnerQuestions->whereNotIn('id', $answeredIds->toArray())->isNotEmpty();
+        // Helper to check availability (reusing logic from original method)
+        $checkAvailability = function (string $difficulty) use ($material, $userId) {
+            $exists = $this->questionService->existsByMaterialAndDifficulty($material->id, $difficulty);
+            
+            if (!$exists) return false;
+            
+            if ($userId) {
+                $answeredIds = $this->progressService->getAnsweredQuestionIds($userId, $material->id);
+                $questions = $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty);
+                return $questions->whereNotIn('id', $answeredIds->toArray())->isNotEmpty();
+            }
+            
+            return true; 
+        };
+
+        // 1. Try Target Difficulty
+        if ($checkAvailability($targetDifficulty)) {
+            session(['quiz_difficulty' => $targetDifficulty]);
+            
+            $labelMap = [
+                'medium' => 'Coba Soal Menengah',
+                'beginner' => 'Coba Soal Pemula',
+            ];
+
+            return [
+                'label' => $labelMap[$targetDifficulty] ?? 'Coba Soal Dasar',
+                'url' => route('mahasiswa.materials.questions.show', ['material' => $material->id]),
+                'type' => 'question',
+            ];
         }
 
-        // Store difficulty preference in session only if there are unanswered questions
-        if ($hasUnansweredBeginner) {
-            session(['quiz_difficulty' => 'beginner']);
+        // 2. Fallback: If target was Medium but failed availability, try Beginner
+        if ($targetDifficulty === 'medium' && $checkAvailability('beginner')) {
+             session(['quiz_difficulty' => 'beginner']);
+             return [
+                'label' => 'Coba Soal Pemula',
+                'url' => route('mahasiswa.materials.questions.show', ['material' => $material->id]),
+                'type' => 'question',
+            ];
         }
 
+        // 3. Final Fallback: Material Review
         return [
-            'label' => $hasUnansweredBeginner ? 'Coba Soal Pemula' : 'Ulas Materi Dasar',
-            'url' => $hasUnansweredBeginner
-            ? route('mahasiswa.materials.questions.show', ['material' => $material->id])
-            : route('mahasiswa.materials.show', $material->id),
-            'type' => $hasUnansweredBeginner ? 'question' : 'material',
+            'label' => 'Ulas Materi Dasar',
+            'url' => route('mahasiswa.materials.show', $material->id),
+            'type' => 'material',
         ];
     }
 

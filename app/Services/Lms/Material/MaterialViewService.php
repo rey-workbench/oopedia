@@ -8,10 +8,13 @@ use App\Contracts\Repositories\SubMaterialRepositoryInterface;
 use App\Contracts\Services\MaterialViewServiceInterface;
 use App\Exceptions\Domain\MaterialNotFoundException;
 use App\Exceptions\Domain\SubMaterialNotFoundException;
+use App\Traits\CalculatesConfiguredQuestions;
 use Illuminate\Database\Eloquent\Collection;
 
 class MaterialViewService implements MaterialViewServiceInterface
 {
+    use CalculatesConfiguredQuestions;
+
     public function __construct(
         protected MaterialRepositoryInterface $materialRepo,
         protected ProgressRepositoryInterface $progressRepo,
@@ -130,18 +133,5 @@ class MaterialViewService implements MaterialViewServiceInterface
     public function resetMaterialProgress(int|string $userId, int $materialId): void
     {
         $this->progressRepo->resetProgress($userId, $materialId);
-    }
-
-    protected function calculateConfiguredQuestions(\App\Models\Material $material, bool $isGuest): int
-    {
-        if ($isGuest) {
-            $beginnerCount = min(3, $material->questions->where('difficulty', 'beginner')->count());
-            $mediumCount = min(3, $material->questions->where('difficulty', 'medium')->count());
-            $hardCount = min(3, $material->questions->where('difficulty', 'hard')->count());
-
-            return $beginnerCount + $mediumCount + $hardCount;
-        }
-
-        return $material->questions->count();
     }
 }
