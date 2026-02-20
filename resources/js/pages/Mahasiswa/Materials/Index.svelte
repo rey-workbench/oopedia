@@ -2,12 +2,11 @@
     import App from "@/layouts/App.svelte";
     import PageHeader from "@/components/ui/PageHeader.svelte";
     import MaterialGrid from "@/components/Mahasiswa/Materials/MaterialGrid.svelte";
-    import { MaterialCatalogState } from "@/states/Mahasiswa/MaterialCatalogState.svelte";
+    import { MaterialCatalogState } from "@/states/Mahasiswa/MaterialState.svelte";
 
     export let materials = [];
-    export let isGuest = false;
 
-    const state = new MaterialCatalogState(materials, isGuest);
+    const state = new MaterialCatalogState(materials);
 </script>
 
 <App title="Materi Pembelajaran">

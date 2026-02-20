@@ -1,19 +1,19 @@
 <script>
     import App from "@/layouts/App.svelte";
     import PageHeader from "@/components/ui/PageHeader.svelte";
-    import Card from "@/pages/components/ui/Card.svelte";
+    import Card from "@/components/ui/Card.svelte";
     import Button from "@/components/ui/Button.svelte";
     import GuestBanner from "@/components/ui/GuestBanner.svelte";
     import LevelMap from "@/components/Mahasiswa/Materials/Questions/LevelMap.svelte";
     import LevelLegend from "@/components/Mahasiswa/Materials/Questions/LevelLegend.svelte";
     import { ArrowLeft, Map as MapIcon } from "lucide-svelte";
-    import { LevelMapState } from "@/states/Mahasiswa/LevelMapState.svelte";
+    import { LevelMapState } from "@/states/Mahasiswa/QuizState.svelte";
+    import { ROUTES } from "@/utils/route";
 
     export let material = {};
     export let levels = [];
-    export let isGuest = false;
 
-    const state = new LevelMapState(material, levels, isGuest);
+    const state = new LevelMapState(material, levels);
 </script>
 
 <App title={`Peta Tantangan - ${state.material.title}`}>
@@ -24,7 +24,7 @@
         >
             <div slot="actions">
                 <Button
-                    href={`/mahasiswa/materials/${state.material.id}`}
+                    href={ROUTES.MAHASISWA.MATERIALS.SHOW(state.material.id)}
                     variant="ghost"
                     icon={ArrowLeft}
                 >
@@ -53,7 +53,7 @@
                     Tim kami sedang merancang tantangan menarik.
                 </p>
                 <Button
-                    href="/mahasiswa/materials"
+                    href={ROUTES.MAHASISWA.MATERIALS.INDEX}
                     variant="primary"
                     icon={ArrowLeft}>Kembali ke Katalog</Button
                 >

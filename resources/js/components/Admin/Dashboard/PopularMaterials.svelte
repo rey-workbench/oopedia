@@ -1,5 +1,5 @@
 <script>
-    import Card from "@/ui/Card.svelte";
+    import Card from "@/components/ui/Card.svelte";
     import { Layers } from "lucide-svelte";
 
     export let popularMaterials;
@@ -10,7 +10,7 @@
         padding="p-0"
         class="overflow-hidden border-slate-100 shadow-2xl h-full"
     >
-        <div class="px-8 py-6 border-b border-slate-50">
+        <div slot="header">
             <p
                 class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
             >

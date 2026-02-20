@@ -4,6 +4,7 @@
     import Button from "@/components/ui/Button.svelte";
     import UserImportForm from "@/components/Admin/Users/UserImportForm.svelte";
     import { ArrowLeft } from "lucide-svelte";
+    import { ROUTES } from "@/utils/route";
 </script>
 
 <App title="Impor Data Admin">
@@ -13,8 +14,10 @@
             subtitle="Unggah dataset admin melalui berkas Excel untuk otorisasi massal."
         >
             <div slot="actions">
-                <Button href="/admin/users" variant="ghost" icon={ArrowLeft}
-                    >KEMBALI KE DAFTAR</Button
+                <Button
+                    href={ROUTES.ADMIN.USERS.INDEX}
+                    variant="ghost"
+                    icon={ArrowLeft}>KEMBALI KE DAFTAR</Button
                 >
             </div>
         </PageHeader>

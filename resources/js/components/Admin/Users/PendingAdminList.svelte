@@ -1,9 +1,10 @@
 <script>
-    import Card from "@/ui/Card.svelte";
-    import Button from "@/ui/Button.svelte";
+    import Card from "@/components/ui/Card.svelte";
+    import Button from "@/components/ui/Button.svelte";
+    import EmptyState from "@/components/ui/EmptyState.svelte";
     import { UserCheck, UserX, Inbox } from "lucide-svelte";
     import { formatDate } from "@/utils/formatters";
-    import { PendingAdminState } from "@/states/Admin/PendingAdminState.svelte";
+    import { PendingAdminState } from "@/states/Admin/UserState.svelte";
 
     export let pendingAdmins = [];
 
@@ -12,13 +13,7 @@
 
 {#if state.pendingAdmins.length > 0}
     <Card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
-        <div
-            slot="header"
-            class="px-6 py-4 border-b border-slate-50 flex items-center gap-4"
-        >
-            <div
-                class="w-1.5 h-8 bg-amber-500 rounded-full animate-pulse"
-            ></div>
+        <div slot="header" class="flex items-center gap-4">
             <p
                 class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
             >
@@ -113,20 +108,11 @@
         </div>
     </Card>
 {:else}
-    <Card padding="p-20" class="text-center border-slate-100 shadow-xl">
-        <div
-            class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 text-slate-200"
-        >
-            <Inbox size={32} />
-        </div>
-        <h3
-            class="text-lg font-bold uppercase tracking-widest text-slate-900 mb-2"
-        >
-            Antrean Kosong
-        </h3>
-        <p class="text-slate-400 text-xs max-w-xs mx-auto">
-            Tidak ada permohonan akses administratif yang menunggu otorisasi
-            saat ini.
-        </p>
+    <Card class="border-slate-100 shadow-xl">
+        <EmptyState
+            title="Antrean Kosong"
+            description="Tidak ada permohonan akses administratif yang menunggu otorisasi saat ini."
+            icon={Inbox}
+        />
     </Card>
 {/if}

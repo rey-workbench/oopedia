@@ -1,5 +1,5 @@
 <script>
-    import StatCard from "@/ui/StatCard.svelte";
+    import StatCard from "@/components/ui/StatCard.svelte";
     import { LineChart, CheckCheck, Zap } from "lucide-svelte";
 
     export let avgProgress = "0";

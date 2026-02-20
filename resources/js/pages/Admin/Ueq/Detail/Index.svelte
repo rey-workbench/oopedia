@@ -3,11 +3,12 @@
     import PageHeader from "@/components/ui/PageHeader.svelte";
     import Button from "@/components/ui/Button.svelte";
     import { ArrowLeft } from "lucide-svelte";
+    import { ROUTES } from "@/utils/route";
     import UeqStudentProfile from "@/components/Admin/Ueq/UeqStudentProfile.svelte";
     import UeqScoreCards from "@/components/Admin/Ueq/UeqScoreCards.svelte";
     import UeqFeedbackCards from "@/components/Admin/Ueq/UeqFeedbackCards.svelte";
     import UeqMatrixTable from "@/components/Admin/Ueq/UeqMatrixTable.svelte";
-    import { UeqDetailState } from "@/states/Admin/UeqDetailState.svelte";
+    import { UeqDetailState } from "@/states/Admin/UeqState.svelte";
 
     export let user;
     export let survey;
@@ -22,8 +23,10 @@
             subtitle={`Analisis mendalam pengalaman pengguna untuk ${state.user.name}.`}
         >
             <div slot="actions">
-                <Button href="/admin/ueq" variant="ghost" icon={ArrowLeft}
-                    >KEMBALI KE DAFTAR</Button
+                <Button
+                    href={ROUTES.ADMIN.UEQ.INDEX}
+                    variant="ghost"
+                    icon={ArrowLeft}>KEMBALI KE DAFTAR</Button
                 >
             </div>
         </PageHeader>

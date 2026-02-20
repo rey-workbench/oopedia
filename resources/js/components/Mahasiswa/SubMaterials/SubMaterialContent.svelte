@@ -3,19 +3,16 @@
     import Button from "@/components/ui/Button.svelte";
     import ContentDisplay from "@/components/ui/ContentDisplay.svelte";
     import { BookOpen, CheckCheck, Play } from "lucide-svelte";
-    import {
-        getBgClass,
-        getShadowClass,
-    } from "@/utils/contentTypeStyles";
+    import { getBgClass, getShadowClass } from "@/utils/contentTypeStyles";
 
     export let subMaterial = {};
     export let materialId;
 </script>
 
 <Card class="p-10 md:p-16">
-    <div class="mb-10">
+    <div slot="header" class="mb-10">
         <h2
-            class="text-3xl font-extrabold tracking-tight text-slate-900 font-display mb-4"
+            class="text-3xl font-extrabold tracking-tight text-slate-900 font-display"
         >
             Materi Pembelajaran
         </h2>

@@ -18,7 +18,7 @@
                 bind:value={state.search}
                 on:input={state.handleSearch}
                 placeholder="Cari teks soal atau identitas..."
-                class="w-full bg-white border-2 border-slate-100 rounded-[2rem] px-8 py-4 text-xs font-bold uppercase tracking-widest text-slate-900 group-hover:border-primary-400 focus:border-primary-600 focus:outline-none transition-all duration-300 shadow-xl shadow-slate-100"
+                class="w-full bg-white border border-slate-100 rounded-2xl px-8 py-4 text-xs font-bold uppercase tracking-widest text-slate-900 group-hover:border-primary-400 focus:border-primary-600 focus:ring-4 focus:ring-primary-100 focus:outline-none transition-all duration-300 shadow-xl shadow-slate-100"
             />
             <Search
                 size={20}
@@ -38,7 +38,7 @@
             id="difficulty"
             bind:value={state.difficulty}
             on:change={() => state.setDifficulty(state.difficulty)}
-            class="w-full bg-white border-2 border-slate-100 rounded-[1.5rem] px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-900 focus:border-primary-600 focus:outline-none transition-all cursor-pointer shadow-xl shadow-slate-100"
+            class="w-full bg-white border border-slate-100 rounded-2xl px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-900 focus:border-primary-600 focus:ring-4 focus:ring-primary-100 focus:outline-none transition-all cursor-pointer shadow-xl shadow-slate-100"
         >
             <option value="">SEMUA LEVEL</option>
             <option value="beginner">BEGINNER</option>

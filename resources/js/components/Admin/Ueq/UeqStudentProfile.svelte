@@ -7,8 +7,8 @@
     export let survey;
 </script>
 
-<Card class="border-slate-100 shadow-2xl overflow-hidden rounded-[2.5rem]">
-    <div class="bg-slate-900 -mx-8 -mt-8 p-10 text-center space-y-4">
+<Card padding="p-0" class="border-slate-100 shadow-2xl overflow-hidden">
+    <div class="bg-slate-900 p-10 text-center space-y-4">
         <div
             class="w-24 h-24 rounded-[2.5rem] bg-white mx-auto flex items-center justify-center text-3xl font-bold text-slate-900 shadow-2xl"
         >
@@ -28,7 +28,7 @@
         </div>
     </div>
 
-    <div class="pt-8 space-y-8">
+    <div class="p-8 pt-0 space-y-8">
         <div class="grid grid-cols-2 gap-4">
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
                 <p

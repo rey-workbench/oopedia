@@ -1,6 +1,6 @@
 <script>
-    import Card from "@/components/components/ui/Card.svelte";
-    import Button from "@/components/components/ui/Button.svelte";
+    import Card from "@/components/ui/Card.svelte";
+    import Button from "@/components/ui/Button.svelte";
     import { BookOpen, Puzzle } from "lucide-svelte";
     import {
         getBgClass,
@@ -8,7 +8,7 @@
         getIcon,
         getBadgeLabel,
         getShadowClass,
-    } from "@/components/utils/contentTypeStyles";
+    } from "@/utils/contentTypeStyles";
 
     export let subMaterials = [];
     export let materialId;

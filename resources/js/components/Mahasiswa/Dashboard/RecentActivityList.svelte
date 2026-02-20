@@ -1,6 +1,7 @@
 <script>
     import Card from "@/components/ui/Card.svelte";
     import Button from "@/components/ui/Button.svelte";
+    import EmptyState from "@/components/ui/EmptyState.svelte";
     import { Trophy, Star, ClipboardList, Ghost } from "lucide-svelte";
 
     export let recentActivities = [];
@@ -99,24 +100,11 @@
                 </div>
             </Card>
         {:else}
-            <Card
-                class="p-20 text-center border-dashed border-slate-200 shadow-none"
-            >
-                <div
-                    class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-slate-200"
-                >
-                    <svelte:component
-                        this={Ghost}
-                        size={32}
-                        strokeWidth={1.5}
-                    />
-                </div>
-                <p
-                    class="text-xs font-bold uppercase tracking-widest text-slate-500"
-                >
-                    Belum ada aktivitas tercatat untuk akun ini.
-                </p>
-            </Card>
+            <EmptyState
+                title="Aktivitas Kosong"
+                description="Belum ada aktivitas tercatat untuk akun ini."
+                icon={Ghost}
+            />
         {/each}
     </div>
 </div>

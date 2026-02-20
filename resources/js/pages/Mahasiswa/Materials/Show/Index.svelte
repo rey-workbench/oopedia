@@ -1,7 +1,7 @@
 <script>
     import App from "@/layouts/App.svelte";
     import PageHeader from "@/components/ui/PageHeader.svelte";
-    import Card from "@/pages/components/ui/Card.svelte";
+    import Card from "@/components/ui/Card.svelte";
     import Button from "@/components/ui/Button.svelte";
     import ContentDisplay from "@/components/ui/ContentDisplay.svelte";
     import SubMaterialGrid from "@/components/Mahasiswa/Materials/Show/SubMaterialGrid.svelte";
@@ -9,7 +9,8 @@
     import { ArrowLeft, BookOpen, Layers, Info } from "lucide-svelte";
     import { onMount, tick } from "svelte";
     import { enhanceCodeBlocks } from "@/utils/codeBlockEnhancer";
-    import { MaterialShowState } from "@/states/Mahasiswa/MaterialShowState.svelte";
+    import { MaterialShowState } from "@/states/Mahasiswa/MaterialState.svelte";
+    import { ROUTES } from "@/utils/route";
 
     export let material = {};
 
@@ -38,7 +39,7 @@
         >
             <div slot="actions">
                 <Button
-                    href="/mahasiswa/materials"
+                    href={ROUTES.MAHASISWA.MATERIALS.INDEX}
                     variant="ghost"
                     icon={ArrowLeft}
                 >
@@ -129,7 +130,7 @@
                         Sub-materi untuk topik ini sedang dalam pengembangan.
                     </p>
                     <Button
-                        href="/mahasiswa/materials"
+                        href={ROUTES.MAHASISWA.MATERIALS.INDEX}
                         variant="outline"
                         icon={ArrowLeft}
                         class="mx-auto"

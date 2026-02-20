@@ -4,7 +4,7 @@
     import Input from "@/components/ui/Input.svelte";
     import QuillEditor from "@/components/ui/QuillEditor.svelte";
     import { Save, RefreshCw } from "lucide-svelte";
-    import { SubmaterialFormState } from "@/states/Admin/SubmaterialFormState.svelte";
+    import { SubmaterialFormState } from "@/states/Admin/MaterialState.svelte";
 
     export let material;
     export let submaterial = null; // If provided, it's Edit mode
@@ -15,10 +15,7 @@
 
 <div class="max-w-4xl mx-auto">
     <Card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
-        <div
-            slot="header"
-            class="bg-primary-600 px-8 py-6 text-white text-center"
-        >
+        <div slot="header" class="text-center">
             <h6 class="text-lg font-bold tracking-widest uppercase mb-0">
                 {state.isEdit
                     ? "Update Konten Unit"

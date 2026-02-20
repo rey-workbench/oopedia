@@ -4,6 +4,7 @@
     import Button from "@/components/ui/Button.svelte";
     import MaterialForm from "@/components/Admin/Materials/MaterialForm.svelte";
     import { ArrowLeft } from "lucide-svelte";
+    import { ROUTES } from "@/utils/route";
 
     export let material;
 </script>
@@ -15,8 +16,10 @@
             subtitle="Modifikasi konten instruksional dan optimasi media visual."
         >
             <div slot="actions">
-                <Button href="/admin/materials" variant="ghost" icon={ArrowLeft}
-                    >BATALKAN MODIFIKASI</Button
+                <Button
+                    href={ROUTES.ADMIN.MATERIALS.INDEX}
+                    variant="ghost"
+                    icon={ArrowLeft}>BATALKAN MODIFIKASI</Button
                 >
             </div>
         </PageHeader>

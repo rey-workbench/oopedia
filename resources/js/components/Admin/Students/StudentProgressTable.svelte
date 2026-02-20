@@ -1,7 +1,8 @@
 <script>
-    import Card from "@/ui/Card.svelte";
-    import Badge from "@/ui/Badge.svelte";
-    import ProgressBar from "@/ui/ProgressBar.svelte";
+    import Card from "@/components/ui/Card.svelte";
+    import Badge from "@/components/ui/Badge.svelte";
+    import ProgressBar from "@/components/ui/ProgressBar.svelte";
+    import EmptyState from "@/components/ui/EmptyState.svelte";
     import { relativeTime } from "@/utils/formatters";
 
     export let materials = [];
@@ -11,11 +12,7 @@
 <div class="space-y-12">
     <!-- Mastery Matrix -->
     <Card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
-        <div
-            slot="header"
-            class="px-6 py-4 border-b border-slate-50 flex items-center gap-4"
-        >
-            <div class="w-1.5 h-8 bg-primary-600 rounded-full"></div>
+        <div slot="header" class="flex items-center gap-4">
             <h6
                 class="mb-0 font-bold uppercase tracking-widest text-xs text-slate-400"
             >
@@ -48,11 +45,12 @@
                 <tbody>
                     {#if materials.length === 0}
                         <tr>
-                            <td
-                                colspan="4"
-                                class="p-20 text-center text-slate-400 text-xs uppercase font-bold tracking-widest"
-                                >Tidak Ada Log Interaksi Ditemukan</td
-                            >
+                            <td colspan="4" class="p-0">
+                                <EmptyState
+                                    title="Tidak Ada Log Interaksi"
+                                    description="Subjek belum melakukan interaksi dengan modul instruksional apapun."
+                                />
+                            </td>
                         </tr>
                     {:else}
                         {#each materials as material}
@@ -129,11 +127,7 @@
             padding="p-0"
             class="overflow-hidden border-rose-100 shadow-2xl bg-rose-50/5"
         >
-            <div
-                slot="header"
-                class="px-6 py-4 border-b border-rose-100 flex items-center gap-4"
-            >
-                <div class="w-1.5 h-8 bg-rose-500 rounded-full"></div>
+            <div slot="header" class="flex items-center gap-4">
                 <h6
                     class="mb-0 font-bold uppercase tracking-widest text-xs text-rose-500"
                 >

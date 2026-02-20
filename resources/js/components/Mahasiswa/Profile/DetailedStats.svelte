@@ -6,9 +6,11 @@
 </script>
 
 <Card padding="p-8 md:p-12" class="bg-slate-50 border-slate-100">
-    <h4 class="text-sm font-bold text-slate-900 uppercase tracking-widest mb-8">
-        Statistik Pembelajaran Detail
-    </h4>
+    <div slot="header">
+        <h4 class="text-sm font-bold text-slate-900 uppercase tracking-widest">
+            Statistik Pembelajaran Detail
+        </h4>
+    </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <!-- Questions Answered -->

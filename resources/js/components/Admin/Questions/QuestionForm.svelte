@@ -1,8 +1,8 @@
 <script>
-    import Card from "@/ui/Card.svelte";
-    import Button from "@/ui/Button.svelte";
-    import Input from "@/ui/Input.svelte";
-    import QuillEditor from "@/ui/QuillEditor.svelte";
+    import Card from "@/components/ui/Card.svelte";
+    import Button from "@/components/ui/Button.svelte";
+    import Input from "@/components/ui/Input.svelte";
+    import QuillEditor from "@/components/ui/QuillEditor.svelte";
     import {
         Edit2,
         Plus,
@@ -11,7 +11,7 @@
         Save,
         RefreshCw,
     } from "lucide-svelte";
-    import { QuestionFormState } from "@/states/Admin/QuestionFormState.svelte";
+    import { QuestionFormState } from "@/states/Admin/QuestionState.svelte";
 
     export let materials = [];
     export let material = null;
@@ -30,13 +30,14 @@
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
     <div class="lg:col-span-2 space-y-10">
         <Card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
-            <div
-                slot="header"
-                class="bg-primary-600 px-8 py-6 text-white flex items-center gap-3"
-            >
-                <Edit2 size={18} />
+            <div slot="header" class="flex items-center gap-3">
+                <div
+                    class="w-8 h-8 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center"
+                >
+                    <Edit2 size={16} />
+                </div>
                 <h6
-                    class="text-sm font-bold tracking-widest uppercase mb-0 text-white"
+                    class="text-xs font-bold tracking-widest uppercase mb-0 text-slate-800"
                 >
                     Konten & Logika Pertanyaan
                 </h6>

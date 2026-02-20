@@ -4,6 +4,7 @@
     import Button from "@/components/ui/Button.svelte";
     import MaterialForm from "@/components/Admin/Materials/MaterialForm.svelte";
     import { ArrowLeft } from "lucide-svelte";
+    import { ROUTES } from "@/utils/route";
 </script>
 
 <App title="Tambah Materi">
@@ -13,8 +14,10 @@
             subtitle="Publikasikan modul pembelajaran baru dengan visualisasi premium."
         >
             <div slot="actions">
-                <Button href="/admin/materials" variant="ghost" icon={ArrowLeft}
-                    >BATALKAN PUBLIKASI</Button
+                <Button
+                    href={ROUTES.ADMIN.MATERIALS.INDEX}
+                    variant="ghost"
+                    icon={ArrowLeft}>BATALKAN PUBLIKASI</Button
                 >
             </div>
         </PageHeader>

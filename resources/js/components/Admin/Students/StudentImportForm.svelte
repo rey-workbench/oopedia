@@ -1,8 +1,8 @@
 <script>
-    import Card from "@/ui/Card.svelte";
-    import Button from "@/ui/Button.svelte";
+    import Card from "@/components/ui/Card.svelte";
+    import Button from "@/components/ui/Button.svelte";
     import { FileSpreadsheet, Upload, Download } from "lucide-svelte";
-    import { StudentImportState } from "@/states/Admin/StudentImportState.svelte";
+    import { StudentImportState } from "@/states/Admin/StudentState.svelte";
 
     const state = new StudentImportState();
     const form = state.form;
@@ -10,7 +10,7 @@
 
 <div class="max-w-2xl mx-auto">
     <Card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
-        <div slot="header" class="bg-primary-600 px-8 py-6 text-white">
+        <div slot="header">
             <h6 class="text-lg font-bold tracking-widest uppercase mb-0">
                 Impor Dataset Mahasiswa
             </h6>

@@ -65,4 +65,6 @@ export type {
     AdaptiveResult,
     AdaptiveFact,
     UseHintResponse,
+    Pagination,
+    PaginatorLink,
 } from '@/types/inertia';

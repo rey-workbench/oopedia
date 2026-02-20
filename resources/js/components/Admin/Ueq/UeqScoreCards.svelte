@@ -9,10 +9,7 @@
     padding="p-0"
     class="border-slate-100 shadow-2xl overflow-hidden rounded-[2.5rem]"
 >
-    <div
-        slot="header"
-        class="px-8 py-6 border-b border-slate-50 bg-slate-50/50"
-    >
+    <div slot="header">
         <h6
             class="mb-0 font-bold uppercase tracking-widest text-[10px] text-slate-400"
         >

@@ -1,9 +1,9 @@
 <script>
-    import Card from "@/ui/Card.svelte";
-    import Button from "@/ui/Button.svelte";
-    import Input from "@/ui/Input.svelte";
-    import Alert from "@/ui/Alert.svelte";
-    import QuillEditor from "@/ui/QuillEditor.svelte";
+    import Card from "@/components/ui/Card.svelte";
+    import Button from "@/components/ui/Button.svelte";
+    import Input from "@/components/ui/Input.svelte";
+    import Alert from "@/components/ui/Alert.svelte";
+    import QuillEditor from "@/components/ui/QuillEditor.svelte";
     import {
         Info,
         CloudUpload,
@@ -12,7 +12,7 @@
         Camera,
         RefreshCw,
     } from "lucide-svelte";
-    import { MaterialFormState } from "@/states/Admin/MaterialFormState.svelte";
+    import { MaterialFormState } from "@/states/Admin/MaterialState.svelte";
 
     export let material = null; // If provided, it's Edit mode
 
@@ -22,7 +22,7 @@
 
 <form on:submit|preventDefault={() => state.submit()} class="space-y-12">
     <Card class="border-slate-100 shadow-2xl">
-        <div slot="header" class="px-6 py-4 border-b border-slate-50">
+        <div slot="header">
             <h3 class="text-lg font-bold text-slate-800">
                 {state.isEdit
                     ? "Sinkronisasi & Konten Modul"

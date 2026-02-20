@@ -1,5 +1,5 @@
 <script>
-    import StatCard from "@/ui/StatCard.svelte";
+    import StatCard from "@/components/ui/StatCard.svelte";
     import { Users, Signal, FolderTree, Cpu } from "lucide-svelte";
 
     export let totalStudents;

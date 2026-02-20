@@ -4,7 +4,8 @@
     import Button from "@/components/ui/Button.svelte";
     import { ArrowLeft } from "lucide-svelte";
     import CompletedMaterialList from "@/components/Mahasiswa/Dashboard/CompletedMaterialList.svelte";
-    import { CompletedState } from "@/states/Mahasiswa/CompletedState.svelte";
+    import { CompletedState } from "@/states/Mahasiswa/MaterialState.svelte";
+    import { ROUTES } from "@/utils/route";
 
     export let materials = [];
 
@@ -19,7 +20,7 @@
         >
             <div slot="actions">
                 <Button
-                    href="/mahasiswa/dashboard"
+                    href={ROUTES.MAHASISWA.DASHBOARD}
                     variant="ghost"
                     icon={ArrowLeft}>KEMBALI</Button
                 >

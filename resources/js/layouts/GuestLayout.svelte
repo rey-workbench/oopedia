@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import { page } from "@inertiajs/svelte";
     import Alert from "@/components/ui/Alert.svelte";
+    import { ROUTES } from "@/utils/route";
 
     export let title;
 
@@ -58,7 +59,7 @@
     >
         <!-- Logo -->
         <div class="flex flex-col items-center mb-10">
-            <a href="/" class="flex items-center gap-4 group">
+            <a href={ROUTES.HOME} class="flex items-center gap-4 group">
                 <div
                     class="w-16 h-16 bg-white rounded-[2rem] flex items-center justify-center shadow-2xl shadow-slate-200 group-hover:rotate-12 transition-transform duration-500"
                 >

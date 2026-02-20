@@ -3,6 +3,7 @@
     import Button from "@/components/ui/Button.svelte";
     import { Link } from "@inertiajs/svelte";
     import { Code2, Plus } from "lucide-svelte";
+    import { ROUTES } from "@/utils/route";
 </script>
 
 <div class="space-y-8">
@@ -34,7 +35,8 @@
                 variant="primary"
                 size="sm"
                 class="w-full py-4 uppercase font-bold tracking-widest"
-                href="/mahasiswa/materials">PELAJARI SEKARANG</Button
+                href={ROUTES.MAHASISWA.MATERIALS.INDEX}
+                >PELAJARI SEKARANG</Button
             >
         </Card>
 
@@ -43,7 +45,7 @@
             class="border-2 border-dashed border-slate-200 shadow-none hover:border-primary-400 hover:bg-primary-50/20 transition-all cursor-pointer group"
         >
             <Link
-                href="/mahasiswa/materials"
+                href={ROUTES.MAHASISWA.MATERIALS.INDEX}
                 class="flex flex-col items-center text-center"
             >
                 <div

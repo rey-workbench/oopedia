@@ -1,7 +1,7 @@
 <script>
-    import Card from "@/ui/Card.svelte";
-    import Button from "@/ui/Button.svelte";
-    import ProgressBar from "@/ui/ProgressBar.svelte";
+    import Card from "@/components/ui/Card.svelte";
+    import Button from "@/components/ui/Button.svelte";
+    import ProgressBar from "@/components/ui/ProgressBar.svelte";
     import { ArrowRight, Search } from "lucide-svelte";
 
     export let studentProgress;
@@ -9,9 +9,7 @@
 
 <div class="lg:col-span-2">
     <Card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
-        <div
-            class="flex items-center justify-between w-full px-8 py-6 border-b border-slate-50"
-        >
+        <div slot="header" class="flex items-center justify-between w-full">
             <p
                 class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
             >

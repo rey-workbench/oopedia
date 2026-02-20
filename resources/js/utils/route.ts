@@ -3,6 +3,7 @@
  * Standardized routes to ensure consistency across the application.
  */
 export const ROUTES = {
+    HOME: '/',
     ADMIN: {
         DASHBOARD: '/admin/dashboard',
         MATERIALS: {
@@ -13,6 +14,10 @@ export const ROUTES = {
             UPDATE: (id: string | number) => `/admin/materials/${id}`,
             DELETE: (id: string | number) => `/admin/materials/${id}`,
             JSON: (id: string | number) => `/admin/materials/${id}/json`,
+            QUESTIONS: {
+                INDEX: (id: string | number) => `/admin/materials/${id}/questions`,
+                CREATE: (id: string | number) => `/admin/materials/${id}/questions/create`,
+            },
             SUBMATERIALS: {
                 INDEX: (id: string | number) => `/admin/materials/${id}/submaterials`,
                 CREATE: (id: string | number) => `/admin/materials/${id}/submaterials/create`,
@@ -41,10 +46,16 @@ export const ROUTES = {
             DELETE: (id: string | number) => `/admin/users/${id}`,
             IMPORT: '/admin/users/import',
             PENDING: '/admin/users/pending',
+            APPROVE: (id: string | number) => `/admin/users/${id}/approve`,
+            REJECT: (id: string | number) => `/admin/users/${id}/reject`,
+        },
+        PENDING_ADMINS: {
+            INDEX: '/admin/pending-admins',
         },
         UEQ: {
             INDEX: '/admin/ueq-survey',
             SHOW: (id: string | number) => `/admin/ueq-survey/${id}`,
+            EXPORT: '/admin/ueq-survey/export',
         }
     },
     MAHASISWA: {

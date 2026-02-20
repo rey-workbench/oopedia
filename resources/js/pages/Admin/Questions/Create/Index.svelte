@@ -4,6 +4,7 @@
     import Button from "@/components/ui/Button.svelte";
     import QuestionForm from "@/components/Admin/Questions/QuestionForm.svelte";
     import { ArrowLeft } from "lucide-svelte";
+    import { ROUTES } from "@/utils/route";
 
     export let materials = [];
     export let material = null;
@@ -19,8 +20,8 @@
             <div slot="actions">
                 <Button
                     href={material
-                        ? `/admin/materials/${material.id}/questions`
-                        : "/admin/questions"}
+                        ? ROUTES.ADMIN.MATERIALS.SHOW_QUESTIONS(material.id)
+                        : ROUTES.ADMIN.QUESTIONS.INDEX}
                     variant="ghost"
                     icon={ArrowLeft}>BATALKAN</Button
                 >

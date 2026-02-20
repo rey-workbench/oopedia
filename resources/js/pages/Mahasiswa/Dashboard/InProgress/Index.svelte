@@ -3,8 +3,9 @@
     import PageHeader from "@/components/ui/PageHeader.svelte";
     import Button from "@/components/ui/Button.svelte";
     import { ArrowLeft, BookOpen, Rocket } from "lucide-svelte";
-    import { InProgressState } from "@/states/Mahasiswa/InProgressState.svelte";
+    import { InProgressState } from "@/states/Mahasiswa/MaterialState.svelte";
     import InProgressCard from "@/components/Mahasiswa/Dashboard/InProgressCard.svelte";
+    import { ROUTES } from "@/utils/route";
 
     export let materialsWithStats = [];
 
@@ -20,7 +21,7 @@
             >
                 <div slot="actions">
                     <Button
-                        href="/mahasiswa/dashboard"
+                        href={ROUTES.MAHASISWA.DASHBOARD}
                         variant="ghost"
                         icon={ArrowLeft}
                     >
@@ -52,7 +53,7 @@
                             sekarang!
                         </p>
                         <Button
-                            href="/mahasiswa/materials"
+                            href={ROUTES.MAHASISWA.MATERIALS.INDEX}
                             variant="primary"
                             class="px-10 py-4 rounded-2xl font-bold uppercase transition-all shadow-xl shadow-primary-900/10"
                             icon={Rocket}

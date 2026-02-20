@@ -1,5 +1,6 @@
 <script>
     import { Link } from "@inertiajs/svelte";
+    import Card from "@/components/ui/Card.svelte";
     import Badge from "@/components/ui/Badge.svelte";
     import Button from "@/components/ui/Button.svelte";
     import ProgressBar from "@/components/ui/ProgressBar.svelte";

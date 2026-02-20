@@ -1,6 +1,6 @@
 <script>
-    import Card from "@/ui/Card.svelte";
-    import ProgressBar from "@/ui/ProgressBar.svelte";
+    import Card from "@/components/ui/Card.svelte";
+    import ProgressBar from "@/components/ui/ProgressBar.svelte";
 
     export let averages = {};
 </script>

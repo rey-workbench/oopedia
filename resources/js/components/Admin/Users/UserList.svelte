@@ -1,9 +1,10 @@
 <script>
-    import Card from "@/ui/Card.svelte";
-    import Button from "@/ui/Button.svelte";
-    import Badge from "@/ui/Badge.svelte";
+    import Card from "@/components/ui/Card.svelte";
+    import Button from "@/components/ui/Button.svelte";
+    import Badge from "@/components/ui/Badge.svelte";
+    import Pagination from "@/components/ui/Pagination.svelte";
     import { ShieldCheck, UserX, Settings, Edit3, Edit2 } from "lucide-svelte";
-    import { UserListState } from "@/states/Admin/UserListState.svelte";
+    import { UserListState } from "@/states/Admin/UserState.svelte";
 
     export let users = { data: [] };
     export let search = "";
@@ -13,7 +14,8 @@
 
 <Card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
     <div
-        class="flex flex-col md:flex-row justify-between items-center gap-6 w-full px-6 py-4 border-b border-slate-50"
+        slot="header"
+        class="flex flex-col md:flex-row justify-between items-center gap-6 w-full"
     >
         <p
             class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
@@ -165,31 +167,6 @@
             </tbody>
         </table>
 
-        <!-- Simple Pagination -->
-        {#if state.users.links && state.users.links.length > 3}
-            <div class="p-6 border-t border-slate-100 flex justify-center">
-                <div class="flex gap-1">
-                    {#each state.users.links as link}
-                        {#if link.url}
-                            <Button
-                                href={link.url}
-                                variant={link.active ? "primary" : "ghost"}
-                                size="sm"
-                                class={!link.active && !link.url
-                                    ? "opacity-50 cursor-not-allowed"
-                                    : ""}
-                            >
-                                {@html link.label}
-                            </Button>
-                        {:else}
-                            <span
-                                class="px-3 py-2 text-slate-400 text-xs font-bold"
-                                >{@html link.label}</span
-                            >
-                        {/if}
-                    {/each}
-                </div>
-            </div>
-        {/if}
+        <Pagination links={state.users.links || []} />
     </div>
 </Card>

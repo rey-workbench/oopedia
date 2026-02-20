@@ -2,6 +2,7 @@
     import Card from "@/components/ui/Card.svelte";
     import Button from "@/components/ui/Button.svelte";
     import Input from "@/components/ui/Input.svelte";
+    import Alert from "@/components/ui/Alert.svelte";
     import { useForm, page } from "@inertiajs/svelte";
     import { Loader2, Save, Check } from "lucide-svelte";
 
@@ -33,18 +34,9 @@
 
     <Card padding="p-8 md:p-12">
         {#if flash && flash.success}
-            <div
-                class="mb-10 p-4 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500"
-            >
-                <div
-                    class="w-10 h-10 bg-emerald-500 text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg"
-                >
-                    <Check size={18} />
-                </div>
-                <p class="text-emerald-800 font-bold text-sm">
-                    {flash.success}
-                </p>
-            </div>
+            <Alert variant="success" className="mb-10">
+                {flash.success}
+            </Alert>
         {/if}
 
         <form on:submit|preventDefault={handleSubmit} class="space-y-10">

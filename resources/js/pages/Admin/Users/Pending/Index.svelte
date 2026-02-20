@@ -4,6 +4,7 @@
     import Button from "@/components/ui/Button.svelte";
     import PendingAdminList from "@/components/Admin/Users/PendingAdminList.svelte";
     import { ArrowLeft } from "lucide-svelte";
+    import { ROUTES } from "@/utils/route";
 
     export let pendingAdmins = [];
 </script>
@@ -15,8 +16,10 @@
             subtitle="Otorisasi permohonan akses administratif dari entitas eksternal."
         >
             <div slot="actions">
-                <Button href="/admin/users" variant="ghost" icon={ArrowLeft}
-                    >KEMBALI KE REPOSITORI</Button
+                <Button
+                    href={ROUTES.ADMIN.USERS.INDEX}
+                    variant="ghost"
+                    icon={ArrowLeft}>KEMBALI KE REPOSITORI</Button
                 >
             </div>
         </PageHeader>

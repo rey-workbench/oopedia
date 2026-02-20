@@ -1,24 +1,62 @@
 import { router } from "@inertiajs/svelte";
 import axios from "axios";
+import { BaseState } from "@/states/BaseState.svelte";
+import { ROUTES } from "@/utils/route";
+import type { Material, Question, DifficultyLevel, StudentStateViewModel, CheckAnswerResponse } from "@/types";
 
-export class QuestionShowState {
-    // Props
+/**
+ * Question List State (Selection/Catalog)
+ */
+export class QuestionListState extends BaseState {
+    materials = $state<any[]>([]);
+
+    constructor(materials: any) {
+        super();
+        this.materials = materials;
+    }
+}
+
+/**
+ * Level Map State (Adaptive Path Visualization)
+ */
+export class LevelMapState extends BaseState {
     material = $state<any>({});
-    currentQuestion = $state<any>(null);
-    difficulty = $state("beginner");
-    studentState = $state<any>({});
-    isGuest = $state(false);
+    levels = $state<any[]>([]);
 
-    // Question State
+    beginnerLevels = $derived(this.levels.filter(l => l.level === 'beginner'));
+    mediumLevels = $derived(this.levels.filter(l => l.level === 'medium'));
+    hardLevels = $derived(this.levels.filter(l => l.level === 'hard'));
+
+    constructor(material: any, levels: any) {
+        super();
+        this.material = material;
+        this.levels = levels;
+    }
+}
+
+/**
+ * Question Show State (Quiz Controller)
+ */
+export class QuestionShowState extends BaseState {
+    material = $state<Material>({} as Material);
+    currentQuestion = $state<Question | null>(null);
+    difficulty = $state<DifficultyLevel>('beginner');
+    studentState = $state<StudentStateViewModel>({} as StudentStateViewModel);
+
     fillInTheBlankAnswer = $state("");
-    selectedMultipleChoiceAnswer = $state(null);
-    dragAndDropAnswers = $state({});
+    selectedMultipleChoiceAnswer = $state<any>(null);
+    dragAndDropAnswers = $state<Record<string, string>>({});
 
-    // UI State
     isSubmitting = $state(false);
     showFeedback = $state(false);
     showHint = $state(false);
-    feedbackData = $state<any>({
+    feedbackData = $state<{
+        status: string;
+        message: string;
+        nextUrl: string;
+        adaptiveResult: any;
+        score: number;
+    }>({
         status: "success",
         message: "",
         nextUrl: "",
@@ -28,28 +66,26 @@ export class QuestionShowState {
     usedHint = $state(false);
     startTime = $state(Date.now());
 
-    // Adaptive UI State
     showAdaptiveIndicator = $state(false);
     adaptiveFacts = $state<any[]>([]);
-    adaptiveTriggeredRule = $state(null);
+    adaptiveTriggeredRule = $state<string | null>(null);
 
-    // Derived State
     xp = $derived(this.studentState?.gamification?.global_xp || 0);
     streak = $derived(this.studentState?.gamification?.current_streak || 0);
     level = $derived(this.studentState?.gamification?.current_level || "Pemula");
     hintsAvailable = $derived(this.studentState?.performance?.hints_available ?? 3);
 
-    constructor(material: any, currentQuestion: any, difficulty: any, studentState: any, isGuest: any) {
+    constructor(material: Material, currentQuestion: Question, difficulty: DifficultyLevel, studentState: StudentStateViewModel) {
+        super();
         this.material = material;
         this.currentQuestion = currentQuestion;
         this.difficulty = difficulty;
         this.studentState = studentState;
-        this.isGuest = isGuest;
         this.startTime = Date.now();
     }
 
-    getDifficultyLabel(diff: any) {
-        const labels: any = {
+    getDifficultyLabel(diff: DifficultyLevel) {
+        const labels: Record<string, string> = {
             beginner: "Pemula",
             medium: "Menengah",
             hard: "Sulit",
@@ -57,8 +93,8 @@ export class QuestionShowState {
         return labels[diff] || diff;
     }
 
-    getDifficultyColor(diff: any) {
-        const colors: any = {
+    getDifficultyColor(diff: DifficultyLevel) {
+        const colors: Record<string, string> = {
             beginner: "text-emerald-600 bg-emerald-50",
             medium: "text-amber-600 bg-amber-50",
             hard: "text-rose-600 bg-rose-50",
@@ -70,7 +106,6 @@ export class QuestionShowState {
         if (this.hintsAvailable > 0 && this.currentQuestion?.hint) {
             this.usedHint = true;
             this.showHint = true;
-            // Optimistically decrease hints, though real state comes from DB
             if (this.studentState.performance) {
                 this.studentState.performance.hints_available--;
             }
@@ -82,13 +117,10 @@ export class QuestionShowState {
     }
 
     async submitAnswer() {
-        if (this.isSubmitting) return;
+        if (this.isSubmitting || !this.currentQuestion) return;
         this.isSubmitting = true;
 
-        const timeSpent = Math.max(
-            0,
-            Math.floor((Date.now() - this.startTime) / 1000)
-        );
+        const timeSpent = Math.max(0, Math.floor((Date.now() - this.startTime) / 1000));
 
         let payload: any = {
             question_id: this.currentQuestion.id,
@@ -108,29 +140,24 @@ export class QuestionShowState {
         }
 
         try {
-            const response = await axios.post(
-                `/mahasiswa/materials/${this.material.id}/questions/${this.currentQuestion.id}/check`,
+            const response = await axios.post<CheckAnswerResponse>(
+                ROUTES.MAHASISWA.MATERIALS.QUESTIONS.CHECK(this.material.id, this.currentQuestion.id),
                 payload
             );
 
             const data = response.data;
-
             this.feedbackData = {
                 status: data.status,
                 message: data.message,
                 nextUrl: data.nextUrl,
                 adaptiveResult: data.adaptiveResult,
-                score: data.score,
+                score: data.xpEarned || 0,
             };
 
             if (data.adaptiveResult) {
                 this.adaptiveFacts = data.adaptiveResult.facts || [];
-                this.adaptiveTriggeredRule = data.adaptiveResult.triggered_rule || null;
+                this.adaptiveTriggeredRule = data.adaptiveResult.triggeredRule || null;
                 this.showAdaptiveIndicator = true;
-            }
-
-            if (data.adaptiveResult?.new_state) {
-                this.studentState = data.adaptiveResult.new_state;
             }
 
             this.showHint = false;
@@ -139,9 +166,7 @@ export class QuestionShowState {
             console.error("Error submitting answer:", error);
             this.feedbackData = {
                 status: "error",
-                message:
-                    error.response?.data?.message ||
-                    "Terjadi kesalahan saat memeriksa jawaban.",
+                message: error.response?.data?.message || "Terjadi kesalahan saat memeriksa jawaban.",
                 nextUrl: "",
                 adaptiveResult: null,
                 score: 0,
@@ -167,5 +192,43 @@ export class QuestionShowState {
         this.selectedMultipleChoiceAnswer = null;
         this.dragAndDropAnswers = {};
         this.startTime = Date.now();
+    }
+}
+
+/**
+ * Review State (Quiz Summary & Filter)
+ */
+export class ReviewState extends BaseState {
+    material = $state<any>({});
+    materials = $state<any[]>([]);
+    questions = $state<any[]>([]);
+    difficulty = $state("");
+
+    constructor(material: any, materials: any, questions: any, difficulty: any) {
+        super();
+        this.material = material;
+        this.materials = materials;
+        this.questions = questions;
+        this.difficulty = difficulty;
+    }
+
+    getDifficultyLabel(d: any) {
+        return d === 'beginner' ? 'Pemula' : d === 'medium' ? 'Menengah' : 'Sulit';
+    }
+
+    getDifficultyColor(d: any) {
+        return d === 'beginner' ? 'text-emerald-600 bg-emerald-50' : d === 'medium' ? 'text-amber-600 bg-amber-50' : 'text-rose-600 bg-rose-50';
+    }
+
+    filterDifficulty(d: any) {
+        router.get(
+            ROUTES.MAHASISWA.MATERIALS.QUESTIONS.REVIEW(this.material.id),
+            { difficulty: d },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                only: ["questions", "difficulty"],
+            }
+        );
     }
 }

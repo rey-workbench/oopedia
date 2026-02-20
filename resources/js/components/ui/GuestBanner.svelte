@@ -1,6 +1,7 @@
 <script>
     import Button from "@/components/ui/Button.svelte";
     import { AlertTriangle } from "lucide-svelte";
+    import { ROUTES } from "@/utils/route";
 
     /** Control visibility externally */
     export let show = false;
@@ -33,11 +34,13 @@
             </p>
             {#if showActions}
                 <div class="flex gap-4 mt-2">
-                    <Button href="/login" variant="primary" size="sm"
+                    <Button href={ROUTES.AUTH.LOGIN} variant="primary" size="sm"
                         >Login Sekarang</Button
                     >
-                    <Button href="/register" variant="ghost" size="sm"
-                        >Daftar Akun</Button
+                    <Button
+                        href={ROUTES.AUTH.REGISTER}
+                        variant="ghost"
+                        size="sm">Daftar Akun</Button
                     >
                 </div>
             {/if}
@@ -62,13 +65,13 @@
                     <slot>
                         {message} Silakan
                         <a
-                            href="/login"
+                            href={ROUTES.AUTH.LOGIN}
                             class="font-bold underline hover:text-amber-950 transition-colors"
                             >login</a
                         >
                         atau
                         <a
-                            href="/register"
+                            href={ROUTES.AUTH.REGISTER}
                             class="font-bold underline hover:text-amber-950 transition-colors"
                             >daftar</a
                         > sebagai mahasiswa.

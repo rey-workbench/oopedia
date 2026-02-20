@@ -5,7 +5,8 @@
     import Alert from "@/components/ui/Alert.svelte";
     import { Link } from "@inertiajs/svelte";
     import { Loader2, ArrowRight, Ghost } from "lucide-svelte";
-    import { LoginState } from "@/states/Auth/LoginState.svelte";
+    import { LoginState } from "@/states/Auth/AuthState.svelte";
+    import { ROUTES } from "@/utils/route";
 
     const state = new LoginState();
     const form = state.form;
@@ -94,8 +95,9 @@
                 class="text-center text-xs font-bold text-slate-500 uppercase tracking-wider"
             >
                 Tidak memiliki akun?
-                <Link href="/register" class="text-primary-600 hover:underline"
-                    >Daftar Gratis</Link
+                <Link
+                    href={ROUTES.AUTH.REGISTER}
+                    class="text-primary-600 hover:underline">Daftar Gratis</Link
                 >
             </p>
 

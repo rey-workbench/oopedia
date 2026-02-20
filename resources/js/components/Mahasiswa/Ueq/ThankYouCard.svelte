@@ -2,6 +2,7 @@
     import Card from "@/components/ui/Card.svelte";
     import Button from "@/components/ui/Button.svelte";
     import { Heart, Home } from "lucide-svelte";
+    import { ROUTES } from "@/utils/route";
 </script>
 
 <div class="py-24 flex items-center justify-center min-h-[70vh]">
@@ -48,7 +49,7 @@
 
                 <div class="pt-4">
                     <Button
-                        href="/mahasiswa/dashboard"
+                        href={ROUTES.MAHASISWA.DASHBOARD}
                         variant="primary"
                         class="px-12 py-5 shadow-xl shadow-primary-900/20"
                         icon={Home}

@@ -1,10 +1,10 @@
 <script>
-    import Modal from "@/ui/Modal.svelte";
-    import Button from "@/ui/Button.svelte";
-    import Input from "@/ui/Input.svelte";
+    import Modal from "@/components/ui/Modal.svelte";
+    import Button from "@/components/ui/Button.svelte";
+    import Input from "@/components/ui/Input.svelte";
     import { X, UserPlus } from "lucide-svelte";
     import { createEventDispatcher } from "svelte";
-    import { StudentRegisterState } from "@/states/Admin/StudentRegisterState.svelte";
+    import { StudentRegisterState } from "@/states/Admin/StudentState.svelte";
 
     export let show = false;
     const dispatch = createEventDispatcher();
@@ -24,20 +24,22 @@
 </script>
 
 <Modal bind:show on:close={handleClose}>
-    <div class="bg-primary-600 px-8 py-10 text-white relative">
+    <div class="px-8 py-10 border-b border-slate-50 relative">
         <div class="absolute right-8 top-10">
             <button
                 on:click={handleClose}
-                class="text-primary-200 hover:text-white"
+                class="text-slate-400 hover:text-slate-900 transition-colors"
             >
                 <X size={20} />
             </button>
         </div>
-        <h6 class="text-xl font-bold tracking-widest mb-1 uppercase">
+        <h6
+            class="text-xl font-bold tracking-widest mb-1 uppercase text-slate-900"
+        >
             Inisialisasi Otentikasi
         </h6>
         <p
-            class="text-[10px] font-bold text-blue-100/60 uppercase tracking-widest"
+            class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"
         >
             Daftarkan entitas mahasiswa individu
         </p>

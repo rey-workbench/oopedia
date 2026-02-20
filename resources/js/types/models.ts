@@ -49,6 +49,9 @@ export interface Material {
     title: string;
     description: string | null;
     content: string | null;
+    cover_image: string | null;
+    level: DifficultyLevel;
+    status: "draft" | "published";
     module_id: number | null;
     created_by: number | null;
     created_at: string;

@@ -1,9 +1,9 @@
 <script>
     import App from "@/layouts/App.svelte";
-    import PageHeader from "@/pages/components/ui/PageHeader.svelte";
-    import Card from "@/pages/components/ui/Card.svelte";
-    import Button from "@/pages/components/ui/Button.svelte";
-    import QuillEditor from "@/pages/components/ui/QuillEditor.svelte";
+    import PageHeader from "@/components/ui/PageHeader.svelte";
+    import Card from "@/components/ui/Card.svelte";
+    import Button from "@/components/ui/Button.svelte";
+    import QuillEditor from "@/components/ui/QuillEditor.svelte";
     import {
         ArrowLeft,
         Edit2,
@@ -12,7 +12,7 @@
         CheckCircle2,
         RefreshCw,
     } from "lucide-svelte";
-    import { QuestionEditState } from "@/states/Admin/QuestionEditState.svelte";
+    import { QuestionEditState } from "@/states/Admin/QuestionState.svelte";
 
     export let materials = [];
     export let material = null;

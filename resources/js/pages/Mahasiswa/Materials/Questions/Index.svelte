@@ -2,13 +2,12 @@
     import App from "@/layouts/App.svelte";
     import PageHeader from "@/components/ui/PageHeader.svelte";
     import GuestBanner from "@/components/ui/GuestBanner.svelte";
-    import { QuestionListState } from "@/states/Mahasiswa/QuestionListState.svelte";
+    import { QuestionListState } from "@/states/Mahasiswa/QuizState.svelte";
     import QuestionMaterialCard from "@/components/Mahasiswa/Materials/Questions/QuestionMaterialCard.svelte";
 
     export let materials = [];
-    export let isGuest = false;
 
-    const state = new QuestionListState(materials, isGuest);
+    const state = new QuestionListState(materials);
 </script>
 
 <App title="Latihan Soal PBO">

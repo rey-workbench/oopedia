@@ -4,6 +4,7 @@
     import Button from "@/components/ui/Button.svelte";
     import StudentImportForm from "@/components/Admin/Students/StudentImportForm.svelte";
     import { ArrowLeft } from "lucide-svelte";
+    import { ROUTES } from "@/utils/route";
 </script>
 
 <App title="Impor Data Mahasiswa">
@@ -13,8 +14,10 @@
             subtitle="Integrasi massal bios data mahasiswa ke dalam registry OOPedia."
         >
             <div slot="actions">
-                <Button href="/admin/students" variant="ghost" icon={ArrowLeft}
-                    >KEMBALI KE DAFTAR</Button
+                <Button
+                    href={ROUTES.ADMIN.STUDENTS.INDEX}
+                    variant="ghost"
+                    icon={ArrowLeft}>KEMBALI KE DAFTAR</Button
                 >
             </div>
         </PageHeader>

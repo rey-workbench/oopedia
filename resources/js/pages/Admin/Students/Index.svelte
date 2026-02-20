@@ -6,7 +6,8 @@
     import StudentList from "@/components/Admin/Students/StudentList.svelte";
     import StudentRegisterModal from "@/components/Admin/Students/StudentRegisterModal.svelte";
     import { UserPlus, FileSpreadsheet, Search } from "lucide-svelte";
-    import { StudentListState } from "@/states/Admin/StudentListState.svelte";
+    import { StudentListState } from "@/states/Admin/StudentState.svelte";
+    import { ROUTES } from "@/utils/route";
 
     export let students = {}; // paginated object
 
@@ -30,7 +31,7 @@
                     icon={UserPlus}>Daftarkan Mahasiswa</Button
                 >
                 <Button
-                    href="/admin/students/import"
+                    href={ROUTES.ADMIN.STUDENTS.IMPORT}
                     variant="success"
                     icon={FileSpreadsheet}>Impor Excel</Button
                 >

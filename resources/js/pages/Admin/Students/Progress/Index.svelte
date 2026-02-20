@@ -5,7 +5,8 @@
     import StudentProgressStats from "@/components/Admin/Students/StudentProgressStats.svelte";
     import StudentProgressTable from "@/components/Admin/Students/StudentProgressTable.svelte";
     import { ArrowLeft } from "lucide-svelte";
-    import { StudentProgressState } from "@/states/Admin/StudentProgressState.svelte";
+    import { ROUTES } from "@/utils/route";
+    import { StudentProgressState } from "@/states/Admin/StudentState.svelte";
 
     export let student;
     export let materials = [];
@@ -25,8 +26,10 @@
             subtitle={`Analisis trajectory pembelajaran untuk entitas ${state.student.name}.`}
         >
             <div slot="actions">
-                <Button href="/admin/students" variant="ghost" icon={ArrowLeft}
-                    >KEMBALI KE DAFTAR</Button
+                <Button
+                    href={ROUTES.ADMIN.STUDENTS.INDEX}
+                    variant="ghost"
+                    icon={ArrowLeft}>KEMBALI KE DAFTAR</Button
                 >
             </div>
         </PageHeader>

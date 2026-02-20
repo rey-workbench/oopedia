@@ -9,10 +9,9 @@
     import ProfileForm from "@/components/Mahasiswa/Profile/ProfileForm.svelte";
     import { ProfileState } from "@/states/Mahasiswa/ProfileState.svelte";
 
-    export let user;
     export let personalization = {};
 
-    const state = new ProfileState(user, personalization);
+    const state = new ProfileState(personalization);
 </script>
 
 <App title="Profil Mahasiswa">

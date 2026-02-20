@@ -4,6 +4,7 @@
     import Button from "@/components/ui/Button.svelte";
     import SubmaterialList from "@/components/Admin/Materials/Submaterials/SubmaterialList.svelte";
     import { Plus, ArrowLeft } from "lucide-svelte";
+    import { ROUTES } from "@/utils/route";
 
     export let material;
     export let subMaterials = [];
@@ -17,12 +18,16 @@
         >
             <div slot="actions" class="flex flex-wrap items-center gap-4">
                 <Button
-                    href={`/admin/materials/${material.id}/submaterials/create`}
+                    href={ROUTES.ADMIN.MATERIALS.SUBMATERIALS.CREATE(
+                        material.id,
+                    )}
                     variant="primary"
                     icon={Plus}>Tambah Sub-Materi</Button
                 >
-                <Button href="/admin/materials" variant="ghost" icon={ArrowLeft}
-                    >KEMBALI KE MATERI</Button
+                <Button
+                    href={ROUTES.ADMIN.MATERIALS.INDEX}
+                    variant="ghost"
+                    icon={ArrowLeft}>KEMBALI KE MATERI</Button
                 >
             </div>
         </PageHeader>

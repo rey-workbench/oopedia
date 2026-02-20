@@ -5,7 +5,7 @@
     import UeqStats from "@/components/Admin/Ueq/UeqStats.svelte";
     import UeqList from "@/components/Admin/Ueq/UeqList.svelte";
     import { FileDown } from "lucide-svelte";
-    import { UeqListState } from "@/states/Admin/UeqListState.svelte";
+    import { UeqListState } from "@/states/Admin/UeqState.svelte";
 
     export let surveys = [];
     export let averages = {};

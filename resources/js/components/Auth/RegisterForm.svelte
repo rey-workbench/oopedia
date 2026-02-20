@@ -4,7 +4,8 @@
     import Input from "@/components/ui/Input.svelte";
     import { Link } from "@inertiajs/svelte";
     import { Loader2, UserPlus } from "lucide-svelte";
-    import { RegisterState } from "@/states/Auth/RegisterState.svelte";
+    import { RegisterState } from "@/states/Auth/AuthState.svelte";
+    import { ROUTES } from "@/utils/route";
 
     const state = new RegisterState();
     const form = state.form;
@@ -137,7 +138,7 @@
         </div>
 
         <div class="text-center">
-            <Button href="/login" variant="secondary" class="w-full">
+            <Button href={ROUTES.AUTH.LOGIN} variant="secondary" class="w-full">
                 MASUK KE AKUN
             </Button>
         </div>

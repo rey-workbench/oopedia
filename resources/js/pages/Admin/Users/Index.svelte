@@ -5,6 +5,7 @@
     import UserList from "@/components/Admin/Users/UserList.svelte";
     import { Clock, UserPlus } from "lucide-svelte";
     import { page } from "@inertiajs/svelte";
+    import { ROUTES } from "@/utils/route";
 
     export let users = { data: [] }; // Paginator object
     export let pendingAdminsCount = 0;
@@ -27,7 +28,7 @@
                     <div class="flex flex-wrap items-center gap-4">
                         {#if pendingAdminsCount > 0}
                             <Button
-                                href="/admin/pending-admins"
+                                href={ROUTES.ADMIN.PENDING_ADMINS.INDEX}
                                 variant="danger"
                                 icon={Clock}
                             >
@@ -35,7 +36,7 @@
                             </Button>
                         {/if}
                         <Button
-                            href="/admin/users/create"
+                            href={ROUTES.ADMIN.USERS.CREATE}
                             variant="primary"
                             icon={UserPlus}>Tambah User</Button
                         >

@@ -1,5 +1,5 @@
 <script>
-    import Button from "@/ui/Button.svelte";
+    import Button from "@/components/ui/Button.svelte";
     import {
         Compass,
         ShieldAlert,
@@ -8,6 +8,7 @@
         AlertTriangle,
         Home,
     } from "lucide-svelte";
+    import { ROUTES } from "@/utils/route";
 
     export let status;
 
@@ -83,7 +84,7 @@
 
         <div class="flex justify-center">
             <Button
-                href="/"
+                href={ROUTES.HOME}
                 variant="primary"
                 size="lg"
                 icon={Home}

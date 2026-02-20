@@ -4,6 +4,7 @@
     import Button from "@/components/ui/Button.svelte";
     import UserForm from "@/components/Admin/Users/UserForm.svelte";
     import { ArrowLeft } from "lucide-svelte";
+    import { ROUTES } from "@/utils/route";
 
     export let user;
 </script>
@@ -15,8 +16,10 @@
             subtitle="Modifikasi data identitas dan kunci keamanan entitas."
         >
             <div slot="actions">
-                <Button href="/admin/users" variant="ghost" icon={ArrowLeft}
-                    >KEMBALI KE DAFTAR</Button
+                <Button
+                    href={ROUTES.ADMIN.USERS.INDEX}
+                    variant="ghost"
+                    icon={ArrowLeft}>KEMBALI KE DAFTAR</Button
                 >
             </div>
         </PageHeader>

@@ -25,7 +25,7 @@
         BarChart3,
     } from "lucide-svelte";
     import GuestBanner from "@/components/ui/GuestBanner.svelte";
-    import { QuestionShowState } from "@/states/Mahasiswa/QuestionShowState.svelte";
+    import { QuestionShowState } from "@/states/Mahasiswa/QuizState.svelte";
 
     // Props from controller
     export let material = {};
@@ -34,7 +34,6 @@
     export let totalQuestions = 0;
     export let answeredCount = 0;
     export let difficulty = "beginner";
-    export let isGuest = false;
     export let studentState = {};
 
     const state = new QuestionShowState(
@@ -42,7 +41,6 @@
         currentQuestion,
         difficulty,
         studentState,
-        isGuest,
     );
 
     // Calculate Progress using controller-provided data (pure calculation, not state dependent)
@@ -84,9 +82,9 @@
             </div>
 
             <!-- Guest Warning -->
-            {#if isGuest}
+            {#if state.isGuest}
                 <GuestBanner
-                    show={isGuest}
+                    show={state.isGuest}
                     variant="inline"
                     title="Mode Tamu Aktif!"
                     message="Anda hanya dapat melihat sebagian dari soal latihan ini."
@@ -100,7 +98,7 @@
             {#if state.currentQuestion}
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <!-- Stats Bar -->
-                    {#if !isGuest}
+                    {#if !state.isGuest}
                         <div
                             class="mb-8 p-1 bg-slate-50 rounded-2xl flex items-center gap-1 shadow-inner"
                         >
@@ -321,7 +319,7 @@
                         </div>
 
                         <!-- Stats Summary -->
-                        {#if !isGuest}
+                        {#if !state.isGuest}
                             <div
                                 class="grid grid-cols-3 gap-0 border-b border-slate-100"
                             >
@@ -424,7 +422,7 @@
     />
 
     <!-- Adaptive Indicator (Debug/Info Panel) -->
-    {#if !isGuest}
+    {#if !state.isGuest}
         <AdaptiveIndicator
             show={state.showAdaptiveIndicator}
             facts={state.adaptiveFacts}

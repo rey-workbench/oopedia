@@ -1,12 +1,12 @@
 <script>
     import App from "@/layouts/App.svelte";
-    import Card from "@/pages/components/ui/Card.svelte";
+    import Card from "@/components/ui/Card.svelte";
     import Button from "@/components/ui/Button.svelte";
     import Alert from "@/components/ui/Alert.svelte";
     import { Book, ArrowLeft } from "lucide-svelte";
     import ReviewSidebar from "@/components/Mahasiswa/Materials/Questions/ReviewSidebar.svelte";
     import ReviewQuestionList from "@/components/Mahasiswa/Materials/Questions/ReviewQuestionList.svelte";
-    import { ReviewState } from "@/states/Mahasiswa/ReviewState.svelte";
+    import { ReviewState } from "@/states/Mahasiswa/QuizState.svelte";
 
     export let material = {};
     export let materials = [];

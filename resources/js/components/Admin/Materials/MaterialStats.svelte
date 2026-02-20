@@ -1,5 +1,5 @@
 <script>
-    import StatCard from "@/ui/StatCard.svelte";
+    import StatCard from "@/components/ui/StatCard.svelte";
     import { Layers, CalendarCheck, Video } from "lucide-svelte";
 
     export let totalMaterials;

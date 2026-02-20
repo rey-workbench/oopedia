@@ -7,6 +7,7 @@
         User,
         LogOut,
     } from "lucide-svelte";
+    import { ROUTES } from "@/utils/route";
 
     export let titlePage = "";
 
@@ -111,7 +112,7 @@
                         class="flex items-center gap-2 p-1 rounded-2xl border-2 border-transparent hover:border-accent-100 transition-all duration-300 group"
                     >
                         <div
-                            class="w-10 h-10 rounded-xl overflow-hidden shadow-inner ring-2 ring-white group-hover:ring-accent-50 transition-all"
+                            class="w-10 h-10 rounded-xl overflow-hidden shadow-[inset_0_2px_4px_rgba(0,0,0,0.06)] ring-2 ring-white group-hover:ring-slate-100 bg-slate-100 border border-slate-200 transition-all flex items-center justify-center"
                         >
                             <img
                                 src="/images/profile.gif"
@@ -134,7 +135,7 @@
                         </div>
 
                         <Link
-                            href="/mahasiswa/profile"
+                            href={ROUTES.MAHASISWA.PROFILE}
                             class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-slate-600 hover:text-accent-600 hover:bg-accent-50 rounded-xl transition-all"
                         >
                             <User size={18} strokeWidth={2.5} class="w-5" />
@@ -159,12 +160,12 @@
             {:else}
                 <div class="flex items-center gap-2">
                     <Link
-                        href="/login"
+                        href={ROUTES.AUTH.LOGIN}
                         class="px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-slate-600 hover:text-accent-600 transition-all"
                         >Masuk</Link
                     >
                     <Link
-                        href="/register"
+                        href={ROUTES.AUTH.REGISTER}
                         class="px-6 py-2.5 bg-slate-900 text-white text-sm font-bold uppercase tracking-widest rounded-xl hover:bg-accent-600 transition-all shadow-lg shadow-slate-200"
                         >Daftar</Link
                     >

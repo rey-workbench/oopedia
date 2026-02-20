@@ -8,7 +8,8 @@
     import { getBgClass } from "@/utils/contentTypeStyles";
     import { onMount, tick } from "svelte";
     import { enhanceCodeBlocks } from "@/utils/codeBlockEnhancer";
-    import { SubMaterialState } from "@/states/Mahasiswa/SubMaterialState.svelte";
+    import { SubMaterialState } from "@/states/Mahasiswa/MaterialState.svelte";
+    import { ROUTES } from "@/utils/route";
 
     export let material = {};
     export let subMaterial = {};
@@ -32,14 +33,14 @@
         <!-- Breadcrumb Navigation -->
         <div class="flex items-center gap-3 text-sm">
             <Link
-                href="/mahasiswa/materials"
+                href={ROUTES.MAHASISWA.MATERIALS.INDEX}
                 class="text-slate-400 hover:text-primary-600 font-bold transition-colors"
             >
                 <Home size={14} class="mr-1" /> Materi
             </Link>
             <ChevronRight size={12} class="text-slate-300" />
             <Link
-                href={`/mahasiswa/materials/${state.material.id}`}
+                href={ROUTES.MAHASISWA.MATERIALS.SHOW(state.material.id)}
                 class="text-slate-400 hover:text-primary-600 font-bold transition-colors"
             >
                 {state.material.title}

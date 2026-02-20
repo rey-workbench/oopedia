@@ -5,6 +5,7 @@
     import MaterialStats from "@/components/Admin/Materials/MaterialStats.svelte";
     import MaterialList from "@/components/Admin/Materials/MaterialList.svelte";
     import { Plus } from "lucide-svelte";
+    import { ROUTES } from "@/utils/route";
 
     export let materials = [];
     $: totalMaterials = materials.length;
@@ -31,7 +32,7 @@
         >
             <div slot="actions">
                 <Button
-                    href="/admin/materials/create"
+                    href={ROUTES.ADMIN.MATERIALS.CREATE}
                     variant="primary"
                     icon={Plus}>Tambah Modul Baru</Button
                 >

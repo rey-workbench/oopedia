@@ -3,7 +3,7 @@
     import Button from "@/components/ui/Button.svelte";
     import Badge from "@/components/ui/Badge.svelte";
     import { Layers, Plus, Edit2, Trash2 } from "lucide-svelte";
-    import { SubmaterialListState } from "@/states/Admin/SubmaterialListState.svelte";
+    import { SubmaterialListState } from "@/states/Admin/MaterialState.svelte";
 
     export let material;
     export let subMaterials = [];
@@ -12,10 +12,7 @@
 </script>
 
 <Card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
-    <div
-        slot="header"
-        class="px-6 py-4 border-b border-slate-50 flex items-center justify-between"
-    >
+    <div slot="header" class="flex items-center justify-between">
         <p
             class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
         >

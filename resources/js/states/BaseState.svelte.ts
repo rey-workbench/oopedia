@@ -14,6 +14,13 @@ export class BaseState {
     }
 
     /**
+     * Check if user is guest
+     */
+    get isGuest() {
+        return !this.user;
+    }
+
+    /**
      * Get flash messages
      */
     get flash() {

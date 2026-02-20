@@ -1,21 +1,29 @@
 <script>
     import { Link } from "@inertiajs/svelte";
+    import Card from "@/components/ui/Card.svelte";
     import { Activity, Loader2, Book, Play } from "lucide-svelte";
 
     export let materialData;
     // Pass calculate percent function or just use data pre-calc helpers
 </script>
 
-<div class="group h-full">
-    <div
-        class="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 h-full flex flex-col"
+<Link
+    href={`/mahasiswa/materials/${materialData.material.id}`}
+    class="group h-full block"
+>
+    <Card
+        padding="p-0"
+        class="overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 h-full flex flex-col"
     >
         <!-- Header Card -->
-        <div class="p-8 bg-primary-600 relative overflow-hidden text-white">
+        <div
+            slot="header"
+            class="p-8 bg-primary-600 relative overflow-hidden text-white border-0 rounded-0"
+        >
             <Activity
                 size={96}
                 strokeWidth={1}
-                class="opacity-10 group-hover:opacity-20 transition-opacity"
+                class="absolute -right-8 -top-8 opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all duration-700"
             />
             <div class="relative z-10 flex items-center gap-6">
                 <div
@@ -138,7 +146,7 @@
             <div class="grid grid-cols-2 gap-4 mt-auto">
                 <Link
                     href={`/mahasiswa/materials/${materialData.material.id}`}
-                    class="flex items-center justify-center gap-2 py-4 rounded-2xl font-bold uppercase text-xs border-2 border-slate-100 hover:bg-slate-50 transition-all text-slate-600"
+                    class="flex items-center justify-center gap-2 py-4 rounded-2xl font-bold uppercase text-xs border-2 border-slate-100 hover:border-primary-600 transition-all text-slate-600"
                 >
                     <Book size={14} strokeWidth={2.5} />
                     Materi
@@ -152,5 +160,5 @@
                 </Link>
             </div>
         </div>
-    </div>
-</div>
+    </Card>
+</Link>

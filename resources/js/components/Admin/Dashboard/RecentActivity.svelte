@@ -1,6 +1,6 @@
 <script>
-    import Card from "@/ui/Card.svelte";
-    import Badge from "@/ui/Badge.svelte";
+    import Card from "@/components/ui/Card.svelte";
+    import Badge from "@/components/ui/Badge.svelte";
     import { Check, Clock, Zap } from "lucide-svelte";
     import { relativeTime } from "@/utils/formatters";
 
@@ -8,7 +8,7 @@
 </script>
 
 <Card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
-    <div class="px-8 py-6 border-b border-slate-50 bg-white">
+    <div slot="header" class="bg-white">
         <p
             class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
         >

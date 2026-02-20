@@ -1,6 +1,8 @@
 <script>
-    import Button from "@/ui/Button.svelte";
-    import ProgressBar from "@/ui/ProgressBar.svelte";
+    import Button from "@/components/ui/Button.svelte";
+    import ProgressBar from "@/components/ui/ProgressBar.svelte";
+    import EmptyState from "@/components/ui/EmptyState.svelte";
+    import Pagination from "@/components/ui/Pagination.svelte";
     import {
         Terminal,
         LineChart,
@@ -44,37 +46,26 @@
         <tbody>
             {#if !state.students.data || state.students.data.length === 0}
                 <tr>
-                    <td colspan="5" class="p-20 text-center">
-                        <div
-                            class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6"
+                    <td colspan="5" class="p-0">
+                        <EmptyState
+                            title="Tidak Ada Mahasiswa Terdaftar"
+                            description="Silakan daftarkan mahasiswa secara manual atau impor melalui protokol Excel."
+                            icon={GraduationCap}
                         >
-                            <GraduationCap
-                                size={32}
-                                strokeWidth={1.5}
-                                class="text-slate-200"
-                            />
-                        </div>
-                        <h3
-                            class="text-xl font-bold uppercase tracking-widest text-slate-900 mb-2"
-                        >
-                            Tidak Ada Mahasiswa Terdaftar
-                        </h3>
-                        <p class="text-slate-400 text-sm max-w-xs mx-auto mb-8">
-                            Silakan daftarkan mahasiswa secara manual atau impor
-                            melalui protokol Excel.
-                        </p>
-                        <div class="flex justify-center gap-4">
-                            <Button
-                                on:click={() => dispatch("open-modal")}
-                                variant="primary"
-                                icon={UserPlus}>Daftar Individu</Button
-                            >
-                            <Button
-                                href="/admin/students/import"
-                                variant="outline"
-                                icon={FileSpreadsheet}>Unggah Dataset</Button
-                            >
-                        </div>
+                            <div class="flex justify-center gap-4">
+                                <Button
+                                    on:click={() => dispatch("open-modal")}
+                                    variant="primary"
+                                    icon={UserPlus}>Daftar Individu</Button
+                                >
+                                <Button
+                                    href="/admin/students/import"
+                                    variant="outline"
+                                    icon={FileSpreadsheet}
+                                    >Unggah Dataset</Button
+                                >
+                            </div>
+                        </EmptyState>
                     </td>
                 </tr>
             {:else}
@@ -155,30 +146,5 @@
     </table>
 
     <!-- Simple Pagination -->
-    {#if state.students.links && state.students.links.length > 3}
-        <div
-            class="p-6 border-t border-slate-100 flex justify-center bg-slate-50/30"
-        >
-            <div class="flex gap-1">
-                {#each state.students.links as link}
-                    {#if link.url}
-                        <Button
-                            href={link.url}
-                            variant={link.active ? "primary" : "ghost"}
-                            size="sm"
-                            class={!link.active && !link.url
-                                ? "opacity-50 cursor-not-allowed"
-                                : ""}
-                        >
-                            {@html link.label}
-                        </Button>
-                    {:else}
-                        <span class="px-3 py-2 text-slate-400 text-xs font-bold"
-                            >{@html link.label}</span
-                        >
-                    {/if}
-                {/each}
-            </div>
-        </div>
-    {/if}
+    <Pagination links={state.students.links} />
 </div>

@@ -1,4 +1,5 @@
-import { useForm } from "@inertiajs/svelte";
+import { useForm, router } from "@inertiajs/svelte";
+import { get } from "svelte/store";
 import { BaseState } from "./BaseState.svelte";
 
 /**
@@ -16,22 +17,21 @@ export class FormState<TForm extends Record<string, any>> extends BaseState {
     }
 
     /**
-     * Standard submit wrapper
+     * Standard submit wrapper - Simple, DRY, and Robust.
      */
-    protected async submitForm(method: 'post' | 'put' | 'patch' | 'delete', url: string, options: any = {}) {
-        return new Promise((resolve, reject) => {
-            this.form[method](url, {
-                ...options,
-                onSuccess: (params: any) => {
-                    if (options.onSuccess) options.onSuccess(params);
-                    resolve(params);
-                },
-                onError: (err: any) => {
-                    if (options.onError) options.onError(err);
-                    reject(err);
-                }
-            } as any);
-        });
+    protected submitForm(method: 'post' | 'put' | 'patch' | 'delete', url: string, options: any = {}) {
+        const f = this.form as any;
+
+        // 1. Try form-specific methods (post, put, etc. or general submit)
+        const submitFn = f[method] || (f.submit ? (u: string, o: any) => f.submit(method, u, o) : null);
+
+        if (typeof submitFn === 'function') {
+            return submitFn(url, options);
+        }
+
+        // 2. Fallback: Use router directly (Handy when useForm returns a pure store)
+        const data = typeof f.subscribe === 'function' ? get(this.form) : (f.data || f);
+        return router[method](url, data, options);
     }
 
     /**

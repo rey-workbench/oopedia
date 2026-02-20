@@ -1,21 +1,20 @@
-import { page } from "@inertiajs/svelte";
+import { BaseState } from "@/states/BaseState.svelte";
 
-export class LeaderboardState {
+export class LeaderboardState extends BaseState {
     leaderboardData = $state<any[]>([]);
-    currentUser = $state<any>(null);
 
     topThree = $derived(this.leaderboardData.slice(0, 3));
     restOfLeaderboard = $derived(this.leaderboardData.slice(3));
 
-    // Determine current user rank safely
+    // Determine current user rank safely using pattern from BaseState
     userRank = $derived(
-        Array.isArray(this.leaderboardData) && this.currentUser
-            ? this.leaderboardData.find((u) => u.id === this.currentUser.id)?.rank
+        Array.isArray(this.leaderboardData) && this.user
+            ? this.leaderboardData.find((u) => u.id === this.user.id)?.rank
             : null
     );
 
-    constructor(leaderboardData: any, currentUser: any) {
+    constructor(leaderboardData: any) {
+        super();
         this.leaderboardData = leaderboardData;
-        this.currentUser = currentUser;
     }
 }

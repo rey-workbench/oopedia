@@ -1,9 +1,9 @@
 <script>
-    import Card from "@/ui/Card.svelte";
-    import Button from "@/ui/Button.svelte";
+    import Card from "@/components/ui/Card.svelte";
+    import Button from "@/components/ui/Button.svelte";
+    import EmptyState from "@/components/ui/EmptyState.svelte";
     import {
         Search,
-        Inbox,
         Plus,
         FileText,
         List,
@@ -11,7 +11,7 @@
         Edit2,
         Trash2,
     } from "lucide-svelte";
-    import { MaterialListState } from "@/states/Admin/MaterialListState.svelte";
+    import { MaterialListState } from "@/states/Admin/MaterialState.svelte";
 
     export let materials = [];
     export let search = "";
@@ -21,7 +21,8 @@
 
 <Card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
     <div
-        class="flex flex-col md:flex-row justify-between items-center gap-6 w-full px-6 py-4 border-b border-slate-50"
+        slot="header"
+        class="flex flex-col md:flex-row justify-between items-center gap-6 w-full"
     >
         <p
             class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
@@ -75,33 +76,17 @@
             <tbody>
                 {#if state.materials.length === 0}
                     <tr>
-                        <td colspan="5" class="p-24 text-center">
-                            <div
-                                class="w-24 h-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-inner"
+                        <td colspan="5" class="p-0">
+                            <EmptyState
+                                title="Kurikulum Kosong"
+                                description="Basis data materi instruksional kosong. Lakukan injeksi modul baru untuk memulai siklus pembelajaran."
                             >
-                                <Inbox
-                                    size={48}
-                                    strokeWidth={1.5}
-                                    class="text-slate-200"
-                                />
-                            </div>
-                            <h3
-                                class="text-2xl font-bold tracking-widest text-slate-900 mb-2"
-                            >
-                                Kurikulum Kosong
-                            </h3>
-                            <p
-                                class="text-slate-400 text-sm max-w-xs mx-auto mb-8"
-                            >
-                                Basis data materi instruksional kosong. Lakukan
-                                injeksi modul baru untuk memulai siklus
-                                pembelajaran.
-                            </p>
-                            <Button
-                                href="/admin/materials/create"
-                                variant="primary"
-                                icon={Plus}>Inisialisasi Kurikulum</Button
-                            >
+                                <Button
+                                    href="/admin/materials/create"
+                                    variant="primary"
+                                    icon={Plus}>Inisialisasi Kurikulum</Button
+                                >
+                            </EmptyState>
                         </td>
                     </tr>
                 {:else}

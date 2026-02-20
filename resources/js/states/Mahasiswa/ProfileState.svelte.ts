@@ -1,9 +1,10 @@
-export class ProfileState {
-    user = $state<any>({});
+import { BaseState } from "@/states/BaseState.svelte";
+
+export class ProfileState extends BaseState {
     personalization = $state<any>({});
 
-    constructor(user: any, personalization: any) {
-        this.user = user;
+    constructor(personalization: any) {
+        super();
         this.personalization = personalization;
     }
 }

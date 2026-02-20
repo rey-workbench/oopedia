@@ -1,16 +1,13 @@
 <script>
-    import Card from "@/components/components/ui/Card.svelte";
+    import Card from "@/components/ui/Card.svelte";
     import Button from "@/components/ui/Button.svelte";
     import { Clock, LogOut } from "lucide-svelte";
-    import { PendingUsersState } from "@/states/Admin/PendingUsersState.svelte";
+    import { PendingUsersState } from "@/states/Admin/UserState.svelte";
 
     const state = new PendingUsersState();
 </script>
 
-<Card
-    padding="p-0"
-    class="overflow-hidden border-slate-100 shadow-2xl rounded-[3rem] group"
->
+<Card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl group">
     <div class="bg-amber-400 p-20 text-white relative">
         <div
             class="absolute -top-12 -right-12 w-48 h-48 bg-white/20 rounded-full blur-3xl group-hover:bg-white/30 transition-all duration-1000"

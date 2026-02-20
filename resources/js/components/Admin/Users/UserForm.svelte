@@ -1,7 +1,7 @@
 <script>
-    import Card from "@/ui/Card.svelte";
-    import Button from "@/ui/Button.svelte";
-    import Input from "@/ui/Input.svelte";
+    import Card from "@/components/ui/Card.svelte";
+    import Button from "@/components/ui/Button.svelte";
+    import Input from "@/components/ui/Input.svelte";
     import {
         ChevronDown,
         Shield,
@@ -11,7 +11,7 @@
         RefreshCw,
         Save,
     } from "lucide-svelte";
-    import { UserFormState } from "@/states/Admin/UserFormState.svelte";
+    import { UserFormState } from "@/states/Admin/UserState.svelte";
 
     // For create mode
     export let roles = [];
@@ -24,7 +24,7 @@
 </script>
 
 <Card class="border-slate-100 shadow-2xl">
-    <div slot="header" class="px-6 py-4 border-b border-slate-50">
+    <div slot="header">
         <h3 class="text-lg font-bold text-slate-800">
             {state.isEdit
                 ? "Modifikasi Identitas Admin"

@@ -1,4 +1,6 @@
-export class ErrorState {
+import { BaseState } from "@/states/BaseState.svelte";
+
+export class ErrorState extends BaseState {
     status = $state(404);
 
     title = $derived(this.status === 404 ? "Halaman Tidak Ditemukan" : this.status === 403 ? "Akses Ditolak" : "Terjadi Kesalahan");
@@ -12,6 +14,7 @@ export class ErrorState {
     );
 
     constructor(status: any) {
+        super();
         this.status = status;
     }
 }

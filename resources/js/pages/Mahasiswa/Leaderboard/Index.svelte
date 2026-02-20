@@ -9,7 +9,7 @@
 
     export let leaderboardData = [];
 
-    const state = new LeaderboardState(leaderboardData, $page.props.auth.user);
+    const state = new LeaderboardState(leaderboardData);
 </script>
 
 <App title="Leaderboard">
@@ -24,7 +24,7 @@
                 <LeaderboardPodium top3={state.topThree} />
                 <LeaderboardTable
                     leaderboardData={state.leaderboardData}
-                    authUserId={state.currentUser.id}
+                    authUserId={state.user?.id}
                 />
             </Card>
         </div>

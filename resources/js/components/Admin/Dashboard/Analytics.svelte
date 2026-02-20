@@ -1,5 +1,6 @@
 <script>
-    import Chart from "@/ui/Chart.svelte";
+    import Chart from "@/components/ui/Chart.svelte";
+    import Card from "@/components/ui/Card.svelte";
     import { ScanEye, Activity } from "lucide-svelte";
 
     export let studentAnalytics;
@@ -120,24 +121,18 @@
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Progress Distribution Chart -->
-    <div
-        class="bg-white/50 backdrop-blur-xl rounded-2xl p-0 shadow-xl border border-slate-100 relative overflow-hidden"
-    >
-        <div
-            class="flex items-center justify-between w-full px-8 py-6 bg-white/80 border-b border-slate-50"
-        >
-            <div class="flex items-center gap-5">
-                <div
-                    class="w-12 h-12 rounded-2xl bg-primary-50 flex items-center justify-center text-primary-600 shadow-inner"
-                >
-                    <ScanEye size={24} strokeWidth={2.5} />
-                </div>
-                <p
-                    class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-0"
-                >
-                    Distribusi Progres Cohort
-                </p>
+    <Card padding="p-0" class="overflow-hidden border-slate-100 shadow-xl">
+        <div slot="header" class="flex items-center gap-5">
+            <div
+                class="w-12 h-12 rounded-2xl bg-primary-50 flex items-center justify-center text-primary-600 shadow-inner"
+            >
+                <ScanEye size={24} strokeWidth={2.5} />
             </div>
+            <p
+                class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-0"
+            >
+                Distribusi Progres Cohort
+            </p>
         </div>
         <div class="p-8">
             <Chart
@@ -147,30 +142,21 @@
                 height={350}
             />
         </div>
-        <div
-            class="absolute -bottom-24 -right-24 w-80 h-80 bg-primary-50/40 rounded-full blur-[100px] -z-10"
-        ></div>
-    </div>
+    </Card>
 
     <!-- Module Performance Radar Chart -->
-    <div
-        class="bg-white/50 backdrop-blur-xl rounded-2xl p-0 shadow-xl border border-slate-100 relative overflow-hidden"
-    >
-        <div
-            class="flex items-center justify-between w-full px-8 py-6 bg-white/80 border-b border-slate-50"
-        >
-            <div class="flex items-center gap-5">
-                <div
-                    class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 shadow-inner"
-                >
-                    <Activity size={24} strokeWidth={2.5} />
-                </div>
-                <p
-                    class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-0"
-                >
-                    Balance Mastering Modul
-                </p>
+    <Card padding="p-0" class="overflow-hidden border-slate-100 shadow-xl">
+        <div slot="header" class="flex items-center gap-5">
+            <div
+                class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 shadow-inner"
+            >
+                <Activity size={24} strokeWidth={2.5} />
             </div>
+            <p
+                class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-0"
+            >
+                Balance Mastering Modul
+            </p>
         </div>
         <div class="p-8">
             <Chart
@@ -180,8 +166,5 @@
                 height={350}
             />
         </div>
-        <div
-            class="absolute -top-24 -left-24 w-80 h-80 bg-emerald-50/40 rounded-full blur-[100px] -z-10"
-        ></div>
-    </div>
+    </Card>
 </div>

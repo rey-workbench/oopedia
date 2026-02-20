@@ -4,6 +4,7 @@
     import Button from "@/components/ui/Button.svelte";
     import SubmaterialForm from "@/components/Admin/Materials/Submaterials/SubmaterialForm.svelte";
     import { ArrowLeft } from "lucide-svelte";
+    import { ROUTES } from "@/utils/route";
 
     export let material;
 </script>
@@ -16,7 +17,9 @@
         >
             <div slot="actions">
                 <Button
-                    href={`/admin/materials/${material.id}/submaterials`}
+                    href={ROUTES.ADMIN.MATERIALS.SUBMATERIALS.INDEX(
+                        material.id,
+                    )}
                     variant="ghost"
                     icon={ArrowLeft}>KEMBALI KE DAFTAR</Button
                 >

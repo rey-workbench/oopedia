@@ -1,6 +1,47 @@
-export class UeqDetailState {
-    user = $state<any>({});
-    survey = $state<any>({});
+import { router } from "@inertiajs/svelte";
+import { BaseState } from "@/states/BaseState.svelte";
+import { ROUTES } from "@/utils/route";
+import type { User, UeqSurvey } from "@/types";
+
+/**
+ * UEQ List State
+ */
+export class UeqListState extends BaseState {
+    surveys = $state<any[]>([]);
+    averages = $state<any>({});
+    classes = $state<any[]>([]);
+    activeClass = $state("");
+
+    constructor(surveys: any, averages: any, classes: any, activeClass: any) {
+        super();
+        this.surveys = surveys;
+        this.averages = averages;
+        this.classes = classes;
+        this.activeClass = activeClass;
+    }
+
+    handleFilterChange(e: any) {
+        router.get(
+            ROUTES.ADMIN.UEQ.INDEX,
+            { class: e.target.value },
+            { preserveState: true, replace: true }
+        );
+    }
+
+    exportResults() {
+        const url = this.activeClass
+            ? `${ROUTES.ADMIN.UEQ.EXPORT}?class=${this.activeClass}`
+            : ROUTES.ADMIN.UEQ.EXPORT;
+        window.location.href = url;
+    }
+}
+
+/**
+ * UEQ Detail State
+ */
+export class UeqDetailState extends BaseState {
+    targetUser = $state<User>({} as User);
+    survey = $state<UeqSurvey>({} as UeqSurvey);
 
     aspects = [
         { name: "annoying_enjoyable", left: "Menyebalkan", right: "Menyenangkan" },
@@ -21,7 +62,7 @@ export class UeqDetailState {
         { name: "unpleasant_pleasant", left: "Unpleasant", right: "Pleasant" },
         { name: "secure_not_secure", left: "Aman", right: "Tidak aman" },
         { name: "motivating_demotivating", left: "Memotivasi", right: "Demotivating" },
-        { name: "meets_expectations_does_not_meet", left: "Meets Expect.", right: "Doesn't Meet" },
+        { name: "meets_expectations_does_not", left: "Meets Expect.", right: "Doesn't Meet" },
         { name: "inefficient_efficient", left: "Tidak efisien", right: "Efisien" },
         { name: "clear_confusing", left: "Jelas", right: "Membingungkan" },
         { name: "impractical_practical", left: "Tidak praktis", right: "Praktis" },
@@ -57,7 +98,7 @@ export class UeqDetailState {
             Ketepatan:
                 (this.survey.unpredictable_predictable +
                     this.survey.secure_not_secure +
-                    this.survey.meets_expectations_does_not_meet) /
+                    this.survey.meets_expectations_does_not) /
                 3,
             Stimulasi:
                 (this.survey.valuable_inferior +
@@ -74,8 +115,9 @@ export class UeqDetailState {
         };
     });
 
-    constructor(user: any, survey: any) {
-        this.user = user;
+    constructor(user: User, survey: UeqSurvey) {
+        super();
+        this.targetUser = user;
         this.survey = survey;
     }
 }

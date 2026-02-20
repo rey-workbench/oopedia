@@ -1,7 +1,8 @@
 <script>
-    import Card from "@/ui/Card.svelte";
-    import Button from "@/ui/Button.svelte";
-    import Badge from "@/ui/Badge.svelte";
+    import Card from "@/components/ui/Card.svelte";
+    import Button from "@/components/ui/Button.svelte";
+    import Badge from "@/components/ui/Badge.svelte";
+    import Pagination from "@/components/ui/Pagination.svelte";
     import { Eye } from "lucide-svelte";
 
     export let state;
@@ -9,7 +10,8 @@
 
 <Card padding="p-0" class="overflow-hidden border-slate-100 shadow-2xl">
     <div
-        class="flex flex-col md:flex-row justify-between items-center gap-6 w-full px-8 py-6 border-b border-slate-50"
+        slot="header"
+        class="flex flex-col md:flex-row justify-between items-center gap-6 w-full"
     >
         <p
             class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
@@ -106,4 +108,5 @@
             </tbody>
         </table>
     </div>
+    <Pagination links={state.surveys.links || []} />
 </Card>

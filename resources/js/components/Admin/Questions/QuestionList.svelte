@@ -1,9 +1,10 @@
 <script>
-    import Card from "@/ui/Card.svelte";
-    import Button from "@/ui/Button.svelte";
-    import Badge from "@/ui/Badge.svelte";
+    import Card from "@/components/ui/Card.svelte";
+    import Button from "@/components/ui/Button.svelte";
+    import Badge from "@/components/ui/Badge.svelte";
+    import EmptyState from "@/components/ui/EmptyState.svelte";
+    import Pagination from "@/components/ui/Pagination.svelte";
     import { FlaskConical, Edit2, Trash2 } from "lucide-svelte";
-    import { Link } from "@inertiajs/svelte";
 
     export let state;
 
@@ -46,30 +47,12 @@
             <tbody>
                 {#if state.questions.data.length === 0}
                     <tr>
-                        <td
-                            colspan={state.material ? 4 : 5}
-                            class="p-20 text-center"
-                        >
-                            <div
-                                class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6"
-                            >
-                                <FlaskConical
-                                    size={32}
-                                    strokeWidth={1.5}
-                                    class="text-slate-200"
-                                />
-                            </div>
-                            <h3
-                                class="text-lg font-bold uppercase tracking-widest text-slate-900 mb-2"
-                            >
-                                Basis Data Kosong
-                            </h3>
-                            <p
-                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest max-w-xs mx-auto mb-8"
-                            >
-                                Tidak ditemukan instrumen evaluasi yang sesuai
-                                dengan filter pencarian.
-                            </p>
+                        <td colspan={state.material ? 4 : 5} class="p-0">
+                            <EmptyState
+                                title="Basis Data Kosong"
+                                description="Tidak ditemukan instrumen evaluasi yang sesuai dengan filter pencarian."
+                                icon={FlaskConical}
+                            />
                         </td>
                     </tr>
                 {:else}
@@ -141,18 +124,5 @@
         </table>
     </div>
 
-    {#if state.questions.links && state.questions.links.length > 3}
-        <div
-            class="p-6 bg-slate-50/50 border-t border-slate-50 flex justify-center gap-2"
-        >
-            {#each state.questions.links as link}
-                <Link
-                    href={link.url || "#"}
-                    class={`px-4 py-2 rounded-xl text-[10px] font-bold transition-all ${link.active ? "bg-slate-900 text-white shadow-lg" : "bg-white text-slate-400 hover:text-slate-900 border border-slate-100"}`}
-                >
-                    {@html link.label}
-                </Link>
-            {/each}
-        </div>
-    {/if}
+    <Pagination links={state.questions.links} />
 </Card>

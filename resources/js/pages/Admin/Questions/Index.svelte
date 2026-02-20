@@ -5,7 +5,8 @@
     import QuestionList from "@/components/Admin/Questions/QuestionList.svelte";
     import QuestionFilter from "@/components/Admin/Questions/QuestionFilter.svelte";
     import { Plus, ArrowLeft } from "lucide-svelte";
-    import { QuestionListAdminState } from "@/states/Admin/QuestionListAdminState.svelte";
+    import { ROUTES } from "@/utils/route";
+    import { QuestionListAdminState } from "@/states/Admin/QuestionState.svelte";
 
     export let questions = { data: [] };
     export let material = null;
@@ -33,14 +34,16 @@
             <div slot="actions" class="flex flex-wrap items-center gap-4">
                 <Button
                     href={state.material
-                        ? `/admin/materials/${state.material.id}/questions/create`
-                        : "/admin/questions/create"}
+                        ? ROUTES.ADMIN.MATERIALS.QUESTIONS.CREATE(
+                              state.material.id,
+                          )
+                        : ROUTES.ADMIN.QUESTIONS.CREATE}
                     variant="primary"
                     icon={Plus}>TAMBAH INSTRUMEN</Button
                 >
                 {#if state.material}
                     <Button
-                        href="/admin/materials"
+                        href={ROUTES.ADMIN.MATERIALS.INDEX}
                         variant="ghost"
                         icon={ArrowLeft}>KEMBALI</Button
                     >

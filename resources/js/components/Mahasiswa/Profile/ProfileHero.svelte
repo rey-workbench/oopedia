@@ -1,15 +1,22 @@
 <script>
-    import { UserCircle, Check, Mail, User } from "lucide-svelte";
+    import { UserCircle, Check, Mail, User as UserIcon } from "lucide-svelte";
+    import Card from "@/components/ui/Card.svelte";
 
     export let user;
 </script>
 
-<div
-    class="relative overflow-hidden rounded-[3rem] bg-slate-900 p-8 md:p-12 text-white shadow-2xl"
+<Card
+    variant="none"
+    padding="p-8 md:p-12 mb-8"
+    class="bg-slate-900 border-none text-white relative overflow-hidden rounded-[3rem] shadow-2xl transition-all duration-500 hover:shadow-primary-900/20"
+    hover={false}
 >
-    <div class="absolute top-0 right-0 w-1/2 h-full bg-primary-600/10"></div>
+    <!-- decorative elements -->
     <div
-        class="absolute -bottom-24 -right-24 w-96 h-96 bg-primary-500/10 rounded-full blur-[100px]"
+        class="absolute top-0 right-0 w-1/2 h-full bg-primary-600/10 pointer-events-none"
+    ></div>
+    <div
+        class="absolute -bottom-24 -right-24 w-96 h-96 bg-primary-500/10 rounded-full blur-[100px] pointer-events-none"
     ></div>
 
     <div class="relative z-10 flex flex-col md:flex-row items-center gap-10">
@@ -33,7 +40,7 @@
                 MEMBER SINCE {new Date(user.created_at).getFullYear()}
             </p>
             <h2
-                class="text-4xl md:text-5xl font-bold tracking-widest mb-4 text-white uppercase"
+                class="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-white uppercase"
             >
                 {user.name}
             </h2>
@@ -49,10 +56,10 @@
                 <div
                     class="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-xs font-bold uppercase tracking-wider"
                 >
-                    <User size={14} class="text-primary-400" />
+                    <UserIcon size={14} class="text-primary-400" />
                     Mahasiswa
                 </div>
             </div>
         </div>
     </div>
-</div>
+</Card>

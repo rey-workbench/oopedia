@@ -2,6 +2,7 @@
     import Card from "@/components/ui/Card.svelte";
     import Button from "@/components/ui/Button.svelte";
     import Badge from "@/components/ui/Badge.svelte";
+    import EmptyState from "@/components/ui/EmptyState.svelte";
     import {
         Medal,
         GraduationCap,
@@ -9,46 +10,31 @@
         Book,
         RotateCcw,
     } from "lucide-svelte";
+    import { ROUTES } from "@/utils/route";
 
     export let materials = [];
 </script>
 
 {#if materials.length === 0}
-    <Card
-        padding="p-20"
-        class="text-center border-dashed border-slate-200 shadow-none"
+    <EmptyState
+        title="Belum Ada Sertifikat"
+        description="Selesaikan setidaknya satu modul pembelajaran untuk melihatnya di sini."
+        icon={Medal}
     >
-        <div
-            class="w-24 h-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 text-slate-200"
-        >
-            <Medal size={48} strokeWidth={1.5} />
-        </div>
-        <h3
-            class="text-xl font-bold tracking-widest text-slate-900 mb-4 uppercase"
-        >
-            Belum Ada Sertifikat
-        </h3>
-        <p
-            class="text-slate-400 text-sm font-bold uppercase tracking-widest max-w-xs mx-auto mb-8"
-        >
-            Selesaikan setidaknya satu modul pembelajaran untuk melihatnya di
-            sini.
-        </p>
         <Button
-            href="/mahasiswa/materials"
+            href={ROUTES.MAHASISWA.MATERIALS.INDEX}
             variant="primary"
             icon={GraduationCap}>MULAI BELAJAR</Button
         >
-    </Card>
+    </EmptyState>
 {:else}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {#each materials as material}
             <Card
-                padding="p-8"
                 class="hover:border-primary-400 border-slate-100 shadow-xl transition-all group relative overflow-hidden"
             >
                 <div
-                    class="absolute -top-6 -right-6 w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all"
+                    class="absolute -top-6 -right-6 w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500"
                 >
                     <CheckCircle2 size={32} strokeWidth={2.5} />
                 </div>
@@ -81,7 +67,7 @@
                         <Button
                             variant="ghost"
                             size="xs"
-                            href={`/mahasiswa/materials/${material.id}`}
+                            href={ROUTES.MAHASISWA.MATERIALS.SHOW(material.id)}
                             icon={RotateCcw}>ULAS MATERI</Button
                         >
                     </div>
