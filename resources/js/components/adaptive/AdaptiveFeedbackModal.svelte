@@ -1,7 +1,7 @@
 <script>
     import { createEventDispatcher } from "svelte";
-    import Button from "../ui/Button.svelte";
-    import Badge from "../ui/Badge.svelte";
+    import Button from "@/components/ui/Button.svelte";
+    import Badge from "@/components/ui/Badge.svelte";
     import {
         CheckCircle2,
         XCircle,

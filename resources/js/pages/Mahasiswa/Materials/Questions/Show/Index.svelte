@@ -1,15 +1,13 @@
 <script>
-    import App from "../../../../../layouts/App.svelte";
-    import Badge from "../../../../../components/ui/Badge.svelte";
-    import Button from "../../../../../components/ui/Button.svelte";
-    import ProgressBar from "../../../../../components/ui/ProgressBar.svelte";
-    import MultipleChoice from "../../../../../components/quiz/MultipleChoice.svelte";
-    import FillInTheBlank from "../../../../../components/quiz/FillInTheBlank.svelte";
-    import DragAndDrop from "../../../../../components/quiz/DragAndDrop.svelte";
-    import AdaptiveFeedbackModal from "../../../../../components/adaptive/AdaptiveFeedbackModal.svelte";
-    import AdaptiveIndicator from "../../../../../components/adaptive/AdaptiveIndicator.svelte";
-    import { router, page } from "@inertiajs/svelte";
-    import { onMount } from "svelte";
+    import App from "@/layouts/App.svelte";
+    import Badge from "@/components/ui/Badge.svelte";
+    import Button from "@/components/ui/Button.svelte";
+    import ProgressBar from "@/components/ui/ProgressBar.svelte";
+    import MultipleChoice from "@/components/quiz/MultipleChoice.svelte";
+    import FillInTheBlank from "@/components/quiz/FillInTheBlank.svelte";
+    import DragAndDrop from "@/components/quiz/DragAndDrop.svelte";
+    import AdaptiveFeedbackModal from "@/components/adaptive/AdaptiveFeedbackModal.svelte";
+    import AdaptiveIndicator from "@/components/adaptive/AdaptiveIndicator.svelte";
     import {
         Terminal,
         UserCheck,
@@ -21,17 +19,13 @@
         CheckCircle2,
         Trophy,
         Check,
-        ListOrdered,
-        Book,
         Home,
         X,
         Target,
         BarChart3,
-        Clock,
-        Zap,
     } from "lucide-svelte";
-    import axios from "axios";
-    import GuestBanner from "../../../../../components/ui/GuestBanner.svelte";
+    import GuestBanner from "@/components/ui/GuestBanner.svelte";
+    import { QuestionShowState } from "@/states/Mahasiswa/QuestionShowState.svelte";
 
     // Props from controller
     export let material = {};
@@ -43,162 +37,17 @@
     export let isGuest = false;
     export let studentState = {};
 
-    // Derive stats from studentState reactively
-    $: xp = studentState?.gamification?.global_xp || 0;
-    $: streak = studentState?.gamification?.current_streak || 0;
-    $: level = studentState?.gamification?.current_level || "Pemula";
-    $: hintsAvailable = studentState?.performance?.hints_available ?? 3;
+    const state = new QuestionShowState(
+        material,
+        currentQuestion,
+        difficulty,
+        studentState,
+        isGuest,
+    );
 
-    // Question State
-    let fillInTheBlankAnswer = "";
-    let selectedMultipleChoiceAnswer = null;
-    let dragAndDropAnswers = {};
-
-    // UI State
-    let isSubmitting = false;
-    let showFeedback = false;
-    let showHint = false;
-    let feedbackData = {
-        status: "success",
-        message: "",
-        nextUrl: "",
-        adaptiveResult: {},
-    };
-
-    let usedHint = false;
-    let startTime = Date.now();
-
-    // Adaptive UI State
-    let showAdaptiveIndicator = false;
-    let adaptiveFacts = [];
-    let adaptiveTriggeredRule = null;
-
-    // Calculate Progress using controller-provided data
+    // Calculate Progress using controller-provided data (pure calculation, not state dependent)
     $: progressPercentage =
         totalQuestions > 0 ? (answeredCount / totalQuestions) * 100 : 0;
-
-    // Difficulty display helpers
-    function getDifficultyLabel(diff) {
-        const labels = {
-            beginner: "Pemula",
-            medium: "Menengah",
-            hard: "Sulit",
-        };
-        return labels[diff] || diff;
-    }
-
-    function getDifficultyColor(diff) {
-        const colors = {
-            beginner: "text-emerald-600 bg-emerald-50",
-            medium: "text-amber-600 bg-amber-50",
-            hard: "text-rose-600 bg-rose-50",
-        };
-        return colors[diff] || "text-slate-600 bg-slate-50";
-    }
-
-    // Hint Logic
-    function useHint() {
-        if (hintsAvailable > 0 && currentQuestion?.hint) {
-            usedHint = true;
-            showHint = true;
-            hintsAvailable--;
-        }
-    }
-
-    function closeHint() {
-        showHint = false;
-    }
-
-    // Answer Submission
-    async function submitAnswer() {
-        if (isSubmitting) return;
-        isSubmitting = true;
-
-        const timeSpent = Math.max(
-            0,
-            Math.floor((Date.now() - startTime) / 1000),
-        );
-
-        let payload = {
-            question_id: currentQuestion.id,
-            material_id: material.id,
-            used_hint: usedHint,
-            time_spent: timeSpent,
-            difficulty: difficulty, // Send current difficulty for guest XP matching
-        };
-
-        if (currentQuestion.question_type === "fill_in_the_blank") {
-            payload.fill_in_the_blank_answer = fillInTheBlankAnswer;
-            payload.answer = fillInTheBlankAnswer;
-        } else if (currentQuestion.question_type === "drag_and_drop") {
-            payload.drag_and_drop_answers = JSON.stringify(dragAndDropAnswers);
-        } else {
-            payload.answer = selectedMultipleChoiceAnswer;
-        }
-
-        try {
-            const response = await axios.post(
-                `/mahasiswa/materials/${material.id}/questions/${currentQuestion.id}/check`,
-                payload,
-            );
-
-            const data = response.data;
-
-            feedbackData = {
-                status: data.status,
-                message: data.message,
-                nextUrl: data.nextUrl,
-                adaptiveResult: data.adaptiveResult,
-                score: data.score,
-            };
-
-            // Update adaptive indicator
-            if (data.adaptiveResult) {
-                adaptiveFacts = data.adaptiveResult.facts || [];
-                adaptiveTriggeredRule =
-                    data.adaptiveResult.triggered_rule || null;
-                showAdaptiveIndicator = true;
-            }
-
-            // Update local stats by updating studentState
-            if (data.adaptiveResult?.new_state) {
-                studentState = data.adaptiveResult.new_state;
-            }
-
-            showHint = false;
-            showFeedback = true;
-        } catch (error) {
-            console.error("Error submitting answer:", error);
-            feedbackData = {
-                status: "error",
-                message:
-                    error.response?.data?.message ||
-                    "Terjadi kesalahan saat memeriksa jawaban.",
-                nextUrl: "",
-                adaptiveResult: null,
-            };
-            showFeedback = true;
-        } finally {
-            isSubmitting = false;
-        }
-    }
-
-    function handleNext() {
-        showFeedback = false;
-        showHint = false;
-        if (feedbackData.nextUrl) {
-            router.visit(feedbackData.nextUrl);
-        }
-    }
-
-    function handleTryAgain() {
-        showFeedback = false;
-        showHint = false;
-        fillInTheBlankAnswer = "";
-        selectedMultipleChoiceAnswer = null;
-        dragAndDropAnswers = {};
-        startTime = Date.now();
-    }
 </script>
 
 <App title={`Latihan Soal - ${material.title}`}>
@@ -248,7 +97,7 @@
                 </GuestBanner>
             {/if}
 
-            {#if currentQuestion}
+            {#if state.currentQuestion}
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <!-- Stats Bar -->
                     {#if !isGuest}
@@ -266,9 +115,11 @@
                                             >Kesulitan</span
                                         >
                                         <span
-                                            class={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-sm font-bold ${getDifficultyColor(difficulty)}`}
+                                            class={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-sm font-bold ${state.getDifficultyColor(state.difficulty)}`}
                                         >
-                                            {getDifficultyLabel(difficulty)}
+                                            {state.getDifficultyLabel(
+                                                state.difficulty,
+                                            )}
                                         </span>
                                     </div>
 
@@ -281,7 +132,7 @@
                                         <h5
                                             class="text-lg font-bold text-slate-700"
                                         >
-                                            {level}
+                                            {state.level}
                                         </h5>
                                     </div>
 
@@ -298,7 +149,7 @@
                                                 size={14}
                                                 class="text-amber-400 fill-current"
                                             />
-                                            <span>{xp}</span>
+                                            <span>{state.xp}</span>
                                         </h5>
                                     </div>
 
@@ -315,7 +166,7 @@
                                                 size={14}
                                                 class="text-orange-500 fill-current"
                                             />
-                                            <span>{streak}</span>
+                                            <span>{state.streak}</span>
                                         </h5>
                                     </div>
                                 </div>
@@ -324,30 +175,30 @@
                                 <button
                                     type="button"
                                     class="group flex items-center gap-2 px-4 py-2 rounded-xl bg-primary-50 text-primary-600 hover:bg-primary-100 hover:text-primary-700 transition-all font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                                    on:click={useHint}
-                                    disabled={hintsAvailable <= 0 ||
-                                        !currentQuestion?.hint}
+                                    on:click={() => state.useHint()}
+                                    disabled={state.hintsAvailable <= 0 ||
+                                        !state.currentQuestion?.hint}
                                 >
                                     <div
                                         class="w-6 h-6 rounded-lg bg-primary-200 group-hover:bg-primary-300 flex items-center justify-center transition-colors"
                                     >
                                         <Lightbulb size={16} />
                                     </div>
-                                    <span>Hint ({hintsAvailable})</span>
+                                    <span>Hint ({state.hintsAvailable})</span>
                                 </button>
                             </div>
                         </div>
                     {/if}
 
                     <!-- Hint Display -->
-                    {#if showHint && currentQuestion?.hint}
+                    {#if state.showHint && state.currentQuestion?.hint}
                         <div
                             class="mb-6 p-5 bg-amber-50 border-2 border-amber-200 rounded-2xl relative animate-fadeIn"
                         >
                             <button
                                 type="button"
                                 class="absolute top-3 right-3 w-6 h-6 rounded-full bg-amber-200 hover:bg-amber-300 flex items-center justify-center transition-colors"
-                                on:click={closeHint}
+                                on:click={() => state.closeHint()}
                             >
                                 <X size={14} class="text-amber-700" />
                             </button>
@@ -367,7 +218,7 @@
                                         Petunjuk
                                     </h4>
                                     <p class="text-sm text-amber-700">
-                                        {currentQuestion.hint}
+                                        {state.currentQuestion.hint}
                                     </p>
                                 </div>
                             </div>
@@ -380,41 +231,44 @@
                             <Badge variant="primary" size="lg"
                                 ><HelpCircle size={18} class="mr-2" /> Soal</Badge
                             >
-                            {#if currentQuestion.difficulty}
+                            {#if state.currentQuestion.difficulty}
                                 <Badge
                                     variant="outline"
                                     size="sm"
-                                    class={getDifficultyColor(
-                                        currentQuestion.difficulty,
+                                    class={state.getDifficultyColor(
+                                        state.currentQuestion.difficulty,
                                     )}
                                 >
-                                    {getDifficultyLabel(
-                                        currentQuestion.difficulty,
+                                    {state.getDifficultyLabel(
+                                        state.currentQuestion.difficulty,
                                     )}
                                 </Badge>
                             {/if}
                         </div>
 
-                        {#if currentQuestion.question_type === "fill_in_the_blank"}
+                        {#if state.currentQuestion.question_type === "fill_in_the_blank"}
                             <FillInTheBlank
-                                question={currentQuestion}
-                                bind:answerText={fillInTheBlankAnswer}
+                                question={state.currentQuestion}
+                                bind:answerText={state.fillInTheBlankAnswer}
                                 on:input={(e) =>
-                                    (fillInTheBlankAnswer = e.detail.text)}
+                                    (state.fillInTheBlankAnswer =
+                                        e.detail.text)}
                             />
-                        {:else if currentQuestion.question_type === "drag_and_drop"}
+                        {:else if state.currentQuestion.question_type === "drag_and_drop"}
                             <DragAndDrop
-                                question={currentQuestion}
-                                bind:dragAndDropAnswers
+                                question={state.currentQuestion}
+                                bind:dragAndDropAnswers={
+                                    state.dragAndDropAnswers
+                                }
                             />
                         {:else}
                             <MultipleChoice
-                                question={currentQuestion}
+                                question={state.currentQuestion}
                                 bind:selectedAnswerId={
-                                    selectedMultipleChoiceAnswer
+                                    state.selectedMultipleChoiceAnswer
                                 }
                                 on:select={(e) =>
-                                    (selectedMultipleChoiceAnswer =
+                                    (state.selectedMultipleChoiceAnswer =
                                         e.detail.answerId)}
                             />
                         {/if}
@@ -425,10 +279,10 @@
                         <Button
                             variant="primary"
                             class="w-full py-3"
-                            disabled={isSubmitting}
-                            on:click={submitAnswer}
+                            disabled={state.isSubmitting}
+                            on:click={() => state.submitAnswer()}
                         >
-                            {#if isSubmitting}
+                            {#if state.isSubmitting}
                                 <Loader2 size={18} class="mr-2 animate-spin" /> Memeriksa...
                             {:else}
                                 <CheckCircle2 size={18} class="mr-2" /> Periksa Jawaban
@@ -507,7 +361,7 @@
                                     <div
                                         class="text-2xl font-bold text-slate-800"
                                     >
-                                        {xp}
+                                        {state.xp}
                                     </div>
                                     <div
                                         class="text-[10px] font-bold text-slate-400 uppercase tracking-wider"
@@ -527,7 +381,7 @@
                                     <div
                                         class="text-2xl font-bold text-slate-800"
                                     >
-                                        {streak}
+                                        {state.streak}
                                     </div>
                                     <div
                                         class="text-[10px] font-bold text-slate-400 uppercase tracking-wider"
@@ -563,19 +417,19 @@
 
     <!-- Adaptive Feedback Modal -->
     <AdaptiveFeedbackModal
-        show={showFeedback}
-        {feedbackData}
-        on:next={handleNext}
-        on:tryAgain={handleTryAgain}
+        show={state.showFeedback}
+        feedbackData={state.feedbackData}
+        on:next={() => state.handleNext()}
+        on:tryAgain={() => state.handleTryAgain()}
     />
 
     <!-- Adaptive Indicator (Debug/Info Panel) -->
     {#if !isGuest}
         <AdaptiveIndicator
-            show={showAdaptiveIndicator}
-            facts={adaptiveFacts}
-            triggeredRule={adaptiveTriggeredRule}
-            isProcessing={isSubmitting}
+            show={state.showAdaptiveIndicator}
+            facts={state.adaptiveFacts}
+            triggeredRule={state.adaptiveTriggeredRule}
+            isProcessing={state.isSubmitting}
         />
     {/if}
 </App>

@@ -1,6 +1,6 @@
 <script>
     import { onMount, tick } from "svelte";
-    import { enhanceCodeBlocks } from "../../utils/codeBlockEnhancer";
+    import { enhanceCodeBlocks } from "@/utils/codeBlockEnhancer";
     import "highlight.js/styles/atom-one-dark.css";
 
     export let content = "";

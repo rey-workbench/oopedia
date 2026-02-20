@@ -1,4 +1,4 @@
-import './bootstrap';
+import '@/bootstrap';
 import { createInertiaApp } from '@inertiajs/svelte'
 import { mount } from 'svelte'
 
@@ -8,31 +8,26 @@ const pages = import.meta.glob("./pages/**/*.svelte");
 
 createInertiaApp({
     resolve: (name) => {
-        let path = `./pages/${name}/+page.svelte`;
+        const key = Object.keys(pages).find((k) => {
+            return (
+                k === `./pages/${name}.svelte` ||
+                k === `./pages/${name}/Index.svelte` ||
+                k === `./pages/${name}/+page.svelte` ||
+                k.endsWith(`/pages/${name}.svelte`) ||
+                k.endsWith(`/pages/${name}/Index.svelte`) ||
+                k.endsWith(`/pages/${name}/+page.svelte`)
+            );
+        });
 
-        if (!pages[path] && name.endsWith('/Index')) {
-            const stripped = name.replace(/\/Index$/, '');
-            path = `./pages/${stripped}/+page.svelte`;
-        }
+        const resolved = key ? pages[key] : null;
 
-        if (!pages[path]) {
-            path = `./pages/${name}/Index.svelte`;
-        }
-
-        if (!pages[path]) {
-            path = `./pages/${name}.svelte`;
-        }
-
-        const page = pages[path] as () => Promise<any>;
-
-        if (!page) {
+        if (!resolved) {
             console.error(`Inertia Resolve Failed: "${name}"`);
-            console.log("Attempted Path:", path);
             console.log("Available Pages:", Object.keys(pages));
             throw new Error(`Component "${name}" not found.`);
         }
 
-        return page();
+        return (resolved as any)();
     },
     setup({ el, App, props }) {
         if (el) {

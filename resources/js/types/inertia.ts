@@ -2,7 +2,7 @@
 // Inertia.js Page Props & Shared Data Types
 // =============================================================================
 
-import type { Material, Question, StudentState, User, UeqSurvey, DifficultyLevel } from './models';
+import type { Material, Question, StudentState, User, UeqSurvey, DifficultyLevel } from '@/types/models';
 
 // ---------------------------------------------------------------------------
 // Shared props injected by HandleInertiaRequests middleware

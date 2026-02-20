@@ -1,29 +1,15 @@
 <script>
-    import App from "../../../../layouts/App.svelte";
-    import PageHeader from "../../../../components/ui/PageHeader.svelte";
-    import Card from "../../../../components/ui/Card.svelte";
-    import Button from "../../../../components/ui/Button.svelte";
-    import { Link, page } from "@inertiajs/svelte";
-    import {
-        ArrowLeft,
-        BookOpen,
-        Layers,
-        Puzzle,
-        Info,
-        ArrowRight,
-    } from "lucide-svelte";
-    import {
-        getGradientClass,
-        getTextClass,
-        getBgClass,
-        getShadowClass,
-        getIcon,
-        getBadgeLabel,
-    } from "../../../../utils/contentTypeStyles";
-
+    import App from "@/layouts/App.svelte";
+    import PageHeader from "@/components/ui/PageHeader.svelte";
+    import Card from "@/pages/components/ui/Card.svelte";
+    import Button from "@/components/ui/Button.svelte";
+    import ContentDisplay from "@/components/ui/ContentDisplay.svelte";
+    import SubMaterialGrid from "@/components/Mahasiswa/Materials/Show/SubMaterialGrid.svelte";
+    import { page } from "@inertiajs/svelte";
+    import { ArrowLeft, BookOpen, Layers, Info } from "lucide-svelte";
     import { onMount, tick } from "svelte";
-    import { enhanceCodeBlocks } from "../../../../utils/codeBlockEnhancer";
-    import ContentDisplay from "../../../../components/ui/ContentDisplay.svelte";
+    import { enhanceCodeBlocks } from "@/utils/codeBlockEnhancer";
+    import { MaterialShowState } from "@/states/Mahasiswa/MaterialShowState.svelte";
 
     export let material = {};
 
@@ -34,29 +20,20 @@
         if (contentContainer) enhanceCodeBlocks(contentContainer);
     });
 
-    // Re-run if material content changes (e.g. navigation)
     $: if (material && contentContainer) {
         tick().then(() => enhanceCodeBlocks(contentContainer));
     }
 
-    // Handling subMaterials properly if it comes as an array or object
-    $: subMaterials = material.subMaterials || material.sub_materials || [];
-
-    // Check if user was redirected from adaptive system
-    $: fromAdaptive = $page.props?.flash?.from_adaptive || false;
-
-    const stripHtml = (html) => {
-        if (!html) return "";
-        const doc = new DOMParser().parseFromString(html, "text/html");
-        return doc.body.textContent || "";
-    };
+    // Initialize State
+    const fromAdaptive = $page.props?.flash?.from_adaptive || false;
+    const state = new MaterialShowState(material, fromAdaptive);
 </script>
 
-<App title={material?.title || "Material"}>
+<App title={state.material?.title || "Material"}>
     <div class="space-y-12">
         <!-- Header Section -->
         <PageHeader
-            title={material?.title || "Loading..."}
+            title={state.material?.title || "Loading..."}
             subtitle="Kuasai konsep fondasi hingga tingkat lanjut Pemrograman Berorientasi Objek."
         >
             <div slot="actions">
@@ -79,7 +56,7 @@
                     <span
                         class="text-[10px] font-bold uppercase tracking-widest text-slate-500"
                     >
-                        {material?.creator?.name || "Admin System"}
+                        {state.material?.creator?.name || "Admin System"}
                     </span>
                 </div>
 
@@ -92,14 +69,14 @@
                     <span
                         class="text-[10px] font-bold uppercase tracking-widest text-slate-500"
                     >
-                        {subMaterials.length} Sub-Materi
+                        {state.subMaterials.length} Sub-Materi
                     </span>
                 </div>
             </div>
         </PageHeader>
 
         <!-- Adaptive System Alert -->
-        {#if fromAdaptive}
+        {#if state.fromAdaptive}
             <Card class="border-l-4 border-primary-500 bg-primary-50">
                 <div class="flex items-start gap-4">
                     <div
@@ -136,7 +113,7 @@
                 </div>
             </div>
 
-            {#if subMaterials.length === 0}
+            {#if state.subMaterials.length === 0}
                 <Card class="p-20 text-center">
                     <div
                         class="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6"
@@ -161,110 +138,24 @@
                     </Button>
                 </Card>
             {:else}
-                <div
-                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-                >
-                    {#each subMaterials as subMaterial (subMaterial.id)}
-                        <Card
-                            padding="p-0"
-                            class="group hover:shadow-2xl transition-all duration-300 overflow-hidden"
-                        >
-                            <!-- Header with Icon -->
-                            <div
-                                class={`relative h-48 ${getBgClass(subMaterial.jenis_konten)} flex items-center justify-center shrink-0`}
-                            >
-                                <div class="absolute inset-0 bg-black/10"></div>
-                                <div
-                                    class="absolute inset-x-0 bottom-0 h-1/2 bg-black/20"
-                                ></div>
-
-                                <!-- Center Icon -->
-                                <div class="relative z-10">
-                                    <svelte:component
-                                        this={getIcon(subMaterial.jenis_konten)}
-                                        size={64}
-                                        class="text-white/20 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500"
-                                    />
-                                </div>
-
-                                <!-- Order Badge (Top Left) -->
-                                <div
-                                    class="absolute top-4 left-4 w-10 h-10 bg-white rounded-xl shadow-lg flex items-center justify-center"
-                                >
-                                    <span
-                                        class={`text-lg font-bold ${getTextClass(subMaterial.jenis_konten)}`}
-                                        >{subMaterial.order}</span
-                                    >
-                                </div>
-
-                                <!-- Bottom Badges -->
-                                <div
-                                    class="absolute bottom-5 left-5 right-5 flex justify-between items-center"
-                                >
-                                    <div
-                                        class="px-3 py-1.5 bg-white/10 backdrop-blur-md rounded-xl text-white text-[9px] font-bold uppercase tracking-widest border border-white/20"
-                                    >
-                                        {getBadgeLabel(
-                                            subMaterial.jenis_konten,
-                                        )}
-                                    </div>
-                                    <div
-                                        class={`flex items-center gap-2 px-3 py-1.5 ${getBgClass(subMaterial.jenis_konten)} rounded-xl text-white text-[9px] font-bold uppercase tracking-widest shadow-xl ${getShadowClass(subMaterial.jenis_konten)}`}
-                                    >
-                                        <Puzzle size={14} />
-                                        {subMaterial.questions
-                                            ? subMaterial.questions.length
-                                            : 0} Soal
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Content -->
-                            <div class="p-6 flex-1 flex flex-col">
-                                <div
-                                    class="min-h-[3.5rem] mb-3 flex items-start"
-                                >
-                                    <h3
-                                        class={`text-xl font-bold text-slate-900 group-hover:${getTextClass(subMaterial.jenis_konten)} transition-colors line-clamp-2`}
-                                    >
-                                        {subMaterial.title}
-                                    </h3>
-                                </div>
-
-                                <div class="min-h-[4.5rem] mb-6">
-                                    <p
-                                        class="text-sm text-slate-600 line-clamp-3 leading-relaxed"
-                                    >
-                                        {stripHtml(subMaterial.content)}
-                                    </p>
-                                </div>
-
-                                <div class="mt-auto">
-                                    <Button
-                                        href={`/mahasiswa/materials/${material.id}/submaterials/${subMaterial.id}`}
-                                        variant="primary"
-                                        class="w-full"
-                                        icon={BookOpen}
-                                    >
-                                        Lihat Materi
-                                    </Button>
-                                </div>
-                            </div>
-                        </Card>
-                    {/each}
-                </div>
+                <SubMaterialGrid
+                    subMaterials={state.subMaterials}
+                    materialId={state.material.id}
+                />
             {/if}
         </div>
 
         <!-- Material Content Section (Optional) -->
-        {#if material.content}
+        {#if state.material.content}
             <Card>
                 <div class="prose max-w-none">
                     <h3 class="text-2xl font-bold text-slate-900 mb-4">
                         Tentang Materi Ini
                     </h3>
                     <div class="leading-relaxed">
-                        <ContentDisplay content={material.content || ""} />
+                        <ContentDisplay
+                            content={state.material.content || ""}
+                        />
                     </div>
                 </div>
             </Card>

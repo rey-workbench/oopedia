@@ -1,11 +1,9 @@
 <script>
-    import App from "../../../../layouts/App.svelte";
-    import PageHeader from "../../../../components/ui/PageHeader.svelte";
-    import Card from "../../../../components/ui/Card.svelte";
-    import Button from "../../../../components/ui/Button.svelte";
-    import Input from "../../../../components/ui/Input.svelte";
-    import QuillEditor from "../../../../components/ui/QuillEditor.svelte";
-    import { useForm, router } from "@inertiajs/svelte";
+    import App from "@/layouts/App.svelte";
+    import PageHeader from "@/pages/components/ui/PageHeader.svelte";
+    import Card from "@/pages/components/ui/Card.svelte";
+    import Button from "@/pages/components/ui/Button.svelte";
+    import QuillEditor from "@/pages/components/ui/QuillEditor.svelte";
     import {
         ArrowLeft,
         Edit2,
@@ -14,63 +12,21 @@
         CheckCircle2,
         RefreshCw,
     } from "lucide-svelte";
-    import { onMount } from "svelte";
+    import { QuestionEditState } from "@/states/Admin/QuestionEditState.svelte";
 
     export let materials = [];
     export let material = null;
     export let subMaterials = [];
     export let question;
 
-    const form = useForm({
-        question_text: question.question_text,
-        question_type: question.question_type,
-        difficulty: question.difficulty,
-        material_id: question.material_id,
-        sub_material_id: question.sub_material_id || "",
-        answers: question.answers.map((a) => ({
-            id: a.id,
-            answer_text: a.answer_text,
-            is_correct: a.is_correct,
-            explanation: a.explanation || "",
-        })),
-        correct_answer: question.answers.findIndex((a) => a.is_correct == 1),
-    });
+    // Initialize State
+    const state = new QuestionEditState(question);
 
-    let availableSubMaterials = subMaterials;
+    // Initialize submaterials
+    state.setSubMaterials(subMaterials);
 
-    async function handleMaterialChange() {
-        if (!$form.material_id) {
-            availableSubMaterials = [];
-            return;
-        }
-        const response = await fetch(
-            `/admin/materials/${$form.material_id}/submaterials/json`,
-        );
-        availableSubMaterials = await response.json();
-        $form.sub_material_id = "";
-    }
-
-    function addAnswer() {
-        $form.answers = [
-            ...$form.answers,
-            { answer_text: "", is_correct: 0, explanation: "" },
-        ];
-    }
-
-    function removeAnswer(index) {
-        $form.answers = $form.answers.filter((_, i) => i !== index);
-    }
-
-    function handleSubmit() {
-        if (
-            ["radio_button", "fill_in_the_blank"].includes($form.question_type)
-        ) {
-            $form.answers.forEach((ans, i) => {
-                ans.is_correct = i == $form.correct_answer ? 1 : 0;
-            });
-        }
-        $form.put(`/admin/questions/${question.id}`);
-    }
+    // Proxy for easy access in template
+    const form = state.form;
 </script>
 
 <App title={`Edit Soal #${question.id}`}>
@@ -137,7 +93,7 @@
 
                                 <Button
                                     type="button"
-                                    on:click={addAnswer}
+                                    on:click={() => state.addAnswer()}
                                     variant="ghost"
                                     size="xs"
                                     icon={Plus}>TAMBAH OPSI</Button
@@ -183,7 +139,7 @@
                                                 <button
                                                     type="button"
                                                     on:click={() =>
-                                                        removeAnswer(i)}
+                                                        state.removeAnswer(i)}
                                                     class="p-2 text-slate-300 hover:text-rose-500 transition-colors"
                                                 >
                                                     <X size={18} />
@@ -219,7 +175,7 @@
                             <select
                                 id="material"
                                 bind:value={$form.material_id}
-                                on:change={handleMaterialChange}
+                                on:change={() => state.handleMaterialChange()}
                                 class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-900 focus:border-primary-600 focus:outline-none transition-all cursor-pointer"
                             >
                                 <option value="">PILIH MODUL</option>
@@ -242,7 +198,7 @@
                                 disabled={!$form.material_id}
                             >
                                 <option value="">TAG UNIT</option>
-                                {#each availableSubMaterials as sm}
+                                {#each state.availableSubMaterials as sm}
                                     <option value={sm.id}>{sm.title}</option>
                                 {/each}
                             </select>
@@ -259,7 +215,7 @@
                                     <button
                                         type="button"
                                         on:click={() =>
-                                            ($form.question_type = type)}
+                                            state.setQuestionType(type)}
                                         class={`py-4 px-6 rounded-2xl border-2 font-bold uppercase tracking-widest text-[10px] text-left transition-all flex items-center justify-between
                         ${$form.question_type === type ? "border-primary-600 bg-primary-50 text-primary-600" : "border-slate-50 bg-slate-50 text-slate-400"}`}
                                     >
@@ -283,7 +239,7 @@
                                     <button
                                         type="button"
                                         on:click={() =>
-                                            ($form.difficulty = diff)}
+                                            state.setDifficulty(diff)}
                                         class={`flex-1 py-3 px-2 rounded-xl border-2 font-bold uppercase tracking-widest text-[9px] transition-all
                         ${$form.difficulty === diff ? "border-primary-600 bg-primary-50 text-primary-600" : "border-slate-50 bg-slate-50 text-slate-400"}`}
                                     >
@@ -296,7 +252,7 @@
 
                     <div class="pt-6">
                         <Button
-                            on:click={handleSubmit}
+                            on:click={() => state.submit(question.id)}
                             variant="primary"
                             class="w-full py-4 shadow-xl shadow-primary-900/20"
                             icon={RefreshCw}

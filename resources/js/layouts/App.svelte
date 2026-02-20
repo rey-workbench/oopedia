@@ -1,9 +1,9 @@
 <script>
     import { page } from "@inertiajs/svelte";
     import { onMount, onDestroy } from "svelte";
-    import Navbar from "../components/navigation/Navbar.svelte";
-    import Sidebar from "../components/navigation/Sidebar.svelte";
-    import Alert from "../components/ui/Alert.svelte";
+    import Navbar from "@/components/navigation/Navbar.svelte";
+    import Sidebar from "@/components/navigation/Sidebar.svelte";
+    import Alert from "@/components/ui/Alert.svelte";
 
     export let title = "OOPEDIAV2";
     export let showNavbar = true;

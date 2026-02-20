@@ -1,7 +1,7 @@
 <script>
     import { onMount } from "svelte";
     import { page } from "@inertiajs/svelte";
-    import Alert from "../components/ui/Alert.svelte";
+    import Alert from "@/components/ui/Alert.svelte";
 
     export let title;
 

@@ -1,63 +1,30 @@
 <script>
-    import App from "../../../../../layouts/App.svelte";
-    import Card from "../../../../../components/ui/Card.svelte";
-    import Button from "../../../../../components/ui/Button.svelte";
-    import Badge from "../../../../../components/ui/Badge.svelte";
-    import Alert from "../../../../../components/ui/Alert.svelte";
-    import { Link, router } from "@inertiajs/svelte";
-    import {
-        Book,
-        FileText,
-        HelpCircle,
-        List,
-        Check,
-        X,
-        Lightbulb,
-        ArrowLeft,
-    } from "lucide-svelte";
+    import App from "@/layouts/App.svelte";
+    import Card from "@/pages/components/ui/Card.svelte";
+    import Button from "@/components/ui/Button.svelte";
+    import Alert from "@/components/ui/Alert.svelte";
+    import { Book, ArrowLeft } from "lucide-svelte";
+    import ReviewSidebar from "@/components/Mahasiswa/Materials/Questions/ReviewSidebar.svelte";
+    import ReviewQuestionList from "@/components/Mahasiswa/Materials/Questions/ReviewQuestionList.svelte";
+    import { ReviewState } from "@/states/Mahasiswa/ReviewState.svelte";
 
     export let material = {};
     export let materials = [];
-    export let questions = []; // This seems to be a collection of questions with answers loaded
+    export let questions = [];
     export let difficulty = "all";
 
-    function filterDifficulty(d) {
-        router.get(
-            `/mahasiswa/materials/${material.id}/questions/review`,
-            { difficulty: d },
-            {
-                preserveState: true,
-                preserveScroll: true,
-                only: ["questions", "difficulty"],
-            },
-        );
-    }
+    const state = new ReviewState(material, materials, questions, difficulty);
 </script>
 
-<App title={`Review Soal - ${material.title}`}>
+<App title={`Review Soal - ${state.material.title}`}>
     <div class="container-fluid py-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <!-- Sidebar: Materials List -->
             <div class="lg:col-span-1">
-                <Card class="sticky top-4">
-                    <div class="mb-4">
-                        <h5 class="font-bold text-lg text-slate-900">
-                            <Book size={18} class="mr-2" />Daftar Materi
-                        </h5>
-                    </div>
-                    <ul class="space-y-2">
-                        {#each materials as m (m.id)}
-                            <li>
-                                <Link
-                                    href={`/mahasiswa/materials/${m.id}`}
-                                    class={`block p-3 rounded-lg transition-colors ${m.id === material.id ? "bg-primary-600 text-white" : "text-slate-700 hover:bg-slate-100"}`}
-                                >
-                                    <FileText size={16} class="mr-2" />{m.title}
-                                </Link>
-                            </li>
-                        {/each}
-                    </ul>
-                </Card>
+                <ReviewSidebar
+                    materials={state.materials}
+                    currentMaterialId={state.material.id}
+                />
             </div>
 
             <!-- Main Content: Questions Review -->
@@ -65,9 +32,9 @@
                 <Card>
                     <div class="mb-6">
                         <h3 class="text-2xl font-bold text-slate-800 mb-2">
-                            Review Soal {difficulty !== "all"
-                                ? difficulty.charAt(0).toUpperCase() +
-                                  difficulty.slice(1)
+                            Review Soal {state.difficulty !== "all"
+                                ? state.difficulty.charAt(0).toUpperCase() +
+                                  state.difficulty.slice(1)
                                 : "Semua Tingkat"}
                         </h3>
                         <p class="text-slate-600">
@@ -77,22 +44,23 @@
 
                         <div class="flex flex-wrap gap-2 mt-4">
                             <Button
-                                variant={difficulty === "all"
+                                variant={state.difficulty === "all"
                                     ? "primary"
                                     : "outline"}
-                                on:click={() => filterDifficulty("all")}
+                                on:click={() => state.filterDifficulty("all")}
                                 size="sm"
                             >
                                 Semua
                             </Button>
 
                             <Button
-                                variant={difficulty === "beginner"
+                                variant={state.difficulty === "beginner"
                                     ? "success"
                                     : "outline"}
-                                on:click={() => filterDifficulty("beginner")}
+                                on:click={() =>
+                                    state.filterDifficulty("beginner")}
                                 size="sm"
-                                class={difficulty === "beginner"
+                                class={state.difficulty === "beginner"
                                     ? ""
                                     : "text-emerald-600 border-emerald-600 hover:bg-emerald-50"}
                             >
@@ -100,12 +68,13 @@
                             </Button>
 
                             <Button
-                                variant={difficulty === "medium"
+                                variant={state.difficulty === "medium"
                                     ? "warning"
                                     : "outline"}
-                                on:click={() => filterDifficulty("medium")}
+                                on:click={() =>
+                                    state.filterDifficulty("medium")}
                                 size="sm"
-                                class={difficulty === "medium"
+                                class={state.difficulty === "medium"
                                     ? ""
                                     : "text-amber-600 border-amber-600 hover:bg-amber-50"}
                             >
@@ -113,12 +82,12 @@
                             </Button>
 
                             <Button
-                                variant={difficulty === "hard"
+                                variant={state.difficulty === "hard"
                                     ? "danger"
                                     : "outline"}
-                                on:click={() => filterDifficulty("hard")}
+                                on:click={() => state.filterDifficulty("hard")}
                                 size="sm"
-                                class={difficulty === "hard"
+                                class={state.difficulty === "hard"
                                     ? ""
                                     : "text-rose-600 border-rose-600 hover:bg-rose-50"}
                             >
@@ -127,210 +96,7 @@
                         </div>
                     </div>
 
-                    {#if questions.length > 0}
-                        <div class="space-y-6">
-                            {#each questions as question, index (question.id)}
-                                <div
-                                    class="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"
-                                >
-                                    <div
-                                        class="flex justify-between items-start mb-6"
-                                    >
-                                        <div class="flex flex-col gap-1">
-                                            <span
-                                                class="inline-flex items-center gap-2 font-bold text-slate-700"
-                                            >
-                                                <div
-                                                    class="w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center text-sm"
-                                                >
-                                                    {index + 1}
-                                                </div>
-                                                Soal dari {questions.length}
-                                            </span>
-                                            {#if question.user_attempt}
-                                                <div
-                                                    class="flex items-center gap-2 ml-10 mt-1"
-                                                >
-                                                    <Badge
-                                                        variant={question
-                                                            .user_attempt
-                                                            .is_correct
-                                                            ? "success"
-                                                            : "danger"}
-                                                        size="sm"
-                                                    >
-                                                        {question.user_attempt
-                                                            .is_correct
-                                                            ? "Benar"
-                                                            : "Salah"}
-                                                    </Badge>
-                                                    <span
-                                                        class="text-[10px] font-bold text-slate-400 uppercase tracking-wider"
-                                                    >
-                                                        Percobaan #{question
-                                                            .user_attempt
-                                                            .attempt_number} • Skor:
-                                                        {question.user_attempt
-                                                            .score}
-                                                    </span>
-                                                </div>
-                                            {/if}
-                                        </div>
-                                        <Badge
-                                            variant={question.difficulty ===
-                                            "beginner"
-                                                ? "success"
-                                                : question.difficulty ===
-                                                    "medium"
-                                                  ? "warning"
-                                                  : "danger"}
-                                        >
-                                            {question.difficulty === "hard"
-                                                ? "Hard"
-                                                : question.difficulty
-                                                      .charAt(0)
-                                                      .toUpperCase() +
-                                                  question.difficulty.slice(1)}
-                                        </Badge>
-                                    </div>
-
-                                    <div class="space-y-6">
-                                        <!-- Question Text -->
-                                        <div>
-                                            <h5
-                                                class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2"
-                                            >
-                                                <HelpCircle
-                                                    size={16}
-                                                    class="text-primary-600"
-                                                />
-                                                Pertanyaan
-                                            </h5>
-                                            <div
-                                                class="p-5 bg-slate-50 rounded-xl text-slate-800 leading-relaxed border border-slate-100"
-                                            >
-                                                {@html question.question_text}
-                                            </div>
-                                        </div>
-
-                                        <!-- Answers -->
-                                        <div>
-                                            <h5
-                                                class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2"
-                                            >
-                                                <List
-                                                    size={16}
-                                                    class="text-primary-600"
-                                                />
-                                                Pilihan Jawaban
-                                            </h5>
-                                            <div class="grid grid-cols-1 gap-3">
-                                                {#each question.answers as answer}
-                                                    <div
-                                                        class={`p-4 rounded-xl flex items-start gap-4 transition-all ${
-                                                            answer.is_correct
-                                                                ? "bg-emerald-50 border-2 border-emerald-200 shadow-sm"
-                                                                : question
-                                                                        .user_attempt
-                                                                        ?.answer_id ===
-                                                                    answer.id
-                                                                  ? "bg-rose-50 border-2 border-rose-200 shadow-sm text-rose-700"
-                                                                  : "bg-white border-2 border-slate-50 text-slate-500"
-                                                        }`}
-                                                    >
-                                                        {#if answer.is_correct}
-                                                            <div
-                                                                class="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5"
-                                                            >
-                                                                <Check
-                                                                    size={14}
-                                                                    class="text-white"
-                                                                />
-                                                            </div>
-                                                        {:else if question.user_attempt?.answer_id === answer.id}
-                                                            <div
-                                                                class="w-6 h-6 rounded-full bg-rose-500 flex items-center justify-center shrink-0 mt-0.5"
-                                                            >
-                                                                <X
-                                                                    size={14}
-                                                                    class="text-white"
-                                                                />
-                                                            </div>
-                                                        {:else}
-                                                            <div
-                                                                class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center shrink-0 mt-0.5"
-                                                            >
-                                                                <X
-                                                                    size={14}
-                                                                    class="text-slate-300"
-                                                                />
-                                                            </div>
-                                                        {/if}
-                                                        <div
-                                                            class="flex-1 font-medium"
-                                                        >
-                                                            {answer.answer_text}
-                                                            {#if question.user_attempt?.answer_id === answer.id}
-                                                                <span
-                                                                    class="ml-2 text-[10px] font-bold uppercase tracking-tight opacity-70"
-                                                                >
-                                                                    (Pilihan
-                                                                    Anda)
-                                                                </span>
-                                                            {/if}
-                                                        </div>
-                                                    </div>
-                                                    {#if answer.is_correct && answer.explanation}
-                                                        <div
-                                                            class="mt-2 p-5 bg-primary-50 border-l-4 border-primary-600 rounded-r-xl"
-                                                        >
-                                                            <div
-                                                                class="flex items-center gap-2 font-bold text-primary-900 mb-1"
-                                                            >
-                                                                <Lightbulb
-                                                                    size={16}
-                                                                    class="text-primary-600"
-                                                                />
-                                                                Penjelasan:
-                                                            </div>
-                                                            <div
-                                                                class="text-primary-800 text-sm leading-relaxed"
-                                                            >
-                                                                {@html answer.explanation}
-                                                            </div>
-                                                        </div>
-                                                    {/if}
-                                                {/each}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {/each}
-                        </div>
-                    {:else}
-                        <Alert variant="info" icon="info-circle" title="Info">
-                            Tidak ada soal yang tersedia untuk ditampilkan.
-                        </Alert>
-                    {/if}
-
-                    <!-- Footer Actions -->
-                    <div class="mt-6 flex gap-3 justify-center">
-                        <Button
-                            href={`/mahasiswa/materials/${material.id}/questions`}
-                            variant="primary"
-                            icon={ArrowLeft}
-                        >
-                            Kembali ke Soal
-                        </Button>
-
-                        <Button
-                            href={`/mahasiswa/materials/${material.id}`}
-                            variant="secondary"
-                            icon={Book}
-                        >
-                            Kembali ke Materi
-                        </Button>
-                    </div>
+                    <ReviewQuestionList questions={state.questions} />
                 </Card>
             </div>
         </div>

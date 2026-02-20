@@ -1,6 +1,6 @@
 <script>
     import { fade, scale, slide } from "svelte/transition";
-    import Badge from "../ui/Badge.svelte";
+    import Badge from "@/components/ui/Badge.svelte";
     import {
         Brain,
         Zap,

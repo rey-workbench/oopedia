@@ -1,5 +1,5 @@
 <script>
-    import Button from "./Button.svelte";
+    import Button from "@/components/ui/Button.svelte";
     import { AlertTriangle } from "lucide-svelte";
 
     /** Control visibility externally */

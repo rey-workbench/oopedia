@@ -36,6 +36,12 @@
         "isolatedModules": true,
         "moduleDetection": "force",
         "skipLibCheck": true,
+        "baseUrl": ".",
+        "paths": {
+            "@/*": [
+                "resources/js/*"
+            ]
+        }
     },
     "include": [
         "resources/js/**/*"

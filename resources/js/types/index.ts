@@ -1,7 +1,7 @@
 // =============================================================================
 // Type Definitions — Public API
 // Import from this barrel to avoid deep relative paths:
-//   import type { User, Material, QuestionType } from '../types';
+//   import type { User, Material, QuestionType } from '@/types';
 // =============================================================================
 
 export type {
@@ -25,7 +25,7 @@ export type {
     LearningProfile,
     AdaptiveState,
     UeqSurvey,
-} from './models';
+} from '@/types/models';
 
 export type {
     // Shared / Inertia
@@ -65,4 +65,4 @@ export type {
     AdaptiveResult,
     AdaptiveFact,
     UseHintResponse,
-} from './inertia';
+} from '@/types/inertia';

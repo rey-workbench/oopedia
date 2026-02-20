@@ -88,7 +88,7 @@ class AdaptiveQuizFlowService
         // 3.7 Recalculate Level based on new XP
         $currentXp = $studentState->gamification_data['global_xp'] ?? 0;
         $newLevel = $this->levelingService->determineLevel($currentXp);
-        
+
         $gamification = $studentState->gamification_data ?? [];
         $gamification['current_level'] = $newLevel;
         $studentState->gamification_data = $gamification;
@@ -163,6 +163,7 @@ class AdaptiveQuizFlowService
 
         $adaptiveState['last_rule'] = $adaptiveResult['triggered_rule'] ?? null;
         $adaptiveState['last_action'] = $ruleOutput['next_action'] ?? 'NEXT_QUESTION';
+        $adaptiveState['fast_track_active'] = $ruleOutput['fast_track_active'] ?? ($adaptiveState['fast_track_active'] ?? false);
         $adaptiveState['time_metrics'] = [
             'avg_time_per_question' => $this->performanceService->calculateAverageTimeSpent($userId, $material->id),
             'total_time_spent' => $this->performanceService->calculateTotalTimeSpent($userId, $material->id),
@@ -199,6 +200,7 @@ class AdaptiveQuizFlowService
                     'message' => $ruleOutput['message'] ?? null,
                     'certification' => $ruleOutput['certification'] ?? null,
                     'intervention_type' => $ruleOutput['intervention_type'] ?? null,
+                    'fast_track_active' => $adaptiveState['fast_track_active'] ?? false,
                 ]),
             ],
         ];

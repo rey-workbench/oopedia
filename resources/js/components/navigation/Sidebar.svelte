@@ -1,6 +1,7 @@
 <script>
     import { Link, page, router } from "@inertiajs/svelte";
-    import SidebarLink from "./SidebarLink.svelte";
+    import SidebarLink from "@/components/navigation/SidebarLink.svelte";
+    import { ROUTES } from "@/utils/route";
     import {
         LayoutDashboard,
         BookOpen,
@@ -49,7 +50,9 @@
         data-step="1"
     >
         <Link
-            href={isAdminRole ? "/admin/dashboard" : "/mahasiswa/dashboard"}
+            href={isAdminRole
+                ? ROUTES.ADMIN.DASHBOARD
+                : ROUTES.MAHASISWA.DASHBOARD}
             class="flex items-center gap-3 group"
         >
             <div
@@ -89,9 +92,9 @@
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
-                        href="/admin/dashboard"
+                        href={ROUTES.ADMIN.DASHBOARD}
                         icon={LayoutDashboard}
-                        active={isActive("/admin/dashboard")}
+                        active={isActive(ROUTES.ADMIN.DASHBOARD)}
                         >Dashboard</SidebarLink
                     >
                 </div>
@@ -106,16 +109,18 @@
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
-                        href="/admin/materials"
+                        href={ROUTES.ADMIN.MATERIALS.INDEX}
                         icon={BookOpen}
-                        active={$page.url.startsWith("/admin/materials")}
-                        >Kelola Materi</SidebarLink
+                        active={$page.url.startsWith(
+                            ROUTES.ADMIN.MATERIALS.INDEX,
+                        )}>Kelola Materi</SidebarLink
                     >
                     <SidebarLink
-                        href="/admin/questions"
+                        href={ROUTES.ADMIN.QUESTIONS.INDEX}
                         icon={SquareActivity}
-                        active={$page.url.startsWith("/admin/questions")}
-                        >Kelola Soal</SidebarLink
+                        active={$page.url.startsWith(
+                            ROUTES.ADMIN.QUESTIONS.INDEX,
+                        )}>Kelola Soal</SidebarLink
                     >
                 </div>
             </div>
@@ -129,25 +134,28 @@
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
-                        href="/admin/students"
+                        href={ROUTES.ADMIN.STUDENTS.INDEX}
                         icon={GraduationCap}
-                        active={$page.url.startsWith("/admin/students")}
-                        >Data Mahasiswa</SidebarLink
+                        active={$page.url.startsWith(
+                            ROUTES.ADMIN.STUDENTS.INDEX,
+                        )}>Data Mahasiswa</SidebarLink
                     >
                     {#if userRole === 1}
                         <SidebarLink
-                            href="/admin/users"
+                            href={ROUTES.ADMIN.USERS.INDEX}
                             icon={Settings}
-                            active={$page.url.startsWith("/admin/users")}
-                            >Daftar Admin</SidebarLink
+                            active={$page.url.startsWith(
+                                ROUTES.ADMIN.USERS.INDEX,
+                            )}>Daftar Admin</SidebarLink
                         >
                     {/if}
                     {#if userRole === 1}
                         <SidebarLink
-                            href="/admin/ueq-survey"
+                            href={ROUTES.ADMIN.UEQ.INDEX}
                             icon={MessageSquareQuote}
-                            active={$page.url.startsWith("/admin/ueq-survey")}
-                            >Survey UEQ</SidebarLink
+                            active={$page.url.startsWith(
+                                ROUTES.ADMIN.UEQ.INDEX,
+                            )}>Survey UEQ</SidebarLink
                         >
                     {/if}
                 </div>
@@ -190,22 +198,25 @@
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
-                        href="/mahasiswa/dashboard"
+                        href={ROUTES.MAHASISWA.DASHBOARD}
                         icon={LayoutDashboard}
-                        active={$page.url.startsWith("/mahasiswa/dashboard")}
-                        >Dashboard</SidebarLink
+                        active={$page.url.startsWith(
+                            ROUTES.MAHASISWA.DASHBOARD,
+                        )}>Dashboard</SidebarLink
                     >
                     <SidebarLink
-                        href="/mahasiswa/materials"
+                        href={ROUTES.MAHASISWA.MATERIALS.INDEX}
                         icon={Shapes}
-                        active={($page.url.startsWith("/mahasiswa/materials") ||
+                        active={($page.url.startsWith(
+                            ROUTES.MAHASISWA.MATERIALS.INDEX,
+                        ) ||
                             $page.url.startsWith("/mahasiswa/submaterials")) &&
                             !$page.url.includes("/questions")}
                     >
                         Materi PBO
                     </SidebarLink>
                     <SidebarLink
-                        href="/mahasiswa/materials/questions"
+                        href={ROUTES.MAHASISWA.MATERIALS.QUESTIONS.CATALOG}
                         icon={SquareActivity}
                         active={$page.url.includes("/materials/questions")}
                         >Latihan Soal</SidebarLink
@@ -222,10 +233,11 @@
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
-                        href="/mahasiswa/leaderboard"
+                        href={ROUTES.MAHASISWA.LEADERBOARD}
                         icon={Trophy}
-                        active={$page.url.startsWith("/mahasiswa/leaderboard")}
-                        >Leaderboard</SidebarLink
+                        active={$page.url.startsWith(
+                            ROUTES.MAHASISWA.LEADERBOARD,
+                        )}>Leaderboard</SidebarLink
                     >
                 </div>
             </div>
@@ -239,9 +251,9 @@
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
-                        href="/mahasiswa/profile"
+                        href={ROUTES.MAHASISWA.PROFILE}
                         icon={UserRound}
-                        active={$page.url.startsWith("/mahasiswa/profile")}
+                        active={$page.url.startsWith(ROUTES.MAHASISWA.PROFILE)}
                         >Profil Saya</SidebarLink
                     >
                 </div>

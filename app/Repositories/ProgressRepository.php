@@ -13,8 +13,12 @@ use Illuminate\Support\Facades\DB;
 class ProgressRepository implements ProgressRepositoryInterface
 {
     /** @return array<string, mixed> */
-    public function getUserProgressStats(int $userId): \Illuminate\Database\Eloquent\Collection
+    public function getUserProgressStats(int|string|null $userId): \Illuminate\Database\Eloquent\Collection
     {
+        if (is_null($userId)) {
+            return new Collection();
+        }
+
         // Join with Questions to get material_id
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->select('questions.material_id')
@@ -26,8 +30,12 @@ class ProgressRepository implements ProgressRepositoryInterface
     }
 
     /** @return \Illuminate\Database\Eloquent\Collection<int, mixed> */
-    public function getUserMaterialProgress(int $userId): \Illuminate\Database\Eloquent\Collection
+    public function getUserMaterialProgress(int|string|null $userId): \Illuminate\Database\Eloquent\Collection
     {
+        if (is_null($userId)) {
+            return new Collection();
+        }
+
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->select('questions.material_id')
             ->selectRaw('COUNT(DISTINCT quiz_attempts.question_id) as total_answered')
@@ -38,8 +46,11 @@ class ProgressRepository implements ProgressRepositoryInterface
     }
 
     /** @return \Illuminate\Support\Collection<int, mixed> */
-    public function getRecentActivities(int $userId, int $limit = 5): \Illuminate\Support\Collection
+    public function getRecentActivities(int|string|null $userId, int $limit = 5): \Illuminate\Support\Collection
     {
+        if (is_null($userId)) {
+            return collect();
+        }
         // Get latest correct attempts
         return QuizAttempt::with(['question.material'])
             ->where('user_id', $userId)
@@ -88,8 +99,12 @@ class ProgressRepository implements ProgressRepositoryInterface
     }
 
     /** @return array<string, mixed> */
-    public function getDetailedUserProgress(int $userId): array
+    public function getDetailedUserProgress(int|string|null $userId): array
     {
+        if (is_null($userId)) {
+            return [];
+        }
+
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->select('questions.material_id', 'questions.difficulty')
             ->selectRaw('COUNT(DISTINCT quiz_attempts.question_id) as total_answered')
@@ -177,8 +192,12 @@ class ProgressRepository implements ProgressRepositoryInterface
         return $attempt;
     }
 
-    public function updateStudentState(int $userId, array $attributes): void
+    public function updateStudentState(int|string|null $userId, array $attributes): void
     {
+        if (is_null($userId)) {
+            return;
+        }
+
         $state = StudentState::firstOrNew(['user_id' => $userId]);
 
         // 1. Update Gamification Data
@@ -248,8 +267,12 @@ class ProgressRepository implements ProgressRepositoryInterface
             ->keyBy('material_id');
     }
 
-    public function getLastAccessTime(int|string $userId, int $materialId): ?string
+    public function getLastAccessTime(int|string|null $userId, int $materialId): ?string
     {
+        if (is_null($userId)) {
+            return null;
+        }
+
         // Join not strictly needed if we just want max created_at for user?
         // But need to filter by material
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
@@ -345,8 +368,12 @@ class ProgressRepository implements ProgressRepositoryInterface
      * Get consecutive failures for a question (for G22 - Persistent Fail).
      * Returns count of consecutive wrong attempts.
      */
-    public function getConsecutiveFailures(int $userId, int $questionId): int
+    public function getConsecutiveFailures(int|string|null $userId, int $questionId): int
     {
+        if (is_null($userId)) {
+            return 0;
+        }
+
         $attempts = QuizAttempt::where('user_id', $userId)
             ->where('question_id', $questionId)
             ->orderBy('created_at', 'desc')
@@ -368,8 +395,12 @@ class ProgressRepository implements ProgressRepositoryInterface
      * Get error type from latest attempt (for G09/G10).
      * Returns 'syntax', 'logic', or null.
      */
-    public function getLatestErrorType(int $userId, int $questionId): ?string
+    public function getLatestErrorType(int|string|null $userId, int $questionId): ?string
     {
+        if (is_null($userId)) {
+            return null;
+        }
+
         $attempt = QuizAttempt::where('user_id', $userId)
             ->where('question_id', $questionId)
             ->where('is_correct', false)
@@ -379,13 +410,21 @@ class ProgressRepository implements ProgressRepositoryInterface
         return $attempt?->error_type ?? 'logic'; // Default to logic error
     }
 
-    public function getStudentState(int $userId): ?StudentState
+    public function getStudentState(int|string|null $userId): ?StudentState
     {
+        if (is_null($userId)) {
+            return null;
+        }
+
         return StudentState::where('user_id', $userId)->first();
     }
 
-    public function getOrCreateStudentState(int $userId): StudentState
+    public function getOrCreateStudentState(int|string|null $userId): StudentState
     {
+        if (is_null($userId)) {
+            return new StudentState();
+        }
+
         // StudentState is global per user
         return StudentState::firstOrCreate(['user_id' => $userId], [
             'gamification_data' => [],
@@ -397,8 +436,15 @@ class ProgressRepository implements ProgressRepositoryInterface
     }
 
     /** @return array<string, mixed> */
-    public function getUserMaterialProgressWithState(int $userId, int $materialId): array
+    public function getUserMaterialProgressWithState(int|string|null $userId, int $materialId): array
     {
+        if (is_null($userId)) {
+            return [
+                'state' => new StudentState(),
+                'progress' => new Collection(),
+            ];
+        }
+
         $state = $this->getOrCreateStudentState($userId);
         $progress = $this->getUserMaterialProgress($userId);
 
