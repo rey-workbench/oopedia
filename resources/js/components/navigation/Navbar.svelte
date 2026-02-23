@@ -1,4 +1,4 @@
-<script>
+<script  lang="ts">
     import { Link, page, router } from "@inertiajs/svelte";
     import {
         Menu,
@@ -8,23 +8,23 @@
         LogOut,
     } from "lucide-svelte";
     import { ROUTES } from "@/utils/route";
+    import { sidebarOpen } from "@/stores/sidebar";
+    import { isAdmin } from "@/utils/roles";
 
-    export let titlePage = "";
+    let { titlePage = "" } = $props();
 
-    $: auth = $page.props.auth || {};
-    $: user = auth.user;
-    $: isAuthenticated = !!user;
-    $: userRole = user ? user.role_id : null;
-    $: isAdminRole = isAuthenticated && [1, 2].includes(userRole);
-    $: userName = user ? user.name : "Tamu";
+    const auth = $derived($page.props.auth ?? {});
+    const user = $derived(auth.user ?? null);
+    const isAuthenticated = $derived(!!user);
+    const isAdminRole = $derived(isAuthenticated && isAdmin(user?.role_id));
+    const userName = $derived(user?.name ?? "Tamu");
 
     function logout() {
         router.post("/logout");
     }
 
     function toggleSidebar() {
-        // Dispatch event to be caught by App layout
-        window.dispatchEvent(new CustomEvent("toggle-sidebar"));
+        sidebarOpen.update((v) => !v);
     }
 </script>
 

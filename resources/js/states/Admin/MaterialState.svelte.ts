@@ -4,7 +4,7 @@ import { BaseState } from "@/states/BaseState.svelte";
 import { FormState } from "@/states/FormState.svelte";
 import { ROUTES } from "@/utils/route";
 import { handleImagePreview } from "@/utils/imagePreview";
-import type { Material } from "@/types";
+import type { Material, SubMaterial, JenisKonten } from "@/types";
 
 /**
  * Material List State
@@ -38,7 +38,13 @@ export class MaterialListState extends BaseState {
 /**
  * Material Form State (Create/Edit)
  */
-export class MaterialFormState extends FormState<any> {
+export class MaterialFormState extends FormState<{
+    title: string;
+    description: string | null;
+    level: string;
+    cover_image: File | null;
+    status: string;
+}> {
     material = $state<Material | null>(null);
     coverPreview = $state<string | null>(null);
 
@@ -58,12 +64,12 @@ export class MaterialFormState extends FormState<any> {
         }
     }
 
-    onImageChange(e: any) {
+    onImageChange(e: Event) {
         handleImagePreview(
             e,
             this.form,
             "cover_image",
-            (url: any) => {
+            (url: string) => {
                 this.coverPreview = url;
             }
         );
@@ -85,18 +91,18 @@ export class MaterialFormState extends FormState<any> {
  * Submaterial List State
  */
 export class SubmaterialListState extends BaseState {
-    material = $state<any>(null);
-    subMaterials = $state<any[]>([]);
+    material = $state<Material | null>(null);
+    subMaterials = $state<SubMaterial[]>([]);
 
-    constructor(material: any, subMaterials: any) {
+    constructor(material: Material, subMaterials: SubMaterial[]) {
         super();
         this.material = material;
         this.subMaterials = subMaterials;
     }
 
-    handleDelete(id: any) {
+    handleDelete(id: number) {
         confirmDelete(
-            ROUTES.ADMIN.MATERIALS.SUBMATERIALS.EDIT(this.material.id, id).replace('/edit', ''),
+            ROUTES.ADMIN.MATERIALS.SUBMATERIALS.EDIT(this.material!.id, id).replace('/edit', ''),
             "Hapus sub-materi ini?",
         );
     }
@@ -105,15 +111,21 @@ export class SubmaterialListState extends BaseState {
 /**
  * Submaterial Form State (Create/Edit)
  */
-export class SubmaterialFormState extends FormState<any> {
-    material = $state<any>(null);
-    submaterial = $state<any>(null);
+export class SubmaterialFormState extends FormState<{
+    title: string;
+    content: string;
+    type: JenisKonten | string;
+    order: number;
+    material_id: number | string;
+}> {
+    material = $state<Material | null>(null);
+    submaterial = $state<SubMaterial | null>(null);
 
-    constructor(material: any, submaterial: any) {
+    constructor(material: Material, submaterial: SubMaterial | null) {
         super({
             title: submaterial ? submaterial.title : "",
             content: submaterial ? submaterial.content : "",
-            type: submaterial ? submaterial.type : "text",
+            type: submaterial ? (submaterial as any).type : "text",
             order: submaterial
                 ? submaterial.order
                 : material?.sub_materials
@@ -128,13 +140,13 @@ export class SubmaterialFormState extends FormState<any> {
 
     async submit() {
         const url = this.isEdit
-            ? ROUTES.ADMIN.MATERIALS.SUBMATERIALS.EDIT(this.material.id, this.submaterial.id).replace('/edit', '')
-            : ROUTES.ADMIN.MATERIALS.SUBMATERIALS.INDEX(this.material.id);
+            ? ROUTES.ADMIN.MATERIALS.SUBMATERIALS.EDIT(this.material!.id, this.submaterial!.id).replace('/edit', '')
+            : ROUTES.ADMIN.MATERIALS.SUBMATERIALS.INDEX(this.material!.id);
 
         await this.submitForm(this.isEdit ? 'put' : 'post', url);
     }
 
-    setType(type: any) {
+    setType(type: JenisKonten | string) {
         this.form.type = type;
     }
 }

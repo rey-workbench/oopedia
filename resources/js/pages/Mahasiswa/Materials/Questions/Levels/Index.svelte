@@ -1,19 +1,25 @@
-<script>
+﻿<script lang="ts">
     import App from "@/layouts/App.svelte";
     import PageHeader from "@/components/ui/PageHeader.svelte";
     import Card from "@/components/ui/Card.svelte";
     import Button from "@/components/ui/Button.svelte";
     import GuestBanner from "@/components/ui/GuestBanner.svelte";
-    import LevelMap from "@/components/Mahasiswa/Materials/Questions/LevelMap.svelte";
-    import LevelLegend from "@/components/Mahasiswa/Materials/Questions/LevelLegend.svelte";
     import { ArrowLeft, Map as MapIcon } from "lucide-svelte";
     import { LevelMapState } from "@/states/Mahasiswa/QuizState.svelte";
     import { ROUTES } from "@/utils/route";
+    import LevelMapLegend from "@/components/quiz/LevelMapLegend.svelte";
+    import LevelMapCanvas from "@/components/quiz/LevelMapCanvas.svelte";
+    import type { Material } from "@/types";
+    import type { LevelItem } from "@/states/Mahasiswa/QuizState.svelte";
 
-    export let material = {};
-    export let levels = [];
+    interface Props {
+        material: Material;
+        levels: unknown[];
+    }
 
-    const state = new LevelMapState(material, levels);
+    let { material, levels }: Props = $props();
+
+    const state = new LevelMapState(material, levels as LevelItem[]);
 </script>
 
 <App title={`Peta Tantangan - ${state.material.title}`}>
@@ -22,15 +28,15 @@
             title="Peta Tantangan"
             subtitle={`Selesaikan setiap level untuk menguasai ${state.material.title || "modul ini"}.`}
         >
-            <div slot="actions">
+            {#snippet actions()}
                 <Button
                     href={ROUTES.MAHASISWA.MATERIALS.SHOW(state.material.id)}
                     variant="ghost"
-                    icon={ArrowLeft}
+                    icon={ArrowLeft as any}
                 >
                     Kembali
                 </Button>
-            </div>
+            {/snippet}
         </PageHeader>
 
         {#if state.isGuest}
@@ -55,13 +61,15 @@
                 <Button
                     href={ROUTES.MAHASISWA.MATERIALS.INDEX}
                     variant="primary"
-                    icon={ArrowLeft}>Kembali ke Katalog</Button
+                    icon={ArrowLeft as any}
                 >
+                    Kembali ke Katalog
+                </Button>
             </Card>
         {:else}
             <div class="space-y-10">
-                <LevelLegend />
-                <LevelMap
+                <LevelMapLegend />
+                <LevelMapCanvas
                     material={state.material}
                     sortedLevels={state.sortedLevels}
                     allCompleted={state.allCompleted}

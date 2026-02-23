@@ -1,7 +1,7 @@
 import { router } from "@inertiajs/svelte";
 import { BaseState } from "@/states/BaseState.svelte";
 import { ROUTES } from "@/utils/route";
-import type { MaterialWithProgress } from "@/types";
+import type { Material, SubMaterial, MaterialWithProgress } from "@/types";
 
 /**
  * Material Catalog State
@@ -19,14 +19,14 @@ export class MaterialCatalogState extends BaseState {
  * Material Show Detail State
  */
 export class MaterialShowState extends BaseState {
-    material = $state<any>({});
-    subMaterials = $state([]);
+    material = $state<Material>({} as Material);
+    subMaterials = $state<SubMaterial[]>([]);
     fromAdaptive = $state(false);
 
-    constructor(material: any, fromAdaptive: any) {
+    constructor(material: Material, fromAdaptive: boolean) {
         super();
         this.material = material;
-        this.subMaterials = material.sub_materials || material.subMaterials || [];
+        this.subMaterials = material.sub_materials ?? [];
         this.fromAdaptive = fromAdaptive;
     }
 }
@@ -35,40 +35,44 @@ export class MaterialShowState extends BaseState {
  * SubMaterial Detail & Navigation State
  */
 export class SubMaterialState extends BaseState {
-    material = $state<any>({});
-    subMaterial = $state<any>({});
+    material = $state<Material>({} as Material);
+    subMaterial = $state<SubMaterial>({} as SubMaterial);
 
     currentIndex = $derived(
         Array.isArray(this.material?.sub_materials)
-            ? this.material.sub_materials.findIndex((sm: any) => sm.id === this.subMaterial.id)
+            ? this.material.sub_materials.findIndex((sm: SubMaterial) => sm.id === this.subMaterial.id)
             : -1
     );
 
     otherSubMaterials = $derived(
         Array.isArray(this.material?.sub_materials)
-            ? this.material.sub_materials.filter((sm: any) => sm.id !== this.subMaterial.id)
+            ? this.material.sub_materials.filter((sm: SubMaterial) => sm.id !== this.subMaterial.id)
             : []
     );
 
-    constructor(material: any, subMaterial: any) {
+    constructor(material: Material, subMaterial: SubMaterial) {
         super();
         this.material = material;
         this.subMaterial = subMaterial;
     }
 
     goToNext() {
-        if (this.currentIndex < this.material.sub_materials.length - 1) {
-            const nextId = this.material.sub_materials[this.currentIndex + 1].id;
-            router.visit(ROUTES.MAHASISWA.SUBMATERIALS.SHOW(this.material.id, nextId));
+        if (this.material.sub_materials && this.currentIndex < this.material.sub_materials.length - 1) {
+            const nextSubMaterial = this.material.sub_materials[this.currentIndex + 1];
+            if (nextSubMaterial) {
+                router.visit(ROUTES.MAHASISWA.SUBMATERIALS.SHOW(this.material.id, nextSubMaterial.id));
+            }
         } else {
             router.visit(ROUTES.MAHASISWA.MATERIALS.SHOW(this.material.id));
         }
     }
 
-    goToPrev() {
-        if (this.currentIndex > 0) {
-            const prevId = this.material.sub_materials[this.currentIndex - 1].id;
-            router.visit(ROUTES.MAHASISWA.SUBMATERIALS.SHOW(this.material.id, prevId));
+    goToPrevious() {
+        if (this.material.sub_materials && this.currentIndex > 0) {
+            const prevSubMaterial = this.material.sub_materials[this.currentIndex - 1];
+            if (prevSubMaterial) {
+                router.visit(ROUTES.MAHASISWA.SUBMATERIALS.SHOW(this.material.id, prevSubMaterial.id));
+            }
         }
     }
 }
@@ -77,9 +81,9 @@ export class SubMaterialState extends BaseState {
  * In Progress Materials State
  */
 export class InProgressState extends BaseState {
-    materialsWithStats = $state<any[]>([]);
+    materialsWithStats = $state<MaterialWithProgress[]>([]);
 
-    constructor(materialsWithStats: any) {
+    constructor(materialsWithStats: MaterialWithProgress[]) {
         super();
         this.materialsWithStats = materialsWithStats;
     }
@@ -93,9 +97,9 @@ export class InProgressState extends BaseState {
  * Completed Materials State
  */
 export class CompletedState extends BaseState {
-    materials = $state<any[]>([]);
+    materials = $state<Material[]>([]);
 
-    constructor(materials: any) {
+    constructor(materials: Material[]) {
         super();
         this.materials = materials;
     }

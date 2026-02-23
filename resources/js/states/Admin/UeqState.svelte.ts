@@ -3,16 +3,18 @@ import { BaseState } from "@/states/BaseState.svelte";
 import { ROUTES } from "@/utils/route";
 import type { User, UeqSurvey } from "@/types";
 
+type UeqAverages = Record<string, number>;
+
 /**
  * UEQ List State
  */
 export class UeqListState extends BaseState {
-    surveys = $state<any[]>([]);
-    averages = $state<any>({});
-    classes = $state<any[]>([]);
+    surveys = $state<UeqSurvey[]>([]);
+    averages = $state<UeqAverages>({});
+    classes = $state<string[]>([]);
     activeClass = $state("");
 
-    constructor(surveys: any, averages: any, classes: any, activeClass: any) {
+    constructor(surveys: UeqSurvey[], averages: UeqAverages, classes: string[], activeClass: string) {
         super();
         this.surveys = surveys;
         this.averages = averages;
@@ -20,10 +22,11 @@ export class UeqListState extends BaseState {
         this.activeClass = activeClass;
     }
 
-    handleFilterChange(e: any) {
+    handleFilterChange(e: Event) {
+        const select = e.target as HTMLSelectElement;
         router.get(
             ROUTES.ADMIN.UEQ.INDEX,
-            { class: e.target.value },
+            { class: select.value },
             { preserveState: true, replace: true }
         );
     }

@@ -1,20 +1,40 @@
-<script>
+<script lang="ts">
     import { Link } from "@inertiajs/svelte";
+    import type { Component, Snippet } from "svelte";
 
-    export let variant = "primary";
-    export let size = "md";
-    export let type = "button";
-    export let disabled = false;
-    export let icon = null;
-    export let iconPosition = "left";
-    export let href = null;
-    let className = "";
-    export { className as class };
+    type ButtonVariant = "primary" | "secondary" | "gradient" | "glass" | "danger" | "success" | "warning" | "ghost" | "outline";
+    type ButtonSize = "sm" | "md" | "lg" | "xl";
+
+    interface Props {
+        variant?: ButtonVariant;
+        size?: ButtonSize;
+        type?: "button" | "submit" | "reset";
+        disabled?: boolean;
+        icon?: Component<{ size?: number; strokeWidth?: number; class?: string }> | string | null;
+        iconPosition?: "left" | "right";
+        href?: string | null;
+        class?: string;
+        children?: Snippet;
+        [key: string]: unknown;
+    }
+
+    let {
+        variant = "primary",
+        size = "md",
+        type = "button",
+        disabled = false,
+        icon = null,
+        iconPosition = "left",
+        href = null,
+        class: className = "",
+        children,
+        ...rest
+    }: Props = $props();
 
     const baseClasses =
         "inline-flex items-center justify-center font-bold tracking-tight transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:pointer-events-none rounded-xl";
 
-    const variants = {
+    const variants: Record<ButtonVariant, string> = {
         primary:
             "bg-primary-600 text-white shadow-lg shadow-accent-950/20 hover:scale-[1.02] hover:shadow-accent-600/30",
         secondary:
@@ -32,71 +52,58 @@
             "bg-transparent border-2 border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white",
     };
 
-    const sizes = {
+    const sizes: Record<ButtonSize, string> = {
         sm: "px-4 py-2 text-[10px]",
         md: "px-6 py-2.5 text-xs",
         lg: "px-8 py-3.5 text-sm",
         xl: "px-10 py-4 text-base",
     };
 
-    $: classes = `${baseClasses} ${variants[variant] || variants.primary} ${sizes[size] || sizes.md} ${className}`;
+    const classes = $derived(
+        `${baseClasses} ${variants[variant] ?? variants.primary} ${sizes[size] ?? sizes.md} ${className}`
+    );
+    const hasChildren = $derived(children !== undefined);
 </script>
 
 {#if href}
-    <Link {href} class={classes} {...$$restProps}>
+    <Link {href} class={classes} {...rest}>
         {#if icon && iconPosition === "left"}
             {#if typeof icon === "string"}
-                <i
-                    class="{icon} {$$slots.default
-                        ? 'mr-3'
-                        : ''} transition-transform group-hover:-translate-x-1"
-                ></i>
+                <i class="{icon} {hasChildren ? 'mr-3' : ''} transition-transform group-hover:-translate-x-1"></i>
             {:else}
-                <div
-                    class="{$$slots.default
-                        ? 'mr-3'
-                        : ''} transition-transform group-hover:-translate-x-1 text-lg"
-                >
+                <div class="{hasChildren ? 'mr-3' : ''} transition-transform group-hover:-translate-x-1 text-lg">
                     <svelte:component this={icon} size={18} strokeWidth={2.5} />
                 </div>
             {/if}
         {/if}
-        <slot />
+        {@render children?.()}
         {#if icon && iconPosition === "right"}
             {#if typeof icon === "string"}
-                <i
-                    class="{icon} {$$slots.default
-                        ? 'ml-3'
-                        : ''} transition-transform group-hover:translate-x-1"
-                ></i>
+                <i class="{icon} {hasChildren ? 'ml-3' : ''} transition-transform group-hover:translate-x-1"></i>
             {:else}
-                <div
-                    class="{$$slots.default
-                        ? 'ml-3'
-                        : ''} transition-transform group-hover:translate-x-1 text-lg"
-                >
+                <div class="{hasChildren ? 'ml-3' : ''} transition-transform group-hover:translate-x-1 text-lg">
                     <svelte:component this={icon} size={18} strokeWidth={2.5} />
                 </div>
             {/if}
         {/if}
     </Link>
 {:else}
-    <button {type} {disabled} class={classes} {...$$restProps} on:click>
+    <button {type} {disabled} class={classes} {...rest}>
         {#if icon && iconPosition === "left"}
             {#if typeof icon === "string"}
-                <i class="{icon} {$$slots.default ? 'mr-3' : ''}"></i>
+                <i class="{icon} {hasChildren ? 'mr-3' : ''}"></i>
             {:else}
-                <div class={$$slots.default ? "mr-3 text-lg" : "text-lg"}>
+                <div class={hasChildren ? "mr-3 text-lg" : "text-lg"}>
                     <svelte:component this={icon} size={18} strokeWidth={2.5} />
                 </div>
             {/if}
         {/if}
-        <slot />
+        {@render children?.()}
         {#if icon && iconPosition === "right"}
             {#if typeof icon === "string"}
-                <i class="{icon} {$$slots.default ? 'ml-3' : ''}"></i>
+                <i class="{icon} {hasChildren ? 'ml-3' : ''}"></i>
             {:else}
-                <div class={$$slots.default ? "ml-3 text-lg" : "text-lg"}>
+                <div class={hasChildren ? "ml-3 text-lg" : "text-lg"}>
                     <svelte:component this={icon} size={18} strokeWidth={2.5} />
                 </div>
             {/if}

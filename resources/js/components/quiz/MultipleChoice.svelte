@@ -1,15 +1,15 @@
 <script>
-    import { createEventDispatcher } from "svelte";
     import { HelpCircle, Code, CheckSquare } from "lucide-svelte";
 
-    export let question;
-    export let selectedAnswerId = null;
-
-    const dispatch = createEventDispatcher();
+    let {
+        question,
+        selectedAnswerId = $bindable(null),
+        onselect = (answerId) => {},
+    } = $props();
 
     function handleSelect(answerId) {
         selectedAnswerId = answerId;
-        dispatch("select", { answerId });
+        onselect(answerId);
     }
 </script>
 
@@ -47,7 +47,7 @@
                 value={answer.id}
                 class="peer hidden"
                 checked={selectedAnswerId === answer.id}
-                on:change={() => handleSelect(answer.id)}
+                onchange={() => handleSelect(answer.id)}
             />
             <div
                 class="p-5 rounded-2xl border-2 border-slate-100 bg-white shadow-sm hover:border-primary-400 hover:bg-primary-50/30 peer-checked:border-primary-600 peer-checked:bg-primary-50 peer-checked:shadow-md peer-checked:shadow-primary-900/10 flex items-center gap-4 transition-all"

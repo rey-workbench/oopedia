@@ -1,4 +1,4 @@
-<script>
+<script  lang="ts">
     import { Link, page } from "@inertiajs/svelte";
     import { ChevronRight, Link2 } from "lucide-svelte";
 

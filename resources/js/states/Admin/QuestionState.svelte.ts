@@ -5,7 +5,13 @@ import { confirmDelete } from "@/utils/confirmDelete";
 import { BaseState } from "@/states/BaseState.svelte";
 import { FormState } from "@/states/FormState.svelte";
 import { ROUTES } from "@/utils/route";
-import type { Question, Material, Pagination } from "@/types";
+import type { Answer, Question, Material, SubMaterial, Pagination } from "@/types";
+
+interface AnswerField {
+    answer_text: string;
+    is_correct: number;
+    explanation: string;
+}
 
 /**
  * Question List Admin State
@@ -53,14 +59,22 @@ export class QuestionListAdminState extends BaseState {
 /**
  * Question Form State (Create/Edit)
  */
-export class QuestionFormState extends FormState<any> {
-    materials = $state<any[]>([]);
-    material = $state<any>(null);
-    subMaterials = $state<any[]>([]);
-    question = $state<any>(null);
-    availableSubMaterials = $state<any[]>([]);
+export class QuestionFormState extends FormState<{
+    question_text: string;
+    question_type: string;
+    difficulty: string;
+    material_id: number | string;
+    sub_material_id: number | string | null;
+    answers: AnswerField[];
+    correct_answer: number | null;
+}> {
+    materials = $state<Material[]>([]);
+    material = $state<Material | null>(null);
+    subMaterials = $state<SubMaterial[]>([]);
+    question = $state<Question | null>(null);
+    availableSubMaterials = $state<SubMaterial[]>([]);
 
-    constructor(materials: any, material: any, subMaterials: any, question: any) {
+    constructor(materials: Material[], material: Material | null, subMaterials: SubMaterial[], question: Question | null) {
         super({
             question_text: question ? question.question_text : "",
             question_type: question ? question.question_type : "radio_button",
@@ -71,14 +85,18 @@ export class QuestionFormState extends FormState<any> {
                     ? material.id
                     : "",
             sub_material_id: question ? question.sub_material_id : "",
-            answers: question
-                ? question.answers
+            answers: question && question.answers
+                ? question.answers.map((a: Answer) => ({
+                    answer_text: a.answer_text || "",
+                    is_correct: a.is_correct ? 1 : 0,
+                    explanation: a.explanation || ""
+                }))
                 : [
                     { answer_text: "", is_correct: 0, explanation: "" },
                     { answer_text: "", is_correct: 0, explanation: "" },
                 ],
-            correct_answer: question
-                ? question.answers.findIndex((a: any) => a.is_correct)
+            correct_answer: question && question.answers
+                ? question.answers.findIndex((a: Answer) => a.is_correct)
                 : null,
         }, !!question);
 
@@ -122,7 +140,7 @@ export class QuestionFormState extends FormState<any> {
     }
 
     removeAnswer(index: number) {
-        this.form.answers = this.form.answers.filter((_: any, i: number) => i !== index);
+        this.form.answers = this.form.answers.filter((_: unknown, i: number) => i !== index);
     }
 
     setType(type: string) {
@@ -137,7 +155,7 @@ export class QuestionFormState extends FormState<any> {
         if (
             ["radio_button", "fill_in_the_blank"].includes(this.form.question_type)
         ) {
-            this.form.answers.forEach((ans: any, i: number) => {
+            this.form.answers.forEach((ans: AnswerField, i: number) => {
                 ans.is_correct = i == this.form.correct_answer ? 1 : 0;
             });
         }
@@ -155,8 +173,8 @@ export class QuestionFormState extends FormState<any> {
  * Kept for backward compatibility or if there's specific logic override
  */
 export class QuestionEditState extends QuestionFormState {
-    constructor(question: any) {
+    constructor(question: Question) {
         // Wrapper for specialized edit page if needed, but QuestionFormState handles it now.
-        super([], null, question.material?.sub_materials || [], question);
+        super([], null, (question as any).material?.sub_materials || [], question);
     }
 }

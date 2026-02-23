@@ -4,21 +4,26 @@
      * @file Input.svelte
      * @description A premium reusable input component for the Oopedia platform.
      */
-    export let type = "text";
-    export let value = "";
-    export let placeholder = "";
-    export let label = "";
-    export let error = "";
-    export let id = "";
-    export let name = "";
-    export let required = false;
-    export let disabled = false;
-    let className = "";
-    export { className as class };
-    export let autocomplete = undefined;
+    let {
+        type = "text",
+        value = $bindable(""),
+        placeholder = "",
+        label = "",
+        error = "",
+        id = "",
+        name = "",
+        required = false,
+        disabled = false,
+        class: className = "",
+        autocomplete = undefined,
+        ...rest
+    } = $props();
 
-    // Generate a random ID if not provided
-    const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+    // Generate a stable ID if not provided
+    const inputId = $derived(
+        id || `input-${Math.random().toString(36).slice(2, 11)}`,
+    );
+    const errorId = $derived(`${inputId}-error`);
 </script>
 
 <div class={`space-y-2 w-full ${className}`}>
@@ -34,7 +39,7 @@
 
     <div class="relative group">
         <input
-            {id}
+            id={inputId}
             {name}
             {type}
             {placeholder}
@@ -42,10 +47,9 @@
             {disabled}
             {autocomplete}
             bind:value
-            on:input
-            on:change
-            on:focus
-            on:blur
+            aria-invalid={error ? "true" : undefined}
+            aria-describedby={error ? errorId : undefined}
+            {...rest}
             class={`
         w-full px-6 py-4 rounded-[1.5rem] border-2 transition-all outline-none font-bold text-sm
         ${disabled ? "bg-slate-50 border-slate-50 text-slate-400 cursor-not-allowed" : "bg-white"}
@@ -68,6 +72,8 @@
 
     {#if error}
         <p
+            id={errorId}
+            role="alert"
             class="text-[9px] font-bold text-rose-500 uppercase tracking-widest ml-4 transition-all animate-in fade-in slide-in-from-top-1"
         >
             {error}

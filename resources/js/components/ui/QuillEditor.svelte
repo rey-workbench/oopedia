@@ -45,12 +45,6 @@
             dispatch("input", html);
         });
     });
-
-    // Watch for external value changes (optional, but good for reactivity)
-    $: if (quill && value !== quill.root.innerHTML) {
-        // careful with cursor position here, but for simple init it's ok
-        // quill.root.innerHTML = value;
-    }
 </script>
 
 <div

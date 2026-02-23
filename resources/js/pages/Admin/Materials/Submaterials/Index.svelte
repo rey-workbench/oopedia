@@ -2,12 +2,24 @@
     import App from "@/layouts/App.svelte";
     import PageHeader from "@/components/ui/PageHeader.svelte";
     import Button from "@/components/ui/Button.svelte";
-    import SubmaterialList from "@/components/Admin/Materials/Submaterials/SubmaterialList.svelte";
-    import { Plus, ArrowLeft } from "lucide-svelte";
+    import DataTable from "@/components/ui/DataTable.svelte";
+    import EmptyState from "@/components/ui/EmptyState.svelte";
+    import Badge from "@/components/ui/Badge.svelte";
+    import { Plus, ArrowLeft, Layers, Edit2, Trash2 } from "lucide-svelte";
     import { ROUTES } from "@/utils/route";
+    import { SubmaterialListState } from "@/states/Admin/MaterialState.svelte";
 
     export let material;
     export let subMaterials = [];
+
+    const state = new SubmaterialListState(material, subMaterials);
+
+    $: columns = [
+        { key: "order", label: "Urutan", align: "left" },
+        { key: "title", label: "Judul Sub-Materi", align: "left" },
+        { key: "jenis_konten", label: "Jenis Konten", align: "center" },
+        { key: "actions", label: "Aksi", align: "right" },
+    ];
 </script>
 
 <App title={`Kelola Sub-Materi: ${material.title}`}>
@@ -32,6 +44,80 @@
             </div>
         </PageHeader>
 
-        <SubmaterialList {material} {subMaterials} />
+        <DataTable
+            title="Hierarki Pembelajaran"
+            items={state.subMaterials}
+            hideSearch={true}
+            {columns}
+        >
+            <svelte:fragment slot="empty">
+                <EmptyState
+                    title="Belum Ada Sub-Materi"
+                    description="Pecah materi utama Anda menjadi beberapa sub-unit yang lebih spesifik."
+                    icon={Layers}
+                >
+                    <div class="flex justify-center gap-4">
+                        <Button
+                            href={ROUTES.ADMIN.MATERIALS.SUBMATERIALS.CREATE(
+                                state.material.id,
+                            )}
+                            variant="primary"
+                            icon={Plus}>Buat Unit Pertama</Button
+                        >
+                    </div>
+                </EmptyState>
+            </svelte:fragment>
+
+            <svelte:fragment slot="row" let:item={sub}>
+                <td
+                    class="px-6 py-6 border-l-4 border-transparent group-hover:border-primary-600"
+                >
+                    <div
+                        class="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-lg shadow-slate-200"
+                    >
+                        {sub.order}
+                    </div>
+                </td>
+                <td class="px-6 py-6">
+                    <div
+                        class="font-bold text-slate-900 uppercase tracking-widest"
+                    >
+                        {sub.title}
+                    </div>
+                </td>
+                <td class="px-6 py-6 text-center">
+                    <Badge
+                        variant={sub.jenis_konten === "teori"
+                            ? "primary"
+                            : sub.jenis_konten === "sintaks"
+                              ? "success"
+                              : "warning"}
+                        size="xs"
+                    >
+                        {sub.jenis_konten.toUpperCase()}
+                    </Badge>
+                </td>
+                <td class="px-6 py-6">
+                    <div class="flex justify-end gap-2">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            href={ROUTES.ADMIN.MATERIALS.SUBMATERIALS.EDIT(
+                                state.material.id,
+                                sub.id,
+                            )}
+                            icon={Edit2}
+                        />
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            on:click={() => state.handleDelete(sub.id)}
+                            icon={Trash2}
+                            class="text-slate-300 hover:text-rose-500"
+                        />
+                    </div>
+                </td>
+            </svelte:fragment>
+        </DataTable>
     </div>
 </App>

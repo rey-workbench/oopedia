@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { createEventDispatcher } from "svelte";
     import { fade } from "svelte/transition";
     import {
@@ -16,7 +16,7 @@
     const dispatch = createEventDispatcher();
     let visible = true;
 
-    const variants = {
+    const variants: Record<string, string> = {
         info: "bg-primary-50 text-primary-800 border-primary-100",
         success: "bg-emerald-50 text-emerald-800 border-emerald-100",
         warning: "bg-amber-50 text-amber-800 border-amber-100",
@@ -24,7 +24,7 @@
         primary: "bg-primary-50 text-primary-800 border-primary-100",
     };
 
-    const icons = {
+    const icons: Record<string, any> = {
         info: Info,
         success: CheckCircle2,
         warning: AlertTriangle,

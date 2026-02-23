@@ -42,19 +42,26 @@ export class UserListState extends BaseState {
 /**
  * User Form State (Create/Edit)
  */
-export class UserFormState extends FormState<any> {
-    targetUser = $state<any>(null);
+export class UserFormState extends FormState<{
+    name: string;
+    email: string;
+    password: string;
+    role_id: number;
+    gamification_level: string;
+    xp: number;
+}> {
+    targetUser = $state<User | null>(null);
 
-    constructor(user: any) {
+    constructor(user: User | null) {
         super({
             name: user ? user.name : "",
             email: user ? user.email : "",
             password: "",
             role_id: user ? user.role_id : 3,
-            gamification_level: user?.gamification
-                ? user.gamification.current_level
+            gamification_level: (user as any)?.gamification
+                ? (user as any).gamification.current_level
                 : "Pemula",
-            xp: user?.gamification ? user.global_xp : 0,
+            xp: (user as any)?.gamification ? (user as any).global_xp : 0,
         }, !!user);
 
         this.targetUser = user;
@@ -62,7 +69,7 @@ export class UserFormState extends FormState<any> {
 
     async submit() {
         const url = this.isEdit
-            ? ROUTES.ADMIN.USERS.EDIT(this.targetUser.id).replace('/edit', '')
+            ? ROUTES.ADMIN.USERS.EDIT(this.targetUser!.id).replace('/edit', '')
             : ROUTES.ADMIN.USERS.INDEX;
 
         await this.submitForm(this.isEdit ? 'put' : 'post', url);
@@ -72,7 +79,7 @@ export class UserFormState extends FormState<any> {
 /**
  * User Import State (Form)
  */
-export class UserImportState extends FormState<any> {
+export class UserImportState extends FormState<{ excel_file: File | null }> {
     constructor() {
         super({
             excel_file: null,
@@ -83,8 +90,9 @@ export class UserImportState extends FormState<any> {
         await this.submitForm("post", ROUTES.ADMIN.USERS.IMPORT);
     }
 
-    handleFileChange(e: any) {
-        this.form.excel_file = e.target.files[0];
+    handleFileChange(e: Event) {
+        const input = e.target as HTMLInputElement;
+        this.form.excel_file = input.files?.[0] ?? null;
     }
 }
 
@@ -92,18 +100,18 @@ export class UserImportState extends FormState<any> {
  * Pending Admin Approval State
  */
 export class PendingAdminState extends BaseState {
-    pendingAdmins = $state<any[]>([]);
+    pendingAdmins = $state<User[]>([]);
 
-    constructor(pendingAdmins: any) {
+    constructor(pendingAdmins: User[]) {
         super();
         this.pendingAdmins = pendingAdmins;
     }
 
-    handleApprove(id: any) {
+    handleApprove(id: number) {
         router.post(ROUTES.ADMIN.USERS.APPROVE(id));
     }
 
-    handleReject(id: any) {
+    handleReject(id: number) {
         router.post(ROUTES.ADMIN.USERS.REJECT(id));
     }
 }

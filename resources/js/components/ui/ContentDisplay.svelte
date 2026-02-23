@@ -1,15 +1,22 @@
-<script>
-    import { onMount, tick } from "svelte";
+<script lang="ts">
+    import { tick } from "svelte";
     import { enhanceCodeBlocks } from "@/utils/codeBlockEnhancer";
+    import DOMPurify from "dompurify";
     import "highlight.js/styles/atom-one-dark.css";
 
-    export let content = "";
+    let { content = "" } = $props();
 
-    let contentContainer;
+    let contentContainer: HTMLDivElement;
 
-    $: if (content && contentContainer) {
-        tick().then(() => enhanceCodeBlocks(contentContainer));
-    }
+    const safeContent = $derived(
+        content ? DOMPurify.sanitize(content) : ""
+    );
+
+    $effect(() => {
+        if (safeContent && contentContainer) {
+            tick().then(() => enhanceCodeBlocks(contentContainer));
+        }
+    });
 </script>
 
 <div
@@ -22,7 +29,7 @@
     "
     bind:this={contentContainer}
 >
-    {@html content || ""}
+    {@html safeContent}
 </div>
 
 <style>

@@ -1,16 +1,17 @@
 <script>
-    import { createEventDispatcher } from "svelte";
     import Input from "@/components/ui/Input.svelte";
     import { HelpCircle } from "lucide-svelte";
 
-    export let question;
-    export let answerText = "";
-
-    const dispatch = createEventDispatcher();
+    let {
+        question,
+        answerText = $bindable(""),
+        oninput = (text) => {},
+    } = $props();
 
     function handleInput(event) {
-        answerText = event.target.value;
-        dispatch("input", { text: answerText });
+        const text = event.target.value;
+        answerText = text;
+        oninput(text);
     }
 </script>
 
@@ -35,6 +36,6 @@
         id="fill_in_the_blank_answer"
         placeholder="Ketik jawaban Anda di sini..."
         value={answerText}
-        on:input={handleInput}
+        oninput={handleInput}
     />
 </div>

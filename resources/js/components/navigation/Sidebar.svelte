@@ -1,7 +1,9 @@
-<script>
+<script lang="ts">
     import { Link, page, router } from "@inertiajs/svelte";
     import SidebarLink from "@/components/navigation/SidebarLink.svelte";
     import { ROUTES } from "@/utils/route";
+    import { sidebarOpen } from "@/stores/sidebar";
+    import { isAdmin, isStudent, ROLE } from "@/utils/roles";
     import {
         LayoutDashboard,
         BookOpen,
@@ -16,33 +18,28 @@
         X,
     } from "lucide-svelte";
 
-    export let showSidebar = true;
+    const auth = $derived($page.props.auth ?? {});
+    const user = $derived(auth.user ?? null);
+    const isAdminRole = $derived(!!user && isAdmin(user.role_id));
+    const isStudentRole = $derived(!!user && isStudent(user.role_id));
+    const userRole = $derived(user?.role_id ?? null);
 
-    $: auth = $page.props.auth || {};
-    $: user = auth.user;
-    $: isAuthenticated = !!user;
-    $: userRole = user ? user.role_id : null;
-    $: isAdminRole = isAuthenticated && [1, 2].includes(userRole);
-    $: isStudentRole = isAuthenticated && [3, 4].includes(userRole);
-
-    // Simple check for active route based on URL start
-    const isActive = (url) =>
+    const isActive = (url: string) =>
         $page.url === url || $page.url.startsWith(url + "/");
 
     function logout() {
         router.post("/logout");
     }
 
-    function toggleSidebar() {
-        const event = new CustomEvent("toggle-sidebar");
-        window.dispatchEvent(event);
+    function closeSidebar() {
+        sidebarOpen.set(false);
     }
 </script>
 
 <aside
     id="sidebar"
     class="fixed left-0 top-0 z-50 h-screen w-64 transition-transform duration-500 overflow-y-auto glass border-r border-slate-100 no-scrollbar
-  {showSidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}"
+  {$sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}"
 >
     <div
         class="px-6 py-6 flex items-center justify-between"
@@ -69,8 +66,8 @@
             >
         </Link>
         <button
-            on:click={toggleSidebar}
-            aria-label="Close sidebar"
+            on:click={closeSidebar}
+            aria-label="Tutup sidebar"
             class="lg:hidden p-2 rounded-xl text-slate-400 hover:text-slate-900 bg-slate-100"
         >
             <X size={20} />
@@ -78,6 +75,7 @@
     </div>
 
     <nav
+        aria-label="Navigasi Utama"
         class="px-5 space-y-6 pb-6"
         data-intro="Gunakan menu navigasi ini untuk menjelajahi fitur-fitur yang tesedia di OOPEDIA."
         data-step="2"
@@ -140,7 +138,7 @@
                             ROUTES.ADMIN.STUDENTS.INDEX,
                         )}>Data Mahasiswa</SidebarLink
                     >
-                    {#if userRole === 1}
+                    {#if userRole === ROLE.SUPERADMIN}
                         <SidebarLink
                             href={ROUTES.ADMIN.USERS.INDEX}
                             icon={Settings}
@@ -149,7 +147,7 @@
                             )}>Daftar Admin</SidebarLink
                         >
                     {/if}
-                    {#if userRole === 1}
+                    {#if userRole === ROLE.SUPERADMIN}
                         <SidebarLink
                             href={ROUTES.ADMIN.UEQ.INDEX}
                             icon={MessageSquareQuote}

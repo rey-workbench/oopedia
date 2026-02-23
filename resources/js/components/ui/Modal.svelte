@@ -1,35 +1,72 @@
-<script>
-    import { createEventDispatcher } from "svelte";
+<script lang="ts">
+    import { onMount } from "svelte";
     import { fade, scale } from "svelte/transition";
+    import { createFocusTrap } from "focus-trap";
+    import type { Snippet } from "svelte";
 
-    export let show = false;
-    export let maxWidth = "2xl"; // sm, md, lg, xl, 2xl
-    export let closeable = true;
-
-    const dispatch = createEventDispatcher();
-
-    function close() {
-        if (closeable) {
-            dispatch("close");
-        }
+    interface Props {
+        show: boolean;
+        maxWidth?: "sm" | "md" | "lg" | "xl" | "2xl";
+        closeable?: boolean;
+        onclose?: () => void;
+        children?: Snippet;
     }
 
-    function handleKeydown(e) {
-        if (e.key === "Escape" && show) {
-            close();
-        }
-    }
+    let {
+        show = false,
+        maxWidth = "2xl",
+        closeable = true,
+        onclose,
+        children,
+    }: Props = $props();
 
-    const maxWidthClass = {
+    const maxWidthClasses: Record<string, string> = {
         sm: "sm:max-w-sm",
         md: "sm:max-w-md",
         lg: "sm:max-w-lg",
         xl: "sm:max-w-xl",
         "2xl": "sm:max-w-2xl",
-    }[maxWidth];
+    };
+
+    let dialogEl: HTMLElement | undefined = $state();
+    let trap: ReturnType<typeof createFocusTrap> | null = null;
+
+    function close() {
+        if (closeable) {
+            onclose?.();
+        }
+    }
+
+    function handleKeydown(e: KeyboardEvent) {
+        if (e.key === "Escape" && show) close();
+    }
+
+    $effect(() => {
+        if (show && dialogEl) {
+            // Small delay so the dialog is fully rendered before trapping focus
+            setTimeout(() => {
+                trap = createFocusTrap(dialogEl!, {
+                    escapeDeactivates: true,
+                    onDeactivate: close,
+                    initialFocus: false,
+                    allowOutsideClick: true,
+                });
+                trap.activate();
+            }, 50);
+        } else {
+            trap?.deactivate();
+            trap = null;
+        }
+    });
+
+    onMount(() => {
+        return () => {
+            trap?.deactivate();
+        };
+    });
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
 {#if show}
     <div
@@ -38,10 +75,10 @@
     >
         <div
             class="fixed inset-0 transform transition-all"
-            on:click={close}
+            onclick={close}
             role="button"
             tabindex="0"
-            on:keydown={(e) => e.key === "Enter" && close()}
+            onkeydown={(e) => e.key === "Enter" && close()}
             aria-label="Close modal backdrop"
         >
             <div
@@ -50,10 +87,13 @@
         </div>
 
         <div
-            class={`mb-6 bg-white rounded-[2.5rem] shadow-2xl overflow-hidden transform transition-all sm:w-full sm:mx-auto ${maxWidthClass}`}
+            bind:this={dialogEl}
+            role="dialog"
+            aria-modal="true"
+            class={`mb-6 bg-white rounded-[2.5rem] shadow-2xl overflow-hidden transform transition-all sm:w-full sm:mx-auto ${maxWidthClasses[maxWidth]}`}
             transition:scale={{ duration: 200, start: 0.95 }}
         >
-            <slot />
+            {@render children?.()}
         </div>
     </div>
 {/if}

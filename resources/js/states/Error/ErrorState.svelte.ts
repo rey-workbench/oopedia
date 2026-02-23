@@ -13,7 +13,7 @@ export class ErrorState extends BaseState {
                 : "Terjadi kesalahan yang tidak terduga."
     );
 
-    constructor(status: any) {
+    constructor(status: number) {
         super();
         this.status = status;
     }

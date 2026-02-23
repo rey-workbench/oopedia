@@ -1,4 +1,4 @@
-<script>
+<script  lang="ts">
     export let variant = "default";
     export let shadow = true;
     export let hover = true;

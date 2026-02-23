@@ -78,7 +78,12 @@ export class StudentProgressState extends BaseState {
 /**
  * Student Register State (Form)
  */
-export class StudentRegisterState extends FormState<any> {
+export class StudentRegisterState extends FormState<{
+    name: string;
+    email: string;
+    password: string;
+    password_confirmation: string;
+}> {
     constructor() {
         super({
             name: "",
@@ -101,7 +106,7 @@ export class StudentRegisterState extends FormState<any> {
 /**
  * Student Import State (Form)
  */
-export class StudentImportState extends FormState<any> {
+export class StudentImportState extends FormState<{ excel_file: File | null }> {
     constructor() {
         super({
             excel_file: null,
@@ -112,7 +117,8 @@ export class StudentImportState extends FormState<any> {
         await this.submitForm("post", ROUTES.ADMIN.STUDENTS.IMPORT);
     }
 
-    handleFileChange(e: any) {
-        this.form.excel_file = e.target.files[0];
+    handleFileChange(e: Event) {
+        const input = e.target as HTMLInputElement;
+        this.form.excel_file = input.files?.[0] ?? null;
     }
 }

@@ -2,15 +2,19 @@
     import App from "@/layouts/App.svelte";
     import PageHeader from "@/components/ui/PageHeader.svelte";
     import Button from "@/components/ui/Button.svelte";
-    import MaterialForm from "@/components/Admin/Materials/MaterialForm.svelte";
-    import { ArrowLeft } from "lucide-svelte";
-    import { ROUTES } from "@/utils/route";
+    import DataForm from "@/components/ui/DataForm.svelte";
+    import Input from "@/components/ui/Input.svelte";
+    import Alert from "@/components/ui/Alert.svelte";
+    import ImageUpload from "@/components/ui/ImageUpload.svelte";
 
     export let material;
+
+    const state = new MaterialFormState(material);
+    const form = state.form;
 </script>
 
 <App title="Edit Materi">
-    <div class="space-y-12">
+    <div class="space-y-12 pb-20">
         <PageHeader
             title="Pembaruan Kurikulum"
             subtitle="Modifikasi konten instruksional dan optimasi media visual."
@@ -24,6 +28,89 @@
             </div>
         </PageHeader>
 
-        <MaterialForm {material} />
+        <DataForm
+            title="Sinkronisasi & Konten Modul"
+            onSubmit={() => state.submit()}
+            isEdit={state.isEdit}
+            processing={$form.processing}
+            submitLabel="SIMPAN PERUBAHAN"
+            submitIcon={CloudUpload}
+        >
+            <svelte:fragment slot="footer-left">
+                <CloudUpload size={14} class="text-primary-600 animate-pulse" />
+                <span
+                    class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
+                    >Sinkronisasi Cloud: Terhubung & Siap</span
+                >
+            </svelte:fragment>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="space-y-2">
+                        <label
+                            for="title"
+                            class="block text-sm font-bold text-slate-700"
+                            >Revisi Judul
+                            <span class="text-rose-500">*</span></label
+                        >
+                        <Input
+                            id="title"
+                            bind:value={$form.title}
+                            placeholder=""
+                            className="text-lg font-bold tracking-widest"
+                            error={$form.errors.title}
+                        />
+                    </div>
+
+                    <Alert
+                        variant="primary"
+                        class="bg-primary-50/50 border-primary-100"
+                    >
+                        <div class="flex gap-4">
+                            <RefreshCw
+                                size={16}
+                                class="text-primary-600 mt-1"
+                            />
+                            <div
+                                class="text-[10px] font-bold text-slate-500 leading-relaxed uppercase tracking-widest"
+                            >
+                                Perubahan pada modul ini akan langsung
+                                disinkronkan ke seluruh direktori belajar
+                                mahasiswa secara real-time.
+                            </div>
+                        </div>
+                    </Alert>
+                </div>
+
+                <div class="lg:col-span-1">
+                    <ImageUpload
+                        preview={state.coverPreview}
+                        label="Sinkronisasi Sampul"
+                        emptyIcon={Camera}
+                        emptyText="Masukkan Gambar"
+                        error={$form.errors.cover_image}
+                        onChange={(e) => state.onImageChange(e)}
+                    />
+                </div>
+            </div>
+
+            <!-- Middle Row: WYSIWYG Editor -->
+            <div class="space-y-4">
+                <label
+                    for="content-editor"
+                    class="block text-sm font-bold text-slate-700"
+                    >Basis Pengetahuan Utama (WYSIWYG)
+                    <span class="text-rose-500">*</span></label
+                >
+                <div id="content-editor">
+                    <QuillEditor bind:value={$form.content} height="500px" />
+                </div>
+                {#if $form.errors.content}
+                    <p class="text-rose-500 text-xs mt-1">
+                        {$form.errors.content}
+                    </p>
+                {/if}
+            </div>
+        </DataForm>
     </div>
 </App>

@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
     export let title = "";
-    export let subtitle = null;
+    export let subtitle: string | null = null;
     export let centered = false;
     let className = "";
     export { className as class };

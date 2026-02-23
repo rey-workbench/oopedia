@@ -1,16 +1,45 @@
 import { router } from "@inertiajs/svelte";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import { BaseState } from "@/states/BaseState.svelte";
 import { ROUTES } from "@/utils/route";
+import { getDifficultyLabel, getDifficultyColor } from "@/utils/quizUtils";
 import type { Material, Question, DifficultyLevel, StudentStateViewModel, CheckAnswerResponse } from "@/types";
+
+// ---------------------------------------------------------------------------
+// Shared interfaces
+// ---------------------------------------------------------------------------
+
+interface AnswerPayload {
+    question_id: number;
+    material_id: number;
+    used_hint: boolean;
+    time_spent: number;
+    difficulty: DifficultyLevel;
+    fill_in_the_blank_answer?: string;
+    answer?: string | null;
+    drag_and_drop_answers?: string;
+}
+
+interface AdaptiveResult {
+    facts?: unknown[];
+    triggeredRule?: string | null;
+    triggered_rule?: { action?: string | null };
+    [key: string]: unknown;
+}
+
+export interface LevelItem {
+    level: number;
+    status: 'completed' | 'in_progress' | 'locked';
+    [key: string]: unknown;
+}
 
 /**
  * Question List State (Selection/Catalog)
  */
 export class QuestionListState extends BaseState {
-    materials = $state<any[]>([]);
+    materials = $state<Material[]>([]);
 
-    constructor(materials: any) {
+    constructor(materials: Material[]) {
         super();
         this.materials = materials;
     }
@@ -20,14 +49,13 @@ export class QuestionListState extends BaseState {
  * Level Map State (Adaptive Path Visualization)
  */
 export class LevelMapState extends BaseState {
-    material = $state<any>({});
-    levels = $state<any[]>([]);
+    material = $state<Material>({} as Material);
+    levels = $state<LevelItem[]>([]);
 
-    beginnerLevels = $derived(this.levels.filter(l => l.level === 'beginner'));
-    mediumLevels = $derived(this.levels.filter(l => l.level === 'medium'));
-    hardLevels = $derived(this.levels.filter(l => l.level === 'hard'));
+    sortedLevels = $derived([...this.levels].sort((a, b) => a.level - b.level));
+    allCompleted = $derived(this.levels.length > 0 && this.levels.every(l => l.status === 'completed'));
 
-    constructor(material: any, levels: any) {
+    constructor(material: Material, levels: LevelItem[]) {
         super();
         this.material = material;
         this.levels = levels;
@@ -44,7 +72,7 @@ export class QuestionShowState extends BaseState {
     studentState = $state<StudentStateViewModel>({} as StudentStateViewModel);
 
     fillInTheBlankAnswer = $state("");
-    selectedMultipleChoiceAnswer = $state<any>(null);
+    selectedMultipleChoiceAnswer = $state<string | null>(null);
     dragAndDropAnswers = $state<Record<string, string>>({});
 
     isSubmitting = $state(false);
@@ -54,20 +82,20 @@ export class QuestionShowState extends BaseState {
         status: string;
         message: string;
         nextUrl: string;
-        adaptiveResult: any;
+        adaptiveResult: AdaptiveResult | null;
         score: number;
     }>({
         status: "success",
         message: "",
         nextUrl: "",
-        adaptiveResult: {},
+        adaptiveResult: null,
         score: 0,
     });
     usedHint = $state(false);
     startTime = $state(Date.now());
 
     showAdaptiveIndicator = $state(false);
-    adaptiveFacts = $state<any[]>([]);
+    adaptiveFacts = $state<unknown[]>([]);
     adaptiveTriggeredRule = $state<string | null>(null);
 
     xp = $derived(this.studentState?.gamification?.global_xp || 0);
@@ -84,22 +112,12 @@ export class QuestionShowState extends BaseState {
         this.startTime = Date.now();
     }
 
-    getDifficultyLabel(diff: DifficultyLevel) {
-        const labels: Record<string, string> = {
-            beginner: "Pemula",
-            medium: "Menengah",
-            hard: "Sulit",
-        };
-        return labels[diff] || diff;
+    getDifficultyLabel(diff: DifficultyLevel): string {
+        return getDifficultyLabel(diff);
     }
 
-    getDifficultyColor(diff: DifficultyLevel) {
-        const colors: Record<string, string> = {
-            beginner: "text-emerald-600 bg-emerald-50",
-            medium: "text-amber-600 bg-amber-50",
-            hard: "text-rose-600 bg-rose-50",
-        };
-        return colors[diff] || "text-slate-600 bg-slate-50";
+    getDifficultyColor(diff: DifficultyLevel): string {
+        return getDifficultyColor(diff);
     }
 
     useHint() {
@@ -122,7 +140,7 @@ export class QuestionShowState extends BaseState {
 
         const timeSpent = Math.max(0, Math.floor((Date.now() - this.startTime) / 1000));
 
-        let payload: any = {
+        const payload: AnswerPayload = {
             question_id: this.currentQuestion.id,
             material_id: this.material.id,
             used_hint: this.usedHint,
@@ -139,34 +157,44 @@ export class QuestionShowState extends BaseState {
             payload.answer = this.selectedMultipleChoiceAnswer;
         }
 
+        console.debug("[QuizState] Submitting answer payload:", payload);
+
         try {
             const response = await axios.post<CheckAnswerResponse>(
                 ROUTES.MAHASISWA.MATERIALS.QUESTIONS.CHECK(this.material.id, this.currentQuestion.id),
                 payload
             );
 
+            console.debug("[QuizState] Received answer response:", response.data);
             const data = response.data;
+            const adaptiveResult = (data.adaptiveResult as unknown as AdaptiveResult) ?? null;
             this.feedbackData = {
                 status: data.status,
                 message: data.message,
                 nextUrl: data.nextUrl,
-                adaptiveResult: data.adaptiveResult,
+                adaptiveResult,
                 score: data.xpEarned || 0,
             };
 
-            if (data.adaptiveResult) {
-                this.adaptiveFacts = data.adaptiveResult.facts || [];
-                this.adaptiveTriggeredRule = data.adaptiveResult.triggeredRule || null;
+            if (adaptiveResult) {
+                this.adaptiveFacts = adaptiveResult.facts ?? [];
+                this.adaptiveTriggeredRule = (adaptiveResult.triggeredRule as string | null) ?? null;
                 this.showAdaptiveIndicator = true;
             }
 
             this.showHint = false;
             this.showFeedback = true;
-        } catch (error: any) {
-            console.error("Error submitting answer:", error);
+        } catch (err: unknown) {
+            const message = isAxiosError(err)
+                ? (err.response?.data as { message?: string })?.message ?? "Terjadi kesalahan saat memeriksa jawaban."
+                : "Terjadi kesalahan tidak terduga.";
+            console.error("[QuizState] Error submitting answer:", err);
+            if (isAxiosError(err)) {
+                console.error("[QuizState] Axios error details:", err.response?.data);
+            }
             this.feedbackData = {
                 status: "error",
-                message: error.response?.data?.message || "Terjadi kesalahan saat memeriksa jawaban.",
+                message,
                 nextUrl: "",
                 adaptiveResult: null,
                 score: 0,
@@ -199,12 +227,12 @@ export class QuestionShowState extends BaseState {
  * Review State (Quiz Summary & Filter)
  */
 export class ReviewState extends BaseState {
-    material = $state<any>({});
-    materials = $state<any[]>([]);
-    questions = $state<any[]>([]);
-    difficulty = $state("");
+    material = $state<Material>({} as Material);
+    materials = $state<Material[]>([]);
+    questions = $state<Question[]>([]);
+    difficulty = $state<DifficultyLevel | "">("");
 
-    constructor(material: any, materials: any, questions: any, difficulty: any) {
+    constructor(material: Material, materials: Material[], questions: Question[], difficulty: DifficultyLevel | "") {
         super();
         this.material = material;
         this.materials = materials;
@@ -212,15 +240,15 @@ export class ReviewState extends BaseState {
         this.difficulty = difficulty;
     }
 
-    getDifficultyLabel(d: any) {
-        return d === 'beginner' ? 'Pemula' : d === 'medium' ? 'Menengah' : 'Sulit';
+    getDifficultyLabel(d: DifficultyLevel | string): string {
+        return getDifficultyLabel(d);
     }
 
-    getDifficultyColor(d: any) {
-        return d === 'beginner' ? 'text-emerald-600 bg-emerald-50' : d === 'medium' ? 'text-amber-600 bg-amber-50' : 'text-rose-600 bg-rose-50';
+    getDifficultyColor(d: DifficultyLevel | string): string {
+        return getDifficultyColor(d);
     }
 
-    filterDifficulty(d: any) {
+    filterDifficulty(d: DifficultyLevel | "") {
         router.get(
             ROUTES.MAHASISWA.MATERIALS.QUESTIONS.REVIEW(this.material.id),
             { difficulty: d },
