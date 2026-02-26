@@ -74,22 +74,34 @@ RUN composer dump-autoload --optimize
 
 # Prepare entrypoint script for running Laravel setup commands
 RUN echo '#!/bin/bash\n\
+    set -e\n\
+    \n\
     # Fallback to port 80 if PORT is not set\n\
     PORT=${PORT:-80}\n\
+    echo "Configuring Apache to listen on port $PORT..."\n\
     sed -i "s/Listen 80/Listen ${PORT}/g" /etc/apache2/ports.conf\n\
     sed -i "s/:80/:${PORT}/g" /etc/apache2/sites-available/*.conf\n\
     \n\
-    # Ensure logging goes to stderr for Back4App dashboard visibility\n\
+    # Ensure logging goes to stderr for Railway/Back4App dashboard visibility\n\
     export LOG_CHANNEL=stderr\n\
     \n\
-    php artisan config:clear\n\
-    php artisan storage:link\n\
-    php artisan config:cache\n\
-    php artisan route:cache\n\
-    php artisan view:cache\n\
-    php artisan event:cache\n\
-    php artisan migrate --force\n\
+    echo "Running Laravel setup tasks..."\n\
     \n\
+    # Clear caches first\n\
+    php artisan config:clear || true\n\
+    \n\
+    # Run setup commands. We use "|| true" to prevent the container from crashing \n\
+    # if these fail, allowing the web server to start so you can see the errors.\n\
+    php artisan storage:link --force || true\n\
+    php artisan config:cache || true\n\
+    php artisan route:cache || true\n\
+    php artisan view:cache || true\n\
+    php artisan event:cache || true\n\
+    \n\
+    echo "Running migrations..."\n\
+    php artisan migrate --force || echo "Migration failed, but starting server anyway..."\n\
+    \n\
+    echo "Starting Apache..."\n\
     exec apache2-foreground' > /usr/local/bin/entrypoint.sh \
     && chmod +x /usr/local/bin/entrypoint.sh
 
