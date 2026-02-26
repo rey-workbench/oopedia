@@ -1,28 +1,18 @@
 # Stage 1: Build Frontend Assets
 FROM node:20 AS frontend-builder
 WORKDIR /app
-
-# Enable pnpm
 RUN npm install -g pnpm
-
-# Copy package and lock file
 COPY package.json pnpm-lock.yaml ./
-
-# Install dependencies
 RUN pnpm install --frozen-lockfile
-
-# Copy the rest of the frontend files
 COPY . .
-
-# Build assets (Vite)
 RUN pnpm run build
 
-
-# Stage 2: Serve application (PHP-Apache)
-FROM php:8.4-apache
+# Stage 2: Serve application (PHP-FPM + Nginx)
+FROM php:8.4-fpm
 
 # Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
+    nginx \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -43,74 +33,68 @@ RUN { \
     echo 'opcache.enable_cli=1'; \
     } > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
-# Enable Apache mod_rewrite and fix MPM error
-RUN a2dismod mpm_event mpm_worker || true \
-    && a2enmod mpm_prefork rewrite
-
-# Change Apache document root to Laravel's public directory
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Leverage Docker cache by copying composer files first
+# Leverage Docker cache
 COPY composer.json composer.lock ./
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install --no-dev --no-scripts --no-autoloader
 
-# Copy the rest of application files
+# Copy application files
 COPY . .
-
-# Copy built assets from Stage 1
 COPY --from=frontend-builder /app/public/build ./public/build
 
-# Finish Composer installation (autoload and scripts)
+# Finish Composer installation
 RUN composer dump-autoload --optimize
 
-# Prepare entrypoint script for running Laravel setup commands
+# Configure Nginx for Laravel
+RUN echo 'server {\n\
+    listen 80;\n\
+    index index.php index.html;\n\
+    root /var/www/html/public;\n\
+    \n\
+    location / {\n\
+    try_files $uri $uri/ /index.php?$query_string;\n\
+    }\n\
+    \n\
+    location ~ \.php$ {\n\
+    fastcgi_split_path_info ^(.+\.php)(/.+)$;\n\
+    fastcgi_pass 127.0.0.1:9000;\n\
+    fastcgi_index index.php;\n\
+    include fastcgi_params;\n\
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;\n\
+    fastcgi_param PATH_INFO $fastcgi_path_info;\n\
+    }\n\
+    }' > /etc/nginx/sites-available/default
+
+# Prepare entrypoint script
 RUN echo '#!/bin/bash\n\
-    set -e\n\
-    \n\
-    # Fallback to port 80 if PORT is not set\n\
     PORT=${PORT:-80}\n\
-    echo "Configuring Apache to listen on port $PORT..."\n\
-    sed -i "s/Listen 80/Listen ${PORT}/g" /etc/apache2/ports.conf\n\
-    sed -i "s/:80/:${PORT}/g" /etc/apache2/sites-available/*.conf\n\
+    sed -i "s/listen 80;/listen ${PORT};/g" /etc/nginx/sites-available/default\n\
     \n\
-    # Ensure logging goes to stderr for Railway/Back4App dashboard visibility\n\
     export LOG_CHANNEL=stderr\n\
     \n\
-    echo "Running Laravel setup tasks..."\n\
-    \n\
-    # Clear caches first\n\
     php artisan config:clear || true\n\
-    \n\
-    # Run setup commands. We use "|| true" to prevent the container from crashing \n\
-    # if these fail, allowing the web server to start so you can see the errors.\n\
     php artisan storage:link --force || true\n\
     php artisan config:cache || true\n\
     php artisan route:cache || true\n\
     php artisan view:cache || true\n\
     php artisan event:cache || true\n\
+    php artisan migrate --force || true\n\
     \n\
-    echo "Running migrations..."\n\
-    php artisan migrate --force || echo "Migration failed, but starting server anyway..."\n\
-    \n\
-    echo "Starting Apache..."\n\
-    exec apache2-foreground' > /usr/local/bin/entrypoint.sh \
+    # Start PHP-FPM in background and Nginx in foreground\n\
+    php-fpm -D\n\
+    echo "Starting Nginx on port $PORT..."\n\
+    nginx -g "daemon off;"' > /usr/local/bin/entrypoint.sh \
     && chmod +x /usr/local/bin/entrypoint.sh
 
-# Set proper permissions for Laravel
+# Set proper permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose port (Back4App typically uses 80, but entrypoint handles $PORT)
 EXPOSE 80
-
-# Start Apache via Entrypoint
 CMD ["/usr/local/bin/entrypoint.sh"]
