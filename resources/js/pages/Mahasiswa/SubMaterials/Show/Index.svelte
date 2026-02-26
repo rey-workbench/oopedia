@@ -44,8 +44,8 @@
     }
 </script>
 
-<App title={state.subMaterial.title}>
-    <div class="space-y-12">
+<App title={state.subMaterial.title} fullWidth={true}>
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-12 py-8 space-y-12">
         <!-- Breadcrumb Navigation -->
         <div class="flex items-center gap-3 text-sm">
             <Link
@@ -121,8 +121,8 @@
             </div>
         </PageHeader>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            <div bind:this={contentContainer} class="lg:col-span-2">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-12">
+            <div bind:this={contentContainer} class="lg:col-span-3">
                 <Card class="p-10 md:p-16">
                     <div slot="header" class="mb-10">
                         <h2
