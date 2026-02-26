@@ -34,67 +34,74 @@ class ComprehensiveQuestionsSeeder extends Seeder
         }
 
         $totalCreated = 0;
-        foreach ($subMaterials as $subMaterial) {
-            // Create 15 questions per submaterial
-            for ($i = 1; $i <= 15; $i++) {
-                // Cycle through difficulty levels
-                $difficulty = $i <= 5 ? 'beginner' : ($i <= 10 ? 'medium' : 'hard');
+        DB::beginTransaction();
+        try {
+            foreach ($subMaterials as $subMaterial) {
+                // Create 15 questions per submaterial
+                for ($i = 1; $i <= 15; $i++) {
+                    // Cycle through difficulty levels
+                    $difficulty = $i <= 5 ? 'beginner' : ($i <= 10 ? 'medium' : 'hard');
 
-                // Cycle through question types
-                $typePool = ['radio_button', 'fill_in_the_blank', 'drag_and_drop'];
-                $questionType = $typePool[($i - 1) % 3];
+                    // Cycle through question types
+                    $typePool = ['radio_button', 'fill_in_the_blank', 'drag_and_drop'];
+                    $questionType = $typePool[($i - 1) % 3];
 
-                // Handle mixed content type for question category
-                $qType = $subMaterial->jenis_konten === 'mixed' ? 'teori' : $subMaterial->jenis_konten;
+                    // Handle mixed content type for question category
+                    $qType = $subMaterial->jenis_konten === 'mixed' ? 'teori' : $subMaterial->jenis_konten;
 
-                if ($questionType === 'radio_button') {
-                    $this->createRadioQuestion(
-                        $subMaterial->material_id,
-                        $subMaterial->id,
-                        "Pertanyaan dummy #{$i} untuk sub-materi: {$subMaterial->title}",
-                        $qType,
-                        $difficulty,
-                        'Pilih jawaban yang bertuliskan "ini benar"',
-                        [
-                            ['ini jawaban benar', true, 'Benar!'],
-                            ['ini jawaban salah (1)', false, 'Salah.'],
-                            ['ini jawaban salah (2)', false, 'Salah.'],
-                            ['ini jawaban salah (3)', false, 'Salah.'],
-                        ],
-                        $admin->id,
-                    );
-                } elseif ($questionType === 'fill_in_the_blank') {
-                    $this->createFillBlankQuestion(
-                        $subMaterial->material_id,
-                        $subMaterial->id,
-                        "Ketik kata 'benar' untuk menjawab pertanyaan dummy #{$i} ini: _____",
-                        $qType,
-                        $difficulty,
-                        'Isi dengan: benar',
-                        [
-                            ['benar', 'Bagus!'],
-                            ['Benar', 'Bagus!'],
-                        ],
-                        $admin->id,
-                    );
-                } else {
-                    $this->createDragDropQuestion(
-                        $subMaterial->material_id,
-                        $subMaterial->id,
-                        "Urutkan elemen dummy #{$i} berikut sesuai angka 1-2-3:",
-                        $qType,
-                        $difficulty,
-                        'Urutkan 1, 2, kemudian 3',
-                        [
-                            ['Elemen ke-1 (ini benar)', '1', 'Tepat!'],
-                            ['Elemen ke-2 (ini benar)', '2', 'Tepat!'],
-                            ['Elemen ke-3 (ini benar)', '3', 'Tepat!'],
-                        ],
-                        $admin->id,
-                    );
+                    if ($questionType === 'radio_button') {
+                        $this->createRadioQuestion(
+                            $subMaterial->material_id,
+                            $subMaterial->id,
+                            "Pertanyaan dummy #{$i} untuk sub-materi: {$subMaterial->title}",
+                            $qType,
+                            $difficulty,
+                            'Pilih jawaban yang bertuliskan "ini benar"',
+                            [
+                                ['ini jawaban benar', true, 'Benar!'],
+                                ['ini jawaban salah (1)', false, 'Salah.'],
+                                ['ini jawaban salah (2)', false, 'Salah.'],
+                                ['ini jawaban salah (3)', false, 'Salah.'],
+                            ],
+                            $admin->id,
+                        );
+                    } elseif ($questionType === 'fill_in_the_blank') {
+                        $this->createFillBlankQuestion(
+                            $subMaterial->material_id,
+                            $subMaterial->id,
+                            "Ketik kata 'benar' untuk menjawab pertanyaan dummy #{$i} ini: _____",
+                            $qType,
+                            $difficulty,
+                            'Isi dengan: benar',
+                            [
+                                ['benar', 'Bagus!'],
+                                ['Benar', 'Bagus!'],
+                            ],
+                            $admin->id,
+                        );
+                    } else {
+                        $this->createDragDropQuestion(
+                            $subMaterial->material_id,
+                            $subMaterial->id,
+                            "Urutkan elemen dummy #{$i} berikut sesuai angka 1-2-3:",
+                            $qType,
+                            $difficulty,
+                            'Urutkan 1, 2, kemudian 3',
+                            [
+                                ['Elemen ke-1 (ini benar)', '1', 'Tepat!'],
+                                ['Elemen ke-2 (ini benar)', '2', 'Tepat!'],
+                                ['Elemen ke-3 (ini benar)', '3', 'Tepat!'],
+                            ],
+                            $admin->id,
+                        );
+                    }
+                    $totalCreated++;
                 }
-                $totalCreated++;
             }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
         }
 
         echo 'Total questions created: ' . $totalCreated . "\n";
@@ -115,14 +122,18 @@ class ComprehensiveQuestionsSeeder extends Seeder
             'created_by' => $adminId,
         ]);
 
+        $answerData = [];
         foreach ($answers as $answer) {
-            Answer::create([
+            $answerData[] = [
                 'question_id' => $question->id,
                 'is_correct' => $answer[1],
                 'answer_text' => $answer[0],
                 'explanation' => $answer[2],
-            ]);
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
         }
+        Answer::insert($answerData);
     }
 
     private function createFillBlankQuestion($materialId, $subMaterialId, $text, $type, $difficulty, $hint, $correctAnswers, $adminId)
@@ -138,15 +149,19 @@ class ComprehensiveQuestionsSeeder extends Seeder
             'created_by' => $adminId,
         ]);
 
+        $answerData = [];
         foreach ($correctAnswers as $answer) {
-            Answer::create([
+            $answerData[] = [
                 'question_id' => $question->id,
                 'is_correct' => true,
                 'answer_text' => $answer[0],
                 'blank_position' => 1,
                 'explanation' => $answer[1],
-            ]);
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
         }
+        Answer::insert($answerData);
     }
 
     private function createDragDropQuestion($materialId, $subMaterialId, $text, $type, $difficulty, $hint, $items, $adminId)
@@ -162,14 +177,18 @@ class ComprehensiveQuestionsSeeder extends Seeder
             'created_by' => $adminId,
         ]);
 
+        $answerData = [];
         foreach ($items as $item) {
-            Answer::create([
+            $answerData[] = [
                 'question_id' => $question->id,
                 'is_correct' => true,
                 'answer_text' => $item[0],
                 'drag_target' => $item[1],
                 'explanation' => $item[2],
-            ]);
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
         }
+        Answer::insert($answerData);
     }
 }
