@@ -63,12 +63,22 @@ RUN composer dump-autoload --optimize
 
 # Prepare entrypoint script for running Laravel setup commands
 RUN echo '#!/bin/bash\n\
+    # Fallback to port 80 if PORT is not set\n\
+    PORT=${PORT:-80}\n\
+    sed -i "s/Listen 80/Listen ${PORT}/g" /etc/apache2/ports.conf\n\
+    sed -i "s/:80/:${PORT}/g" /etc/apache2/sites-available/*.conf\n\
+    \n\
+    # Ensure logging goes to stderr for Back4App dashboard visibility\n\
+    export LOG_CHANNEL=stderr\n\
+    \n\
+    php artisan config:clear\n\
     php artisan storage:link\n\
     php artisan config:cache\n\
     php artisan route:cache\n\
     php artisan view:cache\n\
     php artisan event:cache\n\
     php artisan migrate --force\n\
+    \n\
     exec apache2-foreground' > /usr/local/bin/entrypoint.sh \
     && chmod +x /usr/local/bin/entrypoint.sh
 
@@ -76,7 +86,7 @@ RUN echo '#!/bin/bash\n\
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose port 80
+# Expose port (Back4App typically uses 80, but entrypoint handles $PORT)
 EXPOSE 80
 
 # Start Apache via Entrypoint
