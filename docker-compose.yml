@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: oopedia-app
+    restart: always
     ports:
       - "8000:80"
     environment:
@@ -15,16 +16,20 @@ services:
       - DB_DATABASE=${DB_DATABASE:-oopedia}
       - DB_USERNAME=${DB_USERNAME:-root}
       - DB_PASSWORD=${DB_PASSWORD:-password}
+      - APP_ENV=production
+      - APP_DEBUG=false
     env_file:
       - .env
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - oopedia-network
 
   db:
     image: mysql:8.0
     container_name: oopedia-db
+    restart: always
     ports:
       - "3306:3306"
     environment:
@@ -32,11 +37,15 @@ services:
       MYSQL_USER: ${DB_USERNAME:-root}
       MYSQL_PASSWORD: ${DB_PASSWORD:-password}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-password}
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
     volumes:
       - db-data:/var/lib/mysql
     networks:
       - oopedia-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
   oopedia-network:
