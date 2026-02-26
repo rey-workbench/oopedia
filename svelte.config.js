@@ -1,7 +1,7 @@
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-import type { SvelteConfig } from '@sveltejs/vite-plugin-svelte';
 
-const config: SvelteConfig = {
+/** @type {import('@sveltejs/vite-plugin-svelte').SvelteConfig} */
+const config = {
     preprocess: [vitePreprocess()],
 };
 
