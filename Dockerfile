@@ -19,7 +19,7 @@ RUN pnpm run build
 
 
 # Stage 2: Serve application (PHP-Apache)
-FROM php:8.2-apache
+FROM php:8.4-apache
 
 # Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
