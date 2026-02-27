@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+
 class BlockQuestionParameter
 {
     /**
@@ -22,7 +23,7 @@ class BlockQuestionParameter
                 $request->session()->put('quiz_difficulty', $request->query('difficulty'));
             }
 
-            return redirect()->to($request->url());
+            return redirect()->to(url($request->path()));
         }
 
         return $next($request);

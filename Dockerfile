@@ -69,6 +69,7 @@ RUN echo 'server {\n\
     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;\n\
     fastcgi_param PATH_INFO $fastcgi_path_info;\n\
     fastcgi_param HTTP_X_FORWARDED_PROTO $http_x_forwarded_proto;\n\
+    fastcgi_param HTTPS on;\n\
     }\n\
     }' > /etc/nginx/sites-available/default
 
