@@ -122,15 +122,14 @@ class QuestionListingService implements QuestionListingServiceInterface
                 }
             }
         } else {
-            $answeredQuestionIds = $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
-            $questions = $questions->whereIn('id', $answeredQuestionIds);
+            $questionIds = $questions->pluck('id');
+            $attempts = \App\Models\QuizAttempt::where('user_id', $userId)
+                ->whereIn('question_id', $questionIds)
+                ->get()
+                ->groupBy('question_id');
 
-            // Load latest attempt for each question for authenticated users
             foreach ($questions as $question) {
-                $latestAttempt = \App\Models\QuizAttempt::where('user_id', $userId)
-                    ->where('question_id', $question->id)
-                    ->latest()
-                    ->first();
+                $latestAttempt = $attempts->get($question->id)?->sortByDesc('created_at')->first();
 
                 if ($latestAttempt) {
                     $question->user_attempt = [

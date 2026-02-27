@@ -29,9 +29,7 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
-        View::composer('components.navbars.sidebar', function ($view) {
-            $view->with('materials', Material::orderBy('created_at', 'asc')->get());
-        });
+
 
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
