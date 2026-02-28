@@ -2,16 +2,23 @@
 
 namespace App\Repositories;
 
+use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Models\Material;
+use App\Models\Question;
 use App\Models\QuizAttempt;
 use App\Models\StudentState;
-use App\Models\Question;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
-class ProgressRepository
+class ProgressRepository implements ProgressRepositoryInterface
 {
-
-    public function getUserProgressStats($userId)
+    /** @return array<string, mixed> */
+    public function getUserProgressStats(int|string|null $userId): \Illuminate\Database\Eloquent\Collection
     {
+        if (is_null($userId)) {
+            return new Collection();
+        }
+
         // Join with Questions to get material_id
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->select('questions.material_id')
@@ -22,9 +29,13 @@ class ProgressRepository
             ->get();
     }
 
-    public function getUserMaterialProgress($userId)
+    /** @return \Illuminate\Database\Eloquent\Collection<int, mixed> */
+    public function getUserMaterialProgress(int|string|null $userId): \Illuminate\Database\Eloquent\Collection
     {
-        // Similar to above, utilizing join
+        if (is_null($userId)) {
+            return new Collection();
+        }
+
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->select('questions.material_id')
             ->selectRaw('COUNT(DISTINCT quiz_attempts.question_id) as total_answered')
@@ -34,29 +45,50 @@ class ProgressRepository
             ->get();
     }
 
-    public function getRecentActivities($userId, $limit = 5)
+    /** @return \Illuminate\Support\Collection<int, mixed> */
+    public function getRecentActivities(int|string|null $userId, int $limit = 5): \Illuminate\Support\Collection
     {
+        if (is_null($userId)) {
+            return collect();
+        }
         // Get latest correct attempts
-        return QuizAttempt::with(['question.material']) 
+        return QuizAttempt::with(['question.material'])
             ->where('user_id', $userId)
             ->where('is_correct', true)
             ->orderBy('created_at', 'desc')
             ->take($limit)
             ->get()
-            ->map(function ($attempt) {
-                return (object)[
+            ->map(function ($attempt) use ($userId) {
+                $materialId = $attempt->question->material_id ?? 0;
+                $difficulty = $attempt->question->difficulty;
+
+                // Count how many hard questions completed in this material BEFORE this attempt
+                $previousHardCount = 0;
+                if ($difficulty === 'hard') {
+                    $previousHardCount = QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
+                        ->where('quiz_attempts.user_id', $userId)
+                        ->where('questions.material_id', $materialId)
+                        ->where('questions.difficulty', 'hard')
+                        ->where('quiz_attempts.is_correct', true)
+                        ->where('quiz_attempts.created_at', '<', $attempt->created_at)
+                        ->distinct('quiz_attempts.question_id')
+                        ->count();
+                }
+
+                return (object) [
                     'material_title' => $attempt->question->material->title ?? 'Unknown',
-                    'material_id' => $attempt->question->material_id ?? 0,
+                    'material_id' => $materialId,
                     'difficulty' => $attempt->question->difficulty,
                     'created_at' => $attempt->created_at,
                     'is_correct' => $attempt->is_correct,
+                    'previous_hard_count' => $previousHardCount,
                     // Total correct count calculation might be expensive per row, simplified here
-                    'total_correct' => $this->getMaterialCorrectCount($attempt->user_id, $attempt->question->material_id ?? 0)
+                    'total_correct' => $this->getMaterialCorrectCount($attempt->user_id, $materialId),
                 ];
             });
     }
 
-    protected function getMaterialCorrectCount($userId, $materialId)
+    protected function getMaterialCorrectCount(int $userId, int $materialId): int
     {
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->where('quiz_attempts.user_id', $userId)
@@ -65,9 +97,14 @@ class ProgressRepository
             ->distinct('quiz_attempts.question_id')
             ->count();
     }
-    
-    public function getDetailedUserProgress($userId)
+
+    /** @return array<string, mixed> */
+    public function getDetailedUserProgress(int|string|null $userId): array
     {
+        if (is_null($userId)) {
+            return [];
+        }
+
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->select('questions.material_id', 'questions.difficulty')
             ->selectRaw('COUNT(DISTINCT quiz_attempts.question_id) as total_answered')
@@ -77,14 +114,15 @@ class ProgressRepository
             ->get();
     }
 
-    public function getCorrectAnswersWithAttempts($roleId = 3)
+    /** @return Collection<int, mixed> */
+    public function getCorrectAnswersWithAttempts(int $roleId = 3): Collection
     {
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->join('users', 'quiz_attempts.user_id', '=', 'users.id')
             ->select(
                 'quiz_attempts.user_id',
                 'quiz_attempts.question_id',
-                'questions.difficulty'
+                'questions.difficulty',
             )
             ->selectRaw('MIN(quiz_attempts.attempt_number) as attempts_needed')
             ->where('quiz_attempts.is_correct', 1)
@@ -93,14 +131,16 @@ class ProgressRepository
             ->get();
     }
 
-    public function getLeaderboardStats($roleId = 3)
+    /** @return array<int, mixed> */
+    /** @return \Illuminate\Database\Eloquent\Collection<int, mixed> */
+    public function getLeaderboardStats(int $roleId = 3): \Illuminate\Database\Eloquent\Collection
     {
         return QuizAttempt::join('users', 'quiz_attempts.user_id', '=', 'users.id')
             ->leftJoin('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->select(
                 'users.id',
                 'users.name',
-                'users.email'
+                'users.email',
             )
             ->selectRaw('COUNT(DISTINCT CASE WHEN quiz_attempts.is_correct = 1 THEN quiz_attempts.question_id END) as total_correct_questions')
             ->selectRaw('COUNT(DISTINCT quiz_attempts.question_id) as total_attempted')
@@ -115,7 +155,7 @@ class ProgressRepository
             ->get();
     }
 
-    public function getAttemptCount($userId, $materialId, $questionId)
+    public function getAttemptCount(int|string $userId, int $materialId, int $questionId): int
     {
         // Attempts specific to a question
         return QuizAttempt::where('user_id', $userId)
@@ -123,11 +163,11 @@ class ProgressRepository
             ->count();
     }
 
-    public function saveProgress(array $data)
+    public function saveProgress(array $data): QuizAttempt
     {
         // 1. Create QuizAttempt
         // Calculate attempt number if not provided
-        if (!isset($data['attempt_number'])) {
+        if (! isset($data['attempt_number'])) {
             $data['attempt_number'] = QuizAttempt::where('user_id', $data['user_id'])
                 ->where('question_id', $data['question_id'])
                 ->count() + 1;
@@ -136,11 +176,12 @@ class ProgressRepository
         $attempt = QuizAttempt::create([
             'user_id' => $data['user_id'],
             'question_id' => $data['question_id'],
-            'answer_id' => $data['answer_id'] ?? ($data['answer'] ?? null),
+            'answer_id' => $data['answer_id'] ?? null,
+            'user_response' => $data['user_response'] ?? null,
             'is_correct' => $data['is_correct'] ?? false,
             'score' => $data['score'] ?? ($data['is_correct'] ? 100 : 0),
             'attempt_number' => $data['attempt_number'],
-            'time_spent' => 0 // Can be updated later
+            'time_spent' => 0, // Can be updated later
         ]);
 
         // 2. Update StudentState if attributes provided
@@ -151,10 +192,14 @@ class ProgressRepository
         return $attempt;
     }
 
-    protected function updateStudentState($userId, array $attributes)
+    public function updateStudentState(int|string|null $userId, array $attributes): void
     {
+        if (is_null($userId)) {
+            return;
+        }
+
         $state = StudentState::firstOrNew(['user_id' => $userId]);
-        
+
         // 1. Update Gamification Data
         $gamification = $state->gamification_data ?? [];
         $gamification['global_xp'] = $attributes['global_xp'] ?? ($gamification['global_xp'] ?? 0);
@@ -162,7 +207,7 @@ class ProgressRepository
         $gamification['current_streak'] = $attributes['current_streak'] ?? ($gamification['current_streak'] ?? 0);
         $gamification['max_streak'] = $attributes['max_streak'] ?? ($gamification['max_streak'] ?? 0);
         $state->gamification_data = $gamification;
-        
+
         // 2. Update Performance Metrics
         $metrics = $state->performance_metrics ?? [];
         $metrics['total_questions_answered'] = $attributes['total_questions_answered'] ?? ($metrics['total_questions_answered'] ?? 0);
@@ -177,21 +222,23 @@ class ProgressRepository
         $profile = $state->learning_profile ?? [];
         $profile['learning_style'] = $attributes['learning_style'] ?? ($profile['learning_style'] ?? 'visual');
         $state->learning_profile = $profile;
-        
+
         $state->last_active_at = now();
         $state->save();
     }
 
-    public function updateOrCreateProgress(array $conditions, array $values)
+    public function updateOrCreateProgress(array $conditions, array $values): void
     {
         // Adapter for old code: simple create a new attempt
         // We assume strictly that this is a new interaction.
         // Merge conditions (user_id, question_id) with values
         $data = array_merge($conditions, $values);
-        return $this->saveProgress($data);
+
+        $this->saveProgress($data);
     }
 
-    public function getAnsweredQuestionIds($userId, $materialId)
+    /** @return \Illuminate\Support\Collection<int, int> */
+    public function getAnsweredQuestionIds(int|string $userId, int $materialId): \Illuminate\Support\Collection
     {
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->where('quiz_attempts.user_id', $userId)
@@ -201,18 +248,16 @@ class ProgressRepository
             ->pluck('quiz_attempts.question_id');
     }
 
-    public function resetProgress($userId, $materialId)
+    public function resetProgress(int|string $userId, int $materialId): void
     {
-        // Delete attempts for this material
-        // Use whereHas to filter by material
         $questionIds = Question::where('material_id', $materialId)->pluck('id');
-        
-        return QuizAttempt::where('user_id', $userId)
+
+        QuizAttempt::where('user_id', $userId)
             ->whereIn('question_id', $questionIds)
             ->delete();
     }
 
-    public function getStudentCountByMaterial()
+    public function getStudentCountByMaterial(): \Illuminate\Database\Eloquent\Collection
     {
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->select('questions.material_id')
@@ -222,8 +267,12 @@ class ProgressRepository
             ->keyBy('material_id');
     }
 
-    public function getLastAccessTime($userId, $materialId)
+    public function getLastAccessTime(int|string|null $userId, int $materialId): ?string
     {
+        if (is_null($userId)) {
+            return null;
+        }
+
         // Join not strictly needed if we just want max created_at for user?
         // But need to filter by material
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
@@ -232,7 +281,7 @@ class ProgressRepository
             ->max('quiz_attempts.created_at'); // attempts use created_at roughly as access time
     }
 
-    public function getRecentSystemProgress($limit)
+    public function getRecentSystemProgress(int $limit): \Illuminate\Database\Eloquent\Collection
     {
         return QuizAttempt::with(['user', 'question.material'])
             ->orderBy('created_at', 'desc')
@@ -240,7 +289,7 @@ class ProgressRepository
             ->get();
     }
 
-    public function getMaterialPerformanceStats()
+    public function getMaterialPerformanceStats(): \Illuminate\Database\Eloquent\Collection
     {
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->where('quiz_attempts.is_correct', true)
@@ -248,12 +297,11 @@ class ProgressRepository
             ->get();
     }
 
-    public function getPopularMaterials($limit)
+    public function getPopularMaterials(int $limit): \Illuminate\Database\Eloquent\Collection
     {
-        // Refactored to use quiz_attempts
-        return DB::table('materials')
+        return Material::query()
             ->leftJoin('questions', 'materials.id', '=', 'questions.material_id')
-            ->leftJoin('quiz_attempts', function($join) {
+            ->leftJoin('quiz_attempts', function ($join) {
                 $join->on('questions.id', '=', 'quiz_attempts.question_id')
                     ->where('quiz_attempts.is_correct', '=', true);
             })
@@ -262,10 +310,10 @@ class ProgressRepository
                 'materials.title',
                 DB::raw('COUNT(DISTINCT quiz_attempts.user_id) as students_count'),
                 DB::raw('ROUND(
-                    (COUNT(DISTINCT CASE WHEN quiz_attempts.is_correct = 1 THEN quiz_attempts.id ELSE NULL END) * 100.0) / 
-                    NULLIF(COUNT(DISTINCT quiz_attempts.id), 0), 
+                    (COUNT(DISTINCT CASE WHEN quiz_attempts.is_correct = 1 THEN quiz_attempts.id ELSE NULL END) * 100.0) /
+                    NULLIF(COUNT(DISTINCT quiz_attempts.id), 0),
                     1
-                ) as completion_rate')
+                ) as completion_rate'),
             )
             ->groupBy('materials.id', 'materials.title')
             ->orderByDesc('students_count')
@@ -290,7 +338,7 @@ class ProgressRepository
         return StudentState::where('user_id', $userId)->first();
     }
 
-    public function getByUserAndMaterial($userId, $materialId)
+    public function getByUserAndMaterial(int|string $userId, int $materialId): \Illuminate\Database\Eloquent\Collection
     {
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->where('quiz_attempts.user_id', $userId)
@@ -300,7 +348,7 @@ class ProgressRepository
             ->get();
     }
 
-    public function getWrongAnswers($userId, $materialId)
+    public function getWrongAnswers(int|string $userId, int $materialId): \Illuminate\Database\Eloquent\Collection
     {
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->where('quiz_attempts.user_id', $userId)
@@ -313,10 +361,6 @@ class ProgressRepository
             ->select('quiz_attempts.*')
             ->get();
     }
-    public function getStudentState($userId)
-    {
-        return StudentState::firstOrCreate(['user_id' => $userId]);
-    }
 
     // ==================== ADAPTIVE FACT GATHERING ====================
 
@@ -324,14 +368,18 @@ class ProgressRepository
      * Get consecutive failures for a question (for G22 - Persistent Fail).
      * Returns count of consecutive wrong attempts.
      */
-    public function getConsecutiveFailures(int $userId, int $questionId): int
+    public function getConsecutiveFailures(int|string|null $userId, int $questionId): int
     {
+        if (is_null($userId)) {
+            return 0;
+        }
+
         $attempts = QuizAttempt::where('user_id', $userId)
             ->where('question_id', $questionId)
             ->orderBy('created_at', 'desc')
             ->take(10) // Check last 10 attempts
             ->get();
-        
+
         $consecutiveFails = 0;
         foreach ($attempts as $attempt) {
             if ($attempt->is_correct) {
@@ -339,7 +387,7 @@ class ProgressRepository
             }
             $consecutiveFails++;
         }
-        
+
         return $consecutiveFails;
     }
 
@@ -347,14 +395,62 @@ class ProgressRepository
      * Get error type from latest attempt (for G09/G10).
      * Returns 'syntax', 'logic', or null.
      */
-    public function getLatestErrorType(int $userId, int $questionId): ?string
+    public function getLatestErrorType(int|string|null $userId, int $questionId): ?string
     {
+        if (is_null($userId)) {
+            return null;
+        }
+
         $attempt = QuizAttempt::where('user_id', $userId)
             ->where('question_id', $questionId)
             ->where('is_correct', false)
             ->latest()
             ->first();
-        
+
         return $attempt?->error_type ?? 'logic'; // Default to logic error
+    }
+
+    public function getStudentState(int|string|null $userId): ?StudentState
+    {
+        if (is_null($userId)) {
+            return null;
+        }
+
+        return StudentState::where('user_id', $userId)->first();
+    }
+
+    public function getOrCreateStudentState(int|string|null $userId): StudentState
+    {
+        if (is_null($userId)) {
+            return new StudentState();
+        }
+
+        // StudentState is global per user
+        return StudentState::firstOrCreate(['user_id' => $userId], [
+            'gamification_data' => [],
+            'learning_profile' => [],
+            'performance_metrics' => [],
+            'adaptive_state' => [],
+            'last_active_at' => now(),
+        ]);
+    }
+
+    /** @return array<string, mixed> */
+    public function getUserMaterialProgressWithState(int|string|null $userId, int $materialId): array
+    {
+        if (is_null($userId)) {
+            return [
+                'state' => new StudentState(),
+                'progress' => new Collection(),
+            ];
+        }
+
+        $state = $this->getOrCreateStudentState($userId);
+        $progress = $this->getUserMaterialProgress($userId);
+
+        return [
+            'state' => $state,
+            'progress' => $progress,
+        ];
     }
 }

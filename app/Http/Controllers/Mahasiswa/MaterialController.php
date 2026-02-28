@@ -2,56 +2,60 @@
 
 namespace App\Http\Controllers\Mahasiswa;
 
+use App\Contracts\Services\MaterialViewServiceInterface;
 use App\Http\Controllers\Controller;
-use App\Services\Lms\Material\MaterialViewService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class MaterialController extends Controller
 {
-    protected $materialViewService;
+    public function __construct(
+        protected MaterialViewServiceInterface $materialViewService,
+    ) {}
 
-    public function __construct(MaterialViewService $materialViewService)
+    public function showSubMaterial(int|string $materialId, int|string $subMaterialId): Response
     {
-        $this->materialViewService = $materialViewService;
+        $data = $this->materialViewService->getSubMaterialDetail((int) $materialId, (int) $subMaterialId, $this->isGuest());
+
+        return Inertia::render('Mahasiswa/SubMaterials/Show/Index', $data);
     }
 
-    public function showSubMaterial($materialId, $subMaterialId)
+    public function show(int|string $id): Response
     {
-        $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4);
-        
-        $data = $this->materialViewService->getSubMaterialDetail($materialId, $subMaterialId, $isGuest);
-        
-        return Inertia::render('Mahasiswa/SubMaterials/Show', $data);
+        $data = $this->materialViewService->getMaterialDetail((int) $id, Auth::id(), $this->isGuest());
+
+        return Inertia::render('Mahasiswa/Materials/Show/Index', $data);
     }
 
-    public function show($id)
+    public function index(): Response
     {
-        $userId = auth()->id();
-        $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4);
-
-        $data = $this->materialViewService->getMaterialDetail($id, $userId, $isGuest);
-
-        return Inertia::render('Mahasiswa/Materials/Show', $data);
-    }
-
-    public function index()
-    {
-        $userId = auth()->id();
-        $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4);
-
-        $materials = $this->materialViewService->getMaterialsList($userId, $isGuest);
+        $isGuest = $this->isGuest();
+        $materials = $this->materialViewService->getMaterialsList(Auth::id(), $isGuest);
 
         return Inertia::render('Mahasiswa/Materials/Index', [
             'materials' => $materials,
-            'isGuest' => $isGuest
+            'isGuest' => $isGuest,
         ]);
     }
 
-    public function reset($id)
+    public function reset(int|string $id, Request $request): RedirectResponse
     {
-        $this->materialViewService->resetMaterialProgress(auth()->id(), $id);
+        $intId = (int) $id;
+        if ($this->isGuest()) {
+            $allProgress = session('guest_progress', []);
+            $filtered = collect($allProgress)
+                ->filter(fn ($v, $k) => ! str_starts_with((string) $k, $intId . '_'))
+                ->all();
+            session(['guest_progress' => $filtered]);
+            session()->forget('guest_progress.' . $intId);
+        } else {
+            $this->materialViewService->resetMaterialProgress(Auth::id(), $intId);
+        }
 
-        return redirect()->route('mahasiswa.materials.questions.show', ['material' => $id])
+        return redirect()->route('mahasiswa.materials.questions.show', ['material' => $intId])
             ->with('success', 'Progress direset. Anda dapat mengerjakan soal kembali.');
     }
 }

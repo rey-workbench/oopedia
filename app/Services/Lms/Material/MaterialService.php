@@ -2,27 +2,50 @@
 
 namespace App\Services\Lms\Material;
 
-use App\Repositories\MaterialRepository;
-use App\Models\Media;
+use App\Contracts\Repositories\MaterialRepositoryInterface;
+use App\Contracts\Repositories\MediaRepositoryInterface;
+use App\Contracts\Services\MaterialServiceInterface;
+use App\Exceptions\Domain\MaterialNotFoundException;
+use App\Exceptions\Domain\MediaOperationException;
 use App\Models\Material;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
-use Exception;
 
-class MaterialService
+class MaterialService implements MaterialServiceInterface
 {
-    protected $materialRepo;
+    public function __construct(
+        protected MaterialRepositoryInterface $materialRepo,
+        protected MediaRepositoryInterface $mediaRepo,
+    ) {}
 
-    public function __construct(MaterialRepository $materialRepo)
-    {
-        $this->materialRepo = $materialRepo;
-    }
-
-    public function getAllMaterials($search = null, $sort = 'created_at', $direction = 'asc')
+    /** @return Collection<int, Material> */
+    public function getAllMaterials(?string $search = null, string $sort = 'created_at', string $direction = 'asc'): Collection
     {
         return $this->materialRepo->getMaterialsForAdmin($search, $sort, $direction);
     }
 
-    public function createMaterial(array $data, $coverImage = null)
+    /** @return Collection<int, Material> */
+    public function getAllOrdered(): Collection
+    {
+        return $this->materialRepo->getAllOrdered();
+    }
+
+    public function getMaterialById(int $id): ?Material
+    {
+        return $this->materialRepo->find($id);
+    }
+
+    public function getMaterialWithQuestions(int $id): ?Material
+    {
+        return $this->materialRepo->findWithQuestionsAndAnswers($id);
+    }
+
+    public function getMaterialWithQuestionsAndAnswers(int $id): ?Material
+    {
+        return $this->materialRepo->findWithQuestionsAndAnswers($id);
+    }
+
+    public function createMaterial(array $data, mixed $coverImage = null): Material
     {
         $material = $this->materialRepo->create([
             'title' => $data['title'],
@@ -37,87 +60,102 @@ class MaterialService
         return $material;
     }
 
-    public function updateMaterial(Material $material, array $data, $coverImage = null)
+    public function updateMaterial(int $materialId, array $data, mixed $coverImage = null): Material
     {
+        $material = $this->materialRepo->find($materialId);
+
+        if (! $material) {
+            throw new MaterialNotFoundException($materialId);
+        }
+
         $this->materialRepo->update($material->id, [
             'title' => $data['title'],
-            'content' => $data['content'],
+            'content' => $data['content'] ?? $data['description'] ?? null,
         ]);
 
         if ($coverImage) {
-            // Delete existing cover image if any
             $this->deleteCoverImage($material);
-            
-            // Upload new cover image
             $this->uploadCoverImage($material, $coverImage, $data['title']);
         }
 
-        return $material;
+        return $material->fresh();
     }
 
-    public function deleteMaterial(Material $material)
+    public function deleteMaterial(int $materialId): void
     {
-        foreach($material->media as $media) {
-            $this->removeMediaFile($media->media_url);
-            $media->delete(); 
+        $material = $this->materialRepo->find($materialId);
+
+        if (! $material) {
+            throw new MaterialNotFoundException($materialId);
         }
-                
-        return $this->materialRepo->delete($material->id);
+
+        $mediaFiles = $this->mediaRepo->getByMaterial($material->id);
+
+        foreach ($mediaFiles as $media) {
+            $this->removeMediaFile($media->media_url);
+            $this->mediaRepo->delete($media->id);
+        }
+
+        $this->materialRepo->delete($material->id);
     }
 
-    public function deleteMedia($mediaId)
+    public function deleteMedia(int $mediaId): int
     {
-        $media = Media::findOrFail($mediaId);
+        $media = $this->mediaRepo->find($mediaId);
+
+        if (! $media) {
+            throw new MediaOperationException("Media dengan ID '{$mediaId}' tidak ditemukan.");
+        }
+
         $materialId = $media->material_id;
-        
+
         $this->removeMediaFile($media->media_url);
-        $media->delete();
-        
+        $this->mediaRepo->delete($mediaId);
+
         return $materialId;
     }
 
-    protected function uploadCoverImage($material, $file, $title)
+    protected function uploadCoverImage(Material $material, mixed $file, string $title): void
     {
-        // Simpan file ke direktori images
         $path = $file->store('materials', 'images');
-        
-        Media::create([
+
+        $this->mediaRepo->create([
             'material_id' => $material->id,
             'media_type' => 'image',
             'media_url' => '/images/' . $path,
-            'media_description' => $title . ' - Cover Image'
         ]);
     }
 
-    protected function deleteCoverImage(Material $material)
+    protected function deleteCoverImage(Material $material): void
     {
-        $existingMedia = $material->media()->where('media_type', 'image')->first();
-        
+        $existingMedia = $this->mediaRepo->findByMaterialAndType($material->id, 'image');
+
         if ($existingMedia) {
             $this->removeMediaFile($existingMedia->media_url);
-            $existingMedia->delete();
+            $this->mediaRepo->delete($existingMedia->id);
         }
     }
 
-    protected function removeMediaFile($path)
+    protected function removeMediaFile(string $path): void
     {
         if (str_starts_with($path, '/images/')) {
             $path = str_replace('/images/', '', $path);
+
             if (Storage::disk('images')->exists($path)) {
                 Storage::disk('images')->delete($path);
             }
-        } 
-        elseif (str_starts_with($path, '/storage/')) {
+        } elseif (str_starts_with($path, '/storage/')) {
             $path = str_replace('/storage/', '', $path);
+
             if (Storage::disk('public')->exists($path)) {
                 Storage::disk('public')->delete($path);
             }
         } else {
-             // Handle generic storage path if 'storage/' prefix is present without leading slash
-             $path = str_replace('storage/', '', $path);
-             if (Storage::disk('public')->exists($path)) {
-                 Storage::disk('public')->delete($path);
-             }
+            $path = str_replace('storage/', '', $path);
+
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
         }
     }
 }

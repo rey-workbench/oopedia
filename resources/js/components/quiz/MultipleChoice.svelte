@@ -1,15 +1,15 @@
 <script>
-    import { createEventDispatcher } from "svelte";
     import { HelpCircle, Code, CheckSquare } from "lucide-svelte";
 
-    export let question;
-    export let selectedAnswerId = null;
-
-    const dispatch = createEventDispatcher();
+    let {
+        question,
+        selectedAnswerId = $bindable(null),
+        onselect = (answerId) => {},
+    } = $props();
 
     function handleSelect(answerId) {
         selectedAnswerId = answerId;
-        dispatch("select", { answerId });
+        onselect(answerId);
     }
 </script>
 
@@ -17,7 +17,7 @@
     <h5
         class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2"
     >
-        <HelpCircle size={16} class="text-blue-500" />
+        <HelpCircle size={16} class="text-primary-500" />
         Pertanyaan
     </h5>
     <div
@@ -35,7 +35,7 @@
 <h5
     class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2"
 >
-    <CheckSquare size={16} class="text-indigo-500" />
+    <CheckSquare size={16} class="text-primary-500" />
     Pilih Jawaban
 </h5>
 <div class="grid grid-cols-1 gap-4">
@@ -47,20 +47,20 @@
                 value={answer.id}
                 class="peer hidden"
                 checked={selectedAnswerId === answer.id}
-                on:change={() => handleSelect(answer.id)}
+                onchange={() => handleSelect(answer.id)}
             />
             <div
-                class="p-5 rounded-2xl border-2 border-slate-100 bg-white shadow-sm hover:border-blue-400 hover:bg-blue-50/30 peer-checked:border-blue-600 peer-checked:bg-blue-50 peer-checked:shadow-md peer-checked:shadow-blue-100 flex items-center gap-4 transition-all"
+                class="p-5 rounded-2xl border-2 border-slate-100 bg-white shadow-sm hover:border-primary-400 hover:bg-primary-50/30 peer-checked:border-primary-600 peer-checked:bg-primary-50 peer-checked:shadow-md peer-checked:shadow-primary-900/10 flex items-center gap-4 transition-all"
             >
                 <div
-                    class="w-8 h-8 rounded-full border-2 border-slate-200 group-hover:border-blue-400 peer-checked:border-blue-600 peer-checked:bg-blue-600 flex items-center justify-center shrink-0 transition-all"
+                    class="w-8 h-8 rounded-full border-2 border-slate-200 group-hover:border-primary-400 peer-checked:border-primary-600 peer-checked:bg-primary-600 flex items-center justify-center shrink-0 transition-all"
                 >
                     <div
                         class="w-2.5 h-2.5 rounded-full bg-white opacity-0 peer-checked:opacity-100 transition-opacity"
                     ></div>
                 </div>
                 <div
-                    class="flex-1 text-slate-700 font-bold group-hover:text-blue-900 peer-checked:text-blue-900 transition-colors"
+                    class="flex-1 text-slate-700 font-bold group-hover:text-primary-900 peer-checked:text-primary-900 transition-colors"
                 >
                     {answer.answer_text}
                 </div>

@@ -2,41 +2,35 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Contracts\Services\UserServiceInterface;
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\Auth\RegisterRequest;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Validation\Rules;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class RegisterController extends Controller
 {
-    public function create()
+    public function __construct(
+        protected UserServiceInterface $userService,
+    ) {}
+
+    public function create(): Response
     {
-        return Inertia::render('Auth/Register');
+        return Inertia::render('Auth/Register/Index');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(RegisterRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255', 'regex:/^[\p{L}\'\s]+$/u'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+        $role_id = $request->has('register_as_admin') ? 2 : 3;
+        $is_approved = ($role_id === 3);
 
-        // Tentukan role berdasarkan checkbox
-        $role_id = $request->has('register_as_admin') ? 2 : 3; // 2 untuk admin, 3 untuk mahasiswa
-        
-        // Admin baru perlu approval, mahasiswa langsung approved
-        $is_approved = $role_id == 3;
-
-        $user = User::create([
+        $user = $this->userService->registerUser([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => $request->password,
             'role_id' => $role_id,
             'is_approved' => $is_approved,
         ]);
@@ -45,17 +39,14 @@ class RegisterController extends Controller
 
         Auth::login($user);
 
-        // Jika mendaftar sebagai admin dan belum diapprove, arahkan ke halaman menunggu persetujuan
-        if ($role_id == 2 && !$is_approved) {
+        if ($role_id === 2 && ! $is_approved) {
             return redirect()->route('admin.pending-approval');
         }
 
-        // Arahkan berdasarkan role
-        if ($role_id == 2) {
+        if ($role_id === 2) {
             return redirect()->route('admin.dashboard');
         }
-        
-        // Jika mahasiswa, langsung ke dashboard mahasiswa
+
         return redirect()->route('mahasiswa.dashboard');
     }
-} 
+}

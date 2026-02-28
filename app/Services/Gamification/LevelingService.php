@@ -4,7 +4,7 @@ namespace App\Services\Gamification;
 
 /**
  * LevelingService
- * 
+ *
  * Handles level calculation and leveling logic.
  */
 class LevelingService
@@ -14,9 +14,16 @@ class LevelingService
      */
     public function determineLevel(int $xp): string
     {
-        if ($xp >= 500) return 'Ahli';
-        if ($xp >= 200) return 'Mahir';
-        if ($xp >= 50) return 'Menengah';
+        if ($xp >= 500) {
+            return 'Ahli';
+        }
+        if ($xp >= 200) {
+            return 'Mahir';
+        }
+        if ($xp >= 50) {
+            return 'Menengah';
+        }
+
         return 'Pemula';
     }
 
@@ -42,13 +49,13 @@ class LevelingService
         }
 
         $nextLevel = $levels[$currentIndex + 1] ?? null;
-        
-        if (!$nextLevel) {
+
+        if (! $nextLevel) {
             return [
                 'current_level' => $currentLevel,
                 'next_level' => null,
                 'percentage' => 100,
-                'xp_needed' => 0
+                'xp_needed' => 0,
             ];
         }
 
@@ -61,7 +68,7 @@ class LevelingService
             'current_level' => $currentLevel,
             'next_level' => $nextLevel['name'],
             'percentage' => round(($progressXp / $totalXpNeeded) * 100),
-            'xp_needed' => $nextMin - $xp
+            'xp_needed' => $nextMin - $xp,
         ];
     }
 }

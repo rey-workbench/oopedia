@@ -1,139 +1,238 @@
-<script>
-    import { createEventDispatcher, onMount } from "svelte";
+<script lang="ts">
     import { HelpCircle, List } from "lucide-svelte";
+    import type { Question } from "@/types";
 
-    export let question;
-    export let dragAndDropAnswers = {};
+    let {
+        question,
+        dragAndDropAnswers = $bindable({}),
+    }: {
+        question: Question;
+        dragAndDropAnswers: Record<string, string>;
+    } = $props();
 
-    const dispatch = createEventDispatcher();
+    let hasInlineZones = $state(false);
+    let autoDropZones = $state<number[]>([]);
+    let activeZone = $state<string | null>(null);
 
-    let formattedQuestionText = "";
-    let dropZones = [];
+    let parsedQuestion = $derived.by(() => {
+        if (!question?.question_text)
+            return { text: "", inlineFound: false, count: 0 };
 
-    // Parse [zone] tags in question text
-    $: {
-        if (question && question.question_text) {
-            let zoneIndex = 0;
-            let rawText = question.question_text
-                .replace(/<p>/g, "")
-                .replace(/<\/p>/g, "\n")
-                .replace(/<br>/g, "\n");
+        let zoneIndex = 0;
+        let inlineFound = false;
+        let rawText = question.question_text
+            .replace(/<p>/g, "")
+            .replace(/<\/p>/g, "\n")
+            .replace(/<br>/g, "\n");
 
-            formattedQuestionText = rawText.replace(/\[zone\]/g, () => {
-                zoneIndex++;
-                const currentZoneId = zoneIndex;
-                const currentAnswer = dragAndDropAnswers[currentZoneId] || "";
+        const text = rawText.replace(/\[zone\]/g, () => {
+            inlineFound = true;
+            zoneIndex++;
+            const currentZoneId = zoneIndex.toString();
+            const currentAnswer = dragAndDropAnswers[currentZoneId] || "...";
+            const isActive = activeZone === currentZoneId;
+            const extraClass = isActive
+                ? "bg-primary-100 border-primary-600 scale-[1.05] ring-2 ring-primary-300"
+                : "bg-white border-primary-300 hover:bg-primary-50";
 
-                // Return placeholder for Svelte to hydrate or handle via raw HTML replacement
-                // Note: Svelte @html doesn't easily bind events to inner HTML elements.
-                // We might need a different approach or manual event delegation.
-                // For simplicity, we'll use a data-attribute approach and delegate events on the container.
-                return `<span class="drop-zone inline-block min-w-[80px] h-8 border-b-2 border-slate-400 mx-1 align-middle text-center text-blue-600 font-bold bg-slate-100 rounded px-2" data-zone="${currentZoneId}">${currentAnswer}</span>`;
-            });
+            return `<span class="drop-zone inline-flex min-w-[120px] h-9 border-b-2 mx-1 items-center justify-center text-primary-600 font-bold rounded-md px-3 shadow-sm transition-all duration-200 cursor-pointer ${extraClass}" data-zone="${currentZoneId}">${currentAnswer}</span>`;
+        });
 
-            // Update dropZones based on count
-            dropZones = Array.from({ length: zoneIndex }, (_, i) => i + 1);
+        return { text, inlineFound, count: zoneIndex };
+    });
+
+    $effect(() => {
+        hasInlineZones = parsedQuestion.inlineFound;
+        if (!hasInlineZones) {
+            const count = Array.isArray(question?.answers)
+                ? question.answers.length
+                : 0;
+            autoDropZones = Array.from({ length: count }, (_, i) => i + 1);
+        } else {
+            autoDropZones = [];
         }
-    }
+    });
 
-    function handleDragStart(event, answerText) {
+    function handleDragStart(event: DragEvent, answerText: string) {
+        if (!event.dataTransfer) return;
         event.dataTransfer.setData("text/plain", answerText);
-        event.dataTransfer.effectAllowed = "copy";
-    }
+        event.dataTransfer.effectAllowed = "move";
 
-    function handleDragOver(event) {
-        event.preventDefault();
-        event.dataTransfer.dropEffect = "copy";
-        if (event.target.classList.contains("drop-zone")) {
-            event.target.classList.add("bg-blue-100", "border-blue-500");
+        // Add ghost effect to dragged item
+        if (event.target instanceof HTMLElement) {
+            const el = event.target;
+            setTimeout(() => el.classList.add("opacity-30", "scale-95"), 0);
         }
     }
 
-    function handleDragLeave(event) {
-        if (event.target.classList.contains("drop-zone")) {
-            event.target.classList.remove("bg-blue-100", "border-blue-500");
+    function handleDragEnd(event: DragEvent) {
+        if (event.target instanceof HTMLElement) {
+            event.target.classList.remove("opacity-30", "scale-95");
+        }
+        activeZone = null;
+    }
+
+    function handleDragOver(event: DragEvent) {
+        event.preventDefault();
+        if (event.dataTransfer) event.dataTransfer.dropEffect = "move";
+
+        const target = event.target as HTMLElement;
+        const zone = target.closest(".drop-zone") as HTMLElement;
+        if (zone) {
+            activeZone = zone.dataset.zone || null;
+        } else {
+            activeZone = null;
         }
     }
 
-    function handleDrop(event) {
+    function handleDragLeave(event: DragEvent) {
+        const target = event.target as HTMLElement;
+        const zone = target.closest(".drop-zone") as HTMLElement;
+        if (zone && activeZone === zone.dataset.zone) {
+            activeZone = null;
+        }
+    }
+
+    function handleDrop(event: DragEvent) {
         event.preventDefault();
-        if (event.target.classList.contains("drop-zone")) {
-            event.target.classList.remove("bg-blue-100", "border-blue-500");
+        const target = event.target as HTMLElement;
+        const zone = target.closest(".drop-zone") as HTMLElement;
+
+        if (zone && event.dataTransfer) {
             const answerText = event.dataTransfer.getData("text/plain");
-            const zoneId = event.target.dataset.zone;
-
-            // Update state
-            dragAndDropAnswers = {
-                ...dragAndDropAnswers,
-                [zoneId]: answerText,
-            };
-
-            // Dispatch update
-            dispatch("update", { answers: dragAndDropAnswers });
+            const zoneId = zone.dataset.zone;
+            if (zoneId) {
+                dragAndDropAnswers = {
+                    ...dragAndDropAnswers,
+                    [zoneId]: answerText,
+                };
+            }
         }
+        activeZone = null;
     }
 
-    // For clearing a zone on click (optional user experience improvement)
-    function handleZoneClick(event) {
-        if (event.target.classList.contains("drop-zone")) {
-            const zoneId = event.target.dataset.zone;
-            if (dragAndDropAnswers[zoneId]) {
+    function handleZoneClick(event: MouseEvent) {
+        const target = event.target as HTMLElement;
+        const zone = target.closest(".drop-zone") as HTMLElement;
+        if (zone) {
+            const zoneId = zone.dataset.zone;
+            if (zoneId && dragAndDropAnswers[zoneId]) {
                 const newAnswers = { ...dragAndDropAnswers };
                 delete newAnswers[zoneId];
                 dragAndDropAnswers = newAnswers;
-                dispatch("update", { answers: dragAndDropAnswers });
             }
         }
     }
 </script>
 
-<div class="question-content">
-    <h5 class="mb-2 font-semibold flex items-center">
-        <HelpCircle size={18} class="mr-2" />Pertanyaan
-    </h5>
+<div class="question-content space-y-8">
+    <div class="space-y-4">
+        <h5
+            class="text-sm font-bold uppercase tracking-widest text-slate-400 flex items-center"
+        >
+            <HelpCircle size={14} class="mr-2" /> Pertanyaan
+        </h5>
 
-    <!-- Container for the question text with drop zones -->
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <div
-        class="question-html font-mono bg-slate-50 p-4 rounded-lg border border-slate-200 whitespace-pre-wrap leading-loose"
-        on:dragover={handleDragOver}
-        on:dragleave={handleDragLeave}
-        on:drop={handleDrop}
-        on:click={handleZoneClick}
-    >
-        {@html formattedQuestionText}
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <!-- svelte-ignore a11y_no_static_element_interactions -->
+        <div
+            class="question-html font-medium text-slate-800 bg-slate-50 p-6 rounded-2xl border border-slate-200 leading-loose transition-all"
+            ondragover={handleDragOver}
+            ondragleave={handleDragLeave}
+            ondrop={handleDrop}
+            onclick={handleZoneClick}
+        >
+            {@html parsedQuestion.text}
+
+            {#if !hasInlineZones && autoDropZones.length > 0}
+                <div class="mt-8 space-y-3">
+                    <p
+                        class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-2"
+                    >
+                        Urutan Jawaban:
+                    </p>
+                    {#each autoDropZones as zoneId (zoneId)}
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-black text-slate-500"
+                            >
+                                {zoneId}
+                            </div>
+                            <div
+                                class="drop-zone flex-1 min-h-[50px] border-2 border-dashed rounded-xl flex items-center px-4 text-primary-600 font-bold shadow-inner transition-all duration-200 cursor-pointer {activeZone ===
+                                zoneId.toString()
+                                    ? 'bg-primary-50 border-primary-500 scale-[1.01]'
+                                    : 'bg-white border-slate-200 hover:border-primary-300'}"
+                                data-zone={zoneId}
+                            >
+                                {#if dragAndDropAnswers[zoneId.toString()]}
+                                    <div
+                                        class="flex items-center justify-between w-full"
+                                    >
+                                        <span class="text-base"
+                                            >{dragAndDropAnswers[
+                                                zoneId.toString()
+                                            ]}</span
+                                        >
+                                        <span
+                                            class="text-[10px] text-slate-400 italic bg-slate-100 px-2 py-1 rounded-md"
+                                            >Klik untuk hapus</span
+                                        >
+                                    </div>
+                                {:else}
+                                    <span
+                                        class="text-slate-300 font-medium text-sm italic"
+                                        >Letakkan jawaban di sini...</span
+                                    >
+                                {/if}
+                            </div>
+                        </div>
+                    {/each}
+                </div>
+            {/if}
+        </div>
     </div>
 
-    <input
-        type="hidden"
-        name="drag_and_drop_answers"
-        value={JSON.stringify(dragAndDropAnswers)}
-    />
-
-    <h5
-        class="mt-6 mb-3 text-lg font-semibold text-slate-800 flex items-center"
-    >
-        <List size={20} class="mr-2" />Pilihan Jawaban
-    </h5>
-    <p class="text-xs text-slate-500 mb-2">
-        Geser jawaban ke bagian kosong yang sesuai. Klik pada jawaban yang sudah
-        terisi untuk menghapus.
-    </p>
-
-    <div class="drag-items flex flex-wrap gap-3 mt-2">
-        {#each question.answers as answer (answer.id)}
-            <div
-                class="draggable px-4 py-2 bg-white border-2 border-blue-200 text-blue-600 rounded-lg font-medium cursor-grab active:cursor-grabbing hover:bg-blue-50 hover:border-blue-400 transition-all shadow-sm select-none"
-                draggable="true"
-                role="button"
-                tabindex="0"
-                on:dragstart={(e) => handleDragStart(e, answer.answer_text)}
-                on:keydown={(e) =>
-                    e.key === "Enter" && handleDragStart(e, answer.answer_text)}
+    <div class="space-y-4">
+        <div
+            class="flex items-center justify-between bg-primary-50/50 p-3 rounded-xl"
+        >
+            <h5
+                class="text-sm font-bold uppercase tracking-widest text-primary-700 flex items-center"
             >
-                {answer.answer_text}
-            </div>
-        {/each}
+                <List size={16} class="mr-2" /> Pilihan Jawaban
+            </h5>
+            <span
+                class="text-xs font-semibold text-primary-500/80 bg-primary-100 px-3 py-1 rounded-full"
+            >
+                Tahan & Geser (Drag Drop)
+            </span>
+        </div>
+
+        <div class="drag-items flex flex-wrap gap-3 p-2">
+            {#each question.answers as answer (answer.id)}
+                {@const isUsed = Object.values(dragAndDropAnswers).includes(
+                    answer.answer_text,
+                )}
+                <div
+                    class="draggable px-6 py-3.5 rounded-xl font-bold text-sm transition-all duration-200 shadow-sm select-none border-2 flex items-center gap-2
+                    {isUsed
+                        ? 'bg-slate-50 border-slate-200 text-slate-300 cursor-not-allowed opacity-50 shadow-none'
+                        : 'bg-white border-primary-200 text-primary-700 cursor-grab active:cursor-grabbing hover:border-primary-500 hover:shadow-md hover:-translate-y-0.5'}"
+                    draggable={!isUsed}
+                    role="listitem"
+                    ondragstart={(e) =>
+                        !isUsed && handleDragStart(e, answer.answer_text)}
+                    ondragend={handleDragEnd}
+                >
+                    {#if !isUsed}
+                        <div
+                            class="w-2 h-2 rounded-full bg-primary-500 animate-pulse"
+                        ></div>
+                    {/if}
+                    {answer.answer_text}
+                </div>
+            {/each}
+        </div>
     </div>
 </div>

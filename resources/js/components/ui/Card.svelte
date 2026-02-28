@@ -1,4 +1,4 @@
-<script>
+<script  lang="ts">
     export let variant = "default";
     export let shadow = true;
     export let hover = true;
@@ -10,13 +10,21 @@
         "rounded-2xl transition-all duration-300 overflow-hidden";
 
     $: variantClasses =
-        variant === "glass" ? "glass" : "bg-white border border-slate-100";
+        variant === "none"
+            ? ""
+            : variant === "glass"
+              ? "glass"
+              : "bg-white border border-slate-100";
     $: shadowClasses = shadow
-        ? variant === "glass"
-            ? "shadow-premium"
-            : "shadow-soft"
+        ? variant === "none"
+            ? ""
+            : variant === "glass"
+              ? "shadow-premium"
+              : "shadow-soft"
         : "";
-    $: hoverClasses = hover ? "hover:shadow-premium hover:-translate-y-1" : "";
+    $: hoverClasses = hover
+        ? "hover:shadow-premium hover:shadow-accent-950/10 hover:-translate-y-1"
+        : "";
     $: classes = `${baseClasses} ${variantClasses} ${shadowClasses} ${hoverClasses} ${className}`;
 </script>
 

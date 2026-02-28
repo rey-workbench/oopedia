@@ -2,131 +2,88 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Contracts\Services\UserServiceInterface;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Str;
-use Illuminate\Auth\Events\PasswordReset;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cookie;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class LoginController extends Controller
 {
-    public function create()
+    public function __construct(
+        protected UserServiceInterface $userService,
+    ) {}
+
+    public function create(): Response
     {
-        return Inertia::render('Auth/Login');
+        return Inertia::render('Auth/Login/Index');
     }
 
-    public function store(Request $request)
+    public function store(LoginRequest $request): RedirectResponse
     {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
-
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            $user = Auth::user();
-            
-            // Refresh user data dari database
-            $user = User::find($user->id);
-            
-            // Cek role dan status approval
-            if ($user->role_id == 1) {
-                // Superadmin
-                return redirect()->intended('admin/dashboard');
-            } else if ($user->role_id == 2) {
-                // Admin
-                if ($user->is_approved) {
-                    return redirect()->intended('admin/dashboard');
-                } else {
-                    return redirect()->route('admin.pending-approval');
-                }
-            } else if ($user->role_id == 3) {
-                // Mahasiswa
-                return redirect()->intended('mahasiswa/dashboard');
-            } else {
-                // Tamu (role_id = 4)
-                return redirect()->intended('mahasiswa/materials');
+        // Handle Guest Login
+        if ($request->has('is_guest')) {
+            if (Auth::check()) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
             }
+            return redirect()->route('mahasiswa.materials.index');
         }
 
-        return back()->withErrors([
-            'email' => 'Email atau password salah',
-        ])->onlyInput('email');
+        // Handle Standard Login
+        $credentials = $request->only('email', 'password');
+
+        if (! Auth::attempt($credentials)) {
+            return back()->withErrors([
+                'email' => 'Email atau password salah',
+            ])->onlyInput('email');
+        }
+
+        $request->session()->regenerate();
+        $user = $this->userService->getUserById(Auth::id());
+
+        $clearGuest = Cookie::forget('is_guest');
+        $clearProgress = Cookie::forget('guest_progress');
+
+        return match (true) {
+            $user->role_id == 1 => redirect()->intended('admin/dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
+            $user->role_id == 2 && $user->is_approved => redirect()->intended('admin/dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
+            $user->role_id == 2 => redirect()->route('admin.pending-approval')->withCookie($clearGuest)->withCookie($clearProgress),
+            $user->role_id == 3 => redirect()->intended('mahasiswa/dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
+            default => redirect()->intended('mahasiswa/materials')->withCookie($clearGuest)->withCookie($clearProgress),
+        };
     }
 
-    public function show()
+    public function logout(Request $request): RedirectResponse
     {
-        request()->validate([
-            'email' => 'required|email',
-        ]);
+        Auth::logout();
 
-        $status = Password::sendResetLink(
-            request()->only('email')
-        );
+        $request->session()->invalidate();
 
-        return $status === Password::RESET_LINK_SENT
-                    ? back()->with(['status' => __($status)])
-                    : back()->withErrors(['email' => __($status)]);
+        $request->session()->regenerateToken();
+
+        return redirect('/');
     }
 
-    public function update()
-    {
-        request()->validate([
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|min:8|confirmed',
-        ]); 
-        
-        $status = Password::reset(
-            request()->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user, $password) {
-                $user->forceFill([
-                    'password' => ($password)
-                ])->setRememberToken(Str::random(60));
-
-                $user->save();
-
-                event(new PasswordReset($user));
-            }
-        );
-
-        return $status === Password::PASSWORD_RESET
-                    ? redirect()->route('login')->with('status', __($status))
-                    : back()->withErrors(['email' => [__($status)]]);
-    }
-    public function index()
+    public function home(): RedirectResponse
     {
         if (Auth::check()) {
             $user = Auth::user();
-            
-            if ($user->role_id <= 2) {
-                return redirect()->route('admin.dashboard');
-            } else if ($user->role_id == 3) {
-                return redirect()->route('mahasiswa.dashboard');
-            }
-        }
-        
-        // Unauthenticated users are treated as guests
-        return redirect()->route('mahasiswa.materials.index');
-    }
 
-    public function fallback()
-    {
-        if (Auth::check()) {
-            $user = Auth::user();
-            
             if ($user->role_id <= 2) {
                 return redirect()->route('admin.dashboard');
-            } else if ($user->role_id == 3) {
+            }
+
+            if ($user->role_id == 3) {
                 return redirect()->route('mahasiswa.dashboard');
             }
         }
-        
-        // Guest users or unauthenticated users fall back to materials
+
         return redirect()->route('mahasiswa.materials.index');
     }
-} 
+}

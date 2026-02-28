@@ -14,6 +14,7 @@ class CreateUsersTable extends Migration
             $table->string('email', 100)->unique();
             $table->string('password', 255);
             $table->tinyInteger('role_id')->unsigned();
+            $table->boolean('is_approved')->default(true);
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

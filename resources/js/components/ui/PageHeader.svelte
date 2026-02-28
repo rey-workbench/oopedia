@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
     export let title = "";
-    export let subtitle = null;
+    export let subtitle: string | null = null;
     export let centered = false;
     let className = "";
     export { className as class };
@@ -19,7 +19,7 @@
         class="flex items-center gap-2 mt-3 {centered ? 'justify-center' : ''}"
         role="presentation"
     >
-        <div class="h-1.5 w-12 bg-blue-600 rounded-full"></div>
+        <div class="h-1.5 w-12 bg-primary-600 rounded-full"></div>
         <div class="h-1.5 w-4 bg-slate-200 rounded-full"></div>
         <div class="h-1.5 w-2 bg-slate-100 rounded-full"></div>
     </div>

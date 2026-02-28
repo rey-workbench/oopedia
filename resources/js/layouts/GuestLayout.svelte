@@ -1,7 +1,8 @@
 <script>
     import { onMount } from "svelte";
     import { page } from "@inertiajs/svelte";
-    import Alert from "../components/ui/Alert.svelte";
+    import Alert from "@/components/ui/Alert.svelte";
+    import { ROUTES } from "@/utils/route";
 
     export let title;
 
@@ -46,10 +47,10 @@
     <!-- Decorative Background -->
     <div class="absolute top-0 left-0 w-full h-full pointer-events-none">
         <div
-            class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/5 rounded-full blur-[120px]"
+            class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-600/5 rounded-full blur-[120px]"
         ></div>
         <div
-            class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/5 rounded-full blur-[120px]"
+            class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary-600/5 rounded-full blur-[120px]"
         ></div>
     </div>
 
@@ -58,7 +59,7 @@
     >
         <!-- Logo -->
         <div class="flex flex-col items-center mb-10">
-            <a href="/" class="flex items-center gap-4 group">
+            <a href={ROUTES.HOME} class="flex items-center gap-4 group">
                 <div
                     class="w-16 h-16 bg-white rounded-[2rem] flex items-center justify-center shadow-2xl shadow-slate-200 group-hover:rotate-12 transition-transform duration-500"
                 >

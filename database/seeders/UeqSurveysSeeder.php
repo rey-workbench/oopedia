@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\UeqSurvey;
+use Illuminate\Database\Seeder;
 
 class UeqSurveysSeeder extends Seeder
 {
@@ -81,7 +81,7 @@ class UeqSurveysSeeder extends Seeder
         foreach ($surveys as $survey) {
             UeqSurvey::firstOrCreate(
                 ['user_id' => $survey['user_id']],
-                $survey
+                $survey,
             );
         }
     }

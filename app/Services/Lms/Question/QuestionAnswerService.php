@@ -2,28 +2,23 @@
 
 namespace App\Services\Lms\Question;
 
-use App\Repositories\QuestionRepository;
-use App\Repositories\AnswerRepository;
-use App\Repositories\ProgressRepository;
+use App\Contracts\Repositories\AnswerRepositoryInterface;
+use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Contracts\Repositories\QuestionRepositoryInterface;
+use App\Contracts\Services\QuestionAnswerServiceInterface;
+use App\Models\Question;
 use Illuminate\Support\Facades\Log;
 
-class QuestionAnswerService
+class QuestionAnswerService implements QuestionAnswerServiceInterface
 {
-    protected $questionRepo;
-    protected $answerRepo;
-    protected $progressRepo;
-
     public function __construct(
-        QuestionRepository $questionRepo,
-        AnswerRepository $answerRepo,
-        ProgressRepository $progressRepo
-    ) {
-        $this->questionRepo = $questionRepo;
-        $this->answerRepo = $answerRepo;
-        $this->progressRepo = $progressRepo;
-    }
+        protected QuestionRepositoryInterface $questionRepo,
+        protected AnswerRepositoryInterface $answerRepo,
+        protected ProgressRepositoryInterface $progressRepo,
+    ) {}
 
-    public function checkAnswer($data, $userId, $isGuest)
+    /** @return array<string, mixed> */
+    public function checkAnswer(array $data, int|string $userId, bool $isGuest): array
     {
         $question = $this->questionRepo->find($data['question_id']);
         $isCorrect = false;
@@ -40,11 +35,11 @@ class QuestionAnswerService
             $correctAnswerText = $correctAnswers->first()->answer_text ?? null;
         } else {
             // Multiple choice / Radio button
-            if (!isset($data['answer']) && $question->question_type !== 'drag_and_drop') {
+            if (! isset($data['answer']) && $question->question_type !== 'drag_and_drop') {
                 return [
                     'status' => 'error',
                     'message' => 'Pilih salah satu jawaban.',
-                    'http_code' => 422
+                    'http_code' => 422,
                 ];
             }
 
@@ -60,64 +55,138 @@ class QuestionAnswerService
             $explanation = $correctAnswers->first()->explanation ?? null;
         }
 
-        // Save progress
+        // Gamification & Progress
+        $guestStateData = null;
+        $score = 0;
+        $xpEarned = 0;
+
         if ($isGuest) {
+            // Calculate Score
+            $difficulty = $data['difficulty'] ?? 'beginner';
+            $baseScore = 80; // Standard base
+            $score = $isCorrect ? $baseScore : 0;
+
+            // Guest Gamification (Session-based)
+            $currentXp = session('guest_xp', 0);
+            $currentStreak = session('guest_streak', 0);
+
+            if ($isCorrect) {
+                // XP Logic
+                $baseXp = match ($difficulty) {
+                    'medium' => 20,
+                    'hard' => 30,
+                    default => 10,
+                };
+
+                // Streak Logic
+                $currentStreak++;
+                $streakBonus = 0;
+                if ($currentStreak >= 10) {
+                    $streakBonus = 20;
+                } elseif ($currentStreak >= 5) {
+                    $streakBonus = 10;
+                } elseif ($currentStreak >= 3) {
+                    $streakBonus = 5;
+                }
+
+                $xpEarned = $baseXp + $streakBonus;
+                $currentXp += $xpEarned;
+            } else {
+                $currentStreak = 0;
+            }
+
+            // Save to Session
+            session(['guest_xp' => $currentXp]);
+            session(['guest_streak' => $currentStreak]);
+
+            // Save Progress
             $this->saveGuestProgress($data, $isCorrect, $question->id);
+
+            // Construct State for Frontend
+            $guestStateData = [
+                'gamification' => [
+                    'global_xp' => $currentXp,
+                    'current_streak' => $currentStreak,
+                    'current_level' => 'Tamu',
+                    'badges' => [],
+                ],
+                'performance' => [
+                    'hints_available' => 3, // Static for guests
+                    'total_questions_answered' => count(session('guest_progress', [])),
+                ],
+                // Mock adaptive state to prevent frontend errors
+                'adaptive_state' => [
+                    'last_action' => 'NEXT_QUESTION',
+                    'message' => $isCorrect ? 'Benar!' : 'Salah, tetap semangat!',
+                ],
+            ];
         } else {
             $this->saveAuthenticatedProgress($data, $userId, $isCorrect, $question);
+            // Score for auth users is calculated in controller/Service usually,
+            // but if this path is taken, default strictly.
+            $score = $isCorrect ? 100 : 0;
         }
 
-        // Build response
-        if ($isCorrect && $isGuest) {
-            return [
-                'status' => 'success',
-                'message' => 'Jawaban Benar!',
-                'selectedAnswerText' => $selectedAnswerText ?? null,
-                'correctAnswerText' => $correctAnswerText ?? null,
-                'explanation' => $explanation ?? null,
-                'redirect_url' => route('mahasiswa.materials.questions.levels', [
-                    'material' => $data['material_id'],
-                    'difficulty' => $data['difficulty'] ?? null
-                ])
-            ];
-        } else {
-            return [
-                'status' => $isCorrect ? 'success' : 'error',
-                'message' => $isCorrect ? 'Jawaban Benar!' : 'Jawaban Salah',
-                'selectedAnswerText' => $selectedAnswerText,
-                'correctAnswerText' => $correctAnswerText,
-                'explanation' => $explanation,
-                'hasNextQuestion' => true,
-                'nextUrl' => null
-            ];
-        }
+        // Unified Response Structure
+        return [
+            'status' => $isCorrect ? 'success' : 'error',
+            'message' => $isCorrect ? 'Jawaban Benar!' : 'Jawaban Salah',
+            'score' => $score,
+            'selectedAnswerText' => $selectedAnswerText,
+            'correctAnswerText' => $correctAnswerText,
+            'explanation' => $explanation,
+            'hasNextQuestion' => true,
+            'nextUrl' => route('mahasiswa.materials.questions.levels', [
+                'material' => $data['material_id'],
+                'difficulty' => $data['difficulty'] ?? 'beginner', // Default to prevent null
+            ]),
+            'adaptiveResult' => [
+                'facts' => [],
+                'triggered_rule' => null,
+                'global_xp_earned' => $xpEarned,
+                'new_state' => $guestStateData,
+            ],
+        ];
     }
 
-    protected function saveAuthenticatedProgress($data, $userId, $isCorrect, $question)
+    protected function saveAuthenticatedProgress(array $data, int|string $userId, bool $isCorrect, Question $question): void
     {
         $attemptsCount = $this->progressRepo->getAttemptCount(
             $userId,
             $data['material_id'],
-            $question->id
+            $question->id,
         );
 
         $attemptNumber = $attemptsCount > 0 ? $attemptsCount + 1 : 1;
 
+        // Handle answer_id vs user_response based on question type
+        $answerId = null;
+        $userResponse = null;
+
+        if ($question->question_type === 'multiple_choice' || $question->question_type === 'radio_button') {
+            $answerId = $data['answer'] ?? null;
+        } elseif ($question->question_type === 'fill_in_the_blank') {
+            $userResponse = $data['fill_in_the_blank_answer'] ?? null;
+        } elseif ($question->question_type === 'drag_and_drop') {
+            $userResponse = $data['drag_and_drop_answers'] ?? null;
+        }
+
         $this->progressRepo->saveProgress([
             'user_id' => $userId,
-            'material_id' => $data['material_id'], 
+            'material_id' => $data['material_id'],
             'question_id' => $question->id,
-            'answer_id' => $data['answer'] ?? null,
+            'answer_id' => $answerId,
+            'user_response' => $userResponse,
             'is_correct' => $isCorrect,
             'is_answered' => true,
-            'attempt_number' => $attemptNumber
+            'attempt_number' => $attemptNumber,
         ]);
 
         Log::info("User {$userId} answered question {$question->id}, attempt {$attemptNumber}, " .
             "difficulty: {$question->difficulty}, result: " . ($isCorrect ? 'CORRECT' : 'INCORRECT'));
     }
 
-    protected function saveGuestProgress($data, $isCorrect, $questionId)
+    protected function saveGuestProgress(array $data, bool $isCorrect, int $questionId): void
     {
         $sessionKey = 'guest_progress';
         $guestProgress = session($sessionKey, []);
@@ -126,32 +195,33 @@ class QuestionAnswerService
         $guestProgress[$progressKey] = [
             'is_correct' => $isCorrect,
             'attempt_number' => isset($guestProgress[$progressKey])
-                ? $guestProgress[$progressKey]['attempt_number'] + 1
-                : 1
+            ? $guestProgress[$progressKey]['attempt_number'] + 1
+            : 1,
         ];
 
         session([$sessionKey => $guestProgress]);
 
         if ($isCorrect) {
-            if (!session()->has('guest_progress')) {
+            if (! session()->has('guest_progress')) {
                 session(['guest_progress' => []]);
             }
 
-            if (!session()->has('guest_progress.' . $data['material_id'])) {
+            if (! session()->has('guest_progress.' . $data['material_id'])) {
                 session(['guest_progress.' . $data['material_id'] => []]);
             }
 
             $currentProgress = session('guest_progress.' . $data['material_id'], []);
             $currentProgress[$questionId] = [
                 'is_correct' => true,
-                'answered_at' => now()->toDateTimeString()
+                'answered_at' => now()->toDateTimeString(),
             ];
 
             session(['guest_progress.' . $data['material_id'] => $currentProgress]);
         }
     }
 
-    public function checkAllAnswers($data, $userId)
+    /** @return array<string, mixed> */
+    public function checkAllAnswers(array $data, int|string $userId): array
     {
         $materialId = $data['material_id'];
         $answers = $data['answers'];
@@ -172,14 +242,14 @@ class QuestionAnswerService
             $this->progressRepo->updateOrCreateProgress(
                 [
                     'user_id' => $userId,
-                    'material_id' => $materialId, 
-                    'question_id' => $questionId
+                    'material_id' => $materialId,
+                    'question_id' => $questionId,
                 ],
                 [
                     'is_correct' => $isCorrect,
                     'is_answered' => true,
-                    'attempt_number' => $attemptNumber
-                ]
+                    'attempt_number' => $attemptNumber,
+                ],
             );
 
             if ($isCorrect) {
@@ -192,7 +262,7 @@ class QuestionAnswerService
                 'selected_answer' => $selectedAnswer ? $selectedAnswer->answer_text : null,
                 'correct_answer' => $isCorrect ? null : ($correctAnswer->answer_text ?? null),
                 'explanation' => $correctAnswer->explanation ?? null,
-                'selected_explanation' => $selectedAnswer ? $selectedAnswer->explanation : null
+                'selected_explanation' => $selectedAnswer ? $selectedAnswer->explanation : null,
             ];
         }
 
@@ -205,28 +275,32 @@ class QuestionAnswerService
             'results' => $results,
             'correctAnswers' => $correctAnswers,
             'totalQuestions' => $totalQuestions,
-            'nextUrl' => route('mahasiswa.dashboard')
+            'nextUrl' => route('mahasiswa.dashboard'),
         ];
     }
 
     /**
      * Determine if the provided answer data is correct for the given question.
      */
-    public function determineCorrectness($question, array $data): bool
+    public function determineCorrectness(Question $question, array $data): bool
     {
         if ($question->question_type === 'multiple_choice' || $question->question_type === 'radio_button') {
-            if (!isset($data['answer'])) return false;
-            
+            if (! isset($data['answer'])) {
+                return false;
+            }
+
             $selectedAnswer = $question->answers()
                 ->where('id', $data['answer'])
                 ->first();
-                
+
             return $selectedAnswer && $selectedAnswer->is_correct;
-        } 
-        
+        }
+
         if ($question->question_type === 'fill_in_the_blank') {
             $answer = trim(strtolower($data['fill_in_the_blank_answer'] ?? ''));
-            if (empty($answer)) return false;
+            if (empty($answer)) {
+                return false;
+            }
 
             return $question->answers()
                 ->where('is_correct', true)
@@ -234,11 +308,34 @@ class QuestionAnswerService
                 ->contains(function ($ans) use ($answer) {
                     return trim(strtolower($ans->answer_text)) === $answer;
                 });
-        } 
-        
+        }
+
         if ($question->question_type === 'drag_and_drop') {
-            // Placeholder for drag and drop logic
-            return false;
+            $userAnswersStr = $data['drag_and_drop_answers'] ?? '[]';
+            // It might come as a JSON string or already an array depending on how it's passed
+            $userAnswers = is_array($userAnswersStr) ? $userAnswersStr : json_decode($userAnswersStr, true);
+
+            if (empty($userAnswers)) {
+                return false;
+            }
+
+            $correctAnswers = $question->answers()->whereNotNull('drag_target')->get();
+            if ($correctAnswers->isEmpty()) {
+                return false;
+            }
+
+            foreach ($correctAnswers as $correctAns) {
+                $targetPos = $correctAns->drag_target;
+                // Check if user placed this answer text at the target position
+                $userValue = $userAnswers[$targetPos] ?? null;
+
+                // Compare values (trimming whitespace)
+                if (trim($userValue ?? '') !== trim($correctAns->answer_text)) {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         return false;

@@ -11,7 +11,8 @@ class CreateMaterialsTable extends Migration
         Schema::create('materials', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
-            $table->text('content');
+            $table->longText('content');
+            $table->integer('module_id')->nullable();
             $table->bigInteger('created_by')->unsigned();
             $table->timestamps();
         });

@@ -13,6 +13,9 @@ class CreateQuestionsTable extends Migration
             $table->bigInteger('material_id')->unsigned();
             $table->text('question_text');
             $table->enum('question_type', ['radio_button', 'drag_and_drop', 'fill_in_the_blank']);
+            $table->enum('type', ['teori', 'sintaks', 'mixed'])->default('teori');
+            $table->enum('difficulty', ['beginner', 'medium', 'hard'])->default('beginner');
+            $table->text('hint')->nullable();
             $table->bigInteger('created_by')->unsigned();
             $table->timestamps();
 

@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class DosenSeeder extends Seeder
@@ -15,18 +15,18 @@ class DosenSeeder extends Seeder
             [
                 'name' => 'Dr. Ahmad',
                 'email' => 'ahmad@dosen.com',
-                'password' => 'dosen123'
+                'password' => 'dosen123',
             ],
             [
                 'name' => 'Prof. Sarah',
                 'email' => 'sarah@dosen.com',
-                'password' => 'dosen123'
+                'password' => 'dosen123',
             ],
             [
                 'name' => 'Dr. Budi',
                 'email' => 'budi@dosen.com',
-                'password' => 'dosen123'
-            ]
+                'password' => 'dosen123',
+            ],
         ];
 
         foreach ($dosenList as $dosen) {
@@ -36,9 +36,9 @@ class DosenSeeder extends Seeder
                     'name' => $dosen['name'],
                     'password' => Hash::make($dosen['password']),
                     'role_id' => 2,
-                    'is_approved' => true
-                ]
+                    'is_approved' => true,
+                ],
             );
         }
     }
-} 
+}

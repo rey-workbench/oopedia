@@ -2,57 +2,49 @@
 
 namespace App\Http\Controllers\Mahasiswa;
 
+use App\Contracts\Services\DashboardServiceInterface;
+use App\Contracts\Services\LeaderboardServiceInterface;
 use App\Http\Controllers\Controller;
-use App\Services\Analytics\DashboardService;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class DashboardController extends Controller
 {
-    protected $dashboardService;
+    public function __construct(
+        protected DashboardServiceInterface $dashboardService,
+        protected LeaderboardServiceInterface $leaderboardService,
+    ) {}
 
-    public function __construct(DashboardService $dashboardService)
+    public function index(): Response
     {
-        $this->dashboardService = $dashboardService;
-    }
-
-    public function index()
-    {
-        $userId = auth()->id();
-        $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4);
-
-        $data = $this->dashboardService->getDashboardIndexData($userId, $isGuest);
+        $data = $this->dashboardService->getDashboardIndexData(Auth::id(), $this->isGuest());
 
         return Inertia::render('Mahasiswa/Dashboard/Index', $data);
     }
 
-    public function inProgress()
+    public function inProgress(): Response
     {
-        $userId = auth()->id();
-        $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4);
+        $materialsWithStats = $this->dashboardService->getInProgressData(Auth::id(), $this->isGuest());
 
-        $materialsWithStats = $this->dashboardService->getInProgressData($userId, $isGuest);
-
-        return Inertia::render('Mahasiswa/Dashboard/InProgress', [
-            'materialsWithStats' => $materialsWithStats
+        return Inertia::render('Mahasiswa/Dashboard/InProgress/Index', [
+            'materialsWithStats' => $materialsWithStats,
         ]);
     }
 
-    public function complete()
+    public function complete(): Response
     {
-        $userId = auth()->id();
-        $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4);
+        $materialsWithStats = $this->dashboardService->getCompletedData(Auth::id(), $this->isGuest());
 
-        $materialsWithStats = $this->dashboardService->getCompletedData($userId, $isGuest);
-
-        return Inertia::render('Mahasiswa/Dashboard/Completed', [
-            'materialsWithStats' => $materialsWithStats
+        return Inertia::render('Mahasiswa/Dashboard/Completed/Index', [
+            'materialsWithStats' => $materialsWithStats,
         ]);
     }
 
-    public function completed()
+    public function leaderboard(): Response
     {
-        $materials = $this->dashboardService->getAllMaterials();
-        return Inertia::render('Mahasiswa/Dashboard/Completed', compact('materials'));
+        $data = $this->leaderboardService->getLeaderboardData(Auth::id());
+
+        return Inertia::render('Mahasiswa/Leaderboard/Index', $data);
     }
 }

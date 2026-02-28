@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -162,7 +161,7 @@ return [
         // Hapus atau komentari baris SailServiceProvider ini
         // Laravel\Sail\SailServiceProvider::class,
         Inertia\ServiceProvider::class,
-        
+
         /*
          * Application Service Providers...
          */
@@ -171,7 +170,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RepositoryServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
+        App\Providers\ServiceServiceProvider::class,
+        // App\Providers\RouteServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -188,5 +188,4 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
-
 ];

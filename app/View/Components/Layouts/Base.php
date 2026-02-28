@@ -45,7 +45,7 @@ class Base extends Component
         string $title = 'OOPEDIAv2',
         string $bodyClass = '',
         array $meta = [],
-        ?string $role = null
+        ?string $role = null,
     ) {
         $this->title = $title;
         $this->bodyClass = $bodyClass;
@@ -59,12 +59,12 @@ class Base extends Component
      */
     protected function detectRole(): string
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return 'guest';
         }
 
         $user = Auth::user();
-        
+
         return match ($user->role_id) {
             1 => 'superadmin',
             2 => 'admin',

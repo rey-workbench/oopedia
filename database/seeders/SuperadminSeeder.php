@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class SuperadminSeeder extends Seeder
@@ -17,8 +17,8 @@ class SuperadminSeeder extends Seeder
                 'name' => 'Super Admin',
                 'password' => Hash::make('superadmin123'),
                 'role_id' => 1,
-                'is_approved' => true
-            ]
+                'is_approved' => true,
+            ],
         );
     }
-} 
+}

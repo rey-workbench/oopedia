@@ -2,23 +2,19 @@
 
 namespace App\Services\Analytics;
 
-use App\Repositories\MaterialRepository;
-use App\Repositories\ProgressRepository;
+use App\Contracts\Repositories\MaterialRepositoryInterface;
+use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Contracts\Services\LeaderboardServiceInterface;
 
-class LeaderboardService
+class LeaderboardService implements LeaderboardServiceInterface
 {
-    protected $materialRepo;
-    protected $progressRepo;
-
     public function __construct(
-        MaterialRepository $materialRepo,
-        ProgressRepository $progressRepo
-    ) {
-        $this->materialRepo = $materialRepo;
-        $this->progressRepo = $progressRepo;
-    }
+        protected MaterialRepositoryInterface $materialRepo,
+        protected ProgressRepositoryInterface $progressRepo,
+    ) {}
 
-    public function getLeaderboardData($currentUserId)
+    /** @return array<string, mixed> */
+    public function getLeaderboardData(int $currentUserId): array
     {
         // Get difficulty question counts from active configurations
         $difficultyCount = $this->calculateDifficultyTotals();
@@ -41,7 +37,7 @@ class LeaderboardService
             $leaderboardData,
             $userScores,
             $totalConfiguredQuestions,
-            $difficultyCount
+            $difficultyCount,
         );
 
         // Find current user rank
@@ -51,7 +47,7 @@ class LeaderboardService
 
         return [
             'leaderboardData' => $leaderboardData,
-            'currentUserRank' => $currentUserRank
+            'currentUserRank' => $currentUserRank,
         ];
     }
 
@@ -60,7 +56,7 @@ class LeaderboardService
         $totals = [
             'beginner' => 0,
             'medium' => 0,
-            'hard' => 0
+            'hard' => 0,
         ];
 
         $materials = $this->materialRepo->getAllWithQuestionsAndConfigs();
@@ -82,9 +78,9 @@ class LeaderboardService
         foreach ($correctAnswers as $answer) {
             $userId = $answer->user_id;
             // Repository query alias: 'attempts_needed'
-            $attempts = (int)$answer->attempts_needed;
+            $attempts = (int) $answer->attempts_needed;
 
-            if (!isset($userScores[$userId])) {
+            if (! isset($userScores[$userId])) {
                 $userScores[$userId] = 0;
             }
 
@@ -93,7 +89,7 @@ class LeaderboardService
                 'beginner' => 5,
                 'medium' => 10,
                 'hard' => 15,
-                default => 0  
+                default => 0
             };
 
             // Attempt multiplier
@@ -163,8 +159,8 @@ class LeaderboardService
             return ['name' => 'Medium', 'color' => 'warning'];
         } elseif ($data->beginner_completed >= $difficultyCount['beginner'] && $difficultyCount['beginner'] > 0) {
             return ['name' => 'Beginner', 'color' => 'success'];
-        } else {
-            return ['name' => 'Learner', 'color' => 'secondary'];
         }
+
+        return ['name' => 'Learner', 'color' => 'secondary'];
     }
 }

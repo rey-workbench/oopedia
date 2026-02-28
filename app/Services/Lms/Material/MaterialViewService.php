@@ -2,26 +2,29 @@
 
 namespace App\Services\Lms\Material;
 
-use App\Repositories\MaterialRepository;
-use App\Repositories\ProgressRepository;
+use App\Contracts\Repositories\MaterialRepositoryInterface;
+use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Contracts\Repositories\SubMaterialRepositoryInterface;
+use App\Contracts\Services\MaterialViewServiceInterface;
+use App\Exceptions\Domain\MaterialNotFoundException;
+use App\Exceptions\Domain\SubMaterialNotFoundException;
+use App\Traits\CalculatesConfiguredQuestions;
+use Illuminate\Database\Eloquent\Collection;
 
-
-class MaterialViewService
+class MaterialViewService implements MaterialViewServiceInterface
 {
-    protected $materialRepo;
-    protected $progressRepo;
+    use CalculatesConfiguredQuestions;
 
     public function __construct(
-        MaterialRepository $materialRepo,
-        ProgressRepository $progressRepo
-    ) {
-        $this->materialRepo = $materialRepo;
-        $this->progressRepo = $progressRepo;
-    }
+        protected MaterialRepositoryInterface $materialRepo,
+        protected ProgressRepositoryInterface $progressRepo,
+        protected SubMaterialRepositoryInterface $subMaterialRepo,
+    ) {}
 
-    public function getMaterialsList($userId, $isGuest)
+    /** @return Collection<int, \App\Models\Material> */
+    public function getMaterialsList(int|string|null $userId, bool $isGuest): Collection
     {
-        $progressStats = $this->progressRepo->getUserProgressStats($userId);
+        $progressStats = $userId ? $this->progressRepo->getUserProgressStats($userId) : collect();
         $allMaterials = $this->materialRepo->getAllOrdered();
 
         // Limit materials for guests
@@ -33,7 +36,7 @@ class MaterialViewService
 
         $materials = $allMaterials->map(function ($material) use ($progressStats, $isGuest) {
             $configuredTotalQuestions = $this->calculateConfiguredQuestions($material, $isGuest);
-            
+
             // progressStats is a Collection of objects with material_id, correct_answers
             $materialProgress = $progressStats->firstWhere('material_id', $material->id);
             $correctAnswers = $materialProgress ? $materialProgress->correct_answers : 0;
@@ -47,7 +50,7 @@ class MaterialViewService
             $material->completed_questions = $correctAnswers;
 
             // Ensure media is loaded
-            if (!$material->relationLoaded('media')) {
+            if (! $material->relationLoaded('media')) {
                 $material->load('media');
             }
 
@@ -57,7 +60,8 @@ class MaterialViewService
         return $materials;
     }
 
-    public function getMaterialDetail($materialId, $userId, $isGuest)
+    /** @return array<string, mixed> */
+    public function getMaterialDetail(int $materialId, int|string|null $userId, bool $isGuest): array
     {
         $material = $this->materialRepo->findWithQuestionsShuffled($materialId);
 
@@ -80,13 +84,18 @@ class MaterialViewService
         }
 
         // Get answered questions and current question
-        $answeredQuestionIds = $this->progressRepo->getAnsweredQuestionIds($userId, $materialId);
+        // For guest users, we use session-based progress, so repository stats might be empty
+        // MaterialViewService currently doesn't have access to Request to get cookie progress
+        // But making repo methods nullable prevents the crash
+        $answeredQuestionIds = $userId 
+            ? $this->progressRepo->getAnsweredQuestionIds($userId, $materialId)
+            : collect();
 
         $currentQuestion = $material->questions
             ->whereNotIn('id', $answeredQuestionIds)
             ->first();
 
-        if (!$currentQuestion && $material->questions->count() > 0) {
+        if (! $currentQuestion && $material->questions->count() > 0) {
             $currentQuestion = $material->questions->first();
         }
 
@@ -94,42 +103,40 @@ class MaterialViewService
         $currentQuestionNumber = $answeredCount + 1;
 
         if ($answeredCount >= $material->questions->count()) {
-            $currentQuestionNumber = "Review";
+            $currentQuestionNumber = 'Review';
         }
 
         return [
             'material' => $material,
             'materials' => $materials,
-            'currentQuestionNumber' => $currentQuestionNumber
+            'currentQuestionNumber' => $currentQuestionNumber,
         ];
     }
 
-    public function getSubMaterialDetail($materialId, $subMaterialId, $isGuest)
+    /** @return array<string, mixed> */
+    public function getSubMaterialDetail(int $materialId, int $subMaterialId, bool $isGuest): array
     {
-        $material = \App\Models\Material::with(['subMaterials.questions', 'creator'])->findOrFail($materialId);
-        $subMaterial = \App\Models\SubMaterial::with(['questions'])->findOrFail($subMaterialId);
-        
+        $material = $this->materialRepo->find($materialId);
+
+        if (! $material) {
+            throw new MaterialNotFoundException($materialId);
+        }
+
+        $subMaterial = $this->subMaterialRepo->findWithQuestions($subMaterialId);
+
+        if (! $subMaterial) {
+            throw new SubMaterialNotFoundException($subMaterialId);
+        }
+
         return [
             'material' => $material,
             'subMaterial' => $subMaterial,
-            'isGuest' => $isGuest
+            'isGuest' => $isGuest,
         ];
     }
 
-    public function resetMaterialProgress($userId, $materialId)
+    public function resetMaterialProgress(int|string $userId, int $materialId): void
     {
-        return $this->progressRepo->resetProgress($userId, $materialId);
-    }
-
-    protected function calculateConfiguredQuestions($material, $isGuest)
-    {
-        if ($isGuest) {
-            $beginnerCount = min(3, $material->questions->where('difficulty', 'beginner')->count());
-            $mediumCount = min(3, $material->questions->where('difficulty', 'medium')->count());
-            $hardCount = min(3, $material->questions->where('difficulty', 'hard')->count());
-            return $beginnerCount + $mediumCount + $hardCount;
-        } else {
-            return $material->questions->count();
-        }
+        $this->progressRepo->resetProgress($userId, $materialId);
     }
 }

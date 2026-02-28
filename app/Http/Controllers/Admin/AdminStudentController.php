@@ -2,156 +2,91 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Contracts\Services\StudentServiceInterface;
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Http\Requests\Student\StoreStudentRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use App\Services\User\StudentService;
 use Inertia\Inertia;
+use Inertia\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminStudentController extends Controller
 {
-    protected $studentService;
+    public function __construct(
+        protected StudentServiceInterface $studentService,
+    ) {}
 
-    public function __construct(StudentService $studentService)
+    public function index(Request $request): Response
     {
-        $this->studentService = $studentService;
-    }
-
-    public function index(Request $request)
-    {
-        // Admin and superadmin access check
-        if (auth()->user()->role_id > 2) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses untuk melihat daftar mahasiswa');
-        }
-        
         $search = $request->search;
         $students = $this->studentService->getStudentsWithProgress($search, 10);
-        
+
         return Inertia::render('Admin/Students/Index', compact('students'));
     }
 
-    public function progress(User $student)
+    public function show(int|string $studentId): Response|RedirectResponse
     {
-        // Ensure we're looking at a student
-        abort_if($student->role_id != 3, 404);
-    
+        $student = $this->studentService->getStudentById((int) $studentId);
+
+        if (! $student || $student->role_id != 3) {
+            return redirect()->route('admin.students.index')
+                ->with('error', 'Mahasiswa tidak ditemukan');
+        }
+
         $data = $this->studentService->getStudentProgressDetail($student);
 
-        return Inertia::render('Admin/Students/Progress', [
+        return Inertia::render('Admin/Students/Progress/Index', [
             'student' => $student,
             'materials' => $data['materials'],
             'recent_activities' => $data['recent_activities'],
-            'missingQuestionsByMaterial' => $data['missingQuestionsByMaterial']
+            'missingQuestionsByMaterial' => $data['missingQuestionsByMaterial'],
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreStudentRequest $request): RedirectResponse
     {
-        // Admin and superadmin access check
-        if (auth()->user()->role_id > 2) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses untuk menambah mahasiswa');
-        }
+        $this->studentService->createStudent($request->validated());
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        try {
-            User::create([
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'password' => Hash::make($validated['password']),
-                'role_id' => 3, // Role student
-                'is_approved' => true
-            ]);
-
-            return redirect()->route('admin.students.index')
-                ->with('success', 'Mahasiswa berhasil didaftarkan secara manual.');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Gagal mendaftarkan mahasiswa: ' . $e->getMessage())
-                ->withInput();
-        }
+        return redirect()->route('admin.students.index')
+            ->with('success', 'Mahasiswa berhasil didaftarkan secara manual.');
     }
 
-    public function destroy(User $student)
+    public function destroy(int|string $studentId): RedirectResponse
     {
-        // Admin and superadmin access check
-        if (auth()->user()->role_id > 2) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses untuk menghapus mahasiswa');
-        }
-        
-        try {
-            $this->studentService->deleteStudent($student);
-            
-            return redirect()->route('admin.students.index')
-                ->with('success', 'Data mahasiswa telah berhasil dihapus dari sistem');
-        } catch (\Exception $e) {
-            return redirect()->route('admin.students.index')
-                ->with('error', $e->getMessage());
-        }
+        $this->studentService->deleteStudent((int) $studentId);
+
+        return redirect()->route('admin.students.index')
+            ->with('success', 'Data mahasiswa telah berhasil dihapus dari sistem');
     }
-    
-    public function showImportForm()
+
+    public function showImportForm(): Response
     {
-        // Admin and superadmin access check
-        if (auth()->user()->role_id > 2) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses untuk fitur ini');
-        }
-        
-        return Inertia::render('Admin/Students/Import');
+        return Inertia::render('Admin/Students/Import/Index');
     }
-    
-    public function processImport(Request $request)
+
+    public function processImport(Request $request): RedirectResponse
     {
-        // Admin and superadmin access check
-        if (auth()->user()->role_id > 2) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses untuk fitur ini');
-        }
-        
         $request->validate([
             'excel_file' => 'required|file|mimes:xlsx,xls,csv,txt|max:2048',
         ]);
-        
-        try {
-            $result = $this->studentService->importStudentsFromFile($request->file('excel_file'));
-            
-            $message = "Berhasil menambahkan {$result['success_count']} mahasiswa.";
-            if (!empty($result['error_rows'])) {
-                $message .= " Terdapat " . count($result['error_rows']) . " baris dengan error.";
-            }
-            
-            return redirect()->route('admin.students.index')
-                ->with('success', $message)
-                ->with('importErrors', $result['error_rows']);
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', $e->getMessage());
+
+        $result = $this->studentService->importStudentsFromFile($request->file('excel_file'));
+
+        $message = "Berhasil menambahkan {$result['success_count']} mahasiswa.";
+        if (! empty($result['error_rows'])) {
+            $message .= ' Terdapat ' . count($result['error_rows']) . ' baris dengan error.';
         }
-    }
-    
-    public function downloadTemplate()
-    {
-        // Admin and superadmin access check
-        if (auth()->user()->role_id > 2) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses untuk fitur ini');
-        }
-        
-        $template = $this->studentService->generateImportTemplate();
-        
-        return response()->stream($template['callback'], 200, $template['headers']);
+
+        return redirect()->route('admin.students.index')
+            ->with('success', $message)
+            ->with('importErrors', $result['error_rows']);
     }
 
-    public function show(User $student)
+    public function downloadTemplate(): StreamedResponse
     {
-        return redirect()->route('admin.students.progress', $student);
+        $template = $this->studentService->generateImportTemplate();
+
+        return response()->stream($template['callback'], 200, $template['headers']);
     }
 }

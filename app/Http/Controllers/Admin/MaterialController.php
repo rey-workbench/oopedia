@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Contracts\Services\MaterialServiceInterface;
 use App\Http\Controllers\Controller;
-use App\Models\Material;
-use App\Services\Lms\Material\MaterialService;
+use App\Http\Requests\Material\StoreMaterialRequest;
+use App\Http\Requests\Material\UpdateMaterialRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class MaterialController extends Controller
 {
-    protected $materialService;
+    public function __construct(
+        protected MaterialServiceInterface $materialService,
+    ) {}
 
-    public function __construct(MaterialService $materialService)
-    {
-        $this->materialService = $materialService;
-    }
-
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $search = $request->search;
         $sort = $request->get('sort', 'created_at');
@@ -28,90 +28,59 @@ class MaterialController extends Controller
         return Inertia::render('Admin/Materials/Index', compact('materials'));
     }
 
-    public function create()
+    public function create(): Response
     {
-        return Inertia::render('Admin/Materials/Create');
+        return Inertia::render('Admin/Materials/Create/Index');
     }
 
-    public function store(Request $request)
+    public function store(StoreMaterialRequest $request): RedirectResponse
     {
-        try {
-            $validated = $request->validate([
-                'title' => 'required|string|max:255',
-                'content' => 'required|string',
-                'created_by' => 'required|exists:users,id',
-                'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            ]);
+        $this->materialService->createMaterial(
+            $request->except('cover_image'),
+            $request->file('cover_image'),
+        );
 
-            $this->materialService->createMaterial(
-                $request->except('cover_image'), 
-                $request->file('cover_image')
-            );
+        return redirect()->route('admin.materials.index')
+            ->with('success', 'Materi berhasil ditambahkan.');
+    }
 
+    public function edit(int|string $materialId): Response|RedirectResponse
+    {
+        $material = $this->materialService->getMaterialById((int) $materialId);
+
+        if (! $material) {
             return redirect()->route('admin.materials.index')
-                ->with('success', 'Materi berhasil ditambahkan.');
-        } catch (\Exception $e) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+                ->with('error', 'Material tidak ditemukan');
         }
+
+        return Inertia::render('Admin/Materials/Edit/Index', compact('material'));
     }
 
-    public function edit(Material $material)
+    public function update(UpdateMaterialRequest $request, int|string $materialId): RedirectResponse
     {
-        $material->load('media'); // Ensure media is loaded
-        return Inertia::render('Admin/Materials/Edit', compact('material'));
+        $this->materialService->updateMaterial(
+            (int) $materialId,
+            $request->except('cover_image'),
+            $request->file('cover_image'),
+        );
+
+        return redirect()->route('admin.materials.index')
+            ->with('success', 'Materi berhasil diperbarui.');
     }
 
-    public function update(Request $request, Material $material)
+    public function destroy(int|string $materialId): RedirectResponse
     {
-        try {
-            $request->validate([
-                'title' => 'required|string|max:255',
-                'content' => 'required|string',
-                'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            ]);
+        $this->materialService->deleteMaterial((int) $materialId);
 
-            $this->materialService->updateMaterial(
-                $material,
-                $request->except('cover_image'),
-                $request->file('cover_image')
-            );
-
-            return redirect()->route('admin.materials.index')
-                ->with('success', 'Materi berhasil diperbarui.');
-        } catch (\Exception $e) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
+        return redirect()->route('admin.materials.index')
+            ->with('success', 'Materi berhasil dihapus.');
     }
 
-    public function destroy(Material $material)
+    public function deleteMedia(int|string $id): RedirectResponse
     {
-        try {
-            $this->materialService->deleteMaterial($material);
+        $materialId = $this->materialService->deleteMedia((int) $id);
 
-            return redirect()->route('admin.materials.index')
-                ->with('success', 'Materi berhasil dihapus.');
-        } catch (\Exception $e) {
-            return redirect()->route('admin.materials.index')
-                ->with('error', 'Gagal menghapus materi: ' . $e->getMessage());
-        }
-    }
-    
-    public function deleteMedia($id)
-    {
-        try {
-            $materialId = $this->materialService->deleteMedia($id);
-            
-            return redirect()->route('admin.materials.edit', $materialId)
-                ->with('success', 'Media berhasil dihapus.');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Gagal menghapus media: ' . $e->getMessage());
-        }
+        return redirect()->route('admin.materials.edit', $materialId)
+            ->with('success', 'Media berhasil dihapus.');
     }
 }

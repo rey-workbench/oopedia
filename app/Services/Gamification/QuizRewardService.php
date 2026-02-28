@@ -2,39 +2,49 @@
 
 namespace App\Services\Gamification;
 
-use App\Repositories\ProgressRepository;
+use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Contracts\Services\QuizRewardServiceInterface;
 
 /**
  * QuizRewardService
- * 
+ *
  * Handles XP and Points calculation, and Hint management.
  */
-class QuizRewardService
+class QuizRewardService implements QuizRewardServiceInterface
 {
-    protected $progressRepo;
+    public function __construct(
+        protected ProgressRepositoryInterface $progressRepo,
+    ) {}
 
-    public function __construct(ProgressRepository $progressRepo)
+    public function calculateCorrectAnswerReward(array $state, bool $usedHint = false, string $difficulty = 'beginner', int $timeSpent = 0): array
     {
-        $this->progressRepo = $progressRepo;
-    }
+        // Base XP based on difficulty
+        $baseXp = match ($difficulty) {
+            'medium' => 20,
+            'hard' => 30,
+            default => 10,
+        };
 
-    /**
-     * Calculate rewards for a correct answer
-     */
-    public function calculateCorrectAnswerReward(array $state, bool $usedHint = false): array
-    {
-        $xpEarned = 10;
+        $xpEarned = $baseXp;
 
-        // Penalty for using hint
+        // Speed bonus: +5 XP if answered in 20 seconds or less
+        $isFast = $timeSpent > 0 && $timeSpent <= 20;
+        if ($isFast) {
+            $xpEarned += 5;
+        }
+
+        // Penalty for using hint: -5 XP
         if ($usedHint) {
-            $xpEarned -= 5;
+            $xpEarned = max(0, $xpEarned - 5);
         }
 
         return [
-            'global_xp_earned' => max(0, $xpEarned),
+            'global_xp_earned' => $xpEarned,
+            'is_fast' => $isFast,
+            'base_xp' => $baseXp,
             'updates' => [
                 'global_xp' => ($state['global_xp'] ?? 0) + $xpEarned,
-            ]
+            ],
         ];
     }
 
@@ -47,7 +57,7 @@ class QuizRewardService
             'global_xp_earned' => 0,
             'updates' => [
                 'global_xp' => $state['global_xp'] ?? 0,
-            ]
+            ],
         ];
     }
 
@@ -71,7 +81,7 @@ class QuizRewardService
             'updates' => [
                 'hints_used_count' => ($state['hints_used_count'] ?? 0) + 1,
                 'hints_available' => $hintsAvailable - 1,
-            ]
+            ],
         ];
     }
 
