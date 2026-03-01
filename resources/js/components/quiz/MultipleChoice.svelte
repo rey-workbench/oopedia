@@ -11,7 +11,7 @@
     let {
         question,
         selectedAnswerId = $bindable(null),
-        onselect = (answerId) => {},
+        onselect = () => {},
     }: Props = $props();
 
     function handleSelect(answerId: number) {

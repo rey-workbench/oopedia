@@ -23,7 +23,6 @@
     //   MAP COORDINATE SYSTEM
     // ============================================
     const MAP_W = 900;
-    const NODE_R = 44;
     const START_Y = 100;
     const GAP_Y = 200;
     const TROPHY_GAP = 160;

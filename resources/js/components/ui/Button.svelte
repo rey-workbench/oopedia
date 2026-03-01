@@ -1,6 +1,6 @@
 <script lang="ts">
     import { Link } from "@inertiajs/svelte";
-    import type { Component, Snippet } from "svelte";
+    import type { Snippet } from "svelte";
 
     type ButtonVariant =
         | "primary"

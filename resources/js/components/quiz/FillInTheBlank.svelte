@@ -12,7 +12,7 @@
     let {
         question,
         answerText = $bindable(""),
-        oninput = (text) => {},
+        oninput = () => {},
     }: Props = $props();
 
     function handleInput(event: Event) {
