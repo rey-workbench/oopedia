@@ -8,6 +8,7 @@
     import FinishStateCard from "@/components/quiz/FinishStateCard.svelte";
     import FeedbackModal from "@/components/quiz/FeedbackModal.svelte";
     import AdaptiveDebugPanel from "@/components/quiz/AdaptiveDebugPanel.svelte";
+    import { untrack } from "svelte";
     import type { Material, Question, DifficultyLevel, QuizSessionState } from "@/types";
 
     const {
@@ -38,16 +39,27 @@
     );
 
     $effect(() => {
-        if (state.currentQuestion?.id !== currentQuestion?.id) {
-            state.selectedMultipleChoiceAnswer = null;
-            state.fillInTheBlankAnswer = "";
-            state.dragAndDropAnswers = {};
-            state.startTime = Date.now();
-        }
-        state.material = material;
-        state.currentQuestion = currentQuestion;
-        state.difficulty = difficulty;
-        state.studentState = studentState;
+        // Track the incoming props — this block re-runs only when Inertia
+        // delivers new props (e.g. navigating to the next question).
+        const newMaterial = material;
+        const newQuestion = currentQuestion;
+        const newDifficulty = difficulty;
+        const newStudentState = studentState;
+
+        // All reads & writes to $state happen inside untrack so they don't
+        // register as dependencies and cause another loop iteration.
+        untrack(() => {
+            if (state.currentQuestion?.id !== newQuestion?.id) {
+                state.selectedMultipleChoiceAnswer = null;
+                state.fillInTheBlankAnswer = "";
+                state.dragAndDropAnswers = {};
+                state.startTime = Date.now();
+            }
+            state.material = newMaterial;
+            state.currentQuestion = newQuestion;
+            state.difficulty = newDifficulty;
+            state.studentState = newStudentState;
+        });
     });
 
     const progressPercentage = $derived(
