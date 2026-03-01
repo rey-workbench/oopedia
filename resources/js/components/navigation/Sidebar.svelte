@@ -16,7 +16,9 @@
         Trophy,
         UserRound,
         X,
+        ChevronDown,
     } from "lucide-svelte";
+    import { slide } from "svelte/transition";
 
     const auth = $derived($page.props.auth ?? {});
     const user = $derived(auth.user ?? null);
@@ -34,6 +36,14 @@
     function closeSidebar() {
         sidebarOpen.set(false);
     }
+
+    let isMateriOpen = $state(
+        isActive(ROUTES.MAHASISWA.MATERIALS.INDEX) ||
+            $page.url.startsWith("/mahasiswa/submaterials") ||
+            $page.url.startsWith("/mahasiswa/materials/"),
+    );
+
+    const materials = $derived($page.props.sidebar_materials ?? []);
 </script>
 
 <aside
@@ -66,7 +76,7 @@
             >
         </Link>
         <button
-            on:click={closeSidebar}
+            onclick={closeSidebar}
             aria-label="Tutup sidebar"
             class="lg:hidden p-2 rounded-xl text-slate-400 hover:text-slate-900 bg-slate-100"
         >
@@ -167,7 +177,12 @@
                     Sesi
                 </div>
                 <div class="space-y-2">
-                    <form on:submit|preventDefault={logout}>
+                    <form
+                        onsubmit={(e) => {
+                            e.preventDefault();
+                            logout();
+                        }}
+                    >
                         <button
                             type="submit"
                             class="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold tracking-tight transition-all duration-300 group text-slate-500 hover:text-rose-600 hover:bg-rose-50"
@@ -175,11 +190,7 @@
                             <div
                                 class="w-8 h-8 rounded-xl flex items-center justify-center bg-gray-100 group-hover:bg-rose-100 transition-colors duration-300"
                             >
-                                <svelte:component
-                                    this={LogOut}
-                                    size={18}
-                                    strokeWidth={2.5}
-                                />
+                                <LogOut size={18} strokeWidth={2.5} />
                             </div>
                             <span class="flex-1 text-left">Keluar Sistem</span>
                         </button>
@@ -202,23 +213,68 @@
                             ROUTES.MAHASISWA.DASHBOARD,
                         )}>Dashboard</SidebarLink
                     >
-                    <SidebarLink
-                        href={ROUTES.MAHASISWA.MATERIALS.INDEX}
-                        icon={Shapes}
-                        active={($page.url.startsWith(
-                            ROUTES.MAHASISWA.MATERIALS.INDEX,
-                        ) ||
-                            $page.url.startsWith("/mahasiswa/submaterials")) &&
-                            !$page.url.includes("/questions")}
-                    >
-                        Materi PBO
-                    </SidebarLink>
+
+                    <div class="space-y-1">
+                        <button
+                            onclick={() => (isMateriOpen = !isMateriOpen)}
+                            class="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold tracking-tight transition-all duration-300 group
+                            {isMateriOpen
+                                ? 'text-primary-600 bg-primary-50'
+                                : 'text-slate-500 hover:text-accent-600 hover:bg-accent-50'}"
+                        >
+                            <div
+                                class="w-8 h-8 rounded-xl flex items-center justify-center transition-colors duration-300
+                                {isMateriOpen
+                                    ? 'bg-primary-100'
+                                    : 'bg-gray-100 group-hover:bg-accent-100'}"
+                            >
+                                <Shapes
+                                    size={18}
+                                    strokeWidth={2.5}
+                                    class={isMateriOpen
+                                        ? "text-primary-600"
+                                        : "text-slate-400 group-hover:text-accent-600"}
+                                />
+                            </div>
+                            <span class="flex-1 text-left">Materi PBO</span>
+                            <ChevronDown
+                                size={16}
+                                class="transition-transform duration-300 {isMateriOpen
+                                    ? 'rotate-180 text-primary-600'
+                                    : 'text-slate-400'}"
+                            />
+                        </button>
+
+                        {#if isMateriOpen}
+                            <div
+                                transition:slide={{ duration: 300 }}
+                                class="pl-4 space-y-1 mt-1"
+                            >
+                                {#each materials as material}
+                                    <SidebarLink
+                                        href="/mahasiswa/materials/{material.id}"
+                                        icon={BookOpen}
+                                        active={$page.url.startsWith(
+                                            `/mahasiswa/materials/${material.id}`,
+                                        )}
+                                    >
+                                        <span
+                                            class="text-sm line-clamp-1 font-medium"
+                                            >{material.title}</span
+                                        >
+                                    </SidebarLink>
+                                {/each}
+                            </div>
+                        {/if}
+                    </div>
+
                     <SidebarLink
                         href={ROUTES.MAHASISWA.MATERIALS.QUESTIONS.CATALOG}
                         icon={SquareActivity}
                         active={$page.url.includes("/materials/questions")}
-                        >Latihan Soal</SidebarLink
                     >
+                        Latihan Soal
+                    </SidebarLink>
                 </div>
             </div>
 
@@ -265,7 +321,12 @@
                     Sesi
                 </div>
                 <div class="space-y-2">
-                    <form on:submit|preventDefault={logout}>
+                    <form
+                        onsubmit={(e) => {
+                            e.preventDefault();
+                            logout();
+                        }}
+                    >
                         <button
                             type="submit"
                             class="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold tracking-tight transition-all duration-300 group text-slate-500 hover:text-rose-600 hover:bg-rose-50"
@@ -273,11 +334,7 @@
                             <div
                                 class="w-8 h-8 rounded-xl flex items-center justify-center bg-gray-100 group-hover:bg-rose-100 transition-colors duration-300"
                             >
-                                <svelte:component
-                                    this={LogOut}
-                                    size={18}
-                                    strokeWidth={2.5}
-                                />
+                                <LogOut size={18} strokeWidth={2.5} />
                             </div>
                             <span class="flex-1 text-left">Keluar Sistem</span>
                         </button>

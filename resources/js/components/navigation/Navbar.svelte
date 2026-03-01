@@ -1,4 +1,4 @@
-<script  lang="ts">
+<script lang="ts">
     import { Link, page, router } from "@inertiajs/svelte";
     import {
         Menu,
@@ -9,7 +9,7 @@
     } from "lucide-svelte";
     import { ROUTES } from "@/utils/route";
     import { sidebarOpen } from "@/stores/sidebar";
-    import { isAdmin } from "@/utils/roles";
+    import { isAdmin, isStudent } from "@/utils/roles";
 
     let { titlePage = "" } = $props();
 
@@ -17,6 +17,7 @@
     const user = $derived(auth.user ?? null);
     const isAuthenticated = $derived(!!user);
     const isAdminRole = $derived(isAuthenticated && isAdmin(user?.role_id));
+    const isStudentRole = $derived(isAuthenticated && isStudent(user?.role_id));
     const userName = $derived(user?.name ?? "Tamu");
 
     function logout() {
@@ -34,7 +35,7 @@
     <div class="flex h-16 items-center justify-between">
         <div class="flex items-center gap-4">
             <button
-                on:click={toggleSidebar}
+                onclick={toggleSidebar}
                 aria-label="Toggle Sidebar"
                 class="lg:hidden p-2 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
             >
@@ -142,7 +143,12 @@
                             Profil Saya
                         </Link>
 
-                        <form on:submit|preventDefault={logout}>
+                        <form
+                            onsubmit={(e) => {
+                                e.preventDefault();
+                                logout();
+                            }}
+                        >
                             <button
                                 type="submit"
                                 class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-rose-600 hover:bg-rose-50 rounded-xl transition-all"

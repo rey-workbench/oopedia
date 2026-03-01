@@ -1,12 +1,11 @@
 <script>
     import { Link } from "@inertiajs/svelte";
     import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/ui/PageHeader.svelte";
-    import StatsGrid from "@/components/ui/StatsGrid.svelte";
+    import StatsGrid from "@/components/shared/StatsGrid.svelte";
     import Card from "@/components/ui/Card.svelte";
     import Button from "@/components/ui/Button.svelte";
     import EmptyState from "@/components/ui/EmptyState.svelte";
-    import DarkHeroPanel from "@/components/ui/DarkHeroPanel.svelte";
+    import DarkHeroPanel from "@/components/shared/DarkHeroPanel.svelte";
     import {
         BookOpen,
         Brain,
@@ -67,10 +66,23 @@
 
 <App title="Dashboard">
     <div class="space-y-12">
-        <PageHeader
-            title="Dashboard"
-            subtitle="Selamat datang di pusat kendali belajar Anda."
-        />
+        <div class="mb-8">
+            <h1
+                class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight font-display"
+            >
+                Dashboard
+            </h1>
+            <div class="flex items-center gap-2 mt-3" role="presentation">
+                <div class="h-1.5 w-12 bg-primary-600 rounded-full"></div>
+                <div class="h-1.5 w-4 bg-slate-200 rounded-full"></div>
+                <div class="h-1.5 w-2 bg-slate-100 rounded-full"></div>
+            </div>
+            <p
+                class="mt-4 text-slate-500 font-medium leading-relaxed max-w-3xl"
+            >
+                Selamat datang di pusat kendali belajar Anda.
+            </p>
+        </div>
 
         <DarkHeroPanel class="p-12 shadow-2xl shadow-slate-200">
             <div class="flex flex-col md:flex-row items-center gap-10">

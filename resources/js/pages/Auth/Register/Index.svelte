@@ -1,5 +1,5 @@
 <script>
-    import GuestLayout from "@/layouts/GuestLayout.svelte";
+    import App from "@/layouts/App.svelte";
     import Card from "@/components/ui/Card.svelte";
     import Input from "@/components/ui/Input.svelte";
     import Button from "@/components/ui/Button.svelte";
@@ -12,7 +12,7 @@
     const form = state.form;
 </script>
 
-<GuestLayout title="Daftar - OOPedia">
+<App variant="auth" title="Daftar - OOPedia">
     <Card padding="p-10" hover={false}>
         <div slot="header" class="text-center w-full mb-6">
             <h3 class="text-xl font-bold tracking-widest text-slate-900">
@@ -150,4 +150,4 @@
             </div>
         </form>
     </Card>
-</GuestLayout>
+</App>

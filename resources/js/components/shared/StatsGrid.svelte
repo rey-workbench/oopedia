@@ -1,8 +1,15 @@
-<script>
-    import StatCard from "@/components/ui/StatCard.svelte";
+<script lang="ts">
+    import StatCard from "@/components/shared/StatCard.svelte";
 
-    export let stats = [];
-    export let gridClass = "grid-cols-1 md:grid-cols-2 lg:grid-cols-4";
+    interface Props {
+        stats?: any[];
+        gridClass?: string;
+    }
+
+    let {
+        stats = [],
+        gridClass = "grid-cols-1 md:grid-cols-2 lg:grid-cols-4",
+    }: Props = $props();
 </script>
 
 <div class="grid {gridClass} gap-6">

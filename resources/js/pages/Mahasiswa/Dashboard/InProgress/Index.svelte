@@ -1,8 +1,7 @@
 <script>
     import { Link } from "@inertiajs/svelte";
     import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/ui/PageHeader.svelte";
-    import Button from "@/components/ui/Button.svelte";
+        import Button from "@/components/ui/Button.svelte";
     import Card from "@/components/ui/Card.svelte";
     import {
         ArrowLeft,
@@ -24,11 +23,21 @@
 <App title="Materi Sedang Dipelajari">
     <div class="py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <PageHeader
-                title="Materi Sedang Dipelajari"
-                subtitle="Terus asah kemampuan Anda dan selesaikan tantangan yang ada."
-            >
-                <div slot="actions">
+            
+<div class="mb-8">
+    <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight font-display">
+        Materi Sedang Dipelajari
+    </h1>
+    <div class="flex items-center gap-2 mt-3" role="presentation">
+        <div class="h-1.5 w-12 bg-primary-600 rounded-full"></div>
+        <div class="h-1.5 w-4 bg-slate-200 rounded-full"></div>
+        <div class="h-1.5 w-2 bg-slate-100 rounded-full"></div>
+    </div>
+    <p class="mt-4 text-slate-500 font-medium leading-relaxed max-w-3xl">
+        Terus asah kemampuan Anda dan selesaikan tantangan yang ada.
+    </p>
+    <div class="mt-6 flex flex-wrap gap-4">
+        <div>
                     <Button
                         href={ROUTES.MAHASISWA.DASHBOARD}
                         variant="ghost"
@@ -37,7 +46,8 @@
                         Dashboard
                     </Button>
                 </div>
-            </PageHeader>
+    </div>
+</div>
 
             <div class="mt-10">
                 {#if state.materialsWithStats.length === 0}

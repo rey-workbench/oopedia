@@ -48,4 +48,7 @@ interface MaterialRepositoryInterface
     public function getMaterialsForAdmin(?string $search = null, string $sort = 'created_at', string $direction = 'asc'): Collection;
 
     public function findWithRelations(int $id, array $relations = []): Material;
+
+    /** @return Collection<int, Material> */
+    public function getMaterialsForListing(): Collection;
 }

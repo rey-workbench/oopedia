@@ -25,19 +25,26 @@ class MaterialViewService implements MaterialViewServiceInterface
     public function getMaterialsList(int|string|null $userId, bool $isGuest): Collection
     {
         $progressStats = $userId ? $this->progressRepo->getUserProgressStats($userId) : collect();
-        $allMaterials = $this->materialRepo->getAllOrdered();
+        
+        // Use optimized listing method
+        $allMaterials = $this->materialRepo->getMaterialsForListing();
 
-        // Limit materials for guests
         if ($isGuest) {
             $totalMaterials = $allMaterials->count();
             $materialsToShow = ceil($totalMaterials / 2);
             $allMaterials = $allMaterials->take($materialsToShow);
+
+            // For guests, we only need question difficulties to calculate limits
+            $allMaterials->load(['questions' => function($query) {
+                $query->select('id', 'material_id', 'difficulty');
+            }]);
         }
 
         $materials = $allMaterials->map(function ($material) use ($progressStats, $isGuest) {
+            // If logged in, we use questions_count which was eager-loaded via withCount
+            // If guest, we use the loaded questions collection
             $configuredTotalQuestions = $this->calculateConfiguredQuestions($material, $isGuest);
 
-            // progressStats is a Collection of objects with material_id, correct_answers
             $materialProgress = $progressStats->firstWhere('material_id', $material->id);
             $correctAnswers = $materialProgress ? $materialProgress->correct_answers : 0;
 
@@ -48,11 +55,6 @@ class MaterialViewService implements MaterialViewServiceInterface
             $material->progress_percentage = $progressPercentage;
             $material->total_questions = $configuredTotalQuestions;
             $material->completed_questions = $correctAnswers;
-
-            // Ensure media is loaded
-            if (! $material->relationLoaded('media')) {
-                $material->load('media');
-            }
 
             return $material;
         });

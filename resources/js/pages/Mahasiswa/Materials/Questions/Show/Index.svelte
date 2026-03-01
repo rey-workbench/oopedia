@@ -1,7 +1,7 @@
 <script>
     import App from "@/layouts/App.svelte";
     import ProgressBar from "@/components/ui/ProgressBar.svelte";
-    import GuestBanner from "@/components/ui/GuestBanner.svelte";
+    import GuestBanner from "@/components/shared/GuestBanner.svelte";
     import { Terminal, UserCheck } from "lucide-svelte";
     import { QuestionShowState } from "@/states/Mahasiswa/QuizState.svelte";
     import QuestionSessionCard from "@/components/quiz/QuestionSessionCard.svelte";

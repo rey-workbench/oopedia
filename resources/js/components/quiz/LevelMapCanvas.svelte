@@ -9,9 +9,15 @@
         material: Material;
         sortedLevels: LevelItem[];
         allCompleted: boolean;
+        class?: string;
     }
 
-    let { material, sortedLevels, allCompleted }: Props = $props();
+    let {
+        material,
+        sortedLevels,
+        allCompleted,
+        class: className = "",
+    }: Props = $props();
 
     // ============================================
     //   MAP COORDINATE SYSTEM
@@ -128,7 +134,7 @@
     }
 </script>
 
-<Card padding="p-0" class="overflow-hidden">
+<Card padding="p-0" class={`overflow-hidden ${className}`}>
     <!-- Start Badge -->
     <div class="text-center pt-10 pb-3">
         <span

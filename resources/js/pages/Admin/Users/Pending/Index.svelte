@@ -1,8 +1,7 @@
 <script>
     import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/ui/PageHeader.svelte";
-    import Button from "@/components/ui/Button.svelte";
-    import DataTable from "@/components/ui/DataTable.svelte";
+        import Button from "@/components/ui/Button.svelte";
+    import DataTable from "@/components/shared/DataTable.svelte";
     import Card from "@/components/ui/Card.svelte";
     import EmptyState from "@/components/ui/EmptyState.svelte";
     import UserAvatar from "@/components/ui/UserAvatar.svelte";
@@ -25,18 +24,29 @@
 
 <App title="Pending Requisitions">
     <div class="max-w-5xl mx-auto space-y-12">
-        <PageHeader
-            title="Permohonan Akses"
-            subtitle="Otorisasi permohonan akses administratif dari entitas eksternal."
-        >
-            <div slot="actions">
+        
+<div class="mb-8">
+    <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight font-display">
+        Permohonan Akses
+    </h1>
+    <div class="flex items-center gap-2 mt-3" role="presentation">
+        <div class="h-1.5 w-12 bg-primary-600 rounded-full"></div>
+        <div class="h-1.5 w-4 bg-slate-200 rounded-full"></div>
+        <div class="h-1.5 w-2 bg-slate-100 rounded-full"></div>
+    </div>
+    <p class="mt-4 text-slate-500 font-medium leading-relaxed max-w-3xl">
+        Otorisasi permohonan akses administratif dari entitas eksternal.
+    </p>
+    <div class="mt-6 flex flex-wrap gap-4">
+        <div>
                 <Button
                     href={ROUTES.ADMIN.USERS.INDEX}
                     variant="ghost"
                     icon={ArrowLeft}>KEMBALI KE REPOSITORI</Button
                 >
             </div>
-        </PageHeader>
+    </div>
+</div>
 
         {#if state.pendingAdmins.length > 0}
             <DataTable

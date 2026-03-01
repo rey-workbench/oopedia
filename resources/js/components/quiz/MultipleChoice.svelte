@@ -1,13 +1,20 @@
-<script>
+<script lang="ts">
     import { HelpCircle, Code, CheckSquare } from "lucide-svelte";
+    import type { Question } from "@/types";
+
+    interface Props {
+        question: Question;
+        selectedAnswerId?: number | null;
+        onselect?: (answerId: number) => void;
+    }
 
     let {
         question,
         selectedAnswerId = $bindable(null),
         onselect = (answerId) => {},
-    } = $props();
+    }: Props = $props();
 
-    function handleSelect(answerId) {
+    function handleSelect(answerId: number) {
         selectedAnswerId = answerId;
         onselect(answerId);
     }

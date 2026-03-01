@@ -1,9 +1,9 @@
 <script>
     import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/ui/PageHeader.svelte";
+    import PageHeader from "@/components/shared/PageHeader.svelte";
     import Button from "@/components/ui/Button.svelte";
-    import StatsGrid from "@/components/ui/StatsGrid.svelte";
-    import DataTable from "@/components/ui/DataTable.svelte";
+    import StatsGrid from "@/components/shared/StatsGrid.svelte";
+    import DataTable from "@/components/shared/DataTable.svelte";
     import EmptyState from "@/components/ui/EmptyState.svelte";
     import UserAvatar from "@/components/ui/UserAvatar.svelte";
     import { MaterialListState } from "@/states/Admin/MaterialState.svelte";
@@ -76,13 +76,13 @@
             title="Kurikulum Materi"
             subtitle="Otoritas manajemen konten dan modul pembelajaran Pemrograman Berorientasi Objek."
         >
-            <div slot="actions">
+            {#snippet actions()}
                 <Button
                     href={ROUTES.ADMIN.MATERIALS.CREATE}
                     variant="primary"
                     icon={Plus}>Tambah Modul Baru</Button
                 >
-            </div>
+            {/snippet}
         </PageHeader>
 
         <!-- Statistics -->
@@ -100,7 +100,7 @@
             searchPlaceholder="Pindai materi..."
             {columns}
         >
-            <svelte:fragment slot="empty">
+            {#snippet empty()}
                 <EmptyState
                     title="Kurikulum Kosong"
                     description="Basis data materi instruksional kosong. Lakukan injeksi modul baru untuk memulai siklus pembelajaran."
@@ -111,9 +111,9 @@
                         icon={Plus}>Inisialisasi Kurikulum</Button
                     >
                 </EmptyState>
-            </svelte:fragment>
+            {/snippet}
 
-            <svelte:fragment slot="row" let:item={material}>
+            {#snippet row(material)}
                 <td
                     class="px-6 py-6 border-l-4 border-transparent group-hover:border-primary-600"
                 >
@@ -234,7 +234,7 @@
                         />
                     </div>
                 </td>
-            </svelte:fragment>
+            {/snippet}
         </DataTable>
     </div>
 </App>

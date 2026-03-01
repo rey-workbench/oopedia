@@ -1,14 +1,30 @@
 <script lang="ts">
-    export let title = "";
-    export let subtitle: string | null = null;
-    export let centered = false;
-    let className = "";
-    export { className as class };
+    import type { Snippet } from "svelte";
 
-    $: classes = `${centered ? "text-center" : ""} mb-8 ${className}`;
+    interface Props {
+        title: string;
+        subtitle?: string | null;
+        centered?: boolean;
+        class?: string;
+        actions?: Snippet;
+        children?: Snippet;
+    }
+
+    let {
+        title,
+        subtitle = null,
+        centered = false,
+        class: className = "",
+        actions,
+        children,
+    }: Props = $props();
+
+    const classes = $derived(
+        `${centered ? "text-center" : ""} mb-8 ${className}`,
+    );
 </script>
 
-<div class={classes} {...$$restProps}>
+<div class={classes}>
     <h1
         class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight font-display"
     >
@@ -34,12 +50,12 @@
         </p>
     {/if}
 
-    {#if $$slots.actions || $$slots.default}
+    {#if actions || children}
         <div
             class="mt-6 flex flex-wrap gap-4 {centered ? 'justify-center' : ''}"
         >
-            <slot name="actions" />
-            <slot />
+            {@render actions?.()}
+            {@render children?.()}
         </div>
     {/if}
 </div>

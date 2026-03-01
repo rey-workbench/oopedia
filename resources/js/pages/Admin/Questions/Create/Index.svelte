@@ -1,9 +1,8 @@
-﻿<script>
+<script>
     import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/ui/PageHeader.svelte";
+    import PageHeader from "@/components/shared/PageHeader.svelte";
     import Button from "@/components/ui/Button.svelte";
-    import DataForm from "@/components/ui/DataForm.svelte";
-    import QuillEditor from "@/components/ui/QuillEditor.svelte";
+        import QuillEditor from "@/components/ui/QuillEditor.svelte";
     import { ArrowLeft, Save, Plus, X, CheckCircle2 } from "lucide-svelte";
     import { ROUTES } from "@/utils/route";
     import { QuestionFormState } from "@/states/Admin/QuestionState.svelte";
@@ -38,14 +37,16 @@
             </div>
         </PageHeader>
 
-        <DataForm
-            title="Konten & Logika Pertanyaan"
-            onSubmit={() => state.submit()}
-            isEdit={false}
-            processing={$form.processing}
-            submitLabel="SIMPAN INSTRUMEN"
-            submitIcon={Save}
-        >
+        
+<form onsubmit={(e) => { e.preventDefault(); () => state.submit()(e); }} class="space-y-12">
+    <div class="bg-white rounded-3xl p-6 shadow-2xl border border-slate-100 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
+        <div class="mb-6">
+            <h3 class="text-lg font-bold text-slate-800">
+                Konten & Logika Pertanyaan
+            </h3>
+        </div>
+
+        <div class="space-y-10 p-6">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
                 <div class="lg:col-span-2 space-y-8">
                     <div class="space-y-2">
@@ -76,7 +77,7 @@
                             </span>
                             <Button
                                 type="button"
-                                on:click={() => state.addAnswer()}
+                                onclick={() => state.addAnswer()}
                                 variant="ghost"
                                 size="xs"
                                 icon={Plus}
@@ -119,7 +120,7 @@
                                         {#if $form.answers.length > 1}
                                             <Button
                                                 type="button"
-                                                on:click={() =>
+                                                onclick={() =>
                                                     state.removeAnswer(i)}
                                                 variant="ghost"
                                                 size="sm"
@@ -153,7 +154,7 @@
                             <select
                                 id="material"
                                 bind:value={$form.material_id}
-                                on:change={() => state.handleMaterialChange()}
+                                onchange={() => state.handleMaterialChange()}
                                 class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-900 focus:border-primary-600 focus:outline-none transition-all cursor-pointer"
                             >
                                 <option value="">PILIH MODUL</option>
@@ -201,7 +202,7 @@
                                 {#each ["radio_button", "fill_in_the_blank", "drag_and_drop"] as type}
                                     <button
                                         type="button"
-                                        on:click={() => state.setType(type)}
+                                        onclick={() => state.setType(type)}
                                         class={`py-4 px-6 rounded-2xl border-2 font-bold uppercase tracking-widest text-[10px] text-left transition-all flex items-center justify-between
                                             ${$form.question_type === type ? "border-primary-600 bg-primary-50 text-primary-600" : "border-slate-50 bg-slate-50 text-slate-400"}`}
                                     >
@@ -224,7 +225,7 @@
                                 {#each ["beginner", "medium", "hard"] as diff}
                                     <button
                                         type="button"
-                                        on:click={() =>
+                                        onclick={() =>
                                             state.setDifficulty(diff)}
                                         class={`flex-1 py-3 px-2 rounded-xl border-2 font-bold uppercase tracking-widest text-[9px] transition-all
                                             ${$form.difficulty === diff ? "border-primary-600 bg-primary-50 text-primary-600" : "border-slate-50 bg-slate-50 text-slate-400"}`}
@@ -236,7 +237,33 @@
                         </div>
                     </div>
                 </div>
-            </div></DataForm
-        >
+            </div>
+
+            <div class="pt-6 border-t border-slate-100 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    
+                </div>
+
+                <div class="flex gap-4">
+                    
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        size="lg"
+                        class="shadow-xl shadow-primary-900/20"
+                        icon={Save}
+                        disabled={$form.processing}
+                    >
+                        {#if $form.processing}
+                            Memproses...
+                        {:else}
+                            SIMPAN INSTRUMEN
+                        {/if}
+                    </Button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
     </div>
 </App>

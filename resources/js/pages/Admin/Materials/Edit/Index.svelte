@@ -1,9 +1,8 @@
 <script>
     import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/ui/PageHeader.svelte";
+    import PageHeader from "@/components/shared/PageHeader.svelte";
     import Button from "@/components/ui/Button.svelte";
-    import DataForm from "@/components/ui/DataForm.svelte";
-    import Input from "@/components/ui/Input.svelte";
+        import Input from "@/components/ui/Input.svelte";
     import Alert from "@/components/ui/Alert.svelte";
     import ImageUpload from "@/components/ui/ImageUpload.svelte";
 
@@ -28,22 +27,16 @@
             </div>
         </PageHeader>
 
-        <DataForm
-            title="Sinkronisasi & Konten Modul"
-            onSubmit={() => state.submit()}
-            isEdit={state.isEdit}
-            processing={$form.processing}
-            submitLabel="SIMPAN PERUBAHAN"
-            submitIcon={CloudUpload}
-        >
-            <svelte:fragment slot="footer-left">
-                <CloudUpload size={14} class="text-primary-600 animate-pulse" />
-                <span
-                    class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
-                    >Sinkronisasi Cloud: Terhubung & Siap</span
-                >
-            </svelte:fragment>
+        
+<form onsubmit={(e) => { e.preventDefault(); () => state.submit()(e); }} class="space-y-12">
+    <div class="bg-white rounded-3xl p-6 shadow-2xl border border-slate-100 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
+        <div class="mb-6">
+            <h3 class="text-lg font-bold text-slate-800">
+                Sinkronisasi & Konten Modul
+            </h3>
+        </div>
 
+        <div class="space-y-10 p-6">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
                 <div class="lg:col-span-2 space-y-6">
                     <div class="space-y-2">
@@ -111,6 +104,36 @@
                     </p>
                 {/if}
             </div>
-        </DataForm>
+
+            <div class="pt-6 border-t border-slate-100 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <CloudUpload size={14} class="text-primary-600 animate-pulse" />
+                <span
+                    class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
+                    >Sinkronisasi Cloud: Terhubung & Siap</span
+                >
+                </div>
+
+                <div class="flex gap-4">
+                    
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        size="lg"
+                        class="shadow-xl shadow-primary-900/20"
+                        icon={CloudUpload}
+                        disabled={$form.processing}
+                    >
+                        {#if $form.processing}
+                            Memproses...
+                        {:else}
+                            SIMPAN PERUBAHAN
+                        {/if}
+                    </Button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
     </div>
 </App>

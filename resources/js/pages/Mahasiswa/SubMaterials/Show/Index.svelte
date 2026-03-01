@@ -1,7 +1,6 @@
 <script>
     import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/ui/PageHeader.svelte";
-    import Card from "@/components/ui/Card.svelte";
+        import Card from "@/components/ui/Card.svelte";
     import Button from "@/components/ui/Button.svelte";
     import ContentDisplay from "@/components/ui/ContentDisplay.svelte";
     import { Link } from "@inertiajs/svelte";
@@ -68,11 +67,21 @@
         </div>
 
         <!-- Header -->
-        <PageHeader
-            title={state.subMaterial.title}
-            subtitle={`Bagian ${state.subMaterial.order} dari modul ${state.material.title}.`}
-        >
-            <div slot="actions">
+        
+<div class="mb-8">
+    <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight font-display">
+        {state.subMaterial.title}
+    </h1>
+    <div class="flex items-center gap-2 mt-3" role="presentation">
+        <div class="h-1.5 w-12 bg-primary-600 rounded-full"></div>
+        <div class="h-1.5 w-4 bg-slate-200 rounded-full"></div>
+        <div class="h-1.5 w-2 bg-slate-100 rounded-full"></div>
+    </div>
+    <p class="mt-4 text-slate-500 font-medium leading-relaxed max-w-3xl">
+        {`Bagian ${state.subMaterial.order} dari modul ${state.material.title}.`}
+    </p>
+    <div class="mt-6 flex flex-wrap gap-4">
+        <div>
                 <div class="flex items-center gap-4">
                     <div
                         class={`px-4 py-2 ${getBgClass(state.subMaterial.jenis_konten)} rounded-2xl flex items-center justify-center`}
@@ -119,7 +128,8 @@
                     </span>
                 </div>
             </div>
-        </PageHeader>
+    </div>
+</div>
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-12">
             <div bind:this={contentContainer} class="lg:col-span-3">

@@ -22,7 +22,11 @@
         Star,
     } from "lucide-svelte";
 
-    let { state }: { state: QuestionShowState } = $props();
+    interface Props {
+        state: QuestionShowState;
+    }
+
+    let { state }: Props = $props();
 
     let actionCode = $derived(
         state.feedbackData?.adaptiveResult?.triggered_rule?.action || null,
@@ -69,7 +73,7 @@
         )
             return "intervention";
 
-        if (["H01", "H02", "H03", "H04"].includes(actionCode))
+        if (["H01", "H02", "H03", "H04"].includes(actionCode || ""))
             return "intervention";
         if (actionCode === "H06") return "acceleration";
         if (actionCode === "H07") return "backtrack";
@@ -190,11 +194,10 @@
                         <div
                             class="w-32 h-32 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl border-4 border-white/30"
                         >
-                            <svelte:component
-                                this={IconComponent}
-                                size={64}
-                                class="text-white"
-                            />
+                            {#if IconComponent}
+                                {@const Icon = IconComponent as any}
+                                <Icon size={64} class="text-white" />
+                            {/if}
                         </div>
                         <h2
                             class="text-5xl font-bold mb-3 tracking-widest drop-shadow-lg"
@@ -246,11 +249,10 @@
                         <div
                             class="w-24 h-24 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl border-4 border-white/30 animate-pulse"
                         >
-                            <svelte:component
-                                this={IconComponent}
-                                size={48}
-                                class="text-white"
-                            />
+                            {#if IconComponent}
+                                {@const Icon = IconComponent as any}
+                                <Icon size={48} class="text-white" />
+                            {/if}
                         </div>
                         <Badge
                             variant="secondary"
@@ -310,11 +312,10 @@
                         <div
                             class={`w-24 h-24 ${actionCode === "H01" || actionCode === "H02" ? "bg-amber-100" : "bg-purple-100"} rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg`}
                         >
-                            <svelte:component
-                                this={IconComponent}
-                                size={48}
-                                class={iconColor}
-                            />
+                            {#if IconComponent}
+                                {@const Icon = IconComponent as any}
+                                <Icon size={48} class={iconColor} />
+                            {/if}
                         </div>
                         <Badge
                             variant="outline"
@@ -442,7 +443,7 @@
 
                     <Button
                         variant="primary"
-                        on:click={() => state.handleNext()}
+                        onclick={() => state.handleNext()}
                         class="w-full py-4 uppercase tracking-widest text-base font-bold"
                     >
                         {nextAction}
@@ -454,11 +455,10 @@
                     <div
                         class="w-24 h-24 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg"
                     >
-                        <svelte:component
-                            this={IconComponent}
-                            size={48}
-                            class={iconColor}
-                        />
+                        {#if IconComponent}
+                            {@const Icon = IconComponent as any}
+                            <Icon size={48} class={iconColor} />
+                        {/if}
                     </div>
                     <Badge
                         variant="outline"
@@ -521,11 +521,10 @@
                         <div
                             class="w-28 h-28 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl border-4 border-white/30"
                         >
-                            <svelte:component
-                                this={IconComponent}
-                                size={56}
-                                class="text-white"
-                            />
+                            {#if IconComponent}
+                                {@const Icon = IconComponent as any}
+                                <Icon size={56} class="text-white" />
+                            {/if}
                         </div>
                         <Badge
                             variant="secondary"
@@ -570,11 +569,10 @@
             {:else}
                 <div class="p-12 text-center">
                     <div class="text-8xl mb-6">
-                        <svelte:component
-                            this={IconComponent}
-                            size={96}
-                            class={iconColor + " mx-auto"}
-                        />
+                        {#if IconComponent}
+                            {@const Icon = IconComponent as any}
+                            <Icon size={96} class={iconColor + " mx-auto"} />
+                        {/if}
                     </div>
 
                     <h2

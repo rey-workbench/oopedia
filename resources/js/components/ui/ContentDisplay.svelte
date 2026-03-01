@@ -4,17 +4,19 @@
     import DOMPurify from "dompurify";
     import "highlight.js/styles/atom-one-dark.css";
 
-    let { content = "" } = $props();
+    interface Props {
+        content?: string;
+    }
 
-    let contentContainer: HTMLDivElement;
+    let { content = "" }: Props = $props();
 
-    const safeContent = $derived(
-        content ? DOMPurify.sanitize(content) : ""
-    );
+    let contentContainer: HTMLDivElement | undefined = $state();
+
+    const safeContent = $derived(content ? DOMPurify.sanitize(content) : "");
 
     $effect(() => {
         if (safeContent && contentContainer) {
-            tick().then(() => enhanceCodeBlocks(contentContainer));
+            tick().then(() => enhanceCodeBlocks(contentContainer!));
         }
     });
 </script>

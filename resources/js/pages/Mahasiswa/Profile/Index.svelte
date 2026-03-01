@@ -1,12 +1,11 @@
 <script>
     import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/ui/PageHeader.svelte";
-    import DarkHeroPanel from "@/components/ui/DarkHeroPanel.svelte";
+        import DarkHeroPanel from "@/components/shared/DarkHeroPanel.svelte";
     import Card from "@/components/ui/Card.svelte";
     import Input from "@/components/ui/Input.svelte";
     import Button from "@/components/ui/Button.svelte";
     import Alert from "@/components/ui/Alert.svelte";
-    import StatsGrid from "@/components/ui/StatsGrid.svelte";
+    import StatsGrid from "@/components/shared/StatsGrid.svelte";
     import {
         ShieldCheck,
         UserCircle,
@@ -126,11 +125,21 @@
 <App title="Profil Mahasiswa">
     <div class="space-y-12">
         <!-- Header -->
-        <PageHeader
-            title="Profil Saya"
-            subtitle="Atur informasi akun dan keamanan Anda untuk pengalaman belajar yang lebih personal."
-        >
-            <div slot="actions">
+        
+<div class="mb-8">
+    <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight font-display">
+        Profil Saya
+    </h1>
+    <div class="flex items-center gap-2 mt-3" role="presentation">
+        <div class="h-1.5 w-12 bg-primary-600 rounded-full"></div>
+        <div class="h-1.5 w-4 bg-slate-200 rounded-full"></div>
+        <div class="h-1.5 w-2 bg-slate-100 rounded-full"></div>
+    </div>
+    <p class="mt-4 text-slate-500 font-medium leading-relaxed max-w-3xl">
+        Atur informasi akun dan keamanan Anda untuk pengalaman belajar yang lebih personal.
+    </p>
+    <div class="mt-6 flex flex-wrap gap-4">
+        <div>
                 <div
                     class="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-2xl border border-emerald-100"
                 >
@@ -141,7 +150,8 @@
                     >
                 </div>
             </div>
-        </PageHeader>
+    </div>
+</div>
 
         <!-- Profile Hero Card -->
         <DarkHeroPanel

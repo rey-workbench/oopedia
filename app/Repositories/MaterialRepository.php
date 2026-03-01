@@ -144,4 +144,12 @@ class MaterialRepository implements MaterialRepositoryInterface
 
         return $query->findOrFail($id);
     }
+
+    public function getMaterialsForListing(): Collection
+    {
+        return Material::with(['media', 'creator'])
+            ->withCount('questions')
+            ->orderBy('created_at', 'asc')
+            ->get();
+    }
 }

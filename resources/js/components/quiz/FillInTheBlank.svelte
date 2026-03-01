@@ -1,15 +1,22 @@
-<script>
+<script lang="ts">
     import Input from "@/components/ui/Input.svelte";
     import { HelpCircle } from "lucide-svelte";
+    import type { Question } from "@/types";
+
+    interface Props {
+        question: Question;
+        answerText?: string;
+        oninput?: (text: string) => void;
+    }
 
     let {
         question,
         answerText = $bindable(""),
         oninput = (text) => {},
-    } = $props();
+    }: Props = $props();
 
-    function handleInput(event) {
-        const text = event.target.value;
+    function handleInput(event: Event) {
+        const text = (event.target as HTMLInputElement).value;
         answerText = text;
         oninput(text);
     }
