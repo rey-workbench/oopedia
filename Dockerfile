@@ -59,24 +59,26 @@ RUN composer dump-autoload --optimize
 COPY --from=roadrunner /usr/bin/rr /usr/bin/rr
 
 # Prepare entrypoint script
-RUN echo '#!/bin/bash\n\
-    PORT=\${PORT:-8080}\n\
-    \n\
-    export LOG_CHANNEL=stderr\n\
-    \n\
-    php artisan config:clear || true\n\
-    php artisan storage:link --force || true\n\
-    php artisan octane:install --server=roadrunner --force || true\n\
-    php artisan config:cache || true\n\
-    php artisan route:cache || true\n\
-    php artisan view:cache || true\n\
-    php artisan event:cache || true\n\
-    php artisan migrate --force || true\n\
-    \n\
-    echo "Starting Laravel Octane on port \$PORT..."\n\
-    exec php artisan octane:start --server=roadrunner --host=0.0.0.0 --port=\$PORT'\n\
-    > /usr/local/bin/entrypoint.sh \
-    && chmod +x /usr/local/bin/entrypoint.sh
+RUN cat <<'EOF' > /usr/local/bin/entrypoint.sh
+#!/bin/bash
+PORT=${PORT:-8080}
+
+export LOG_CHANNEL=stderr
+
+php artisan config:clear || true
+php artisan storage:link --force || true
+php artisan octane:install --server=roadrunner --force || true
+php artisan config:cache || true
+php artisan route:cache || true
+php artisan view:cache || true
+php artisan event:cache || true
+php artisan migrate --force || true
+
+echo "Starting Laravel Octane on port ${PORT}..."
+exec php artisan octane:start --server=roadrunner --host=0.0.0.0 --port=${PORT}
+EOF
+
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/html \
