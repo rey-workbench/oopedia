@@ -8,13 +8,14 @@
     import { Shapes, Users, Puzzle, Play, Lock } from "lucide-svelte";
     import { Link } from "@inertiajs/svelte";
     import { ROUTES } from "@/utils/route";
+    import { untrack } from 'svelte';
     import { QuestionListState } from "@/states/Mahasiswa/QuizState.svelte";
 
     import type { Material } from "@/types";
 
     const { materials = [] }: { materials: Material[] } = $props();
 
-    const state = new QuestionListState(materials);
+    const state = untrack(() => new QuestionListState(materials));
 </script>
 
 <App title="Latihan Soal PBO">

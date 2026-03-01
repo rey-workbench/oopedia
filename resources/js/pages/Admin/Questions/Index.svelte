@@ -15,16 +15,17 @@
     } from "lucide-svelte";
     import PageHeader from "@/components/shared/PageHeader.svelte";
     import { ROUTES } from "@/utils/route";
+    import { untrack } from 'svelte';
     import { QuestionListAdminState } from "@/states/Admin/QuestionState.svelte";
 
     let { questions = { data: [] }, material = null, search = "", difficulty = "" }: { questions: any; material: any; search: string; difficulty: string } = $props();
 
-    const state = new QuestionListAdminState(
+    const state = untrack(() => new QuestionListAdminState(
         questions,
         material,
         search,
         difficulty,
-    );
+    ));
 
     const columns = $derived([
         { key: "question", label: "Pertanyaan", align: "left" },

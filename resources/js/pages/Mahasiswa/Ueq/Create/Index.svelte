@@ -9,12 +9,13 @@
         MessageSquare,
         Send,
     } from "lucide-svelte";
+    import { untrack } from 'svelte';
     import { UeqSurveyState } from "@/states/Mahasiswa/UeqSurveyState.svelte";
     import Input from "@/components/ui/Input.svelte";
 
     const { aspects = [] }: { aspects: { name: string }[] } = $props();
 
-    const state = new UeqSurveyState(aspects);
+    const state = untrack(() => new UeqSurveyState(aspects));
 </script>
 
 <App title="UEQ Survey">

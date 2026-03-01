@@ -23,13 +23,13 @@
     } from "@/utils/contentTypeStyles";
     import { SubMaterialState } from "@/states/Mahasiswa/MaterialState.svelte";
     import { ROUTES } from "@/utils/route";
-    import { onMount, tick } from "svelte";
+    import { onMount, tick, untrack } from "svelte";
     import { enhanceCodeBlocks } from "@/utils/codeBlockEnhancer";
     import type { Material, SubMaterial } from "@/types";
 
     const { material, subMaterial }: { material: Material; subMaterial: SubMaterial } = $props();
 
-    const state = new SubMaterialState(material, subMaterial);
+    const state = untrack(() => new SubMaterialState(material, subMaterial));
 
     let contentContainer: HTMLElement | undefined;
 

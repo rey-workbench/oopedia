@@ -5,6 +5,7 @@
     import Badge from "@/components/ui/Badge.svelte";
     import Pagination from "@/components/ui/Pagination.svelte";
     import EmptyState from "@/components/ui/EmptyState.svelte";
+    import { untrack } from 'svelte';
     import { UserListState } from "@/states/Admin/UserState.svelte";
     import { Clock, UserPlus, ShieldCheck, Edit2, Trash2 } from "lucide-svelte";
     import { page } from "@inertiajs/svelte";
@@ -16,7 +17,7 @@
         new URLSearchParams(window.location.search).get("search") || ""
     );
 
-    const listState = new UserListState(users, search);
+    const listState = untrack(() => new UserListState(users, search));
 
     const authUser = $derived(($page.props as any)['auth'].user);
     const isSuperAdmin = $derived((authUser as any)?.role_id === 1);

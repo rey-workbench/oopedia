@@ -4,6 +4,7 @@
     import Button from "@/components/ui/Button.svelte";
     import GuestBanner from "@/components/shared/GuestBanner.svelte";
     import { ArrowLeft, Map as MapIcon } from "lucide-svelte";
+    import { untrack } from 'svelte';
     import { LevelMapState } from "@/states/Mahasiswa/QuizState.svelte";
     import { ROUTES } from "@/utils/route";
     import LevelMapLegend from "@/components/quiz/LevelMapLegend.svelte";
@@ -18,7 +19,7 @@
 
     let { material, levels }: Props = $props();
 
-    const state = new LevelMapState(material, levels as LevelItem[]);
+    const state = untrack(() => new LevelMapState(material, levels as LevelItem[]));
 </script>
 
 <App title={`Peta Tantangan - ${state.material.title}`}>

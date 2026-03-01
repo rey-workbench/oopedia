@@ -7,11 +7,12 @@
     import Badge from "@/components/ui/Badge.svelte";
     import { Plus, ArrowLeft, Layers, Edit2, Trash2 } from "lucide-svelte";
     import { ROUTES } from "@/utils/route";
+    import { untrack } from 'svelte';
     import { SubmaterialListState } from "@/states/Admin/MaterialState.svelte";
 
     let { material, subMaterials = [] }: { material: any; subMaterials: any[] } = $props();
 
-    const state = new SubmaterialListState(material, subMaterials);
+    const state = untrack(() => new SubmaterialListState(material, subMaterials));
 
     const columns = $derived([
         { key: "order", label: "Urutan", align: "left" },

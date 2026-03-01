@@ -25,13 +25,14 @@
         Loader2,
         Save,
     } from "lucide-svelte";
+    import { untrack } from 'svelte';
     import { ProfileState } from "@/states/Mahasiswa/ProfileState.svelte";
 
     import type { StudentProfile } from "@/types";
 
     const { personalization }: { personalization: StudentProfile | null } = $props();
 
-    const state = new ProfileState(personalization);
+    const state = untrack(() => new ProfileState(personalization));
 
     const personalizationStats = $derived([
         {

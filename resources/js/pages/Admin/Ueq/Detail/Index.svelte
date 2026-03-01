@@ -6,11 +6,12 @@
     import { formatDate } from "@/utils/formatters";
     import UserAvatar from "@/components/ui/UserAvatar.svelte";
     import ProgressBar from "@/components/ui/ProgressBar.svelte";
+    import { untrack } from 'svelte';
     import { UeqDetailState } from "@/states/Admin/UeqState.svelte";
 
     let { user, survey }: { user: any; survey: any } = $props();
 
-    const state = new UeqDetailState(user, survey);
+    const state = untrack(() => new UeqDetailState(user, survey));
 </script>
 
 <App title={`Detail UEQ - ${state.user.name}`}>

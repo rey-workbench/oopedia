@@ -18,6 +18,7 @@
         Plus,
     } from "lucide-svelte";
     import { ROUTES } from "@/utils/route";
+    import { untrack } from 'svelte';
     import { DashboardState } from "@/states/Mahasiswa/DashboardState.svelte";
     import type { MahasiswaDashboardProps } from "@/types";
 
@@ -38,7 +39,7 @@
         allMaterials = [],
     }: Omit<MahasiswaDashboardProps, 'auth' | 'flash' | 'errors'> = $props();
 
-    const state = new DashboardState({
+    const state = untrack(() => new DashboardState({
         totalMaterials,
         totalQuestions,
         easyQuestions,
@@ -53,7 +54,7 @@
         totalCorrectQuestions,
         recentActivities,
         allMaterials,
-    });
+    }));
 
     const dashboardStats = $derived([
         {

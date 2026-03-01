@@ -4,6 +4,7 @@
     import Card from "@/components/ui/Card.svelte";
     import ProgressBar from "@/components/ui/ProgressBar.svelte";
     import UserAvatar from "@/components/ui/UserAvatar.svelte";
+    import { untrack } from 'svelte';
     import { AdminDashboardState } from "@/states/Admin/DashboardState.svelte";
     import {
         Users,
@@ -19,7 +20,7 @@
 
     let { totalStudents, totalMaterials, totalQuestions, activeStudents, recentProgress, studentProgress, popularMaterials, studentAnalytics }: { totalStudents: any; totalMaterials: any; totalQuestions: any; activeStudents: any; recentProgress: any; studentProgress: any; popularMaterials: any; studentAnalytics: any } = $props();
 
-    const state = new AdminDashboardState({
+    const state = untrack(() => new AdminDashboardState({
         totalStudents,
         totalMaterials,
         totalQuestions,
@@ -28,7 +29,7 @@
         studentProgress,
         popularMaterials,
         studentAnalytics,
-    } as any);
+    } as any));
 
     const distribution = $derived(state.studentAnalytics?.distribution ?? {});
     const radar = $derived(state.studentAnalytics?.radar ?? {});

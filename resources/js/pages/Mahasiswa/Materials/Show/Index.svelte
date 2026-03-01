@@ -5,7 +5,7 @@
     import ContentDisplay from "@/components/ui/ContentDisplay.svelte";
     import { page } from "@inertiajs/svelte";
     import { ArrowLeft, BookOpen, Layers, Info, Puzzle } from "lucide-svelte";
-    import { onMount, tick } from "svelte";
+    import { onMount, tick, untrack } from "svelte";
     import { enhanceCodeBlocks } from "@/utils/codeBlockEnhancer";
     import { MaterialShowState } from "@/states/Mahasiswa/MaterialState.svelte";
     import { ROUTES } from "@/utils/route";
@@ -41,7 +41,7 @@
 
     // Initialize State
     const fromAdaptive = ($page.props as any)?.flash?.from_adaptive || false;
-    const state = new MaterialShowState(material, fromAdaptive);
+    const state = untrack(() => new MaterialShowState(material, fromAdaptive));
 </script>
 
 <App title={state.material?.title || "Material"}>

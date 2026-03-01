@@ -31,12 +31,12 @@
         studentState: QuizSessionState;
     } = $props();
 
-    let state = new QuestionShowState(
+    let state = untrack(() => new QuestionShowState(
         material,
         currentQuestion as Question,
         difficulty,
         studentState,
-    );
+    ));
 
     $effect(() => {
         // Track the incoming props — this block re-runs only when Inertia

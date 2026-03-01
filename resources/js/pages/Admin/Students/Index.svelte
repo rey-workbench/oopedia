@@ -19,6 +19,7 @@
     import Input from "@/components/ui/Input.svelte";
     import PageHeader from "@/components/shared/PageHeader.svelte";
     import { ROUTES } from "@/utils/route";
+    import { untrack } from 'svelte';
     import {
         StudentListState,
         StudentRegisterState,
@@ -31,7 +32,7 @@
     );
     let openModal: boolean = $state(false);
 
-    const listState = new StudentListState(students, search);
+    const listState = untrack(() => new StudentListState(students, search));
 
     const registerState = new StudentRegisterState();
 

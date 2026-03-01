@@ -6,11 +6,12 @@
     import QuillEditor from "@/components/ui/QuillEditor.svelte";
     import { ArrowLeft, Save } from "lucide-svelte";
     import { ROUTES } from "@/utils/route";
+    import { untrack } from 'svelte';
     import { SubmaterialFormState } from "@/states/Admin/MaterialState.svelte";
 
     let { material } = $props();
 
-    const state = new SubmaterialFormState(material, null);
+    const state = untrack(() => new SubmaterialFormState(material, null));
 </script>
 
 <App title={`Buat Sub-Materi untuk ${material.title}`}>

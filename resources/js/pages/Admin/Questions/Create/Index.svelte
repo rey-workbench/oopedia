@@ -5,16 +5,17 @@
     import QuillEditor from "@/components/ui/QuillEditor.svelte";
     import { ArrowLeft, Save, Plus, X, CheckCircle2 } from "lucide-svelte";
     import { ROUTES } from "@/utils/route";
+    import { untrack } from 'svelte';
     import { QuestionFormState } from "@/states/Admin/QuestionState.svelte";
 
     let { materials = [], material = null, subMaterials = [] } = $props();
 
-    const state = new QuestionFormState(
+    const state = untrack(() => new QuestionFormState(
         materials,
         material,
         subMaterials,
         null,
-    );
+    ));
 </script>
 
 <App title="Buat Instrumen Baru">

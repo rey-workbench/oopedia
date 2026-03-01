@@ -6,13 +6,14 @@
     import ProgressBar from "@/components/ui/ProgressBar.svelte";
     import UserAvatar from "@/components/ui/UserAvatar.svelte";
     import LeaderboardPodium from "./components/LeaderboardPodium.svelte";
+    import { untrack } from 'svelte';
     import { LeaderboardState } from "@/states/Mahasiswa/LeaderboardState.svelte";
 
     import type { LeaderboardEntry } from "@/types";
 
     const { leaderboardData = [] }: { leaderboardData: LeaderboardEntry[] } = $props();
 
-    const state = new LeaderboardState(leaderboardData);
+    const state = untrack(() => new LeaderboardState(leaderboardData));
 
     const columns = [
         { key: "rank", label: "Peringkat", align: "left" },

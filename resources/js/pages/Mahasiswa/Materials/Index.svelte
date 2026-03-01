@@ -5,13 +5,14 @@
     import { Code, Puzzle, BookOpen, Ghost, ArrowRight } from "lucide-svelte";
     import { formatDate } from "@/utils/formatters";
     import { ROUTES } from "@/utils/route";
+    import { untrack } from 'svelte';
     import { MaterialCatalogState } from "@/states/Mahasiswa/MaterialState.svelte";
 
     import type { Material } from "@/types";
 
     const { materials = [] }: { materials: Material[] } = $props();
 
-    const state = new MaterialCatalogState(materials);
+    const state = untrack(() => new MaterialCatalogState(materials));
 </script>
 
 <App title="Materi Pembelajaran">

@@ -6,11 +6,12 @@
     import InfoPanel from "@/components/shared/InfoPanel.svelte";
     import { ArrowLeft, Save, Lock } from "lucide-svelte";
     import { ROUTES } from "@/utils/route";
+    import { untrack } from 'svelte';
     import { UserFormState } from "@/states/Admin/UserState.svelte";
 
     let { user } = $props();
 
-    const state = new UserFormState(user);
+    const state = untrack(() => new UserFormState(user));
     const form = state.form;
 
     const safeUpdateItems = [

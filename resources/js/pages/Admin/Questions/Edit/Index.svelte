@@ -4,11 +4,12 @@
     import Button from "@/components/ui/Button.svelte";
     import QuillEditor from "@/components/ui/QuillEditor.svelte";
     import { ArrowLeft, RefreshCw, Plus, X } from "lucide-svelte";
+    import { untrack } from 'svelte';
     import { QuestionEditState } from "@/states/Admin/QuestionState.svelte";
 
     let { materials = [], material = null, subMaterials = [], question } = $props();
 
-    const state = new QuestionEditState(question, subMaterials);
+    const state = untrack(() => new QuestionEditState(question, subMaterials));
     const form = state.form;
 </script>
 

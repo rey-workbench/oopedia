@@ -12,6 +12,7 @@
         Book,
         Play,
     } from "lucide-svelte";
+    import { untrack } from 'svelte';
     import { InProgressState } from "@/states/Mahasiswa/MaterialState.svelte";
     import { ROUTES } from "@/utils/route";
 
@@ -19,7 +20,7 @@
 
     const { materialsWithStats = [] }: { materialsWithStats: MaterialWithStats[] } = $props();
 
-    const state = new InProgressState(materialsWithStats);
+    const state = untrack(() => new InProgressState(materialsWithStats));
 </script>
 
 <App title="Materi Sedang Dipelajari">

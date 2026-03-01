@@ -8,11 +8,12 @@
     import { ArrowLeft, Inbox, UserCheck, UserX } from "lucide-svelte";
     import { ROUTES } from "@/utils/route";
     import { formatDate } from "@/utils/formatters";
+    import { untrack } from 'svelte';
     import { PendingAdminState } from "@/states/Admin/UserState.svelte";
 
     let { pendingAdmins = [] }: { pendingAdmins: any[] } = $props();
 
-    const state = new PendingAdminState(pendingAdmins);
+    const state = untrack(() => new PendingAdminState(pendingAdmins));
 
     const columns = [
         { key: "identity", label: "Identitas", align: "left" },

@@ -5,13 +5,14 @@
     import Card from "@/components/ui/Card.svelte";
     import Badge from "@/components/ui/Badge.svelte";
     import { ArrowLeft, Medal, GraduationCap, Book, CheckCircle2, RotateCcw } from "lucide-svelte";
+    import { untrack } from 'svelte';
     import { CompletedState } from "@/states/Mahasiswa/MaterialState.svelte";
     import { ROUTES } from "@/utils/route";
     import type { MaterialWithStats } from "@/types";
 
     const { materialsWithStats = [] }: { materialsWithStats: MaterialWithStats[] } = $props();
 
-    const state = new CompletedState(materialsWithStats);
+    const state = untrack(() => new CompletedState(materialsWithStats));
 </script>
 
 <App title="Materi Selesai">

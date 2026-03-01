@@ -14,6 +14,7 @@
         Book,
         FileText,
     } from "lucide-svelte";
+    import { untrack } from 'svelte';
     import { ReviewState } from "@/states/Mahasiswa/QuizState.svelte";
     import type { Material, QuestionWithAttempt, DifficultyLevel } from "@/types";
 
@@ -24,7 +25,7 @@
         difficulty = "all",
     }: { material: Material; materials: Material[]; questions: QuestionWithAttempt[]; difficulty: DifficultyLevel | 'all' } = $props();
 
-    const state = new ReviewState(material, materials, questions, difficulty);
+    const state = untrack(() => new ReviewState(material, materials, questions, difficulty));
 
     $effect(() => {
         state.material = material;

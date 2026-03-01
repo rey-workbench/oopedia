@@ -6,13 +6,14 @@
     import StatsGrid from "@/components/shared/StatsGrid.svelte";
     import UserAvatar from "@/components/ui/UserAvatar.svelte";
     import { BarChart3, FileDown, Eye } from "lucide-svelte";
+    import { untrack } from 'svelte';
     import { UeqListState } from "@/states/Admin/UeqState.svelte";
     import { formatDate } from "@/utils/formatters";
     import { ROUTES } from "@/utils/route";
 
     let { surveys = [], averages = {}, classes = [], activeClass = "" }: { surveys: any[]; averages: Record<string, number>; classes: string[]; activeClass: string } = $props();
 
-    const state = new UeqListState(surveys, averages, classes, activeClass);
+    const state = untrack(() => new UeqListState(surveys, averages, classes, activeClass));
 
     const columns = $derived([
         { key: "respondent", label: "Responden", align: "left" },

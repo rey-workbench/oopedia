@@ -10,15 +10,16 @@
     import { ArrowLeft, LineChart, CheckCheck, Zap } from "lucide-svelte";
     import { formatDate } from "@/utils/formatters";
     import { ROUTES } from "@/utils/route";
+    import { untrack } from 'svelte';
     import { StudentProgressState } from "@/states/Admin/StudentState.svelte";
 
     let { student, materials = [], missingQuestionsByMaterial = [] }: { student: any; materials: any[]; missingQuestionsByMaterial: any[] } = $props();
 
-    const state = new StudentProgressState(
+    const state = untrack(() => new StudentProgressState(
         student,
         materials,
         missingQuestionsByMaterial,
-    );
+    ));
 
     const progressStats = $derived([
         {

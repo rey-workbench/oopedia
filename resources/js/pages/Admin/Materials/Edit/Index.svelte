@@ -6,13 +6,14 @@
     import Alert from "@/components/ui/Alert.svelte";
     import ImageUpload from "@/components/ui/ImageUpload.svelte";
     import QuillEditor from "@/components/ui/QuillEditor.svelte";
+    import { untrack } from 'svelte';
     import { MaterialFormState } from "@/states/Admin/MaterialState.svelte";
     import { ROUTES } from "@/utils/route";
     import { ArrowLeft, RefreshCw, CloudUpload } from "lucide-svelte";
 
     let { material } = $props();
 
-    const state = new MaterialFormState(material);
+    const state = untrack(() => new MaterialFormState(material));
 </script>
 
 <App title="Edit Materi">
