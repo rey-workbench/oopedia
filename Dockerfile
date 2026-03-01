@@ -60,7 +60,7 @@ COPY --from=roadrunner /usr/bin/rr /usr/bin/rr
 
 # Prepare entrypoint script
 RUN echo '#!/bin/bash\n\
-    PORT=${PORT:-8080}\n\
+    PORT=\${PORT:-8080}\n\
     \n\
     export LOG_CHANNEL=stderr\n\
     \n\
@@ -73,8 +73,8 @@ RUN echo '#!/bin/bash\n\
     php artisan event:cache || true\n\
     php artisan migrate --force || true\n\
     \n\
-    echo "Starting Laravel Octane on port $PORT..."\n\
-    exec php artisan octane:start --server=roadrunner --host=0.0.0.0 --port=$PORT'\n\
+    echo "Starting Laravel Octane on port \$PORT..."\n\
+    exec php artisan octane:start --server=roadrunner --host=0.0.0.0 --port=\$PORT'\n\
     > /usr/local/bin/entrypoint.sh \
     && chmod +x /usr/local/bin/entrypoint.sh
 
