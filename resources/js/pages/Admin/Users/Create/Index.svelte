@@ -1,7 +1,6 @@
 <script>
     import App from "@/layouts/App.svelte";
     import Button from "@/components/ui/Button.svelte";
-    import DataForm from "@/components/ui/DataForm.svelte";
     import Input from "@/components/ui/Input.svelte";
     import InfoPanel from "@/components/shared/InfoPanel.svelte";
     import { ArrowLeft, UserPlus, Shield, ChevronDown } from "lucide-svelte";
@@ -50,120 +49,162 @@
             </div>
         </div>
 
-        <DataForm
-            title="Arsitektur Kredensial & Identitas"
-            onSubmit={() => state.submit()}
-            isEdit={false}
-            processing={$form.processing}
-            submitLabel="OTORISASI ENTITAS"
-            submitIcon={UserPlus}
-            cancelHref={ROUTES.ADMIN.USERS.INDEX}
+        <form
+            onsubmit={(e) => {
+                e.preventDefault();
+                state.submit()(e);
+            }}
+            class="space-y-12"
         >
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                <div class="lg:col-span-2">
-                    <div class="space-y-8">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="space-y-2">
-                                <label
-                                    for="name"
-                                    class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
-                                    >Nama Lengkap</label
-                                >
-                                <Input
-                                    id="name"
-                                    bind:value={$form.name}
-                                    placeholder="John Doe"
-                                    error={$form.errors.name}
-                                />
-                            </div>
-                            <div class="space-y-2">
-                                <label
-                                    for="email"
-                                    class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
-                                    >Alamat Email</label
-                                >
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    bind:value={$form.email}
-                                    placeholder="john@email.com"
-                                    error={$form.errors.email}
-                                />
-                            </div>
-                        </div>
+            <div
+                class="bg-white rounded-3xl p-6 shadow-2xl border border-slate-100 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300"
+            >
+                <div class="mb-6">
+                    <h3 class="text-lg font-bold text-slate-800">
+                        Arsitektur Kredensial & Identitas
+                    </h3>
+                </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="space-y-2">
-                                <label
-                                    for="password"
-                                    class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
-                                    >Password</label
+                <div class="space-y-10 p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                        <div class="lg:col-span-2">
+                            <div class="space-y-8">
+                                <div
+                                    class="grid grid-cols-1 md:grid-cols-2 gap-6"
                                 >
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    bind:value={$form.password}
-                                    placeholder="••••••••"
-                                    error={$form.errors.password}
-                                />
-                            </div>
-                            <div class="space-y-2">
-                                <label
-                                    for="password_confirmation"
-                                    class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
-                                    >Konfirmasi Password</label
-                                >
-                                <Input
-                                    id="password_confirmation"
-                                    type="password"
-                                    bind:value={$form.password_confirmation}
-                                    placeholder="••••••••"
-                                />
-                            </div>
-                        </div>
-
-                        <div class="space-y-2">
-                            <label
-                                for="role_id"
-                                class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
-                                >Peran Sistem</label
-                            >
-                            <div class="relative">
-                                <select
-                                    id="role_id"
-                                    bind:value={$form.role_id}
-                                    class="w-full px-4 py-3 border-2 border-slate-100 rounded-2xl bg-white text-sm font-bold focus:ring-4 focus:ring-primary-50 focus:border-primary-500 outline-none transition-all appearance-none"
-                                >
-                                    <option value="">Pilih Peran</option>
-                                    {#each roles as role}
-                                        <option value={role.id}
-                                            >{role.name}</option
+                                    <div class="space-y-2">
+                                        <label
+                                            for="name"
+                                            class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
+                                            >Nama Lengkap</label
                                         >
-                                    {/each}
-                                </select>
-                                <ChevronDown
-                                    size={16}
-                                    class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
-                                />
-                            </div>
-                            {#if $form.errors.role_id}
-                                <p
-                                    class="text-[10px] font-bold text-rose-500 uppercase tracking-widest"
+                                        <Input
+                                            id="name"
+                                            bind:value={$form.name}
+                                            placeholder="John Doe"
+                                            error={$form.errors.name}
+                                        />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label
+                                            for="email"
+                                            class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
+                                            >Alamat Email</label
+                                        >
+                                        <Input
+                                            id="email"
+                                            type="email"
+                                            bind:value={$form.email}
+                                            placeholder="john@email.com"
+                                            error={$form.errors.email}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="grid grid-cols-1 md:grid-cols-2 gap-6"
                                 >
-                                    {$form.errors.role_id}
-                                </p>
-                            {/if}
+                                    <div class="space-y-2">
+                                        <label
+                                            for="password"
+                                            class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
+                                            >Password</label
+                                        >
+                                        <Input
+                                            id="password"
+                                            type="password"
+                                            bind:value={$form.password}
+                                            placeholder="••••••••"
+                                            error={$form.errors.password}
+                                        />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label
+                                            for="password_confirmation"
+                                            class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
+                                            >Konfirmasi Password</label
+                                        >
+                                        <Input
+                                            id="password_confirmation"
+                                            type="password"
+                                            bind:value={
+                                                $form.password_confirmation
+                                            }
+                                            placeholder="••••••••"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <label
+                                        for="role_id"
+                                        class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
+                                        >Peran Sistem</label
+                                    >
+                                    <div class="relative">
+                                        <select
+                                            id="role_id"
+                                            bind:value={$form.role_id}
+                                            class="w-full px-4 py-3 border-2 border-slate-100 rounded-2xl bg-white text-sm font-bold focus:ring-4 focus:ring-primary-50 focus:border-primary-500 outline-none transition-all appearance-none"
+                                        >
+                                            <option value="">Pilih Peran</option
+                                            >
+                                            {#each roles as role}
+                                                <option value={role.id}
+                                                    >{role.name}</option
+                                                >
+                                            {/each}
+                                        </select>
+                                        <ChevronDown
+                                            size={16}
+                                            class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                                        />
+                                    </div>
+                                    {#if $form.errors.role_id}
+                                        <p
+                                            class="text-[10px] font-bold text-rose-500 uppercase tracking-widest"
+                                        >
+                                            {$form.errors.role_id}
+                                        </p>
+                                    {/if}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="pt-6 border-t border-slate-100 flex items-center justify-between gap-4"
+                        >
+                            <div class="flex items-center gap-3"></div>
+
+                            <div class="flex gap-4">
+                                <Button
+                                    href={ROUTES.ADMIN.USERS.INDEX}
+                                    variant="ghost"
+                                >
+                                    <span
+                                        class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
+                                        >BATAL</span
+                                    >
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="primary"
+                                    size="lg"
+                                    class="shadow-xl shadow-primary-900/20"
+                                    icon={UserPlus}
+                                    disabled={$form.processing}
+                                >
+                                    {#if $form.processing}
+                                        Memproses...
+                                    {:else}
+                                        OTORISASI ENTITAS
+                                    {/if}
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="lg:col-span-1">
-                    <InfoPanel
-                        icon={Shield}
-                        title="Protokol Keamanan"
-                        items={securityItems}
-                    />
-                </div>
             </div>
-        </DataForm>
+        </form>
     </div>
 </App>
