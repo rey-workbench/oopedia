@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
     import PageHeader from "@/components/shared/PageHeader.svelte";
     import Button from "@/components/ui/Button.svelte";
@@ -20,32 +20,34 @@
     } from "lucide-svelte";
     import { ROUTES } from "@/utils/route";
 
-    export let materials = [];
-    $: totalMaterials = materials.length;
-    $: recentMaterials = materials.filter((m) => {
-        const date = new Date(m.created_at);
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-        return date >= thirtyDaysAgo;
-    }).length;
-    $: totalMedia = materials.reduce(
-        (acc, m) => acc + (m.media ? m.media.length : 0),
-        0,
+    let { materials = [] }: { materials: any[] } = $props();
+
+    const totalMaterials = $derived(materials.length);
+    const recentMaterials = $derived(
+        materials.filter((m) => {
+            const date = new Date(m.created_at);
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            return date >= thirtyDaysAgo;
+        }).length
+    );
+    const totalMedia = $derived(
+        materials.reduce((acc: number, m: any) => acc + (m.media ? m.media.length : 0), 0)
     );
 
     let search =
         new URLSearchParams(window.location.search).get("search") || "";
     const listState = new MaterialListState(materials, search);
 
-    $: columns = [
+    const columns = $derived([
         { key: "visual", label: "Pratinjau Visual", align: "left" },
         { key: "identity", label: "Identitas Modul", align: "left" },
         { key: "author", label: "Penulis Utama", align: "left" },
         { key: "sync", label: "Sinkronisasi Awal", align: "center" },
         { key: "actions", label: "Operasi", align: "right" },
-    ];
+    ]);
 
-    $: materialStats = [
+    const materialStats = $derived([
         {
             title: "Total Modul",
             value: totalMaterials,
@@ -67,7 +69,7 @@
             variant: "primary",
             footer: "Total aset multimedia",
         },
-    ];
+    ]);
 </script>
 
 <App title="Kelola Materi">
@@ -96,7 +98,7 @@
             title="Inventaris Konten"
             items={listState.materials}
             bind:search={listState.search}
-            onSearch={() => listState.handleSearch()}
+            onsearch={() => listState.handleSearch()}
             searchPlaceholder="Pindai materi..."
             {columns}
         >

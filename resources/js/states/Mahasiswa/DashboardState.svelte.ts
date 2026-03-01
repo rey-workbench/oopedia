@@ -1,13 +1,19 @@
 import { BaseState } from "@/states/BaseState.svelte";
-import type { MahasiswaDashboardProps, RecentActivityItem } from "@/types";
+
+type DashboardData = {
+    totalMaterials: number;
+    totalQuestions: number;
+    hardQuestions: number;
+    recentActivities: any[];
+};
 
 export class DashboardState extends BaseState {
     totalMaterials = $state(0);
     totalQuestions = $state(0);
     hardQuestions = $state(0);
-    recentActivities = $state<RecentActivityItem[]>([]);
+    recentActivities = $state<any[]>([]);
 
-    constructor(data: MahasiswaDashboardProps) {
+    constructor(data: DashboardData) {
         super();
         this.totalMaterials = data.totalMaterials;
         this.totalQuestions = data.totalQuestions;

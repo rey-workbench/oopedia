@@ -1,8 +1,6 @@
 <script lang="ts">
-    import type { Component } from "svelte";
-
     interface Props {
-        icon: Component<any> | string;
+        icon: any;
         title: string;
         items?: string[];
     }

@@ -1,7 +1,6 @@
-<script>
-    import { page } from "@inertiajs/svelte";
+<script lang="ts">
     import App from "@/layouts/App.svelte";
-        import Card from "@/components/ui/Card.svelte";
+    import Card from "@/components/ui/Card.svelte";
     import DataTable from "@/components/shared/DataTable.svelte";
     import Badge from "@/components/ui/Badge.svelte";
     import ProgressBar from "@/components/ui/ProgressBar.svelte";
@@ -9,11 +8,11 @@
     import LeaderboardPodium from "./components/LeaderboardPodium.svelte";
     import { LeaderboardState } from "@/states/Mahasiswa/LeaderboardState.svelte";
 
-    export let leaderboardData = [];
+    const { leaderboardData = [] }: { leaderboardData: any[] } = $props();
 
     const state = new LeaderboardState(leaderboardData);
 
-    $: columns = [
+    const columns = [
         { key: "rank", label: "Peringkat", align: "left" },
         { key: "student", label: "Mahasiswa", align: "left" },
         { key: "category", label: "Kategori", align: "left" },
@@ -55,7 +54,7 @@
                     rowClass={(item) =>
                         item.id === state.user?.id ? "bg-primary-50/50" : ""}
                 >
-                    <svelte:fragment slot="row" let:item={data}>
+                    {#snippet row(data)}
                         <td class="px-6 py-6 border-b border-slate-50">
                             {#if data.rank <= 3}
                                 <div
@@ -124,7 +123,7 @@
                                 >
                             </div>
                         </td>
-                    </svelte:fragment>
+                    {/snippet}
                 </DataTable>
             </Card>
         </div>

@@ -1,24 +1,14 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
     import PageHeader from "@/components/shared/PageHeader.svelte";
     import Button from "@/components/ui/Button.svelte";
     import QuillEditor from "@/components/ui/QuillEditor.svelte";
-    import { ArrowLeft, Edit2, RefreshCw, Plus, X } from "lucide-svelte";
+    import { ArrowLeft, RefreshCw, Plus, X } from "lucide-svelte";
     import { QuestionEditState } from "@/states/Admin/QuestionState.svelte";
-    import Input from "@/components/ui/Input.svelte";
 
-    export let materials = [];
-    export let material = null;
-    export let subMaterials = [];
-    export let question;
+    let { materials = [], material = null, subMaterials = [], question } = $props();
 
-    // Initialize State
-    const state = new QuestionEditState(question);
-
-    // Initialize submaterials
-    state.setSubMaterials(subMaterials);
-
-    // Proxy for easy access in template
+    const state = new QuestionEditState(question, subMaterials);
     const form = state.form;
 </script>
 
@@ -28,7 +18,7 @@
             title="Rekonfigurasi Soal"
             subtitle={`Memodifikasi instrumen penilaian #${question.id} untuk optimasi validitas.`}
         >
-            <div slot="actions">
+            {#snippet actions()}
                 <Button
                     href={material
                         ? `/admin/materials/${material.id}/questions`
@@ -36,7 +26,7 @@
                     variant="ghost"
                     icon={ArrowLeft}>BATALKAN</Button
                 >
-            </div>
+            {/snippet}
         </PageHeader>
 
         <form
@@ -64,14 +54,14 @@
                                     >Teks Pertanyaan (Rich Text)</span
                                 >
                                 <QuillEditor
-                                    bind:value={$form.question_text}
+                                    bind:value={form.question_text}
                                     placeholder="Deskripsikan problematik pemrograman di sini..."
                                 />
-                                {#if $form.errors.question_text}
+                                {#if form.errors && form.errors['question_text']}
                                     <p
                                         class="text-[10px] font-bold text-rose-500 uppercase tracking-widest"
                                     >
-                                        {$form.errors.question_text}
+                                        {form.errors['question_text']}
                                     </p>
                                 {/if}
                             </div>
@@ -94,7 +84,7 @@
                                     </Button>
                                 </div>
 
-                                {#each state.answers as answer, i}
+                                {#each form.answers || [] as answer, i}
                                     <div
                                         class="flex items-start gap-4 p-4 bg-slate-50 rounded-2xl border-2 border-slate-100 group"
                                     >
@@ -113,9 +103,8 @@
                                                 >
                                                     <input
                                                         type="checkbox"
-                                                        bind:checked={
-                                                            answer.is_correct
-                                                        }
+                                                        checked={answer.is_correct === 1}
+                                                        onchange={(e) => { answer.is_correct = (e.target as HTMLInputElement).checked ? 1 : 0; }}
                                                         class="w-4 h-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500 transition-colors"
                                                     />
                                                     <span
@@ -161,11 +150,9 @@
                                     >
                                     <select
                                         id="material_id"
-                                        bind:value={$form.material_id}
-                                        onchange={(e) =>
-                                            state.handleMaterialChange(
-                                                e.target.value,
-                                            )}
+                                        bind:value={form.material_id}
+                                        onchange={() =>
+                                            state.handleMaterialChange()}
                                         class="w-full px-4 py-3 border-2 border-slate-100 rounded-2xl bg-white text-sm font-bold focus:ring-4 focus:ring-primary-50 focus:border-primary-500 outline-none transition-all appearance-none"
                                     >
                                         <option value="">Pilih Materi</option>
@@ -186,7 +173,7 @@
                                         >
                                         <select
                                             id="sub_material_id"
-                                            bind:value={$form.sub_material_id}
+                                            bind:value={form.sub_material_id}
                                             class="w-full px-4 py-3 border-2 border-slate-100 rounded-2xl bg-white text-sm font-bold focus:ring-4 focus:ring-primary-50 focus:border-primary-500 outline-none transition-all appearance-none"
                                         >
                                             <option value=""
@@ -206,18 +193,16 @@
                                         class="text-[10px] font-bold uppercase text-slate-400 block"
                                         >Algoritma Tipe</span
                                     >
-                                    <div class="grid grid-cols-2 gap-3">
-                                        {#each ["multiple_choice", "true_false"] as type}
+                                    <div class="grid grid-cols-1 gap-3">
+                                        {#each ["radio_button", "fill_in_the_blank", "drag_and_drop"] as type}
                                             <button
                                                 type="button"
                                                 onclick={() =>
                                                     state.setType(type)}
-                                                class={`py-3 px-4 rounded-2xl border-2 font-bold uppercase tracking-widest text-[10px] transition-all
-                                        ${$form.question_type === type ? "border-primary-600 bg-primary-50 text-primary-600" : "border-slate-100 bg-slate-50 text-slate-400"}`}
+                                                class={`py-3 px-4 rounded-2xl border-2 font-bold uppercase tracking-widest text-[10px] transition-all text-left flex items-center justify-between
+                                        ${form.question_type === type ? "border-primary-600 bg-primary-50 text-primary-600" : "border-slate-100 bg-slate-50 text-slate-400"}`}
                                             >
-                                                {type === "multiple_choice"
-                                                    ? "Multiple Choice"
-                                                    : "True/False"}
+                                                {type.replace(/_/g, " ")}
                                             </button>
                                         {/each}
                                     </div>
@@ -229,7 +214,7 @@
                                         >Tingkat Kesulitan</span
                                     >
                                     <div class="space-y-2">
-                                        {#each [{ value: "easy", label: "Mudah", color: "emerald" }, { value: "medium", label: "Sedang", color: "amber" }, { value: "hard", label: "Sulit", color: "rose" }] as diff}
+                                        {#each [{ value: "beginner", label: "Mudah", color: "emerald" }, { value: "medium", label: "Sedang", color: "amber" }, { value: "hard", label: "Sulit", color: "rose" }] as diff}
                                             <button
                                                 type="button"
                                                 onclick={() =>
@@ -237,34 +222,19 @@
                                                         diff.value,
                                                     )}
                                                 class={`w-full py-3 px-4 rounded-2xl border-2 font-bold uppercase tracking-widest text-[10px] transition-all text-left
-                                        ${$form.difficulty === diff.value ? `border-${diff.color}-600 bg-${diff.color}-50 text-${diff.color}-600` : "border-slate-100 bg-slate-50 text-slate-400"}`}
+                                        ${form.difficulty === diff.value ? `border-${diff.color}-600 bg-${diff.color}-50 text-${diff.color}-600` : "border-slate-100 bg-slate-50 text-slate-400"}`}
                                             >
                                                 {diff.label}
                                             </button>
                                         {/each}
                                     </div>
-                                    {#if $form.errors.difficulty}
+                                    {#if form.errors && form.errors['difficulty']}
                                         <p
                                             class="text-[10px] font-bold text-rose-500 uppercase tracking-widest"
                                         >
-                                            {$form.errors.difficulty}
+                                            {form.errors['difficulty']}
                                         </p>
                                     {/if}
-                                </div>
-
-                                <div class="space-y-2">
-                                    <label
-                                        for="score"
-                                        class="text-[10px] font-bold uppercase text-slate-400"
-                                        >Skor Soal</label
-                                    >
-                                    <Input
-                                        id="score"
-                                        type="number"
-                                        bind:value={$form.score}
-                                        placeholder="10"
-                                        error={$form.errors.score}
-                                    />
                                 </div>
                             </div>
                         </div>
@@ -282,9 +252,9 @@
                                 size="lg"
                                 class="shadow-xl shadow-primary-900/20"
                                 icon={RefreshCw}
-                                disabled={$form.processing}
+                                disabled={form.processing}
                             >
-                                {#if $form.processing}
+                                {#if form.processing}
                                     Memproses...
                                 {:else}
                                     PERBARUI INSTRUMEN

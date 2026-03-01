@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
     import { Link } from "@inertiajs/svelte";
     import App from "@/layouts/App.svelte";
-        import Button from "@/components/ui/Button.svelte";
+    import Button from "@/components/ui/Button.svelte";
     import Card from "@/components/ui/Card.svelte";
     import {
         ArrowLeft,
@@ -15,7 +15,7 @@
     import { InProgressState } from "@/states/Mahasiswa/MaterialState.svelte";
     import { ROUTES } from "@/utils/route";
 
-    export let materialsWithStats = [];
+    const { materialsWithStats = [] }: { materialsWithStats: any[] } = $props();
 
     const state = new InProgressState(materialsWithStats);
 </script>

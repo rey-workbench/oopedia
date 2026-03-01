@@ -7,7 +7,7 @@
 // Primitives / Enums
 // ---------------------------------------------------------------------------
 
-export type QuestionType = 'fill_in_the_blank' | 'radio_button' | 'drag_and_drop';
+export type QuestionType = 'fill_in_the_blank' | 'radio_button' | 'drag_and_drop' | 'multiple_choice';
 
 export type DifficultyLevel = 'beginner' | 'intermediate' | 'advanced' | 'final';
 

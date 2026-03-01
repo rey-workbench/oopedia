@@ -4,7 +4,7 @@ import { ROUTES } from "@/utils/route";
 /**
  * Login State
  */
-export class LoginState extends FormState<{ email: string; password: string }> {
+export class LoginState extends FormState<{ email: string; password: string; is_guest?: boolean }> {
     constructor() {
         super({
             email: "",
@@ -17,7 +17,7 @@ export class LoginState extends FormState<{ email: string; password: string }> {
     }
 
     async submitAsGuest() {
-        this.form.transform((data: Record<string, unknown>) => ({ ...data, is_guest: true }));
+        this.form.is_guest = true;
         await this.submitForm('post', ROUTES.AUTH.LOGIN);
     }
 }

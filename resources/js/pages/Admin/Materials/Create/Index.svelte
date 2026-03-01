@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
     import PageHeader from "@/components/shared/PageHeader.svelte";
     import Button from "@/components/ui/Button.svelte";
@@ -11,7 +11,6 @@
     import { ArrowLeft, Info, CloudUpload, CheckCheck } from "lucide-svelte";
 
     const state = new MaterialFormState(null);
-    const form = state.form;
 </script>
 
 <App title="Tambah Materi">
@@ -20,13 +19,13 @@
             title="Arsitek Konten Kurikulum"
             subtitle="Publikasikan modul pembelajaran baru dengan visualisasi premium."
         >
-            <div slot="actions">
+            {#snippet actions()}
                 <Button
                     href={ROUTES.ADMIN.MATERIALS.INDEX}
                     variant="ghost"
                     icon={ArrowLeft}>BATALKAN PUBLIKASI</Button
                 >
-            </div>
+            {/snippet}
         </PageHeader>
 
         <form
@@ -51,10 +50,10 @@
                             <Input
                                 label="Judul Modul"
                                 required
-                                bind:value={$form.title}
+                                bind:value={state.form.title}
                                 placeholder="e.g. Fundamental of Object Oriented Programming"
                                 className="text-lg font-bold tracking-widest"
-                                error={$form.errors.title}
+                                error={state.form.errors['title']}
                             />
 
                             <Alert
@@ -81,10 +80,10 @@
                             <ImageUpload
                                 preview={state.coverPreview}
                                 label="Visualisasi Sampul"
-                                emptyIcon={CloudUpload}
+                                emptyIcon="upload"
                                 emptyText="Unggah Sampul"
-                                error={$form.errors.cover_image}
-                                onChange={(e) => state.onImageChange(e)}
+                                error={state.form.errors['cover_image']}
+                                onchange={(e) => state.onImageChange(e as Event)}
                             />
                         </div>
                     </div>
@@ -97,13 +96,13 @@
                         >
                         <div id="content-editor">
                             <QuillEditor
-                                bind:value={$form.content}
+                                bind:value={state.form.content}
                                 height="500px"
                             />
                         </div>
-                        {#if $form.errors.content}
+                        {#if state.form.errors['content']}
                             <p class="text-rose-500 text-xs mt-1">
-                                {$form.errors.content}
+                                {state.form.errors['content']}
                             </p>
                         {/if}
                     </div>
@@ -126,9 +125,9 @@
                                 size="lg"
                                 class="shadow-xl shadow-primary-900/20"
                                 icon={CheckCheck}
-                                disabled={$form.processing}
+                                disabled={state.form.processing}
                             >
-                                {#if $form.processing}
+                                {#if state.form.processing}
                                     Memproses...
                                 {:else}
                                     PUBLIKASIKAN MODUL

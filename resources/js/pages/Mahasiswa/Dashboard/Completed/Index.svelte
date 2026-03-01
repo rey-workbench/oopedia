@@ -1,14 +1,15 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
-        import Button from "@/components/ui/Button.svelte";
+    import Button from "@/components/ui/Button.svelte";
     import EmptyState from "@/components/ui/EmptyState.svelte";
     import Card from "@/components/ui/Card.svelte";
     import Badge from "@/components/ui/Badge.svelte";
     import { ArrowLeft, Medal, GraduationCap, Book, CheckCircle2, RotateCcw } from "lucide-svelte";
     import { CompletedState } from "@/states/Mahasiswa/MaterialState.svelte";
     import { ROUTES } from "@/utils/route";
+    import type { Material } from "@/types";
 
-    export let materials = [];
+    const { materials = [] }: { materials: Material[] } = $props();
 
     const state = new CompletedState(materials);
 </script>

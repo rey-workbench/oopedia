@@ -51,7 +51,7 @@
 
                 <div class="pt-4">
                     <Button
-                        on:click={() => state.logout()}
+                        onclick={() => state.logout()}
                         variant="secondary"
                         class="px-12 py-5 shadow-xl shadow-slate-200"
                         icon={LogOut}

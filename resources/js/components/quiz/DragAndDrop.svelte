@@ -79,7 +79,7 @@
         const target = event.target as HTMLElement;
         const zone = target.closest(".drop-zone") as HTMLElement;
         if (zone) {
-            activeZone = zone.dataset.zone || null;
+            activeZone = zone.dataset["zone"] || null;
         } else {
             activeZone = null;
         }
@@ -88,7 +88,7 @@
     function handleDragLeave(event: DragEvent) {
         const target = event.target as HTMLElement;
         const zone = target.closest(".drop-zone") as HTMLElement;
-        if (zone && activeZone === zone.dataset.zone) {
+        if (zone && activeZone === zone.dataset["zone"]) {
             activeZone = null;
         }
     }
@@ -100,7 +100,7 @@
 
         if (zone && event.dataTransfer) {
             const answerText = event.dataTransfer.getData("text/plain");
-            const zoneId = zone.dataset.zone;
+            const zoneId = zone.dataset["zone"];
             if (zoneId) {
                 dragAndDropAnswers = {
                     ...dragAndDropAnswers,
@@ -115,7 +115,7 @@
         const target = event.target as HTMLElement;
         const zone = target.closest(".drop-zone") as HTMLElement;
         if (zone) {
-            const zoneId = zone.dataset.zone;
+            const zoneId = zone.dataset["zone"];
             if (zoneId && dragAndDropAnswers[zoneId]) {
                 const newAnswers = { ...dragAndDropAnswers };
                 delete newAnswers[zoneId];

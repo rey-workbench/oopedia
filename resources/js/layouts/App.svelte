@@ -60,29 +60,41 @@
         <!-- Flash Messages -->
         {#if flash.success || flash.error || flash.info || flash.warning || (flash as any).status}
             <div
-                class="fixed top-6 right-6 z-[100] flex flex-col gap-3 pointer-events-auto max-w-sm w-full"
+                class="fixed top-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none max-w-sm w-full"
             >
                 {#if flash.success}
-                    <Alert variant="success" dismissible={true}
-                        >{flash.success}</Alert
+                    <Alert
+                        variant="success"
+                        dismissible={true}
+                        class="pointer-events-auto">{flash.success}</Alert
                     >
                 {/if}
                 {#if flash.error}
-                    <Alert variant="danger" dismissible={true}
-                        >{flash.error}</Alert
+                    <Alert
+                        variant="danger"
+                        dismissible={true}
+                        class="pointer-events-auto">{flash.error}</Alert
                     >
                 {/if}
                 {#if flash.info}
-                    <Alert variant="info" dismissible={true}>{flash.info}</Alert
+                    <Alert
+                        variant="info"
+                        dismissible={true}
+                        class="pointer-events-auto">{flash.info}</Alert
                     >
                 {/if}
                 {#if flash.warning}
-                    <Alert variant="warning" dismissible={true}
-                        >{flash.warning}</Alert
+                    <Alert
+                        variant="warning"
+                        dismissible={true}
+                        class="pointer-events-auto">{flash.warning}</Alert
                     >
                 {/if}
                 {#if (flash as any).status}
-                    <Alert variant="success" dismissible={true}
+                    <Alert
+                        variant="success"
+                        dismissible={true}
+                        class="pointer-events-auto"
                         >{(flash as any).status}</Alert
                     >
                 {/if}
@@ -169,30 +181,41 @@
             <!-- Flash Messages -->
             {#if flash.success || flash.error || flash.info || flash.warning || (flash as any).status}
                 <div
-                    class="fixed top-24 right-6 z-[100] flex flex-col gap-3 pointer-events-auto max-w-sm w-full"
+                    class="fixed top-24 right-6 z-[100] flex flex-col gap-3 pointer-events-none max-w-sm w-full"
                 >
                     {#if flash.success}
-                        <Alert variant="success" dismissible={true}
-                            >{flash.success}</Alert
+                        <Alert
+                            variant="success"
+                            dismissible={true}
+                            class="pointer-events-auto">{flash.success}</Alert
                         >
                     {/if}
                     {#if flash.error}
-                        <Alert variant="danger" dismissible={true}
-                            >{flash.error}</Alert
+                        <Alert
+                            variant="danger"
+                            dismissible={true}
+                            class="pointer-events-auto">{flash.error}</Alert
                         >
                     {/if}
                     {#if flash.info}
-                        <Alert variant="info" dismissible={true}
-                            >{flash.info}</Alert
+                        <Alert
+                            variant="info"
+                            dismissible={true}
+                            class="pointer-events-auto">{flash.info}</Alert
                         >
                     {/if}
                     {#if flash.warning}
-                        <Alert variant="warning" dismissible={true}
-                            >{flash.warning}</Alert
+                        <Alert
+                            variant="warning"
+                            dismissible={true}
+                            class="pointer-events-auto">{flash.warning}</Alert
                         >
                     {/if}
                     {#if (flash as any).status}
-                        <Alert variant="success" dismissible={true}
+                        <Alert
+                            variant="success"
+                            dismissible={true}
+                            class="pointer-events-auto"
                             >{(flash as any).status}</Alert
                         >
                     {/if}

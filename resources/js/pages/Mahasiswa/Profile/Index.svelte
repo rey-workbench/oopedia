@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
-        import DarkHeroPanel from "@/components/shared/DarkHeroPanel.svelte";
+    import DarkHeroPanel from "@/components/shared/DarkHeroPanel.svelte";
     import Card from "@/components/ui/Card.svelte";
     import Input from "@/components/ui/Input.svelte";
     import Button from "@/components/ui/Button.svelte";
@@ -25,101 +25,82 @@
         Loader2,
         Save,
     } from "lucide-svelte";
-    import { useForm, page } from "@inertiajs/svelte";
     import { ProfileState } from "@/states/Mahasiswa/ProfileState.svelte";
 
-    export let personalization = {};
+    const { personalization }: { personalization: any } = $props();
 
     const state = new ProfileState(personalization);
 
-    let form = useForm({
-        name: state.user.name,
-        email: state.user.email,
-        password: "",
-        password_confirmation: "",
-        _method: "PUT",
-    });
-
-    function handleSubmit() {
-        $form.post("/mahasiswa/profile", {
-            onSuccess: () => {
-                form.reset("password", "password_confirmation");
-            },
-        });
-    }
-
-    $: flash = $page.props.flash || {};
-
-    $: personalizationStats = [
+    const personalizationStats = $derived([
         {
             title: "Gaya Belajar",
-            value: state.personalization.learning_style || "Visual",
+            value: state.personalization?.learning_style || "Visual",
             icon:
-                state.personalization.learning_style === "visual"
+                state.personalization?.learning_style === "visual"
                     ? Eye
-                    : state.personalization.learning_style === "auditory"
+                    : state.personalization?.learning_style === "auditory"
                       ? Brain
                       : Zap,
             variant: "primary",
         },
         {
             title: "Level Saat Ini",
-            value: state.personalization.current_level || "Pemula",
+            value: state.personalization?.current_level || "Pemula",
             icon: Trophy,
             variant: "primary",
-            footer: `${state.personalization.global_xp || 0} XP`,
+            footer: `${state.personalization?.global_xp || 0} XP`,
         },
         {
             title: "Akurasi",
-            value: `${state.personalization.accuracy || 0}%`,
+            value: `${state.personalization?.accuracy || 0}%`,
             icon: Target,
             variant: "success",
-            footer: `${state.personalization.correct_count || 0}/${state.personalization.total_questions_answered || 0} Benar`,
+            footer: `${state.personalization?.correct_count || 0}/${state.personalization?.total_questions_answered || 0} Benar`,
         },
         {
             title: "Streak",
-            value: `${state.personalization.current_streak || 0} 🔥`,
+            value: `${state.personalization?.current_streak || 0} 🔥`,
             icon: Flame,
             variant: "warning",
-            footer: `Max: ${state.personalization.max_streak || 0}`,
+            footer: `Max: ${state.personalization?.max_streak || 0}`,
         },
-    ];
+    ]);
 
-    $: detailedStats = [
+    const detailedStats = $derived([
         {
             title: "Total Soal Dijawab",
-            value: state.personalization.total_questions_answered || 0,
+            value: state.personalization?.total_questions_answered || 0,
             icon: CheckCircle,
             variant: "primary",
         },
         {
             title: "Jawaban Benar",
-            value: state.personalization.correct_count || 0,
+            value: state.personalization?.correct_count || 0,
             icon: CheckCircle,
             variant: "success",
         },
         {
             title: "Jawaban Salah",
-            value: state.personalization.wrong_count || 0,
+            value: state.personalization?.wrong_count || 0,
             icon: XCircle,
             variant: "danger",
         },
         {
             title: "Hints Digunakan",
-            value: state.personalization.hints_used_count || 0,
+            value: state.personalization?.hints_used_count || 0,
             icon: Lightbulb,
             variant: "warning",
-            footer: `${state.personalization.hints_available || 3} Tersisa`,
+            footer: `${state.personalization?.hints_available || 3} Tersisa`,
         },
         {
             title: "Status Fast Track",
-            value: state.personalization.fast_track_active
+            value: state.personalization?.fast_track_active
                 ? "Aktif"
                 : "Tidak Aktif",
             icon: Zap,
             variant: "warning",
         },
-    ];
+    ]);
 </script>
 
 <App title="Profil Mahasiswa">
@@ -317,14 +298,14 @@
                 </h3>
 
                 <Card padding="p-8 md:p-12">
-                    {#if flash && flash.success}
+                    {#if state.flash?.success}
                         <Alert variant="success" className="mb-10"
-                            >{flash.success}</Alert
+                            >{(state.flash as any).success}</Alert
                         >
                     {/if}
 
                     <form
-                        on:submit|preventDefault={handleSubmit}
+                        onsubmit={(e) => { e.preventDefault(); state.submit(); }}
                         class="space-y-10"
                     >
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -337,10 +318,10 @@
                                 <Input
                                     id="name"
                                     type="text"
-                                    bind:value={$form.name}
+                                    bind:value={state.form.name}
                                     className="rounded-2xl border-slate-100 bg-slate-50/50 py-4 font-bold focus:bg-white"
                                     placeholder="Masukkan nama lengkap"
-                                    error={$form.errors.name}
+                                    error={state.form.errors['name']}
                                 />
                             </div>
                             <div class="space-y-3">
@@ -352,10 +333,10 @@
                                 <Input
                                     id="email"
                                     type="email"
-                                    bind:value={$form.email}
+                                    bind:value={state.form.email}
                                     className="rounded-2xl border-slate-100 bg-slate-50/50 py-4 font-bold focus:bg-white"
                                     placeholder="email@contoh.com"
-                                    error={$form.errors.email}
+                                    error={state.form.errors['email']}
                                 />
                             </div>
                         </div>
@@ -376,10 +357,10 @@
                                     <Input
                                         id="password"
                                         type="password"
-                                        bind:value={$form.password}
+                                        bind:value={state.form.password}
                                         className="rounded-2xl border-slate-100 bg-slate-50/50 py-4 font-bold focus:bg-white"
                                         placeholder="••••••••"
-                                        error={$form.errors.password}
+                                        error={state.form.errors['password']}
                                     />
                                     <p
                                         class="text-[10px] font-bold text-slate-400 px-1 italic"
@@ -397,7 +378,7 @@
                                     <Input
                                         id="password_confirmation"
                                         type="password"
-                                        bind:value={$form.password_confirmation}
+                                        bind:value={state.form.password_confirmation}
                                         className="rounded-2xl border-slate-100 bg-slate-50/50 py-4 font-bold focus:bg-white"
                                         placeholder="••••••••"
                                     />
@@ -411,9 +392,9 @@
                                 variant="primary"
                                 size="xl"
                                 class="w-full md:w-auto px-12 group"
-                                disabled={$form.processing}
+                                disabled={state.form.processing}
                             >
-                                {#if $form.processing}
+                                {#if state.form.processing}
                                     <Loader2
                                         size={18}
                                         class="mr-2 animate-spin"

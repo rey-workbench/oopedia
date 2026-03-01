@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
     import Card from "@/components/ui/Card.svelte";
     import Input from "@/components/ui/Input.svelte";
@@ -10,26 +10,27 @@
     import { LoginState } from "@/states/Auth/AuthState.svelte";
 
     const state = new LoginState();
-    const form = state.form;
 </script>
 
 <App variant="auth" title="Login - OOPedia">
     <Card padding="p-10" hover={false}>
-        <div slot="header" class="text-center w-full mb-6">
-            <h3 class="text-xl font-bold tracking-widest text-slate-900">
-                MASUK KE AKUN
-            </h3>
-            <p
-                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2"
-            >
-                Gunakan akun OOPedia Anda
-            </p>
-        </div>
+        {#snippet header()}
+            <div class="text-center w-full mb-6">
+                <h3 class="text-xl font-bold tracking-widest text-slate-900">
+                    MASUK KE AKUN
+                </h3>
+                <p
+                    class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2"
+                >
+                    Gunakan akun OOPedia Anda
+                </p>
+            </div>
+        {/snippet}
 
-        <form on:submit|preventDefault={() => state.submit()} class="space-y-6">
-            {#if $form.errors.email}
+        <form onsubmit={(e) => { e.preventDefault(); state.submit(); }} class="space-y-6">
+            {#if state.form.errors['email']}
                 <Alert variant="danger" dismissible={true}
-                    >{$form.errors.email}</Alert
+                    >{state.form.errors['email']}</Alert
                 >
             {/if}
 
@@ -43,10 +44,10 @@
                 <Input
                     id="email"
                     type="email"
-                    bind:value={$form.email}
+                    bind:value={state.form.email}
                     placeholder="nama@email.com"
                     required
-                    error={$form.errors.email}
+                    error={state.form.errors['email']}
                 />
             </div>
 
@@ -60,10 +61,10 @@
                 <Input
                     id="password"
                     type="password"
-                    bind:value={$form.password}
+                    bind:value={state.form.password}
                     placeholder="••••••••"
                     required
-                    error={$form.errors.password}
+                    error={state.form.errors['password']}
                 />
             </div>
 
@@ -71,9 +72,9 @@
                 <button
                     type="submit"
                     class="w-full flex items-center justify-center gap-3 py-4 px-6 bg-primary-600 text-white rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-primary-700 transition-all disabled:opacity-50"
-                    disabled={$form.processing}
+                    disabled={state.form.processing}
                 >
-                    {#if $form.processing}
+                    {#if state.form.processing}
                         <Loader2 size={18} class="animate-spin" /> MEMPROSES...
                     {:else}
                         MASUK SEKARANG <ArrowRight size={18} />
@@ -108,7 +109,7 @@
                     variant="ghost"
                     size="sm"
                     icon={Ghost}
-                    on:click={() => state.submitAsGuest()}
+                    onclick={() => state.submitAsGuest()}
                     class="w-full text-slate-400 hover:text-slate-900"
                 >
                     Masuk Sebagai Tamu

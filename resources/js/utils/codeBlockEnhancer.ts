@@ -9,7 +9,7 @@ export function enhanceCodeBlocks(container: HTMLElement) {
         const el = block as HTMLElement;
 
         // Apply Syntax Highlighting
-        if (!el.dataset.highlighted) {
+        if (!el.dataset['highlighted']) {
             // Quill structural lines are usually divs. InnerText usually handles this, 
             // but we can be more explicit to ensure newlines are preserved.
             const lines = Array.from(el.querySelectorAll('.ql-code-block'))
@@ -19,7 +19,7 @@ export function enhanceCodeBlocks(container: HTMLElement) {
 
             const highlighted = hljs.highlightAuto(text).value;
             el.innerHTML = highlighted;
-            el.dataset.highlighted = "true";
+            el.dataset['highlighted'] = "true";
         }
 
         // Prevent double injection of copy button

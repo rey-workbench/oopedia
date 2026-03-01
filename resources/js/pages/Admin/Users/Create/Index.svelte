@@ -1,23 +1,15 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
     import Button from "@/components/ui/Button.svelte";
     import Input from "@/components/ui/Input.svelte";
-    import InfoPanel from "@/components/shared/InfoPanel.svelte";
-    import { ArrowLeft, UserPlus, Shield, ChevronDown } from "lucide-svelte";
+    import { ArrowLeft, UserPlus, ChevronDown } from "lucide-svelte";
     import { ROUTES } from "@/utils/route";
     import { UserFormState } from "@/states/Admin/UserState.svelte";
 
-    export let roles = [];
+    let { roles = [] } = $props();
 
     const state = new UserFormState(null);
     const form = state.form;
-
-    const securityItems = [
-        "Password disimpan secara terenkripsi (bcrypt)",
-        "Email harus unik dalam sistem",
-        "Akun admin memerlukan approval dari Super Admin",
-        "Semua aktivitas login dicatat dalam audit log",
-    ];
 </script>
 
 <App title="Pembuatan Administrator">
@@ -72,67 +64,45 @@
                                 <div
                                     class="grid grid-cols-1 md:grid-cols-2 gap-6"
                                 >
-                                    <div class="space-y-2">
-                                        <label
-                                            for="name"
-                                            class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
-                                            >Nama Lengkap</label
-                                        >
-                                        <Input
-                                            id="name"
-                                            bind:value={$form.name}
-                                            placeholder="John Doe"
-                                            error={$form.errors.name}
-                                        />
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label
-                                            for="email"
-                                            class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
-                                            >Alamat Email</label
-                                        >
-                                        <Input
-                                            id="email"
-                                            type="email"
-                                            bind:value={$form.email}
-                                            placeholder="john@email.com"
-                                            error={$form.errors.email}
-                                        />
-                                    </div>
+                                    <Input
+                                        id="name"
+                                        label="Nama Lengkap"
+                                        required
+                                        bind:value={form.name}
+                                        placeholder="John Doe"
+                                    error={form.errors['name']}
+                                    />
+                                    <Input
+                                        id="email"
+                                        label="Alamat Email"
+                                        required
+                                        type="email"
+                                        bind:value={form.email}
+                                        placeholder="john@email.com"
+                                        error={form.errors['email']}
+                                    />
                                 </div>
 
                                 <div
                                     class="grid grid-cols-1 md:grid-cols-2 gap-6"
                                 >
-                                    <div class="space-y-2">
-                                        <label
-                                            for="password"
-                                            class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
-                                            >Password</label
-                                        >
-                                        <Input
-                                            id="password"
-                                            type="password"
-                                            bind:value={$form.password}
-                                            placeholder="••••••••"
-                                            error={$form.errors.password}
-                                        />
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label
-                                            for="password_confirmation"
-                                            class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
-                                            >Konfirmasi Password</label
-                                        >
-                                        <Input
-                                            id="password_confirmation"
-                                            type="password"
-                                            bind:value={
-                                                $form.password_confirmation
-                                            }
-                                            placeholder="••••••••"
-                                        />
-                                    </div>
+                                    <Input
+                                        id="password"
+                                        label="Password"
+                                        required
+                                        type="password"
+                                        bind:value={form.password}
+                                        placeholder="••••••••"
+                                        error={form.errors['password']}
+                                    />
+                                    <Input
+                                        id="password_confirmation"
+                                        label="Konfirmasi Password"
+                                        required
+                                        type="password"
+                                        bind:value={form.password_confirmation}
+                                        placeholder="••••••••"
+                                    />
                                 </div>
 
                                 <div class="space-y-2">
@@ -144,7 +114,7 @@
                                     <div class="relative">
                                         <select
                                             id="role_id"
-                                            bind:value={$form.role_id}
+                                            bind:value={form.role_id}
                                             class="w-full px-4 py-3 border-2 border-slate-100 rounded-2xl bg-white text-sm font-bold focus:ring-4 focus:ring-primary-50 focus:border-primary-500 outline-none transition-all appearance-none"
                                         >
                                             <option value="">Pilih Peran</option
@@ -160,11 +130,11 @@
                                             class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
                                         />
                                     </div>
-                                    {#if $form.errors.role_id}
+                                    {#if form.errors['role_id']}
                                         <p
                                             class="text-[10px] font-bold text-rose-500 uppercase tracking-widest"
                                         >
-                                            {$form.errors.role_id}
+                                            {form.errors['role_id']}
                                         </p>
                                     {/if}
                                 </div>
@@ -192,9 +162,9 @@
                                     size="lg"
                                     class="shadow-xl shadow-primary-900/20"
                                     icon={UserPlus}
-                                    disabled={$form.processing}
+                                    disabled={form.processing}
                                 >
-                                    {#if $form.processing}
+                                    {#if form.processing}
                                         Memproses...
                                     {:else}
                                         OTORISASI ENTITAS

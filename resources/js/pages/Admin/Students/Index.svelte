@@ -1,5 +1,14 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
+    import {
+        UserPlus,
+        FileSpreadsheet,
+        Terminal,
+        UserMinus,
+        LineChart,
+        GraduationCap,
+        Loader2,
+    } from "lucide-svelte";
     import Button from "@/components/ui/Button.svelte";
     import DataTable from "@/components/shared/DataTable.svelte";
     import ProgressBar from "@/components/ui/ProgressBar.svelte";
@@ -15,24 +24,24 @@
         StudentRegisterState,
     } from "@/states/Admin/StudentState.svelte";
 
-    export let students = {}; // paginated object
+    let { students = {} }: { students: any } = $props(); // paginated object
 
-    let search =
-        new URLSearchParams(window.location.search).get("search") || "";
-    let openModal = false;
+    let search: string = $state(
+        new URLSearchParams(window.location.search).get("search") || ""
+    );
+    let openModal: boolean = $state(false);
 
-    const state = new StudentListState(students, search);
+    const listState = new StudentListState(students, search);
 
     const registerState = new StudentRegisterState();
-    $: registerForm = registerState.registerForm;
 
-    $: columns = [
+    const columns = $derived([
         { key: "identity", label: "Identitas Mahasiswa", align: "left" },
         { key: "email", label: "Akses Email", align: "left" },
         { key: "activity", label: "Aktivitas Soal", align: "center" },
         { key: "progress", label: "Integrasi Progres", align: "center" },
         { key: "actions", label: "Aksi", align: "right" },
-    ];
+    ]);
 </script>
 
 <App title="Data Mahasiswa">
@@ -43,7 +52,7 @@
         >
             {#snippet actions()}
                 <Button
-                    on:click={() => (openModal = true)}
+                    onclick={() => (openModal = true)}
                     variant="primary"
                     icon={UserPlus}>Daftarkan Mahasiswa</Button
                 >
@@ -57,11 +66,11 @@
 
         <DataTable
             title="Registri Subjek"
-            items={state.students.data || []}
+            items={listState.students.data || []}
             bind:search
-            onSearch={() => {
-                state.search = search;
-                state.handleSearch();
+            onsearch={() => {
+                listState.search = search;
+                listState.handleSearch();
             }}
             searchPlaceholder="Cari mahasiswa..."
             {columns}
@@ -74,7 +83,7 @@
                 >
                     <div class="flex justify-center gap-4">
                         <Button
-                            on:click={() => (openModal = true)}
+                            onclick={() => (openModal = true)}
                             variant="primary"
                             icon={UserPlus}>Daftar Individu</Button
                         >
@@ -125,7 +134,7 @@
                         </div>
                         <ProgressBar
                             value={student.overall_progress}
-                            size="xs"
+                            height="h-2"
                             color="blue"
                         />
                     </div>
@@ -141,7 +150,7 @@
                         <Button
                             variant="ghost"
                             size="sm"
-                            on:click={() => state.handleDelete(student.id)}
+                        onclick={() => listState.handleDelete(student.id)}
                             icon={UserMinus}
                             class="text-slate-300 hover:text-rose-500"
                         />
@@ -150,15 +159,15 @@
             {/snippet}
         </DataTable>
 
-        {#if state.students.data && state.students.data.length > 0}
+        {#if listState.students.data && listState.students.data.length > 0}
             <div class="mt-6">
-                <Pagination links={state.students.links} />
+                <Pagination links={listState.students.links} />
             </div>
         {/if}
 
         <Modal show={openModal} onclose={() => (openModal = false)}>
             <form
-                on:submit|preventDefault={() => registerState.submitRegister()}
+                onsubmit={(e) => { e.preventDefault(); registerState.submit(() => (openModal = false)); }}
                 class="space-y-6 p-8"
             >
                 <div class="pb-4 border-b border-slate-100">
@@ -176,9 +185,9 @@
                     >
                     <Input
                         id="reg_name"
-                        bind:value={$registerForm.name}
+                        bind:value={registerState.form.name}
                         placeholder="Nama mahasiswa"
-                        error={$registerForm.errors.name}
+                        error={registerState.form.errors['name']}
                     />
                 </div>
                 <div class="space-y-2">
@@ -190,9 +199,9 @@
                     <Input
                         id="reg_email"
                         type="email"
-                        bind:value={$registerForm.email}
+                        bind:value={registerState.form.email}
                         placeholder="email@mahasiswa.ac.id"
-                        error={$registerForm.errors.email}
+                        error={registerState.form.errors['email']}
                     />
                 </div>
                 <div class="space-y-2">
@@ -204,9 +213,9 @@
                     <Input
                         id="reg_password"
                         type="password"
-                        bind:value={$registerForm.password}
+                        bind:value={registerState.form.password}
                         placeholder="••••••••"
-                        error={$registerForm.errors.password}
+                        error={registerState.form.errors['password']}
                     />
                 </div>
                 <div class="space-y-2">
@@ -218,7 +227,7 @@
                     <Input
                         id="reg_password_confirmation"
                         type="password"
-                        bind:value={$registerForm.password_confirmation}
+                        bind:value={registerState.form.password_confirmation}
                         placeholder="••••••••"
                     />
                 </div>
@@ -226,15 +235,15 @@
                     <Button
                         type="button"
                         variant="ghost"
-                        on:click={() => (openModal = false)}>Batal</Button
+                        onclick={() => (openModal = false)}>Batal</Button
                     >
                     <Button
                         type="submit"
                         variant="primary"
                         icon={UserPlus}
-                        disabled={$registerForm.processing}
+                        disabled={registerState.form.processing}
                     >
-                        {#if $registerForm.processing}<Loader2
+                        {#if registerState.form.processing}<Loader2
                                 size={16}
                                 class="animate-spin mr-2"
                             />Mendaftarkan...{:else}Daftarkan{/if}

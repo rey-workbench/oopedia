@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
     import PageHeader from "@/components/shared/PageHeader.svelte";
     import Button from "@/components/ui/Button.svelte";
@@ -8,11 +8,9 @@
     import { ROUTES } from "@/utils/route";
     import { SubmaterialFormState } from "@/states/Admin/MaterialState.svelte";
 
-    export let material;
-    export let submaterial;
+    let { material, submaterial } = $props();
 
     const state = new SubmaterialFormState(material, submaterial);
-    const form = state.form;
 </script>
 
 <App title={`Edit Sub-Materi: ${submaterial.title}`}>
@@ -21,7 +19,7 @@
             title="Pembaruan Unit"
             subtitle={`Modifikasi konten pembelajaran untuk unit: ${submaterial.title}`}
         >
-            <div slot="actions">
+            {#snippet actions()}
                 <Button
                     href={ROUTES.ADMIN.MATERIALS.SUBMATERIALS.INDEX(
                         material.id,
@@ -29,7 +27,7 @@
                     variant="ghost"
                     icon={ArrowLeft}>KEMBALI KE HIERARKI</Button
                 >
-            </div>
+            {/snippet}
         </PageHeader>
 
         <div class="max-w-4xl mx-auto">
@@ -61,10 +59,10 @@
                                 </label>
                                 <Input
                                     id="title"
-                                    bind:value={$form.title}
+                                    bind:value={state.form.title}
                                     placeholder="Contoh: Pengenalan Class & Object"
                                     required
-                                    error={$form.errors.title}
+                                    error={state.form.errors['title']}
                                 />
                             </div>
 
@@ -78,9 +76,9 @@
                                 <Input
                                     id="order"
                                     type="number"
-                                    bind:value={$form.order}
+                                    bind:value={state.form.order}
                                     required
-                                    error={$form.errors.order}
+                                    error={state.form.errors['order']}
                                 />
                             </div>
                         </div>
@@ -97,7 +95,7 @@
                                         onclick={() =>
                                             state.setJenisKonten(type)}
                                         class={`py-3 px-4 rounded-2xl border-2 font-bold uppercase tracking-widest text-[10px] transition-all
-                                    ${$form.jenis_konten === type ? "border-primary-600 bg-primary-50 text-primary-600" : "border-slate-100 bg-slate-50 text-slate-400"}`}
+                                    ${state.form.jenis_konten === type ? "border-primary-600 bg-primary-50 text-primary-600" : "border-slate-100 bg-slate-50 text-slate-400"}`}
                                     >
                                         {type}
                                     </button>
@@ -112,14 +110,14 @@
                                 Materi Pembelajaran (Rich Text)
                             </span>
                             <QuillEditor
-                                bind:value={$form.content}
+                                bind:value={state.form.content}
                                 placeholder="Tuliskan materi pembelajaran secara detail di sini..."
                             />
-                            {#if $form.errors.content}
+                            {#if state.form.errors['content']}
                                 <p
                                     class="text-[10px] font-bold text-rose-500 uppercase tracking-widest"
                                 >
-                                    {$form.errors.content}
+                                    {state.form.errors['content']}
                                 </p>
                             {/if}
                         </div>
@@ -147,9 +145,9 @@
                                     size="lg"
                                     class="shadow-xl shadow-primary-900/20"
                                     icon={RefreshCw}
-                                    disabled={$form.processing}
+                                    disabled={state.form.processing}
                                 >
-                                    {#if $form.processing}
+                                    {#if state.form.processing}
                                         Memproses...
                                     {:else}
                                         SIMPAN PERUBAHAN UNIT

@@ -1,13 +1,14 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
-        import Card from "@/components/ui/Card.svelte";
+    import Card from "@/components/ui/Card.svelte";
     import Button from "@/components/ui/Button.svelte";
     import { Code, Puzzle, BookOpen, Ghost, ArrowRight } from "lucide-svelte";
     import { formatDate } from "@/utils/formatters";
     import { ROUTES } from "@/utils/route";
     import { MaterialCatalogState } from "@/states/Mahasiswa/MaterialState.svelte";
+    import type { Material } from "@/types";
 
-    export let materials = [];
+    const { materials = [] }: { materials: Material[] } = $props();
 
     const state = new MaterialCatalogState(materials);
 </script>

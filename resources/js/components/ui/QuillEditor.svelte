@@ -18,7 +18,7 @@
     }
 
     let {
-        value = $bindable(""),
+        value = $bindable(),
         placeholder = "Tulis sesuatu...",
         height = "300px",
         oninput = () => {},

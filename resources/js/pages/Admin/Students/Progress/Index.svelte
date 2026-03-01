@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
     import PageHeader from "@/components/shared/PageHeader.svelte";
     import Button from "@/components/ui/Button.svelte";
@@ -8,13 +8,11 @@
     import ProgressBar from "@/components/ui/ProgressBar.svelte";
     import Badge from "@/components/ui/Badge.svelte";
     import { ArrowLeft, LineChart, CheckCheck, Zap } from "lucide-svelte";
-    import { relativeTime, formatDate } from "@/utils/formatters";
+    import { formatDate } from "@/utils/formatters";
     import { ROUTES } from "@/utils/route";
     import { StudentProgressState } from "@/states/Admin/StudentState.svelte";
 
-    export let student;
-    export let materials = [];
-    export let missingQuestionsByMaterial = [];
+    let { student, materials = [], missingQuestionsByMaterial = [] }: { student: any; materials: any[]; missingQuestionsByMaterial: any[] } = $props();
 
     const state = new StudentProgressState(
         student,
@@ -22,7 +20,7 @@
         missingQuestionsByMaterial,
     );
 
-    $: progressStats = [
+    const progressStats = $derived([
         {
             title: "Lintasan Pembelajaran",
             value: `${state.avgProgress}%`,
@@ -44,19 +42,19 @@
             variant: "danger",
             footer: "Jawaban benar tertunda",
         },
-    ];
+    ]);
 
-    $: matrixColumns = [
+    const matrixColumns = $derived([
         { key: "module", label: "Skema Modul", align: "left" },
         { key: "mastery", label: "Tingkat Penguasaan", align: "left" },
         { key: "status", label: "Status Protokol", align: "center" },
         { key: "last_accessed", label: "Interaksi Terakhir", align: "right" },
-    ];
+    ]);
 
-    $: challengeColumns = [
+    const challengeColumns = $derived([
         { key: "module", label: "Modul Kritis", align: "left" },
         { key: "anomaly", label: "Jumlah Anomali", align: "right" },
-    ];
+    ]);
 </script>
 
 <App title="Progress Mahasiswa">
@@ -65,13 +63,13 @@
             title="Wawasan Performa Siswa"
             subtitle={`Analisis trajectory pembelajaran untuk entitas ${state.student.name}.`}
         >
-            <div slot="actions">
+            {#snippet actions()}
                 <Button
                     href={ROUTES.ADMIN.STUDENTS.INDEX}
                     variant="ghost"
                     icon={ArrowLeft}>KEMBALI KE DAFTAR</Button
                 >
-            </div>
+            {/snippet}
         </PageHeader>
 
         <!-- Summary Cards -->
@@ -89,14 +87,14 @@
                 columns={matrixColumns}
                 hideSearch={true}
             >
-                <svelte:fragment slot="empty">
+                {#snippet empty()}
                     <EmptyState
                         title="Tidak Ada Log Interaksi"
                         description="Subjek belum melakukan interaksi dengan modul instruksional apapun."
                     />
-                </svelte:fragment>
+                {/snippet}
 
-                <svelte:fragment slot="row" let:item={material}>
+                {#snippet row(material)}
                     <td class="px-6 py-6 border-b border-slate-50">
                         <div class="flex items-center gap-3">
                             <div
@@ -144,7 +142,7 @@
                                 : "Belum diakses"}
                         </span>
                     </td>
-                </svelte:fragment>
+                {/snippet}
             </DataTable>
 
             <!-- Missing Questions (Anomalies) -->
@@ -155,7 +153,7 @@
                     columns={challengeColumns}
                     hideSearch={true}
                 >
-                    <svelte:fragment slot="row" let:item>
+                    {#snippet row(item)}
                         <td class="px-6 py-6 border-b border-slate-50">
                             <span
                                 class="font-bold text-slate-900 uppercase tracking-widest text-sm"
@@ -172,7 +170,7 @@
                                 >
                             </div>
                         </td>
-                    </svelte:fragment>
+                    {/snippet}
                 </DataTable>
             {/if}
         </div>

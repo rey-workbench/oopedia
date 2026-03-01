@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
-        import Card from "@/components/ui/Card.svelte";
+    import Card from "@/components/ui/Card.svelte";
     import Button from "@/components/ui/Button.svelte";
     import ContentDisplay from "@/components/ui/ContentDisplay.svelte";
     import { Link } from "@inertiajs/svelte";
@@ -25,22 +25,24 @@
     import { ROUTES } from "@/utils/route";
     import { onMount, tick } from "svelte";
     import { enhanceCodeBlocks } from "@/utils/codeBlockEnhancer";
+    import type { Material } from "@/types";
 
-    export let material = {};
-    export let subMaterial = {};
+    const { material, subMaterial }: { material: Material; subMaterial: any } = $props();
 
     const state = new SubMaterialState(material, subMaterial);
 
-    let contentContainer;
+    let contentContainer: HTMLElement | undefined = $state();
 
     onMount(async () => {
         await tick();
         if (contentContainer) enhanceCodeBlocks(contentContainer);
     });
 
-    $: if (state.subMaterial && contentContainer) {
-        tick().then(() => enhanceCodeBlocks(contentContainer));
-    }
+    $effect(() => {
+        if (state.subMaterial && contentContainer) {
+            tick().then(() => enhanceCodeBlocks(contentContainer!));
+        }
+    });
 </script>
 
 <App title={state.subMaterial.title} fullWidth={true}>
@@ -134,27 +136,29 @@
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-12">
             <div bind:this={contentContainer} class="lg:col-span-3">
                 <Card class="p-10 md:p-16">
-                    <div slot="header" class="mb-10">
-                        <h2
-                            class="text-3xl font-extrabold tracking-tight text-slate-900 font-display"
-                        >
-                            Materi Pembelajaran
-                        </h2>
-                        <div
-                            class="flex items-center gap-2 mt-3"
-                            role="presentation"
-                        >
+                    {#snippet header()}
+                        <div class="mb-10">
+                            <h2
+                                class="text-3xl font-extrabold tracking-tight text-slate-900 font-display"
+                            >
+                                Materi Pembelajaran
+                            </h2>
                             <div
-                                class={`h-1.5 w-12 ${getBgClass(state.subMaterial.jenis_konten)} rounded-full shadow-sm`}
-                            ></div>
-                            <div
-                                class="h-1.5 w-4 bg-slate-200 rounded-full"
-                            ></div>
-                            <div
-                                class="h-1.5 w-2 bg-slate-100 rounded-full"
-                            ></div>
+                                class="flex items-center gap-2 mt-3"
+                                role="presentation"
+                            >
+                                <div
+                                    class={`h-1.5 w-12 ${getBgClass(state.subMaterial.jenis_konten)} rounded-full shadow-sm`}
+                                ></div>
+                                <div
+                                    class="h-1.5 w-4 bg-slate-200 rounded-full"
+                                ></div>
+                                <div
+                                    class="h-1.5 w-2 bg-slate-100 rounded-full"
+                                ></div>
+                            </div>
                         </div>
-                    </div>
+                    {/snippet}
 
                     {#if state.subMaterial.content && state.subMaterial.content.trim()}
                         <ContentDisplay content={state.subMaterial.content} />

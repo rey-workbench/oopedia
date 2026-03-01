@@ -13,7 +13,7 @@
         columns?: {
             key: string;
             label: string;
-            align?: "left" | "center" | "right";
+            align?: "left" | "center" | "right" | string;
         }[];
         rowClass?: (item: any) => string;
         emptyTitle?: string;

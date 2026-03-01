@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
     import ProgressBar from "@/components/ui/ProgressBar.svelte";
     import GuestBanner from "@/components/shared/GuestBanner.svelte";
@@ -9,13 +9,23 @@
     import FeedbackModal from "@/components/quiz/FeedbackModal.svelte";
     import AdaptiveDebugPanel from "@/components/quiz/AdaptiveDebugPanel.svelte";
 
-    export let material = {};
-    export let currentQuestion = null;
-    export let currentQuestionNumber = 1;
-    export let totalQuestions = 0;
-    export let answeredCount = 0;
-    export let difficulty = "beginner";
-    export let studentState = {};
+    const {
+        material,
+        currentQuestion = null,
+        currentQuestionNumber = 1,
+        totalQuestions = 0,
+        answeredCount = 0,
+        difficulty = "beginner",
+        studentState = {},
+    }: {
+        material: any;
+        currentQuestion: any;
+        currentQuestionNumber: number;
+        totalQuestions: number;
+        answeredCount: number;
+        difficulty: string;
+        studentState: any;
+    } = $props();
 
     let state = new QuestionShowState(
         material,
@@ -24,8 +34,7 @@
         studentState,
     );
 
-    // Sync Svelte 4 props from Inertia navigations to Svelte 5 class instance
-    $: {
+    $effect(() => {
         if (state.currentQuestion?.id !== currentQuestion?.id) {
             state.selectedMultipleChoiceAnswer = null;
             state.fillInTheBlankAnswer = "";
@@ -36,13 +45,14 @@
         state.currentQuestion = currentQuestion;
         state.difficulty = difficulty;
         state.studentState = studentState;
-    }
+    });
 
-    $: progressPercentage =
-        totalQuestions > 0 ? (answeredCount / totalQuestions) * 100 : 0;
+    const progressPercentage = $derived(
+        totalQuestions > 0 ? (answeredCount / totalQuestions) * 100 : 0
+    );
 
     const DEBUG_MODE = import.meta.env.VITE_ADAPTIVE_DEBUG === "true";
-    $: showDebug = state.showAdaptiveIndicator && DEBUG_MODE;
+    const showDebug = $derived(state.showAdaptiveIndicator && DEBUG_MODE);
 </script>
 
 <App title={`Latihan Soal - ${material.title}`}>
@@ -84,9 +94,9 @@
                     title="Mode Tamu Aktif!"
                     message="Anda hanya dapat melihat sebagian dari soal latihan ini."
                 >
-                    <svelte:fragment slot="icon">
+                    {#snippet icon()}
                         <UserCheck size={24} class="text-amber-600" />
-                    </svelte:fragment>
+                    {/snippet}
                 </GuestBanner>
             {/if}
 

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
     import DifficultyFilterBar from "@/components/shared/DifficultyFilterBar.svelte";
     import Card from "@/components/ui/Card.svelte";
@@ -15,21 +15,23 @@
         FileText,
     } from "lucide-svelte";
     import { ReviewState } from "@/states/Mahasiswa/QuizState.svelte";
+    import type { Material } from "@/types";
 
-    export let material = {};
-    export let materials = [];
-    export let questions = [];
-    export let difficulty = "all";
+    const {
+        material,
+        materials = [],
+        questions = [],
+        difficulty = "all",
+    }: { material: Material; materials: Material[]; questions: any[]; difficulty: string } = $props();
 
     const state = new ReviewState(material, materials, questions, difficulty);
 
-    // Sync Svelte 4 props to Svelte 5 class instance
-    $: {
+    $effect(() => {
         state.material = material;
         state.materials = materials;
         state.questions = questions;
         state.difficulty = difficulty;
-    }
+    });
 </script>
 
 <App title={`Review Soal - ${state.material.title}`}>
@@ -37,7 +39,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <div class="lg:col-span-1">
                 <Card class="sticky top-4" padding="p-2">
-                    <div slot="header">
+                    {#snippet header()}
                         <h5
                             class="font-black text-slate-900 uppercase tracking-widest text-xs flex items-center gap-3"
                         >
@@ -48,7 +50,7 @@
                             </div>
                             Daftar Materi
                         </h5>
-                    </div>
+                    {/snippet}
 
                     <ul class="space-y-1 p-2">
                         {#each state.materials as m (m.id)}

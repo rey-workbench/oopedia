@@ -1,58 +1,97 @@
-import { useForm, router } from "@inertiajs/svelte";
-import { get } from "svelte/store";
+import { router } from "@inertiajs/svelte";
 import { BaseState } from "./BaseState.svelte";
 
-type VisitOptions = Parameters<typeof router.visit>[1];
-type FormSubmitOptions = Omit<VisitOptions, 'method'> & { [key: string]: unknown };
+type FormSubmitOptions = {
+    forceFormData?: boolean;
+    _method?: string;
+    onSuccess?: () => void;
+    onError?: (errors: Record<string, string>) => void;
+    onFinish?: () => void;
+    [key: string]: unknown;
+};
 
 /**
- * FormState - Standardized state class for handling forms
- * Extends BaseState to include Inertia form management.
+ * FormState - Svelte 5 native form state using $state runes.
+ * No Svelte 4 store (useForm) — fully reactive via $state proxy.
  */
 export class FormState<TForm extends Record<string, any>> extends BaseState {
-    public form;
-    public isEdit = $state(false);
+    form = $state<TForm & { processing: boolean; errors: Record<string, string>; progress: number | null }>({} as any);
+    isEdit = $state(false);
+    private initialValues: TForm;
 
     constructor(initialValues: TForm, isEdit: boolean = false) {
         super();
         this.isEdit = isEdit;
-        this.form = useForm(initialValues);
+        this.initialValues = initialValues;
+        this.form = {
+            ...initialValues,
+            processing: false,
+            errors: {},
+            progress: null,
+        } as any;
+    }
+
+    /** Reset form fields back to the initial values passed to the constructor. */
+    resetForm() {
+        Object.assign(this.form, {
+            ...this.initialValues,
+            errors: {},
+            processing: false,
+            progress: null,
+        });
     }
 
     /**
-     * Standard submit wrapper - Simple, DRY, and Robust.
+     * Submit form via Inertia router. Uses $state.snapshot() to get a
+     * plain serialisable copy before sending.
      */
     protected submitForm(method: 'post' | 'put' | 'patch' | 'delete', url: string, options: FormSubmitOptions = {}) {
-        // Inertia useForm returns a store-like object; access methods via index
-        const f = this.form as Record<string, unknown>;
-        const methodFn = f[method];
+        this.form.processing = true;
+        this.form.errors = {};
 
-        // 1. Use the form helper's own method (post, put, patch, delete)
-        if (typeof methodFn === 'function') {
-            return (methodFn as (url: string, opts: FormSubmitOptions) => void)(url, options);
+        const { forceFormData, _method, onSuccess, onError, onFinish, ...routerOptions } = options;
+
+        // $state.snapshot() returns a deep plain-object clone of the reactive proxy
+        const snapshot = $state.snapshot(this.form) as Record<string, any>;
+        const { processing, errors, progress, ...fields } = snapshot;
+
+        if (_method) fields['_method'] = _method;
+
+        let data: FormData | Record<string, any>;
+        if (forceFormData) {
+            const fd = new FormData();
+            Object.entries(fields).forEach(([key, val]) => {
+                if (val !== null && val !== undefined) {
+                    fd.append(key, val as any);
+                }
+            });
+            data = fd;
+        } else {
+            data = fields;
         }
 
-        // 2. Use the generic submit method if available
-        const submitFn = f['submit'];
-        if (typeof submitFn === 'function') {
-            return (submitFn as (method: string, url: string, opts: FormSubmitOptions) => void)(method, url, options);
-        }
-
-        // 3. Fallback: Use router directly
-        const data = typeof f['subscribe'] === 'function' ? get(this.form) : (f['data'] ?? f);
-        return router[method](url, data as TForm, options);
+        return router[method](url, data as any, {
+            ...routerOptions,
+            onError: (errs: Record<string, string>) => {
+                this.form.errors = errs;
+                this.form.processing = false;
+                onError?.(errs);
+            },
+            onSuccess: () => {
+                this.form.processing = false;
+                onSuccess?.();
+            },
+            onFinish: () => {
+                this.form.processing = false;
+                onFinish?.();
+            },
+        });
     }
 
-    /**
-     * Get form processing state
-     */
     get processing() {
         return this.form.processing;
     }
 
-    /**
-     * Get form errors
-     */
     get formErrors() {
         return this.form.errors;
     }

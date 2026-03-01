@@ -96,8 +96,8 @@ export class StudentRegisterState extends FormState<{
     async submit(onSuccess?: () => void) {
         await this.submitForm("post", ROUTES.ADMIN.STUDENTS.INDEX, {
             onSuccess: () => {
+                this.resetForm();
                 if (onSuccess) onSuccess();
-                this.form.reset();
             },
         });
     }

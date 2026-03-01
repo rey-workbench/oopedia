@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
-        import GuestBanner from "@/components/shared/GuestBanner.svelte";
+    import GuestBanner from "@/components/shared/GuestBanner.svelte";
     import Card from "@/components/ui/Card.svelte";
     import Badge from "@/components/ui/Badge.svelte";
     import Button from "@/components/ui/Button.svelte";
@@ -9,8 +9,9 @@
     import { Link } from "@inertiajs/svelte";
     import { ROUTES } from "@/utils/route";
     import { QuestionListState } from "@/states/Mahasiswa/QuizState.svelte";
+    import type { Material } from "@/types";
 
-    export let materials = [];
+    const { materials = [] }: { materials: Material[] } = $props();
 
     const state = new QuestionListState(materials);
 </script>

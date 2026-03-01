@@ -45,12 +45,17 @@
         "forceConsistentCasingInFileNames": true,
         "allowUnreachableCode": false,
         "allowUnusedLabels": false,
+        "useDefineForClassFields": true,
+        "noPropertyAccessFromIndexSignature": true,
         // Recommended Options
         "jsx": "preserve",
         "verbatimModuleSyntax": true,
         "isolatedModules": true,
         "moduleDetection": "force",
         "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowJs": true,
+        "resolveJsonModule": true,
         "baseUrl": ".",
         "paths": {
             "@/*": [

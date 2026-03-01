@@ -46,6 +46,7 @@ export class UserFormState extends FormState<{
     name: string;
     email: string;
     password: string;
+    password_confirmation: string;
     role_id: number;
     gamification_level: string;
     xp: number;
@@ -57,6 +58,7 @@ export class UserFormState extends FormState<{
             name: user ? user.name : "",
             email: user ? user.email : "",
             password: "",
+            password_confirmation: "",
             role_id: user ? user.role_id : 3,
             gamification_level: (user as any)?.gamification
                 ? (user as any).gamification.current_level

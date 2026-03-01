@@ -1,31 +1,31 @@
-<script>
+    <script lang="ts">
     import App from "@/layouts/App.svelte";
     import Card from "@/components/ui/Card.svelte";
     import Input from "@/components/ui/Input.svelte";
     import Button from "@/components/ui/Button.svelte";
-    import { Link } from "@inertiajs/svelte";
     import { Loader2, UserPlus } from "lucide-svelte";
     import { ROUTES } from "@/utils/route";
     import { RegisterState } from "@/states/Auth/AuthState.svelte";
 
     const state = new RegisterState();
-    const form = state.form;
 </script>
 
 <App variant="auth" title="Daftar - OOPedia">
     <Card padding="p-10" hover={false}>
-        <div slot="header" class="text-center w-full mb-6">
-            <h3 class="text-xl font-bold tracking-widest text-slate-900">
-                BUAT AKUN BARU
-            </h3>
-            <p
-                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2"
-            >
-                Bergabunglah dengan komunitas OOPedia
-            </p>
-        </div>
+        {#snippet header()}
+            <div class="text-center w-full mb-6">
+                <h3 class="text-xl font-bold tracking-widest text-slate-900">
+                    BUAT AKUN BARU
+                </h3>
+                <p
+                    class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2"
+                >
+                    Bergabunglah dengan komunitas OOPedia
+                </p>
+            </div>
+        {/snippet}
 
-        <form on:submit|preventDefault={() => state.submit()} class="space-y-6">
+        <form onsubmit={(e) => { e.preventDefault(); state.submit(); }} class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-2">
                     <label
@@ -37,10 +37,10 @@
                     <Input
                         id="name"
                         type="text"
-                        bind:value={$form.name}
+                        bind:value={state.form.name}
                         placeholder="John Doe"
                         required
-                        error={$form.errors.name}
+                        error={state.form.errors['name']}
                     />
                 </div>
                 <div class="space-y-2">
@@ -53,10 +53,10 @@
                     <Input
                         id="email"
                         type="email"
-                        bind:value={$form.email}
+                        bind:value={state.form.email}
                         placeholder="john@example.com"
                         required
-                        error={$form.errors.email}
+                        error={state.form.errors['email']}
                     />
                 </div>
             </div>
@@ -72,10 +72,10 @@
                     <Input
                         id="password"
                         type="password"
-                        bind:value={$form.password}
+                        bind:value={state.form.password}
                         placeholder="••••••••"
                         required
-                        error={$form.errors.password}
+                        error={state.form.errors['password']}
                     />
                 </div>
                 <div class="space-y-2">
@@ -88,7 +88,7 @@
                     <Input
                         id="password_confirmation"
                         type="password"
-                        bind:value={$form.password_confirmation}
+                        bind:value={state.form.password_confirmation}
                         placeholder="••••••••"
                         required
                     />
@@ -101,7 +101,7 @@
                 <input
                     type="checkbox"
                     id="register_as_admin"
-                    bind:checked={$form.register_as_admin}
+                    bind:checked={state.form.register_as_admin}
                     class="w-5 h-5 rounded border-slate-300 text-primary-600 focus:ring-primary-500 transition-colors cursor-pointer"
                 />
                 <label
@@ -118,9 +118,9 @@
                     variant="primary"
                     class="w-full"
                     size="lg"
-                    disabled={$form.processing}
+                    disabled={state.form.processing}
                 >
-                    {#if $form.processing}
+                    {#if state.form.processing}
                         <Loader2 size={18} class="mr-3 animate-spin" /> MEMPROSES...
                     {:else}
                         DAFTAR SEKARANG <UserPlus size={18} class="ml-3" />

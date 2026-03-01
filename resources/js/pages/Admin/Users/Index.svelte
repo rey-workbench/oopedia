@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
-        import Button from "@/components/ui/Button.svelte";
+    import Button from "@/components/ui/Button.svelte";
     import DataTable from "@/components/shared/DataTable.svelte";
     import Badge from "@/components/ui/Badge.svelte";
     import Pagination from "@/components/ui/Pagination.svelte";
@@ -10,24 +10,24 @@
     import { page } from "@inertiajs/svelte";
     import { ROUTES } from "@/utils/route";
 
-    export let users = { data: [] }; // Paginator object
-    export let pendingAdminsCount = 0;
+    let { users = { data: [] }, pendingAdminsCount = 0 }: { users: any; pendingAdminsCount: number } = $props();
 
-    let search =
-        new URLSearchParams(window.location.search).get("search") || "";
+    let search: string = $state(
+        new URLSearchParams(window.location.search).get("search") || ""
+    );
 
-    const state = new UserListState(users, search);
+    const listState = new UserListState(users, search);
 
-    $: authUser = $page.props.auth.user;
-    $: isSuperAdmin = authUser.role_id === 1;
+    const authUser = $derived(($page.props as any)['auth'].user);
+    const isSuperAdmin = $derived((authUser as any)?.role_id === 1);
 
-    $: columns = [
+    const columns = $derived([
         { key: "identity", label: "Identitas", align: "left" },
         { key: "email", label: "Otorisasi Email", align: "left" },
         { key: "role", label: "Peran Sistem", align: "center" },
         { key: "status", label: "Status Akses", align: "center" },
         { key: "actions", label: "Aksi", align: "right" },
-    ];
+    ]);
 </script>
 
 <App title="Manajemen Admin">
@@ -71,24 +71,24 @@
 
         <DataTable
             title="Direktori Pengguna Sistem"
-            items={state.users.data}
+            items={listState.users.data}
             bind:search
-            onSearch={() => {
-                state.search = search;
-                state.handleSearch();
+            onsearch={() => {
+                listState.search = search;
+                listState.handleSearch();
             }}
             searchPlaceholder="Cari nama atau email..."
             {columns}
         >
-            <svelte:fragment slot="empty">
+            {#snippet empty()}
                 <EmptyState
                     title="Data Pengguna Kosong"
                     description="Belum ada pengguna sistem yang ditemukan sesuai pencarian."
                     icon={ShieldCheck}
                 />
-            </svelte:fragment>
+            {/snippet}
 
-            <svelte:fragment slot="row" let:item={user}>
+            {#snippet row(user)}
                 <td
                     class={`px-6 py-6 border-b border-slate-50 border-l-4 border-l-transparent group-hover:border-l-primary-600 ${user.role_id === 1 ? "bg-slate-900/5" : ""}`}
                 >
@@ -152,19 +152,19 @@
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                on:click={() => state.handleDelete(user.id)}
+                                onclick={() => listState.handleDelete(user.id)}
                                 icon={Trash2}
                                 class="text-slate-300 hover:text-rose-500"
                             />
                         {/if}
                     </div>
                 </td>
-            </svelte:fragment>
+            {/snippet}
         </DataTable>
 
-        {#if state.users.data && state.users.data.length > 0}
+        {#if listState.users.data && listState.users.data.length > 0}
             <div class="mt-6">
-                <Pagination links={state.users.links || []} />
+                <Pagination links={listState.users.links || []} />
             </div>
         {/if}
     </div>

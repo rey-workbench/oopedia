@@ -134,13 +134,13 @@ export class QuestionFormState extends FormState<{
 
     addAnswer() {
         this.form.answers = [
-            ...this.form.answers,
+            ...(this.form.answers || []),
             { answer_text: "", is_correct: 0, explanation: "" },
         ];
     }
 
     removeAnswer(index: number) {
-        this.form.answers = this.form.answers.filter((_: unknown, i: number) => i !== index);
+        this.form.answers = (this.form.answers || []).filter((_: unknown, i: number) => i !== index);
     }
 
     setType(type: string) {
@@ -153,11 +153,14 @@ export class QuestionFormState extends FormState<{
 
     async submit() {
         if (
-            ["radio_button", "fill_in_the_blank"].includes(this.form.question_type)
+            ["radio_button", "fill_in_the_blank", "multiple_choice"].includes(this.form.question_type)
         ) {
-            this.form.answers.forEach((ans: AnswerField, i: number) => {
+            const answers = [...(this.form.answers || [])];
+            answers.forEach((ans: AnswerField, i: number) => {
                 ans.is_correct = i == this.form.correct_answer ? 1 : 0;
             });
+
+            this.form.answers = answers;
         }
 
         const url = this.question
@@ -169,12 +172,10 @@ export class QuestionFormState extends FormState<{
 }
 
 /**
- * Question Edit State (Specialized if needed, otherwise use QuestionFormState)
- * Kept for backward compatibility or if there's specific logic override
+ * Question Edit State
  */
 export class QuestionEditState extends QuestionFormState {
-    constructor(question: Question) {
-        // Wrapper for specialized edit page if needed, but QuestionFormState handles it now.
-        super([], null, (question as any).material?.sub_materials || [], question);
+    constructor(question: Question, subMaterials: SubMaterial[] = []) {
+        super([], (question as any).material || null, subMaterials, question);
     }
 }

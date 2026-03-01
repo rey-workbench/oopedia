@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
-        import Button from "@/components/ui/Button.svelte";
+    import Button from "@/components/ui/Button.svelte";
     import Card from "@/components/ui/Card.svelte";
     import ContentDisplay from "@/components/ui/ContentDisplay.svelte";
     import { page } from "@inertiajs/svelte";
@@ -16,12 +16,13 @@
         getBadgeLabel,
         getShadowClass,
     } from "@/utils/contentTypeStyles";
+    import type { Material } from "@/types";
 
-    export let material = {};
+    const { material }: { material: Material } = $props();
 
-    let contentContainer;
+    let contentContainer: HTMLElement | undefined = $state();
 
-    const stripHtml = (html) => {
+    const stripHtml = (html: string | undefined) => {
         if (!html) return "";
         const doc = new DOMParser().parseFromString(html, "text/html");
         return doc.body.textContent || "";
@@ -32,12 +33,14 @@
         if (contentContainer) enhanceCodeBlocks(contentContainer);
     });
 
-    $: if (material && contentContainer) {
-        tick().then(() => enhanceCodeBlocks(contentContainer));
-    }
+    $effect(() => {
+        if (material && contentContainer) {
+            tick().then(() => enhanceCodeBlocks(contentContainer!));
+        }
+    });
 
     // Initialize State
-    const fromAdaptive = $page.props?.flash?.from_adaptive || false;
+    const fromAdaptive = ($page.props as any)?.flash?.from_adaptive || false;
     const state = new MaterialShowState(material, fromAdaptive);
 </script>
 
@@ -178,8 +181,8 @@
                                     class="absolute inset-x-0 bottom-0 h-1/2 bg-black/20"
                                 ></div>
                                 <div class="relative z-10">
-                                    <svelte:component
-                                        this={getIcon(subMaterial.jenis_konten)}
+                                    {@const SubIcon = getIcon(subMaterial.jenis_konten)}
+                                    <SubIcon
                                         size={64}
                                         class="text-white/20 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500"
                                     />

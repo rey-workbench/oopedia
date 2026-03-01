@@ -20,7 +20,7 @@
     } from "lucide-svelte";
     import { slide } from "svelte/transition";
 
-    const auth = $derived($page.props.auth ?? {});
+    const auth = $derived($page.props["auth"] ?? {});
     const user = $derived(auth.user ?? null);
     const isAdminRole = $derived(!!user && isAdmin(user.role_id));
     const isStudentRole = $derived(!!user && isStudent(user.role_id));
@@ -43,7 +43,7 @@
             $page.url.startsWith("/mahasiswa/materials/"),
     );
 
-    const materials = $derived($page.props.sidebar_materials ?? []);
+    const materials = $derived($page.props["sidebar_materials"] ?? []);
 </script>
 
 <aside

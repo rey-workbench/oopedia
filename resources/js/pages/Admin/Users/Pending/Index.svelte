@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
         import Button from "@/components/ui/Button.svelte";
     import DataTable from "@/components/shared/DataTable.svelte";
@@ -10,7 +10,7 @@
     import { formatDate } from "@/utils/formatters";
     import { PendingAdminState } from "@/states/Admin/UserState.svelte";
 
-    export let pendingAdmins = [];
+    let { pendingAdmins = [] }: { pendingAdmins: any[] } = $props();
 
     const state = new PendingAdminState(pendingAdmins);
 
@@ -55,7 +55,7 @@
                 {columns}
                 hideSearch={true}
             >
-                <svelte:fragment slot="row" let:item={admin}>
+                {#snippet row(admin)}
                     <td class="px-6 py-6 border-b border-slate-50">
                         <div class="flex items-center gap-4">
                             <UserAvatar name={admin.name} />
@@ -81,20 +81,20 @@
                     <td class="px-6 py-6 border-b border-slate-50">
                         <div class="flex justify-end gap-2">
                             <button
-                                on:click={() => state.handleApprove(admin.id)}
+                            onclick={() => state.handleApprove(admin.id)}
                                 class="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all"
                             >
                                 <UserCheck size={14} /> Setujui
                             </button>
                             <button
-                                on:click={() => state.handleReject(admin.id)}
+                            onclick={() => state.handleReject(admin.id)}
                                 class="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all"
                             >
                                 <UserX size={14} /> Tolak
                             </button>
                         </div>
                     </td>
-                </svelte:fragment>
+                {/snippet}
             </DataTable>
         {:else}
             <Card class="border-slate-100 shadow-xl">

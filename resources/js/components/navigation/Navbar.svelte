@@ -13,7 +13,7 @@
 
     let { titlePage = "" } = $props();
 
-    const auth = $derived($page.props.auth ?? {});
+    const auth = $derived($page.props["auth"] ?? {});
     const user = $derived(auth.user ?? null);
     const isAuthenticated = $derived(!!user);
     const isAdminRole = $derived(isAuthenticated && isAdmin(user?.role_id));

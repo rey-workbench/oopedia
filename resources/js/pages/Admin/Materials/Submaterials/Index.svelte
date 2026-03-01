@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
     import Button from "@/components/ui/Button.svelte";
     import DataTable from "@/components/shared/DataTable.svelte";
@@ -9,17 +9,16 @@
     import { ROUTES } from "@/utils/route";
     import { SubmaterialListState } from "@/states/Admin/MaterialState.svelte";
 
-    export let material;
-    export let subMaterials = [];
+    let { material, subMaterials = [] }: { material: any; subMaterials: any[] } = $props();
 
     const state = new SubmaterialListState(material, subMaterials);
 
-    $: columns = [
+    const columns = $derived([
         { key: "order", label: "Urutan", align: "left" },
         { key: "title", label: "Judul Sub-Materi", align: "left" },
         { key: "jenis_konten", label: "Jenis Konten", align: "center" },
         { key: "actions", label: "Aksi", align: "right" },
-    ];
+    ]);
 </script>
 
 <App title={`Kelola Sub-Materi: ${material.title}`}>
@@ -59,7 +58,7 @@
                     <div class="flex justify-center gap-4">
                         <Button
                             href={ROUTES.ADMIN.MATERIALS.SUBMATERIALS.CREATE(
-                                state.material.id,
+                                state.material!.id,
                             )}
                             variant="primary"
                             icon={Plus}>Buat Unit Pertama</Button
@@ -103,7 +102,7 @@
                             variant="ghost"
                             size="sm"
                             href={ROUTES.ADMIN.MATERIALS.SUBMATERIALS.EDIT(
-                                state.material.id,
+                                state.material!.id,
                                 sub.id,
                             )}
                             icon={Edit2}
@@ -111,7 +110,7 @@
                         <Button
                             variant="ghost"
                             size="sm"
-                            on:click={() => state.handleDelete(sub.id)}
+                        onclick={() => state.handleDelete(sub.id)}
                             icon={Trash2}
                             class="text-slate-300 hover:text-rose-500"
                         />

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
     import PageHeader from "@/components/shared/PageHeader.svelte";
     import Button from "@/components/ui/Button.svelte";
@@ -7,9 +7,7 @@
     import { ROUTES } from "@/utils/route";
     import { QuestionFormState } from "@/states/Admin/QuestionState.svelte";
 
-    export let materials = [];
-    export let material = null;
-    export let subMaterials = [];
+    let { materials = [], material = null, subMaterials = [] } = $props();
 
     const state = new QuestionFormState(
         materials,
@@ -17,7 +15,6 @@
         subMaterials,
         null,
     );
-    const form = state.form;
 </script>
 
 <App title="Buat Instrumen Baru">
@@ -26,15 +23,15 @@
             title="Engineering Evaluasi"
             subtitle="Membangun instrumen penilaian baru dengan parameter algoritma yang presisi."
         >
-            <div slot="actions">
+            {#snippet actions()}
                 <Button
                     href={material
-                        ? ROUTES.ADMIN.MATERIALS.SHOW_QUESTIONS(material.id)
+                        ? ROUTES.ADMIN.MATERIALS.QUESTIONS.INDEX(material.id)
                         : ROUTES.ADMIN.QUESTIONS.INDEX}
                     variant="ghost"
                     icon={ArrowLeft}>BATALKAN</Button
                 >
-            </div>
+            {/snippet}
         </PageHeader>
 
         <form
@@ -63,14 +60,14 @@
                                     Teks Pertanyaan (Rich Text)
                                 </span>
                                 <QuillEditor
-                                    bind:value={$form.question_text}
+                                    bind:value={state.form.question_text}
                                     placeholder="Deskripsikan problematik pemrograman di sini..."
                                 />
-                                {#if $form.errors.question_text}
+                                {#if state.form.errors['question_text']}
                                     <p
                                         class="text-[10px] font-bold text-rose-500 uppercase tracking-widest"
                                     >
-                                        {$form.errors.question_text}
+                                        {state.form.errors['question_text']}
                                     </p>
                                 {/if}
                             </div>
@@ -86,7 +83,7 @@
                                         type="button"
                                         onclick={() => state.addAnswer()}
                                         variant="ghost"
-                                        size="xs"
+                                        size="sm"
                                         icon={Plus}
                                     >
                                         TAMBAH OPSI
@@ -94,7 +91,7 @@
                                 </div>
 
                                 <div class="space-y-4">
-                                    {#each $form.answers as answer, i}
+                                    {#each state.form.answers as answer, i}
                                         <div
                                             class="p-6 bg-slate-50 rounded-3xl border border-slate-100 space-y-4 relative group"
                                         >
@@ -105,7 +102,7 @@
                                                         name="correct_answer"
                                                         value={i}
                                                         bind:group={
-                                                            $form.correct_answer
+                                                            state.form.correct_answer
                                                         }
                                                         class="w-5 h-5 text-primary-600 focus:ring-primary-500 border-slate-300 transition-all cursor-pointer"
                                                     />
@@ -128,7 +125,7 @@
                                                         class="w-full bg-white/50 border border-slate-100 rounded-xl px-4 py-2 text-[10px] font-bold text-slate-500 focus:border-primary-400 focus:outline-none transition-all"
                                                     />
                                                 </div>
-                                                {#if $form.answers.length > 1}
+                                                {#if state.form.answers.length > 1}
                                                     <Button
                                                         type="button"
                                                         onclick={() =>
@@ -166,7 +163,7 @@
                                     </label>
                                     <select
                                         id="material"
-                                        bind:value={$form.material_id}
+                                        bind:value={state.form.material_id}
                                         onchange={() =>
                                             state.handleMaterialChange()}
                                         class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-900 focus:border-primary-600 focus:outline-none transition-all cursor-pointer"
@@ -178,11 +175,11 @@
                                             >
                                         {/each}
                                     </select>
-                                    {#if $form.errors.material_id}
+                                    {#if state.form.errors['material_id']}
                                         <p
                                             class="text-[10px] font-bold text-rose-500 uppercase tracking-widest"
                                         >
-                                            {$form.errors.material_id}
+                                            {state.form.errors['material_id']}
                                         </p>
                                     {/if}
                                 </div>
@@ -197,9 +194,9 @@
                                     </label>
                                     <select
                                         id="sub_material"
-                                        bind:value={$form.sub_material_id}
+                                        bind:value={state.form.sub_material_id}
                                         class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-900 focus:border-primary-600 focus:outline-none transition-all cursor-pointer disabled:opacity-50"
-                                        disabled={!$form.material_id}
+                                        disabled={!state.form.material_id}
                                     >
                                         <option value=""
                                             >TAG UNIT TERKAIT</option
@@ -225,10 +222,10 @@
                                                 onclick={() =>
                                                     state.setType(type)}
                                                 class={`py-4 px-6 rounded-2xl border-2 font-bold uppercase tracking-widest text-[10px] text-left transition-all flex items-center justify-between
-                                            ${$form.question_type === type ? "border-primary-600 bg-primary-50 text-primary-600" : "border-slate-50 bg-slate-50 text-slate-400"}`}
+                                            ${state.form.question_type === type ? "border-primary-600 bg-primary-50 text-primary-600" : "border-slate-50 bg-slate-50 text-slate-400"}`}
                                             >
                                                 {type.replace(/_/g, " ")}
-                                                {#if $form.question_type === type}
+                                                {#if state.form.question_type === type}
                                                     <CheckCircle2 size={16} />
                                                 {/if}
                                             </button>
@@ -249,7 +246,7 @@
                                                 onclick={() =>
                                                     state.setDifficulty(diff)}
                                                 class={`flex-1 py-3 px-2 rounded-xl border-2 font-bold uppercase tracking-widest text-[9px] transition-all
-                                            ${$form.difficulty === diff ? "border-primary-600 bg-primary-50 text-primary-600" : "border-slate-50 bg-slate-50 text-slate-400"}`}
+                                            ${state.form.difficulty === diff ? "border-primary-600 bg-primary-50 text-primary-600" : "border-slate-50 bg-slate-50 text-slate-400"}`}
                                             >
                                                 {diff}
                                             </button>
@@ -259,7 +256,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div
                         class="pt-6 border-t border-slate-100 flex items-center justify-between gap-4"
                     >
@@ -272,9 +268,9 @@
                                 size="lg"
                                 class="shadow-xl shadow-primary-900/20"
                                 icon={Save}
-                                disabled={$form.processing}
+                                disabled={state.form.processing}
                             >
-                                {#if $form.processing}
+                                {#if state.form.processing}
                                     Memproses...
                                 {:else}
                                     SIMPAN INSTRUMEN

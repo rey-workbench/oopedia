@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
         import StatsGrid from "@/components/shared/StatsGrid.svelte";
     import Card from "@/components/ui/Card.svelte";
@@ -17,14 +17,7 @@
     } from "lucide-svelte";
     import { formatDate } from "@/utils/formatters";
 
-    export let totalStudents;
-    export let totalMaterials;
-    export let totalQuestions;
-    export let activeStudents;
-    export let recentProgress;
-    export let studentProgress;
-    export let popularMaterials;
-    export let studentAnalytics;
+    let { totalStudents, totalMaterials, totalQuestions, activeStudents, recentProgress, studentProgress, popularMaterials, studentAnalytics }: { totalStudents: any; totalMaterials: any; totalQuestions: any; activeStudents: any; recentProgress: any; studentProgress: any; popularMaterials: any; studentAnalytics: any } = $props();
 
     const state = new AdminDashboardState({
         totalStudents,
@@ -35,23 +28,27 @@
         studentProgress,
         popularMaterials,
         studentAnalytics,
-    });
+    } as any);
 
-    $: distribution = state.studentAnalytics?.distribution ?? {};
-    $: radar = state.studentAnalytics?.radar ?? {};
-    $: distributionMax = Math.max(
-        1,
-        ...Object.values(distribution).map(Number),
+    const distribution = $derived(state.studentAnalytics?.distribution ?? {});
+    const radar = $derived(state.studentAnalytics?.radar ?? {});
+    const distributionMax = $derived(
+        Math.max(
+            1,
+            ...Object.values(distribution).map(Number),
+        )
     );
-    $: radarMax = Math.max(1, ...Object.values(radar).map(Number));
+    const radarMax = $derived(Math.max(1, ...Object.values(radar).map(Number)));
     const radarColors = ["blue", "emerald", "amber", "rose", "gray"];
 
-    $: maxAttempts = Math.max(
-        1,
-        ...(state.popularMaterials || []).map((m) => m.total_attempts ?? 0),
+    const maxAttempts = $derived(
+        Math.max(
+            1,
+            ...(state.popularMaterials || []).map((m: any) => m.total_attempts ?? 0),
+        )
     );
 
-    $: dashboardStats = [
+    const dashboardStats = $derived([
         {
             title: "Total Mahasiswa",
             value: state.totalStudents,
@@ -80,7 +77,7 @@
             variant: "success",
             footer: "Total butir evaluasi",
         },
-    ];
+    ]);
 </script>
 
 <App title="Admin Dashboard">
@@ -187,9 +184,9 @@
                                     <ProgressBar
                                         value={Number(value)}
                                         max={radarMax}
-                                        color={radarColors[
+                                        color={(radarColors[
                                             i % radarColors.length
-                                        ]}
+                                        ] ?? "blue") as "emerald" | "amber" | "rose" | "blue" | "gray"}
                                         height="h-2"
                                     />
                                 </div>

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
     import PageHeader from "@/components/shared/PageHeader.svelte";
     import Button from "@/components/ui/Button.svelte";
@@ -9,7 +9,6 @@
     import { UserImportState } from "@/states/Admin/UserState.svelte";
 
     const state = new UserImportState();
-    const form = state.form;
 
     const items = [
         "File harus dalam format <strong>.xlsx</strong> atau <strong>.xls</strong>",
@@ -25,13 +24,13 @@
             title="Protokol Impor Admin"
             subtitle="Unggah dataset admin melalui berkas Excel untuk otorisasi massal."
         >
-            <div slot="actions">
+            {#snippet actions()}
                 <Button
                     href={ROUTES.ADMIN.USERS.INDEX}
                     variant="ghost"
                     icon={ArrowLeft}>KEMBALI KE DAFTAR</Button
                 >
-            </div>
+            {/snippet}
         </PageHeader>
 
         <div class="max-w-2xl mx-auto">
@@ -54,7 +53,7 @@
                     <div class="space-y-10 p-6">
                         <ImportInstructions {items} />
                         <FileUploadZone
-                            {form}
+                            form={state.form}
                             onFileChange={(e) => state.handleFileChange(e)}
                             label="Berkas Dataset (Excel)"
                             downloadHref="/admin/users/download-template"
@@ -79,9 +78,9 @@
                                     size="lg"
                                     class="shadow-xl shadow-primary-900/20"
                                     icon={Upload}
-                                    disabled={$form.processing}
+                                    disabled={state.form.processing}
                                 >
-                                    {#if $form.processing}
+                                    {#if state.form.processing}
                                         Memproses...
                                     {:else}
                                         MULAI IMPOR DATASET

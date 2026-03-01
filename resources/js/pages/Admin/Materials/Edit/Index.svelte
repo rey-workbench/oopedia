@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
     import PageHeader from "@/components/shared/PageHeader.svelte";
     import Button from "@/components/ui/Button.svelte";
@@ -8,12 +8,11 @@
     import QuillEditor from "@/components/ui/QuillEditor.svelte";
     import { MaterialFormState } from "@/states/Admin/MaterialState.svelte";
     import { ROUTES } from "@/utils/route";
-    import { ArrowLeft, RefreshCw, Camera, CloudUpload } from "lucide-svelte";
+    import { ArrowLeft, RefreshCw, CloudUpload } from "lucide-svelte";
 
-    export let material;
+    let { material } = $props();
 
     const state = new MaterialFormState(material);
-    const form = state.form;
 </script>
 
 <App title="Edit Materi">
@@ -22,13 +21,13 @@
             title="Pembaruan Kurikulum"
             subtitle="Modifikasi konten instruksional dan optimasi media visual."
         >
-            <div slot="actions">
+            {#snippet actions()}
                 <Button
                     href={ROUTES.ADMIN.MATERIALS.INDEX}
                     variant="ghost"
                     icon={ArrowLeft}>BATALKAN MODIFIKASI</Button
                 >
-            </div>
+            {/snippet}
         </PageHeader>
 
         <form
@@ -53,10 +52,10 @@
                             <Input
                                 label="Revisi Judul"
                                 required
-                                bind:value={$form.title}
+                                bind:value={state.form.title}
                                 placeholder=""
                                 className="text-lg font-bold tracking-widest"
-                                error={$form.errors.title}
+                                error={state.form.errors['title']}
                             />
 
                             <Alert
@@ -83,10 +82,10 @@
                             <ImageUpload
                                 preview={state.coverPreview}
                                 label="Sinkronisasi Sampul"
-                                emptyIcon={Camera}
+                                emptyIcon="camera"
                                 emptyText="Masukkan Gambar"
-                                error={$form.errors.cover_image}
-                                onChange={(e) => state.onImageChange(e)}
+                                error={state.form.errors['cover_image']}
+                                onchange={(e) => state.onImageChange(e)}
                             />
                         </div>
                     </div>
@@ -99,13 +98,13 @@
                         >
                         <div id="content-editor">
                             <QuillEditor
-                                bind:value={$form.content}
+                                bind:value={state.form.content}
                                 height="500px"
                             />
                         </div>
-                        {#if $form.errors.content}
+                        {#if state.form.errors['content']}
                             <p class="text-rose-500 text-xs mt-1">
-                                {$form.errors.content}
+                                {state.form.errors['content']}
                             </p>
                         {/if}
                     </div>
@@ -131,9 +130,9 @@
                                 size="lg"
                                 class="shadow-xl shadow-primary-900/20"
                                 icon={CloudUpload}
-                                disabled={$form.processing}
+                                disabled={state.form.processing}
                             >
-                                {#if $form.processing}
+                                {#if state.form.processing}
                                     Memproses...
                                 {:else}
                                     SIMPAN PERUBAHAN

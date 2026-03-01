@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
     import PageHeader from "@/components/shared/PageHeader.svelte";
     import Button from "@/components/ui/Button.svelte";
@@ -8,7 +8,7 @@
     import { ROUTES } from "@/utils/route";
     import { UserFormState } from "@/states/Admin/UserState.svelte";
 
-    export let user;
+    let { user } = $props();
 
     const state = new UserFormState(user);
     const form = state.form;
@@ -27,13 +27,13 @@
             title="Pembaruan Kredensial"
             subtitle="Modifikasi data identitas dan kunci keamanan entitas."
         >
-            <div slot="actions">
+            {#snippet actions()}
                 <Button
                     href={ROUTES.ADMIN.USERS.INDEX}
                     variant="ghost"
                     icon={ArrowLeft}>KEMBALI KE DAFTAR</Button
                 >
-            </div>
+            {/snippet}
         </PageHeader>
 
         <form
@@ -61,16 +61,16 @@
                                 >
                                     <Input
                                         label="Nama Lengkap"
-                                        bind:value={$form.name}
+                                        bind:value={form.name}
                                         placeholder="John Doe"
-                                        error={$form.errors.name}
+                                        error={form.errors['name']}
                                     />
                                     <Input
                                         label="Alamat Email"
                                         type="email"
-                                        bind:value={$form.email}
+                                        bind:value={form.email}
                                         placeholder="john@email.com"
-                                        error={$form.errors.email}
+                                        error={form.errors['email']}
                                     />
                                 </div>
 
@@ -80,14 +80,14 @@
                                     <Input
                                         label="Password Baru (Opsional)"
                                         type="password"
-                                        bind:value={$form.password}
+                                        bind:value={form.password}
                                         placeholder="••••••••"
-                                        error={$form.errors.password}
+                                        error={form.errors['password']}
                                     />
                                     <Input
                                         label="Konfirmasi (Opsional)"
                                         type="password"
-                                        bind:value={$form.password_confirmation}
+                                        bind:value={form.password_confirmation}
                                         placeholder="••••••••"
                                     />
                                 </div>
@@ -123,9 +123,9 @@
                                 size="lg"
                                 class="shadow-xl shadow-primary-900/20"
                                 icon={Save}
-                                disabled={$form.processing}
+                                disabled={form.processing}
                             >
-                                {#if $form.processing}
+                                {#if form.processing}
                                     Memproses...
                                 {:else}
                                     SIMPAN PERUBAHAN

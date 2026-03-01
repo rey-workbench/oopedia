@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
         import Button from "@/components/ui/Button.svelte";
     import { ArrowLeft } from "lucide-svelte";
@@ -8,8 +8,7 @@
     import ProgressBar from "@/components/ui/ProgressBar.svelte";
     import { UeqDetailState } from "@/states/Admin/UeqState.svelte";
 
-    export let user;
-    export let survey;
+    let { user, survey }: { user: any; survey: any } = $props();
 
     const state = new UeqDetailState(user, survey);
 </script>
@@ -136,7 +135,7 @@
                                         Math.max(0, (value / 7) * 100),
                                     )}
                                     height="h-2"
-                                    color="primary"
+                                    color="blue"
                                 />
                             {/if}
                         </div>
@@ -210,7 +209,7 @@
                                         <td class="px-2 py-4 text-center">
                                             <div
                                                 class={`w-8 h-8 mx-auto rounded-lg flex items-center justify-center text-[10px] font-bold
-                                                ${state.survey[aspect.name] === i + 1 ? "bg-primary-600 text-white shadow-lg shadow-primary-900/20" : "bg-slate-100 text-slate-300"}`}
+                                                ${(state.survey as any)[aspect.name] === i + 1 ? "bg-primary-600 text-white shadow-lg shadow-primary-900/20" : "bg-slate-100 text-slate-300"}`}
                                             >
                                                 {i + 1}
                                             </div>

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import Button from "@/components/ui/Button.svelte";
     import {
         Compass,
@@ -10,27 +10,30 @@
     } from "lucide-svelte";
     import { ROUTES } from "@/utils/route";
 
-    export let status;
+    let { status }: { status: number } = $props();
 
-    $: title =
-        {
+    const title = $derived(
+        ({
             503: "503: Service Unavailable",
             500: "500: Server Error",
             404: "404: Page Not Found",
             403: "403: Forbidden",
-        }[status] || "Error";
+        } as Record<number, string>)[status] ?? "Error"
+    );
 
-    $: description =
-        {
+    const description = $derived(
+        ({
             503: "Sorry, we are doing some maintenance on the site. Please check back soon.",
             500: "Whoops, something went wrong on our servers.",
             404: "Sorry, the page you are looking for could not be found.",
             403: "Sorry, you are forbidden from accessing this page.",
-        }[status] || "An unexpected error occurred.";
+        } as Record<number, string>)[status] ?? "An unexpected error occurred."
+    );
 
-    $: illustration =
-        { 404: Compass, 403: ShieldAlert, 500: Server, 503: Wrench }[status] ||
-        AlertTriangle;
+    const illustration = $derived(
+        ({ 404: Compass, 403: ShieldAlert, 500: Server, 503: Wrench } as Record<number, any>)[status] ??
+            AlertTriangle
+    );
 </script>
 
 <svelte:head>
@@ -56,11 +59,13 @@
         <div
             class="w-32 h-32 bg-white rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-slate-200 mx-auto mb-8 relative z-10"
         >
-            <svelte:component
-                this={illustration}
-                size={64}
-                class="text-slate-300"
-            />
+            {#if illustration}
+                {@const IllComp = illustration}
+                <IllComp
+                    size={64}
+                    class="text-slate-300"
+                />
+            {/if}
         </div>
 
         <h1 class="text-6xl font-black text-slate-900 tracking-widest mb-2">

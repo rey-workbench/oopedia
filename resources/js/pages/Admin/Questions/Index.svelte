@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
     import Button from "@/components/ui/Button.svelte";
     import DataTable from "@/components/shared/DataTable.svelte";
@@ -17,10 +17,7 @@
     import { ROUTES } from "@/utils/route";
     import { QuestionListAdminState } from "@/states/Admin/QuestionState.svelte";
 
-    export let questions = { data: [] };
-    export let material = null;
-    export let search = "";
-    export let difficulty = "";
+    let { questions = { data: [] }, material = null, search = "", difficulty = "" }: { questions: any; material: any; search: string; difficulty: string } = $props();
 
     const state = new QuestionListAdminState(
         questions,
@@ -29,7 +26,7 @@
         difficulty,
     );
 
-    $: columns = [
+    const columns = $derived([
         { key: "question", label: "Pertanyaan", align: "left" },
         { key: "type", label: "Tipe", align: "left" },
         { key: "difficulty", label: "Tingkat", align: "left" },
@@ -37,9 +34,9 @@
             ? []
             : [{ key: "material", label: "Modul", align: "left" }]),
         { key: "actions", label: "Aksi", align: "right" },
-    ];
+    ]);
 
-    function getDifficultyColor(diff) {
+    function getDifficultyColor(diff: string) {
         if (diff === "beginner") return "success";
         if (diff === "medium") return "warning";
         return "danger";
@@ -86,7 +83,7 @@
                     type="text"
                     id="q-search"
                     bind:value={state.search}
-                    on:input={state.handleSearch}
+                    oninput={state.handleSearch}
                     placeholder="Cari teks soal atau identitas..."
                     class="w-full bg-white border border-slate-100 rounded-2xl px-8 py-4 text-xs font-bold uppercase tracking-widest text-slate-900 group-hover:border-primary-400 focus:border-primary-600 focus:ring-4 focus:ring-primary-100 focus:outline-none transition-all duration-300 shadow-xl shadow-slate-100"
                 />
@@ -108,7 +105,7 @@
             <select
                 id="q-difficulty"
                 bind:value={state.difficulty}
-                on:change={() => state.setDifficulty(state.difficulty)}
+                onchange={() => state.setDifficulty(state.difficulty)}
                 class="w-full bg-white border border-slate-100 rounded-2xl px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-900 focus:border-primary-600 focus:ring-4 focus:ring-primary-100 focus:outline-none transition-all cursor-pointer shadow-xl shadow-slate-100"
             >
                 <option value="">SEMUA LEVEL</option>
@@ -149,7 +146,7 @@
                 </div>
             </td>
             <td class="px-6 py-6">
-                <Badge variant="ghost" size="xs">
+                <Badge variant="secondary" size="xs">
                     {question.question_type.replace(/_/g, " ").toUpperCase()}
                 </Badge>
             </td>
@@ -183,7 +180,7 @@
                     <Button
                         variant="ghost"
                         size="sm"
-                        on:click={() => state.handleDelete(question.id)}
+                        onclick={() => state.handleDelete(question.id)}
                         icon={Trash2}
                         class="text-slate-300 hover:text-rose-500"
                     />

@@ -3,7 +3,7 @@
 
     interface Props {
         form: any;
-        onfilechange: (e: Event) => void;
+        onFileChange: (e: Event) => void;
         label?: string;
         downloadHref?: string;
         downloadLabel?: string;
@@ -11,7 +11,7 @@
 
     let {
         form,
-        onfilechange,
+        onFileChange,
         label = "Upload File Excel",
         downloadHref = "#",
         downloadLabel = "Download Template",
@@ -27,7 +27,7 @@
         <input
             type="file"
             accept=".xlsx,.xls"
-            onchange={onfilechange}
+            onchange={onFileChange}
             class="hidden"
         />
         <div
@@ -42,7 +42,7 @@
                 <p
                     class="text-xs font-bold text-slate-600 uppercase tracking-widest mb-1"
                 >
-                    {$form.file ? $form.file.name : "Klik untuk memilih file"}
+                    {form.excel_file ? form.excel_file.name : "Klik untuk memilih file"}
                 </p>
                 <p class="text-[10px] text-slate-400 font-medium">
                     Format: .xlsx, .xls
@@ -51,11 +51,11 @@
         </div>
     </label>
 
-    {#if $form.errors.file}
+    {#if form.errors?.excel_file}
         <p
             class="text-[10px] font-bold text-rose-500 uppercase tracking-widest"
         >
-            {$form.errors.file}
+            {form.errors.excel_file}
         </p>
     {/if}
 

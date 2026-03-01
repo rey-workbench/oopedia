@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { Link } from "@inertiajs/svelte";
     import App from "@/layouts/App.svelte";
     import StatsGrid from "@/components/shared/StatsGrid.svelte";
@@ -20,10 +20,12 @@
     import { ROUTES } from "@/utils/route";
     import { DashboardState } from "@/states/Mahasiswa/DashboardState.svelte";
 
-    export let totalMaterials = 0;
-    export let totalQuestions = 0;
-    export let hardQuestions = 0;
-    export let recentActivities = [];
+    const { totalMaterials = 0, totalQuestions = 0, hardQuestions = 0, recentActivities = [] }: {
+        totalMaterials: number;
+        totalQuestions: number;
+        hardQuestions: number;
+        recentActivities: any[];
+    } = $props();
 
     const state = new DashboardState({
         totalMaterials,
@@ -32,7 +34,7 @@
         recentActivities,
     });
 
-    $: dashboardStats = [
+    const dashboardStats = $derived([
         {
             title: "Materi Tersedia",
             value: state.totalMaterials,
@@ -61,7 +63,7 @@
             variant: "warning",
             footer: "Peringkat global Anda",
         },
-    ];
+    ]);
 </script>
 
 <App title="Dashboard">
@@ -137,6 +139,7 @@
                     <!-- Activity Feed Inline -->
                     <div class="space-y-6">
                         {#each state.recentActivities as activity}
+                            {@const ActivityIcon = activity.type === "achievement" ? Trophy : activity.type === "milestone" ? Star : ClipboardList}
                             <Card
                                 padding="p-0"
                                 class="hover:border-primary-400 transition-all border-slate-100 shadow-xl overflow-hidden group"
@@ -146,13 +149,7 @@
                                         class={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 border border-black/5 shadow-inner transition-colors
                                     ${activity.type === "achievement" ? "bg-emerald-50 text-emerald-500" : activity.type === "milestone" ? "bg-amber-50 text-amber-500" : "bg-primary-50 text-primary-500"}`}
                                     >
-                                        <svelte:component
-                                            this={activity.type ===
-                                            "achievement"
-                                                ? Trophy
-                                                : activity.type === "milestone"
-                                                  ? Star
-                                                  : ClipboardList}
+                                        <ActivityIcon
                                             size={24}
                                             strokeWidth={2.5}
                                         />
@@ -248,11 +245,7 @@
                                 class="absolute -top-10 -right-10 w-32 h-32 bg-primary-100/50 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000"
                             ></div>
                             <div class="mb-6 text-primary-600">
-                                <svelte:component
-                                    this={Code2}
-                                    size={32}
-                                    strokeWidth={2.5}
-                                />
+                                <Code2 size={32} strokeWidth={2.5} />
                             </div>
                             <h4
                                 class="text-lg font-bold tracking-widest mb-2 uppercase text-slate-900"
@@ -285,11 +278,7 @@
                                 <div
                                     class="w-12 h-12 rounded-xl bg-slate-100/50 text-slate-500 flex items-center justify-center mb-4 group-hover:bg-primary-600 group-hover:text-white transition-all"
                                 >
-                                    <svelte:component
-                                        this={Plus}
-                                        size={24}
-                                        strokeWidth={3}
-                                    />
+                                    <Plus size={24} strokeWidth={3} />
                                 </div>
                                 <h4
                                     class="text-[10px] font-bold text-slate-600 uppercase tracking-widest group-hover:text-primary-600"
