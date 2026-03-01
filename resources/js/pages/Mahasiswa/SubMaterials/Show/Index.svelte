@@ -22,6 +22,7 @@
         getHoverBorderClass,
     } from "@/utils/contentTypeStyles";
     import { SubMaterialState } from "@/states/Mahasiswa/MaterialState.svelte";
+    import PageHeader from "@/components/shared/PageHeader.svelte";
     import { ROUTES } from "@/utils/route";
     import { onMount, tick, untrack } from "svelte";
     import { enhanceCodeBlocks } from "@/utils/codeBlockEnhancer";
@@ -38,6 +39,7 @@
         if (contentContainer) enhanceCodeBlocks(contentContainer);
     });
 
+
     $effect(() => {
         if (state.subMaterial && contentContainer) {
             tick().then(() => enhanceCodeBlocks(contentContainer!));
@@ -47,6 +49,7 @@
 
 <App title={state.subMaterial.title} fullWidth={true}>
     <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-12 py-8 space-y-12">
+        <PageHeader title={state.subMaterial.title} />
         <!-- Breadcrumb Navigation -->
         <div class="flex items-center gap-3 text-sm">
             <Link

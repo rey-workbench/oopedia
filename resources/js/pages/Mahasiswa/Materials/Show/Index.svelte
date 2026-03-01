@@ -8,6 +8,7 @@
     import { onMount, tick, untrack } from "svelte";
     import { enhanceCodeBlocks } from "@/utils/codeBlockEnhancer";
     import { MaterialShowState } from "@/states/Mahasiswa/MaterialState.svelte";
+    import PageHeader from "@/components/shared/PageHeader.svelte";
     import { ROUTES } from "@/utils/route";
     import {
         getBgClass,
@@ -46,6 +47,7 @@
 
 <App title={state.material?.title || "Material"}>
     <div class="space-y-12">
+        <PageHeader title={state.material?.title || material.title} />
         <!-- Header Section -->
         
 <div class="mb-8">
