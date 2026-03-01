@@ -1,17 +1,27 @@
-import { router } from "@inertiajs/svelte";
-import { debounce } from "lodash";
-import { confirmDelete } from "@/utils/confirmDelete";
-import { BaseState } from "@/states/BaseState.svelte";
-import { FormState } from "@/states/FormState.svelte";
-import { ROUTES } from "@/utils/route";
-import type { User, Pagination } from "@/types";
+import { router } from '@inertiajs/svelte';
+import { debounce } from 'lodash';
+import { confirmDelete } from '@/utils/confirmDelete';
+import { BaseState } from '@/states/BaseState.svelte';
+import { FormState } from '@/states/FormState.svelte';
+import { ROUTES } from '@/utils/route';
+import type { User, Pagination } from '@/types';
 
 /**
  * User List State
  */
 export class UserListState extends BaseState {
-    users = $state<Pagination<User>>({ data: [], links: [], current_page: 1, from: null, last_page: 1, path: "", per_page: 10, to: null, total: 0 });
-    search = $state("");
+    users = $state<Pagination<User>>({
+        data: [],
+        links: [],
+        current_page: 1,
+        from: null,
+        last_page: 1,
+        path: '',
+        per_page: 10,
+        to: null,
+        total: 0,
+    });
+    search = $state('');
 
     constructor(users: Pagination<User>, search: string) {
         super();
@@ -32,10 +42,7 @@ export class UserListState extends BaseState {
     }, 300);
 
     handleDelete(id: number) {
-        confirmDelete(
-            ROUTES.ADMIN.USERS.DELETE(id),
-            "Hapus pengguna ini?"
-        );
+        confirmDelete(ROUTES.ADMIN.USERS.DELETE(id), 'Hapus pengguna ini?');
     }
 }
 
@@ -54,17 +61,20 @@ export class UserFormState extends FormState<{
     targetUser = $state<User | null>(null);
 
     constructor(user: User | null) {
-        super({
-            name: user ? user.name : "",
-            email: user ? user.email : "",
-            password: "",
-            password_confirmation: "",
-            role_id: user ? user.role_id : 3,
-            gamification_level: (user as any)?.gamification
-                ? (user as any).gamification.current_level
-                : "Pemula",
-            xp: (user as any)?.gamification ? (user as any).global_xp : 0,
-        }, !!user);
+        super(
+            {
+                name: user ? user.name : '',
+                email: user ? user.email : '',
+                password: '',
+                password_confirmation: '',
+                role_id: user ? user.role_id : 3,
+                gamification_level: (user as any)?.gamification
+                    ? (user as any).gamification.current_level
+                    : 'Pemula',
+                xp: (user as any)?.gamification ? (user as any).global_xp : 0,
+            },
+            !!user
+        );
 
         this.targetUser = user;
     }
@@ -89,7 +99,7 @@ export class UserImportState extends FormState<{ excel_file: File | null }> {
     }
 
     async submit() {
-        await this.submitForm("post", ROUTES.ADMIN.USERS.IMPORT);
+        await this.submitForm('post', ROUTES.ADMIN.USERS.IMPORT);
     }
 
     handleFileChange(e: Event) {

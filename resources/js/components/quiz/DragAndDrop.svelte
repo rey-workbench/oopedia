@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { HelpCircle, List } from "lucide-svelte";
-    import type { Question } from "@/types";
+    import { HelpCircle, List } from 'lucide-svelte';
+    import type { Question } from '@/types';
 
     let {
         question,
@@ -15,25 +15,24 @@
     let activeZone = $state<string | null>(null);
 
     let parsedQuestion = $derived.by(() => {
-        if (!question?.question_text)
-            return { text: "", inlineFound: false, count: 0 };
+        if (!question?.question_text) return { text: '', inlineFound: false, count: 0 };
 
         let zoneIndex = 0;
         let inlineFound = false;
         let rawText = question.question_text
-            .replace(/<p>/g, "")
-            .replace(/<\/p>/g, "\n")
-            .replace(/<br>/g, "\n");
+            .replace(/<p>/g, '')
+            .replace(/<\/p>/g, '\n')
+            .replace(/<br>/g, '\n');
 
         const text = rawText.replace(/\[zone\]/g, () => {
             inlineFound = true;
             zoneIndex++;
             const currentZoneId = zoneIndex.toString();
-            const currentAnswer = dragAndDropAnswers[currentZoneId] || "...";
+            const currentAnswer = dragAndDropAnswers[currentZoneId] || '...';
             const isActive = activeZone === currentZoneId;
             const extraClass = isActive
-                ? "bg-primary-100 border-primary-600 scale-[1.05] ring-2 ring-primary-300"
-                : "bg-white border-primary-300 hover:bg-primary-50";
+                ? 'bg-primary-100 border-primary-600 scale-[1.05] ring-2 ring-primary-300'
+                : 'bg-white border-primary-300 hover:bg-primary-50';
 
             return `<span class="drop-zone inline-flex min-w-[120px] h-9 border-b-2 mx-1 items-center justify-center text-primary-600 font-bold rounded-md px-3 shadow-sm transition-all duration-200 cursor-pointer ${extraClass}" data-zone="${currentZoneId}">${currentAnswer}</span>`;
         });
@@ -44,9 +43,7 @@
     $effect(() => {
         hasInlineZones = parsedQuestion.inlineFound;
         if (!hasInlineZones) {
-            const count = Array.isArray(question?.answers)
-                ? question.answers.length
-                : 0;
+            const count = Array.isArray(question?.answers) ? question.answers.length : 0;
             autoDropZones = Array.from({ length: count }, (_, i) => i + 1);
         } else {
             autoDropZones = [];
@@ -55,31 +52,31 @@
 
     function handleDragStart(event: DragEvent, answerText: string) {
         if (!event.dataTransfer) return;
-        event.dataTransfer.setData("text/plain", answerText);
-        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData('text/plain', answerText);
+        event.dataTransfer.effectAllowed = 'move';
 
         // Add ghost effect to dragged item
         if (event.target instanceof HTMLElement) {
             const el = event.target;
-            setTimeout(() => el.classList.add("opacity-30", "scale-95"), 0);
+            setTimeout(() => el.classList.add('opacity-30', 'scale-95'), 0);
         }
     }
 
     function handleDragEnd(event: DragEvent) {
         if (event.target instanceof HTMLElement) {
-            event.target.classList.remove("opacity-30", "scale-95");
+            event.target.classList.remove('opacity-30', 'scale-95');
         }
         activeZone = null;
     }
 
     function handleDragOver(event: DragEvent) {
         event.preventDefault();
-        if (event.dataTransfer) event.dataTransfer.dropEffect = "move";
+        if (event.dataTransfer) event.dataTransfer.dropEffect = 'move';
 
         const target = event.target as HTMLElement;
-        const zone = target.closest(".drop-zone") as HTMLElement;
+        const zone = target.closest('.drop-zone') as HTMLElement;
         if (zone) {
-            activeZone = zone.dataset["zone"] || null;
+            activeZone = zone.dataset['zone'] || null;
         } else {
             activeZone = null;
         }
@@ -87,8 +84,8 @@
 
     function handleDragLeave(event: DragEvent) {
         const target = event.target as HTMLElement;
-        const zone = target.closest(".drop-zone") as HTMLElement;
-        if (zone && activeZone === zone.dataset["zone"]) {
+        const zone = target.closest('.drop-zone') as HTMLElement;
+        if (zone && activeZone === zone.dataset['zone']) {
             activeZone = null;
         }
     }
@@ -96,11 +93,11 @@
     function handleDrop(event: DragEvent) {
         event.preventDefault();
         const target = event.target as HTMLElement;
-        const zone = target.closest(".drop-zone") as HTMLElement;
+        const zone = target.closest('.drop-zone') as HTMLElement;
 
         if (zone && event.dataTransfer) {
-            const answerText = event.dataTransfer.getData("text/plain");
-            const zoneId = zone.dataset["zone"];
+            const answerText = event.dataTransfer.getData('text/plain');
+            const zoneId = zone.dataset['zone'];
             if (zoneId) {
                 dragAndDropAnswers = {
                     ...dragAndDropAnswers,
@@ -113,9 +110,9 @@
 
     function handleZoneClick(event: MouseEvent) {
         const target = event.target as HTMLElement;
-        const zone = target.closest(".drop-zone") as HTMLElement;
+        const zone = target.closest('.drop-zone') as HTMLElement;
         if (zone) {
-            const zoneId = zone.dataset["zone"];
+            const zoneId = zone.dataset['zone'];
             if (zoneId && dragAndDropAnswers[zoneId]) {
                 const newAnswers = { ...dragAndDropAnswers };
                 delete newAnswers[zoneId];
@@ -127,16 +124,14 @@
 
 <div class="question-content space-y-8">
     <div class="space-y-4">
-        <h5
-            class="text-sm font-bold uppercase tracking-widest text-slate-400 flex items-center"
-        >
+        <h5 class="flex items-center text-sm font-bold tracking-widest text-slate-400 uppercase">
             <HelpCircle size={14} class="mr-2" /> Pertanyaan
         </h5>
 
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <!-- svelte-ignore a11y_no_static_element_interactions -->
         <div
-            class="question-html font-medium text-slate-800 bg-slate-50 p-6 rounded-2xl border border-slate-200 leading-loose transition-all"
+            class="question-html rounded-2xl border border-slate-200 bg-slate-50 p-6 leading-loose font-medium text-slate-800 transition-all"
             ondragover={handleDragOver}
             ondragleave={handleDragLeave}
             ondrop={handleDrop}
@@ -146,42 +141,35 @@
 
             {#if !hasInlineZones && autoDropZones.length > 0}
                 <div class="mt-8 space-y-3">
-                    <p
-                        class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-2"
-                    >
+                    <p class="mb-2 text-[10px] font-bold tracking-tighter text-slate-400 uppercase">
                         Urutan Jawaban:
                     </p>
                     {#each autoDropZones as zoneId (zoneId)}
                         <div class="flex items-center gap-4">
                             <div
-                                class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-black text-slate-500"
+                                class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-[10px] font-black text-slate-500"
                             >
                                 {zoneId}
                             </div>
                             <div
-                                class="drop-zone flex-1 min-h-[50px] border-2 border-dashed rounded-xl flex items-center px-4 text-primary-600 font-bold shadow-inner transition-all duration-200 cursor-pointer {activeZone ===
+                                class="drop-zone text-primary-600 flex min-h-[50px] flex-1 cursor-pointer items-center rounded-xl border-2 border-dashed px-4 font-bold shadow-inner transition-all duration-200 {activeZone ===
                                 zoneId.toString()
                                     ? 'bg-primary-50 border-primary-500 scale-[1.01]'
-                                    : 'bg-white border-slate-200 hover:border-primary-300'}"
+                                    : 'hover:border-primary-300 border-slate-200 bg-white'}"
                                 data-zone={zoneId}
                             >
                                 {#if dragAndDropAnswers[zoneId.toString()]}
-                                    <div
-                                        class="flex items-center justify-between w-full"
-                                    >
+                                    <div class="flex w-full items-center justify-between">
                                         <span class="text-base"
-                                            >{dragAndDropAnswers[
-                                                zoneId.toString()
-                                            ]}</span
+                                            >{dragAndDropAnswers[zoneId.toString()]}</span
                                         >
                                         <span
-                                            class="text-[10px] text-slate-400 italic bg-slate-100 px-2 py-1 rounded-md"
+                                            class="rounded-md bg-slate-100 px-2 py-1 text-[10px] text-slate-400 italic"
                                             >Klik untuk hapus</span
                                         >
                                     </div>
                                 {:else}
-                                    <span
-                                        class="text-slate-300 font-medium text-sm italic"
+                                    <span class="text-sm font-medium text-slate-300 italic"
                                         >Letakkan jawaban di sini...</span
                                     >
                                 {/if}
@@ -194,16 +182,14 @@
     </div>
 
     <div class="space-y-4">
-        <div
-            class="flex items-center justify-between bg-primary-50/50 p-3 rounded-xl"
-        >
+        <div class="bg-primary-50/50 flex items-center justify-between rounded-xl p-3">
             <h5
-                class="text-sm font-bold uppercase tracking-widest text-primary-700 flex items-center"
+                class="text-primary-700 flex items-center text-sm font-bold tracking-widest uppercase"
             >
                 <List size={16} class="mr-2" /> Pilihan Jawaban
             </h5>
             <span
-                class="text-xs font-semibold text-primary-500/80 bg-primary-100 px-3 py-1 rounded-full"
+                class="text-primary-500/80 bg-primary-100 rounded-full px-3 py-1 text-xs font-semibold"
             >
                 Tahan & Geser (Drag Drop)
             </span>
@@ -212,23 +198,20 @@
         <div class="drag-items flex flex-wrap gap-3 p-2">
             {#each question.answers as answer (answer.id)}
                 {@const isUsed = Object.values(dragAndDropAnswers).includes(
-                    answer.answer_text ?? "",
+                    answer.answer_text ?? ''
                 )}
                 <div
-                    class="draggable px-6 py-3.5 rounded-xl font-bold text-sm transition-all duration-200 shadow-sm select-none border-2 flex items-center gap-2
+                    class="draggable flex items-center gap-2 rounded-xl border-2 px-6 py-3.5 text-sm font-bold shadow-sm transition-all duration-200 select-none
                     {isUsed
-                        ? 'bg-slate-50 border-slate-200 text-slate-300 cursor-not-allowed opacity-50 shadow-none'
-                        : 'bg-white border-primary-200 text-primary-700 cursor-grab active:cursor-grabbing hover:border-primary-500 hover:shadow-md hover:-translate-y-0.5'}"
+                        ? 'cursor-not-allowed border-slate-200 bg-slate-50 text-slate-300 opacity-50 shadow-none'
+                        : 'border-primary-200 text-primary-700 hover:border-primary-500 cursor-grab bg-white hover:-translate-y-0.5 hover:shadow-md active:cursor-grabbing'}"
                     draggable={!isUsed}
                     role="listitem"
-                    ondragstart={(e) =>
-                        !isUsed && handleDragStart(e, answer.answer_text ?? "")}
+                    ondragstart={(e) => !isUsed && handleDragStart(e, answer.answer_text ?? '')}
                     ondragend={handleDragEnd}
                 >
                     {#if !isUsed}
-                        <div
-                            class="w-2 h-2 rounded-full bg-primary-500 animate-pulse"
-                        ></div>
+                        <div class="bg-primary-500 h-2 w-2 animate-pulse rounded-full"></div>
                     {/if}
                     {answer.answer_text}
                 </div>

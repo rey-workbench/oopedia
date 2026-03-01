@@ -1,5 +1,5 @@
-import { BaseState } from "@/states/BaseState.svelte";
-import type { LeaderboardEntry } from "@/types";
+import { BaseState } from '@/states/BaseState.svelte';
+import type { LeaderboardEntry } from '@/types';
 
 export class LeaderboardState extends BaseState {
     leaderboardData = $state<LeaderboardEntry[]>([]);

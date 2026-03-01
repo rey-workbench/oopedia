@@ -21,9 +21,10 @@ export const ROUTES = {
             SUBMATERIALS: {
                 INDEX: (id: string | number) => `/admin/materials/${id}/submaterials`,
                 CREATE: (id: string | number) => `/admin/materials/${id}/submaterials/create`,
-                EDIT: (matId: string | number, subId: string | number) => `/admin/materials/${matId}/submaterials/${subId}/edit`,
+                EDIT: (matId: string | number, subId: string | number) =>
+                    `/admin/materials/${matId}/submaterials/${subId}/edit`,
                 JSON: (id: string | number) => `/admin/materials/${id}/submaterials/json`,
-            }
+            },
         },
         QUESTIONS: {
             INDEX: '/admin/questions',
@@ -56,7 +57,7 @@ export const ROUTES = {
             INDEX: '/admin/ueq-survey',
             SHOW: (id: string | number) => `/admin/ueq-survey/${id}`,
             EXPORT: '/admin/ueq-survey/export',
-        }
+        },
     },
     MAHASISWA: {
         DASHBOARD: '/mahasiswa/dashboard',
@@ -69,31 +70,34 @@ export const ROUTES = {
                 SHOW: (id: string | number) => `/mahasiswa/materials/${id}/questions`,
                 LEVELS: (id: string | number) => `/mahasiswa/materials/${id}/questions/levels`,
                 REVIEW: (id: string | number) => `/mahasiswa/materials/${id}/questions/review`,
-                CHECK: (matId: string | number, quesId: string | number) => `/mahasiswa/materials/${matId}/questions/${quesId}/check`,
-                ATTEMPTS: (matId: string | number, quesId: string | number) => `/mahasiswa/materials/${matId}/questions/${quesId}/attempts`,
-            }
+                CHECK: (matId: string | number, quesId: string | number) =>
+                    `/mahasiswa/materials/${matId}/questions/${quesId}/check`,
+                ATTEMPTS: (matId: string | number, quesId: string | number) =>
+                    `/mahasiswa/materials/${matId}/questions/${quesId}/attempts`,
+            },
         },
         SUBMATERIALS: {
-            SHOW: (matId: string | number, subId: string | number) => `/mahasiswa/materials/${matId}/submaterials/${subId}`,
+            SHOW: (matId: string | number, subId: string | number) =>
+                `/mahasiswa/materials/${matId}/submaterials/${subId}`,
         },
         LEADERBOARD: '/mahasiswa/leaderboard',
         PROFILE: '/mahasiswa/profile',
         UEQ: {
             CREATE: '/mahasiswa/ueq/create',
             THANK_YOU: '/mahasiswa/ueq/thank-you',
-        }
+        },
     },
     AUTH: {
         LOGIN: '/login',
         REGISTER: '/register',
         LOGOUT: '/logout',
-    }
+    },
 };
 
 /**
  * Route Helper to handle navigation standardized
  */
-import { router } from "@inertiajs/svelte";
+import { router } from '@inertiajs/svelte';
 
 export const route = {
     visit: (url: string, options = {}) => router.visit(url, options),

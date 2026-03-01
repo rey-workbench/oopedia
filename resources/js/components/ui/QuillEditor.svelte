@@ -1,12 +1,12 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import Quill from "quill";
-    import hljs from "highlight.js";
-    import "quill/dist/quill.snow.css";
-    import "highlight.js/styles/atom-one-dark.css";
+    import { onMount } from 'svelte';
+    import Quill from 'quill';
+    import hljs from 'highlight.js';
+    import 'quill/dist/quill.snow.css';
+    import 'highlight.js/styles/atom-one-dark.css';
 
     // Quill syntax module expects hljs on window
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
         (window as any).hljs = hljs;
     }
 
@@ -19,24 +19,24 @@
 
     let {
         value = $bindable(),
-        placeholder = "Tulis sesuatu...",
-        height = "300px",
+        placeholder = 'Tulis sesuatu...',
+        height = '300px',
         oninput = () => {},
     }: Props = $props();
 
     // Ensure value is never undefined to prevent Svelte 5 props_invalid_value error
-    if (value === undefined) value = "";
+    if (value === undefined) value = '';
 
     let editorContainer: HTMLElement;
     let quill: any;
 
     onMount(() => {
-        if (typeof window !== "undefined") {
+        if (typeof window !== 'undefined') {
             (window as any).hljs = hljs;
         }
 
         quill = new Quill(editorContainer, {
-            theme: "snow",
+            theme: 'snow',
             placeholder: placeholder,
             modules: {
                 syntax: {
@@ -44,10 +44,10 @@
                 },
                 toolbar: [
                     [{ header: [1, 2, 3, false] }],
-                    ["bold", "italic", "underline", "strike"],
-                    [{ list: "ordered" }, { list: "bullet" }],
-                    ["link", "image", "code-block"],
-                    ["clean"],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    ['link', 'image', 'code-block'],
+                    ['clean'],
                 ],
             },
         });
@@ -57,19 +57,13 @@
             quill.root.innerHTML = value;
         }
 
-        quill.on("text-change", () => {
+        quill.on('text-change', () => {
             const html = quill.root.innerHTML;
             value = html;
             oninput(html);
         });
     });
 </script>
-
-<div
-    class="quill-wrapper bg-white rounded-2xl border border-slate-200 overflow-hidden"
->
-    <div bind:this={editorContainer} style="height: {height};"></div>
-</div>
 
 <style>
     :global(.ql-toolbar) {
@@ -94,16 +88,14 @@
         color: var(--color-slate-400, #94a3b8) !important;
         font-style: normal !important;
     }
-    :global(
-            .ql-snow.ql-toolbar button:hover,
-            .ql-snow .ql-toolbar button:focus
-        ) {
+    :global(.ql-snow.ql-toolbar button:hover, .ql-snow .ql-toolbar button:focus) {
         color: var(--color-primary-600) !important;
     }
-    :global(
-            .ql-snow.ql-toolbar button.ql-active,
-            .ql-snow .ql-toolbar button.ql-active
-        ) {
+    :global(.ql-snow.ql-toolbar button.ql-active, .ql-snow .ql-toolbar button.ql-active) {
         color: var(--color-primary-600) !important;
     }
 </style>
+
+<div class="quill-wrapper overflow-hidden rounded-2xl border border-slate-200 bg-white">
+    <div bind:this={editorContainer} style="height: {height};"></div>
+</div>

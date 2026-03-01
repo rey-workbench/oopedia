@@ -1,60 +1,54 @@
 <script lang="ts">
-    import App from "@/layouts/App.svelte";
-    import Card from "@/components/ui/Card.svelte";
-    import Button from "@/components/ui/Button.svelte";
-    import { Heart, Home } from "lucide-svelte";
-    import { ROUTES } from "@/utils/route";
+    import App from '@/layouts/App.svelte';
+    import Card from '@/components/ui/Card.svelte';
+    import Button from '@/components/ui/Button.svelte';
+    import { Heart, Home } from 'lucide-svelte';
+    import { ROUTES } from '@/utils/route';
 </script>
 
 <App title="Terima Kasih">
-    <div class="py-24 flex items-center justify-center min-h-[70vh]">
-        <div class="max-w-2xl w-full px-4 text-center">
+    <div class="flex min-h-[70vh] items-center justify-center py-24">
+        <div class="w-full max-w-2xl px-4 text-center">
             <Card
                 padding="p-0"
-                class="overflow-hidden border-slate-100 shadow-2xl rounded-[3.5rem] group"
+                class="group overflow-hidden rounded-[3.5rem] border-slate-100 shadow-2xl"
             >
-                <div class="bg-primary-600 p-20 text-white relative">
+                <div class="bg-primary-600 relative p-20 text-white">
                     <div
-                        class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-1000"
+                        class="absolute -top-12 -right-12 h-48 w-48 rounded-full bg-white/10 blur-3xl transition-all duration-1000 group-hover:bg-white/20"
                     ></div>
 
                     <div class="relative z-10 space-y-8">
                         <div
-                            class="w-24 h-24 bg-white/20 backdrop-blur-md rounded-[2.5rem] flex items-center justify-center mx-auto shadow-2xl border border-white/30 transform rotate-12 transition-transform group-hover:rotate-0 duration-500"
+                            class="mx-auto flex h-24 w-24 rotate-12 transform items-center justify-center rounded-[2.5rem] border border-white/30 bg-white/20 shadow-2xl backdrop-blur-md transition-transform duration-500 group-hover:rotate-0"
                         >
-                            <Heart size={48} class="text-white fill-current" />
+                            <Heart size={48} class="fill-current text-white" />
                         </div>
                         <div class="space-y-4">
-                            <h2
-                                class="text-5xl font-bold tracking-[0.2em] uppercase"
-                            >
+                            <h2 class="text-5xl font-bold tracking-[0.2em] uppercase">
                                 Terima Kasih!
                             </h2>
-                            <p
-                                class="text-primary-100 text-lg font-bold tracking-widest uppercase"
-                            >
+                            <p class="text-primary-100 text-lg font-bold tracking-widest uppercase">
                                 Evaluasi Anda Berhasil Kami Amankan.
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div class="p-16 space-y-12">
+                <div class="space-y-12 p-16">
                     <p
-                        class="text-slate-500 text-lg leading-relaxed font-bold uppercase tracking-widest"
+                        class="text-lg leading-relaxed font-bold tracking-widest text-slate-500 uppercase"
                     >
-                        Setiap bit informasi yang Anda berikan adalah navigasi
-                        bagi kami untuk membangun
-                        <span class="text-primary-600">
-                            Arsitektur Pembelajaran</span
-                        > yang lebih sempurna.
+                        Setiap bit informasi yang Anda berikan adalah navigasi bagi kami untuk
+                        membangun
+                        <span class="text-primary-600"> Arsitektur Pembelajaran</span> yang lebih sempurna.
                     </p>
 
                     <div class="pt-4">
                         <Button
                             href={ROUTES.MAHASISWA.DASHBOARD}
                             variant="primary"
-                            class="px-12 py-5 shadow-xl shadow-primary-900/20"
+                            class="shadow-primary-900/20 px-12 py-5 shadow-xl"
                             icon={Home}
                         >
                             KEMBALI KE DASHBOARD

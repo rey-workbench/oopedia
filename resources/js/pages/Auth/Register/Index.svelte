@@ -1,11 +1,11 @@
-    <script lang="ts">
-    import App from "@/layouts/App.svelte";
-    import Card from "@/components/ui/Card.svelte";
-    import Input from "@/components/ui/Input.svelte";
-    import Button from "@/components/ui/Button.svelte";
-    import { Loader2, UserPlus } from "lucide-svelte";
-    import { ROUTES } from "@/utils/route";
-    import { RegisterState } from "@/states/Auth/AuthState.svelte";
+<script lang="ts">
+    import App from '@/layouts/App.svelte';
+    import Card from '@/components/ui/Card.svelte';
+    import Input from '@/components/ui/Input.svelte';
+    import Button from '@/components/ui/Button.svelte';
+    import { Loader2, UserPlus } from 'lucide-svelte';
+    import { ROUTES } from '@/utils/route';
+    import { RegisterState } from '@/states/Auth/AuthState.svelte';
 
     const state = new RegisterState();
 </script>
@@ -13,24 +13,26 @@
 <App variant="auth" title="Daftar - OOPedia">
     <Card padding="p-10" hover={false}>
         {#snippet header()}
-            <div class="text-center w-full mb-6">
-                <h3 class="text-xl font-bold tracking-widest text-slate-900">
-                    BUAT AKUN BARU
-                </h3>
-                <p
-                    class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2"
-                >
+            <div class="mb-6 w-full text-center">
+                <h3 class="text-xl font-bold tracking-widest text-slate-900">BUAT AKUN BARU</h3>
+                <p class="mt-2 text-[10px] font-bold tracking-widest text-slate-400 uppercase">
                     Bergabunglah dengan komunitas OOPedia
                 </p>
             </div>
         {/snippet}
 
-        <form onsubmit={(e) => { e.preventDefault(); state.submit(); }} class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form
+            onsubmit={(e) => {
+                e.preventDefault();
+                state.submit();
+            }}
+            class="space-y-6"
+        >
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div class="space-y-2">
                     <label
                         for="name"
-                        class="text-xs font-bold text-slate-700 uppercase tracking-wider"
+                        class="text-xs font-bold tracking-wider text-slate-700 uppercase"
                     >
                         Nama Lengkap <span class="text-rose-500">*</span>
                     </label>
@@ -46,7 +48,7 @@
                 <div class="space-y-2">
                     <label
                         for="email"
-                        class="text-xs font-bold text-slate-700 uppercase tracking-wider"
+                        class="text-xs font-bold tracking-wider text-slate-700 uppercase"
                     >
                         Alamat Email <span class="text-rose-500">*</span>
                     </label>
@@ -61,11 +63,11 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div class="space-y-2">
                     <label
                         for="password"
-                        class="text-xs font-bold text-slate-700 uppercase tracking-wider"
+                        class="text-xs font-bold tracking-wider text-slate-700 uppercase"
                     >
                         Kata Sandi <span class="text-rose-500">*</span>
                     </label>
@@ -81,7 +83,7 @@
                 <div class="space-y-2">
                     <label
                         for="password_confirmation"
-                        class="text-xs font-bold text-slate-700 uppercase tracking-wider"
+                        class="text-xs font-bold tracking-wider text-slate-700 uppercase"
                     >
                         Konfirmasi <span class="text-rose-500">*</span>
                     </label>
@@ -95,18 +97,16 @@
                 </div>
             </div>
 
-            <div
-                class="flex items-center gap-3 bg-slate-50 p-4 rounded-xl border border-slate-100"
-            >
+            <div class="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 p-4">
                 <input
                     type="checkbox"
                     id="register_as_admin"
                     bind:checked={state.form.register_as_admin}
-                    class="w-5 h-5 rounded border-slate-300 text-primary-600 focus:ring-primary-500 transition-colors cursor-pointer"
+                    class="text-primary-600 focus:ring-primary-500 h-5 w-5 cursor-pointer rounded border-slate-300 transition-colors"
                 />
                 <label
                     for="register_as_admin"
-                    class="text-xs font-bold text-slate-600 uppercase tracking-wider cursor-pointer select-none flex-1"
+                    class="flex-1 cursor-pointer text-xs font-bold tracking-wider text-slate-600 uppercase select-none"
                 >
                     Daftar sebagai Dosen (Perlu Approval)
                 </label>
@@ -133,19 +133,15 @@
                     <div class="w-full border-t border-slate-100"></div>
                 </div>
                 <div
-                    class="relative flex justify-center text-[10px] uppercase font-bold tracking-widest"
+                    class="relative flex justify-center text-[10px] font-bold tracking-widest uppercase"
                 >
-                    <span class="bg-white px-4 text-slate-400"
-                        >Sudah punya akun?</span
-                    >
+                    <span class="bg-white px-4 text-slate-400">Sudah punya akun?</span>
                 </div>
             </div>
 
             <div class="text-center">
-                <Button
-                    href={ROUTES.AUTH.LOGIN}
-                    variant="secondary"
-                    class="w-full">MASUK KE AKUN</Button
+                <Button href={ROUTES.AUTH.LOGIN} variant="secondary" class="w-full"
+                    >MASUK KE AKUN</Button
                 >
             </div>
         </form>

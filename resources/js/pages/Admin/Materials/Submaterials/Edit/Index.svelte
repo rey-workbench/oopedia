@@ -1,13 +1,13 @@
 <script lang="ts">
-    import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/shared/PageHeader.svelte";
-    import Button from "@/components/ui/Button.svelte";
-    import Input from "@/components/ui/Input.svelte";
-    import QuillEditor from "@/components/ui/QuillEditor.svelte";
-    import { ArrowLeft, RefreshCw } from "lucide-svelte";
-    import { ROUTES } from "@/utils/route";
+    import App from '@/layouts/App.svelte';
+    import PageHeader from '@/components/shared/PageHeader.svelte';
+    import Button from '@/components/ui/Button.svelte';
+    import Input from '@/components/ui/Input.svelte';
+    import QuillEditor from '@/components/ui/QuillEditor.svelte';
+    import { ArrowLeft, RefreshCw } from 'lucide-svelte';
+    import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';
-    import { SubmaterialFormState } from "@/states/Admin/MaterialState.svelte";
+    import { SubmaterialFormState } from '@/states/Admin/MaterialState.svelte';
 
     let { material, submaterial } = $props();
 
@@ -22,16 +22,14 @@
         >
             {#snippet actions()}
                 <Button
-                    href={ROUTES.ADMIN.MATERIALS.SUBMATERIALS.INDEX(
-                        material.id,
-                    )}
+                    href={ROUTES.ADMIN.MATERIALS.SUBMATERIALS.INDEX(material.id)}
                     variant="ghost"
                     icon={ArrowLeft}>KEMBALI KE HIERARKI</Button
                 >
             {/snippet}
         </PageHeader>
 
-        <div class="max-w-4xl mx-auto">
+        <div class="mx-auto max-w-4xl">
             <form
                 onsubmit={(e) => {
                     e.preventDefault();
@@ -40,21 +38,19 @@
                 class="space-y-12"
             >
                 <div
-                    class="bg-white rounded-3xl p-6 shadow-2xl border border-slate-100 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300"
+                    class="group relative overflow-hidden rounded-3xl border border-slate-100 bg-white p-6 shadow-2xl transition-transform duration-300 hover:-translate-y-1"
                 >
                     <div class="mb-6">
-                        <h3 class="text-lg font-bold text-slate-800">
-                            Update Konten Unit
-                        </h3>
+                        <h3 class="text-lg font-bold text-slate-800">Update Konten Unit</h3>
                     </div>
 
                     <div class="space-y-10 p-6">
                         <!-- SubMaterial Form Fields -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="md:col-span-2 space-y-2">
+                        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+                            <div class="space-y-2 md:col-span-2">
                                 <label
                                     for="title"
-                                    class="text-[10px] font-bold uppercase text-slate-400 font-poppins"
+                                    class="font-poppins text-[10px] font-bold text-slate-400 uppercase"
                                 >
                                     Judul Sub-Materi
                                 </label>
@@ -70,7 +66,7 @@
                             <div class="space-y-2">
                                 <label
                                     for="order"
-                                    class="text-[10px] font-bold uppercase text-slate-400 font-poppins"
+                                    class="font-poppins text-[10px] font-bold text-slate-400 uppercase"
                                 >
                                     Urutan Tampil
                                 </label>
@@ -86,17 +82,16 @@
 
                         <div class="space-y-2">
                             <span
-                                class="text-[10px] font-bold uppercase text-slate-400 font-poppins"
+                                class="font-poppins text-[10px] font-bold text-slate-400 uppercase"
                                 >Jenis Konten Utama</span
                             >
                             <div class="grid grid-cols-3 gap-4">
-                                {#each ["teori", "sintaks", "mixed"] as type}
+                                {#each ['teori', 'sintaks', 'mixed'] as type}
                                     <button
                                         type="button"
-                                        onclick={() =>
-                                            state.setJenisKonten(type)}
-                                        class={`py-3 px-4 rounded-2xl border-2 font-bold uppercase tracking-widest text-[10px] transition-all
-                                    ${state.form.jenis_konten === type ? "border-primary-600 bg-primary-50 text-primary-600" : "border-slate-100 bg-slate-50 text-slate-400"}`}
+                                        onclick={() => state.setJenisKonten(type)}
+                                        class={`rounded-2xl border-2 px-4 py-3 text-[10px] font-bold tracking-widest uppercase transition-all
+                                    ${state.form.jenis_konten === type ? 'border-primary-600 bg-primary-50 text-primary-600' : 'border-slate-100 bg-slate-50 text-slate-400'}`}
                                     >
                                         {type}
                                     </button>
@@ -106,7 +101,7 @@
 
                         <div class="space-y-2">
                             <span
-                                class="text-[10px] font-bold uppercase text-slate-400 font-poppins"
+                                class="font-poppins text-[10px] font-bold text-slate-400 uppercase"
                             >
                                 Materi Pembelajaran (Rich Text)
                             </span>
@@ -116,7 +111,7 @@
                             />
                             {#if state.form.errors['content']}
                                 <p
-                                    class="text-[10px] font-bold text-rose-500 uppercase tracking-widest"
+                                    class="text-[10px] font-bold tracking-widest text-rose-500 uppercase"
                                 >
                                     {state.form.errors['content']}
                                 </p>
@@ -124,19 +119,17 @@
                         </div>
 
                         <div
-                            class="pt-6 border-t border-slate-100 flex items-center justify-between gap-4"
+                            class="flex items-center justify-between gap-4 border-t border-slate-100 pt-6"
                         >
                             <div class="flex items-center gap-3"></div>
 
                             <div class="flex gap-4">
                                 <Button
-                                    href={ROUTES.ADMIN.MATERIALS.SUBMATERIALS.INDEX(
-                                        material.id,
-                                    )}
+                                    href={ROUTES.ADMIN.MATERIALS.SUBMATERIALS.INDEX(material.id)}
                                     variant="ghost"
                                 >
                                     <span
-                                        class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
+                                        class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
                                         >BATAL</span
                                     >
                                 </Button>
@@ -144,7 +137,7 @@
                                     type="submit"
                                     variant="primary"
                                     size="lg"
-                                    class="shadow-xl shadow-primary-900/20"
+                                    class="shadow-primary-900/20 shadow-xl"
                                     icon={RefreshCw}
                                     disabled={state.form.processing}
                                 >

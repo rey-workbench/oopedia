@@ -1,5 +1,5 @@
-import { Code, BookOpen } from "lucide-svelte";
-import type { ComponentType } from "svelte";
+import { Code, BookOpen } from 'lucide-svelte';
+import type { ComponentType } from 'svelte';
 
 type ContentType = string; // "sintaks" | "teori" — kept loose for flexibility
 
@@ -7,46 +7,42 @@ type ContentType = string; // "sintaks" | "teori" — kept loose for flexibility
  * Gradient background for content-type headers.
  */
 export function getGradientClass(type: ContentType): string {
-    return type === "sintaks"
-        ? "bg-emerald-600"
-        : "bg-primary-600";
+    return type === 'sintaks' ? 'bg-emerald-600' : 'bg-primary-600';
 }
 
 /**
  * Text color for content-type labels.
  */
 export function getTextClass(type: ContentType): string {
-    return type === "sintaks" ? "text-emerald-600" : "text-primary-600";
+    return type === 'sintaks' ? 'text-emerald-600' : 'text-primary-600';
 }
 
 /**
  * Solid background color for badges / pills.
  */
 export function getBgClass(type: ContentType): string {
-    return type === "sintaks" ? "bg-emerald-600" : "bg-primary-600";
+    return type === 'sintaks' ? 'bg-emerald-600' : 'bg-primary-600';
 }
 
 /**
  * Shadow color for cards.
  */
 export function getShadowClass(type: ContentType): string {
-    return type === "sintaks"
-        ? "shadow-emerald-900/20"
-        : "shadow-primary-900/20";
+    return type === 'sintaks' ? 'shadow-emerald-900/20' : 'shadow-primary-900/20';
 }
 
 /**
  * Icon component for the content type.
  */
 export function getIcon(type: ContentType): ComponentType {
-    return type === "sintaks" ? Code : BookOpen;
+    return type === 'sintaks' ? Code : BookOpen;
 }
 
 /**
  * Badge label text.
  */
 export function getBadgeLabel(type: ContentType): string {
-    return type === "sintaks" ? "Sintaks" : "Teori";
+    return type === 'sintaks' ? 'Sintaks' : 'Teori';
 }
 
 // ── Additional helpers used in SubMaterials/Show ─────────────
@@ -55,37 +51,33 @@ export function getBadgeLabel(type: ContentType): string {
  * Light background for sub-material cards.
  */
 export function getSubMaterialBg(type: ContentType): string {
-    return type === "sintaks" ? "bg-emerald-50" : "bg-primary-50";
+    return type === 'sintaks' ? 'bg-emerald-50' : 'bg-primary-50';
 }
 
 /**
  * Text color for sub-material cards.
  */
 export function getSubMaterialText(type: ContentType): string {
-    return type === "sintaks" ? "text-emerald-600" : "text-primary-600";
+    return type === 'sintaks' ? 'text-emerald-600' : 'text-primary-600';
 }
 
 /**
  * Hover border color for sub-material navigation links.
  */
 export function getHoverBorderClass(type: ContentType): string {
-    return type === "sintaks"
-        ? "hover:border-emerald-500"
-        : "hover:border-primary-500";
+    return type === 'sintaks' ? 'hover:border-emerald-500' : 'hover:border-primary-500';
 }
 
 /**
  * Border color for content sections.
  */
 export function getBorderClass(type: ContentType): string {
-    return type === "sintaks" ? "border-emerald-100" : "border-primary-100";
+    return type === 'sintaks' ? 'border-emerald-100' : 'border-primary-100';
 }
 
 /**
  * Shadow color for sub-material call-to-action buttons.
  */
 export function getCtaShadowClass(type: ContentType): string {
-    return type === "sintaks"
-        ? "shadow-emerald-500/20"
-        : "shadow-primary-500/20";
+    return type === 'sintaks' ? 'shadow-emerald-500/20' : 'shadow-primary-500/20';
 }

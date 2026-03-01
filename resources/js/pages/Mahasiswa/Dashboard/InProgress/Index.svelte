@@ -1,22 +1,14 @@
 <script lang="ts">
-    import { Link } from "@inertiajs/svelte";
-    import App from "@/layouts/App.svelte";
-    import Button from "@/components/ui/Button.svelte";
-    import Card from "@/components/ui/Card.svelte";
-    import {
-        ArrowLeft,
-        BookOpen,
-        Rocket,
-        Activity,
-        Loader2,
-        Book,
-        Play,
-    } from "lucide-svelte";
+    import { Link } from '@inertiajs/svelte';
+    import App from '@/layouts/App.svelte';
+    import Button from '@/components/ui/Button.svelte';
+    import Card from '@/components/ui/Card.svelte';
+    import { ArrowLeft, BookOpen, Rocket, Activity, Loader2, Book, Play } from 'lucide-svelte';
     import { untrack } from 'svelte';
-    import { InProgressState } from "@/states/Mahasiswa/MaterialState.svelte";
-    import { ROUTES } from "@/utils/route";
+    import { InProgressState } from '@/states/Mahasiswa/MaterialState.svelte';
+    import { ROUTES } from '@/utils/route';
 
-    import type { MaterialWithStats } from "@/types";
+    import type { MaterialWithStats } from '@/types';
 
     const { materialsWithStats = [] }: { materialsWithStats: MaterialWithStats[] } = $props();
 
@@ -25,174 +17,150 @@
 
 <App title="Materi Sedang Dipelajari">
     <div class="py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            
-<div class="mb-8">
-    <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight font-display">
-        Materi Sedang Dipelajari
-    </h1>
-    <div class="flex items-center gap-2 mt-3" role="presentation">
-        <div class="h-1.5 w-12 bg-primary-600 rounded-full"></div>
-        <div class="h-1.5 w-4 bg-slate-200 rounded-full"></div>
-        <div class="h-1.5 w-2 bg-slate-100 rounded-full"></div>
-    </div>
-    <p class="mt-4 text-slate-500 font-medium leading-relaxed max-w-3xl">
-        Terus asah kemampuan Anda dan selesaikan tantangan yang ada.
-    </p>
-    <div class="mt-6 flex flex-wrap gap-4">
-        <div>
-                    <Button
-                        href={ROUTES.MAHASISWA.DASHBOARD}
-                        variant="ghost"
-                        icon={ArrowLeft}
-                    >
-                        Dashboard
-                    </Button>
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="mb-8">
+                <h1
+                    class="font-display text-3xl leading-tight font-extrabold tracking-tight text-slate-900 md:text-4xl"
+                >
+                    Materi Sedang Dipelajari
+                </h1>
+                <div class="mt-3 flex items-center gap-2" role="presentation">
+                    <div class="bg-primary-600 h-1.5 w-12 rounded-full"></div>
+                    <div class="h-1.5 w-4 rounded-full bg-slate-200"></div>
+                    <div class="h-1.5 w-2 rounded-full bg-slate-100"></div>
                 </div>
-    </div>
-</div>
+                <p class="mt-4 max-w-3xl leading-relaxed font-medium text-slate-500">
+                    Terus asah kemampuan Anda dan selesaikan tantangan yang ada.
+                </p>
+                <div class="mt-6 flex flex-wrap gap-4">
+                    <div>
+                        <Button href={ROUTES.MAHASISWA.DASHBOARD} variant="ghost" icon={ArrowLeft}>
+                            Dashboard
+                        </Button>
+                    </div>
+                </div>
+            </div>
 
             <div class="mt-10">
                 {#if state.materialsWithStats.length === 0}
                     <div
-                        class="text-center py-24 bg-white rounded-[2.5rem] shadow-sm border border-slate-100"
+                        class="rounded-[2.5rem] border border-slate-100 bg-white py-24 text-center shadow-sm"
                     >
                         <div
-                            class="w-24 h-24 bg-primary-50 text-primary-500 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-inner"
+                            class="bg-primary-50 text-primary-500 mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-3xl shadow-inner"
                         >
                             <BookOpen size={48} strokeWidth={2} />
                         </div>
                         <h3
-                            class="text-3xl font-bold text-slate-900 mb-4 uppercase tracking-widest"
+                            class="mb-4 text-3xl font-bold tracking-widest text-slate-900 uppercase"
                         >
                             Belum Ada Progres
                         </h3>
-                        <p
-                            class="text-slate-500 mb-10 max-w-md mx-auto font-medium"
-                        >
-                            Anda belum memulai materi apapun. Pilih materi yang
-                            Anda minati dan mulai petualangan belajar Anda
-                            sekarang!
+                        <p class="mx-auto mb-10 max-w-md font-medium text-slate-500">
+                            Anda belum memulai materi apapun. Pilih materi yang Anda minati dan
+                            mulai petualangan belajar Anda sekarang!
                         </p>
                         <Button
                             href={ROUTES.MAHASISWA.MATERIALS.INDEX}
                             variant="primary"
-                            class="px-10 py-4 rounded-2xl font-bold uppercase transition-all shadow-xl shadow-primary-900/10"
+                            class="shadow-primary-900/10 rounded-2xl px-10 py-4 font-bold uppercase shadow-xl transition-all"
                             icon={Rocket}
                         >
                             Mulai Belajar
                         </Button>
                     </div>
                 {:else}
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                    <div class="grid grid-cols-1 gap-10 lg:grid-cols-2">
                         {#each state.materialsWithStats as materialData (materialData.material.id)}
                             <Link
-                                href={ROUTES.MAHASISWA.MATERIALS.SHOW(
-                                    materialData.material.id,
-                                )}
-                                class="group h-full block"
+                                href={ROUTES.MAHASISWA.MATERIALS.SHOW(materialData.material.id)}
+                                class="group block h-full"
                             >
                                 <Card
                                     padding="p-0"
-                                    class="overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 h-full flex flex-col"
+                                    class="flex h-full flex-col overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
                                 >
                                     {#snippet header()}
-                                    <div
-                                        class="p-8 bg-primary-600 relative overflow-hidden text-white border-0 rounded-0"
-                                    >
-                                        <Activity
-                                            size={96}
-                                            strokeWidth={1}
-                                            class="absolute -right-8 -top-8 opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all duration-700"
-                                        />
                                         <div
-                                            class="relative z-10 flex items-center gap-6"
+                                            class="bg-primary-600 rounded-0 relative overflow-hidden border-0 p-8 text-white"
                                         >
-                                            <div
-                                                class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-inner border border-white/30 group-hover:scale-110 transition-transform duration-500"
-                                            >
-                                                <Loader2
-                                                    size={32}
-                                                    strokeWidth={2.5}
-                                                    class="animate-spin"
-                                                />
-                                            </div>
-                                            <div
-                                                class="min-h-[4.5rem] flex flex-col justify-center"
-                                            >
+                                            <Activity
+                                                size={96}
+                                                strokeWidth={1}
+                                                class="absolute -top-8 -right-8 opacity-10 transition-all duration-700 group-hover:scale-110 group-hover:opacity-20"
+                                            />
+                                            <div class="relative z-10 flex items-center gap-6">
                                                 <div
-                                                    class="text-[10px] font-bold uppercase tracking-widest text-primary-100 mb-1"
+                                                    class="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/30 bg-white/20 shadow-inner backdrop-blur-md transition-transform duration-500 group-hover:scale-110"
                                                 >
-                                                    Learning in Progress
+                                                    <Loader2
+                                                        size={32}
+                                                        strokeWidth={2.5}
+                                                        class="animate-spin"
+                                                    />
                                                 </div>
-                                                <h4
-                                                    class="text-2xl font-bold tracking-widest leading-tight"
+                                                <div
+                                                    class="flex min-h-[4.5rem] flex-col justify-center"
                                                 >
-                                                    {materialData.material
-                                                        .title}
-                                                </h4>
+                                                    <div
+                                                        class="text-primary-100 mb-1 text-[10px] font-bold tracking-widest uppercase"
+                                                    >
+                                                        Learning in Progress
+                                                    </div>
+                                                    <h4
+                                                        class="text-2xl leading-tight font-bold tracking-widest"
+                                                    >
+                                                        {materialData.material.title}
+                                                    </h4>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
                                     {/snippet}
 
-                                    <div class="p-8 flex-1 flex flex-col">
-                                        <div
-                                            class="flex items-end justify-between mb-8"
-                                        >
+                                    <div class="flex flex-1 flex-col p-8">
+                                        <div class="mb-8 flex items-end justify-between">
                                             <div>
                                                 <div
-                                                    class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1"
+                                                    class="mb-1 text-[10px] font-bold tracking-widest text-slate-400 uppercase"
                                                 >
                                                     Status Progres
                                                 </div>
-                                                <div
-                                                    class="text-3xl font-bold text-slate-900"
-                                                >
-                                                    {materialData.stats.overall
-                                                        .correct}
-                                                    <span
-                                                        class="text-sm text-slate-400 ml-2"
-                                                    >
-                                                        / {materialData.stats
-                                                            .overall.total} SELESAI
+                                                <div class="text-3xl font-bold text-slate-900">
+                                                    {materialData.stats.overall.correct}
+                                                    <span class="ml-2 text-sm text-slate-400">
+                                                        / {materialData.stats.overall.total} SELESAI
                                                     </span>
                                                 </div>
                                             </div>
                                             <div class="text-right">
-                                                <div
-                                                    class="text-4xl font-bold text-primary-600"
-                                                >
-                                                    {materialData.stats.overall
-                                                        .percentage}%
+                                                <div class="text-primary-600 text-4xl font-bold">
+                                                    {materialData.stats.overall.percentage}%
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="space-y-4 mb-10">
-                                            {#each [{ label: "Beginner Level", stats: materialData.stats.beginner, color: "bg-emerald-500" }, { label: "Medium Level", stats: materialData.stats.medium, color: "bg-amber-500" }, { label: "Hard Level", stats: materialData.stats.hard, color: "bg-rose-500" }] as diff}
+                                        <div class="mb-10 space-y-4">
+                                            {#each [{ label: 'Beginner Level', stats: materialData.stats.beginner, color: 'bg-emerald-500' }, { label: 'Medium Level', stats: materialData.stats.medium, color: 'bg-amber-500' }, { label: 'Hard Level', stats: materialData.stats.hard, color: 'bg-rose-500' }] as diff}
                                                 <div
-                                                    class="p-4 bg-slate-50 rounded-2xl border border-slate-100 transition-colors"
+                                                    class="rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-colors"
                                                 >
                                                     <div
-                                                        class="flex justify-between items-center mb-2"
+                                                        class="mb-2 flex items-center justify-between"
                                                     >
                                                         <span
-                                                            class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"
+                                                            class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
                                                         >
                                                             {diff.label}
                                                         </span>
                                                         <span
                                                             class="text-xs font-bold text-slate-900"
                                                         >
-                                                            {diff.stats
-                                                                .correct}/{diff
-                                                                .stats
+                                                            {diff.stats.correct}/{diff.stats
                                                                 .configured_total}
                                                         </span>
                                                     </div>
                                                     <div
-                                                        class="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden"
+                                                        class="h-1.5 w-full overflow-hidden rounded-full bg-slate-200"
                                                     >
                                                         <div
                                                             class="h-full {diff.color} rounded-full transition-all duration-1000"
@@ -203,27 +171,19 @@
                                             {/each}
                                         </div>
 
-                                        <div
-                                            class="grid grid-cols-2 gap-4 mt-auto"
-                                        >
+                                        <div class="mt-auto grid grid-cols-2 gap-4">
                                             <div
-                                                class="flex items-center justify-center gap-2 py-4 rounded-2xl font-bold uppercase text-xs border-2 border-slate-100 hover:border-primary-600 transition-all text-slate-600"
+                                                class="hover:border-primary-600 flex items-center justify-center gap-2 rounded-2xl border-2 border-slate-100 py-4 text-xs font-bold text-slate-600 uppercase transition-all"
                                             >
-                                                <Book
-                                                    size={14}
-                                                    strokeWidth={2.5}
-                                                /> Materi
+                                                <Book size={14} strokeWidth={2.5} /> Materi
                                             </div>
                                             <Link
                                                 href={ROUTES.MAHASISWA.MATERIALS.QUESTIONS.LEVELS(
-                                                    materialData.material.id,
+                                                    materialData.material.id
                                                 )}
-                                                class="flex items-center justify-center gap-2 py-4 rounded-2xl font-bold uppercase text-xs bg-slate-900 text-white hover:bg-primary-600 transition-all shadow-lg shadow-slate-200 hover:shadow-primary-900/20"
+                                                class="hover:bg-primary-600 hover:shadow-primary-900/20 flex items-center justify-center gap-2 rounded-2xl bg-slate-900 py-4 text-xs font-bold text-white uppercase shadow-lg shadow-slate-200 transition-all"
                                             >
-                                                <Play
-                                                    size={14}
-                                                    strokeWidth={2.5}
-                                                /> Lanjut
+                                                <Play size={14} strokeWidth={2.5} /> Lanjut
                                             </Link>
                                         </div>
                                     </div>

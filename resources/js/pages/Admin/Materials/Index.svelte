@@ -1,13 +1,13 @@
 <script lang="ts">
-    import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/shared/PageHeader.svelte";
-    import Button from "@/components/ui/Button.svelte";
-    import StatsGrid from "@/components/shared/StatsGrid.svelte";
-    import DataTable from "@/components/shared/DataTable.svelte";
-    import EmptyState from "@/components/ui/EmptyState.svelte";
-    import UserAvatar from "@/components/ui/UserAvatar.svelte";
+    import App from '@/layouts/App.svelte';
+    import PageHeader from '@/components/shared/PageHeader.svelte';
+    import Button from '@/components/ui/Button.svelte';
+    import StatsGrid from '@/components/shared/StatsGrid.svelte';
+    import DataTable from '@/components/shared/DataTable.svelte';
+    import EmptyState from '@/components/ui/EmptyState.svelte';
+    import UserAvatar from '@/components/ui/UserAvatar.svelte';
     import { untrack } from 'svelte';
-    import { MaterialListState } from "@/states/Admin/MaterialState.svelte";
+    import { MaterialListState } from '@/states/Admin/MaterialState.svelte';
     import {
         Plus,
         Layers,
@@ -18,8 +18,8 @@
         FlaskConical,
         Edit2,
         Trash2,
-    } from "lucide-svelte";
-    import { ROUTES } from "@/utils/route";
+    } from 'lucide-svelte';
+    import { ROUTES } from '@/utils/route';
 
     let { materials = [] }: { materials: any[] } = $props();
 
@@ -36,39 +36,38 @@
         materials.reduce((acc: number, m: any) => acc + (m.media ? m.media.length : 0), 0)
     );
 
-    let search =
-        new URLSearchParams(window.location.search).get("search") || "";
+    let search = new URLSearchParams(window.location.search).get('search') || '';
     const listState = untrack(() => new MaterialListState(materials, search));
 
     const columns = $derived([
-        { key: "visual", label: "Pratinjau Visual", align: "left" },
-        { key: "identity", label: "Identitas Modul", align: "left" },
-        { key: "author", label: "Penulis Utama", align: "left" },
-        { key: "sync", label: "Sinkronisasi Awal", align: "center" },
-        { key: "actions", label: "Operasi", align: "right" },
+        { key: 'visual', label: 'Pratinjau Visual', align: 'left' },
+        { key: 'identity', label: 'Identitas Modul', align: 'left' },
+        { key: 'author', label: 'Penulis Utama', align: 'left' },
+        { key: 'sync', label: 'Sinkronisasi Awal', align: 'center' },
+        { key: 'actions', label: 'Operasi', align: 'right' },
     ]);
 
     const materialStats = $derived([
         {
-            title: "Total Modul",
+            title: 'Total Modul',
             value: totalMaterials,
             icon: Layers,
-            variant: "primary",
-            footer: "Modul instruksional aktif",
+            variant: 'primary',
+            footer: 'Modul instruksional aktif',
         },
         {
-            title: "Materi Baru",
+            title: 'Materi Baru',
             value: recentMaterials,
             icon: CalendarCheck,
-            variant: "success",
-            footer: "Penambahan 30 hari terakhir",
+            variant: 'success',
+            footer: 'Penambahan 30 hari terakhir',
         },
         {
-            title: "Korpus Media",
+            title: 'Korpus Media',
             value: totalMedia,
             icon: Video,
-            variant: "primary",
-            footer: "Total aset multimedia",
+            variant: 'primary',
+            footer: 'Total aset multimedia',
         },
     ]);
 </script>
@@ -80,19 +79,14 @@
             subtitle="Otoritas manajemen konten dan modul pembelajaran Pemrograman Berorientasi Objek."
         >
             {#snippet actions()}
-                <Button
-                    href={ROUTES.ADMIN.MATERIALS.CREATE}
-                    variant="primary"
-                    icon={Plus}>Tambah Modul Baru</Button
+                <Button href={ROUTES.ADMIN.MATERIALS.CREATE} variant="primary" icon={Plus}
+                    >Tambah Modul Baru</Button
                 >
             {/snippet}
         </PageHeader>
 
         <!-- Statistics -->
-        <StatsGrid
-            stats={materialStats}
-            gridClass="grid-cols-1 md:grid-cols-3"
-        />
+        <StatsGrid stats={materialStats} gridClass="grid-cols-1 md:grid-cols-3" />
 
         <!-- Material List -->
         <DataTable
@@ -108,69 +102,51 @@
                     title="Kurikulum Kosong"
                     description="Basis data materi instruksional kosong. Lakukan injeksi modul baru untuk memulai siklus pembelajaran."
                 >
-                    <Button
-                        href={ROUTES.ADMIN.MATERIALS.CREATE}
-                        variant="primary"
-                        icon={Plus}>Inisialisasi Kurikulum</Button
+                    <Button href={ROUTES.ADMIN.MATERIALS.CREATE} variant="primary" icon={Plus}
+                        >Inisialisasi Kurikulum</Button
                     >
                 </EmptyState>
             {/snippet}
 
             {#snippet row(material)}
-                <td
-                    class="px-6 py-6 border-l-4 border-transparent group-hover:border-primary-600"
-                >
+                <td class="group-hover:border-primary-600 border-l-4 border-transparent px-6 py-6">
                     {#if material.media && material.media.length > 0}
                         <div
-                            class="w-20 h-14 rounded-xl overflow-hidden shadow-lg shadow-slate-200 group-hover:scale-105 transition-transform"
+                            class="h-14 w-20 overflow-hidden rounded-xl shadow-lg shadow-slate-200 transition-transform group-hover:scale-105"
                         >
                             <img
                                 src={`/${material.media[0].media_url}`}
                                 alt={material.title}
-                                class="w-full h-full object-cover"
+                                class="h-full w-full object-cover"
                             />
                         </div>
                     {:else}
                         <div
-                            class="w-20 h-14 rounded-xl bg-slate-100 flex items-center justify-center text-slate-300 border border-dashed border-slate-200"
+                            class="flex h-14 w-20 items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-100 text-slate-300"
                         >
-                            <FileText
-                                size={24}
-                                strokeWidth={2}
-                                class="opacity-30"
-                            />
+                            <FileText size={24} strokeWidth={2} class="opacity-30" />
                         </div>
                     {/if}
                 </td>
 
-                <td
-                    class="px-6 py-6 border-l-4 border-transparent group-hover:border-primary-600"
-                >
+                <td class="group-hover:border-primary-600 border-l-4 border-transparent px-6 py-6">
                     <div>
-                        <div
-                            class="font-bold text-slate-900 tracking-widest mb-1"
-                        >
+                        <div class="mb-1 font-bold tracking-widest text-slate-900">
                             {material.title}
                         </div>
-                        <div class="flex items-center gap-2 flex-wrap">
+                        <div class="flex flex-wrap items-center gap-2">
                             <span
-                                class="text-[9px] font-bold bg-primary-50 text-primary-600 px-2 py-0.5 rounded-full uppercase tracking-widest"
+                                class="bg-primary-50 text-primary-600 rounded-full px-2 py-0.5 text-[9px] font-bold tracking-widest uppercase"
                             >
-                                MOD-{String(material.id).padStart(3, "0")}
+                                MOD-{String(material.id).padStart(3, '0')}
                             </span>
                             <span
-                                class="text-[9px] font-bold bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full uppercase tracking-widest"
+                                class="rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-bold tracking-widest text-emerald-600 uppercase"
                             >
-                                {material.sub_materials
-                                    ? material.sub_materials.length
-                                    : 0} SUB-MATERI
+                                {material.sub_materials ? material.sub_materials.length : 0} SUB-MATERI
                             </span>
-                            <p
-                                class="text-[10px] font-medium text-slate-400 line-clamp-1 max-w-sm"
-                            >
-                                {material.content
-                                    .replace(/<[^>]*>?/gm, "")
-                                    .substring(0, 60)}...
+                            <p class="line-clamp-1 max-w-sm text-[10px] font-medium text-slate-400">
+                                {material.content.replace(/<[^>]*>?/gm, '').substring(0, 60)}...
                             </p>
                         </div>
                     </div>
@@ -178,25 +154,18 @@
 
                 <td class="px-6 py-6">
                     <div class="flex items-center gap-3">
-                        <UserAvatar
-                            name={material.creator?.name ?? "S"}
-                            size="sm"
-                        />
+                        <UserAvatar name={material.creator?.name ?? 'S'} size="sm" />
                         <span
-                            class="text-[11px] font-bold text-slate-600 uppercase tracking-widest"
+                            class="text-[11px] font-bold tracking-widest text-slate-600 uppercase"
                         >
-                            {material.creator?.name || "System Admin"}
+                            {material.creator?.name || 'System Admin'}
                         </span>
                     </div>
                 </td>
 
                 <td class="px-6 py-6 text-center">
-                    <span
-                        class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"
-                    >
-                        {new Date(material.created_at).toLocaleDateString(
-                            "id-ID",
-                        )}
+                    <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+                        {new Date(material.created_at).toLocaleDateString('id-ID')}
                     </span>
                 </td>
 
@@ -205,9 +174,7 @@
                         <Button
                             variant="ghost"
                             size="sm"
-                            href={ROUTES.ADMIN.MATERIALS.SUBMATERIALS.INDEX(
-                                material.id,
-                            )}
+                            href={ROUTES.ADMIN.MATERIALS.SUBMATERIALS.INDEX(material.id)}
                             icon={List}
                             class="text-emerald-500 hover:text-emerald-600"
                             title="Kelola Sub-materi"
@@ -215,9 +182,7 @@
                         <Button
                             variant="ghost"
                             size="sm"
-                            href={ROUTES.ADMIN.MATERIALS.QUESTIONS.INDEX(
-                                material.id,
-                            )}
+                            href={ROUTES.ADMIN.MATERIALS.QUESTIONS.INDEX(material.id)}
                             icon={FlaskConical}
                             class="text-primary-500 hover:text-primary-600"
                             title="Kelola Soal"

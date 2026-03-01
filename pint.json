@@ -7,11 +7,7 @@
         "blank_line_after_namespace": true,
         "blank_line_after_opening_tag": true,
         "blank_line_before_statement": {
-            "statements": [
-                "return",
-                "throw",
-                "try"
-            ]
+            "statements": ["return", "throw", "try"]
         },
         "braces": false,
         "cast_spaces": {
@@ -77,11 +73,7 @@
         "standardize_not_equals": true,
         "ternary_operator_spaces": true,
         "trailing_comma_in_multiline": {
-            "elements": [
-                "arrays",
-                "arguments",
-                "parameters"
-            ]
+            "elements": ["arrays", "arguments", "parameters"]
         },
         "trim_array_spaces": true,
         "unary_operator_spaces": true,

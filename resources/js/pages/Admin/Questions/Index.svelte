@@ -1,57 +1,48 @@
 <script lang="ts">
-    import App from "@/layouts/App.svelte";
-    import Button from "@/components/ui/Button.svelte";
-    import DataTable from "@/components/shared/DataTable.svelte";
-    import Badge from "@/components/ui/Badge.svelte";
-    import EmptyState from "@/components/ui/EmptyState.svelte";
-    import Pagination from "@/components/ui/Pagination.svelte";
-    import {
-        Plus,
-        ArrowLeft,
-        FlaskConical,
-        Search,
-        Edit2,
-        Trash2,
-    } from "lucide-svelte";
-    import PageHeader from "@/components/shared/PageHeader.svelte";
-    import { ROUTES } from "@/utils/route";
+    import App from '@/layouts/App.svelte';
+    import Button from '@/components/ui/Button.svelte';
+    import DataTable from '@/components/shared/DataTable.svelte';
+    import Badge from '@/components/ui/Badge.svelte';
+    import EmptyState from '@/components/ui/EmptyState.svelte';
+    import Pagination from '@/components/ui/Pagination.svelte';
+    import { Plus, ArrowLeft, FlaskConical, Search, Edit2, Trash2 } from 'lucide-svelte';
+    import PageHeader from '@/components/shared/PageHeader.svelte';
+    import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';
-    import { QuestionListAdminState } from "@/states/Admin/QuestionState.svelte";
+    import { QuestionListAdminState } from '@/states/Admin/QuestionState.svelte';
 
-    let { questions = { data: [] }, material = null, search = "", difficulty = "" }: { questions: any; material: any; search: string; difficulty: string } = $props();
+    let {
+        questions = { data: [] },
+        material = null,
+        search = '',
+        difficulty = '',
+    }: { questions: any; material: any; search: string; difficulty: string } = $props();
 
-    const state = untrack(() => new QuestionListAdminState(
-        questions,
-        material,
-        search,
-        difficulty,
-    ));
+    const state = untrack(
+        () => new QuestionListAdminState(questions, material, search, difficulty)
+    );
 
     const columns = $derived([
-        { key: "question", label: "Pertanyaan", align: "left" },
-        { key: "type", label: "Tipe", align: "left" },
-        { key: "difficulty", label: "Tingkat", align: "left" },
-        ...(state.material
-            ? []
-            : [{ key: "material", label: "Modul", align: "left" }]),
-        { key: "actions", label: "Aksi", align: "right" },
+        { key: 'question', label: 'Pertanyaan', align: 'left' },
+        { key: 'type', label: 'Tipe', align: 'left' },
+        { key: 'difficulty', label: 'Tingkat', align: 'left' },
+        ...(state.material ? [] : [{ key: 'material', label: 'Modul', align: 'left' }]),
+        { key: 'actions', label: 'Aksi', align: 'right' },
     ]);
 
     function getDifficultyColor(diff: string) {
-        if (diff === "beginner") return "success";
-        if (diff === "medium") return "warning";
-        return "danger";
+        if (diff === 'beginner') return 'success';
+        if (diff === 'medium') return 'warning';
+        return 'danger';
     }
 </script>
 
-<App
-    title={`Kelola Bank Soal ${state.material ? ": " + state.material.title : ""}`}
->
+<App title={`Kelola Bank Soal ${state.material ? ': ' + state.material.title : ''}`}>
     <PageHeader
         title="Repositori Evaluasi"
         subtitle={state.material
             ? `Kumpulan instrumen penilaian untuk materi: ${state.material.title}`
-            : "Manajemen komprehensif seluruh bank soal evaluasi sistem."}
+            : 'Manajemen komprehensif seluruh bank soal evaluasi sistem.'}
     >
         {#snippet actions()}
             <Button
@@ -62,44 +53,42 @@
                 icon={Plus}>TAMBAH INSTRUMEN</Button
             >
             {#if state.material}
-                <Button
-                    href={ROUTES.ADMIN.MATERIALS.INDEX}
-                    variant="ghost"
-                    icon={ArrowLeft}>KEMBALI</Button
+                <Button href={ROUTES.ADMIN.MATERIALS.INDEX} variant="ghost" icon={ArrowLeft}
+                    >KEMBALI</Button
                 >
             {/if}
         {/snippet}
     </PageHeader>
 
-    <div class="flex flex-col md:flex-row gap-6 items-end">
+    <div class="flex flex-col items-end gap-6 md:flex-row">
         <div class="flex-1 space-y-2">
             <label
                 for="q-search"
-                class="text-[10px] font-bold uppercase text-slate-400 font-poppins ml-2"
+                class="font-poppins ml-2 text-[10px] font-bold text-slate-400 uppercase"
             >
                 Pencarian Soal
             </label>
-            <div class="relative group">
+            <div class="group relative">
                 <input
                     type="text"
                     id="q-search"
                     bind:value={state.search}
                     oninput={state.handleSearch}
                     placeholder="Cari teks soal atau identitas..."
-                    class="w-full bg-white border border-slate-100 rounded-2xl px-8 py-4 text-xs font-bold uppercase tracking-widest text-slate-900 group-hover:border-primary-400 focus:border-primary-600 focus:ring-4 focus:ring-primary-100 focus:outline-none transition-all duration-300 shadow-xl shadow-slate-100"
+                    class="group-hover:border-primary-400 focus:border-primary-600 focus:ring-primary-100 w-full rounded-2xl border border-slate-100 bg-white px-8 py-4 text-xs font-bold tracking-widest text-slate-900 uppercase shadow-xl shadow-slate-100 transition-all duration-300 focus:ring-4 focus:outline-none"
                 />
                 <Search
                     size={20}
                     strokeWidth={2.5}
-                    class="absolute right-8 top-1/2 -translate-y-1/2 text-slate-300 group-hover:text-primary-600 transition-colors"
+                    class="group-hover:text-primary-600 absolute top-1/2 right-8 -translate-y-1/2 text-slate-300 transition-colors"
                 />
             </div>
         </div>
 
-        <div class="w-full md:w-64 space-y-2">
+        <div class="w-full space-y-2 md:w-64">
             <label
                 for="q-difficulty"
-                class="text-[10px] font-bold uppercase text-slate-400 font-poppins ml-2"
+                class="font-poppins ml-2 text-[10px] font-bold text-slate-400 uppercase"
             >
                 Tingkat Kesulitan
             </label>
@@ -107,7 +96,7 @@
                 id="q-difficulty"
                 bind:value={state.difficulty}
                 onchange={() => state.setDifficulty(state.difficulty)}
-                class="w-full bg-white border border-slate-100 rounded-2xl px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-900 focus:border-primary-600 focus:ring-4 focus:ring-primary-100 focus:outline-none transition-all cursor-pointer shadow-xl shadow-slate-100"
+                class="focus:border-primary-600 focus:ring-primary-100 w-full cursor-pointer rounded-2xl border border-slate-100 bg-white px-6 py-4 text-[10px] font-bold tracking-widest text-slate-900 uppercase shadow-xl shadow-slate-100 transition-all focus:ring-4 focus:outline-none"
             >
                 <option value="">SEMUA LEVEL</option>
                 <option value="beginner">BEGINNER</option>
@@ -133,38 +122,32 @@
 
         {#snippet row(question)}
             <td class="px-6 py-6">
-                <div class="flex flex-col gap-1 max-w-xl">
-                    <span
-                        class="text-xs font-bold text-slate-900 line-clamp-2 leading-relaxed"
-                    >
+                <div class="flex max-w-xl flex-col gap-1">
+                    <span class="line-clamp-2 text-xs leading-relaxed font-bold text-slate-900">
                         {@html question.question_text}
                     </span>
-                    <span
-                        class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"
-                    >
+                    <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
                         {question.answers_count} OPSI JAWABAN
                     </span>
                 </div>
             </td>
             <td class="px-6 py-6">
                 <Badge variant="secondary" size="xs">
-                    {question.question_type.replace(/_/g, " ").toUpperCase()}
+                    {question.question_type.replace(/_/g, ' ').toUpperCase()}
                 </Badge>
             </td>
-            <td class="px-6 py-6 font-bold text-xs uppercase text-slate-600">
+            <td class="px-6 py-6 text-xs font-bold text-slate-600 uppercase">
                 <div class="flex items-center gap-2">
                     <span
-                        class={`w-2 h-2 rounded-full bg-${getDifficultyColor(question.difficulty)}-500`}
+                        class={`h-2 w-2 rounded-full bg-${getDifficultyColor(question.difficulty)}-500`}
                     ></span>
                     {question.difficulty}
                 </div>
             </td>
             {#if !state.material}
                 <td class="px-6 py-6">
-                    <div
-                        class="text-[10px] font-bold text-primary-600 uppercase tracking-widest"
-                    >
-                        {question.material?.title || "GENERAL"}
+                    <div class="text-primary-600 text-[10px] font-bold tracking-widest uppercase">
+                        {question.material?.title || 'GENERAL'}
                     </div>
                 </td>
             {/if}

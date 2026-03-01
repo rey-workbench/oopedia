@@ -1,12 +1,12 @@
 <script lang="ts">
-    import { Link } from "@inertiajs/svelte";
-    import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/shared/PageHeader.svelte";
-    import StatsGrid from "@/components/shared/StatsGrid.svelte";
-    import Card from "@/components/ui/Card.svelte";
-    import Button from "@/components/ui/Button.svelte";
-    import EmptyState from "@/components/ui/EmptyState.svelte";
-    import DarkHeroPanel from "@/components/shared/DarkHeroPanel.svelte";
+    import { Link } from '@inertiajs/svelte';
+    import App from '@/layouts/App.svelte';
+    import PageHeader from '@/components/shared/PageHeader.svelte';
+    import StatsGrid from '@/components/shared/StatsGrid.svelte';
+    import Card from '@/components/ui/Card.svelte';
+    import Button from '@/components/ui/Button.svelte';
+    import EmptyState from '@/components/ui/EmptyState.svelte';
+    import DarkHeroPanel from '@/components/shared/DarkHeroPanel.svelte';
     import {
         BookOpen,
         Brain,
@@ -17,11 +17,11 @@
         Ghost,
         Code2,
         Plus,
-    } from "lucide-svelte";
-    import { ROUTES } from "@/utils/route";
+    } from 'lucide-svelte';
+    import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';
-    import { DashboardState } from "@/states/Mahasiswa/DashboardState.svelte";
-    import type { MahasiswaDashboardProps } from "@/types";
+    import { DashboardState } from '@/states/Mahasiswa/DashboardState.svelte';
+    import type { MahasiswaDashboardProps } from '@/types';
 
     const {
         totalMaterials = 0,
@@ -40,51 +40,54 @@
         allMaterials = [],
     }: Omit<MahasiswaDashboardProps, 'auth' | 'flash' | 'errors'> = $props();
 
-    const state = untrack(() => new DashboardState({
-        totalMaterials,
-        totalQuestions,
-        easyQuestions,
-        mediumQuestions,
-        hardQuestions,
-        materialProgressPercentage,
-        questionProgressPercentage,
-        completedMaterials,
-        inProgressMaterials,
-        totalMaterialProgress,
-        totalAnsweredQuestions,
-        totalCorrectQuestions,
-        recentActivities,
-        allMaterials,
-    }));
+    const state = untrack(
+        () =>
+            new DashboardState({
+                totalMaterials,
+                totalQuestions,
+                easyQuestions,
+                mediumQuestions,
+                hardQuestions,
+                materialProgressPercentage,
+                questionProgressPercentage,
+                completedMaterials,
+                inProgressMaterials,
+                totalMaterialProgress,
+                totalAnsweredQuestions,
+                totalCorrectQuestions,
+                recentActivities,
+                allMaterials,
+            })
+    );
 
     const dashboardStats = $derived([
         {
-            title: "Materi Tersedia",
+            title: 'Materi Tersedia',
             value: state.totalMaterials,
             icon: BookOpen,
-            variant: "primary",
-            footer: "Konsep PBO dari Dasar",
+            variant: 'primary',
+            footer: 'Konsep PBO dari Dasar',
         },
         {
-            title: "Total Soal",
+            title: 'Total Soal',
             value: state.totalQuestions,
             icon: Brain,
-            variant: "success",
-            footer: "Latihan & Tantangan",
+            variant: 'success',
+            footer: 'Latihan & Tantangan',
         },
         {
-            title: "Level Hard",
+            title: 'Level Hard',
             value: state.hardQuestions,
             icon: Flame,
-            variant: "danger",
-            footer: "Tingkat Kesulitan Tinggi",
+            variant: 'danger',
+            footer: 'Tingkat Kesulitan Tinggi',
         },
         {
-            title: "Peringkat",
-            value: "#12",
+            title: 'Peringkat',
+            value: '#12',
             icon: Trophy,
-            variant: "warning",
-            footer: "Peringkat global Anda",
+            variant: 'warning',
+            footer: 'Peringkat global Anda',
         },
     ]);
 </script>
@@ -94,50 +97,36 @@
         <PageHeader title="Dashboard" subtitle="Selamat datang di pusat kendali belajar Anda." />
 
         <DarkHeroPanel class="p-12 shadow-2xl shadow-slate-200">
-            <div class="flex flex-col md:flex-row items-center gap-10">
+            <div class="flex flex-col items-center gap-10 md:flex-row">
                 <div
-                    class="w-32 h-32 bg-white rounded-[2.5rem] flex items-center justify-center shadow-2xl rotate-3"
+                    class="flex h-32 w-32 rotate-3 items-center justify-center rounded-[2.5rem] bg-white shadow-2xl"
                 >
-                    <img
-                        src="/images/logo.png"
-                        alt="Oopedia"
-                        class="w-20 h-auto"
-                    />
+                    <img src="/images/logo.png" alt="Oopedia" class="h-auto w-20" />
                 </div>
                 <div class="text-center md:text-left">
                     <p
-                        class="text-[10px] font-bold uppercase tracking-widest text-primary-400 mb-3"
+                        class="text-primary-400 mb-3 text-[10px] font-bold tracking-widest uppercase"
                     >
                         Selamat Datang Kembali
                     </p>
-                    <h2
-                        class="text-5xl font-bold tracking-widest mb-4 text-white uppercase"
-                    >
+                    <h2 class="mb-4 text-5xl font-bold tracking-widest text-white uppercase">
                         {state.user?.name}
                     </h2>
-                    <p class="text-slate-400 font-medium text-lg max-w-xl">
-                        Lanjutkan perjalanan belajar Anda hari ini dan kuasai
-                        konsep
-                        <span class="text-white"
-                            >Object-Oriented Programming</span
-                        > dengan cara yang menyenangkan!
+                    <p class="max-w-xl text-lg font-medium text-slate-400">
+                        Lanjutkan perjalanan belajar Anda hari ini dan kuasai konsep
+                        <span class="text-white">Object-Oriented Programming</span> dengan cara yang menyenangkan!
                     </p>
                 </div>
             </div>
         </DarkHeroPanel>
 
-        <StatsGrid
-            stats={dashboardStats}
-            gridClass="grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
-        />
+        <StatsGrid stats={dashboardStats} gridClass="grid-cols-1 md:grid-cols-2 lg:grid-cols-4" />
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            <div class="lg:col-span-2 space-y-8">
+        <div class="grid grid-cols-1 gap-12 lg:grid-cols-3">
+            <div class="space-y-8 lg:col-span-2">
                 <div class="space-y-8">
                     <div class="flex items-center justify-between">
-                        <h3
-                            class="text-xl font-bold tracking-widest text-slate-900 uppercase"
-                        >
+                        <h3 class="text-xl font-bold tracking-widest text-slate-900 uppercase">
                             Aktivitas Terbaru
                         </h3>
                         <Button variant="ghost" size="sm">Lihat Semua</Button>
@@ -146,79 +135,75 @@
                     <!-- Activity Feed Inline -->
                     <div class="space-y-6">
                         {#each state.recentActivities as activity}
-                            {@const ActivityIcon = activity.type === "achievement" ? Trophy : activity.type === "milestone" ? Star : ClipboardList}
+                            {@const ActivityIcon =
+                                activity.type === 'achievement'
+                                    ? Trophy
+                                    : activity.type === 'milestone'
+                                      ? Star
+                                      : ClipboardList}
                             <Card
                                 padding="p-0"
-                                class="hover:border-primary-400 transition-all border-slate-100 shadow-xl overflow-hidden group"
+                                class="hover:border-primary-400 group overflow-hidden border-slate-100 shadow-xl transition-all"
                             >
-                                <div class="p-8 flex gap-8 items-center">
+                                <div class="flex items-center gap-8 p-8">
                                     <div
-                                        class={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 border border-black/5 shadow-inner transition-colors
-                                    ${activity.type === "achievement" ? "bg-emerald-50 text-emerald-500" : activity.type === "milestone" ? "bg-amber-50 text-amber-500" : "bg-primary-50 text-primary-500"}`}
+                                        class={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-black/5 shadow-inner transition-colors
+                                    ${activity.type === 'achievement' ? 'bg-emerald-50 text-emerald-500' : activity.type === 'milestone' ? 'bg-amber-50 text-amber-500' : 'bg-primary-50 text-primary-500'}`}
                                     >
-                                        <ActivityIcon
-                                            size={24}
-                                            strokeWidth={2.5}
-                                        />
+                                        <ActivityIcon size={24} strokeWidth={2.5} />
                                     </div>
                                     <div class="flex-1">
-                                        <div
-                                            class="flex justify-between items-start"
-                                        >
+                                        <div class="flex items-start justify-between">
                                             <div>
                                                 <h4
-                                                    class="font-bold text-slate-900 tracking-widest text-sm uppercase"
+                                                    class="text-sm font-bold tracking-widest text-slate-900 uppercase"
                                                 >
-                                                    {activity.type ===
-                                                    "achievement"
-                                                        ? "Pencapaian Baru!"
-                                                        : activity.type ===
-                                                            "milestone"
-                                                          ? "Milestone Tercapai!"
-                                                          : "Progres Belajar"}
+                                                    {activity.type === 'achievement'
+                                                        ? 'Pencapaian Baru!'
+                                                        : activity.type === 'milestone'
+                                                          ? 'Milestone Tercapai!'
+                                                          : 'Progres Belajar'}
                                                 </h4>
                                                 <p
-                                                    class="text-slate-500 text-sm font-medium mt-1 leading-relaxed"
+                                                    class="mt-1 text-sm leading-relaxed font-medium text-slate-500"
                                                 >
-                                                    {#if activity.type === "achievement"}
+                                                    {#if activity.type === 'achievement'}
                                                         Menyelesaikan <span
-                                                            class="text-emerald-500 font-bold"
+                                                            class="font-bold text-emerald-500"
                                                             >{activity.total_correct}
                                                             soal</span
                                                         >
                                                         di materi
                                                         <span
-                                                            class="text-slate-900 font-bold uppercase"
+                                                            class="font-bold text-slate-900 uppercase"
                                                             >{activity.material_title}</span
                                                         >
-                                                    {:else if activity.type === "milestone"}
-                                                        Berhasil menyelesaikan
-                                                        soal <span
-                                                            class="text-amber-500 font-bold"
+                                                    {:else if activity.type === 'milestone'}
+                                                        Berhasil menyelesaikan soal <span
+                                                            class="font-bold text-amber-500"
                                                             >level hard</span
                                                         >
                                                         di materi
                                                         <span
-                                                            class="text-slate-900 font-bold uppercase"
+                                                            class="font-bold text-slate-900 uppercase"
                                                             >{activity.material_title}</span
                                                         >
                                                     {:else}
                                                         Mengerjakan soal <span
-                                                            class="capitalize font-bold text-primary-500"
+                                                            class="text-primary-500 font-bold capitalize"
                                                             >{activity.difficulty}</span
                                                         >
                                                         di materi
                                                         <span
-                                                            class="text-slate-900 font-bold uppercase"
+                                                            class="font-bold text-slate-900 uppercase"
                                                             >{activity.material_title}</span
                                                         >
                                                     {/if}
                                                 </p>
                                             </div>
                                             <span
-                                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"
-                                                >{activity.time_ago ||
-                                                    "Baru saja"}</span
+                                                class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                                                >{activity.time_ago || 'Baru saja'}</span
                                             >
                                         </div>
                                     </div>
@@ -237,63 +222,58 @@
 
             <div class="space-y-8">
                 <div class="space-y-8">
-                    <h3
-                        class="text-xl font-bold tracking-widest text-slate-900 uppercase"
-                    >
+                    <h3 class="text-xl font-bold tracking-widest text-slate-900 uppercase">
                         Materi Unggulan
                     </h3>
 
                     <div class="space-y-6">
                         <Card
                             padding="p-8"
-                            class="bg-white border border-slate-100 shadow-2xl relative overflow-hidden group"
+                            class="group relative overflow-hidden border border-slate-100 bg-white shadow-2xl"
                         >
                             <div
-                                class="absolute -top-10 -right-10 w-32 h-32 bg-primary-100/50 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000"
+                                class="bg-primary-100/50 absolute -top-10 -right-10 h-32 w-32 rounded-full blur-2xl transition-transform duration-1000 group-hover:scale-150"
                             ></div>
-                            <div class="mb-6 text-primary-600">
+                            <div class="text-primary-600 mb-6">
                                 <Code2 size={32} strokeWidth={2.5} />
                             </div>
                             <h4
-                                class="text-lg font-bold tracking-widest mb-2 uppercase text-slate-900"
+                                class="mb-2 text-lg font-bold tracking-widest text-slate-900 uppercase"
                             >
                                 Dasar PBO: Class & Object
                             </h4>
-                            <p
-                                class="text-slate-500 text-sm font-medium mb-8 leading-relaxed"
-                            >
-                                Fundamental utama pemrograman berorientasi objek
-                                yang harus dikuasai.
+                            <p class="mb-8 text-sm leading-relaxed font-medium text-slate-500">
+                                Fundamental utama pemrograman berorientasi objek yang harus
+                                dikuasai.
                             </p>
                             <Button
                                 variant="primary"
                                 size="sm"
-                                class="w-full py-4 uppercase font-bold tracking-widest"
-                                href={ROUTES.MAHASISWA.MATERIALS.INDEX}
-                                >PELAJARI SEKARANG</Button
+                                class="w-full py-4 font-bold tracking-widest uppercase"
+                                href={ROUTES.MAHASISWA.MATERIALS.INDEX}>PELAJARI SEKARANG</Button
                             >
                         </Card>
 
                         <Card
                             padding="p-8"
-                            class="border-2 border-dashed border-slate-200 shadow-none hover:border-primary-400 hover:bg-primary-50/20 transition-all cursor-pointer group"
+                            class="hover:border-primary-400 hover:bg-primary-50/20 group cursor-pointer border-2 border-dashed border-slate-200 shadow-none transition-all"
                         >
                             <Link
                                 href={ROUTES.MAHASISWA.MATERIALS.INDEX}
                                 class="flex flex-col items-center text-center"
                             >
                                 <div
-                                    class="w-12 h-12 rounded-xl bg-slate-100/50 text-slate-500 flex items-center justify-center mb-4 group-hover:bg-primary-600 group-hover:text-white transition-all"
+                                    class="group-hover:bg-primary-600 mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100/50 text-slate-500 transition-all group-hover:text-white"
                                 >
                                     <Plus size={24} strokeWidth={3} />
                                 </div>
                                 <h4
-                                    class="text-[10px] font-bold text-slate-600 uppercase tracking-widest group-hover:text-primary-600"
+                                    class="group-hover:text-primary-600 text-[10px] font-bold tracking-widest text-slate-600 uppercase"
                                 >
                                     Eksplorasi Katalog Materi
                                 </h4>
                                 <p
-                                    class="mt-2 text-[9px] font-bold text-primary-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity"
+                                    class="text-primary-600 mt-2 text-[9px] font-bold tracking-widest uppercase opacity-0 transition-opacity group-hover:opacity-100"
                                 >
                                     LIHAT SEMUA
                                 </p>

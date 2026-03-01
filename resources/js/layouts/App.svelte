@@ -1,29 +1,29 @@
 <script lang="ts">
-    import { page } from "@inertiajs/svelte";
-    import { onMount, onDestroy } from "svelte";
-    import Navbar from "@/components/navigation/Navbar.svelte";
-    import Sidebar from "@/components/navigation/Sidebar.svelte";
-    import Alert from "@/components/ui/Alert.svelte";
-    import { sidebarOpen } from "@/stores/sidebar";
-    import { isAdmin, isStudent } from "@/utils/roles";
-    import { ROUTES } from "@/utils/route";
-    import type { SharedProps } from "@/types/inertia";
+    import { page } from '@inertiajs/svelte';
+    import { onMount, onDestroy } from 'svelte';
+    import Navbar from '@/components/navigation/Navbar.svelte';
+    import Sidebar from '@/components/navigation/Sidebar.svelte';
+    import Alert from '@/components/ui/Alert.svelte';
+    import { sidebarOpen } from '@/stores/sidebar';
+    import { isAdmin, isStudent } from '@/utils/roles';
+    import { ROUTES } from '@/utils/route';
+    import type { SharedProps } from '@/types/inertia';
 
     interface Props {
         title?: string;
         showNavbar?: boolean;
         showSidebar?: boolean;
         fullWidth?: boolean;
-        variant?: "app" | "auth";
-        children?: import("svelte").Snippet;
+        variant?: 'app' | 'auth';
+        children?: import('svelte').Snippet;
     }
 
     let {
-        title = "OOPEDIAV2",
+        title = 'OOPEDIAV2',
         showNavbar = true,
         showSidebar = true,
         fullWidth = false,
-        variant = "app",
+        variant = 'app',
         children,
     }: Props = $props();
 
@@ -34,7 +34,7 @@
     const isAdminRole = $derived(isAuthenticated && isAdmin(user?.role_id));
     const isStudentRole = $derived(isAuthenticated && isStudent(user?.role_id));
     const showSidebarRender = $derived(
-        variant === "app" && showSidebar && (isAdminRole || isStudentRole),
+        variant === 'app' && showSidebar && (isAdminRole || isStudentRole)
     );
 
     function handleResize() {
@@ -44,57 +44,46 @@
     }
 
     onMount(() => {
-        window.addEventListener("resize", handleResize);
+        window.addEventListener('resize', handleResize);
     });
-    onDestroy(() => window.removeEventListener("resize", handleResize));
+    onDestroy(() => window.removeEventListener('resize', handleResize));
 </script>
 
 <svelte:head>
     <title>{title}</title>
 </svelte:head>
 
-{#if variant === "auth"}
+{#if variant === 'auth'}
     <div
-        class="relative min-h-screen flex items-center justify-center p-6 overflow-hidden bg-slate-50 font-poppins text-slate-600 antialiased"
+        class="font-poppins relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-50 p-6 text-slate-600 antialiased"
     >
         <!-- Flash Messages -->
         {#if flash.success || flash.error || flash.info || flash.warning || (flash as any).status}
             <div
-                class="fixed top-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none max-w-sm w-full"
+                class="pointer-events-none fixed top-6 right-6 z-[100] flex w-full max-w-sm flex-col gap-3"
             >
                 {#if flash.success}
-                    <Alert
-                        variant="success"
-                        dismissible={true}
-                        class="pointer-events-auto">{flash.success}</Alert
+                    <Alert variant="success" dismissible={true} class="pointer-events-auto"
+                        >{flash.success}</Alert
                     >
                 {/if}
                 {#if flash.error}
-                    <Alert
-                        variant="danger"
-                        dismissible={true}
-                        class="pointer-events-auto">{flash.error}</Alert
+                    <Alert variant="danger" dismissible={true} class="pointer-events-auto"
+                        >{flash.error}</Alert
                     >
                 {/if}
                 {#if flash.info}
-                    <Alert
-                        variant="info"
-                        dismissible={true}
-                        class="pointer-events-auto">{flash.info}</Alert
+                    <Alert variant="info" dismissible={true} class="pointer-events-auto"
+                        >{flash.info}</Alert
                     >
                 {/if}
                 {#if flash.warning}
-                    <Alert
-                        variant="warning"
-                        dismissible={true}
-                        class="pointer-events-auto">{flash.warning}</Alert
+                    <Alert variant="warning" dismissible={true} class="pointer-events-auto"
+                        >{flash.warning}</Alert
                     >
                 {/if}
                 {#if (flash as any).status}
-                    <Alert
-                        variant="success"
-                        dismissible={true}
-                        class="pointer-events-auto"
+                    <Alert variant="success" dismissible={true} class="pointer-events-auto"
                         >{(flash as any).status}</Alert
                     >
                 {/if}
@@ -102,38 +91,30 @@
         {/if}
 
         <!-- Decorative Background -->
-        <div class="absolute top-0 left-0 w-full h-full pointer-events-none">
+        <div class="pointer-events-none absolute top-0 left-0 h-full w-full">
             <div
-                class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-600/5 rounded-full blur-[120px]"
+                class="bg-primary-600/5 absolute top-[-10%] left-[-10%] h-[40%] w-[40%] rounded-full blur-[120px]"
             ></div>
             <div
-                class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary-600/5 rounded-full blur-[120px]"
+                class="bg-primary-600/5 absolute right-[-10%] bottom-[-10%] h-[40%] w-[40%] rounded-full blur-[120px]"
             ></div>
         </div>
 
-        <div
-            class="relative w-full max-w-lg animate-in fade-in zoom-in duration-700"
-        >
+        <div class="animate-in fade-in zoom-in relative w-full max-w-lg duration-700">
             <!-- Logo -->
-            <div class="flex flex-col items-center mb-10">
-                <a href={ROUTES.HOME} class="flex items-center gap-4 group">
+            <div class="mb-10 flex flex-col items-center">
+                <a href={ROUTES.HOME} class="group flex items-center gap-4">
                     <div
-                        class="w-16 h-16 bg-white rounded-[2rem] flex items-center justify-center shadow-2xl shadow-slate-200 group-hover:rotate-12 transition-transform duration-500"
+                        class="flex h-16 w-16 items-center justify-center rounded-[2rem] bg-white shadow-2xl shadow-slate-200 transition-transform duration-500 group-hover:rotate-12"
                     >
-                        <img
-                            src="/images/logo.png"
-                            alt="OOPedia"
-                            class="w-10 h-auto"
-                        />
+                        <img src="/images/logo.png" alt="OOPedia" class="h-auto w-10" />
                     </div>
                     <div>
-                        <h2
-                            class="text-3xl font-bold tracking-widest text-slate-900 leading-none"
-                        >
+                        <h2 class="text-3xl leading-none font-bold tracking-widest text-slate-900">
                             OOPEDIA
                         </h2>
                         <p
-                            class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1"
+                            class="mt-1 text-[10px] font-bold tracking-widest text-slate-400 uppercase"
                         >
                             Learning System
                         </p>
@@ -144,7 +125,7 @@
             {@render children?.()}
 
             <p
-                class="text-center mt-10 text-[10px] font-bold text-slate-300 uppercase tracking-widest"
+                class="mt-10 text-center text-[10px] font-bold tracking-widest text-slate-300 uppercase"
             >
                 &copy; {new Date().getFullYear()} OOPEDIA TEAM. ALL RIGHTS RESERVED.
             </p>
@@ -152,7 +133,7 @@
     </div>
 {:else}
     <div
-        class="relative flex min-h-screen bg-slate-50 font-sans text-slate-900 antialiased overflow-x-hidden"
+        class="relative flex min-h-screen overflow-x-hidden bg-slate-50 font-sans text-slate-900 antialiased"
     >
         {#if showSidebarRender}
             <Sidebar />
@@ -161,16 +142,15 @@
                     role="button"
                     tabindex="0"
                     aria-label="Tutup sidebar"
-                    class="fixed inset-0 z-[45] bg-gray-900/50 backdrop-blur-sm lg:hidden transition-opacity duration-300"
+                    class="fixed inset-0 z-[45] bg-gray-900/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden"
                     onclick={() => sidebarOpen.set(false)}
-                    onkeydown={(e) =>
-                        e.key === "Escape" && sidebarOpen.set(false)}
+                    onkeydown={(e) => e.key === 'Escape' && sidebarOpen.set(false)}
                 ></div>
             {/if}
         {/if}
 
         <div
-            class="flex-1 flex flex-col min-w-0 transition-all duration-300 {showSidebarRender
+            class="flex min-w-0 flex-1 flex-col transition-all duration-300 {showSidebarRender
                 ? 'lg:ml-64'
                 : ''}"
         >
@@ -181,41 +161,30 @@
             <!-- Flash Messages -->
             {#if flash.success || flash.error || flash.info || flash.warning || (flash as any).status}
                 <div
-                    class="fixed top-24 right-6 z-[100] flex flex-col gap-3 pointer-events-none max-w-sm w-full"
+                    class="pointer-events-none fixed top-24 right-6 z-[100] flex w-full max-w-sm flex-col gap-3"
                 >
                     {#if flash.success}
-                        <Alert
-                            variant="success"
-                            dismissible={true}
-                            class="pointer-events-auto">{flash.success}</Alert
+                        <Alert variant="success" dismissible={true} class="pointer-events-auto"
+                            >{flash.success}</Alert
                         >
                     {/if}
                     {#if flash.error}
-                        <Alert
-                            variant="danger"
-                            dismissible={true}
-                            class="pointer-events-auto">{flash.error}</Alert
+                        <Alert variant="danger" dismissible={true} class="pointer-events-auto"
+                            >{flash.error}</Alert
                         >
                     {/if}
                     {#if flash.info}
-                        <Alert
-                            variant="info"
-                            dismissible={true}
-                            class="pointer-events-auto">{flash.info}</Alert
+                        <Alert variant="info" dismissible={true} class="pointer-events-auto"
+                            >{flash.info}</Alert
                         >
                     {/if}
                     {#if flash.warning}
-                        <Alert
-                            variant="warning"
-                            dismissible={true}
-                            class="pointer-events-auto">{flash.warning}</Alert
+                        <Alert variant="warning" dismissible={true} class="pointer-events-auto"
+                            >{flash.warning}</Alert
                         >
                     {/if}
                     {#if (flash as any).status}
-                        <Alert
-                            variant="success"
-                            dismissible={true}
-                            class="pointer-events-auto"
+                        <Alert variant="success" dismissible={true} class="pointer-events-auto"
                             >{(flash as any).status}</Alert
                         >
                     {/if}
@@ -223,9 +192,9 @@
             {/if}
 
             <main
-                class="flex-1 w-full {fullWidth
+                class="w-full flex-1 {fullWidth
                     ? ''
-                    : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'}"
+                    : 'mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8'}"
             >
                 {@render children?.()}
             </main>

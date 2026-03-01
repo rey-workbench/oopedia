@@ -1,16 +1,16 @@
 <script lang="ts">
-    import App from "@/layouts/App.svelte";
-        import Card from "@/components/ui/Card.svelte";
-    import Button from "@/components/ui/Button.svelte";
-    import GuestBanner from "@/components/shared/GuestBanner.svelte";
-    import { ArrowLeft, Map as MapIcon } from "lucide-svelte";
+    import App from '@/layouts/App.svelte';
+    import Card from '@/components/ui/Card.svelte';
+    import Button from '@/components/ui/Button.svelte';
+    import GuestBanner from '@/components/shared/GuestBanner.svelte';
+    import { ArrowLeft, Map as MapIcon } from 'lucide-svelte';
     import { untrack } from 'svelte';
-    import { LevelMapState } from "@/states/Mahasiswa/QuizState.svelte";
-    import { ROUTES } from "@/utils/route";
-    import LevelMapLegend from "@/components/quiz/LevelMapLegend.svelte";
-    import LevelMapCanvas from "@/components/quiz/LevelMapCanvas.svelte";
-    import type { Material } from "@/types";
-    import type { LevelItem } from "@/states/Mahasiswa/QuizState.svelte";
+    import { LevelMapState } from '@/states/Mahasiswa/QuizState.svelte';
+    import { ROUTES } from '@/utils/route';
+    import LevelMapLegend from '@/components/quiz/LevelMapLegend.svelte';
+    import LevelMapCanvas from '@/components/quiz/LevelMapCanvas.svelte';
+    import type { Material } from '@/types';
+    import type { LevelItem } from '@/states/Mahasiswa/QuizState.svelte';
 
     interface Props {
         material: Material;
@@ -24,29 +24,30 @@
 
 <App title={`Peta Tantangan - ${state.material.title}`}>
     <div class="space-y-12">
-        
-<div class="mb-8">
-    <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight font-display">
-        Peta Tantangan
-    </h1>
-    <div class="flex items-center gap-2 mt-3" role="presentation">
-        <div class="h-1.5 w-12 bg-primary-600 rounded-full"></div>
-        <div class="h-1.5 w-4 bg-slate-200 rounded-full"></div>
-        <div class="h-1.5 w-2 bg-slate-100 rounded-full"></div>
-    </div>
-    <p class="mt-4 text-slate-500 font-medium leading-relaxed max-w-3xl">
-        {`Selesaikan setiap level untuk menguasai ${state.material.title || "modul ini"}.`}
-    </p>
-    <div class="mt-6 flex flex-wrap gap-4">
-        <Button
+        <div class="mb-8">
+            <h1
+                class="font-display text-3xl leading-tight font-extrabold tracking-tight text-slate-900 md:text-4xl"
+            >
+                Peta Tantangan
+            </h1>
+            <div class="mt-3 flex items-center gap-2" role="presentation">
+                <div class="bg-primary-600 h-1.5 w-12 rounded-full"></div>
+                <div class="h-1.5 w-4 rounded-full bg-slate-200"></div>
+                <div class="h-1.5 w-2 rounded-full bg-slate-100"></div>
+            </div>
+            <p class="mt-4 max-w-3xl leading-relaxed font-medium text-slate-500">
+                {`Selesaikan setiap level untuk menguasai ${state.material.title || 'modul ini'}.`}
+            </p>
+            <div class="mt-6 flex flex-wrap gap-4">
+                <Button
                     href={ROUTES.MAHASISWA.MATERIALS.SHOW(state.material.id)}
                     variant="ghost"
                     icon={ArrowLeft as any}
                 >
                     Kembali
                 </Button>
-    </div>
-</div>
+            </div>
+        </div>
 
         {#if state.isGuest}
             <GuestBanner show={state.isGuest} variant="inline" />
@@ -55,16 +56,14 @@
         {#if state.levels.length === 0}
             <Card class="py-24 text-center">
                 <div
-                    class="w-20 h-20 bg-slate-50 text-slate-300 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-inner"
+                    class="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-[2rem] bg-slate-50 text-slate-300 shadow-inner"
                 >
                     <MapIcon size={40} />
                 </div>
-                <h3
-                    class="text-2xl font-bold text-slate-900 mb-4 uppercase tracking-widest"
-                >
+                <h3 class="mb-4 text-2xl font-bold tracking-widest text-slate-900 uppercase">
                     Belum Ada Level
                 </h3>
-                <p class="text-slate-500 mb-10 max-w-md mx-auto font-medium">
+                <p class="mx-auto mb-10 max-w-md font-medium text-slate-500">
                     Tim kami sedang merancang tantangan menarik.
                 </p>
                 <Button

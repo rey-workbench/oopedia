@@ -7,7 +7,11 @@
 // Primitives / Enums
 // ---------------------------------------------------------------------------
 
-export type QuestionType = 'fill_in_the_blank' | 'radio_button' | 'drag_and_drop' | 'multiple_choice';
+export type QuestionType =
+    | 'fill_in_the_blank'
+    | 'radio_button'
+    | 'drag_and_drop'
+    | 'multiple_choice';
 
 export type DifficultyLevel = 'beginner' | 'medium' | 'hard';
 
@@ -51,7 +55,7 @@ export interface Material {
     content: string | null;
     cover_image: string | null;
     level: DifficultyLevel;
-    status: "draft" | "published";
+    status: 'draft' | 'published';
     module_id: number | null;
     created_by: number | null;
     created_at: string;
@@ -352,7 +356,14 @@ export interface QuestionWithAttempt extends Question {
  * Uses Pick<> to stay in sync with the base data interfaces.
  */
 export interface QuizSessionState {
-    gamification: Pick<GamificationData, 'global_xp' | 'current_level' | 'current_streak' | 'max_streak'>;
-    performance: Pick<PerformanceMetrics, 'total_questions_answered' | 'correct_count' | 'wrong_count' | 'hints_available'>;
-    adaptive: Pick<AdaptiveState, 'fast_track_active' | 'last_rule'> & Pick<LearningProfile, 'learning_style'>;
+    gamification: Pick<
+        GamificationData,
+        'global_xp' | 'current_level' | 'current_streak' | 'max_streak'
+    >;
+    performance: Pick<
+        PerformanceMetrics,
+        'total_questions_answered' | 'correct_count' | 'wrong_count' | 'hints_available'
+    >;
+    adaptive: Pick<AdaptiveState, 'fast_track_active' | 'last_rule'> &
+        Pick<LearningProfile, 'learning_style'>;
 }

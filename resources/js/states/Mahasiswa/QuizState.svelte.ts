@@ -1,9 +1,16 @@
-import { router } from "@inertiajs/svelte";
-import axios, { isAxiosError } from "axios";
-import { BaseState } from "@/states/BaseState.svelte";
-import { ROUTES } from "@/utils/route";
-import { getDifficultyLabel, getDifficultyColor } from "@/utils/quizUtils";
-import type { Material, Question, DifficultyLevel, QuestionWithAttempt, QuizSessionState, CheckAnswerResponse } from "@/types";
+import { router } from '@inertiajs/svelte';
+import axios, { isAxiosError } from 'axios';
+import { BaseState } from '@/states/BaseState.svelte';
+import { ROUTES } from '@/utils/route';
+import { getDifficultyLabel, getDifficultyColor } from '@/utils/quizUtils';
+import type {
+    Material,
+    Question,
+    DifficultyLevel,
+    QuestionWithAttempt,
+    QuizSessionState,
+    CheckAnswerResponse,
+} from '@/types';
 
 // ---------------------------------------------------------------------------
 // Shared interfaces
@@ -71,7 +78,9 @@ export class LevelMapState extends BaseState {
     levels = $state<LevelItem[]>([]);
 
     sortedLevels = $derived([...this.levels].sort((a, b) => a.level - b.level));
-    allCompleted = $derived(this.levels.length > 0 && this.levels.every(l => l.status === 'completed'));
+    allCompleted = $derived(
+        this.levels.length > 0 && this.levels.every((l) => l.status === 'completed')
+    );
 
     constructor(material: Material, levels: LevelItem[]) {
         super();
@@ -89,7 +98,7 @@ export class QuestionShowState extends BaseState {
     difficulty = $state<string>('beginner');
     studentState = $state<QuizSessionState>({} as QuizSessionState);
 
-    fillInTheBlankAnswer = $state("");
+    fillInTheBlankAnswer = $state('');
     selectedMultipleChoiceAnswer = $state<string | null>(null);
     dragAndDropAnswers = $state<Record<string, string>>({});
 
@@ -103,9 +112,9 @@ export class QuestionShowState extends BaseState {
         adaptiveResult: AdaptiveResult | null;
         score: number;
     }>({
-        status: "success",
-        message: "",
-        nextUrl: "",
+        status: 'success',
+        message: '',
+        nextUrl: '',
         adaptiveResult: null,
         score: 0,
     });
@@ -125,10 +134,15 @@ export class QuestionShowState extends BaseState {
 
     xp = $derived(this.studentState?.gamification?.global_xp || 0);
     streak = $derived(this.studentState?.gamification?.current_streak || 0);
-    level = $derived(this.studentState?.gamification?.current_level || "Pemula");
+    level = $derived(this.studentState?.gamification?.current_level || 'Pemula');
     hintsAvailable = $derived(this.studentState?.performance?.hints_available ?? 3);
 
-    constructor(material: Material, currentQuestion: Question, difficulty: string, studentState: QuizSessionState) {
+    constructor(
+        material: Material,
+        currentQuestion: Question,
+        difficulty: string,
+        studentState: QuizSessionState
+    ) {
         super();
         this.material = material;
         this.currentQuestion = currentQuestion;
@@ -173,24 +187,27 @@ export class QuestionShowState extends BaseState {
             difficulty: this.difficulty,
         };
 
-        if (this.currentQuestion.question_type === "fill_in_the_blank") {
+        if (this.currentQuestion.question_type === 'fill_in_the_blank') {
             payload.fill_in_the_blank_answer = this.fillInTheBlankAnswer;
             payload.answer = this.fillInTheBlankAnswer;
-        } else if (this.currentQuestion.question_type === "drag_and_drop") {
+        } else if (this.currentQuestion.question_type === 'drag_and_drop') {
             payload.drag_and_drop_answers = JSON.stringify(this.dragAndDropAnswers);
         } else {
             payload.answer = this.selectedMultipleChoiceAnswer;
         }
 
-        console.debug("[QuizState] Submitting answer payload:", payload);
+        console.debug('[QuizState] Submitting answer payload:', payload);
 
         try {
             const response = await axios.post<CheckAnswerResponse>(
-                ROUTES.MAHASISWA.MATERIALS.QUESTIONS.CHECK(this.material.id, this.currentQuestion.id),
+                ROUTES.MAHASISWA.MATERIALS.QUESTIONS.CHECK(
+                    this.material.id,
+                    this.currentQuestion.id
+                ),
                 payload
             );
 
-            console.debug("[QuizState] Received answer response:", response.data);
+            console.debug('[QuizState] Received answer response:', response.data);
             const data = response.data;
             const adaptiveResult = (data.adaptiveResult as unknown as AdaptiveResult) ?? null;
             this.feedbackData = {
@@ -211,16 +228,17 @@ export class QuestionShowState extends BaseState {
             this.showFeedback = true;
         } catch (err: unknown) {
             const message = isAxiosError(err)
-                ? (err.response?.data as { message?: string })?.message ?? "Terjadi kesalahan saat memeriksa jawaban."
-                : "Terjadi kesalahan tidak terduga.";
-            console.error("[QuizState] Error submitting answer:", err);
+                ? ((err.response?.data as { message?: string })?.message ??
+                  'Terjadi kesalahan saat memeriksa jawaban.')
+                : 'Terjadi kesalahan tidak terduga.';
+            console.error('[QuizState] Error submitting answer:', err);
             if (isAxiosError(err)) {
-                console.error("[QuizState] Axios error details:", err.response?.data);
+                console.error('[QuizState] Axios error details:', err.response?.data);
             }
             this.feedbackData = {
-                status: "error",
+                status: 'error',
                 message,
-                nextUrl: "",
+                nextUrl: '',
                 adaptiveResult: null,
                 score: 0,
             };
@@ -241,7 +259,7 @@ export class QuestionShowState extends BaseState {
     handleTryAgain() {
         this.showFeedback = false;
         this.showHint = false;
-        this.fillInTheBlankAnswer = "";
+        this.fillInTheBlankAnswer = '';
         this.selectedMultipleChoiceAnswer = null;
         this.dragAndDropAnswers = {};
         this.startTime = Date.now();
@@ -257,7 +275,12 @@ export class ReviewState extends BaseState {
     questions = $state<QuestionWithAttempt[]>([]);
     difficulty = $state<DifficultyLevel | 'all'>('all');
 
-    constructor(material: Material, materials: Material[], questions: QuestionWithAttempt[], difficulty: DifficultyLevel | 'all') {
+    constructor(
+        material: Material,
+        materials: Material[],
+        questions: QuestionWithAttempt[],
+        difficulty: DifficultyLevel | 'all'
+    ) {
         super();
         this.material = material;
         this.materials = materials;
@@ -280,7 +303,7 @@ export class ReviewState extends BaseState {
             {
                 preserveState: true,
                 preserveScroll: true,
-                only: ["questions", "difficulty"],
+                only: ['questions', 'difficulty'],
             }
         );
     }

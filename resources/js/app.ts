@@ -1,10 +1,10 @@
 import '@/bootstrap';
-import { createInertiaApp } from '@inertiajs/svelte'
-import { mount } from 'svelte'
+import { createInertiaApp } from '@inertiajs/svelte';
+import { mount } from 'svelte';
 
 import '../css/app.css';
 
-const pages = import.meta.glob("./pages/**/*.svelte");
+const pages = import.meta.glob('./pages/**/*.svelte');
 
 createInertiaApp({
     resolve: (name) => {
@@ -23,7 +23,7 @@ createInertiaApp({
 
         if (!resolved) {
             console.error(`Inertia Resolve Failed: "${name}"`);
-            console.log("Available Pages:", Object.keys(pages));
+            console.log('Available Pages:', Object.keys(pages));
             throw new Error(`Component "${name}" not found.`);
         }
 
@@ -33,7 +33,7 @@ createInertiaApp({
         if (el) {
             mount(App, { target: el, props });
         } else {
-            console.error("Inertia target element not found");
+            console.error('Inertia target element not found');
         }
     },
 });

@@ -1,4 +1,4 @@
-import { router } from "@inertiajs/svelte";
+import { router } from '@inertiajs/svelte';
 
 /**
  * Show a browser confirm dialog, then send a DELETE request via Inertia router.
@@ -8,7 +8,7 @@ import { router } from "@inertiajs/svelte";
  */
 export function confirmDelete(
     url: string,
-    message: string = "Data yang dihapus tidak dapat dikembalikan. Lanjutkan?"
+    message: string = 'Data yang dihapus tidak dapat dikembalikan. Lanjutkan?'
 ): void {
     if (confirm(message)) {
         router.delete(url);

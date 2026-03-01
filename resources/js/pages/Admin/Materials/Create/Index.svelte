@@ -1,14 +1,14 @@
 <script lang="ts">
-    import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/shared/PageHeader.svelte";
-    import Button from "@/components/ui/Button.svelte";
-    import Input from "@/components/ui/Input.svelte";
-    import Alert from "@/components/ui/Alert.svelte";
-    import ImageUpload from "@/components/ui/ImageUpload.svelte";
-    import QuillEditor from "@/components/ui/QuillEditor.svelte";
-    import { MaterialFormState } from "@/states/Admin/MaterialState.svelte";
-    import { ROUTES } from "@/utils/route";
-    import { ArrowLeft, Info, CloudUpload, CheckCheck } from "lucide-svelte";
+    import App from '@/layouts/App.svelte';
+    import PageHeader from '@/components/shared/PageHeader.svelte';
+    import Button from '@/components/ui/Button.svelte';
+    import Input from '@/components/ui/Input.svelte';
+    import Alert from '@/components/ui/Alert.svelte';
+    import ImageUpload from '@/components/ui/ImageUpload.svelte';
+    import QuillEditor from '@/components/ui/QuillEditor.svelte';
+    import { MaterialFormState } from '@/states/Admin/MaterialState.svelte';
+    import { ROUTES } from '@/utils/route';
+    import { ArrowLeft, Info, CloudUpload, CheckCheck } from 'lucide-svelte';
 
     const state = new MaterialFormState(null);
 </script>
@@ -20,10 +20,8 @@
             subtitle="Publikasikan modul pembelajaran baru dengan visualisasi premium."
         >
             {#snippet actions()}
-                <Button
-                    href={ROUTES.ADMIN.MATERIALS.INDEX}
-                    variant="ghost"
-                    icon={ArrowLeft}>BATALKAN PUBLIKASI</Button
+                <Button href={ROUTES.ADMIN.MATERIALS.INDEX} variant="ghost" icon={ArrowLeft}
+                    >BATALKAN PUBLIKASI</Button
                 >
             {/snippet}
         </PageHeader>
@@ -36,17 +34,15 @@
             class="space-y-12"
         >
             <div
-                class="bg-white rounded-3xl p-6 shadow-2xl border border-slate-100 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300"
+                class="group relative overflow-hidden rounded-3xl border border-slate-100 bg-white p-6 shadow-2xl transition-transform duration-300 hover:-translate-y-1"
             >
                 <div class="mb-6">
-                    <h3 class="text-lg font-bold text-slate-800">
-                        Identifikasi & Konten Modul
-                    </h3>
+                    <h3 class="text-lg font-bold text-slate-800">Identifikasi & Konten Modul</h3>
                 </div>
 
                 <div class="space-y-10 p-6">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                        <div class="lg:col-span-2 space-y-6">
+                    <div class="grid grid-cols-1 gap-10 lg:grid-cols-3">
+                        <div class="space-y-6 lg:col-span-2">
                             <Input
                                 label="Judul Modul"
                                 required
@@ -56,21 +52,14 @@
                                 error={state.form.errors['title']}
                             />
 
-                            <Alert
-                                variant="primary"
-                                class="bg-primary-50/50 border-primary-100"
-                            >
+                            <Alert variant="primary" class="bg-primary-50/50 border-primary-100">
                                 <div class="flex gap-4">
-                                    <Info
-                                        size={16}
-                                        class="text-primary-600 mt-1"
-                                    />
+                                    <Info size={16} class="text-primary-600 mt-1" />
                                     <div
-                                        class="text-[10px] font-bold text-slate-500 leading-relaxed uppercase tracking-widest"
+                                        class="text-[10px] leading-relaxed font-bold tracking-widest text-slate-500 uppercase"
                                     >
-                                        Pastikan judul modul mendeskripsikan isi
-                                        materi dengan jelas untuk memudahkan
-                                        mahasiswa.
+                                        Pastikan judul modul mendeskripsikan isi materi dengan jelas
+                                        untuk memudahkan mahasiswa.
                                     </div>
                                 </div>
                             </Alert>
@@ -95,25 +84,22 @@
                             <span class="text-rose-500">*</span></span
                         >
                         <div id="content-editor">
-                            <QuillEditor
-                                bind:value={state.form.content}
-                                height="500px"
-                            />
+                            <QuillEditor bind:value={state.form.content} height="500px" />
                         </div>
                         {#if state.form.errors['content']}
-                            <p class="text-rose-500 text-xs mt-1">
+                            <p class="mt-1 text-xs text-rose-500">
                                 {state.form.errors['content']}
                             </p>
                         {/if}
                     </div>
 
                     <div
-                        class="pt-6 border-t border-slate-100 flex items-center justify-between gap-4"
+                        class="flex items-center justify-between gap-4 border-t border-slate-100 pt-6"
                     >
                         <div class="flex items-center gap-3">
                             <CloudUpload size={14} class="text-primary-600" />
                             <span
-                                class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
+                                class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
                                 >Status Kesiapan: Siap Dipublikasikan</span
                             >
                         </div>
@@ -123,7 +109,7 @@
                                 type="submit"
                                 variant="primary"
                                 size="lg"
-                                class="shadow-xl shadow-primary-900/20"
+                                class="shadow-primary-900/20 shadow-xl"
                                 icon={CheckCheck}
                                 disabled={state.form.processing}
                             >

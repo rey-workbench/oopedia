@@ -1,5 +1,5 @@
-import { BaseState } from "@/states/BaseState.svelte";
-import type { Material, RecentActivity } from "@/types";
+import { BaseState } from '@/states/BaseState.svelte';
+import type { Material, RecentActivity } from '@/types';
 
 type DashboardData = {
     totalMaterials: number;
@@ -52,4 +52,3 @@ export class DashboardState extends BaseState {
         this.allMaterials = data.allMaterials;
     }
 }
-

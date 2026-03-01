@@ -1,7 +1,7 @@
-import { router } from "@inertiajs/svelte";
-import { BaseState } from "@/states/BaseState.svelte";
-import { ROUTES } from "@/utils/route";
-import type { Material, SubMaterial, MaterialWithStats } from "@/types";
+import { router } from '@inertiajs/svelte';
+import { BaseState } from '@/states/BaseState.svelte';
+import { ROUTES } from '@/utils/route';
+import type { Material, SubMaterial, MaterialWithStats } from '@/types';
 
 /**
  * Material Catalog State
@@ -40,7 +40,9 @@ export class SubMaterialState extends BaseState {
 
     currentIndex = $derived(
         Array.isArray(this.material?.sub_materials)
-            ? this.material.sub_materials.findIndex((sm: SubMaterial) => sm.id === this.subMaterial.id)
+            ? this.material.sub_materials.findIndex(
+                  (sm: SubMaterial) => sm.id === this.subMaterial.id
+              )
             : -1
     );
 
@@ -57,10 +59,15 @@ export class SubMaterialState extends BaseState {
     }
 
     goToNext() {
-        if (this.material.sub_materials && this.currentIndex < this.material.sub_materials.length - 1) {
+        if (
+            this.material.sub_materials &&
+            this.currentIndex < this.material.sub_materials.length - 1
+        ) {
             const nextSubMaterial = this.material.sub_materials[this.currentIndex + 1];
             if (nextSubMaterial) {
-                router.visit(ROUTES.MAHASISWA.SUBMATERIALS.SHOW(this.material.id, nextSubMaterial.id));
+                router.visit(
+                    ROUTES.MAHASISWA.SUBMATERIALS.SHOW(this.material.id, nextSubMaterial.id)
+                );
             }
         } else {
             router.visit(ROUTES.MAHASISWA.MATERIALS.SHOW(this.material.id));
@@ -71,7 +78,9 @@ export class SubMaterialState extends BaseState {
         if (this.material.sub_materials && this.currentIndex > 0) {
             const prevSubMaterial = this.material.sub_materials[this.currentIndex - 1];
             if (prevSubMaterial) {
-                router.visit(ROUTES.MAHASISWA.SUBMATERIALS.SHOW(this.material.id, prevSubMaterial.id));
+                router.visit(
+                    ROUTES.MAHASISWA.SUBMATERIALS.SHOW(this.material.id, prevSubMaterial.id)
+                );
             }
         }
     }

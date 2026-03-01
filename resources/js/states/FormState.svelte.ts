@@ -1,5 +1,5 @@
-import { router } from "@inertiajs/svelte";
-import { BaseState } from "./BaseState.svelte";
+import { router } from '@inertiajs/svelte';
+import { BaseState } from './BaseState.svelte';
 
 type FormSubmitOptions = {
     forceFormData?: boolean;
@@ -15,7 +15,9 @@ type FormSubmitOptions = {
  * No Svelte 4 store (useForm) — fully reactive via $state proxy.
  */
 export class FormState<TForm extends Record<string, any>> extends BaseState {
-    form = $state<TForm & { processing: boolean; errors: Record<string, string>; progress: number | null }>({} as any);
+    form = $state<
+        TForm & { processing: boolean; errors: Record<string, string>; progress: number | null }
+    >({} as any);
     isEdit = $state(false);
     private initialValues: TForm;
 
@@ -45,7 +47,11 @@ export class FormState<TForm extends Record<string, any>> extends BaseState {
      * Submit form via Inertia router. Uses $state.snapshot() to get a
      * plain serialisable copy before sending.
      */
-    protected submitForm(method: 'post' | 'put' | 'patch' | 'delete', url: string, options: FormSubmitOptions = {}) {
+    protected submitForm(
+        method: 'post' | 'put' | 'patch' | 'delete',
+        url: string,
+        options: FormSubmitOptions = {}
+    ) {
         this.form.processing = true;
         this.form.errors = {};
 

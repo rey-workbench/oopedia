@@ -1,26 +1,20 @@
 <script lang="ts">
-    import { Link, page, router } from "@inertiajs/svelte";
-    import {
-        Menu,
-        ChevronRight,
-        CircleHelp,
-        User,
-        LogOut,
-    } from "lucide-svelte";
-    import { ROUTES } from "@/utils/route";
-    import { sidebarOpen } from "@/stores/sidebar";
-    import { isAdmin } from "@/utils/roles";
+    import { Link, page, router } from '@inertiajs/svelte';
+    import { Menu, ChevronRight, CircleHelp, User, LogOut } from 'lucide-svelte';
+    import { ROUTES } from '@/utils/route';
+    import { sidebarOpen } from '@/stores/sidebar';
+    import { isAdmin } from '@/utils/roles';
 
-    let { titlePage = "" } = $props();
+    let { titlePage = '' } = $props();
 
-    const auth = $derived($page.props["auth"] ?? {});
+    const auth = $derived($page.props['auth'] ?? {});
     const user = $derived(auth.user ?? null);
     const isAuthenticated = $derived(!!user);
     const isAdminRole = $derived(isAuthenticated && isAdmin(user?.role_id));
-    const userName = $derived(user?.name ?? "Tamu");
+    const userName = $derived(user?.name ?? 'Tamu');
 
     function logout() {
-        router.post("/logout");
+        router.post('/logout');
     }
 
     function toggleSidebar() {
@@ -29,14 +23,14 @@
 </script>
 
 <nav
-    class="sticky top-0 z-40 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 sm:px-6 lg:px-8"
+    class="sticky top-0 z-40 w-full border-b border-gray-100 bg-white/80 px-4 backdrop-blur-md sm:px-6 lg:px-8"
 >
     <div class="flex h-16 items-center justify-between">
         <div class="flex items-center gap-4">
             <button
                 onclick={toggleSidebar}
                 aria-label="Toggle Sidebar"
-                class="lg:hidden p-2 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors"
+                class="rounded-xl p-2 text-slate-500 transition-colors hover:bg-slate-50 lg:hidden"
             >
                 <Menu size={20} strokeWidth={2.5} />
             </button>
@@ -49,19 +43,16 @@
                 <nav class="flex text-sm" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-3">
                         <li class="inline-flex items-center">
-                            <span class="text-slate-400 font-medium"
-                                >Halaman</span
-                            >
+                            <span class="font-medium text-slate-400">Halaman</span>
                         </li>
                         <li>
                             <div class="flex items-center">
                                 <ChevronRight
                                     size={10}
                                     strokeWidth={3}
-                                    class="text-slate-300 mx-2"
+                                    class="mx-2 text-slate-300"
                                 />
-                                <span
-                                    class="text-slate-900 font-bold tracking-widest uppercase"
+                                <span class="font-bold tracking-widest text-slate-900 uppercase"
                                     >{titlePage}</span
                                 >
                             </div>
@@ -73,20 +64,17 @@
 
         <div class="flex items-center gap-2 sm:gap-4">
             {#if isAuthenticated}
-                <div class="hidden md:flex flex-col items-end mr-2">
-                    <span class="text-sm font-bold text-slate-900 leading-none"
-                        >{userName}</span
-                    >
-                    <span
-                        class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"
-                        >{isAdminRole ? "Administrator" : "Mahasiswa"}</span
+                <div class="mr-2 hidden flex-col items-end md:flex">
+                    <span class="text-sm leading-none font-bold text-slate-900">{userName}</span>
+                    <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                        >{isAdminRole ? 'Administrator' : 'Mahasiswa'}</span
                     >
                 </div>
 
                 <button
                     id="start-page-tour"
                     aria-label="Start Page Tour"
-                    class="p-2 rounded-xl text-slate-500 hover:bg-accent-50 hover:text-accent-600 transition-all group relative"
+                    class="hover:bg-accent-50 hover:text-accent-600 group relative rounded-xl p-2 text-slate-500 transition-all"
                     title="Mulai Tutorial"
                     data-intro="Klik tombol ini kapan saja jika kamu butuh bantuan atau ingin mengulang tutorial di halaman ini."
                     data-step="4"
@@ -94,49 +82,48 @@
                     <CircleHelp size={20} strokeWidth={2.5} />
                     <span class="absolute -top-1 -right-1 flex h-3 w-3">
                         <span
-                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-400 opacity-75"
+                            class="bg-accent-400 absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
                         ></span>
-                        <span
-                            class="relative inline-flex rounded-full h-3 w-3 bg-accent-500"
+                        <span class="bg-accent-500 relative inline-flex h-3 w-3 rounded-full"
                         ></span>
                     </span>
                 </button>
 
                 <div
-                    class="relative group"
+                    class="group relative"
                     data-intro="Kelola profil kamu atau keluar dari akun melalui menu ini."
                     data-step="5"
                 >
                     <button
                         aria-label="Open project menu"
-                        class="flex items-center gap-2 p-1 rounded-2xl border-2 border-transparent hover:border-accent-100 transition-all duration-300 group"
+                        class="hover:border-accent-100 group flex items-center gap-2 rounded-2xl border-2 border-transparent p-1 transition-all duration-300"
                     >
                         <div
-                            class="w-10 h-10 rounded-xl overflow-hidden shadow-[inset_0_2px_4px_rgba(0,0,0,0.06)] ring-2 ring-white group-hover:ring-slate-100 bg-slate-100 border border-slate-200 transition-all flex items-center justify-center"
+                            class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-[inset_0_2px_4px_rgba(0,0,0,0.06)] ring-2 ring-white transition-all group-hover:ring-slate-100"
                         >
                             <img
                                 src="/images/profile.gif"
                                 alt="Profile"
-                                class="w-full h-full object-cover"
+                                class="h-full w-full object-cover"
                             />
                         </div>
                     </button>
 
                     <div
-                        class="absolute right-0 mt-2 w-56 origin-top-right rounded-2xl bg-white p-2 shadow-2xl ring-1 ring-black/5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 group-hover:scale-100"
+                        class="invisible absolute right-0 mt-2 w-56 origin-top-right scale-95 transform rounded-2xl bg-white p-2 opacity-0 shadow-2xl ring-1 ring-black/5 transition-all duration-300 group-hover:visible group-hover:scale-100 group-hover:opacity-100"
                     >
-                        <div class="px-4 py-3 border-b border-slate-50 mb-1">
+                        <div class="mb-1 border-b border-slate-50 px-4 py-3">
                             <p class="text-sm font-bold text-slate-900">
                                 {userName}
                             </p>
-                            <p class="text-[10px] text-slate-400 truncate">
+                            <p class="truncate text-[10px] text-slate-400">
                                 {user.email}
                             </p>
                         </div>
 
                         <Link
                             href={ROUTES.MAHASISWA.PROFILE}
-                            class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-slate-600 hover:text-accent-600 hover:bg-accent-50 rounded-xl transition-all"
+                            class="hover:text-accent-600 hover:bg-accent-50 flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-600 transition-all"
                         >
                             <User size={18} strokeWidth={2.5} class="w-5" />
                             Profil Saya
@@ -150,13 +137,9 @@
                         >
                             <button
                                 type="submit"
-                                class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
+                                class="flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-bold text-rose-600 transition-all hover:bg-rose-50"
                             >
-                                <LogOut
-                                    size={18}
-                                    strokeWidth={2.5}
-                                    class="w-5"
-                                />
+                                <LogOut size={18} strokeWidth={2.5} class="w-5" />
                                 Keluar
                             </button>
                         </form>
@@ -166,12 +149,12 @@
                 <div class="flex items-center gap-2">
                     <Link
                         href={ROUTES.AUTH.LOGIN}
-                        class="px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-slate-600 hover:text-accent-600 transition-all"
+                        class="hover:text-accent-600 px-6 py-2.5 text-sm font-bold tracking-widest text-slate-600 uppercase transition-all"
                         >Masuk</Link
                     >
                     <Link
                         href={ROUTES.AUTH.REGISTER}
-                        class="px-6 py-2.5 bg-slate-900 text-white text-sm font-bold uppercase tracking-widest rounded-xl hover:bg-accent-600 transition-all shadow-lg shadow-slate-200"
+                        class="hover:bg-accent-600 rounded-xl bg-slate-900 px-6 py-2.5 text-sm font-bold tracking-widest text-white uppercase shadow-lg shadow-slate-200 transition-all"
                         >Daftar</Link
                     >
                 </div>

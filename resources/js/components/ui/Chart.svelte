@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount, onDestroy } from "svelte";
+    import { onMount, onDestroy } from 'svelte';
 
     interface Props {
         type?: string;
@@ -8,19 +8,14 @@
         height?: number;
     }
 
-    let {
-        type = "line",
-        series = [],
-        options = {},
-        height = 350,
-    }: Props = $props();
+    let { type = 'line', series = [], options = {}, height = 350 }: Props = $props();
 
     let chart: any;
     let chartElement: HTMLElement;
 
     async function initChart() {
-        if (typeof window !== "undefined") {
-            const ApexCharts = (await import("apexcharts")).default;
+        if (typeof window !== 'undefined') {
+            const ApexCharts = (await import('apexcharts')).default;
 
             const config = {
                 series: series,

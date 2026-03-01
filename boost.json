@@ -1,10 +1,5 @@
 {
-    "agents": [
-        "kiro"
-    ],
-    "editors": [
-        "kiro",
-        "vscode"
-    ],
+    "agents": ["kiro"],
+    "editors": ["kiro", "vscode"],
     "guidelines": []
 }

@@ -1,15 +1,7 @@
 <script lang="ts">
-    import {
-        Trophy,
-        Check,
-        Target,
-        Star,
-        Flame,
-        BarChart3,
-        Home,
-    } from "lucide-svelte";
-    import Button from "@/components/ui/Button.svelte";
-    import { ROUTES } from "@/utils/route";
+    import { Trophy, Check, Target, Star, Flame, BarChart3, Home } from 'lucide-svelte';
+    import Button from '@/components/ui/Button.svelte';
+    import { ROUTES } from '@/utils/route';
 
     interface Props {
         state: any;
@@ -20,22 +12,20 @@
     let { state, material = {}, answeredCount = 0 }: Props = $props();
 </script>
 
-<div class="max-w-3xl mx-auto">
-    <div
-        class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100"
-    >
-        <div class="bg-emerald-600 p-12 text-center text-white relative">
+<div class="mx-auto max-w-3xl">
+    <div class="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-xl">
+        <div class="relative bg-emerald-600 p-12 text-center text-white">
             <div class="absolute top-0 right-0 p-8 opacity-10">
                 <Trophy size={96} class="text-white" />
             </div>
             <div class="relative z-10">
                 <div
-                    class="w-24 h-24 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl border-4 border-white/30"
+                    class="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full border-4 border-white/30 bg-white/20 shadow-xl backdrop-blur-md"
                 >
                     <Check size={48} class="text-white" />
                 </div>
-                <h2 class="text-4xl font-bold mb-3 tracking-widest">HEBAT!</h2>
-                <p class="text-emerald-50 text-xl font-medium">
+                <h2 class="mb-3 text-4xl font-bold tracking-widest">HEBAT!</h2>
+                <p class="text-xl font-medium text-emerald-50">
                     Kamu sudah menjawab semua soal di materi ini dengan baik.
                 </p>
             </div>
@@ -43,55 +33,49 @@
 
         {#if !state.isGuest}
             <div class="grid grid-cols-3 gap-0 border-b border-slate-100">
-                <div class="p-6 text-center border-r border-slate-100">
+                <div class="border-r border-slate-100 p-6 text-center">
                     <div
-                        class="w-10 h-10 bg-primary-50 rounded-xl flex items-center justify-center mx-auto mb-2"
+                        class="bg-primary-50 mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-xl"
                     >
                         <Target size={20} class="text-primary-600" />
                     </div>
                     <div class="text-2xl font-bold text-slate-800">
                         {answeredCount}
                     </div>
-                    <div
-                        class="text-[10px] font-bold text-slate-400 uppercase tracking-wider"
-                    >
+                    <div class="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
                         Soal Dijawab
                     </div>
                 </div>
-                <div class="p-6 text-center border-r border-slate-100">
+                <div class="border-r border-slate-100 p-6 text-center">
                     <div
-                        class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center mx-auto mb-2"
+                        class="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50"
                     >
                         <Star size={20} class="text-amber-500" />
                     </div>
                     <div class="text-2xl font-bold text-slate-800">
                         {state.xp}
                     </div>
-                    <div
-                        class="text-[10px] font-bold text-slate-400 uppercase tracking-wider"
-                    >
+                    <div class="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
                         Total XP
                     </div>
                 </div>
                 <div class="p-6 text-center">
                     <div
-                        class="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center mx-auto mb-2"
+                        class="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50"
                     >
                         <Flame size={20} class="text-orange-500" />
                     </div>
                     <div class="text-2xl font-bold text-slate-800">
                         {state.streak}
                     </div>
-                    <div
-                        class="text-[10px] font-bold text-slate-400 uppercase tracking-wider"
-                    >
+                    <div class="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
                         Streak
                     </div>
                 </div>
             </div>
         {/if}
 
-        <div class="p-10 bg-white text-center space-y-4">
+        <div class="space-y-4 bg-white p-10 text-center">
             <Button
                 href={ROUTES.MAHASISWA.MATERIALS.QUESTIONS.REVIEW(material.id)}
                 variant="secondary"

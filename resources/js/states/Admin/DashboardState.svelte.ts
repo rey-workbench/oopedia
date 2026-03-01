@@ -1,5 +1,11 @@
-import { BaseState } from "@/states/BaseState.svelte";
-import type { AdminDashboardProps, PopularMaterialItem, RecentProgressItem, StudentAnalytics, StudentProgressItem } from "@/types";
+import { BaseState } from '@/states/BaseState.svelte';
+import type {
+    AdminDashboardProps,
+    PopularMaterialItem,
+    RecentProgressItem,
+    StudentAnalytics,
+    StudentProgressItem,
+} from '@/types';
 
 export class AdminDashboardState extends BaseState {
     totalStudents = $state(0);

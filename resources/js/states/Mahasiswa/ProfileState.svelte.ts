@@ -1,5 +1,5 @@
-import { FormState } from "@/states/FormState.svelte";
-import type { StudentProfile } from "@/types";
+import { FormState } from '@/states/FormState.svelte';
+import type { StudentProfile } from '@/types';
 
 type ProfileForm = {
     name: string;
@@ -12,10 +12,10 @@ export class ProfileState extends FormState<ProfileForm> {
     personalization = $state<StudentProfile | null>(null);
 
     constructor(personalization: StudentProfile | null) {
-        super({ name: "", email: "", password: "", password_confirmation: "" });
+        super({ name: '', email: '', password: '', password_confirmation: '' });
         if (this.user) {
-            this.form.name = this.user.name ?? "";
-            this.form.email = this.user.email ?? "";
+            this.form.name = this.user.name ?? '';
+            this.form.email = this.user.email ?? '';
         }
         this.personalization = personalization;
     }
@@ -24,8 +24,8 @@ export class ProfileState extends FormState<ProfileForm> {
         this.submitForm('post', '/mahasiswa/profile', {
             _method: 'PUT',
             onSuccess: () => {
-                this.form.password = "";
-                this.form.password_confirmation = "";
+                this.form.password = '';
+                this.form.password_confirmation = '';
             },
         });
     }

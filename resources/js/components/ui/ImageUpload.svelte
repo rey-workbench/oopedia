@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { CloudUpload, Camera } from "lucide-svelte";
+    import { CloudUpload, Camera } from 'lucide-svelte';
 
     interface Props {
         preview?: string | null;
@@ -12,45 +12,40 @@
 
     let {
         preview = null,
-        label = "Visualisasi Sampul",
-        emptyIcon = "upload",
-        emptyText = "Unggah Sampul",
+        label = 'Visualisasi Sampul',
+        emptyIcon = 'upload',
+        emptyText = 'Unggah Sampul',
         error = undefined,
         onchange,
     }: Props = $props();
 </script>
 
-<div class="lg:col-span-1 space-y-4">
+<div class="space-y-4 lg:col-span-1">
     <label
         for="cover_image"
-        class="text-[10px] font-bold uppercase tracking-widest text-slate-400 block"
+        class="block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
     >
         {label}
     </label>
     <div
-        class="relative group aspect-video rounded-2xl bg-slate-50 border-2 {preview
-            ? 'border-solid border-primary-500/30'
-            : 'border-dashed border-slate-200'} flex flex-col items-center justify-center overflow-hidden transition-all hover:border-primary-500/50"
+        class="group relative aspect-video rounded-2xl border-2 bg-slate-50 {preview
+            ? 'border-primary-500/30 border-solid'
+            : 'border-dashed border-slate-200'} hover:border-primary-500/50 flex flex-col items-center justify-center overflow-hidden transition-all"
     >
         {#if preview}
             <img
                 src={preview}
                 alt="Preview Sampul"
-                class="absolute inset-0 w-full h-full object-cover"
+                class="absolute inset-0 h-full w-full object-cover"
             />
         {:else}
-            <div class="text-center group-hover:scale-110 transition-transform">
-                {#if emptyIcon === "camera"}
-                    <Camera size={24} class="text-slate-300 mb-2 mx-auto" />
+            <div class="text-center transition-transform group-hover:scale-110">
+                {#if emptyIcon === 'camera'}
+                    <Camera size={24} class="mx-auto mb-2 text-slate-300" />
                 {:else}
-                    <CloudUpload
-                        size={24}
-                        class="text-slate-300 mb-2 mx-auto"
-                    />
+                    <CloudUpload size={24} class="mx-auto mb-2 text-slate-300" />
                 {/if}
-                <p
-                    class="text-[9px] font-bold uppercase tracking-widest text-slate-400"
-                >
+                <p class="text-[9px] font-bold tracking-widest text-slate-400 uppercase">
                     {emptyText}
                 </p>
             </div>
@@ -59,11 +54,11 @@
             id="cover_image"
             type="file"
             accept="image/*"
-            class="absolute inset-0 opacity-0 cursor-pointer"
+            class="absolute inset-0 cursor-pointer opacity-0"
             {onchange}
         />
     </div>
     {#if error}
-        <p class="text-rose-500 text-xs mt-1">{error}</p>
+        <p class="mt-1 text-xs text-rose-500">{error}</p>
     {/if}
 </div>

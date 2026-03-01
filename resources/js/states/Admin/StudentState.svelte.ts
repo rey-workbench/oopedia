@@ -1,17 +1,27 @@
-import { router } from "@inertiajs/svelte";
-import { debounce } from "lodash";
-import { confirmDelete } from "@/utils/confirmDelete";
-import { BaseState } from "@/states/BaseState.svelte";
-import { FormState } from "@/states/FormState.svelte";
-import { ROUTES } from "@/utils/route";
-import type { User, Pagination, MaterialWithProgress, MissingQuestionsItem } from "@/types";
+import { router } from '@inertiajs/svelte';
+import { debounce } from 'lodash';
+import { confirmDelete } from '@/utils/confirmDelete';
+import { BaseState } from '@/states/BaseState.svelte';
+import { FormState } from '@/states/FormState.svelte';
+import { ROUTES } from '@/utils/route';
+import type { User, Pagination, MaterialWithProgress, MissingQuestionsItem } from '@/types';
 
 /**
  * Student List State
  */
 export class StudentListState extends BaseState {
-    students = $state<Pagination<User>>({ data: [], links: [], current_page: 1, from: null, last_page: 1, path: "", per_page: 10, to: null, total: 0 });
-    search = $state("");
+    students = $state<Pagination<User>>({
+        data: [],
+        links: [],
+        current_page: 1,
+        from: null,
+        last_page: 1,
+        path: '',
+        per_page: 10,
+        to: null,
+        total: 0,
+    });
+    search = $state('');
 
     constructor(students: Pagination<User>, search: string) {
         super();
@@ -28,10 +38,7 @@ export class StudentListState extends BaseState {
     }, 300);
 
     handleDelete(id: number) {
-        confirmDelete(
-            ROUTES.ADMIN.STUDENTS.DELETE(id),
-            "Hapus data mahasiswa ini?"
-        );
+        confirmDelete(ROUTES.ADMIN.STUDENTS.DELETE(id), 'Hapus data mahasiswa ini?');
     }
 }
 
@@ -46,28 +53,25 @@ export class StudentProgressState extends BaseState {
     avgProgress = $derived(
         this.materials.length > 0
             ? (
-                this.materials.reduce(
-                    (acc, m) => acc + (Number(m.progress) || 0),
-                    0
-                ) / this.materials.length
-            ).toFixed(1)
-            : "0.0"
+                  this.materials.reduce((acc, m) => acc + (Number(m.progress) || 0), 0) /
+                  this.materials.length
+              ).toFixed(1)
+            : '0.0'
     );
 
-    completedModules = $derived(
-        this.materials.filter((m) => Number(m.progress) === 100).length
-    );
+    completedModules = $derived(this.materials.filter((m) => Number(m.progress) === 100).length);
 
     totalModules = $derived(this.materials.length);
 
     missingQuestions = $derived(
-        this.missingQuestionsByMaterial.reduce(
-            (acc, item) => acc + item.missing_count,
-            0
-        )
+        this.missingQuestionsByMaterial.reduce((acc, item) => acc + item.missing_count, 0)
     );
 
-    constructor(student: User, materials: MaterialWithProgress[], missingQuestionsByMaterial: MissingQuestionsItem[]) {
+    constructor(
+        student: User,
+        materials: MaterialWithProgress[],
+        missingQuestionsByMaterial: MissingQuestionsItem[]
+    ) {
         super();
         this.student = student;
         this.materials = materials;
@@ -86,15 +90,15 @@ export class StudentRegisterState extends FormState<{
 }> {
     constructor() {
         super({
-            name: "",
-            email: "",
-            password: "",
-            password_confirmation: "",
+            name: '',
+            email: '',
+            password: '',
+            password_confirmation: '',
         });
     }
 
     async submit(onSuccess?: () => void) {
-        await this.submitForm("post", ROUTES.ADMIN.STUDENTS.INDEX, {
+        await this.submitForm('post', ROUTES.ADMIN.STUDENTS.INDEX, {
             onSuccess: () => {
                 this.resetForm();
                 if (onSuccess) onSuccess();
@@ -114,7 +118,7 @@ export class StudentImportState extends FormState<{ excel_file: File | null }> {
     }
 
     async submit() {
-        await this.submitForm("post", ROUTES.ADMIN.STUDENTS.IMPORT);
+        await this.submitForm('post', ROUTES.ADMIN.STUDENTS.IMPORT);
     }
 
     handleFileChange(e: Event) {

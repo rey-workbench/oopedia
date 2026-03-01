@@ -1,18 +1,18 @@
 <script lang="ts">
-    import { tick } from "svelte";
-    import { enhanceCodeBlocks } from "@/utils/codeBlockEnhancer";
-    import DOMPurify from "dompurify";
-    import "highlight.js/styles/atom-one-dark.css";
+    import { tick } from 'svelte';
+    import { enhanceCodeBlocks } from '@/utils/codeBlockEnhancer';
+    import DOMPurify from 'dompurify';
+    import 'highlight.js/styles/atom-one-dark.css';
 
     interface Props {
         content?: string;
     }
 
-    let { content = "" }: Props = $props();
+    let { content = '' }: Props = $props();
 
     let contentContainer: HTMLDivElement | undefined = $state();
 
-    const safeContent = $derived(content ? DOMPurify.sanitize(content) : "");
+    const safeContent = $derived(content ? DOMPurify.sanitize(content) : '');
 
     $effect(() => {
         if (safeContent && contentContainer) {
@@ -21,31 +21,18 @@
     });
 </script>
 
-<div
-    class="prose prose-slate max-w-none
-    prose-headings:font-display prose-headings:font-extrabold prose-headings:tracking-tight prose-headings:text-slate-900
-    prose-p:text-slate-600 prose-p:leading-relaxed prose-p:font-sans
-    prose-a:text-primary-600 prose-a:font-bold prose-a:no-underline hover:prose-a:underline
-    prose-strong:text-slate-900 prose-strong:font-bold
-    prose-ul:list-disc prose-ul:pl-5
-    "
-    bind:this={contentContainer}
->
-    {@html safeContent}
-</div>
-
 <style>
     /* Force fonts from global theme */
     :global(.prose) {
-        font-family: var(--font-sans, "Inter", sans-serif);
+        font-family: var(--font-sans, 'Inter', sans-serif);
     }
 
     :global(.prose h1, .prose h2, .prose h3, .prose h4) {
-        font-family: var(--font-display, "Poppins", sans-serif);
+        font-family: var(--font-display, 'Poppins', sans-serif);
     }
 
     :global(code) {
-        font-family: "JetBrains Mono", "Consolas", "Monaco", monospace !important;
+        font-family: 'JetBrains Mono', 'Consolas', 'Monaco', monospace !important;
     }
 
     /* Inline code style - matching theme */
@@ -69,7 +56,7 @@
         border-radius: 1rem !important;
         border: 1px solid rgba(0, 0, 0, 0.2) !important;
         border-left: 6px solid var(--color-primary-500, #0e8ad9) !important;
-        font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace !important;
+        font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !important;
         position: relative !important;
         margin-top: 2rem !important;
         margin-bottom: 2rem !important;
@@ -84,17 +71,14 @@
 
     /* Decorative dots (macOS style) */
     :global(.ql-code-block-container::before) {
-        content: "";
+        content: '';
         position: absolute;
         top: 0.85rem;
         left: 1.1rem;
         width: 3.2rem;
         height: 0.75rem;
-        background-image: radial-gradient(
-                circle,
-                #ff5f56 0.25rem,
-                transparent 0.25rem
-            ),
+        background-image:
+            radial-gradient(circle, #ff5f56 0.25rem, transparent 0.25rem),
             radial-gradient(circle, #ffbd2e 0.25rem, transparent 0.25rem),
             radial-gradient(circle, #27c93f 0.25rem, transparent 0.25rem);
         background-size: 1rem 1rem;
@@ -137,3 +121,16 @@
         margin-bottom: 0.5rem !important;
     }
 </style>
+
+<div
+    class="prose prose-slate prose-headings:font-display
+    prose-headings:font-extrabold prose-headings:tracking-tight prose-headings:text-slate-900 prose-p:text-slate-600
+    prose-p:leading-relaxed prose-p:font-sans prose-a:text-primary-600
+    prose-a:font-bold prose-a:no-underline hover:prose-a:underline prose-strong:text-slate-900
+    prose-strong:font-bold prose-ul:list-disc
+    prose-ul:pl-5 max-w-none
+    "
+    bind:this={contentContainer}
+>
+    {@html safeContent}
+</div>

@@ -1,6 +1,6 @@
-import { page } from "@inertiajs/svelte";
-import { get } from "svelte/store";
-import type { SharedProps } from "@/types/inertia";
+import { page } from '@inertiajs/svelte';
+import { get } from 'svelte/store';
+import type { SharedProps } from '@/types/inertia';
 
 /**
  * BaseState - Standardized base class for Svelte 5 states

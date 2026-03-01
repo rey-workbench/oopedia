@@ -1,10 +1,10 @@
 <script lang="ts">
-    import App from "@/layouts/App.svelte";
-    import Button from "@/components/ui/Button.svelte";
-    import Input from "@/components/ui/Input.svelte";
-    import { ArrowLeft, UserPlus, ChevronDown } from "lucide-svelte";
-    import { ROUTES } from "@/utils/route";
-    import { UserFormState } from "@/states/Admin/UserState.svelte";
+    import App from '@/layouts/App.svelte';
+    import Button from '@/components/ui/Button.svelte';
+    import Input from '@/components/ui/Input.svelte';
+    import { ArrowLeft, UserPlus, ChevronDown } from 'lucide-svelte';
+    import { ROUTES } from '@/utils/route';
+    import { UserFormState } from '@/states/Admin/UserState.svelte';
 
     let { roles = [] } = $props();
 
@@ -16,26 +16,22 @@
     <div class="space-y-12">
         <div class="mb-8">
             <h1
-                class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight font-display"
+                class="font-display text-3xl leading-tight font-extrabold tracking-tight text-slate-900 md:text-4xl"
             >
                 Pembuatan Administrator
             </h1>
-            <div class="flex items-center gap-2 mt-3" role="presentation">
-                <div class="h-1.5 w-12 bg-primary-600 rounded-full"></div>
-                <div class="h-1.5 w-4 bg-slate-200 rounded-full"></div>
-                <div class="h-1.5 w-2 bg-slate-100 rounded-full"></div>
+            <div class="mt-3 flex items-center gap-2" role="presentation">
+                <div class="bg-primary-600 h-1.5 w-12 rounded-full"></div>
+                <div class="h-1.5 w-4 rounded-full bg-slate-200"></div>
+                <div class="h-1.5 w-2 rounded-full bg-slate-100"></div>
             </div>
-            <p
-                class="mt-4 text-slate-500 font-medium leading-relaxed max-w-3xl"
-            >
+            <p class="mt-4 max-w-3xl leading-relaxed font-medium text-slate-500">
                 Otorisasi entitas baru ke dalam pusat kendali sistem.
             </p>
             <div class="mt-6 flex flex-wrap gap-4">
                 <div>
-                    <Button
-                        href={ROUTES.ADMIN.USERS.INDEX}
-                        variant="ghost"
-                        icon={ArrowLeft}>KEMBALI KE DAFTAR</Button
+                    <Button href={ROUTES.ADMIN.USERS.INDEX} variant="ghost" icon={ArrowLeft}
+                        >KEMBALI KE DAFTAR</Button
                     >
                 </div>
             </div>
@@ -49,7 +45,7 @@
             class="space-y-12"
         >
             <div
-                class="bg-white rounded-3xl p-6 shadow-2xl border border-slate-100 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300"
+                class="group relative overflow-hidden rounded-3xl border border-slate-100 bg-white p-6 shadow-2xl transition-transform duration-300 hover:-translate-y-1"
             >
                 <div class="mb-6">
                     <h3 class="text-lg font-bold text-slate-800">
@@ -58,19 +54,17 @@
                 </div>
 
                 <div class="space-y-10 p-6">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                    <div class="grid grid-cols-1 gap-10 lg:grid-cols-3">
                         <div class="lg:col-span-2">
                             <div class="space-y-8">
-                                <div
-                                    class="grid grid-cols-1 md:grid-cols-2 gap-6"
-                                >
+                                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     <Input
                                         id="name"
                                         label="Nama Lengkap"
                                         required
                                         bind:value={form.name}
                                         placeholder="John Doe"
-                                    error={form.errors['name']}
+                                        error={form.errors['name']}
                                     />
                                     <Input
                                         id="email"
@@ -83,9 +77,7 @@
                                     />
                                 </div>
 
-                                <div
-                                    class="grid grid-cols-1 md:grid-cols-2 gap-6"
-                                >
+                                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     <Input
                                         id="password"
                                         label="Password"
@@ -108,31 +100,28 @@
                                 <div class="space-y-2">
                                     <label
                                         for="role_id"
-                                        class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
+                                        class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
                                         >Peran Sistem</label
                                     >
                                     <div class="relative">
                                         <select
                                             id="role_id"
                                             bind:value={form.role_id}
-                                            class="w-full px-4 py-3 border-2 border-slate-100 rounded-2xl bg-white text-sm font-bold focus:ring-4 focus:ring-primary-50 focus:border-primary-500 outline-none transition-all appearance-none"
+                                            class="focus:ring-primary-50 focus:border-primary-500 w-full appearance-none rounded-2xl border-2 border-slate-100 bg-white px-4 py-3 text-sm font-bold transition-all outline-none focus:ring-4"
                                         >
-                                            <option value="">Pilih Peran</option
-                                            >
+                                            <option value="">Pilih Peran</option>
                                             {#each roles as role}
-                                                <option value={role.id}
-                                                    >{role.name}</option
-                                                >
+                                                <option value={role.id}>{role.name}</option>
                                             {/each}
                                         </select>
                                         <ChevronDown
                                             size={16}
-                                            class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                                            class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-slate-400"
                                         />
                                     </div>
                                     {#if form.errors['role_id']}
                                         <p
-                                            class="text-[10px] font-bold text-rose-500 uppercase tracking-widest"
+                                            class="text-[10px] font-bold tracking-widest text-rose-500 uppercase"
                                         >
                                             {form.errors['role_id']}
                                         </p>
@@ -142,17 +131,14 @@
                         </div>
 
                         <div
-                            class="pt-6 border-t border-slate-100 flex items-center justify-between gap-4"
+                            class="flex items-center justify-between gap-4 border-t border-slate-100 pt-6"
                         >
                             <div class="flex items-center gap-3"></div>
 
                             <div class="flex gap-4">
-                                <Button
-                                    href={ROUTES.ADMIN.USERS.INDEX}
-                                    variant="ghost"
-                                >
+                                <Button href={ROUTES.ADMIN.USERS.INDEX} variant="ghost">
                                     <span
-                                        class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
+                                        class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
                                         >BATAL</span
                                     >
                                 </Button>
@@ -160,7 +146,7 @@
                                     type="submit"
                                     variant="primary"
                                     size="lg"
-                                    class="shadow-xl shadow-primary-900/20"
+                                    class="shadow-primary-900/20 shadow-xl"
                                     icon={UserPlus}
                                     disabled={form.processing}
                                 >

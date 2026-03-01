@@ -1,11 +1,11 @@
 <script lang="ts">
-    import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/shared/PageHeader.svelte";
-    import Button from "@/components/ui/Button.svelte";
-    import QuillEditor from "@/components/ui/QuillEditor.svelte";
-    import { ArrowLeft, RefreshCw, Plus, X } from "lucide-svelte";
+    import App from '@/layouts/App.svelte';
+    import PageHeader from '@/components/shared/PageHeader.svelte';
+    import Button from '@/components/ui/Button.svelte';
+    import QuillEditor from '@/components/ui/QuillEditor.svelte';
+    import { ArrowLeft, RefreshCw, Plus, X } from 'lucide-svelte';
     import { untrack } from 'svelte';
-    import { QuestionEditState } from "@/states/Admin/QuestionState.svelte";
+    import { QuestionEditState } from '@/states/Admin/QuestionState.svelte';
 
     let { materials = [], material = null, subMaterials = [], question } = $props();
 
@@ -23,7 +23,7 @@
                 <Button
                     href={material
                         ? `/admin/materials/${material.id}/questions`
-                        : "/admin/questions"}
+                        : '/admin/questions'}
                     variant="ghost"
                     icon={ArrowLeft}>BATALKAN</Button
                 >
@@ -38,20 +38,18 @@
             class="space-y-12"
         >
             <div
-                class="bg-white rounded-3xl p-6 shadow-2xl border border-slate-100 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300"
+                class="group relative overflow-hidden rounded-3xl border border-slate-100 bg-white p-6 shadow-2xl transition-transform duration-300 hover:-translate-y-1"
             >
                 <div class="mb-6">
-                    <h3 class="text-lg font-bold text-slate-800">
-                        Update Konten & Logika
-                    </h3>
+                    <h3 class="text-lg font-bold text-slate-800">Update Konten & Logika</h3>
                 </div>
 
                 <div class="space-y-10 p-6">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                        <div class="lg:col-span-2 space-y-8">
+                    <div class="grid grid-cols-1 gap-10 lg:grid-cols-3">
+                        <div class="space-y-8 lg:col-span-2">
                             <div class="space-y-2">
                                 <span
-                                    class="text-[10px] font-bold uppercase text-slate-400 font-poppins"
+                                    class="font-poppins text-[10px] font-bold text-slate-400 uppercase"
                                     >Teks Pertanyaan (Rich Text)</span
                                 >
                                 <QuillEditor
@@ -60,7 +58,7 @@
                                 />
                                 {#if form.errors && form.errors['question_text']}
                                     <p
-                                        class="text-[10px] font-bold text-rose-500 uppercase tracking-widest"
+                                        class="text-[10px] font-bold tracking-widest text-rose-500 uppercase"
                                     >
                                         {form.errors['question_text']}
                                     </p>
@@ -70,7 +68,7 @@
                             <div class="space-y-6">
                                 <div class="flex items-center justify-between">
                                     <h3
-                                        class="text-sm font-bold text-slate-900 uppercase tracking-widest"
+                                        class="text-sm font-bold tracking-widest text-slate-900 uppercase"
                                     >
                                         Opsi Jawaban Terdaftar
                                     </h3>
@@ -87,29 +85,33 @@
 
                                 {#each form.answers || [] as answer, i}
                                     <div
-                                        class="flex items-start gap-4 p-4 bg-slate-50 rounded-2xl border-2 border-slate-100 group"
+                                        class="group flex items-start gap-4 rounded-2xl border-2 border-slate-100 bg-slate-50 p-4"
                                     >
                                         <div class="flex-1 space-y-3">
                                             <textarea
                                                 bind:value={answer.answer_text}
                                                 placeholder="Teks jawaban..."
-                                                class="w-full px-4 py-3 border-2 border-slate-100 rounded-xl bg-white text-sm font-bold focus:ring-4 focus:ring-primary-50 focus:border-primary-500 outline-none transition-all resize-none"
+                                                class="focus:ring-primary-50 focus:border-primary-500 w-full resize-none rounded-xl border-2 border-slate-100 bg-white px-4 py-3 text-sm font-bold transition-all outline-none focus:ring-4"
                                                 rows="2"
                                             ></textarea>
-                                            <div
-                                                class="flex items-center gap-3"
-                                            >
+                                            <div class="flex items-center gap-3">
                                                 <label
-                                                    class="flex items-center gap-2 cursor-pointer"
+                                                    class="flex cursor-pointer items-center gap-2"
                                                 >
                                                     <input
                                                         type="checkbox"
                                                         checked={answer.is_correct === 1}
-                                                        onchange={(e) => { answer.is_correct = (e.target as HTMLInputElement).checked ? 1 : 0; }}
-                                                        class="w-4 h-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500 transition-colors"
+                                                        onchange={(e) => {
+                                                            answer.is_correct = (
+                                                                e.target as HTMLInputElement
+                                                            ).checked
+                                                                ? 1
+                                                                : 0;
+                                                        }}
+                                                        class="text-primary-600 focus:ring-primary-500 h-4 w-4 rounded border-slate-300 transition-colors"
                                                     />
                                                     <span
-                                                        class="text-[10px] font-bold uppercase tracking-widest text-slate-500"
+                                                        class="text-[10px] font-bold tracking-widest text-slate-500 uppercase"
                                                         >Jawaban Benar</span
                                                     >
                                                 </label>
@@ -117,18 +119,17 @@
                                             <textarea
                                                 bind:value={answer.explanation}
                                                 placeholder="Penjelasan jawaban (opsional)..."
-                                                class="w-full px-4 py-3 border-2 border-slate-100 rounded-xl bg-white text-sm focus:ring-4 focus:ring-primary-50 focus:border-primary-500 outline-none transition-all resize-none"
+                                                class="focus:ring-primary-50 focus:border-primary-500 w-full resize-none rounded-xl border-2 border-slate-100 bg-white px-4 py-3 text-sm transition-all outline-none focus:ring-4"
                                                 rows="2"
                                             ></textarea>
                                         </div>
                                         <Button
                                             type="button"
-                                            onclick={() =>
-                                                state.removeAnswer(i)}
+                                            onclick={() => state.removeAnswer(i)}
                                             variant="ghost"
                                             size="sm"
                                             icon={X}
-                                            class="text-slate-300 hover:text-rose-500 hover:bg-rose-50 p-2"
+                                            class="p-2 text-slate-300 hover:bg-rose-50 hover:text-rose-500"
                                         />
                                     </div>
                                 {/each}
@@ -138,7 +139,7 @@
                         <div class="lg:col-span-1">
                             <div class="space-y-8">
                                 <h3
-                                    class="text-sm font-bold text-slate-900 uppercase tracking-widest"
+                                    class="text-sm font-bold tracking-widest text-slate-900 uppercase"
                                 >
                                     Parametrik
                                 </h3>
@@ -146,21 +147,18 @@
                                 <div class="space-y-2">
                                     <label
                                         for="material_id"
-                                        class="text-[10px] font-bold uppercase text-slate-400"
+                                        class="text-[10px] font-bold text-slate-400 uppercase"
                                         >Modul Materi</label
                                     >
                                     <select
                                         id="material_id"
                                         bind:value={form.material_id}
-                                        onchange={() =>
-                                            state.handleMaterialChange()}
-                                        class="w-full px-4 py-3 border-2 border-slate-100 rounded-2xl bg-white text-sm font-bold focus:ring-4 focus:ring-primary-50 focus:border-primary-500 outline-none transition-all appearance-none"
+                                        onchange={() => state.handleMaterialChange()}
+                                        class="focus:ring-primary-50 focus:border-primary-500 w-full appearance-none rounded-2xl border-2 border-slate-100 bg-white px-4 py-3 text-sm font-bold transition-all outline-none focus:ring-4"
                                     >
                                         <option value="">Pilih Materi</option>
                                         {#each materials as mat}
-                                            <option value={mat.id}
-                                                >{mat.title}</option
-                                            >
+                                            <option value={mat.id}>{mat.title}</option>
                                         {/each}
                                     </select>
                                 </div>
@@ -169,21 +167,17 @@
                                     <div class="space-y-2">
                                         <label
                                             for="sub_material_id"
-                                            class="text-[10px] font-bold uppercase text-slate-400"
+                                            class="text-[10px] font-bold text-slate-400 uppercase"
                                             >Sub-Materi</label
                                         >
                                         <select
                                             id="sub_material_id"
                                             bind:value={form.sub_material_id}
-                                            class="w-full px-4 py-3 border-2 border-slate-100 rounded-2xl bg-white text-sm font-bold focus:ring-4 focus:ring-primary-50 focus:border-primary-500 outline-none transition-all appearance-none"
+                                            class="focus:ring-primary-50 focus:border-primary-500 w-full appearance-none rounded-2xl border-2 border-slate-100 bg-white px-4 py-3 text-sm font-bold transition-all outline-none focus:ring-4"
                                         >
-                                            <option value=""
-                                                >Pilih Sub-Materi</option
-                                            >
+                                            <option value="">Pilih Sub-Materi</option>
                                             {#each state.availableSubMaterials as sub}
-                                                <option value={sub.id}
-                                                    >{sub.title}</option
-                                                >
+                                                <option value={sub.id}>{sub.title}</option>
                                             {/each}
                                         </select>
                                     </div>
@@ -191,19 +185,18 @@
 
                                 <div class="space-y-2">
                                     <span
-                                        class="text-[10px] font-bold uppercase text-slate-400 block"
+                                        class="block text-[10px] font-bold text-slate-400 uppercase"
                                         >Algoritma Tipe</span
                                     >
                                     <div class="grid grid-cols-1 gap-3">
-                                        {#each ["radio_button", "fill_in_the_blank", "drag_and_drop"] as type}
+                                        {#each ['radio_button', 'fill_in_the_blank', 'drag_and_drop'] as type}
                                             <button
                                                 type="button"
-                                                onclick={() =>
-                                                    state.setType(type)}
-                                                class={`py-3 px-4 rounded-2xl border-2 font-bold uppercase tracking-widest text-[10px] transition-all text-left flex items-center justify-between
-                                        ${form.question_type === type ? "border-primary-600 bg-primary-50 text-primary-600" : "border-slate-100 bg-slate-50 text-slate-400"}`}
+                                                onclick={() => state.setType(type)}
+                                                class={`flex items-center justify-between rounded-2xl border-2 px-4 py-3 text-left text-[10px] font-bold tracking-widest uppercase transition-all
+                                        ${form.question_type === type ? 'border-primary-600 bg-primary-50 text-primary-600' : 'border-slate-100 bg-slate-50 text-slate-400'}`}
                                             >
-                                                {type.replace(/_/g, " ")}
+                                                {type.replace(/_/g, ' ')}
                                             </button>
                                         {/each}
                                     </div>
@@ -211,19 +204,16 @@
 
                                 <div class="space-y-2">
                                     <span
-                                        class="text-[10px] font-bold uppercase text-slate-400 block"
+                                        class="block text-[10px] font-bold text-slate-400 uppercase"
                                         >Tingkat Kesulitan</span
                                     >
                                     <div class="space-y-2">
-                                        {#each [{ value: "beginner", label: "Mudah", color: "emerald" }, { value: "medium", label: "Sedang", color: "amber" }, { value: "hard", label: "Sulit", color: "rose" }] as diff}
+                                        {#each [{ value: 'beginner', label: 'Mudah', color: 'emerald' }, { value: 'medium', label: 'Sedang', color: 'amber' }, { value: 'hard', label: 'Sulit', color: 'rose' }] as diff}
                                             <button
                                                 type="button"
-                                                onclick={() =>
-                                                    state.setDifficulty(
-                                                        diff.value,
-                                                    )}
-                                                class={`w-full py-3 px-4 rounded-2xl border-2 font-bold uppercase tracking-widest text-[10px] transition-all text-left
-                                        ${form.difficulty === diff.value ? `border-${diff.color}-600 bg-${diff.color}-50 text-${diff.color}-600` : "border-slate-100 bg-slate-50 text-slate-400"}`}
+                                                onclick={() => state.setDifficulty(diff.value)}
+                                                class={`w-full rounded-2xl border-2 px-4 py-3 text-left text-[10px] font-bold tracking-widest uppercase transition-all
+                                        ${form.difficulty === diff.value ? `border-${diff.color}-600 bg-${diff.color}-50 text-${diff.color}-600` : 'border-slate-100 bg-slate-50 text-slate-400'}`}
                                             >
                                                 {diff.label}
                                             </button>
@@ -231,7 +221,7 @@
                                     </div>
                                     {#if form.errors && form.errors['difficulty']}
                                         <p
-                                            class="text-[10px] font-bold text-rose-500 uppercase tracking-widest"
+                                            class="text-[10px] font-bold tracking-widest text-rose-500 uppercase"
                                         >
                                             {form.errors['difficulty']}
                                         </p>
@@ -242,7 +232,7 @@
                     </div>
 
                     <div
-                        class="pt-6 border-t border-slate-100 flex items-center justify-between gap-4"
+                        class="flex items-center justify-between gap-4 border-t border-slate-100 pt-6"
                     >
                         <div class="flex items-center gap-3"></div>
 
@@ -251,7 +241,7 @@
                                 type="submit"
                                 variant="primary"
                                 size="lg"
-                                class="shadow-xl shadow-primary-900/20"
+                                class="shadow-primary-900/20 shadow-xl"
                                 icon={RefreshCw}
                                 disabled={form.processing}
                             >

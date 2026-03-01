@@ -46,10 +46,21 @@ export default {
                 },
             },
             backgroundImage: {
-                'none': 'none',
+                none: 'none',
             },
             fontFamily: {
-                sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                sans: [
+                    'Inter',
+                    'ui-sans-serif',
+                    'system-ui',
+                    '-apple-system',
+                    'BlinkMacSystemFont',
+                    'Segoe UI',
+                    'Roboto',
+                    'Helvetica Neue',
+                    'Arial',
+                    'sans-serif',
+                ],
                 display: ['Poppins', 'Inter', 'sans-serif'],
             },
             typography: {
@@ -85,7 +96,8 @@ export default {
                             fontSize: '15px',
                             lineHeight: '1.6',
                             position: 'relative',
-                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)', // Shadow-md
+                            boxShadow:
+                                '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)', // Shadow-md
                         },
                         code: {
                             color: '#d63384',

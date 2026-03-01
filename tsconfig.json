@@ -9,16 +9,9 @@
         "module": "esnext",
         "moduleResolution": "bundler",
         "target": "esnext",
-        "types": [
-            "vite/client",
-            "svelte"
-        ],
+        "types": ["vite/client", "svelte"],
         // For nodejs:
-        "lib": [
-            "esnext",
-            "dom",
-            "dom.iterable"
-        ],
+        "lib": ["esnext", "dom", "dom.iterable"],
         // "types": ["node"],
         // and npm install -D @types/node
         // Other Outputs
@@ -60,18 +53,9 @@
         "resolveJsonModule": true,
         "baseUrl": ".",
         "paths": {
-            "@/*": [
-                "resources/js/*"
-            ]
+            "@/*": ["resources/js/*"]
         }
     },
-    "include": [
-        "resources/js/**/*",
-        "resources/js/**/*.svelte"
-    ],
-    "exclude": [
-        "node_modules",
-        "public",
-        "vendor"
-    ]
+    "include": ["resources/js/**/*", "resources/js/**/*.svelte"],
+    "exclude": ["node_modules", "public", "vendor"]
 }

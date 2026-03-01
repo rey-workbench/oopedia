@@ -1,12 +1,12 @@
 <script lang="ts">
-    import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/shared/PageHeader.svelte";
-        import StatsGrid from "@/components/shared/StatsGrid.svelte";
-    import Card from "@/components/ui/Card.svelte";
-    import ProgressBar from "@/components/ui/ProgressBar.svelte";
-    import UserAvatar from "@/components/ui/UserAvatar.svelte";
+    import App from '@/layouts/App.svelte';
+    import PageHeader from '@/components/shared/PageHeader.svelte';
+    import StatsGrid from '@/components/shared/StatsGrid.svelte';
+    import Card from '@/components/ui/Card.svelte';
+    import ProgressBar from '@/components/ui/ProgressBar.svelte';
+    import UserAvatar from '@/components/ui/UserAvatar.svelte';
     import { untrack } from 'svelte';
-    import { AdminDashboardState } from "@/states/Admin/DashboardState.svelte";
+    import { AdminDashboardState } from '@/states/Admin/DashboardState.svelte';
     import {
         Users,
         Signal,
@@ -16,12 +16,10 @@
         Radar,
         Trophy,
         Activity,
-    } from "lucide-svelte";
-    import { formatDate } from "@/utils/formatters";
+    } from 'lucide-svelte';
+    import { formatDate } from '@/utils/formatters';
 
-    let { totalStudents, totalMaterials, totalQuestions, activeStudents, recentProgress, studentProgress, popularMaterials, studentAnalytics }: { totalStudents: any; totalMaterials: any; totalQuestions: any; activeStudents: any; recentProgress: any; studentProgress: any; popularMaterials: any; studentAnalytics: any } = $props();
-
-    const state = untrack(() => new AdminDashboardState({
+    let {
         totalStudents,
         totalMaterials,
         totalQuestions,
@@ -30,80 +28,95 @@
         studentProgress,
         popularMaterials,
         studentAnalytics,
-    } as any));
+    }: {
+        totalStudents: any;
+        totalMaterials: any;
+        totalQuestions: any;
+        activeStudents: any;
+        recentProgress: any;
+        studentProgress: any;
+        popularMaterials: any;
+        studentAnalytics: any;
+    } = $props();
+
+    const state = untrack(
+        () =>
+            new AdminDashboardState({
+                totalStudents,
+                totalMaterials,
+                totalQuestions,
+                activeStudents,
+                recentProgress,
+                studentProgress,
+                popularMaterials,
+                studentAnalytics,
+            } as any)
+    );
 
     const distribution = $derived(state.studentAnalytics?.distribution ?? {});
     const radar = $derived(state.studentAnalytics?.radar ?? {});
-    const distributionMax = $derived(
-        Math.max(
-            1,
-            ...Object.values(distribution).map(Number),
-        )
-    );
+    const distributionMax = $derived(Math.max(1, ...Object.values(distribution).map(Number)));
     const radarMax = $derived(Math.max(1, ...Object.values(radar).map(Number)));
-    const radarColors = ["blue", "emerald", "amber", "rose", "gray"];
+    const radarColors = ['blue', 'emerald', 'amber', 'rose', 'gray'];
 
     const maxAttempts = $derived(
-        Math.max(
-            1,
-            ...(state.popularMaterials || []).map((m: any) => m.total_attempts ?? 0),
-        )
+        Math.max(1, ...(state.popularMaterials || []).map((m: any) => m.total_attempts ?? 0))
     );
 
     const dashboardStats = $derived([
         {
-            title: "Total Mahasiswa",
+            title: 'Total Mahasiswa',
             value: state.totalStudents,
             icon: Users,
-            variant: "primary",
-            footer: "Entitas terdaftar",
+            variant: 'primary',
+            footer: 'Entitas terdaftar',
         },
         {
-            title: "Node Aktif",
+            title: 'Node Aktif',
             value: state.activeStudents,
             icon: Signal,
-            variant: "success",
-            footer: "Sesi aktif hari ini",
+            variant: 'success',
+            footer: 'Sesi aktif hari ini',
         },
         {
-            title: "Modul Instruksional",
+            title: 'Modul Instruksional',
             value: state.totalMaterials,
             icon: FolderTree,
-            variant: "primary",
-            footer: "Konten aktif",
+            variant: 'primary',
+            footer: 'Konten aktif',
         },
         {
-            title: "Korpus Evaluasi",
+            title: 'Korpus Evaluasi',
             value: state.totalQuestions,
             icon: Cpu,
-            variant: "success",
-            footer: "Total butir evaluasi",
+            variant: 'success',
+            footer: 'Total butir evaluasi',
         },
     ]);
 </script>
 
 <App title="Admin Dashboard">
     <div class="space-y-12">
-        
-<PageHeader title="Dashboard" subtitle="Pusat kendali operasional dan visualisasi data sistem OOPedia." />
+        <PageHeader
+            title="Dashboard"
+            subtitle="Pusat kendali operasional dan visualisasi data sistem OOPedia."
+        />
 
         <!-- Main Stats -->
         <StatsGrid stats={dashboardStats} />
 
         <!-- Analytics Section -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <!-- Distribution -->
             <Card hover={false}>
                 <div class="space-y-4">
-                    <div class="flex items-center gap-3 mb-2">
+                    <div class="mb-2 flex items-center gap-3">
                         <div
-                            class="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center"
+                            class="bg-primary-50 text-primary-600 flex h-9 w-9 items-center justify-center rounded-xl"
                         >
                             <BarChart3 size={18} />
                         </div>
-                        <h3
-                            class="text-sm font-bold uppercase tracking-widest text-slate-900"
-                        >
+                        <h3 class="text-sm font-bold tracking-widest text-slate-900 uppercase">
                             Distribusi Level
                         </h3>
                     </div>
@@ -111,15 +124,12 @@
                         <div class="space-y-3">
                             {#each Object.entries(distribution) as [label, value]}
                                 <div class="space-y-1">
-                                    <div
-                                        class="flex justify-between items-center px-0.5"
-                                    >
+                                    <div class="flex items-center justify-between px-0.5">
                                         <span
-                                            class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"
+                                            class="text-[10px] font-bold tracking-widest text-slate-500 uppercase"
                                             >{label}</span
                                         >
-                                        <span
-                                            class="text-[10px] font-bold text-slate-700"
+                                        <span class="text-[10px] font-bold text-slate-700"
                                             >{value}</span
                                         >
                                     </div>
@@ -133,7 +143,7 @@
                             {/each}
                         </div>
                     {:else}
-                        <p class="text-xs text-slate-400 font-medium">
+                        <p class="text-xs font-medium text-slate-400">
                             Data distribusi tidak tersedia.
                         </p>
                     {/if}
@@ -143,15 +153,13 @@
             <!-- Radar / Kompetensi -->
             <Card hover={false}>
                 <div class="space-y-4">
-                    <div class="flex items-center gap-3 mb-2">
+                    <div class="mb-2 flex items-center gap-3">
                         <div
-                            class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center"
+                            class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600"
                         >
                             <Radar size={18} />
                         </div>
-                        <h3
-                            class="text-sm font-bold uppercase tracking-widest text-slate-900"
-                        >
+                        <h3 class="text-sm font-bold tracking-widest text-slate-900 uppercase">
                             Kompetensi Materi
                         </h3>
                     </div>
@@ -159,31 +167,31 @@
                         <div class="space-y-3">
                             {#each Object.entries(radar) as [label, value], i}
                                 <div class="space-y-1">
-                                    <div
-                                        class="flex justify-between items-center px-0.5"
-                                    >
+                                    <div class="flex items-center justify-between px-0.5">
                                         <span
-                                            class="text-[10px] font-bold text-slate-500 uppercase tracking-widest line-clamp-1 max-w-[70%]"
+                                            class="line-clamp-1 max-w-[70%] text-[10px] font-bold tracking-widest text-slate-500 uppercase"
                                             >{label}</span
                                         >
-                                        <span
-                                            class="text-[10px] font-bold text-slate-700"
+                                        <span class="text-[10px] font-bold text-slate-700"
                                             >{Number(value).toFixed(1)}%</span
                                         >
                                     </div>
                                     <ProgressBar
                                         value={Number(value)}
                                         max={radarMax}
-                                        color={(radarColors[
-                                            i % radarColors.length
-                                        ] ?? "blue") as "emerald" | "amber" | "rose" | "blue" | "gray"}
+                                        color={(radarColors[i % radarColors.length] ?? 'blue') as
+                                            | 'emerald'
+                                            | 'amber'
+                                            | 'rose'
+                                            | 'blue'
+                                            | 'gray'}
                                         height="h-2"
                                     />
                                 </div>
                             {/each}
                         </div>
                     {:else}
-                        <p class="text-xs text-slate-400 font-medium">
+                        <p class="text-xs font-medium text-slate-400">
                             Data kompetensi tidak tersedia.
                         </p>
                     {/if}
@@ -191,19 +199,17 @@
             </Card>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <!-- Top Students -->
             <Card hover={false} class="lg:col-span-2">
                 <div class="space-y-4">
-                    <div class="flex items-center gap-3 mb-2">
+                    <div class="mb-2 flex items-center gap-3">
                         <div
-                            class="w-9 h-9 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center"
+                            class="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-500"
                         >
                             <Trophy size={18} />
                         </div>
-                        <h3
-                            class="text-sm font-bold uppercase tracking-widest text-slate-900"
-                        >
+                        <h3 class="text-sm font-bold tracking-widest text-slate-900 uppercase">
                             Top Mahasiswa
                         </h3>
                     </div>
@@ -213,23 +219,18 @@
                             {#each state.studentProgress as s, i}
                                 <div class="flex items-center gap-4">
                                     <span
-                                        class="text-[10px] font-bold text-slate-400 w-5 text-center"
+                                        class="w-5 text-center text-[10px] font-bold text-slate-400"
                                         >{i + 1}</span
                                     >
-                                    <UserAvatar
-                                        name={s.user?.name ?? "?"}
-                                        size="sm"
-                                    />
-                                    <div class="flex-1 min-w-0">
-                                        <div
-                                            class="flex justify-between items-center mb-1"
-                                        >
+                                    <UserAvatar name={s.user?.name ?? '?'} size="sm" />
+                                    <div class="min-w-0 flex-1">
+                                        <div class="mb-1 flex items-center justify-between">
                                             <span
-                                                class="text-xs font-bold text-slate-900 uppercase tracking-widest truncate"
-                                                >{s.user?.name ?? "-"}</span
+                                                class="truncate text-xs font-bold tracking-widest text-slate-900 uppercase"
+                                                >{s.user?.name ?? '-'}</span
                                             >
                                             <span
-                                                class="text-[10px] font-bold text-slate-400 ml-2 shrink-0"
+                                                class="ml-2 shrink-0 text-[10px] font-bold text-slate-400"
                                                 >{s.accuracy ?? 0}%</span
                                             >
                                         </div>
@@ -239,14 +240,12 @@
                                             height="h-1.5"
                                         />
                                     </div>
-                                    <div class="text-right shrink-0">
-                                        <div
-                                            class="text-xs font-bold text-slate-700"
-                                        >
+                                    <div class="shrink-0 text-right">
+                                        <div class="text-xs font-bold text-slate-700">
                                             {s.correct_count ?? 0}
                                         </div>
                                         <div
-                                            class="text-[9px] font-bold text-slate-400 uppercase tracking-widest"
+                                            class="text-[9px] font-bold tracking-widest text-slate-400 uppercase"
                                         >
                                             Benar
                                         </div>
@@ -255,9 +254,7 @@
                             {/each}
                         </div>
                     {:else}
-                        <p class="text-xs text-slate-400 font-medium">
-                            Tidak ada data mahasiswa.
-                        </p>
+                        <p class="text-xs font-medium text-slate-400">Tidak ada data mahasiswa.</p>
                     {/if}
                 </div>
             </Card>
@@ -265,15 +262,13 @@
             <!-- Popular Materials -->
             <Card hover={false}>
                 <div class="space-y-4">
-                    <div class="flex items-center gap-3 mb-2">
+                    <div class="mb-2 flex items-center gap-3">
                         <div
-                            class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center"
+                            class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600"
                         >
                             <FolderTree size={18} />
                         </div>
-                        <h3
-                            class="text-sm font-bold uppercase tracking-widest text-slate-900"
-                        >
+                        <h3 class="text-sm font-bold tracking-widest text-slate-900 uppercase">
                             Materi Populer
                         </h3>
                     </div>
@@ -282,15 +277,13 @@
                         <div class="space-y-4">
                             {#each state.popularMaterials as m}
                                 <div class="space-y-1.5">
-                                    <div
-                                        class="flex justify-between items-start"
-                                    >
+                                    <div class="flex items-start justify-between">
                                         <span
-                                            class="text-xs font-bold text-slate-900 uppercase tracking-widest line-clamp-1 max-w-[70%]"
+                                            class="line-clamp-1 max-w-[70%] text-xs font-bold tracking-widest text-slate-900 uppercase"
                                             >{m.title}</span
                                         >
                                         <span
-                                            class="text-[10px] font-bold text-emerald-600 ml-2 shrink-0"
+                                            class="ml-2 shrink-0 text-[10px] font-bold text-emerald-600"
                                             >{m.total_attempts ?? 0} percobaan</span
                                         >
                                     </div>
@@ -301,7 +294,7 @@
                                         height="h-1.5"
                                     />
                                     <div
-                                        class="text-[9px] font-bold text-slate-400 uppercase tracking-widest"
+                                        class="text-[9px] font-bold tracking-widest text-slate-400 uppercase"
                                     >
                                         {m.unique_students ?? 0} mahasiswa unik
                                     </div>
@@ -309,9 +302,7 @@
                             {/each}
                         </div>
                     {:else}
-                        <p class="text-xs text-slate-400 font-medium">
-                            Belum ada data materi.
-                        </p>
+                        <p class="text-xs font-medium text-slate-400">Belum ada data materi.</p>
                     {/if}
                 </div>
             </Card>
@@ -320,15 +311,13 @@
         <!-- Recent Activity Timeline -->
         <Card hover={false}>
             <div class="space-y-4">
-                <div class="flex items-center gap-3 mb-2">
+                <div class="mb-2 flex items-center gap-3">
                     <div
-                        class="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center"
+                        class="bg-primary-50 text-primary-600 flex h-9 w-9 items-center justify-center rounded-xl"
                     >
                         <Activity size={18} />
                     </div>
-                    <h3
-                        class="text-sm font-bold uppercase tracking-widest text-slate-900"
-                    >
+                    <h3 class="text-sm font-bold tracking-widest text-slate-900 uppercase">
                         Aktivitas Terbaru
                     </h3>
                 </div>
@@ -337,31 +326,23 @@
                     <div class="space-y-4">
                         {#each state.recentProgress as item}
                             <div class="flex items-start gap-3">
-                                <UserAvatar
-                                    name={item.user?.name ?? "?"}
-                                    size="sm"
-                                />
-                                <div class="flex-1 min-w-0 space-y-1.5">
-                                    <div
-                                        class="flex justify-between items-start"
-                                    >
+                                <UserAvatar name={item.user?.name ?? '?'} size="sm" />
+                                <div class="min-w-0 flex-1 space-y-1.5">
+                                    <div class="flex items-start justify-between">
                                         <div>
                                             <span
-                                                class="text-xs font-bold text-slate-900 uppercase tracking-widest"
-                                                >{item.user?.name ?? "-"}</span
+                                                class="text-xs font-bold tracking-widest text-slate-900 uppercase"
+                                                >{item.user?.name ?? '-'}</span
                                             >
                                             <span
-                                                class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block"
-                                                >{item.material?.title ??
-                                                    "-"}</span
+                                                class="block text-[9px] font-bold tracking-widest text-slate-400 uppercase"
+                                                >{item.material?.title ?? '-'}</span
                                             >
                                         </div>
                                         <span
-                                            class="text-[10px] font-bold text-slate-400 ml-2 shrink-0"
+                                            class="ml-2 shrink-0 text-[10px] font-bold text-slate-400"
                                         >
-                                            {item.updated_at
-                                                ? formatDate(item.updated_at)
-                                                : "-"}
+                                            {item.updated_at ? formatDate(item.updated_at) : '-'}
                                         </span>
                                     </div>
                                     <div class="flex items-center gap-2">
@@ -370,8 +351,7 @@
                                             color="blue"
                                             height="h-1.5"
                                         />
-                                        <span
-                                            class="text-[10px] font-bold text-slate-500 shrink-0"
+                                        <span class="shrink-0 text-[10px] font-bold text-slate-500"
                                             >{item.progress ?? 0}%</span
                                         >
                                     </div>
@@ -380,9 +360,7 @@
                         {/each}
                     </div>
                 {:else}
-                    <p class="text-xs text-slate-400 font-medium">
-                        Belum ada aktivitas terbaru.
-                    </p>
+                    <p class="text-xs font-medium text-slate-400">Belum ada aktivitas terbaru.</p>
                 {/if}
             </div>
         </Card>

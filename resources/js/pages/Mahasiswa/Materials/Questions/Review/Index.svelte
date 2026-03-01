@@ -1,29 +1,26 @@
 <script lang="ts">
-    import App from "@/layouts/App.svelte";
-    import DifficultyFilterBar from "@/components/shared/DifficultyFilterBar.svelte";
-    import Card from "@/components/ui/Card.svelte";
-    import Badge from "@/components/ui/Badge.svelte";
-    import { Link } from "@inertiajs/svelte";
-    import { ROUTES } from "@/utils/route";
-    import {
-        HelpCircle,
-        List,
-        Check,
-        X,
-        Lightbulb,
-        Book,
-        FileText,
-    } from "lucide-svelte";
+    import App from '@/layouts/App.svelte';
+    import DifficultyFilterBar from '@/components/shared/DifficultyFilterBar.svelte';
+    import Card from '@/components/ui/Card.svelte';
+    import Badge from '@/components/ui/Badge.svelte';
+    import { Link } from '@inertiajs/svelte';
+    import { ROUTES } from '@/utils/route';
+    import { HelpCircle, List, Check, X, Lightbulb, Book, FileText } from 'lucide-svelte';
     import { untrack } from 'svelte';
-    import { ReviewState } from "@/states/Mahasiswa/QuizState.svelte";
-    import type { Material, QuestionWithAttempt, DifficultyLevel } from "@/types";
+    import { ReviewState } from '@/states/Mahasiswa/QuizState.svelte';
+    import type { Material, QuestionWithAttempt, DifficultyLevel } from '@/types';
 
     const {
         material,
         materials = [],
         questions = [],
-        difficulty = "all",
-    }: { material: Material; materials: Material[]; questions: QuestionWithAttempt[]; difficulty: DifficultyLevel | 'all' } = $props();
+        difficulty = 'all',
+    }: {
+        material: Material;
+        materials: Material[];
+        questions: QuestionWithAttempt[];
+        difficulty: DifficultyLevel | 'all';
+    } = $props();
 
     const state = untrack(() => new ReviewState(material, materials, questions, difficulty));
 
@@ -36,16 +33,16 @@
 </script>
 
 <App title={`Review Soal - ${state.material.title}`}>
-    <div class="container-fluid py-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <div class="container-fluid mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-4">
             <div class="lg:col-span-1">
                 <Card class="sticky top-4" padding="p-2">
                     {#snippet header()}
                         <h5
-                            class="font-black text-slate-900 uppercase tracking-widest text-xs flex items-center gap-3"
+                            class="flex items-center gap-3 text-xs font-black tracking-widest text-slate-900 uppercase"
                         >
                             <div
-                                class="w-8 h-8 rounded-xl bg-primary-600 text-white flex items-center justify-center shadow-lg shadow-primary-900/20"
+                                class="bg-primary-600 shadow-primary-900/20 flex h-8 w-8 items-center justify-center rounded-xl text-white shadow-lg"
                             >
                                 <Book size={16} />
                             </div>
@@ -58,18 +55,16 @@
                             <li>
                                 <Link
                                     href={ROUTES.MAHASISWA.MATERIALS.SHOW(m.id)}
-                                    class={`group flex items-center gap-3 p-3 rounded-xl transition-all font-bold tracking-tight text-xs uppercase
-                                        ${m.id === state.material.id ? "bg-primary-600 text-white shadow-xl shadow-primary-900/20" : "text-slate-500 hover:bg-slate-50 hover:text-primary-600"}`}
+                                    class={`group flex items-center gap-3 rounded-xl p-3 text-xs font-bold tracking-tight uppercase transition-all
+                                        ${m.id === state.material.id ? 'bg-primary-600 shadow-primary-900/20 text-white shadow-xl' : 'hover:text-primary-600 text-slate-500 hover:bg-slate-50'}`}
                                 >
                                     <div
-                                        class={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors
-                                        ${m.id === state.material.id ? "bg-white/20" : "bg-slate-100 group-hover:bg-primary-100"}`}
+                                        class={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors
+                                        ${m.id === state.material.id ? 'bg-white/20' : 'group-hover:bg-primary-100 bg-slate-100'}`}
                                     >
                                         <FileText size={16} />
                                     </div>
-                                    <span class="flex-1 truncate"
-                                        >{m.title}</span
-                                    >
+                                    <span class="flex-1 truncate">{m.title}</span>
                                 </Link>
                             </li>
                         {/each}
@@ -77,7 +72,7 @@
                 </Card>
             </div>
 
-            <div class="lg:col-span-3 space-y-8">
+            <div class="space-y-8 lg:col-span-3">
                 <DifficultyFilterBar
                     difficulty={state.difficulty}
                     onfilter={(d) => state.filterDifficulty(d)}
@@ -85,56 +80,52 @@
 
                 {#each state.questions as question, index (question.id)}
                     <Card padding="p-8">
-                        <div class="flex justify-between items-start mb-8">
+                        <div class="mb-8 flex items-start justify-between">
                             <div class="flex flex-col gap-2">
                                 <span
                                     class="inline-flex items-center gap-3 font-bold text-slate-800"
                                 >
                                     <div
-                                        class="w-10 h-10 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center text-sm shadow-inner"
+                                        class="bg-primary-50 text-primary-600 flex h-10 w-10 items-center justify-center rounded-xl text-sm shadow-inner"
                                     >
                                         {index + 1}
                                     </div>
-                                    <span
-                                        class="text-xs uppercase tracking-widest text-slate-400"
-                                        >Soal dari {state.questions
-                                            .length}</span
+                                    <span class="text-xs tracking-widest text-slate-400 uppercase"
+                                        >Soal dari {state.questions.length}</span
                                     >
                                 </span>
                                 {#if question.user_attempt}
-                                    <div class="flex items-center gap-3 ml-12">
+                                    <div class="ml-12 flex items-center gap-3">
                                         <Badge
-                                            variant={question.user_attempt
-                                                .is_correct
-                                                ? "success"
-                                                : "danger"}
+                                            variant={question.user_attempt.is_correct
+                                                ? 'success'
+                                                : 'danger'}
                                             size="sm"
                                             class="shadow-sm"
                                         >
                                             {question.user_attempt.is_correct
-                                                ? "TERJAWAB BENAR"
-                                                : "TERJAWAB SALAH"}
+                                                ? 'TERJAWAB BENAR'
+                                                : 'TERJAWAB SALAH'}
                                         </Badge>
                                         <span
-                                            class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"
+                                            class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
                                         >
-                                            Percobaan #{question.user_attempt
-                                                .attempt_number} • Skor: {question
-                                                .user_attempt.score}
+                                            Percobaan #{question.user_attempt.attempt_number} • Skor:
+                                            {question.user_attempt.score}
                                         </span>
                                     </div>
                                 {/if}
                             </div>
                             <Badge
-                                variant={question.difficulty === "beginner"
-                                    ? "success"
-                                    : question.difficulty === "medium"
-                                      ? "warning"
-                                      : "danger"}
+                                variant={question.difficulty === 'beginner'
+                                    ? 'success'
+                                    : question.difficulty === 'medium'
+                                      ? 'warning'
+                                      : 'danger'}
                                 class="shadow-sm"
                             >
-                                {question.difficulty === "hard"
-                                    ? "HARD LEVEL"
+                                {question.difficulty === 'hard'
+                                    ? 'HARD LEVEL'
                                     : question.difficulty.toUpperCase()}
                             </Badge>
                         </div>
@@ -142,15 +133,12 @@
                         <div class="space-y-10">
                             <div class="space-y-4">
                                 <h5
-                                    class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-0"
+                                    class="mb-0 flex items-center gap-2 text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase"
                                 >
-                                    <HelpCircle
-                                        size={16}
-                                        class="text-primary-600"
-                                    /> Deskripsi Pertanyaan
+                                    <HelpCircle size={16} class="text-primary-600" /> Deskripsi Pertanyaan
                                 </h5>
                                 <div
-                                    class="p-6 bg-slate-50 rounded-[1.5rem] text-slate-800 leading-relaxed border border-slate-100 font-medium"
+                                    class="rounded-[1.5rem] border border-slate-100 bg-slate-50 p-6 leading-relaxed font-medium text-slate-800"
                                 >
                                     {@html question.question_text}
                                 </div>
@@ -158,28 +146,25 @@
 
                             <div class="space-y-6">
                                 <h5
-                                    class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 mb-0"
+                                    class="mb-0 flex items-center gap-2 text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase"
                                 >
-                                    <List size={16} class="text-primary-600" /> Pilihan
-                                    Jawaban
+                                    <List size={16} class="text-primary-600" /> Pilihan Jawaban
                                 </h5>
                                 <div class="grid grid-cols-1 gap-4">
                                     {#each question.answers as answer}
                                         <div
-                                            class={`p-5 rounded-2xl flex items-start gap-4 transition-all duration-300 border-2
+                                            class={`flex items-start gap-4 rounded-2xl border-2 p-5 transition-all duration-300
                                             ${
                                                 answer.is_correct
-                                                    ? "bg-emerald-50 border-emerald-100 ring-4 ring-emerald-50/50 shadow-sm"
-                                                    : question.user_attempt
-                                                            ?.answer_id ===
-                                                        answer.id
-                                                      ? "bg-rose-50 border-rose-100 ring-4 ring-rose-50/50 shadow-sm text-rose-700"
-                                                      : "bg-white border-transparent text-slate-500 hover:bg-slate-50 transition-all font-medium"
+                                                    ? 'border-emerald-100 bg-emerald-50 shadow-sm ring-4 ring-emerald-50/50'
+                                                    : question.user_attempt?.answer_id === answer.id
+                                                      ? 'border-rose-100 bg-rose-50 text-rose-700 shadow-sm ring-4 ring-rose-50/50'
+                                                      : 'border-transparent bg-white font-medium text-slate-500 transition-all hover:bg-slate-50'
                                             }`}
                                         >
                                             {#if answer.is_correct}
                                                 <div
-                                                    class="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center shrink-0 shadow-lg shadow-emerald-200"
+                                                    class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-500 shadow-lg shadow-emerald-200"
                                                 >
                                                     <Check
                                                         size={16}
@@ -189,7 +174,7 @@
                                                 </div>
                                             {:else if question.user_attempt?.answer_id === answer.id}
                                                 <div
-                                                    class="w-7 h-7 rounded-lg bg-rose-500 flex items-center justify-center shrink-0 shadow-lg shadow-rose-200"
+                                                    class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-rose-500 shadow-lg shadow-rose-200"
                                                 >
                                                     <X
                                                         size={16}
@@ -199,10 +184,10 @@
                                                 </div>
                                             {:else}
                                                 <div
-                                                    class="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center shrink-0 border border-slate-200"
+                                                    class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-100"
                                                 >
                                                     <div
-                                                        class="w-2 h-2 rounded-full bg-slate-300"
+                                                        class="h-2 w-2 rounded-full bg-slate-300"
                                                     ></div>
                                                 </div>
                                             {/if}
@@ -220,19 +205,16 @@
                                         </div>
                                         {#if answer.is_correct && answer.explanation}
                                             <div
-                                                class="mt-2 p-6 bg-primary-50 border border-primary-100 rounded-[1.5rem] relative overflow-hidden group/exp"
+                                                class="bg-primary-50 border-primary-100 group/exp relative mt-2 overflow-hidden rounded-[1.5rem] border p-6"
                                             >
                                                 <div
-                                                    class="absolute top-0 right-0 p-4 opacity-10 group-hover/exp:scale-110 transition-transform duration-700"
+                                                    class="absolute top-0 right-0 p-4 opacity-10 transition-transform duration-700 group-hover/exp:scale-110"
                                                 >
-                                                    <Lightbulb
-                                                        size={64}
-                                                        class="text-primary-600"
-                                                    />
+                                                    <Lightbulb size={64} class="text-primary-600" />
                                                 </div>
                                                 <div class="relative z-10">
                                                     <div
-                                                        class="flex items-center gap-2 text-[10px] font-black text-primary-600 uppercase tracking-widest mb-3"
+                                                        class="text-primary-600 mb-3 flex items-center gap-2 text-[10px] font-black tracking-widest uppercase"
                                                     >
                                                         <Lightbulb
                                                             size={14}

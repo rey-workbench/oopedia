@@ -1,13 +1,13 @@
 <script lang="ts">
-    import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/shared/PageHeader.svelte";
-    import Button from "@/components/ui/Button.svelte";
-    import Input from "@/components/ui/Input.svelte";
-    import InfoPanel from "@/components/shared/InfoPanel.svelte";
-    import { ArrowLeft, Save, Lock } from "lucide-svelte";
-    import { ROUTES } from "@/utils/route";
+    import App from '@/layouts/App.svelte';
+    import PageHeader from '@/components/shared/PageHeader.svelte';
+    import Button from '@/components/ui/Button.svelte';
+    import Input from '@/components/ui/Input.svelte';
+    import InfoPanel from '@/components/shared/InfoPanel.svelte';
+    import { ArrowLeft, Save, Lock } from 'lucide-svelte';
+    import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';
-    import { UserFormState } from "@/states/Admin/UserState.svelte";
+    import { UserFormState } from '@/states/Admin/UserState.svelte';
 
     let { user } = $props();
 
@@ -15,10 +15,10 @@
     const form = state.form;
 
     const safeUpdateItems = [
-        "Kosongkan kolom password jika tidak ingin mengubahnya",
-        "Password lama tidak diperlukan untuk reset",
-        "Perubahan email mungkin memerlukan verifikasi ulang",
-        "Semua perubahan dicatat dalam log sistem",
+        'Kosongkan kolom password jika tidak ingin mengubahnya',
+        'Password lama tidak diperlukan untuk reset',
+        'Perubahan email mungkin memerlukan verifikasi ulang',
+        'Semua perubahan dicatat dalam log sistem',
     ];
 </script>
 
@@ -29,10 +29,8 @@
             subtitle="Modifikasi data identitas dan kunci keamanan entitas."
         >
             {#snippet actions()}
-                <Button
-                    href={ROUTES.ADMIN.USERS.INDEX}
-                    variant="ghost"
-                    icon={ArrowLeft}>KEMBALI KE DAFTAR</Button
+                <Button href={ROUTES.ADMIN.USERS.INDEX} variant="ghost" icon={ArrowLeft}
+                    >KEMBALI KE DAFTAR</Button
                 >
             {/snippet}
         </PageHeader>
@@ -45,21 +43,17 @@
             class="space-y-12"
         >
             <div
-                class="bg-white rounded-3xl p-6 shadow-2xl border border-slate-100 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300"
+                class="group relative overflow-hidden rounded-3xl border border-slate-100 bg-white p-6 shadow-2xl transition-transform duration-300 hover:-translate-y-1"
             >
                 <div class="mb-6">
-                    <h3 class="text-lg font-bold text-slate-800">
-                        Modifikasi Identitas Admin
-                    </h3>
+                    <h3 class="text-lg font-bold text-slate-800">Modifikasi Identitas Admin</h3>
                 </div>
 
                 <div class="space-y-10 p-6">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                    <div class="grid grid-cols-1 gap-10 lg:grid-cols-3">
                         <div class="lg:col-span-2">
                             <div class="space-y-8">
-                                <div
-                                    class="grid grid-cols-1 md:grid-cols-2 gap-6"
-                                >
+                                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     <Input
                                         label="Nama Lengkap"
                                         bind:value={form.name}
@@ -75,9 +69,7 @@
                                     />
                                 </div>
 
-                                <div
-                                    class="grid grid-cols-1 md:grid-cols-2 gap-6"
-                                >
+                                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     <Input
                                         label="Password Baru (Opsional)"
                                         type="password"
@@ -95,26 +87,19 @@
                             </div>
                         </div>
                         <div class="lg:col-span-1">
-                            <InfoPanel
-                                icon={Lock}
-                                title="Pembaruan Aman"
-                                items={safeUpdateItems}
-                            />
+                            <InfoPanel icon={Lock} title="Pembaruan Aman" items={safeUpdateItems} />
                         </div>
                     </div>
 
                     <div
-                        class="pt-6 border-t border-slate-100 flex items-center justify-between gap-4"
+                        class="flex items-center justify-between gap-4 border-t border-slate-100 pt-6"
                     >
                         <div class="flex items-center gap-3"></div>
 
                         <div class="flex gap-4">
-                            <Button
-                                href={ROUTES.ADMIN.USERS.INDEX}
-                                variant="ghost"
-                            >
+                            <Button href={ROUTES.ADMIN.USERS.INDEX} variant="ghost">
                                 <span
-                                    class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
+                                    class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
                                     >BATAL</span
                                 >
                             </Button>
@@ -122,7 +107,7 @@
                                 type="submit"
                                 variant="primary"
                                 size="lg"
-                                class="shadow-xl shadow-primary-900/20"
+                                class="shadow-primary-900/20 shadow-xl"
                                 icon={Save}
                                 disabled={form.processing}
                             >

@@ -1,5 +1,5 @@
-import { FormState } from "@/states/FormState.svelte";
-import { ROUTES } from "@/utils/route";
+import { FormState } from '@/states/FormState.svelte';
+import { ROUTES } from '@/utils/route';
 
 /**
  * Login State
@@ -7,8 +7,8 @@ import { ROUTES } from "@/utils/route";
 export class LoginState extends FormState<{ email: string; password: string; is_guest?: boolean }> {
     constructor() {
         super({
-            email: "",
-            password: "",
+            email: '',
+            password: '',
         });
     }
 
@@ -34,10 +34,10 @@ export class RegisterState extends FormState<{
 }> {
     constructor() {
         super({
-            name: "",
-            email: "",
-            password: "",
-            password_confirmation: "",
+            name: '',
+            email: '',
+            password: '',
+            password_confirmation: '',
             register_as_admin: false,
         });
     }
