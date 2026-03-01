@@ -52,7 +52,7 @@
         <form
             onsubmit={(e) => {
                 e.preventDefault();
-                state.submit()(e);
+                state.submit();
             }}
             class="space-y-12"
         >

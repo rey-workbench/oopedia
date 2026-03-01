@@ -228,7 +228,7 @@
                         <Button
                             variant="ghost"
                             size="sm"
-                            on:click={() => listState.handleDelete(material.id)}
+                            onclick={() => listState.handleDelete(material.id)}
                             icon={Trash2}
                             class="text-slate-300 hover:text-rose-500"
                         />

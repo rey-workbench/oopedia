@@ -2,7 +2,7 @@
     import App from "@/layouts/App.svelte";
     import PageHeader from "@/components/shared/PageHeader.svelte";
     import Button from "@/components/ui/Button.svelte";
-        import ImportInstructions from "@/components/shared/ImportInstructions.svelte";
+    import ImportInstructions from "@/components/shared/ImportInstructions.svelte";
     import FileUploadZone from "@/components/shared/FileUploadZone.svelte";
     import { ArrowLeft, Upload } from "lucide-svelte";
     import { ROUTES } from "@/utils/route";
@@ -35,54 +35,63 @@
         </PageHeader>
 
         <div class="max-w-2xl mx-auto">
-            
-<form onsubmit={(e) => { e.preventDefault(); () => state.submit()(e); }} class="space-y-12">
-    <div class="bg-white rounded-3xl p-6 shadow-2xl border border-slate-100 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
-        <div class="mb-6">
-            <h3 class="text-lg font-bold text-slate-800">
-                Impor Dataset Mahasiswa
-            </h3>
-        </div>
+            <form
+                onsubmit={(e) => {
+                    e.preventDefault();
+                    state.submit();
+                }}
+                class="space-y-12"
+            >
+                <div
+                    class="bg-white rounded-3xl p-6 shadow-2xl border border-slate-100 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300"
+                >
+                    <div class="mb-6">
+                        <h3 class="text-lg font-bold text-slate-800">
+                            Impor Dataset Mahasiswa
+                        </h3>
+                    </div>
 
-        <div class="space-y-10 p-6">
-            <ImportInstructions {items} />
-                <FileUploadZone
-                    {form}
-                    onFileChange={(e) => state.handleFileChange(e)}
-                    label="Berkas Dataset (Excel)"
-                    downloadHref="/admin/students/download-template"
-                    downloadLabel="TEMPLATE FORMAL"
-                />
+                    <div class="space-y-10 p-6">
+                        <ImportInstructions {items} />
+                        <FileUploadZone
+                            {form}
+                            onFileChange={(e) => state.handleFileChange(e)}
+                            label="Berkas Dataset (Excel)"
+                            downloadHref="/admin/students/download-template"
+                            downloadLabel="TEMPLATE FORMAL"
+                        />
 
-            <div class="pt-6 border-t border-slate-100 flex items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    
+                        <div
+                            class="pt-6 border-t border-slate-100 flex items-center justify-between gap-4"
+                        >
+                            <div class="flex items-center gap-3"></div>
+
+                            <div class="flex gap-4">
+                                <Button href={null} variant="ghost">
+                                    <span
+                                        class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
+                                        >BATAL</span
+                                    >
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="primary"
+                                    size="lg"
+                                    class="shadow-xl shadow-primary-900/20"
+                                    icon={Upload}
+                                    disabled={$form.processing}
+                                >
+                                    {#if $form.processing}
+                                        Memproses...
+                                    {:else}
+                                        EKSEKUSI IMPOR DATASET
+                                    {/if}
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="flex gap-4">
-                    
-                    <Button href={null} variant="ghost">
-                        <span class="text-[10px] font-bold uppercase text-slate-400 tracking-widest">BATAL</span>
-                    </Button>
-                    <Button
-                        type="submit"
-                        variant="primary"
-                        size="lg"
-                        class="shadow-xl shadow-primary-900/20"
-                        icon={Upload}
-                        disabled={$form.processing}
-                    >
-                        {#if $form.processing}
-                            Memproses...
-                        {:else}
-                            EKSEKUSI IMPOR DATASET
-                        {/if}
-                    </Button>
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
+            </form>
         </div>
     </div>
 </App>

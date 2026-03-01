@@ -24,15 +24,24 @@
         oninput = () => {},
     }: Props = $props();
 
+    // Ensure value is never undefined to prevent Svelte 5 props_invalid_value error
+    if (value === undefined) value = "";
+
     let editorContainer: HTMLElement;
     let quill: any;
 
     onMount(() => {
+        if (typeof window !== "undefined") {
+            (window as any).hljs = hljs;
+        }
+
         quill = new Quill(editorContainer, {
             theme: "snow",
             placeholder: placeholder,
             modules: {
-                syntax: true,
+                syntax: {
+                    hljs: hljs,
+                },
                 toolbar: [
                     [{ header: [1, 2, 3, false] }],
                     ["bold", "italic", "underline", "strike"],

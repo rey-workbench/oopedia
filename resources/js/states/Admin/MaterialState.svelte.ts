@@ -41,6 +41,7 @@ export class MaterialListState extends BaseState {
 export class MaterialFormState extends FormState<{
     title: string;
     description: string | null;
+    content: string;
     level: string;
     cover_image: File | null;
     status: string;
@@ -52,6 +53,7 @@ export class MaterialFormState extends FormState<{
         super({
             title: material ? material.title : "",
             description: material ? material.description : "",
+            content: material ? (material.content || "") : "",
             level: material ? material.level : "beginner",
             cover_image: null,
             status: material ? material.status : "draft",
@@ -114,7 +116,7 @@ export class SubmaterialListState extends BaseState {
 export class SubmaterialFormState extends FormState<{
     title: string;
     content: string;
-    type: JenisKonten | string;
+    jenis_konten: JenisKonten | string;
     order: number;
     material_id: number | string;
 }> {
@@ -125,7 +127,7 @@ export class SubmaterialFormState extends FormState<{
         super({
             title: submaterial ? submaterial.title : "",
             content: submaterial ? submaterial.content : "",
-            type: submaterial ? (submaterial as any).type : "text",
+            jenis_konten: submaterial ? submaterial.jenis_konten : "teori",
             order: submaterial
                 ? submaterial.order
                 : material?.sub_materials
@@ -146,7 +148,7 @@ export class SubmaterialFormState extends FormState<{
         await this.submitForm(this.isEdit ? 'put' : 'post', url);
     }
 
-    setType(type: JenisKonten | string) {
-        this.form.type = type;
+    setJenisKonten(jenis_konten: JenisKonten | string) {
+        this.form.jenis_konten = jenis_konten;
     }
 }
