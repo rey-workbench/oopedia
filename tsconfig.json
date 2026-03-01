@@ -10,27 +10,42 @@
         "moduleResolution": "bundler",
         "target": "esnext",
         "types": [
-            "vite/client"
+            "vite/client",
+            "svelte"
         ],
         // For nodejs:
-        // "lib": ["esnext"],
+        "lib": [
+            "esnext",
+            "dom",
+            "dom.iterable"
+        ],
         // "types": ["node"],
         // and npm install -D @types/node
         // Other Outputs
         "noEmit": true,
         "sourceMap": true,
         // Stricter Typechecking Options
+        "strict": true,
         "noUncheckedIndexedAccess": true,
         "exactOptionalPropertyTypes": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictBindCallApply": true,
+        "strictPropertyInitialization": true,
+        "noImplicitThis": true,
+        "useUnknownInCatchVariables": true,
+        "alwaysStrict": true,
         // Style Options
-        // "noImplicitReturns": true,
-        // "noImplicitOverride": true,
-        // "noUnusedLocals": true,
-        // "noUnusedParameters": true,
-        // "noFallthroughCasesInSwitch": true,
-        // "noPropertyAccessFromIndexSignature": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitOverride": true,
+        "forceConsistentCasingInFileNames": true,
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false,
         // Recommended Options
-        "strict": true,
         "jsx": "preserve",
         "verbatimModuleSyntax": true,
         "isolatedModules": true,
@@ -44,7 +59,8 @@
         }
     },
     "include": [
-        "resources/js/**/*"
+        "resources/js/**/*",
+        "resources/js/**/*.svelte"
     ],
     "exclude": [
         "node_modules",

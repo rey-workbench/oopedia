@@ -9,7 +9,7 @@
     } from "lucide-svelte";
     import { ROUTES } from "@/utils/route";
     import { sidebarOpen } from "@/stores/sidebar";
-    import { isAdmin, isStudent } from "@/utils/roles";
+    import { isAdmin } from "@/utils/roles";
 
     let { titlePage = "" } = $props();
 
@@ -17,7 +17,6 @@
     const user = $derived(auth.user ?? null);
     const isAuthenticated = $derived(!!user);
     const isAdminRole = $derived(isAuthenticated && isAdmin(user?.role_id));
-    const isStudentRole = $derived(isAuthenticated && isStudent(user?.role_id));
     const userName = $derived(user?.name ?? "Tamu");
 
     function logout() {

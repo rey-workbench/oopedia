@@ -124,11 +124,13 @@
 
                         <div class="space-y-2">
                             <label
+                                for="role_id"
                                 class="text-[10px] font-bold uppercase text-slate-400 tracking-widest"
                                 >Peran Sistem</label
                             >
                             <div class="relative">
                                 <select
+                                    id="role_id"
                                     bind:value={$form.role_id}
                                     class="w-full px-4 py-3 border-2 border-slate-100 rounded-2xl bg-white text-sm font-bold focus:ring-4 focus:ring-primary-50 focus:border-primary-500 outline-none transition-all appearance-none"
                                 >
