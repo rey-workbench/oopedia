@@ -7,12 +7,14 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm run build
 
-# Stage 2: Serve application (PHP-FPM + Nginx)
-FROM php:8.4-fpm
+# Stage 2: Get RoadRunner Binary
+FROM ghcr.io/roadrunner-server/roadrunner:2024.1.0 AS roadrunner
+
+# Stage 3: Serve application (PHP CLI + Octane)
+FROM php:8.4-cli
 
 # Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
-    nginx \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -20,7 +22,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql zip opcache \
+    && docker-php-ext-install gd pdo pdo_mysql zip opcache pcntl sockets \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Configure OPcache for production
@@ -51,52 +53,33 @@ COPY --from=frontend-builder /app/public/build ./public/build
 # Finish Composer installation
 RUN composer dump-autoload --optimize
 
-# Configure Nginx for Laravel
-RUN echo 'server {\n\
-    listen 80;\n\
-    index index.php index.html;\n\
-    root /var/www/html/public;\n\
-    \n\
-    location / {\n\
-    try_files $uri $uri/ /index.php?$query_string;\n\
-    }\n\
-    \n\
-    location ~ \.php$ {\n\
-    fastcgi_split_path_info ^(.+\.php)(/.+)$;\n\
-    fastcgi_pass 127.0.0.1:9000;\n\
-    fastcgi_index index.php;\n\
-    include fastcgi_params;\n\
-    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;\n\
-    fastcgi_param PATH_INFO $fastcgi_path_info;\n\
-    fastcgi_param HTTP_X_FORWARDED_PROTO $http_x_forwarded_proto;\n\
-    fastcgi_param HTTPS on;\n\
-    }\n\
-    }' > /etc/nginx/sites-available/default
+# Copy RoadRunner binary
+COPY --from=roadrunner /usr/bin/rr /usr/bin/rr
 
 # Prepare entrypoint script
 RUN echo '#!/bin/bash\n\
-    PORT=${PORT:-80}\n\
-    sed -i "s/listen 80;/listen ${PORT};/g" /etc/nginx/sites-available/default\n\
+    PORT=${PORT:-8080}\n\
     \n\
     export LOG_CHANNEL=stderr\n\
     \n\
     php artisan config:clear || true\n\
     php artisan storage:link --force || true\n\
+    php artisan octane:install --server=roadrunner --force || true\n\
     php artisan config:cache || true\n\
     php artisan route:cache || true\n\
     php artisan view:cache || true\n\
     php artisan event:cache || true\n\
     php artisan migrate --force || true\n\
     \n\
-    # Start PHP-FPM in background and Nginx in foreground\n\
-    php-fpm -D\n\
-    echo "Starting Nginx on port $PORT..."\n\
-    nginx -g "daemon off;"' > /usr/local/bin/entrypoint.sh \
+    echo "Starting Laravel Octane on port $PORT..."\n\
+    exec php artisan octane:start --server=roadrunner --host=0.0.0.0 --port=$PORT'\n\
+    > /usr/local/bin/entrypoint.sh \
     && chmod +x /usr/local/bin/entrypoint.sh
 
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod +x /usr/bin/rr
 
-EXPOSE 80
+EXPOSE 8080
 CMD ["/usr/local/bin/entrypoint.sh"]
