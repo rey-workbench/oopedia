@@ -1,6 +1,6 @@
 <script>
     import App from "@/layouts/App.svelte";
-    import DifficultyFilterBar from "@/components/ui/DifficultyFilterBar.svelte";
+    import DifficultyFilterBar from "@/components/shared/DifficultyFilterBar.svelte";
     import Card from "@/components/ui/Card.svelte";
     import Badge from "@/components/ui/Badge.svelte";
     import { Link } from "@inertiajs/svelte";

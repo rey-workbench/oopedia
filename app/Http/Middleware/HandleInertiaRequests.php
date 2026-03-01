@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Material;
+use App\Contracts\Services\MaterialServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
@@ -49,9 +49,9 @@ class HandleInertiaRequests extends Middleware
                 'warning' => fn () => $request->session()->get('warning'),
                 'status' => fn () => $request->session()->get('status'),
             ],
-            'sidebar_materials' => Cache::remember('sidebar_materials', 3600, function () {
-                return Material::orderBy('created_at', 'asc')
-                    ->select('id', 'title', 'module_id')
+            'sidebar_materials' => Cache::remember('sidebar_materials_v4', 3600, function () {
+                return \App\Models\Material::orderBy('created_at', 'asc')
+                    ->select('id', 'title')
                     ->get();
             }),
             'csrf_token' => csrf_token(),

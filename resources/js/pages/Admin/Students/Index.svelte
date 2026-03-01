@@ -1,23 +1,14 @@
 <script>
     import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/ui/PageHeader.svelte";
     import Button from "@/components/ui/Button.svelte";
-    import DataTable from "@/components/ui/DataTable.svelte";
+    import DataTable from "@/components/shared/DataTable.svelte";
     import ProgressBar from "@/components/ui/ProgressBar.svelte";
     import EmptyState from "@/components/ui/EmptyState.svelte";
     import Pagination from "@/components/ui/Pagination.svelte";
     import UserAvatar from "@/components/ui/UserAvatar.svelte";
     import Modal from "@/components/ui/Modal.svelte";
     import Input from "@/components/ui/Input.svelte";
-    import {
-        UserPlus,
-        FileSpreadsheet,
-        GraduationCap,
-        Terminal,
-        LineChart,
-        UserMinus,
-        Loader2,
-    } from "lucide-svelte";
+    import PageHeader from "@/components/shared/PageHeader.svelte";
     import { ROUTES } from "@/utils/route";
     import {
         StudentListState,
@@ -50,7 +41,7 @@
             title="Database Mahasiswa"
             subtitle="Pantau progres dan aktivitas belajar seluruh mahasiswa terdaftar."
         >
-            <div slot="actions" class="flex flex-wrap items-center gap-4">
+            {#snippet actions()}
                 <Button
                     on:click={() => (openModal = true)}
                     variant="primary"
@@ -61,7 +52,7 @@
                     variant="success"
                     icon={FileSpreadsheet}>Impor Excel</Button
                 >
-            </div>
+            {/snippet}
         </PageHeader>
 
         <DataTable
@@ -75,7 +66,7 @@
             searchPlaceholder="Cari mahasiswa..."
             {columns}
         >
-            <svelte:fragment slot="empty">
+            {#snippet empty()}
                 <EmptyState
                     title="Tidak Ada Mahasiswa Terdaftar"
                     description="Silakan daftarkan mahasiswa secara manual atau impor melalui protokol Excel."
@@ -94,9 +85,9 @@
                         >
                     </div>
                 </EmptyState>
-            </svelte:fragment>
+            {/snippet}
 
-            <svelte:fragment slot="row" let:item={student}>
+            {#snippet row(student)}
                 <td
                     class="px-6 py-6 border-l-4 border-transparent group-hover:border-primary-600"
                 >
@@ -156,7 +147,7 @@
                         />
                     </div>
                 </td>
-            </svelte:fragment>
+            {/snippet}
         </DataTable>
 
         {#if state.students.data && state.students.data.length > 0}

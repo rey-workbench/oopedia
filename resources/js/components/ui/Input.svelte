@@ -1,9 +1,25 @@
-<script>
+<script lang="ts">
     import { AlertCircle } from "lucide-svelte";
+
     /**
      * @file Input.svelte
      * @description A premium reusable input component for the Oopedia platform.
      */
+    interface Props {
+        type?: string;
+        value?: string;
+        placeholder?: string;
+        label?: string;
+        error?: string;
+        id?: string;
+        name?: string;
+        required?: boolean;
+        disabled?: boolean;
+        class?: string;
+        autocomplete?: any;
+        [key: string]: any;
+    }
+
     let {
         type = "text",
         value = $bindable(""),
@@ -17,7 +33,7 @@
         class: className = "",
         autocomplete = undefined,
         ...rest
-    } = $props();
+    }: Props = $props();
 
     // Generate a stable ID if not provided
     const inputId = $derived(

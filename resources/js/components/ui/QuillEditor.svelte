@@ -1,5 +1,5 @@
-<script>
-    import { onMount, createEventDispatcher } from "svelte";
+<script lang="ts">
+    import { onMount } from "svelte";
     import Quill from "quill";
     import hljs from "highlight.js";
     import "quill/dist/quill.snow.css";
@@ -7,16 +7,25 @@
 
     // Quill syntax module expects hljs on window
     if (typeof window !== "undefined") {
-        window.hljs = hljs;
+        (window as any).hljs = hljs;
     }
 
-    export let value = "";
-    export let placeholder = "Tulis sesuatu...";
-    export let height = "300px";
+    interface Props {
+        value?: string;
+        placeholder?: string;
+        height?: string;
+        oninput?: (html: string) => void;
+    }
 
-    let editorContainer;
-    let quill;
-    const dispatch = createEventDispatcher();
+    let {
+        value = $bindable(""),
+        placeholder = "Tulis sesuatu...",
+        height = "300px",
+        oninput = () => {},
+    }: Props = $props();
+
+    let editorContainer: HTMLElement;
+    let quill: any;
 
     onMount(() => {
         quill = new Quill(editorContainer, {
@@ -42,7 +51,7 @@
         quill.on("text-change", () => {
             const html = quill.root.innerHTML;
             value = html;
-            dispatch("input", html);
+            oninput(html);
         });
     });
 </script>

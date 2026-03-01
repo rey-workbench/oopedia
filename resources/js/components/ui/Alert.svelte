@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
     import { fade } from "svelte/transition";
+    import type { Snippet } from "svelte";
     import {
         Info,
         CheckCircle2,
@@ -9,14 +9,27 @@
         X,
     } from "lucide-svelte";
 
-    export let variant = "info"; // info, success, warning, danger
-    export let dismissible = false;
-    export let className = "";
+    type AlertVariant = "info" | "success" | "warning" | "danger" | "primary";
 
-    const dispatch = createEventDispatcher();
-    let visible = true;
+    interface Props {
+        variant?: AlertVariant;
+        dismissible?: boolean;
+        class?: string;
+        children?: Snippet;
+        ondismiss?: () => void;
+    }
 
-    const variants: Record<string, string> = {
+    let {
+        variant = "info",
+        dismissible = false,
+        class: className = "",
+        children,
+        ondismiss,
+    }: Props = $props();
+
+    let visible = $state(true);
+
+    const variants: Record<AlertVariant, string> = {
         info: "bg-primary-50 text-primary-800 border-primary-100",
         success: "bg-emerald-50 text-emerald-800 border-emerald-100",
         warning: "bg-amber-50 text-amber-800 border-amber-100",
@@ -24,7 +37,7 @@
         primary: "bg-primary-50 text-primary-800 border-primary-100",
     };
 
-    const icons: Record<string, any> = {
+    const icons: Record<AlertVariant, any> = {
         info: Info,
         success: CheckCircle2,
         warning: AlertTriangle,
@@ -34,27 +47,24 @@
 
     function dismiss() {
         visible = false;
-        dispatch("dismiss");
+        ondismiss?.();
     }
 </script>
 
 {#if visible}
+    {@const IconComponent = icons[variant] || icons.info}
     <div
         transition:fade={{ duration: 200 }}
         class={`flex items-center p-4 border rounded-2xl ${variants[variant] || variants.info} ${className}`}
         role="alert"
     >
-        <svelte:component
-            this={icons[variant] || icons.info}
-            size={20}
-            class="mr-3"
-        />
+        <IconComponent size={20} class="mr-3" />
         <div class="flex-1 text-xs font-bold uppercase tracking-widest">
-            <slot />
+            {@render children?.()}
         </div>
         {#if dismissible}
             <button
-                on:click={dismiss}
+                onclick={dismiss}
                 type="button"
                 aria-label="Dismiss alert"
                 class="ml-auto -mx-1.5 -my-1.5 rounded-lg p-1.5 inline-flex h-8 w-8 hover:bg-white/20 transition-colors items-center justify-center"

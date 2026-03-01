@@ -1,9 +1,9 @@
 <script>
     import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/ui/PageHeader.svelte";
+    import PageHeader from "@/components/shared/PageHeader.svelte";
     import Button from "@/components/ui/Button.svelte";
-    import StatsGrid from "@/components/ui/StatsGrid.svelte";
-    import DataTable from "@/components/ui/DataTable.svelte";
+    import StatsGrid from "@/components/shared/StatsGrid.svelte";
+    import DataTable from "@/components/shared/DataTable.svelte";
     import EmptyState from "@/components/ui/EmptyState.svelte";
     import ProgressBar from "@/components/ui/ProgressBar.svelte";
     import Badge from "@/components/ui/Badge.svelte";

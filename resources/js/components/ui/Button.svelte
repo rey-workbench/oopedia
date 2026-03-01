@@ -2,7 +2,16 @@
     import { Link } from "@inertiajs/svelte";
     import type { Component, Snippet } from "svelte";
 
-    type ButtonVariant = "primary" | "secondary" | "gradient" | "glass" | "danger" | "success" | "warning" | "ghost" | "outline";
+    type ButtonVariant =
+        | "primary"
+        | "secondary"
+        | "gradient"
+        | "glass"
+        | "danger"
+        | "success"
+        | "warning"
+        | "ghost"
+        | "outline";
     type ButtonSize = "sm" | "md" | "lg" | "xl";
 
     interface Props {
@@ -10,7 +19,7 @@
         size?: ButtonSize;
         type?: "button" | "submit" | "reset";
         disabled?: boolean;
-        icon?: Component<{ size?: number; strokeWidth?: number; class?: string }> | string | null;
+        icon?: any;
         iconPosition?: "left" | "right";
         href?: string | null;
         class?: string;
@@ -60,7 +69,7 @@
     };
 
     const classes = $derived(
-        `${baseClasses} ${variants[variant] ?? variants.primary} ${sizes[size] ?? sizes.md} ${className}`
+        `${baseClasses} ${variants[variant] ?? variants.primary} ${sizes[size] ?? sizes.md} ${className}`,
     );
     const hasChildren = $derived(children !== undefined);
 </script>
@@ -69,20 +78,38 @@
     <Link {href} class={classes} {...rest}>
         {#if icon && iconPosition === "left"}
             {#if typeof icon === "string"}
-                <i class="{icon} {hasChildren ? 'mr-3' : ''} transition-transform group-hover:-translate-x-1"></i>
+                <i
+                    class="{icon} {hasChildren
+                        ? 'mr-3'
+                        : ''} transition-transform group-hover:-translate-x-1"
+                ></i>
             {:else}
-                <div class="{hasChildren ? 'mr-3' : ''} transition-transform group-hover:-translate-x-1 text-lg">
-                    <svelte:component this={icon} size={18} strokeWidth={2.5} />
+                {@const Icon = icon as any}
+                <div
+                    class="{hasChildren
+                        ? 'mr-3'
+                        : ''} transition-transform group-hover:-translate-x-1 text-lg"
+                >
+                    <Icon size={18} strokeWidth={2.5} />
                 </div>
             {/if}
         {/if}
         {@render children?.()}
         {#if icon && iconPosition === "right"}
             {#if typeof icon === "string"}
-                <i class="{icon} {hasChildren ? 'ml-3' : ''} transition-transform group-hover:translate-x-1"></i>
+                <i
+                    class="{icon} {hasChildren
+                        ? 'ml-3'
+                        : ''} transition-transform group-hover:translate-x-1"
+                ></i>
             {:else}
-                <div class="{hasChildren ? 'ml-3' : ''} transition-transform group-hover:translate-x-1 text-lg">
-                    <svelte:component this={icon} size={18} strokeWidth={2.5} />
+                {@const Icon = icon as any}
+                <div
+                    class="{hasChildren
+                        ? 'ml-3'
+                        : ''} transition-transform group-hover:translate-x-1 text-lg"
+                >
+                    <Icon size={18} strokeWidth={2.5} />
                 </div>
             {/if}
         {/if}
@@ -93,18 +120,24 @@
             {#if typeof icon === "string"}
                 <i class="{icon} {hasChildren ? 'mr-3' : ''}"></i>
             {:else}
+                {@const Icon = icon as any}
                 <div class={hasChildren ? "mr-3 text-lg" : "text-lg"}>
-                    <svelte:component this={icon} size={18} strokeWidth={2.5} />
+                    <Icon size={18} strokeWidth={2.5} />
                 </div>
             {/if}
         {/if}
         {@render children?.()}
         {#if icon && iconPosition === "right"}
             {#if typeof icon === "string"}
-                <i class="{icon} {hasChildren ? 'ml-3' : ''}"></i>
+                <i
+                    class="{icon} {hasChildren
+                        ? 'ml-3'
+                        : ''} transition-transform group-hover:translate-x-1"
+                ></i>
             {:else}
+                {@const Icon = icon as any}
                 <div class={hasChildren ? "ml-3 text-lg" : "text-lg"}>
-                    <svelte:component this={icon} size={18} strokeWidth={2.5} />
+                    <Icon size={18} strokeWidth={2.5} />
                 </div>
             {/if}
         {/if}

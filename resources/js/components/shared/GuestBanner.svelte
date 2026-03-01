@@ -1,23 +1,35 @@
-<script  lang="ts">
+<script lang="ts">
+    import type { Snippet } from "svelte";
     import Button from "@/components/ui/Button.svelte";
     import { AlertTriangle } from "lucide-svelte";
     import { ROUTES } from "@/utils/route";
 
-    /** Control visibility externally */
-    export let show = false;
+    interface Props {
+        /** Control visibility externally */
+        show?: boolean;
+        /** Title text */
+        title?: string;
+        /** Description text */
+        message?: string;
+        /** Whether to show login/register action buttons */
+        showActions?: boolean;
+        /** Visual variant: "banner" (full-width), "inline" (compact with icon) */
+        variant?: "banner" | "inline";
+        /** Custom icon snippet */
+        icon?: Snippet;
+        /** Default slot / children snippet */
+        children?: Snippet;
+    }
 
-    /** Title text */
-    export let title = "Mode Tamu Aktif!";
-
-    /** Description text */
-    export let message =
-        "Anda hanya dapat melihat sebagian materi. Untuk akses penuh, silakan login atau daftar.";
-
-    /** Whether to show login/register action buttons */
-    export let showActions = true;
-
-    /** Visual variant: "banner" (full-width), "inline" (compact with icon) */
-    export let variant = "banner";
+    let {
+        show = false,
+        title = "Mode Tamu Aktif!",
+        message = "Anda hanya dapat melihat sebagian materi. Untuk akses penuh, silakan login atau daftar.",
+        showActions = true,
+        variant = "banner",
+        icon,
+        children,
+    }: Props = $props();
 </script>
 
 {#if show}
@@ -53,16 +65,20 @@
             <div
                 class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center shrink-0"
             >
-                <slot name="icon">
+                {#if icon}
+                    {@render icon()}
+                {:else}
                     <AlertTriangle size={24} class="text-amber-600" />
-                </slot>
+                {/if}
             </div>
             <div>
                 <strong class="text-amber-900 text-lg block mb-1"
                     >{title}</strong
                 >
                 <p class="text-amber-800">
-                    <slot>
+                    {#if children}
+                        {@render children()}
+                    {:else}
                         {message} Silakan
                         <a
                             href={ROUTES.AUTH.LOGIN}
@@ -75,7 +91,7 @@
                             class="font-bold underline hover:text-amber-950 transition-colors"
                             >daftar</a
                         > sebagai mahasiswa.
-                    </slot>
+                    {/if}
                 </p>
             </div>
         </div>

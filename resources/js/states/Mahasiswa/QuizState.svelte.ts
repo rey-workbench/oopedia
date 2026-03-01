@@ -23,13 +23,31 @@ interface AnswerPayload {
 interface AdaptiveResult {
     facts?: unknown[];
     triggeredRule?: string | null;
-    triggered_rule?: { action?: string | null };
+    triggered_rule?: {
+        id?: string;
+        name?: string;
+        action?: string | null;
+        priority?: number;
+    } | null;
+    new_state?: {
+        next_action_data?: {
+            label?: string;
+            type?: string;
+        };
+        recommendation?: string | null;
+        certification?: string | null;
+        intervention_type?: string | null;
+    } | null;
+    global_xp_earned?: number;
+    streak_bonus?: string | null;
     [key: string]: unknown;
 }
 
 export interface LevelItem {
     level: number;
     status: 'completed' | 'in_progress' | 'locked';
+    question_id?: number;
+    difficulty?: DifficultyLevel;
     [key: string]: unknown;
 }
 
@@ -96,7 +114,14 @@ export class QuestionShowState extends BaseState {
 
     showAdaptiveIndicator = $state(false);
     adaptiveFacts = $state<unknown[]>([]);
-    adaptiveTriggeredRule = $state<string | null>(null);
+    adaptiveTriggeredRule = $state<{
+        id?: string;
+        name?: string;
+        action?: string | null;
+        priority?: number;
+    } | null>(null);
+
+    isProcessing = $derived(this.isSubmitting);
 
     xp = $derived(this.studentState?.gamification?.global_xp || 0);
     streak = $derived(this.studentState?.gamification?.current_streak || 0);
@@ -178,7 +203,7 @@ export class QuestionShowState extends BaseState {
 
             if (adaptiveResult) {
                 this.adaptiveFacts = adaptiveResult.facts ?? [];
-                this.adaptiveTriggeredRule = (adaptiveResult.triggeredRule as string | null) ?? null;
+                this.adaptiveTriggeredRule = adaptiveResult.triggered_rule ?? null;
                 this.showAdaptiveIndicator = true;
             }
 

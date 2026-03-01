@@ -1,5 +1,5 @@
 <script>
-    import GuestLayout from "@/layouts/GuestLayout.svelte";
+    import App from "@/layouts/App.svelte";
     import Card from "@/components/ui/Card.svelte";
     import Input from "@/components/ui/Input.svelte";
     import Button from "@/components/ui/Button.svelte";
@@ -13,7 +13,7 @@
     const form = state.form;
 </script>
 
-<GuestLayout title="Login - OOPedia">
+<App variant="auth" title="Login - OOPedia">
     <Card padding="p-10" hover={false}>
         <div slot="header" class="text-center w-full mb-6">
             <h3 class="text-xl font-bold tracking-widest text-slate-900">
@@ -68,19 +68,17 @@
             </div>
 
             <div class="pt-2">
-                <Button
+                <button
                     type="submit"
-                    variant="primary"
-                    class="w-full"
-                    size="lg"
+                    class="w-full flex items-center justify-center gap-3 py-4 px-6 bg-primary-600 text-white rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-primary-700 transition-all disabled:opacity-50"
                     disabled={$form.processing}
                 >
                     {#if $form.processing}
-                        <Loader2 size={18} class="mr-3 animate-spin" /> MEMPROSES...
+                        <Loader2 size={18} class="animate-spin" /> MEMPROSES...
                     {:else}
-                        MASUK SEKARANG <ArrowRight size={18} class="ml-3" />
+                        MASUK SEKARANG <ArrowRight size={18} />
                     {/if}
-                </Button>
+                </button>
             </div>
 
             <div class="relative py-4">
@@ -118,4 +116,4 @@
             </div>
         </form>
     </Card>
-</GuestLayout>
+</App>

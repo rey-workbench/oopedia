@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import Badge from "@/components/ui/Badge.svelte";
     import Button from "@/components/ui/Button.svelte";
     import MultipleChoice from "@/components/quiz/MultipleChoice.svelte";
@@ -13,8 +13,13 @@
         CheckCircle2,
         X,
     } from "lucide-svelte";
+    import type { QuestionShowState } from "@/states/Mahasiswa/QuizState.svelte.ts";
 
-    let { state = $bindable() } = $props();
+    interface Props {
+        state: QuestionShowState;
+    }
+
+    let { state = $bindable() }: Props = $props();
 </script>
 
 <div class="bg-white rounded-xl shadow-md p-6">
@@ -136,7 +141,7 @@
             <Badge variant="primary" size="lg"
                 ><HelpCircle size={18} class="mr-2" /> Soal</Badge
             >
-            {#if state.currentQuestion.difficulty}
+            {#if state.currentQuestion?.difficulty}
                 <Badge
                     variant="outline"
                     size="sm"
@@ -149,23 +154,23 @@
             {/if}
         </div>
 
-        {#if state.currentQuestion.question_type === "fill_in_the_blank"}
+        {#if state.currentQuestion?.question_type === "fill_in_the_blank"}
             <FillInTheBlank
                 question={state.currentQuestion}
                 bind:answerText={state.fillInTheBlankAnswer}
                 oninput={(text) => (state.fillInTheBlankAnswer = text)}
             />
-        {:else if state.currentQuestion.question_type === "drag_and_drop"}
+        {:else if state.currentQuestion?.question_type === "drag_and_drop"}
             <DragAndDrop
                 question={state.currentQuestion}
                 bind:dragAndDropAnswers={state.dragAndDropAnswers}
             />
-        {:else}
+        {:else if state.currentQuestion}
             <MultipleChoice
                 question={state.currentQuestion}
-                bind:selectedAnswerId={state.selectedMultipleChoiceAnswer}
+                selectedAnswerId={state.selectedMultipleChoiceAnswer as any}
                 onselect={(answerId) =>
-                    (state.selectedMultipleChoiceAnswer = answerId)}
+                    (state.selectedMultipleChoiceAnswer = answerId as any)}
             />
         {/if}
     </div>

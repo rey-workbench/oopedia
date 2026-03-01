@@ -1,15 +1,29 @@
-<script>
-    import { Trophy, Check, Target, Star, Flame, BarChart3, Home } from "lucide-svelte";
+<script lang="ts">
+    import {
+        Trophy,
+        Check,
+        Target,
+        Star,
+        Flame,
+        BarChart3,
+        Home,
+    } from "lucide-svelte";
     import Button from "@/components/ui/Button.svelte";
     import { ROUTES } from "@/utils/route";
 
-    export let state;
-    export let material = {};
-    export let answeredCount = 0;
+    interface Props {
+        state: any;
+        material?: any;
+        answeredCount?: number;
+    }
+
+    let { state, material = {}, answeredCount = 0 }: Props = $props();
 </script>
 
 <div class="max-w-3xl mx-auto">
-    <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
+    <div
+        class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100"
+    >
         <div class="bg-emerald-600 p-12 text-center text-white relative">
             <div class="absolute top-0 right-0 p-8 opacity-10">
                 <Trophy size={96} class="text-white" />
@@ -35,8 +49,12 @@
                     >
                         <Target size={20} class="text-primary-600" />
                     </div>
-                    <div class="text-2xl font-bold text-slate-800">{answeredCount}</div>
-                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    <div class="text-2xl font-bold text-slate-800">
+                        {answeredCount}
+                    </div>
+                    <div
+                        class="text-[10px] font-bold text-slate-400 uppercase tracking-wider"
+                    >
                         Soal Dijawab
                     </div>
                 </div>
@@ -46,8 +64,12 @@
                     >
                         <Star size={20} class="text-amber-500" />
                     </div>
-                    <div class="text-2xl font-bold text-slate-800">{state.xp}</div>
-                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    <div class="text-2xl font-bold text-slate-800">
+                        {state.xp}
+                    </div>
+                    <div
+                        class="text-[10px] font-bold text-slate-400 uppercase tracking-wider"
+                    >
                         Total XP
                     </div>
                 </div>
@@ -57,8 +79,12 @@
                     >
                         <Flame size={20} class="text-orange-500" />
                     </div>
-                    <div class="text-2xl font-bold text-slate-800">{state.streak}</div>
-                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    <div class="text-2xl font-bold text-slate-800">
+                        {state.streak}
+                    </div>
+                    <div
+                        class="text-[10px] font-bold text-slate-400 uppercase tracking-wider"
+                    >
                         Streak
                     </div>
                 </div>

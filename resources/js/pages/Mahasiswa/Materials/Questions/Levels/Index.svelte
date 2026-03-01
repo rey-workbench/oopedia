@@ -1,9 +1,8 @@
-﻿<script lang="ts">
+<script lang="ts">
     import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/ui/PageHeader.svelte";
-    import Card from "@/components/ui/Card.svelte";
+        import Card from "@/components/ui/Card.svelte";
     import Button from "@/components/ui/Button.svelte";
-    import GuestBanner from "@/components/ui/GuestBanner.svelte";
+    import GuestBanner from "@/components/shared/GuestBanner.svelte";
     import { ArrowLeft, Map as MapIcon } from "lucide-svelte";
     import { LevelMapState } from "@/states/Mahasiswa/QuizState.svelte";
     import { ROUTES } from "@/utils/route";
@@ -24,20 +23,29 @@
 
 <App title={`Peta Tantangan - ${state.material.title}`}>
     <div class="space-y-12">
-        <PageHeader
-            title="Peta Tantangan"
-            subtitle={`Selesaikan setiap level untuk menguasai ${state.material.title || "modul ini"}.`}
-        >
-            {#snippet actions()}
-                <Button
+        
+<div class="mb-8">
+    <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight font-display">
+        Peta Tantangan
+    </h1>
+    <div class="flex items-center gap-2 mt-3" role="presentation">
+        <div class="h-1.5 w-12 bg-primary-600 rounded-full"></div>
+        <div class="h-1.5 w-4 bg-slate-200 rounded-full"></div>
+        <div class="h-1.5 w-2 bg-slate-100 rounded-full"></div>
+    </div>
+    <p class="mt-4 text-slate-500 font-medium leading-relaxed max-w-3xl">
+        {`Selesaikan setiap level untuk menguasai ${state.material.title || "modul ini"}.`}
+    </p>
+    <div class="mt-6 flex flex-wrap gap-4">
+        <Button
                     href={ROUTES.MAHASISWA.MATERIALS.SHOW(state.material.id)}
                     variant="ghost"
                     icon={ArrowLeft as any}
                 >
                     Kembali
                 </Button>
-            {/snippet}
-        </PageHeader>
+    </div>
+</div>
 
         {#if state.isGuest}
             <GuestBanner show={state.isGuest} variant="inline" />

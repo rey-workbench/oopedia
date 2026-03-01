@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import Badge from "@/components/ui/Badge.svelte";
     import {
         Brain,
@@ -9,8 +9,14 @@
         ChevronDown,
     } from "lucide-svelte";
     import { fade, scale, slide } from "svelte/transition";
+    import type { QuestionShowState } from "@/states/Mahasiswa/QuizState.svelte.ts";
 
-    let { quizState, showDebug = false } = $props();
+    interface Props {
+        quizState: QuestionShowState;
+        showDebug?: boolean;
+    }
+
+    let { quizState, showDebug = false }: Props = $props();
 
     let isDebugPanelCollapsed = $state(true);
 
@@ -18,31 +24,29 @@
         isDebugPanelCollapsed = !isDebugPanelCollapsed;
     }
 
+    const factCodes = $derived(quizState.adaptiveFacts as string[]);
+
     const factCategories = $derived({
-        score: quizState.adaptiveFacts.filter((f) =>
+        score: factCodes.filter((f) =>
             ["G01", "G02", "G03", "G04"].includes(f),
         ),
-        time: quizState.adaptiveFacts.filter((f) => ["G05", "G06"].includes(f)),
-        style: quizState.adaptiveFacts.filter((f) =>
-            ["G07", "G08"].includes(f),
-        ),
-        error: quizState.adaptiveFacts.filter((f) =>
-            ["G09", "G10"].includes(f),
-        ),
-        hint: quizState.adaptiveFacts.filter((f) => ["G11", "G12"].includes(f)),
-        module: quizState.adaptiveFacts.filter((f) =>
+        time: factCodes.filter((f) => ["G05", "G06"].includes(f)),
+        style: factCodes.filter((f) => ["G07", "G08"].includes(f)),
+        error: factCodes.filter((f) => ["G09", "G10"].includes(f)),
+        hint: factCodes.filter((f) => ["G11", "G12"].includes(f)),
+        module: factCodes.filter((f) =>
             ["G13", "G14", "G23", "G24", "G25"].includes(f),
         ),
-        difficulty: quizState.adaptiveFacts.filter((f) =>
+        difficulty: factCodes.filter((f) =>
             ["G15", "G16", "G17", "G18"].includes(f),
         ),
-        status: quizState.adaptiveFacts.filter((f) =>
+        status: factCodes.filter((f) =>
             ["G19", "G20", "G21", "G22", "G26"].includes(f),
         ),
     });
 
-    function getFactLabel(factCode) {
-        const labels = {
+    function getFactLabel(factCode: string) {
+        const labels: Record<string, string> = {
             G01: "Critical (<40)",
             G02: "Remedial (40-69)",
             G03: "Standard (70-89)",
@@ -73,8 +77,8 @@
         return labels[factCode] || factCode;
     }
 
-    function getCategoryLabel(category) {
-        const labels = {
+    function getCategoryLabel(category: string) {
+        const labels: Record<string, string> = {
             score: "Skor",
             time: "Waktu",
             style: "Gaya Belajar",
@@ -175,7 +179,7 @@
                                 class="space-y-3 max-h-48 overflow-y-auto pr-2 custom-scrollbar"
                             >
                                 {#each Object.entries(factCategories) as [category, categoryFacts] (category)}
-                                    {#if categoryFacts.length > 0}
+                                    {#if (categoryFacts as string[]).length > 0}
                                         <div
                                             transition:fade={{ duration: 200 }}
                                         >
@@ -188,7 +192,7 @@
                                                 {getCategoryLabel(category)}
                                             </div>
                                             <div class="flex flex-wrap gap-1.5">
-                                                {#each categoryFacts as fact (fact)}
+                                                {#each categoryFacts as string[] as fact (fact)}
                                                     <Badge
                                                         variant="secondary"
                                                         size="sm"
@@ -199,7 +203,7 @@
                                                             class="ml-1 text-[9px] text-slate-400 font-sans italic"
                                                         >
                                                             • {getFactLabel(
-                                                                fact,
+                                                                fact as string,
                                                             )}
                                                         </span>
                                                     </Badge>

@@ -1,7 +1,6 @@
 <script>
     import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/ui/PageHeader.svelte";
-    import Button from "@/components/ui/Button.svelte";
+        import Button from "@/components/ui/Button.svelte";
     import { ArrowLeft } from "lucide-svelte";
     import { ROUTES } from "@/utils/route";
     import { formatDate } from "@/utils/formatters";
@@ -17,18 +16,29 @@
 
 <App title={`Detail UEQ - ${state.user.name}`}>
     <div class="space-y-12 pb-20">
-        <PageHeader
-            title="Detail Evaluasi UEQ"
-            subtitle={`Analisis mendalam pengalaman pengguna untuk ${state.user.name}.`}
-        >
-            <div slot="actions">
+        
+<div class="mb-8">
+    <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight font-display">
+        Detail Evaluasi UEQ
+    </h1>
+    <div class="flex items-center gap-2 mt-3" role="presentation">
+        <div class="h-1.5 w-12 bg-primary-600 rounded-full"></div>
+        <div class="h-1.5 w-4 bg-slate-200 rounded-full"></div>
+        <div class="h-1.5 w-2 bg-slate-100 rounded-full"></div>
+    </div>
+    <p class="mt-4 text-slate-500 font-medium leading-relaxed max-w-3xl">
+        {`Analisis mendalam pengalaman pengguna untuk ${state.user.name}.`}
+    </p>
+    <div class="mt-6 flex flex-wrap gap-4">
+        <div>
                 <Button
                     href={ROUTES.ADMIN.UEQ.INDEX}
                     variant="ghost"
                     icon={ArrowLeft}>KEMBALI KE DAFTAR</Button
                 >
             </div>
-        </PageHeader>
+    </div>
+</div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
             <div class="space-y-10">

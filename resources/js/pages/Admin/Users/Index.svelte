@@ -1,8 +1,7 @@
 <script>
     import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/ui/PageHeader.svelte";
-    import Button from "@/components/ui/Button.svelte";
-    import DataTable from "@/components/ui/DataTable.svelte";
+        import Button from "@/components/ui/Button.svelte";
+    import DataTable from "@/components/shared/DataTable.svelte";
     import Badge from "@/components/ui/Badge.svelte";
     import Pagination from "@/components/ui/Pagination.svelte";
     import EmptyState from "@/components/ui/EmptyState.svelte";
@@ -33,11 +32,21 @@
 
 <App title="Manajemen Admin">
     <div class="space-y-12">
-        <PageHeader
-            title="Akses Kontrol Admin"
-            subtitle="Kelola akun Administrator dan Dosen pembimbing sistem."
-        >
-            <div slot="actions">
+        
+<div class="mb-8">
+    <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight font-display">
+        Akses Kontrol Admin
+    </h1>
+    <div class="flex items-center gap-2 mt-3" role="presentation">
+        <div class="h-1.5 w-12 bg-primary-600 rounded-full"></div>
+        <div class="h-1.5 w-4 bg-slate-200 rounded-full"></div>
+        <div class="h-1.5 w-2 bg-slate-100 rounded-full"></div>
+    </div>
+    <p class="mt-4 text-slate-500 font-medium leading-relaxed max-w-3xl">
+        Kelola akun Administrator dan Dosen pembimbing sistem.
+    </p>
+    <div class="mt-6 flex flex-wrap gap-4">
+        <div>
                 {#if isSuperAdmin}
                     <div class="flex flex-wrap items-center gap-4">
                         {#if pendingAdminsCount > 0}
@@ -57,7 +66,8 @@
                     </div>
                 {/if}
             </div>
-        </PageHeader>
+    </div>
+</div>
 
         <DataTable
             title="Direktori Pengguna Sistem"

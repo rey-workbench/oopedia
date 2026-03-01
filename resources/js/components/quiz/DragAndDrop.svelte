@@ -212,7 +212,7 @@
         <div class="drag-items flex flex-wrap gap-3 p-2">
             {#each question.answers as answer (answer.id)}
                 {@const isUsed = Object.values(dragAndDropAnswers).includes(
-                    answer.answer_text,
+                    answer.answer_text ?? "",
                 )}
                 <div
                     class="draggable px-6 py-3.5 rounded-xl font-bold text-sm transition-all duration-200 shadow-sm select-none border-2 flex items-center gap-2
@@ -222,7 +222,7 @@
                     draggable={!isUsed}
                     role="listitem"
                     ondragstart={(e) =>
-                        !isUsed && handleDragStart(e, answer.answer_text)}
+                        !isUsed && handleDragStart(e, answer.answer_text ?? "")}
                     ondragend={handleDragEnd}
                 >
                     {#if !isUsed}

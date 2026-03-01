@@ -1,11 +1,21 @@
 <script lang="ts">
     import Card from "@/components/ui/Card.svelte";
     import { Check, Lock, Trophy } from "lucide-svelte";
+
+    interface Props {
+        class?: string;
+    }
+
+    let { class: className = "" }: Props = $props();
 </script>
 
-<Card padding="p-6">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+<Card padding="p-6" class={className}>
+    <div
+        class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+    >
+        <span
+            class="text-[10px] font-black text-slate-400 uppercase tracking-widest"
+        >
             Keterangan
         </span>
         <div class="flex flex-wrap items-center gap-x-8 gap-y-3">
@@ -15,7 +25,9 @@
                 >
                     <span class="text-xs font-black">1</span>
                 </div>
-                <span class="text-xs font-semibold text-slate-600">Bisa dikerjakan</span>
+                <span class="text-xs font-semibold text-slate-600"
+                    >Bisa dikerjakan</span
+                >
             </div>
             <div class="flex items-center gap-2.5">
                 <div
@@ -23,7 +35,9 @@
                 >
                     <Check size={14} strokeWidth={3} />
                 </div>
-                <span class="text-xs font-semibold text-slate-600">Sudah benar</span>
+                <span class="text-xs font-semibold text-slate-600"
+                    >Sudah benar</span
+                >
             </div>
             <div class="flex items-center gap-2.5">
                 <div
@@ -31,7 +45,9 @@
                 >
                     <Lock size={12} />
                 </div>
-                <span class="text-xs font-semibold text-slate-400">Terkunci</span>
+                <span class="text-xs font-semibold text-slate-400"
+                    >Terkunci</span
+                >
             </div>
             <div class="flex items-center gap-2.5">
                 <div
@@ -39,7 +55,9 @@
                 >
                     <Trophy size={12} />
                 </div>
-                <span class="text-xs font-semibold text-slate-400">Penghargaan akhir</span>
+                <span class="text-xs font-semibold text-slate-400"
+                    >Penghargaan akhir</span
+                >
             </div>
         </div>
     </div>

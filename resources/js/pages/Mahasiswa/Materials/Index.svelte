@@ -1,7 +1,6 @@
 <script>
     import App from "@/layouts/App.svelte";
-    import PageHeader from "@/components/ui/PageHeader.svelte";
-    import Card from "@/components/ui/Card.svelte";
+        import Card from "@/components/ui/Card.svelte";
     import Button from "@/components/ui/Button.svelte";
     import { Code, Puzzle, BookOpen, Ghost, ArrowRight } from "lucide-svelte";
     import { formatDate } from "@/utils/formatters";
@@ -15,10 +14,20 @@
 
 <App title="Materi Pembelajaran">
     <div class="space-y-12">
-        <PageHeader
-            title="Kurikulum PBO"
-            subtitle="Kuasai konsep fondasi hingga tingkat lanjut Pemrograman Berorientasi Objek."
-        />
+        
+<div class="mb-8">
+    <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight font-display">
+        Kurikulum PBO
+    </h1>
+    <div class="flex items-center gap-2 mt-3" role="presentation">
+        <div class="h-1.5 w-12 bg-primary-600 rounded-full"></div>
+        <div class="h-1.5 w-4 bg-slate-200 rounded-full"></div>
+        <div class="h-1.5 w-2 bg-slate-100 rounded-full"></div>
+    </div>
+    <p class="mt-4 text-slate-500 font-medium leading-relaxed max-w-3xl">
+        Kuasai konsep fondasi hingga tingkat lanjut Pemrograman Berorientasi Objek.
+    </p>
+</div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {#each state.materials as material (material.id)}

@@ -1,13 +1,22 @@
-<script>
-    import { onMount, afterUpdate, onDestroy } from "svelte";
+<script lang="ts">
+    import { onMount, onDestroy } from "svelte";
 
-    export let type = "line";
-    export let series = [];
-    export let options = {};
-    export let height = 350;
+    interface Props {
+        type?: string;
+        series?: any[];
+        options?: any;
+        height?: number;
+    }
 
-    let chart;
-    let chartElement;
+    let {
+        type = "line",
+        series = [],
+        options = {},
+        height = 350,
+    }: Props = $props();
+
+    let chart: any;
+    let chartElement: HTMLElement;
 
     async function initChart() {
         if (typeof window !== "undefined") {
@@ -36,8 +45,8 @@
         initChart();
     });
 
-    afterUpdate(() => {
-        if (chart) {
+    $effect(() => {
+        if (chart && (series || options)) {
             chart.updateOptions({
                 ...options,
                 series: series,
