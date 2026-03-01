@@ -1,15 +1,15 @@
 import { router } from "@inertiajs/svelte";
 import { BaseState } from "@/states/BaseState.svelte";
 import { ROUTES } from "@/utils/route";
-import type { Material, SubMaterial, MaterialWithProgress } from "@/types";
+import type { Material, SubMaterial } from "@/types";
 
 /**
  * Material Catalog State
  */
 export class MaterialCatalogState extends BaseState {
-    materials = $state<MaterialWithProgress[]>([]);
+    materials = $state<any[]>([]);
 
-    constructor(materials: MaterialWithProgress[]) {
+    constructor(materials: any[]) {
         super();
         this.materials = materials;
     }
@@ -81,9 +81,9 @@ export class SubMaterialState extends BaseState {
  * In Progress Materials State
  */
 export class InProgressState extends BaseState {
-    materialsWithStats = $state<MaterialWithProgress[]>([]);
+    materialsWithStats = $state<any[]>([]);
 
-    constructor(materialsWithStats: MaterialWithProgress[]) {
+    constructor(materialsWithStats: any[]) {
         super();
         this.materialsWithStats = materialsWithStats;
     }

@@ -299,7 +299,7 @@
 
                 <Card padding="p-8 md:p-12">
                     {#if state.flash?.success}
-                        <Alert variant="success" className="mb-10"
+                        <Alert variant="success" class="mb-10"
                             >{(state.flash as any).success}</Alert
                         >
                     {/if}

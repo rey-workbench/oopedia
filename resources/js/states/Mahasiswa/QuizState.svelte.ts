@@ -14,7 +14,7 @@ interface AnswerPayload {
     material_id: number;
     used_hint: boolean;
     time_spent: number;
-    difficulty: DifficultyLevel;
+    difficulty: string;
     fill_in_the_blank_answer?: string;
     answer?: string | null;
     drag_and_drop_answers?: string;
@@ -55,9 +55,9 @@ export interface LevelItem {
  * Question List State (Selection/Catalog)
  */
 export class QuestionListState extends BaseState {
-    materials = $state<Material[]>([]);
+    materials = $state<any[]>([]);
 
-    constructor(materials: Material[]) {
+    constructor(materials: any[]) {
         super();
         this.materials = materials;
     }
@@ -86,7 +86,7 @@ export class LevelMapState extends BaseState {
 export class QuestionShowState extends BaseState {
     material = $state<Material>({} as Material);
     currentQuestion = $state<Question | null>(null);
-    difficulty = $state<DifficultyLevel>('beginner');
+    difficulty = $state<string>('beginner');
     studentState = $state<StudentStateViewModel>({} as StudentStateViewModel);
 
     fillInTheBlankAnswer = $state("");
@@ -128,7 +128,7 @@ export class QuestionShowState extends BaseState {
     level = $derived(this.studentState?.gamification?.current_level || "Pemula");
     hintsAvailable = $derived(this.studentState?.performance?.hints_available ?? 3);
 
-    constructor(material: Material, currentQuestion: Question, difficulty: DifficultyLevel, studentState: StudentStateViewModel) {
+    constructor(material: Material, currentQuestion: Question, difficulty: string, studentState: StudentStateViewModel) {
         super();
         this.material = material;
         this.currentQuestion = currentQuestion;
@@ -137,11 +137,11 @@ export class QuestionShowState extends BaseState {
         this.startTime = Date.now();
     }
 
-    getDifficultyLabel(diff: DifficultyLevel): string {
+    getDifficultyLabel(diff: string): string {
         return getDifficultyLabel(diff);
     }
 
-    getDifficultyColor(diff: DifficultyLevel): string {
+    getDifficultyColor(diff: string): string {
         return getDifficultyColor(diff);
     }
 
@@ -253,11 +253,11 @@ export class QuestionShowState extends BaseState {
  */
 export class ReviewState extends BaseState {
     material = $state<Material>({} as Material);
-    materials = $state<Material[]>([]);
-    questions = $state<Question[]>([]);
-    difficulty = $state<DifficultyLevel | "">("");
+    materials = $state<any[]>([]);
+    questions = $state<any[]>([]);
+    difficulty = $state<string>("");
 
-    constructor(material: Material, materials: Material[], questions: Question[], difficulty: DifficultyLevel | "") {
+    constructor(material: Material, materials: any[], questions: any[], difficulty: string) {
         super();
         this.material = material;
         this.materials = materials;
@@ -273,7 +273,7 @@ export class ReviewState extends BaseState {
         return getDifficultyColor(d);
     }
 
-    filterDifficulty(d: DifficultyLevel | "") {
+    filterDifficulty(d: string) {
         router.get(
             ROUTES.MAHASISWA.MATERIALS.QUESTIONS.REVIEW(this.material.id),
             { difficulty: d },

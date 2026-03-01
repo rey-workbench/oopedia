@@ -1,5 +1,5 @@
 import { FormState } from "@/states/FormState.svelte";
-import type { LearningProfile } from "@/types";
+
 
 type ProfileForm = {
     name: string;
@@ -9,9 +9,9 @@ type ProfileForm = {
 };
 
 export class ProfileState extends FormState<ProfileForm> {
-    personalization = $state<LearningProfile | null>(null);
+    personalization = $state<any>(null);
 
-    constructor(personalization: LearningProfile) {
+    constructor(personalization: any) {
         super({ name: "", email: "", password: "", password_confirmation: "" });
         if (this.user) {
             this.form.name = this.user.name ?? "";

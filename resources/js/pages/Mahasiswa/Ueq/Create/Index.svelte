@@ -45,7 +45,7 @@
             <div class="p-12 space-y-12">
                 {#if state.form.errors && Object.keys(state.form.errors).length > 0}
                     <Alert variant="danger" dismissible={true}>
-                        Ada {Object.keys($form.errors).length} aspek yang belum Anda
+                        Ada {Object.keys(state.form.errors).length} aspek yang belum Anda
                         evaluasi atau tidak valid. Silakan tinjau kembali input Anda.
                     </Alert>
                 {/if}
@@ -214,16 +214,16 @@
                                 </label>
                                 <textarea
                                     id="comments"
-                                    bind:value={state.form.comments}
+                                    bind:value={state.form['comments']}
                                     class="w-full px-8 py-6 border-2 border-slate-50 rounded-[2rem] bg-slate-50 font-bold focus:ring-8 focus:ring-primary-50 focus:border-primary-500 outline-none transition-all placeholder:text-slate-300 text-xs min-h-[160px] uppercase tracking-wider"
                                     placeholder="Bagaimana perasaan Anda saat belajar menggunakan OOPEDIA?"
                                     required
                                 ></textarea>
-                                {#if state.form.errors.comments}
+                                {#if state.form.errors['comments']}
                                     <p
                                         class="text-[10px] font-bold text-rose-500 ml-4 uppercase tracking-widest"
                                     >
-                                        {state.form.errors.comments}
+                                        {state.form.errors['comments']}
                                     </p>
                                 {/if}
                             </div>
@@ -239,16 +239,16 @@
                                 </label>
                                 <textarea
                                     id="suggestions"
-                                    bind:value={state.form.suggestions}
+                                    bind:value={state.form['suggestions']}
                                     class="w-full px-8 py-6 border-2 border-slate-50 rounded-[2rem] bg-slate-50 font-bold focus:ring-8 focus:ring-primary-50 focus:border-primary-500 outline-none transition-all placeholder:text-slate-300 text-xs min-h-[160px] uppercase tracking-wider"
                                     placeholder="Apa satu hal yang paling ingin Anda tingkatkan dari sistem ini?"
                                     required
                                 ></textarea>
-                                {#if state.form.errors.suggestions}
+                                {#if state.form.errors['suggestions']}
                                     <p
                                         class="text-[10px] font-bold text-rose-500 ml-4 uppercase tracking-widest"
                                     >
-                                        {state.form.errors.suggestions}
+                                        {state.form.errors['suggestions']}
                                     </p>
                                 {/if}
                             </div>

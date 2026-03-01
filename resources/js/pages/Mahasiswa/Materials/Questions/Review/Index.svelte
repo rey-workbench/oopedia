@@ -21,8 +21,8 @@
         material,
         materials = [],
         questions = [],
-        difficulty = "all",
-    }: { material: Material; materials: Material[]; questions: any[]; difficulty: string } = $props();
+        difficulty = "",
+    }: { material: Material; materials: any[]; questions: any[]; difficulty: string } = $props();
 
     const state = new ReviewState(material, materials, questions, difficulty);
 
@@ -79,7 +79,7 @@
             <div class="lg:col-span-3 space-y-8">
                 <DifficultyFilterBar
                     difficulty={state.difficulty}
-                    onFilter={(d) => state.filterDifficulty(d)}
+                    onfilter={(d) => state.filterDifficulty(d)}
                 />
 
                 {#each state.questions as question, index (question.id)}

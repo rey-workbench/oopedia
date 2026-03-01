@@ -51,7 +51,7 @@
         totalQuestions > 0 ? (answeredCount / totalQuestions) * 100 : 0
     );
 
-    const DEBUG_MODE = import.meta.env.VITE_ADAPTIVE_DEBUG === "true";
+    const DEBUG_MODE = import.meta.env['VITE_ADAPTIVE_DEBUG'] === "true";
     const showDebug = $derived(state.showAdaptiveIndicator && DEBUG_MODE);
 </script>
 
@@ -81,7 +81,7 @@
                     </div>
                     <ProgressBar
                         value={progressPercentage}
-                        color="primary"
+                        color="blue"
                         height="h-1.5"
                     />
                 </div>
@@ -101,13 +101,13 @@
             {/if}
 
             {#if state.currentQuestion}
-                <QuestionSessionCard bind:state />
+                <QuestionSessionCard {state} />
             {:else}
-                <FinishStateCard bind:state {material} {answeredCount} />
+                <FinishStateCard {state} {material} {answeredCount} />
             {/if}
         </div>
     </div>
 
-    <FeedbackModal bind:state />
-    <AdaptiveDebugPanel bind:state {showDebug} />
+    <FeedbackModal {state} />
+    <AdaptiveDebugPanel quizState={state} {showDebug} />
 </App>

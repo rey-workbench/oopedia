@@ -61,6 +61,11 @@ export interface Material {
     media?: Media[];
     // Computed / appended fields from controllers
     progress?: number;
+    creator?: User;
+    total_questions?: number;
+    student_count?: number;
+    progress_percentage?: number;
+    completed_questions?: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -78,6 +83,7 @@ export interface SubMaterial {
     created_at: string;
     updated_at: string;
     material?: Material;
+    questions?: Question[];
 }
 
 // ---------------------------------------------------------------------------

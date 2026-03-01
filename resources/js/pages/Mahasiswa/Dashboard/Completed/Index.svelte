@@ -74,7 +74,7 @@
 
                             <div class="pt-6 border-t border-slate-50 flex items-center justify-between">
                                 <Badge variant="success" size="xs">MASTERED</Badge>
-                                <Button variant="ghost" size="xs" href={ROUTES.MAHASISWA.MATERIALS.SHOW(material.id)} icon={RotateCcw}>
+                                <Button variant="ghost" size="sm" href={ROUTES.MAHASISWA.MATERIALS.SHOW(material.id)} icon={RotateCcw}>
                                     ULAS MATERI
                                 </Button>
                             </div>

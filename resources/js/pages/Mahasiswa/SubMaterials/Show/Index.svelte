@@ -31,7 +31,7 @@
 
     const state = new SubMaterialState(material, subMaterial);
 
-    let contentContainer: HTMLElement | undefined = $state();
+    let contentContainer: HTMLElement | undefined;
 
     onMount(async () => {
         await tick();

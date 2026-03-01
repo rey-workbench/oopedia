@@ -93,8 +93,8 @@
                                     padding="p-0"
                                     class="overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 h-full flex flex-col"
                                 >
+                                    {#snippet header()}
                                     <div
-                                        slot="header"
                                         class="p-8 bg-primary-600 relative overflow-hidden text-white border-0 rounded-0"
                                     >
                                         <Activity
@@ -131,6 +131,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    {/snippet}
 
                                     <div class="p-8 flex-1 flex flex-col">
                                         <div

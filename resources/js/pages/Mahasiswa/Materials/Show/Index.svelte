@@ -20,7 +20,7 @@
 
     const { material }: { material: Material } = $props();
 
-    let contentContainer: HTMLElement | undefined = $state();
+    let contentContainer: HTMLElement | undefined;
 
     const stripHtml = (html: string | undefined) => {
         if (!html) return "";
@@ -168,6 +168,7 @@
                     class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                 >
                     {#each state.subMaterials as subMaterial (subMaterial.id)}
+                        {@const SubIcon = getIcon(subMaterial.jenis_konten)}
                         <Card
                             padding="p-0"
                             class="group hover:shadow-2xl transition-all duration-300 overflow-hidden"
@@ -181,7 +182,6 @@
                                     class="absolute inset-x-0 bottom-0 h-1/2 bg-black/20"
                                 ></div>
                                 <div class="relative z-10">
-                                    {@const SubIcon = getIcon(subMaterial.jenis_konten)}
                                     <SubIcon
                                         size={64}
                                         class="text-white/20 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500"

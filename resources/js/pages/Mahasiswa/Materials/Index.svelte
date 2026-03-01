@@ -6,9 +6,8 @@
     import { formatDate } from "@/utils/formatters";
     import { ROUTES } from "@/utils/route";
     import { MaterialCatalogState } from "@/states/Mahasiswa/MaterialState.svelte";
-    import type { Material } from "@/types";
 
-    const { materials = [] }: { materials: Material[] } = $props();
+    const { materials = [] }: { materials: any[] } = $props();
 
     const state = new MaterialCatalogState(materials);
 </script>
@@ -40,7 +39,7 @@
                     <div class="relative h-60 overflow-hidden shrink-0">
                         {#if material.media && material.media.length > 0}
                             <img
-                                src={material.media[0].media_url}
+                                src={material.media[0].full_url}
                                 alt={material.title}
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                             />
