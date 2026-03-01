@@ -18,7 +18,8 @@
         "laravel/legacy-factories": "^1.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.11",
-        "inertiajs/inertia-laravel": "^2.0"
+        "inertiajs/inertia-laravel": "^2.0",
+        "predis/predis": "^3.4"
     },
     "autoload": {
         "psr-4": {

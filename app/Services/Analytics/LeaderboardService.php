@@ -5,6 +5,7 @@ namespace App\Services\Analytics;
 use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\LeaderboardServiceInterface;
+use Illuminate\Support\Facades\Cache;
 
 class LeaderboardService implements LeaderboardServiceInterface
 {
@@ -16,31 +17,34 @@ class LeaderboardService implements LeaderboardServiceInterface
     /** @return array<string, mixed> */
     public function getLeaderboardData(int $currentUserId): array
     {
-        // Get difficulty question counts from active configurations
-        $difficultyCount = $this->calculateDifficultyTotals();
+        // Cache global leaderboard data for 10 minutes (600 seconds)
+        $leaderboardData = Cache::remember('global_leaderboard_data', 600, function () {
+            // Get difficulty question counts from active configurations
+            $difficultyCount = $this->calculateDifficultyTotals();
 
-        // Get correct answers with attempts for scoring
-        $correctAnswers = $this->progressRepo->getCorrectAnswersWithAttempts(3);
+            // Get correct answers with attempts for scoring
+            $correctAnswers = $this->progressRepo->getCorrectAnswersWithAttempts(3);
 
-        // Calculate user scores
-        $userScores = $this->calculateUserScores($correctAnswers);
+            // Calculate user scores
+            $userScores = $this->calculateUserScores($correctAnswers);
 
-        // Get leaderboard statistics
-        $leaderboardData = $this->progressRepo->getLeaderboardStats(3);
+            // Get leaderboard statistics
+            $leaderboardDataRaw = $this->progressRepo->getLeaderboardStats(3);
 
-        // Get materials for calculating total questions
-        $materials = $this->materialRepo->getAllWithQuestionsAndConfigs();
-        $totalConfiguredQuestions = $this->calculateTotalConfiguredQuestions($materials);
+            // Get materials for calculating total questions
+            $materials = $this->materialRepo->getAllWithQuestionsAndConfigs();
+            $totalConfiguredQuestions = $this->calculateTotalConfiguredQuestions($materials);
 
-        // Process leaderboard data
-        $leaderboardData = $this->processLeaderboardData(
-            $leaderboardData,
-            $userScores,
-            $totalConfiguredQuestions,
-            $difficultyCount,
-        );
+            // Process leaderboard data
+            return $this->processLeaderboardData(
+                $leaderboardDataRaw,
+                $userScores,
+                $totalConfiguredQuestions,
+                $difficultyCount,
+            );
+        });
 
-        // Find current user rank
+        // Find current user rank dynamically from cached data
         // Repository returns collection of objects (stdClass or arrays converted to collection)
         // Access 'id' property
         $currentUserRank = $leaderboardData->firstWhere('id', $currentUserId);
