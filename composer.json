@@ -1,12 +1,16 @@
 {
-    "name": "laravel-frontend-presets/material",
-    "description": "Laravel 10.x Front-end preset for material",
+    "name": "oopedia/laravel-inertia-svelte",
+    "description": "Laravel 12.x Inertia OOPedia",
     "license": "MIT",
-    "homepage": "https://github.com/creativetimofficial/material-dashboard-laravel",
+    "homepage": "https://github.com/reyworkbench/oopedia",
     "keywords": [
         "Laravel",
-        "Preset",
-        "Material"
+        "Skripsi",
+        "Rule Based",
+        "Forward Chaining",
+        "Adaptive Quiz",
+        "Inertia",
+        "OOPedia"
     ],
     "require": {
         "php": "^8.2",
@@ -19,15 +23,12 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
-            "LaravelFrontendPresets\\MaterialPreset\\": "src/",
             "Database\\Seeders\\": "database/seeders/"
         }
     },
     "extra": {
         "laravel": {
-            "providers": [
-                "LaravelFrontendPresets\\MaterialPreset\\MaterialPresetServiceProvider"
-            ]
+            "dont-discover": []
         }
     },
     "require-dev": {
