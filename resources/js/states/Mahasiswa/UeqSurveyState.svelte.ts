@@ -1,5 +1,4 @@
 import { FormState } from "@/states/FormState.svelte";
-import type { UeqSurvey } from "@/types";
 
 type UeqSurveyForm = {
     nim: string;
@@ -10,7 +9,7 @@ type UeqSurveyForm = {
 };
 
 export class UeqSurveyState extends FormState<UeqSurveyForm> {
-    aspects = $state<Partial<UeqSurvey>[]>([]);
+    aspects = $state<{ name: string }[]>([]);
     questionnaireAspects = [
         { name: "annoying_enjoyable", left: "Menyebalkan", right: "Menyenangkan" },
         { name: "not_understandable_understandable", left: "Tidak dipahami", right: "Dapat dipahami" },
@@ -40,7 +39,7 @@ export class UeqSurveyState extends FormState<UeqSurveyForm> {
         { name: "conservative_innovative", left: "Konservatif", right: "Inovatif" },
     ];
 
-    constructor(aspects: Partial<UeqSurvey>[]) {
+    constructor(aspects: { name: string }[]) {
         const initialFields: UeqSurveyForm = {
             nim: "",
             class: "",
@@ -48,7 +47,7 @@ export class UeqSurveyState extends FormState<UeqSurveyForm> {
             suggestions: "",
         };
         for (const a of aspects) {
-            if ((a as any).name) initialFields[(a as any).name as string] = null;
+            if (a.name) initialFields[a.name as string] = null;
         }
         super(initialFields);
         this.aspects = aspects;

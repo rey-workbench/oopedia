@@ -19,19 +19,40 @@
     } from "lucide-svelte";
     import { ROUTES } from "@/utils/route";
     import { DashboardState } from "@/states/Mahasiswa/DashboardState.svelte";
+    import type { MahasiswaDashboardProps } from "@/types";
 
-    const { totalMaterials = 0, totalQuestions = 0, hardQuestions = 0, recentActivities = [] }: {
-        totalMaterials: number;
-        totalQuestions: number;
-        hardQuestions: number;
-        recentActivities: any[];
-    } = $props();
+    const {
+        totalMaterials = 0,
+        totalQuestions = 0,
+        easyQuestions = 0,
+        mediumQuestions = 0,
+        hardQuestions = 0,
+        materialProgressPercentage = 0,
+        questionProgressPercentage = 0,
+        completedMaterials = 0,
+        inProgressMaterials = 0,
+        totalMaterialProgress = 0,
+        totalAnsweredQuestions = 0,
+        totalCorrectQuestions = 0,
+        recentActivities = [],
+        allMaterials = [],
+    }: Omit<MahasiswaDashboardProps, 'auth' | 'flash' | 'errors'> = $props();
 
     const state = new DashboardState({
         totalMaterials,
         totalQuestions,
+        easyQuestions,
+        mediumQuestions,
         hardQuestions,
+        materialProgressPercentage,
+        questionProgressPercentage,
+        completedMaterials,
+        inProgressMaterials,
+        totalMaterialProgress,
+        totalAnsweredQuestions,
+        totalCorrectQuestions,
         recentActivities,
+        allMaterials,
     });
 
     const dashboardStats = $derived([

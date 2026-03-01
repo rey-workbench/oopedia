@@ -25,6 +25,15 @@ export type {
     LearningProfile,
     AdaptiveState,
     UeqSurvey,
+    // Computed / service shapes
+    DifficultyStats,
+    MaterialWithStats,
+    RecentActivity,
+    StudentProfile,
+    LeaderboardEntry,
+    UserAttempt,
+    QuestionWithAttempt,
+    QuizSessionState,
 } from '@/types/models';
 
 export type {
@@ -45,7 +54,10 @@ export type {
     MissingQuestionsItem,
     // Mahasiswa pages
     MahasiswaDashboardProps,
+    MahasiswaInProgressProps,
+    MahasiswaCompletedProps,
     MaterialsListProps,
+    QuestionListProps,
     MaterialShowProps,
     QuestionLevelsProps,
     QuestionShowProps,
@@ -54,12 +66,7 @@ export type {
     LeaderboardProps,
     UeqCreateProps,
     // View models
-    StudentStateViewModel,
     LevelStatus,
-    QuestionWithResult,
-    RecentActivityItem,
-    Personalization,
-    LeaderboardEntry,
     // API responses
     CheckAnswerResponse,
     AdaptiveResult,

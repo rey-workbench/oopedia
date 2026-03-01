@@ -2,7 +2,19 @@
 // Inertia.js Page Props & Shared Data Types
 // =============================================================================
 
-import type { Material, Question, StudentState, User, UeqSurvey, DifficultyLevel } from '@/types/models';
+import type {
+    Material,
+    Question,
+    User,
+    UeqSurvey,
+    DifficultyLevel,
+    RecentActivity,
+    MaterialWithStats,
+    StudentProfile,
+    LeaderboardEntry,
+    QuestionWithAttempt,
+    QuizSessionState,
+} from '@/types/models';
 
 // ---------------------------------------------------------------------------
 // Shared props injected by HandleInertiaRequests middleware
@@ -99,24 +111,43 @@ export interface AdminUeqDetailProps extends SharedProps {
 // Mahasiswa page props
 // ---------------------------------------------------------------------------
 
+/** Dashboard index — matches DashboardService.getDashboardIndexData() */
 export interface MahasiswaDashboardProps extends SharedProps {
     totalMaterials: number;
     totalQuestions: number;
+    easyQuestions: number;
+    mediumQuestions: number;
     hardQuestions: number;
-    recentActivities: RecentActivityItem[];
+    materialProgressPercentage: number;
+    questionProgressPercentage: number;
+    completedMaterials: number;
+    inProgressMaterials: number;
+    totalMaterialProgress: number;
+    totalAnsweredQuestions: number;
+    totalCorrectQuestions: number;
+    recentActivities: RecentActivity[];
+    allMaterials: Material[];
 }
 
-export interface RecentActivityItem {
-    id: number;
-    material: Pick<Material, 'id' | 'title'>;
-    difficulty: DifficultyLevel;
-    is_correct: boolean;
-    created_at: string;
+/** Dashboard in-progress list — DashboardService.getInProgressData() */
+export interface MahasiswaInProgressProps extends SharedProps {
+    materialsWithStats: MaterialWithStats[];
 }
 
+/** Dashboard completed list — DashboardService.getCompletedData() */
+export interface MahasiswaCompletedProps extends SharedProps {
+    materialsWithStats: MaterialWithStats[];
+}
+
+/** Material catalog — MaterialViewService.getMaterialsList() */
 export interface MaterialsListProps extends SharedProps {
-    materials: MaterialWithProgress[];
-    studentState: StudentState | null;
+    materials: Material[];
+    isGuest: boolean;
+}
+
+/** Question catalog — QuestionListingService.getMaterialsListWithStudentCount() */
+export interface QuestionListProps extends SharedProps {
+    materials: Material[];
     isGuest: boolean;
 }
 
@@ -147,70 +178,35 @@ export interface QuestionShowProps extends SharedProps {
     answeredCount: number;
     difficulty: DifficultyLevel;
     isGuest: boolean;
-    studentState: StudentStateViewModel;
+    studentState: QuizSessionState;
 }
 
 /**
- * Flattened StudentState shape passed to the question page view.
- * Matches what MaterialQuestionController serializes for Inertia.
+ * Serialised StudentState sent to the quiz page via Inertia.
+ * Defined in models.ts as QuizSessionState — re-exported here for page prop use.
  */
-export interface StudentStateViewModel {
-    gamification: {
-        global_xp: number;
-        current_level: string;
-        current_streak: number;
-        max_streak: number;
-    };
-    performance: {
-        total_questions_answered: number;
-        correct_count: number;
-        wrong_count: number;
-        hints_available: number;
-    };
-    adaptive: {
-        learning_style: string;
-        fast_track_active: boolean;
-        last_rule: string | null;
-    };
-}
+export type { QuizSessionState } from '@/types/models';
 
+/** Review page — MaterialQuestionController.reviewQuestions() */
 export interface QuestionReviewProps extends SharedProps {
     material: Material;
     materials: Material[];
-    questions: QuestionWithResult[];
+    questions: QuestionWithAttempt[];
     difficulty: DifficultyLevel | 'all';
+    isGuest: boolean;
 }
 
-export interface QuestionWithResult extends Question {
-    user_answer: string | null;
-    is_correct: boolean | null;
-    hint_used: boolean;
-}
-
+/** Profile page — ProfileController.show() */
 export interface ProfileProps extends SharedProps {
     user: User;
-    personalization: Personalization;
+    personalization: StudentProfile;
+    materials: Material[];
 }
 
-export interface Personalization {
-    learning_style: string | null;
-    current_level: string | null;
-    global_xp: number;
-    current_streak: number;
-    badges: string[];
-}
-
+/** Leaderboard page — LeaderboardService.getLeaderboardData() */
 export interface LeaderboardProps extends SharedProps {
     leaderboardData: LeaderboardEntry[];
-}
-
-export interface LeaderboardEntry {
-    rank: number;
-    user: Pick<User, 'id' | 'name' | 'email'>;
-    global_xp: number;
-    current_level: string;
-    correct_count: number;
-    total_questions_answered: number;
+    currentUserRank: LeaderboardEntry | null;
 }
 
 export interface UeqCreateProps extends SharedProps {

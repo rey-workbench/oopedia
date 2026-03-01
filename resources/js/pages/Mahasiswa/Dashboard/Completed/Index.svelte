@@ -7,11 +7,11 @@
     import { ArrowLeft, Medal, GraduationCap, Book, CheckCircle2, RotateCcw } from "lucide-svelte";
     import { CompletedState } from "@/states/Mahasiswa/MaterialState.svelte";
     import { ROUTES } from "@/utils/route";
-    import type { Material } from "@/types";
+    import type { MaterialWithStats } from "@/types";
 
-    const { materials = [] }: { materials: Material[] } = $props();
+    const { materialsWithStats = [] }: { materialsWithStats: MaterialWithStats[] } = $props();
 
-    const state = new CompletedState(materials);
+    const state = new CompletedState(materialsWithStats);
 </script>
 
 <App title="Materi Selesai">
@@ -40,7 +40,7 @@
     </div>
 </div>
 
-        {#if state.materials.length === 0}
+        {#if state.materialsWithStats.length === 0}
             <EmptyState
                 title="Belum Ada Sertifikat"
                 description="Selesaikan setidaknya satu modul pembelajaran untuk melihatnya di sini."
@@ -54,7 +54,7 @@
             </EmptyState>
         {:else}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {#each state.materials as material}
+                {#each state.materialsWithStats as { material }}
                     <Card class="hover:border-primary-400 border-slate-100 shadow-xl transition-all group relative overflow-hidden">
                         <div class="absolute -top-6 -right-6 w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500">
                             <CheckCircle2 size={32} strokeWidth={2.5} />

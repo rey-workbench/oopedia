@@ -9,7 +9,7 @@
 
 export type QuestionType = 'fill_in_the_blank' | 'radio_button' | 'drag_and_drop' | 'multiple_choice';
 
-export type DifficultyLevel = 'beginner' | 'intermediate' | 'advanced' | 'final';
+export type DifficultyLevel = 'beginner' | 'medium' | 'hard';
 
 export type JenisKonten = 'teori' | 'sintaks' | 'mixed';
 
@@ -93,12 +93,15 @@ export interface SubMaterial {
 export interface Media {
     id: number;
     material_id: number;
-    file_path: string;
-    file_type: string;
+    /** Raw stored path/URL from DB column */
+    media_url: string;
+    media_type?: string;
+    file_path?: string;
+    file_type?: string;
     title: string | null;
     created_at: string;
     updated_at: string;
-    /** Accessor: public URL to the stored file */
+    /** Accessor: absolute public URL (computed by PHP getFullUrlAttribute) */
     full_url: string;
 }
 
@@ -257,4 +260,99 @@ export interface UeqSurvey {
     created_at: string;
     updated_at: string;
     user?: User;
+}
+
+// ---------------------------------------------------------------------------
+// Dashboard / Services — Computed data shapes (not DB models)
+// ---------------------------------------------------------------------------
+
+/** Per-difficulty breakdown returned by DashboardService.processMaterialsWithStats */
+export interface DifficultyStats {
+    correct: number;
+    total: number;
+    configured_total: number;
+    percentage: number;
+}
+
+/** One entry in materialsWithStats array from DashboardService */
+export interface MaterialWithStats {
+    material: Material;
+    stats: {
+        overall: DifficultyStats;
+        beginner: DifficultyStats;
+        medium: DifficultyStats;
+        hard: DifficultyStats;
+    };
+}
+
+/** Recent activity item returned by ProgressRepository.getRecentActivities */
+export interface RecentActivity {
+    id?: number;
+    material_id: number;
+    material_title?: string;
+    difficulty: DifficultyLevel | string;
+    is_correct: boolean;
+    total_correct?: number;
+    time_ago?: string;
+    created_at?: string;
+    /** Computed by DashboardService: 'achievement' | 'milestone' | 'progress' */
+    type: 'achievement' | 'milestone' | 'progress';
+}
+
+/**
+ * Flattened learning data returned by ProfileController.show().
+ * Built from StudentState accessors — NOT the nested LearningProfile sub-object.
+ */
+export interface StudentProfile {
+    learning_style: string;
+    current_level: string;
+    global_xp: number;
+    current_streak: number;
+    max_streak: number;
+    total_questions_answered: number;
+    correct_count: number;
+    wrong_count: number;
+    hints_used_count: number;
+    hints_available: number;
+    accuracy: number;
+    fast_track_active: boolean;
+}
+
+/** One row in the leaderboard from LeaderboardService.processLeaderboardData */
+export interface LeaderboardEntry {
+    id: number;
+    name: string;
+    rank: number;
+    total_correct_questions: number;
+    hard_completed: number;
+    medium_completed: number;
+    beginner_completed: number;
+    weighted_score: number;
+    formatted_score: string;
+    percentage: number;
+    badge: string;
+    badge_color: string;
+}
+
+/** A single recorded attempt on a question (nested inside QuestionWithAttempt) */
+export interface UserAttempt {
+    is_correct: boolean;
+    answer_id: number;
+    attempt_number: number;
+    score: number;
+}
+
+/** Question augmented with the student's attempt data — used on the Review page */
+export interface QuestionWithAttempt extends Question {
+    user_attempt: UserAttempt | null;
+}
+
+/**
+ * Serialised StudentState sent to the quiz page via Inertia.
+ * Uses Pick<> to stay in sync with the base data interfaces.
+ */
+export interface QuizSessionState {
+    gamification: Pick<GamificationData, 'global_xp' | 'current_level' | 'current_streak' | 'max_streak'>;
+    performance: Pick<PerformanceMetrics, 'total_questions_answered' | 'correct_count' | 'wrong_count' | 'hints_available'>;
+    adaptive: Pick<AdaptiveState, 'fast_track_active' | 'last_rule'> & Pick<LearningProfile, 'learning_style'>;
 }

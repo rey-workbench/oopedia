@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import App from "@/layouts/App.svelte";
     import Card from "@/components/ui/Card.svelte";
     import Button from "@/components/ui/Button.svelte";

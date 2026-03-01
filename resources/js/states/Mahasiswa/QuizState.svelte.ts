@@ -3,7 +3,7 @@ import axios, { isAxiosError } from "axios";
 import { BaseState } from "@/states/BaseState.svelte";
 import { ROUTES } from "@/utils/route";
 import { getDifficultyLabel, getDifficultyColor } from "@/utils/quizUtils";
-import type { Material, Question, DifficultyLevel, StudentStateViewModel, CheckAnswerResponse } from "@/types";
+import type { Material, Question, DifficultyLevel, QuestionWithAttempt, QuizSessionState, CheckAnswerResponse } from "@/types";
 
 // ---------------------------------------------------------------------------
 // Shared interfaces
@@ -55,9 +55,9 @@ export interface LevelItem {
  * Question List State (Selection/Catalog)
  */
 export class QuestionListState extends BaseState {
-    materials = $state<any[]>([]);
+    materials = $state<Material[]>([]);
 
-    constructor(materials: any[]) {
+    constructor(materials: Material[]) {
         super();
         this.materials = materials;
     }
@@ -87,7 +87,7 @@ export class QuestionShowState extends BaseState {
     material = $state<Material>({} as Material);
     currentQuestion = $state<Question | null>(null);
     difficulty = $state<string>('beginner');
-    studentState = $state<StudentStateViewModel>({} as StudentStateViewModel);
+    studentState = $state<QuizSessionState>({} as QuizSessionState);
 
     fillInTheBlankAnswer = $state("");
     selectedMultipleChoiceAnswer = $state<string | null>(null);
@@ -128,7 +128,7 @@ export class QuestionShowState extends BaseState {
     level = $derived(this.studentState?.gamification?.current_level || "Pemula");
     hintsAvailable = $derived(this.studentState?.performance?.hints_available ?? 3);
 
-    constructor(material: Material, currentQuestion: Question, difficulty: string, studentState: StudentStateViewModel) {
+    constructor(material: Material, currentQuestion: Question, difficulty: string, studentState: QuizSessionState) {
         super();
         this.material = material;
         this.currentQuestion = currentQuestion;
@@ -253,11 +253,11 @@ export class QuestionShowState extends BaseState {
  */
 export class ReviewState extends BaseState {
     material = $state<Material>({} as Material);
-    materials = $state<any[]>([]);
-    questions = $state<any[]>([]);
-    difficulty = $state<string>("");
+    materials = $state<Material[]>([]);
+    questions = $state<QuestionWithAttempt[]>([]);
+    difficulty = $state<DifficultyLevel | 'all'>('all');
 
-    constructor(material: Material, materials: any[], questions: any[], difficulty: string) {
+    constructor(material: Material, materials: Material[], questions: QuestionWithAttempt[], difficulty: DifficultyLevel | 'all') {
         super();
         this.material = material;
         this.materials = materials;

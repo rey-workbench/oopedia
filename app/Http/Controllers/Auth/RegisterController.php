@@ -8,6 +8,7 @@ use App\Http\Requests\Auth\RegisterRequest;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -40,13 +41,13 @@ class RegisterController extends Controller
         Auth::login($user);
 
         if ($role_id === 2 && ! $is_approved) {
-            return redirect()->route('admin.pending-approval');
+            return Redirect::route('admin.pending-approval');
         }
 
         if ($role_id === 2) {
-            return redirect()->route('admin.dashboard');
+            return Redirect::route('admin.dashboard');
         }
 
-        return redirect()->route('mahasiswa.dashboard');
+        return Redirect::route('mahasiswa.dashboard');
     }
 }

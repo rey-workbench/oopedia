@@ -10,7 +10,9 @@
     import { ROUTES } from "@/utils/route";
     import { QuestionListState } from "@/states/Mahasiswa/QuizState.svelte";
 
-    const { materials = [] }: { materials: any[] } = $props();
+    import type { Material } from "@/types";
+
+    const { materials = [] }: { materials: Material[] } = $props();
 
     const state = new QuestionListState(materials);
 </script>
@@ -55,7 +57,7 @@
                             {#if material.media && material.media.length > 0}
                                 <div class="h-60 md:h-full">
                                     <img
-                                        src={material.media[0].full_url}
+                                        src={material.media[0]?.full_url}
                                         alt={material.title}
                                         class="w-full h-full object-cover"
                                     />

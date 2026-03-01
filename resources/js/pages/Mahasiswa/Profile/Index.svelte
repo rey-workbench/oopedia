@@ -27,7 +27,9 @@
     } from "lucide-svelte";
     import { ProfileState } from "@/states/Mahasiswa/ProfileState.svelte";
 
-    const { personalization }: { personalization: any } = $props();
+    import type { StudentProfile } from "@/types";
+
+    const { personalization }: { personalization: StudentProfile | null } = $props();
 
     const state = new ProfileState(personalization);
 

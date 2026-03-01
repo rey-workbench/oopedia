@@ -8,6 +8,7 @@
     import FinishStateCard from "@/components/quiz/FinishStateCard.svelte";
     import FeedbackModal from "@/components/quiz/FeedbackModal.svelte";
     import AdaptiveDebugPanel from "@/components/quiz/AdaptiveDebugPanel.svelte";
+    import type { Material, Question, DifficultyLevel, QuizSessionState } from "@/types";
 
     const {
         material,
@@ -15,21 +16,23 @@
         currentQuestionNumber = 1,
         totalQuestions = 0,
         answeredCount = 0,
-        difficulty = "beginner",
-        studentState = {},
+        difficulty = "beginner" as const,
+        isGuest: _isGuest = false,
+        studentState,
     }: {
-        material: any;
-        currentQuestion: any;
+        material: Material;
+        currentQuestion: Question | null;
         currentQuestionNumber: number;
         totalQuestions: number;
         answeredCount: number;
-        difficulty: string;
-        studentState: any;
+        difficulty: DifficultyLevel;
+        isGuest: boolean;
+        studentState: QuizSessionState;
     } = $props();
 
     let state = new QuestionShowState(
         material,
-        currentQuestion,
+        currentQuestion as Question,
         difficulty,
         studentState,
     );

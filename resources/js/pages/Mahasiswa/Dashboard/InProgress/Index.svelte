@@ -15,7 +15,9 @@
     import { InProgressState } from "@/states/Mahasiswa/MaterialState.svelte";
     import { ROUTES } from "@/utils/route";
 
-    const { materialsWithStats = [] }: { materialsWithStats: any[] } = $props();
+    import type { MaterialWithStats } from "@/types";
+
+    const { materialsWithStats = [] }: { materialsWithStats: MaterialWithStats[] } = $props();
 
     const state = new InProgressState(materialsWithStats);
 </script>

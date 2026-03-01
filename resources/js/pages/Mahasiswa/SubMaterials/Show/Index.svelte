@@ -25,9 +25,9 @@
     import { ROUTES } from "@/utils/route";
     import { onMount, tick } from "svelte";
     import { enhanceCodeBlocks } from "@/utils/codeBlockEnhancer";
-    import type { Material } from "@/types";
+    import type { Material, SubMaterial } from "@/types";
 
-    const { material, subMaterial }: { material: Material; subMaterial: any } = $props();
+    const { material, subMaterial }: { material: Material; subMaterial: SubMaterial } = $props();
 
     const state = new SubMaterialState(material, subMaterial);
 

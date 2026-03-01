@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
     import UserAvatar from "@/components/ui/UserAvatar.svelte";
-    import Badge from "@/components/ui/Badge.svelte";
     import { Crown } from "lucide-svelte";
+    import type { LeaderboardEntry } from "@/types";
 
-    let { top3 = [] } = $props();
+    let { top3 = [] }: { top3: LeaderboardEntry[] } = $props();
 
     // We want to reorder them so it's 2, 1, 3 for a visual podium
     let podiumItems = $derived([

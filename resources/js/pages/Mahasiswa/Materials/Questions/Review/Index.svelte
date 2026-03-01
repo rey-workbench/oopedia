@@ -15,14 +15,14 @@
         FileText,
     } from "lucide-svelte";
     import { ReviewState } from "@/states/Mahasiswa/QuizState.svelte";
-    import type { Material } from "@/types";
+    import type { Material, QuestionWithAttempt, DifficultyLevel } from "@/types";
 
     const {
         material,
         materials = [],
         questions = [],
-        difficulty = "",
-    }: { material: Material; materials: any[]; questions: any[]; difficulty: string } = $props();
+        difficulty = "all",
+    }: { material: Material; materials: Material[]; questions: QuestionWithAttempt[]; difficulty: DifficultyLevel | 'all' } = $props();
 
     const state = new ReviewState(material, materials, questions, difficulty);
 

@@ -8,7 +8,9 @@
     import LeaderboardPodium from "./components/LeaderboardPodium.svelte";
     import { LeaderboardState } from "@/states/Mahasiswa/LeaderboardState.svelte";
 
-    const { leaderboardData = [] }: { leaderboardData: any[] } = $props();
+    import type { LeaderboardEntry } from "@/types";
+
+    const { leaderboardData = [] }: { leaderboardData: LeaderboardEntry[] } = $props();
 
     const state = new LeaderboardState(leaderboardData);
 

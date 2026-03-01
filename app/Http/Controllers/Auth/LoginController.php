@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -32,7 +33,7 @@ class LoginController extends Controller
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
             }
-            return redirect()->route('mahasiswa.materials.index');
+            return Redirect::route('mahasiswa.materials.index');
         }
 
         // Handle Standard Login
@@ -62,12 +63,12 @@ class LoginController extends Controller
     public function logout(Request $request): RedirectResponse
     {
         Auth::logout();
-
         $request->session()->invalidate();
+
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return Redirect::to('/');
     }
 
     public function home(): RedirectResponse
@@ -76,14 +77,14 @@ class LoginController extends Controller
             $user = Auth::user();
 
             if ($user->role_id <= 2) {
-                return redirect()->route('admin.dashboard');
+                return Redirect::route('admin.dashboard');
             }
 
             if ($user->role_id == 3) {
-                return redirect()->route('mahasiswa.dashboard');
+                return Redirect::route('mahasiswa.dashboard');
             }
         }
 
-        return redirect()->route('mahasiswa.materials.index');
+        return Redirect::route('mahasiswa.materials.index');
     }
 }
