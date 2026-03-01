@@ -22,7 +22,7 @@ readonly class MaterialUpdateDTO
     public function toArray(): array
     {
         return array_filter([
-            'title' => $this->title,
+            'title'       => $this->title,
             'description' => $this->description,
         ], fn ($value) => $value !== null);
     }

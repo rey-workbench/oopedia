@@ -17,9 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'role' => \App\Http\Middleware\CheckRole::class,
+            'role'           => \App\Http\Middleware\CheckRole::class,
             'admin.approved' => \App\Http\Middleware\EnsureAdminIsApproved::class,
-            'guest.access' => \App\Http\Middleware\GuestAccess::class,
+            'guest.access'   => \App\Http\Middleware\GuestAccess::class,
         ]);
 
         $middleware->web(append: [
@@ -49,7 +49,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (HttpException $e, Request $request) {
             if ($request->inertia()) {
                 return Inertia::render('Error/Index', [
-                    'status' => $e->getStatusCode(),
+                    'status'  => $e->getStatusCode(),
                     'message' => $e->getMessage(),
                 ])->toResponse($request)->setStatusCode($e->getStatusCode());
             }

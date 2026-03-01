@@ -36,16 +36,16 @@ readonly class QuizAttemptDTO
     public function toArray(): array
     {
         return [
-            'id' => $this->id,
-            'user_id' => $this->user_id,
-            'question_id' => $this->question_id,
-            'answer_id' => $this->answer_id,
-            'is_correct' => $this->is_correct,
-            'score' => $this->score,
+            'id'             => $this->id,
+            'user_id'        => $this->user_id,
+            'question_id'    => $this->question_id,
+            'answer_id'      => $this->answer_id,
+            'is_correct'     => $this->is_correct,
+            'score'          => $this->score,
             'attempt_number' => $this->attempt_number,
-            'time_spent' => $this->time_spent,
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
+            'time_spent'     => $this->time_spent,
+            'created_at'     => $this->created_at->format('Y-m-d H:i:s'),
+            'updated_at'     => $this->updated_at->format('Y-m-d H:i:s'),
         ];
     }
 }

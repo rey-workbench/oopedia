@@ -15,8 +15,11 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
 class Rule13_TextualProjectRevision extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_13';
+
     protected string $ruleName = 'Textual Project Revision';
+
     protected string $actionCode = AdaptiveConstants::ACTION_TEXTUAL_REMEDIATION;
+
     protected int $priority = 15; // High priority
 
     public function evaluate(array $facts): bool
@@ -28,9 +31,9 @@ class Rule13_TextualProjectRevision extends BaseAdaptiveRule
 
     public function apply(array $state, array $context): array
     {
-        $state['recommendation'] = 'Revisi Proyek - Ulas Materi';
-        $state['next_action'] = 'STUDY_TEXTUAL';
-        $state['message'] = 'Proyek Anda perlu perbaikan. Mari ulas kembali konsep fundamental.';
+        $state['recommendation']    = 'Revisi Proyek - Ulas Materi';
+        $state['next_action']       = 'STUDY_TEXTUAL';
+        $state['message']           = 'Proyek Anda perlu perbaikan. Mari ulas kembali konsep fundamental.';
         $state['intervention_type'] = 'textual_project_revision';
 
         return $state;

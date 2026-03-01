@@ -53,7 +53,7 @@ class SubMaterialController extends Controller
 
     public function edit(int|string $materialId, int|string $submaterialId): Response|RedirectResponse
     {
-        $material = $this->materialRepo->find((int) $materialId);
+        $material    = $this->materialRepo->find((int) $materialId);
         $submaterial = $this->subMaterialService->getSubMaterialById((int) $submaterialId);
 
         if (! $material || ! $submaterial) {

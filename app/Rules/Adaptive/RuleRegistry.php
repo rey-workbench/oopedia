@@ -40,27 +40,27 @@ class RuleRegistry
     protected function registerRules(): void
     {
         // Crisis rules (highest priority 5-15)
-        $this->register(new Rule14_PersistentVisualSafetyNet());
-        $this->register(new Rule15_PersistentTextualSafetyNet());
-        $this->register(new Rule01_VisualCrisisIntervention());
-        $this->register(new Rule02_TextualRemediation());
-        $this->register(new Rule12_VisualProjectRevision());
-        $this->register(new Rule13_TextualProjectRevision());
+        $this->register(new Rule14_PersistentVisualSafetyNet);
+        $this->register(new Rule15_PersistentTextualSafetyNet);
+        $this->register(new Rule01_VisualCrisisIntervention);
+        $this->register(new Rule02_TextualRemediation);
+        $this->register(new Rule12_VisualProjectRevision);
+        $this->register(new Rule13_TextualProjectRevision);
 
         // Recovery rules (priority 20)
-        $this->register(new Rule03_SyntaxRecovery());
-        $this->register(new Rule04_LogicRecovery());
+        $this->register(new Rule03_SyntaxRecovery);
+        $this->register(new Rule04_LogicRecovery);
 
         // Achievement rules (priority 20-30)
-        $this->register(new Rule09_GoldCertificate());
-        $this->register(new Rule10_SilverCertificate());
-        $this->register(new Rule11_BronzeCertificate());
-        $this->register(new Rule08_ModuleGraduation());
+        $this->register(new Rule09_GoldCertificate);
+        $this->register(new Rule10_SilverCertificate);
+        $this->register(new Rule11_BronzeCertificate);
+        $this->register(new Rule08_ModuleGraduation);
 
         // Progression rules (priority 25-50)
-        $this->register(new Rule07_CriticalBacktracking());
-        $this->register(new Rule06_AcceleratedJump());
-        $this->register(new Rule05_StandardPromotion());
+        $this->register(new Rule07_CriticalBacktracking);
+        $this->register(new Rule06_AcceleratedJump);
+        $this->register(new Rule05_StandardPromotion);
 
         // Sort by priority (lower number = higher priority)
         usort($this->rules, fn ($a, $b) => $a->getPriority() <=> $b->getPriority());

@@ -31,19 +31,19 @@ readonly class QuestionCreateDTO
 
     private static function processAnswers(Request $request): array
     {
-        $answers = $request->input('answers', []);
+        $answers      = $request->input('answers', []);
         $questionType = $request->input('question_type');
 
         // Process correct_answer for radio_button and fill_in_the_blank
         if (in_array($questionType, ['radio_button', 'fill_in_the_blank'])
             && $request->has('correct_answer')) {
-            $correctIndex = $request->input('correct_answer');
+            $correctIndex     = $request->input('correct_answer');
             $processedAnswers = [];
 
             foreach ($answers as $index => $answer) {
                 $processedAnswers[] = [
                     'answer_text' => $answer['answer_text'] ?? $answer,
-                    'is_correct' => ($index == $correctIndex) ? 1 : 0,
+                    'is_correct'  => ($index == $correctIndex) ? 1 : 0,
                 ];
             }
 
@@ -56,12 +56,12 @@ readonly class QuestionCreateDTO
     public function toArray(): array
     {
         return [
-            'material_id' => $this->material_id,
+            'material_id'     => $this->material_id,
             'sub_material_id' => $this->sub_material_id,
-            'question_text' => $this->question_text,
-            'question_type' => $this->question_type,
-            'difficulty' => $this->difficulty,
-            'created_by' => $this->created_by,
+            'question_text'   => $this->question_text,
+            'question_type'   => $this->question_type,
+            'difficulty'      => $this->difficulty,
+            'created_by'      => $this->created_by,
         ];
     }
 }

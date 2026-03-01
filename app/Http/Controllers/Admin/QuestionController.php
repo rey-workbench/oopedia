@@ -23,25 +23,25 @@ class QuestionController extends Controller
 
     public function index(Request $request): Response
     {
-        $search = $request->input('search');
+        $search     = $request->input('search');
         $difficulty = $request->input('difficulty');
         $materialId = $request->input('material');
 
-        $material = $materialId ? $this->materialRepo->find($materialId) : null;
+        $material  = $materialId ? $this->materialRepo->find($materialId) : null;
         $questions = $this->questionService->getFilteredQuestions($search, $difficulty, $materialId);
 
         return Inertia::render('Admin/Questions/Index', [
-            'questions' => $questions,
-            'material' => $material,
-            'search' => $search,
+            'questions'  => $questions,
+            'material'   => $material,
+            'search'     => $search,
             'difficulty' => $difficulty,
         ]);
     }
 
     public function create(Request $request): Response|RedirectResponse
     {
-        $materialId = $request->input('material');
-        $material = null;
+        $materialId   = $request->input('material');
+        $material     = null;
         $subMaterials = collect();
 
         if ($materialId) {
@@ -52,7 +52,7 @@ class QuestionController extends Controller
                     ->with('error', 'Material tidak ditemukan');
             }
 
-            $materials = collect([$material]);
+            $materials    = collect([$material]);
             $subMaterials = $material->subMaterials()->orderBy('order')->get();
         } else {
             $materials = $this->materialService->getAllMaterials();
@@ -68,7 +68,7 @@ class QuestionController extends Controller
         if (in_array($request->question_type, ['radio_button', 'fill_in_the_blank'])) {
             if ($request->has('correct_answer')) {
                 $correctIndex = $request->correct_answer;
-                $answers = array_map(function ($answer, $index) use ($correctIndex) {
+                $answers      = array_map(function ($answer, $index) use ($correctIndex) {
                     $answer['is_correct'] = ($index == $correctIndex) ? 1 : 0;
 
                     return $answer;
@@ -86,7 +86,7 @@ class QuestionController extends Controller
             }
         }
 
-        $data = $request->only(['question_text', 'question_type', 'difficulty', 'material_id', 'sub_material_id']);
+        $data            = $request->only(['question_text', 'question_type', 'difficulty', 'material_id', 'sub_material_id']);
         $data['answers'] = $answers;
 
         $this->questionService->createQuestion($data);
@@ -106,8 +106,8 @@ class QuestionController extends Controller
                 ->with('error', 'Soal tidak ditemukan');
         }
 
-        $materials = $this->materialService->getAllMaterials();
-        $material = $this->materialRepo->find($question->material_id);
+        $materials    = $this->materialService->getAllMaterials();
+        $material     = $this->materialRepo->find($question->material_id);
         $subMaterials = $material ? $material->subMaterials()->orderBy('order')->get() : collect();
 
         return Inertia::render('Admin/Questions/Edit/Index', compact('question', 'materials', 'material', 'subMaterials'));
@@ -126,7 +126,7 @@ class QuestionController extends Controller
             }
         }
 
-        $data = $request->only(['question_text', 'question_type', 'difficulty', 'material_id', 'sub_material_id']);
+        $data            = $request->only(['question_text', 'question_type', 'difficulty', 'material_id', 'sub_material_id']);
         $data['answers'] = $request->input('answers');
 
         $this->questionService->updateQuestion((int) $questionId, $data);
@@ -139,7 +139,7 @@ class QuestionController extends Controller
 
     public function destroy(int|string $questionId): RedirectResponse
     {
-        $question = $this->questionService->getQuestionById((int) $questionId);
+        $question   = $this->questionService->getQuestionById((int) $questionId);
         $materialId = $question?->material_id;
 
         $this->questionService->deleteQuestion((int) $questionId);

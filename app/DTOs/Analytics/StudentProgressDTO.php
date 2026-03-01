@@ -18,13 +18,13 @@ readonly class StudentProgressDTO
     public function toArray(): array
     {
         return [
-            'user_id' => $this->user_id,
-            'material_id' => $this->material_id,
-            'total_questions' => $this->total_questions,
-            'answered_questions' => $this->answered_questions,
-            'correct_answers' => $this->correct_answers,
-            'progress_percentage' => $this->progress_percentage,
-            'accuracy_percentage' => $this->accuracy_percentage,
+            'user_id'              => $this->user_id,
+            'material_id'          => $this->material_id,
+            'total_questions'      => $this->total_questions,
+            'answered_questions'   => $this->answered_questions,
+            'correct_answers'      => $this->correct_answers,
+            'progress_percentage'  => $this->progress_percentage,
+            'accuracy_percentage'  => $this->accuracy_percentage,
             'difficulty_breakdown' => $this->difficulty_breakdown,
         ];
     }

@@ -15,7 +15,6 @@ interface QuestionListingServiceInterface
      * Get all quiz data for a specific material and difficulty.
      *
      * @param array<string, mixed> $guestProgress
-     *
      * @return array<string, mixed>
      */
     public function getQuizData(Material $material, string $difficulty, int|string|null $userId, bool $isGuest, array $guestProgress = []): array;
@@ -24,7 +23,6 @@ interface QuestionListingServiceInterface
      * Get all materials with student progress counts.
      *
      * @param array<string, mixed> $guestProgress
-     *
      * @return Collection<int, \App\Models\Material>
      */
     public function getMaterialsListWithStudentCount(int|string|null $userId, bool $isGuest, array $guestProgress = []): Collection;
@@ -33,7 +31,6 @@ interface QuestionListingServiceInterface
      * Get questions for the review/report view.
      *
      * @param array<string, mixed> $guestProgress
-     *
      * @return Collection<int, \App\Models\Question>
      */
     public function getReviewQuestions(Material $material, ?string $difficulty, int|string|null $userId, bool $isGuest, array $guestProgress = []): Collection;
@@ -42,7 +39,6 @@ interface QuestionListingServiceInterface
      * Get answered question IDs from guest progress cookie data.
      *
      * @param array<string, mixed> $guestProgress
-     *
      * @return SupportCollection<int, int>
      */
     public function getGuestAnsweredQuestionIds(int $materialId, array $guestProgress = []): SupportCollection;

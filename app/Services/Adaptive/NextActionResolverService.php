@@ -28,30 +28,30 @@ class NextActionResolverService implements NextActionResolverServiceInterface
         return match ($actionCommand) {
             'STUDY_MATERIAL' => [
                 'label' => 'Ulas Materi: ' . $material->title,
-                'url' => route('mahasiswa.materials.show', $material->id),
-                'type' => 'material',
+                'url'   => route('mahasiswa.materials.show', $material->id),
+                'type'  => 'material',
             ],
-            'REDUCE_DIFFICULTY' => $this->reduceDifficulty($material, $question, $userId),
+            'REDUCE_DIFFICULTY'   => $this->reduceDifficulty($material, $question, $userId),
             'INCREASE_DIFFICULTY' => $this->increaseDifficulty($material, $userId),
-            'NEXT_MATERIAL' => $this->jumpToNextMaterial($material),
-            'FINISH_MATERIAL' => [
+            'NEXT_MATERIAL'       => $this->jumpToNextMaterial($material),
+            'FINISH_MATERIAL'     => [
                 'label' => 'Selesaikan Modul',
-                'url' => route('mahasiswa.dashboard'),
-                'type' => 'navigation',
+                'url'   => route('mahasiswa.dashboard'),
+                'type'  => 'navigation',
             ],
             'ISSUE_CERTIFICATE' => [
                 'label' => 'Klaim Sertifikat',
-                'url' => route('mahasiswa.dashboard'),
-                'type' => 'certificate',
+                'url'   => route('mahasiswa.dashboard'),
+                'type'  => 'certificate',
             ],
-            'STUDY_SYNTAX' => $this->studySubMaterial($material, 'sintaks', 'Pelajari Sintaks'),
-            'STUDY_THEORY' => $this->studySubMaterial($material, 'teori', 'Pahami Konsep'),
-            'STUDY_MIXED' => $this->studySubMaterial($material, 'mixed', 'Materi Komprehensif'),
-            'STUDY_VISUAL' => $this->studySubMaterial($material, null, 'Materi Visual'),
+            'STUDY_SYNTAX'  => $this->studySubMaterial($material, 'sintaks', 'Pelajari Sintaks'),
+            'STUDY_THEORY'  => $this->studySubMaterial($material, 'teori', 'Pahami Konsep'),
+            'STUDY_MIXED'   => $this->studySubMaterial($material, 'mixed', 'Materi Komprehensif'),
+            'STUDY_VISUAL'  => $this->studySubMaterial($material, null, 'Materi Visual'),
             'STUDY_TEXTUAL' => $this->studySubMaterial($material, null, 'Materi Tekstual'),
-            default => [
+            default         => [
                 'label' => 'Soal Berikutnya',
-                'url' => (function () use ($material, $question) {
+                'url'   => (function () use ($material, $question) {
                     session(['quiz_difficulty' => $question->difficulty]);
 
                     return route('mahasiswa.materials.questions.show', ['material' => $material->id]);
@@ -67,9 +67,9 @@ class NextActionResolverService implements NextActionResolverServiceInterface
 
         // Determine target difficulty (Stepwise reduction)
         $targetDifficulty = match ($currentDifficulty) {
-            'hard' => 'medium',
+            'hard'   => 'medium',
             'medium' => 'beginner',
-            default => 'beginner',
+            default  => 'beginner',
         };
 
         // Helper to check availability (reusing logic from original method)
@@ -82,7 +82,7 @@ class NextActionResolverService implements NextActionResolverServiceInterface
 
             if ($userId) {
                 $answeredIds = $this->progressService->getAnsweredQuestionIds($userId, $material->id);
-                $questions = $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty);
+                $questions   = $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty);
 
                 return $questions->whereNotIn('id', $answeredIds->toArray())->isNotEmpty();
             }
@@ -95,14 +95,14 @@ class NextActionResolverService implements NextActionResolverServiceInterface
             session(['quiz_difficulty' => $targetDifficulty]);
 
             $labelMap = [
-                'medium' => 'Coba Soal Menengah',
+                'medium'   => 'Coba Soal Menengah',
                 'beginner' => 'Coba Soal Pemula',
             ];
 
             return [
                 'label' => $labelMap[$targetDifficulty] ?? 'Coba Soal Dasar',
-                'url' => route('mahasiswa.materials.questions.show', ['material' => $material->id]),
-                'type' => 'question',
+                'url'   => route('mahasiswa.materials.questions.show', ['material' => $material->id]),
+                'type'  => 'question',
             ];
         }
 
@@ -112,16 +112,16 @@ class NextActionResolverService implements NextActionResolverServiceInterface
 
             return [
                 'label' => 'Coba Soal Pemula',
-                'url' => route('mahasiswa.materials.questions.show', ['material' => $material->id]),
-                'type' => 'question',
+                'url'   => route('mahasiswa.materials.questions.show', ['material' => $material->id]),
+                'type'  => 'question',
             ];
         }
 
         // 3. Final Fallback: Material Review
         return [
             'label' => 'Ulas Materi Dasar',
-            'url' => route('mahasiswa.materials.show', $material->id),
-            'type' => 'material',
+            'url'   => route('mahasiswa.materials.show', $material->id),
+            'type'  => 'material',
         ];
     }
 
@@ -132,8 +132,8 @@ class NextActionResolverService implements NextActionResolverServiceInterface
         // Check if there are unanswered hard questions
         $hasUnansweredHard = false;
         if ($hasHard && $userId) {
-            $answeredIds = $this->progressService->getAnsweredQuestionIds($userId, $material->id);
-            $hardQuestions = $this->questionRepo->getByMaterialAndDifficulty($material->id, 'hard');
+            $answeredIds       = $this->progressService->getAnsweredQuestionIds($userId, $material->id);
+            $hardQuestions     = $this->questionRepo->getByMaterialAndDifficulty($material->id, 'hard');
             $hasUnansweredHard = $hardQuestions->whereNotIn('id', $answeredIds->toArray())->isNotEmpty();
         }
 
@@ -144,7 +144,7 @@ class NextActionResolverService implements NextActionResolverServiceInterface
 
         return [
             'label' => $hasUnansweredHard ? 'Tantangan Menantang' : 'Ulas Materi Lagi',
-            'url' => $hasUnansweredHard
+            'url'   => $hasUnansweredHard
             ? route('mahasiswa.materials.questions.show', ['material' => $material->id])
             : route('mahasiswa.materials.show', $material->id),
             'type' => $hasUnansweredHard ? 'question' : 'material',
@@ -171,7 +171,7 @@ class NextActionResolverService implements NextActionResolverServiceInterface
 
         return [
             'label' => $label,
-            'url' => $subMaterial
+            'url'   => $subMaterial
             ? route('mahasiswa.submaterials.show', ['material' => $material->id, 'submaterial' => $subMaterial->id])
             : route('mahasiswa.materials.show', $material->id),
             'type' => 'material',
@@ -188,16 +188,16 @@ class NextActionResolverService implements NextActionResolverServiceInterface
         if ($nextMaterial) {
             return [
                 'label' => 'Lanjut ke: ' . $nextMaterial->title,
-                'url' => route('mahasiswa.materials.show', $nextMaterial->id),
-                'type' => 'material',
+                'url'   => route('mahasiswa.materials.show', $nextMaterial->id),
+                'type'  => 'material',
             ];
         }
 
         // No more materials - completed all modules
         return [
             'label' => 'Selesai! Kembali ke Dashboard',
-            'url' => route('mahasiswa.dashboard'),
-            'type' => 'navigation',
+            'url'   => route('mahasiswa.dashboard'),
+            'type'  => 'navigation',
         ];
     }
 }

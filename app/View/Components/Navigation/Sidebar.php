@@ -53,11 +53,11 @@ class Sidebar extends Component
         string $userRole = '',
         $materials = null,
     ) {
-        $this->activePage = $activePage;
-        $this->role = $role ?? $this->detectRole();
-        $this->userName = $userName ?: (Auth::check() ? Auth::user()->name : 'Guest');
-        $this->userRole = $userRole ?: $this->getRoleLabel();
-        $this->materials = $materials ?? $this->loadMaterials();
+        $this->activePage   = $activePage;
+        $this->role         = $role ?? $this->detectRole();
+        $this->userName     = $userName ?: (Auth::check() ? Auth::user()->name : 'Guest');
+        $this->userRole     = $userRole ?: $this->getRoleLabel();
+        $this->materials    = $materials                     ?? $this->loadMaterials();
         $this->currentRoute = request()->route()?->getName() ?? '';
     }
 
@@ -73,10 +73,10 @@ class Sidebar extends Component
         $user = Auth::user();
 
         return match ($user->role_id) {
-            1 => 'superadmin',
-            2 => 'admin',
-            3 => 'mahasiswa',
-            4 => 'guest',
+            1       => 'superadmin',
+            2       => 'admin',
+            3       => 'mahasiswa',
+            4       => 'guest',
             default => 'guest',
         };
     }
@@ -91,10 +91,10 @@ class Sidebar extends Component
         }
 
         return match (Auth::user()->role_id) {
-            1 => 'Super Admin',
-            2 => 'Admin',
-            3 => 'Mahasiswa',
-            4 => 'Guest',
+            1       => 'Super Admin',
+            2       => 'Admin',
+            3       => 'Mahasiswa',
+            4       => 'Guest',
             default => 'Guest',
         };
     }
@@ -184,7 +184,7 @@ class Sidebar extends Component
 
         // If user is guest, only show half of the materials
         if ($this->isGuest()) {
-            $totalMaterials = $allMaterials->count();
+            $totalMaterials  = $allMaterials->count();
             $materialsToShow = ceil($totalMaterials / 2);
 
             return $allMaterials->take($materialsToShow);

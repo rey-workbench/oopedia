@@ -65,20 +65,20 @@ class StudentState extends Model
      */
     protected $casts = [
         'performance_metrics' => 'array',
-        'gamification_data' => 'array',
-        'learning_profile' => 'array',
-        'adaptive_state' => 'array',
-        'last_active_at' => 'datetime',
+        'gamification_data'   => 'array',
+        'learning_profile'    => 'array',
+        'adaptive_state'      => 'array',
+        'last_active_at'      => 'datetime',
     ];
 
     /**
      * Default values for JSON fields
      */
     protected $attributes = [
-        'gamification_data' => '{"global_xp":0,"current_level":"Pemula","current_streak":0,"max_streak":0,"badges":[]}',
-        'learning_profile' => '{"learning_style":"visual","mastery_levels":{},"unlocked_modules":[]}',
+        'gamification_data'   => '{"global_xp":0,"current_level":"Pemula","current_streak":0,"max_streak":0,"badges":[]}',
+        'learning_profile'    => '{"learning_style":"visual","mastery_levels":{},"unlocked_modules":[]}',
         'performance_metrics' => '{"total_questions_answered":0,"correct_count":0,"wrong_count":0,"wrong_streak":0,"hints_used_count":0,"hints_available":3}',
-        'adaptive_state' => '{"fast_track_active":false,"current_module_id":null,"module_progress":{},"time_metrics":{"avg_time_per_question":0,"total_time_spent":0},"variables":{}}',
+        'adaptive_state'      => '{"fast_track_active":false,"current_module_id":null,"module_progress":{},"time_metrics":{"avg_time_per_question":0,"total_time_spent":0},"variables":{}}',
     ];
 
     // ==================== RELATIONSHIPS ====================
@@ -162,35 +162,35 @@ class StudentState extends Model
     public function updatePerformance($isCorrect, $attemptNumber, $usedHint)
     {
         // Get current metrics (already decoded by Laravel)
-        $metrics = $this->performance_metrics ?? [];
-        $gamification = $this->gamification_data ?? [];
+        $metrics      = $this->performance_metrics ?? [];
+        $gamification = $this->gamification_data   ?? [];
 
         // Update counters
         $metrics['total_questions_answered'] = ($metrics['total_questions_answered'] ?? 0) + 1;
 
         if ($usedHint) {
             $metrics['hints_used_count'] = ($metrics['hints_used_count'] ?? 0) + 1;
-            $metrics['hints_available'] = max(0, ($metrics['hints_available'] ?? 3) - 1);
+            $metrics['hints_available']  = max(0, ($metrics['hints_available'] ?? 3) - 1);
         }
 
         if ($isCorrect) {
-            $metrics['correct_count'] = ($metrics['correct_count'] ?? 0) + 1;
+            $metrics['correct_count']       = ($metrics['correct_count'] ?? 0)       + 1;
             $gamification['current_streak'] = ($gamification['current_streak'] ?? 0) + 1;
-            $gamification['max_streak'] = max(
-                $gamification['max_streak'] ?? 0,
+            $gamification['max_streak']     = max(
+                $gamification['max_streak']     ?? 0,
                 $gamification['current_streak'] ?? 0,
             );
             $metrics['wrong_streak'] = 0;
         } else {
-            $metrics['wrong_count'] = ($metrics['wrong_count'] ?? 0) + 1;
-            $metrics['wrong_streak'] = ($metrics['wrong_streak'] ?? 0) + 1;
+            $metrics['wrong_count']         = ($metrics['wrong_count'] ?? 0)  + 1;
+            $metrics['wrong_streak']        = ($metrics['wrong_streak'] ?? 0) + 1;
             $gamification['current_streak'] = 0;
         }
 
         // Save back (Laravel will encode automatically)
         $this->performance_metrics = $metrics;
-        $this->gamification_data = $gamification;
-        $this->last_active_at = now();
+        $this->gamification_data   = $gamification;
+        $this->last_active_at      = now();
         $this->save();
 
         return $this;

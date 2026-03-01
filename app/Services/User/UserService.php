@@ -34,8 +34,8 @@ class UserService implements UserServiceInterface
 
     public function createAdmin(array $data): User
     {
-        $data['password'] = Hash::make($data['password']);
-        $data['role_id'] = 2;
+        $data['password']    = Hash::make($data['password']);
+        $data['role_id']     = 2;
         $data['is_approved'] = true;
 
         return $this->userRepo->create($data);
@@ -124,8 +124,8 @@ class UserService implements UserServiceInterface
 
     public function createStudent(array $data): User
     {
-        $data['password'] = Hash::make($data['password']);
-        $data['role_id'] = 3;
+        $data['password']    = Hash::make($data['password']);
+        $data['role_id']     = 3;
         $data['is_approved'] = true;
 
         return $this->userRepo->create($data);
@@ -134,23 +134,23 @@ class UserService implements UserServiceInterface
     /** @return array<string, mixed> */
     public function importAdminsFromFile(UploadedFile $file): array
     {
-        $path = $file->getRealPath();
+        $path         = $file->getRealPath();
         $successCount = 0;
-        $errorRows = [];
+        $errorRows    = [];
 
         if (($handle = fopen($path, 'r')) !== false) {
-            $header = fgetcsv($handle, 1000, ',');
+            $header          = fgetcsv($handle, 1000, ',');
             $requiredColumns = ['name', 'email', 'password'];
-            $missingColumns = array_diff($requiredColumns, $header);
+            $missingColumns  = array_diff($requiredColumns, $header);
 
             if (! empty($missingColumns)) {
                 throw new \RuntimeException('File tidak memiliki kolom yang diperlukan: ' . implode(', ', $missingColumns));
             }
 
-            $nameIndex = array_search('name', $header);
-            $emailIndex = array_search('email', $header);
+            $nameIndex     = array_search('name', $header);
+            $emailIndex    = array_search('email', $header);
             $passwordIndex = array_search('password', $header);
-            $rowNumber = 1;
+            $rowNumber     = 1;
 
             while (($row = fgetcsv($handle, 1000, ',')) !== false) {
                 $rowNumber++;
@@ -160,14 +160,14 @@ class UserService implements UserServiceInterface
                 }
 
                 $rowData = [
-                    'name' => $row[$nameIndex] ?? '',
-                    'email' => $row[$emailIndex] ?? '',
+                    'name'     => $row[$nameIndex]     ?? '',
+                    'email'    => $row[$emailIndex]    ?? '',
                     'password' => $row[$passwordIndex] ?? '',
                 ];
 
                 $validator = Validator::make($rowData, [
-                    'name' => 'required|string|max:255',
-                    'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')],
+                    'name'     => 'required|string|max:255',
+                    'email'    => ['required', 'string', 'email', 'max:255', Rule::unique('users')],
                     'password' => 'required|string|min:8',
                 ]);
 
@@ -179,8 +179,8 @@ class UserService implements UserServiceInterface
 
                 try {
                     $this->createAdmin([
-                        'name' => $row[$nameIndex],
-                        'email' => $row[$emailIndex],
+                        'name'     => $row[$nameIndex],
+                        'email'    => $row[$emailIndex],
                         'password' => $row[$passwordIndex],
                     ]);
 
@@ -199,11 +199,11 @@ class UserService implements UserServiceInterface
     public function generateImportTemplate(): array
     {
         $headers = [
-            'Content-Type' => 'text/csv',
+            'Content-Type'        => 'text/csv',
             'Content-Disposition' => 'attachment; filename="admin_template.csv"',
-            'Pragma' => 'no-cache',
-            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires' => '0',
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
         ];
 
         $callback = function () {

@@ -32,12 +32,12 @@ class MaterialController extends Controller
 
     public function index(): Response
     {
-        $isGuest = $this->isGuest();
+        $isGuest   = $this->isGuest();
         $materials = $this->materialViewService->getMaterialsList(Auth::id(), $isGuest);
 
         return Inertia::render('Mahasiswa/Materials/Index', [
             'materials' => $materials,
-            'isGuest' => $isGuest,
+            'isGuest'   => $isGuest,
         ]);
     }
 
@@ -46,7 +46,7 @@ class MaterialController extends Controller
         $intId = (int) $id;
         if ($this->isGuest()) {
             $allProgress = session('guest_progress', []);
-            $filtered = collect($allProgress)
+            $filtered    = collect($allProgress)
                 ->filter(fn ($v, $k) => ! str_starts_with((string) $k, $intId . '_'))
                 ->all();
             session(['guest_progress' => $filtered]);

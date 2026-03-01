@@ -19,7 +19,7 @@ class StreakService implements StreakServiceInterface
         return [
             'updates' => [
                 'current_streak' => ($state['current_streak'] ?? 0) + 1,
-                'wrong_streak' => 0,
+                'wrong_streak'   => 0,
             ],
         ];
     }
@@ -32,7 +32,7 @@ class StreakService implements StreakServiceInterface
         return [
             'updates' => [
                 'current_streak' => 0,
-                'wrong_streak' => ($state['wrong_streak'] ?? 0) + 1,
+                'wrong_streak'   => ($state['wrong_streak'] ?? 0) + 1,
             ],
         ];
     }
@@ -48,8 +48,8 @@ class StreakService implements StreakServiceInterface
         if ($currentStreak > 0 && $currentStreak % 5 === 0) {
             return [
                 'bonus_granted' => true,
-                'message' => "Streak {$currentStreak}! +1 Hint bonus",
-                'updates' => [
+                'message'       => "Streak {$currentStreak}! +1 Hint bonus",
+                'updates'       => [
                     'hints_available' => ($state['hints_available'] ?? 0) + 1,
                 ],
             ];

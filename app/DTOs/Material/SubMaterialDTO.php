@@ -46,14 +46,14 @@ readonly class SubMaterialDTO
     public function toArray(): array
     {
         return [
-            'id' => $this->id,
-            'material_id' => $this->material_id,
-            'title' => $this->title,
-            'content' => $this->content,
+            'id'           => $this->id,
+            'material_id'  => $this->material_id,
+            'title'        => $this->title,
+            'content'      => $this->content,
             'jenis_konten' => $this->jenis_konten,
-            'order' => $this->order,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'order'        => $this->order,
+            'created_at'   => $this->created_at,
+            'updated_at'   => $this->updated_at,
         ];
     }
 }

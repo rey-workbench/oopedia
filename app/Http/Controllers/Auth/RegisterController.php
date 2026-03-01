@@ -25,14 +25,14 @@ class RegisterController extends Controller
 
     public function store(RegisterRequest $request): RedirectResponse
     {
-        $role_id = $request->has('register_as_admin') ? 2 : 3;
+        $role_id     = $request->has('register_as_admin') ? 2 : 3;
         $is_approved = ($role_id === 3);
 
         $user = $this->userService->registerUser([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password,
-            'role_id' => $role_id,
+            'name'        => $request->name,
+            'email'       => $request->email,
+            'password'    => $request->password,
+            'role_id'     => $role_id,
             'is_approved' => $is_approved,
         ]);
 

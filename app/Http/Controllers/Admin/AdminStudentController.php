@@ -19,7 +19,7 @@ class AdminStudentController extends Controller
 
     public function index(Request $request): Response
     {
-        $search = $request->search;
+        $search   = $request->search;
         $students = $this->studentService->getStudentsWithProgress($search, 10);
 
         return Inertia::render('Admin/Students/Index', compact('students'));
@@ -37,9 +37,9 @@ class AdminStudentController extends Controller
         $data = $this->studentService->getStudentProgressDetail($student);
 
         return Inertia::render('Admin/Students/Progress/Index', [
-            'student' => $student,
-            'materials' => $data['materials'],
-            'recent_activities' => $data['recent_activities'],
+            'student'                    => $student,
+            'materials'                  => $data['materials'],
+            'recent_activities'          => $data['recent_activities'],
             'missingQuestionsByMaterial' => $data['missingQuestionsByMaterial'],
         ]);
     }

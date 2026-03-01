@@ -12,8 +12,11 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
 class Rule04_LogicRecovery extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_04';
+
     protected string $ruleName = 'Logic Recovery';
+
     protected string $actionCode = AdaptiveConstants::ACTION_LOGIC_RECOVERY;
+
     protected int $priority = 20; // High priority
 
     public function evaluate(array $facts): bool
@@ -29,9 +32,9 @@ class Rule04_LogicRecovery extends BaseAdaptiveRule
     public function apply(array $state, array $context): array
     {
         $state['recommendation'] = 'Pemahaman Konsep';
-        $state['next_action'] = 'STUDY_THEORY';
-        $state['message'] = 'Sintaks Anda sudah baik, tapi pemahaman konsep perlu diperkuat. Mari ulas kembali teori fundamental.';
-        $state['recovery_type'] = 'logic';
+        $state['next_action']    = 'STUDY_THEORY';
+        $state['message']        = 'Sintaks Anda sudah baik, tapi pemahaman konsep perlu diperkuat. Mari ulas kembali teori fundamental.';
+        $state['recovery_type']  = 'logic';
 
         return $state;
     }

@@ -14,8 +14,11 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
 class Rule10_SilverCertificate extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_10';
+
     protected string $ruleName = 'Silver Certificate';
+
     protected string $actionCode = AdaptiveConstants::ACTION_SILVER_CERTIFICATE;
+
     protected int $priority = 20; // High priority
 
     public function evaluate(array $facts): bool
@@ -29,14 +32,14 @@ class Rule10_SilverCertificate extends BaseAdaptiveRule
 
     public function apply(array $state, array $context): array
     {
-        $state['next_action'] = 'ISSUE_CERTIFICATE';
-        $state['message'] = 'Selamat! Anda layak mendapatkan Sertifikat PERAK sebagai Object-Oriented Developer.';
+        $state['next_action']   = 'ISSUE_CERTIFICATE';
+        $state['message']       = 'Selamat! Anda layak mendapatkan Sertifikat PERAK sebagai Object-Oriented Developer.';
         $state['certification'] = 'silver';
-        $state['achievement'] = 'silver_certificate';
+        $state['achievement']   = 'silver_certificate';
 
         // Add badge
-        $badges = $state['gamification_data']['badges'] ?? [];
-        $badges[] = 'silver_developer';
+        $badges                               = $state['gamification_data']['badges'] ?? [];
+        $badges[]                             = 'silver_developer';
         $state['gamification_data']['badges'] = $badges;
 
         return $state;

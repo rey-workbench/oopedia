@@ -32,7 +32,7 @@ class LeaderboardService implements LeaderboardServiceInterface
             $leaderboardDataRaw = $this->progressRepo->getLeaderboardStats(3);
 
             // Get materials for calculating total questions
-            $materials = $this->materialRepo->getAllWithQuestionsAndConfigs();
+            $materials                = $this->materialRepo->getAllWithQuestionsAndConfigs();
             $totalConfiguredQuestions = $this->calculateTotalConfiguredQuestions($materials);
 
             // Process leaderboard data
@@ -59,8 +59,8 @@ class LeaderboardService implements LeaderboardServiceInterface
     {
         $totals = [
             'beginner' => 0,
-            'medium' => 0,
-            'hard' => 0,
+            'medium'   => 0,
+            'hard'     => 0,
         ];
 
         $materials = $this->materialRepo->getAllWithQuestionsAndConfigs();
@@ -68,8 +68,8 @@ class LeaderboardService implements LeaderboardServiceInterface
         foreach ($materials as $material) {
             // Use all available questions
             $totals['beginner'] += $material->questions->where('difficulty', 'beginner')->count();
-            $totals['medium'] += $material->questions->where('difficulty', 'medium')->count();
-            $totals['hard'] += $material->questions->where('difficulty', 'hard')->count();
+            $totals['medium']   += $material->questions->where('difficulty', 'medium')->count();
+            $totals['hard']     += $material->questions->where('difficulty', 'hard')->count();
         }
 
         return $totals;
@@ -91,17 +91,17 @@ class LeaderboardService implements LeaderboardServiceInterface
             // Base points by difficulty
             $basePoin = match ($answer->difficulty) {
                 'beginner' => 5,
-                'medium' => 10,
-                'hard' => 15,
-                default => 0
+                'medium'   => 10,
+                'hard'     => 15,
+                default    => 0
             };
 
             // Attempt multiplier
             $attemptMultiplier = match ($attempts) {
-                1 => 1.0,
-                2 => 0.8,
-                3 => 0.6,
-                4 => 0.4,
+                1       => 1.0,
+                2       => 0.8,
+                3       => 0.6,
+                4       => 0.4,
                 default => 0.2
             };
 
@@ -147,8 +147,8 @@ class LeaderboardService implements LeaderboardServiceInterface
             $data->formatted_score = number_format($data->weighted_score, 0, ',', '.');
 
             // Determine badge
-            $badge = $this->determineBadge($data, $difficultyCount);
-            $data->badge = $badge['name'];
+            $badge             = $this->determineBadge($data, $difficultyCount);
+            $data->badge       = $badge['name'];
             $data->badge_color = $badge['color'];
         }
 

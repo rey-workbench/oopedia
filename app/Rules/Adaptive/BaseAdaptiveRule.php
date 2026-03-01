@@ -7,8 +7,11 @@ use App\Rules\Adaptive\Contracts\AdaptiveRuleInterface;
 abstract class BaseAdaptiveRule implements AdaptiveRuleInterface
 {
     protected string $ruleId;
+
     protected string $ruleName;
+
     protected string $actionCode;
+
     protected int $priority = 100; // Lower = higher priority
 
     public function getRuleId(): string

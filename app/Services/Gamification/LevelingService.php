@@ -53,22 +53,22 @@ class LevelingService
         if (! $nextLevel) {
             return [
                 'current_level' => $currentLevel,
-                'next_level' => null,
-                'percentage' => 100,
-                'xp_needed' => 0,
+                'next_level'    => null,
+                'percentage'    => 100,
+                'xp_needed'     => 0,
             ];
         }
 
-        $currentMin = $levels[$currentIndex]['min'];
-        $nextMin = $nextLevel['min'];
-        $progressXp = $xp - $currentMin;
+        $currentMin    = $levels[$currentIndex]['min'];
+        $nextMin       = $nextLevel['min'];
+        $progressXp    = $xp      - $currentMin;
         $totalXpNeeded = $nextMin - $currentMin;
 
         return [
             'current_level' => $currentLevel,
-            'next_level' => $nextLevel['name'],
-            'percentage' => round(($progressXp / $totalXpNeeded) * 100),
-            'xp_needed' => $nextMin - $xp,
+            'next_level'    => $nextLevel['name'],
+            'percentage'    => round(($progressXp / $totalXpNeeded) * 100),
+            'xp_needed'     => $nextMin - $xp,
         ];
     }
 }

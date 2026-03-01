@@ -28,12 +28,12 @@ readonly class AnswerDTO
     public function toArray(): array
     {
         return [
-            'id' => $this->id,
+            'id'          => $this->id,
             'question_id' => $this->question_id,
             'answer_text' => $this->answer_text,
-            'is_correct' => $this->is_correct,
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
+            'is_correct'  => $this->is_correct,
+            'created_at'  => $this->created_at->format('Y-m-d H:i:s'),
+            'updated_at'  => $this->updated_at->format('Y-m-d H:i:s'),
         ];
     }
 }

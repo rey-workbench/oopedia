@@ -21,8 +21,8 @@ class QuizRewardService implements QuizRewardServiceInterface
         // Base XP based on difficulty
         $baseXp = match ($difficulty) {
             'medium' => 20,
-            'hard' => 30,
-            default => 10,
+            'hard'   => 30,
+            default  => 10,
         };
 
         $xpEarned = $baseXp;
@@ -40,9 +40,9 @@ class QuizRewardService implements QuizRewardServiceInterface
 
         return [
             'global_xp_earned' => $xpEarned,
-            'is_fast' => $isFast,
-            'base_xp' => $baseXp,
-            'updates' => [
+            'is_fast'          => $isFast,
+            'base_xp'          => $baseXp,
+            'updates'          => [
                 'global_xp' => ($state['global_xp'] ?? 0) + $xpEarned,
             ],
         ];
@@ -55,7 +55,7 @@ class QuizRewardService implements QuizRewardServiceInterface
     {
         return [
             'global_xp_earned' => 0,
-            'updates' => [
+            'updates'          => [
                 'global_xp' => $state['global_xp'] ?? 0,
             ],
         ];
@@ -80,7 +80,7 @@ class QuizRewardService implements QuizRewardServiceInterface
             'message' => 'Hint digunakan',
             'updates' => [
                 'hints_used_count' => ($state['hints_used_count'] ?? 0) + 1,
-                'hints_available' => $hintsAvailable - 1,
+                'hints_available'  => $hintsAvailable - 1,
             ],
         ];
     }
@@ -90,8 +90,8 @@ class QuizRewardService implements QuizRewardServiceInterface
      */
     public function calculateAccuracy(array $state): float
     {
-        $correct = $state['correct_count'] ?? 0;
-        $total = $state['total_questions_answered'] ?? 0;
+        $correct = $state['correct_count']            ?? 0;
+        $total   = $state['total_questions_answered'] ?? 0;
 
         if ($total === 0) {
             return 0;

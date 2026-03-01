@@ -16,8 +16,11 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
 class Rule02_TextualRemediation extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_02';
+
     protected string $ruleName = 'Textual Remediation';
+
     protected string $actionCode = AdaptiveConstants::ACTION_TEXTUAL_REMEDIATION;
+
     protected int $priority = 10; // High priority (crisis)
 
     public function evaluate(array $facts): bool
@@ -31,9 +34,9 @@ class Rule02_TextualRemediation extends BaseAdaptiveRule
 
     public function apply(array $state, array $context): array
     {
-        $state['recommendation'] = 'Ulas Materi';
-        $state['next_action'] = 'STUDY_TEXTUAL';
-        $state['message'] = 'Performa Anda menurun. Mari ulas kembali materi untuk memperkuat pemahaman.';
+        $state['recommendation']    = 'Ulas Materi';
+        $state['next_action']       = 'STUDY_TEXTUAL';
+        $state['message']           = 'Performa Anda menurun. Mari ulas kembali materi untuk memperkuat pemahaman.';
         $state['intervention_type'] = 'textual_crisis';
 
         return $state;

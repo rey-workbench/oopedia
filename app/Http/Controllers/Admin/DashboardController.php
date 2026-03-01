@@ -16,20 +16,20 @@ class DashboardController extends Controller
 
     public function index(): Response
     {
-        $user = Auth::user();
+        $user     = Auth::user();
         $userName = $user->name;
         $userRole = $user->role->role_name;
 
         $stats = $this->adminDashboardService->getDashboardStats();
 
-        $totalStudents = $stats['totalStudents'];
+        $totalStudents  = $stats['totalStudents'];
         $totalMaterials = $stats['totalMaterials'];
         $totalQuestions = $stats['totalQuestions'];
         $activeStudents = $stats['activeStudents'];
 
-        $recentProgress = $this->adminDashboardService->getRecentProgress(10);
-        $studentProgress = $this->adminDashboardService->getStudentProgressOverview(5);
-        $materialStats = $this->adminDashboardService->getMaterialStatistics();
+        $recentProgress   = $this->adminDashboardService->getRecentProgress(10);
+        $studentProgress  = $this->adminDashboardService->getStudentProgressOverview(5);
+        $materialStats    = $this->adminDashboardService->getMaterialStatistics();
         $popularMaterials = $this->adminDashboardService->getPopularMaterials(5);
         $studentAnalytics = $this->adminDashboardService->getStudentAnalytics();
 

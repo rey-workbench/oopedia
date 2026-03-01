@@ -16,8 +16,11 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
 class Rule07_CriticalBacktracking extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_07';
+
     protected string $ruleName = 'Critical Backtracking';
+
     protected string $actionCode = AdaptiveConstants::ACTION_CRITICAL_BACKTRACKING;
+
     protected int $priority = 25; // Medium-high priority
 
     public function evaluate(array $facts): bool
@@ -29,8 +32,8 @@ class Rule07_CriticalBacktracking extends BaseAdaptiveRule
     public function apply(array $state, array $context): array
     {
         $state['recommendation'] = 'Review Dasar';
-        $state['next_action'] = 'REDUCE_DIFFICULTY';
-        $state['message'] = 'Soal ini sepertinya terlalu sulit sekarang. Mari turunkan tingkat kesulitan dan perkuat fondasi Anda.';
+        $state['next_action']    = 'REDUCE_DIFFICULTY';
+        $state['message']        = 'Soal ini sepertinya terlalu sulit sekarang. Mari turunkan tingkat kesulitan dan perkuat fondasi Anda.';
 
         return $state;
     }

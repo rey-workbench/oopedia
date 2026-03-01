@@ -24,10 +24,10 @@ readonly class StudentCreateDTO
     public function toArray(): array
     {
         return [
-            'name' => $this->name,
-            'email' => $this->email,
-            'password' => $this->password, // Will be hashed in service
-            'role_id' => 3, // Student role
+            'name'        => $this->name,
+            'email'       => $this->email,
+            'password'    => $this->password, // Will be hashed in service
+            'role_id'     => 3, // Student role
             'is_approved' => true, // Admin-created students are auto-approved
         ];
     }

@@ -48,8 +48,8 @@ class MaterialService implements MaterialServiceInterface
     public function createMaterial(array $data, mixed $coverImage = null): Material
     {
         $material = $this->materialRepo->create([
-            'title' => $data['title'],
-            'content' => $data['content'],
+            'title'      => $data['title'],
+            'content'    => $data['content'],
             'created_by' => $data['created_by'],
         ]);
 
@@ -69,7 +69,7 @@ class MaterialService implements MaterialServiceInterface
         }
 
         $this->materialRepo->update($material->id, [
-            'title' => $data['title'],
+            'title'   => $data['title'],
             'content' => $data['content'] ?? $data['description'] ?? null,
         ]);
 
@@ -121,8 +121,8 @@ class MaterialService implements MaterialServiceInterface
 
         $this->mediaRepo->create([
             'material_id' => $material->id,
-            'media_type' => 'image',
-            'media_url' => '/images/' . $path,
+            'media_type'  => 'image',
+            'media_url'   => '/images/' . $path,
         ]);
     }
 

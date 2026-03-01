@@ -15,8 +15,11 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
 class Rule08_ModuleGraduation extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_08';
+
     protected string $ruleName = 'Module Graduation';
+
     protected string $actionCode = AdaptiveConstants::ACTION_MODULE_GRADUATION;
+
     protected int $priority = 30; // Medium priority
 
     public function evaluate(array $facts): bool
@@ -42,13 +45,13 @@ class Rule08_ModuleGraduation extends BaseAdaptiveRule
     public function apply(array $state, array $context): array
     {
         $state['next_action'] = 'FINISH_MATERIAL';
-        $state['message'] = 'Selamat! Anda telah menguasai seluruh materi modul ini dengan sempurna.';
+        $state['message']     = 'Selamat! Anda telah menguasai seluruh materi modul ini dengan sempurna.';
         $state['achievement'] = 'module_completed';
 
         // Update module progress
         if (isset($context['module_id'])) {
-            $moduleProgress = $state['adaptive_state']['module_progress'] ?? [];
-            $moduleProgress[$context['module_id']] = 100;
+            $moduleProgress                             = $state['adaptive_state']['module_progress'] ?? [];
+            $moduleProgress[$context['module_id']]      = 100;
             $state['adaptive_state']['module_progress'] = $moduleProgress;
         }
 

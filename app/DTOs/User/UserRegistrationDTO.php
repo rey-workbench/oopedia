@@ -17,7 +17,7 @@ readonly class UserRegistrationDTO
     public static function fromRequest(Request $request): self
     {
         // Determine role_id based on email domain
-        $role_id = str_ends_with($request->input('email'), '@admin.oopedia.com') ? 2 : 3;
+        $role_id     = str_ends_with($request->input('email'), '@admin.oopedia.com') ? 2 : 3;
         $is_approved = ($role_id === 2); // Admin auto-approved
 
         return new self(
@@ -32,10 +32,10 @@ readonly class UserRegistrationDTO
     public function toArray(): array
     {
         return [
-            'name' => $this->name,
-            'email' => $this->email,
-            'password' => $this->password, // Will be hashed in service
-            'role_id' => $this->role_id,
+            'name'        => $this->name,
+            'email'       => $this->email,
+            'password'    => $this->password, // Will be hashed in service
+            'role_id'     => $this->role_id,
             'is_approved' => $this->is_approved,
         ];
     }

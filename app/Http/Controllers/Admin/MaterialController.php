@@ -19,8 +19,8 @@ class MaterialController extends Controller
 
     public function index(Request $request): Response
     {
-        $search = $request->search;
-        $sort = $request->get('sort', 'created_at');
+        $search    = $request->search;
+        $sort      = $request->get('sort', 'created_at');
         $direction = $request->get('direction', 'asc');
 
         $materials = $this->materialService->getAllMaterials($search, $sort, $direction);

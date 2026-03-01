@@ -13,11 +13,11 @@ class StudentStateRepository implements StudentStateRepositoryInterface
         return StudentState::updateOrCreate(
             ['user_id' => $userId],
             array_merge([
-                'gamification_data' => [],
-                'learning_profile' => [],
+                'gamification_data'   => [],
+                'learning_profile'    => [],
                 'performance_metrics' => [],
-                'adaptive_state' => [],
-                'last_active_at' => now(),
+                'adaptive_state'      => [],
+                'last_active_at'      => now(),
             ], $attributes),
         );
     }
@@ -36,7 +36,7 @@ class StudentStateRepository implements StudentStateRepositoryInterface
 
         $state->update([
             'performance_metrics' => $performanceMetrics,
-            'last_active_at' => now(),
+            'last_active_at'      => now(),
         ]);
     }
 
@@ -56,11 +56,11 @@ class StudentStateRepository implements StudentStateRepositoryInterface
         return StudentState::firstOrCreate(
             ['user_id' => $userId],
             [
-                'gamification_data' => [],
-                'learning_profile' => [],
+                'gamification_data'   => [],
+                'learning_profile'    => [],
                 'performance_metrics' => [],
-                'adaptive_state' => [],
-                'last_active_at' => now(),
+                'adaptive_state'      => [],
+                'last_active_at'      => now(),
             ],
         );
     }

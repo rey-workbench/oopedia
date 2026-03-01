@@ -24,7 +24,7 @@ class AdminDashboardService implements AdminDashboardServiceInterface
     {
         return Cache::remember('admin_dashboard_stats', 600, function () {
             return [
-                'totalStudents' => $this->userRepo->countByRole(3),
+                'totalStudents'  => $this->userRepo->countByRole(3),
                 'totalMaterials' => $this->materialRepo->countAll(),
                 'totalQuestions' => $this->questionRepo->countAll(),
                 'activeStudents' => $this->userRepo->getActiveStudentsCount(7),
@@ -59,7 +59,7 @@ class AdminDashboardService implements AdminDashboardServiceInterface
                     : 0;
 
                 // Add last active timestamp
-                $lastActivity = $student->quizAttempts->max('created_at');
+                $lastActivity         = $student->quizAttempts->max('created_at');
                 $student->last_active = $lastActivity ? Carbon::parse($lastActivity) : null;
 
                 return $student;
@@ -70,7 +70,7 @@ class AdminDashboardService implements AdminDashboardServiceInterface
     public function getMaterialStatistics(): \Illuminate\Support\Collection
     {
         return Cache::remember('admin_material_statistics', 600, function () {
-            $materials = $this->materialRepo->getAllWithQuestionsAndConfigs();
+            $materials    = $this->materialRepo->getAllWithQuestionsAndConfigs();
             $progressData = $this->progressRepo->getMaterialPerformanceStats();
 
             return $materials->map(function ($material) use ($progressData) {
@@ -93,8 +93,8 @@ class AdminDashboardService implements AdminDashboardServiceInterface
                     : 0;
 
                 return (object) [
-                    'id' => $material->id,
-                    'title' => $material->title,
+                    'id'              => $material->id,
+                    'title'           => $material->title,
                     'questions_count' => $totalConfiguredQuestions,
                     'active_students' => $activeStudents,
                     'completion_rate' => $completionRate,
@@ -112,21 +112,21 @@ class AdminDashboardService implements AdminDashboardServiceInterface
     public function getStudentAnalytics(): array
     {
         return Cache::remember('admin_student_analytics', 600, function () {
-            $allStudents = $this->userRepo->getUsersByRoleAndApproval(3, true, null, null);
-            $materials = $this->materialRepo->getAllWithQuestionsAndConfigs();
+            $allStudents              = $this->userRepo->getUsersByRoleAndApproval(3, true, null, null);
+            $materials                = $this->materialRepo->getAllWithQuestionsAndConfigs();
             $totalConfiguredQuestions = $materials->sum(fn ($m) => $m->questions->count());
 
             $distribution = [
-                '0%' => 0,
-                '1-25%' => 0,
-                '26-50%' => 0,
-                '51-75%' => 0,
+                '0%'      => 0,
+                '1-25%'   => 0,
+                '26-50%'  => 0,
+                '51-75%'  => 0,
                 '76-100%' => 0,
             ];
 
             foreach ($allStudents as $student) {
                 $correctCount = $student->quizAttempts->where('is_correct', true)->pluck('question_id')->unique()->count();
-                $progress = $totalConfiguredQuestions > 0 ? ($correctCount / $totalConfiguredQuestions) * 100 : 0;
+                $progress     = $totalConfiguredQuestions > 0 ? ($correctCount / $totalConfiguredQuestions) * 100 : 0;
 
                 if ($progress == 0) {
                     $distribution['0%']++;
@@ -144,10 +144,10 @@ class AdminDashboardService implements AdminDashboardServiceInterface
             $moduleStats = $this->getMaterialStatistics();
 
             return [
-                'distribution' => $distribution,
+                'distribution'      => $distribution,
                 'modulePerformance' => [
                     'labels' => $moduleStats->pluck('title'),
-                    'data' => $moduleStats->pluck('completion_rate'),
+                    'data'   => $moduleStats->pluck('completion_rate'),
                 ],
             ];
         });

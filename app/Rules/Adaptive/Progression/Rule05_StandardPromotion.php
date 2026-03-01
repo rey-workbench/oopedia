@@ -15,8 +15,11 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
 class Rule05_StandardPromotion extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_05';
+
     protected string $ruleName = 'Standard Promotion';
+
     protected string $actionCode = AdaptiveConstants::ACTION_STANDARD_PROMOTION;
+
     protected int $priority = 50; // Normal priority
 
     public function evaluate(array $facts): bool
@@ -33,7 +36,7 @@ class Rule05_StandardPromotion extends BaseAdaptiveRule
     public function apply(array $state, array $context): array
     {
         $state['next_action'] = 'NEXT_QUESTION';
-        $state['message'] = $context['is_correct']
+        $state['message']     = $context['is_correct']
             ? 'Jawaban tepat! Mari lanjut ke soal berikutnya.'
             : 'Jawaban kurang tepat. Mari coba lagi atau ulas kembali materi jika kesulitan.';
 

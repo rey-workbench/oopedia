@@ -108,13 +108,13 @@ class FactGatheringService implements FactGatheringServiceInterface
         // Allocation based on difficulty
         $allocatedTimeMap = [
             'beginner' => 45,
-            'medium' => 90,
-            'hard' => 150,
-            'final' => 300,
+            'medium'   => 90,
+            'hard'     => 150,
+            'final'    => 300,
         ];
 
         $allocatedTime = $allocatedTimeMap[$difficulty] ?? 60;
-        $percentage = ($timeSpent / $allocatedTime) * 100;
+        $percentage    = ($timeSpent / $allocatedTime) * 100;
 
         return $percentage < 50 ? [AdaptiveConstants::FACT_TIME_FAST] : [AdaptiveConstants::FACT_TIME_NORMAL];
     }
@@ -140,7 +140,7 @@ class FactGatheringService implements FactGatheringServiceInterface
         }
 
         // Get question type from database
-        $question = $this->questionRepo->find($questionId);
+        $question     = $this->questionRepo->find($questionId);
         $questionType = $question?->type ?? 'teori';
 
         // Syntax questions → G09, Theory/Logic questions → G10
@@ -170,8 +170,8 @@ class FactGatheringService implements FactGatheringServiceInterface
     {
         $difficultyMap = [
             'beginner' => AdaptiveConstants::FACT_DIFF_BEGINNER,
-            'medium' => AdaptiveConstants::FACT_DIFF_MEDIUM,
-            'hard' => AdaptiveConstants::FACT_DIFF_HARD,
+            'medium'   => AdaptiveConstants::FACT_DIFF_MEDIUM,
+            'hard'     => AdaptiveConstants::FACT_DIFF_HARD,
         ];
 
         return $difficultyMap[$difficulty] ?? AdaptiveConstants::FACT_DIFF_BEGINNER;
@@ -225,7 +225,7 @@ class FactGatheringService implements FactGatheringServiceInterface
      */
     protected function hasSatisfactoryProgress(int $userId, int $materialId): bool
     {
-        $answeredCount = $this->progressRepo->getAnsweredQuestionIds($userId, $materialId)->count();
+        $answeredCount  = $this->progressRepo->getAnsweredQuestionIds($userId, $materialId)->count();
         $totalQuestions = $this->questionRepo->countByMaterial($materialId);
 
         if ($totalQuestions === 0) {

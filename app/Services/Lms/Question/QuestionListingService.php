@@ -28,8 +28,8 @@ class QuestionListingService implements QuestionListingServiceInterface
             ? $this->getGuestAnsweredQuestionIds($material->id, $guestProgress)
             : $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
 
-        $filteredData = $this->getFilteredQuestions($material, $difficulty, $isGuest);
-        $questions = $filteredData['questions'];
+        $filteredData           = $this->getFilteredQuestions($material, $difficulty, $isGuest);
+        $questions              = $filteredData['questions'];
         $totalFilteredQuestions = $filteredData['totalFilteredQuestions'];
 
         $currentQuestion = $this->getCurrentQuestion($questions, $answeredQuestionIds);
@@ -42,14 +42,14 @@ class QuestionListingService implements QuestionListingServiceInterface
         })->count();
 
         return [
-            'material' => $material,
-            'questions' => $questions,
-            'currentQuestion' => $currentQuestion,
+            'material'              => $material,
+            'questions'             => $questions,
+            'currentQuestion'       => $currentQuestion,
             'currentQuestionNumber' => $answeredCount + 1,
-            'totalQuestions' => $totalFilteredQuestions,
-            'answeredCount' => $answeredCount,
-            'levelProgress' => $levelProgress,
-            'difficulty' => $difficulty,
+            'totalQuestions'        => $totalFilteredQuestions,
+            'answeredCount'         => $answeredCount,
+            'levelProgress'         => $levelProgress,
+            'difficulty'            => $difficulty,
         ];
     }
 
@@ -57,12 +57,12 @@ class QuestionListingService implements QuestionListingServiceInterface
     public function getMaterialsListWithStudentCount(int|string|null $userId, bool $isGuest, array $guestProgress = []): Collection
     {
         $progressStats = $isGuest ? collect([]) : $this->progressRepo->getUserProgressStats($userId);
-        $allMaterials = $this->materialRepo->getAllWithQuestions();
+        $allMaterials  = $this->materialRepo->getAllWithQuestions();
 
         if ($isGuest) {
-            $totalMaterials = $allMaterials->count();
+            $totalMaterials  = $allMaterials->count();
             $materialsToShow = ceil($totalMaterials / 2);
-            $allMaterials = $allMaterials->take($materialsToShow);
+            $allMaterials    = $allMaterials->take($materialsToShow);
         }
 
         $studentCounts = $this->progressRepo->getStudentCountByMaterial();
@@ -79,7 +79,7 @@ class QuestionListingService implements QuestionListingServiceInterface
                 }
             } else {
                 $materialProgress = $progressStats->firstWhere('material_id', $material->id);
-                $correctAnswers = $materialProgress ? $materialProgress->correct_answers : 0;
+                $correctAnswers   = $materialProgress ? $materialProgress->correct_answers : 0;
             }
 
             $progressPercentage = $configuredTotalQuestions > 0
@@ -89,9 +89,9 @@ class QuestionListingService implements QuestionListingServiceInterface
             $studentCount = isset($studentCounts[$material->id]) ? $studentCounts[$material->id]->student_count : 0;
 
             $material->progress_percentage = $progressPercentage;
-            $material->total_questions = $configuredTotalQuestions;
+            $material->total_questions     = $configuredTotalQuestions;
             $material->completed_questions = $correctAnswers;
-            $material->student_count = $studentCount;
+            $material->student_count       = $studentCount;
 
             return $material;
         });
@@ -107,12 +107,12 @@ class QuestionListingService implements QuestionListingServiceInterface
         if ($difficulty && $difficulty !== 'all') {
             // Normalize difficulty: 'advanced' from UI mapping to 'hard' in DB
             $dbDifficulty = ($difficulty === 'advanced') ? 'hard' : $difficulty;
-            $questions = $questions->where('difficulty', $dbDifficulty);
+            $questions    = $questions->where('difficulty', $dbDifficulty);
         }
 
         if ($isGuest) {
             $answeredQuestionIds = $this->getGuestAnsweredQuestionIds($material->id, $guestProgress);
-            $questions = $questions->whereIn('id', $answeredQuestionIds->toArray());
+            $questions           = $questions->whereIn('id', $answeredQuestionIds->toArray());
 
             // Map guest attempts
             foreach ($questions as $question) {
@@ -123,7 +123,7 @@ class QuestionListingService implements QuestionListingServiceInterface
             }
         } else {
             $questionIds = $questions->pluck('id');
-            $attempts = \App\Models\QuizAttempt::where('user_id', $userId)
+            $attempts    = \App\Models\QuizAttempt::where('user_id', $userId)
                 ->whereIn('question_id', $questionIds)
                 ->get()
                 ->groupBy('question_id');
@@ -133,12 +133,12 @@ class QuestionListingService implements QuestionListingServiceInterface
 
                 if ($latestAttempt) {
                     $question->user_attempt = [
-                        'score' => $latestAttempt->score,
-                        'is_correct' => $latestAttempt->is_correct,
-                        'answer_id' => $latestAttempt->answer_id,
-                        'user_response' => $latestAttempt->user_response,
+                        'score'          => $latestAttempt->score,
+                        'is_correct'     => $latestAttempt->is_correct,
+                        'answer_id'      => $latestAttempt->answer_id,
+                        'user_response'  => $latestAttempt->user_response,
                         'attempt_number' => $latestAttempt->attempt_number,
-                        'time_spent' => $latestAttempt->time_spent,
+                        'time_spent'     => $latestAttempt->time_spent,
                     ];
                 }
             }
@@ -173,13 +173,13 @@ class QuestionListingService implements QuestionListingServiceInterface
 
         if ($isGuest) {
             if ($difficulty === 'all') {
-                $beginnerQuestions = $questions->where('difficulty', 'beginner')->take(3);
-                $mediumQuestions = $questions->where('difficulty', 'medium')->take(3);
-                $hardQuestions = $questions->where('difficulty', 'hard')->take(3);
-                $questions = $beginnerQuestions->concat($mediumQuestions)->concat($hardQuestions);
+                $beginnerQuestions      = $questions->where('difficulty', 'beginner')->take(3);
+                $mediumQuestions        = $questions->where('difficulty', 'medium')->take(3);
+                $hardQuestions          = $questions->where('difficulty', 'hard')->take(3);
+                $questions              = $beginnerQuestions->concat($mediumQuestions)->concat($hardQuestions);
                 $totalFilteredQuestions = 9;
             } else {
-                $questions = $questions->take(3);
+                $questions              = $questions->take(3);
                 $totalFilteredQuestions = 3;
             }
         } else {
@@ -190,7 +190,7 @@ class QuestionListingService implements QuestionListingServiceInterface
         $questions = $questions->shuffle();
 
         return [
-            'questions' => $questions,
+            'questions'              => $questions,
             'totalFilteredQuestions' => $totalFilteredQuestions,
         ];
     }
@@ -221,9 +221,9 @@ class QuestionListingService implements QuestionListingServiceInterface
         if ($isGuest) {
             if ($difficulty === 'all') {
                 $beginnerQuestions = $questions->where('difficulty', 'beginner')->take(3);
-                $mediumQuestions = $questions->where('difficulty', 'medium')->take(3);
-                $hardQuestions = $questions->where('difficulty', 'hard')->take(3);
-                $questions = $beginnerQuestions->concat($mediumQuestions)->concat($hardQuestions);
+                $mediumQuestions   = $questions->where('difficulty', 'medium')->take(3);
+                $hardQuestions     = $questions->where('difficulty', 'hard')->take(3);
+                $questions         = $beginnerQuestions->concat($mediumQuestions)->concat($hardQuestions);
             } else {
                 $questions = $questions->take(3);
             }
@@ -233,7 +233,7 @@ class QuestionListingService implements QuestionListingServiceInterface
 
         foreach ($questions as $index => $question) {
             $questionIndex = $index + 1;
-            $isAnswered = $answeredQuestionIds->contains($question->id);
+            $isAnswered    = $answeredQuestionIds->contains($question->id);
 
             if ($isAnswered) {
                 $status = 'completed';
@@ -251,10 +251,10 @@ class QuestionListingService implements QuestionListingServiceInterface
             }
 
             $levels[] = [
-                'level' => $questionIndex,
+                'level'       => $questionIndex,
                 'question_id' => $question->id,
-                'status' => $status,
-                'difficulty' => $question->difficulty,
+                'status'      => $status,
+                'difficulty'  => $question->difficulty,
             ];
         }
 

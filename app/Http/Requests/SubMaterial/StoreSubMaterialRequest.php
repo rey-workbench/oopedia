@@ -10,10 +10,10 @@ class StoreSubMaterialRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
+            'title'        => 'required|string|max:255',
+            'content'      => 'required|string',
             'jenis_konten' => 'nullable|in:teori,sintaks,mixed',
-            'order' => 'nullable|integer|min:0',
+            'order'        => 'nullable|integer|min:0',
         ];
     }
 }

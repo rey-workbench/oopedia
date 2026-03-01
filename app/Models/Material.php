@@ -26,7 +26,7 @@ class Material extends Model
     ];
 
     protected $casts = [
-        'module_id' => 'integer',
+        'module_id'  => 'integer',
         'created_by' => 'integer',
     ];
 

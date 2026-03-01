@@ -75,7 +75,7 @@ class SubMaterialService implements SubMaterialServiceInterface
 
         return $subMaterials->map(function ($sub) {
             return [
-                'id' => $sub->id,
+                'id'    => $sub->id,
                 'title' => $sub->title,
             ];
         })->toArray();

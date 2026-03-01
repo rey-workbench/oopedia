@@ -24,9 +24,9 @@ readonly class MaterialCreateDTO
     public function toArray(): array
     {
         return [
-            'title' => $this->title,
+            'title'       => $this->title,
             'description' => $this->description,
-            'created_by' => $this->created_by,
+            'created_by'  => $this->created_by,
         ];
     }
 }

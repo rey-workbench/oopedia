@@ -16,7 +16,7 @@ class ProgressRepository implements ProgressRepositoryInterface
     public function getUserProgressStats(int|string|null $userId): \Illuminate\Database\Eloquent\Collection
     {
         if (is_null($userId)) {
-            return new Collection();
+            return new Collection;
         }
 
         // Join with Questions to get material_id
@@ -33,7 +33,7 @@ class ProgressRepository implements ProgressRepositoryInterface
     public function getUserMaterialProgress(int|string|null $userId): \Illuminate\Database\Eloquent\Collection
     {
         if (is_null($userId)) {
-            return new Collection();
+            return new Collection;
         }
 
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
@@ -77,11 +77,11 @@ class ProgressRepository implements ProgressRepositoryInterface
                 }
 
                 return (object) [
-                    'material_title' => $attempt->question->material->title ?? 'Unknown',
-                    'material_id' => $materialId,
-                    'difficulty' => $attempt->question->difficulty,
-                    'created_at' => $attempt->created_at,
-                    'is_correct' => $attempt->is_correct,
+                    'material_title'      => $attempt->question->material->title ?? 'Unknown',
+                    'material_id'         => $materialId,
+                    'difficulty'          => $attempt->question->difficulty,
+                    'created_at'          => $attempt->created_at,
+                    'is_correct'          => $attempt->is_correct,
                     'previous_hard_count' => $previousHardCount,
                     // Total correct count calculation might be expensive per row, simplified here
                     'total_correct' => $this->getMaterialCorrectCount($attempt->user_id, $materialId),
@@ -175,14 +175,14 @@ class ProgressRepository implements ProgressRepositoryInterface
         }
 
         $attempt = QuizAttempt::create([
-            'user_id' => $data['user_id'],
-            'question_id' => $data['question_id'],
-            'answer_id' => $data['answer_id'] ?? null,
-            'user_response' => $data['user_response'] ?? null,
-            'is_correct' => $data['is_correct'] ?? false,
-            'score' => $data['score'] ?? ($data['is_correct'] ? 100 : 0),
+            'user_id'        => $data['user_id'],
+            'question_id'    => $data['question_id'],
+            'answer_id'      => $data['answer_id']     ?? null,
+            'user_response'  => $data['user_response'] ?? null,
+            'is_correct'     => $data['is_correct']    ?? false,
+            'score'          => $data['score']         ?? ($data['is_correct'] ? 100 : 0),
             'attempt_number' => $data['attempt_number'],
-            'time_spent' => 0, // Can be updated later
+            'time_spent'     => 0, // Can be updated later
         ]);
 
         // 2. Update StudentState if attributes provided
@@ -202,27 +202,27 @@ class ProgressRepository implements ProgressRepositoryInterface
         $state = StudentState::firstOrNew(['user_id' => $userId]);
 
         // 1. Update Gamification Data
-        $gamification = $state->gamification_data ?? [];
-        $gamification['global_xp'] = $attributes['global_xp'] ?? ($gamification['global_xp'] ?? 0);
-        $gamification['current_level'] = $attributes['current_level'] ?? ($gamification['current_level'] ?? 'Pemula');
+        $gamification                   = $state->gamification_data     ?? [];
+        $gamification['global_xp']      = $attributes['global_xp']      ?? ($gamification['global_xp'] ?? 0);
+        $gamification['current_level']  = $attributes['current_level']  ?? ($gamification['current_level'] ?? 'Pemula');
         $gamification['current_streak'] = $attributes['current_streak'] ?? ($gamification['current_streak'] ?? 0);
-        $gamification['max_streak'] = $attributes['max_streak'] ?? ($gamification['max_streak'] ?? 0);
-        $state->gamification_data = $gamification;
+        $gamification['max_streak']     = $attributes['max_streak']     ?? ($gamification['max_streak'] ?? 0);
+        $state->gamification_data       = $gamification;
 
         // 2. Update Performance Metrics
-        $metrics = $state->performance_metrics ?? [];
+        $metrics                             = $state->performance_metrics             ?? [];
         $metrics['total_questions_answered'] = $attributes['total_questions_answered'] ?? ($metrics['total_questions_answered'] ?? 0);
-        $metrics['correct_count'] = $attributes['correct_count'] ?? ($metrics['correct_count'] ?? 0);
-        $metrics['wrong_count'] = $attributes['wrong_count'] ?? ($metrics['wrong_count'] ?? 0);
-        $metrics['wrong_streak'] = $attributes['wrong_streak'] ?? ($metrics['wrong_streak'] ?? 0);
-        $metrics['hints_used_count'] = $attributes['hints_used_count'] ?? ($metrics['hints_used_count'] ?? 0);
-        $metrics['hints_available'] = $attributes['hints_available'] ?? ($metrics['hints_available'] ?? 3);
-        $state->performance_metrics = $metrics;
+        $metrics['correct_count']            = $attributes['correct_count']            ?? ($metrics['correct_count'] ?? 0);
+        $metrics['wrong_count']              = $attributes['wrong_count']              ?? ($metrics['wrong_count'] ?? 0);
+        $metrics['wrong_streak']             = $attributes['wrong_streak']             ?? ($metrics['wrong_streak'] ?? 0);
+        $metrics['hints_used_count']         = $attributes['hints_used_count']         ?? ($metrics['hints_used_count'] ?? 0);
+        $metrics['hints_available']          = $attributes['hints_available']          ?? ($metrics['hints_available'] ?? 3);
+        $state->performance_metrics          = $metrics;
 
         // 3. Update Learning Profile
-        $profile = $state->learning_profile ?? [];
+        $profile                   = $state->learning_profile      ?? [];
         $profile['learning_style'] = $attributes['learning_style'] ?? ($profile['learning_style'] ?? 'visual');
-        $state->learning_profile = $profile;
+        $state->learning_profile   = $profile;
 
         $state->last_active_at = now();
         $state->save();
@@ -423,16 +423,16 @@ class ProgressRepository implements ProgressRepositoryInterface
     public function getOrCreateStudentState(int|string|null $userId): StudentState
     {
         if (is_null($userId)) {
-            return new StudentState();
+            return new StudentState;
         }
 
         // StudentState is global per user
         return StudentState::firstOrCreate(['user_id' => $userId], [
-            'gamification_data' => [],
-            'learning_profile' => [],
+            'gamification_data'   => [],
+            'learning_profile'    => [],
             'performance_metrics' => [],
-            'adaptive_state' => [],
-            'last_active_at' => now(),
+            'adaptive_state'      => [],
+            'last_active_at'      => now(),
         ]);
     }
 
@@ -441,16 +441,16 @@ class ProgressRepository implements ProgressRepositoryInterface
     {
         if (is_null($userId)) {
             return [
-                'state' => new StudentState(),
-                'progress' => new Collection(),
+                'state'    => new StudentState,
+                'progress' => new Collection,
             ];
         }
 
-        $state = $this->getOrCreateStudentState($userId);
+        $state    = $this->getOrCreateStudentState($userId);
         $progress = $this->getUserMaterialProgress($userId);
 
         return [
-            'state' => $state,
+            'state'    => $state,
             'progress' => $progress,
         ];
     }

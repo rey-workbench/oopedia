@@ -18,8 +18,8 @@ trait CalculatesConfiguredQuestions
     {
         if ($isGuest) {
             $beginnerCount = min(3, $material->questions->where('difficulty', 'beginner')->count());
-            $mediumCount = min(3, $material->questions->where('difficulty', 'medium')->count());
-            $hardCount = min(3, $material->questions->where('difficulty', 'hard')->count());
+            $mediumCount   = min(3, $material->questions->where('difficulty', 'medium')->count());
+            $hardCount     = min(3, $material->questions->where('difficulty', 'hard')->count());
 
             return $beginnerCount + $mediumCount + $hardCount;
         }

@@ -12,8 +12,11 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
 class Rule14_PersistentVisualSafetyNet extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_14';
+
     protected string $ruleName = 'Persistent Visual Safety Net';
+
     protected string $actionCode = AdaptiveConstants::ACTION_VISUAL_CRISIS_INTERVENTION;
+
     protected int $priority = 5; // Highest priority
 
     public function evaluate(array $facts): bool
@@ -25,10 +28,10 @@ class Rule14_PersistentVisualSafetyNet extends BaseAdaptiveRule
 
     public function apply(array $state, array $context): array
     {
-        $state['recommendation'] = 'Bantuan Komprehensif';
-        $state['next_action'] = 'STUDY_VISUAL';
-        $state['message'] = 'Anda mengalami kesulitan signifikan. Mari kita ulas materi secara menyeluruh.';
-        $state['intervention_type'] = 'persistent_visual_safety';
+        $state['recommendation']        = 'Bantuan Komprehensif';
+        $state['next_action']           = 'STUDY_VISUAL';
+        $state['message']               = 'Anda mengalami kesulitan signifikan. Mari kita ulas materi secara menyeluruh.';
+        $state['intervention_type']     = 'persistent_visual_safety';
         $state['force_material_review'] = true;
 
         return $state;

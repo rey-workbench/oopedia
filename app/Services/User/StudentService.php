@@ -34,7 +34,7 @@ class StudentService implements StudentServiceInterface
 
         // Add progress data to each student
         foreach ($students as $student) {
-            $progressStats = $this->progressRepo->getUserProgressStats($student->id);
+            $progressStats  = $this->progressRepo->getUserProgressStats($student->id);
             $correctAnswers = $progressStats->sum('correct_answers');
 
             $student->overall_progress = $totalQuestions > 0
@@ -60,8 +60,8 @@ class StudentService implements StudentServiceInterface
     public function createStudent(array $data): \App\Models\User
     {
         // Hash password
-        $data['password'] = Hash::make($data['password']);
-        $data['role_id'] = 3; // Student role
+        $data['password']    = Hash::make($data['password']);
+        $data['role_id']     = 3; // Student role
         $data['is_approved'] = true; // Admin-created students are auto-approved
 
         return $this->userRepo->create($data);
@@ -123,7 +123,7 @@ class StudentService implements StudentServiceInterface
 
             // Get correct answers for this material
             $materialProgress = $progressStats->firstWhere('material_id', $material->id);
-            $correctAnswers = $materialProgress ? $materialProgress->correct_answers : 0;
+            $correctAnswers   = $materialProgress ? $materialProgress->correct_answers : 0;
 
             // Calculate progress percentage
             $progressPercentage = $totalQuestions > 0
@@ -134,12 +134,12 @@ class StudentService implements StudentServiceInterface
             $lastAccessed = $this->progressRepo->getLastAccessTime($student->id, $material->id);
 
             $materialsWithProgress->push((object) [
-                'id' => $material->id,
-                'title' => $material->title,
-                'total_questions' => $totalQuestions,
+                'id'                 => $material->id,
+                'title'              => $material->title,
+                'total_questions'    => $totalQuestions,
                 'answered_questions' => $correctAnswers,
-                'progress' => $progressPercentage,
-                'last_accessed' => $lastAccessed ? \Carbon\Carbon::parse($lastAccessed) : null,
+                'progress'           => $progressPercentage,
+                'last_accessed'      => $lastAccessed ? \Carbon\Carbon::parse($lastAccessed) : null,
             ]);
         }
 
@@ -151,7 +151,7 @@ class StudentService implements StudentServiceInterface
             if ($missingCount > 0) {
                 $missingQuestionsByMaterial[] = [
                     'material_title' => $item->title,
-                    'missing_count' => $missingCount,
+                    'missing_count'  => $missingCount,
                 ];
             }
         }
@@ -160,8 +160,8 @@ class StudentService implements StudentServiceInterface
         $recentActivities = $this->progressRepo->getRecentActivities($student->id, 10);
 
         return [
-            'materials' => $materialsWithProgress,
-            'recent_activities' => $recentActivities,
+            'materials'                  => $materialsWithProgress,
+            'recent_activities'          => $recentActivities,
             'missingQuestionsByMaterial' => $missingQuestionsByMaterial,
         ];
     }
@@ -169,9 +169,9 @@ class StudentService implements StudentServiceInterface
     /** @return array<string, mixed> */
     public function importStudentsFromFile(UploadedFile $file): array
     {
-        $path = $file->getRealPath();
+        $path         = $file->getRealPath();
         $successCount = 0;
-        $errorRows = [];
+        $errorRows    = [];
 
         if (($handle = fopen($path, 'r')) !== false) {
             // Read header
@@ -179,15 +179,15 @@ class StudentService implements StudentServiceInterface
 
             // Validate required columns
             $requiredColumns = ['name', 'email', 'password'];
-            $missingColumns = array_diff($requiredColumns, $header);
+            $missingColumns  = array_diff($requiredColumns, $header);
 
             if (! empty($missingColumns)) {
                 throw new \Exception('File tidak memiliki kolom yang diperlukan: ' . implode(', ', $missingColumns));
             }
 
             // Map column indexes
-            $nameIndex = array_search('name', $header);
-            $emailIndex = array_search('email', $header);
+            $nameIndex     = array_search('name', $header);
+            $emailIndex    = array_search('email', $header);
             $passwordIndex = array_search('password', $header);
 
             // Process each row
@@ -203,13 +203,13 @@ class StudentService implements StudentServiceInterface
 
                 // Validate row data
                 $rowData = [
-                    'name' => $row[$nameIndex] ?? '',
-                    'email' => $row[$emailIndex] ?? '',
+                    'name'     => $row[$nameIndex]     ?? '',
+                    'email'    => $row[$emailIndex]    ?? '',
                     'password' => $row[$passwordIndex] ?? '',
                 ];
 
                 $validator = Validator::make($rowData, [
-                    'name' => 'required|string|max:255',
+                    'name'  => 'required|string|max:255',
                     'email' => [
                         'required',
                         'string',
@@ -222,7 +222,7 @@ class StudentService implements StudentServiceInterface
 
                 if ($validator->fails()) {
                     $errorRows[] = [
-                        'row' => $rowNumber,
+                        'row'    => $rowNumber,
                         'errors' => $validator->errors()->all(),
                     ];
                     continue;
@@ -231,17 +231,17 @@ class StudentService implements StudentServiceInterface
                 // Create the student
                 try {
                     $this->userRepo->create([
-                        'name' => $row[$nameIndex],
-                        'email' => $row[$emailIndex],
-                        'password' => Hash::make($row[$passwordIndex]),
-                        'role_id' => 3,
+                        'name'        => $row[$nameIndex],
+                        'email'       => $row[$emailIndex],
+                        'password'    => Hash::make($row[$passwordIndex]),
+                        'role_id'     => 3,
                         'is_approved' => true,
                     ]);
 
                     $successCount++;
                 } catch (\Exception $e) {
                     $errorRows[] = [
-                        'row' => $rowNumber,
+                        'row'    => $rowNumber,
                         'errors' => [$e->getMessage()],
                     ];
                 }
@@ -251,7 +251,7 @@ class StudentService implements StudentServiceInterface
 
         return [
             'success_count' => $successCount,
-            'error_rows' => $errorRows,
+            'error_rows'    => $errorRows,
         ];
     }
 
@@ -259,11 +259,11 @@ class StudentService implements StudentServiceInterface
     public function generateImportTemplate(): array
     {
         $headers = [
-            'Content-Type' => 'text/csv',
+            'Content-Type'        => 'text/csv',
             'Content-Disposition' => 'attachment; filename="mahasiswa_template.csv"',
-            'Pragma' => 'no-cache',
-            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires' => '0',
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
         ];
 
         $callback = function () {

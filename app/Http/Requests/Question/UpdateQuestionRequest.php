@@ -14,14 +14,14 @@ class UpdateQuestionRequest extends BaseFormRequest
             : 'required|array|min:2';
 
         return [
-            'question_text' => 'required|string',
-            'question_type' => 'required|in:radio_button,drag_and_drop,fill_in_the_blank',
-            'difficulty' => 'required|in:beginner,medium,hard',
-            'material_id' => 'required|exists:materials,id',
-            'sub_material_id' => 'nullable|exists:sub_materials,id',
-            'answers' => $answersMinRule,
+            'question_text'         => 'required|string',
+            'question_type'         => 'required|in:radio_button,drag_and_drop,fill_in_the_blank',
+            'difficulty'            => 'required|in:beginner,medium,hard',
+            'material_id'           => 'required|exists:materials,id',
+            'sub_material_id'       => 'nullable|exists:sub_materials,id',
+            'answers'               => $answersMinRule,
             'answers.*.answer_text' => 'required|string',
-            'answers.*.is_correct' => 'required|boolean',
+            'answers.*.is_correct'  => 'required|boolean',
             'answers.*.explanation' => 'nullable|string',
         ];
     }

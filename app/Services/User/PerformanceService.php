@@ -34,7 +34,7 @@ class PerformanceService implements PerformanceServiceInterface
 
     public function setUserInitialLevel(int $userId, int $materialId, string $level): void
     {
-        $state = $this->progressRepo->getOrCreateStudentState($userId);
+        $state                = $this->progressRepo->getOrCreateStudentState($userId);
         $state->current_level = $level;
         $state->save();
     }
@@ -48,10 +48,10 @@ class PerformanceService implements PerformanceServiceInterface
 
     public function setUserLearningStyle(int $userId, int $materialId, string $style): void
     {
-        $state = $this->progressRepo->getOrCreateStudentState($userId);
-        $profile = $state->learning_profile ?? [];
+        $state                     = $this->progressRepo->getOrCreateStudentState($userId);
+        $profile                   = $state->learning_profile ?? [];
         $profile['learning_style'] = $style;
-        $state->learning_profile = $profile;
+        $state->learning_profile   = $profile;
         $state->save();
     }
 
@@ -60,7 +60,7 @@ class PerformanceService implements PerformanceServiceInterface
      */
     public function updateLearningStyleFromInteraction(int $userId, string $questionType, int $timeSpent): string
     {
-        $state = $this->progressRepo->getOrCreateStudentState($userId);
+        $state   = $this->progressRepo->getOrCreateStudentState($userId);
         $profile = $state->learning_profile ?? [];
 
         // Initialize time distribution if not exists
@@ -77,14 +77,14 @@ class PerformanceService implements PerformanceServiceInterface
         $profile['time_distribution'][$category] += $timeSpent;
 
         // Recalculate dominant style
-        $visualTime = $profile['time_distribution']['visual'];
+        $visualTime  = $profile['time_distribution']['visual'];
         $textualTime = $profile['time_distribution']['textual'];
 
         $newStyle = ($visualTime > $textualTime) ? 'visual' : 'textual';
 
         // Update profile
         $profile['learning_style'] = $newStyle;
-        $state->learning_profile = $profile;
+        $state->learning_profile   = $profile;
         $state->save();
 
         return $newStyle;
@@ -112,7 +112,7 @@ class PerformanceService implements PerformanceServiceInterface
         }
 
         $totalTime = 0;
-        $count = 0;
+        $count     = 0;
 
         foreach ($attempts as $attempt) {
             // QuizAttempt has time_spent
@@ -146,7 +146,7 @@ class PerformanceService implements PerformanceServiceInterface
     /** @return array<string, int> */
     public function getKnowledgeGaps(int $userId, int $materialId): array
     {
-        $wrongAttempts = $this->progressRepo->getWrongAnswers($userId, $materialId);
+        $wrongAttempts  = $this->progressRepo->getWrongAnswers($userId, $materialId);
         $topicFrequency = [];
 
         foreach ($wrongAttempts as $attempt) {
@@ -172,7 +172,7 @@ class PerformanceService implements PerformanceServiceInterface
 
     public function isFastLearner(int $userId, int $materialId, array $currentState): bool
     {
-        $avgTime = $this->calculateAverageTimeSpent($userId, $materialId);
+        $avgTime  = $this->calculateAverageTimeSpent($userId, $materialId);
         $accuracy = $this->calculateAccuracy($currentState);
 
         return $avgTime > 0 && $avgTime < 15 && $accuracy >= 90;
@@ -180,8 +180,8 @@ class PerformanceService implements PerformanceServiceInterface
 
     public function isFatigued(int $userId, int $materialId, array $currentState): bool
     {
-        $totalTime = $this->calculateTotalTimeSpent($userId, $materialId);
-        $accuracy = $this->calculateAccuracy($currentState);
+        $totalTime   = $this->calculateTotalTimeSpent($userId, $materialId);
+        $accuracy    = $this->calculateAccuracy($currentState);
         $wrongStreak = $currentState['wrong_streak'] ?? 0;
 
         return $totalTime >= 30 && $wrongStreak >= 2 && $accuracy < 70;
@@ -199,10 +199,10 @@ class PerformanceService implements PerformanceServiceInterface
 
     public function markMaterialCompleted(int $userId, int $materialId): void
     {
-        $state = $this->progressRepo->getOrCreateStudentState($userId);
+        $state     = $this->progressRepo->getOrCreateStudentState($userId);
         $completed = $state->unlocked_modules ?? [];
         if (! in_array($materialId, $completed)) {
-            $completed[] = $materialId;
+            $completed[]             = $materialId;
             $state->unlocked_modules = $completed;
             $state->save();
         }
@@ -212,8 +212,8 @@ class PerformanceService implements PerformanceServiceInterface
 
     protected function calculateAccuracy(array $state): float
     {
-        $correct = $state['correct_count'] ?? 0;
-        $total = $state['total_questions_answered'] ?? 0;
+        $correct = $state['correct_count']            ?? 0;
+        $total   = $state['total_questions_answered'] ?? 0;
 
         return ($total === 0) ? 0 : round(($correct / $total) * 100, 2);
     }
@@ -222,13 +222,13 @@ class PerformanceService implements PerformanceServiceInterface
     public function getPersonalizationProfile(int $userId, int $materialId, array $currentState): array
     {
         return [
-            'initial_level' => $this->getUserInitialLevel($userId, $materialId),
-            'learning_style' => $this->getUserLearningStyle($userId, $materialId),
-            'avg_time_spent' => $this->calculateAverageTimeSpent($userId, $materialId),
-            'total_time_spent' => $this->calculateTotalTimeSpent($userId, $materialId),
-            'is_fast_learner' => $this->isFastLearner($userId, $materialId, $currentState),
-            'is_fatigued' => $this->isFatigued($userId, $materialId, $currentState),
-            'weakest_topic' => $this->getWeakestTopic($userId, $materialId),
+            'initial_level'       => $this->getUserInitialLevel($userId, $materialId),
+            'learning_style'      => $this->getUserLearningStyle($userId, $materialId),
+            'avg_time_spent'      => $this->calculateAverageTimeSpent($userId, $materialId),
+            'total_time_spent'    => $this->calculateTotalTimeSpent($userId, $materialId),
+            'is_fast_learner'     => $this->isFastLearner($userId, $materialId, $currentState),
+            'is_fatigued'         => $this->isFatigued($userId, $materialId, $currentState),
+            'weakest_topic'       => $this->getWeakestTopic($userId, $materialId),
             'completed_materials' => $this->getCompletedMaterials($userId),
         ];
     }
@@ -248,17 +248,17 @@ class PerformanceService implements PerformanceServiceInterface
 
         // Difficulty multiplier
         $score += match ($difficulty) {
-            'hard' => 10,
+            'hard'   => 10,
             'medium' => 5,
-            default => 0,
+            default  => 0,
         };
 
         // Time bonus (G05: < 50% of allocated time)
         $allocatedTimeMap = [
             'beginner' => 45,
-            'medium' => 90,
-            'hard' => 150,
-            'final' => 300,
+            'medium'   => 90,
+            'hard'     => 150,
+            'final'    => 300,
         ];
         $allocatedTime = $allocatedTimeMap[$difficulty] ?? 60;
 

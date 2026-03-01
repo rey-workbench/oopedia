@@ -34,15 +34,15 @@ readonly class QuestionDTO
     public function toArray(): array
     {
         return [
-            'id' => $this->id,
-            'material_id' => $this->material_id,
+            'id'              => $this->id,
+            'material_id'     => $this->material_id,
             'sub_material_id' => $this->sub_material_id,
-            'question_text' => $this->question_text,
-            'question_type' => $this->question_type,
-            'difficulty' => $this->difficulty,
-            'created_by' => $this->created_by,
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
+            'question_text'   => $this->question_text,
+            'question_type'   => $this->question_type,
+            'difficulty'      => $this->difficulty,
+            'created_by'      => $this->created_by,
+            'created_at'      => $this->created_at->format('Y-m-d H:i:s'),
+            'updated_at'      => $this->updated_at->format('Y-m-d H:i:s'),
         ];
     }
 }

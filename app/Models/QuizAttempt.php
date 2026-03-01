@@ -33,10 +33,10 @@ class QuizAttempt extends Model
     ];
 
     protected $casts = [
-        'is_correct' => 'boolean',
-        'score' => 'integer',
+        'is_correct'     => 'boolean',
+        'score'          => 'integer',
         'attempt_number' => 'integer',
-        'time_spent' => 'integer',
+        'time_spent'     => 'integer',
     ];
 
     public function setTimeSpent(int $seconds): static

@@ -15,8 +15,11 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
 class Rule03_SyntaxRecovery extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_03';
+
     protected string $ruleName = 'Syntax Recovery';
+
     protected string $actionCode = AdaptiveConstants::ACTION_SYNTAX_RECOVERY;
+
     protected int $priority = 20; // High priority
 
     public function evaluate(array $facts): bool
@@ -32,9 +35,9 @@ class Rule03_SyntaxRecovery extends BaseAdaptiveRule
     public function apply(array $state, array $context): array
     {
         $state['recommendation'] = 'Latihan Sintaksis';
-        $state['next_action'] = 'STUDY_SYNTAX';
-        $state['message'] = 'Sepertinya Anda butuh penguatan sintaks. Mari pelajari contoh kode secara mendalam.';
-        $state['recovery_type'] = 'syntax';
+        $state['next_action']    = 'STUDY_SYNTAX';
+        $state['message']        = 'Sepertinya Anda butuh penguatan sintaks. Mari pelajari contoh kode secara mendalam.';
+        $state['recovery_type']  = 'syntax';
 
         return $state;
     }

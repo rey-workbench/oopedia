@@ -50,20 +50,20 @@ class UeqSurveyService implements UeqSurveyServiceInterface
         // Inisialisasi array untuk menyimpan total nilai
         $totals = [
             'attractiveness' => 0,
-            'perspicuity' => 0,
-            'efficiency' => 0,
-            'dependability' => 0,
-            'stimulation' => 0,
-            'novelty' => 0,
+            'perspicuity'    => 0,
+            'efficiency'     => 0,
+            'dependability'  => 0,
+            'stimulation'    => 0,
+            'novelty'        => 0,
         ];
 
         foreach ($surveys as $survey) {
             // Attractiveness
             $totals['attractiveness'] += (
-                $survey->annoying_enjoyable +
-                $survey->good_bad +
-                $survey->unlikable_pleasing +
-                $survey->unpleasant_pleasant +
+                $survey->annoying_enjoyable      +
+                $survey->good_bad                +
+                $survey->unlikable_pleasing      +
+                $survey->unpleasant_pleasant     +
                 $survey->attractive_unattractive +
                 $survey->friendly_unfriendly
             ) / 6;
@@ -71,14 +71,14 @@ class UeqSurveyService implements UeqSurveyServiceInterface
             // Perspicuity
             $totals['perspicuity'] += (
                 $survey->not_understandable_understandable +
-                $survey->easy_difficult +
-                $survey->complicated_easy +
+                $survey->easy_difficult                    +
+                $survey->complicated_easy                  +
                 $survey->clear_confusing
             ) / 4;
 
             // Efficiency
             $totals['efficiency'] += (
-                $survey->fast_slow +
+                $survey->fast_slow             +
                 $survey->inefficient_efficient +
                 $survey->impractical_practical +
                 $survey->organized_cluttered
@@ -87,30 +87,30 @@ class UeqSurveyService implements UeqSurveyServiceInterface
             // Dependability
             $totals['dependability'] += (
                 $survey->unpredictable_predictable +
-                $survey->obstructive_supportive +
-                $survey->secure_not_secure +
+                $survey->obstructive_supportive    +
+                $survey->secure_not_secure         +
                 $survey->meets_expectations_does_not_meet
             ) / 4;
 
             // Stimulation
             $totals['stimulation'] += (
-                $survey->valuable_inferior +
-                $survey->boring_exciting +
+                $survey->valuable_inferior           +
+                $survey->boring_exciting             +
                 $survey->not_interesting_interesting +
                 $survey->motivating_demotivating
             ) / 4;
 
             // Novelty
             $totals['novelty'] += (
-                $survey->creative_dull +
+                $survey->creative_dull          +
                 $survey->inventive_conventional +
-                $survey->usual_leading_edge +
+                $survey->usual_leading_edge     +
                 $survey->conservative_innovative
             ) / 4;
         }
 
         // Hitung rata-rata
-        $count = $surveys->count();
+        $count    = $surveys->count();
         $averages = [];
 
         foreach ($totals as $key => $total) {

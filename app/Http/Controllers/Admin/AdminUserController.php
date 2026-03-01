@@ -23,8 +23,8 @@ class AdminUserController extends Controller
 
     public function index(Request $request): Response
     {
-        $search = $request->search;
-        $users = $this->userService->getAdmins($search);
+        $search             = $request->search;
+        $users              = $this->userService->getAdmins($search);
         $pendingAdminsCount = $this->userService->getPendingAdminsCount();
 
         return Inertia::render('Admin/Users/Index', compact('users', 'pendingAdminsCount'));

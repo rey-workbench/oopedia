@@ -13,9 +13,9 @@ class SubMaterialsSeeder extends Seeder
         $materialTopicMap = [
             1 => [ // Pengenalan PBO
                 [
-                    'title' => 'Konsep Paradigma PBO',
-                    'jenis' => 'teori',
-                    'style' => 'textual',
+                    'title'   => 'Konsep Paradigma PBO',
+                    'jenis'   => 'teori',
+                    'style'   => 'textual',
                     'content' => '<h3>Apa itu PBO?</h3>
                     <p>Pemrograman Berorientasi Objek (PBO) adalah sebuah paradigma pemrograman yang berorientasi kepada objek. Semua data dan fungsi di dalam paradigma ini dibungkus dalam kelas-kelas atau objek-objek. Setiap objek dapat menerima pesan, memproses data, dan mengirim pesan ke objek lainnya.</p>
                     <p>Berbeda dengan pemrograman prosedural yang membagi program menjadi unit-unit kecil fungis, PBO membagi program berdasarkan entitas (Objek) yang memiliki data dan perilaku sendiri.</p>
@@ -23,9 +23,9 @@ class SubMaterialsSeeder extends Seeder
                     <p>Bayangkan sebuah mobil. Mobil adalah sebuah objek. Mobil memiliki atribut (warna, merk, kecepatan) dan perilaku (maju, mundur, klakson). Dalam PBO, kita memodelkan sistem perangkat lunak seperti kita melihat benda-benda di dunia nyata.</p>',
                 ],
                 [
-                    'title' => 'Sintaks Dasar Objek',
-                    'jenis' => 'sintaks',
-                    'style' => 'visual',
+                    'title'   => 'Sintaks Dasar Objek',
+                    'jenis'   => 'sintaks',
+                    'style'   => 'visual',
                     'content' => '<h3>Mendeklarasikan Kelas dan Objek</h3>
                     <p>Dalam bahasa seperti Java atau PHP, kita mendefinisikan struktur objek menggunakan kata kunci <code>class</code>.</p>
                     <div class="ql-code-block-container" spellcheck="false">
@@ -46,9 +46,9 @@ class SubMaterialsSeeder extends Seeder
                     <p>Kata kunci <code>new</code> digunakan untuk mengalokasikan memori bagi objek baru di sistem.</p>',
                 ],
                 [
-                    'title' => 'Analisis Sistem PBO',
-                    'jenis' => 'mixed',
-                    'style' => 'mixed',
+                    'title'   => 'Analisis Sistem PBO',
+                    'jenis'   => 'mixed',
+                    'style'   => 'mixed',
                     'content' => '<h3>Mengidentifikasi Objek</h3>
                     <p>Langkah pertama dalam PBO adalah analisis. Kita harus mampu membedakan mana yang merupakan <strong>Kelas</strong> dan mana yang merupakan <strong>Objek</strong>.</p>
                     <ul>
@@ -60,17 +60,17 @@ class SubMaterialsSeeder extends Seeder
             ],
             2 => [ // Kelas dan Objek
                 [
-                    'title' => 'Teori Blueprint (Kelas)',
-                    'jenis' => 'teori',
-                    'style' => 'textual',
+                    'title'   => 'Teori Blueprint (Kelas)',
+                    'jenis'   => 'teori',
+                    'style'   => 'textual',
                     'content' => '<h3>Kelas sebagai Blueprint</h3>
                     <p>Kelas bukan merupakan objek itu sendiri, melainkan sketsa atau cetakan. Kelas menentukan data apa yang akan dimiliki oleh objek (Atribut) dan fungsi apa yang bisa dijalankan (Method).</p>
                     <p>Satu kelas dapat digunakan untuk menciptakan ribuan objek yang berbeda-beda nilainya namun memiliki struktur yang sama.</p>',
                 ],
                 [
-                    'title' => 'Deklarasi Class & Instansiasi',
-                    'jenis' => 'sintaks',
-                    'style' => 'visual',
+                    'title'   => 'Deklarasi Class & Instansiasi',
+                    'jenis'   => 'sintaks',
+                    'style'   => 'visual',
                     'content' => '<h3>Struktur Lengkap Kelas</h3>
                     <div class="ql-code-block-container" spellcheck="false">
                         <div class="ql-code-block">class Produk {</div>
@@ -95,9 +95,9 @@ class SubMaterialsSeeder extends Seeder
                     </div>',
                 ],
                 [
-                    'title' => 'Latihan Pembuatan Objek',
-                    'jenis' => 'mixed',
-                    'style' => 'mixed',
+                    'title'   => 'Latihan Pembuatan Objek',
+                    'jenis'   => 'mixed',
+                    'style'   => 'mixed',
                     'content' => '<h3>Membuat Banyak Instance</h3>
                     <p>Mari kita lihat bagaimana satu kelas <code>Mobil</code> bisa menjadi banyak objek berbeda:</p>
                     <div class="ql-code-block-container" spellcheck="false">
@@ -110,9 +110,9 @@ class SubMaterialsSeeder extends Seeder
             ],
             3 => [ // Atribut dan Method
                 [
-                    'title' => 'State vs Behavior',
-                    'jenis' => 'teori',
-                    'style' => 'textual',
+                    'title'   => 'State vs Behavior',
+                    'jenis'   => 'teori',
+                    'style'   => 'textual',
                     'content' => '<h3>Memahami Karakteristik Objek</h3>
                     <p>Objek memiliki dua hal utama:</p>
                     <ol>
@@ -122,9 +122,9 @@ class SubMaterialsSeeder extends Seeder
                     <p>State biasanya berupa variabel, sedangkan Behavior berupa fungsi/prosedur.</p>',
                 ],
                 [
-                    'title' => 'Definisi Field & Fungsi',
-                    'jenis' => 'sintaks',
-                    'style' => 'visual',
+                    'title'   => 'Definisi Field & Fungsi',
+                    'jenis'   => 'sintaks',
+                    'style'   => 'visual',
                     'content' => '<h3>Menulis State dan Behavior</h3>
                     <div class="ql-code-block-container" spellcheck="false">
                         <div class="ql-code-block">class Player {</div>
@@ -142,9 +142,9 @@ class SubMaterialsSeeder extends Seeder
                     <p>Method seringkali mengubah nilai dari Atribut (State) objek itu sendiri menggunakan keyword <code>this</code>.</p>',
                 ],
                 [
-                    'title' => 'Interaksi Antar Objek',
-                    'jenis' => 'mixed',
-                    'style' => 'mixed',
+                    'title'   => 'Interaksi Antar Objek',
+                    'jenis'   => 'mixed',
+                    'style'   => 'mixed',
                     'content' => '<h3>Objek Berbicara dengan Objek Lain</h3>
                     <p>Dalam aplikasi nyata, objek jarang bekerja sendirian. Mereka saling memanggil method satu sama lain.</p>
                     <p>Contoh: Objek <code>Penjual</code> memanggil method <code>terimaPesanan()</code> milik objek <code>Kurir</code> untuk mengirimkan barang.</p>',
@@ -152,17 +152,17 @@ class SubMaterialsSeeder extends Seeder
             ],
             4 => [ // Enkapsulasi
                 [
-                    'title' => 'Prinsip Information Hiding',
-                    'jenis' => 'teori',
-                    'style' => 'textual',
+                    'title'   => 'Prinsip Information Hiding',
+                    'jenis'   => 'teori',
+                    'style'   => 'textual',
                     'content' => '<h3>Melindungi Integritas Data</h3>
                     <p>Enkapsulasi memastikan bahwa data sensitif di dalam objek tidak bisa diubah secara sembarangan dari luar. Ini disebut <em>Information Hiding</em>.</p>
                     <p>Tanpa enkapsulasi, siapapun bisa mengubah saldo bank seseorang menjadi 1 Milyar tanpa melalui proses validasi yang benar.</p>',
                 ],
                 [
-                    'title' => 'Getter, Setter & Modifier',
-                    'jenis' => 'sintaks',
-                    'style' => 'visual',
+                    'title'   => 'Getter, Setter & Modifier',
+                    'jenis'   => 'sintaks',
+                    'style'   => 'visual',
                     'content' => '<h3>Access Modifiers</h3>
                     <ul>
                         <li><strong>Private:</strong> Hanya bisa diakses di dalam kelas itu sendiri.</li>
@@ -184,9 +184,9 @@ class SubMaterialsSeeder extends Seeder
                     </div>',
                 ],
                 [
-                    'title' => 'Keamanan Data Objek',
-                    'jenis' => 'mixed',
-                    'style' => 'mixed',
+                    'title'   => 'Keamanan Data Objek',
+                    'jenis'   => 'mixed',
+                    'style'   => 'mixed',
                     'content' => '<h3>Studi Kasus: Validasi Umur</h3>
                     <p>Dengan enkapsulasi, kita bisa mencegah data yang tidak logis masuk ke sistem. Contoh: mencegah input umur negatif.</p>
                     <div class="ql-code-block-container" spellcheck="false">
@@ -199,17 +199,17 @@ class SubMaterialsSeeder extends Seeder
             ],
             5 => [ // Pewarisan
                 [
-                    'title' => 'Hierarki Kelas (Parent/Child)',
-                    'jenis' => 'teori',
-                    'style' => 'textual',
+                    'title'   => 'Hierarki Kelas (Parent/Child)',
+                    'jenis'   => 'teori',
+                    'style'   => 'textual',
                     'content' => '<h3>Konsep Reusability</h3>
                     <p>Pewarisan (Inheritance) memungkinkan kita untuk membuat kelas baru berdasarkan kelas yang sudah ada. Kelas yang mewarisi disebut <strong>Child Class</strong>, dan yang diwarisi disebut <strong>Parent Class</strong>.</p>
                     <p>Keuntungan utamanya adalah kita tidak perlu menulis ulang kode yang sama untuk kelas-kelas yang memiliki sifat serupa.</p>',
                 ],
                 [
-                    'title' => 'Keyword Extends & Super',
-                    'jenis' => 'sintaks',
-                    'style' => 'visual',
+                    'title'   => 'Keyword Extends & Super',
+                    'jenis'   => 'sintaks',
+                    'style'   => 'visual',
                     'content' => '<h3>Menggunakan Inheritance</h3>
                     <div class="ql-code-block-container" spellcheck="false">
                         <div class="ql-code-block">// Parent Class</div>
@@ -228,25 +228,25 @@ class SubMaterialsSeeder extends Seeder
                     </div>',
                 ],
                 [
-                    'title' => 'Reusability dengan Inheritance',
-                    'jenis' => 'mixed',
-                    'style' => 'mixed',
+                    'title'   => 'Reusability dengan Inheritance',
+                    'jenis'   => 'mixed',
+                    'style'   => 'mixed',
                     'content' => '<h3>Membangun Struktur Organisasi</h3>
                     <p>Dalam sistem kampus, kita bisa punya Parent Class <code>CivitasAkademika</code>. Lalu Child Class-nya adalah <code>Dosen</code> dan <code>Mahasiswa</code>. Keduanya mewarisi atribut <code>nama</code> dan <code>NIM/NIDN</code> dari parent, tapi punya perilaku unik masing-masing.</p>',
                 ],
             ],
             6 => [ // Polimorfisme
                 [
-                    'title' => 'Konsep Banyak Bentuk',
-                    'jenis' => 'teori',
-                    'style' => 'textual',
+                    'title'   => 'Konsep Banyak Bentuk',
+                    'jenis'   => 'teori',
+                    'style'   => 'textual',
                     'content' => '<h3>Satu Antarmuka, Banyak Aksi</h3>
                     <p>Polimorfisme berasal dari bahasa Yunani yang berarti "banyak bentuk". Dalam PBO, ini berarti satu nama method bisa memiliki cara kerja yang berbeda-beda tergantung objek yang memanggilnya.</p>',
                 ],
                 [
-                    'title' => 'Override vs Overload',
-                    'jenis' => 'sintaks',
-                    'style' => 'visual',
+                    'title'   => 'Override vs Overload',
+                    'jenis'   => 'sintaks',
+                    'style'   => 'visual',
                     'content' => '<h3>Method Overriding</h3>
                     <p>Terjadi ketika Child Class mendefinisikan ulang method yang sudah ada di Parent Class.</p>
                     <div class="ql-code-block-container" spellcheck="false">
@@ -264,9 +264,9 @@ class SubMaterialsSeeder extends Seeder
                     </div>',
                 ],
                 [
-                    'title' => 'Dynamic Dispatching',
-                    'jenis' => 'mixed',
-                    'style' => 'mixed',
+                    'title'   => 'Dynamic Dispatching',
+                    'jenis'   => 'mixed',
+                    'style'   => 'mixed',
                     'content' => '<h3>Fleksibilitas Runtime</h3>
                     <p>Dengan polimorfisme, kita bisa memproses sekumpulan objek yang berbeda dalam satu loop yang sama:</p>
                     <div class="ql-code-block-container" spellcheck="false">
@@ -279,17 +279,17 @@ class SubMaterialsSeeder extends Seeder
             ],
             7 => [ // Abstraksi
                 [
-                    'title' => 'Penyederhanaan Sistem',
-                    'jenis' => 'teori',
-                    'style' => 'textual',
+                    'title'   => 'Penyederhanaan Sistem',
+                    'jenis'   => 'teori',
+                    'style'   => 'textual',
                     'content' => '<h3>Fokus pada Esensi</h3>
                     <p>Abstraksi adalah proses menyembunyikan detail implementasi yang rumit dan hanya memperlihatkan fitur penting kepada pengguna. Tujuannya adalah mengurangi kompleksitas.</p>
                     <p>Contoh: Saat menyetir mobil, Anda hanya perlu tahu cara menginjak pedal gas, bukan bagaimana cara bensin terbakar di ruang mesin.</p>',
                 ],
                 [
-                    'title' => 'Abstract Class & Interface',
-                    'jenis' => 'sintaks',
-                    'style' => 'visual',
+                    'title'   => 'Abstract Class & Interface',
+                    'jenis'   => 'sintaks',
+                    'style'   => 'visual',
                     'content' => '<h3>Membuat Kontrak dengan Interface</h3>
                     <div class="ql-code-block-container" spellcheck="false">
                         <div class="ql-code-block">interface Pembayaran {</div>
@@ -310,9 +310,9 @@ class SubMaterialsSeeder extends Seeder
                     </div>',
                 ],
                 [
-                    'title' => 'Desain Arsitektur OOP',
-                    'jenis' => 'mixed',
-                    'style' => 'mixed',
+                    'title'   => 'Desain Arsitektur OOP',
+                    'jenis'   => 'mixed',
+                    'style'   => 'mixed',
                     'content' => '<h3>Best Practice Abstraksi</h3>
                     <p>Selalulah membuat program yang bergantung pada <strong>Abstraksi</strong> (Interface), bukan pada <strong>Implementasi</strong> (Class konkret). Ini akan membuat kode Anda sangat mudah diganti-ganti teknologinya di masa depan tanpa merusak sistem utama.</p>',
                 ],
@@ -330,13 +330,13 @@ class SubMaterialsSeeder extends Seeder
                 SubMaterial::updateOrCreate(
                     [
                         'material_id' => $material->id,
-                        'title' => $topic['title'],
+                        'title'       => $topic['title'],
                     ],
                     [
-                        'content' => $topic['content'],
-                        'jenis_konten' => $topic['jenis'],
+                        'content'        => $topic['content'],
+                        'jenis_konten'   => $topic['jenis'],
                         'learning_style' => $topic['style'],
-                        'order' => $index + 1,
+                        'order'          => $index + 1,
                     ],
                 );
             }

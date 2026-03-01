@@ -23,10 +23,10 @@ class RedirectIfAuthenticated
                 $user = Auth::guard($guard)->user();
 
                 return match ($user->role_id) {
-                    1 => redirect()->route('admin.dashboard'),
-                    2 => redirect()->route('admin.dashboard'),
-                    3 => redirect()->route('mahasiswa.dashboard'),
-                    4 => redirect()->route('mahasiswa.materials.index'),
+                    1       => redirect()->route('admin.dashboard'),
+                    2       => redirect()->route('admin.dashboard'),
+                    3       => redirect()->route('mahasiswa.dashboard'),
+                    4       => redirect()->route('mahasiswa.materials.index'),
                     default => redirect('/')
                 };
             }

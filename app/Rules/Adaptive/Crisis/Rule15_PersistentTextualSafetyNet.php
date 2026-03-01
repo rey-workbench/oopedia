@@ -12,8 +12,11 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
 class Rule15_PersistentTextualSafetyNet extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_15';
+
     protected string $ruleName = 'Persistent Textual Safety Net';
+
     protected string $actionCode = AdaptiveConstants::ACTION_TEXTUAL_REMEDIATION;
+
     protected int $priority = 5; // Highest priority
 
     public function evaluate(array $facts): bool
@@ -25,10 +28,10 @@ class Rule15_PersistentTextualSafetyNet extends BaseAdaptiveRule
 
     public function apply(array $state, array $context): array
     {
-        $state['recommendation'] = 'Bantuan Komprehensif';
-        $state['next_action'] = 'STUDY_TEXTUAL';
-        $state['message'] = 'Anda mengalami kesulitan signifikan. Mari kita ulas materi secara menyeluruh.';
-        $state['intervention_type'] = 'persistent_textual_safety';
+        $state['recommendation']        = 'Bantuan Komprehensif';
+        $state['next_action']           = 'STUDY_TEXTUAL';
+        $state['message']               = 'Anda mengalami kesulitan signifikan. Mari kita ulas materi secara menyeluruh.';
+        $state['intervention_type']     = 'persistent_textual_safety';
         $state['force_material_review'] = true;
 
         return $state;

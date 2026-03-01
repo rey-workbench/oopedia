@@ -17,13 +17,13 @@ readonly class DashboardStatsDTO
     public function toArray(): array
     {
         return [
-            'total_materials' => $this->total_materials,
-            'total_questions' => $this->total_questions,
-            'total_students' => $this->total_students,
-            'answered_questions' => $this->answered_questions,
-            'correct_answers' => $this->correct_answers,
+            'total_materials'     => $this->total_materials,
+            'total_questions'     => $this->total_questions,
+            'total_students'      => $this->total_students,
+            'answered_questions'  => $this->answered_questions,
+            'correct_answers'     => $this->correct_answers,
             'accuracy_percentage' => $this->accuracy_percentage,
-            'recent_activities' => $this->recent_activities,
+            'recent_activities'   => $this->recent_activities,
         ];
     }
 }

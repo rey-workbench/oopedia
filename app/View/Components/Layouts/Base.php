@@ -47,11 +47,11 @@ class Base extends Component
         array $meta = [],
         ?string $role = null,
     ) {
-        $this->title = $title;
+        $this->title     = $title;
         $this->bodyClass = $bodyClass;
-        $this->meta = $meta;
-        $this->role = $role ?? $this->detectRole();
-        $this->theme = $this->determineTheme();
+        $this->meta      = $meta;
+        $this->role      = $role ?? $this->detectRole();
+        $this->theme     = $this->determineTheme();
     }
 
     /**
@@ -66,10 +66,10 @@ class Base extends Component
         $user = Auth::user();
 
         return match ($user->role_id) {
-            1 => 'superadmin',
-            2 => 'admin',
-            3 => 'mahasiswa',
-            4 => 'guest',
+            1       => 'superadmin',
+            2       => 'admin',
+            3       => 'mahasiswa',
+            4       => 'guest',
             default => 'guest',
         };
     }

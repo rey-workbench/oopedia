@@ -49,15 +49,15 @@ class LoginController extends Controller
         $request->session()->regenerate();
         $user = $this->userService->getUserById(Auth::id());
 
-        $clearGuest = Cookie::forget('is_guest');
+        $clearGuest    = Cookie::forget('is_guest');
         $clearProgress = Cookie::forget('guest_progress');
 
         return match (true) {
-            $user->role_id == 1 => redirect()->intended('admin/dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
+            $user->role_id == 1                       => redirect()->intended('admin/dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
             $user->role_id == 2 && $user->is_approved => redirect()->intended('admin/dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
-            $user->role_id == 2 => redirect()->route('admin.pending-approval')->withCookie($clearGuest)->withCookie($clearProgress),
-            $user->role_id == 3 => redirect()->intended('mahasiswa/dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
-            default => redirect()->intended('mahasiswa/materials')->withCookie($clearGuest)->withCookie($clearProgress),
+            $user->role_id == 2                       => redirect()->route('admin.pending-approval')->withCookie($clearGuest)->withCookie($clearProgress),
+            $user->role_id == 3                       => redirect()->intended('mahasiswa/dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
+            default                                   => redirect()->intended('mahasiswa/materials')->withCookie($clearGuest)->withCookie($clearProgress),
         };
     }
 

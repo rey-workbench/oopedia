@@ -12,7 +12,6 @@ class CheckRole
      * Handle an incoming request.
      *
      * @param string $role
-     *
      * @return mixed
      */
     public function handle(Request $request, Closure $next, $role)
@@ -26,7 +25,7 @@ class CheckRole
 
         if (! in_array(auth()->user()->role_id, $roles)) {
             return Inertia::render('Error', [
-                'status' => 403,
+                'status'  => 403,
                 'message' => 'Anda tidak memiliki akses untuk halaman ini',
             ])->toResponse($request)->setStatusCode(403);
         }

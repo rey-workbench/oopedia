@@ -13,7 +13,6 @@ interface QuestionAnswerServiceInterface
      * Check a single answer submission.
      *
      * @param array<string, mixed> $data
-     *
      * @return array<string, mixed>
      */
     public function checkAnswer(array $data, int|string $userId, bool $isGuest): array;
@@ -22,7 +21,6 @@ interface QuestionAnswerServiceInterface
      * Check all answers for a completed quiz session.
      *
      * @param array<string, mixed> $data
-     *
      * @return array<string, mixed>
      */
     public function checkAllAnswers(array $data, int $userId): array;

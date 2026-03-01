@@ -62,8 +62,8 @@ class MaterialQuestionController extends Controller
      */
     public function index(Request $request): Response
     {
-        $isGuest = $this->isGuestUser();
-        $userId = $this->getUserId();
+        $isGuest       = $this->isGuestUser();
+        $userId        = $this->getUserId();
         $guestProgress = $this->getGuestProgress($request);
 
         $materials = $this->questionListingService->getMaterialsListWithStudentCount($userId, $isGuest, $guestProgress);
@@ -92,7 +92,7 @@ class MaterialQuestionController extends Controller
         // session()->forget('quiz_difficulty');
 
         $guestProgress = $this->getGuestProgress($request);
-        $userId = $this->getUserId();
+        $userId        = $this->getUserId();
 
         $data = $this->questionListingService->getQuizData($material, $difficulty, $userId, $isGuest, $guestProgress);
 
@@ -102,8 +102,8 @@ class MaterialQuestionController extends Controller
             $studentState = $this->performanceService->getStudentState($userId);
             if ($studentState) {
                 $studentStateData = [
-                    'gamification' => $studentState->gamification_data,
-                    'performance' => $studentState->performance_metrics,
+                    'gamification'     => $studentState->gamification_data,
+                    'performance'      => $studentState->performance_metrics,
                     'learning_profile' => $studentState->learning_profile,
                 ];
             }
@@ -111,12 +111,12 @@ class MaterialQuestionController extends Controller
             // Mock state for guests from session to ensure continuity
             $studentStateData = [
                 'gamification' => [
-                    'global_xp' => session('guest_xp', 0),
+                    'global_xp'      => session('guest_xp', 0),
                     'current_streak' => session('guest_streak', 0),
-                    'current_level' => 'Tamu',
+                    'current_level'  => 'Tamu',
                 ],
                 'performance' => [
-                    'hints_available' => 3,
+                    'hints_available'          => 3,
                     'total_questions_answered' => count(session('guest_progress', [])),
                 ],
                 'learning_profile' => [],
@@ -124,7 +124,7 @@ class MaterialQuestionController extends Controller
         }
 
         return Inertia::render('Mahasiswa/Materials/Questions/Show/Index', array_merge($data, [
-            'isGuest' => $isGuest,
+            'isGuest'      => $isGuest,
             'studentState' => $studentStateData,
         ]));
     }
@@ -140,10 +140,10 @@ class MaterialQuestionController extends Controller
                 ->with('error', 'Material tidak ditemukan');
         }
 
-        $materials = $this->materialService->getAllOrdered();
-        $difficulty = 'all';
-        $isGuest = $this->isGuestUser();
-        $userId = $this->getUserId();
+        $materials     = $this->materialService->getAllOrdered();
+        $difficulty    = 'all';
+        $isGuest       = $this->isGuestUser();
+        $userId        = $this->getUserId();
         $guestProgress = $this->getGuestProgress($request);
 
         $answeredQuestionIds = $isGuest
@@ -166,21 +166,21 @@ class MaterialQuestionController extends Controller
      */
     public function review(int|string $id, Request $request): Response
     {
-        $material = $this->materialService->getMaterialWithQuestionsAndAnswers((int) $id);
-        $materials = $this->materialService->getAllOrdered();
-        $difficulty = $request->query('difficulty', 'all');
-        $isGuest = $this->isGuestUser();
-        $userId = $this->getUserId();
+        $material      = $this->materialService->getMaterialWithQuestionsAndAnswers((int) $id);
+        $materials     = $this->materialService->getAllOrdered();
+        $difficulty    = $request->query('difficulty', 'all');
+        $isGuest       = $this->isGuestUser();
+        $userId        = $this->getUserId();
         $guestProgress = $this->getGuestProgress($request);
 
         $questions = $this->questionListingService->getReviewQuestions($material, $difficulty, $userId, $isGuest, $guestProgress);
 
         return Inertia::render('Mahasiswa/Materials/Questions/Review/Index', [
-            'material' => $material,
-            'materials' => $materials,
-            'questions' => $questions,
+            'material'   => $material,
+            'materials'  => $materials,
+            'questions'  => $questions,
             'difficulty' => $difficulty,
-            'isGuest' => $isGuest,
+            'isGuest'    => $isGuest,
         ]);
     }
 
@@ -192,9 +192,9 @@ class MaterialQuestionController extends Controller
         $isGuest = $this->isGuestUser();
 
         if ($isGuest) {
-            $progressKey = $materialId . '_' . $questionId;
+            $progressKey   = $materialId . '_' . $questionId;
             $guestProgress = $this->getGuestProgress($request);
-            $attempts = isset($guestProgress[$progressKey]) ? $guestProgress[$progressKey]['attempt_number'] : 0;
+            $attempts      = isset($guestProgress[$progressKey]) ? $guestProgress[$progressKey]['attempt_number'] : 0;
         } else {
             $attempts = $this->progressService->getAttemptCount(Auth::id(), (int) $materialId, (int) $questionId);
         }
@@ -212,20 +212,20 @@ class MaterialQuestionController extends Controller
 
         if (! $material || ! $question) {
             return response()->json([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => 'Material atau soal tidak ditemukan',
             ], 404);
         }
 
-        $userId = $this->getUserId();
+        $userId  = $this->getUserId();
         $isGuest = $this->isGuestUser();
 
         Log::debug('[MaterialQuestionController] Request data for checkAnswer:', [
             'material_id' => $materialId,
             'question_id' => $questionId,
-            'user_id' => $userId,
-            'is_guest' => $isGuest,
-            'payload' => $request->all(),
+            'user_id'     => $userId,
+            'is_guest'    => $isGuest,
+            'payload'     => $request->all(),
         ]);
 
         if (! $isGuest) {

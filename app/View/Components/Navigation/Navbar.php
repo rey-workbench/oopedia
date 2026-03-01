@@ -42,11 +42,11 @@ class Navbar extends Component
         ?string $role = null,
         string $variant = 'default',
     ) {
-        $this->titlePage = $titlePage;
-        $this->role = $role ?? $this->detectRole();
-        $this->variant = $variant;
+        $this->titlePage    = $titlePage;
+        $this->role         = $role ?? $this->detectRole();
+        $this->variant      = $variant;
         $this->currentRoute = request()->route()?->getName() ?? '';
-        $this->userName = Auth::check() ? Auth::user()->name : '';
+        $this->userName     = Auth::check() ? Auth::user()->name : '';
     }
 
     /**
@@ -61,10 +61,10 @@ class Navbar extends Component
         $user = Auth::user();
 
         return match ($user->role_id) {
-            1 => 'superadmin',
-            2 => 'admin',
-            3 => 'mahasiswa',
-            4 => 'guest',
+            1       => 'superadmin',
+            2       => 'admin',
+            3       => 'mahasiswa',
+            4       => 'guest',
             default => 'guest',
         };
     }
@@ -112,42 +112,42 @@ class Navbar extends Component
 
         if ($this->isAuthenticated()) {
             $items[] = [
-                'route' => 'mahasiswa.dashboard',
-                'icon' => 'fa-home',
-                'label' => 'Dashboard',
+                'route'   => 'mahasiswa.dashboard',
+                'icon'    => 'fa-home',
+                'label'   => 'Dashboard',
                 'pattern' => 'mahasiswa.dashboard*',
                 'tooltip' => 'Dashboard pengguna',
             ];
         }
 
         $items[] = [
-            'route' => 'mahasiswa.materials.index',
-            'icon' => 'fa-book',
-            'label' => 'Materi',
-            'pattern' => 'mahasiswa.materials*',
+            'route'          => 'mahasiswa.materials.index',
+            'icon'           => 'fa-book',
+            'label'          => 'Materi',
+            'pattern'        => 'mahasiswa.materials*',
             'excludePattern' => 'mahasiswa.materials.questions*',
-            'tooltip' => 'Kumpulan materi pembelajaran',
-            'badge' => ! $this->isAuthenticated() ? 'Terbatas' : null,
+            'tooltip'        => 'Kumpulan materi pembelajaran',
+            'badge'          => ! $this->isAuthenticated() ? 'Terbatas' : null,
+            'badgeClass'     => 'bg-warning text-dark',
+        ];
+
+        $items[] = [
+            'route'      => 'mahasiswa.materials.questions.index',
+            'icon'       => 'fa-clipboard-check',
+            'label'      => 'Latihan Soal',
+            'pattern'    => 'mahasiswa.materials.questions*',
+            'tooltip'    => 'Latihan soal untuk menguji pemahaman',
+            'badge'      => ! $this->isAuthenticated() ? 'Terbatas' : null,
             'badgeClass' => 'bg-warning text-dark',
         ];
 
         $items[] = [
-            'route' => 'mahasiswa.materials.questions.index',
-            'icon' => 'fa-clipboard-check',
-            'label' => 'Latihan Soal',
-            'pattern' => 'mahasiswa.materials.questions*',
-            'tooltip' => 'Latihan soal untuk menguji pemahaman',
-            'badge' => ! $this->isAuthenticated() ? 'Terbatas' : null,
-            'badgeClass' => 'bg-warning text-dark',
-        ];
-
-        $items[] = [
-            'route' => 'mahasiswa.leaderboard',
-            'icon' => 'fa-trophy',
-            'label' => 'Peringkat',
-            'pattern' => 'mahasiswa.leaderboard*',
-            'tooltip' => 'Papan peringkat pengguna berdasarkan skor',
-            'badge' => ! $this->isAuthenticated() ? 'Perlu Login' : null,
+            'route'      => 'mahasiswa.leaderboard',
+            'icon'       => 'fa-trophy',
+            'label'      => 'Peringkat',
+            'pattern'    => 'mahasiswa.leaderboard*',
+            'tooltip'    => 'Papan peringkat pengguna berdasarkan skor',
+            'badge'      => ! $this->isAuthenticated() ? 'Perlu Login' : null,
             'badgeClass' => 'bg-danger text-white',
         ];
 

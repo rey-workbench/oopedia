@@ -16,8 +16,11 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
 class Rule01_VisualCrisisIntervention extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_01';
+
     protected string $ruleName = 'Visual Crisis Intervention';
+
     protected string $actionCode = AdaptiveConstants::ACTION_VISUAL_CRISIS_INTERVENTION;
+
     protected int $priority = 10; // Very high priority
 
     public function evaluate(array $facts): bool
@@ -31,9 +34,9 @@ class Rule01_VisualCrisisIntervention extends BaseAdaptiveRule
 
     public function apply(array $state, array $context): array
     {
-        $state['recommendation'] = 'Ulas Materi';
-        $state['next_action'] = 'STUDY_VISUAL';
-        $state['message'] = 'Performa Anda menurun. Mari ulas kembali materi untuk memperkuat pemahaman.';
+        $state['recommendation']    = 'Ulas Materi';
+        $state['next_action']       = 'STUDY_VISUAL';
+        $state['message']           = 'Performa Anda menurun. Mari ulas kembali materi untuk memperkuat pemahaman.';
         $state['intervention_type'] = 'visual_crisis';
 
         return $state;

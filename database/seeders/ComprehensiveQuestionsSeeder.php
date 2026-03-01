@@ -19,7 +19,7 @@ class ComprehensiveQuestionsSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $subMaterials = SubMaterial::all();
-        $admin = User::whereIn('role_id', [1, 2])->first();
+        $admin        = User::whereIn('role_id', [1, 2])->first();
 
         if ($subMaterials->isEmpty()) {
             echo "Warning: No submaterials found. Please run SubMaterialsSeeder first.\n";
@@ -44,7 +44,7 @@ class ComprehensiveQuestionsSeeder extends Seeder
                     $difficulty = $i <= 5 ? 'beginner' : ($i <= 10 ? 'medium' : 'hard');
 
                     // Cycle through question types
-                    $typePool = ['radio_button', 'fill_in_the_blank', 'drag_and_drop'];
+                    $typePool     = ['radio_button', 'fill_in_the_blank', 'drag_and_drop'];
                     $questionType = $typePool[($i - 1) % 3];
 
                     // Handle mixed content type for question category
@@ -114,25 +114,25 @@ class ComprehensiveQuestionsSeeder extends Seeder
     private function createRadioQuestion($materialId, $subMaterialId, $text, $type, $difficulty, $hint, $answers, $adminId)
     {
         $question = Question::create([
-            'material_id' => $materialId,
+            'material_id'     => $materialId,
             'sub_material_id' => $subMaterialId,
-            'question_text' => $text,
-            'question_type' => 'radio_button',
-            'type' => $type,
-            'difficulty' => $difficulty,
-            'hint' => $hint,
-            'created_by' => $adminId,
+            'question_text'   => $text,
+            'question_type'   => 'radio_button',
+            'type'            => $type,
+            'difficulty'      => $difficulty,
+            'hint'            => $hint,
+            'created_by'      => $adminId,
         ]);
 
         $answerData = [];
         foreach ($answers as $answer) {
             $answerData[] = [
                 'question_id' => $question->id,
-                'is_correct' => $answer[1],
+                'is_correct'  => $answer[1],
                 'answer_text' => $answer[0],
                 'explanation' => $answer[2],
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at'  => now(),
+                'updated_at'  => now(),
             ];
         }
         Answer::insert($answerData);
@@ -141,26 +141,26 @@ class ComprehensiveQuestionsSeeder extends Seeder
     private function createFillBlankQuestion($materialId, $subMaterialId, $text, $type, $difficulty, $hint, $correctAnswers, $adminId)
     {
         $question = Question::create([
-            'material_id' => $materialId,
+            'material_id'     => $materialId,
             'sub_material_id' => $subMaterialId,
-            'question_text' => $text,
-            'question_type' => 'fill_in_the_blank',
-            'type' => $type,
-            'difficulty' => $difficulty,
-            'hint' => $hint,
-            'created_by' => $adminId,
+            'question_text'   => $text,
+            'question_type'   => 'fill_in_the_blank',
+            'type'            => $type,
+            'difficulty'      => $difficulty,
+            'hint'            => $hint,
+            'created_by'      => $adminId,
         ]);
 
         $answerData = [];
         foreach ($correctAnswers as $answer) {
             $answerData[] = [
-                'question_id' => $question->id,
-                'is_correct' => true,
-                'answer_text' => $answer[0],
+                'question_id'    => $question->id,
+                'is_correct'     => true,
+                'answer_text'    => $answer[0],
                 'blank_position' => 1,
-                'explanation' => $answer[1],
-                'created_at' => now(),
-                'updated_at' => now(),
+                'explanation'    => $answer[1],
+                'created_at'     => now(),
+                'updated_at'     => now(),
             ];
         }
         Answer::insert($answerData);
@@ -169,26 +169,26 @@ class ComprehensiveQuestionsSeeder extends Seeder
     private function createDragDropQuestion($materialId, $subMaterialId, $text, $type, $difficulty, $hint, $items, $adminId)
     {
         $question = Question::create([
-            'material_id' => $materialId,
+            'material_id'     => $materialId,
             'sub_material_id' => $subMaterialId,
-            'question_text' => $text,
-            'question_type' => 'drag_and_drop',
-            'type' => $type,
-            'difficulty' => $difficulty,
-            'hint' => $hint,
-            'created_by' => $adminId,
+            'question_text'   => $text,
+            'question_type'   => 'drag_and_drop',
+            'type'            => $type,
+            'difficulty'      => $difficulty,
+            'hint'            => $hint,
+            'created_by'      => $adminId,
         ]);
 
         $answerData = [];
         foreach ($items as $item) {
             $answerData[] = [
                 'question_id' => $question->id,
-                'is_correct' => true,
+                'is_correct'  => true,
                 'answer_text' => $item[0],
                 'drag_target' => $item[1],
                 'explanation' => $item[2],
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at'  => now(),
+                'updated_at'  => now(),
             ];
         }
         Answer::insert($answerData);

@@ -22,7 +22,9 @@ class Question extends Model
     use HasFactory;
 
     const TYPE_FILL_IN_THE_BLANK = 'fill_in_the_blank';
+
     const TYPE_RADIO_BUTTON = 'radio_button';
+
     const TYPE_DRAG_AND_DROP = 'drag_and_drop';
 
     protected $fillable = [
@@ -36,9 +38,9 @@ class Question extends Model
     ];
 
     protected $casts = [
-        'material_id' => 'integer',
+        'material_id'     => 'integer',
         'sub_material_id' => 'integer',
-        'created_by' => 'integer',
+        'created_by'      => 'integer',
     ];
 
     // ==================== RELATIONSHIPS ====================
