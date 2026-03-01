@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Contracts\Services\MaterialServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;

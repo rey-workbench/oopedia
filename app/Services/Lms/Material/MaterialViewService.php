@@ -25,7 +25,7 @@ class MaterialViewService implements MaterialViewServiceInterface
     public function getMaterialsList(int|string|null $userId, bool $isGuest): Collection
     {
         $progressStats = $userId ? $this->progressRepo->getUserProgressStats($userId) : collect();
-        
+
         // Use optimized listing method
         $allMaterials = $this->materialRepo->getMaterialsForListing();
 
@@ -35,7 +35,7 @@ class MaterialViewService implements MaterialViewServiceInterface
             $allMaterials = $allMaterials->take($materialsToShow);
 
             // For guests, we only need question difficulties to calculate limits
-            $allMaterials->load(['questions' => function($query) {
+            $allMaterials->load(['questions' => function ($query) {
                 $query->select('id', 'material_id', 'difficulty');
             }]);
         }
@@ -89,7 +89,7 @@ class MaterialViewService implements MaterialViewServiceInterface
         // For guest users, we use session-based progress, so repository stats might be empty
         // MaterialViewService currently doesn't have access to Request to get cookie progress
         // But making repo methods nullable prevents the crash
-        $answeredQuestionIds = $userId 
+        $answeredQuestionIds = $userId
             ? $this->progressRepo->getAnsweredQuestionIds($userId, $materialId)
             : collect();
 

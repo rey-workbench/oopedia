@@ -35,6 +35,7 @@ class ComprehensiveQuestionsSeeder extends Seeder
 
         $totalCreated = 0;
         DB::beginTransaction();
+
         try {
             foreach ($subMaterials as $subMaterial) {
                 // Create 15 questions per submaterial
@@ -101,6 +102,7 @@ class ComprehensiveQuestionsSeeder extends Seeder
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+
             throw $e;
         }
 

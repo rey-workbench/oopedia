@@ -3,6 +3,9 @@
     "description": "Laravel 12.x Inertia OOPedia",
     "license": "MIT",
     "homepage": "https://github.com/reyworkbench/oopedia",
+    "scripts": {
+        "pint": "pint"
+    },
     "keywords": [
         "Laravel",
         "Skripsi",

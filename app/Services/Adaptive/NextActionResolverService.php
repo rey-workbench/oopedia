@@ -64,7 +64,7 @@ class NextActionResolverService implements NextActionResolverServiceInterface
     protected function reduceDifficulty(Material $material, Question $question, ?int $userId = null): array
     {
         $currentDifficulty = $question->difficulty ?? 'beginner';
-        
+
         // Determine target difficulty (Stepwise reduction)
         $targetDifficulty = match ($currentDifficulty) {
             'hard' => 'medium',
@@ -75,22 +75,25 @@ class NextActionResolverService implements NextActionResolverServiceInterface
         // Helper to check availability (reusing logic from original method)
         $checkAvailability = function (string $difficulty) use ($material, $userId) {
             $exists = $this->questionService->existsByMaterialAndDifficulty($material->id, $difficulty);
-            
-            if (!$exists) return false;
-            
+
+            if (! $exists) {
+                return false;
+            }
+
             if ($userId) {
                 $answeredIds = $this->progressService->getAnsweredQuestionIds($userId, $material->id);
                 $questions = $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty);
+
                 return $questions->whereNotIn('id', $answeredIds->toArray())->isNotEmpty();
             }
-            
-            return true; 
+
+            return true;
         };
 
         // 1. Try Target Difficulty
         if ($checkAvailability($targetDifficulty)) {
             session(['quiz_difficulty' => $targetDifficulty]);
-            
+
             $labelMap = [
                 'medium' => 'Coba Soal Menengah',
                 'beginner' => 'Coba Soal Pemula',
@@ -105,8 +108,9 @@ class NextActionResolverService implements NextActionResolverServiceInterface
 
         // 2. Fallback: If target was Medium but failed availability, try Beginner
         if ($targetDifficulty === 'medium' && $checkAvailability('beginner')) {
-             session(['quiz_difficulty' => 'beginner']);
-             return [
+            session(['quiz_difficulty' => 'beginner']);
+
+            return [
                 'label' => 'Coba Soal Pemula',
                 'url' => route('mahasiswa.materials.questions.show', ['material' => $material->id]),
                 'type' => 'question',

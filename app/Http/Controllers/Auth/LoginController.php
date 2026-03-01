@@ -33,6 +33,7 @@ class LoginController extends Controller
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
             }
+
             return Redirect::route('mahasiswa.materials.index');
         }
 
@@ -64,7 +65,6 @@ class LoginController extends Controller
     {
         Auth::logout();
         $request->session()->invalidate();
-
 
         $request->session()->regenerateToken();
 

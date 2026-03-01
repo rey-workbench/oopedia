@@ -51,6 +51,7 @@ class ProgressRepository implements ProgressRepositoryInterface
         if (is_null($userId)) {
             return collect();
         }
+
         // Get latest correct attempts
         return QuizAttempt::with(['question.material'])
             ->where('user_id', $userId)

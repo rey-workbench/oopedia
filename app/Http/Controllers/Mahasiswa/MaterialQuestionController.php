@@ -220,19 +220,19 @@ class MaterialQuestionController extends Controller
         $userId = $this->getUserId();
         $isGuest = $this->isGuestUser();
 
-        Log::debug("[MaterialQuestionController] Request data for checkAnswer:", [
+        Log::debug('[MaterialQuestionController] Request data for checkAnswer:', [
             'material_id' => $materialId,
             'question_id' => $questionId,
             'user_id' => $userId,
             'is_guest' => $isGuest,
-            'payload' => $request->all()
+            'payload' => $request->all(),
         ]);
 
         if (! $isGuest) {
             // Use Adaptive Flow Service
             $result = $this->adaptiveQuizFlowService->processAdaptiveAttempt($material, $question, $userId, $request->all());
-            
-            Log::debug("[MaterialQuestionController] Result for checkAnswer (Auth):", $result);
+
+            Log::debug('[MaterialQuestionController] Result for checkAnswer (Auth):', $result);
 
             return response()->json($result);
         }
@@ -243,7 +243,7 @@ class MaterialQuestionController extends Controller
             $isGuest,
         );
 
-        Log::debug("[MaterialQuestionController] Result for checkAnswer (Guest):", $result);
+        Log::debug('[MaterialQuestionController] Result for checkAnswer (Guest):', $result);
 
         return response()->json($result);
     }
