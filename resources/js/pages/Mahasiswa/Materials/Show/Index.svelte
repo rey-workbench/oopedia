@@ -48,62 +48,6 @@
 <App title={state.material?.title || 'Material'}>
     <div class="space-y-12">
         <PageHeader title={state.material?.title || material.title} />
-        <!-- Header Section -->
-
-        <div class="mb-8">
-            <h1
-                class="font-display text-3xl leading-tight font-extrabold tracking-tight text-slate-900 md:text-4xl"
-            >
-                {state.material?.title || 'Loading...'}
-            </h1>
-            <div class="mt-3 flex items-center gap-2" role="presentation">
-                <div class="bg-primary-600 h-1.5 w-12 rounded-full"></div>
-                <div class="h-1.5 w-4 rounded-full bg-slate-200"></div>
-                <div class="h-1.5 w-2 rounded-full bg-slate-100"></div>
-            </div>
-            <p class="mt-4 max-w-3xl leading-relaxed font-medium text-slate-500">
-                Kuasai konsep fondasi hingga tingkat lanjut Pemrograman Berorientasi Objek.
-            </p>
-            <div class="mt-6 flex flex-wrap gap-4">
-                <div>
-                    <Button
-                        href={ROUTES.MAHASISWA.MATERIALS.INDEX}
-                        variant="ghost"
-                        icon={ArrowLeft}
-                    >
-                        Kembali ke Materi
-                    </Button>
-                </div>
-
-                <div class="flex flex-wrap items-center gap-4">
-                    <div class="flex items-center gap-3">
-                        <div
-                            class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 shadow-inner"
-                        >
-                            <BookOpen size={16} />
-                        </div>
-                        <span
-                            class="text-[10px] font-bold tracking-widest text-slate-500 uppercase"
-                        >
-                            {state.material?.creator?.name || 'Admin System'}
-                        </span>
-                    </div>
-
-                    <div class="flex items-center gap-3">
-                        <div
-                            class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 shadow-inner"
-                        >
-                            <Layers size={16} />
-                        </div>
-                        <span
-                            class="text-[10px] font-bold tracking-widest text-slate-500 uppercase"
-                        >
-                            {state.subMaterials.length} Sub-Materi
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Adaptive System Alert -->
         {#if state.fromAdaptive}
