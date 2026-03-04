@@ -22,7 +22,7 @@
         getHoverBorderClass,
     } from '@/utils/contentTypeStyles';
     import { SubMaterialState } from '@/states/Mahasiswa/MaterialState.svelte';
-    import PageHeader from '@/components/shared/PageHeader.svelte';
+    import PageHeader from '@/components/ui/PageHeader.svelte';
     import { ROUTES } from '@/utils/route';
     import { onMount, tick, untrack } from 'svelte';
     import { enhanceCodeBlocks } from '@/utils/codeBlockEnhancer';

@@ -1,12 +1,12 @@
 <script lang="ts">
     import App from '@/layouts/App.svelte';
     import Button from '@/components/ui/Button.svelte';
-    import DataTable from '@/components/shared/DataTable.svelte';
+    import DataTable from '@/components/ui/DataTable.svelte';
     import Badge from '@/components/ui/Badge.svelte';
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import Pagination from '@/components/ui/Pagination.svelte';
     import { Plus, ArrowLeft, FlaskConical, Search, Edit2, Trash2 } from 'lucide-svelte';
-    import PageHeader from '@/components/shared/PageHeader.svelte';
+    import PageHeader from '@/components/ui/PageHeader.svelte';
     import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';
     import { QuestionListAdminState } from '@/states/Admin/QuestionState.svelte';

@@ -1,8 +1,8 @@
 <script lang="ts">
     import App from '@/layouts/App.svelte';
     import Card from '@/components/ui/Card.svelte';
-    import PageHeader from '@/components/shared/PageHeader.svelte';
-    import DataTable from '@/components/shared/DataTable.svelte';
+    import PageHeader from '@/components/ui/PageHeader.svelte';
+    import DataTable from '@/components/ui/DataTable.svelte';
     import Badge from '@/components/ui/Badge.svelte';
     import ProgressBar from '@/components/ui/ProgressBar.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';

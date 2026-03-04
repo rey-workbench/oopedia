@@ -1,9 +1,9 @@
 <script lang="ts">
     import App from '@/layouts/App.svelte';
     import Button from '@/components/ui/Button.svelte';
-    import DataTable from '@/components/shared/DataTable.svelte';
+    import DataTable from '@/components/ui/DataTable.svelte';
     import EmptyState from '@/components/ui/EmptyState.svelte';
-    import PageHeader from '@/components/shared/PageHeader.svelte';
+    import PageHeader from '@/components/ui/PageHeader.svelte';
     import Badge from '@/components/ui/Badge.svelte';
     import { Plus, ArrowLeft, Layers, Edit2, Trash2 } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';

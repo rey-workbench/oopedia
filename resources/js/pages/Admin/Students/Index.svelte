@@ -10,14 +10,14 @@
         Loader2,
     } from 'lucide-svelte';
     import Button from '@/components/ui/Button.svelte';
-    import DataTable from '@/components/shared/DataTable.svelte';
+    import DataTable from '@/components/ui/DataTable.svelte';
     import ProgressBar from '@/components/ui/ProgressBar.svelte';
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import Pagination from '@/components/ui/Pagination.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
     import Modal from '@/components/ui/Modal.svelte';
     import Input from '@/components/ui/Input.svelte';
-    import PageHeader from '@/components/shared/PageHeader.svelte';
+    import PageHeader from '@/components/ui/PageHeader.svelte';
     import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';
     import { StudentListState, StudentRegisterState } from '@/states/Admin/StudentState.svelte';

@@ -1,6 +1,6 @@
 <script lang="ts">
     import App from '@/layouts/App.svelte';
-    import PageHeader from '@/components/shared/PageHeader.svelte';
+    import PageHeader from '@/components/ui/PageHeader.svelte';
     import Button from '@/components/ui/Button.svelte';
     import Input from '@/components/ui/Input.svelte';
     import Alert from '@/components/ui/Alert.svelte';

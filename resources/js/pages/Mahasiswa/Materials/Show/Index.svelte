@@ -4,11 +4,11 @@
     import Card from '@/components/ui/Card.svelte';
     import ContentDisplay from '@/components/ui/ContentDisplay.svelte';
     import { page } from '@inertiajs/svelte';
-    import { ArrowLeft, BookOpen, Layers, Info, Puzzle } from 'lucide-svelte';
+    import { ArrowLeft, BookOpen, Info, Puzzle } from 'lucide-svelte';
     import { onMount, tick, untrack } from 'svelte';
     import { enhanceCodeBlocks } from '@/utils/codeBlockEnhancer';
     import { MaterialShowState } from '@/states/Mahasiswa/MaterialState.svelte';
-    import PageHeader from '@/components/shared/PageHeader.svelte';
+    import PageHeader from '@/components/ui/PageHeader.svelte';
     import { ROUTES } from '@/utils/route';
     import {
         getBgClass,

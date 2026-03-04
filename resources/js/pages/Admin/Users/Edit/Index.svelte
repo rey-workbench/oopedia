@@ -1,9 +1,10 @@
 <script lang="ts">
     import App from '@/layouts/App.svelte';
-    import PageHeader from '@/components/shared/PageHeader.svelte';
+    import PageHeader from '@/components/ui/PageHeader.svelte';
+    import Card from '@/components/ui/Card.svelte';
     import Button from '@/components/ui/Button.svelte';
     import Input from '@/components/ui/Input.svelte';
-    import InfoPanel from '@/components/shared/InfoPanel.svelte';
+    import InfoPanel from '@/components/ui/InfoPanel.svelte';
     import { ArrowLeft, Save, Lock } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';
@@ -42,9 +43,7 @@
             }}
             class="space-y-12"
         >
-            <div
-                class="group relative overflow-hidden rounded-3xl border border-slate-100 bg-white p-6 shadow-2xl transition-transform duration-300 hover:-translate-y-1"
-            >
+            <Card padding="p-6">
                 <div class="mb-6">
                     <h3 class="text-lg font-bold text-slate-800">Modifikasi Identitas Admin</h3>
                 </div>
@@ -120,7 +119,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </Card>
         </form>
     </div>
 </App>

@@ -1,12 +1,11 @@
 <script lang="ts">
-    import { Link } from '@inertiajs/svelte';
+    import { Link, page } from '@inertiajs/svelte';
     import App from '@/layouts/App.svelte';
-    import PageHeader from '@/components/shared/PageHeader.svelte';
-    import StatsGrid from '@/components/shared/StatsGrid.svelte';
+    import PageHeader from '@/components/ui/PageHeader.svelte';
     import Card from '@/components/ui/Card.svelte';
     import Button from '@/components/ui/Button.svelte';
     import EmptyState from '@/components/ui/EmptyState.svelte';
-    import DarkHeroPanel from '@/components/shared/DarkHeroPanel.svelte';
+    import Panel from '@/components/ui/Panel.svelte';
     import {
         BookOpen,
         Brain,
@@ -96,21 +95,21 @@
     <div class="space-y-12">
         <PageHeader title="Dashboard" subtitle="Selamat datang di pusat kendali belajar Anda." />
 
-        <DarkHeroPanel class="p-12 shadow-2xl shadow-slate-200">
+        <Panel rounded="full" class="shadow-2xl shadow-slate-200" padding="p-12">
             <div class="flex flex-col items-center gap-10 md:flex-row">
-                <div
-                    class="flex h-32 w-32 rotate-3 items-center justify-center rounded-[2.5rem] bg-white shadow-2xl"
-                >
-                    <img src="/images/logo.png" alt="Oopedia" class="h-auto w-20" />
-                </div>
-                <div class="text-center md:text-left">
-                    <p
-                        class="text-primary-400 mb-3 text-[10px] font-bold tracking-widest uppercase"
+                <div class="group relative">
+                    <div
+                        class="flex h-32 w-32 rotate-3 items-center justify-center overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-transform duration-500 group-hover:rotate-0"
                     >
-                        Selamat Datang Kembali
-                    </p>
-                    <h2 class="mb-4 text-5xl font-bold tracking-widest text-white uppercase">
-                        {state.user?.name}
+                        <Star size={80} class="text-primary-500" />
+                    </div>
+                </div>
+
+                <div class="text-center md:text-left">
+                    <h2
+                        class="mb-4 text-4xl font-bold tracking-tight text-white uppercase md:text-5xl"
+                    >
+                        Siap Belajar, <span class="text-primary-400">{$page.props['auth'].user.name}</span>?
                     </h2>
                     <p class="max-w-xl text-lg font-medium text-slate-400">
                         Lanjutkan perjalanan belajar Anda hari ini dan kuasai konsep
@@ -118,9 +117,63 @@
                     </p>
                 </div>
             </div>
-        </DarkHeroPanel>
+        </Panel>
 
-        <StatsGrid stats={dashboardStats} gridClass="grid-cols-1 md:grid-cols-2 lg:grid-cols-4" />
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {#each dashboardStats as stat (stat.title)}
+                <Card hover={true} class="relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-slate-400">
+                        {#if typeof stat.icon !== 'string'}
+                            {@const IconComponent = stat.icon}
+                            <div class="scale-[4] transition-transform duration-500 group-hover:scale-[4.5]">
+                                <IconComponent size={24} strokeWidth={2.5} />
+                            </div>
+                        {/if}
+                    </div>
+
+                    <div class="relative z-10">
+                        <div
+                            class="glass mb-6 flex h-14 w-14 items-center justify-center rounded-2xl shadow-sm
+                            {stat.variant === 'success' ? 'bg-emerald-100 text-emerald-600' : 
+                             stat.variant === 'danger' ? 'bg-rose-100 text-rose-600' :
+                             stat.variant === 'warning' ? 'bg-amber-100 text-amber-600' :
+                             'bg-primary-100 text-primary-600'}"
+                        >
+                            {#if typeof stat.icon === 'string'}
+                                <i class={stat.icon}></i>
+                            {:else}
+                                {@const IconComponent = stat.icon}
+                                <IconComponent size={24} strokeWidth={2.5} />
+                            {/if}
+                        </div>
+
+                        <h3 class="mb-2 text-[10px] font-bold tracking-wider text-slate-600 uppercase">
+                            {stat.title}
+                        </h3>
+                        <div class="font-display mb-2 text-4xl font-black tracking-tight text-slate-900">
+                            {stat.value}
+                        </div>
+
+                        {#if stat.footer}
+                            <div class="flex items-center gap-2">
+                                <div
+                                    class="h-1.5 w-1.5 rounded-full {stat.variant === 'success'
+                                        ? 'bg-emerald-500'
+                                        : stat.variant === 'danger'
+                                        ? 'bg-rose-500'
+                                        : stat.variant === 'warning'
+                                        ? 'bg-amber-500'
+                                        : 'bg-primary-500'}"
+                                ></div>
+                                <p class="text-[10px] font-bold tracking-widest text-slate-500 uppercase">
+                                    {stat.footer}
+                                </p>
+                            </div>
+                        {/if}
+                    </div>
+                </Card>
+            {/each}
+        </div>
 
         <div class="grid grid-cols-1 gap-12 lg:grid-cols-3">
             <div class="space-y-8 lg:col-span-2">

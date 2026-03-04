@@ -1,9 +1,9 @@
 <script lang="ts">
     import App from '@/layouts/App.svelte';
-    import PageHeader from '@/components/shared/PageHeader.svelte';
+    import PageHeader from '@/components/ui/PageHeader.svelte';
     import Button from '@/components/ui/Button.svelte';
     import ImportInstructions from '@/components/shared/ImportInstructions.svelte';
-    import FileUploadZone from '@/components/shared/FileUploadZone.svelte';
+    import FileUploadZone from '@/components/ui/FileUploadZone.svelte';
     import { ArrowLeft, Upload } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
     import { StudentImportState } from '@/states/Admin/StudentState.svelte';

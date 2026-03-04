@@ -1,11 +1,10 @@
 <script lang="ts">
     import App from '@/layouts/App.svelte';
-    import DarkHeroPanel from '@/components/shared/DarkHeroPanel.svelte';
+    import Panel from '@/components/ui/Panel.svelte';
     import Card from '@/components/ui/Card.svelte';
     import Input from '@/components/ui/Input.svelte';
     import Button from '@/components/ui/Button.svelte';
     import Alert from '@/components/ui/Alert.svelte';
-    import StatsGrid from '@/components/shared/StatsGrid.svelte';
     import {
         ShieldCheck,
         UserCircle,
@@ -27,7 +26,7 @@
     } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { ProfileState } from '@/states/Mahasiswa/ProfileState.svelte';
-    import PageHeader from '@/components/shared/PageHeader.svelte';
+    import PageHeader from '@/components/ui/PageHeader.svelte';
 
     import type { StudentProfile } from '@/types';
 
@@ -111,23 +110,13 @@
             title="Profil Saya"
             subtitle="Atur informasi akun dan keamanan Anda untuk pengalaman belajar yang lebih personal."
         >
-            <div class="mt-6 flex flex-wrap gap-4">
-                <div>
-                    <div
-                        class="flex items-center gap-2 rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-2 text-emerald-600"
-                    >
-                        <ShieldCheck size={16} />
-                        <span class="text-[10px] font-bold tracking-widest uppercase"
-                            >Akun Terverifikasi</span
-                        >
-                    </div>
-                </div>
-            </div>
         </PageHeader>
 
         <!-- Profile Hero Card -->
-        <DarkHeroPanel
-            class="hover:shadow-primary-900/20 mb-8 p-8 shadow-2xl transition-all duration-500 md:p-12"
+        <Panel
+            rounded="full"
+            class="hover:shadow-primary-900/20 mb-8 shadow-2xl transition-all duration-500"
+            padding="p-8 md:p-12"
         >
             <div class="flex flex-col items-center gap-10 md:flex-row">
                 <div class="group relative">
@@ -169,7 +158,7 @@
                     </div>
                 </div>
             </div>
-        </DarkHeroPanel>
+        </Panel>
 
         <!-- Personalization Section -->
         <div class="space-y-8">
@@ -177,7 +166,61 @@
                 Data Personalisasi Pembelajaran
             </h3>
             <div class="space-y-8">
-                <StatsGrid stats={personalizationStats} />
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+                    {#each personalizationStats as stat}
+                        <Card hover={true} class="relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 p-4 opacity-10 text-slate-400">
+                                {#if typeof stat.icon !== 'string'}
+                                    {@const IconComponent = stat.icon}
+                                    <div class="scale-[4] transition-transform duration-500 group-hover:scale-[4.5]">
+                                        <IconComponent size={24} strokeWidth={2.5} />
+                                    </div>
+                                {/if}
+                            </div>
+
+                            <div class="relative z-10">
+                                <div
+                                    class="glass mb-6 flex h-14 w-14 items-center justify-center rounded-2xl shadow-sm
+                                    {stat.variant === 'success' ? 'bg-emerald-100 text-emerald-600' : 
+                                     stat.variant === 'warning' ? 'bg-amber-100 text-amber-600' :
+                                     stat.variant === 'danger' ? 'bg-rose-100 text-rose-600' :
+                                     'bg-primary-100 text-primary-600'}"
+                                >
+                                    {#if typeof stat.icon === 'string'}
+                                        <i class={stat.icon}></i>
+                                    {:else}
+                                        {@const IconComponent = stat.icon}
+                                        <IconComponent size={24} strokeWidth={2.5} />
+                                    {/if}
+                                </div>
+
+                                <h3 class="mb-2 text-[10px] font-bold tracking-wider text-slate-600 uppercase">
+                                    {stat.title}
+                                </h3>
+                                <div class="font-display mb-2 text-4xl font-black tracking-tight text-slate-900">
+                                    {stat.value}
+                                </div>
+
+                                {#if stat.footer}
+                                    <div class="flex items-center gap-2">
+                                        <div
+                                            class="h-1.5 w-1.5 rounded-full {stat.variant === 'success'
+                                                ? 'bg-emerald-500'
+                                                : stat.variant === 'warning'
+                                                ? 'bg-amber-500'
+                                                : stat.variant === 'danger'
+                                                ? 'bg-rose-500'
+                                                : 'bg-primary-500'}"
+                                        ></div>
+                                        <p class="text-[10px] font-bold tracking-widest text-slate-500 uppercase">
+                                            {stat.footer}
+                                        </p>
+                                    </div>
+                                {/if}
+                            </div>
+                        </Card>
+                    {/each}
+                </div>
 
                 <div class="space-y-6 pt-6">
                     <h4
@@ -185,10 +228,61 @@
                     >
                         Statistik Pembelajaran Detail
                     </h4>
-                    <StatsGrid
-                        stats={detailedStats}
-                        gridClass="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-                    />
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        {#each detailedStats as stat}
+                            <Card hover={true} class="relative overflow-hidden group">
+                                <div class="absolute top-0 right-0 p-4 opacity-10 text-slate-400">
+                                    {#if typeof stat.icon !== 'string'}
+                                        {@const IconComponent = stat.icon}
+                                        <div class="scale-[4] transition-transform duration-500 group-hover:scale-[4.5]">
+                                            <IconComponent size={24} strokeWidth={2.5} />
+                                        </div>
+                                    {/if}
+                                </div>
+
+                                <div class="relative z-10">
+                                    <div
+                                        class="glass mb-6 flex h-14 w-14 items-center justify-center rounded-2xl shadow-sm
+                                        {stat.variant === 'success' ? 'bg-emerald-100 text-emerald-600' : 
+                                         stat.variant === 'warning' ? 'bg-amber-100 text-amber-600' :
+                                         stat.variant === 'danger' ? 'bg-rose-100 text-rose-600' :
+                                         'bg-primary-100 text-primary-600'}"
+                                    >
+                                        {#if typeof stat.icon === 'string'}
+                                            <i class={stat.icon}></i>
+                                        {:else}
+                                            {@const IconComponent = stat.icon}
+                                            <IconComponent size={24} strokeWidth={2.5} />
+                                        {/if}
+                                    </div>
+
+                                    <h3 class="mb-2 text-[10px] font-bold tracking-wider text-slate-600 uppercase">
+                                        {stat.title}
+                                    </h3>
+                                    <div class="font-display mb-2 text-4xl font-black tracking-tight text-slate-900">
+                                        {stat.value}
+                                    </div>
+
+                                    {#if stat.footer}
+                                        <div class="flex items-center gap-2">
+                                            <div
+                                                class="h-1.5 w-1.5 rounded-full {stat.variant === 'success'
+                                                    ? 'bg-emerald-500'
+                                                    : stat.variant === 'warning'
+                                                    ? 'bg-amber-500'
+                                                    : stat.variant === 'danger'
+                                                    ? 'bg-rose-500'
+                                                    : 'bg-primary-500'}"
+                                            ></div>
+                                            <p class="text-[10px] font-bold tracking-widest text-slate-500 uppercase">
+                                                {stat.footer}
+                                            </p>
+                                        </div>
+                                    {/if}
+                                </div>
+                            </Card>
+                        {/each}
+                    </div>
                 </div>
             </div>
         </div>
@@ -234,12 +328,7 @@
                     </div>
                 </Card>
 
-                <div
-                    class="group relative overflow-hidden rounded-[2rem] bg-slate-900 p-8 text-white"
-                >
-                    <div
-                        class="bg-primary-500/10 absolute -top-10 -right-10 h-32 w-32 rounded-full blur-2xl transition-transform duration-1000"
-                    ></div>
+                <Panel padding="p-8" class="group">
                     <h4 class="mb-4 text-lg font-bold tracking-widest uppercase">Butuh Bantuan?</h4>
                     <p class="mb-6 text-xs leading-relaxed font-medium text-slate-400">
                         Jika Anda mengalami kendala pada akun, silakan hubungi tim administrator
@@ -250,7 +339,7 @@
                         size="sm"
                         class="w-full font-bold tracking-widest uppercase">Hubungi Admin</Button
                     >
-                </div>
+                </Panel>
             </div>
 
             <!-- Main Form -->
