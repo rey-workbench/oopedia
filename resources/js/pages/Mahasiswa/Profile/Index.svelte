@@ -55,14 +55,14 @@
         },
         {
             title: 'Akurasi',
-            value: `${state.personalization?.accuracy || 0}%`,
+            value: `${state.personalization?.accuracy || 0} %`,
             icon: Target,
             variant: 'success',
             footer: `${state.personalization?.correct_count || 0}/${state.personalization?.total_questions_answered || 0} Benar`,
         },
         {
             title: 'Streak',
-            value: `${state.personalization?.current_streak || 0} 🔥`,
+            value: state.personalization?.current_streak || 0,
             icon: Flame,
             variant: 'warning',
             footer: `Max: ${state.personalization?.max_streak || 0}`,
@@ -121,7 +121,7 @@
             <div class="flex flex-col items-center gap-10 md:flex-row">
                 <div class="group relative">
                     <div
-                        class="flex h-32 w-32 rotate-3 items-center justify-center overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-transform duration-500 group-hover:rotate-0"
+                        class="flex h-32 w-32 rotate-3 items-center justify-center overflow-hidden rounded-3xl bg-white shadow-2xl transition-transform duration-500 group-hover:rotate-0"
                     >
                         <UserCircle size={80} class="text-slate-200" />
                     </div>
@@ -197,8 +197,13 @@
                                 <h3 class="mb-2 text-[10px] font-bold tracking-wider text-slate-600 uppercase">
                                     {stat.title}
                                 </h3>
-                                <div class="font-display mb-2 text-4xl font-black tracking-tight text-slate-900">
+                                <div class="font-display mb-2 flex items-center gap-3 text-4xl font-black tracking-tight text-slate-900">
                                     {stat.value}
+                                    {#if stat.title === 'Streak'}
+                                        <div class="animate-pulse text-amber-500">
+                                            <Flame size={32} strokeWidth={2.5} class="fill-amber-500/20" />
+                                        </div>
+                                    {/if}
                                 </div>
 
                                 {#if stat.footer}
