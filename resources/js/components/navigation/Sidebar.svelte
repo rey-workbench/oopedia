@@ -47,11 +47,11 @@
 
 <aside
     id="sidebar"
-    class="glass no-scrollbar fixed top-0 left-0 z-50 h-screen w-64 overflow-y-auto border-r border-slate-100 transition-transform duration-500
-  {$sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}"
+    class="bg-white no-scrollbar fixed inset-y-0 left-0 z-50 w-72 overflow-y-auto border-r border-slate-100 transition-all duration-500 ease-in-out lg:w-64
+  {$sidebarOpen ? 'translate-x-0 shadow-[0_0_50px_-12px_rgba(0,0,0,0.15)]' : '-translate-x-full lg:translate-x-0 lg:shadow-none'}"
 >
     <div
-        class="flex items-center justify-between px-6 py-6"
+        class="sticky top-0 z-10 flex items-center justify-between bg-white/80 px-6 py-8 backdrop-blur-md"
         data-intro="Ini adalah Logo OOPEDIA. Kamu bisa kembali ke dashboard dengan mengklik logo ini."
         data-step="1"
     >
@@ -60,20 +60,28 @@
             class="group flex items-center gap-3"
         >
             <div
-                class="flex h-8 w-8 items-center justify-center rounded-xl bg-white p-1.5 shadow-lg transition-transform group-hover:rotate-12"
+                class="flex h-10 w-10 items-center justify-center rounded-2xl bg-white p-2 shadow-premium transition-all duration-500 group-hover:rotate-12 group-hover:scale-110"
             >
                 <img src="/images/logo.png" alt="OOPedia" class="h-auto w-full" />
             </div>
-            <span class="text-lg font-bold tracking-widest text-slate-900">OOPEDIA</span>
+            <div class="flex flex-col">
+                <span class="text-xl font-black tracking-tighter text-slate-900">OOPEDIA</span>
+                <span class="text-[8px] font-bold tracking-[0.2em] text-primary-500 uppercase"
+                    >Learning System</span
+                >
+            </div>
         </Link>
         <button
             onclick={closeSidebar}
             aria-label="Tutup sidebar"
-            class="rounded-xl bg-slate-100 p-2 text-slate-400 hover:text-slate-900 lg:hidden"
+            class="group flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-50 text-slate-400 transition-all hover:bg-rose-50 hover:text-rose-500 lg:hidden"
         >
-            <X size={20} />
+            <X size={20} strokeWidth={2.5} class="transition-transform group-hover:rotate-90" />
         </button>
     </div>
+
+    <!-- Decorative line -->
+    <div class="mx-6 mb-8 h-px bg-linear-to-r from-transparent via-slate-100 to-transparent"></div>
 
     <nav
         aria-label="Navigasi Utama"
@@ -83,11 +91,10 @@
     >
         {#if isAdminRole}
             <div class="space-y-6">
-                <div
-                    class="flex items-center gap-3 px-4 text-[10px] font-bold tracking-tight text-slate-500 uppercase"
-                >
-                    <span class="bg-primary-500/50 h-0.5 w-2"></span>
-                    Utama
+                <div class="flex items-center gap-2 px-4 transition-all">
+                    <div class="h-1 w-1 rounded-full bg-primary-500"></div>
+                    <span class="text-[9px] font-extrabold tracking-widest text-slate-400 uppercase">Utama</span>
+                    <div class="h-px flex-1 bg-linear-to-r from-slate-100 to-transparent"></div>
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
@@ -99,11 +106,10 @@
             </div>
 
             <div class="space-y-6">
-                <div
-                    class="flex items-center gap-3 px-4 text-[10px] font-bold tracking-tight text-slate-500 uppercase"
-                >
-                    <span class="bg-primary-500/50 h-0.5 w-2"></span>
-                    Kurikulum
+                <div class="flex items-center gap-2 px-4 transition-all">
+                    <div class="h-1 w-1 rounded-full bg-primary-500"></div>
+                    <span class="text-[9px] font-extrabold tracking-widest text-slate-400 uppercase">Kurikulum</span>
+                    <div class="h-px flex-1 bg-linear-to-r from-slate-100 to-transparent"></div>
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
@@ -122,11 +128,10 @@
             </div>
 
             <div class="space-y-6">
-                <div
-                    class="flex items-center gap-3 px-4 text-[10px] font-bold tracking-tight text-slate-500 uppercase"
-                >
-                    <span class="bg-primary-500/50 h-0.5 w-2"></span>
-                    Manajemen
+                <div class="flex items-center gap-2 px-4 transition-all">
+                    <div class="h-1 w-1 rounded-full bg-primary-500"></div>
+                    <span class="text-[9px] font-extrabold tracking-widest text-slate-400 uppercase">Manajemen</span>
+                    <div class="h-px flex-1 bg-linear-to-r from-slate-100 to-transparent"></div>
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
@@ -185,10 +190,11 @@
         {:else if isStudentRole}
             <div class="space-y-6">
                 <div
-                    class="flex items-center gap-3 px-4 text-[10px] font-bold tracking-tight text-slate-500 uppercase"
+                    class="flex items-center gap-2 px-4 transition-all"
                 >
-                    <span class="bg-primary-500/50 h-0.5 w-2"></span>
-                    Belajar
+                    <div class="h-1 w-1 rounded-full bg-primary-500"></div>
+                    <span class="text-[9px] font-extrabold tracking-widest text-slate-400 uppercase">Belajar</span>
+                    <div class="h-px flex-1 bg-linear-to-r from-slate-100 to-transparent"></div>
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
@@ -259,11 +265,10 @@
             </div>
 
             <div class="space-y-6">
-                <div
-                    class="flex items-center gap-3 px-4 text-[10px] font-bold tracking-tight text-slate-500 uppercase"
-                >
-                    <span class="bg-primary-500/50 h-0.5 w-2"></span>
-                    Pencapaian
+                <div class="flex items-center gap-2 px-4 transition-all">
+                    <div class="h-1 w-1 rounded-full bg-primary-500"></div>
+                    <span class="text-[9px] font-extrabold tracking-widest text-slate-400 uppercase">Pencapaian</span>
+                    <div class="h-px flex-1 bg-linear-to-r from-slate-100 to-transparent"></div>
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
@@ -276,11 +281,10 @@
             </div>
 
             <div class="space-y-6 pb-10">
-                <div
-                    class="flex items-center gap-3 px-4 text-[10px] font-bold tracking-tight text-slate-500 uppercase"
-                >
-                    <span class="bg-primary-500/50 h-0.5 w-2"></span>
-                    Akun
+                <div class="flex items-center gap-2 px-4 transition-all">
+                    <div class="h-1 w-1 rounded-full bg-primary-500"></div>
+                    <span class="text-[9px] font-extrabold tracking-widest text-slate-400 uppercase">Akun</span>
+                    <div class="h-px flex-1 bg-linear-to-r from-slate-100 to-transparent"></div>
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
@@ -293,11 +297,10 @@
             </div>
 
             <div class="space-y-6 border-t border-slate-100 pt-10">
-                <div
-                    class="flex items-center gap-3 px-4 text-[10px] font-bold tracking-tight text-slate-500 uppercase"
-                >
-                    <span class="h-0.5 w-2 bg-rose-500/50"></span>
-                    Sesi
+                <div class="flex items-center gap-2 px-4 transition-all">
+                    <div class="h-1 w-1 rounded-full bg-rose-500"></div>
+                    <span class="text-[9px] font-extrabold tracking-widest text-slate-400 uppercase">Sesi</span>
+                    <div class="h-px flex-1 bg-linear-to-r from-slate-100 to-transparent"></div>
                 </div>
                 <div class="space-y-2">
                     <form
