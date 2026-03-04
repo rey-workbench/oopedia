@@ -1,7 +1,5 @@
 <script lang="ts">
-    import { HelpCircle, CheckSquare, Terminal } from 'lucide-svelte';
-    import Panel from '@/components/ui/Panel.svelte';
-    import Card from '@/components/ui/Card.svelte';
+    import { CheckSquare, Terminal } from 'lucide-svelte';
     import type { Question } from '@/types';
 
     interface Props {
@@ -18,71 +16,79 @@
     }
 </script>
 
-<div class="space-y-8">
-    <div class="space-y-4">
-        <label
-            class="flex items-center gap-2 text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-        >
-            <HelpCircle size={14} class="text-primary-500" />
-            Blok Kode Pertanyaan
-        </label>
-        
-        <Panel variant="none" rounded="3xl" padding="p-8" class="relative overflow-hidden border-2 border-slate-800 bg-slate-900 shadow-2xl">
-            <div class="absolute -top-6 -right-6 text-white/5 rotate-12">
-                <Terminal size={120} />
-            </div>
-            <div class="relative z-10 font-mono text-lg leading-relaxed text-slate-100 selection:bg-primary-500/30">
-                {@html question.question_text}
-            </div>
-        </Panel>
-    </div>
-
-    <div class="space-y-4">
-        <div class="flex items-center justify-between">
-            <label class="flex items-center gap-2 text-[10px] font-bold tracking-widest text-slate-400 uppercase">
-                <CheckSquare size={14} class="text-primary-500" />
-                Pilih Jawaban Yang Tepat
-            </label>
-            <div class="h-px flex-1 ml-4 bg-slate-100"></div>
+<div class="space-y-6">
+    <!-- Question block: consistent dark terminal style -->
+    <div class="relative overflow-hidden rounded-3xl bg-slate-900 p-8 shadow-xl">
+        <!-- Subtle top accent line -->
+        <div class="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-primary-500/60 to-transparent"></div>
+        <!-- Decorative icon -->
+        <div class="pointer-events-none absolute -right-4 -top-4 text-white/4">
+            <Terminal size={120} />
         </div>
 
-        <div class="grid grid-cols-1 gap-4">
+        <!-- Header bar -->
+        <div class="mb-5 flex items-center gap-3 border-b border-white/10 pb-4">
+            <div class="flex gap-1.5">
+                <div class="h-2 w-2 rounded-full bg-rose-500/60"></div>
+                <div class="h-2 w-2 rounded-full bg-amber-500/60"></div>
+                <div class="h-2 w-2 rounded-full bg-emerald-500/60"></div>
+            </div>
+            <span class="ml-1 font-mono text-[10px] font-bold tracking-widest text-slate-500 uppercase">
+                soal.txt
+            </span>
+        </div>
+
+        <div class="relative z-10 font-semibold text-lg leading-relaxed text-slate-100 selection:bg-primary-500/30">
+            {@html question.question_text}
+        </div>
+    </div>
+
+    <!-- Answer options -->
+    <div class="space-y-3">
+        <div class="flex items-center gap-2 px-1">
+            <CheckSquare size={13} class="text-primary-500" />
+            <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">
+                Pilih Jawaban Yang Tepat
+            </span>
+            <div class="ml-2 h-px flex-1 bg-slate-100"></div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-3">
             {#each question.answers as answer (answer.id)}
-                <label class="group relative block cursor-pointer transition-all">
+                {@const isSelected = selectedAnswerId === answer.id}
+                <label class="group relative block cursor-pointer">
                     <input
                         type="radio"
                         name="answer"
                         value={answer.id}
-                        class="peer hidden"
-                        checked={selectedAnswerId === answer.id}
+                        class="peer sr-only"
+                        checked={isSelected}
                         onchange={() => handleSelect(answer.id)}
                     />
-                    <Card 
-                        variant="none" 
-                        padding="p-0" 
-                        class="overflow-hidden border-2 border-slate-100 bg-white transition-all duration-300
-                                group-hover:border-primary-200 group-hover:bg-slate-50/50 
-                                peer-checked:border-primary-600 peer-checked:bg-primary-50 peer-checked:shadow-lg peer-checked:ring-4 peer-checked:ring-primary-50/50"
+                    <div
+                        class="flex items-center gap-5 rounded-2xl border-2 px-6 py-4 transition-all duration-200
+                        {isSelected
+                            ? 'border-primary-600 bg-primary-50 ring-4 ring-primary-50/80 shadow-md'
+                            : 'border-slate-100 bg-white hover:border-primary-200 hover:bg-slate-50/50 shadow-sm hover:shadow-md'}"
                     >
-                        <div class="flex items-center gap-5 p-6">
-                            <div
-                                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-100 transition-all duration-300
-                                       group-hover:border-primary-300 
-                                       peer-checked:border-primary-600 peer-checked:bg-primary-600 peer-checked:rotate-12 peer-checked:scale-110 shadow-sm"
-                            >
-                                <div
-                                    class="h-2.5 w-2.5 rounded-full bg-white opacity-0 transition-opacity peer-checked:opacity-100"
-                                ></div>
-                            </div>
-                            <div
-                                class="flex-1 font-black text-slate-700 transition-colors duration-300 
-                                       group-hover:text-slate-900 
-                                       peer-checked:text-primary-950 text-base tracking-tight"
-                            >
-                                {answer.answer_text}
-                            </div>
+                        <!-- Custom radio circle -->
+                        <div
+                            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border-2 transition-all duration-200
+                            {isSelected
+                                ? 'border-primary-600 bg-primary-600 shadow-lg shadow-primary-200'
+                                : 'border-slate-200 group-hover:border-primary-300'}"
+                        >
+                            {#if isSelected}
+                                <div class="h-3 w-3 rounded-full bg-white shadow-sm"></div>
+                            {/if}
                         </div>
-                    </Card>
+                        <span
+                            class="flex-1 font-semibold text-base tracking-tight transition-colors duration-200
+                            {isSelected ? 'text-primary-900' : 'text-slate-700 group-hover:text-slate-900'}"
+                        >
+                            {answer.answer_text}
+                        </span>
+                    </div>
                 </label>
             {/each}
         </div>

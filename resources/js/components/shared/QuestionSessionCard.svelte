@@ -108,67 +108,49 @@
             </div>
         {/if}
 
-        <div class="space-y-8">
-            <div class="flex items-center justify-between border-b border-slate-50 pb-4">
-                <div class="flex items-center gap-3">
-                    <div class="h-10 w-1 bg-primary-500 rounded-full"></div>
-                    <h2 class="text-xl font-black tracking-tight text-slate-800">Pertanyaan</h2>
+        <div class="space-y-0">
+            <!-- Question type components already contain their own header & layout -->
+            {#if state.currentQuestion?.question_type === 'fill_in_the_blank'}
+                <div transition:fade>
+                    <FillInTheBlank
+                        question={state.currentQuestion}
+                        bind:answerText={state.fillInTheBlankAnswer}
+                    />
                 </div>
-                {#if state.currentQuestion?.difficulty}
-                    <Badge
-                        variant={state.currentQuestion.difficulty === 'beginner' ? 'success' : state.currentQuestion.difficulty === 'medium' ? 'warning' : 'danger'}
-                        size="sm"
-                        class="font-bold uppercase tracking-widest px-3"
-                    >
-                        {state.getDifficultyLabel(state.currentQuestion.difficulty)}
-                    </Badge>
-                {/if}
-            </div>
-
-            <div class="min-h-[200px]">
-                {#if state.currentQuestion?.question_type === 'fill_in_the_blank'}
-                    <div transition:fade>
-                        <FillInTheBlank
-                            question={state.currentQuestion}
-                            bind:answerText={state.fillInTheBlankAnswer}
-                            oninput={(text: any) => (state.fillInTheBlankAnswer = text)}
-                        />
-                    </div>
-                {:else if state.currentQuestion?.question_type === 'drag_and_drop'}
-                    <div transition:fade>
-                        <DragAndDrop
-                            question={state.currentQuestion}
-                            bind:dragAndDropAnswers={state.dragAndDropAnswers}
-                        />
-                    </div>
-                {:else if state.currentQuestion}
-                    <div transition:fade>
-                        <MultipleChoice
-                            question={state.currentQuestion}
-                            selectedAnswerId={state.selectedMultipleChoiceAnswer as any}
-                            onselect={(answerId) => (state.selectedMultipleChoiceAnswer = answerId as any)}
-                        />
-                    </div>
-                {/if}
-            </div>
+            {:else if state.currentQuestion?.question_type === 'drag_and_drop'}
+                <div transition:fade>
+                    <DragAndDrop
+                        question={state.currentQuestion}
+                        bind:dragAndDropAnswers={state.dragAndDropAnswers}
+                    />
+                </div>
+            {:else if state.currentQuestion}
+                <div transition:fade>
+                    <MultipleChoice
+                        question={state.currentQuestion}
+                        selectedAnswerId={state.selectedMultipleChoiceAnswer as any}
+                        onselect={(answerId) => (state.selectedMultipleChoiceAnswer = answerId as any)}
+                    />
+                </div>
+            {/if}
         </div>
 
-        <div class="mt-12">
+        <div class="mt-8 pt-8 border-t border-slate-50">
             <Button
                 variant="primary"
                 size="lg"
-                class="w-full py-6 text-lg font-black tracking-widest uppercase shadow-2xl shadow-primary-200 hover:shadow-primary-300 hover:scale-[1.01] active:scale-[0.99] transition-all"
+                class="w-full py-5 text-base font-black tracking-widest uppercase shadow-xl shadow-primary-100 hover:shadow-primary-200 hover:scale-[1.01] active:scale-[0.99] transition-all"
                 disabled={state.isSubmitting}
                 onclick={() => state.submitAnswer()}
             >
                 {#if state.isSubmitting}
-                    <Loader2 size={24} class="mr-3 animate-spin" /> Memeriksa...
+                    <Loader2 size={20} class="mr-2.5 animate-spin" /> Memeriksa...
                 {:else}
-                    <CheckCircle2 size={24} class="mr-3" /> Periksa Jawaban
+                    <CheckCircle2 size={20} class="mr-2.5" /> Periksa Jawaban
                 {/if}
             </Button>
-            <p class="mt-4 text-center text-[10px] font-bold tracking-widest text-slate-400 uppercase">
-                Sistem Adaptif v2.0 • Data Terenkripsi
+            <p class="mt-4 text-center text-[10px] font-bold tracking-[0.2em] text-slate-300 uppercase">
+                Sistem Adaptif Oopedia • v2.0
             </p>
         </div>
     </div>
