@@ -10,45 +10,34 @@
         dragAndDropAnswers: Record<string, string>;
     } = $props();
 
-    let hasInlineZones = $state(false);
-    let autoDropZones = $state<number[]>([]);
     let activeZone = $state<string | null>(null);
 
     let parsedQuestion = $derived.by(() => {
         if (!question?.question_text) return { text: '', inlineFound: false, count: 0 };
 
-        let zoneIndex = 0;
-        let inlineFound = false;
         let rawText = question.question_text
             .replace(/<p>/g, '')
             .replace(/<\/p>/g, '\n')
             .replace(/<br>/g, '\n');
 
-        const text = rawText.replace(/\[zone\]/g, () => {
-            inlineFound = true;
-            zoneIndex++;
-            const currentZoneId = zoneIndex.toString();
+        let maxZone = 0;
+        const text = rawText.replace(/\[blank_(\d+)\]/g, (_, zoneIdStr) => {
+            const currentZoneId = zoneIdStr;
             const currentAnswer = dragAndDropAnswers[currentZoneId] || '...';
             const isActive = activeZone === currentZoneId;
             const extraClass = isActive
                 ? 'bg-primary-100 border-primary-600 scale-[1.05] ring-2 ring-primary-300'
                 : 'bg-white border-primary-300 hover:bg-primary-50';
 
+            const zoneNum = parseInt(zoneIdStr, 10);
+            if (zoneNum > maxZone) maxZone = zoneNum;
+
             return `<span class="drop-zone inline-flex min-w-[120px] h-9 border-b-2 mx-1 items-center justify-center text-primary-600 font-bold rounded-md px-3 shadow-sm transition-all duration-200 cursor-pointer ${extraClass}" data-zone="${currentZoneId}">${currentAnswer}</span>`;
         });
 
-        return { text, inlineFound, count: zoneIndex };
+        return { text, inlineFound: maxZone > 0, count: maxZone };
     });
 
-    $effect(() => {
-        hasInlineZones = parsedQuestion.inlineFound;
-        if (!hasInlineZones) {
-            const count = Array.isArray(question?.answers) ? question.answers.length : 0;
-            autoDropZones = Array.from({ length: count }, (_, i) => i + 1);
-        } else {
-            autoDropZones = [];
-        }
-    });
 
     function handleDragStart(event: DragEvent, answerText: string) {
         if (!event.dataTransfer) return;
@@ -138,46 +127,6 @@
             onclick={handleZoneClick}
         >
             {@html parsedQuestion.text}
-
-            {#if !hasInlineZones && autoDropZones.length > 0}
-                <div class="mt-8 space-y-3">
-                    <p class="mb-2 text-[10px] font-bold tracking-tighter text-slate-400 uppercase">
-                        Urutan Jawaban:
-                    </p>
-                    {#each autoDropZones as zoneId (zoneId)}
-                        <div class="flex items-center gap-4">
-                            <div
-                                class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-[10px] font-black text-slate-500"
-                            >
-                                {zoneId}
-                            </div>
-                            <div
-                                class="drop-zone text-primary-600 flex min-h-[50px] flex-1 cursor-pointer items-center rounded-xl border-2 border-dashed px-4 font-bold shadow-inner transition-all duration-200 {activeZone ===
-                                zoneId.toString()
-                                    ? 'bg-primary-50 border-primary-500 scale-[1.01]'
-                                    : 'hover:border-primary-300 border-slate-200 bg-white'}"
-                                data-zone={zoneId}
-                            >
-                                {#if dragAndDropAnswers[zoneId.toString()]}
-                                    <div class="flex w-full items-center justify-between">
-                                        <span class="text-base"
-                                            >{dragAndDropAnswers[zoneId.toString()]}</span
-                                        >
-                                        <span
-                                            class="rounded-md bg-slate-100 px-2 py-1 text-[10px] text-slate-400 italic"
-                                            >Klik untuk hapus</span
-                                        >
-                                    </div>
-                                {:else}
-                                    <span class="text-sm font-medium text-slate-300 italic"
-                                        >Letakkan jawaban di sini...</span
-                                    >
-                                {/if}
-                            </div>
-                        </div>
-                    {/each}
-                </div>
-            {/if}
         </div>
     </div>
 

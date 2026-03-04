@@ -13,25 +13,28 @@ use Illuminate\Support\Facades\DB;
 
 class QuestionService implements QuestionServiceInterface
 {
-    public function __construct(
-        protected QuestionRepositoryInterface $questionRepo,
-        protected AnswerRepositoryInterface $answerRepo,
-    ) {}
+    public function __construct(protected
+        QuestionRepositoryInterface $questionRepo, protected
+        AnswerRepositoryInterface $answerRepo,
+        )
+    {
+    }
 
     public function getFilteredQuestions(
         ?string $search = null,
         ?string $difficulty = null,
         ?int $materialId = null,
-    ): LengthAwarePaginator {
+        ): LengthAwarePaginator
+    {
         $questions = $this->questionRepo->getFilteredQuestions($search, $difficulty, $materialId);
 
         return $questions->through(function ($question) {
             $question->formatted_type = match ($question->question_type) {
-                'fill_in_the_blank' => 'Fill in the Blank',
-                'radio_button'      => 'Radio Button',
-                'drag_and_drop'     => 'Drag and Drop',
-                default             => $question->question_type,
-            };
+                    'fill_in_the_blank' => 'Fill in the Blank',
+                    'radio_button' => 'Radio Button',
+                    'drag_and_drop' => 'Drag and Drop',
+                    default => $question->question_type,
+                };
 
             return $question;
         });
@@ -42,7 +45,8 @@ class QuestionService implements QuestionServiceInterface
         array $excludeIds,
         ?string $search = null,
         ?string $difficulty = null,
-    ): LengthAwarePaginator {
+        ): LengthAwarePaginator
+    {
         return $this->questionRepo->getQuestionsForBank($materialId, $excludeIds, $search, $difficulty);
     }
 
@@ -65,12 +69,12 @@ class QuestionService implements QuestionServiceInterface
     {
         return DB::transaction(function () use ($data) {
             $question = $this->questionRepo->create([
-                'question_text'   => $data['question_text'],
-                'question_type'   => $data['question_type'],
-                'difficulty'      => $data['difficulty'],
-                'material_id'     => $data['material_id'],
+                'question_text' => $data['question_text'],
+                'question_type' => $data['question_type'],
+                'difficulty' => $data['difficulty'],
+                'material_id' => $data['material_id'],
                 'sub_material_id' => $data['sub_material_id'] ?? null,
-                'created_by'      => Auth::id(),
+                'created_by' => Auth::id(),
             ]);
 
             $this->createAnswers($question->id, $data['answers']);
@@ -83,18 +87,18 @@ class QuestionService implements QuestionServiceInterface
     {
         $question = $this->questionRepo->find($questionId);
 
-        if (! $question) {
+        if (!$question) {
             throw new QuestionNotFoundException($questionId);
         }
 
         return DB::transaction(function () use ($question, $data) {
             $this->questionRepo->update($question->id, [
-                'question_text'   => $data['question_text'],
-                'question_type'   => $data['question_type'],
-                'difficulty'      => $data['difficulty'],
-                'material_id'     => $data['material_id'],
+                'question_text' => $data['question_text'],
+                'question_type' => $data['question_type'],
+                'difficulty' => $data['difficulty'],
+                'material_id' => $data['material_id'],
                 'sub_material_id' => $data['sub_material_id'] ?? null,
-                'updated_by'      => Auth::id(),
+                'updated_by' => Auth::id(),
             ]);
 
             $this->answerRepo->deleteByQuestionId($question->id);
@@ -108,7 +112,7 @@ class QuestionService implements QuestionServiceInterface
     {
         $question = $this->questionRepo->find($questionId);
 
-        if (! $question) {
+        if (!$question) {
             throw new QuestionNotFoundException($questionId);
         }
 
@@ -122,12 +126,12 @@ class QuestionService implements QuestionServiceInterface
     {
         foreach ($answersData as $answer) {
             $this->answerRepo->create([
-                'question_id'    => $questionId,
-                'answer_text'    => $answer['answer_text'],
-                'is_correct'     => $answer['is_correct']     ?? 0,
-                'explanation'    => $answer['explanation']    ?? null,
-                'drag_source'    => $answer['drag_source']    ?? null,
-                'drag_target'    => $answer['drag_target']    ?? null,
+                'question_id' => $questionId,
+                'answer_text' => $answer['answer_text'] ?? null,
+                'is_correct' => $answer['is_correct'] ?? 0,
+                'explanation' => $answer['explanation'] ?? null,
+                'drag_source' => $answer['drag_source'] ?? null,
+                'drag_target' => $answer['drag_target'] ?? null,
                 'blank_position' => $answer['blank_position'] ?? null,
             ]);
         }

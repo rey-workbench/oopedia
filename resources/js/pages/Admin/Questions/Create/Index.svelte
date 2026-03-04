@@ -3,6 +3,8 @@
     import PageHeader from '@/components/shared/PageHeader.svelte';
     import Button from '@/components/ui/Button.svelte';
     import QuillEditor from '@/components/ui/QuillEditor.svelte';
+    import DragDropEditor from '@/components/shared/DragDropEditor.svelte';
+    import DragDropHandle from '@/components/shared/DragDropHandle.svelte';
     import { ArrowLeft, Save, Plus, X, CheckCircle2 } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';
@@ -51,12 +53,16 @@
                                 <span
                                     class="font-poppins text-[10px] font-bold text-slate-400 uppercase"
                                 >
-                                    Teks Pertanyaan (Rich Text)
+                                    Teks Pertanyaan {#if state.form.question_type !== 'drag_and_drop'} (Rich Text) {/if}
                                 </span>
-                                <QuillEditor
-                                    bind:value={state.form.question_text}
-                                    placeholder="Deskripsikan problematik pemrograman di sini..."
-                                />
+                                {#if state.form.question_type === 'drag_and_drop'}
+                                    <DragDropEditor bind:value={state.form.question_text} />
+                                {:else}
+                                    <QuillEditor
+                                        bind:value={state.form.question_text}
+                                        placeholder="Deskripsikan problematik pemrograman di sini..."
+                                    />
+                                {/if}
                                 {#if state.form.errors['question_text']}
                                     <p
                                         class="text-[10px] font-bold tracking-widest text-rose-500 uppercase"
@@ -73,6 +79,7 @@
                                     >
                                         Konfigurasi Opsi Jawaban
                                     </span>
+                                    {#if state.form.question_type !== 'fill_in_the_blank'}
                                     <Button
                                         type="button"
                                         onclick={() => state.addAnswer()}
@@ -82,6 +89,7 @@
                                     >
                                         TAMBAH OPSI
                                     </Button>
+                                    {/if}
                                 </div>
 
                                 <div class="space-y-4">
@@ -90,22 +98,58 @@
                                             class="group relative space-y-4 rounded-3xl border border-slate-100 bg-slate-50 p-6"
                                         >
                                             <div class="flex items-start gap-4">
-                                                <div class="pt-2">
-                                                    <input
-                                                        type="radio"
-                                                        name="correct_answer"
-                                                        value={i}
-                                                        bind:group={state.form.correct_answer}
-                                                        class="text-primary-600 focus:ring-primary-500 h-5 w-5 cursor-pointer border-slate-300 transition-all"
-                                                    />
-                                                </div>
-                                                <div class="flex-1 space-y-2">
-                                                    <input
-                                                        type="text"
-                                                        bind:value={answer.answer_text}
-                                                        placeholder={`Opsi Jawaban #${i + 1}`}
-                                                        class="focus:border-primary-600 w-full rounded-2xl border-2 border-slate-100 bg-white px-6 py-3 text-xs font-bold tracking-widest text-slate-900 uppercase transition-all focus:outline-none"
-                                                    />
+                                                {#if state.form.question_type === 'radio_button' || state.form.question_type === 'multiple_choice'}
+                                                    <div class="pt-2">
+                                                        <input
+                                                            type="radio"
+                                                            name="correct_answer"
+                                                            value={i}
+                                                            bind:group={state.form.correct_answer}
+                                                            class="text-primary-600 focus:ring-primary-500 h-5 w-5 cursor-pointer border-slate-300 transition-all"
+                                                        />
+                                                    </div>
+                                                {:else if state.form.question_type === 'drag_and_drop'}
+                                                    <div class="pt-2">
+                                                        <DragDropHandle text={answer.answer_text as string} />
+                                                    </div>
+                                                {:else}
+                                                    <div class="pt-2 flex flex-col items-center gap-1">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={answer.is_correct === 1}
+                                                            onchange={(e) => {
+                                                                answer.is_correct = (e.target as HTMLInputElement).checked ? 1 : 0;
+                                                            }}
+                                                            class="text-primary-600 focus:ring-primary-500 h-5 w-5 cursor-pointer border-slate-300 transition-all"
+                                                        />
+                                                        <span class="text-[8px] font-bold tracking-widest text-slate-500 uppercase">Benar</span>
+                                                    </div>
+                                                {/if}
+
+                                                <div class="flex-1 space-y-3 w-full max-w-full overflow-hidden">
+                                                    {#if state.form.question_type === 'fill_in_the_blank'}
+                                                        <div class="w-full bg-white rounded-xl overflow-hidden border-2 border-slate-100">
+                                                            <QuillEditor
+                                                                bind:value={answer.answer_text as string}
+                                                                placeholder="Ketik isi / bagian rumpang di sini..."
+                                                            />
+                                                        </div>
+                                                    {:else if state.form.question_type === 'drag_and_drop'}
+                                                        <input
+                                                            type="text"
+                                                            bind:value={answer.answer_text}
+                                                            placeholder="Teks Jawaban (Item Drag)"
+                                                            class="focus:border-primary-600 w-full rounded-2xl border-2 border-slate-100 bg-white px-6 py-3 text-xs font-bold tracking-widest text-slate-900 transition-all focus:outline-none"
+                                                        />
+                                                    {:else}
+                                                        <input
+                                                            type="text"
+                                                            bind:value={answer.answer_text}
+                                                            placeholder={`Opsi Jawaban #${i + 1}`}
+                                                            class="focus:border-primary-600 w-full rounded-2xl border-2 border-slate-100 bg-white px-6 py-3 text-xs font-bold tracking-widest text-slate-900 uppercase transition-all focus:outline-none"
+                                                        />
+                                                    {/if}
+
                                                     <input
                                                         type="text"
                                                         bind:value={answer.explanation}
@@ -113,15 +157,15 @@
                                                         class="focus:border-primary-400 w-full rounded-xl border border-slate-100 bg-white/50 px-4 py-2 text-[10px] font-bold text-slate-500 transition-all focus:outline-none"
                                                     />
                                                 </div>
-                                                {#if state.form.answers.length > 1}
-                                                    <Button
-                                                        type="button"
-                                                        onclick={() => state.removeAnswer(i)}
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        icon={X}
-                                                        class="p-2 text-slate-300 hover:bg-rose-50 hover:text-rose-500"
-                                                    />
+                                                {#if state.form.question_type !== 'fill_in_the_blank' && state.form.answers.length > 1}
+                                                <Button
+                                                    type="button"
+                                                    onclick={() => state.removeAnswer(i)}
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    icon={X}
+                                                    class="p-2 text-slate-300 hover:bg-rose-50 hover:text-rose-500 shrink-0"
+                                                />
                                                 {/if}
                                             </div>
                                         </div>
