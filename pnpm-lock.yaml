@@ -3,7 +3,6 @@ lockfileVersion: '9.0'
 settings:
   excludeLinksFromLockfile: false
   autoInstallPeers: true
-  excludeLinksFromLockfile: false
 
 importers:
 
