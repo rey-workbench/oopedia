@@ -1,5 +1,5 @@
 import { BaseState } from '@/states/BaseState.svelte';
-import type { Material, RecentActivity } from '@/types';
+import type { Material, RecentActivity, LeaderboardEntry } from '@/types';
 
 type DashboardData = {
     totalMaterials: number;
@@ -16,6 +16,7 @@ type DashboardData = {
     totalCorrectQuestions: number;
     recentActivities: RecentActivity[];
     allMaterials: Material[];
+    currentUserRank: LeaderboardEntry | null;
 };
 
 export class DashboardState extends BaseState {
@@ -33,6 +34,7 @@ export class DashboardState extends BaseState {
     totalCorrectQuestions = $state(0);
     recentActivities = $state<RecentActivity[]>([]);
     allMaterials = $state<Material[]>([]);
+    currentUserRank = $state<LeaderboardEntry | null>(null);
 
     constructor(data: DashboardData) {
         super();
@@ -50,5 +52,6 @@ export class DashboardState extends BaseState {
         this.totalCorrectQuestions = data.totalCorrectQuestions;
         this.recentActivities = data.recentActivities;
         this.allMaterials = data.allMaterials;
+        this.currentUserRank = data.currentUserRank;
     }
 }

@@ -37,6 +37,7 @@
         totalCorrectQuestions = 0,
         recentActivities = [],
         allMaterials = [],
+        currentUserRank = null,
     }: Omit<MahasiswaDashboardProps, 'auth' | 'flash' | 'errors'> = $props();
 
     const state = untrack(
@@ -56,6 +57,7 @@
                 totalCorrectQuestions,
                 recentActivities,
                 allMaterials,
+                currentUserRank,
             })
     );
 
@@ -83,7 +85,7 @@
         },
         {
             title: 'Peringkat',
-            value: '#12',
+            value: state.currentUserRank ? `#${state.currentUserRank.rank}` : '-',
             icon: Trophy,
             variant: 'warning',
             footer: 'Peringkat global Anda',
@@ -99,7 +101,7 @@
             <div class="flex flex-col items-center gap-10 md:flex-row">
                 <div class="group relative">
                     <div
-                        class="flex h-32 w-32 rotate-3 items-center justify-center overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-transform duration-500 group-hover:rotate-0"
+                        class="flex h-32 w-32 rotate-3 items-center justify-center overflow-hidden rounded-3xl bg-white shadow-2xl transition-transform duration-500 group-hover:rotate-0"
                     >
                         <Star size={80} class="text-primary-500" />
                     </div>

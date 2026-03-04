@@ -127,6 +127,7 @@ export interface MahasiswaDashboardProps extends SharedProps {
     totalCorrectQuestions: number;
     recentActivities: RecentActivity[];
     allMaterials: Material[];
+    currentUserRank: LeaderboardEntry | null;
 }
 
 /** Dashboard in-progress list — DashboardService.getInProgressData() */

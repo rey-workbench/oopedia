@@ -14,11 +14,14 @@ class DashboardController extends Controller
     public function __construct(
         protected DashboardServiceInterface $dashboardService,
         protected LeaderboardServiceInterface $leaderboardService,
-    ) {}
+    ) {
+    }
 
     public function index(): Response
     {
         $data = $this->dashboardService->getDashboardIndexData(Auth::id(), $this->isGuest());
+        $leaderboard = $this->leaderboardService->getLeaderboardData(Auth::id());
+        $data['currentUserRank'] = $leaderboard['currentUserRank'];
 
         return Inertia::render('Mahasiswa/Dashboard/Index', $data);
     }
