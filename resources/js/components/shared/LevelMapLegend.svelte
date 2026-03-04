@@ -33,7 +33,7 @@
 
             <div class="flex items-center gap-3 group">
                 <div
-                    class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl bg-emerald-500 text-white shadow-lg shadow-emerald-100 transition-transform group-hover:scale-110"
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-emerald-500 text-white shadow-lg shadow-emerald-100 transition-transform group-hover:scale-110"
                 >
                     <Check size={20} strokeWidth={3} />
                 </div>
@@ -45,7 +45,7 @@
 
             <div class="flex items-center gap-3 group">
                 <div
-                    class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl bg-slate-100 border border-slate-200 text-slate-400 shadow-sm transition-transform group-hover:scale-105"
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-slate-100 border border-slate-200 text-slate-400 shadow-sm transition-transform group-hover:scale-105"
                 >
                     <Lock size={16} />
                 </div>
@@ -57,7 +57,7 @@
 
             <div class="flex items-center gap-3 group">
                 <div
-                    class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl border-2 border-amber-100 bg-amber-50 text-amber-500 shadow-sm shadow-amber-50 transition-transform group-hover:scale-110"
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border-2 border-amber-100 bg-amber-50 text-amber-500 shadow-sm shadow-amber-50 transition-transform group-hover:scale-110"
                 >
                     <Trophy size={18} />
                 </div>

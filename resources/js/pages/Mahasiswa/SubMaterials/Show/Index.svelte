@@ -48,12 +48,11 @@
 
 <App title={state.subMaterial.title} fullWidth={true}>
     <div class="mx-auto max-w-[1600px] space-y-12 px-4 py-8 sm:px-6 lg:px-12">
-        <PageHeader title={state.subMaterial.title} />
         <!-- Breadcrumb Navigation -->
         <div class="flex items-center gap-3 text-sm">
             <Link
                 href={ROUTES.MAHASISWA.MATERIALS.INDEX}
-                class="hover:text-primary-600 font-bold text-slate-400 transition-colors"
+                class="flex items-center hover:text-primary-600 font-bold text-slate-400 transition-colors"
             >
                 <Home size={14} class="mr-1" /> Materi
             </Link>
@@ -70,70 +69,44 @@
 
         <!-- Header -->
 
-        <div class="mb-8">
-            <h1
-                class="font-display text-3xl leading-tight font-extrabold tracking-tight text-slate-900 md:text-4xl"
-            >
-                {state.subMaterial.title}
-            </h1>
-            <div class="mt-3 flex items-center gap-2" role="presentation">
-                <div class="bg-primary-600 h-1.5 w-12 rounded-full"></div>
-                <div class="h-1.5 w-4 rounded-full bg-slate-200"></div>
-                <div class="h-1.5 w-2 rounded-full bg-slate-100"></div>
-            </div>
-            <p class="mt-4 max-w-3xl leading-relaxed font-medium text-slate-500">
-                {`Bagian ${state.subMaterial.order} dari modul ${state.material.title}.`}
-            </p>
-            <div class="mt-6 flex flex-wrap gap-4">
-                <div>
-                    <div class="flex items-center gap-4">
-                        <div
-                            class={`px-4 py-2 ${getBgClass(state.subMaterial.jenis_konten)} flex items-center justify-center rounded-2xl`}
-                        >
-                            <span
-                                class="text-[10px] font-bold tracking-widest text-white uppercase"
-                            >
-                                {state.subMaterial.jenis_konten === 'sintaks' ? 'Sintaks' : 'Teori'}
-                            </span>
-                        </div>
+        <!-- Header with PageHeader for consistency -->
+        <PageHeader 
+            title={state.subMaterial.title}
+            subtitle={`Bagian ${state.subMaterial.order} dari modul ${state.material.title}.`}
+        >
+            <div class="flex flex-wrap gap-4">
+                <div class="flex items-center gap-4">
+                    <div class={`px-4 py-2 ${getBgClass(state.subMaterial.jenis_konten)} flex items-center justify-center rounded-2xl shadow-sm`}>
+                        <span class="text-[10px] font-bold tracking-widest text-white uppercase">
+                            {state.subMaterial.jenis_konten === 'sintaks' ? 'Sintaks' : 'Teori'}
+                        </span>
                     </div>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-4">
                     <div class="flex items-center gap-3">
-                        <div
-                            class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 shadow-inner"
-                        >
+                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 shadow-inner">
                             <Puzzle size={16} />
                         </div>
-                        <span
-                            class="text-[10px] font-bold tracking-widest text-slate-500 uppercase"
-                        >
-                            {state.subMaterial.questions ? state.subMaterial.questions.length : 0} Soal
-                            Latihan
+                        <span class="text-[10px] font-bold tracking-widest text-slate-500 uppercase">
+                            {state.subMaterial.questions ? state.subMaterial.questions.length : 0} Soal Latihan
                         </span>
                     </div>
 
                     <div class="flex items-center gap-3">
-                        <div
-                            class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 shadow-inner"
-                        >
+                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 shadow-inner">
                             <Clock size={16} />
                         </div>
-                        <span
-                            class="text-[10px] font-bold tracking-widest text-slate-500 uppercase"
-                        >
-                            ~{(state.subMaterial.questions
-                                ? state.subMaterial.questions.length
-                                : 0) * 2} Menit
+                        <span class="text-[10px] font-bold tracking-widest text-slate-500 uppercase">
+                            ~{(state.subMaterial.questions ? state.subMaterial.questions.length : 0) * 2} Menit
                         </span>
                     </div>
                 </div>
             </div>
-        </div>
+        </PageHeader>
 
-        <div class="grid grid-cols-1 gap-12 lg:grid-cols-4">
-            <div bind:this={contentContainer} class="lg:col-span-3">
+        <div class="grid grid-cols-1 gap-12 {state.otherSubMaterials.length > 0 ? 'lg:grid-cols-4' : ''}">
+            <div bind:this={contentContainer} class={state.otherSubMaterials.length > 0 ? 'lg:col-span-3' : 'lg:col-span-4'}>
                 <Card class="p-10 md:p-16">
                     {#snippet header()}
                         <div class="mb-10">
@@ -207,8 +180,8 @@
                 </Card>
             </div>
 
-            <div>
-                {#if state.otherSubMaterials.length > 0}
+            {#if state.otherSubMaterials.length > 0}
+                <div>
                     <Card>
                         <h3 class="mb-6 text-2xl font-bold text-slate-900">Sub-Materi Lainnya</h3>
                         <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-1">
@@ -252,8 +225,8 @@
                             {/each}
                         </div>
                     </Card>
-                {/if}
-            </div>
+                </div>
+            {/if}
         </div>
     </div>
 </App>
