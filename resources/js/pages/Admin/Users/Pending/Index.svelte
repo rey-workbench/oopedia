@@ -1,7 +1,7 @@
 <script lang="ts">
     import App from '@/layouts/App.svelte';
     import Button from '@/components/ui/Button.svelte';
-    import DataTable from '@/components/shared/DataTable.svelte';
+    import DataTable from '@/components/ui/DataTable.svelte';
     import Card from '@/components/ui/Card.svelte';
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
