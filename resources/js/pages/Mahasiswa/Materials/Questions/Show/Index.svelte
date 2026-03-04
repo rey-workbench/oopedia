@@ -4,10 +4,10 @@
     import GuestBanner from '@/components/shared/GuestBanner.svelte';
     import { Terminal, UserCheck } from 'lucide-svelte';
     import { QuestionShowState } from '@/states/Mahasiswa/QuizState.svelte';
-    import QuestionSessionCard from '@/components/quiz/QuestionSessionCard.svelte';
-    import FinishStateCard from '@/components/quiz/FinishStateCard.svelte';
-    import FeedbackModal from '@/components/quiz/FeedbackModal.svelte';
-    import AdaptiveDebugPanel from '@/components/quiz/AdaptiveDebugPanel.svelte';
+    import QuestionSessionCard from '@/components/shared/QuestionSessionCard.svelte';
+    import FinishStateCard from '@/components/shared/FinishStateCard.svelte';
+    import FeedbackModal from '@/components/shared/FeedbackModal.svelte';
+    import AdaptiveDebugPanel from '@/components/shared/AdaptiveDebugPanel.svelte';
     import { untrack } from 'svelte';
     import type { Material, Question, DifficultyLevel, QuizSessionState } from '@/types';
 

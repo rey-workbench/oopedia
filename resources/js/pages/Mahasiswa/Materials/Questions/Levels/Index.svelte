@@ -7,8 +7,8 @@
     import { untrack } from 'svelte';
     import { LevelMapState } from '@/states/Mahasiswa/QuizState.svelte';
     import { ROUTES } from '@/utils/route';
-    import LevelMapLegend from '@/components/quiz/LevelMapLegend.svelte';
-    import LevelMapCanvas from '@/components/quiz/LevelMapCanvas.svelte';
+    import LevelMapLegend from '@/components/shared/LevelMapLegend.svelte';
+    import LevelMapCanvas from '@/components/shared/LevelMapCanvas.svelte';
     import type { Material } from '@/types';
     import type { LevelItem } from '@/states/Mahasiswa/QuizState.svelte';
 

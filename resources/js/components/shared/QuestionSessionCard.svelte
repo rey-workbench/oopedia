@@ -1,9 +1,9 @@
 <script lang="ts">
     import Badge from '@/components/ui/Badge.svelte';
     import Button from '@/components/ui/Button.svelte';
-    import MultipleChoice from '@/components/quiz/MultipleChoice.svelte';
-    import FillInTheBlank from '@/components/quiz/FillInTheBlank.svelte';
-    import DragAndDrop from '@/components/quiz/DragAndDrop.svelte';
+    import MultipleChoice from '@/components/shared/MultipleChoice.svelte';
+    import FillInTheBlank from '@/components/shared/FillInTheBlank.svelte';
+    import DragAndDrop from '@/components/shared/DragAndDrop.svelte';
     import { Star, Flame, Lightbulb, HelpCircle, Loader2, CheckCircle2, X } from 'lucide-svelte';
     import type { QuestionShowState } from '@/states/Mahasiswa/QuizState.svelte.ts';
 
