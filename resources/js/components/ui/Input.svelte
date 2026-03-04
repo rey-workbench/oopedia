@@ -16,6 +16,8 @@
         required?: boolean;
         disabled?: boolean;
         class?: string;
+        inputClass?: string;
+        variant?: 'white' | 'dark';
         autocomplete?: any;
         [key: string]: any;
     }
@@ -31,6 +33,8 @@
         required = false,
         disabled = false,
         class: className = '',
+        inputClass = '',
+        variant = 'white',
         autocomplete = undefined,
         ...rest
     }: Props = $props();
@@ -38,13 +42,18 @@
     // Generate a stable ID if not provided
     const inputId = $derived(id || `input-${Math.random().toString(36).slice(2, 11)}`);
     const errorId = $derived(`${inputId}-error`);
+
+    const variantClasses = {
+        white: 'bg-white text-slate-900 border-slate-100 focus:border-primary-600 focus:ring-primary-50',
+        dark: 'bg-slate-800 text-white border-slate-700/50 focus:border-primary-500 focus:ring-primary-900/30'
+    };
 </script>
 
 <div class={`w-full space-y-2 ${className}`}>
     {#if label}
         <label
             for={inputId}
-            class="ml-4 block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+            class={`ml-4 block text-[10px] font-bold tracking-widest uppercase ${variant === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}
         >
             {label}
             {#if required}<span class="text-rose-500">*</span>{/if}
@@ -66,12 +75,13 @@
             {...rest}
             class={`
         w-full rounded-[1.5rem] border-2 px-6 py-4 text-sm font-bold transition-all outline-none
-        ${disabled ? 'cursor-not-allowed border-slate-50 bg-slate-50 text-slate-400' : 'bg-white'}
+        ${disabled ? 'cursor-not-allowed border-slate-50 bg-slate-50 text-slate-400' : ''}
         ${
             error
                 ? 'border-rose-100 bg-rose-50/30 text-rose-900 focus:border-rose-500 focus:ring-4 focus:ring-rose-50'
-                : 'hover:border-primary-200 focus:border-primary-600 focus:ring-primary-50 border-slate-50 border-slate-100 focus:ring-8'
+                : `hover:border-primary-200 focus:ring-8 ${variantClasses[variant]}`
         }
+        ${inputClass}
       `}
         />
 

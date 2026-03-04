@@ -1,6 +1,8 @@
 <script lang="ts">
     import Badge from '@/components/ui/Badge.svelte';
     import Button from '@/components/ui/Button.svelte';
+    import Modal from '@/components/ui/Modal.svelte';
+    import Panel from '@/components/ui/Panel.svelte';
     import type { QuestionShowState } from '@/states/Mahasiswa/QuizState.svelte';
     import {
         Video,
@@ -10,7 +12,6 @@
         CheckCircle2,
         Trophy,
         XCircle,
-        Target,
         RotateCcw,
         ArrowRight,
         Zap,
@@ -20,6 +21,7 @@
         AlertTriangle,
         TrendingUp,
         Star,
+        Check
     } from 'lucide-svelte';
 
     interface Props {
@@ -31,7 +33,7 @@
     let actionCode = $derived(state.feedbackData?.adaptiveResult?.triggered_rule?.action || null);
     let nextAction = $derived(
         state.feedbackData?.adaptiveResult?.new_state?.next_action_data?.label ||
-            (state.feedbackData?.status === 'success' ? 'Lanjut' : 'Lihat Materi')
+            (state.feedbackData?.status === 'success' ? 'Soal Berikutnya' : 'Lihat Materi')
     );
     let nextActionType = $derived(
         state.feedbackData?.adaptiveResult?.new_state?.next_action_data?.type || 'question'
@@ -39,7 +41,6 @@
     let recommendation = $derived(
         state.feedbackData?.adaptiveResult?.new_state?.recommendation || null
     );
-    let modalTriggeredRule = $derived(state.feedbackData?.adaptiveResult?.triggered_rule || null);
     let certification = $derived(
         state.feedbackData?.adaptiveResult?.new_state?.certification || null
     );
@@ -91,56 +92,52 @@
             case 'H11':
                 return Medal;
             default:
-                return state.feedbackData?.status === 'success' ? CheckCircle2 : XCircle;
+                return state.feedbackData?.status === 'success' ? Check : XCircle;
         }
     }
 
     function getIconColor() {
         switch (actionCode) {
             case 'H01':
+                return 'text-purple-600';
             case 'H02':
-                return 'text-amber-500';
+                return 'text-primary-600';
             case 'H03':
+                return 'text-indigo-600';
             case 'H04':
-                return 'text-purple-500';
+                return 'text-amber-600';
             case 'H06':
-                return 'text-primary-500';
+                return 'text-blue-600';
             case 'H07':
-                return 'text-rose-500';
+                return 'text-rose-600';
             case 'H08':
-                return 'text-emerald-500';
-            case 'H09':
-                return 'text-yellow-500';
-            case 'H10':
-                return 'text-slate-400';
-            case 'H11':
-                return 'text-orange-600';
+                return 'text-emerald-600';
             default:
-                return state.feedbackData?.status === 'success'
-                    ? 'text-emerald-500'
-                    : 'text-rose-500';
+                return state.feedbackData?.status === 'success' ? 'text-emerald-500' : 'text-rose-500';
         }
     }
 
     function getCertificateDetails() {
+        if (!certification) return null;
+
         switch (certification) {
             case 'gold':
                 return {
-                    color: 'bg-amber-400',
+                    color: 'bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600',
                     title: 'SERTIFIKAT EMAS',
                     badge: '🥇',
-                    subtitle: 'Object-Oriented Architect',
+                    subtitle: 'Master Of Object-Oriented Programming',
                 };
             case 'silver':
                 return {
-                    color: 'bg-slate-300',
+                    color: 'bg-gradient-to-br from-slate-300 via-slate-400 to-slate-500',
                     title: 'SERTIFIKAT PERAK',
                     badge: '🥈',
-                    subtitle: 'Object-Oriented Developer',
+                    subtitle: 'Senior Object-Oriented Programmer',
                 };
             case 'bronze':
                 return {
-                    color: 'bg-orange-400',
+                    color: 'bg-gradient-to-br from-orange-300 via-orange-400 to-orange-500',
                     title: 'SERTIFIKAT PERUNGGU',
                     badge: '🥉',
                     subtitle: 'Junior Object-Oriented Programmer',
@@ -156,406 +153,260 @@
     let certDetails = $derived(state.showFeedback ? getCertificateDetails() : null);
 </script>
 
-{#if state.showFeedback}
-    <div
-        class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm transition-all duration-300"
-        role="dialog"
-        aria-modal="true"
-    >
-        <div
-            class="mx-4 w-full max-w-2xl scale-100 transform overflow-hidden rounded-3xl bg-white shadow-2xl transition-all"
-        >
-            {#if variant === 'certificate' && certDetails}
-                <div
-                    class={`${certDetails.color} relative overflow-hidden p-16 text-center text-white`}
-                >
-                    <div class="absolute -top-10 -right-10 text-9xl opacity-10">
-                        {certDetails.badge}
-                    </div>
-                    <div class="relative z-10">
-                        <div
-                            class="mx-auto mb-6 flex h-32 w-32 items-center justify-center rounded-full border-4 border-white/30 bg-white/20 shadow-2xl backdrop-blur-md"
-                        >
-                            {#if IconComponent}
-                                {@const Icon = IconComponent as any}
-                                <Icon size={64} class="text-white" />
-                            {/if}
-                        </div>
-                        <h2 class="mb-3 text-5xl font-bold tracking-widest drop-shadow-lg">
-                            {certDetails.title}
-                        </h2>
-                        <div
-                            class="mb-4 inline-block rounded-full bg-white/20 px-6 py-2 text-sm font-bold tracking-widest backdrop-blur-md"
-                        >
-                            {certDetails.subtitle}
-                        </div>
-                        <p class="mt-4 text-lg font-medium text-white/90">
-                            {state.feedbackData.message}
-                        </p>
-                    </div>
+<Modal show={state.showFeedback} maxWidth="xl" closeable={false}>
+    <div class="bg-white/95 backdrop-blur-xl">
+        {#if variant === 'certificate' && certDetails}
+            <div class={`${certDetails.color} relative overflow-hidden p-16 text-center text-white`}>
+                <div class="absolute -top-10 -right-10 text-[10rem] opacity-20 rotate-12">
+                    {certDetails.badge}
                 </div>
-                <div class="bg-white p-10">
-                    {#if xpEarned > 0}
-                        <div
-                            class="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-center"
-                        >
-                            <div class="flex items-center justify-center gap-2">
-                                <Star size={20} class="fill-current text-amber-500" />
-                                <span class="text-lg font-bold text-amber-700">+{xpEarned} XP</span>
-                            </div>
-                        </div>
-                    {/if}
-                    <Button
-                        variant="primary"
-                        onclick={() => state.handleNext()}
-                        class="w-full py-4 text-base font-bold tracking-widest uppercase"
-                    >
-                        Lanjutkan <ArrowRight size={20} class="ml-2" />
-                    </Button>
-                </div>
-            {:else if variant === 'acceleration'}
-                <div class="bg-primary-600 relative overflow-hidden p-12 text-center text-white">
-                    <div class="absolute top-0 left-0 h-full w-full opacity-10"></div>
-                    <div class="relative z-10">
-                        <div
-                            class="mx-auto mb-6 flex h-24 w-24 animate-pulse items-center justify-center rounded-full border-4 border-white/30 bg-white/20 shadow-xl backdrop-blur-md"
-                        >
-                            {#if IconComponent}
-                                {@const Icon = IconComponent as any}
-                                <Icon size={48} class="text-white" />
-                            {/if}
-                        </div>
-                        <Badge
-                            variant="secondary"
-                            size="lg"
-                            class="mb-4 border-white/30 bg-white/20 text-white"
-                        >
-                            <Zap size={16} class="mr-1" /> LOMPATAN KESULITAN
-                        </Badge>
-                        <h2 class="mb-3 text-4xl font-bold tracking-widest">PERCEPATAN!</h2>
-                        <p class="text-primary-50 text-lg font-medium">
-                            {state.feedbackData.message}
-                        </p>
-                    </div>
-                </div>
-                <div class="bg-white p-10">
-                    {#if xpEarned > 0}
-                        <div class="bg-primary-50 border-primary-200 mb-6 rounded-xl border p-4">
-                            <div class="flex items-center justify-center gap-3">
-                                <Star size={20} class="fill-current text-blue-500" />
-                                <span class="text-primary-700 text-lg font-bold"
-                                    >Bonus: +{xpEarned} XP</span
-                                >
-                            </div>
-                        </div>
-                    {/if}
-                    {#if modalTriggeredRule}
-                        <div class="mb-6 rounded-xl bg-slate-50 p-4 text-sm text-slate-600">
-                            <div class="mb-1 font-bold text-slate-700">
-                                Adaptive Rule Triggered:
-                            </div>
-                            <Badge variant="outline" size="sm"
-                                >{modalTriggeredRule.id}: {modalTriggeredRule.name}</Badge
-                            >
-                        </div>
-                    {/if}
-                    <Button
-                        variant="primary"
-                        onclick={() => state.handleNext()}
-                        class="bg-primary-600 hover:bg-primary-700 w-full py-4 text-base font-bold tracking-widest uppercase"
-                    >
-                        {nextAction}
-                        <ArrowRight size={20} class="ml-2" />
-                    </Button>
-                </div>
-            {:else if variant === 'intervention'}
-                <div class="p-12">
-                    <div class="mb-8 text-center">
-                        <div
-                            class={`h-24 w-24 ${actionCode === 'H01' || actionCode === 'H02' ? 'bg-amber-100' : 'bg-purple-100'} mx-auto mb-6 flex items-center justify-center rounded-full shadow-lg`}
-                        >
-                            {#if IconComponent}
-                                {@const Icon = IconComponent as any}
-                                <Icon size={48} class={iconColor} />
-                            {/if}
-                        </div>
-                        <Badge
-                            variant="outline"
-                            size="lg"
-                            class="mb-4 border-amber-300 text-amber-700"
-                        >
-                            <AlertTriangle size={16} class="mr-1" />
-                            {interventionType?.includes('crisis')
-                                ? 'Intervensi Krisis'
-                                : interventionType?.includes('recovery')
-                                  ? 'Pemulihan'
-                                  : interventionType?.includes('persistent')
-                                    ? 'Safety Net'
-                                    : 'Rekomendasi Adaptif'}
-                        </Badge>
-                        <h2 class="mb-3 text-3xl font-bold tracking-wide text-slate-800 uppercase">
-                            {state.feedbackData.status === 'success' ? 'Bagus!' : 'Perlu Perbaikan'}
-                        </h2>
-                        <p class="mb-6 text-lg text-slate-600">
-                            {state.feedbackData.message}
-                        </p>
-                    </div>
-
-                    {#if recommendation}
-                        <div class="bg-primary-50 border-primary-200 mb-8 rounded-2xl border-2 p-6">
-                            <div
-                                class="border-primary-200 mb-4 flex items-start gap-4 border-b pb-4"
-                            >
-                                <div
-                                    class="bg-primary-100 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl"
-                                >
-                                    <BookOpen size={20} class="text-primary-600" />
-                                </div>
-                                <div class="flex-1">
-                                    <h3 class="text-primary-900 mb-1 text-lg font-bold">
-                                        Rekomendasi Pembelajaran
-                                    </h3>
-                                    <p class="text-primary-700 text-sm">
-                                        Sistem merekomendasikan metode berikut untuk meningkatkan
-                                        pemahaman Anda
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                {#if actionCode === 'H01'}
-                                    <Video size={24} class="text-purple-600" />
-                                    <span class="text-base font-bold text-slate-800"
-                                        >{recommendation}</span
-                                    >
-                                {:else if actionCode === 'H02'}
-                                    <FileText size={24} class="text-primary-600" />
-                                    <span class="text-base font-bold text-slate-800"
-                                        >{recommendation}</span
-                                    >
-                                {:else if actionCode === 'H03'}
-                                    <Code size={24} class="text-purple-600" />
-                                    <span class="text-base font-bold text-slate-800"
-                                        >{recommendation}</span
-                                    >
-                                {:else if actionCode === 'H04'}
-                                    <Brain size={24} class="text-primary-600" />
-                                    <span class="text-base font-bold text-slate-800"
-                                        >{recommendation}</span
-                                    >
-                                {:else}
-                                    <Target size={24} class="text-primary-600" />
-                                    <span class="text-base font-bold text-slate-800"
-                                        >{recommendation}</span
-                                    >
-                                {/if}
-                            </div>
-                        </div>
-                    {/if}
-
-                    {#if modalTriggeredRule}
-                        <div class="mb-6 rounded-xl bg-slate-50 p-4 text-sm text-slate-600">
-                            <div class="mb-2 font-bold text-slate-700">Sistem Adaptif:</div>
-                            <div class="space-y-1">
-                                <div class="flex items-center gap-2">
-                                    <Badge variant="outline" size="sm"
-                                        >{modalTriggeredRule.id}</Badge
-                                    >
-                                    <span>{modalTriggeredRule.name}</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <Badge
-                                        variant="secondary"
-                                        size="sm"
-                                        class="bg-primary-100 text-primary-700"
-                                        >{modalTriggeredRule.action}</Badge
-                                    >
-                                    <span class="text-xs text-slate-500"
-                                        >Priority: {modalTriggeredRule.priority}</span
-                                    >
-                                </div>
-                            </div>
-                        </div>
-                    {/if}
-
-                    <Button
-                        variant="primary"
-                        onclick={() => state.handleNext()}
-                        class="w-full py-4 text-base font-bold tracking-widest uppercase"
-                    >
-                        {nextAction}
-                        <ArrowRight size={20} class="ml-2" />
-                    </Button>
-                </div>
-            {:else if variant === 'backtrack'}
-                <div class="p-12 text-center">
+                <div class="relative z-10">
                     <div
-                        class="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-rose-100 shadow-lg"
+                        class="mx-auto mb-6 flex h-32 w-32 items-center justify-center rounded-full border-4 border-white/40 bg-white/20 shadow-2xl backdrop-blur-md animate-in zoom-in-50 duration-700"
                     >
                         {#if IconComponent}
                             {@const Icon = IconComponent as any}
-                            <Icon size={48} class={iconColor} />
+                            <Icon size={64} class="text-white drop-shadow-md" />
                         {/if}
                     </div>
-                    <Badge variant="outline" size="lg" class="mb-4 border-rose-300 text-rose-700">
-                        <ArrowDown size={16} class="mr-1" /> Penyesuaian Tingkat
+                    <h2 class="mb-3 text-4xl font-black tracking-widest drop-shadow-xl uppercase">
+                        {certDetails.title}
+                    </h2>
+                    <div
+                        class="mb-4 inline-block rounded-full bg-white/30 px-6 py-2 text-[10px] font-black tracking-widest backdrop-blur-xl ring-1 ring-white/50"
+                    >
+                        {certDetails.subtitle}
+                    </div>
+                    <p class="mt-2 text-lg font-medium text-white/95 leading-relaxed drop-shadow">
+                        {state.feedbackData.message}
+                    </p>
+                </div>
+            </div>
+            <div class="p-10">
+                {#if xpEarned > 0}
+                    <div class="mb-8 flex justify-center">
+                        <Panel variant="none" rounded="2xl" padding="px-10 py-5" class="bg-slate-900 border border-amber-500/30 flex items-center gap-4 shadow-2xl">
+                            <Star size={24} class="fill-current text-white" />
+                            <span class="text-2xl font-black text-white tracking-tighter">+{xpEarned} XP</span>
+                        </Panel>
+                    </div>
+                {/if}
+                <Button
+                    variant="primary"
+                    onclick={() => state.handleNext()}
+                    class="w-full bg-slate-900 hover:bg-slate-800 border-none py-4 text-sm font-black tracking-widest uppercase shadow-xl"
+                >
+                    Lanjutkan <ArrowRight size={18} class="ml-2" />
+                </Button>
+            </div>
+        {:else if variant === 'acceleration'}
+            <div class="bg-primary-600 relative overflow-hidden p-12 text-center text-white">
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-white/10 to-transparent"></div>
+                <div class="relative z-10">
+                    <div
+                        class="mx-auto mb-6 flex h-24 w-24 animate-pulse items-center justify-center rounded-full border-4 border-white/30 bg-white/20 shadow-2xl backdrop-blur-md"
+                    >
+                        {#if IconComponent}
+                            {@const Icon = IconComponent as any}
+                            <Icon size={48} class="text-white" />
+                        {/if}
+                    </div>
+                    <Badge
+                        variant="secondary"
+                        size="sm"
+                        class="mb-4 border-white/30 bg-white/30 text-white font-black tracking-widest"
+                    >
+                        <Zap size={14} class="mr-2" /> TINGKATAN DIVALIDASI
                     </Badge>
-                    <h2 class="mb-3 text-3xl font-bold tracking-wide text-slate-800 uppercase">
-                        Mari Kembali ke Dasar
-                    </h2>
-                    <p class="mb-8 text-lg text-slate-600">
+                    <h2 class="mb-2 text-4xl font-black tracking-widest drop-shadow-lg">PERCEPATAN!</h2>
+                    <p class="text-primary-50 text-base font-medium max-w-xs mx-auto">
                         {state.feedbackData.message}
                     </p>
-
-                    {#if recommendation}
-                        <div class="mb-8 rounded-2xl border border-rose-200 bg-rose-50 p-6">
-                            <div class="flex items-center justify-center gap-3">
-                                <BookOpen size={24} class="text-rose-600" />
-                                <span class="text-base font-bold text-slate-800"
-                                    >{recommendation}</span
-                                >
-                            </div>
-                        </div>
-                    {/if}
-
-                    {#if modalTriggeredRule}
-                        <div class="mb-6 rounded-xl bg-slate-50 p-4 text-sm text-slate-600">
-                            <Badge variant="outline" size="sm"
-                                >{modalTriggeredRule.id}: {modalTriggeredRule.name}</Badge
-                            >
-                        </div>
-                    {/if}
-
-                    <Button
-                        variant="primary"
-                        onclick={() => state.handleNext()}
-                        class="w-full bg-rose-600 py-4 text-base font-bold tracking-widest uppercase hover:bg-rose-700"
-                    >
-                        {nextAction}
-                        <ArrowRight size={20} class="ml-2" />
-                    </Button>
                 </div>
-            {:else if variant === 'graduation'}
-                <div class="relative overflow-hidden bg-emerald-600 p-12 text-center text-white">
-                    <div class="absolute top-0 right-0 animate-bounce p-8 opacity-10">
-                        <Trophy size={120} class="text-white" />
+            </div>
+            <div class="p-10">
+                {#if xpEarned > 0}
+                    <div class="mb-8 flex justify-center">
+                        <Panel variant="none" rounded="2xl" padding="px-10 py-5" class="bg-slate-900 border border-primary-500/30 flex items-center gap-4 shadow-2xl">
+                            <Star size={24} class="fill-current text-white" />
+                            <span class="text-2xl font-black text-white tracking-tighter">+{xpEarned} XP</span>
+                        </Panel>
                     </div>
-                    <div class="relative z-10">
-                        <div
-                            class="mx-auto mb-6 flex h-28 w-28 items-center justify-center rounded-full border-4 border-white/30 bg-white/20 shadow-2xl backdrop-blur-md"
-                        >
-                            {#if IconComponent}
-                                {@const Icon = IconComponent as any}
-                                <Icon size={56} class="text-white" />
-                            {/if}
-                        </div>
-                        <Badge
-                            variant="secondary"
-                            size="lg"
-                            class="mb-4 border-white/30 bg-white/20 text-white"
-                        >
-                            <Trophy size={16} class="mr-1" /> MODUL SELESAI
-                        </Badge>
-                        <h2 class="mb-3 text-5xl font-bold tracking-widest">SELAMAT!</h2>
-                        <p class="text-xl font-medium text-emerald-50">
-                            {state.feedbackData.message}
-                        </p>
-                    </div>
-                </div>
-                <div class="bg-white p-10">
-                    {#if xpEarned > 0}
-                        <div
-                            class="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-center"
-                        >
-                            <div class="flex items-center justify-center gap-2">
-                                <Star size={20} class="fill-current text-emerald-500" />
-                                <span class="text-lg font-bold text-emerald-700"
-                                    >+{xpEarned} XP</span
-                                >
-                            </div>
-                        </div>
+                {/if}
+                <Button
+                    variant="primary"
+                    onclick={() => state.handleNext()}
+                    class="w-full bg-slate-900 hover:bg-slate-800 border-none py-4 text-sm font-black tracking-widest uppercase shadow-xl"
+                >
+                    {nextAction} <ArrowRight size={18} class="ml-2" />
+                </Button>
+            </div>
+        {:else if variant === 'intervention'}
+            <div class="p-12 text-center">
+                <div
+                    class={`h-24 w-24 ${actionCode === 'H01' || actionCode === 'H02' ? 'bg-amber-100 shadow-amber-100' : 'bg-purple-100 shadow-purple-100'} mx-auto mb-6 flex items-center justify-center rounded-3xl shadow-xl transition-transform hover:scale-110 duration-500`}
+                >
+                    {#if IconComponent}
+                        {@const Icon = IconComponent as any}
+                        <Icon size={48} class={iconColor} />
                     {/if}
-                    <Button
-                        variant="primary"
-                        onclick={() => state.handleNext()}
-                        class="w-full bg-emerald-600 py-4 text-base font-bold tracking-widest uppercase hover:bg-emerald-700"
-                    >
-                        {nextAction}
-                        <ArrowRight size={20} class="ml-2" />
-                    </Button>
                 </div>
-            {:else}
-                <div class="p-12 text-center">
-                    <div class="mb-6 text-8xl">
+                <Badge
+                    variant="warning"
+                    size="sm"
+                    class="mb-4 font-black tracking-widest uppercase border-2"
+                >
+                    <AlertTriangle size={14} class="mr-2" /> Rekomendasi Adaptif
+                </Badge>
+                <h2 class="mb-2 text-3xl font-black tracking-tight text-slate-900 uppercase">
+                    {state.feedbackData.status === 'success' ? 'BAGUS SEKALI!' : 'KAMI ADA UNTUKMU'}
+                </h2>
+                <p class="mb-8 text-base font-medium text-slate-500 max-w-xs mx-auto">
+                    {state.feedbackData.message}
+                </p>
+
+                {#if recommendation}
+                    <Panel variant="none" rounded="2xl" padding="p-6" class="mb-8 border-2 border-primary-100 bg-primary-50/50 flex items-center gap-4">
+                        <div class="bg-primary-600 p-3 rounded-xl shadow-lg shadow-primary-200">
+                             <BookOpen size={24} class="text-white" />
+                        </div>
+                        <div class="text-left">
+                            <span class="text-[9px] font-black text-primary-600 tracking-widest uppercase">Pelajari Lagi</span>
+                            <p class="text-lg font-black text-slate-800 tracking-tight leading-tight">{recommendation}</p>
+                        </div>
+                    </Panel>
+                {/if}
+
+                <Button
+                    variant="primary"
+                    onclick={() => state.handleNext()}
+                    class="w-full bg-slate-900 hover:bg-slate-800 border-none py-4 text-sm font-black tracking-widest uppercase shadow-xl"
+                >
+                    {nextAction} <ArrowRight size={18} class="ml-2" />
+                </Button>
+            </div>
+        {:else if variant === 'backtrack'}
+            <div class="p-12 text-center">
+                <div
+                    class="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-3xl bg-rose-100 shadow-xl shadow-rose-100 animate-in slide-in-from-top-4 duration-500"
+                >
+                    {#if IconComponent}
+                        {@const Icon = IconComponent as any}
+                        <Icon size={48} class={iconColor} />
+                    {/if}
+                </div>
+                <Badge variant="danger" size="sm" class="mb-4 font-black tracking-widest uppercase">
+                    <ArrowDown size={14} class="mr-2" /> PENYESUAIAN ALUR
+                </Badge>
+                <h2 class="mb-2 text-3xl font-black tracking-tight text-slate-900 uppercase">
+                    MARI KEMBALI KE DASAR
+                </h2>
+                <p class="mb-8 text-base font-medium text-slate-500 max-w-xs mx-auto">
+                    {state.feedbackData.message}
+                </p>
+
+                {#if recommendation}
+                    <Panel variant="none" rounded="2xl" padding="p-4" class="mb-8 bg-rose-50 border border-rose-100">
+                        <div class="flex items-center justify-center gap-3">
+                            <BookOpen size={20} class="text-rose-600" />
+                            <span class="text-sm font-black text-slate-800 tracking-tight">{recommendation}</span>
+                        </div>
+                    </Panel>
+                {/if}
+
+                <Button
+                    variant="primary"
+                    onclick={() => state.handleNext()}
+                    class="w-full bg-slate-900 hover:bg-slate-800 border-none py-4 text-sm font-black tracking-widest uppercase shadow-xl shadow-rose-100"
+                >
+                    {nextAction} <ArrowRight size={18} class="ml-2" />
+                </Button>
+            </div>
+        {:else}
+            <!-- Success/Error Variant matching the reference screenshot -->
+            <div class="p-10 pt-16 text-center">
+                <div class="mb-8 flex justify-center">
+                    <div class={`relative flex h-28 w-28 items-center justify-center rounded-full border-4 ${state.feedbackData.status === 'success' ? 'border-emerald-500 bg-emerald-500' : 'border-rose-500 bg-rose-500'} shadow-2xl transition-transform hover:scale-110 duration-500`}>
                         {#if IconComponent}
                             {@const Icon = IconComponent as any}
-                            <Icon size={96} class={iconColor + ' mx-auto'} />
+                            <Icon size={56} class="text-white" strokeWidth={4} />
+                        {/if}
+                        <div class={`absolute -inset-2 rounded-full border-4 border-dashed animate-spin-slow opacity-20 ${state.feedbackData.status === 'success' ? 'border-emerald-500' : 'border-rose-500'}`}></div>
+                    </div>
+                </div>
+
+                <div class="mb-2">
+                    <span class={`text-xs font-black tracking-[0.3em] uppercase ${state.feedbackData.status === 'success' ? 'text-emerald-500' : 'text-rose-500'}`}>
+                        {state.feedbackData.status === 'success' ? 'OK!' : 'WRONG'}
+                    </span>
+                </div>
+
+                <h2 class={`mb-4 text-5xl font-black tracking-tighter uppercase ${state.feedbackData.status === 'success' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                    {state.feedbackData.status === 'success' ? 'BENAR!' : 'KURANG TEPAT'}
+                </h2>
+
+                <p class="mb-12 text-base font-semibold text-slate-400 max-w-xs mx-auto leading-relaxed">
+                    {state.feedbackData.message}
+                </p>
+
+                <div class="flex flex-col gap-8">
+                    <div class="flex flex-wrap items-center justify-center gap-4">
+                        {#if xpEarned > 0}
+                            <div class="group relative">
+                                <Panel variant="none" rounded="2xl" padding="px-8 py-4" class="bg-slate-900 border border-white/10 flex items-center gap-3 shadow-xl transition-all hover:scale-105 active:scale-95">
+                                    <Star size={20} class="text-white fill-current" />
+                                    <span class="text-xl font-black text-white tracking-tighter">+{xpEarned} XP</span>
+                                </Panel>
+                            </div>
+                        {/if}
+                        {#if streakBonus}
+                            <div class="group relative">
+                                <Panel variant="none" rounded="2xl" padding="px-8 py-4" class="bg-slate-900 border border-amber-500/50 flex items-center gap-3 shadow-xl transition-all hover:scale-105 active:scale-95">
+                                    <TrendingUp size={20} class="text-orange-500" />
+                                    <div class="text-left">
+                                        <p class="text-[14px] font-black text-orange-500 tracking-tight leading-none">{streakBonus}</p>
+                                    </div>
+                                </Panel>
+                            </div>
                         {/if}
                     </div>
 
-                    <h2
-                        class={`mb-4 text-4xl font-bold tracking-widest uppercase ${state.feedbackData.status === 'success' ? 'text-emerald-600' : 'text-rose-600'}`}
-                    >
-                        {state.feedbackData.status === 'success' ? 'BENAR!' : 'SALAH!'}
-                    </h2>
-
-                    <p class="mb-8 text-lg text-slate-600">
-                        {state.feedbackData.message}
-                    </p>
-
-                    {#if state.feedbackData.status === 'success'}
-                        <div class="mb-8 space-y-3">
-                            {#if xpEarned > 0}
-                                <div class="bg-primary-50 border-primary-200 rounded-xl border p-4">
-                                    <div class="flex items-center justify-center gap-2">
-                                        <Star size={20} class="text-primary-500 fill-current" />
-                                        <span class="text-primary-700 text-lg font-bold"
-                                            >+{xpEarned} XP</span
-                                        >
-                                    </div>
-                                </div>
-                            {/if}
-                            {#if streakBonus}
-                                <div class="rounded-xl border border-orange-200 bg-orange-50 p-4">
-                                    <div class="flex items-center justify-center gap-2">
-                                        <TrendingUp size={20} class="text-orange-500" />
-                                        <span class="text-base font-bold text-orange-700"
-                                            >{streakBonus}</span
-                                        >
-                                    </div>
-                                </div>
-                            {/if}
-                        </div>
-                    {/if}
-
-                    {#if modalTriggeredRule && state.feedbackData.status === 'success'}
-                        <div class="mb-8 rounded-xl bg-slate-50 p-4 text-sm text-slate-600">
-                            <Badge variant="outline" size="sm"
-                                >{modalTriggeredRule.id}: {modalTriggeredRule.name}</Badge
-                            >
-                        </div>
-                    {/if}
-
-                    <div class="flex flex-col justify-center gap-4 sm:flex-row">
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
                         {#if state.feedbackData.status === 'error' && nextActionType !== 'material' && !recommendation}
                             <Button
                                 variant="outline"
                                 onclick={() => state.handleTryAgain()}
-                                class="px-8 py-3 text-sm font-bold tracking-widest uppercase"
+                                class="px-10 py-4 text-xs font-black tracking-widest uppercase border-2 border-slate-200 hover:bg-slate-50"
                             >
-                                <RotateCcw size={18} class="mr-2" /> Coba Lagi
+                                <RotateCcw size={16} class="mr-2" /> COBA LAGI
                             </Button>
                         {/if}
                         <Button
                             variant="primary"
                             onclick={() => state.handleNext()}
-                            class="px-8 py-3 text-sm font-bold tracking-widest uppercase"
+                            class="w-full sm:w-auto px-16 py-4 bg-slate-900 hover:bg-slate-800 border-none text-xs font-black tracking-widest uppercase shadow-2xl shadow-slate-200 ring-4 ring-slate-100 transition-all active:scale-95"
                         >
                             {nextAction}
-                            <ArrowRight size={18} class="ml-2" />
+                            <ArrowRight size={16} class="ml-2" />
                         </Button>
                     </div>
+                    
+                    <p class="text-[9px] font-bold tracking-[0.2em] text-slate-300 uppercase">
+                        Sistem Adaptif oopedia • v2.1
+                    </p>
                 </div>
-            {/if}
-        </div>
+            </div>
+        {/if}
     </div>
-{/if}
+</Modal>
+
+<style>
+    :global(.animate-spin-slow) {
+        animation: spin 8s linear infinite;
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+</style>

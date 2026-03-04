@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { HelpCircle, List } from 'lucide-svelte';
+    import { HelpCircle, List, MousePointer2 } from 'lucide-svelte';
+    import Panel from '@/components/ui/Panel.svelte';
     import type { Question } from '@/types';
 
     let {
@@ -26,13 +27,13 @@
             const currentAnswer = dragAndDropAnswers[currentZoneId] || '...';
             const isActive = activeZone === currentZoneId;
             const extraClass = isActive
-                ? 'bg-primary-100 border-primary-600 scale-[1.05] ring-2 ring-primary-300'
-                : 'bg-white border-primary-300 hover:bg-primary-50';
+                ? 'bg-primary-100 border-primary-600 scale-[1.05] ring-4 ring-primary-300 shadow-xl'
+                : 'bg-white border-primary-100 hover:bg-primary-50 hover:border-primary-300';
 
             const zoneNum = parseInt(zoneIdStr, 10);
             if (zoneNum > maxZone) maxZone = zoneNum;
 
-            return `<span class="drop-zone inline-flex min-w-[120px] h-9 border-b-2 mx-1 items-center justify-center text-primary-600 font-bold rounded-md px-3 shadow-sm transition-all duration-200 cursor-pointer ${extraClass}" data-zone="${currentZoneId}">${currentAnswer}</span>`;
+            return `<span class="drop-zone inline-flex min-w-[120px] h-10 border-2 mx-1.5 items-center justify-center text-primary-900 font-black rounded-xl px-4 shadow-sm transition-all duration-300 cursor-pointer ${extraClass}" data-zone="${currentZoneId}">${currentAnswer}</span>`;
         });
 
         return { text, inlineFound: maxZone > 0, count: maxZone };
@@ -44,16 +45,15 @@
         event.dataTransfer.setData('text/plain', answerText);
         event.dataTransfer.effectAllowed = 'move';
 
-        // Add ghost effect to dragged item
         if (event.target instanceof HTMLElement) {
             const el = event.target;
-            setTimeout(() => el.classList.add('opacity-30', 'scale-95'), 0);
+            setTimeout(() => el.classList.add('opacity-30', 'scale-95', 'grayscale'), 0);
         }
     }
 
     function handleDragEnd(event: DragEvent) {
         if (event.target instanceof HTMLElement) {
-            event.target.classList.remove('opacity-30', 'scale-95');
+            event.target.classList.remove('opacity-30', 'scale-95', 'grayscale');
         }
         activeZone = null;
     }
@@ -111,58 +111,70 @@
     }
 </script>
 
-<div class="question-content space-y-8">
+<div class="space-y-10">
     <div class="space-y-4">
-        <h5 class="flex items-center text-sm font-bold tracking-widest text-slate-400 uppercase">
-            <HelpCircle size={14} class="mr-2" /> Pertanyaan
-        </h5>
+        <div class="flex items-center gap-2 text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+            <HelpCircle size={14} class="text-primary-500" /> Kanvas Pertanyaan
+        </div>
 
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <!-- svelte-ignore a11y_no_static_element_interactions -->
-        <div
-            class="question-html rounded-2xl border border-slate-200 bg-slate-50 p-6 leading-loose font-medium text-slate-800 transition-all"
+        <Panel
+            variant="none"
+            rounded="3xl"
+            padding="p-10"
+            class="border-2 border-slate-100 bg-slate-50/50 leading-[3rem] font-semibold text-slate-700 shadow-inner group selection:bg-primary-100"
             ondragover={handleDragOver}
             ondragleave={handleDragLeave}
             ondrop={handleDrop}
             onclick={handleZoneClick}
         >
-            {@html parsedQuestion.text}
-        </div>
+            <div class="text-xl sm:text-2xl tracking-normal">
+                {@html parsedQuestion.text}
+            </div>
+            
+            <div class="mt-8 flex items-center gap-2 text-[9px] font-bold text-slate-300 uppercase tracking-[0.2em] border-t border-slate-200/50 pt-4">
+                <MousePointer2 size={10} /> Klik kotak untuk membatalkan pilihan
+            </div>
+        </Panel>
     </div>
 
-    <div class="space-y-4">
-        <div class="bg-primary-50/50 flex items-center justify-between rounded-xl p-3">
-            <h5
-                class="text-primary-700 flex items-center text-sm font-bold tracking-widest uppercase"
-            >
-                <List size={16} class="mr-2" /> Pilihan Jawaban
-            </h5>
-            <span
-                class="text-primary-500/80 bg-primary-100 rounded-full px-3 py-1 text-xs font-semibold"
-            >
-                Tahan & Geser (Drag Drop)
-            </span>
+    <div class="space-y-6">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <List size={14} class="text-primary-500" />
+                <div class="text-[10px] font-black tracking-widest text-slate-400 uppercase">
+                    Pilihan Komponen
+                </div>
+            </div>
+            <div class="h-px flex-1 ml-6 bg-slate-100"></div>
         </div>
 
-        <div class="drag-items flex flex-wrap gap-3 p-2">
+        <div class="flex flex-wrap gap-4 p-2">
             {#each question.answers as answer (answer.id)}
                 {@const isUsed = Object.values(dragAndDropAnswers).includes(
                     answer.answer_text ?? ''
                 )}
                 <div
-                    class="draggable flex items-center gap-2 rounded-xl border-2 px-6 py-3.5 text-sm font-bold shadow-sm transition-all duration-200 select-none
-                    {isUsed
-                        ? 'cursor-not-allowed border-slate-200 bg-slate-50 text-slate-300 opacity-50 shadow-none'
-                        : 'border-primary-200 text-primary-700 hover:border-primary-500 cursor-grab bg-white hover:-translate-y-0.5 hover:shadow-md active:cursor-grabbing'}"
-                    draggable={!isUsed}
-                    role="listitem"
-                    ondragstart={(e) => !isUsed && handleDragStart(e, answer.answer_text ?? '')}
-                    ondragend={handleDragEnd}
+                    class="group relative"
                 >
-                    {#if !isUsed}
-                        <div class="bg-primary-500 h-2 w-2 animate-pulse rounded-full"></div>
-                    {/if}
-                    {answer.answer_text}
+                    <div
+                        class="draggable flex items-center gap-3 rounded-[1.25rem] border-2 px-8 py-5 text-base font-black shadow-sm transition-all duration-300 select-none
+                        {isUsed
+                            ? 'cursor-not-allowed border-slate-100 bg-slate-200/30 text-slate-300 shadow-none grayscale'
+                            : 'border-white bg-white text-primary-950 hover:border-primary-500 cursor-grab hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary-100 active:cursor-grabbing active:scale-95 ring-1 ring-slate-100'}"
+                        draggable={!isUsed}
+                        role="listitem"
+                        ondragstart={(e) => !isUsed && handleDragStart(e, answer.answer_text ?? '')}
+                        ondragend={handleDragEnd}
+                    >
+                        {#if !isUsed}
+                            <div class="bg-primary-500 h-2.5 w-2.5 rounded-full shadow-lg shadow-primary-200 group-hover:animate-ping"></div>
+                        {:else}
+                            <div class="bg-slate-300 h-2.5 w-2.5 rounded-full"></div>
+                        {/if}
+                        {answer.answer_text}
+                    </div>
                 </div>
             {/each}
         </div>

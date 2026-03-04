@@ -14,6 +14,7 @@
         variant={difficulty === 'all' ? 'primary' : 'outline'}
         onclick={() => onfilter('all')}
         size="sm"
+        class="font-bold uppercase tracking-widest"
     >
         Semua
     </Button>
@@ -22,9 +23,7 @@
         variant={difficulty === 'beginner' ? 'success' : 'outline'}
         onclick={() => onfilter('beginner')}
         size="sm"
-        class={difficulty === 'beginner'
-            ? ''
-            : 'border-emerald-600 text-emerald-600 hover:bg-emerald-50'}
+        class="font-bold uppercase tracking-widest {difficulty === 'beginner' ? '' : 'border-emerald-600/20 text-emerald-600 hover:bg-emerald-50'}"
     >
         Beginner
     </Button>
@@ -33,7 +32,7 @@
         variant={difficulty === 'medium' ? 'warning' : 'outline'}
         onclick={() => onfilter('medium')}
         size="sm"
-        class={difficulty === 'medium' ? '' : 'border-amber-600 text-amber-600 hover:bg-amber-50'}
+        class="font-bold uppercase tracking-widest {difficulty === 'medium' ? '' : 'border-amber-600/20 text-amber-600 hover:bg-amber-50'}"
     >
         Medium
     </Button>
@@ -42,7 +41,7 @@
         variant={difficulty === 'hard' ? 'danger' : 'outline'}
         onclick={() => onfilter('hard')}
         size="sm"
-        class={difficulty === 'hard' ? '' : 'border-rose-600 text-rose-600 hover:bg-rose-50'}
+        class="font-bold uppercase tracking-widest {difficulty === 'hard' ? '' : 'border-rose-600/20 text-rose-600 hover:bg-rose-50'}"
     >
         Hard
     </Button>

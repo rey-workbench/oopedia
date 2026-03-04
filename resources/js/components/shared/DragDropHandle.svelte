@@ -1,28 +1,27 @@
 <script lang="ts">
     import { GripVertical } from 'lucide-svelte';
 
-    let { text }: { text: string } = $props();
+    interface Props {
+        data: string;
+    }
 
-    function dragStart(e: DragEvent) {
-        if (!text) {
-            e.preventDefault();
-            return;
+    let { data }: Props = $props();
+
+    function dragStart(event: DragEvent) {
+        if (event.dataTransfer) {
+            event.dataTransfer.setData('text/plain', data);
+            event.dataTransfer.effectAllowed = 'copy';
         }
-        e.dataTransfer?.setData('text/plain', `[${text}]`);
-        e.dataTransfer?.setData(
-            'text/html',
-            `<span class="dnd-dropzone inline-block rounded border border-primary-200 bg-primary-50 px-2 py-1 mx-1 text-xs font-bold text-primary-700 shadow-sm" contenteditable="false" data-answer="${text}">[ ${text} ]</span>&nbsp;`
-        );
     }
 </script>
 
 <span
     role="button"
     tabindex="0"
-    class="flex h-6 w-6 cursor-grab items-center justify-center rounded-full bg-slate-200 text-xs font-bold text-slate-500 transition-colors hover:bg-slate-300"
+    class="flex h-8 w-8 cursor-grab items-center justify-center rounded-xl bg-slate-100 text-slate-400 transition-all hover:bg-primary-50 hover:text-primary-600 hover:scale-110 active:cursor-grabbing shadow-sm"
     draggable="true"
     ondragstart={dragStart}
     title="Drag ini ke dalam kotak soal!"
 >
-    <GripVertical size={14} />
+    <GripVertical size={16} />
 </span>

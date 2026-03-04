@@ -1,5 +1,7 @@
 <script lang="ts">
     import Badge from '@/components/ui/Badge.svelte';
+    import Panel from '@/components/ui/Panel.svelte';
+    import Card from '@/components/ui/Card.svelte';
     import { Brain, Zap, Target, CheckCircle, ChevronUp, ChevronDown } from 'lucide-svelte';
     import { fade, scale, slide } from 'svelte/transition';
     import type { QuestionShowState } from '@/states/Mahasiswa/QuizState.svelte.ts';
@@ -79,208 +81,200 @@
 
 {#if showDebug}
     <div
-        class="fixed right-0 bottom-0 left-0 z-[110] border-t border-slate-200 bg-white shadow-2xl transition-all duration-300"
+        class="fixed right-0 bottom-0 left-0 z-[110]"
         transition:scale={{ duration: 300, start: 0.95 }}
     >
-        <button
-            class="bg-primary-600 hover:bg-primary-700 flex w-full cursor-pointer items-center justify-between px-6 py-2 text-white transition-all"
-            onclick={toggleDebugCollapse}
-        >
-            <div class="flex items-center gap-4">
-                <div
-                    class={`flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 backdrop-blur-md ${quizState.isProcessing ? 'animate-pulse' : ''}`}
-                >
-                    <Brain size={18} class="text-white" />
-                </div>
-                <div class="text-left">
-                    <h3 class="flex items-center gap-2 text-xs font-bold tracking-wide">
-                        Adaptive Debug Panel
-                        {#if isDebugPanelCollapsed}
-                            <Badge
-                                variant="secondary"
-                                size="sm"
-                                class="border-none bg-white/20 text-[10px] text-white"
-                            >
-                                {quizState.adaptiveFacts.length} Facts • {quizState.adaptiveTriggeredRule
-                                    ? 'Rule Active'
-                                    : 'No Rule'}
-                            </Badge>
-                        {/if}
-                    </h3>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-4">
-                {#if quizState.isProcessing}
-                    <div class="flex gap-1">
-                        <span
-                            class="h-1.5 w-1.5 animate-bounce rounded-full bg-white"
-                            style="animation-delay: 0ms;"
-                        ></span>
-                        <span
-                            class="h-1.5 w-1.5 animate-bounce rounded-full bg-white"
-                            style="animation-delay: 150ms;"
-                        ></span>
-                        <span
-                            class="h-1.5 w-1.5 animate-bounce rounded-full bg-white"
-                            style="animation-delay: 300ms;"
-                        ></span>
-                    </div>
-                {/if}
-                {#if isDebugPanelCollapsed}
-                    <ChevronUp size={20} />
-                {:else}
-                    <ChevronDown size={20} />
-                {/if}
-            </div>
-        </button>
-
-        {#if !isDebugPanelCollapsed}
-            <div transition:slide={{ duration: 300 }}>
-                <div class="mx-auto max-w-7xl">
+        <Panel variant="none" rounded="none" padding="p-0" class="border-t border-slate-200 bg-white shadow-2xl transition-all duration-300">
+            <button
+                class="bg-primary-600 hover:bg-primary-700 flex w-full cursor-pointer items-center justify-between px-6 py-2 text-white transition-all focus:outline-none"
+                onclick={toggleDebugCollapse}
+            >
+                <div class="flex items-center gap-4">
                     <div
-                        class="grid grid-cols-1 gap-4 border-b border-slate-100 p-4 lg:grid-cols-2"
+                        class={`flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 backdrop-blur-md ${quizState.isProcessing ? 'animate-pulse' : ''}`}
                     >
-                        <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                            <div
-                                class="mb-3 flex items-center justify-between text-[10px] font-bold tracking-wider text-slate-500 uppercase"
-                            >
-                                <span>Facts Gathered ({quizState.adaptiveFacts.length})</span>
-                                <span class="font-medium text-slate-400 normal-case"
-                                    >Auto-extracted from user state & performance</span
+                        <Brain size={18} class="text-white" />
+                    </div>
+                    <div class="text-left">
+                        <h3 class="flex items-center gap-2 text-xs font-bold tracking-wide">
+                            Adaptive Debug Panel
+                            {#if isDebugPanelCollapsed}
+                                <Badge
+                                    variant="secondary"
+                                    size="sm"
+                                    class="border-none bg-white/20 text-[10px] text-white"
                                 >
-                            </div>
+                                    {quizState.adaptiveFacts.length} Facts • {quizState.adaptiveTriggeredRule
+                                        ? 'Rule Active'
+                                        : 'No Rule'}
+                                </Badge>
+                            {/if}
+                        </h3>
+                    </div>
+                </div>
 
-                            <div class="custom-scrollbar max-h-48 space-y-3 overflow-y-auto pr-2">
-                                {#each Object.entries(factCategories) as [category, categoryFacts] (category)}
-                                    {#if (categoryFacts as string[]).length > 0}
-                                        <div transition:fade={{ duration: 200 }}>
-                                            <div
-                                                class="mb-1.5 flex items-center gap-2 text-[9px] font-bold text-slate-400 uppercase"
-                                            >
-                                                <span class="h-1.5 w-1.5 rounded-full bg-slate-300"
-                                                ></span>
-                                                {getCategoryLabel(category)}
-                                            </div>
-                                            <div class="flex flex-wrap gap-1.5">
-                                                {#each categoryFacts as string[] as fact (fact)}
-                                                    <Badge
-                                                        variant="secondary"
-                                                        size="sm"
-                                                        class="border border-slate-200 bg-white py-0.5 font-mono text-[10px] text-slate-700"
-                                                    >
-                                                        {fact}
-                                                        <span
-                                                            class="ml-1 font-sans text-[9px] text-slate-400 italic"
+                <div class="flex items-center gap-4">
+                    {#if quizState.isProcessing}
+                        <div class="flex gap-1">
+                            <span
+                                class="h-1.5 w-1.5 animate-bounce rounded-full bg-white"
+                                style="animation-delay: 0ms;"
+                            ></span>
+                            <span
+                                class="h-1.5 w-1.5 animate-bounce rounded-full bg-white"
+                                style="animation-delay: 150ms;"
+                            ></span>
+                            <span
+                                class="h-1.5 w-1.5 animate-bounce rounded-full bg-white"
+                                style="animation-delay: 300ms;"
+                            ></span>
+                        </div>
+                    {/if}
+                    {#if isDebugPanelCollapsed}
+                        <ChevronUp size={20} />
+                    {:else}
+                        <ChevronDown size={20} />
+                    {/if}
+                </div>
+            </button>
+
+            {#if !isDebugPanelCollapsed}
+                <div transition:slide={{ duration: 300 }}>
+                    <div class="mx-auto max-w-7xl">
+                        <div
+                            class="grid grid-cols-1 gap-4 border-b border-slate-100 p-4 lg:grid-cols-2"
+                        >
+                            <Card variant="none" padding="p-4" class="border border-slate-200 bg-slate-50">
+                                <div
+                                    class="mb-3 flex items-center justify-between text-[10px] font-bold tracking-wider text-slate-500 uppercase"
+                                >
+                                    <span>Facts Gathered ({quizState.adaptiveFacts.length})</span>
+                                    <span class="font-medium text-slate-400 normal-case"
+                                        >Auto-extracted from user state & performance</span
+                                    >
+                                </div>
+
+                                <div class="custom-scrollbar max-h-48 space-y-3 overflow-y-auto pr-2">
+                                    {#each Object.entries(factCategories) as [category, categoryFacts] (category)}
+                                        {#if (categoryFacts as string[]).length > 0}
+                                            <div transition:fade={{ duration: 200 }}>
+                                                <div
+                                                    class="mb-1.5 flex items-center gap-2 text-[9px] font-bold text-slate-400 uppercase"
+                                                >
+                                                    <span class="h-1.5 w-1.5 rounded-full bg-slate-300"
+                                                    ></span>
+                                                    {getCategoryLabel(category)}
+                                                </div>
+                                                <div class="flex flex-wrap gap-1.5">
+                                                    {#each categoryFacts as string[] as fact (fact)}
+                                                        <Badge
+                                                            variant="info"
+                                                            size="sm"
+                                                            class="font-mono text-[10px]"
                                                         >
-                                                            • {getFactLabel(fact as string)}
-                                                        </span>
-                                                    </Badge>
-                                                {/each}
+                                                            {fact}
+                                                            <span
+                                                                class="ml-1 font-sans text-[9px] opacity-60 italic"
+                                                            >
+                                                                • {getFactLabel(fact as string)}
+                                                            </span>
+                                                        </Badge>
+                                                    {/each}
+                                                </div>
                                             </div>
+                                        {/if}
+                                    {/each}
+
+                                    {#if quizState.adaptiveFacts.length === 0}
+                                        <div class="py-4 text-center text-xs text-slate-400 italic">
+                                            No facts gathered for this session yet.
                                         </div>
                                     {/if}
-                                {/each}
+                                </div>
+                            </Card>
 
-                                {#if quizState.adaptiveFacts.length === 0}
-                                    <div class="py-4 text-center text-xs text-slate-400 italic">
-                                        No facts gathered for this session yet.
+                            <div class="flex flex-col">
+                                <div
+                                    class="mb-3 text-[10px] font-bold tracking-wider text-slate-500 uppercase"
+                                >
+                                    Rule Execution Status
+                                </div>
+
+                                {#if quizState.adaptiveTriggeredRule}
+                                    <Panel variant="none" rounded="xl" padding="p-5" class="flex flex-1 flex-col justify-center border border-emerald-200 bg-emerald-50">
+                                        <div class="flex items-start gap-4" transition:fade={{ duration: 300 }}>
+                                            <div
+                                                class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-100 shadow-sm"
+                                            >
+                                                <CheckCircle size={20} class="text-emerald-600" />
+                                            </div>
+                                            <div class="min-w-0 flex-1">
+                                                <div
+                                                    class="mb-1 text-[10px] font-black tracking-tighter text-emerald-600 uppercase"
+                                                >
+                                                    Rule Successfully Triggered
+                                                </div>
+                                                <div
+                                                    class="mb-1.5 text-base leading-tight font-bold text-slate-800"
+                                                >
+                                                    {quizState.adaptiveTriggeredRule.name}
+                                                </div>
+                                                <div
+                                                    class="flex flex-wrap items-center gap-2 text-[11px]"
+                                                >
+                                                    <Badge variant="success" size="xs" class="font-mono lowercase">
+                                                        id: {quizState.adaptiveTriggeredRule.id}
+                                                    </Badge>
+                                                    <Badge variant="primary" size="xs" class="font-mono lowercase">
+                                                        action: {quizState.adaptiveTriggeredRule.action}
+                                                    </Badge>
+                                                    <Badge variant="secondary" size="xs" class="text-[10px]">
+                                                        PRIORITY: {quizState.adaptiveTriggeredRule.priority}
+                                                    </Badge>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Panel>
+                                {:else}
+                                    <div
+                                        class="flex flex-1 flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center"
+                                    >
+                                        <div
+                                            class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100"
+                                        >
+                                            <Zap size={20} class="text-slate-300" />
+                                        </div>
+                                        <p
+                                            class="text-xs font-bold tracking-widest text-slate-400 uppercase"
+                                        >
+                                            Awaiting Engine Inference
+                                        </p>
+                                        <p class="mt-1 max-w-[200px] text-[10px] text-slate-400">
+                                            Data is being processed using Forward Chaining matching
+                                            strategy.
+                                        </p>
                                     </div>
                                 {/if}
                             </div>
                         </div>
+                    </div>
 
-                        <div class="flex flex-col">
-                            <div
-                                class="mb-3 text-[10px] font-bold tracking-wider text-slate-500 uppercase"
+                    <div
+                        class="flex items-center justify-between border-t border-slate-50 bg-white px-6 py-2 text-[9px] font-bold tracking-widest text-slate-400 uppercase"
+                    >
+                        <div class="flex items-center gap-4">
+                            <span class="flex items-center gap-1"
+                                ><Zap size={10} /> Forward Chaining</span
                             >
-                                Rule Execution Status
-                            </div>
-
-                            {#if quizState.adaptiveTriggeredRule}
-                                <div
-                                    class="flex flex-1 flex-col justify-center rounded-xl border border-emerald-200 bg-emerald-50 p-5"
-                                    transition:fade={{ duration: 300 }}
-                                >
-                                    <div class="flex items-start gap-4">
-                                        <div
-                                            class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-100 shadow-sm"
-                                        >
-                                            <CheckCircle size={20} class="text-emerald-600" />
-                                        </div>
-                                        <div class="min-w-0 flex-1">
-                                            <div
-                                                class="mb-1 text-[10px] font-black tracking-tighter text-emerald-600 uppercase"
-                                            >
-                                                Rule Successfully Triggered
-                                            </div>
-                                            <div
-                                                class="mb-1.5 text-base leading-tight font-bold text-slate-800"
-                                            >
-                                                {quizState.adaptiveTriggeredRule.name}
-                                            </div>
-                                            <div
-                                                class="flex flex-wrap items-center gap-2 text-[11px]"
-                                            >
-                                                <span
-                                                    class="rounded border border-emerald-300 bg-emerald-200 px-2 py-0.5 font-mono font-bold text-emerald-800"
-                                                >
-                                                    ID: {quizState.adaptiveTriggeredRule.id}
-                                                </span>
-                                                <span
-                                                    class="bg-primary-100 text-primary-700 border-primary-200 rounded border px-2 py-0.5 font-mono font-bold"
-                                                >
-                                                    ACTION: {quizState.adaptiveTriggeredRule.action}
-                                                </span>
-                                                <span
-                                                    class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500"
-                                                >
-                                                    PRIORITY: {quizState.adaptiveTriggeredRule
-                                                        .priority}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {:else}
-                                <div
-                                    class="flex flex-1 flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center"
-                                >
-                                    <div
-                                        class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100"
-                                    >
-                                        <Zap size={20} class="text-slate-300" />
-                                    </div>
-                                    <p
-                                        class="text-xs font-bold tracking-widest text-slate-400 uppercase"
-                                    >
-                                        Awaiting Engine Inference
-                                    </p>
-                                    <p class="mt-1 max-w-[200px] text-[10px] text-slate-400">
-                                        Data is being processed using Forward Chaining matching
-                                        strategy.
-                                    </p>
-                                </div>
-                            {/if}
+                            <span class="flex items-center gap-1 text-slate-300">•</span>
+                            <span class="flex items-center gap-1"
+                                ><Target size={10} /> First Match Conflict Resolution</span
+                            >
                         </div>
+                        <div class="text-primary-400">Adaptive Engine v2 • Stable</div>
                     </div>
                 </div>
-
-                <div
-                    class="flex items-center justify-between border-t border-slate-50 bg-white px-6 py-2 text-[9px] font-bold tracking-widest text-slate-400 uppercase"
-                >
-                    <div class="flex items-center gap-4">
-                        <span class="flex items-center gap-1"
-                            ><Zap size={10} /> Forward Chaining</span
-                        >
-                        <span class="flex items-center gap-1 text-slate-300">•</span>
-                        <span class="flex items-center gap-1"
-                            ><Target size={10} /> First Match Conflict Resolution</span
-                        >
-                    </div>
-                    <div class="text-primary-400">Adaptive Engine v2 • Stable</div>
-                </div>
-            </div>
-        {/if}
+            {/if}
+        </Panel>
     </div>
 {/if}
