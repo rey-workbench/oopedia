@@ -110,7 +110,7 @@
                                                     </div>
                                                 {:else if state.form.question_type === 'drag_and_drop'}
                                                     <div class="pt-2">
-                                                        <DragDropHandle text={answer.answer_text as string} />
+                                                        <DragDropHandle data={answer.answer_text as string} />
                                                     </div>
                                                 {:else}
                                                     <div class="pt-2 flex flex-col items-center gap-1">

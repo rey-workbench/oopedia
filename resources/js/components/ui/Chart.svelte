@@ -15,7 +15,7 @@
 
     async function initChart() {
         if (typeof window !== 'undefined') {
-            const ApexCharts = (await import('apexcharts'));
+            const ApexCharts = (await import('apexcharts')).default;
 
             const config = {
                 series: series,

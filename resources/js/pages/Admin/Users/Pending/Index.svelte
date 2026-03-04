@@ -55,7 +55,7 @@
                 {columns}
                 hideSearch={true}
             >
-                {#snippet row(admin)}
+                {#snippet row(admin: any)}
                     <td class="border-b border-slate-50 px-6 py-6">
                         <div class="flex items-center gap-4">
                             <UserAvatar name={admin.name} />
