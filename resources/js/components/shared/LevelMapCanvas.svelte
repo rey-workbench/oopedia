@@ -94,18 +94,7 @@
         return result;
     });
 
-    interface DiffStyle {
-        color: string;
-        label: string;
-        bg: string;
-    }
 
-    function diffStyle(d: string): DiffStyle {
-        if (d === 'beginner') return { color: '#10b981', label: 'Beginner', bg: 'emerald' };
-        if (d === 'medium') return { color: '#f59e0b', label: 'Medium', bg: 'amber' };
-        if (d === 'hard') return { color: '#ef4444', label: 'Hard', bg: 'rose' };
-        return { color: '#004e98', label: 'Level', bg: 'primary' };
-    }
 </script>
 
 <Card padding="p-0" class={`overflow-hidden ${className}`}>
@@ -146,7 +135,6 @@
             {@const cy = nodeY(i)}
             {@const pctX = (cx / MAP_W) * 100}
             {@const pctY = (cy / totalH) * 100}
-            {@const ds = diffStyle(level.difficulty as string)}
 
             <div
                 class="absolute flex flex-col items-center"
@@ -164,11 +152,6 @@
                             <Lock size={12} class="text-slate-300" />
                         </div>
                     </div>
-                    <span
-                        class="mt-3 text-[10px] font-bold tracking-widest text-slate-300 uppercase"
-                    >
-                        {ds.label}
-                    </span>
                 {:else if level.status === 'completed'}
                     <!-- COMPLETED NODE -->
                     <Link
@@ -192,11 +175,6 @@
                                 <Star size={13} class="fill-amber-400 text-amber-400" />
                             {/each}
                         </div>
-                        <span
-                            class="mt-1 text-[10px] font-bold tracking-widest text-emerald-500 uppercase"
-                        >
-                            {ds.label}
-                        </span>
                     </Link>
                 {:else}
                     <!-- ACTIVE / PLAYABLE NODE -->
@@ -222,11 +200,6 @@
                             class="z-10 mt-3 rounded-full bg-slate-900 px-5 py-1.5 text-[10px] font-black tracking-wider text-white uppercase shadow-lg"
                             >Play</span
                         >
-                        <span
-                            class="text-primary-600 z-10 mt-1.5 text-[10px] font-bold tracking-widest uppercase"
-                        >
-                            {ds.label}
-                        </span>
                     </Link>
                 {/if}
             </div>

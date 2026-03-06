@@ -10,8 +10,8 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
  * IF (G01 AND (G16 OR G17) AND NOT G22) THEN H07
  *
  * Triggers when student has critical score on medium or advanced level,
- * but hasn't reached persistent failure. Forces a difficulty reduction.
- * If persistent failure (G22), Safety Net rules (R14/R15) take over instead.
+ * and has NOT reached persistent failure (G22 — stuck).
+ * When G22 is present, Safety Net rules (R14/R15) take over at priority 5.
  */
 class Rule07_CriticalBacktracking extends BaseAdaptiveRule
 {
@@ -21,12 +21,13 @@ class Rule07_CriticalBacktracking extends BaseAdaptiveRule
 
     protected string $actionCode = AdaptiveConstants::ACTION_CRITICAL_BACKTRACKING;
 
-    protected int $priority = 25; // Medium-high priority
+    protected int $priority = 27;
 
     public function evaluate(array $facts): bool
     {
         return $this->hasFact($facts, AdaptiveConstants::FACT_SCORE_CRITICAL)
-            && $this->hasAnyFact($facts, [AdaptiveConstants::FACT_DIFF_MEDIUM, AdaptiveConstants::FACT_DIFF_HARD]);
+            && $this->hasAnyFact($facts, [AdaptiveConstants::FACT_DIFF_MEDIUM, AdaptiveConstants::FACT_DIFF_HARD])
+            && $this->notHasFact($facts, AdaptiveConstants::FACT_PERSISTENT_FAIL);
     }
 
     public function apply(array $state, array $context): array

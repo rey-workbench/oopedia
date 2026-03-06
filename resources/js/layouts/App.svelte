@@ -5,7 +5,6 @@
     import Sidebar from '@/components/navigation/Sidebar.svelte';
     import Alert from '@/components/ui/Alert.svelte';
     import { sidebarOpen } from '@/stores/sidebar';
-    import { isAdmin, isStudent } from '@/utils/roles';
     import { ROUTES } from '@/utils/route';
     import type { SharedProps } from '@/types/inertia';
 
@@ -28,14 +27,7 @@
     }: Props = $props();
 
     const flash = $derived(($page.props as unknown as SharedProps).flash ?? {});
-    const auth = $derived(($page.props as unknown as SharedProps).auth);
-    const user = $derived(auth?.user ?? null);
-    const isAuthenticated = $derived(!!user);
-    const isAdminRole = $derived(isAuthenticated && isAdmin(user?.role_id));
-    const isStudentRole = $derived(isAuthenticated && isStudent(user?.role_id));
-    const showSidebarRender = $derived(
-        variant === 'app' && showSidebar && (isAdminRole || isStudentRole)
-    );
+    const showSidebarRender = $derived(variant === 'app' && showSidebar);
 
     function handleResize() {
         if (window.innerWidth >= 1024) {
@@ -60,7 +52,7 @@
         <!-- Flash Messages -->
         {#if flash.success || flash.error || flash.info || flash.warning || (flash as any).status}
             <div
-                class="pointer-events-none fixed top-6 right-6 z-[100] flex w-full max-w-sm flex-col gap-3"
+                class="pointer-events-none fixed top-6 right-6 z-100 flex w-full max-w-sm flex-col gap-3"
             >
                 {#if flash.success}
                     <Alert variant="success" dismissible={true} class="pointer-events-auto"
@@ -142,7 +134,7 @@
                     role="button"
                     tabindex="0"
                     aria-label="Tutup sidebar"
-                    class="fixed inset-0 z-[45] bg-gray-900/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden"
+                    class="fixed inset-0 z-45 bg-gray-900/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden"
                     onclick={() => sidebarOpen.set(false)}
                     onkeydown={(e) => e.key === 'Escape' && sidebarOpen.set(false)}
                 ></div>
@@ -154,14 +146,11 @@
                 ? 'lg:ml-64'
                 : ''}"
         >
-            {#if showNavbar}
-                <Navbar titlePage={title} />
-            {/if}
 
             <!-- Flash Messages -->
             {#if flash.success || flash.error || flash.info || flash.warning || (flash as any).status}
                 <div
-                    class="pointer-events-none fixed top-24 right-6 z-[100] flex w-full max-w-sm flex-col gap-3"
+                    class="pointer-events-none fixed top-24 right-6 z-100 flex w-full max-w-sm flex-col gap-3"
                 >
                     {#if flash.success}
                         <Alert variant="success" dismissible={true} class="pointer-events-auto"

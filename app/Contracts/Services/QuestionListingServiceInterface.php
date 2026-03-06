@@ -48,5 +48,5 @@ interface QuestionListingServiceInterface
      *
      * @return array<string, mixed>
      */
-    public function getLevelProgress(Material $material, string $difficulty, SupportCollection $answeredQuestionIds, bool $isGuest = false): array;
+    public function getLevelProgress(Material $material, string $difficulty, SupportCollection $answeredQuestionIds, bool $isGuest = false, ?Collection $preloadedQuestions = null): array;
 }

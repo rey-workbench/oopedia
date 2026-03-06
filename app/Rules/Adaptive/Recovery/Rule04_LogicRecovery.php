@@ -17,7 +17,7 @@ class Rule04_LogicRecovery extends BaseAdaptiveRule
 
     protected string $actionCode = AdaptiveConstants::ACTION_LOGIC_RECOVERY;
 
-    protected int $priority = 20; // High priority
+    protected int $priority = 25;
 
     public function evaluate(array $facts): bool
     {

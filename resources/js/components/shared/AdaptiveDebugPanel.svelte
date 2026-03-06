@@ -2,7 +2,7 @@
     import Badge from '@/components/ui/Badge.svelte';
     import Panel from '@/components/ui/Panel.svelte';
     import Card from '@/components/ui/Card.svelte';
-    import { Brain, Zap, Target, CheckCircle, ChevronUp, ChevronDown } from 'lucide-svelte';
+    import { Brain, Zap, Target, CheckCircle, ChevronUp, ChevronDown, ArrowRight, MessageSquare } from 'lucide-svelte';
     import { fade, scale, slide } from 'svelte/transition';
     import type { QuestionShowState } from '@/states/Mahasiswa/QuizState.svelte.ts';
 
@@ -81,7 +81,7 @@
 
 {#if showDebug}
     <div
-        class="fixed right-0 bottom-0 left-0 z-[110]"
+        class="fixed right-0 bottom-0 left-0 z-[1001]"
         transition:scale={{ duration: 300, start: 0.95 }}
     >
         <Panel variant="none" rounded="none" padding="p-0" class="border-t border-slate-200 bg-white shadow-2xl transition-all duration-300">
@@ -201,6 +201,7 @@
                                 </div>
 
                                 {#if quizState.adaptiveTriggeredRule}
+                                    {@const newState = quizState.feedbackData?.adaptiveResult?.new_state}
                                     <Panel variant="none" rounded="xl" padding="p-5" class="flex flex-1 flex-col justify-center border border-emerald-200 bg-emerald-50">
                                         <div class="flex items-start gap-4" transition:fade={{ duration: 300 }}>
                                             <div
@@ -215,13 +216,11 @@
                                                     Rule Successfully Triggered
                                                 </div>
                                                 <div
-                                                    class="mb-1.5 text-base leading-tight font-bold text-slate-800"
+                                                    class="mb-2 text-base leading-tight font-bold text-slate-800"
                                                 >
                                                     {quizState.adaptiveTriggeredRule.name}
                                                 </div>
-                                                <div
-                                                    class="flex flex-wrap items-center gap-2 text-[11px]"
-                                                >
+                                                <div class="mb-3 flex flex-wrap items-center gap-2 text-[11px]">
                                                     <Badge variant="success" size="xs" class="font-mono lowercase">
                                                         id: {quizState.adaptiveTriggeredRule.id}
                                                     </Badge>
@@ -231,7 +230,45 @@
                                                     <Badge variant="secondary" size="xs" class="text-[10px]">
                                                         PRIORITY: {quizState.adaptiveTriggeredRule.priority}
                                                     </Badge>
+                                                    {#if newState?.next_action_data?.label}
+                                                        <Badge variant="info" size="xs" class="flex items-center gap-1 text-[10px]">
+                                                            <ArrowRight size={8} />
+                                                            {newState.next_action_data.label}
+                                                            {#if newState.next_action_data.type}
+                                                                <span class="opacity-60">({newState.next_action_data.type})</span>
+                                                            {/if}
+                                                        </Badge>
+                                                    {/if}
                                                 </div>
+
+                                                {#if quizState.feedbackData?.message}
+                                                    <div class="mb-2 flex items-start gap-1.5 rounded-lg bg-emerald-100/60 px-3 py-2">
+                                                        <MessageSquare size={11} class="mt-0.5 flex-shrink-0 text-emerald-600" />
+                                                        <p class="text-[11px] leading-snug text-slate-700 italic">
+                                                            "{quizState.feedbackData.message}"
+                                                        </p>
+                                                    </div>
+                                                {/if}
+
+                                                {#if newState?.recommendation || newState?.intervention_type || newState?.recovery_type}
+                                                    <div class="flex flex-wrap gap-1.5">
+                                                        {#if newState?.recommendation}
+                                                            <Badge variant="warning" size="xs" class="text-[10px]">
+                                                                rec: {newState.recommendation}
+                                                            </Badge>
+                                                        {/if}
+                                                        {#if newState?.intervention_type}
+                                                            <Badge variant="danger" size="xs" class="font-mono text-[10px]">
+                                                                intervention: {newState.intervention_type}
+                                                            </Badge>
+                                                        {/if}
+                                                        {#if newState?.recovery_type}
+                                                            <Badge variant="warning" size="xs" class="font-mono text-[10px]">
+                                                                recovery: {newState.recovery_type}
+                                                            </Badge>
+                                                        {/if}
+                                                    </div>
+                                                {/if}
                                             </div>
                                         </div>
                                     </Panel>
@@ -271,7 +308,7 @@
                                 ><Target size={10} /> First Match Conflict Resolution</span
                             >
                         </div>
-                        <div class="text-primary-400">Adaptive Engine v2 • Stable</div>
+                        <div class="text-primary-400">17 Rules • Adaptive Engine v2 • Stable</div>
                     </div>
                 </div>
             {/if}

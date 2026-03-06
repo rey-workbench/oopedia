@@ -72,4 +72,12 @@ interface ProgressRepositoryInterface
     public function getWrongAnswers(int|string $userId, int $materialId): \Illuminate\Database\Eloquent\Collection;
 
     public function getLastAccessTime(int|string|null $userId, int $materialId): ?string;
+
+    /**
+     * Get the latest QuizAttempt for each of the given question IDs by a user.
+     *
+     * @param  array<int, int>  $questionIds
+     * @return \Illuminate\Support\Collection<int, \App\Models\QuizAttempt> keyed by question_id
+     */
+    public function getLatestAttemptsForQuestions(int|string $userId, array $questionIds): \Illuminate\Support\Collection;
 }

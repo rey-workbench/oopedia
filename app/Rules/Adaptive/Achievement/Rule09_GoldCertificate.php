@@ -19,7 +19,7 @@ class Rule09_GoldCertificate extends BaseAdaptiveRule
 
     protected string $actionCode = AdaptiveConstants::ACTION_GOLD_CERTIFICATE;
 
-    protected int $priority = 20; // High priority
+    protected int $priority = 21;
 
     public function evaluate(array $facts): bool
     {

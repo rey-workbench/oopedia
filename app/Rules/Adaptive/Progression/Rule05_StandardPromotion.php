@@ -7,10 +7,10 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
 /**
  * Rule 5: Standard Promotion
- * IF (G03 AND (G15 OR G16 OR G17)) THEN H05
+ * IF (G03 AND G11 AND (G15 OR G16 OR G17)) THEN H05
  *
- * Triggers when student passes with standard score on any difficulty.
- * This is the "normal progression" path for adequate performance.
+ * Triggers when student passes with standard score on any difficulty, without hint.
+ * Normal linear progression path.
  */
 class Rule05_StandardPromotion extends BaseAdaptiveRule
 {
@@ -20,7 +20,7 @@ class Rule05_StandardPromotion extends BaseAdaptiveRule
 
     protected string $actionCode = AdaptiveConstants::ACTION_STANDARD_PROMOTION;
 
-    protected int $priority = 50; // Normal priority
+    protected int $priority = 50;
 
     public function evaluate(array $facts): bool
     {
@@ -30,6 +30,7 @@ class Rule05_StandardPromotion extends BaseAdaptiveRule
         ]) && $this->hasAnyFact($facts, [
             AdaptiveConstants::FACT_DIFF_BEGINNER,
             AdaptiveConstants::FACT_DIFF_MEDIUM,
+            AdaptiveConstants::FACT_DIFF_HARD,
         ]);
     }
 

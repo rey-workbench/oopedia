@@ -20,7 +20,7 @@ class Rule11_BronzeCertificate extends BaseAdaptiveRule
 
     protected string $actionCode = AdaptiveConstants::ACTION_BRONZE_CERTIFICATE;
 
-    protected int $priority = 20; // High priority
+    protected int $priority = 23;
 
     public function evaluate(array $facts): bool
     {

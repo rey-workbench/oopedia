@@ -1,7 +1,6 @@
 <script lang="ts">
     import type { Snippet } from 'svelte';
     import Button from '@/components/ui/Button.svelte';
-    import Panel from '@/components/ui/Panel.svelte';
     import Card from '@/components/ui/Card.svelte';
     import { AlertTriangle, LogIn, UserPlus, ShieldAlert } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
@@ -29,43 +28,60 @@
 
 {#if show}
     {#if variant === 'banner'}
-        <Panel variant="none" rounded="2xl" padding="p-8" class="border-2 border-amber-200 bg-amber-50/50 relative overflow-hidden shadow-xl">
-            <div class="absolute -top-10 -right-10 text-amber-200/30 rotate-12">
-                <ShieldAlert size={160} />
+        <div class="relative overflow-hidden rounded-3xl border border-amber-100 bg-white/70 p-8 shadow-premium backdrop-blur-xl sm:p-10">
+            <!-- Decorative Background Icon -->
+            <div class="absolute -right-10 -bottom-10 rotate-12 text-amber-500/5">
+                <ShieldAlert size={280} />
             </div>
+            
             <div class="relative z-10">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="p-2 bg-amber-200 rounded-lg text-amber-800">
-                        <AlertTriangle size={20} />
+                <div class="mb-6 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-lg shadow-amber-200">
+                        <AlertTriangle size={24} />
                     </div>
-                    <span class="text-xl font-black tracking-tight text-amber-950 uppercase">{title}</span>
+                    <div>
+                        <h2 class="text-2xl font-black tracking-tight text-slate-900 uppercase">
+                            {title}
+                        </h2>
+                        <div class="mt-1 h-1 w-12 rounded-full bg-amber-500"></div>
+                    </div>
                 </div>
                 
-                <p class="text-base font-semibold text-amber-800/90 mb-8 max-w-2xl leading-relaxed">
+                <p class="mb-10 max-w-2xl text-lg font-medium leading-relaxed text-slate-600">
                     {message}
                 </p>
                 
                 {#if showActions}
                     <div class="flex flex-wrap gap-4">
-                        <Button href={ROUTES.AUTH.LOGIN} variant="primary" size="lg" class="px-8 shadow-lg shadow-amber-200">
-                            <LogIn size={18} class="mr-2" /> Login Sekarang
+                        <Button 
+                            href={ROUTES.AUTH.LOGIN} 
+                            variant="primary" 
+                            size="lg" 
+                            class="bg-slate-900 px-10 text-white shadow-xl shadow-slate-200 transition-all hover:scale-105"
+                        >
+                            <LogIn size={20} class="mr-2" /> Login Sekarang
                         </Button>
-                        <Button href={ROUTES.AUTH.REGISTER} variant="outline" size="lg" class="px-8 border-amber-300 text-amber-900 hover:bg-amber-100">
-                            <UserPlus size={18} class="mr-2" /> Daftar Akun
+                        <Button 
+                            href={ROUTES.AUTH.REGISTER} 
+                            variant="outline" 
+                            size="lg" 
+                            class="border-slate-200 px-10 font-bold text-slate-700 hover:bg-slate-50 transition-all hover:scale-105"
+                        >
+                            <UserPlus size={20} class="mr-2" /> Daftar Akun
                         </Button>
                     </div>
                 {/if}
             </div>
-        </Panel>
+        </div>
     {:else}
         <Card
             variant="none"
             padding="p-6"
-            class="mb-8 border-2 border-amber-100 bg-amber-50/30 shadow-sm hover:shadow-md transition-shadow group rounded-3xl"
+            class="group mb-8 rounded-3xl border border-amber-100 bg-amber-50/50 shadow-soft ring-8 ring-amber-50/40 transition-all hover:shadow-premium"
         >
             <div class="flex items-start gap-5">
                 <div
-                    class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-amber-100 text-amber-600 group-hover:scale-110 transition-transform shadow-sm"
+                    class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-lg shadow-amber-200 transition-transform group-hover:rotate-3 group-hover:scale-110"
                 >
                     {#if icon}
                         {@render icon()}
@@ -74,21 +90,21 @@
                     {/if}
                 </div>
                 <div class="pt-1">
-                    <strong class="mb-2 block text-xl font-black tracking-tight text-amber-950 uppercase">{title}</strong>
-                    <div class="text-amber-800/80 font-medium leading-relaxed">
+                    <strong class="mb-1 block text-xl font-black tracking-tight text-slate-900 uppercase">{title}</strong>
+                    <div class="font-medium leading-relaxed text-slate-600">
                         {#if children}
                             {@render children()}
                         {:else}
                             {message} Silakan
                             <a
                                 href={ROUTES.AUTH.LOGIN}
-                                class="font-bold text-amber-900 underline decoration-amber-300 underline-offset-4 hover:text-amber-950 transition-colors"
+                                class="font-bold text-slate-900 underline decoration-amber-400 decoration-2 underline-offset-4 transition-colors hover:text-amber-600"
                                 >login</a
                             >
                             atau
                             <a
                                 href={ROUTES.AUTH.REGISTER}
-                                class="font-bold text-amber-900 underline decoration-amber-300 underline-offset-4 hover:text-amber-950 transition-colors"
+                                class="font-bold text-slate-900 underline decoration-amber-400 decoration-2 underline-offset-4 transition-colors hover:text-amber-600"
                                 >daftar</a
                             > sebagai mahasiswa.
                         {/if}

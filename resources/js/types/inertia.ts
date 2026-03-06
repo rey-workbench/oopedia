@@ -229,10 +229,30 @@ export interface CheckAnswerResponse {
 }
 
 export interface AdaptiveResult {
-    triggeredRule: string | null;
-    action: string | null;
-    facts: AdaptiveFact[];
-    nextDifficulty?: DifficultyLevel | null;
+    /** Backend uses snake_case */
+    triggered_rule?: {
+        id?: string;
+        name?: string;
+        action?: string | null;
+        priority?: number;
+    } | null;
+    facts?: AdaptiveFact[];
+    global_xp_earned?: number;
+    streak_bonus?: string | null;
+    new_state?: {
+        next_action?: string | null;
+        next_action_data?: {
+            label?: string;
+            url?: string;
+            type?: string;
+        } | null;
+        recommendation?: string | null;
+        certification?: string | null;
+        intervention_type?: string | null;
+        recovery_type?: string | null;
+        fast_track_active?: boolean;
+        message?: string | null;
+    } | null;
 }
 
 export interface AdaptiveFact {

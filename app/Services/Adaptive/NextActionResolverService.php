@@ -2,10 +2,7 @@
 
 namespace App\Services\Adaptive;
 
-use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Services\NextActionResolverServiceInterface;
-use App\Contracts\Services\ProgressServiceInterface;
-use App\Contracts\Services\QuestionServiceInterface;
 use App\Models\Material;
 use App\Models\Question;
 
@@ -14,11 +11,6 @@ use App\Models\Question;
  */
 class NextActionResolverService implements NextActionResolverServiceInterface
 {
-    public function __construct(
-        protected QuestionServiceInterface $questionService,
-        protected ProgressServiceInterface $progressService,
-        protected QuestionRepositoryInterface $questionRepo,
-    ) {}
 
     /**
      * Resolve dynamic next action command into URL and metadata.
@@ -31,10 +23,14 @@ class NextActionResolverService implements NextActionResolverServiceInterface
                 'url'   => route('mahasiswa.materials.show', $material->id),
                 'type'  => 'material',
             ],
-            'REDUCE_DIFFICULTY'   => $this->reduceDifficulty($material, $question, $userId),
-            'INCREASE_DIFFICULTY' => $this->increaseDifficulty($material, $userId),
-            'NEXT_MATERIAL'       => $this->jumpToNextMaterial($material),
-            'FINISH_MATERIAL'     => [
+            'REDUCE_DIFFICULTY',
+            'INCREASE_DIFFICULTY' => [
+                'label' => 'Soal Berikutnya',
+                'url'   => route('mahasiswa.materials.questions.show', ['material' => $material->id]),
+                'type'  => 'question',
+            ],
+            'NEXT_MATERIAL' => $this->jumpToNextMaterial($material),
+            'FINISH_MATERIAL' => [
                 'label' => 'Selesaikan Modul',
                 'url'   => route('mahasiswa.dashboard'),
                 'type'  => 'navigation',
@@ -51,104 +47,10 @@ class NextActionResolverService implements NextActionResolverServiceInterface
             'STUDY_TEXTUAL' => $this->studySubMaterial($material, null, 'Materi Tekstual'),
             default         => [
                 'label' => 'Soal Berikutnya',
-                'url'   => (function () use ($material, $question) {
-                    session(['quiz_difficulty' => $question->difficulty]);
-
-                    return route('mahasiswa.materials.questions.show', ['material' => $material->id]);
-                })(),
-                'type' => 'question',
+                'url'   => route('mahasiswa.materials.questions.show', ['material' => $material->id]),
+                'type'  => 'question',
             ],
         };
-    }
-
-    protected function reduceDifficulty(Material $material, Question $question, ?int $userId = null): array
-    {
-        $currentDifficulty = $question->difficulty ?? 'beginner';
-
-        // Determine target difficulty (Stepwise reduction)
-        $targetDifficulty = match ($currentDifficulty) {
-            'hard'   => 'medium',
-            'medium' => 'beginner',
-            default  => 'beginner',
-        };
-
-        // Helper to check availability (reusing logic from original method)
-        $checkAvailability = function (string $difficulty) use ($material, $userId) {
-            $exists = $this->questionService->existsByMaterialAndDifficulty($material->id, $difficulty);
-
-            if (! $exists) {
-                return false;
-            }
-
-            if ($userId) {
-                $answeredIds = $this->progressService->getAnsweredQuestionIds($userId, $material->id);
-                $questions   = $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty);
-
-                return $questions->whereNotIn('id', $answeredIds->toArray())->isNotEmpty();
-            }
-
-            return true;
-        };
-
-        // 1. Try Target Difficulty
-        if ($checkAvailability($targetDifficulty)) {
-            session(['quiz_difficulty' => $targetDifficulty]);
-
-            $labelMap = [
-                'medium'   => 'Coba Soal Menengah',
-                'beginner' => 'Coba Soal Pemula',
-            ];
-
-            return [
-                'label' => $labelMap[$targetDifficulty] ?? 'Coba Soal Dasar',
-                'url'   => route('mahasiswa.materials.questions.show', ['material' => $material->id]),
-                'type'  => 'question',
-            ];
-        }
-
-        // 2. Fallback: If target was Medium but failed availability, try Beginner
-        if ($targetDifficulty === 'medium' && $checkAvailability('beginner')) {
-            session(['quiz_difficulty' => 'beginner']);
-
-            return [
-                'label' => 'Coba Soal Pemula',
-                'url'   => route('mahasiswa.materials.questions.show', ['material' => $material->id]),
-                'type'  => 'question',
-            ];
-        }
-
-        // 3. Final Fallback: Material Review
-        return [
-            'label' => 'Ulas Materi Dasar',
-            'url'   => route('mahasiswa.materials.show', $material->id),
-            'type'  => 'material',
-        ];
-    }
-
-    protected function increaseDifficulty(Material $material, ?int $userId = null): array
-    {
-        $hasHard = $this->questionService->existsByMaterialAndDifficulty($material->id, 'hard');
-
-        // Check if there are unanswered hard questions
-        $hasUnansweredHard = false;
-        if ($hasHard && $userId) {
-            $answeredIds       = $this->progressService->getAnsweredQuestionIds($userId, $material->id);
-            $hardQuestions     = $this->questionRepo->getByMaterialAndDifficulty($material->id, 'hard');
-            $hasUnansweredHard = $hardQuestions->whereNotIn('id', $answeredIds->toArray())->isNotEmpty();
-        }
-
-        // Store difficulty preference in session only if there are unanswered questions
-        if ($hasUnansweredHard) {
-            session(['quiz_difficulty' => 'hard']);
-        }
-
-        return [
-            'label' => $hasUnansweredHard ? 'Tantangan Menantang' : 'Ulas Materi Lagi',
-            'url'   => $hasUnansweredHard
-            ? route('mahasiswa.materials.questions.show', ['material' => $material->id])
-            : route('mahasiswa.materials.show', $material->id),
-            'type' => $hasUnansweredHard ? 'question' : 'material',
-        ];
     }
 
     /**

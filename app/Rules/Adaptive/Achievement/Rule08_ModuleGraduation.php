@@ -7,10 +7,10 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
 /**
  * Rule 8: Module Graduation
- * IF ((G03 OR G04) AND G11 AND (G16 OR G17) AND (G26 OR G18) AND (G13..G25)) THEN H08
+ * IF (G04 AND G05 AND G11 AND G17 AND (G13 OR G14 OR G23 OR G24 OR G25)) THEN H08
  *
- * Triggers when student completes a medium/hard question with standard or mastery score,
- * no hints, in any of the 5 modules, and has satisfactory progress.
+ * Triggers when student answers a hard question with mastery score,
+ * fast response (G05), no hints, in any of the 5 OOP modules.
  */
 class Rule08_ModuleGraduation extends BaseAdaptiveRule
 {
@@ -33,13 +33,11 @@ class Rule08_ModuleGraduation extends BaseAdaptiveRule
         ];
 
         return $this->hasAllFacts($facts, [
+            AdaptiveConstants::FACT_SCORE_MASTERY,
+            AdaptiveConstants::FACT_TIME_FAST,
             AdaptiveConstants::FACT_HINT_NONE,
             AdaptiveConstants::FACT_DIFF_HARD,
-            AdaptiveConstants::FACT_SATISFACTORY_PROGRESS,
-        ]) && ($this->hasAnyFact($facts, [
-            AdaptiveConstants::FACT_SCORE_STANDARD,
-            AdaptiveConstants::FACT_SCORE_MASTERY,
-        ])) && $this->hasAnyFact($facts, $modulesFacts);
+        ]) && $this->hasAnyFact($facts, $modulesFacts);
     }
 
     public function apply(array $state, array $context): array

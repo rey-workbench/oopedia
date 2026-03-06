@@ -44,6 +44,7 @@ interface AdaptiveResult {
         recommendation?: string | null;
         certification?: string | null;
         intervention_type?: string | null;
+        recovery_type?: string | null;
     } | null;
     global_xp_earned?: number;
     streak_bonus?: string | null;

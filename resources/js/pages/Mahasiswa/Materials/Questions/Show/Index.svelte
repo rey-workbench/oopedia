@@ -17,6 +17,7 @@
         currentQuestionNumber = 1,
         totalQuestions = 0,
         answeredCount = 0,
+        materialAnsweredCount = 0,
         difficulty = 'beginner' as const,
         isGuest: _isGuest = false,
         studentState,
@@ -26,6 +27,7 @@
         currentQuestionNumber: number;
         totalQuestions: number;
         answeredCount: number;
+        materialAnsweredCount: number;
         difficulty: DifficultyLevel;
         isGuest: boolean;
         studentState: QuizSessionState;
@@ -36,15 +38,11 @@
     );
 
     $effect(() => {
-        // Track the incoming props — this block re-runs only when Inertia
-        // delivers new props (e.g. navigating to the next question).
         const newMaterial = material;
         const newQuestion = currentQuestion;
         const newDifficulty = difficulty;
         const newStudentState = studentState;
 
-        // All reads & writes to $state happen inside untrack so they don't
-        // register as dependencies and cause another loop iteration.
         untrack(() => {
             if (state.currentQuestion?.id !== newQuestion?.id) {
                 state.selectedMultipleChoiceAnswer = null;
@@ -83,7 +81,7 @@
                 <div class="mx-auto mt-6 max-w-xl">
                     <div class="mb-2 flex items-center justify-between">
                         <span class="text-xs font-bold text-slate-500"
-                            >Soal {currentQuestionNumber} / {totalQuestions}</span
+                            >Soal {state.currentQuestion ? currentQuestionNumber : totalQuestions} / {totalQuestions}</span
                         >
                         <span class="text-primary-600 text-xs font-bold"
                             >{Math.round(progressPercentage)}%</span
@@ -109,7 +107,7 @@
             {#if state.currentQuestion}
                 <QuestionSessionCard {state} />
             {:else}
-                <FinishStateCard {state} {material} {answeredCount} />
+                <FinishStateCard {state} {material} answeredCount={materialAnsweredCount} />
             {/if}
         </div>
     </div>

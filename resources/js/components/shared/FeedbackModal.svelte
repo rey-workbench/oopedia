@@ -106,6 +106,8 @@
                 return 'text-indigo-600';
             case 'H04':
                 return 'text-amber-600';
+            case 'H05':
+                return 'text-emerald-500';
             case 'H06':
                 return 'text-blue-600';
             case 'H07':

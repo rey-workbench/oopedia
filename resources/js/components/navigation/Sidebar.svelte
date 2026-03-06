@@ -3,7 +3,7 @@
     import SidebarLink from '@/components/navigation/SidebarLink.svelte';
     import { ROUTES } from '@/utils/route';
     import { sidebarOpen } from '@/stores/sidebar';
-    import { isAdmin, isStudent, ROLE } from '@/utils/roles';
+    import { isAdmin, ROLE } from '@/utils/roles';
     import {
         LayoutDashboard,
         BookOpen,
@@ -17,13 +17,14 @@
         UserRound,
         X,
         ChevronDown,
+        LogIn,
+        UserPlus,
     } from 'lucide-svelte';
     import { slide } from 'svelte/transition';
 
     const auth = $derived($page.props['auth'] ?? {});
     const user = $derived(auth.user ?? null);
     const isAdminRole = $derived(!!user && isAdmin(user.role_id));
-    const isStudentRole = $derived(!!user && isStudent(user.role_id));
     const userRole = $derived(user?.role_id ?? null);
 
     const isActive = (url: string) => $page.url === url || $page.url.startsWith(url + '/');
@@ -56,7 +57,11 @@
         data-step="1"
     >
         <Link
-            href={isAdminRole ? ROUTES.ADMIN.DASHBOARD : ROUTES.MAHASISWA.DASHBOARD}
+            href={isAdminRole
+                ? ROUTES.ADMIN.DASHBOARD
+                : userRole === ROLE.MAHASISWA
+                  ? ROUTES.MAHASISWA.DASHBOARD
+                  : ROUTES.MAHASISWA.MATERIALS.INDEX}
             class="group flex items-center gap-3"
         >
             <div
@@ -187,7 +192,7 @@
                     </form>
                 </div>
             </div>
-        {:else if isStudentRole}
+        {:else}
             <div class="space-y-6">
                 <div
                     class="flex items-center gap-2 px-4 transition-all"
@@ -197,12 +202,14 @@
                     <div class="h-px flex-1 bg-linear-to-r from-slate-100 to-transparent"></div>
                 </div>
                 <div class="space-y-2">
-                    <SidebarLink
-                        href={ROUTES.MAHASISWA.DASHBOARD}
-                        icon={LayoutDashboard}
-                        active={$page.url.startsWith(ROUTES.MAHASISWA.DASHBOARD)}
-                        >Dashboard</SidebarLink
-                    >
+                    {#if userRole === ROLE.MAHASISWA}
+                        <SidebarLink
+                            href={ROUTES.MAHASISWA.DASHBOARD}
+                            icon={LayoutDashboard}
+                            active={$page.url.startsWith(ROUTES.MAHASISWA.DASHBOARD)}
+                            >Dashboard</SidebarLink
+                        >
+                    {/if}
 
                     <div class="space-y-1">
                         <button
@@ -264,37 +271,41 @@
                 </div>
             </div>
 
-            <div class="space-y-6">
-                <div class="flex items-center gap-2 px-4 transition-all">
-                    <div class="h-1 w-1 rounded-full bg-primary-500"></div>
-                    <span class="text-[9px] font-extrabold tracking-widest text-slate-400 uppercase">Pencapaian</span>
-                    <div class="h-px flex-1 bg-linear-to-r from-slate-100 to-transparent"></div>
+            {#if userRole === ROLE.MAHASISWA}
+                <div class="space-y-6">
+                    <div class="flex items-center gap-2 px-4 transition-all">
+                        <div class="h-1 w-1 rounded-full bg-primary-500"></div>
+                        <span class="text-[9px] font-extrabold tracking-widest text-slate-400 uppercase">Pencapaian</span>
+                        <div class="h-px flex-1 bg-linear-to-r from-slate-100 to-transparent"></div>
+                    </div>
+                    <div class="space-y-2">
+                        <SidebarLink
+                            href={ROUTES.MAHASISWA.LEADERBOARD}
+                            icon={Trophy}
+                            active={$page.url.startsWith(ROUTES.MAHASISWA.LEADERBOARD)}
+                            >Leaderboard</SidebarLink
+                        >
+                    </div>
                 </div>
-                <div class="space-y-2">
-                    <SidebarLink
-                        href={ROUTES.MAHASISWA.LEADERBOARD}
-                        icon={Trophy}
-                        active={$page.url.startsWith(ROUTES.MAHASISWA.LEADERBOARD)}
-                        >Leaderboard</SidebarLink
-                    >
-                </div>
-            </div>
+            {/if}
 
-            <div class="space-y-6 pb-10">
-                <div class="flex items-center gap-2 px-4 transition-all">
-                    <div class="h-1 w-1 rounded-full bg-primary-500"></div>
-                    <span class="text-[9px] font-extrabold tracking-widest text-slate-400 uppercase">Akun</span>
-                    <div class="h-px flex-1 bg-linear-to-r from-slate-100 to-transparent"></div>
+            {#if userRole === ROLE.MAHASISWA}
+                <div class="space-y-6 pb-10">
+                    <div class="flex items-center gap-2 px-4 transition-all">
+                        <div class="h-1 w-1 rounded-full bg-primary-500"></div>
+                        <span class="text-[9px] font-extrabold tracking-widest text-slate-400 uppercase">Akun</span>
+                        <div class="h-px flex-1 bg-linear-to-r from-slate-100 to-transparent"></div>
+                    </div>
+                    <div class="space-y-2">
+                        <SidebarLink
+                            href={ROUTES.MAHASISWA.PROFILE}
+                            icon={UserRound}
+                            active={$page.url.startsWith(ROUTES.MAHASISWA.PROFILE)}
+                            >Profil Saya</SidebarLink
+                        >
+                    </div>
                 </div>
-                <div class="space-y-2">
-                    <SidebarLink
-                        href={ROUTES.MAHASISWA.PROFILE}
-                        icon={UserRound}
-                        active={$page.url.startsWith(ROUTES.MAHASISWA.PROFILE)}
-                        >Profil Saya</SidebarLink
-                    >
-                </div>
-            </div>
+            {/if}
 
             <div class="space-y-6 border-t border-slate-100 pt-10">
                 <div class="flex items-center gap-2 px-4 transition-all">
@@ -303,24 +314,41 @@
                     <div class="h-px flex-1 bg-linear-to-r from-slate-100 to-transparent"></div>
                 </div>
                 <div class="space-y-2">
-                    <form
-                        onsubmit={(e) => {
-                            e.preventDefault();
-                            logout();
-                        }}
-                    >
-                        <button
-                            type="submit"
-                            class="group flex w-full items-center gap-4 rounded-2xl px-4 py-3.5 font-bold tracking-tight text-slate-500 transition-all duration-300 hover:bg-rose-50 hover:text-rose-600"
+                    {#if user}
+                        <form
+                            onsubmit={(e) => {
+                                e.preventDefault();
+                                logout();
+                            }}
                         >
-                            <div
-                                class="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-100 transition-colors duration-300 group-hover:bg-rose-100"
+                            <button
+                                type="submit"
+                                class="group flex w-full items-center gap-4 rounded-2xl px-4 py-3.5 font-bold tracking-tight text-slate-500 transition-all duration-300 hover:bg-rose-50 hover:text-rose-600"
                             >
-                                <LogOut size={18} strokeWidth={2.5} />
-                            </div>
-                            <span class="flex-1 text-left">Keluar Sistem</span>
-                        </button>
-                    </form>
+                                <div
+                                    class="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-100 transition-colors duration-300 group-hover:bg-rose-100"
+                                >
+                                    <LogOut size={18} strokeWidth={2.5} />
+                                </div>
+                                <span class="flex-1 text-left">Keluar Sistem</span>
+                            </button>
+                        </form>
+                    {:else}
+                        <SidebarLink
+                            href={ROUTES.AUTH.LOGIN}
+                            icon={LogIn}
+                            active={$page.url === ROUTES.AUTH.LOGIN}
+                        >
+                            Masuk
+                        </SidebarLink>
+                        <SidebarLink
+                            href={ROUTES.AUTH.REGISTER}
+                            icon={UserPlus}
+                            active={$page.url === ROUTES.AUTH.REGISTER}
+                        >
+                            Daftar Akun
+                        </SidebarLink>
+                    {/if}
                 </div>
             </div>
         {/if}

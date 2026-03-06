@@ -84,13 +84,7 @@ class MaterialQuestionController extends Controller
 
         $isGuest = $this->isGuestUser();
 
-        // Get difficulty from session, fallback to beginner for all users
-        // 'all' is not valid for the adaptive engine which needs a specific difficulty
-        $difficulty = session('quiz_difficulty', 'beginner');
-
-        // Clear session after reading to prevent persistence across different materials
-        // session()->forget('quiz_difficulty');
-
+        $difficulty    = 'all';
         $guestProgress = $this->getGuestProgress($request);
         $userId        = $this->getUserId();
 
@@ -140,8 +134,6 @@ class MaterialQuestionController extends Controller
                 ->with('error', 'Material tidak ditemukan');
         }
 
-        $materials     = $this->materialService->getAllOrdered();
-        $difficulty    = 'all';
         $isGuest       = $this->isGuestUser();
         $userId        = $this->getUserId();
         $guestProgress = $this->getGuestProgress($request);
@@ -150,14 +142,11 @@ class MaterialQuestionController extends Controller
             ? $this->questionListingService->getGuestAnsweredQuestionIds($material->id, $guestProgress)
             : $this->progressService->getAnsweredQuestionIds($userId, $material->id);
 
-        $levels = $this->questionListingService->getLevelProgress($material, $difficulty, $answeredQuestionIds, $isGuest);
+        $levels = $this->questionListingService->getLevelProgress($material, 'all', $answeredQuestionIds, $isGuest);
 
         return Inertia::render('Mahasiswa/Materials/Questions/Levels/Index', compact(
             'material',
-            'materials',
             'levels',
-            'difficulty',
-            'isGuest',
         ));
     }
 

@@ -36,7 +36,7 @@
     <div class="container-fluid mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-4">
             <div class="lg:col-span-1">
-                <Card class="sticky top-4" padding="p-2">
+                <Card class="sticky top-24" padding="p-2">
                     {#snippet header()}
                         <h5
                             class="flex items-center gap-3 text-xs font-black tracking-widest text-slate-900 uppercase"

@@ -16,8 +16,10 @@ use App\Rules\Adaptive\Crisis\Rule15_PersistentTextualSafetyNet;
 use App\Rules\Adaptive\Progression\Rule05_StandardPromotion;
 use App\Rules\Adaptive\Progression\Rule06_AcceleratedJump;
 use App\Rules\Adaptive\Progression\Rule07_CriticalBacktracking;
+use App\Rules\Adaptive\Progression\Rule16_MasteryMedium;
 use App\Rules\Adaptive\Recovery\Rule03_SyntaxRecovery;
 use App\Rules\Adaptive\Recovery\Rule04_LogicRecovery;
+use App\Rules\Adaptive\Recovery\Rule17_RemedialIndependent;
 
 /**
  * RuleRegistry
@@ -47,9 +49,10 @@ class RuleRegistry
         $this->register(new Rule12_VisualProjectRevision);
         $this->register(new Rule13_TextualProjectRevision);
 
-        // Recovery rules (priority 20)
+        // Recovery rules (priority 24-48)
         $this->register(new Rule03_SyntaxRecovery);
         $this->register(new Rule04_LogicRecovery);
+        $this->register(new Rule17_RemedialIndependent);
 
         // Achievement rules (priority 20-30)
         $this->register(new Rule09_GoldCertificate);
@@ -57,8 +60,9 @@ class RuleRegistry
         $this->register(new Rule11_BronzeCertificate);
         $this->register(new Rule08_ModuleGraduation);
 
-        // Progression rules (priority 25-50)
+        // Progression rules (priority 27-50)
         $this->register(new Rule07_CriticalBacktracking);
+        $this->register(new Rule16_MasteryMedium);
         $this->register(new Rule06_AcceleratedJump);
         $this->register(new Rule05_StandardPromotion);
 

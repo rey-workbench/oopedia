@@ -32,14 +32,11 @@ class QuestionListingService implements QuestionListingServiceInterface
         $questions              = $filteredData['questions'];
         $totalFilteredQuestions = $filteredData['totalFilteredQuestions'];
 
+        $levelProgress   = $this->getLevelProgress($material, $difficulty, $answeredQuestionIds, $isGuest, $questions);
+        $questions       = $questions->shuffle();
         $currentQuestion = $this->getCurrentQuestion($questions, $answeredQuestionIds);
 
-        $levelProgress = $this->getLevelProgress($material, $difficulty, $answeredQuestionIds, $isGuest);
-
-        // Calculate answeredCount relative ONLY to the currently filtered question set
-        $answeredCount = $questions->filter(function ($q) use ($answeredQuestionIds) {
-            return $answeredQuestionIds->contains($q->id);
-        })->count();
+        $answeredCount = $questions->filter(fn ($q) => $answeredQuestionIds->contains($q->id))->count();
 
         return [
             'material'              => $material,
@@ -48,6 +45,7 @@ class QuestionListingService implements QuestionListingServiceInterface
             'currentQuestionNumber' => $answeredCount + 1,
             'totalQuestions'        => $totalFilteredQuestions,
             'answeredCount'         => $answeredCount,
+            'materialAnsweredCount' => $answeredQuestionIds->count(),
             'levelProgress'         => $levelProgress,
             'difficulty'            => $difficulty,
         ];
@@ -71,26 +69,26 @@ class QuestionListingService implements QuestionListingServiceInterface
             $configuredTotalQuestions = $this->calculateConfiguredQuestions($material, $isGuest);
 
             if ($isGuest) {
-                $correctAnswers = 0;
+                $answeredCount = 0;
                 foreach ($guestProgress as $key => $progress) {
-                    if (strpos($key, $material->id . '_') === 0 && isset($progress['is_correct']) && $progress['is_correct']) {
-                        $correctAnswers++;
+                    if (strpos($key, $material->id . '_') === 0 && (isset($progress['is_correct']) || isset($progress['attempt_number']))) {
+                        $answeredCount++;
                     }
                 }
             } else {
                 $materialProgress = $progressStats->firstWhere('material_id', $material->id);
-                $correctAnswers   = $materialProgress ? $materialProgress->correct_answers : 0;
+                $answeredCount    = $materialProgress ? $materialProgress->answered_questions : 0;
             }
 
             $progressPercentage = $configuredTotalQuestions > 0
-                ? min(100, round(($correctAnswers / $configuredTotalQuestions) * 100))
+                ? min(100, round(($answeredCount / $configuredTotalQuestions) * 100))
                 : 0;
 
             $studentCount = isset($studentCounts[$material->id]) ? $studentCounts[$material->id]->student_count : 0;
 
             $material->progress_percentage = $progressPercentage;
             $material->total_questions     = $configuredTotalQuestions;
-            $material->completed_questions = $correctAnswers;
+            $material->completed_questions = $answeredCount;
             $material->student_count       = $studentCount;
 
             return $material;
@@ -105,7 +103,6 @@ class QuestionListingService implements QuestionListingServiceInterface
         $questions = $material->questions;
 
         if ($difficulty && $difficulty !== 'all') {
-            // Normalize difficulty: 'advanced' from UI mapping to 'hard' in DB
             $dbDifficulty = ($difficulty === 'advanced') ? 'hard' : $difficulty;
             $questions    = $questions->where('difficulty', $dbDifficulty);
         }
@@ -114,7 +111,6 @@ class QuestionListingService implements QuestionListingServiceInterface
             $answeredQuestionIds = $this->getGuestAnsweredQuestionIds($material->id, $guestProgress);
             $questions           = $questions->whereIn('id', $answeredQuestionIds->toArray());
 
-            // Map guest attempts
             foreach ($questions as $question) {
                 $key = $material->id . '_' . $question->id;
                 if (isset($guestProgress[$key])) {
@@ -122,29 +118,30 @@ class QuestionListingService implements QuestionListingServiceInterface
                 }
             }
         } else {
-            $questionIds = $questions->pluck('id');
-            $attempts    = \App\Models\QuizAttempt::where('user_id', $userId)
-                ->whereIn('question_id', $questionIds)
-                ->get()
-                ->groupBy('question_id');
+            $answeredQuestionIds = $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
+            $questions           = $questions->whereIn('id', $answeredQuestionIds->toArray());
+
+            $latestAttempts = $this->progressRepo->getLatestAttemptsForQuestions(
+                $userId,
+                $answeredQuestionIds->toArray(),
+            );
 
             foreach ($questions as $question) {
-                $latestAttempt = $attempts->get($question->id)?->sortByDesc('created_at')->first();
-
-                if ($latestAttempt) {
+                $attempt = $latestAttempts->get($question->id);
+                if ($attempt) {
                     $question->user_attempt = [
-                        'score'          => $latestAttempt->score,
-                        'is_correct'     => $latestAttempt->is_correct,
-                        'answer_id'      => $latestAttempt->answer_id,
-                        'user_response'  => $latestAttempt->user_response,
-                        'attempt_number' => $latestAttempt->attempt_number,
-                        'time_spent'     => $latestAttempt->time_spent,
+                        'score'          => $attempt->score,
+                        'is_correct'     => $attempt->is_correct,
+                        'answer_id'      => $attempt->answer_id,
+                        'user_response'  => $attempt->user_response,
+                        'attempt_number' => $attempt->attempt_number,
+                        'time_spent'     => $attempt->time_spent,
                     ];
                 }
             }
         }
 
-        return $questions;
+        return $questions->values();
     }
 
     public function getGuestAnsweredQuestionIds(int $materialId, array $guestProgress = []): SupportCollection
@@ -166,7 +163,6 @@ class QuestionListingService implements QuestionListingServiceInterface
         return $answeredQuestionIds;
     }
 
-    /** @return array<string, mixed> */
     public function getFilteredQuestions(Material $material, string $difficulty, bool $isGuest): array
     {
         $questions = $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty);
@@ -186,9 +182,6 @@ class QuestionListingService implements QuestionListingServiceInterface
             $totalFilteredQuestions = $questions->count();
         }
 
-        // Shuffle questions for randomness as requested by user
-        $questions = $questions->shuffle();
-
         return [
             'questions'              => $questions,
             'totalFilteredQuestions' => $totalFilteredQuestions,
@@ -205,7 +198,6 @@ class QuestionListingService implements QuestionListingServiceInterface
             if (! $currentQuestion->relationLoaded('answers')) {
                 $currentQuestion->load('answers');
             }
-            // Ensure answers are always shuffled when loaded
             $currentQuestion->setRelation('answers', $currentQuestion->answers->shuffle());
         }
 
@@ -213,49 +205,39 @@ class QuestionListingService implements QuestionListingServiceInterface
     }
 
     /** @return array<int, array<string, mixed>> */
-    public function getLevelProgress(Material $material, string $difficulty, SupportCollection $answeredQuestionIds, bool $isGuest = false): array
+    public function getLevelProgress(Material $material, string $difficulty, SupportCollection $answeredQuestionIds, bool $isGuest = false, ?Collection $preloadedQuestions = null): array
     {
-        $questions = $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty);
-
-        // Apply guest filtering - same logic as getFilteredQuestions
-        if ($isGuest) {
-            if ($difficulty === 'all') {
-                $beginnerQuestions = $questions->where('difficulty', 'beginner')->take(3);
-                $mediumQuestions   = $questions->where('difficulty', 'medium')->take(3);
-                $hardQuestions     = $questions->where('difficulty', 'hard')->take(3);
-                $questions         = $beginnerQuestions->concat($mediumQuestions)->concat($hardQuestions);
-            } else {
-                $questions = $questions->take(3);
+        if ($preloadedQuestions !== null) {
+            $questions = $preloadedQuestions;
+        } else {
+            $questions = $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty);
+            if ($isGuest) {
+                $questions = $questions->take($difficulty === 'all' ? 9 : 3);
             }
         }
 
+        $completed = $questions->filter(fn ($q) => $answeredQuestionIds->contains($q->id));
+        $remaining = $questions->reject(fn ($q) => $answeredQuestionIds->contains($q->id));
+
         $levels = [];
+        $index  = 1;
 
-        foreach ($questions as $index => $question) {
-            $questionIndex = $index + 1;
-            $isAnswered    = $answeredQuestionIds->contains($question->id);
-
-            if ($isAnswered) {
-                $status = 'completed';
-            } elseif ($questionIndex === 1) {
-                $status = 'unlocked';
-            } else {
-                $allPreviousAnswered = true;
-                for ($i = 0; $i < $index; $i++) {
-                    if (! $answeredQuestionIds->contains($questions[$i]->id)) {
-                        $allPreviousAnswered = false;
-                        break;
-                    }
-                }
-                $status = $allPreviousAnswered ? 'unlocked' : 'locked';
-            }
-
+        foreach ($completed as $question) {
             $levels[] = [
-                'level'       => $questionIndex,
+                'level'       => $index++,
                 'question_id' => $question->id,
-                'status'      => $status,
-                'difficulty'  => $question->difficulty,
+                'status'      => 'completed',
             ];
+        }
+
+        $isFirst = true;
+        foreach ($remaining as $question) {
+            $levels[] = [
+                'level'       => $index++,
+                'question_id' => $question->id,
+                'status'      => $isFirst ? 'unlocked' : 'locked',
+            ];
+            $isFirst = false;
         }
 
         return $levels;

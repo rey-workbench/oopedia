@@ -20,7 +20,7 @@ class Rule03_SyntaxRecovery extends BaseAdaptiveRule
 
     protected string $actionCode = AdaptiveConstants::ACTION_SYNTAX_RECOVERY;
 
-    protected int $priority = 20; // High priority
+    protected int $priority = 24;
 
     public function evaluate(array $facts): bool
     {

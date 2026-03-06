@@ -200,6 +200,7 @@ class AdaptiveQuizFlowService
                     'message'           => $ruleOutput['message']              ?? null,
                     'certification'     => $ruleOutput['certification']        ?? null,
                     'intervention_type' => $ruleOutput['intervention_type']    ?? null,
+                    'recovery_type'     => $ruleOutput['recovery_type']        ?? null,
                     'fast_track_active' => $adaptiveState['fast_track_active'] ?? false,
                 ]),
             ],
