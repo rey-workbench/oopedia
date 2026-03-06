@@ -13,7 +13,7 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
  * on a medium-level question without using hints.
  * Consistent with R06 (easy) and R08 (advanced) time requirements.
  */
-class Rule16_MasteryMedium extends BaseAdaptiveRule
+class MasteryMedium extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_16';
 

@@ -13,7 +13,7 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
  * and has NOT reached persistent failure (G22 — stuck).
  * When G22 is present, Safety Net rules (R14/R15) take over at priority 5.
  */
-class Rule07_CriticalBacktracking extends BaseAdaptiveRule
+class CriticalBacktracking extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_07';
 

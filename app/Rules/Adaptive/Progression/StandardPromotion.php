@@ -12,7 +12,7 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
  * Triggers when student passes with standard score on any difficulty, without hint.
  * Normal linear progression path.
  */
-class Rule05_StandardPromotion extends BaseAdaptiveRule
+class StandardPromotion extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_05';
 

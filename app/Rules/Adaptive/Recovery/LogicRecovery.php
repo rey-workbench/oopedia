@@ -9,7 +9,7 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
  * Rule 4: Logic Recovery
  * IF (G02 AND G10 AND G14) THEN H04
  */
-class Rule04_LogicRecovery extends BaseAdaptiveRule
+class LogicRecovery extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_04';
 

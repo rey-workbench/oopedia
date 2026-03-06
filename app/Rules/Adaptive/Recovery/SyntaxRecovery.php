@@ -12,7 +12,7 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
  * Triggers when student has remedial score on medium level,
  * made syntax errors, and used hints.
  */
-class Rule03_SyntaxRecovery extends BaseAdaptiveRule
+class SyntaxRecovery extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_03';
 

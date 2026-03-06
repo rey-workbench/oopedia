@@ -11,7 +11,7 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
  *
  * Requires standard score, no hints, final project, and satisfactory progress.
  */
-class Rule10_SilverCertificate extends BaseAdaptiveRule
+class SilverCertificate extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_10';
 

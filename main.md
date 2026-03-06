@@ -325,7 +325,7 @@ public function evaluate(
 
 ```php
 // IF (G01 AND G07 AND G15 AND NOT G22) THEN H01
-class Rule01_VisualCrisisIntervention extends BaseAdaptiveRule
+class VisualCrisisIntervention extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_01';
     protected string $actionCode = 'H01';
@@ -355,7 +355,7 @@ class Rule01_VisualCrisisIntervention extends BaseAdaptiveRule
 
 ```php
 // IF (G03 AND G11 AND (G15 OR G16)) THEN H05
-class Rule05_StandardPromotion extends BaseAdaptiveRule
+class StandardPromotion extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_05';
     protected string $actionCode = 'H05';
@@ -565,36 +565,36 @@ docker-compose up -d
 
 Aturan untuk menangani kondisi krisis mahasiswa:
 
-- `Rule01_VisualCrisisIntervention` - Intervensi krisis mode visual
-- `Rule02_TextualRemediation` - Remediasi mode teks
-- `Rule12_VisualProjectRevision` - Revisi proyek visual
-- `Rule13_TextualProjectRevision` - Revisi proyek teks
-- `Rule14_PersistentVisualSafetyNet` - Safety net visual
-- `Rule15_PersistentTextualSafetyNet` - Safety net teks
+- `VisualCrisisIntervention` - Intervensi krisis mode visual
+- `TextualRemediation` - Remediasi mode teks
+- `VisualProjectRevision` - Revisi proyek visual
+- `TextualProjectRevision` - Revisi proyek teks
+- `PersistentVisualSafetyNet` - Safety net visual
+- `PersistentTextualSafetyNet` - Safety net teks
 
 #### 2. Recovery Rules (Priority 20)
 
 Aturan untuk pemulihan:
 
-- `Rule03_SyntaxRecovery` - Pemulihan sintaks
-- `Rule04_LogicRecovery` - Pemulihan logika
+- `SyntaxRecovery` - Pemulihan sintaks
+- `LogicRecovery` - Pemulihan logika
 
 #### 3. Achievement Rules (Priority 20-30)
 
 Aturan untuk pencapaian:
 
-- `Rule08_ModuleGraduation` - Kelulusan modul
-- `Rule09_GoldCertificate` - Sertifikat emas
-- `Rule10_SilverCertificate` - Sertifikat perak
-- `Rule11_BronzeCertificate` - Sertifikat perunggu
+- `ModuleGraduation` - Kelulusan modul
+- `GoldCertificate` - Sertifikat emas
+- `SilverCertificate` - Sertifikat perak
+- `BronzeCertificate` - Sertifikat perunggu
 
 #### 4. Progression Rules (Priority 25-50)
 
 Aturan untuk progressions:
 
-- `Rule05_StandardPromotion` - Promo standar
-- `Rule06_AcceleratedJump` - Loncatan akselerasi
-- `Rule07_CriticalBacktracking` - Mundur kritis
+- `StandardPromotion` - Promo standar
+- `AcceleratedJump` - Loncatan akselerasi
+- `CriticalBacktracking` - Mundur kritis
 
 ---
 

@@ -2,24 +2,24 @@
 
 namespace App\Rules\Adaptive;
 
-use App\Rules\Adaptive\Achievement\Rule08_ModuleGraduation;
-use App\Rules\Adaptive\Achievement\Rule09_GoldCertificate;
-use App\Rules\Adaptive\Achievement\Rule10_SilverCertificate;
-use App\Rules\Adaptive\Achievement\Rule11_BronzeCertificate;
+use App\Rules\Adaptive\Achievement\ModuleGraduation;
+use App\Rules\Adaptive\Achievement\GoldCertificate;
+use App\Rules\Adaptive\Achievement\SilverCertificate;
+use App\Rules\Adaptive\Achievement\BronzeCertificate;
 use App\Rules\Adaptive\Contracts\AdaptiveRuleInterface;
-use App\Rules\Adaptive\Crisis\Rule01_VisualCrisisIntervention;
-use App\Rules\Adaptive\Crisis\Rule02_TextualRemediation;
-use App\Rules\Adaptive\Crisis\Rule12_VisualProjectRevision;
-use App\Rules\Adaptive\Crisis\Rule13_TextualProjectRevision;
-use App\Rules\Adaptive\Crisis\Rule14_PersistentVisualSafetyNet;
-use App\Rules\Adaptive\Crisis\Rule15_PersistentTextualSafetyNet;
-use App\Rules\Adaptive\Progression\Rule05_StandardPromotion;
-use App\Rules\Adaptive\Progression\Rule06_AcceleratedJump;
-use App\Rules\Adaptive\Progression\Rule07_CriticalBacktracking;
-use App\Rules\Adaptive\Progression\Rule16_MasteryMedium;
-use App\Rules\Adaptive\Recovery\Rule03_SyntaxRecovery;
-use App\Rules\Adaptive\Recovery\Rule04_LogicRecovery;
-use App\Rules\Adaptive\Recovery\Rule17_RemedialIndependent;
+use App\Rules\Adaptive\Crisis\VisualCrisisIntervention;
+use App\Rules\Adaptive\Crisis\TextualRemediation;
+use App\Rules\Adaptive\Crisis\VisualProjectRevision;
+use App\Rules\Adaptive\Crisis\TextualProjectRevision;
+use App\Rules\Adaptive\Crisis\PersistentVisualSafetyNet;
+use App\Rules\Adaptive\Crisis\PersistentTextualSafetyNet;
+use App\Rules\Adaptive\Progression\StandardPromotion;
+use App\Rules\Adaptive\Progression\AcceleratedJump;
+use App\Rules\Adaptive\Progression\CriticalBacktracking;
+use App\Rules\Adaptive\Progression\MasteryMedium;
+use App\Rules\Adaptive\Recovery\SyntaxRecovery;
+use App\Rules\Adaptive\Recovery\LogicRecovery;
+use App\Rules\Adaptive\Recovery\RemedialIndependent;
 
 /**
  * RuleRegistry
@@ -42,29 +42,29 @@ class RuleRegistry
     protected function registerRules(): void
     {
         // Crisis rules (highest priority 5-15)
-        $this->register(new Rule14_PersistentVisualSafetyNet);
-        $this->register(new Rule15_PersistentTextualSafetyNet);
-        $this->register(new Rule01_VisualCrisisIntervention);
-        $this->register(new Rule02_TextualRemediation);
-        $this->register(new Rule12_VisualProjectRevision);
-        $this->register(new Rule13_TextualProjectRevision);
+        $this->register(new PersistentVisualSafetyNet);
+        $this->register(new PersistentTextualSafetyNet);
+        $this->register(new VisualCrisisIntervention);
+        $this->register(new TextualRemediation);
+        $this->register(new VisualProjectRevision);
+        $this->register(new TextualProjectRevision);
 
         // Recovery rules (priority 24-48)
-        $this->register(new Rule03_SyntaxRecovery);
-        $this->register(new Rule04_LogicRecovery);
-        $this->register(new Rule17_RemedialIndependent);
+        $this->register(new SyntaxRecovery);
+        $this->register(new LogicRecovery);
+        $this->register(new RemedialIndependent);
 
         // Achievement rules (priority 20-30)
-        $this->register(new Rule09_GoldCertificate);
-        $this->register(new Rule10_SilverCertificate);
-        $this->register(new Rule11_BronzeCertificate);
-        $this->register(new Rule08_ModuleGraduation);
+        $this->register(new GoldCertificate);
+        $this->register(new SilverCertificate);
+        $this->register(new BronzeCertificate);
+        $this->register(new ModuleGraduation);
 
         // Progression rules (priority 27-50)
-        $this->register(new Rule07_CriticalBacktracking);
-        $this->register(new Rule16_MasteryMedium);
-        $this->register(new Rule06_AcceleratedJump);
-        $this->register(new Rule05_StandardPromotion);
+        $this->register(new CriticalBacktracking);
+        $this->register(new MasteryMedium);
+        $this->register(new AcceleratedJump);
+        $this->register(new StandardPromotion);
 
         // Sort by priority (lower number = higher priority)
         usort($this->rules, fn ($a, $b) => $a->getPriority() <=> $b->getPriority());

@@ -6,35 +6,35 @@ use App\Rules\Adaptive\BaseAdaptiveRule;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
 /**
- * Rule 12: Visual Project Revision
- * IF (G01 AND G07 AND G18) THEN H12
+ * Rule 13: Textual Project Revision
+ * IF (G01 AND G08 AND G18) THEN H13
  *
- * Triggers when visual learner has CRITICAL score on final project.
+ * Triggers when textual learner has CRITICAL score on final project.
  * Remedial scores go to Bronze Certificate instead.
  */
-class Rule12_VisualProjectRevision extends BaseAdaptiveRule
+class TextualProjectRevision extends BaseAdaptiveRule
 {
-    protected string $ruleId = 'RULE_12';
+    protected string $ruleId = 'RULE_13';
 
-    protected string $ruleName = 'Visual Project Revision';
+    protected string $ruleName = 'Textual Project Revision';
 
-    protected string $actionCode = AdaptiveConstants::ACTION_VISUAL_CRISIS_INTERVENTION;
+    protected string $actionCode = AdaptiveConstants::ACTION_TEXTUAL_REMEDIATION;
 
     protected int $priority = 15; // High priority
 
     public function evaluate(array $facts): bool
     {
         return $this->hasAnyFact($facts, [AdaptiveConstants::FACT_SCORE_CRITICAL, AdaptiveConstants::FACT_SCORE_REMEDIAL])
-            && $this->hasFact($facts, AdaptiveConstants::FACT_STYLE_VISUAL)
+            && $this->hasFact($facts, AdaptiveConstants::FACT_STYLE_TEXTUAL)
             && $this->hasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT);
     }
 
     public function apply(array $state, array $context): array
     {
         $state['recommendation']    = 'Revisi Proyek - Ulas Materi';
-        $state['next_action']       = 'STUDY_VISUAL';
+        $state['next_action']       = 'STUDY_TEXTUAL';
         $state['message']           = 'Proyek Anda perlu perbaikan. Mari ulas kembali konsep fundamental.';
-        $state['intervention_type'] = 'visual_project_revision';
+        $state['intervention_type'] = 'textual_project_revision';
 
         return $state;
     }

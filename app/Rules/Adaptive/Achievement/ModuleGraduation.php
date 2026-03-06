@@ -12,7 +12,7 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
  * Triggers when student answers a hard question with mastery score,
  * fast response (G05), no hints, in any of the 5 OOP modules.
  */
-class Rule08_ModuleGraduation extends BaseAdaptiveRule
+class ModuleGraduation extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_08';
 

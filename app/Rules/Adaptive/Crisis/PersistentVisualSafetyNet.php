@@ -6,16 +6,16 @@ use App\Rules\Adaptive\BaseAdaptiveRule;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
 /**
- * Rule 15: Persistent Textual Safety Net
- * IF (G22 AND G08) THEN H15
+ * Rule 14: Persistent Visual Safety Net
+ * IF (G22 AND G07) THEN H14
  */
-class Rule15_PersistentTextualSafetyNet extends BaseAdaptiveRule
+class PersistentVisualSafetyNet extends BaseAdaptiveRule
 {
-    protected string $ruleId = 'RULE_15';
+    protected string $ruleId = 'RULE_14';
 
-    protected string $ruleName = 'Persistent Textual Safety Net';
+    protected string $ruleName = 'Persistent Visual Safety Net';
 
-    protected string $actionCode = AdaptiveConstants::ACTION_TEXTUAL_REMEDIATION;
+    protected string $actionCode = AdaptiveConstants::ACTION_VISUAL_CRISIS_INTERVENTION;
 
     protected int $priority = 5; // Highest priority
 
@@ -23,15 +23,15 @@ class Rule15_PersistentTextualSafetyNet extends BaseAdaptiveRule
     {
         return $this->hasAnyFact($facts, [AdaptiveConstants::FACT_SCORE_CRITICAL, AdaptiveConstants::FACT_SCORE_REMEDIAL])
             && $this->hasFact($facts, AdaptiveConstants::FACT_PERSISTENT_FAIL)
-            && $this->hasFact($facts, AdaptiveConstants::FACT_STYLE_TEXTUAL);
+            && $this->hasFact($facts, AdaptiveConstants::FACT_STYLE_VISUAL);
     }
 
     public function apply(array $state, array $context): array
     {
         $state['recommendation']        = 'Bantuan Komprehensif';
-        $state['next_action']           = 'STUDY_TEXTUAL';
+        $state['next_action']           = 'STUDY_VISUAL';
         $state['message']               = 'Anda mengalami kesulitan signifikan. Mari kita ulas materi secara menyeluruh.';
-        $state['intervention_type']     = 'persistent_textual_safety';
+        $state['intervention_type']     = 'persistent_visual_safety';
         $state['force_material_review'] = true;
 
         return $state;

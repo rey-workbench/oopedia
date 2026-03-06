@@ -12,7 +12,7 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
  * Triggers when student has mastery score, answers fast (G05),
  * no hints, on easy level, and next material is still locked.
  */
-class Rule06_AcceleratedJump extends BaseAdaptiveRule
+class AcceleratedJump extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_06';
 

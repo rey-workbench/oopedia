@@ -12,7 +12,7 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
  * Requires remedial score on final project AND satisfactory progress.
  * Satisfactory progress prevents getting a certificate too early.
  */
-class Rule11_BronzeCertificate extends BaseAdaptiveRule
+class BronzeCertificate extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_11';
 

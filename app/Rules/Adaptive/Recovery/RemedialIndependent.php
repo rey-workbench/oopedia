@@ -13,7 +13,7 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
  * Without hint data we cannot pinpoint syntax vs logic error, so a
  * mixed-content review is recommended to cover both angles.
  */
-class Rule17_RemedialIndependent extends BaseAdaptiveRule
+class RemedialIndependent extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_17';
 

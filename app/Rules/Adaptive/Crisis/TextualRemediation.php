@@ -6,28 +6,28 @@ use App\Rules\Adaptive\BaseAdaptiveRule;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
 /**
- * Rule 1: Visual Crisis Intervention
- * IF (G01 AND G07 AND NOT G22) THEN H01
+ * Rule 2: Textual Remediation
+ * IF (G01 AND G08 AND NOT G22) THEN H02
  *
  * Triggers when student has critical score,
- * is a visual learner, and hasn't failed persistently yet.
+ * is a textual learner, and hasn't failed persistently yet.
  * Error type is irrelevant — any critical score warrants intervention.
  */
-class Rule01_VisualCrisisIntervention extends BaseAdaptiveRule
+class TextualRemediation extends BaseAdaptiveRule
 {
-    protected string $ruleId = 'RULE_01';
+    protected string $ruleId = 'RULE_02';
 
-    protected string $ruleName = 'Visual Crisis Intervention';
+    protected string $ruleName = 'Textual Remediation';
 
-    protected string $actionCode = AdaptiveConstants::ACTION_VISUAL_CRISIS_INTERVENTION;
+    protected string $actionCode = AdaptiveConstants::ACTION_TEXTUAL_REMEDIATION;
 
-    protected int $priority = 10; // Very high priority
+    protected int $priority = 10; // High priority (crisis)
 
     public function evaluate(array $facts): bool
     {
         return $this->hasAllFacts($facts, [
             AdaptiveConstants::FACT_SCORE_CRITICAL,
-            AdaptiveConstants::FACT_STYLE_VISUAL,
+            AdaptiveConstants::FACT_STYLE_TEXTUAL,
             AdaptiveConstants::FACT_DIFF_BEGINNER,
         ]) && $this->notHasFact($facts, AdaptiveConstants::FACT_PERSISTENT_FAIL);
     }
@@ -35,9 +35,9 @@ class Rule01_VisualCrisisIntervention extends BaseAdaptiveRule
     public function apply(array $state, array $context): array
     {
         $state['recommendation']    = 'Ulas Materi';
-        $state['next_action']       = 'STUDY_VISUAL';
+        $state['next_action']       = 'STUDY_TEXTUAL';
         $state['message']           = 'Performa Anda menurun. Mari ulas kembali materi untuk memperkuat pemahaman.';
-        $state['intervention_type'] = 'visual_crisis';
+        $state['intervention_type'] = 'textual_crisis';
 
         return $state;
     }
