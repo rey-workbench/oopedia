@@ -31,7 +31,7 @@ class StandardPromotion extends BaseAdaptiveRule
             AdaptiveConstants::FACT_DIFF_BEGINNER,
             AdaptiveConstants::FACT_DIFF_MEDIUM,
             AdaptiveConstants::FACT_DIFF_HARD,
-        ]);
+        ]) && $this->notHasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT); // Final Project uses certificate rules
     }
 
     public function apply(array $state, array $context): array

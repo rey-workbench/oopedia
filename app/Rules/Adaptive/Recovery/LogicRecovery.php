@@ -29,15 +29,15 @@ class LogicRecovery extends BaseAdaptiveRule
             AdaptiveConstants::FACT_ERROR_LOGIC,
             AdaptiveConstants::FACT_DIFF_MEDIUM,
             AdaptiveConstants::FACT_HINT_USED,
-        ]);
+        ]) && $this->notHasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT);
     }
 
     public function apply(array $state, array $context): array
     {
         $state['recommendation'] = 'Pemahaman Konsep';
-        $state['next_action']    = 'STUDY_THEORY';
-        $state['message']        = 'Sintaks Anda sudah baik, tapi pemahaman konsep perlu diperkuat. Mari ulas kembali teori fundamental.';
-        $state['recovery_type']  = 'logic';
+        $state['next_action'] = 'STUDY_THEORY';
+        $state['message'] = 'Sintaks Anda sudah baik, tapi pemahaman konsep perlu diperkuat. Mari ulas kembali teori fundamental.';
+        $state['recovery_type'] = 'logic';
 
         return $state;
     }

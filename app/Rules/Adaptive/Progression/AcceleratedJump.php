@@ -30,7 +30,7 @@ class AcceleratedJump extends BaseAdaptiveRule
             AdaptiveConstants::FACT_HINT_NONE,
             AdaptiveConstants::FACT_DIFF_BEGINNER,
             AdaptiveConstants::FACT_NEXT_LOCKED,
-        ]);
+        ]) && $this->notHasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT);
     }
 
     public function apply(array $state, array $context): array

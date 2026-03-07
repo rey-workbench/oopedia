@@ -43,7 +43,7 @@ class FinalProjectSeeder extends Seeder
             'sub_material_id' => $subMaterial->id,
             'question_type' => 'radio_button',
             'type' => 'teori',
-            'difficulty' => 'hard', // Identification via ModuleID (G18)
+            'difficulty' => 'final', // Identification via ModuleID (G18)
             'hint' => 'Satu antarmuka, banyak wujud.',
             'created_by' => 2,
         ]
@@ -67,7 +67,7 @@ class FinalProjectSeeder extends Seeder
             'sub_material_id' => $subMaterial->id,
             'question_type' => 'radio_button',
             'type' => 'sintaks',
-            'difficulty' => 'hard',
+            'difficulty' => 'final',
             'hint' => 'Urutannya adalah extends lalu implements.',
             'created_by' => 2,
         ]

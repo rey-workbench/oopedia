@@ -30,7 +30,7 @@ class MasteryMedium extends BaseAdaptiveRule
             AdaptiveConstants::FACT_TIME_FAST,
             AdaptiveConstants::FACT_HINT_NONE,
             AdaptiveConstants::FACT_DIFF_MEDIUM,
-        ]);
+        ]) && $this->notHasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT);
     }
 
     public function apply(array $state, array $context): array

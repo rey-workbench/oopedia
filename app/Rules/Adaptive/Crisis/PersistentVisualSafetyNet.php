@@ -23,15 +23,16 @@ class PersistentVisualSafetyNet extends BaseAdaptiveRule
     {
         return $this->hasAnyFact($facts, [AdaptiveConstants::FACT_SCORE_CRITICAL, AdaptiveConstants::FACT_SCORE_REMEDIAL])
             && $this->hasFact($facts, AdaptiveConstants::FACT_PERSISTENT_FAIL)
-            && $this->hasFact($facts, AdaptiveConstants::FACT_STYLE_VISUAL);
+            && $this->hasFact($facts, AdaptiveConstants::FACT_STYLE_VISUAL)
+            && $this->notHasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT);
     }
 
     public function apply(array $state, array $context): array
     {
-        $state['recommendation']        = 'Bantuan Komprehensif';
-        $state['next_action']           = 'STUDY_VISUAL';
-        $state['message']               = 'Anda mengalami kesulitan signifikan. Mari kita ulas materi secara menyeluruh.';
-        $state['intervention_type']     = 'persistent_visual_safety';
+        $state['recommendation'] = 'Bantuan Komprehensif';
+        $state['next_action'] = 'STUDY_VISUAL';
+        $state['message'] = 'Anda mengalami kesulitan signifikan. Mari kita ulas materi secara menyeluruh.';
+        $state['intervention_type'] = 'persistent_visual_safety';
         $state['force_material_review'] = true;
 
         return $state;

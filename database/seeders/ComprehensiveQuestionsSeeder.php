@@ -41,7 +41,8 @@ class ComprehensiveQuestionsSeeder extends Seeder
                 // Create 15 questions per submaterial
                 for ($i = 1; $i <= 15; $i++) {
                     // Cycle through difficulty levels
-                    $difficulty = $i <= 5 ? 'beginner' : ($i <= 10 ? 'medium' : 'hard');
+                    $isFinal = $subMaterial->material && $subMaterial->material->is_final_project;
+                    $difficulty = $isFinal ? 'final' : ($i <= 5 ? 'beginner' : ($i <= 10 ? 'medium' : 'hard'));
 
                     // Cycle through question types
                     $typePool = ['radio_button', 'fill_in_the_blank', 'drag_and_drop'];

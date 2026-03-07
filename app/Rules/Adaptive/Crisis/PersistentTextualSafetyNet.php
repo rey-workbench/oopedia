@@ -23,7 +23,8 @@ class PersistentTextualSafetyNet extends BaseAdaptiveRule
     {
         return $this->hasAnyFact($facts, [AdaptiveConstants::FACT_SCORE_CRITICAL, AdaptiveConstants::FACT_SCORE_REMEDIAL])
             && $this->hasFact($facts, AdaptiveConstants::FACT_PERSISTENT_FAIL)
-            && $this->hasFact($facts, AdaptiveConstants::FACT_STYLE_TEXTUAL);
+            && $this->hasFact($facts, AdaptiveConstants::FACT_STYLE_TEXTUAL)
+            && $this->notHasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT);
     }
 
     public function apply(array $state, array $context): array

@@ -91,8 +91,8 @@
         }
     }
 
-    let variant = $derived(state.showFeedback ? getModalVariant() : null);
-    let certDetails = $derived(state.showFeedback ? getCertificateDetails() : null);
+    let variant = $derived(getModalVariant());
+    let certDetails = $derived(getCertificateDetails());
 </script>
 
 <Modal show={state.showFeedback} maxWidth="2xl" closeable={false}>
@@ -293,7 +293,7 @@
                     {nextAction} <ArrowRight size={18} class="ml-2" />
                 </Button>
             </div>
-        {:else}
+        {:else if (variant === 'success' || variant === 'error') && state.feedbackData}
             <!-- Success/Error Variant matching the reference screenshot -->
             <div class="p-10 pt-16 text-center">
                 <div class="mb-8 flex justify-center">

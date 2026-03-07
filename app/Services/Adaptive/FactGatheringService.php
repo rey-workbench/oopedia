@@ -67,7 +67,7 @@ class FactGatheringService implements FactGatheringServiceInterface
         $facts[] = $usedHint ? AdaptiveConstants::FACT_HINT_USED : AdaptiveConstants::FACT_HINT_NONE;
 
         // G13-G25: Module Facts
-        if ($moduleId) {
+        if ($moduleId && $difficulty !== 'final') {
             $facts[] = $this->getModuleFact($moduleId);
         }
 

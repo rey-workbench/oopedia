@@ -32,7 +32,7 @@ class ModuleGraduation extends BaseAdaptiveRule
             AdaptiveConstants::FACT_DIFF_HARD,
             AdaptiveConstants::FACT_SATISFACTORY_PROGRESS,
             AdaptiveConstants::FACT_IN_MODULE,
-        ]);
+        ]) && $this->notHasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT);
     }
 
     public function apply(array $state, array $context): array

@@ -13,6 +13,8 @@ use App\Rules\Adaptive\Crisis\VisualProjectRevision;
 use App\Rules\Adaptive\Crisis\TextualProjectRevision;
 use App\Rules\Adaptive\Crisis\PersistentVisualSafetyNet;
 use App\Rules\Adaptive\Crisis\PersistentTextualSafetyNet;
+use App\Rules\Adaptive\Crisis\FinalProjectVisualPersistentFail;
+use App\Rules\Adaptive\Crisis\FinalProjectTextualPersistentFail;
 use App\Rules\Adaptive\Progression\StandardPromotion;
 use App\Rules\Adaptive\Progression\AcceleratedJump;
 use App\Rules\Adaptive\Progression\CriticalBacktracking;
@@ -48,6 +50,8 @@ class RuleRegistry
         $this->register(new TextualCrisisIntervention);
         $this->register(new VisualProjectRevision);
         $this->register(new TextualProjectRevision);
+        $this->register(new FinalProjectVisualPersistentFail);
+        $this->register(new FinalProjectTextualPersistentFail);
 
         // Recovery rules (priority 24-48)
         $this->register(new SyntaxRecovery);

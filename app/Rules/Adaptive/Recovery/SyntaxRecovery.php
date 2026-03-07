@@ -29,15 +29,15 @@ class SyntaxRecovery extends BaseAdaptiveRule
             AdaptiveConstants::FACT_ERROR_SYNTAX,
             AdaptiveConstants::FACT_DIFF_MEDIUM,
             AdaptiveConstants::FACT_HINT_USED,
-        ]);
+        ]) && $this->notHasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT);
     }
 
     public function apply(array $state, array $context): array
     {
         $state['recommendation'] = 'Latihan Sintaksis';
-        $state['next_action']    = 'STUDY_SYNTAX';
-        $state['message']        = 'Sepertinya Anda butuh penguatan sintaks. Mari pelajari contoh kode secara mendalam.';
-        $state['recovery_type']  = 'syntax';
+        $state['next_action'] = 'STUDY_SYNTAX';
+        $state['message'] = 'Sepertinya Anda butuh penguatan sintaks. Mari pelajari contoh kode secara mendalam.';
+        $state['recovery_type'] = 'syntax';
 
         return $state;
     }

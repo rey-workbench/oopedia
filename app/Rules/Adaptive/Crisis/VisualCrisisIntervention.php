@@ -29,14 +29,15 @@ class VisualCrisisIntervention extends BaseAdaptiveRule
             AdaptiveConstants::FACT_SCORE_CRITICAL,
             AdaptiveConstants::FACT_STYLE_VISUAL,
             AdaptiveConstants::FACT_DIFF_BEGINNER,
-        ]) && $this->notHasFact($facts, AdaptiveConstants::FACT_PERSISTENT_FAIL);
+        ]) && $this->notHasFact($facts, AdaptiveConstants::FACT_PERSISTENT_FAIL)
+            && $this->notHasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT);
     }
 
     public function apply(array $state, array $context): array
     {
-        $state['recommendation']    = 'Ulas Materi';
-        $state['next_action']       = 'STUDY_VISUAL';
-        $state['message']           = 'Performa Anda menurun. Mari ulas kembali materi untuk memperkuat pemahaman.';
+        $state['recommendation'] = 'Ulas Materi';
+        $state['next_action'] = 'STUDY_VISUAL';
+        $state['message'] = 'Performa Anda menurun. Mari ulas kembali materi untuk memperkuat pemahaman.';
         $state['intervention_type'] = 'visual_crisis';
 
         return $state;

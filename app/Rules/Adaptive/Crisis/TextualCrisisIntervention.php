@@ -29,7 +29,8 @@ class TextualCrisisIntervention extends BaseAdaptiveRule
             AdaptiveConstants::FACT_SCORE_CRITICAL,
             AdaptiveConstants::FACT_STYLE_TEXTUAL,
             AdaptiveConstants::FACT_DIFF_BEGINNER,
-        ]) && $this->notHasFact($facts, AdaptiveConstants::FACT_PERSISTENT_FAIL);
+        ]) && $this->notHasFact($facts, AdaptiveConstants::FACT_PERSISTENT_FAIL)
+            && $this->notHasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT);
     }
 
     public function apply(array $state, array $context): array

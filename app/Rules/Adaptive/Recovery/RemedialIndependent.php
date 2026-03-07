@@ -28,15 +28,15 @@ class RemedialIndependent extends BaseAdaptiveRule
         return $this->hasAllFacts($facts, [
             AdaptiveConstants::FACT_SCORE_REMEDIAL,
             AdaptiveConstants::FACT_HINT_NONE,
-        ]);
+        ]) && $this->notHasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT);
     }
 
     public function apply(array $state, array $context): array
     {
         $state['recommendation'] = 'Perkuat Pemahaman';
-        $state['next_action']    = 'STUDY_MIXED';
-        $state['message']        = 'Nilai Anda perlu sedikit perbaikan. Mari perkuat pemahaman melalui materi komprehensif sebelum melanjutkan.';
-        $state['recovery_type']  = 'remedial_independent';
+        $state['next_action'] = 'STUDY_MIXED';
+        $state['message'] = 'Nilai Anda perlu sedikit perbaikan. Mari perkuat pemahaman melalui materi komprehensif sebelum melanjutkan.';
+        $state['recovery_type'] = 'remedial_independent';
 
         return $state;
     }
