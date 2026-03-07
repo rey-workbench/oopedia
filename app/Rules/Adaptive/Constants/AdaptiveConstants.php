@@ -40,10 +40,8 @@ class AdaptiveConstants
 
     public const FACT_SCORE_MASTERY = 'G04';
 
-    // Time Spent (G05 - G06)
+    // Time Spent (G05)
     public const FACT_TIME_FAST = 'G05';
-
-    public const FACT_TIME_NORMAL = 'G06';
 
     // Learning Styles (G07 - G08, G27)
     public const FACT_STYLE_VISUAL = 'G07';
@@ -57,9 +55,7 @@ class AdaptiveConstants
 
     public const FACT_ERROR_LOGIC = 'G10';
 
-    // Hint Usage (G11 - G12)
-    public const FACT_HINT_NONE = 'G11';
-
+    // Hint Usage (G12)
     public const FACT_HINT_USED = 'G12';
 
     // Modules (G13)
@@ -74,8 +70,6 @@ class AdaptiveConstants
 
     // Special (G18 - G22, G26)
     public const FACT_IS_FINAL_PROJECT = 'G18';
-
-    public const FACT_NEXT_LOCKED = 'G19';
 
     public const FACT_NEXT_UNLOCKED = 'G20';
 
@@ -117,6 +111,8 @@ class AdaptiveConstants
 
     public const ACTION_PERSISTENT_TEXTUAL_NET = 'H15';
 
+    public const ACTION_ACCELERATED_MATERIAL_PROMOTION = 'H16';
+
     /**
      * Get detailed descriptions for Fact (G) codes.
      */
@@ -128,20 +124,17 @@ class AdaptiveConstants
             self::FACT_SCORE_STANDARD => 'Skor Standar (70-89)',
             self::FACT_SCORE_MASTERY => 'Skor Mahir (90-100)',
             self::FACT_TIME_FAST => 'Waktu Pengerjaan Cepat',
-            self::FACT_TIME_NORMAL => 'Waktu Pengerjaan Normal',
             self::FACT_STYLE_VISUAL => 'Gaya Belajar Visual',
             self::FACT_STYLE_TEXTUAL => 'Gaya Belajar Tekstual',
             self::FACT_STYLE_MIXED => 'Gaya Belajar Campuran',
             self::FACT_ERROR_SYNTAX => 'Kesalahan Sintaksis',
             self::FACT_ERROR_LOGIC => 'Kesalahan Logika',
-            self::FACT_HINT_NONE => 'Tanpa Bantuan Hint',
             self::FACT_HINT_USED => 'Menggunakan Hint',
             self::FACT_IN_MODULE => 'Dalam Modul Pembelajaran',
             self::FACT_DIFF_BEGINNER => 'Tingkat Kesulitan: Easy',
             self::FACT_DIFF_MEDIUM => 'Tingkat Kesulitan: Medium',
             self::FACT_DIFF_HARD => 'Tingkat Kesulitan: Advanced',
             self::FACT_IS_FINAL_PROJECT => 'Soal Proyek Akhir',
-            self::FACT_NEXT_LOCKED => 'Materi Berikutnya Terkunci',
             self::FACT_NEXT_UNLOCKED => 'Materi Berikutnya Terbuka',
             self::FACT_PREV_UNLOCKED => 'Materi Sebelumnya Terbuka',
             self::FACT_PERSISTENT_FAIL => 'Gagal Berulang (Persistent)',
@@ -170,6 +163,7 @@ class AdaptiveConstants
             self::ACTION_TEXTUAL_PROJECT_REVISION => 'Revisi Proyek Tekstual',
             self::ACTION_PERSISTENT_VISUAL_NET => 'Safety Net Visual (Gagal Berulang)',
             self::ACTION_PERSISTENT_TEXTUAL_NET => 'Safety Net Tekstual (Gagal Berulang)',
+            self::ACTION_ACCELERATED_MATERIAL_PROMOTION => 'Loncatan Akseleratif Modul',
         ];
     }
 }

@@ -17,6 +17,7 @@ use App\Rules\Adaptive\Crisis\FinalProjectVisualPersistentFail;
 use App\Rules\Adaptive\Crisis\FinalProjectTextualPersistentFail;
 use App\Rules\Adaptive\Progression\StandardPromotion;
 use App\Rules\Adaptive\Progression\AcceleratedJump;
+use App\Rules\Adaptive\Progression\AcceleratedMaterialPromotion;
 use App\Rules\Adaptive\Progression\CriticalBacktracking;
 use App\Rules\Adaptive\Progression\MasteryMedium;
 use App\Rules\Adaptive\Recovery\SyntaxRecovery;
@@ -67,6 +68,7 @@ class RuleRegistry
         // Progression rules (priority 27-50)
         $this->register(new CriticalBacktracking);
         $this->register(new MasteryMedium);
+        $this->register(new AcceleratedMaterialPromotion);
         $this->register(new AcceleratedJump);
         $this->register(new StandardPromotion);
 

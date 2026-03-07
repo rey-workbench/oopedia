@@ -25,10 +25,9 @@ class SilverCertificate extends BaseAdaptiveRule
     {
         return $this->hasAnyFact($facts, [AdaptiveConstants::FACT_SCORE_STANDARD, AdaptiveConstants::FACT_SCORE_MASTERY])
             && $this->hasAllFacts($facts, [
-            AdaptiveConstants::FACT_HINT_NONE,
             AdaptiveConstants::FACT_IS_FINAL_PROJECT,
             AdaptiveConstants::FACT_SATISFACTORY_PROGRESS,
-        ]);
+        ]) && $this->notHasFact($facts, AdaptiveConstants::FACT_HINT_USED);
     }
 
     public function apply(array $state, array $context): array

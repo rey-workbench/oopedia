@@ -54,7 +54,7 @@ class FactGatheringService implements FactGatheringServiceInterface
         // G01-G04: Score Facts
         $facts = array_merge($facts, $this->getScoreFacts($score, $isCorrect));
 
-        // G05-G06: Time Facts
+        // G05: Time Facts
         $facts = array_merge($facts, $this->getTimeFacts($timeSpent, $difficulty));
 
         // G07-G08: Learning Style Facts
@@ -63,8 +63,10 @@ class FactGatheringService implements FactGatheringServiceInterface
         // G09-G10: Error Type Facts
         $facts = array_merge($facts, $this->getErrorTypeFacts($studentState, $questionId, $isCorrect));
 
-        // G11-G12: Hint Facts
-        $facts[] = $usedHint ? AdaptiveConstants::FACT_HINT_USED : AdaptiveConstants::FACT_HINT_NONE;
+        // G12: Hint Facts (G11 removed)
+        if ($usedHint) {
+            $facts[] = AdaptiveConstants::FACT_HINT_USED;
+        }
 
         // G13-G25: Module Facts
         if ($moduleId && $difficulty !== 'final') {
@@ -79,7 +81,7 @@ class FactGatheringService implements FactGatheringServiceInterface
             $facts[] = AdaptiveConstants::FACT_IS_FINAL_PROJECT;
         }
 
-        // G19-G21: Unlock Status Facts
+        // G20-G21: Unlock Status Facts (G19 removed)
         $facts = array_merge($facts, $this->getUnlockStatusFacts($studentState, $materialId));
 
         // G22: Persistent Fail
@@ -117,7 +119,7 @@ class FactGatheringService implements FactGatheringServiceInterface
     }
 
     /**
-     * Get time-based facts (G05-G06).
+     * Get time-based facts (G05).
      */
     protected function getTimeFacts(int $timeSpent, string $difficulty = 'beginner'): array
     {
@@ -126,7 +128,7 @@ class FactGatheringService implements FactGatheringServiceInterface
 
         return $percentage < AdaptiveConstants::TIME_FAST_THRESHOLD
             ? [AdaptiveConstants::FACT_TIME_FAST]
-            : [AdaptiveConstants::FACT_TIME_NORMAL];
+            : [];
     }
 
     /**
@@ -191,7 +193,7 @@ class FactGatheringService implements FactGatheringServiceInterface
     }
 
     /**
-     * Get unlock status facts (G19-G21).
+     * Get unlock status facts (G20-G21).
      */
     protected function getUnlockStatusFacts(StudentState $state, int $materialId): array
     {
@@ -200,7 +202,7 @@ class FactGatheringService implements FactGatheringServiceInterface
         // Use model navigation logic instead of ID math
         $currentMaterial = Material::find($materialId);
         if (! $currentMaterial) {
-            return [AdaptiveConstants::FACT_NEXT_LOCKED];
+            return [];
         }
 
         $nextMaterial = $currentMaterial->getNextMaterial();
@@ -208,14 +210,12 @@ class FactGatheringService implements FactGatheringServiceInterface
 
         $unlockedModules = $state->learning_profile['unlocked_modules'] ?? [];
 
-        // Check if next material's module is locked
-        if ($nextMaterial && ! in_array($nextMaterial->module_id, $unlockedModules)) {
-            $facts[] = AdaptiveConstants::FACT_NEXT_LOCKED;
-        } else {
+        // Check if next material's module is unlocked (G20)
+        if ($nextMaterial && in_array($nextMaterial->module_id, $unlockedModules)) {
             $facts[] = AdaptiveConstants::FACT_NEXT_UNLOCKED;
         }
 
-        // Check if previous material's module is unlocked
+        // Check if previous material's module is unlocked (G21)
         if ($prevMaterial && in_array($prevMaterial->module_id, $unlockedModules)) {
             $facts[] = AdaptiveConstants::FACT_PREV_UNLOCKED;
         }
