@@ -44,6 +44,8 @@
         "dompurify": "^3.3.2",
         "focus-trap": "^8.0.0",
         "highlight.js": "^11.11.1",
+        "html2canvas": "^1.4.1",
+        "jspdf": "^4.2.0",
         "lodash": "^4.17.23",
         "lucide-svelte": "^0.577.0",
         "quill": "^2.0.3"

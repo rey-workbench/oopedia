@@ -44,7 +44,23 @@ class ProfileController extends Controller
             'fast_track_active' => ($studentState->adaptive_state['fast_track_active'] ?? false),
         ];
 
-        return Inertia::render('Mahasiswa/Profile/Index', compact('materials', 'user', 'personalization'));
+        /** @var array<string|int, string> $rawCertifications */
+        $rawCertifications = $studentState?->gamification_data['certifications'] ?? [];
+        $certifications = collect($rawCertifications)
+            ->map(function (string $type, int|string $materialId): array {
+                $material = $this->materialRepo->find((int) $materialId);
+
+                return [
+                    'material_id'    => (int) $materialId,
+                    'material_title' => $material?->title ?? 'Object-Oriented Programming',
+                    'type'           => $type,
+                    'issued_at'      => null,
+                ];
+            })
+            ->values()
+            ->toArray();
+
+        return Inertia::render('Mahasiswa/Profile/Index', compact('materials', 'user', 'personalization', 'certifications'));
     }
 
     public function update(UpdateProfileRequest $request): RedirectResponse

@@ -68,7 +68,13 @@ class MaterialQuestionController extends Controller
         $userId = $this->getUserId();
         $guestProgress = $this->getGuestProgress($request);
 
-        $materials = $this->questionListingService->getMaterialsListWithStudentCount($userId, $isGuest, $guestProgress);
+        $unlockedModules = [];
+        if (!$isGuest) {
+            $studentState = $this->progressRepo->getOrCreateStudentState($userId);
+            $unlockedModules = $studentState->learning_profile['unlocked_modules'] ?? [];
+        }
+
+        $materials = $this->questionListingService->getMaterialsListWithStudentCount($userId, $isGuest, $guestProgress, $unlockedModules);
 
         return Inertia::render('Mahasiswa/Materials/Questions/Index', compact('materials', 'isGuest'));
     }
@@ -85,6 +91,26 @@ class MaterialQuestionController extends Controller
         }
 
         $isGuest = $this->isGuestUser();
+        $userId = $this->getUserId();
+
+        // ── MODULE GATING GUARD ────────────────────────────────────────────
+        // Determine first module (always accessible)
+        $allMaterials = \App\Models\Material::whereNotNull('module_id')->get();
+        $firstModuleId = $allMaterials->min('module_id');
+
+        if (!$isGuest && $material->module_id !== null) {
+            $studentState = $this->progressRepo->getOrCreateStudentState($userId);
+            $unlockedModules = $studentState->learning_profile['unlocked_modules'] ?? [];
+
+            $isFirstModule = $material->module_id === $firstModuleId;
+            $isUnlocked = $isFirstModule || in_array($material->module_id, $unlockedModules);
+
+            if (!$isUnlocked) {
+                return redirect()->route('mahasiswa.materials.questions.index')
+                    ->with('error', 'Modul ini belum terbuka. Selesaikan modul sebelumnya terlebih dahulu.');
+            }
+        }
+        // ────────────────────────────────────────────────────────────────────
 
         $difficulty = 'all';
         $guestProgress = $this->getGuestProgress($request);
@@ -106,10 +132,10 @@ class MaterialQuestionController extends Controller
                 // one tracked in adaptive_state, reset all material-scoped
                 // flags so the previous material's context does not bleed in.
                 $lastMaterialId = $adaptiveState['current_material_id'] ?? null;
-                if ($lastMaterialId !== null && (int) $lastMaterialId !== (int) $materialId) {
+                if ($lastMaterialId !== null && (int)$lastMaterialId !== (int)$materialId) {
                     $adaptiveState['target_difficulty'] = null;
                     $adaptiveState['fast_track_active'] = false;
-                    $adaptiveState['last_rule']         = null;
+                    $adaptiveState['last_rule'] = null;
 
                     // Also reset wrong_streak so crisis rules don't fire on the
                     // first question of a new material due to carry-over streak.

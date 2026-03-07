@@ -34,6 +34,8 @@ export type {
     UserAttempt,
     QuestionWithAttempt,
     QuizSessionState,
+    Certification,
+    CertificationType,
 } from '@/types/models';
 
 export type {
@@ -63,6 +65,7 @@ export type {
     QuestionShowProps,
     QuestionReviewProps,
     ProfileProps,
+    CertificatesPageProps,
     LeaderboardProps,
     UeqCreateProps,
     // View models

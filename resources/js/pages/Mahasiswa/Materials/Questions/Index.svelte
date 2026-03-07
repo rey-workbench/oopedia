@@ -47,11 +47,12 @@
 
         <div class="grid grid-cols-1 gap-10">
             {#each state.materials as material (material.id)}
-                <Card padding="p-0" hover={true} class="overflow-hidden">
-                    <Link
-                        href={ROUTES.MAHASISWA.MATERIALS.QUESTIONS.LEVELS(material.id)}
-                        class="flex h-full flex-col md:flex-row"
-                    >
+                {@const isLocked = !state.isGuest && !!material.is_locked}
+
+                <Card padding="p-0" hover={!isLocked} class="overflow-hidden {isLocked ? 'opacity-70 grayscale' : ''}">
+
+                    <!-- ── Graphic + Content (shared markup) ─────────────────── -->
+                    {#snippet cardInner()}
                         <!-- Graphic Section -->
                         <div class="relative shrink-0 md:w-72 lg:w-96">
                             {#if material.media && material.media.length > 0}
@@ -76,9 +77,11 @@
                                 </div>
                             {/if}
                             <div class="absolute top-6 left-6">
-                                <Badge variant="primary" size="sm" class="shadow-xl"
-                                    >MODUL AKTIF</Badge
-                                >
+                                {#if isLocked}
+                                    <Badge variant="warning" size="sm" class="shadow-xl">TERKUNCI</Badge>
+                                {:else}
+                                    <Badge variant="primary" size="sm" class="shadow-xl">MODUL AKTIF</Badge>
+                                {/if}
                             </div>
                         </div>
 
@@ -118,12 +121,19 @@
                                         </div>
                                     </div>
                                     <div
-                                        class="group-hover:bg-primary-600 hidden h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 text-slate-900 shadow-inner transition-all group-hover:text-white sm:flex"
+                                        class="{isLocked
+                                            ? 'bg-slate-100 text-slate-400'
+                                            : 'group-hover:bg-primary-600 bg-slate-50 text-slate-900 group-hover:text-white'} hidden h-14 w-14 items-center justify-center rounded-2xl shadow-inner transition-all sm:flex"
                                     >
-                                        <Play size={20} class="ml-1 fill-current" />
+                                        {#if isLocked}
+                                            <Lock size={20} />
+                                        {:else}
+                                            <Play size={20} class="ml-1 fill-current" />
+                                        {/if}
                                     </div>
                                 </div>
 
+                                <!-- Status banners -->
                                 {#if state.isGuest}
                                     <div
                                         class="mt-8 flex items-center gap-6 rounded-[2rem] border border-amber-100 bg-amber-50 p-6 ring-8 ring-amber-50/50"
@@ -139,8 +149,26 @@
                                                 >Akses Terbatas</span
                                             >
                                             <p class="text-xs font-medium text-amber-700">
-                                                Selesaikan pendaftaran untuk membuka semua level
-                                                soal.
+                                                Selesaikan pendaftaran untuk membuka semua level soal.
+                                            </p>
+                                        </div>
+                                    </div>
+                                {:else if isLocked}
+                                    <div
+                                        class="mt-8 flex items-center gap-6 rounded-[2rem] border border-slate-200 bg-slate-100 p-6"
+                                    >
+                                        <div
+                                            class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-400 text-white shadow-lg"
+                                        >
+                                            <Lock size={20} />
+                                        </div>
+                                        <div>
+                                            <span
+                                                class="mb-1 block text-[10px] font-bold tracking-widest text-slate-600 uppercase"
+                                                >Modul Terkunci</span
+                                            >
+                                            <p class="text-xs font-medium text-slate-500">
+                                                Selesaikan modul sebelumnya untuk membuka modul ini.
                                             </p>
                                         </div>
                                     </div>
@@ -171,15 +199,32 @@
                                 {/if}
                             </div>
 
-                            <div class="mt-10 md:hidden">
-                                <Button
-                                    variant="primary"
-                                    class="shadow-primary-900/20 w-full shadow-lg"
-                                    icon={Play}>Mulai Latihan</Button
-                                >
-                            </div>
+                            {#if !isLocked && !state.isGuest}
+                                <div class="mt-10 md:hidden">
+                                    <Button
+                                        variant="primary"
+                                        class="shadow-primary-900/20 w-full shadow-lg"
+                                        icon={Play}>Mulai Latihan</Button
+                                    >
+                                </div>
+                            {/if}
                         </div>
-                    </Link>
+                    {/snippet}
+
+                    <!-- Render as link if unlocked, plain div if locked -->
+                    {#if isLocked}
+                        <div class="flex h-full flex-col md:flex-row">
+                            {@render cardInner()}
+                        </div>
+                    {:else}
+                        <Link
+                            href={ROUTES.MAHASISWA.MATERIALS.QUESTIONS.LEVELS(material.id)}
+                            class="flex h-full flex-col md:flex-row"
+                        >
+                            {@render cardInner()}
+                        </Link>
+                    {/if}
+
                 </Card>
             {/each}
         </div>

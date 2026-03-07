@@ -14,6 +14,7 @@ import type {
     LeaderboardEntry,
     QuestionWithAttempt,
     QuizSessionState,
+    Certification,
 } from '@/types/models';
 
 // ---------------------------------------------------------------------------
@@ -204,6 +205,12 @@ export interface ProfileProps extends SharedProps {
     user: User;
     personalization: StudentProfile;
     materials: Material[];
+    certifications: Certification[];
+}
+
+/** Certificates page — CertificateController.index() */
+export interface CertificatesPageProps extends SharedProps {
+    certifications: Certification[];
 }
 
 /** Leaderboard page — LeaderboardService.getLeaderboardData() */

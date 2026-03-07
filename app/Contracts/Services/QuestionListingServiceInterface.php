@@ -25,7 +25,7 @@ interface QuestionListingServiceInterface
      * @param array<string, mixed> $guestProgress
      * @return Collection<int, \App\Models\Material>
      */
-    public function getMaterialsListWithStudentCount(int|string|null $userId, bool $isGuest, array $guestProgress = []): Collection;
+    public function getMaterialsListWithStudentCount(int|string|null $userId, bool $isGuest, array $guestProgress = [], array $unlockedModules = []): Collection;
 
     /**
      * Get questions for the review/report view.

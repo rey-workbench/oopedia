@@ -82,6 +82,9 @@ export const ROUTES = {
         },
         LEADERBOARD: '/mahasiswa/leaderboard',
         PROFILE: '/mahasiswa/profile',
+        CERTIFICATES: {
+            INDEX: '/mahasiswa/certificates',
+        },
         UEQ: {
             CREATE: '/mahasiswa/ueq/create',
             THANK_YOU: '/mahasiswa/ueq/thank-you',

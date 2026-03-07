@@ -132,11 +132,22 @@ class AdaptiveQuizFlowService
         if (isset($ruleOutput['target_difficulty'])) {
             $adaptiveState['target_difficulty'] = $ruleOutput['target_difficulty'];
         }
-        $adaptiveState['time_metrics']      = [
+        $adaptiveState['time_metrics'] = [
             'avg_time_per_question' => $this->performanceService->calculateAverageTimeSpent($userId, $material->id),
             'total_time_spent'      => $this->performanceService->calculateTotalTimeSpent($userId, $material->id),
         ];
         $studentState->adaptive_state = $adaptiveState;
+
+        // 7.5 Persist certificate into gamification_data['certifications'] if issued
+        // This is what makes the certificate available on the profile/certificate page.
+        if (!empty($ruleOutput['certification'])) {
+            $gamification = $studentState->gamification_data ?? [];
+            $certifications = $gamification['certifications'] ?? [];
+            $certifications[$material->id] = $ruleOutput['certification']; // 'gold', 'silver', 'bronze'
+            $gamification['certifications'] = $certifications;
+            $studentState->gamification_data = $gamification;
+        }
+
         $studentState->save();
 
         // 8. Resolve next action

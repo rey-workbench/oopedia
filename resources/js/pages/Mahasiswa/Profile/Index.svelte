@@ -27,10 +27,15 @@
     import { untrack } from 'svelte';
     import { ProfileState } from '@/states/Mahasiswa/ProfileState.svelte';
     import PageHeader from '@/components/ui/PageHeader.svelte';
+    import CertificateCard from '@/components/shared/CertificateCard.svelte';
+    import { ROUTES } from '@/utils/route';
 
-    import type { StudentProfile } from '@/types';
+    import type { StudentProfile, Certification } from '@/types';
 
-    const { personalization }: { personalization: StudentProfile | null } = $props();
+    const {
+        personalization,
+        certifications = [],
+    }: { personalization: StudentProfile | null; certifications: Certification[] } = $props();
 
     const state = untrack(() => new ProfileState(personalization));
 
@@ -291,6 +296,31 @@
                 </div>
             </div>
         </div>
+
+        {#if certifications.length > 0}
+            <!-- Certificate Section -->
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-bold tracking-widest text-slate-900 uppercase">
+                        Sertifikat Saya
+                    </h3>
+                    <a
+                        href={ROUTES.MAHASISWA.CERTIFICATES.INDEX}
+                        class="text-[10px] font-black tracking-widest text-primary-600 uppercase hover:underline"
+                    >Lihat &amp; Unduh Semua →</a>
+                </div>
+                <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+                    {#each certifications.slice(0, 2) as cert (cert.material_id)}
+                        <CertificateCard
+                            materialTitle={cert.material_title}
+                            type={cert.type}
+                            issuedAt={cert.issued_at ?? undefined}
+                            id={cert.material_id}
+                        />
+                    {/each}
+                </div>
+            </div>
+        {/if}
 
         <div class="grid grid-cols-1 gap-12 lg:grid-cols-3">
             <!-- Sidebar Info -->

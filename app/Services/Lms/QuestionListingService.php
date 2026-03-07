@@ -80,7 +80,7 @@ class QuestionListingService implements QuestionListingServiceInterface
     }
 
     /** @return Collection<int, Material> */
-    public function getMaterialsListWithStudentCount(int|string|null $userId, bool $isGuest, array $guestProgress = []): Collection
+    public function getMaterialsListWithStudentCount(int|string|null $userId, bool $isGuest, array $guestProgress = [], array $unlockedModules = []): Collection
     {
         $progressStats = $isGuest ? collect([]) : $this->progressRepo->getUserProgressStats($userId);
         $allMaterials = $this->materialRepo->getAllWithQuestions();
@@ -93,7 +93,10 @@ class QuestionListingService implements QuestionListingServiceInterface
 
         $studentCounts = $this->progressRepo->getStudentCountByMaterial();
 
-        $materials = $allMaterials->map(function ($material) use ($progressStats, $isGuest, $studentCounts, $guestProgress) {
+        // Determine the first module_id to always be unlocked
+        $firstModuleId = $allMaterials->whereNotNull('module_id')->min('module_id');
+
+        $materials = $allMaterials->map(function ($material) use ($progressStats, $isGuest, $studentCounts, $guestProgress, $unlockedModules, $firstModuleId) {
             $configuredTotalQuestions = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest)['total'];
 
             if ($isGuest) {
@@ -117,6 +120,12 @@ class QuestionListingService implements QuestionListingServiceInterface
             $material->total_questions = $configuredTotalQuestions;
             $material->completed_questions = $answeredCount;
             $material->student_count = $studentCount;
+
+            // Gating: locked if not guest AND module_id is set AND not in unlocked list AND not the first module
+            $moduleId = $material->module_id;
+            $isFirstModule = ($moduleId !== null && $moduleId === $firstModuleId);
+            $isUnlocked = $isGuest || $isFirstModule || empty($moduleId) || in_array($moduleId, $unlockedModules);
+            $material->is_locked = !$isUnlocked;
 
             return $material;
         });
