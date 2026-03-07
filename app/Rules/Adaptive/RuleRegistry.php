@@ -8,7 +8,7 @@ use App\Rules\Adaptive\Achievement\SilverCertificate;
 use App\Rules\Adaptive\Achievement\BronzeCertificate;
 use App\Rules\Adaptive\Contracts\AdaptiveRuleInterface;
 use App\Rules\Adaptive\Crisis\VisualCrisisIntervention;
-use App\Rules\Adaptive\Crisis\TextualRemediation;
+use App\Rules\Adaptive\Crisis\TextualCrisisIntervention;
 use App\Rules\Adaptive\Crisis\VisualProjectRevision;
 use App\Rules\Adaptive\Crisis\TextualProjectRevision;
 use App\Rules\Adaptive\Crisis\PersistentVisualSafetyNet;
@@ -45,7 +45,7 @@ class RuleRegistry
         $this->register(new PersistentVisualSafetyNet);
         $this->register(new PersistentTextualSafetyNet);
         $this->register(new VisualCrisisIntervention);
-        $this->register(new TextualRemediation);
+        $this->register(new TextualCrisisIntervention);
         $this->register(new VisualProjectRevision);
         $this->register(new TextualProjectRevision);
 

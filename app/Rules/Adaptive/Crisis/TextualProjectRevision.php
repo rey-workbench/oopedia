@@ -18,7 +18,7 @@ class TextualProjectRevision extends BaseAdaptiveRule
 
     protected string $ruleName = 'Textual Project Revision';
 
-    protected string $actionCode = AdaptiveConstants::ACTION_TEXTUAL_REMEDIATION;
+    protected string $actionCode = AdaptiveConstants::ACTION_TEXTUAL_CRISIS_INTERVENTION;
 
     protected int $priority = 15; // High priority
 
@@ -31,9 +31,9 @@ class TextualProjectRevision extends BaseAdaptiveRule
 
     public function apply(array $state, array $context): array
     {
-        $state['recommendation']    = 'Revisi Proyek - Ulas Materi';
-        $state['next_action']       = 'STUDY_TEXTUAL';
-        $state['message']           = 'Proyek Anda perlu perbaikan. Mari ulas kembali konsep fundamental.';
+        $state['recommendation'] = 'Revisi Proyek - Ulas Materi';
+        $state['next_action'] = 'STUDY_TEXTUAL';
+        $state['message'] = 'Proyek Anda perlu perbaikan. Mari ulas kembali konsep fundamental.';
         $state['intervention_type'] = 'textual_project_revision';
 
         return $state;

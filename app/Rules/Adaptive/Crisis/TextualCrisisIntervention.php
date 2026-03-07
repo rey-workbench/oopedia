@@ -6,20 +6,20 @@ use App\Rules\Adaptive\BaseAdaptiveRule;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
 /**
- * Rule 2: Textual Remediation
+ * Rule 2: Textual Crisis Intervention
  * IF (G01 AND G08 AND NOT G22) THEN H02
  *
  * Triggers when student has critical score,
  * is a textual learner, and hasn't failed persistently yet.
  * Error type is irrelevant — any critical score warrants intervention.
  */
-class TextualRemediation extends BaseAdaptiveRule
+class TextualCrisisIntervention extends BaseAdaptiveRule
 {
     protected string $ruleId = 'RULE_02';
 
-    protected string $ruleName = 'Textual Remediation';
+    protected string $ruleName = 'Textual Crisis Intervention';
 
-    protected string $actionCode = AdaptiveConstants::ACTION_TEXTUAL_REMEDIATION;
+    protected string $actionCode = AdaptiveConstants::ACTION_TEXTUAL_CRISIS_INTERVENTION;
 
     protected int $priority = 10; // High priority (crisis)
 
@@ -34,9 +34,9 @@ class TextualRemediation extends BaseAdaptiveRule
 
     public function apply(array $state, array $context): array
     {
-        $state['recommendation']    = 'Ulas Materi';
-        $state['next_action']       = 'STUDY_TEXTUAL';
-        $state['message']           = 'Performa Anda menurun. Mari ulas kembali materi untuk memperkuat pemahaman.';
+        $state['recommendation'] = 'Ulas Materi';
+        $state['next_action'] = 'STUDY_TEXTUAL';
+        $state['message'] = 'Performa Anda menurun. Mari ulas kembali materi untuk memperkuat pemahaman.';
         $state['intervention_type'] = 'textual_crisis';
 
         return $state;

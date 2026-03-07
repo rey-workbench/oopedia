@@ -15,7 +15,7 @@ class PersistentTextualSafetyNet extends BaseAdaptiveRule
 
     protected string $ruleName = 'Persistent Textual Safety Net';
 
-    protected string $actionCode = AdaptiveConstants::ACTION_TEXTUAL_REMEDIATION;
+    protected string $actionCode = AdaptiveConstants::ACTION_TEXTUAL_CRISIS_INTERVENTION;
 
     protected int $priority = 5; // Highest priority
 
@@ -28,10 +28,10 @@ class PersistentTextualSafetyNet extends BaseAdaptiveRule
 
     public function apply(array $state, array $context): array
     {
-        $state['recommendation']        = 'Bantuan Komprehensif';
-        $state['next_action']           = 'STUDY_TEXTUAL';
-        $state['message']               = 'Anda mengalami kesulitan signifikan. Mari kita ulas materi secara menyeluruh.';
-        $state['intervention_type']     = 'persistent_textual_safety';
+        $state['recommendation'] = 'Bantuan Komprehensif';
+        $state['next_action'] = 'STUDY_TEXTUAL';
+        $state['message'] = 'Anda mengalami kesulitan signifikan. Mari kita ulas materi secara menyeluruh.';
+        $state['intervention_type'] = 'persistent_textual_safety';
         $state['force_material_review'] = true;
 
         return $state;

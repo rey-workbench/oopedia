@@ -18,9 +18,9 @@ class AdaptiveConstants
      */
     public const ALLOCATED_TIME = [
         'beginner' => 45,
-        'medium'   => 90,
-        'hard'     => 150,
-        'final'    => 300,
+        'medium' => 90,
+        'hard' => 150,
+        'final' => 300,
     ];
 
     /**
@@ -97,7 +97,7 @@ class AdaptiveConstants
 
     public const ACTION_VISUAL_CRISIS_INTERVENTION = 'H01';
 
-    public const ACTION_TEXTUAL_REMEDIATION = 'H02';
+    public const ACTION_TEXTUAL_CRISIS_INTERVENTION = 'H02';
 
     public const ACTION_SYNTAX_RECOVERY = 'H03';
 
@@ -131,32 +131,32 @@ class AdaptiveConstants
     public static function getFactDescriptions(): array
     {
         return [
-            self::FACT_SCORE_CRITICAL        => 'Skor Kritis (<40)',
-            self::FACT_SCORE_REMEDIAL        => 'Skor Remedial (40-69)',
-            self::FACT_SCORE_STANDARD        => 'Skor Standar (70-89)',
-            self::FACT_SCORE_MASTERY         => 'Skor Mahir (90-100)',
-            self::FACT_TIME_FAST             => 'Waktu Pengerjaan Cepat',
-            self::FACT_TIME_NORMAL           => 'Waktu Pengerjaan Normal',
-            self::FACT_STYLE_VISUAL          => 'Gaya Belajar Visual',
-            self::FACT_STYLE_TEXTUAL         => 'Gaya Belajar Tekstual',
-            self::FACT_STYLE_MIXED           => 'Gaya Belajar Campuran',
-            self::FACT_ERROR_SYNTAX          => 'Kesalahan Sintaksis',
-            self::FACT_ERROR_LOGIC           => 'Kesalahan Logika',
-            self::FACT_HINT_NONE             => 'Tanpa Bantuan Hint',
-            self::FACT_HINT_USED             => 'Menggunakan Hint',
-            self::FACT_MODULE_FOUNDATION     => 'Modul: Dasar PBO',
-            self::FACT_MODULE_ENCAPSULATION  => 'Modul: Enkapsulasi',
-            self::FACT_MODULE_INHERITANCE    => 'Modul: Pewarisan',
-            self::FACT_MODULE_POLYMORPHISM   => 'Modul: Polimorfisme',
-            self::FACT_MODULE_ABSTRACTION    => 'Modul: Abstraksi',
-            self::FACT_DIFF_BEGINNER         => 'Tingkat Kesulitan: Easy',
-            self::FACT_DIFF_MEDIUM           => 'Tingkat Kesulitan: Medium',
-            self::FACT_DIFF_HARD             => 'Tingkat Kesulitan: Advanced',
-            self::FACT_IS_FINAL_PROJECT      => 'Soal Proyek Akhir',
-            self::FACT_NEXT_LOCKED           => 'Materi Berikutnya Terkunci',
-            self::FACT_NEXT_UNLOCKED         => 'Materi Berikutnya Terbuka',
-            self::FACT_PREV_UNLOCKED         => 'Materi Sebelumnya Terbuka',
-            self::FACT_PERSISTENT_FAIL       => 'Gagal Berulang (Persistent)',
+            self::FACT_SCORE_CRITICAL => 'Skor Kritis (<40)',
+            self::FACT_SCORE_REMEDIAL => 'Skor Remedial (40-69)',
+            self::FACT_SCORE_STANDARD => 'Skor Standar (70-89)',
+            self::FACT_SCORE_MASTERY => 'Skor Mahir (90-100)',
+            self::FACT_TIME_FAST => 'Waktu Pengerjaan Cepat',
+            self::FACT_TIME_NORMAL => 'Waktu Pengerjaan Normal',
+            self::FACT_STYLE_VISUAL => 'Gaya Belajar Visual',
+            self::FACT_STYLE_TEXTUAL => 'Gaya Belajar Tekstual',
+            self::FACT_STYLE_MIXED => 'Gaya Belajar Campuran',
+            self::FACT_ERROR_SYNTAX => 'Kesalahan Sintaksis',
+            self::FACT_ERROR_LOGIC => 'Kesalahan Logika',
+            self::FACT_HINT_NONE => 'Tanpa Bantuan Hint',
+            self::FACT_HINT_USED => 'Menggunakan Hint',
+            self::FACT_MODULE_FOUNDATION => 'Modul: Dasar PBO',
+            self::FACT_MODULE_ENCAPSULATION => 'Modul: Enkapsulasi',
+            self::FACT_MODULE_INHERITANCE => 'Modul: Pewarisan',
+            self::FACT_MODULE_POLYMORPHISM => 'Modul: Polimorfisme',
+            self::FACT_MODULE_ABSTRACTION => 'Modul: Abstraksi',
+            self::FACT_DIFF_BEGINNER => 'Tingkat Kesulitan: Easy',
+            self::FACT_DIFF_MEDIUM => 'Tingkat Kesulitan: Medium',
+            self::FACT_DIFF_HARD => 'Tingkat Kesulitan: Advanced',
+            self::FACT_IS_FINAL_PROJECT => 'Soal Proyek Akhir',
+            self::FACT_NEXT_LOCKED => 'Materi Berikutnya Terkunci',
+            self::FACT_NEXT_UNLOCKED => 'Materi Berikutnya Terbuka',
+            self::FACT_PREV_UNLOCKED => 'Materi Sebelumnya Terbuka',
+            self::FACT_PERSISTENT_FAIL => 'Gagal Berulang (Persistent)',
             self::FACT_SATISFACTORY_PROGRESS => 'Progres Materi Memadai (>=60%)',
         ];
     }
@@ -168,20 +168,20 @@ class AdaptiveConstants
     {
         return [
             self::ACTION_VISUAL_CRISIS_INTERVENTION => 'Intervensi Krisis Visual',
-            self::ACTION_TEXTUAL_REMEDIATION        => 'Remediasi Tekstual',
-            self::ACTION_SYNTAX_RECOVERY            => 'Pemulihan Sintaksis',
-            self::ACTION_LOGIC_RECOVERY             => 'Pemulihan Logika',
-            self::ACTION_STANDARD_PROMOTION         => 'Promosi Standar',
-            self::ACTION_ACCELERATED_JUMP           => 'Loncatan Akselerasi (Fast Track)',
-            self::ACTION_CRITICAL_BACKTRACKING      => 'Mundur Kritis (Backtracking)',
-            self::ACTION_MODULE_GRADUATION          => 'Kelulusan Modul',
-            self::ACTION_GOLD_CERTIFICATE           => 'Sertifikat Emas',
-            self::ACTION_SILVER_CERTIFICATE         => 'Sertifikat Perak',
-            self::ACTION_BRONZE_CERTIFICATE         => 'Sertifikat Perunggu',
-            self::ACTION_VISUAL_PROJECT_REVISION    => 'Revisi Proyek Visual',
-            self::ACTION_TEXTUAL_PROJECT_REVISION   => 'Revisi Proyek Tekstual',
-            self::ACTION_PERSISTENT_VISUAL_NET      => 'Safety Net Visual (Gagal Berulang)',
-            self::ACTION_PERSISTENT_TEXTUAL_NET     => 'Safety Net Tekstual (Gagal Berulang)',
+            self::ACTION_TEXTUAL_CRISIS_INTERVENTION => 'Intervensi Krisis Tekstual',
+            self::ACTION_SYNTAX_RECOVERY => 'Pemulihan Sintaksis',
+            self::ACTION_LOGIC_RECOVERY => 'Pemulihan Logika',
+            self::ACTION_STANDARD_PROMOTION => 'Promosi Standar',
+            self::ACTION_ACCELERATED_JUMP => 'Loncatan Akselerasi (Fast Track)',
+            self::ACTION_CRITICAL_BACKTRACKING => 'Mundur Kritis (Backtracking)',
+            self::ACTION_MODULE_GRADUATION => 'Kelulusan Modul',
+            self::ACTION_GOLD_CERTIFICATE => 'Sertifikat Emas',
+            self::ACTION_SILVER_CERTIFICATE => 'Sertifikat Perak',
+            self::ACTION_BRONZE_CERTIFICATE => 'Sertifikat Perunggu',
+            self::ACTION_VISUAL_PROJECT_REVISION => 'Revisi Proyek Visual',
+            self::ACTION_TEXTUAL_PROJECT_REVISION => 'Revisi Proyek Tekstual',
+            self::ACTION_PERSISTENT_VISUAL_NET => 'Safety Net Visual (Gagal Berulang)',
+            self::ACTION_PERSISTENT_TEXTUAL_NET => 'Safety Net Tekstual (Gagal Berulang)',
         ];
     }
 }
