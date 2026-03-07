@@ -21,7 +21,7 @@ class GuestProgressService implements GuestProgressServiceInterface
     /**
      * Save progress for a specific question.
      */
-    public function saveProgress(array $data, bool $isCorrect, int $questionId): void
+    public function saveProgress(array $data, bool $isCorrect, string $questionId): void
     {
         $guestProgress = $this->getProgress();
 
@@ -54,7 +54,7 @@ class GuestProgressService implements GuestProgressServiceInterface
     /**
      * Reset progress for a specific material.
      */
-    public function resetMaterialProgress(int $materialId): void
+    public function resetMaterialProgress(string $materialId): void
     {
         $allProgress = $this->getProgress();
 

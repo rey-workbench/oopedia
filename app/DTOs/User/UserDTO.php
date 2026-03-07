@@ -5,10 +5,10 @@ namespace App\DTOs\User;
 readonly class UserDTO
 {
     public function __construct(
-        public int $id,
+        public string $id,
         public string $name,
         public string $email,
-        public int $role_id,
+        public string $role_id,
         public bool $is_approved,
         public \DateTimeInterface $created_at,
         public \DateTimeInterface $updated_at,

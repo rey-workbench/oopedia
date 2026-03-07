@@ -23,13 +23,13 @@ class QuestionListingService implements QuestionListingServiceInterface
     }
 
     /** @return array<string, mixed> */
-    public function getQuizData(Material $material, string $difficulty, int|string|null $userId, bool $isGuest, array $guestProgress = [], ?string $targetDifficulty = null): array
+    public function getQuizData(Material $material, string $difficulty, string $userId, bool $isGuest, array $guestProgress = [], ?string $subMaterialId = null, ?string $targetDifficulty = null): array
     {
         $answeredQuestionIds = $isGuest
             ? $this->getGuestAnsweredQuestionIds($material->id, $guestProgress)
             : $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
 
-        $filteredData = $this->getFilteredQuestions($material, $difficulty, $isGuest);
+        $filteredData = $this->getFilteredQuestions($material, $difficulty, $isGuest, $subMaterialId);
         $questions = $filteredData['questions'];
         $totalFilteredQuestions = $filteredData['totalFilteredQuestions'];
 
@@ -80,7 +80,7 @@ class QuestionListingService implements QuestionListingServiceInterface
     }
 
     /** @return Collection<int, Material> */
-    public function getMaterialsListWithStudentCount(int|string|null $userId, bool $isGuest, array $guestProgress = [], array $unlockedModules = []): Collection
+    public function getMaterialsListWithStudentCount(string $userId, bool $isGuest, array $guestProgress = [], array $unlockedModules = []): Collection
     {
         $progressStats = $isGuest ? collect([]) : $this->progressRepo->getUserProgressStats($userId);
         $allMaterials = $this->materialRepo->getAllWithQuestions();
@@ -134,7 +134,7 @@ class QuestionListingService implements QuestionListingServiceInterface
     }
 
     /** @return Collection<int, \App\Models\Question> */
-    public function getReviewQuestions(Material $material, ?string $difficulty, int|string|null $userId, bool $isGuest, array $guestProgress = []): Collection
+    public function getReviewQuestions(Material $material, ?string $difficulty, string $userId, bool $isGuest, array $guestProgress = []): Collection
     {
         $questions = $material->questions;
 
@@ -181,7 +181,7 @@ class QuestionListingService implements QuestionListingServiceInterface
         return $questions->values();
     }
 
-    public function getGuestAnsweredQuestionIds(int $materialId, array $guestProgress = []): SupportCollection
+    public function getGuestAnsweredQuestionIds(string $materialId, array $guestProgress = []): SupportCollection
     {
         $answeredQuestionIds = collect([]);
 
@@ -189,7 +189,7 @@ class QuestionListingService implements QuestionListingServiceInterface
             if (is_array($progress) && (isset($progress['is_correct']) || isset($progress['attempt_number']))) {
                 $parts = explode('_', $key);
                 if (count($parts) >= 2 && $parts[0] == $materialId) {
-                    $questionId = (int)$parts[1];
+                    $questionId = $parts[1];
                     if (!$answeredQuestionIds->contains($questionId)) {
                         $answeredQuestionIds->push($questionId);
                     }
@@ -200,9 +200,9 @@ class QuestionListingService implements QuestionListingServiceInterface
         return $answeredQuestionIds;
     }
 
-    public function getFilteredQuestions(Material $material, string $difficulty, bool $isGuest): array
+    public function getFilteredQuestions(Material $material, string $difficulty, bool $isGuest, ?string $subMaterialId = null): array
     {
-        $questions = $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty);
+        $questions = $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty, $subMaterialId);
 
         if ($isGuest) {
             if ($difficulty === 'all') {

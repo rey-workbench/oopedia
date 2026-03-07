@@ -22,12 +22,12 @@ class RedirectIfAuthenticated
             if (Auth::guard($guard)->check()) {
                 $user = Auth::guard($guard)->user();
 
-                return match ($user->role_id) {
-                    1       => redirect()->route('admin.dashboard'),
-                    2       => redirect()->route('admin.dashboard'),
-                    3       => redirect()->route('mahasiswa.dashboard'),
-                    4       => redirect()->route('mahasiswa.materials.index'),
-                    default => redirect('/')
+                return match ($user->role?->role_name) {
+                    'superadmin' => redirect()->route('admin.dashboard'),
+                    'dosen'      => redirect()->route('admin.dashboard'),
+                    'mahasiswa'  => redirect()->route('mahasiswa.dashboard'),
+                    'pending'    => redirect()->route('mahasiswa.materials.index'),
+                    default      => redirect('/')
                 };
             }
         }

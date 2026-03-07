@@ -13,36 +13,36 @@ interface SubMaterialServiceInterface
     /**
      * Get all sub-materials for a given material.
      *
-     * @return Collection<int, SubMaterial>
+     * @return Collection<string, SubMaterial>
      */
-    public function getSubMaterialsByMaterial(int $materialId): Collection;
+    public function getSubMaterialsByMaterial(string $materialId): Collection;
 
     /**
      * Create a new sub-material under a material.
      *
-     * @return int The ID of the newly created sub-material
+     * @return string The ID of the newly created sub-material
      */
-    public function createSubMaterial(int $materialId, array $data): int;
+    public function createSubMaterial(string $materialId, array $data): string;
 
     /**
      * Update an existing sub-material.
      */
-    public function updateSubMaterial(int $subMaterialId, array $data): bool;
+    public function updateSubMaterial(string $subMaterialId, array $data): bool;
 
     /**
      * Delete a sub-material.
      */
-    public function deleteSubMaterial(int $subMaterialId): bool;
+    public function deleteSubMaterial(string $subMaterialId): bool;
 
     /**
      * Get a sub-material by its ID.
      */
-    public function getSubMaterialById(int $subMaterialId): ?SubMaterial;
+    public function getSubMaterialById(string $subMaterialId): ?SubMaterial;
 
     /**
      * Get sub-materials as a simple array for JSON responses.
      *
-     * @return array<int, mixed>
+     * @return array<string, mixed>
      */
-    public function getSubMaterialsSimple(int $materialId): array;
+    public function getSubMaterialsSimple(string $materialId): array;
 }

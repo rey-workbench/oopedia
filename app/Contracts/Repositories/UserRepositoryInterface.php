@@ -14,13 +14,13 @@ interface UserRepositoryInterface
     /** @return Collection<int, User> */
     public function all(): Collection;
 
-    public function find(int $id): ?User;
+    public function find(string $id): ?User;
 
     public function create(array $data): User;
 
-    public function update(int $id, array $data): ?User;
+    public function update(string $id, array $data): ?User;
 
-    public function delete(int $id): bool;
+    public function delete(string $id): bool;
 
     public function paginate(int $perPage = 15): LengthAwarePaginator;
 
@@ -28,16 +28,16 @@ interface UserRepositoryInterface
 
     public function getStudentsList(?string $search = null, int $perPage = 10): LengthAwarePaginator;
 
-    public function getStudentsWithRole(int $roleId, ?string $search = null, int $perPage = 10): LengthAwarePaginator;
+    public function getStudentsWithRole(string $roleName, ?string $search = null, int $perPage = 10): LengthAwarePaginator;
 
-    public function deleteStudentData(int $userId): void;
+    public function deleteStudentData(string $userId): void;
 
     public function findByEmail(string $email): ?User;
 
     /** @return Collection<int, User> */
     public function getUnapprovedStudents(): Collection;
 
-    public function approveStudent(int $userId): void;
+    public function approveStudent(string $userId): void;
 
     /**
      * Get users by role and approval status, paginated or as a full collection.
@@ -46,13 +46,13 @@ interface UserRepositoryInterface
      * @return LengthAwarePaginator|Collection<int, User>
      */
     public function getUsersByRoleAndApproval(
-        int $roleId,
+        string $roleName,
         bool $isApproved,
         ?string $search = null,
         ?int $perPage = 10,
-    ): LengthAwarePaginator|Collection;
+        ): LengthAwarePaginator|Collection;
 
-    public function countByRole(int $roleId): int;
+    public function countByRole(string $roleName): int;
 
     public function getActiveStudentsCount(int $days): int;
 

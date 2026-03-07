@@ -2,6 +2,7 @@
 
 namespace App\DTOs\User;
 
+use App\Models\Role;
 use Illuminate\Http\Request;
 
 readonly class UserRegistrationDTO
@@ -10,15 +11,17 @@ readonly class UserRegistrationDTO
         public string $name,
         public string $email,
         public string $password,
-        public int $role_id,
+        public string $role_id,
         public bool $is_approved,
     ) {}
 
     public static function fromRequest(Request $request): self
     {
-        // Determine role_id based on email domain
-        $role_id     = str_ends_with($request->input('email'), '@admin.oopedia.com') ? 2 : 3;
-        $is_approved = ($role_id === 2); // Admin auto-approved
+        // Determine role by email domain
+        $roleName    = str_ends_with($request->input('email'), '@admin.oopedia.com') ? 'dosen' : 'mahasiswa';
+        $role        = Role::where('role_name', $roleName)->first();
+        $role_id     = $role?->id ?? '';
+        $is_approved = $roleName === 'dosen';
 
         return new self(
             name: $request->input('name'),

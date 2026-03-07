@@ -10,19 +10,8 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         // Create or ensure roles exist with new structure
-        Role::firstOrCreate(
-            ['id' => 1],
-            ['role_name' => 'Superadmin'],
-        );
-
-        Role::firstOrCreate(
-            ['id' => 2],
-            ['role_name' => 'Admin'],
-        );
-
-        Role::firstOrCreate(
-            ['id' => 3],
-            ['role_name' => 'Mahasiswa'],
-        );
+        Role::updateOrCreate(['role_name' => 'superadmin']);
+        Role::updateOrCreate(['role_name' => 'dosen']);
+        Role::updateOrCreate(['role_name' => 'mahasiswa']);
     }
 }

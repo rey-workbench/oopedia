@@ -5,13 +5,13 @@ namespace App\DTOs\Question;
 readonly class QuestionDTO
 {
     public function __construct(
-        public int $id,
-        public int $material_id,
-        public ?int $sub_material_id,
+        public string $id,
+        public string $material_id,
+        public ?string $sub_material_id,
         public string $question_text,
         public string $question_type,
         public string $difficulty,
-        public ?int $created_by,
+        public ?string $created_by,
         public \DateTimeInterface $created_at,
         public \DateTimeInterface $updated_at,
     ) {}

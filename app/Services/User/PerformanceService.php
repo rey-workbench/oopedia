@@ -58,33 +58,33 @@ class PerformanceService implements PerformanceServiceInterface
 
     // ==================== PROFILE MANAGEMENT ====================
 
-    public function getStudentState(int $userId): StudentState
+    public function getStudentState(string $userId): StudentState
     {
         return $this->progressRepo->getOrCreateStudentState($userId);
     }
 
-    public function getUserInitialLevel(int $userId, int $materialId): ?string
+    public function getUserInitialLevel(string $userId, string $materialId): ?string
     {
         $state = $this->progressRepo->getOrCreateStudentState($userId);
 
         return $state->current_level;
     }
 
-    public function setUserInitialLevel(int $userId, int $materialId, string $level): void
+    public function setUserInitialLevel(string $userId, string $materialId, string $level): void
     {
         $state = $this->progressRepo->getOrCreateStudentState($userId);
         $state->current_level = $level;
         $state->save();
     }
 
-    public function getUserLearningStyle(int $userId, int $materialId): ?string
+    public function getUserLearningStyle(string $userId, string $materialId): ?string
     {
         $state = $this->progressRepo->getOrCreateStudentState($userId);
 
         return $state->learning_style;
     }
 
-    public function setUserLearningStyle(int $userId, int $materialId, string $style): void
+    public function setUserLearningStyle(string $userId, string $materialId, string $style): void
     {
         $state = $this->progressRepo->getOrCreateStudentState($userId);
         $profile = $state->learning_profile ?? [];
@@ -97,7 +97,7 @@ class PerformanceService implements PerformanceServiceInterface
      * Update learning style based on real-time interaction.
      * Returns 'visual', 'textual', or 'mixed' (G07, G08, G27).
      */
-    public function updateLearningStyleFromInteraction(int $userId, string $questionType, int $timeSpent): string
+    public function updateLearningStyleFromInteraction(string $userId, string $questionType, int $timeSpent): string
     {
         $state = $this->progressRepo->getOrCreateStudentState($userId);
         $profile = $state->learning_profile ?? [];
@@ -139,7 +139,7 @@ class PerformanceService implements PerformanceServiceInterface
     /**
      * Update student performance counters (Strict Service Layer).
      */
-    public function updateStudentPerformance(int $userId, bool $isCorrect, int $timeSpent = 0, bool $usedHint = false): StudentState
+    public function updateStudentPerformance(string $userId, bool $isCorrect, int $timeSpent = 0, bool $usedHint = false): StudentState
     {
         $state = $this->progressRepo->getOrCreateStudentState($userId);
         $state->updatePerformance($isCorrect, $timeSpent, $usedHint);
@@ -149,7 +149,7 @@ class PerformanceService implements PerformanceServiceInterface
 
     // ==================== TIME-BASED PROFILING ====================
 
-    public function calculateAverageTimeSpent(int $userId, int $materialId): float
+    public function calculateAverageTimeSpent(string $userId, string $materialId): float
     {
         $attempts = $this->progressRepo->getByUserAndMaterial($userId, $materialId);
 
@@ -172,7 +172,7 @@ class PerformanceService implements PerformanceServiceInterface
         return $count > 0 ? round($totalTime / $count, 2) : 0;
     }
 
-    public function calculateTotalTimeSpent(int $userId, int $materialId): float
+    public function calculateTotalTimeSpent(string $userId, string $materialId): float
     {
         $attempts = $this->progressRepo->getByUserAndMaterial($userId, $materialId);
 
@@ -190,7 +190,7 @@ class PerformanceService implements PerformanceServiceInterface
     // ==================== KNOWLEDGE GAP ANALYSIS ====================
 
     /** @return array<string, int> */
-    public function getKnowledgeGaps(int $userId, int $materialId): array
+    public function getKnowledgeGaps(string $userId, string $materialId): array
     {
         $wrongAttempts = $this->progressRepo->getWrongAnswers($userId, $materialId);
         $topicFrequency = [];
@@ -207,7 +207,7 @@ class PerformanceService implements PerformanceServiceInterface
         return $topicFrequency;
     }
 
-    public function getWeakestTopic(int $userId, int $materialId): ?string
+    public function getWeakestTopic(string $userId, string $materialId): ?string
     {
         $gaps = $this->getKnowledgeGaps($userId, $materialId);
 
@@ -216,7 +216,7 @@ class PerformanceService implements PerformanceServiceInterface
 
     // ==================== BEHAVIORAL PATTERN DETECTION ====================
 
-    public function isFastLearner(int $userId, int $materialId, array $currentState): bool
+    public function isFastLearner(string $userId, string $materialId, array $currentState): bool
     {
         $avgTime = $this->calculateAverageTimeSpent($userId, $materialId);
         $accuracy = $this->gamificationService->calculateAccuracy($currentState);
@@ -224,7 +224,7 @@ class PerformanceService implements PerformanceServiceInterface
         return $avgTime > 0 && $avgTime < self::FAST_LEARNER_MAX_AVG_TIME && $accuracy >= self::FAST_LEARNER_MIN_ACCURACY;
     }
 
-    public function isFatigued(int $userId, int $materialId, array $currentState): bool
+    public function isFatigued(string $userId, string $materialId, array $currentState): bool
     {
         $totalTime = $this->calculateTotalTimeSpent($userId, $materialId);
         $accuracy = $this->gamificationService->calculateAccuracy($currentState);
@@ -238,14 +238,14 @@ class PerformanceService implements PerformanceServiceInterface
     // ==================== CROSS-MATERIAL TRACKING ====================
 
     /** @return array<int, int> */
-    public function getCompletedMaterials(int $userId): array
+    public function getCompletedMaterials(string $userId): array
     {
         $state = $this->progressRepo->getOrCreateStudentState($userId);
 
         return $state ? ($state->unlocked_modules ?? []) : [];
     }
 
-    public function markMaterialCompleted(int $userId, int $materialId): void
+    public function markMaterialCompleted(string $userId, string $materialId): void
     {
         $state = $this->progressRepo->getOrCreateStudentState($userId);
 
@@ -268,7 +268,7 @@ class PerformanceService implements PerformanceServiceInterface
     // ==================== HELPERS ====================
 
     /** @return array<string, mixed> */
-    public function getPersonalizationProfile(int $userId, int $materialId, array $currentState): array
+    public function getPersonalizationProfile(string $userId, string $materialId, array $currentState): array
     {
         return [
             'initial_level' => $this->getUserInitialLevel($userId, $materialId),

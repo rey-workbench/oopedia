@@ -14,7 +14,7 @@ interface UserServiceInterface
     /**
      * Get a user by their ID.
      */
-    public function getUserById(int $id): ?User;
+    public function getUserById(string $id): ?User;
 
     /**
      * Get paginated list of admin users.
@@ -29,17 +29,17 @@ interface UserServiceInterface
     /**
      * Update an existing admin user.
      */
-    public function updateAdmin(int $userId, array $data): User;
+    public function updateAdmin(string $userId, array $data): User;
 
     /**
      * Update a user's profile information.
      */
-    public function updateProfile(int $userId, array $data): User;
+    public function updateProfile(string $userId, array $data): User;
 
     /**
      * Delete an admin user.
      */
-    public function deleteAdmin(int $userId): void;
+    public function deleteAdmin(string $userId): void;
 
     /**
      * Get paginated list of pending admin approvals.
@@ -54,12 +54,12 @@ interface UserServiceInterface
     /**
      * Approve an admin user account.
      */
-    public function approveAdmin(int $userId): void;
+    public function approveAdmin(string $userId): void;
 
     /**
      * Reject and delete a pending admin account.
      */
-    public function rejectAdmin(int $userId): void;
+    public function rejectAdmin(string $userId): void;
 
     /**
      * Register a new user.

@@ -67,9 +67,11 @@ export const ROUTES = {
             RESET: (id: string | number) => `/mahasiswa/materials/${id}/reset`,
             QUESTIONS: {
                 CATALOG: '/mahasiswa/materials/questions',
-                SHOW: (id: string | number) => `/mahasiswa/materials/${id}/questions`,
+                SHOW: (id: string | number, subId?: string | number) =>
+                    subId ? `/mahasiswa/materials/${id}/questions/${subId}` : `/mahasiswa/materials/${id}/questions`,
                 LEVELS: (id: string | number) => `/mahasiswa/materials/${id}/questions/levels`,
-                REVIEW: (id: string | number) => `/mahasiswa/materials/${id}/questions/review`,
+                REVIEW: (id: string | number, difficulty?: string) =>
+                    difficulty ? `/mahasiswa/materials/${id}/questions/review/${difficulty}` : `/mahasiswa/materials/${id}/questions/review`,
                 CHECK: (matId: string | number, quesId: string | number) =>
                     `/mahasiswa/materials/${matId}/questions/${quesId}/check`,
                 ATTEMPTS: (matId: string | number, quesId: string | number) =>

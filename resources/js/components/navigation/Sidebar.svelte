@@ -24,8 +24,8 @@
 
     const auth = $derived($page.props['auth'] ?? {});
     const user = $derived(auth.user ?? null);
-    const isAdminRole = $derived(!!user && isAdmin(user.role_id));
-    const userRole = $derived(user?.role_id ?? null);
+    const isAdminRole = $derived(!!user && isAdmin(user.role?.role_name));
+    const userRole = $derived(user?.role?.role_name ?? null);
 
     const isActive = (url: string) => $page.url === url || $page.url.startsWith(url + '/');
 

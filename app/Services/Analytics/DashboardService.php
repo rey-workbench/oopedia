@@ -26,7 +26,7 @@ class DashboardService implements DashboardServiceInterface
     }
 
     /** @return array<string, mixed> */
-    public function getDashboardIndexData(int|string|null $userId, bool $isGuest): array
+    public function getDashboardIndexData(string $userId, bool $isGuest): array
     {
         // Cache user specific dashboard data for 5 minutes (300 seconds)
         return Cache::remember("dashboard_index_{$userId}_{$isGuest}", 300, function () use ($userId, $isGuest) {
@@ -147,7 +147,7 @@ class DashboardService implements DashboardServiceInterface
     }
 
     /** @return array<int, array<string, mixed>> */
-    public function getInProgressData(int|string|null $userId, bool $isGuest): array
+    public function getInProgressData(string $userId, bool $isGuest): array
     {
         return Cache::remember("dashboard_inprogress_{$userId}_{$isGuest}", 300, function () use ($userId, $isGuest) {
             $progressStats = $this->progressRepo->getDetailedUserProgress($userId);
@@ -173,7 +173,7 @@ class DashboardService implements DashboardServiceInterface
     }
 
     /** @return array<int, array<string, mixed>> */
-    public function getCompletedData(int|string|null $userId, bool $isGuest): array
+    public function getCompletedData(string $userId, bool $isGuest): array
     {
         return Cache::remember("dashboard_completed_{$userId}_{$isGuest}", 300, function () use ($userId, $isGuest) {
             $progressStats = $this->progressRepo->getDetailedUserProgress($userId);

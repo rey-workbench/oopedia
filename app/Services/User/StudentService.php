@@ -54,7 +54,7 @@ class StudentService implements StudentServiceInterface
         return $this->userRepo->getStudentsList($search, $perPage);
     }
 
-    public function getStudentById(int $id): ?\App\Models\User
+    public function getStudentById(string $id): ?\App\Models\User
     {
         return $this->userRepo->find($id);
     }
@@ -63,13 +63,13 @@ class StudentService implements StudentServiceInterface
     {
         // Hash password
         $data['password'] = Hash::make($data['password']);
-        $data['role_id'] = 3; // Student role
+        $data['role_id'] = \App\Models\Role::where('role_name', 'mahasiswa')->value('id'); // Student role
         $data['is_approved'] = true; // Admin-created students are auto-approved
 
         return $this->userRepo->create($data);
     }
 
-    public function updateStudent(int $studentId, array $data): \App\Models\User
+    public function updateStudent(string $studentId, array $data): \App\Models\User
     {
         if (isset($data['password']) && !empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
@@ -81,7 +81,7 @@ class StudentService implements StudentServiceInterface
         return $this->userRepo->update($studentId, $data);
     }
 
-    public function deleteStudent(int $studentId): void
+    public function deleteStudent(string $studentId): void
     {
         $student = $this->userRepo->find($studentId);
 
@@ -96,15 +96,15 @@ class StudentService implements StudentServiceInterface
 
     public function getPendingStudents(?int $perPage = null): LengthAwarePaginator
     {
-        return $this->userRepo->getUsersByRoleAndApproval(3, false, null, $perPage ?? 10);
+        return $this->userRepo->getUsersByRoleAndApproval('mahasiswa', false, null, $perPage ?? 10);
     }
 
-    public function approveStudent(int $studentId): void
+    public function approveStudent(string $studentId): void
     {
         $this->userRepo->approveStudent($studentId);
     }
 
-    public function rejectStudent(int $studentId): void
+    public function rejectStudent(string $studentId): void
     {
         $this->userRepo->delete($studentId);
     }

@@ -5,7 +5,7 @@ namespace App\DTOs\Material;
 readonly class MaterialDTO
 {
     public function __construct(
-        public int $id,
+        public string $id,
         public string $title,
         public ?string $description,
         public ?int $created_by,

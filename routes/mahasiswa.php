@@ -9,8 +9,8 @@ use App\Http\Controllers\Mahasiswa\UeqSurveyController as MahasiswaUeqSurveyCont
 use App\Http\Middleware\BlockQuestionParameter;
 use Illuminate\Support\Facades\Route;
 
-// Private Mahasiswa Routes (authenticated role 3 only - using 'role:3')
-Route::middleware(['auth', 'role:3'])->name('mahasiswa.')->prefix('mahasiswa')->group(function () {
+// Private Mahasiswa Routes (authenticated role 3 only - using 'role:mahasiswa')
+Route::middleware(['auth', 'role:mahasiswa'])->name('mahasiswa.')->prefix('mahasiswa')->group(function () {
     // Dashboard
     Route::get('dashboard', [MahasiswaDashboardController::class , 'index'])->name('dashboard');
     Route::get('dashboard/in-progress', [MahasiswaDashboardController::class , 'inProgress'])->name('dashboard.in-progress');
@@ -42,11 +42,11 @@ Route::middleware(['guest.access'])->prefix('mahasiswa')->name('mahasiswa.')->gr
     Route::post('materials/{material}/reset', [MahasiswaMaterialController::class , 'reset'])->name('materials.reset');
 
     // Questions (nested under material)
-    Route::get('materials/{material}/questions', [MaterialQuestionController::class , 'show'])
+    Route::get('materials/{material}/questions/{sub_material?}', [MaterialQuestionController::class , 'show'])
         ->middleware(BlockQuestionParameter::class)
         ->name('materials.questions.show');
     Route::get('materials/{material}/questions/levels', [MaterialQuestionController::class , 'levels'])->name('materials.questions.levels');
-    Route::get('materials/{material}/questions/review', [MaterialQuestionController::class , 'review'])->name('materials.questions.review');
+    Route::get('materials/{material}/questions/review/{difficulty?}', [MaterialQuestionController::class , 'review'])->name('materials.questions.review');
     Route::post('materials/{material}/questions/{question}/check', [MaterialQuestionController::class , 'checkAnswer'])->name('materials.questions.check');
     Route::get('materials/{material}/questions/{question}/attempts', [MaterialQuestionController::class , 'getAttempts'])->name('materials.questions.attempts');
 });

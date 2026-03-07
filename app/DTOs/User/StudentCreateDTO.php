@@ -27,7 +27,7 @@ readonly class StudentCreateDTO
             'name'        => $this->name,
             'email'       => $this->email,
             'password'    => $this->password, // Will be hashed in service
-            'role_id'     => 3, // Student role
+            'role_id'     => \App\Models\Role::where('role_name', 'mahasiswa')->value('id'),
             'is_approved' => true, // Admin-created students are auto-approved
         ];
     }

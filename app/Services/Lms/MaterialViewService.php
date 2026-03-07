@@ -23,7 +23,7 @@ class MaterialViewService implements MaterialViewServiceInterface
     }
 
     /** @return Collection<int, \App\Models\Material> */
-    public function getMaterialsList(int|string|null $userId, bool $isGuest): Collection
+    public function getMaterialsList(string|null $userId, bool $isGuest): Collection
     {
         $progressStats = $userId ? $this->progressRepo->getUserProgressStats($userId) : collect();
 
@@ -62,7 +62,7 @@ class MaterialViewService implements MaterialViewServiceInterface
     }
 
     /** @return array<string, mixed> */
-    public function getMaterialDetail(int $materialId, int|string|null $userId, bool $isGuest): array
+    public function getMaterialDetail(string $materialId, string|null $userId, bool $isGuest): array
     {
         $material = $this->materialRepo->findWithQuestionsShuffled($materialId);
 
@@ -116,7 +116,7 @@ class MaterialViewService implements MaterialViewServiceInterface
     }
 
     /** @return array<string, mixed> */
-    public function getSubMaterialDetail(int $materialId, int $subMaterialId, bool $isGuest): array
+    public function getSubMaterialDetail(string $materialId, string $subMaterialId, bool $isGuest): array
     {
         $material = $this->materialRepo->find($materialId);
 
@@ -137,7 +137,7 @@ class MaterialViewService implements MaterialViewServiceInterface
         ];
     }
 
-    public function resetMaterialProgress(int|string $userId, int $materialId): void
+    public function resetMaterialProgress(string $userId, string $materialId): void
     {
         $this->progressRepo->resetProgress($userId, $materialId);
     }

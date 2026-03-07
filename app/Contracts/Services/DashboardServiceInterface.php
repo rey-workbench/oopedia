@@ -12,7 +12,7 @@ interface DashboardServiceInterface
     /**
      * Get all available materials.
      *
-     * @return Collection<int, \App\Models\Material>
+     * @return Collection<string, \App\Models\Material>
      */
     public function getAllMaterials(): Collection;
 
@@ -21,19 +21,19 @@ interface DashboardServiceInterface
      *
      * @return array<string, mixed>
      */
-    public function getDashboardIndexData(int|string $userId, bool $isGuest): array;
+    public function getDashboardIndexData(string $userId, bool $isGuest): array;
 
     /**
      * Get materials that are currently in-progress for the user.
      *
      * @return array<string, mixed>
      */
-    public function getInProgressData(int|string $userId, bool $isGuest): array;
+    public function getInProgressData(string $userId, bool $isGuest): array;
 
     /**
      * Get materials completed by the user.
      *
      * @return array<string, mixed>
      */
-    public function getCompletedData(int|string $userId, bool $isGuest): array;
+    public function getCompletedData(string $userId, bool $isGuest): array;
 }

@@ -24,7 +24,7 @@ class QuestionAnswerService implements QuestionAnswerServiceInterface
     }
 
     /** @return array<string, mixed> */
-    public function checkAnswer(array $data, int|string $userId, bool $isGuest): array
+    public function checkAnswer(array $data, string $userId, bool $isGuest): array
     {
         $question = $this->questionRepo->find($data['question_id']);
         $isCorrect = false;
@@ -155,7 +155,7 @@ class QuestionAnswerService implements QuestionAnswerServiceInterface
         ];
     }
 
-    protected function saveAuthenticatedProgress(array $data, int|string $userId, bool $isCorrect, Question $question): void
+    protected function saveAuthenticatedProgress(array $data, string $userId, bool $isCorrect, Question $question): void
     {
         $attemptsCount = $this->progressRepo->getAttemptCount(
             $userId,
@@ -196,7 +196,7 @@ class QuestionAnswerService implements QuestionAnswerServiceInterface
 
 
     /** @return array<string, mixed> */
-    public function checkAllAnswers(array $data, int|string $userId): array
+    public function checkAllAnswers(array $data, string $userId): array
     {
         $materialId = $data['material_id'];
         $answers = $data['answers'];

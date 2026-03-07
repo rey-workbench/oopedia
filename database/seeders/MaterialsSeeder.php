@@ -93,9 +93,14 @@ class MaterialsSeeder extends Seeder
             ],
         ];
 
+        $dosen = \App\Models\User::whereHas('role', function ($q) {
+            $q->where('role_name', 'dosen'); })->first();
+        $dosenId = $dosen ? $dosen->id : null;
+
         foreach ($materials as $material) {
+            $material['created_by'] = $dosenId;
             Material::updateOrCreate(
-            ['module_id' => $material['module_id']],
+            ['title' => $material['title']],
                 $material,
             );
         }

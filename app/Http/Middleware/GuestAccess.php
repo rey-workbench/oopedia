@@ -16,8 +16,8 @@ class GuestAccess
 
         $user = auth()->user();
 
-        // Only restrict role 4 (Authenticated Guest)
-        if ($user->role_id === 4) {
+        // Only restrict authenticated users with 'guest' role
+        if (($user->role?->role_name ?? null) === 'guest') {
             $allowedRoutes = [
                 'mahasiswa.materials.index',
                 'mahasiswa.materials.show',

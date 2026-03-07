@@ -2,25 +2,26 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int $id
- * @property int $material_id
+ * @property string $id
+ * @property string $material_id
  * @property string $media_type
  * @property string $media_url
  * @property-read string $full_url
  */
 class Media extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUlids;
 
     protected $fillable = ['material_id', 'media_type', 'media_url'];
 
     protected $casts = [
-        'material_id' => 'integer',
+        'material_id' => 'string',
     ];
 
     public function material(): BelongsTo
@@ -31,7 +32,7 @@ class Media extends Model
     public function getFullUrlAttribute(): string
     {
         if (str_starts_with($this->media_url, 'http://') ||
-            str_starts_with($this->media_url, 'https://')) {
+        str_starts_with($this->media_url, 'https://')) {
             return $this->media_url;
         }
 

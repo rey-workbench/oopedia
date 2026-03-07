@@ -16,15 +16,17 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminUserController extends Controller
 {
-    public function __construct(
-        protected UserServiceInterface $userService,
-        protected RoleRepositoryInterface $roleRepo,
-    ) {}
+    public function __construct(protected
+        UserServiceInterface $userService, protected
+        RoleRepositoryInterface $roleRepo,
+        )
+    {
+    }
 
     public function index(Request $request): Response
     {
-        $search             = $request->search;
-        $users              = $this->userService->getAdmins($search);
+        $search = $request->search;
+        $users = $this->userService->getAdmins($search);
         $pendingAdminsCount = $this->userService->getPendingAdminsCount();
 
         return Inertia::render('Admin/Users/Index', compact('users', 'pendingAdminsCount'));
@@ -45,16 +47,16 @@ class AdminUserController extends Controller
             ->with('success', 'Admin berhasil ditambahkan');
     }
 
-    public function edit(int|string $userId): Response|RedirectResponse
+    public function edit(string $userId): Response|RedirectResponse
     {
-        $user = $this->userService->getUserById((int) $userId);
+        $user = $this->userService->getUserById($userId);
 
-        if (! $user) {
+        if (!$user) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'User tidak ditemukan');
         }
 
-        if ($user->role_id != 2) {
+        if (!$user->isDosen()) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'User bukan admin');
         }
@@ -62,24 +64,24 @@ class AdminUserController extends Controller
         return Inertia::render('Admin/Users/Edit/Index', compact('user'));
     }
 
-    public function update(UpdateAdminRequest $request, int|string $userId): RedirectResponse
+    public function update(UpdateAdminRequest $request, string $userId): RedirectResponse
     {
-        $user = $this->userService->getUserById((int) $userId);
+        $user = $this->userService->getUserById($userId);
 
-        if (! $user) {
+        if (!$user) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'User tidak ditemukan');
         }
 
-        $this->userService->updateAdmin((int) $userId, $request->validated());
+        $this->userService->updateAdmin($userId, $request->validated());
 
         return redirect()->route('admin.users.index')
             ->with('success', 'Data admin berhasil diperbarui');
     }
 
-    public function destroy(int|string $userId): RedirectResponse
+    public function destroy(string $userId): RedirectResponse
     {
-        $this->userService->deleteAdmin((int) $userId);
+        $this->userService->deleteAdmin($userId);
 
         return redirect()->route('admin.users.index')
             ->with('success', 'Admin berhasil dihapus');
@@ -89,11 +91,11 @@ class AdminUserController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->role_id == 1) {
+        if ($user->isSuperAdmin()) {
             return redirect()->route('admin.pending-admins');
         }
 
-        if ($user->role_id == 2 && ! $user->is_approved) {
+        if ($user->isDosen() && !$user->is_approved) {
             $freshUser = $this->userService->getUserById($user->id);
 
             if ($freshUser && $freshUser->is_approved) {
@@ -103,7 +105,7 @@ class AdminUserController extends Controller
             return Inertia::render('Admin/Users/PendingApproval/Index');
         }
 
-        if ($user->role_id == 2 && $user->is_approved) {
+        if ($user->isDosen() && $user->is_approved) {
             return redirect()->route('admin.dashboard');
         }
 
@@ -117,17 +119,17 @@ class AdminUserController extends Controller
         return Inertia::render('Admin/Users/Pending/Index', compact('pendingAdmins'));
     }
 
-    public function approveAdmin(int|string $userId): RedirectResponse
+    public function approveAdmin(string $userId): RedirectResponse
     {
-        $this->userService->approveAdmin((int) $userId);
+        $this->userService->approveAdmin($userId);
 
         return redirect()->route('admin.pending-admins')
             ->with('success', 'Admin berhasil disetujui');
     }
 
-    public function rejectAdmin(int|string $userId): RedirectResponse
+    public function rejectAdmin(string $userId): RedirectResponse
     {
-        $this->userService->rejectAdmin((int) $userId);
+        $this->userService->rejectAdmin($userId);
 
         return redirect()->route('admin.pending-admins')
             ->with('success', 'Permintaan admin ditolak');
@@ -147,7 +149,7 @@ class AdminUserController extends Controller
         $result = $this->userService->importAdminsFromFile($request->file('excel_file'));
 
         $message = "Berhasil menambahkan {$result['success_count']} admin.";
-        if (! empty($result['error_rows'])) {
+        if (!empty($result['error_rows'])) {
             $message .= ' Terdapat ' . count($result['error_rows']) . ' baris dengan error.';
         }
 

@@ -15,7 +15,7 @@ class NextActionResolverService implements NextActionResolverServiceInterface
     /**
      * Resolve dynamic next action command into URL and metadata.
      */
-    public function resolve(string $actionCommand, Material $material, Question $question, ?int $userId = null): array
+    public function resolve(string $actionCommand, Material $material, Question $question, ?string $userId = null): array
     {
         return match ($actionCommand) {
                 'STUDY_MATERIAL' => [

@@ -59,14 +59,7 @@ class Navbar extends Component
         }
 
         $user = Auth::user();
-
-        return match ($user->role_id) {
-            1       => 'superadmin',
-            2       => 'admin',
-            3       => 'mahasiswa',
-            4       => 'guest',
-            default => 'guest',
-        };
+        return $user->role?->role_name ?? 'guest';
     }
 
     /**

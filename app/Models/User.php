@@ -6,20 +6,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 /**
- * @property int $id
+ * @property string $id
  * @property string $name
  * @property string $email
  * @property string $password
- * @property int $role_id
+ * @property string $role_id
  * @property bool $is_approved
  */
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasUlids;
+
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = ['name', 'email', 'password', 'role_id', 'is_approved'];
 
@@ -47,6 +51,47 @@ class User extends Authenticatable
 
     public function hasRole(string $role): bool
     {
-        return $this->role->role_name === $role;
+        $roleName = $this->role?->role_name;
+
+        if ($roleName) {
+            return $roleName === $role;
+        }
+
+        // Fallback for legacy numeric role_id values
+        $rid = $this->role_id;
+
+        if (is_numeric($rid)) {
+            return match ((int) $rid) {
+                1 => $role === 'superadmin',
+                2 => $role === 'dosen',
+                3 => $role === 'mahasiswa',
+                4 => $role === 'guest',
+                default => false,
+            };
+        }
+
+        return false;
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole('superadmin');
+    }
+
+    public function isDosen(): bool
+    {
+        return $this->hasRole('dosen');
+    }
+
+    public function isMahasiswa(): bool
+    {
+        return $this->hasRole('mahasiswa');
+    }
+
+    public function scopeWhereRole($query, string $roleName)
+    {
+        return $query->whereHas('role', function ($q) use ($roleName) {
+            $q->where('role_name', $roleName);
+        });
     }
 }

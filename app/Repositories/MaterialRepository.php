@@ -15,19 +15,19 @@ class MaterialRepository implements MaterialRepositoryInterface
         return Material::all();
     }
 
-    public function find(int $id): ?Material
+    public function find(string $id): ?Material
     {
-        return Material::find($id);
+        return Material::query()->find($id, ['*']);
     }
 
     public function create(array $data): Material
     {
-        return Material::create($data);
+        return Material::query()->create($data);
     }
 
-    public function update(int $id, array $data): ?Material
+    public function update(string $id, array $data): ?Material
     {
-        $material = Material::find($id);
+        $material = Material::query()->find($id, ['*']);
 
         if ($material) {
             $material->update($data);
@@ -38,12 +38,12 @@ class MaterialRepository implements MaterialRepositoryInterface
         return null;
     }
 
-    public function delete(int $id): bool
+    public function delete(string $id): bool
     {
-        $material = Material::find($id);
+        $material = Material::query()->find($id, ['*']);
 
         if ($material) {
-            return (bool) $material->delete();
+            return (bool)$material->delete();
         }
 
         return false;
@@ -51,50 +51,50 @@ class MaterialRepository implements MaterialRepositoryInterface
 
     public function paginate(int $perPage = 15): LengthAwarePaginator
     {
-        return Material::paginate($perPage);
+        return Material::query()->paginate($perPage, ['*'], 'page', null);
     }
 
     public function countAll(): int
     {
-        return Material::count('*');
+        return Material::query()->count('*');
     }
 
     /** @return Collection<int, Material> */
     public function getAllWithQuestions(): Collection
     {
-        return Material::with(['questions'])->get();
+        return Material::query()->with(['questions'])->get();
     }
 
     /** @return Collection<int, Material> */
     public function getAllWithQuestionsAndConfigs(): Collection
     {
-        return Material::with(['questions'])->get();
+        return Material::query()->with(['questions'])->get();
     }
 
     /** @return Collection<int, Material> */
     public function getAllWithQuestionsAndActiveConfigs(): Collection
     {
-        return Material::with(['questions'])->get();
+        return Material::query()->with(['questions'])->get();
     }
 
     public function findBySlug(string $slug): ?Material
     {
         $title = str_replace('-', ' ', $slug);
 
-        return Material::where('title', $title)->firstOrFail();
+        return Material::query()->where('title', '=', $title)->firstOrFail();
     }
 
     /** @return Collection<int, Material> */
     public function getAllOrdered(): Collection
     {
-        return Material::with(['questions', 'media', 'creator'])
+        return Material::query()->with(['questions', 'media', 'creator'])
             ->orderBy('created_at', 'asc')
             ->get();
     }
 
-    public function findWithQuestionsShuffled(int $id): Material
+    public function findWithQuestionsShuffled(string $id): Material
     {
-        $material = Material::with(['questions.answers', 'subMaterials.questions', 'creator', 'media'])
+        $material = Material::query()->with(['questions.answers', 'subMaterials.questions', 'creator', 'media'])
             ->findOrFail($id);
 
         foreach ($material->questions as $question) {
@@ -106,9 +106,9 @@ class MaterialRepository implements MaterialRepositoryInterface
         return $material;
     }
 
-    public function findWithQuestionsAndAnswers(int $id): Material
+    public function findWithQuestionsAndAnswers(string $id): Material
     {
-        return Material::with(['questions.answers'])->findOrFail($id);
+        return Material::query()->with(['questions.answers'])->findOrFail($id);
     }
 
     /** @return Collection<int, Material> */
@@ -116,7 +116,8 @@ class MaterialRepository implements MaterialRepositoryInterface
         ?string $search = null,
         string $sort = 'created_at',
         string $direction = 'asc',
-    ): Collection {
+        ): Collection
+    {
         $query = Material::query();
 
         if ($search) {
@@ -127,18 +128,19 @@ class MaterialRepository implements MaterialRepositoryInterface
 
         if (in_array($sort, $allowedSortFields)) {
             $query->orderBy($sort, $direction);
-        } else {
+        }
+        else {
             $query->orderBy('created_at', 'asc');
         }
 
         return $query->with(['creator', 'subMaterials', 'media'])->get();
     }
 
-    public function findWithRelations(int $id, array $relations = []): Material
+    public function findWithRelations(string $id, array $relations = []): Material
     {
         $query = Material::query();
 
-        if (! empty($relations)) {
+        if (!empty($relations)) {
             $query->with($relations);
         }
 
@@ -147,7 +149,7 @@ class MaterialRepository implements MaterialRepositoryInterface
 
     public function getMaterialsForListing(): Collection
     {
-        return Material::with(['media', 'creator'])
+        return Material::query()->with(['media', 'creator'])
             ->withCount('questions')
             ->orderBy('created_at', 'asc')
             ->get();

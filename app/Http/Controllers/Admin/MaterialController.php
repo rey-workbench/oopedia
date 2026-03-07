@@ -13,14 +13,16 @@ use Inertia\Response;
 
 class MaterialController extends Controller
 {
-    public function __construct(
-        protected MaterialServiceInterface $materialService,
-    ) {}
+    public function __construct(protected
+        MaterialServiceInterface $materialService,
+        )
+    {
+    }
 
     public function index(Request $request): Response
     {
-        $search    = $request->search;
-        $sort      = $request->get('sort', 'created_at');
+        $search = $request->search;
+        $sort = $request->get('sort', 'created_at');
         $direction = $request->get('direction', 'asc');
 
         $materials = $this->materialService->getAllMaterials($search, $sort, $direction);
@@ -44,11 +46,11 @@ class MaterialController extends Controller
             ->with('success', 'Materi berhasil ditambahkan.');
     }
 
-    public function edit(int|string $materialId): Response|RedirectResponse
+    public function edit(string $materialId): Response|RedirectResponse
     {
-        $material = $this->materialService->getMaterialById((int) $materialId);
+        $material = $this->materialService->getMaterialById($materialId);
 
-        if (! $material) {
+        if (!$material) {
             return redirect()->route('admin.materials.index')
                 ->with('error', 'Material tidak ditemukan');
         }
@@ -56,10 +58,10 @@ class MaterialController extends Controller
         return Inertia::render('Admin/Materials/Edit/Index', compact('material'));
     }
 
-    public function update(UpdateMaterialRequest $request, int|string $materialId): RedirectResponse
+    public function update(UpdateMaterialRequest $request, string $materialId): RedirectResponse
     {
         $this->materialService->updateMaterial(
-            (int) $materialId,
+            $materialId,
             $request->except('cover_image'),
             $request->file('cover_image'),
         );
@@ -68,17 +70,17 @@ class MaterialController extends Controller
             ->with('success', 'Materi berhasil diperbarui.');
     }
 
-    public function destroy(int|string $materialId): RedirectResponse
+    public function destroy(string $materialId): RedirectResponse
     {
-        $this->materialService->deleteMaterial((int) $materialId);
+        $this->materialService->deleteMaterial($materialId);
 
         return redirect()->route('admin.materials.index')
             ->with('success', 'Materi berhasil dihapus.');
     }
 
-    public function deleteMedia(int|string $id): RedirectResponse
+    public function deleteMedia(string $id): RedirectResponse
     {
-        $materialId = $this->materialService->deleteMedia((int) $id);
+        $materialId = $this->materialService->deleteMedia($id);
 
         return redirect()->route('admin.materials.edit', $materialId)
             ->with('success', 'Media berhasil dihapus.');

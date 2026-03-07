@@ -168,7 +168,7 @@
                         </div>
 
                         <Button
-                            href={`/mahasiswa/materials/${state.material.id}/questions?sub_material=${state.subMaterial.id}`}
+                            href={ROUTES.MAHASISWA.MATERIALS.QUESTIONS.SHOW(state.material.id, state.subMaterial.id)}
                             variant="primary"
                             size="xl"
                             icon={Play}

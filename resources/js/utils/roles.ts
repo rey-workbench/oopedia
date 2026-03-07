@@ -4,31 +4,31 @@
  */
 
 export const ROLE = {
-    SUPERADMIN: 1,
-    ADMIN: 2,
-    MAHASISWA: 3,
-    PENDING: 4,
+    SUPERADMIN: 'superadmin',
+    ADMIN: 'dosen',
+    MAHASISWA: 'mahasiswa',
+    PENDING: 'pending',
 } as const;
 
-export type RoleId = (typeof ROLE)[keyof typeof ROLE];
+export type RoleName = (typeof ROLE)[keyof typeof ROLE];
 
 /**
- * Returns true if the given role_id belongs to an admin (superadmin or admin).
+ * Returns true if the given role_name belongs to an admin (superadmin or admin).
  */
-export function isAdmin(roleId: number | null | undefined): boolean {
-    return roleId === ROLE.SUPERADMIN || roleId === ROLE.ADMIN;
+export function isAdmin(roleName: string | null | undefined): boolean {
+    return roleName === ROLE.SUPERADMIN || roleName === ROLE.ADMIN;
 }
 
 /**
- * Returns true if the given role_id belongs to a student (active or pending).
+ * Returns true if the given role_name belongs to a student (active or pending).
  */
-export function isStudent(roleId: number | null | undefined): boolean {
-    return roleId === ROLE.MAHASISWA || roleId === ROLE.PENDING;
+export function isStudent(roleName: string | null | undefined): boolean {
+    return roleName === ROLE.MAHASISWA || roleName === ROLE.PENDING;
 }
 
 /**
- * Returns true if the given role_id is superadmin only.
+ * Returns true if the given role_name is superadmin only.
  */
-export function isSuperAdmin(roleId: number | null | undefined): boolean {
-    return roleId === ROLE.SUPERADMIN;
+export function isSuperAdmin(roleName: string | null | undefined): boolean {
+    return roleName === ROLE.SUPERADMIN;
 }

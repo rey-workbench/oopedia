@@ -18,7 +18,7 @@ class ComprehensiveQuestionsSeeder extends Seeder
         Answer::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        $subMaterials = SubMaterial::all();
+        $subMaterials = SubMaterial::with('material')->get();
         $admin = User::whereIn('role_id', [1, 2])->first();
 
         if ($subMaterials->isEmpty()) {
@@ -49,7 +49,7 @@ class ComprehensiveQuestionsSeeder extends Seeder
                     $questionType = $typePool[($i - 1) % 3];
 
                     // Handle mixed content type for question category
-                    $qType = $subMaterial->jenis_konten === 'mixed' ? 'teori' : $subMaterial->jenis_konten;
+                    $qType = $subMaterial->jenis_konten === 'mixed' ? 'teori' : 'sintaks';
 
                     if ($questionType === 'radio_button') {
                         $this->createRadioQuestion(
@@ -131,6 +131,7 @@ class ComprehensiveQuestionsSeeder extends Seeder
         $answerData = [];
         foreach ($answers as $answer) {
             $answerData[] = [
+                'id' => str()->ulid()->toString(),
                 'question_id' => $question->id,
                 'is_correct' => $answer[1],
                 'answer_text' => $answer[0],
@@ -158,6 +159,7 @@ class ComprehensiveQuestionsSeeder extends Seeder
         $answerData = [];
         foreach ($correctAnswers as $answer) {
             $answerData[] = [
+                'id' => str()->ulid()->toString(),
                 'question_id' => $question->id,
                 'is_correct' => true,
                 'answer_text' => $answer[0],
@@ -186,6 +188,7 @@ class ComprehensiveQuestionsSeeder extends Seeder
         $answerData = [];
         foreach ($items as $item) {
             $answerData[] = [
+                'id' => str()->ulid()->toString(),
                 'question_id' => $question->id,
                 'is_correct' => true,
                 'answer_text' => $item[0],

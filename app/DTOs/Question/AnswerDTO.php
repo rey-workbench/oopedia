@@ -5,8 +5,8 @@ namespace App\DTOs\Question;
 readonly class AnswerDTO
 {
     public function __construct(
-        public int $id,
-        public int $question_id,
+        public string $id,
+        public string $question_id,
         public string $answer_text,
         public bool $is_correct,
         public \DateTimeInterface $created_at,

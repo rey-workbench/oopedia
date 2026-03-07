@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property int $id
- * @property int $material_id
+ * @property string $id
+ * @property string $material_id
  * @property string $title
  * @property string $content
  * @property string $jenis_konten
@@ -17,6 +18,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class SubMaterial extends Model
 {
+    use HasUlids;
+
     protected $fillable = [
         'material_id',
         'title',
@@ -27,8 +30,8 @@ class SubMaterial extends Model
     ];
 
     protected $casts = [
-        'material_id' => 'integer',
-        'order'       => 'integer',
+        'material_id' => 'string',
+        'order' => 'integer',
     ];
 
     // ==================== RELATIONSHIPS ====================

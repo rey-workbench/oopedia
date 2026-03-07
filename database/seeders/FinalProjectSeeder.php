@@ -12,14 +12,19 @@ class FinalProjectSeeder extends Seeder
 {
     public function run(): void
     {
+        $dosen = \App\Models\User::whereHas('role', function ($q) {
+            $q->where('role_name', 'dosen');
+        })->first();
+        $dosenId = $dosen ? $dosen->id : null;
+
         // 1. Create Final Project Material
         $material = Material::updateOrCreate(
         ['module_id' => 10],
         [
             'title' => 'Proyek Akhir: Arsitektur Sistem Terintegrasi',
             'content' => '<h2>Ujian Akhir Penguasaan OOP</h2>
-                <p>Selamat! Anda telah capai tahap akhir. Proyek ini akan menguji seluruh pemahaman Anda tentang 4 pilar OOP (Enkapsulasi, Pewarisan, Polimorfisme, dan Abstraksi) dalam satu skenario terpadu.</p>',
-            'created_by' => 2,
+                    <p>Selamat! Anda telah capai tahap akhir. Proyek ini akan menguji seluruh pemahaman Anda tentang 4 pilar OOP (Enkapsulasi, Pewarisan, Polimorfisme, dan Abstraksi) dalam satu skenario terpadu.</p>',
+            'created_by' => $dosenId,
             'is_final_project' => true,
         ]
         );
@@ -45,7 +50,7 @@ class FinalProjectSeeder extends Seeder
             'type' => 'teori',
             'difficulty' => 'final', // Identification via ModuleID (G18)
             'hint' => 'Satu antarmuka, banyak wujud.',
-            'created_by' => 2,
+            'created_by' => $dosenId,
         ]
         );
 
@@ -69,7 +74,7 @@ class FinalProjectSeeder extends Seeder
             'type' => 'sintaks',
             'difficulty' => 'final',
             'hint' => 'Urutannya adalah extends lalu implements.',
-            'created_by' => 2,
+            'created_by' => $dosenId,
         ]
         );
 

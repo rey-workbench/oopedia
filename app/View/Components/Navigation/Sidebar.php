@@ -71,14 +71,7 @@ class Sidebar extends Component
         }
 
         $user = Auth::user();
-
-        return match ($user->role_id) {
-            1       => 'superadmin',
-            2       => 'admin',
-            3       => 'mahasiswa',
-            4       => 'guest',
-            default => 'guest',
-        };
+        return $user->role?->role_name ?? 'guest';
     }
 
     /**
@@ -89,13 +82,14 @@ class Sidebar extends Component
         if (! Auth::check()) {
             return 'Guest';
         }
+        $role = Auth::user()->role?->role_name ?? 'guest';
 
-        return match (Auth::user()->role_id) {
-            1       => 'Super Admin',
-            2       => 'Admin',
-            3       => 'Mahasiswa',
-            4       => 'Guest',
-            default => 'Guest',
+        return match ($role) {
+            'superadmin' => 'Super Admin',
+            'dosen'      => 'Admin',
+            'mahasiswa'  => 'Mahasiswa',
+            'guest'      => 'Guest',
+            default      => 'User',
         };
     }
 
@@ -138,7 +132,7 @@ class Sidebar extends Component
      */
     public function isGuest(): bool
     {
-        return ! Auth::check() || (Auth::check() && Auth::user()->role_id === 4);
+        return ! Auth::check() || (Auth::check() && (Auth::user()->role?->role_name ?? 'guest') === 'guest');
     }
 
     /**
@@ -157,8 +151,7 @@ class Sidebar extends Component
         if (! Auth::check()) {
             return 'mahasiswa.dashboard';
         }
-
-        return Auth::user()->role_id === 3 ? 'mahasiswa.dashboard' : 'admin.dashboard';
+        return (Auth::user()->role?->role_name ?? 'mahasiswa') === 'mahasiswa' ? 'mahasiswa.dashboard' : 'admin.dashboard';
     }
 
     /**
@@ -166,11 +159,13 @@ class Sidebar extends Component
      */
     public function getPendingAdminsCount(): int
     {
-        if (! Auth::check() || Auth::user()->role_id !== 1) {
+        if (! Auth::check() || ! Auth::user()->isSuperAdmin()) {
             return 0;
         }
 
-        return User::where('role_id', 2)->where('is_approved', false)->count();
+        return User::whereHas('role', function ($q) {
+            $q->where('role_name', 'dosen');
+        })->where('is_approved', false)->count();
     }
 
     /**

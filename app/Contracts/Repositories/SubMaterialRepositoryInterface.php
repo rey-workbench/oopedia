@@ -13,21 +13,21 @@ interface SubMaterialRepositoryInterface
     /** @return Collection<int, SubMaterial> */
     public function all(): Collection;
 
-    public function find(int $id): ?SubMaterial;
+    public function find(string $id): ?SubMaterial;
 
     public function create(array $data): SubMaterial;
 
-    public function update(int $id, array $data): bool;
+    public function update(string $id, array $data): bool;
 
-    public function delete(int $id): bool;
-
-    /** @return Collection<int, SubMaterial> */
-    public function getAllByMaterial(int $materialId): Collection;
+    public function delete(string $id): bool;
 
     /** @return Collection<int, SubMaterial> */
-    public function findByMaterial(int $materialId): Collection;
+    public function getAllByMaterial(string $materialId): Collection;
 
-    public function reorder(int $materialId, array $orderData): void;
+    /** @return Collection<int, SubMaterial> */
+    public function findByMaterial(string $materialId): Collection;
 
-    public function findWithQuestions(int $id): SubMaterial;
+    public function reorder(string $materialId, array $orderData): void;
+
+    public function findWithQuestions(string $id): SubMaterial;
 }

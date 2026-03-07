@@ -33,12 +33,12 @@ class MaterialService implements MaterialServiceInterface
         return $this->materialRepo->getAllOrdered();
     }
 
-    public function getMaterialById(int $id): ?Material
+    public function getMaterialById(string $id): ?Material
     {
         return $this->materialRepo->find($id);
     }
 
-    public function getMaterialWithQuestionsAndAnswers(int $id): ?Material
+    public function getMaterialWithQuestionsAndAnswers(string $id): ?Material
     {
         return $this->materialRepo->findWithQuestionsAndAnswers($id);
     }
@@ -62,7 +62,7 @@ class MaterialService implements MaterialServiceInterface
         return $material;
     }
 
-    public function updateMaterial(int $materialId, array $data, mixed $coverImage = null): Material
+    public function updateMaterial(string $materialId, array $data, mixed $coverImage = null): Material
     {
         $material = $this->materialRepo->find($materialId);
 
@@ -87,7 +87,7 @@ class MaterialService implements MaterialServiceInterface
         return $material->fresh();
     }
 
-    public function deleteMaterial(int $materialId): void
+    public function deleteMaterial(string $materialId): void
     {
         $material = $this->materialRepo->find($materialId);
 
@@ -107,7 +107,7 @@ class MaterialService implements MaterialServiceInterface
         Cache::forget('sidebar_materials_v4');
     }
 
-    public function deleteMedia(int $mediaId): int
+    public function deleteMedia(string $mediaId): string
     {
         $media = $this->mediaRepo->find($mediaId);
 
@@ -120,7 +120,7 @@ class MaterialService implements MaterialServiceInterface
         $this->removeMediaFile($media->media_url);
         $this->mediaRepo->delete($mediaId);
 
-        return $materialId;
+        return (string)$materialId;
     }
 
     protected function uploadCoverImage(Material $material, mixed $file, string $title): void

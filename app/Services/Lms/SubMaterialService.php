@@ -21,7 +21,7 @@ class SubMaterialService implements SubMaterialServiceInterface
     /**
      * Get all sub-materials for a material
      */
-    public function getSubMaterialsByMaterial(int $materialId): Collection
+    public function getSubMaterialsByMaterial(string $materialId): Collection
     {
         return $this->subMaterialRepo->findByMaterial($materialId);
     }
@@ -29,7 +29,7 @@ class SubMaterialService implements SubMaterialServiceInterface
     /**
      * Create a new sub-material
      */
-    public function createSubMaterial(int $materialId, array $data): int
+    public function createSubMaterial(string $materialId, array $data): string
     {
         $material = $this->materialRepo->find($materialId);
 
@@ -47,7 +47,7 @@ class SubMaterialService implements SubMaterialServiceInterface
     /**
      * Update a sub-material
      */
-    public function updateSubMaterial(int $subMaterialId, array $data): bool
+    public function updateSubMaterial(string $subMaterialId, array $data): bool
     {
         return $this->subMaterialRepo->update($subMaterialId, $data);
     }
@@ -55,7 +55,7 @@ class SubMaterialService implements SubMaterialServiceInterface
     /**
      * Delete a sub-material
      */
-    public function deleteSubMaterial(int $subMaterialId): bool
+    public function deleteSubMaterial(string $subMaterialId): bool
     {
         return $this->subMaterialRepo->delete($subMaterialId);
     }
@@ -63,7 +63,7 @@ class SubMaterialService implements SubMaterialServiceInterface
     /**
      * Get sub-material by ID
      */
-    public function getSubMaterialById(int $subMaterialId): ?SubMaterial
+    public function getSubMaterialById(string $subMaterialId): ?SubMaterial
     {
         return $this->subMaterialRepo->find($subMaterialId);
     }
@@ -71,7 +71,7 @@ class SubMaterialService implements SubMaterialServiceInterface
     /**
      * Get sub-materials as simple array for JSON response
      */
-    public function getSubMaterialsSimple(int $materialId): array
+    public function getSubMaterialsSimple(string $materialId): array
     {
         $subMaterials = $this->subMaterialRepo->findByMaterial($materialId);
 

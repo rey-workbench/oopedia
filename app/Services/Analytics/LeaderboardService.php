@@ -16,7 +16,7 @@ class LeaderboardService implements LeaderboardServiceInterface
     ) {}
 
     /** @return array<string, mixed> */
-    public function getLeaderboardData(int $currentUserId): array
+    public function getLeaderboardData(string $currentUserId): array
     {
         // Cache global leaderboard data for 10 minutes (600 seconds)
         $leaderboardData = Cache::remember('global_leaderboard_data', 600, function () {

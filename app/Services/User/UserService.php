@@ -25,36 +25,36 @@ class UserService implements UserServiceInterface
     {
     }
 
-    public function getUserById(int $id): ?User
+    public function getUserById(string $id): ?User
     {
         return $this->userRepo->find($id);
     }
 
     public function getAdmins(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
-        return $this->userRepo->getStudentsWithRole(2, $search, $perPage);
+        return $this->userRepo->getStudentsWithRole('dosen', $search, $perPage);
     }
 
     public function createAdmin(array $data): User
     {
         $data['password'] = Hash::make($data['password']);
-        $data['role_id'] = 2;
+        $data['role_id'] = \App\Models\Role::where('role_name', 'dosen')->value('id');
         $data['is_approved'] = true;
 
         return $this->userRepo->create($data);
     }
 
-    public function updateAdmin(int $userId, array $data): User
+    public function updateAdmin(string $userId, array $data): User
     {
         return $this->updateUser($userId, $data);
     }
 
-    public function updateProfile(int $userId, array $data): User
+    public function updateProfile(string $userId, array $data): User
     {
         return $this->updateUser($userId, $data);
     }
 
-    protected function updateUser(int $userId, array $data): User
+    protected function updateUser(string $userId, array $data): User
     {
         if (isset($data['password']) && !empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
@@ -66,7 +66,7 @@ class UserService implements UserServiceInterface
         return $this->userRepo->update($userId, $data);
     }
 
-    public function deleteAdmin(int $userId): void
+    public function deleteAdmin(string $userId): void
     {
         $user = $this->userRepo->find($userId);
 
@@ -74,7 +74,7 @@ class UserService implements UserServiceInterface
             throw new UserNotFoundException($userId);
         }
 
-        if ($user->id === Auth::id() || $user->role_id === 1) {
+        if ($user->id === Auth::id() || $user->isSuperAdmin()) {
             throw new \RuntimeException('Tidak dapat menghapus user ini.');
         }
 
@@ -83,15 +83,15 @@ class UserService implements UserServiceInterface
 
     public function getPendingAdmins(?int $perPage = null): LengthAwarePaginator
     {
-        return $this->userRepo->getUsersByRoleAndApproval(2, false, null, $perPage ?? 10);
+        return $this->userRepo->getUsersByRoleAndApproval('dosen', false, null, $perPage ?? 10);
     }
 
     public function getPendingAdminsCount(): int
     {
-        return $this->userRepo->getUsersByRoleAndApproval(2, false, null, 10)->total();
+        return $this->userRepo->getUsersByRoleAndApproval('dosen', false, null, 10)->total();
     }
 
-    public function approveAdmin(int $userId): void
+    public function approveAdmin(string $userId): void
     {
         $user = $this->userRepo->find($userId);
 
@@ -105,7 +105,7 @@ class UserService implements UserServiceInterface
         });
     }
 
-    public function rejectAdmin(int $userId): void
+    public function rejectAdmin(string $userId): void
     {
         $this->userRepo->delete($userId);
     }
@@ -114,12 +114,15 @@ class UserService implements UserServiceInterface
     {
         $data['password'] = Hash::make($data['password']);
 
+        $roleDosenId = \App\Models\Role::where('role_name', 'dosen')->value('id');
+        $roleMahasiswaId = \App\Models\Role::where('role_name', 'mahasiswa')->value('id');
+
         if (!isset($data['role_id'])) {
-            $data['role_id'] = str_ends_with($data['email'], '@admin.oopedia.com') ? 2 : 3;
+            $data['role_id'] = str_ends_with($data['email'], '@admin.oopedia.com') ? $roleDosenId : $roleMahasiswaId;
         }
 
         if (!isset($data['is_approved'])) {
-            $data['is_approved'] = ($data['role_id'] === 2);
+            $data['is_approved'] = ($data['role_id'] === $roleDosenId);
         }
 
         return $this->userRepo->create($data);

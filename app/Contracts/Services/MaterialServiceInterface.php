@@ -27,12 +27,12 @@ interface MaterialServiceInterface
     /**
      * Get a material by its ID.
      */
-    public function getMaterialById(int $id): ?Material;
+    public function getMaterialById(string $id): ?Material;
 
     /**
      * Get a material with full question and answer data.
      */
-    public function getMaterialWithQuestionsAndAnswers(int $id): ?Material;
+    public function getMaterialWithQuestionsAndAnswers(string $id): ?Material;
 
     /**
      * Create a new material with optional cover image.
@@ -42,15 +42,15 @@ interface MaterialServiceInterface
     /**
      * Update an existing material by ID.
      */
-    public function updateMaterial(int $materialId, array $data, mixed $coverImage = null): Material;
+    public function updateMaterial(string $materialId, array $data, mixed $coverImage = null): Material;
 
     /**
      * Delete a material and all its associated media.
      */
-    public function deleteMaterial(int $materialId): void;
+    public function deleteMaterial(string $materialId): void;
 
     /**
      * Delete a specific media file by ID, returns the parent material ID.
      */
-    public function deleteMedia(int $mediaId): int;
+    public function deleteMedia(string $mediaId): string;
 }

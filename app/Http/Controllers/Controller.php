@@ -14,6 +14,6 @@ class Controller extends BaseController
 
     protected function isGuest(): bool
     {
-        return ! Auth::check() || Auth::user()->role_id === 4;
+        return ! Auth::check() || (Auth::user()->role?->role_name ?? 'guest') === 'guest';
     }
 }

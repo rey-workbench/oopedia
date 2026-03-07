@@ -27,11 +27,11 @@ class AdminStudentController extends Controller
         return Inertia::render('Admin/Students/Index', compact('students'));
     }
 
-    public function show(int|string $studentId): Response|RedirectResponse
+    public function show(string $studentId): Response|RedirectResponse
     {
-        $student = $this->studentService->getStudentById((int)$studentId);
+        $student = $this->studentService->getStudentById($studentId);
 
-        if (!$student || $student->role_id != 3) {
+        if (!$student || !$student->isMahasiswa()) {
             return redirect()->route('admin.students.index')
                 ->with('error', 'Mahasiswa tidak ditemukan');
         }
@@ -55,9 +55,9 @@ class AdminStudentController extends Controller
             ->with('success', 'Mahasiswa berhasil didaftarkan secara manual.');
     }
 
-    public function destroy(int|string $studentId): RedirectResponse
+    public function destroy(string $studentId): RedirectResponse
     {
-        $this->studentService->deleteStudent((int)$studentId);
+        $this->studentService->deleteStudent($studentId);
 
         return redirect()->route('admin.students.index')
             ->with('success', 'Data mahasiswa telah berhasil dihapus dari sistem');

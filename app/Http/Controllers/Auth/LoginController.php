@@ -60,11 +60,11 @@ class LoginController extends Controller
         $clearProgress = Cookie::forget('guest_progress');
 
         return match (true) {
-                $user->role_id == 1 => redirect()->intended('admin/dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
-                $user->role_id == 2 && $user->is_approved => redirect()->intended('admin/dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
-                $user->role_id == 2 => redirect()->route('admin.pending-approval')->withCookie($clearGuest)->withCookie($clearProgress),
-                $user->role_id == 3 => redirect()->intended('mahasiswa/dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
-                default => redirect()->intended('mahasiswa/materials')->withCookie($clearGuest)->withCookie($clearProgress),
+                $user->isSuperAdmin() => redirect()->route('admin.dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
+                $user->isDosen() && $user->is_approved => redirect()->route('admin.dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
+                $user->isDosen() => redirect()->route('admin.pending-approval')->withCookie($clearGuest)->withCookie($clearProgress),
+                $user->isMahasiswa() => redirect()->route('mahasiswa.dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
+                default => redirect()->route('mahasiswa.materials.index')->withCookie($clearGuest)->withCookie($clearProgress),
             };
     }
 
@@ -83,11 +83,11 @@ class LoginController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
 
-            if ($user->role_id <= 2) {
+            if ($user->isSuperAdmin() || $user->isDosen()) {
                 return Redirect::route('admin.dashboard');
             }
 
-            if ($user->role_id == 3) {
+            if ($user->isMahasiswa()) {
                 return Redirect::route('mahasiswa.dashboard');
             }
         }

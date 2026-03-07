@@ -19,7 +19,7 @@ interface StudentServiceInterface
     /**
      * Get a student by their ID.
      */
-    public function getStudentById(int $id): ?User;
+    public function getStudentById(string $id): ?User;
 
     /**
      * Create a new student user.
@@ -29,12 +29,12 @@ interface StudentServiceInterface
     /**
      * Update an existing student.
      */
-    public function updateStudent(int $studentId, array $data): User;
+    public function updateStudent(string $studentId, array $data): User;
 
     /**
      * Delete a student user.
      */
-    public function deleteStudent(int $studentId): void;
+    public function deleteStudent(string $studentId): void;
 
     /**
      * Get paginated list of pending student approvals.
@@ -44,12 +44,12 @@ interface StudentServiceInterface
     /**
      * Approve a student account.
      */
-    public function approveStudent(int $studentId): void;
+    public function approveStudent(string $studentId): void;
 
     /**
      * Reject and delete a pending student account.
      */
-    public function rejectStudent(int $studentId): void;
+    public function rejectStudent(string $studentId): void;
 
     /**
      * Get paginated list of students with their progress data.

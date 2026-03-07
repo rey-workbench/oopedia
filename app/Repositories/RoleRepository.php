@@ -9,27 +9,27 @@ use Illuminate\Database\Eloquent\Collection;
 
 class RoleRepository implements RoleRepositoryInterface
 {
-    /** @return Collection<int, Role> */
+    /** @return Collection<string, Role> */
     public function all(): Collection
     {
         return Role::all();
     }
 
-    public function find(int $id): ?Role
+    public function find(string $id): ?Role
     {
-        return Role::find($id);
+        return Role::query()->find($id, ['*']);
     }
 
     public function findByName(string $name): ?Role
     {
-        return Role::where('role_name', $name)->first();
+        return Role::query()->where('role_name', '=', $name)->first();
     }
 
-    /** @return Collection<int, User> */
-    public function getUsersByRole(int $roleId): Collection
+    /** @return Collection<string, User> */
+    public function getUsersByRole(string $roleId): Collection
     {
-        return Role::with('users')
-            ->find($roleId)
+        return Role::query()->with('users')
+            ->find($roleId, ['*'])
             ?->users ?? collect();
     }
 }

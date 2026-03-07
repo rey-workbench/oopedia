@@ -5,8 +5,8 @@ namespace App\DTOs\Analytics;
 readonly class StudentProgressDTO
 {
     public function __construct(
-        public int $user_id,
-        public int $material_id,
+        public string $user_id,
+        public string $material_id,
         public int $total_questions,
         public int $answered_questions,
         public int $correct_answers,

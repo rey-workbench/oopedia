@@ -9,10 +9,10 @@ readonly class MaterialCreateDTO
     public function __construct(
         public string $title,
         public ?string $description,
-        public int $created_by,
+        public string $created_by,
     ) {}
 
-    public static function fromRequest(Request $request, int $userId): self
+    public static function fromRequest(Request $request, string $userId): self
     {
         return new self(
             title: $request->input('title'),

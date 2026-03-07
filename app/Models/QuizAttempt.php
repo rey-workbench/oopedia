@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int $id
- * @property int $user_id
- * @property int $question_id
- * @property int|null $answer_id
+ * @property string $id
+ * @property string $user_id
+ * @property string $question_id
+ * @property string|null $answer_id
  * @property string|null $user_response
  * @property bool $is_correct
  * @property int $score
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class QuizAttempt extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUlids;
 
     protected $fillable = [
         'user_id',
@@ -33,10 +34,10 @@ class QuizAttempt extends Model
     ];
 
     protected $casts = [
-        'is_correct'     => 'boolean',
-        'score'          => 'integer',
+        'is_correct' => 'boolean',
+        'score' => 'integer',
         'attempt_number' => 'integer',
-        'time_spent'     => 'integer',
+        'time_spent' => 'integer',
     ];
 
     public function setTimeSpent(int $seconds): static

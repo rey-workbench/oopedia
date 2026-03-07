@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int $id
- * @property int $user_id
+ * @property string $id
+ * @property string $user_id
  * @property string|null $nim
  * @property string|null $class
  * @property int $annoying_enjoyable
@@ -42,7 +43,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class UeqSurvey extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUlids;
 
     protected $fillable = [
         'user_id',
@@ -79,7 +80,7 @@ class UeqSurvey extends Model
     ];
 
     protected $casts = [
-        'user_id' => 'integer',
+        'user_id' => 'string',
     ];
 
     public function user(): BelongsTo

@@ -21,15 +21,15 @@ class CertificateController extends Controller
         $userId = Auth::id();
         $state  = $this->progressRepo->getOrCreateStudentState($userId);
 
-        /** @var array<string|int, string> $rawCertifications */
+        /** @var array<string, string> $rawCertifications */
         $rawCertifications = $state->gamification_data['certifications'] ?? [];
 
         $certifications = collect($rawCertifications)
-            ->map(function (string $type, int|string $materialId): array {
-                $material = $this->materialRepo->find((int) $materialId);
+            ->map(function (string $type, string $materialId): array {
+                $material = $this->materialRepo->find($materialId);
 
                 return [
-                    'material_id'    => (int) $materialId,
+                    'material_id'    => $materialId,
                     'material_title' => $material?->title ?? 'Object-Oriented Programming',
                     'type'           => $type, // gold | silver | bronze
                     'issued_at'      => null,

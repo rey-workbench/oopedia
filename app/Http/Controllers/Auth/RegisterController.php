@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Contracts\Services\UserServiceInterface;
+use App\Models\Role;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use Illuminate\Auth\Events\Registered;
@@ -25,8 +26,10 @@ class RegisterController extends Controller
 
     public function store(RegisterRequest $request): RedirectResponse
     {
-        $role_id     = $request->has('register_as_admin') ? 2 : 3;
-        $is_approved = ($role_id === 3);
+        $roleName    = $request->has('register_as_admin') ? 'dosen' : 'mahasiswa';
+        $role        = Role::where('role_name', $roleName)->first();
+        $role_id     = $role?->id;
+        $is_approved = ($roleName === 'mahasiswa');
 
         $user = $this->userService->registerUser([
             'name'        => $request->name,
@@ -40,11 +43,11 @@ class RegisterController extends Controller
 
         Auth::login($user);
 
-        if ($role_id === 2 && ! $is_approved) {
+        if ($roleName === 'dosen' && ! $is_approved) {
             return Redirect::route('admin.pending-approval');
         }
 
-        if ($role_id === 2) {
+        if ($roleName === 'dosen') {
             return Redirect::route('admin.dashboard');
         }
 

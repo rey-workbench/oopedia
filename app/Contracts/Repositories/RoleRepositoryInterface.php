@@ -13,10 +13,10 @@ interface RoleRepositoryInterface
     /** @return Collection<int, Role> */
     public function all(): Collection;
 
-    public function find(int $id): ?Role;
+    public function find(string $id): ?Role;
 
     public function findByName(string $name): ?Role;
 
     /** @return Collection<int, \App\Models\User> */
-    public function getUsersByRole(int $roleId): Collection;
+    public function getUsersByRole(string $roleId): Collection;
 }

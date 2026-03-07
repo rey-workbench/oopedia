@@ -13,9 +13,9 @@ interface UeqSurveyServiceInterface
     /** @return array<string> */
     public function getDistinctClasses(): array;
 
-    public function getStudentDetail(int $userId): ?UeqSurvey;
+    public function getStudentDetail(string $userId): ?UeqSurvey;
 
-    public function hasUserSubmitted(int $userId): bool;
+    public function hasUserSubmitted(string $userId): bool;
 
     public function createSurvey(array $data): UeqSurvey;
 

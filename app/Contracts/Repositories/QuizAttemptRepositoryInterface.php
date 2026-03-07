@@ -12,26 +12,26 @@ interface QuizAttemptRepositoryInterface
 {
     public function create(array $data): QuizAttempt;
 
-    public function find(int $id): ?QuizAttempt;
+    public function find(string $id): ?QuizAttempt;
 
     /** @return Collection<int, QuizAttempt> */
-    public function getByUser(int $userId): Collection;
+    public function getByUser(string $userId): Collection;
 
     /** @return Collection<int, QuizAttempt> */
-    public function getByUserAndQuestion(int $userId, int $questionId): Collection;
+    public function getByUserAndQuestion(string $userId, string $questionId): Collection;
 
     /** @return Collection<int, QuizAttempt> */
-    public function getByMaterial(int $materialId): Collection;
+    public function getByMaterial(string $materialId): Collection;
 
-    public function getBestAttempt(int $userId, int $questionId): ?QuizAttempt;
+    public function getBestAttempt(string $userId, string $questionId): ?QuizAttempt;
 
-    public function getLatestAttempt(int $userId, int $questionId): ?QuizAttempt;
+    public function getLatestAttempt(string $userId, string $questionId): ?QuizAttempt;
 
-    public function countAttempts(int $userId, int $questionId): int;
+    public function countAttempts(string $userId, string $questionId): int;
 
     /** @return Collection<int, QuizAttempt> */
-    public function getCorrectAttempts(int $userId): Collection;
+    public function getCorrectAttempts(string $userId): Collection;
 
     /** @return array<string, mixed> */
-    public function getUserStats(int $userId): array;
+    public function getUserStats(string $userId): array;
 }

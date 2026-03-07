@@ -12,5 +12,5 @@ interface LeaderboardServiceInterface
      *
      * @return array<string, mixed>
      */
-    public function getLeaderboardData(int $currentUserId): array;
+    public function getLeaderboardData(string $currentUserId): array;
 }

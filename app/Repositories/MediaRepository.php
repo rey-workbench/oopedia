@@ -14,19 +14,19 @@ class MediaRepository implements MediaRepositoryInterface
         return Media::all();
     }
 
-    public function find(int $id): ?Media
+    public function find(string $id): ?Media
     {
-        return Media::find($id);
+        return Media::query()->find($id, ['*']);
     }
 
     public function create(array $data): Media
     {
-        return Media::create($data);
+        return Media::query()->create($data);
     }
 
-    public function update(int $id, array $data): ?Media
+    public function update(string $id, array $data): ?Media
     {
-        $media = $this->find($id);
+        $media = $this->find($id, ['*']);
 
         if ($media) {
             $media->update($data);
@@ -37,32 +37,32 @@ class MediaRepository implements MediaRepositoryInterface
         return null;
     }
 
-    public function delete(int $id): bool
+    public function delete(string $id): bool
     {
-        $media = $this->find($id);
+        $media = $this->find($id, ['*']);
 
         if ($media) {
-            return (bool) $media->delete();
+            return (bool)$media->delete();
         }
 
         return false;
     }
 
     /** @return Collection<int, Media> */
-    public function getByMaterial(int $materialId): Collection
+    public function getByMaterial(string $materialId): Collection
     {
-        return Media::where('material_id', $materialId)->get();
+        return Media::query()->where('material_id', '=', $materialId)->get();
     }
 
-    public function deleteByMaterial(int $materialId): bool
+    public function deleteByMaterial(string $materialId): bool
     {
-        return (bool) Media::where('material_id', $materialId)->delete();
+        return (bool) Media::query()->where('material_id', '=', $materialId)->delete();
     }
 
-    public function findByMaterialAndType(int $materialId, string $mediaType): ?Media
+    public function findByMaterialAndType(string $materialId, string $mediaType): ?Media
     {
-        return Media::where('material_id', $materialId)
-            ->where('media_type', $mediaType)
+        return Media::query()->where('material_id', '=', $materialId)
+            ->where('media_type', '=', $mediaType)
             ->first();
     }
 }

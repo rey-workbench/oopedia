@@ -14,8 +14,8 @@ interface FactGatheringServiceInterface
         int $score,
         int $timeSpent,
         string $difficulty,
-        int $questionId,
-        int $materialId,
-        ?int $moduleId = null,
-    ): array;
+        string $questionId,
+        string $materialId,
+        ?string $moduleId = null,
+        ): array;
 }

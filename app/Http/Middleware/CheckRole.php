@@ -23,7 +23,7 @@ class CheckRole
         // Convert role parameter to array for multiple role support
         $roles = explode('|', $role);
 
-        if (! in_array(auth()->user()->role_id, $roles)) {
+        if (! in_array(auth()->user()->role->role_name, $roles)) {
             return Inertia::render('Error', [
                 'status'  => 403,
                 'message' => 'Anda tidak memiliki akses untuk halaman ini',

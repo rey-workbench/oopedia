@@ -2,21 +2,22 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property int $id
+ * @property string $id
  * @property string $title
  * @property string|null $content
- * @property int|null $module_id
- * @property int|null $created_by
+ * @property string|null $module_id
+ * @property string|null $created_by
  */
 class Material extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUlids;
 
     protected $fillable = [
         'title',
@@ -28,8 +29,8 @@ class Material extends Model
 
     protected $casts = [
         'is_final_project' => 'boolean',
-        'module_id' => 'integer',
-        'created_by' => 'integer',
+        'module_id' => 'string',
+        'created_by' => 'string',
     ];
 
     // ==================== RELATIONSHIPS ====================

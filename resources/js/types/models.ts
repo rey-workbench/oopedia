@@ -57,7 +57,6 @@ export interface Material {
     level: DifficultyLevel;
     status: 'draft' | 'published';
     module_id: number | null;
-    is_final_project: boolean;
     created_by: number | null;
     created_at: string;
     updated_at: string;
@@ -71,8 +70,6 @@ export interface Material {
     student_count?: number;
     progress_percentage?: number;
     completed_questions?: number;
-    /** Set by QuestionListingService — true when student hasn't unlocked this module yet */
-    is_locked?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -324,21 +321,6 @@ export interface StudentProfile {
     hints_available: number;
     accuracy: number;
     fast_track_active: boolean;
-}
-
-// ---------------------------------------------------------------------------
-// Certification
-// ---------------------------------------------------------------------------
-
-/** Certificate tier awarded by adaptive rules (Gold/Silver/Bronze) */
-export type CertificationType = 'gold' | 'silver' | 'bronze';
-
-/** A single awarded certificate, enriched by the controller */
-export interface Certification {
-    material_id: number;
-    material_title: string;
-    type: CertificationType;
-    issued_at: string | null;
 }
 
 /** One row in the leaderboard from LeaderboardService.processLeaderboardData */

@@ -12,9 +12,11 @@ use Inertia\Response;
 
 class UeqSurveyController extends Controller
 {
-    public function __construct(
-        protected UeqSurveyServiceInterface $ueqService,
-    ) {}
+    public function __construct(protected
+        UeqSurveyServiceInterface $ueqService,
+        )
+    {
+    }
 
     public function create(): Response|RedirectResponse
     {
@@ -45,7 +47,7 @@ class UeqSurveyController extends Controller
         return Inertia::render('Mahasiswa/Ueq/ThankYou/Index');
     }
 
-    /** @return array<int, array<string, string>> */
+    /** @return array<string, array<string, string>> */
     private function getAspects(): array
     {
         return [

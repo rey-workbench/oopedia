@@ -97,9 +97,9 @@ class QuestionController extends Controller
             ->with('success', 'Soal berhasil ditambahkan.');
     }
 
-    public function edit(int|string $questionId): Response|RedirectResponse
+    public function edit(string $questionId): Response|RedirectResponse
     {
-        $question = $this->questionService->getQuestionWithAnswers((int) $questionId);
+        $question = $this->questionService->getQuestionWithAnswers($questionId);
 
         if (! $question) {
             return redirect()->route('admin.questions.index')
@@ -113,7 +113,7 @@ class QuestionController extends Controller
         return Inertia::render('Admin/Questions/Edit/Index', compact('question', 'materials', 'material', 'subMaterials'));
     }
 
-    public function update(UpdateQuestionRequest $request, int|string $questionId): RedirectResponse
+    public function update(UpdateQuestionRequest $request, string $questionId): RedirectResponse
     {
         $questionType = $request->question_type;
 
@@ -129,7 +129,7 @@ class QuestionController extends Controller
         $data            = $request->only(['question_text', 'question_type', 'difficulty', 'material_id', 'sub_material_id']);
         $data['answers'] = $request->input('answers');
 
-        $this->questionService->updateQuestion((int) $questionId, $data);
+        $this->questionService->updateQuestion($questionId, $data);
 
         $redirectParams = $request->material_id ? ['material' => $request->material_id] : [];
 
@@ -137,12 +137,12 @@ class QuestionController extends Controller
             ->with('success', 'Soal berhasil diperbarui.');
     }
 
-    public function destroy(int|string $questionId): RedirectResponse
+    public function destroy(string $questionId): RedirectResponse
     {
-        $question   = $this->questionService->getQuestionById((int) $questionId);
+        $question   = $this->questionService->getQuestionById($questionId);
         $materialId = $question?->material_id;
 
-        $this->questionService->deleteQuestion((int) $questionId);
+        $this->questionService->deleteQuestion($questionId);
 
         $redirectParams = $materialId ? ['material' => $materialId] : [];
 

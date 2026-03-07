@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int $id
- * @property int $question_id
+ * @property string $id
+ * @property string $question_id
  * @property bool $is_correct
  * @property string|null $explanation
  * @property string|null $answer_text
@@ -18,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Answer extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUlids;
 
     protected $fillable = [
         'question_id',
@@ -31,7 +32,7 @@ class Answer extends Model
     ];
 
     protected $casts = [
-        'is_correct'     => 'boolean',
+        'is_correct' => 'boolean',
         'blank_position' => 'integer',
     ];
 

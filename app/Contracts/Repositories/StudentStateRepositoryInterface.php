@@ -10,14 +10,14 @@ use Illuminate\Database\Eloquent\Collection;
  */
 interface StudentStateRepositoryInterface
 {
-    public function upsert(int $userId, int $materialId, array $attributes): StudentState;
+    public function upsert(string $userId, string $materialId, array $attributes): StudentState;
 
-    public function getByUserAndMaterial(int $userId, int $materialId): ?StudentState;
+    public function getByUserAndMaterial(string $userId, string $materialId): ?StudentState;
 
-    public function updateProgress(int $userId, int $materialId, array $progressData): void;
+    public function updateProgress(string $userId, string $materialId, array $progressData): void;
 
     /** @return Collection<int, StudentState> */
-    public function getAll(int $userId): Collection;
+    public function getAll(string $userId): Collection;
 
-    public function delete(int $userId, int $materialId): bool;
+    public function delete(string $userId, string $materialId): bool;
 }

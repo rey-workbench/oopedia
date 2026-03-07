@@ -2,25 +2,26 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property int $id
- * @property int $material_id
- * @property int|null $sub_material_id
+ * @property string $id
+ * @property string $material_id
+ * @property string|null $sub_material_id
  * @property string $question_text
  * @property string $question_type
  * @property string $type
  * @property string $difficulty
  * @property string|null $hint
- * @property int|null $created_by
+ * @property string|null $created_by
  */
 class Question extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUlids;
 
     const TYPE_FILL_IN_THE_BLANK = 'fill_in_the_blank';
 
@@ -40,9 +41,9 @@ class Question extends Model
     ];
 
     protected $casts = [
-        'material_id'     => 'integer',
-        'sub_material_id' => 'integer',
-        'created_by'      => 'integer',
+        'material_id' => 'string',
+        'sub_material_id' => 'string',
+        'created_by' => 'string',
     ];
 
     // ==================== RELATIONSHIPS ====================
@@ -59,7 +60,7 @@ class Question extends Model
 
     public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class , 'created_by');
     }
 
     public function answers(): HasMany

@@ -13,18 +13,18 @@ interface MediaRepositoryInterface
     /** @return Collection<int, Media> */
     public function all(): Collection;
 
-    public function find(int $id): ?Media;
+    public function find(string $id): ?Media;
 
     public function create(array $data): Media;
 
-    public function update(int $id, array $data): ?Media;
+    public function update(string $id, array $data): ?Media;
 
-    public function delete(int $id): bool;
+    public function delete(string $id): bool;
 
     /** @return Collection<int, Media> */
-    public function getByMaterial(int $materialId): Collection;
+    public function getByMaterial(string $materialId): Collection;
 
-    public function deleteByMaterial(int $materialId): bool;
+    public function deleteByMaterial(string $materialId): bool;
 
-    public function findByMaterialAndType(int $materialId, string $mediaType): ?Media;
+    public function findByMaterialAndType(string $materialId, string $mediaType): ?Media;
 }

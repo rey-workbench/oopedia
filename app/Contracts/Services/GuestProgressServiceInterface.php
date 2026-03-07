@@ -12,12 +12,12 @@ interface GuestProgressServiceInterface
     /**
      * Save progress for a specific question.
      */
-    public function saveProgress(array $data, bool $isCorrect, int $questionId): void;
+    public function saveProgress(array $data, bool $isCorrect, string $questionId): void;
 
     /**
      * Reset progress for a specific material.
      */
-    public function resetMaterialProgress(int $materialId): void;
+    public function resetMaterialProgress(string $materialId): void;
 
     /**
      * Clear all guest progress.

@@ -8,28 +8,28 @@ use Illuminate\Database\Eloquent\Collection;
 
 class AnswerRepository implements AnswerRepositoryInterface
 {
-    /** @return Collection<int, Answer> */
+    /** @return Collection<string, Answer> */
     public function all(): Collection
     {
         return Answer::all();
     }
 
-    public function find(int $id): ?Answer
+    public function find(string $id): ?Answer
     {
-        return Answer::find($id);
+        return Answer::query()->find($id, ['*']);
     }
 
-    public function findOrFail(int $id): Answer
+    public function findOrFail(string $id): Answer
     {
-        return Answer::findOrFail($id);
+        return Answer::query()->findOrFail($id);
     }
 
     public function create(array $data): Answer
     {
-        return Answer::create($data);
+        return Answer::query()->create($data);
     }
 
-    public function update(int $id, array $data): ?Answer
+    public function update(string $id, array $data): ?Answer
     {
         $answer = $this->findOrFail($id);
         $answer->update($data);
@@ -37,29 +37,29 @@ class AnswerRepository implements AnswerRepositoryInterface
         return $answer;
     }
 
-    public function delete(int $id): bool
+    public function delete(string $id): bool
     {
         $answer = $this->findOrFail($id);
 
-        return (bool) $answer->delete();
+        return (bool)$answer->delete();
     }
 
-    /** @return Collection<int, Answer> */
-    public function getByQuestionId(int $questionId): Collection
+    /** @return Collection<string, Answer> */
+    public function getByQuestionId(string $questionId): Collection
     {
-        return Answer::where('question_id', $questionId)->get();
+        return Answer::query()->where('question_id', '=', $questionId)->get();
     }
 
-    /** @return Collection<int, Answer> */
-    public function getCorrectAnswers(int $questionId): Collection
+    /** @return Collection<string, Answer> */
+    public function getCorrectAnswers(string $questionId): Collection
     {
-        return Answer::where('question_id', $questionId)
-            ->where('is_correct', true)
+        return Answer::query()->where('question_id', '=', $questionId)
+            ->where('is_correct', '=', true)
             ->get();
     }
 
-    public function deleteByQuestionId(int $questionId): bool
+    public function deleteByQuestionId(string $questionId): bool
     {
-        return (bool) Answer::where('question_id', $questionId)->delete();
+        return (bool)Answer::query()->where('question_id', '=', $questionId)->delete();
     }
 }

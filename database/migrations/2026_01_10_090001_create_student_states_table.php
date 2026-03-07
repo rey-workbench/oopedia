@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+return new class extends Migration 
 {
     /**
      * Run the migrations.
@@ -15,8 +15,8 @@ return new class extends Migration
         Schema::dropIfExists('student_states');
 
         Schema::create('student_states', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->ulid('id')->primary();
+            $table->foreignUlid('user_id')->constrained()->cascadeOnDelete();
 
             // JSON Data Structures
             $table->json('gamification_data')->nullable(); // global_xp, current_level, current_streak, max_streak, badges

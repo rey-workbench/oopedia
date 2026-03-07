@@ -299,8 +299,8 @@ export class ReviewState extends BaseState {
 
     filterDifficulty(d: string) {
         router.get(
-            ROUTES.MAHASISWA.MATERIALS.QUESTIONS.REVIEW(this.material.id),
-            { difficulty: d },
+            ROUTES.MAHASISWA.MATERIALS.QUESTIONS.REVIEW(this.material.id, d),
+            {},
             {
                 preserveState: true,
                 preserveScroll: true,

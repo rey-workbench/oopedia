@@ -45,9 +45,9 @@ class FactGatheringService implements FactGatheringServiceInterface
         int $score,
         int $timeSpent,
         string $difficulty,
-        int $questionId,
-        int $materialId,
-        ?int $moduleId = null,
+        string $questionId,
+        string $materialId,
+        ?string $moduleId = null,
     ): array {
         $facts = [];
 
@@ -155,7 +155,7 @@ class FactGatheringService implements FactGatheringServiceInterface
     /**
      * Get error type facts (G09-G10).
      */
-    protected function getErrorTypeFacts(StudentState $state, int $questionId, bool $isCorrect): array
+    protected function getErrorTypeFacts(StudentState $state, string $questionId, bool $isCorrect): array
     {
         if ($isCorrect) {
             return [];
@@ -172,7 +172,7 @@ class FactGatheringService implements FactGatheringServiceInterface
     /**
      * Get module fact (G13-G25).
      */
-    protected function getModuleFact(int $moduleId): string
+    protected function getModuleFact(string $moduleId): string
     {
         return AdaptiveConstants::FACT_IN_MODULE;
     }
@@ -195,7 +195,7 @@ class FactGatheringService implements FactGatheringServiceInterface
     /**
      * Get unlock status facts (G20-G21).
      */
-    protected function getUnlockStatusFacts(StudentState $state, int $materialId): array
+    protected function getUnlockStatusFacts(StudentState $state, string $materialId): array
     {
         $facts = [];
 
@@ -226,7 +226,7 @@ class FactGatheringService implements FactGatheringServiceInterface
     /**
      * Check if student has persistent failures (G22).
      */
-    protected function isPersistentFail(int $userId, int $questionId): bool
+    protected function isPersistentFail(string $userId, string $questionId): bool
     {
         $consecutiveFails = $this->progressRepo->getConsecutiveFailures($userId, $questionId);
 
@@ -236,7 +236,7 @@ class FactGatheringService implements FactGatheringServiceInterface
     /**
      * Check if student has satisfied enough questions in the material (G26).
      */
-    protected function hasSatisfactoryProgress(int $userId, int $materialId, string $difficulty = 'all'): bool
+    protected function hasSatisfactoryProgress(string $userId, string $materialId, string $difficulty = 'all'): bool
     {
         $answeredIds = $this->progressRepo->getAnsweredQuestionIds($userId, $materialId);
         

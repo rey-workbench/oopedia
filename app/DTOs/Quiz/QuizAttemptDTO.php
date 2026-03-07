@@ -5,10 +5,10 @@ namespace App\DTOs\Quiz;
 readonly class QuizAttemptDTO
 {
     public function __construct(
-        public int $id,
-        public int $user_id,
-        public int $question_id,
-        public ?int $answer_id,
+        public string $id,
+        public string $user_id,
+        public string $question_id,
+        public ?string $answer_id,
         public bool $is_correct,
         public int $score,
         public int $attempt_number,

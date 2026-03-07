@@ -15,7 +15,7 @@ interface QuestionAnswerServiceInterface
      * @param array<string, mixed> $data
      * @return array<string, mixed>
      */
-    public function checkAnswer(array $data, int|string $userId, bool $isGuest): array;
+    public function checkAnswer(array $data, string $userId, bool $isGuest): array;
 
     /**
      * Check all answers for a completed quiz session.
@@ -23,7 +23,7 @@ interface QuestionAnswerServiceInterface
      * @param array<string, mixed> $data
      * @return array<string, mixed>
      */
-    public function checkAllAnswers(array $data, int $userId): array;
+    public function checkAllAnswers(array $data, string $userId): array;
 
     /**
      * Determine if a given answer for a question is correct.

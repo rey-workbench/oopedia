@@ -23,7 +23,7 @@ class QuestionService implements QuestionServiceInterface
     public function getFilteredQuestions(
         ?string $search = null,
         ?string $difficulty = null,
-        ?int $materialId = null,
+        ?string $materialId = null,
         ): LengthAwarePaginator
     {
         $questions = $this->questionRepo->getFilteredQuestions($search, $difficulty, $materialId);
@@ -41,7 +41,7 @@ class QuestionService implements QuestionServiceInterface
     }
 
     public function getAvailableQuestionsForBank(
-        int $materialId,
+        string $materialId,
         array $excludeIds,
         ?string $search = null,
         ?string $difficulty = null,
@@ -50,17 +50,17 @@ class QuestionService implements QuestionServiceInterface
         return $this->questionRepo->getQuestionsForBank($materialId, $excludeIds, $search, $difficulty);
     }
 
-    public function getQuestionById(int $id): ?Question
+    public function getQuestionById(string $id): ?Question
     {
         return $this->questionRepo->find($id);
     }
 
-    public function getQuestionWithAnswers(int $id): ?Question
+    public function getQuestionWithAnswers(string $id): ?Question
     {
         return $this->questionRepo->findWithAnswers($id);
     }
 
-    public function existsByMaterialAndDifficulty(int $materialId, string $difficulty): bool
+    public function existsByMaterialAndDifficulty(string $materialId, string $difficulty): bool
     {
         return $this->questionRepo->existsByMaterialAndDifficulty($materialId, $difficulty);
     }
@@ -83,7 +83,7 @@ class QuestionService implements QuestionServiceInterface
         });
     }
 
-    public function updateQuestion(int $questionId, array $data): Question
+    public function updateQuestion(string $questionId, array $data): Question
     {
         $question = $this->questionRepo->find($questionId);
 
@@ -108,7 +108,7 @@ class QuestionService implements QuestionServiceInterface
         });
     }
 
-    public function deleteQuestion(int $questionId): void
+    public function deleteQuestion(string $questionId): void
     {
         $question = $this->questionRepo->find($questionId);
 
@@ -122,7 +122,7 @@ class QuestionService implements QuestionServiceInterface
         });
     }
 
-    protected function createAnswers(int $questionId, array $answersData): void
+    protected function createAnswers(string $questionId, array $answersData): void
     {
         foreach ($answersData as $answer) {
             $this->answerRepo->create([

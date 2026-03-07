@@ -9,8 +9,8 @@ class CreateAnswersTable extends Migration
     public function up()
     {
         Schema::create('answers', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->bigInteger('question_id')->unsigned();
+            $table->ulid('id')->primary();
+            $table->ulid('question_id');
             $table->boolean('is_correct')->default(false);
             $table->text('explanation')->nullable();
             $table->string('answer_text')->nullable();

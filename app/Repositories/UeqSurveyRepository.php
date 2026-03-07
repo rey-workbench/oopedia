@@ -9,25 +9,25 @@ use Illuminate\Database\Eloquent\Collection;
 
 class UeqSurveyRepository implements UeqSurveyRepositoryInterface
 {
-    /** @return Collection<int, UeqSurvey> */
+    /** @return Collection<string, UeqSurvey> */
     public function all(): Collection
     {
         return UeqSurvey::all();
     }
 
-    public function find(int $id): ?UeqSurvey
+    public function find(string $id): ?UeqSurvey
     {
-        return UeqSurvey::find($id);
+        return UeqSurvey::query()->find($id, ['*']);
     }
 
     public function create(array $data): UeqSurvey
     {
-        return UeqSurvey::create($data);
+        return UeqSurvey::query()->create($data);
     }
 
-    public function update(int $id, array $data): ?UeqSurvey
+    public function update(string $id, array $data): ?UeqSurvey
     {
-        $ueq = UeqSurvey::find($id);
+        $ueq = UeqSurvey::query()->find($id, ['*']);
 
         if ($ueq) {
             $ueq->update($data);
@@ -38,12 +38,12 @@ class UeqSurveyRepository implements UeqSurveyRepositoryInterface
         return null;
     }
 
-    public function delete(int $id): bool
+    public function delete(string $id): bool
     {
-        $ueq = UeqSurvey::find($id);
+        $ueq = UeqSurvey::query()->find($id, ['*']);
 
         if ($ueq) {
-            return (bool) $ueq->delete();
+            return (bool)$ueq->delete();
         }
 
         return false;
@@ -51,21 +51,21 @@ class UeqSurveyRepository implements UeqSurveyRepositoryInterface
 
     public function paginate(int $perPage = 15): LengthAwarePaginator
     {
-        return UeqSurvey::paginate($perPage);
+        return UeqSurvey::query()->paginate($perPage, ['*'], 'page', null);
     }
 
     public function countAll(): int
     {
-        return UeqSurvey::count();
+        return UeqSurvey::query()->count('*');
     }
 
     /** @return Collection<int, UeqSurvey> */
     public function getAllWithUser(?string $class = null): Collection
     {
-        $query = UeqSurvey::with('user');
+        $query = UeqSurvey::query()->with('user');
 
         if ($class) {
-            $query->where('class', $class);
+            $query->where('class', '=', $class);
         }
 
         return $query->get();
@@ -77,13 +77,13 @@ class UeqSurveyRepository implements UeqSurveyRepositoryInterface
         return UeqSurvey::distinct()->pluck('class')->filter()->values()->all();
     }
 
-    public function findByUserId(int $userId): ?UeqSurvey
+    public function findByUserId(string $userId): ?UeqSurvey
     {
-        return UeqSurvey::where('user_id', $userId)->firstOrFail();
+        return UeqSurvey::query()->where('user_id', '=', $userId)->firstOrFail();
     }
 
-    public function findSurveyByUser(int $userId): ?UeqSurvey
+    public function findSurveyByUser(string $userId): ?UeqSurvey
     {
-        return UeqSurvey::where('user_id', $userId)->first();
+        return UeqSurvey::query()->where('user_id', '=', $userId)->first();
     }
 }

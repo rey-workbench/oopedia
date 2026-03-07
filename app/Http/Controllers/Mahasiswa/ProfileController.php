@@ -47,11 +47,11 @@ class ProfileController extends Controller
         /** @var array<string|int, string> $rawCertifications */
         $rawCertifications = $studentState?->gamification_data['certifications'] ?? [];
         $certifications = collect($rawCertifications)
-            ->map(function (string $type, int|string $materialId): array {
-                $material = $this->materialRepo->find((int) $materialId);
+            ->map(function (string $type, string $materialId): array {
+                $material = $this->materialRepo->find($materialId);
 
                 return [
-                    'material_id'    => (int) $materialId,
+                    'material_id'    => $materialId,
                     'material_title' => $material?->title ?? 'Object-Oriented Programming',
                     'type'           => $type,
                     'issued_at'      => null,

@@ -13,31 +13,33 @@ class DosenSeeder extends Seeder
         // Create dosen users
         $dosenList = [
             [
-                'name'     => 'Dr. Ahmad',
-                'email'    => 'ahmad@dosen.com',
+                'name' => 'Dr. Ahmad',
+                'email' => 'ahmad@dosen.com',
                 'password' => 'dosen123',
             ],
             [
-                'name'     => 'Prof. Sarah',
-                'email'    => 'sarah@dosen.com',
+                'name' => 'Prof. Sarah',
+                'email' => 'sarah@dosen.com',
                 'password' => 'dosen123',
             ],
             [
-                'name'     => 'Dr. Budi',
-                'email'    => 'budi@dosen.com',
+                'name' => 'Dr. Budi',
+                'email' => 'budi@dosen.com',
                 'password' => 'dosen123',
             ],
         ];
 
+        $role = \App\Models\Role::where('role_name', 'dosen')->first();
+
         foreach ($dosenList as $dosen) {
             User::firstOrCreate(
-                ['email' => $dosen['email']],
-                [
-                    'name'        => $dosen['name'],
-                    'password'    => Hash::make($dosen['password']),
-                    'role_id'     => 2,
-                    'is_approved' => true,
-                ],
+            ['email' => $dosen['email']],
+            [
+                'name' => $dosen['name'],
+                'password' => Hash::make($dosen['password']),
+                'role_id' => $role->id,
+                'is_approved' => true,
+            ],
             );
         }
     }

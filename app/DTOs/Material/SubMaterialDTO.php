@@ -7,8 +7,8 @@ use App\Models\SubMaterial;
 readonly class SubMaterialDTO
 {
     public function __construct(
-        public int $id,
-        public int $material_id,
+        public string $id,
+        public string $material_id,
         public string $title,
         public string $content,
         public string $jenis_konten,
@@ -34,7 +34,7 @@ readonly class SubMaterialDTO
     public static function fromRequest(array $data): self
     {
         return new self(
-            id: $data['id'] ?? 0,
+            id: $data['id'] ?? '',
             material_id: $data['material_id'],
             title: $data['title'],
             content: $data['content'],
