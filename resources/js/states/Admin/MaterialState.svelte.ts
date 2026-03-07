@@ -43,6 +43,8 @@ export class MaterialFormState extends FormState<{
     description: string | null;
     content: string;
     level: string;
+    module_id: number | string | null;
+    is_final_project: boolean;
     cover_image: File | null;
     status: string;
 }> {
@@ -56,6 +58,8 @@ export class MaterialFormState extends FormState<{
                 description: material ? material.description : '',
                 content: material ? material.content || '' : '',
                 level: material ? material.level : 'beginner',
+                module_id: material ? material.module_id : null,
+                is_final_project: material ? !!material.is_final_project : false,
                 cover_image: null,
                 status: material ? material.status : 'draft',
             },

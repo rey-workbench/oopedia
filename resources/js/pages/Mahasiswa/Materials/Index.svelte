@@ -2,7 +2,7 @@
     import App from '@/layouts/App.svelte';
     import Card from '@/components/ui/Card.svelte';
     import Button from '@/components/ui/Button.svelte';
-    import { Code, Puzzle, BookOpen, Ghost, ArrowRight } from 'lucide-svelte';
+    import { Code, Puzzle, BookOpen, Ghost, ArrowRight, Trophy } from 'lucide-svelte';
     import { formatDate } from '@/utils/formatters';
     import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';
@@ -58,6 +58,15 @@
                             </div>
                         {/if}
                         <div class="absolute inset-0 bg-slate-900/40"></div>
+
+                        {#if material.is_final_project}
+                            <div class="absolute top-6 left-6 z-20">
+                                <div class="bg-amber-400 text-amber-950 flex items-center gap-2 rounded-2xl px-4 py-2 text-[10px] font-black tracking-widest uppercase shadow-xl ring-4 ring-amber-400/20">
+                                    <Trophy size={14} strokeWidth={3} />
+                                    PROYEK AKHIR
+                                </div>
+                            </div>
+                        {/if}
 
                         <div
                             class="absolute right-6 bottom-6 left-6 flex items-center justify-between"

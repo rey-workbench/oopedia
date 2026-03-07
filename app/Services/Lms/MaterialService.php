@@ -9,6 +9,7 @@ use App\Exceptions\Domain\MaterialNotFoundException;
 use App\Exceptions\Domain\MediaOperationException;
 use App\Models\Material;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class MaterialService implements MaterialServiceInterface
@@ -47,12 +48,16 @@ class MaterialService implements MaterialServiceInterface
         $material = $this->materialRepo->create([
             'title' => $data['title'],
             'content' => $data['content'],
+            'module_id' => $data['module_id'],
             'created_by' => $data['created_by'],
+            'is_final_project' => $data['is_final_project'] ?? false,
         ]);
 
         if ($coverImage) {
             $this->uploadCoverImage($material, $coverImage, $data['title']);
         }
+
+        Cache::forget('sidebar_materials_v4');
 
         return $material;
     }
@@ -68,12 +73,16 @@ class MaterialService implements MaterialServiceInterface
         $this->materialRepo->update($material->id, [
             'title' => $data['title'],
             'content' => $data['content'] ?? $data['description'] ?? null,
+            'module_id' => $data['module_id'] ?? $material->module_id,
+            'is_final_project' => $data['is_final_project'] ?? $material->is_final_project,
         ]);
 
         if ($coverImage) {
             $this->deleteCoverImage($material);
             $this->uploadCoverImage($material, $coverImage, $data['title']);
         }
+
+        Cache::forget('sidebar_materials_v4');
 
         return $material->fresh();
     }
@@ -94,6 +103,8 @@ class MaterialService implements MaterialServiceInterface
         }
 
         $this->materialRepo->delete($material->id);
+
+        Cache::forget('sidebar_materials_v4');
     }
 
     public function deleteMedia(int $mediaId): int

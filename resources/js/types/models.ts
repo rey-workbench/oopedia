@@ -57,6 +57,7 @@ export interface Material {
     level: DifficultyLevel;
     status: 'draft' | 'published';
     module_id: number | null;
+    is_final_project: boolean;
     created_by: number | null;
     created_at: string;
     updated_at: string;

@@ -11,310 +11,317 @@ class SubMaterialsSeeder extends Seeder
     public function run(): void
     {
         $materialTopicMap = [
-            1 => [ // Pengenalan PBO
+            1 => [ // Pengantar Konsep Dasar OOP
                 [
-                    'title'   => 'Konsep Paradigma PBO',
-                    'jenis'   => 'teori',
-                    'style'   => 'textual',
-                    'content' => '<h3>Apa itu PBO?</h3>
-                    <p>Pemrograman Berorientasi Objek (PBO) adalah sebuah paradigma pemrograman yang berorientasi kepada objek. Semua data dan fungsi di dalam paradigma ini dibungkus dalam kelas-kelas atau objek-objek. Setiap objek dapat menerima pesan, memproses data, dan mengirim pesan ke objek lainnya.</p>
-                    <p>Berbeda dengan pemrograman prosedural yang membagi program menjadi unit-unit kecil fungis, PBO membagi program berdasarkan entitas (Objek) yang memiliki data dan perilaku sendiri.</p>
-                    <h4>Analogi Nyata</h4>
-                    <p>Bayangkan sebuah mobil. Mobil adalah sebuah objek. Mobil memiliki atribut (warna, merk, kecepatan) dan perilaku (maju, mundur, klakson). Dalam PBO, kita memodelkan sistem perangkat lunak seperti kita melihat benda-benda di dunia nyata.</p>',
-                ],
-                [
-                    'title'   => 'Sintaks Dasar Objek',
-                    'jenis'   => 'sintaks',
-                    'style'   => 'visual',
-                    'content' => '<h3>Mendeklarasikan Kelas dan Objek</h3>
-                    <p>Dalam bahasa seperti Java atau PHP, kita mendefinisikan struktur objek menggunakan kata kunci <code>class</code>.</p>
-                    <div class="ql-code-block-container" spellcheck="false">
-                        <div class="ql-code-block">// Definisi Kelas</div>
-                        <div class="ql-code-block">class Manusia {</div>
-                        <div class="ql-code-block">    public $nama;</div>
-                        <div class="ql-code-block">    </div>
-                        <div class="ql-code-block">    public function bicara() {</div>
-                        <div class="ql-code-block">        return "Halo, nama saya " . $this->nama;</div>
-                        <div class="ql-code-block">    }</div>
-                        <div class="ql-code-block">}</div>
-                        <div class="ql-code-block"></div>
-                        <div class="ql-code-block">// Membuat Objek (Instansiasi)</div>
-                        <div class="ql-code-block">$budi = new Manusia();</div>
-                        <div class="ql-code-block">$budi->nama = "Budi";</div>
-                        <div class="ql-code-block">echo $budi->bicara(); // Output: Halo, nama saya Budi</div>
-                    </div>
-                    <p>Kata kunci <code>new</code> digunakan untuk mengalokasikan memori bagi objek baru di sistem.</p>',
-                ],
-                [
-                    'title'   => 'Analisis Sistem PBO',
-                    'jenis'   => 'mixed',
-                    'style'   => 'mixed',
-                    'content' => '<h3>Mengidentifikasi Objek</h3>
-                    <p>Langkah pertama dalam PBO adalah analisis. Kita harus mampu membedakan mana yang merupakan <strong>Kelas</strong> dan mana yang merupakan <strong>Objek</strong>.</p>
+                    'title' => 'Paradigma PBO vs Struktural: Analisis Mendalam (Teori)',
+                    'jenis' => 'teori',
+                    'style' => 'textual',
+                    'content' => '<h3>Evolusi Pemecahan Masalah Perangkat Lunak</h3>
+                    <p>Pemrograman Struktural (atau Prosedural) telah lama menjadi fondasi pengembangan perangkat lunak, dengan fokus pada pengolahan data melalui serangkaian fungsi atau prosedur. Namun, seiring dengan meningkatnya kompleksitas sistem—seperti aplikasi perbankan atau sistem manajemen rumah sakit—pendekatan ini mulai menemui batasnya. Masalah utamanya adalah ketergantungan yang terlalu kuat antara data dan fungsi (<em>Tight Coupling</em>), di mana perubahan kecil pada struktur data dapat merusak fungsi-fungsi yang tersebar di seluruh sistem.</p>
+                    <p>Pemrograman Berorientasi Objek (PBO) mentransformasi pendekatan ini dengan memperkenalkan konsep <strong>Objek</strong>. Dalam PBO, data tidak lagi diproses secara bebas di luar, melainkan menjadi bagian internal dari objek itu sendiri. Perubahan pada struktur data internal sebuah objek tidak akan merusak bagian luar sistem selama antarmuka komunikasinya tetap sama.</p>
+                    <p>Keunggulan utama PBO meliputi:</p>
                     <ul>
-                        <li><strong>Kelas:</strong> Kategori umum (Contoh: Mahasiswa, Buku, Transaksi).</li>
-                        <li><strong>Objek:</strong> Entitas spesifik (Contoh: Budi, Buku "Laskar Pelangi", Transaksi ID #102).</li>
+                        <li><strong>Modularity:</strong> Program dibagi menjadi modul-modul yang mandiri dan dapat diuji secara terpisah.</li>
+                        <li><strong>Maintainability:</strong> Kode lebih mudah diperbaiki karena lokasi kesalahan biasanya terlokalisasi di objek tertentu.</li>
+                        <li><strong>Scalability:</strong> Memudahkan penambahan fitur baru dengan sistem yang sudah ada melalui ekstensibilitas objek.</li>
                     </ul>
-                    <p><strong>Latihan:</strong> Jika kita membangun sistem ATM, identifikasilah minimal 3 objek yang terlibat! (Nasabah, Kartu, Mesin ATM).</p>',
-                ],
-            ],
-            2 => [ // Kelas dan Objek
-                [
-                    'title'   => 'Teori Blueprint (Kelas)',
-                    'jenis'   => 'teori',
-                    'style'   => 'textual',
-                    'content' => '<h3>Kelas sebagai Blueprint</h3>
-                    <p>Kelas bukan merupakan objek itu sendiri, melainkan sketsa atau cetakan. Kelas menentukan data apa yang akan dimiliki oleh objek (Atribut) dan fungsi apa yang bisa dijalankan (Method).</p>
-                    <p>Satu kelas dapat digunakan untuk menciptakan ribuan objek yang berbeda-beda nilainya namun memiliki struktur yang sama.</p>',
+                    <p>Dengan menguasai PBO, seorang pengembang beralih dari sekadar menulis instruksi ke membangun arsitektur sistem yang elastis dan adaptif terhadap perubahan kebutuhan bisnis.</p>',
                 ],
                 [
-                    'title'   => 'Deklarasi Class & Instansiasi',
-                    'jenis'   => 'sintaks',
-                    'style'   => 'visual',
-                    'content' => '<h3>Struktur Lengkap Kelas</h3>
+                    'title' => 'Struktur Teknis dan Konvensi Java (Sintaks)',
+                    'jenis' => 'sintaks',
+                    'style' => 'visual',
+                    'content' => '<h3>Anatomi dan Tata Tulis Kelas Profesional</h3>
+                    <p>Dalam ekosistem Java, penulisan kode harus mengikuti standar industri untuk memudahkan kolaborasi. Nama kelas selalu menggunakan <strong>PascalCase</strong> (contoh: <code>SistemAkademik</code>), sedangkan metode dan atribut menggunakan <strong>camelCase</strong> (contoh: <code>hitungTotalHarga</code>).</p>
                     <div class="ql-code-block-container" spellcheck="false">
-                        <div class="ql-code-block">class Produk {</div>
-                        <div class="ql-code-block">    // Atribut (Properti)</div>
-                        <div class="ql-code-block">    public $id;</div>
-                        <div class="ql-code-block">    public $harga;</div>
+                        <div class="ql-code-block">/* Struktur Kelas Sederhana */</div>
+                        <div class="ql-code-block">public class Karyawan {</div>
+                        <div class="ql-code-block">    // Atribut/Fields</div>
+                        <div class="ql-code-block">    private String nama;</div>
+                        <div class="ql-code-block">    private double gaji;</div>
                         <div class="ql-code-block"></div>
-                        <div class="ql-code-block">    // Constructor (Dijalankan saat objek dibuat)</div>
-                        <div class="ql-code-block">    public function __construct($id, $harga) {</div>
-                        <div class="ql-code-block">        $this->id = $id;</div>
-                        <div class="ql-code-block">        $this->harga = $harga;</div>
+                        <div class="ql-code-block">    // Konstruktor</div>
+                        <div class="ql-code-block">    public Karyawan(String nama, double gaji) {</div>
+                        <div class="ql-code-block">        this.nama = nama;</div>
+                        <div class="ql-code-block">        this.gaji = gaji;</div>
                         <div class="ql-code-block">    }</div>
                         <div class="ql-code-block"></div>
-                        <div class="ql-code-block">    // Method</div>
-                        <div class="ql-code-block">    public function cekHarga() {</div>
-                        <div class="ql-code-block">        return "Harga produk ini adalah: " . $this->harga;</div>
+                        <div class="ql-code-block">    // Metode</div>
+                        <div class="ql-code-block">    public void tampilkanProfil() {</div>
+                        <div class="ql-code-block">        System.out.println("Nama: " + nama + ", Gaji: " + gaji);</div>
                         <div class="ql-code-block">    }</div>
                         <div class="ql-code-block">}</div>
-                        <div class="ql-code-block"></div>
-                        <div class="ql-code-block">// Instansiasi dengan parameter</div>
-                        <div class="ql-code-block">$laptop = new Produk("LP01", 15000000);</div>
                     </div>',
                 ],
                 [
-                    'title'   => 'Latihan Pembuatan Objek',
-                    'jenis'   => 'mixed',
-                    'style'   => 'mixed',
-                    'content' => '<h3>Membuat Banyak Instance</h3>
-                    <p>Mari kita lihat bagaimana satu kelas <code>Mobil</code> bisa menjadi banyak objek berbeda:</p>
-                    <div class="ql-code-block-container" spellcheck="false">
-                        <div class="ql-code-block">$avanza = new Mobil("Putih", "Toyota");</div>
-                        <div class="ql-code-block">$civic = new Mobil("Hitam", "Honda");</div>
-                        <div class="ql-code-block">$ferrari = new Mobil("Merah", "Ferrari");</div>
+                    'title' => 'Visualisasi Konsep Dasar OOP (Visual)',
+                    'jenis' => 'mixed',
+                    'style' => 'visual',
+                    'content' => '<h3>Memahami OOP Secara Visual</h3>
+                    <p>Simak penjelasan interaktif mengenai dasar-dasar pemrograman berorientasi objek dalam video dari Kelas Terbuka di bawah ini untuk mendapatkan gambaran menyeluruh.</p>
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin: 2rem 0;">
+                        <iframe src="https://www.youtube.com/embed/bxOPd_b0rg4" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
-                    <p>Ketiganya berasal dari Blueprint yang sama, namun masing-masing berdiri sendiri di memori komputer dengan data yang berbeda.</p>',
+                    <p>Video ini menjelaskan filosofi dan alasan mengapa kita beralih ke paradigma bebasis objek dalam pengembangan aplikasi skala menengah hingga besar.</p>',
                 ],
             ],
-            3 => [ // Atribut dan Method
+            2 => [ // Class dan Object
                 [
-                    'title'   => 'State vs Behavior',
-                    'jenis'   => 'teori',
-                    'style'   => 'textual',
-                    'content' => '<h3>Memahami Karakteristik Objek</h3>
-                    <p>Objek memiliki dua hal utama:</p>
-                    <ol>
-                        <li><strong>State (Atribut):</strong> Apa yang dimiliki atau diketahui objek. Contoh: Saldo bank, Judul buku.</li>
-                        <li><strong>Behavior (Method):</strong> Apa yang bisa dilakukan objek. Contoh: Tarik tunai, Baca buku.</li>
-                    </ol>
-                    <p>State biasanya berupa variabel, sedangkan Behavior berupa fungsi/prosedur.</p>',
-                ],
-                [
-                    'title'   => 'Definisi Field & Fungsi',
-                    'jenis'   => 'sintaks',
-                    'style'   => 'visual',
-                    'content' => '<h3>Menulis State dan Behavior</h3>
-                    <div class="ql-code-block-container" spellcheck="false">
-                        <div class="ql-code-block">class Player {</div>
-                        <div class="ql-code-block">    // State</div>
-                        <div class="ql-code-block">    public $health = 100;</div>
-                        <div class="ql-code-block">    public $level = 1;</div>
-                        <div class="ql-code-block"></div>
-                        <div class="ql-code-block">    // Behavior</div>
-                        <div class="ql-code-block">    public function takeDamage($amount) {</div>
-                        <div class="ql-code-block">        $this->health -= $amount;</div>
-                        <div class="ql-code-block">        if($this->health < 0) $this->health = 0;</div>
-                        <div class="ql-code-block">    }</div>
-                        <div class="ql-code-block">}</div>
-                    </div>
-                    <p>Method seringkali mengubah nilai dari Atribut (State) objek itu sendiri menggunakan keyword <code>this</code>.</p>',
-                ],
-                [
-                    'title'   => 'Interaksi Antar Objek',
-                    'jenis'   => 'mixed',
-                    'style'   => 'mixed',
-                    'content' => '<h3>Objek Berbicara dengan Objek Lain</h3>
-                    <p>Dalam aplikasi nyata, objek jarang bekerja sendirian. Mereka saling memanggil method satu sama lain.</p>
-                    <p>Contoh: Objek <code>Penjual</code> memanggil method <code>terimaPesanan()</code> milik objek <code>Kurir</code> untuk mengirimkan barang.</p>',
-                ],
-            ],
-            4 => [ // Enkapsulasi
-                [
-                    'title'   => 'Prinsip Information Hiding',
-                    'jenis'   => 'teori',
-                    'style'   => 'textual',
-                    'content' => '<h3>Melindungi Integritas Data</h3>
-                    <p>Enkapsulasi memastikan bahwa data sensitif di dalam objek tidak bisa diubah secara sembarangan dari luar. Ini disebut <em>Information Hiding</em>.</p>
-                    <p>Tanpa enkapsulasi, siapapun bisa mengubah saldo bank seseorang menjadi 1 Milyar tanpa melalui proses validasi yang benar.</p>',
-                ],
-                [
-                    'title'   => 'Getter, Setter & Modifier',
-                    'jenis'   => 'sintaks',
-                    'style'   => 'visual',
-                    'content' => '<h3>Access Modifiers</h3>
+                    'title' => 'Manajemen Memori: Stack vs Heap (Teori)',
+                    'jenis' => 'teori',
+                    'style' => 'textual',
+                    'content' => '<h3>Bagaimana Objek Hidup di Komputer Anda</h3>
+                    <p>Saat Anda melakukan instansiasi sebuah objek di Java, referensi (nama variabel) disimpan di memori <strong>Stack</strong>, namun isi data objek disimpan di memori <strong>Heap</strong>.</p>
+                    <p>Konsekuensi dari arsitektur ini adalah:</p>
                     <ul>
-                        <li><strong>Private:</strong> Hanya bisa diakses di dalam kelas itu sendiri.</li>
-                        <li><strong>Public:</strong> Bisa diakses dari mana saja.</li>
-                        <li><strong>Protected:</strong> Diakses oleh kelas sendiri dan turunannya.</li>
-                    </ul>
+                        <li>Beberapa variabel bisa merujuk ke satu objek fisik yang sama di Heap.</li>
+                        <li>Perubahan pada satu referensi akan terlihat oleh referensi lain yang menunjuk ke objek yang sama.</li>
+                        <li>Garbage Collector akan membersihkan objek di Heap jika sudah tidak ada referensi lagi yang menunjuk ke objek tersebut.</li>
+                    </ul>',
+                ],
+                [
+                    'title' => 'Siklus Instansiasi dan Konstruktor (Sintaks)',
+                    'jenis' => 'sintaks',
+                    'style' => 'visual',
+                    'content' => '<h3>Penciptaan Objek dengan Kata Kunci New</h3>
                     <div class="ql-code-block-container" spellcheck="false">
-                        <div class="ql-code-block">class AkunBank {</div>
-                        <div class="ql-code-block">    private $saldo; // Tidak bisa diakses langsung via $obj->saldo</div>
-                        <div class="ql-code-block"></div>
-                        <div class="ql-code-block">    public function setSaldo($jumlah) {</div>
-                        <div class="ql-code-block">        if($jumlah > 0) $this->saldo = $jumlah;</div>
-                        <div class="ql-code-block">    }</div>
-                        <div class="ql-code-block"></div>
-                        <div class="ql-code-block">    public function getSaldo() {</div>
-                        <div class="ql-code-block">        return "Rp " . number_format($this->saldo);</div>
-                        <div class="ql-code-block">    }</div>
+                        <div class="ql-code-block">public class Produk {</div>
+                        <div class="ql-code-block">    String id;</div>
+                        <div class="ql-code-block">    public Produk(String id) { this.id = id; }</div>
                         <div class="ql-code-block">}</div>
+                        <div class="ql-code-block"></div>
+                        <div class="ql-code-block">// Membuat instance di memory</div>
+                        <div class="ql-code-block">Produk p1 = new Produk("A01");</div>
                     </div>',
                 ],
                 [
-                    'title'   => 'Keamanan Data Objek',
-                    'jenis'   => 'mixed',
-                    'style'   => 'mixed',
-                    'content' => '<h3>Studi Kasus: Validasi Umur</h3>
-                    <p>Dengan enkapsulasi, kita bisa mencegah data yang tidak logis masuk ke sistem. Contoh: mencegah input umur negatif.</p>
-                    <div class="ql-code-block-container" spellcheck="false">
-                        <div class="ql-code-block">public function setUmur($u) {</div>
-                        <div class="ql-code-block">    if($u < 0) throw new Exception("Umur tidak boleh negatif!");</div>
-                        <div class="ql-code-block">    $this->umur = $u;</div>
-                        <div class="ql-code-block">}</div>
-                    </div>',
-                ],
-            ],
-            5 => [ // Pewarisan
-                [
-                    'title'   => 'Hierarki Kelas (Parent/Child)',
-                    'jenis'   => 'teori',
-                    'style'   => 'textual',
-                    'content' => '<h3>Konsep Reusability</h3>
-                    <p>Pewarisan (Inheritance) memungkinkan kita untuk membuat kelas baru berdasarkan kelas yang sudah ada. Kelas yang mewarisi disebut <strong>Child Class</strong>, dan yang diwarisi disebut <strong>Parent Class</strong>.</p>
-                    <p>Keuntungan utamanya adalah kita tidak perlu menulis ulang kode yang sama untuk kelas-kelas yang memiliki sifat serupa.</p>',
-                ],
-                [
-                    'title'   => 'Keyword Extends & Super',
-                    'jenis'   => 'sintaks',
-                    'style'   => 'visual',
-                    'content' => '<h3>Menggunakan Inheritance</h3>
-                    <div class="ql-code-block-container" spellcheck="false">
-                        <div class="ql-code-block">// Parent Class</div>
-                        <div class="ql-code-block">class Kendaraan {</div>
-                        <div class="ql-code-block">    public $merk;</div>
-                        <div class="ql-code-block">    public function klakson() { return "Beep!"; }</div>
-                        <div class="ql-code-block">}</div>
-                        <div class="ql-code-block"></div>
-                        <div class="ql-code-block">// Child Class</div>
-                        <div class="ql-code-block">class Motor extends Kendaraan {</div>
-                        <div class="ql-code-block">    public $cc;</div>
-                        <div class="ql-code-block">}</div>
-                        <div class="ql-code-block"></div>
-                        <div class="ql-code-block">$mio = new Motor();</div>
-                        <div class="ql-code-block">echo $mio->klakson(); // Hasil: Beep! (Warisan dari Kendaraan)</div>
-                    </div>',
-                ],
-                [
-                    'title'   => 'Reusability dengan Inheritance',
-                    'jenis'   => 'mixed',
-                    'style'   => 'mixed',
-                    'content' => '<h3>Membangun Struktur Organisasi</h3>
-                    <p>Dalam sistem kampus, kita bisa punya Parent Class <code>CivitasAkademika</code>. Lalu Child Class-nya adalah <code>Dosen</code> dan <code>Mahasiswa</code>. Keduanya mewarisi atribut <code>nama</code> dan <code>NIM/NIDN</code> dari parent, tapi punya perilaku unik masing-masing.</p>',
-                ],
-            ],
-            6 => [ // Polimorfisme
-                [
-                    'title'   => 'Konsep Banyak Bentuk',
-                    'jenis'   => 'teori',
-                    'style'   => 'textual',
-                    'content' => '<h3>Satu Antarmuka, Banyak Aksi</h3>
-                    <p>Polimorfisme berasal dari bahasa Yunani yang berarti "banyak bentuk". Dalam PBO, ini berarti satu nama method bisa memiliki cara kerja yang berbeda-beda tergantung objek yang memanggilnya.</p>',
-                ],
-                [
-                    'title'   => 'Override vs Overload',
-                    'jenis'   => 'sintaks',
-                    'style'   => 'visual',
-                    'content' => '<h3>Method Overriding</h3>
-                    <p>Terjadi ketika Child Class mendefinisikan ulang method yang sudah ada di Parent Class.</p>
-                    <div class="ql-code-block-container" spellcheck="false">
-                        <div class="ql-code-block">class Hewan {</div>
-                        <div class="ql-code-block">    public function suara() { return "..."; }</div>
-                        <div class="ql-code-block">}</div>
-                        <div class="ql-code-block"></div>
-                        <div class="ql-code-block">class Anjing extends Hewan {</div>
-                        <div class="ql-code-block">    public function suara() { return "Guk Guk!"; }</div>
-                        <div class="ql-code-block">}</div>
-                        <div class="ql-code-block"></div>
-                        <div class="ql-code-block">class Kucing extends Hewan {</div>
-                        <div class="ql-code-block">    public function suara() { return "Meong!"; }</div>
-                        <div class="ql-code-block">}</div>
-                    </div>',
-                ],
-                [
-                    'title'   => 'Dynamic Dispatching',
-                    'jenis'   => 'mixed',
-                    'style'   => 'mixed',
-                    'content' => '<h3>Fleksibilitas Runtime</h3>
-                    <p>Dengan polimorfisme, kita bisa memproses sekumpulan objek yang berbeda dalam satu loop yang sama:</p>
-                    <div class="ql-code-block-container" spellcheck="false">
-                        <div class="ql-code-block">$hewan_peliharaan = [$dog, $cat, $bird];</div>
-                        <div class="ql-code-block">foreach($hewan_peliharaan as $h) {</div>
-                        <div class="ql-code-block">    echo $h->suara(); // Menghasilkan suara yang berbeda sesuai jenisnya</div>
-                        <div class="ql-code-block">}</div>
+                    'title' => 'Visualisasi Class dan Object (Visual)',
+                    'jenis' => 'mixed',
+                    'style' => 'visual',
+                    'content' => '<h3>Analogi Blueprint dan Produk Nyata</h3>
+                    <p>Tonton video berikut untuk memahami perbedaan antara "cetakan" (Class) dan "hasil cetakan" (Object) melalui demonstrasi langsung.</p>
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin: 2rem 0;">
+                        <iframe src="https://www.youtube.com/embed/aQRemTq6Two" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>',
                 ],
             ],
-            7 => [ // Abstraksi
+            3 => [ // Enkapsulasi
                 [
-                    'title'   => 'Penyederhanaan Sistem',
-                    'jenis'   => 'teori',
-                    'style'   => 'textual',
-                    'content' => '<h3>Fokus pada Esensi</h3>
-                    <p>Abstraksi adalah proses menyembunyikan detail implementasi yang rumit dan hanya memperlihatkan fitur penting kepada pengguna. Tujuannya adalah mengurangi kompleksitas.</p>
-                    <p>Contoh: Saat menyetir mobil, Anda hanya perlu tahu cara menginjak pedal gas, bukan bagaimana cara bensin terbakar di ruang mesin.</p>',
+                    'title' => 'Prinsip Black Box dan Keamanan Data (Teori)',
+                    'jenis' => 'teori',
+                    'style' => 'textual',
+                    'content' => '<h3>Menyembunyikan Kompleksitas Internal</h3>
+                    <p>Enkapsulasi membungkus data sensitif di dalam objek dan menutup akses langsung dari luar. Ini menciptakan keamanan data dan mencegah korupsi state objek oleh bagian program lain yang tidak sah.</p>
+                    <p>Manfaat utamanya adalah kita bisa mengubah logika internal kelas tanpa merusak bagian program lain yang menggunakannya, selama antarmuka publiknya tetap konsisten.</p>',
                 ],
                 [
-                    'title'   => 'Abstract Class & Interface',
-                    'jenis'   => 'sintaks',
-                    'style'   => 'visual',
-                    'content' => '<h3>Membuat Kontrak dengan Interface</h3>
+                    'title' => 'Implementasi Modifier dan Getter/Setter (Sintaks)',
+                    'jenis' => 'sintaks',
+                    'style' => 'visual',
+                    'content' => '<h3>Mekanisme Access Control</h3>
                     <div class="ql-code-block-container" spellcheck="false">
-                        <div class="ql-code-block">interface Pembayaran {</div>
-                        <div class="ql-code-block">    public function bayar($jumlah);</div>
-                        <div class="ql-code-block">}</div>
+                        <div class="ql-code-block">public class Rekening {</div>
+                        <div class="ql-code-block">    private double saldo; // Data tersembunyi</div>
                         <div class="ql-code-block"></div>
-                        <div class="ql-code-block">class DompetDigital implements Pembayaran {</div>
-                        <div class="ql-code-block">    public function bayar($jumlah) {</div>
-                        <div class="ql-code-block">        // Logika bayar lewat API dompet digital</div>
-                        <div class="ql-code-block">    }</div>
-                        <div class="ql-code-block">}</div>
-                        <div class="ql-code-block"></div>
-                        <div class="ql-code-block">class TransferBank implements Pembayaran {</div>
-                        <div class="ql-code-block">    public function bayar($jumlah) {</div>
-                        <div class="ql-code-block">        // Logika bayar lewat transfer</div>
-                        <div class="ql-code-block">    }</div>
+                        <div class="ql-code-block">    public double getSaldo() { return saldo; }</div>
+                        <div class="ql-code-block">    public void setSaldo(double s) { if(s >= 0) saldo = s; }</div>
                         <div class="ql-code-block">}</div>
                     </div>',
                 ],
                 [
-                    'title'   => 'Desain Arsitektur OOP',
-                    'jenis'   => 'mixed',
-                    'style'   => 'mixed',
-                    'content' => '<h3>Best Practice Abstraksi</h3>
-                    <p>Selalulah membuat program yang bergantung pada <strong>Abstraksi</strong> (Interface), bukan pada <strong>Implementasi</strong> (Class konkret). Ini akan membuat kode Anda sangat mudah diganti-ganti teknologinya di masa depan tanpa merusak sistem utama.</p>',
+                    'title' => 'Visualisasi Enkapsulasi (Visual)',
+                    'jenis' => 'mixed',
+                    'style' => 'visual',
+                    'content' => '<h3>Kenapa Kita Butuh Enkapsulasi?</h3>
+                    <p>Video ini memberikan visualisasi mendalam tentang bagaimana Access Modifier dan Getter/Setter bekerja melindungi data.</p>
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin: 2rem 0;">
+                        <iframe src="https://www.youtube.com/embed/zwDMHJzTUzs" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>',
+                ],
+            ],
+            4 => [ // Relasi Class
+                [
+                    'title' => 'Referensi dan Struktur Hubungan Objek (Teori)',
+                    'jenis' => 'teori',
+                    'style' => 'textual',
+                    'content' => '<h3>Bagaimana Objek Saling Berkomunikasi</h3>
+                    <p>Sistem OOP yang kompleks terdiri dari banyak objek yang saling merujuk. Penting untuk memahami bagaimana "Reference" bekerja agar tidak terjadi kesalahan memori atau data yang tidak sinkron saat satu objek digunakan oleh objek lainnya.</p>',
+                ],
+                [
+                    'title' => 'Implementasi Relasi Has-A (Sintaks)',
+                    'jenis' => 'sintaks',
+                    'style' => 'visual',
+                    'content' => '<h3>Struktur Referensi Objek</h3>
+                    <div class="ql-code-block-container" spellcheck="false">
+                        <div class="ql-code-block">public class Mobil {</div>
+                        <div class="ql-code-block">    private Mesin mesin; // Relasi</div>
+                        <div class="ql-code-block">    public Mobil(Mesin m) { this.mesin = m; }</div>
+                        <div class="ql-code-block">}</div>
+                    </div>',
+                ],
+                [
+                    'title' => 'Visualisasi Reference dan Relasi (Visual)',
+                    'jenis' => 'mixed',
+                    'style' => 'visual',
+                    'content' => '<h3>Memahami Reference pada Object</h3>
+                    <p>Sebelum masuk ke relasi yang lebih kompleks seperti Agregasi dan Komposisi, penting untuk memahami bagaimana variabel menyimpan referensi ke objek di memori Heap.</p>
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin: 2rem 0;">
+                        <iframe src="https://www.youtube.com/embed/iLyKXuH5xis" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>',
+                ],
+            ],
+            5 => [ // Inheritance
+                [
+                    'title' => 'Hierarki Kelas dan Pewarisan Sifat (Teori)',
+                    'jenis' => 'teori',
+                    'style' => 'textual',
+                    'content' => '<h3>Konsep Is-A dalam Pemrograman</h3>
+                    <p>Inheritance memungkinkan sebuah kelas (Subclass) mewarisi semua sifat public dan protected dari kelas induk (Superclass). Ini sangat efektif untuk menghindari pengulangan kode (DRY Principle).</p>',
+                ],
+                [
+                    'title' => 'Keyword Extends dan Super (Sintaks)',
+                    'jenis' => 'sintaks',
+                    'style' => 'visual',
+                    'content' => '<h3>Membangun Koneksi Antar Kelas</h3>
+                    <div class="ql-code-block-container" spellcheck="false">
+                        <div class="ql-code-block">public class Hewan {</div>
+                        <div class="ql-code-block">    public void makan() { System.out.println("Makan..."); }</div>
+                        <div class="ql-code-block">}</div>
+                        <div class="ql-code-block">public class Kucing extends Hewan {</div>
+                        <div class="ql-code-block">    public void meong() { System.out.println("Meong!"); }</div>
+                        <div class="ql-code-block">}</div>
+                    </div>',
+                ],
+                [
+                    'title' => 'Visualisasi Inheritance (Visual)',
+                    'jenis' => 'mixed',
+                    'style' => 'visual',
+                    'content' => '<h3>Hierarki Pewarisan di Java</h3>
+                    <p>Tonton video ini untuk melihat bagaimana struktur pewarisan dibangun langkah demi langkah beserta aturan-aturannya.</p>
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin: 2rem 0;">
+                        <iframe src="https://www.youtube.com/embed/CXqOqqe7zjo" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>',
+                ],
+            ],
+            6 => [ // Overriding dan Overloading
+                [
+                    'title' => 'Polimorfisme Statis vs Dinamis (Teori)',
+                    'jenis' => 'teori',
+                    'style' => 'textual',
+                    'content' => '<h3>Modifikasi Perilaku Metode</h3>
+                    <p><strong>Overloading</strong> memungkinkan satu nama metode memiliki banyak variasi parameter (Polimorfisme Statis). <strong>Overriding</strong> memungkinkan kelas anak untuk mengganti perilaku metode yang diwarisi dari induknya.</p>',
+                ],
+                [
+                    'title' => 'Anotasi @Override dan Signature (Sintaks)',
+                    'jenis' => 'sintaks',
+                    'style' => 'visual',
+                    'content' => '<h3>Koding Metode Adaptif</h3>
+                    <div class="ql-code-block-container" spellcheck="false">
+                        <div class="ql-code-block">@Override</div>
+                        <div class="ql-code-block">public void bersuara() {</div>
+                        <div class="ql-code-block">    System.out.println("Guk guk!"); </div>
+                        <div class="ql-code-block">}</div>
+                    </div>',
+                ],
+                [
+                    'title' => 'Video: Overriding Methods (Visual)',
+                    'jenis' => 'mixed',
+                    'style' => 'visual',
+                    'content' => '<h3>Mengganti Perilaku di Kelas Anak</h3>
+                    <p>Video ini menjelaskan bagaimana Overriding bekerja saat sebuah subclass ingin menyesuaikan perilaku yang sudah ada di superclassnya.</p>
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin: 2rem 0;">
+                        <iframe src="https://www.youtube.com/embed/7okH5nc2LEc" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>',
+                ],
+            ],
+            7 => [ // Abstract Class
+                [
+                    'title' => 'Template dan Abstraksi Struktur (Teori)',
+                    'jenis' => 'teori',
+                    'style' => 'textual',
+                    'content' => '<h3>Membangun Pondasi Logika</h3>
+                    <p>Abstract Class adalah kelas yang tidak bisa dibuat objeknya secara langsung. Ia berfungsi sebagai blueprint dasar yang WAJIB dilengkapi oleh kelas-kelas turunannya.</p>',
+                ],
+                [
+                    'title' => 'Sintaks Abstract Method (Sintaks)',
+                    'jenis' => 'sintaks',
+                    'style' => 'visual',
+                    'content' => '<h3>Mendefinisikan Kontrak di Kelas Induk</h3>
+                    <div class="ql-code-block-container" spellcheck="false">
+                        <div class="ql-code-block">public abstract class BangunDatar {</div>
+                        <div class="ql-code-block">    public abstract double hitungLuas(); </div>
+                        <div class="ql-code-block">}</div>
+                    </div>',
+                ],
+                [
+                    'title' => 'Visualisasi Abstract Class (Visual)',
+                    'jenis' => 'mixed',
+                    'style' => 'visual',
+                    'content' => '<h3>Konsep Kelas yang Belum Selesai</h3>
+                    <p>Video ini menjelaskan kenapa kita membutuhkan Abstract Class untuk menciptakan struktur sistem yang lebih terorganisir.</p>
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin: 2rem 0;">
+                        <iframe src="https://www.youtube.com/embed/7N3lxM05cw0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>',
+                ],
+            ],
+            8 => [ // Interface
+                [
+                    'title' => 'Kontrak Sifat dan Abstraksi Murni (Teori)',
+                    'jenis' => 'teori',
+                    'style' => 'textual',
+                    'content' => '<h3>Definisi Kemampuan Suatu Objek</h3>
+                    <p>Interface adalah kontrak yang mendefinisikan "apa yang bisa dilakukan" oleh sebuah objek. Ini memungkinkan Multiple Inheritance di Java.</p>',
+                ],
+                [
+                    'title' => 'Implement Kontrak Interface (Sintaks)',
+                    'jenis' => 'sintaks',
+                    'style' => 'visual',
+                    'content' => '<h3>Penulisan Implements di Java</h3>
+                    <div class="ql-code-block-container" spellcheck="false">
+                        <div class="ql-code-block">public interface CanFly { void fly(); }</div>
+                        <div class="ql-code-block">public class Plane implements CanFly {</div>
+                        <div class="ql-code-block">    public void fly() { System.out.println("Terbang..."); }</div>
+                        <div class="ql-code-block">}</div>
+                    </div>',
+                ],
+                [
+                    'title' => 'Visualisasi Interface (Visual)',
+                    'jenis' => 'mixed',
+                    'style' => 'visual',
+                    'content' => '<h3>Interface sebagai Standarisasi</h3>
+                    <p>Mempelajari Interface membantu kita memahami bagaimana standarisasi kode dilakukan dalam proyek skala besar.</p>
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin: 2rem 0;">
+                        <iframe src="https://www.youtube.com/embed/ztQPFMFEItI" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>',
+                ],
+            ],
+            9 => [ // Polimorfisme
+                [
+                    'title' => 'Dynamic Binding dan Satu Nama Banyak Wujud (Teori)',
+                    'jenis' => 'teori',
+                    'style' => 'textual',
+                    'content' => '<h3>Level Tertinggi Abstraksi Objek</h3>
+                    <p>Polimorfisme memungkinkan sebuah variabel induk menampung objek dari turunan manapun. JVM akan menentukan metode mana yang dipanggil saat runtime.</p>',
+                ],
+                [
+                    'title' => 'Contoh Polimorfisme (Sintaks)',
+                    'jenis' => 'sintaks',
+                    'style' => 'visual',
+                    'content' => '<h3>Implementasi Polimorfisme</h3>
+                    <div class="ql-code-block-container" spellcheck="false">
+                        <div class="ql-code-block">Hewan h = new Kucing(); // Polymorphic call</div>
+                        <div class="ql-code-block">h.bersuara(); // Memanggil meong()</div>
+                    </div>',
+                ],
+                [
+                    'title' => 'Visualisasi Polimorfisme (Visual)',
+                    'jenis' => 'mixed',
+                    'style' => 'visual',
+                    'content' => '<h3>Kekuatan Sebenarnya dari Polimorfisme</h3>
+                    <p>Video ini menjelaskan bagaimana polimorfisme membuat kode kita sangat fleksibel dan mudah untuk dikembangkan di masa depan.</p>
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin: 2rem 0;">
+                        <iframe src="https://www.youtube.com/embed/hvrS5b0k4Jk" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>',
                 ],
             ],
         ];
@@ -322,23 +329,22 @@ class SubMaterialsSeeder extends Seeder
         foreach ($materialTopicMap as $moduleId => $subTopics) {
             $material = Material::where('module_id', $moduleId)->first();
 
-            if (! $material) {
+            if (!$material) {
                 continue;
             }
 
+            // Clear existing sub-materials for this material to ensure clean update
+            $material->subMaterials()->delete();
+
             foreach ($subTopics as $index => $topic) {
-                SubMaterial::updateOrCreate(
-                    [
-                        'material_id' => $material->id,
-                        'title'       => $topic['title'],
-                    ],
-                    [
-                        'content'        => $topic['content'],
-                        'jenis_konten'   => $topic['jenis'],
-                        'learning_style' => $topic['style'],
-                        'order'          => $index + 1,
-                    ],
-                );
+                SubMaterial::create([
+                    'material_id' => $material->id,
+                    'title' => $topic['title'],
+                    'content' => $topic['content'],
+                    'jenis_konten' => $topic['jenis'] ?? 'teori',
+                    'learning_style' => $topic['style'] ?? 'textual',
+                    'order' => $index + 1,
+                ]);
             }
         }
     }

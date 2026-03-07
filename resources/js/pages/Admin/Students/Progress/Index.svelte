@@ -7,20 +7,27 @@
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import ProgressBar from '@/components/ui/ProgressBar.svelte';
     import Badge from '@/components/ui/Badge.svelte';
-    import { ArrowLeft, LineChart, CheckCheck, Zap } from 'lucide-svelte';
+    import { ArrowLeft, LineChart, CheckCheck, Zap, Award } from 'lucide-svelte';
     import { formatDate } from '@/utils/formatters';
     import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';
     import { StudentProgressState } from '@/states/Admin/StudentState.svelte';
+    import type { User, MaterialWithProgress, MissingQuestionsItem } from '@/types';
 
     let {
         student,
         materials = [],
         missingQuestionsByMaterial = [],
-    }: { student: any; materials: any[]; missingQuestionsByMaterial: any[] } = $props();
+        certifications = {},
+    }: {
+        student: User;
+        materials: MaterialWithProgress[];
+        missingQuestionsByMaterial: MissingQuestionsItem[];
+        certifications: Record<number, string>;
+    } = $props();
 
     const state = untrack(
-        () => new StudentProgressState(student, materials, missingQuestionsByMaterial)
+        () => new StudentProgressState(student, materials, missingQuestionsByMaterial, certifications)
     );
 
     const progressStats = $derived([
@@ -126,6 +133,35 @@
                 </Card>
             {/each}
         </div>
+
+        <!-- Certifications Section -->
+        {#if Object.keys(state.certifications).length > 0}
+            <div class="space-y-6">
+                <h3 class="text-xl font-bold tracking-widest text-slate-900 uppercase">
+                    Pencapaian Sertifikasi
+                </h3>
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {#each Object.entries(state.certifications) as [materialId, type]}
+                        {@const material = state.materials.find(m => m.id === Number(materialId))}
+                        <Card class="relative overflow-hidden border-2 {type === 'gold' ? 'border-amber-400 bg-amber-50/10' : type === 'silver' ? 'border-slate-300 bg-slate-50/10' : 'border-orange-300 bg-orange-50/10'} px-6 py-8">
+                            <div class="flex items-center gap-4">
+                                <div class="flex h-12 w-12 items-center justify-center rounded-xl {type === 'gold' ? 'bg-amber-100 text-amber-600' : type === 'silver' ? 'bg-slate-200 text-slate-600' : 'bg-orange-100 text-orange-600'} shadow-md">
+                                    <Award size={24} strokeWidth={2.5} />
+                                </div>
+                                <div class="flex-1">
+                                    <span class="text-[9px] font-black tracking-widest uppercase {type === 'gold' ? 'text-amber-600' : type === 'silver' ? 'text-slate-500' : 'text-orange-600'}">
+                                        CERTIFIED ARCHITECT {type.toUpperCase()}
+                                    </span>
+                                    <h4 class="text-sm font-bold text-slate-900 uppercase truncate">
+                                        {material?.title || 'Project'}
+                                    </h4>
+                                </div>
+                            </div>
+                        </Card>
+                    {/each}
+                </div>
+            </div>
+        {/if}
 
         <!-- Tables -->
         <div class="space-y-12">

@@ -23,10 +23,12 @@ class Material extends Model
         'content',
         'module_id',
         'created_by',
+        'is_final_project',
     ];
 
     protected $casts = [
-        'module_id'  => 'integer',
+        'is_final_project' => 'boolean',
+        'module_id' => 'integer',
         'created_by' => 'integer',
     ];
 
@@ -49,7 +51,7 @@ class Material extends Model
 
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class , 'created_by');
     }
 
     // ==================== SCOPES ====================

@@ -12,7 +12,23 @@
 
     let contentContainer: HTMLDivElement | undefined = $state();
 
-    const safeContent = $derived(content ? DOMPurify.sanitize(content) : '');
+    const safeContent = $derived(
+        content
+            ? DOMPurify.sanitize(content, {
+                  ADD_TAGS: ['iframe'],
+                  ADD_ATTR: [
+                      'allow',
+                      'allowfullscreen',
+                      'frameborder',
+                      'scrolling',
+                      'src',
+                      'width',
+                      'height',
+                      'title'
+                  ],
+              })
+            : ''
+    );
 
     $effect(() => {
         if (safeContent && contentContainer) {

@@ -49,8 +49,8 @@ class NextActionResolverService implements NextActionResolverServiceInterface
                 'STUDY_SYNTAX' => $this->studySubMaterial($material, 'sintaks', 'Pelajari Sintaks'),
                 'STUDY_THEORY' => $this->studySubMaterial($material, 'teori', 'Pahami Konsep'),
                 'STUDY_MIXED' => $this->studySubMaterial($material, 'mixed', 'Materi Komprehensif'),
-                'STUDY_VISUAL' => $this->studySubMaterial($material, null, 'Materi Visual'),
-                'STUDY_TEXTUAL' => $this->studySubMaterial($material, null, 'Materi Tekstual'),
+                'STUDY_VISUAL' => $this->studySubMaterial($material, null, 'Materi Visual', 'visual'),
+                'STUDY_TEXTUAL' => $this->studySubMaterial($material, null, 'Materi Tekstual', 'textual'),
                 default => [
                 'label' => 'Soal Berikutnya',
                 'url' => route('mahasiswa.materials.questions.show', ['material' => $material->id]),

@@ -17,6 +17,7 @@ type DashboardData = {
     recentActivities: RecentActivity[];
     allMaterials: Material[];
     currentUserRank: LeaderboardEntry | null;
+    certifications: Record<number, string>;
 };
 
 export class DashboardState extends BaseState {
@@ -35,6 +36,7 @@ export class DashboardState extends BaseState {
     recentActivities = $state<RecentActivity[]>([]);
     allMaterials = $state<Material[]>([]);
     currentUserRank = $state<LeaderboardEntry | null>(null);
+    certifications = $state<Record<number, string>>({});
 
     constructor(data: DashboardData) {
         super();
@@ -53,5 +55,6 @@ export class DashboardState extends BaseState {
         this.recentActivities = data.recentActivities;
         this.allMaterials = data.allMaterials;
         this.currentUserRank = data.currentUserRank;
+        this.certifications = data.certifications || {};
     }
 }

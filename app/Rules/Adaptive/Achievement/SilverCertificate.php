@@ -23,8 +23,8 @@ class SilverCertificate extends BaseAdaptiveRule
 
     public function evaluate(array $facts): bool
     {
-        return $this->hasAllFacts($facts, [
-            AdaptiveConstants::FACT_SCORE_STANDARD,
+        return $this->hasAnyFact($facts, [AdaptiveConstants::FACT_SCORE_STANDARD, AdaptiveConstants::FACT_SCORE_MASTERY])
+            && $this->hasAllFacts($facts, [
             AdaptiveConstants::FACT_HINT_NONE,
             AdaptiveConstants::FACT_IS_FINAL_PROJECT,
             AdaptiveConstants::FACT_SATISFACTORY_PROGRESS,

@@ -63,6 +63,14 @@
                                     </div>
                                 </div>
                             </Alert>
+
+                            <div class="flex items-center gap-4 rounded-3xl border border-slate-100 bg-slate-50/50 p-6">
+                                <label class="relative inline-flex cursor-pointer items-center">
+                                    <input type="checkbox" bind:checked={state.form.is_final_project} class="peer sr-only">
+                                    <div class="peer h-6 w-11 rounded-full bg-slate-200 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-amber-400 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none ring-primary-500/20 peer-focus:ring-4"></div>
+                                    <span class="ml-3 text-xs font-bold tracking-widest text-slate-700 uppercase">Tandai sebagai Proyek Akhir</span>
+                                </label>
+                            </div>
                         </div>
 
                         <div class="lg:col-span-1">

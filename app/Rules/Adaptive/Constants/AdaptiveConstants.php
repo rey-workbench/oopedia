@@ -62,16 +62,8 @@ class AdaptiveConstants
 
     public const FACT_HINT_USED = 'G12';
 
-    // Modules (G13, G14, G23 - G25)
-    public const FACT_MODULE_FOUNDATION = 'G13';
-
-    public const FACT_MODULE_ENCAPSULATION = 'G14';
-
-    public const FACT_MODULE_INHERITANCE = 'G23';
-
-    public const FACT_MODULE_POLYMORPHISM = 'G24';
-
-    public const FACT_MODULE_ABSTRACTION = 'G25';
+    // Modules (G13)
+    public const FACT_IN_MODULE = 'G13';
 
     // Difficulty (G15 - G17)
     public const FACT_DIFF_BEGINNER = 'G15';
@@ -144,11 +136,7 @@ class AdaptiveConstants
             self::FACT_ERROR_LOGIC => 'Kesalahan Logika',
             self::FACT_HINT_NONE => 'Tanpa Bantuan Hint',
             self::FACT_HINT_USED => 'Menggunakan Hint',
-            self::FACT_MODULE_FOUNDATION => 'Modul: Dasar PBO',
-            self::FACT_MODULE_ENCAPSULATION => 'Modul: Enkapsulasi',
-            self::FACT_MODULE_INHERITANCE => 'Modul: Pewarisan',
-            self::FACT_MODULE_POLYMORPHISM => 'Modul: Polimorfisme',
-            self::FACT_MODULE_ABSTRACTION => 'Modul: Abstraksi',
+            self::FACT_IN_MODULE => 'Dalam Modul Pembelajaran',
             self::FACT_DIFF_BEGINNER => 'Tingkat Kesulitan: Easy',
             self::FACT_DIFF_MEDIUM => 'Tingkat Kesulitan: Medium',
             self::FACT_DIFF_HARD => 'Tingkat Kesulitan: Advanced',

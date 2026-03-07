@@ -13,13 +13,15 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminStudentController extends Controller
 {
-    public function __construct(
-        protected StudentServiceInterface $studentService,
-    ) {}
+    public function __construct(protected
+        StudentServiceInterface $studentService,
+        )
+    {
+    }
 
     public function index(Request $request): Response
     {
-        $search   = $request->search;
+        $search = $request->search;
         $students = $this->studentService->getStudentsWithProgress($search, 10);
 
         return Inertia::render('Admin/Students/Index', compact('students'));
@@ -27,9 +29,9 @@ class AdminStudentController extends Controller
 
     public function show(int|string $studentId): Response|RedirectResponse
     {
-        $student = $this->studentService->getStudentById((int) $studentId);
+        $student = $this->studentService->getStudentById((int)$studentId);
 
-        if (! $student || $student->role_id != 3) {
+        if (!$student || $student->role_id != 3) {
             return redirect()->route('admin.students.index')
                 ->with('error', 'Mahasiswa tidak ditemukan');
         }
@@ -37,10 +39,11 @@ class AdminStudentController extends Controller
         $data = $this->studentService->getStudentProgressDetail($student);
 
         return Inertia::render('Admin/Students/Progress/Index', [
-            'student'                    => $student,
-            'materials'                  => $data['materials'],
-            'recent_activities'          => $data['recent_activities'],
+            'student' => $student,
+            'materials' => $data['materials'],
+            'recent_activities' => $data['recent_activities'],
             'missingQuestionsByMaterial' => $data['missingQuestionsByMaterial'],
+            'certifications' => $data['certifications'] ?? [],
         ]);
     }
 
@@ -54,7 +57,7 @@ class AdminStudentController extends Controller
 
     public function destroy(int|string $studentId): RedirectResponse
     {
-        $this->studentService->deleteStudent((int) $studentId);
+        $this->studentService->deleteStudent((int)$studentId);
 
         return redirect()->route('admin.students.index')
             ->with('success', 'Data mahasiswa telah berhasil dihapus dari sistem');
@@ -74,7 +77,7 @@ class AdminStudentController extends Controller
         $result = $this->studentService->importStudentsFromFile($request->file('excel_file'));
 
         $message = "Berhasil menambahkan {$result['success_count']} mahasiswa.";
-        if (! empty($result['error_rows'])) {
+        if (!empty($result['error_rows'])) {
             $message .= ' Terdapat ' . count($result['error_rows']) . ' baris dengan error.';
         }
 

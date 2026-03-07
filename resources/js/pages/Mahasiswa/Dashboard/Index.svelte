@@ -38,6 +38,7 @@
         recentActivities = [],
         allMaterials = [],
         currentUserRank = null,
+        certifications = {},
     }: Omit<MahasiswaDashboardProps, 'auth' | 'flash' | 'errors'> = $props();
 
     const state = untrack(
@@ -58,6 +59,7 @@
                 recentActivities,
                 allMaterials,
                 currentUserRank,
+                certifications,
             })
     );
 
@@ -120,6 +122,40 @@
                 </div>
             </div>
         </Panel>
+
+        {#if Object.keys(state.certifications).length > 0}
+            <div class="mb-12">
+                <h3 class="mb-6 text-xl font-bold tracking-widest text-slate-900 uppercase">
+                    Sertifikat Utama
+                </h3>
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    {#each Object.entries(state.certifications) as [materialId, type]}
+                        {@const material = state.allMaterials.find(m => m.id === Number(materialId))}
+                        <Card class="relative overflow-hidden border-2 {type === 'gold' ? 'border-amber-400 bg-amber-50/10' : type === 'silver' ? 'border-slate-300 bg-slate-50/10' : 'border-orange-300 bg-orange-50/10'}">
+                           <div class="flex items-center gap-6 p-2">
+                                <div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl {type === 'gold' ? 'bg-amber-100 text-amber-600' : type === 'silver' ? 'bg-slate-200 text-slate-600' : 'bg-orange-100 text-orange-600'} shadow-lg">
+                                    <Trophy size={40} strokeWidth={2.5} />
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[10px] font-black tracking-widest uppercase {type === 'gold' ? 'text-amber-600' : type === 'silver' ? 'text-slate-500' : 'text-orange-600'}">
+                                            CERTIFIED {type.toUpperCase()} ARCHITECT
+                                        </span>
+                                    </div>
+                                    <h4 class="text-xl font-black text-slate-900 uppercase leading-none mt-1">
+                                        {material?.title || 'Object-Oriented Project'}
+                                    </h4>
+                                    <p class="text-xs font-bold text-slate-500 mt-2">Diterbitkan pada {new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                                </div>
+                           </div>
+                           <div class="absolute -right-8 -bottom-8 opacity-10 rotate-12">
+                               <Trophy size={120} />
+                           </div>
+                        </Card>
+                    {/each}
+                </div>
+            </div>
+        {/if}
 
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             {#each dashboardStats as stat (stat.title)}

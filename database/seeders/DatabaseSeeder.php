@@ -12,16 +12,15 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            RoleSeeder::class,
-            SuperadminSeeder::class,
-            DosenSeeder::class,
-            MahasiswaSeeder::class,
-            MaterialsSeeder::class,
-            SubMaterialsSeeder::class,
-            ComprehensiveQuestionsSeeder::class, // NEW: Comprehensive Q&A seeder
-            // QuestionsSeeder::class, // OLD: Replaced by comprehensive version
-            // AnswersSeeder::class,   // OLD: Now integrated in comprehensive seeder
-            UeqSurveysSeeder::class,
+            RoleSeeder::class ,
+            SuperadminSeeder::class ,
+            DosenSeeder::class ,
+            MahasiswaSeeder::class ,
+            MaterialsSeeder::class ,
+            SubMaterialsSeeder::class ,
+            ComprehensiveQuestionsSeeder::class ,
+            FinalProjectSeeder::class ,
+            UeqSurveysSeeder::class ,
         ]);
     }
 }

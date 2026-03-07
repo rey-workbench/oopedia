@@ -31,10 +31,20 @@ class TextualProjectRevision extends BaseAdaptiveRule
 
     public function apply(array $state, array $context): array
     {
+        $facts = $context['facts'] ?? [];
         $state['recommendation'] = 'Revisi Proyek - Ulas Materi';
         $state['next_action'] = 'STUDY_TEXTUAL';
-        $state['message'] = 'Proyek Anda perlu perbaikan. Mari ulas kembali konsep fundamental.';
         $state['intervention_type'] = 'textual_project_revision';
+
+        if (in_array(AdaptiveConstants::FACT_ERROR_SYNTAX, $facts)) {
+            $state['message'] = 'Ada kesalahan penulisan kode (sintaks) pada proyek Anda. Mari baca kembali dokumentasi teknis.';
+        }
+        elseif (in_array(AdaptiveConstants::FACT_ERROR_LOGIC, $facts)) {
+            $state['message'] = 'Logika pemrograman Anda perlu dipertajam. Silakan ulas penjelasan teks mendalam mengenai konsep ini.';
+        }
+        else {
+            $state['message'] = 'Proyek Anda perlu perbaikan. Mari ulas kembali penjelasan teori secara mendalam.';
+        }
 
         return $state;
     }

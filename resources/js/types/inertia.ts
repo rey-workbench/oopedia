@@ -83,6 +83,7 @@ export interface AdminStudentProgressProps extends SharedProps {
     student: User;
     materials: MaterialWithProgress[];
     missingQuestionsByMaterial: MissingQuestionsItem[];
+    certifications: Record<number, string>;
 }
 
 export interface MaterialWithProgress extends Material {
@@ -128,6 +129,7 @@ export interface MahasiswaDashboardProps extends SharedProps {
     recentActivities: RecentActivity[];
     allMaterials: Material[];
     currentUserRank: LeaderboardEntry | null;
+    certifications: Record<number, string>;
 }
 
 /** Dashboard in-progress list — DashboardService.getInProgressData() */

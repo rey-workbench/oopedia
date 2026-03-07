@@ -11,7 +11,7 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
  *
  * Triggers when student answers a hard question with mastery score,
  * fast response (G05), no hints, has satisfactory progress (≥60%),
- * in any of the 5 OOP modules.
+ * in any learning module (G13).
  */
 class ModuleGraduation extends BaseAdaptiveRule
 {
@@ -25,21 +25,14 @@ class ModuleGraduation extends BaseAdaptiveRule
 
     public function evaluate(array $facts): bool
     {
-        $modulesFacts = [
-            AdaptiveConstants::FACT_MODULE_FOUNDATION,
-            AdaptiveConstants::FACT_MODULE_ENCAPSULATION,
-            AdaptiveConstants::FACT_MODULE_INHERITANCE,
-            AdaptiveConstants::FACT_MODULE_POLYMORPHISM,
-            AdaptiveConstants::FACT_MODULE_ABSTRACTION,
-        ];
-
         return $this->hasAllFacts($facts, [
             AdaptiveConstants::FACT_SCORE_MASTERY,
             AdaptiveConstants::FACT_TIME_FAST,
             AdaptiveConstants::FACT_HINT_NONE,
             AdaptiveConstants::FACT_DIFF_HARD,
             AdaptiveConstants::FACT_SATISFACTORY_PROGRESS,
-        ]) && $this->hasAnyFact($facts, $modulesFacts);
+            AdaptiveConstants::FACT_IN_MODULE,
+        ]);
     }
 
     public function apply(array $state, array $context): array

@@ -1,0 +1,81 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Material;
+use App\Models\SubMaterial;
+use App\Models\Question;
+use App\Models\Answer;
+use Illuminate\Database\Seeder;
+
+class FinalProjectSeeder extends Seeder
+{
+    public function run(): void
+    {
+        // 1. Create Final Project Material
+        $material = Material::updateOrCreate(
+        ['module_id' => 10],
+        [
+            'title' => 'Proyek Akhir: Arsitektur Sistem Terintegrasi',
+            'content' => '<h2>Ujian Akhir Penguasaan OOP</h2>
+                <p>Selamat! Anda telah capai tahap akhir. Proyek ini akan menguji seluruh pemahaman Anda tentang 4 pilar OOP (Enkapsulasi, Pewarisan, Polimorfisme, dan Abstraksi) dalam satu skenario terpadu.</p>',
+            'created_by' => 2,
+            'is_final_project' => true,
+        ]
+        );
+
+        // 2. Create Sub Material
+        $subMaterial = SubMaterial::updateOrCreate(
+        ['material_id' => $material->id, 'title' => 'Instruksi Proyek Akhir'],
+        [
+            'content' => 'Selesaikan pertanyaan berikut dengan tingkat akurasi tinggi untuk mendapatkan sertifikasi.',
+            'jenis_konten' => 'teori',
+            'learning_style' => 'mixed',
+            'order' => 1,
+        ]
+        );
+
+        // 3. Create Final Questions
+        $q1 = Question::updateOrCreate(
+        ['question_text' => 'Dalam sebuah sistem pembayaran, Anda memiliki interface "PaymentProcessor" dan class "CreditCard", "EWallet", serta "BankTransfer". Konsep apa yang paling tepat menggambarkan kemampuan memanggil method "pay()" pada variabel bertipe "PaymentProcessor" tanpa peduli jenis pembayarannya?'],
+        [
+            'material_id' => $material->id,
+            'sub_material_id' => $subMaterial->id,
+            'question_type' => 'radio_button',
+            'type' => 'teori',
+            'difficulty' => 'hard', // Identification via ModuleID (G18)
+            'hint' => 'Satu antarmuka, banyak wujud.',
+            'created_by' => 2,
+        ]
+        );
+
+        Answer::updateOrCreate(
+        ['question_id' => $q1->id, 'answer_text' => 'Polimorfisme'],
+        ['is_correct' => true, 'explanation' => 'Polimorfisme memungkinkan kita menggunakan interface umum untuk berbagai implementasi spesifik.']
+        );
+
+        Answer::updateOrCreate(
+        ['question_id' => $q1->id, 'answer_text' => 'Enkapsulasi'],
+        ['is_correct' => false]
+        );
+
+        // 4. Create Syntax Question for Final Project
+        $q2 = Question::updateOrCreate(
+        ['question_text' => 'Manakah potongan kode Java yang benar untuk mendeklarasikan kelas "Manager" yang mewarisi dari "Employee" dan mengimplementasikan interface "Authenticatable"?'],
+        [
+            'material_id' => $material->id,
+            'sub_material_id' => $subMaterial->id,
+            'question_type' => 'radio_button',
+            'type' => 'sintaks',
+            'difficulty' => 'hard',
+            'hint' => 'Urutannya adalah extends lalu implements.',
+            'created_by' => 2,
+        ]
+        );
+
+        Answer::updateOrCreate(
+        ['question_id' => $q2->id, 'answer_text' => 'public class Manager extends Employee implements Authenticatable {}'],
+        ['is_correct' => true, 'explanation' => 'Di Java, kelas hanya bisa extends satu superclass, tapi bisa implements banyak interface.']
+        );
+    }
+}

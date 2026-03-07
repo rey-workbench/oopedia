@@ -18,10 +18,10 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
 class FactGatheringService implements FactGatheringServiceInterface
 {
     // ==================== SCORE THRESHOLDS (G01-G04) ====================
-    private const SCORE_CRITICAL_MAX  = 50;   // < 50  → G01
-    private const SCORE_REMEDIAL_MAX  = 75;   // 50-74 → G02
-    private const SCORE_STANDARD_MAX  = 90;   // 75-89 → G03
-                                               // ≥ 90  → G04
+    private const SCORE_CRITICAL_MAX  = 50;   // < 50  ? G01
+    private const SCORE_REMEDIAL_MAX  = 75;   // 50-74 ? G02
+    private const SCORE_STANDARD_MAX  = 90;   // 75-89 ? G03
+                                               // = 90  ? G04
 
     // ==================== TIME THRESHOLDS (G05-G06) ====================
     // Canonical values live in AdaptiveConstants::ALLOCATED_TIME and AdaptiveConstants::TIME_FAST_THRESHOLD
@@ -163,7 +163,7 @@ class FactGatheringService implements FactGatheringServiceInterface
         $question     = $this->questionRepo->find($questionId);
         $questionType = $question?->type ?? 'teori';
 
-        // Syntax questions → G09, Theory/Logic questions → G10
+        // Syntax questions ? G09, Theory/Logic questions ? G10
         return $questionType === 'sintaks' ? [AdaptiveConstants::FACT_ERROR_SYNTAX] : [AdaptiveConstants::FACT_ERROR_LOGIC];
     }
 
@@ -172,15 +172,7 @@ class FactGatheringService implements FactGatheringServiceInterface
      */
     protected function getModuleFact(int $moduleId): string
     {
-        $moduleMap = [
-            1 => AdaptiveConstants::FACT_MODULE_FOUNDATION,
-            2 => AdaptiveConstants::FACT_MODULE_ENCAPSULATION,
-            3 => AdaptiveConstants::FACT_MODULE_INHERITANCE,
-            4 => AdaptiveConstants::FACT_MODULE_POLYMORPHISM,
-            5 => AdaptiveConstants::FACT_MODULE_ABSTRACTION,
-        ];
-
-        return $moduleMap[$moduleId] ?? AdaptiveConstants::FACT_MODULE_FOUNDATION;
+        return AdaptiveConstants::FACT_IN_MODULE;
     }
 
     /**
@@ -192,6 +184,7 @@ class FactGatheringService implements FactGatheringServiceInterface
             'beginner' => AdaptiveConstants::FACT_DIFF_BEGINNER,
             'medium'   => AdaptiveConstants::FACT_DIFF_MEDIUM,
             'hard'     => AdaptiveConstants::FACT_DIFF_HARD,
+            'final'    => AdaptiveConstants::FACT_DIFF_HARD, // Mapping final to hard fact
         ];
 
         return $difficultyMap[$difficulty] ?? AdaptiveConstants::FACT_DIFF_BEGINNER;
@@ -267,4 +260,3 @@ class FactGatheringService implements FactGatheringServiceInterface
         return $percentage >= self::SATISFACTORY_PROGRESS_THRESHOLD;
     }
 }
-

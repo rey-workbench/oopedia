@@ -49,6 +49,7 @@ export class StudentProgressState extends BaseState {
     student = $state<User>({} as User);
     materials = $state<MaterialWithProgress[]>([]);
     missingQuestionsByMaterial = $state<MissingQuestionsItem[]>([]);
+    certifications = $state<Record<number, string>>({});
 
     avgProgress = $derived(
         this.materials.length > 0
@@ -70,12 +71,14 @@ export class StudentProgressState extends BaseState {
     constructor(
         student: User,
         materials: MaterialWithProgress[],
-        missingQuestionsByMaterial: MissingQuestionsItem[]
+        missingQuestionsByMaterial: MissingQuestionsItem[],
+        certifications: Record<number, string> = {}
     ) {
         super();
         this.student = student;
         this.materials = materials;
         this.missingQuestionsByMaterial = missingQuestionsByMaterial;
+        this.certifications = certifications;
     }
 }
 

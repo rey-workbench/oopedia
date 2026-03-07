@@ -122,6 +122,10 @@ class DashboardService implements DashboardServiceInterface
                 }
                 )->take(5)->values(); // Take only 5 after deduplication
     
+                // Get student state for certifications and badges
+                $studentState = \App\Models\StudentState::find($userId, ['*']);
+                $certifications = $studentState ? ($studentState->learning_profile['certifications'] ?? []) : [];
+
                 return [
                     'totalMaterials' => $totalMaterials,
                     'totalQuestions' => $configuredTotalQuestions,
@@ -137,6 +141,7 @@ class DashboardService implements DashboardServiceInterface
                     'totalCorrectQuestions' => $totalCorrectQuestions,
                     'recentActivities' => $recentActivities,
                     'allMaterials' => $materials,
+                    'certifications' => $certifications,
                 ];
             });
     }

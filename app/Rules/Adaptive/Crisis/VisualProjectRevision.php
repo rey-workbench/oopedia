@@ -31,10 +31,20 @@ class VisualProjectRevision extends BaseAdaptiveRule
 
     public function apply(array $state, array $context): array
     {
-        $state['recommendation']    = 'Revisi Proyek - Ulas Materi';
-        $state['next_action']       = 'STUDY_VISUAL';
-        $state['message']           = 'Proyek Anda perlu perbaikan. Mari ulas kembali konsep fundamental.';
+        $facts = $context['facts'] ?? [];
+        $state['recommendation'] = 'Revisi Proyek - Ulas Materi';
+        $state['next_action'] = 'STUDY_VISUAL';
         $state['intervention_type'] = 'visual_project_revision';
+
+        if (in_array(AdaptiveConstants::FACT_ERROR_SYNTAX, $facts)) {
+            $state['message'] = 'Proyek Anda mengalami kendala pada penulisan kode (sintaks). Ayo ulas materi panduan visual koding!';
+        }
+        elseif (in_array(AdaptiveConstants::FACT_ERROR_LOGIC, $facts)) {
+            $state['message'] = 'Logika proyek Anda perlu diperbaiki. Mari lihat diagram alur dan konsep fundamental lagi.';
+        }
+        else {
+            $state['message'] = 'Proyek Anda perlu perbaikan. Mari ulas kembali konsep fundamental secara visual.';
+        }
 
         return $state;
     }
