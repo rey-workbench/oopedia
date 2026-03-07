@@ -35,8 +35,10 @@ class MasteryMedium extends BaseAdaptiveRule
 
     public function apply(array $state, array $context): array
     {
+        $state['fast_track_active'] = true;
+        $state['target_difficulty'] = 'hard';
         $state['next_action'] = 'NEXT_QUESTION';
-        $state['message']     = 'Luar biasa! Penguasaan dan kecepatan Anda di level menengah sangat baik. Lanjutkan.';
+        $state['message'] = 'Luar biasa! Penguasaan dan kecepatan Anda di level menengah sangat baik. Lanjutkan ke level sulit (Hard).';
 
         return $state;
     }

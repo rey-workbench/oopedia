@@ -22,9 +22,8 @@ class ProgressRepository implements ProgressRepositoryInterface
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->select('questions.material_id')
             ->selectRaw('COUNT(DISTINCT quiz_attempts.question_id) as answered_questions')
-            ->selectRaw('SUM(CASE WHEN quiz_attempts.is_correct = 1 THEN 1 ELSE 0 END) as correct_answers')
+            ->selectRaw('COUNT(DISTINCT CASE WHEN quiz_attempts.is_correct = 1 THEN quiz_attempts.question_id END) as correct_answers')
             ->where('quiz_attempts.user_id', $userId)
-            ->where('quiz_attempts.is_correct', true)
             ->groupBy('questions.material_id')
             ->get();
     }
@@ -161,9 +160,12 @@ class ProgressRepository implements ProgressRepositoryInterface
     public function saveProgress(array $data): QuizAttempt
     {
         if (! isset($data['attempt_number'])) {
-            $data['attempt_number'] = QuizAttempt::where('user_id', $data['user_id'])
-                ->where('question_id', $data['question_id'])
-                ->count() + 1;
+            $data['attempt_number'] = DB::transaction(function () use ($data) {
+                return QuizAttempt::where('user_id', $data['user_id'])
+                    ->where('question_id', $data['question_id'])
+                    ->lockForUpdate()
+                    ->count() + 1;
+            });
         }
 
         $attempt = QuizAttempt::create([
@@ -172,9 +174,9 @@ class ProgressRepository implements ProgressRepositoryInterface
             'answer_id'      => $data['answer_id']     ?? null,
             'user_response'  => $data['user_response'] ?? null,
             'is_correct'     => $data['is_correct']    ?? false,
-            'score'          => $data['score']         ?? ($data['is_correct'] ? 100 : 0),
+            'score'          => $data['attributes']['score'] ?? $data['score'] ?? ($data['is_correct'] ? 100 : 0),
             'attempt_number' => $data['attempt_number'],
-            'time_spent'     => 0,
+            'time_spent'     => $data['attributes']['time_spent'] ?? $data['time_spent'] ?? 0,
         ]);
 
         if (isset($data['attributes']) && is_array($data['attributes'])) {

@@ -25,22 +25,31 @@ class GoldCertificate extends BaseAdaptiveRule
     {
         return $this->hasAllFacts($facts, [
             AdaptiveConstants::FACT_SCORE_MASTERY,
+            AdaptiveConstants::FACT_TIME_FAST,
             AdaptiveConstants::FACT_HINT_NONE,
             AdaptiveConstants::FACT_IS_FINAL_PROJECT,
+            AdaptiveConstants::FACT_SATISFACTORY_PROGRESS,
         ]);
     }
 
     public function apply(array $state, array $context): array
     {
-        $state['next_action']   = 'ISSUE_CERTIFICATE';
-        $state['message']       = 'Luar Biasa! Anda layak mendapatkan Sertifikat EMAS sebagai Object-Oriented Architect.';
+        $state['next_action'] = 'ISSUE_CERTIFICATE';
+        $state['message'] = 'Luar Biasa! Anda layak mendapatkan Sertifikat EMAS sebagai Object-Oriented Architect.';
         $state['certification'] = 'gold';
-        $state['achievement']   = 'gold_certificate';
+        $state['achievement'] = 'gold_certificate';
 
         // Add badge
-        $badges                               = $state['gamification_data']['badges'] ?? [];
-        $badges[]                             = 'gold_architect';
+        $badges = $state['gamification_data']['badges'] ?? [];
+        $badges[] = 'gold_architect';
         $state['gamification_data']['badges'] = $badges;
+
+        // Ensure module progress is marked 100% (merged from ModuleGraduation logic)
+        if (isset($context['module_id'])) {
+            $moduleProgress = $state['adaptive_state']['module_progress'] ?? [];
+            $moduleProgress[$context['module_id']] = 100;
+            $state['adaptive_state']['module_progress'] = $moduleProgress;
+        }
 
         return $state;
     }

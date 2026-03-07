@@ -10,6 +10,25 @@ namespace App\Rules\Adaptive\Constants;
  */
 class AdaptiveConstants
 {
+    // ==================== QUIZ CONFIGURATION (Shared Thresholds) ====================
+
+    /**
+     * Allocated seconds per difficulty level.
+     * Used by PerformanceService, FactGatheringService, QuizRewardService.
+     */
+    public const ALLOCATED_TIME = [
+        'beginner' => 45,
+        'medium'   => 90,
+        'hard'     => 150,
+        'final'    => 300,
+    ];
+
+    /**
+     * Answering below this % of allocated time → G05 (Fast).
+     * Used as the canonical "fast answer" threshold across all services.
+     */
+    public const TIME_FAST_THRESHOLD = 50;
+
     // ==================== FACTS (G Codes) ====================
 
     // Performance / Score (G01 - G04)
@@ -26,10 +45,12 @@ class AdaptiveConstants
 
     public const FACT_TIME_NORMAL = 'G06';
 
-    // Learning Styles (G07 - G08)
+    // Learning Styles (G07 - G08, G27)
     public const FACT_STYLE_VISUAL = 'G07';
 
     public const FACT_STYLE_TEXTUAL = 'G08';
+
+    public const FACT_STYLE_MIXED = 'G27';
 
     // Error Types (G09 - G10)
     public const FACT_ERROR_SYNTAX = 'G09';
@@ -118,6 +139,7 @@ class AdaptiveConstants
             self::FACT_TIME_NORMAL           => 'Waktu Pengerjaan Normal',
             self::FACT_STYLE_VISUAL          => 'Gaya Belajar Visual',
             self::FACT_STYLE_TEXTUAL         => 'Gaya Belajar Tekstual',
+            self::FACT_STYLE_MIXED           => 'Gaya Belajar Campuran',
             self::FACT_ERROR_SYNTAX          => 'Kesalahan Sintaksis',
             self::FACT_ERROR_LOGIC           => 'Kesalahan Logika',
             self::FACT_HINT_NONE             => 'Tanpa Bantuan Hint',

@@ -30,11 +30,6 @@ interface MaterialServiceInterface
     public function getMaterialById(int $id): ?Material;
 
     /**
-     * Get a material with all its questions.
-     */
-    public function getMaterialWithQuestions(int $id): ?Material;
-
-    /**
      * Get a material with full question and answer data.
      */
     public function getMaterialWithQuestionsAndAnswers(int $id): ?Material;

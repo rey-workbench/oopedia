@@ -78,7 +78,7 @@ class StudentState extends Model
         'gamification_data'   => '{"global_xp":0,"current_level":"Pemula","current_streak":0,"max_streak":0,"badges":[]}',
         'learning_profile'    => '{"learning_style":"visual","mastery_levels":{},"unlocked_modules":[]}',
         'performance_metrics' => '{"total_questions_answered":0,"correct_count":0,"wrong_count":0,"wrong_streak":0,"hints_used_count":0,"hints_available":3}',
-        'adaptive_state'      => '{"fast_track_active":false,"current_module_id":null,"module_progress":{},"time_metrics":{"avg_time_per_question":0,"total_time_spent":0},"variables":{}}',
+        'adaptive_state'      => '{"fast_track_active":false,"current_material_id":null,"target_difficulty":null,"module_progress":{},"time_metrics":{"avg_time_per_question":0,"total_time_spent":0}}',
     ];
 
     // ==================== RELATIONSHIPS ====================
@@ -159,7 +159,7 @@ class StudentState extends Model
      * Update performance counters based on answer result.
      * No need for custom accessors/mutators - Laravel handles JSON casting automatically
      */
-    public function updatePerformance($isCorrect, $attemptNumber, $usedHint)
+    public function updatePerformance($isCorrect, $timeSpent, $usedHint)
     {
         // Get current metrics (already decoded by Laravel)
         $metrics      = $this->performance_metrics ?? [];

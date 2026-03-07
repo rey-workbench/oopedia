@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int|null $sub_material_id
  * @property string $question_text
  * @property string $question_type
+ * @property string $type
  * @property string $difficulty
  * @property string|null $hint
  * @property int|null $created_by
@@ -32,6 +33,7 @@ class Question extends Model
         'sub_material_id',
         'question_text',
         'question_type',
+        'type',
         'difficulty',
         'hint',
         'created_by',

@@ -17,7 +17,7 @@ interface QuestionListingServiceInterface
      * @param array<string, mixed> $guestProgress
      * @return array<string, mixed>
      */
-    public function getQuizData(Material $material, string $difficulty, int|string|null $userId, bool $isGuest, array $guestProgress = []): array;
+    public function getQuizData(Material $material, string $difficulty, int|string|null $userId, bool $isGuest, array $guestProgress = [], ?string $targetDifficulty = null): array;
 
     /**
      * Get all materials with student progress counts.

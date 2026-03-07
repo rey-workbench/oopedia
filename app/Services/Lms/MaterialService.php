@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Lms\Material;
+namespace App\Services\Lms;
 
 use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\MediaRepositoryInterface;
@@ -13,10 +13,12 @@ use Illuminate\Support\Facades\Storage;
 
 class MaterialService implements MaterialServiceInterface
 {
-    public function __construct(
-        protected MaterialRepositoryInterface $materialRepo,
-        protected MediaRepositoryInterface $mediaRepo,
-    ) {}
+    public function __construct(protected
+        MaterialRepositoryInterface $materialRepo, protected
+        MediaRepositoryInterface $mediaRepo,
+        )
+    {
+    }
 
     /** @return Collection<int, Material> */
     public function getAllMaterials(?string $search = null, string $sort = 'created_at', string $direction = 'asc'): Collection
@@ -35,11 +37,6 @@ class MaterialService implements MaterialServiceInterface
         return $this->materialRepo->find($id);
     }
 
-    public function getMaterialWithQuestions(int $id): ?Material
-    {
-        return $this->materialRepo->findWithQuestionsAndAnswers($id);
-    }
-
     public function getMaterialWithQuestionsAndAnswers(int $id): ?Material
     {
         return $this->materialRepo->findWithQuestionsAndAnswers($id);
@@ -48,8 +45,8 @@ class MaterialService implements MaterialServiceInterface
     public function createMaterial(array $data, mixed $coverImage = null): Material
     {
         $material = $this->materialRepo->create([
-            'title'      => $data['title'],
-            'content'    => $data['content'],
+            'title' => $data['title'],
+            'content' => $data['content'],
             'created_by' => $data['created_by'],
         ]);
 
@@ -64,12 +61,12 @@ class MaterialService implements MaterialServiceInterface
     {
         $material = $this->materialRepo->find($materialId);
 
-        if (! $material) {
+        if (!$material) {
             throw new MaterialNotFoundException($materialId);
         }
 
         $this->materialRepo->update($material->id, [
-            'title'   => $data['title'],
+            'title' => $data['title'],
             'content' => $data['content'] ?? $data['description'] ?? null,
         ]);
 
@@ -85,7 +82,7 @@ class MaterialService implements MaterialServiceInterface
     {
         $material = $this->materialRepo->find($materialId);
 
-        if (! $material) {
+        if (!$material) {
             throw new MaterialNotFoundException($materialId);
         }
 
@@ -103,7 +100,7 @@ class MaterialService implements MaterialServiceInterface
     {
         $media = $this->mediaRepo->find($mediaId);
 
-        if (! $media) {
+        if (!$media) {
             throw new MediaOperationException("Media dengan ID '{$mediaId}' tidak ditemukan.");
         }
 
@@ -121,8 +118,8 @@ class MaterialService implements MaterialServiceInterface
 
         $this->mediaRepo->create([
             'material_id' => $material->id,
-            'media_type'  => 'image',
-            'media_url'   => '/images/' . $path,
+            'media_type' => 'image',
+            'media_url' => '/images/' . $path,
         ]);
     }
 
@@ -144,13 +141,15 @@ class MaterialService implements MaterialServiceInterface
             if (Storage::disk('images')->exists($path)) {
                 Storage::disk('images')->delete($path);
             }
-        } elseif (str_starts_with($path, '/storage/')) {
+        }
+        elseif (str_starts_with($path, '/storage/')) {
             $path = str_replace('/storage/', '', $path);
 
             if (Storage::disk('public')->exists($path)) {
                 Storage::disk('public')->delete($path);
             }
-        } else {
+        }
+        else {
             $path = str_replace('storage/', '', $path);
 
             if (Storage::disk('public')->exists($path)) {

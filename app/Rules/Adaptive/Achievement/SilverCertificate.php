@@ -27,20 +27,28 @@ class SilverCertificate extends BaseAdaptiveRule
             AdaptiveConstants::FACT_SCORE_STANDARD,
             AdaptiveConstants::FACT_HINT_NONE,
             AdaptiveConstants::FACT_IS_FINAL_PROJECT,
+            AdaptiveConstants::FACT_SATISFACTORY_PROGRESS,
         ]);
     }
 
     public function apply(array $state, array $context): array
     {
-        $state['next_action']   = 'ISSUE_CERTIFICATE';
-        $state['message']       = 'Selamat! Anda layak mendapatkan Sertifikat PERAK sebagai Object-Oriented Developer.';
+        $state['next_action'] = 'ISSUE_CERTIFICATE';
+        $state['message'] = 'Selamat! Anda layak mendapatkan Sertifikat PERAK sebagai Object-Oriented Developer.';
         $state['certification'] = 'silver';
-        $state['achievement']   = 'silver_certificate';
+        $state['achievement'] = 'silver_certificate';
 
         // Add badge
-        $badges                               = $state['gamification_data']['badges'] ?? [];
-        $badges[]                             = 'silver_developer';
+        $badges = $state['gamification_data']['badges'] ?? [];
+        $badges[] = 'silver_developer';
         $state['gamification_data']['badges'] = $badges;
+
+        // Ensure module progress is marked 100% (merged from ModuleGraduation logic)
+        if (isset($context['module_id'])) {
+            $moduleProgress = $state['adaptive_state']['module_progress'] ?? [];
+            $moduleProgress[$context['module_id']] = 100;
+            $state['adaptive_state']['module_progress'] = $moduleProgress;
+        }
 
         return $state;
     }

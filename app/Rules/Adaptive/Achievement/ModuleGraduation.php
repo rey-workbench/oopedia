@@ -7,10 +7,11 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
 /**
  * Rule 8: Module Graduation
- * IF (G04 AND G05 AND G11 AND G17 AND (G13 OR G14 OR G23 OR G24 OR G25)) THEN H08
+ * IF (G04 AND G05 AND G11 AND G17 AND G26 AND (G13 OR G14 OR G23 OR G24 OR G25)) THEN H08
  *
  * Triggers when student answers a hard question with mastery score,
- * fast response (G05), no hints, in any of the 5 OOP modules.
+ * fast response (G05), no hints, has satisfactory progress (≥60%),
+ * in any of the 5 OOP modules.
  */
 class ModuleGraduation extends BaseAdaptiveRule
 {
@@ -37,19 +38,20 @@ class ModuleGraduation extends BaseAdaptiveRule
             AdaptiveConstants::FACT_TIME_FAST,
             AdaptiveConstants::FACT_HINT_NONE,
             AdaptiveConstants::FACT_DIFF_HARD,
+            AdaptiveConstants::FACT_SATISFACTORY_PROGRESS,
         ]) && $this->hasAnyFact($facts, $modulesFacts);
     }
 
     public function apply(array $state, array $context): array
     {
         $state['next_action'] = 'FINISH_MATERIAL';
-        $state['message']     = 'Selamat! Anda telah menguasai seluruh materi modul ini dengan sempurna.';
+        $state['message'] = 'Selamat! Anda telah menguasai seluruh materi modul ini dengan sempurna.';
         $state['achievement'] = 'module_completed';
 
         // Update module progress
         if (isset($context['module_id'])) {
-            $moduleProgress                             = $state['adaptive_state']['module_progress'] ?? [];
-            $moduleProgress[$context['module_id']]      = 100;
+            $moduleProgress = $state['adaptive_state']['module_progress'] ?? [];
+            $moduleProgress[$context['module_id']] = 100;
             $state['adaptive_state']['module_progress'] = $moduleProgress;
         }
 

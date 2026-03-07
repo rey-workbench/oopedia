@@ -17,6 +17,22 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
  */
 class FactGatheringService implements FactGatheringServiceInterface
 {
+    // ==================== SCORE THRESHOLDS (G01-G04) ====================
+    private const SCORE_CRITICAL_MAX  = 40;   // < 40  → G01
+    private const SCORE_REMEDIAL_MAX  = 70;   // 40-69 → G02
+    private const SCORE_STANDARD_MAX  = 90;   // 70-89 → G03
+                                               // ≥ 90  → G04
+
+    // ==================== TIME THRESHOLDS (G05-G06) ====================
+    // Canonical values live in AdaptiveConstants::ALLOCATED_TIME and AdaptiveConstants::TIME_FAST_THRESHOLD
+
+    // ==================== OTHER THRESHOLDS ====================
+    /** Consecutive failures on same question before G22 (persistent fail) */
+    private const PERSISTENT_FAIL_THRESHOLD = 3;
+
+    /** Minimum % of questions answered to be considered satisfactory (G26) */
+    private const SATISFACTORY_PROGRESS_THRESHOLD = 60;
+
     public function __construct(
         protected ProgressRepositoryInterface $progressRepo,
         protected QuestionRepositoryInterface $questionRepo,
@@ -87,13 +103,13 @@ class FactGatheringService implements FactGatheringServiceInterface
         // Normalize score: correct answers get at least 70, wrong get max 69
         $finalScore = $isCorrect ? max($score, 70) : min($score, 69);
 
-        if ($finalScore < 40) {
+        if ($finalScore < self::SCORE_CRITICAL_MAX) {
             return [AdaptiveConstants::FACT_SCORE_CRITICAL];
         }
-        if ($finalScore < 70) {
+        if ($finalScore < self::SCORE_REMEDIAL_MAX) {
             return [AdaptiveConstants::FACT_SCORE_REMEDIAL];
         }
-        if ($finalScore < 90) {
+        if ($finalScore < self::SCORE_STANDARD_MAX) {
             return [AdaptiveConstants::FACT_SCORE_STANDARD];
         }
 
@@ -105,29 +121,33 @@ class FactGatheringService implements FactGatheringServiceInterface
      */
     protected function getTimeFacts(int $timeSpent, string $difficulty = 'beginner'): array
     {
-        // Allocation based on difficulty
-        $allocatedTimeMap = [
-            'beginner' => 45,
-            'medium'   => 90,
-            'hard'     => 150,
-            'final'    => 300,
-        ];
-
-        $allocatedTime = $allocatedTimeMap[$difficulty] ?? 60;
+        $allocatedTime = AdaptiveConstants::ALLOCATED_TIME[$difficulty] ?? 60;
         $percentage    = ($timeSpent / $allocatedTime) * 100;
 
-        return $percentage < 50 ? [AdaptiveConstants::FACT_TIME_FAST] : [AdaptiveConstants::FACT_TIME_NORMAL];
+        return $percentage < AdaptiveConstants::TIME_FAST_THRESHOLD
+            ? [AdaptiveConstants::FACT_TIME_FAST]
+            : [AdaptiveConstants::FACT_TIME_NORMAL];
     }
 
     /**
-     * Get learning style facts (G07-G08).
+     * Get learning style facts (G07-G08, G27).
+     * Mixed learners emit G07 + G08 + G27 so existing crisis rules still fire.
      */
     protected function getLearningStyleFacts(StudentState $state): array
     {
-        // Use accessor from model
         $style = $state->learning_style;
 
-        return $style === 'visual' ? [AdaptiveConstants::FACT_STYLE_VISUAL] : [AdaptiveConstants::FACT_STYLE_TEXTUAL];
+        if ($style === 'mixed') {
+            return [
+                AdaptiveConstants::FACT_STYLE_VISUAL,
+                AdaptiveConstants::FACT_STYLE_TEXTUAL,
+                AdaptiveConstants::FACT_STYLE_MIXED,
+            ];
+        }
+
+        return $style === 'visual'
+            ? [AdaptiveConstants::FACT_STYLE_VISUAL]
+            : [AdaptiveConstants::FACT_STYLE_TEXTUAL];
     }
 
     /**
@@ -217,16 +237,26 @@ class FactGatheringService implements FactGatheringServiceInterface
     {
         $consecutiveFails = $this->progressRepo->getConsecutiveFailures($userId, $questionId);
 
-        return $consecutiveFails >= 3;
+        return $consecutiveFails >= self::PERSISTENT_FAIL_THRESHOLD;
     }
 
     /**
      * Check if student has satisfied enough questions in the material (G26).
      */
-    protected function hasSatisfactoryProgress(int $userId, int $materialId): bool
+    protected function hasSatisfactoryProgress(int $userId, int $materialId, string $difficulty = 'all'): bool
     {
-        $answeredCount  = $this->progressRepo->getAnsweredQuestionIds($userId, $materialId)->count();
-        $totalQuestions = $this->questionRepo->countByMaterial($materialId);
+        $answeredIds = $this->progressRepo->getAnsweredQuestionIds($userId, $materialId);
+        
+        if ($difficulty === 'all' || $difficulty === 'final') {
+            $answeredCount  = $answeredIds->count();
+            $totalQuestions = $this->questionRepo->countByMaterial($materialId);
+        } else {
+            $allQuestions = $this->questionRepo->getByMaterialAndDifficulty($materialId, 'all');
+            $difficultyQuestions = $allQuestions->where('difficulty', $difficulty);
+            
+            $totalQuestions = $difficultyQuestions->count();
+            $answeredCount = $difficultyQuestions->filter(fn($q) => $answeredIds->contains($q->id))->count();
+        }
 
         if ($totalQuestions === 0) {
             return true;
@@ -234,6 +264,7 @@ class FactGatheringService implements FactGatheringServiceInterface
 
         $percentage = ($answeredCount / $totalQuestions) * 100;
 
-        return $percentage >= 60; // 60% threshold for "almost done" skip logic
+        return $percentage >= self::SATISFACTORY_PROGRESS_THRESHOLD;
     }
 }
+

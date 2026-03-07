@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Lms\Material;
+namespace App\Services\Lms;
 
 use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\SubMaterialRepositoryInterface;
@@ -11,10 +11,12 @@ use Illuminate\Database\Eloquent\Collection;
 
 class SubMaterialService implements SubMaterialServiceInterface
 {
-    public function __construct(
-        protected SubMaterialRepositoryInterface $subMaterialRepo,
-        protected MaterialRepositoryInterface $materialRepo,
-    ) {}
+    public function __construct(protected
+        SubMaterialRepositoryInterface $subMaterialRepo, protected
+        MaterialRepositoryInterface $materialRepo,
+        )
+    {
+    }
 
     /**
      * Get all sub-materials for a material
@@ -31,7 +33,7 @@ class SubMaterialService implements SubMaterialServiceInterface
     {
         $material = $this->materialRepo->find($materialId);
 
-        if (! $material) {
+        if (!$material) {
             throw new MaterialNotFoundException($materialId);
         }
 
@@ -75,7 +77,7 @@ class SubMaterialService implements SubMaterialServiceInterface
 
         return $subMaterials->map(function ($sub) {
             return [
-                'id'    => $sub->id,
+                'id' => $sub->id,
                 'title' => $sub->title,
             ];
         })->toArray();

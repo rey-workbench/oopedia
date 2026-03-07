@@ -195,10 +195,11 @@ export interface LearningProfile {
 
 export interface AdaptiveState {
     fast_track_active: boolean;
-    current_module_id: number | null;
+    current_material_id: number | null;
+    target_difficulty: string | null;
     last_rule: string | null;
-    last_action: string | null;
     time_metrics: TimeMetrics;
+    module_progress: Record<string, unknown>;
 }
 
 export interface StudentState {

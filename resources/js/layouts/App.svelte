@@ -1,8 +1,8 @@
 <script lang="ts">
     import { page } from '@inertiajs/svelte';
     import { onMount, onDestroy } from 'svelte';
-    import Navbar from '@/components/navigation/Navbar.svelte';
     import Sidebar from '@/components/navigation/Sidebar.svelte';
+    import Navbar from '@/components/navigation/Navbar.svelte';
     import Alert from '@/components/ui/Alert.svelte';
     import { sidebarOpen } from '@/stores/sidebar';
     import { ROUTES } from '@/utils/route';
@@ -10,8 +10,8 @@
 
     interface Props {
         title?: string;
-        showNavbar?: boolean;
         showSidebar?: boolean;
+        showNavbar?: boolean;
         fullWidth?: boolean;
         variant?: 'app' | 'auth';
         children?: import('svelte').Snippet;
@@ -19,8 +19,8 @@
 
     let {
         title = 'OOPEDIAV2',
-        showNavbar = true,
         showSidebar = true,
+        showNavbar = true,
         fullWidth = false,
         variant = 'app',
         children,
@@ -44,6 +44,7 @@
 <svelte:head>
     <title>{title}</title>
 </svelte:head>
+
 
 {#if variant === 'auth'}
     <div
@@ -146,7 +147,9 @@
                 ? 'lg:ml-64'
                 : ''}"
         >
-
+            {#if showNavbar}
+                <Navbar />
+            {/if}
             <!-- Flash Messages -->
             {#if flash.success || flash.error || flash.info || flash.warning || (flash as any).status}
                 <div

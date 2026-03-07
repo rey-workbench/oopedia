@@ -32,9 +32,11 @@ class CriticalBacktracking extends BaseAdaptiveRule
 
     public function apply(array $state, array $context): array
     {
+        $state['fast_track_active'] = false; // Revoke fast track if they fail critically
+        $state['target_difficulty'] = 'beginner'; // Force back to beginner
         $state['recommendation'] = 'Review Dasar';
-        $state['next_action']    = 'REDUCE_DIFFICULTY';
-        $state['message']        = 'Soal ini sepertinya terlalu sulit sekarang. Mari turunkan tingkat kesulitan dan perkuat fondasi Anda.';
+        $state['next_action'] = 'REDUCE_DIFFICULTY';
+        $state['message'] = 'Soal ini sepertinya terlalu sulit sekarang. Mari turunkan tingkat kesulitan dan perkuat fondasi Anda.';
 
         return $state;
     }

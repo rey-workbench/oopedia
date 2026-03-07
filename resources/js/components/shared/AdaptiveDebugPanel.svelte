@@ -24,7 +24,7 @@
     const factCategories = $derived({
         score: factCodes.filter((f) => ['G01', 'G02', 'G03', 'G04'].includes(f)),
         time: factCodes.filter((f) => ['G05', 'G06'].includes(f)),
-        style: factCodes.filter((f) => ['G07', 'G08'].includes(f)),
+        style: factCodes.filter((f) => ['G07', 'G08', 'G27'].includes(f)),
         error: factCodes.filter((f) => ['G09', 'G10'].includes(f)),
         hint: factCodes.filter((f) => ['G11', 'G12'].includes(f)),
         module: factCodes.filter((f) => ['G13', 'G14', 'G23', 'G24', 'G25'].includes(f)),
@@ -42,6 +42,7 @@
             G06: 'Normal (≥50%)',
             G07: 'Visual Learner',
             G08: 'Textual Learner',
+            G27: 'Mixed Learner',
             G09: 'Syntax Error',
             G10: 'Logic Error',
             G11: 'No Hint',

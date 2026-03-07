@@ -67,7 +67,7 @@ class RuleRegistry
         $this->register(new StandardPromotion);
 
         // Sort by priority (lower number = higher priority)
-        usort($this->rules, fn ($a, $b) => $a->getPriority() <=> $b->getPriority());
+        usort($this->rules, fn($a, $b) => $a->getPriority() <=> $b->getPriority());
     }
 
     /**
@@ -107,7 +107,7 @@ class RuleRegistry
     {
         return array_filter(
             $this->rules,
-            fn ($rule) => $rule->getActionCode() === $actionCode,
+        fn($rule) => $rule->getActionCode() === $actionCode,
         );
     }
 }

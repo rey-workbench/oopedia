@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Contracts\Services\UserServiceInterface;
+use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
@@ -15,9 +16,12 @@ use Inertia\Response;
 
 class LoginController extends Controller
 {
-    public function __construct(
-        protected UserServiceInterface $userService,
-    ) {}
+    public function __construct(protected
+        UserServiceInterface $userService, protected
+        GuestProgressServiceInterface $guestProgressService,
+        )
+    {
+    }
 
     public function create(): Response
     {
@@ -34,31 +38,34 @@ class LoginController extends Controller
                 $request->session()->regenerateToken();
             }
 
+            $this->guestProgressService->clearAllProgress();
+
             return Redirect::route('mahasiswa.materials.index');
         }
 
         // Handle Standard Login
         $credentials = $request->only('email', 'password');
 
-        if (! Auth::attempt($credentials)) {
+        if (!Auth::attempt($credentials)) {
             return back()->withErrors([
                 'email' => 'Email atau password salah',
             ])->onlyInput('email');
         }
 
         $request->session()->regenerate();
+        $this->guestProgressService->clearAllProgress();
         $user = $this->userService->getUserById(Auth::id());
 
-        $clearGuest    = Cookie::forget('is_guest');
+        $clearGuest = Cookie::forget('is_guest');
         $clearProgress = Cookie::forget('guest_progress');
 
         return match (true) {
-            $user->role_id == 1                       => redirect()->intended('admin/dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
-            $user->role_id == 2 && $user->is_approved => redirect()->intended('admin/dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
-            $user->role_id == 2                       => redirect()->route('admin.pending-approval')->withCookie($clearGuest)->withCookie($clearProgress),
-            $user->role_id == 3                       => redirect()->intended('mahasiswa/dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
-            default                                   => redirect()->intended('mahasiswa/materials')->withCookie($clearGuest)->withCookie($clearProgress),
-        };
+                $user->role_id == 1 => redirect()->intended('admin/dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
+                $user->role_id == 2 && $user->is_approved => redirect()->intended('admin/dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
+                $user->role_id == 2 => redirect()->route('admin.pending-approval')->withCookie($clearGuest)->withCookie($clearProgress),
+                $user->role_id == 3 => redirect()->intended('mahasiswa/dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
+                default => redirect()->intended('mahasiswa/materials')->withCookie($clearGuest)->withCookie($clearProgress),
+            };
     }
 
     public function logout(Request $request): RedirectResponse

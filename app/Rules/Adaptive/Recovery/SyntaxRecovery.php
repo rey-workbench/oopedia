@@ -7,9 +7,9 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
 /**
  * Rule 3: Syntax Recovery
- * IF (G02 AND G09 AND G14) THEN H03
+ * IF (G02 AND G09 AND G16 AND G12) THEN H03
  *
- * Triggers when student has remedial score on medium level,
+ * Triggers when student has remedial score on medium difficulty,
  * made syntax errors, and used hints.
  */
 class SyntaxRecovery extends BaseAdaptiveRule

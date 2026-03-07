@@ -6,6 +6,7 @@ use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\LeaderboardServiceInterface;
 use Illuminate\Support\Facades\Cache;
+use App\Helpers\ProgressHelper;
 
 class LeaderboardService implements LeaderboardServiceInterface
 {
@@ -20,7 +21,8 @@ class LeaderboardService implements LeaderboardServiceInterface
         // Cache global leaderboard data for 10 minutes (600 seconds)
         $leaderboardData = Cache::remember('global_leaderboard_data', 600, function () {
             // Get difficulty question counts from active configurations
-            $difficultyCount = $this->calculateDifficultyTotals();
+            $materials = $this->materialRepo->getAllWithQuestionsAndConfigs();
+            $difficultyCount = ProgressHelper::calculateDifficultyTotals($materials);
 
             // Get correct answers with attempts for scoring
             $correctAnswers = $this->progressRepo->getCorrectAnswersWithAttempts(3);
@@ -31,9 +33,7 @@ class LeaderboardService implements LeaderboardServiceInterface
             // Get leaderboard statistics
             $leaderboardDataRaw = $this->progressRepo->getLeaderboardStats(3);
 
-            // Get materials for calculating total questions
-            $materials                = $this->materialRepo->getAllWithQuestionsAndConfigs();
-            $totalConfiguredQuestions = $this->calculateTotalConfiguredQuestions($materials);
+            $totalConfiguredQuestions = ProgressHelper::calculateTotalQuestions($materials);
 
             // Process leaderboard data
             return $this->processLeaderboardData(
@@ -55,25 +55,6 @@ class LeaderboardService implements LeaderboardServiceInterface
         ];
     }
 
-    protected function calculateDifficultyTotals()
-    {
-        $totals = [
-            'beginner' => 0,
-            'medium'   => 0,
-            'hard'     => 0,
-        ];
-
-        $materials = $this->materialRepo->getAllWithQuestionsAndConfigs();
-
-        foreach ($materials as $material) {
-            // Use all available questions
-            $totals['beginner'] += $material->questions->where('difficulty', 'beginner')->count();
-            $totals['medium']   += $material->questions->where('difficulty', 'medium')->count();
-            $totals['hard']     += $material->questions->where('difficulty', 'hard')->count();
-        }
-
-        return $totals;
-    }
 
     protected function calculateUserScores($correctAnswers)
     {
@@ -112,17 +93,6 @@ class LeaderboardService implements LeaderboardServiceInterface
         return $userScores;
     }
 
-    protected function calculateTotalConfiguredQuestions($materials)
-    {
-        $total = 0;
-
-        foreach ($materials as $material) {
-            // Use all available questions
-            $total += $material->questions->count();
-        }
-
-        return $total;
-    }
 
     protected function processLeaderboardData($leaderboardData, $userScores, $totalConfiguredQuestions, $difficultyCount)
     {
@@ -140,9 +110,7 @@ class LeaderboardService implements LeaderboardServiceInterface
             $data->rank = $rank++;
 
             // Calculate percentage
-            $data->percentage = $totalConfiguredQuestions > 0
-                ? min(100, round(($data->total_correct_questions / $totalConfiguredQuestions) * 100))
-                : 0;
+            $data->percentage = ProgressHelper::calculateProgressPercentage($data->total_correct_questions, $totalConfiguredQuestions);
 
             $data->formatted_score = number_format($data->weighted_score, 0, ',', '.');
 

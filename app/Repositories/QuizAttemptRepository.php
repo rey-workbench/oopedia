@@ -11,11 +11,16 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
 {
     public function create(array $data): QuizAttempt
     {
-        if (! isset($data['attempt_number'])) {
-            $data['attempt_number'] = $this->countAttempts($data['user_id'], $data['question_id']) + 1;
-        }
+        return DB::transaction(function () use ($data) {
+            if (! isset($data['attempt_number'])) {
+                $data['attempt_number'] = QuizAttempt::where('user_id', $data['user_id'])
+                    ->where('question_id', $data['question_id'])
+                    ->lockForUpdate()
+                    ->count() + 1;
+            }
 
-        return QuizAttempt::create($data);
+            return QuizAttempt::create($data);
+        });
     }
 
     public function find(int $id): ?QuizAttempt

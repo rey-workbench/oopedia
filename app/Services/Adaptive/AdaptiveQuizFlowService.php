@@ -2,30 +2,27 @@
 
 namespace App\Services\Adaptive;
 
+use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\AdaptiveEngineServiceInterface;
 use App\Contracts\Services\FactGatheringServiceInterface;
+use App\Contracts\Services\GamificationServiceInterface;
 use App\Contracts\Services\NextActionResolverServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
-use App\Contracts\Services\ProgressServiceInterface;
 use App\Contracts\Services\QuestionAnswerServiceInterface;
-use App\Contracts\Services\QuizRewardServiceInterface;
-use App\Contracts\Services\StreakServiceInterface;
 use App\Models\Material;
 use App\Models\Question;
-use App\Services\Gamification\LevelingService;
+use Illuminate\Support\Facades\Cache;
 
 class AdaptiveQuizFlowService
 {
     public function __construct(
         protected QuestionAnswerServiceInterface $questionAnswerService,
         protected PerformanceServiceInterface $performanceService,
-        protected QuizRewardServiceInterface $rewardService,
-        protected StreakServiceInterface $streakService,
-        protected ProgressServiceInterface $progressService,
+        protected GamificationServiceInterface $gamificationService,
+        protected ProgressRepositoryInterface $progressRepo,
         protected FactGatheringServiceInterface $factGathering,
         protected AdaptiveEngineServiceInterface $adaptiveEngine,
         protected NextActionResolverServiceInterface $nextActionResolver,
-        protected LevelingService $levelingService,
     ) {}
 
     /** @return array<string, mixed> */
@@ -50,48 +47,13 @@ class AdaptiveQuizFlowService
 
         // 3. Calculate rewards
         $rewardResult = $isCorrect
-            ? $this->rewardService->calculateCorrectAnswerReward($studentState->toArray(), $usedHint, $question->difficulty ?? 'beginner', $timeSpent)
-            : $this->rewardService->processWrongAnswer($studentState->toArray());
+            ? $this->gamificationService->calculateCorrectAnswerReward($studentState->toArray(), $usedHint, $question->difficulty ?? 'beginner', $timeSpent)
+            : $this->gamificationService->processWrongAnswer($studentState->toArray());
 
         $baseXpEarned = $rewardResult['global_xp_earned'] ?? 0;
 
-        // Apply base rewards
-        $gamification                    = $studentState->gamification_data ?? [];
-        $gamification['global_xp']       = ($gamification['global_xp'] ?? 0) + $baseXpEarned;
-        $studentState->gamification_data = $gamification;
-
-        // 3.5 Calculate and apply additional streak XP bonus
-        $streakXpBonus = 0;
-        if ($isCorrect) {
-            $streakXpBonus = $this->streakService->calculateStreakBonusXP($studentState->current_streak);
-
-            if ($streakXpBonus > 0) {
-                $gamification                    = $studentState->gamification_data ?? [];
-                $gamification['global_xp']       = ($gamification['global_xp'] ?? 0) + $streakXpBonus;
-                $studentState->gamification_data = $gamification;
-            }
-        }
-
-        $totalXpEarned = $baseXpEarned + $streakXpBonus;
-
-        // 3.6 Check and apply streak milestones (like hint bonuses)
-        $streakBonus = $this->streakService->checkStreakBonus($studentState->toArray());
-        if ($streakBonus && isset($streakBonus['updates'])) {
-            // Apply updates (e.g., hints_available)
-            $metrics = $studentState->performance_metrics ?? [];
-            foreach ($streakBonus['updates'] as $key => $value) {
-                $metrics[$key] = $value;
-            }
-            $studentState->performance_metrics = $metrics;
-        }
-
-        // 3.7 Recalculate Level based on new XP
-        $currentXp = $studentState->gamification_data['global_xp'] ?? 0;
-        $newLevel  = $this->levelingService->determineLevel($currentXp);
-
-        $gamification                    = $studentState->gamification_data ?? [];
-        $gamification['current_level']   = $newLevel;
-        $studentState->gamification_data = $gamification;
+        // 3.5-3.7 Apply all gamification rewards (XP, streak bonus, level) atomically
+        [$totalXpEarned, $streakBonus] = $this->applyGamificationRewards($studentState, $rewardResult, $isCorrect);
 
         $studentState->save();
 
@@ -107,7 +69,7 @@ class AdaptiveQuizFlowService
             $userResponse = $data['drag_and_drop_answers'] ?? null;
         }
 
-        $savedProgress = $this->progressService->saveProgress([
+        $savedProgress = $this->progressRepo->saveProgress([
             'user_id'       => $userId,
             'material_id'   => $material->id,
             'question_id'   => $question->id,
@@ -123,10 +85,13 @@ class AdaptiveQuizFlowService
             ],
         ]);
 
-        if ($timeSpent > 0) {
-            $savedProgress?->setTimeSpent($timeSpent);
-            $savedProgress?->save();
-        }
+        // 4.5 Invalidate dashboard caches so progress is visible immediately
+        Cache::forget("dashboard_index_{$userId}_false");
+        Cache::forget("dashboard_index_{$userId}_true");
+        Cache::forget("dashboard_inprogress_{$userId}_false");
+        Cache::forget("dashboard_inprogress_{$userId}_true");
+        Cache::forget("dashboard_completed_{$userId}_false");
+        Cache::forget("dashboard_completed_{$userId}_true");
 
         // 5. Gather facts for adaptive engine (Uses updated progress)
         $facts = $this->factGathering->gatherFacts(
@@ -161,9 +126,12 @@ class AdaptiveQuizFlowService
         }
         $adaptiveState = $adaptiveState ?? [];
 
+        $adaptiveState['current_material_id'] = $material->id;
         $adaptiveState['last_rule']         = $adaptiveResult['triggered_rule'] ?? null;
-        $adaptiveState['last_action']       = $ruleOutput['next_action']        ?? 'NEXT_QUESTION';
         $adaptiveState['fast_track_active'] = $ruleOutput['fast_track_active']  ?? ($adaptiveState['fast_track_active'] ?? false);
+        if (isset($ruleOutput['target_difficulty'])) {
+            $adaptiveState['target_difficulty'] = $ruleOutput['target_difficulty'];
+        }
         $adaptiveState['time_metrics']      = [
             'avg_time_per_question' => $this->performanceService->calculateAverageTimeSpent($userId, $material->id),
             'total_time_spent'      => $this->performanceService->calculateTotalTimeSpent($userId, $material->id),
@@ -205,5 +173,50 @@ class AdaptiveQuizFlowService
                 ]),
             ],
         ];
+    }
+
+    /**
+     * Apply all gamification rewards to StudentState atomically:
+     * base XP -> streak XP bonus -> streak milestone hints -> level recalculation.
+     *
+     * @return array{0: int, 1: array|null} [totalXpEarned, streakMilestoneData]
+     */
+    private function applyGamificationRewards(\App\Models\StudentState $state, array $rewardResult, bool $isCorrect): array
+    {
+        $baseXpEarned = $rewardResult['global_xp_earned'] ?? 0;
+
+        // Base XP
+        $gamification              = $state->gamification_data ?? [];
+        $gamification['global_xp'] = ($gamification['global_xp'] ?? 0) + $baseXpEarned;
+        $state->gamification_data  = $gamification;
+
+        // Streak XP bonus
+        $streakXpBonus = 0;
+        if ($isCorrect) {
+            $streakXpBonus = $this->gamificationService->calculateStreakBonusXP($state->current_streak);
+
+            if ($streakXpBonus > 0) {
+                $gamification              = $state->gamification_data ?? [];
+                $gamification['global_xp'] = ($gamification['global_xp'] ?? 0) + $streakXpBonus;
+                $state->gamification_data  = $gamification;
+            }
+        }
+
+        // Streak milestone rewards (e.g., bonus hints)
+        $streakMilestone = $this->gamificationService->checkStreakBonus($state->toArray());
+        if ($streakMilestone && isset($streakMilestone['updates'])) {
+            $metrics = $state->performance_metrics ?? [];
+            foreach ($streakMilestone['updates'] as $key => $value) {
+                $metrics[$key] = $value;
+            }
+            $state->performance_metrics = $metrics;
+        }
+
+        // Recalculate level from cumulative XP
+        $gamification                  = $state->gamification_data ?? [];
+        $gamification['current_level'] = $this->gamificationService->determineLevel($gamification['global_xp'] ?? 0);
+        $state->gamification_data      = $gamification;
+
+        return [$baseXpEarned + $streakXpBonus, $streakMilestone];
     }
 }

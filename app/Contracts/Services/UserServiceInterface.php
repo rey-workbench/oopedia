@@ -67,11 +67,6 @@ interface UserServiceInterface
     public function registerUser(array $data): User;
 
     /**
-     * Create a new student user.
-     */
-    public function createStudent(array $data): User;
-
-    /**
      * Import admin users from an uploaded file.
      *
      * @return array<string, mixed>

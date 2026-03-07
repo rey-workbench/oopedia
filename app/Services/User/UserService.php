@@ -7,20 +7,23 @@ use App\Contracts\Services\UserServiceInterface;
 use App\Exceptions\Domain\UserNotFoundException;
 use App\Mail\AdminApproved;
 use App\Models\User;
+use App\Services\User\Concerns\ImportsCsvUsers;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class UserService implements UserServiceInterface
 {
-    public function __construct(
-        protected UserRepositoryInterface $userRepo,
-    ) {}
+    use ImportsCsvUsers;
+
+    public function __construct(protected
+        UserRepositoryInterface $userRepo,
+        )
+    {
+    }
 
     public function getUserById(int $id): ?User
     {
@@ -34,8 +37,8 @@ class UserService implements UserServiceInterface
 
     public function createAdmin(array $data): User
     {
-        $data['password']    = Hash::make($data['password']);
-        $data['role_id']     = 2;
+        $data['password'] = Hash::make($data['password']);
+        $data['role_id'] = 2;
         $data['is_approved'] = true;
 
         return $this->userRepo->create($data);
@@ -43,20 +46,20 @@ class UserService implements UserServiceInterface
 
     public function updateAdmin(int $userId, array $data): User
     {
-        if (isset($data['password']) && ! empty($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
-        } else {
-            unset($data['password']);
-        }
-
-        return $this->userRepo->update($userId, $data);
+        return $this->updateUser($userId, $data);
     }
 
     public function updateProfile(int $userId, array $data): User
     {
-        if (isset($data['password']) && ! empty($data['password'])) {
+        return $this->updateUser($userId, $data);
+    }
+
+    protected function updateUser(int $userId, array $data): User
+    {
+        if (isset($data['password']) && !empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
-        } else {
+        }
+        else {
             unset($data['password']);
         }
 
@@ -67,7 +70,7 @@ class UserService implements UserServiceInterface
     {
         $user = $this->userRepo->find($userId);
 
-        if (! $user) {
+        if (!$user) {
             throw new UserNotFoundException($userId);
         }
 
@@ -92,7 +95,7 @@ class UserService implements UserServiceInterface
     {
         $user = $this->userRepo->find($userId);
 
-        if (! $user) {
+        if (!$user) {
             throw new UserNotFoundException($userId);
         }
 
@@ -111,22 +114,13 @@ class UserService implements UserServiceInterface
     {
         $data['password'] = Hash::make($data['password']);
 
-        if (! isset($data['role_id'])) {
+        if (!isset($data['role_id'])) {
             $data['role_id'] = str_ends_with($data['email'], '@admin.oopedia.com') ? 2 : 3;
         }
 
-        if (! isset($data['is_approved'])) {
+        if (!isset($data['is_approved'])) {
             $data['is_approved'] = ($data['role_id'] === 2);
         }
-
-        return $this->userRepo->create($data);
-    }
-
-    public function createStudent(array $data): User
-    {
-        $data['password']    = Hash::make($data['password']);
-        $data['role_id']     = 3;
-        $data['is_approved'] = true;
 
         return $this->userRepo->create($data);
     }
@@ -134,85 +128,13 @@ class UserService implements UserServiceInterface
     /** @return array<string, mixed> */
     public function importAdminsFromFile(UploadedFile $file): array
     {
-        $path         = $file->getRealPath();
-        $successCount = 0;
-        $errorRows    = [];
-
-        if (($handle = fopen($path, 'r')) !== false) {
-            $header          = fgetcsv($handle, 1000, ',');
-            $requiredColumns = ['name', 'email', 'password'];
-            $missingColumns  = array_diff($requiredColumns, $header);
-
-            if (! empty($missingColumns)) {
-                throw new \RuntimeException('File tidak memiliki kolom yang diperlukan: ' . implode(', ', $missingColumns));
-            }
-
-            $nameIndex     = array_search('name', $header);
-            $emailIndex    = array_search('email', $header);
-            $passwordIndex = array_search('password', $header);
-            $rowNumber     = 1;
-
-            while (($row = fgetcsv($handle, 1000, ',')) !== false) {
-                $rowNumber++;
-
-                if (empty($row[$nameIndex]) && empty($row[$emailIndex])) {
-                    continue;
-                }
-
-                $rowData = [
-                    'name'     => $row[$nameIndex]     ?? '',
-                    'email'    => $row[$emailIndex]    ?? '',
-                    'password' => $row[$passwordIndex] ?? '',
-                ];
-
-                $validator = Validator::make($rowData, [
-                    'name'     => 'required|string|max:255',
-                    'email'    => ['required', 'string', 'email', 'max:255', Rule::unique('users')],
-                    'password' => 'required|string|min:8',
-                ]);
-
-                if ($validator->fails()) {
-                    $errorRows[] = ['row' => $rowNumber, 'errors' => $validator->errors()->all()];
-
-                    continue;
-                }
-
-                try {
-                    $this->createAdmin([
-                        'name'     => $row[$nameIndex],
-                        'email'    => $row[$emailIndex],
-                        'password' => $row[$passwordIndex],
-                    ]);
-
-                    $successCount++;
-                } catch (\Exception $e) {
-                    $errorRows[] = ['row' => $rowNumber, 'errors' => [$e->getMessage()]];
-                }
-            }
-
-            fclose($handle);
-        }
-
-        return ['success_count' => $successCount, 'error_rows' => $errorRows];
+        return $this->importUsersFromCsv($file, function (array $rowData) {
+            $this->createAdmin($rowData);
+        });
     }
 
     public function generateImportTemplate(): array
     {
-        $headers = [
-            'Content-Type'        => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="admin_template.csv"',
-            'Pragma'              => 'no-cache',
-            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires'             => '0',
-        ];
-
-        $callback = function () {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, ['name', 'email', 'password']);
-            fputcsv($file, ['Nama Admin', 'admin@example.com', 'password123']);
-            fclose($file);
-        };
-
-        return ['headers' => $headers, 'callback' => $callback];
+        return $this->generateCsvTemplate('admin_template.csv', ['Nama Admin', 'admin@example.com', 'password123']);
     }
 }

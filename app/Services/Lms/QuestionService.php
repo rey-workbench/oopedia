@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Lms\Question;
+namespace App\Services\Lms;
 
 use App\Contracts\Repositories\AnswerRepositoryInterface;
 use App\Contracts\Repositories\QuestionRepositoryInterface;

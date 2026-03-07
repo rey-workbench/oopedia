@@ -36,8 +36,10 @@ class AcceleratedJump extends BaseAdaptiveRule
     public function apply(array $state, array $context): array
     {
         $state['fast_track_active'] = true;
-        $state['next_action']       = 'NEXT_QUESTION';
-        $state['message']           = 'Luar biasa! Penguasaan dan kecepatan Anda sangat baik. Lanjutkan ke soal berikutnya.';
+        // The rule dictates that the next difficulty should be medium
+        $state['target_difficulty'] = 'medium';
+        $state['next_action'] = 'NEXT_QUESTION';
+        $state['message'] = 'Luar biasa! Penguasaan dan kecepatan Anda sangat baik. Lanjutkan ke level menengah.';
 
         return $state;
     }

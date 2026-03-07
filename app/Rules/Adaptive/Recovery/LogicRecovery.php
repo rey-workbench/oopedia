@@ -7,7 +7,10 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
 /**
  * Rule 4: Logic Recovery
- * IF (G02 AND G10 AND G14) THEN H04
+ * IF (G02 AND G10 AND G16 AND G12) THEN H04
+ *
+ * Triggers when student has remedial score on medium difficulty,
+ * made logic errors, and used hints.
  */
 class LogicRecovery extends BaseAdaptiveRule
 {
