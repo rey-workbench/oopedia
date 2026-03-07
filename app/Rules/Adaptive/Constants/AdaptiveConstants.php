@@ -27,7 +27,7 @@ class AdaptiveConstants
      * Answering below this % of allocated time → G05 (Fast).
      * Used as the canonical "fast answer" threshold across all services.
      */
-    public const TIME_FAST_THRESHOLD = 50;
+    public const TIME_FAST_THRESHOLD = 70;
 
     // ==================== FACTS (G Codes) ====================
 

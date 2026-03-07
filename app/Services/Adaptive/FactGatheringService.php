@@ -18,9 +18,9 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
 class FactGatheringService implements FactGatheringServiceInterface
 {
     // ==================== SCORE THRESHOLDS (G01-G04) ====================
-    private const SCORE_CRITICAL_MAX  = 40;   // < 40  → G01
-    private const SCORE_REMEDIAL_MAX  = 70;   // 40-69 → G02
-    private const SCORE_STANDARD_MAX  = 90;   // 70-89 → G03
+    private const SCORE_CRITICAL_MAX  = 50;   // < 50  → G01
+    private const SCORE_REMEDIAL_MAX  = 75;   // 50-74 → G02
+    private const SCORE_STANDARD_MAX  = 90;   // 75-89 → G03
                                                // ≥ 90  → G04
 
     // ==================== TIME THRESHOLDS (G05-G06) ====================
@@ -28,10 +28,10 @@ class FactGatheringService implements FactGatheringServiceInterface
 
     // ==================== OTHER THRESHOLDS ====================
     /** Consecutive failures on same question before G22 (persistent fail) */
-    private const PERSISTENT_FAIL_THRESHOLD = 3;
+    private const PERSISTENT_FAIL_THRESHOLD = 2;
 
     /** Minimum % of questions answered to be considered satisfactory (G26) */
-    private const SATISFACTORY_PROGRESS_THRESHOLD = 60;
+    private const SATISFACTORY_PROGRESS_THRESHOLD = 50;
 
     public function __construct(
         protected ProgressRepositoryInterface $progressRepo,

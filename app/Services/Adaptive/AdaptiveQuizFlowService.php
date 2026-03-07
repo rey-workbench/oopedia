@@ -150,9 +150,12 @@ class AdaptiveQuizFlowService
             'adaptive_state'   => $studentState->adaptive_state,
         ];
 
+        // Ensure next action specific messages overwrite the default success message
+        $finalMessage = $nextActionData['message'] ?? ($ruleOutput['message'] ?? ($isCorrect ? 'Jawaban benar!' : 'Jawaban salah, coba lagi.'));
+
         return [
             'status'          => $isCorrect ? 'success' : 'error',
-            'message'         => $ruleOutput['message'] ?? ($isCorrect ? 'Jawaban benar!' : 'Jawaban salah, coba lagi.'),
+            'message'         => $finalMessage,
             'score'           => $score,
             'hasNextQuestion' => true,
             'nextUrl'         => $nextActionData['url'],

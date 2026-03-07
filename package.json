@@ -38,6 +38,7 @@
     },
     "dependencies": {
         "@jixo/mcp-pnpm": "^4.0.0",
+        "@lottiefiles/dotlottie-svelte": "^0.9.4",
         "@tailwindcss/vite": "^4.2.1",
         "apexcharts": "^5.10.1",
         "dompurify": "^3.3.2",
