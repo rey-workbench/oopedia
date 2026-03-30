@@ -2,11 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Material;
-use App\Models\StudentState;
-use Illuminate\Database\Eloquent\Collection;
+use App\Contracts\Services\MaterialServiceInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -19,6 +16,10 @@ class HandleInertiaRequests extends Middleware
      * @var string
      */
     protected $rootView = 'app';
+
+    public function __construct(
+        protected ?MaterialServiceInterface $materialService = null,
+    ) {}
 
     /**
      * Determines the current asset version.
@@ -39,10 +40,18 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user    = $request->user();
+        $isGuest = ! $user;
+        $userId  = $user?->id;
+
+        $sidebarMaterials = $this->materialService
+            ? $this->materialService->getSidebarMaterials($userId, $isGuest)
+            : collect();
+
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $user,
             ],
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
@@ -51,50 +60,8 @@ class HandleInertiaRequests extends Middleware
                 'warning' => fn () => $request->session()->get('warning'),
                 'status'  => fn () => $request->session()->get('status'),
             ],
-            'sidebar_materials' => $this->getSidebarMaterials($request->user()),
+            'sidebar_materials' => $sidebarMaterials,
             'csrf_token'        => csrf_token(),
         ];
-    }
-
-    /**
-     * Get sidebar materials with locked status based on user role.
-     *
-     * @return Collection
-     */
-    protected function getSidebarMaterials($user)
-    {
-        $isGuest = ! $user;
-
-        // For guests, cache without user-specific data (all unlocked for guests)
-        if ($isGuest) {
-            return Cache::remember('sidebar_materials_guest', 3600, function () {
-                return Material::orderBy('created_at', 'asc')
-                    ->select('id', 'title')
-                    ->get()
-                    ->map(function ($material) {
-                        $material->is_locked = false;
-
-                        return $material;
-                    });
-            });
-        }
-
-        // For authenticated users, get their unlocked modules
-        $studentState    = StudentState::where('user_id', $user->id)->first();
-        $unlockedModules = $studentState?->learning_profile['unlocked_modules'] ?? [];
-
-        $materials = Material::orderBy('created_at', 'asc')
-            ->select('id', 'title', 'module_id')
-            ->get()
-            ->map(function ($material) use ($unlockedModules) {
-                $moduleId            = $material->module_id;
-                $isFirstModule       = $moduleId !== null && $moduleId == 1;
-                $isUnlocked          = empty($moduleId) || $isFirstModule || in_array($moduleId, $unlockedModules);
-                $material->is_locked = ! $isUnlocked;
-
-                return $material;
-            });
-
-        return $materials;
     }
 }

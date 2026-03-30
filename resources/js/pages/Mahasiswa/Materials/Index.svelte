@@ -2,7 +2,7 @@
     import App from '@/layouts/App.svelte';
     import Card from '@/components/ui/Card.svelte';
     import Button from '@/components/ui/Button.svelte';
-    import { Code, Puzzle, BookOpen, Ghost, ArrowRight, Trophy } from 'lucide-svelte';
+    import { Code, Puzzle, BookOpen, Ghost, ArrowRight, Trophy, Lock } from 'lucide-svelte';
     import { formatDate } from '@/utils/formatters';
     import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';
@@ -61,10 +61,32 @@
 
                         {#if material.is_final_project}
                             <div class="absolute top-6 left-6 z-20">
-                                <div class="bg-amber-400 text-amber-950 flex items-center gap-2 rounded-2xl px-4 py-2 text-[10px] font-black tracking-widest uppercase shadow-xl ring-4 ring-amber-400/20">
+                                <div
+                                    class="flex items-center gap-2 rounded-2xl bg-amber-400 px-4 py-2 text-[10px] font-black tracking-widest text-amber-950 uppercase shadow-xl ring-4 ring-amber-400/20"
+                                >
                                     <Trophy size={14} strokeWidth={3} />
                                     PROYEK AKHIR
                                 </div>
+                            </div>
+                        {/if}
+
+                        {#if material.is_locked}
+                            <div
+                                class="absolute inset-0 z-30 bg-slate-900/60 backdrop-blur-sm"
+                            ></div>
+                            <div
+                                class="absolute inset-0 z-40 flex flex-col items-center justify-center"
+                            >
+                                <div
+                                    class="flex h-16 w-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-md"
+                                >
+                                    <Lock size={32} class="text-white" strokeWidth={2} />
+                                </div>
+                                <span
+                                    class="mt-4 rounded-full bg-white/20 px-6 py-2 text-sm font-bold tracking-widest text-white uppercase backdrop-blur-md"
+                                >
+                                    Terkunci
+                                </span>
                             </div>
                         {/if}
 
@@ -135,15 +157,27 @@
                         {/if}
 
                         <div class="mt-auto pt-6">
-                            <Button
-                                href={ROUTES.MAHASISWA.MATERIALS.SHOW(material.id)}
-                                variant="primary"
-                                class="w-full"
-                                size="lg"
-                                icon={ArrowRight}
-                            >
-                                MULAI BELAJAR
-                            </Button>
+                            {#if material.is_locked}
+                                <Button
+                                    disabled={true}
+                                    variant="secondary"
+                                    class="w-full cursor-not-allowed opacity-60"
+                                    size="lg"
+                                    icon={Lock}
+                                >
+                                    BELUM TERSEDIA
+                                </Button>
+                            {:else}
+                                <Button
+                                    href={ROUTES.MAHASISWA.MATERIALS.SHOW(material.id)}
+                                    variant="primary"
+                                    class="w-full"
+                                    size="lg"
+                                    icon={ArrowRight}
+                                >
+                                    MULAI BELAJAR
+                                </Button>
+                            {/if}
                         </div>
                     </div>
                 </Card>

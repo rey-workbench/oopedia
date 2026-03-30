@@ -4,6 +4,7 @@ namespace App\Services\Lms;
 
 use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\MediaRepositoryInterface;
+use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\MaterialServiceInterface;
 use App\Exceptions\Domain\MaterialNotFoundException;
 use App\Exceptions\Domain\MediaOperationException;
@@ -14,12 +15,11 @@ use Illuminate\Support\Facades\Storage;
 
 class MaterialService implements MaterialServiceInterface
 {
-    public function __construct(protected
-        MaterialRepositoryInterface $materialRepo, protected
-        MediaRepositoryInterface $mediaRepo,
-        )
-    {
-    }
+    public function __construct(
+        protected MaterialRepositoryInterface $materialRepo,
+        protected MediaRepositoryInterface $mediaRepo,
+        protected ?ProgressRepositoryInterface $progressRepo = null,
+    ) {}
 
     /** @return Collection<int, Material> */
     public function getAllMaterials(?string $search = null, string $sort = 'created_at', string $direction = 'asc'): Collection
@@ -46,10 +46,10 @@ class MaterialService implements MaterialServiceInterface
     public function createMaterial(array $data, mixed $coverImage = null): Material
     {
         $material = $this->materialRepo->create([
-            'title' => $data['title'],
-            'content' => $data['content'],
-            'module_id' => $data['module_id'],
-            'created_by' => $data['created_by'],
+            'title'            => $data['title'],
+            'content'          => $data['content'],
+            'module_id'        => $data['module_id'],
+            'created_by'       => $data['created_by'],
             'is_final_project' => $data['is_final_project'] ?? false,
         ]);
 
@@ -66,14 +66,14 @@ class MaterialService implements MaterialServiceInterface
     {
         $material = $this->materialRepo->find($materialId);
 
-        if (!$material) {
+        if (! $material) {
             throw new MaterialNotFoundException($materialId);
         }
 
         $this->materialRepo->update($material->id, [
-            'title' => $data['title'],
-            'content' => $data['content'] ?? $data['description'] ?? null,
-            'module_id' => $data['module_id'] ?? $material->module_id,
+            'title'            => $data['title'],
+            'content'          => $data['content']          ?? $data['description'] ?? null,
+            'module_id'        => $data['module_id']        ?? $material->module_id,
             'is_final_project' => $data['is_final_project'] ?? $material->is_final_project,
         ]);
 
@@ -91,7 +91,7 @@ class MaterialService implements MaterialServiceInterface
     {
         $material = $this->materialRepo->find($materialId);
 
-        if (!$material) {
+        if (! $material) {
             throw new MaterialNotFoundException($materialId);
         }
 
@@ -111,7 +111,7 @@ class MaterialService implements MaterialServiceInterface
     {
         $media = $this->mediaRepo->find($mediaId);
 
-        if (!$media) {
+        if (! $media) {
             throw new MediaOperationException("Media dengan ID '{$mediaId}' tidak ditemukan.");
         }
 
@@ -120,7 +120,7 @@ class MaterialService implements MaterialServiceInterface
         $this->removeMediaFile($media->media_url);
         $this->mediaRepo->delete($mediaId);
 
-        return (string)$materialId;
+        return (string) $materialId;
     }
 
     protected function uploadCoverImage(Material $material, mixed $file, string $title): void
@@ -129,8 +129,8 @@ class MaterialService implements MaterialServiceInterface
 
         $this->mediaRepo->create([
             'material_id' => $material->id,
-            'media_type' => 'image',
-            'media_url' => '/images/' . $path,
+            'media_type'  => 'image',
+            'media_url'   => '/images/' . $path,
         ]);
     }
 
@@ -152,20 +152,54 @@ class MaterialService implements MaterialServiceInterface
             if (Storage::disk('images')->exists($path)) {
                 Storage::disk('images')->delete($path);
             }
-        }
-        elseif (str_starts_with($path, '/storage/')) {
+        } elseif (str_starts_with($path, '/storage/')) {
             $path = str_replace('/storage/', '', $path);
 
             if (Storage::disk('public')->exists($path)) {
                 Storage::disk('public')->delete($path);
             }
-        }
-        else {
+        } else {
             $path = str_replace('storage/', '', $path);
 
             if (Storage::disk('public')->exists($path)) {
                 Storage::disk('public')->delete($path);
             }
         }
+    }
+
+    /** @return Collection<int, Material> */
+    public function getSidebarMaterials(?string $userId, bool $isGuest): Collection
+    {
+        $materials = Material::orderBy('created_at', 'asc')
+            ->select('id', 'title', 'module_id')
+            ->get();
+
+        if ($isGuest) {
+            $totalMaterials = $materials->count();
+
+            return $materials->map(function ($material, $index) use ($totalMaterials) {
+                $material->is_locked = $index >= ceil($totalMaterials / 2);
+
+                return $material;
+            });
+        }
+
+        // For authenticated users
+        $unlockedModules = [];
+        if ($userId && $this->progressRepo) {
+            $studentState    = StudentState::where('user_id', $userId)->first();
+            $unlockedModules = $studentState?->learning_profile['unlocked_modules'] ?? [];
+        }
+
+        $firstModuleId = $materials->whereNotNull('module_id')->min('module_id');
+
+        return $materials->map(function ($material) use ($unlockedModules, $firstModuleId) {
+            $moduleId            = $material->module_id;
+            $isFirstModule       = $moduleId !== null && $moduleId == $firstModuleId;
+            $isUnlocked          = empty($moduleId) || $isFirstModule || in_array($moduleId, $unlockedModules);
+            $material->is_locked = ! $isUnlocked;
+
+            return $material;
+        });
     }
 }

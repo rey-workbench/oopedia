@@ -53,4 +53,11 @@ interface MaterialServiceInterface
      * Delete a specific media file by ID, returns the parent material ID.
      */
     public function deleteMedia(string $mediaId): string;
+
+    /**
+     * Get sidebar materials with locked status for a user.
+     *
+     * @return Collection<int, Material>
+     */
+    public function getSidebarMaterials(?string $userId, bool $isGuest): Collection;
 }
