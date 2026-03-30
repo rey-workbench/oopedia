@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Contracts\Services\AdaptiveQuizFlowServiceInterface;
 use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\MaterialServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;

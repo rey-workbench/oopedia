@@ -4,19 +4,19 @@ namespace App\Contracts\Repositories;
 
 use App\Models\QuizAttempt;
 use App\Models\StudentState;
-use Collection;
-use Illuminate\Support\SupportCollection;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Support\Collection as SupportCollection;
 
 /**
  * Contract for student progress data access.
  */
 interface ProgressRepositoryInterface
 {
-    /** @return Collection<int, mixed> */
-    public function getUserProgressStats(?string $userId): Collection;
+    /** @return EloquentCollection<int, mixed> */
+    public function getUserProgressStats(?string $userId): EloquentCollection;
 
-    /** @return Collection<int, mixed> */
-    public function getUserMaterialProgress(?string $userId): Collection;
+    /** @return EloquentCollection<int, mixed> */
+    public function getUserMaterialProgress(?string $userId): EloquentCollection;
 
     /** @return SupportCollection<int, mixed> */
     public function getRecentActivities(?string $userId, int $limit = 5): SupportCollection;
@@ -24,11 +24,11 @@ interface ProgressRepositoryInterface
     /** @return array<string, mixed> */
     public function getDetailedUserProgress(?string $userId): array;
 
-    /** @return Collection<int, mixed> */
-    public function getCorrectAnswersWithAttempts(string $roleId): Collection;
+    /** @return EloquentCollection<int, mixed> */
+    public function getCorrectAnswersWithAttempts(string $roleId): EloquentCollection;
 
-    /** @return Collection<int, mixed> */
-    public function getLeaderboardStats(string $roleId): Collection;
+    /** @return EloquentCollection<int, mixed> */
+    public function getLeaderboardStats(string $roleId): EloquentCollection;
 
     public function getAttemptCount(string $userId, string $materialId, string $questionId): int;
 
@@ -54,23 +54,23 @@ interface ProgressRepositoryInterface
 
     public function updateOrCreateProgress(array $conditions, array $values): void;
 
-    /** @return Collection<int, mixed> */
-    public function getStudentCountByMaterial(): Collection;
+    /** @return EloquentCollection<int, mixed> */
+    public function getStudentCountByMaterial(): EloquentCollection;
 
-    /** @return Collection<int, mixed> */
-    public function getRecentSystemProgress(int $limit): Collection;
+    /** @return EloquentCollection<int, mixed> */
+    public function getRecentSystemProgress(int $limit): EloquentCollection;
 
-    /** @return Collection<int, mixed> */
-    public function getMaterialPerformanceStats(): Collection;
+    /** @return EloquentCollection<int, mixed> */
+    public function getMaterialPerformanceStats(): EloquentCollection;
 
-    /** @return Collection<int, mixed> */
-    public function getPopularMaterials(int $limit): Collection;
+    /** @return EloquentCollection<int, mixed> */
+    public function getPopularMaterials(int $limit): EloquentCollection;
 
-    /** @return Collection<int, mixed> */
-    public function getByUserAndMaterial(string $userId, string $materialId): Collection;
+    /** @return EloquentCollection<int, mixed> */
+    public function getByUserAndMaterial(string $userId, string $materialId): EloquentCollection;
 
-    /** @return Collection<int, mixed> */
-    public function getWrongAnswers(string $userId, string $materialId): Collection;
+    /** @return EloquentCollection<int, mixed> */
+    public function getWrongAnswers(string $userId, string $materialId): EloquentCollection;
 
     public function getLastAccessTime(?string $userId, string $materialId): ?string;
 

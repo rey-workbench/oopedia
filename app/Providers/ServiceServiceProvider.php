@@ -4,6 +4,7 @@ namespace App\Providers;
 
 // Service Interfaces
 use App\Contracts\Services\AdaptiveEngineServiceInterface;
+use App\Contracts\Services\AdaptiveQuizFlowServiceInterface;
 use App\Contracts\Services\AdminDashboardServiceInterface;
 use App\Contracts\Services\DashboardServiceInterface;
 use App\Contracts\Services\FactGatheringServiceInterface;
@@ -24,6 +25,7 @@ use App\Contracts\Services\UserServiceInterface;
 
 // Service Implementations
 use App\Services\Adaptive\AdaptiveEngineService;
+use App\Services\Adaptive\AdaptiveQuizFlowService;
 use App\Services\Adaptive\FactGatheringService;
 use App\Services\Adaptive\NextActionResolverService;
 use App\Services\Analytics\AdminDashboardService;
