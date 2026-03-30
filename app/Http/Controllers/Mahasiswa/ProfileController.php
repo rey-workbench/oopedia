@@ -44,7 +44,7 @@ class ProfileController extends Controller
             'fast_track_active' => ($studentState->adaptive_state['fast_track_active'] ?? false),
         ];
 
-        /** @var array<string|int, string> $rawCertifications */
+        /** @var array<string, string> $rawCertifications */
         $rawCertifications = $studentState?->gamification_data['certifications'] ?? [];
         $certifications = collect($rawCertifications)
             ->map(function (string $type, string $materialId): array {
