@@ -9,6 +9,7 @@ use App\Contracts\Services\MaterialServiceInterface;
 use App\Exceptions\Domain\MaterialNotFoundException;
 use App\Exceptions\Domain\MediaOperationException;
 use App\Models\Material;
+use App\Models\StudentState;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
