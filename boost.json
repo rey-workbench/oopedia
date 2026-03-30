@@ -1,5 +1,11 @@
 {
-    "agents": ["kiro"],
-    "editors": ["kiro", "vscode"],
-    "guidelines": []
+    "agents": [
+        "opencode"
+    ],
+    "editors": [
+        "opencode"
+    ],
+    "guidelines": [
+        "inertiajs/inertia-laravel"
+    ]
 }

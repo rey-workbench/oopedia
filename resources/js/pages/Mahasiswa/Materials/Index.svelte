@@ -90,7 +90,7 @@
 
                     <!-- Content Section -->
                     <div class="flex flex-1 flex-col p-8">
-                        <div class="mb-4 flex min-h-[4.5rem] items-start">
+                        <div class="mb-4 flex min-h-18 items-start">
                             <h2
                                 class="group-hover:text-primary-600 text-2xl leading-tight font-bold tracking-widest text-slate-900 uppercase transition-colors"
                             >

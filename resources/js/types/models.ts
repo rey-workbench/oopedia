@@ -57,6 +57,8 @@ export interface Material {
     level: DifficultyLevel;
     status: 'draft' | 'published';
     module_id: number | null;
+    is_final_project?: boolean;
+    is_locked?: boolean;
     created_by: number | null;
     created_at: string;
     updated_at: string;
@@ -367,4 +369,13 @@ export interface QuizSessionState {
     >;
     adaptive: Pick<AdaptiveState, 'fast_track_active' | 'last_rule'> &
         Pick<LearningProfile, 'learning_style'>;
+}
+
+export type CertificationType = 'gold' | 'silver' | 'bronze';
+
+export interface Certification {
+    material_id: string;
+    material_title: string;
+    type: CertificationType;
+    issued_at: string | null;
 }
