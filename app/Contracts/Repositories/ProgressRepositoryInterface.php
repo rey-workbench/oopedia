@@ -2,82 +2,83 @@
 
 namespace App\Contracts\Repositories;
 
+use App\Models\QuizAttempt;
 use App\Models\StudentState;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Collection as SupportCollection;
+use Collection;
+use Illuminate\Support\SupportCollection;
 
 /**
  * Contract for student progress data access.
  */
 interface ProgressRepositoryInterface
 {
-    /** @return \Illuminate\Database\Eloquent\Collection<int, mixed> */
-    public function getUserProgressStats(string|null $userId): \Illuminate\Database\Eloquent\Collection;
+    /** @return Collection<int, mixed> */
+    public function getUserProgressStats(?string $userId): Collection;
 
-    /** @return \Illuminate\Database\Eloquent\Collection<int, mixed> */
-    public function getUserMaterialProgress(string|null $userId): \Illuminate\Database\Eloquent\Collection;
+    /** @return Collection<int, mixed> */
+    public function getUserMaterialProgress(?string $userId): Collection;
 
     /** @return SupportCollection<int, mixed> */
-    public function getRecentActivities(string|null $userId, int $limit = 5): SupportCollection;
+    public function getRecentActivities(?string $userId, int $limit = 5): SupportCollection;
 
     /** @return array<string, mixed> */
-    public function getDetailedUserProgress(string|null $userId): array;
+    public function getDetailedUserProgress(?string $userId): array;
 
     /** @return Collection<int, mixed> */
     public function getCorrectAnswersWithAttempts(string $roleId): Collection;
 
-    /** @return \Illuminate\Database\Eloquent\Collection<int, mixed> */
-    public function getLeaderboardStats(string $roleId): \Illuminate\Database\Eloquent\Collection;
+    /** @return Collection<int, mixed> */
+    public function getLeaderboardStats(string $roleId): Collection;
 
     public function getAttemptCount(string $userId, string $materialId, string $questionId): int;
 
-    public function saveProgress(array $data): \App\Models\QuizAttempt;
+    public function saveProgress(array $data): QuizAttempt;
 
-    public function updateStudentState(string|null $userId, array $attributes): void;
+    public function updateStudentState(?string $userId, array $attributes): void;
 
-    public function getStudentState(string|null $userId): ?StudentState;
+    public function getStudentState(?string $userId): ?StudentState;
 
-    public function getOrCreateStudentState(string|null $userId): StudentState;
+    public function getOrCreateStudentState(?string $userId): StudentState;
 
     /** @return array<string, mixed> */
-    public function getUserMaterialProgressWithState(string|null $userId, string $materialId): array;
+    public function getUserMaterialProgressWithState(?string $userId, string $materialId): array;
 
     /** @return SupportCollection<int, string> */
     public function getAnsweredQuestionIds(string $userId, string $materialId): SupportCollection;
 
-    public function getConsecutiveFailures(string|null $userId, string $questionId): int;
+    public function getConsecutiveFailures(?string $userId, string $questionId): int;
 
-    public function getLatestErrorType(string|null $userId, string $questionId): ?string;
+    public function getLatestErrorType(?string $userId, string $questionId): ?string;
 
     public function resetProgress(string $userId, string $materialId): void;
 
     public function updateOrCreateProgress(array $conditions, array $values): void;
 
-    /** @return \Illuminate\Database\Eloquent\Collection<int, mixed> */
-    public function getStudentCountByMaterial(): \Illuminate\Database\Eloquent\Collection;
+    /** @return Collection<int, mixed> */
+    public function getStudentCountByMaterial(): Collection;
 
-    /** @return \Illuminate\Database\Eloquent\Collection<int, mixed> */
-    public function getRecentSystemProgress(int $limit): \Illuminate\Database\Eloquent\Collection;
+    /** @return Collection<int, mixed> */
+    public function getRecentSystemProgress(int $limit): Collection;
 
-    /** @return \Illuminate\Database\Eloquent\Collection<int, mixed> */
-    public function getMaterialPerformanceStats(): \Illuminate\Database\Eloquent\Collection;
+    /** @return Collection<int, mixed> */
+    public function getMaterialPerformanceStats(): Collection;
 
-    /** @return \Illuminate\Database\Eloquent\Collection<int, mixed> */
-    public function getPopularMaterials(int $limit): \Illuminate\Database\Eloquent\Collection;
+    /** @return Collection<int, mixed> */
+    public function getPopularMaterials(int $limit): Collection;
 
-    /** @return \Illuminate\Database\Eloquent\Collection<int, mixed> */
-    public function getByUserAndMaterial(string $userId, string $materialId): \Illuminate\Database\Eloquent\Collection;
+    /** @return Collection<int, mixed> */
+    public function getByUserAndMaterial(string $userId, string $materialId): Collection;
 
-    /** @return \Illuminate\Database\Eloquent\Collection<int, mixed> */
-    public function getWrongAnswers(string $userId, string $materialId): \Illuminate\Database\Eloquent\Collection;
+    /** @return Collection<int, mixed> */
+    public function getWrongAnswers(string $userId, string $materialId): Collection;
 
-    public function getLastAccessTime(string|null $userId, string $materialId): ?string;
+    public function getLastAccessTime(?string $userId, string $materialId): ?string;
 
     /**
      * Get the latest QuizAttempt for each of the given question IDs by a user.
      *
-     * @param  array<int, string>  $questionIds
-     * @return \Illuminate\Support\Collection<string, \App\Models\QuizAttempt> keyed by question_id
+     * @param array<int, string> $questionIds
+     * @return SupportCollection<string, QuizAttempt> keyed by question_id
      */
-    public function getLatestAttemptsForQuestions(string $userId, array $questionIds): \Illuminate\Support\Collection;
+    public function getLatestAttemptsForQuestions(string $userId, array $questionIds): SupportCollection;
 }

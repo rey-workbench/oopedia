@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\Mahasiswa;
 
-use App\Contracts\Services\MaterialServiceInterface;
-use App\Contracts\Services\PerformanceServiceInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\GuestProgressServiceInterface;
+use App\Contracts\Services\MaterialServiceInterface;
+use App\Contracts\Services\PerformanceServiceInterface;
 use App\Contracts\Services\QuestionAnswerServiceInterface;
 use App\Contracts\Services\QuestionListingServiceInterface;
 use App\Contracts\Services\QuestionServiceInterface;
 use App\Http\Controllers\Controller;
-use App\Services\Adaptive\AdaptiveQuizFlowService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,18 +21,16 @@ use Inertia\Response;
 
 class MaterialQuestionController extends Controller
 {
-    public function __construct(protected
-        MaterialServiceInterface $materialService, protected
-        QuestionServiceInterface $questionService, protected
-        QuestionListingServiceInterface $questionListingService, protected
-        QuestionAnswerServiceInterface $questionAnswerService, protected
-        ProgressRepositoryInterface $progressRepo, protected
-        PerformanceServiceInterface $performanceService, protected
-        AdaptiveQuizFlowService $adaptiveQuizFlowService, protected
-        GuestProgressServiceInterface $guestProgressService,
-        )
-    {
-    }
+    public function __construct(
+        protected MaterialServiceInterface $materialService,
+        protected QuestionServiceInterface $questionService,
+        protected QuestionListingServiceInterface $questionListingService,
+        protected QuestionAnswerServiceInterface $questionAnswerService,
+        protected ProgressRepositoryInterface $progressRepo,
+        protected PerformanceServiceInterface $performanceService,
+        protected AdaptiveQuizFlowServiceInterface $adaptiveQuizFlowService,
+        protected GuestProgressServiceInterface $guestProgressService,
+    ) {}
 
     // ==================== HELPER METHODS ====================
 
@@ -44,13 +41,13 @@ class MaterialQuestionController extends Controller
 
     protected function getUserId(): string|int
     {
-        return $this->isGuestUser() ?Session::getId() : Auth::id();
+        return $this->isGuestUser() ? Session::getId() : Auth::id();
     }
 
     /** @return array<string, mixed> */
     protected function getGuestProgress(Request $request): array
     {
-        if (!$this->isGuestUser()) {
+        if (! $this->isGuestUser()) {
             return [];
         }
 
@@ -64,8 +61,8 @@ class MaterialQuestionController extends Controller
      */
     public function index(Request $request): Response
     {
-        $isGuest = $this->isGuestUser();
-        $userId = $this->getUserId();
+        $isGuest       = $this->isGuestUser();
+        $userId        = $this->getUserId();
         $guestProgress = $this->getGuestProgress($request);
 
         $materials = $this->questionListingService->getMaterialsListWithStudentCount($userId, $isGuest, $guestProgress);
@@ -78,22 +75,22 @@ class MaterialQuestionController extends Controller
      */
     public function show(int|string $materialId, Request $request): Response|RedirectResponse
     {
-        $material = $this->materialService->getMaterialById((int)$materialId);
-        if (!$material) {
+        $material = $this->materialService->getMaterialById((int) $materialId);
+        if (! $material) {
             return redirect()->route('mahasiswa.materials.questions.index')
                 ->with('error', 'Material tidak ditemukan');
         }
 
         $isGuest = $this->isGuestUser();
 
-        $difficulty = 'all';
+        $difficulty    = 'all';
         $guestProgress = $this->getGuestProgress($request);
-        $userId = $this->getUserId();
+        $userId        = $this->getUserId();
 
         // Fetch student state for detailed stats
         $studentStateData = [];
         $targetDifficulty = null;
-        if (!$isGuest) {
+        if (! $isGuest) {
             $studentState = $this->performanceService->getStudentState($userId);
             if ($studentState) {
                 $adaptiveState = $studentState->adaptive_state ?? [];
@@ -113,8 +110,8 @@ class MaterialQuestionController extends Controller
 
                     // Also reset wrong_streak so crisis rules don't fire on the
                     // first question of a new material due to carry-over streak.
-                    $metrics = $studentState->performance_metrics ?? [];
-                    $metrics['wrong_streak'] = 0;
+                    $metrics                           = $studentState->performance_metrics ?? [];
+                    $metrics['wrong_streak']           = 0;
                     $studentState->performance_metrics = $metrics;
 
                     $studentState->adaptive_state = $adaptiveState;
@@ -125,22 +122,21 @@ class MaterialQuestionController extends Controller
                 $targetDifficulty = $adaptiveState['target_difficulty'] ?? null;
 
                 $studentStateData = [
-                    'gamification' => $studentState->gamification_data,
-                    'performance' => $studentState->performance_metrics,
+                    'gamification'     => $studentState->gamification_data,
+                    'performance'      => $studentState->performance_metrics,
                     'learning_profile' => $studentState->learning_profile,
                 ];
             }
-        }
-        else {
+        } else {
             // Mock state for guests from session to ensure continuity
             $studentStateData = [
                 'gamification' => [
-                    'global_xp' => $this->guestProgressService->getGamificationState()['xp'],
+                    'global_xp'      => $this->guestProgressService->getGamificationState()['xp'],
                     'current_streak' => $this->guestProgressService->getGamificationState()['streak'],
-                    'current_level' => 'Tamu',
+                    'current_level'  => 'Tamu',
                 ],
                 'performance' => [
-                    'hints_available' => 3,
+                    'hints_available'          => 3,
                     'total_questions_answered' => count($this->guestProgressService->getProgress()),
                 ],
                 'learning_profile' => [],
@@ -150,7 +146,7 @@ class MaterialQuestionController extends Controller
         $data = $this->questionListingService->getQuizData($material, $difficulty, $userId, $isGuest, $guestProgress, $targetDifficulty);
 
         return Inertia::render('Mahasiswa/Materials/Questions/Show/Index', array_merge($data, [
-            'isGuest' => $isGuest,
+            'isGuest'      => $isGuest,
             'studentState' => $studentStateData,
         ]));
     }
@@ -160,14 +156,14 @@ class MaterialQuestionController extends Controller
      */
     public function levels(int|string $materialId, Request $request): Response|RedirectResponse
     {
-        $material = $this->materialService->getMaterialById((int)$materialId);
-        if (!$material) {
+        $material = $this->materialService->getMaterialById((int) $materialId);
+        if (! $material) {
             return redirect()->route('mahasiswa.materials.questions.index')
                 ->with('error', 'Material tidak ditemukan');
         }
 
-        $isGuest = $this->isGuestUser();
-        $userId = $this->getUserId();
+        $isGuest       = $this->isGuestUser();
+        $userId        = $this->getUserId();
         $guestProgress = $this->getGuestProgress($request);
 
         $answeredQuestionIds = $isGuest
@@ -187,21 +183,21 @@ class MaterialQuestionController extends Controller
      */
     public function review(int|string $id, Request $request): Response
     {
-        $material = $this->materialService->getMaterialWithQuestionsAndAnswers((int)$id);
-        $materials = $this->materialService->getAllOrdered();
-        $difficulty = $request->query('difficulty', 'all');
-        $isGuest = $this->isGuestUser();
-        $userId = $this->getUserId();
+        $material      = $this->materialService->getMaterialWithQuestionsAndAnswers((int) $id);
+        $materials     = $this->materialService->getAllOrdered();
+        $difficulty    = $request->query('difficulty', 'all');
+        $isGuest       = $this->isGuestUser();
+        $userId        = $this->getUserId();
         $guestProgress = $this->getGuestProgress($request);
 
         $questions = $this->questionListingService->getReviewQuestions($material, $difficulty, $userId, $isGuest, $guestProgress);
 
         return Inertia::render('Mahasiswa/Materials/Questions/Review/Index', [
-            'material' => $material,
-            'materials' => $materials,
-            'questions' => $questions,
+            'material'   => $material,
+            'materials'  => $materials,
+            'questions'  => $questions,
             'difficulty' => $difficulty,
-            'isGuest' => $isGuest,
+            'isGuest'    => $isGuest,
         ]);
     }
 
@@ -213,12 +209,11 @@ class MaterialQuestionController extends Controller
         $isGuest = $this->isGuestUser();
 
         if ($isGuest) {
-            $progressKey = $materialId . '_' . $questionId;
+            $progressKey   = $materialId . '_' . $questionId;
             $guestProgress = $this->getGuestProgress($request);
-            $attempts = isset($guestProgress[$progressKey]) ? $guestProgress[$progressKey]['attempt_number'] : 0;
-        }
-        else {
-            $attempts = $this->progressRepo->getAttemptCount(Auth::id(), (int)$materialId, (int)$questionId);
+            $attempts      = isset($guestProgress[$progressKey]) ? $guestProgress[$progressKey]['attempt_number'] : 0;
+        } else {
+            $attempts = $this->progressRepo->getAttemptCount(Auth::id(), (int) $materialId, (int) $questionId);
         }
 
         return response()->json(['attempts' => $attempts]);
@@ -229,28 +224,28 @@ class MaterialQuestionController extends Controller
      */
     public function checkAnswer(int|string $materialId, int|string $questionId, Request $request): JsonResponse
     {
-        $material = $this->materialService->getMaterialById((int)$materialId);
-        $question = $this->questionService->getQuestionById((int)$questionId);
+        $material = $this->materialService->getMaterialById((int) $materialId);
+        $question = $this->questionService->getQuestionById((int) $questionId);
 
-        if (!$material || !$question) {
+        if (! $material || ! $question) {
             return response()->json([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => 'Material atau soal tidak ditemukan',
             ], 404);
         }
 
-        $userId = $this->getUserId();
+        $userId  = $this->getUserId();
         $isGuest = $this->isGuestUser();
 
         Log::debug('[MaterialQuestionController] Request data for checkAnswer:', [
             'material_id' => $materialId,
             'question_id' => $questionId,
-            'user_id' => $userId,
-            'is_guest' => $isGuest,
-            'payload' => $request->all(),
+            'user_id'     => $userId,
+            'is_guest'    => $isGuest,
+            'payload'     => $request->all(),
         ]);
 
-        if (!$isGuest) {
+        if (! $isGuest) {
             // Use Adaptive Flow Service
             $result = $this->adaptiveQuizFlowService->processAdaptiveAttempt($material, $question, $userId, $request->all());
 

@@ -4,6 +4,7 @@ namespace App\Services\Adaptive;
 
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\AdaptiveEngineServiceInterface;
+use App\Contracts\Services\AdaptiveQuizFlowServiceInterface;
 use App\Contracts\Services\FactGatheringServiceInterface;
 use App\Contracts\Services\GamificationServiceInterface;
 use App\Contracts\Services\NextActionResolverServiceInterface;
@@ -11,9 +12,10 @@ use App\Contracts\Services\PerformanceServiceInterface;
 use App\Contracts\Services\QuestionAnswerServiceInterface;
 use App\Models\Material;
 use App\Models\Question;
+use App\Models\StudentState;
 use Illuminate\Support\Facades\Cache;
 
-class AdaptiveQuizFlowService
+class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
 {
     public function __construct(
         protected QuestionAnswerServiceInterface $questionAnswerService,
@@ -127,8 +129,8 @@ class AdaptiveQuizFlowService
         $adaptiveState = $adaptiveState ?? [];
 
         $adaptiveState['current_material_id'] = $material->id;
-        $adaptiveState['last_rule']         = $adaptiveResult['triggered_rule'] ?? null;
-        $adaptiveState['fast_track_active'] = $ruleOutput['fast_track_active']  ?? ($adaptiveState['fast_track_active'] ?? false);
+        $adaptiveState['last_rule']           = $adaptiveResult['triggered_rule'] ?? null;
+        $adaptiveState['fast_track_active']   = $ruleOutput['fast_track_active']  ?? ($adaptiveState['fast_track_active'] ?? false);
         if (isset($ruleOutput['target_difficulty'])) {
             $adaptiveState['target_difficulty'] = $ruleOutput['target_difficulty'];
         }
@@ -181,7 +183,7 @@ class AdaptiveQuizFlowService
      *
      * @return array{0: int, 1: array|null} [totalXpEarned, streakMilestoneData]
      */
-    private function applyGamificationRewards(\App\Models\StudentState $state, array $rewardResult, bool $isCorrect): array
+    private function applyGamificationRewards(StudentState $state, array $rewardResult, bool $isCorrect): array
     {
         $baseXpEarned = $rewardResult['global_xp_earned'] ?? 0;
 

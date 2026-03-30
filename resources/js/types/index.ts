@@ -52,6 +52,7 @@ export type {
     StudentProgressItem,
     PopularMaterialItem,
     StudentAnalytics,
+    MaterialStatsItem,
     MaterialWithProgress,
     MissingQuestionsItem,
     // Mahasiswa pages

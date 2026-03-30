@@ -1,11 +1,23 @@
 import { BaseState } from '@/states/BaseState.svelte';
 import type {
-    AdminDashboardProps,
+    MaterialStatsItem,
     PopularMaterialItem,
     RecentProgressItem,
     StudentAnalytics,
     StudentProgressItem,
 } from '@/types';
+
+export interface AdminDashboardData {
+    totalStudents: number;
+    totalMaterials: number;
+    totalQuestions: number;
+    activeStudents: number;
+    recentProgress: RecentProgressItem[];
+    studentProgress: StudentProgressItem[];
+    popularMaterials: PopularMaterialItem[];
+    studentAnalytics: StudentAnalytics;
+    materialStats: MaterialStatsItem[];
+}
 
 export class AdminDashboardState extends BaseState {
     totalStudents = $state(0);
@@ -16,8 +28,9 @@ export class AdminDashboardState extends BaseState {
     studentProgress = $state<StudentProgressItem[]>([]);
     popularMaterials = $state<PopularMaterialItem[]>([]);
     studentAnalytics = $state<StudentAnalytics>({ distribution: {}, radar: {} });
+    materialStats = $state<MaterialStatsItem[]>([]);
 
-    constructor(data: AdminDashboardProps) {
+    constructor(data: AdminDashboardData) {
         super();
         this.totalStudents = data.totalStudents;
         this.totalMaterials = data.totalMaterials;
@@ -27,5 +40,6 @@ export class AdminDashboardState extends BaseState {
         this.studentProgress = data.studentProgress;
         this.popularMaterials = data.popularMaterials;
         this.studentAnalytics = data.studentAnalytics;
+        this.materialStats = data.materialStats ?? [];
     }
 }

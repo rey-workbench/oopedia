@@ -2,6 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Material;
+use App\Models\StudentState;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
@@ -48,12 +51,50 @@ class HandleInertiaRequests extends Middleware
                 'warning' => fn () => $request->session()->get('warning'),
                 'status'  => fn () => $request->session()->get('status'),
             ],
-            'sidebar_materials' => Cache::remember('sidebar_materials_v4', 3600, function () {
-                return \App\Models\Material::orderBy('created_at', 'asc')
-                    ->select('id', 'title')
-                    ->get();
-            }),
-            'csrf_token' => csrf_token(),
+            'sidebar_materials' => $this->getSidebarMaterials($request->user()),
+            'csrf_token'        => csrf_token(),
         ];
+    }
+
+    /**
+     * Get sidebar materials with locked status based on user role.
+     *
+     * @return Collection
+     */
+    protected function getSidebarMaterials($user)
+    {
+        $isGuest = ! $user;
+
+        // For guests, cache without user-specific data (all unlocked for guests)
+        if ($isGuest) {
+            return Cache::remember('sidebar_materials_guest', 3600, function () {
+                return Material::orderBy('created_at', 'asc')
+                    ->select('id', 'title')
+                    ->get()
+                    ->map(function ($material) {
+                        $material->is_locked = false;
+
+                        return $material;
+                    });
+            });
+        }
+
+        // For authenticated users, get their unlocked modules
+        $studentState    = StudentState::where('user_id', $user->id)->first();
+        $unlockedModules = $studentState?->learning_profile['unlocked_modules'] ?? [];
+
+        $materials = Material::orderBy('created_at', 'asc')
+            ->select('id', 'title', 'module_id')
+            ->get()
+            ->map(function ($material) use ($unlockedModules) {
+                $moduleId            = $material->module_id;
+                $isFirstModule       = $moduleId !== null && $moduleId == 1;
+                $isUnlocked          = empty($moduleId) || $isFirstModule || in_array($moduleId, $unlockedModules);
+                $material->is_locked = ! $isUnlocked;
+
+                return $material;
+            });
+
+        return $materials;
     }
 }

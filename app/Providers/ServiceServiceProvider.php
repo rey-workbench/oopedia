@@ -51,32 +51,33 @@ class ServiceServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Lms Services
-        $this->app->bind(MaterialServiceInterface::class , MaterialService::class);
-        $this->app->bind(SubMaterialServiceInterface::class , SubMaterialService::class);
-        $this->app->bind(MaterialViewServiceInterface::class , MaterialViewService::class);
-        $this->app->bind(QuestionServiceInterface::class , QuestionService::class);
-        $this->app->bind(QuestionAnswerServiceInterface::class , QuestionAnswerService::class);
-        $this->app->bind(QuestionListingServiceInterface::class , QuestionListingService::class);
-        $this->app->bind(GuestProgressServiceInterface::class , GuestProgressService::class);
+        $this->app->bind(MaterialServiceInterface::class, MaterialService::class);
+        $this->app->bind(SubMaterialServiceInterface::class, SubMaterialService::class);
+        $this->app->bind(MaterialViewServiceInterface::class, MaterialViewService::class);
+        $this->app->bind(QuestionServiceInterface::class, QuestionService::class);
+        $this->app->bind(QuestionAnswerServiceInterface::class, QuestionAnswerService::class);
+        $this->app->bind(QuestionListingServiceInterface::class, QuestionListingService::class);
+        $this->app->bind(GuestProgressServiceInterface::class, GuestProgressService::class);
 
         // User Services
-        $this->app->bind(UserServiceInterface::class , UserService::class);
-        $this->app->bind(StudentServiceInterface::class , StudentService::class);
-        $this->app->bind(PerformanceServiceInterface::class , PerformanceService::class);
+        $this->app->bind(UserServiceInterface::class, UserService::class);
+        $this->app->bind(StudentServiceInterface::class, StudentService::class);
+        $this->app->bind(PerformanceServiceInterface::class, PerformanceService::class);
 
         // Analytics Services
-        $this->app->bind(DashboardServiceInterface::class , DashboardService::class);
-        $this->app->bind(LeaderboardServiceInterface::class , LeaderboardService::class);
-        $this->app->bind(AdminDashboardServiceInterface::class , AdminDashboardService::class);
-        $this->app->bind(UeqSurveyServiceInterface::class , UeqSurveyService::class);
+        $this->app->bind(DashboardServiceInterface::class, DashboardService::class);
+        $this->app->bind(LeaderboardServiceInterface::class, LeaderboardService::class);
+        $this->app->bind(AdminDashboardServiceInterface::class, AdminDashboardService::class);
+        $this->app->bind(UeqSurveyServiceInterface::class, UeqSurveyService::class);
 
         // Gamification (unified)
-        $this->app->bind(GamificationServiceInterface::class , GamificationService::class);
+        $this->app->bind(GamificationServiceInterface::class, GamificationService::class);
 
         // Adaptive Services
-        $this->app->bind(AdaptiveEngineServiceInterface::class , AdaptiveEngineService::class);
-        $this->app->bind(FactGatheringServiceInterface::class , FactGatheringService::class);
-        $this->app->bind(NextActionResolverServiceInterface::class , NextActionResolverService::class);
+        $this->app->bind(AdaptiveEngineServiceInterface::class, AdaptiveEngineService::class);
+        $this->app->bind(AdaptiveQuizFlowServiceInterface::class, AdaptiveQuizFlowService::class);
+        $this->app->bind(FactGatheringServiceInterface::class, FactGatheringService::class);
+        $this->app->bind(NextActionResolverServiceInterface::class, NextActionResolverService::class);
     }
 
     /**
@@ -84,6 +85,6 @@ class ServiceServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-    //
+        //
     }
 }

@@ -6,6 +6,13 @@
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
     import { untrack } from 'svelte';
     import { AdminDashboardState } from '@/states/Admin/DashboardState.svelte';
+    import type {
+        MaterialStatsItem,
+        RecentProgressItem,
+        StudentProgressItem,
+        PopularMaterialItem,
+        StudentAnalytics,
+    } from '@/types';
     import {
         Users,
         Signal,
@@ -27,15 +34,17 @@
         studentProgress,
         popularMaterials,
         studentAnalytics,
+        materialStats = [],
     }: {
-        totalStudents: any;
-        totalMaterials: any;
-        totalQuestions: any;
-        activeStudents: any;
-        recentProgress: any;
-        studentProgress: any;
-        popularMaterials: any;
-        studentAnalytics: any;
+        totalStudents: number;
+        totalMaterials: number;
+        totalQuestions: number;
+        activeStudents: number;
+        recentProgress: RecentProgressItem[];
+        studentProgress: StudentProgressItem[];
+        popularMaterials: PopularMaterialItem[];
+        studentAnalytics: StudentAnalytics;
+        materialStats: MaterialStatsItem[];
     } = $props();
 
     const state = untrack(
@@ -49,7 +58,8 @@
                 studentProgress,
                 popularMaterials,
                 studentAnalytics,
-            } as any)
+                materialStats,
+            })
     );
 
     const distribution = $derived(state.studentAnalytics?.distribution ?? {});
@@ -59,7 +69,7 @@
     const radarColors = ['blue', 'emerald', 'amber', 'rose', 'gray'];
 
     const maxAttempts = $derived(
-        Math.max(1, ...(state.popularMaterials || []).map((m: any) => m.total_attempts ?? 0))
+        Math.max(1, ...(state.popularMaterials || []).map((m) => m.total_attempts ?? 0))
     );
 
     const dashboardStats = $derived([
@@ -104,11 +114,13 @@
         <!-- Main Stats -->
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             {#each dashboardStats as stat}
-                <Card hover={true} class="relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 p-4 opacity-10 text-slate-400">
+                <Card hover={true} class="group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
                         {#if typeof stat.icon !== 'string'}
                             {@const IconComponent = stat.icon}
-                            <div class="scale-[4] transition-transform duration-500 group-hover:scale-[4.5]">
+                            <div
+                                class="scale-[4] transition-transform duration-500 group-hover:scale-[4.5]"
+                            >
                                 <IconComponent size={24} strokeWidth={2.5} />
                             </div>
                         {/if}
@@ -117,7 +129,9 @@
                     <div class="relative z-10">
                         <div
                             class="glass mb-6 flex h-14 w-14 items-center justify-center rounded-2xl shadow-sm
-                            {stat.variant === 'success' ? 'bg-emerald-100 text-emerald-600' : 'bg-primary-100 text-primary-600'}"
+                            {stat.variant === 'success'
+                                ? 'bg-emerald-100 text-emerald-600'
+                                : 'bg-primary-100 text-primary-600'}"
                         >
                             {#if typeof stat.icon === 'string'}
                                 <i class={stat.icon}></i>
@@ -127,10 +141,14 @@
                             {/if}
                         </div>
 
-                        <h3 class="mb-2 text-[10px] font-bold tracking-wider text-slate-600 uppercase">
+                        <h3
+                            class="mb-2 text-[10px] font-bold tracking-wider text-slate-600 uppercase"
+                        >
                             {stat.title}
                         </h3>
-                        <div class="font-display mb-2 text-4xl font-black tracking-tight text-slate-900">
+                        <div
+                            class="font-display mb-2 text-4xl font-black tracking-tight text-slate-900"
+                        >
                             {stat.value}
                         </div>
 
@@ -141,7 +159,9 @@
                                         ? 'bg-emerald-500'
                                         : 'bg-primary-500'}"
                                 ></div>
-                                <p class="text-[10px] font-bold tracking-widest text-slate-500 uppercase">
+                                <p
+                                    class="text-[10px] font-bold tracking-widest text-slate-500 uppercase"
+                                >
                                     {stat.footer}
                                 </p>
                             </div>
@@ -353,6 +373,97 @@
                 </div>
             </Card>
         </div>
+
+        <!-- Material Statistics -->
+        {#if state.materialStats && state.materialStats.length > 0}
+            <Card hover={false}>
+                <div class="space-y-4">
+                    <div class="mb-2 flex items-center gap-3">
+                        <div
+                            class="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600"
+                        >
+                            <FolderTree size={18} />
+                        </div>
+                        <h3 class="text-sm font-bold tracking-widest text-slate-900 uppercase">
+                            Statistik Materi
+                        </h3>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-slate-100">
+                                    <th
+                                        class="pb-3 text-left text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                                    >
+                                        Materi
+                                    </th>
+                                    <th
+                                        class="pb-3 text-center text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                                    >
+                                        Total Soal
+                                    </th>
+                                    <th
+                                        class="pb-3 text-center text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                                    >
+                                        Mahasiswa Aktif
+                                    </th>
+                                    <th
+                                        class="pb-3 text-left text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                                    >
+                                        Tingkat Penyelesaian
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {#each state.materialStats as m}
+                                    <tr class="border-b border-slate-50">
+                                        <td class="py-4">
+                                            <span
+                                                class="text-xs font-bold tracking-widest text-slate-900 uppercase"
+                                            >
+                                                {m.title}
+                                            </span>
+                                        </td>
+                                        <td class="py-4 text-center">
+                                            <span class="text-xs font-bold text-slate-700">
+                                                {m.questions_count}
+                                            </span>
+                                        </td>
+                                        <td class="py-4 text-center">
+                                            <span class="text-xs font-bold text-slate-700">
+                                                {m.active_students}
+                                            </span>
+                                        </td>
+                                        <td class="py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="flex-1">
+                                                    <ProgressBar
+                                                        value={m.completion_rate ?? 0}
+                                                        max={100}
+                                                        color={m.completion_rate >= 70
+                                                            ? 'emerald'
+                                                            : m.completion_rate >= 40
+                                                              ? 'amber'
+                                                              : 'rose'}
+                                                        height="h-2"
+                                                    />
+                                                </div>
+                                                <span
+                                                    class="w-12 shrink-0 text-right text-xs font-bold text-slate-700"
+                                                >
+                                                    {m.completion_rate ?? 0}%
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {/each}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </Card>
+        {/if}
 
         <!-- Recent Activity Timeline -->
         <Card hover={false}>

@@ -16,17 +16,13 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminUserController extends Controller
 {
-    public function __construct(protected
-        UserServiceInterface $userService, protected
-        RoleRepositoryInterface $roleRepo,
-        )
-    {
-    }
+    public function __construct(protected UserServiceInterface $userService, protected RoleRepositoryInterface $roleRepo,
+    ) {}
 
     public function index(Request $request): Response
     {
-        $search = $request->search;
-        $users = $this->userService->getAdmins($search);
+        $search             = $request->search;
+        $users              = $this->userService->getAdmins($search);
         $pendingAdminsCount = $this->userService->getPendingAdminsCount();
 
         return Inertia::render('Admin/Users/Index', compact('users', 'pendingAdminsCount'));
@@ -51,12 +47,12 @@ class AdminUserController extends Controller
     {
         $user = $this->userService->getUserById($userId);
 
-        if (!$user) {
+        if (! $user) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'User tidak ditemukan');
         }
 
-        if (!$user->isDosen()) {
+        if (! $user->isDosen()) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'User bukan admin');
         }
@@ -68,7 +64,7 @@ class AdminUserController extends Controller
     {
         $user = $this->userService->getUserById($userId);
 
-        if (!$user) {
+        if (! $user) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'User tidak ditemukan');
         }
@@ -95,7 +91,7 @@ class AdminUserController extends Controller
             return redirect()->route('admin.pending-admins');
         }
 
-        if ($user->isDosen() && !$user->is_approved) {
+        if ($user->isDosen() && ! $user->is_approved) {
             $freshUser = $this->userService->getUserById($user->id);
 
             if ($freshUser && $freshUser->is_approved) {
@@ -140,16 +136,12 @@ class AdminUserController extends Controller
         return Inertia::render('Admin/Users/Import/Index');
     }
 
-    public function processImport(Request $request): RedirectResponse
+    public function processImport(ImportAdminRequest $request): RedirectResponse
     {
-        $request->validate([
-            'excel_file' => 'required|file|mimes:xlsx,xls,csv,txt|max:2048',
-        ]);
-
         $result = $this->userService->importAdminsFromFile($request->file('excel_file'));
 
         $message = "Berhasil menambahkan {$result['success_count']} admin.";
-        if (!empty($result['error_rows'])) {
+        if (! empty($result['error_rows'])) {
             $message .= ' Terdapat ' . count($result['error_rows']) . ' baris dengan error.';
         }
 

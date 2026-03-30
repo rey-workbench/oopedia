@@ -42,6 +42,14 @@ export interface SharedProps {
 // Admin page props
 // ---------------------------------------------------------------------------
 
+export interface MaterialStatsItem {
+    id: number;
+    title: string;
+    questions_count: number;
+    active_students: number;
+    completion_rate: number;
+}
+
 export interface AdminDashboardProps extends SharedProps {
     totalStudents: number;
     totalMaterials: number;
@@ -51,6 +59,7 @@ export interface AdminDashboardProps extends SharedProps {
     studentProgress: StudentProgressItem[];
     popularMaterials: PopularMaterialItem[];
     studentAnalytics: StudentAnalytics;
+    materialStats: MaterialStatsItem[];
 }
 
 export interface RecentProgressItem {
