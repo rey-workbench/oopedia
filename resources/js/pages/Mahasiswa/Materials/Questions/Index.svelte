@@ -1,6 +1,6 @@
 <script lang="ts">
     import App from '@/layouts/App.svelte';
-    import GuestBanner from '@/components/shared/GuestBanner.svelte';
+    import GuestBanner from '@/components/layout/GuestBanner.svelte';
     import Card from '@/components/ui/Card.svelte';
     import Badge from '@/components/ui/Badge.svelte';
     import Button from '@/components/ui/Button.svelte';
@@ -49,8 +49,11 @@
             {#each state.materials as material (material.id)}
                 {@const isLocked = !state.isGuest && !!material.is_locked}
 
-                <Card padding="p-0" hover={!isLocked} class="overflow-hidden {isLocked ? 'opacity-70 grayscale' : ''}">
-
+                <Card
+                    padding="p-0"
+                    hover={!isLocked}
+                    class="overflow-hidden {isLocked ? 'opacity-70 grayscale' : ''}"
+                >
                     <!-- ── Graphic + Content (shared markup) ─────────────────── -->
                     {#snippet cardInner()}
                         <!-- Graphic Section -->
@@ -78,9 +81,13 @@
                             {/if}
                             <div class="absolute top-6 left-6">
                                 {#if isLocked}
-                                    <Badge variant="warning" size="sm" class="shadow-xl">TERKUNCI</Badge>
+                                    <Badge variant="warning" size="sm" class="shadow-xl"
+                                        >TERKUNCI</Badge
+                                    >
                                 {:else}
-                                    <Badge variant="primary" size="sm" class="shadow-xl">MODUL AKTIF</Badge>
+                                    <Badge variant="primary" size="sm" class="shadow-xl"
+                                        >MODUL AKTIF</Badge
+                                    >
                                 {/if}
                             </div>
                         </div>
@@ -149,7 +156,8 @@
                                                 >Akses Terbatas</span
                                             >
                                             <p class="text-xs font-medium text-amber-700">
-                                                Selesaikan pendaftaran untuk membuka semua level soal.
+                                                Selesaikan pendaftaran untuk membuka semua level
+                                                soal.
                                             </p>
                                         </div>
                                     </div>
@@ -224,7 +232,6 @@
                             {@render cardInner()}
                         </Link>
                     {/if}
-
                 </Card>
             {/each}
         </div>

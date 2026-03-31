@@ -27,7 +27,8 @@
     } = $props();
 
     const state = untrack(
-        () => new StudentProgressState(student, materials, missingQuestionsByMaterial, certifications)
+        () =>
+            new StudentProgressState(student, materials, missingQuestionsByMaterial, certifications)
     );
 
     const progressStats = $derived([
@@ -83,11 +84,13 @@
         <!-- Summary Cards -->
         <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
             {#each progressStats as stat}
-                <Card hover={true} class="relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 p-4 opacity-10 text-slate-400">
+                <Card hover={true} class="group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
                         {#if typeof stat.icon !== 'string'}
                             {@const IconComponent = stat.icon}
-                            <div class="scale-[4] transition-transform duration-500 group-hover:scale-[4.5]">
+                            <div
+                                class="scale-[4] transition-transform duration-500 group-hover:scale-[4.5]"
+                            >
                                 <IconComponent size={24} strokeWidth={2.5} />
                             </div>
                         {/if}
@@ -96,9 +99,11 @@
                     <div class="relative z-10">
                         <div
                             class="glass mb-6 flex h-14 w-14 items-center justify-center rounded-2xl shadow-sm
-                            {stat.variant === 'success' ? 'bg-emerald-100 text-emerald-600' : 
-                             stat.variant === 'danger' ? 'bg-rose-100 text-rose-600' :
-                             'bg-primary-100 text-primary-600'}"
+                            {stat.variant === 'success'
+                                ? 'bg-emerald-100 text-emerald-600'
+                                : stat.variant === 'danger'
+                                  ? 'bg-rose-100 text-rose-600'
+                                  : 'bg-primary-100 text-primary-600'}"
                         >
                             {#if typeof stat.icon === 'string'}
                                 <i class={stat.icon}></i>
@@ -108,10 +113,14 @@
                             {/if}
                         </div>
 
-                        <h3 class="mb-2 text-[10px] font-bold tracking-wider text-slate-600 uppercase">
+                        <h3
+                            class="mb-2 text-[10px] font-bold tracking-wider text-slate-600 uppercase"
+                        >
                             {stat.title}
                         </h3>
-                        <div class="font-display mb-2 text-4xl font-black tracking-tight text-slate-900">
+                        <div
+                            class="font-display mb-2 text-4xl font-black tracking-tight text-slate-900"
+                        >
                             {stat.value}
                         </div>
 
@@ -121,10 +130,12 @@
                                     class="h-1.5 w-1.5 rounded-full {stat.variant === 'success'
                                         ? 'bg-emerald-500'
                                         : stat.variant === 'danger'
-                                        ? 'bg-rose-500'
-                                        : 'bg-primary-500'}"
+                                          ? 'bg-rose-500'
+                                          : 'bg-primary-500'}"
                                 ></div>
-                                <p class="text-[10px] font-bold tracking-widest text-slate-500 uppercase">
+                                <p
+                                    class="text-[10px] font-bold tracking-widest text-slate-500 uppercase"
+                                >
                                     {stat.footer}
                                 </p>
                             </div>
@@ -142,17 +153,37 @@
                 </h3>
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {#each Object.entries(state.certifications) as [materialId, type]}
-                        {@const material = state.materials.find(m => m.id === Number(materialId))}
-                        <Card class="relative overflow-hidden border-2 {type === 'gold' ? 'border-amber-400 bg-amber-50/10' : type === 'silver' ? 'border-slate-300 bg-slate-50/10' : 'border-orange-300 bg-orange-50/10'} px-6 py-8">
+                        {@const material = state.materials.find((m) => m.id === Number(materialId))}
+                        <Card
+                            class="relative overflow-hidden border-2 {type === 'gold'
+                                ? 'border-amber-400 bg-amber-50/10'
+                                : type === 'silver'
+                                  ? 'border-slate-300 bg-slate-50/10'
+                                  : 'border-orange-300 bg-orange-50/10'} px-6 py-8"
+                        >
                             <div class="flex items-center gap-4">
-                                <div class="flex h-12 w-12 items-center justify-center rounded-xl {type === 'gold' ? 'bg-amber-100 text-amber-600' : type === 'silver' ? 'bg-slate-200 text-slate-600' : 'bg-orange-100 text-orange-600'} shadow-md">
+                                <div
+                                    class="flex h-12 w-12 items-center justify-center rounded-xl {type ===
+                                    'gold'
+                                        ? 'bg-amber-100 text-amber-600'
+                                        : type === 'silver'
+                                          ? 'bg-slate-200 text-slate-600'
+                                          : 'bg-orange-100 text-orange-600'} shadow-md"
+                                >
                                     <Award size={24} strokeWidth={2.5} />
                                 </div>
                                 <div class="flex-1">
-                                    <span class="text-[9px] font-black tracking-widest uppercase {type === 'gold' ? 'text-amber-600' : type === 'silver' ? 'text-slate-500' : 'text-orange-600'}">
+                                    <span
+                                        class="text-[9px] font-black tracking-widest uppercase {type ===
+                                        'gold'
+                                            ? 'text-amber-600'
+                                            : type === 'silver'
+                                              ? 'text-slate-500'
+                                              : 'text-orange-600'}"
+                                    >
                                         CERTIFIED ARCHITECT {type.toUpperCase()}
                                     </span>
-                                    <h4 class="text-sm font-bold text-slate-900 uppercase truncate">
+                                    <h4 class="truncate text-sm font-bold text-slate-900 uppercase">
                                         {material?.title || 'Project'}
                                     </h4>
                                 </div>
@@ -180,11 +211,17 @@
                 {/snippet}
 
                 {#snippet row(material)}
+                    {@const status =
+                        material.progress === 100
+                            ? 'STABIL'
+                            : material.progress > 0
+                              ? 'PROSES'
+                              : 'BELUM DIMULAI'}
                     <td class="border-b border-slate-50 px-6 py-6">
                         <div class="flex items-center gap-3">
                             <div class="bg-primary-600 h-10 w-1 rounded-full"></div>
                             <span class="text-sm font-bold tracking-widest text-slate-900 uppercase"
-                                >{material.material_title}</span
+                                >{material.title}</span
                             >
                         </div>
                     </td>
@@ -193,26 +230,22 @@
                             <div class="flex items-center justify-between px-0.5">
                                 <span
                                     class="text-[9px] font-bold tracking-widest text-slate-400 uppercase"
-                                    >{material.mastery_percentage}%</span
+                                    >{material.progress}%</span
                                 >
                             </div>
-                            <ProgressBar
-                                value={material.mastery_percentage}
-                                height="h-2"
-                                color="blue"
-                            />
+                            <ProgressBar value={material.progress} height="h-2" color="blue" />
                         </div>
                     </td>
                     <td class="border-b border-slate-50 px-6 py-6">
                         <Badge
-                            variant={material.status === 'STABIL'
+                            variant={status === 'STABIL'
                                 ? 'success'
-                                : material.status === 'PROSES'
+                                : status === 'PROSES'
                                   ? 'warning'
                                   : 'secondary'}
                             size="xs"
                         >
-                            {material.status}
+                            {status}
                         </Badge>
                     </td>
                     <td class="border-b border-slate-50 px-6 py-6">

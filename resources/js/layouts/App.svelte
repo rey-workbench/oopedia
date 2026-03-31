@@ -1,10 +1,9 @@
 <script lang="ts">
     import { page } from '@inertiajs/svelte';
-    import { onMount, onDestroy } from 'svelte';
-    import Sidebar from '@/components/navigation/Sidebar.svelte';
-    import Navbar from '@/components/navigation/Navbar.svelte';
-    import Alert from '@/components/ui/Alert.svelte';
-    import { sidebarOpen } from '@/stores/sidebar';
+    import { onMount } from 'svelte';
+    import { Sidebar, Navbar } from '@/components/navigation';
+    import { Alert } from '@/components/ui';
+    import { sidebarState, initSidebarResponsive } from '@/states/UI';
     import { ROUTES } from '@/utils/route';
     import type { SharedProps } from '@/types/inertia';
 
@@ -28,23 +27,16 @@
 
     const flash = $derived(($page.props as unknown as SharedProps).flash ?? {});
     const showSidebarRender = $derived(variant === 'app' && showSidebar);
-
-    function handleResize() {
-        if (window.innerWidth >= 1024) {
-            sidebarOpen.set(false);
-        }
-    }
+    const sidebarOpen = $derived(sidebarState.isOpen);
 
     onMount(() => {
-        window.addEventListener('resize', handleResize);
+        return initSidebarResponsive();
     });
-    onDestroy(() => window.removeEventListener('resize', handleResize));
 </script>
 
 <svelte:head>
     <title>{title}</title>
 </svelte:head>
-
 
 {#if variant === 'auth'}
     <div
@@ -130,14 +122,14 @@
     >
         {#if showSidebarRender}
             <Sidebar />
-            {#if $sidebarOpen}
+            {#if sidebarOpen}
                 <div
                     role="button"
                     tabindex="0"
                     aria-label="Tutup sidebar"
                     class="fixed inset-0 z-45 bg-gray-900/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden"
-                    onclick={() => sidebarOpen.set(false)}
-                    onkeydown={(e) => e.key === 'Escape' && sidebarOpen.set(false)}
+                    onclick={() => sidebarState.close()}
+                    onkeydown={(e) => e.key === 'Escape' && sidebarState.close()}
                 ></div>
             {/if}
         {/if}

@@ -2,7 +2,7 @@
     import { Link, page, router } from '@inertiajs/svelte';
     import SidebarLink from '@/components/navigation/SidebarLink.svelte';
     import { ROUTES } from '@/utils/route';
-    import { sidebarOpen } from '@/stores/sidebar';
+    import { sidebarState, closeSidebar } from '@/states/UI';
     import { isAdmin, ROLE } from '@/utils/roles';
     import {
         LayoutDashboard,
@@ -27,15 +27,12 @@
     const user = $derived(auth.user ?? null);
     const isAdminRole = $derived(!!user && isAdmin(user.role?.role_name));
     const userRole = $derived(user?.role?.role_name ?? null);
+    const sidebarOpen = $derived(sidebarState.isOpen);
 
     const isActive = (url: string) => $page.url === url || $page.url.startsWith(url + '/');
 
     function logout() {
         router.post('/logout');
-    }
-
-    function closeSidebar() {
-        sidebarOpen.set(false);
     }
 
     let isMateriOpen = $state(
@@ -50,7 +47,7 @@
 <aside
     id="sidebar"
     class="no-scrollbar fixed inset-y-0 left-0 z-50 w-72 overflow-y-auto border-r border-slate-100 bg-white transition-all duration-500 ease-in-out lg:w-64
-  {$sidebarOpen
+  {sidebarOpen
         ? 'translate-x-0 shadow-[0_0_50px_-12px_rgba(0,0,0,0.15)]'
         : '-translate-x-full lg:translate-x-0 lg:shadow-none'}"
 >
@@ -80,7 +77,7 @@
             </div>
         </Link>
         <button
-            onclick={closeSidebar}
+            onclick={() => closeSidebar()}
             aria-label="Tutup sidebar"
             class="group flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-50 text-slate-400 transition-all hover:bg-rose-50 hover:text-rose-500 lg:hidden"
         >

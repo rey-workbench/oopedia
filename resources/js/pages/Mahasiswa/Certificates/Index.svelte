@@ -2,11 +2,12 @@
     import App from '@/layouts/App.svelte';
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import EmptyState from '@/components/ui/EmptyState.svelte';
-    import CertificateCard from '@/components/shared/CertificateCard.svelte';
+    import CertificateCard from '@/components/layout/CertificateCard.svelte';
     import { Award } from 'lucide-svelte';
     import type { CertificatesPageProps } from '@/types';
 
-    const { certifications = [] }: Omit<CertificatesPageProps, 'auth' | 'flash' | 'errors'> = $props();
+    const { certifications = [] }: Omit<CertificatesPageProps, 'auth' | 'flash' | 'errors'> =
+        $props();
 </script>
 
 <App title="Sertifikat Saya">

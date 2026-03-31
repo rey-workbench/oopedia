@@ -2,7 +2,7 @@
     import App from '@/layouts/App.svelte';
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import Button from '@/components/ui/Button.svelte';
-    import ImportInstructions from '@/components/shared/ImportInstructions.svelte';
+    import ImportInstructions from '@/components/layout/ImportInstructions.svelte';
     import FileUploadZone from '@/components/ui/FileUploadZone.svelte';
     import { ArrowLeft, Upload } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';

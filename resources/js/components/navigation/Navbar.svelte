@@ -2,10 +2,14 @@
     import { Link, page, router } from '@inertiajs/svelte';
     import { Menu, ChevronRight, CircleHelp, User, LogOut } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
-    import { sidebarOpen } from '@/stores/sidebar';
+    import { sidebarState } from '@/states/UI';
     import { isAdmin } from '@/utils/roles';
 
-    let { titlePage = '' } = $props();
+    interface Props {
+        titlePage?: string;
+    }
+
+    let { titlePage = '' }: Props = $props();
 
     const auth = $derived($page.props['auth'] ?? {});
     const user = $derived(auth.user ?? null);
@@ -16,10 +20,6 @@
     function logout() {
         router.post('/logout');
     }
-
-    function toggleSidebar() {
-        sidebarOpen.update((v) => !v);
-    }
 </script>
 
 <nav
@@ -28,7 +28,7 @@
     <div class="flex h-16 items-center justify-between">
         <div class="flex items-center gap-4">
             <button
-                onclick={toggleSidebar}
+                onclick={() => sidebarState.toggle()}
                 aria-label="Toggle Sidebar"
                 class="rounded-xl p-2 text-slate-500 transition-colors hover:bg-slate-50 lg:hidden"
             >

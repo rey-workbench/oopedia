@@ -68,10 +68,14 @@ export const ROUTES = {
             QUESTIONS: {
                 CATALOG: '/mahasiswa/materials/questions',
                 SHOW: (id: string | number, subId?: string | number) =>
-                    subId ? `/mahasiswa/materials/${id}/questions/${subId}` : `/mahasiswa/materials/${id}/questions`,
+                    subId
+                        ? `/mahasiswa/materials/${id}/questions/${subId}`
+                        : `/mahasiswa/materials/${id}/questions`,
                 LEVELS: (id: string | number) => `/mahasiswa/materials/${id}/questions/levels`,
                 REVIEW: (id: string | number, difficulty?: string) =>
-                    difficulty ? `/mahasiswa/materials/${id}/questions/review/${difficulty}` : `/mahasiswa/materials/${id}/questions/review`,
+                    difficulty
+                        ? `/mahasiswa/materials/${id}/questions/review/${difficulty}`
+                        : `/mahasiswa/materials/${id}/questions/review`,
                 CHECK: (matId: string | number, quesId: string | number) =>
                     `/mahasiswa/materials/${matId}/questions/${quesId}/check`,
                 ATTEMPTS: (matId: string | number, quesId: string | number) =>
@@ -97,17 +101,6 @@ export const ROUTES = {
         REGISTER: '/register',
         LOGOUT: '/logout',
     },
-};
+} as const;
 
-/**
- * Route Helper to handle navigation standardized
- */
-import { router } from '@inertiajs/svelte';
-
-export const route = {
-    visit: (url: string, options = {}) => router.visit(url, options),
-    post: (url: string, data = {}, options = {}) => router.post(url, data, options),
-    put: (url: string, data = {}, options = {}) => router.put(url, data, options),
-    delete: (url: string, options = {}) => router.delete(url, options),
-    reload: (options = {}) => router.reload(options),
-};
+export type RouteKeys = keyof typeof ROUTES;

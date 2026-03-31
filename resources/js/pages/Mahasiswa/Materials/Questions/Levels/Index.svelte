@@ -2,13 +2,13 @@
     import App from '@/layouts/App.svelte';
     import Card from '@/components/ui/Card.svelte';
     import Button from '@/components/ui/Button.svelte';
-    import GuestBanner from '@/components/shared/GuestBanner.svelte';
+    import GuestBanner from '@/components/layout/GuestBanner.svelte';
     import { ArrowLeft, Map as MapIcon } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { LevelMapState } from '@/states/Mahasiswa/QuizState.svelte';
     import { ROUTES } from '@/utils/route';
-    import LevelMapLegend from '@/components/shared/LevelMapLegend.svelte';
-    import LevelMapCanvas from '@/components/shared/LevelMapCanvas.svelte';
+    import LevelMapLegend from '@/components/layout/LevelMapLegend.svelte';
+    import LevelMapCanvas from '@/components/layout/LevelMapCanvas.svelte';
     import type { Material } from '@/types';
     import type { LevelItem } from '@/states/Mahasiswa/QuizState.svelte';
 

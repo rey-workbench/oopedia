@@ -1,13 +1,13 @@
 <script lang="ts">
     import App from '@/layouts/App.svelte';
     import ProgressBar from '@/components/ui/ProgressBar.svelte';
-    import GuestBanner from '@/components/shared/GuestBanner.svelte';
+    import GuestBanner from '@/components/layout/GuestBanner.svelte';
     import { Terminal, UserCheck } from 'lucide-svelte';
     import { QuestionShowState } from '@/states/Mahasiswa/QuizState.svelte';
-    import QuestionSessionCard from '@/components/shared/QuestionSessionCard.svelte';
-    import FinishStateCard from '@/components/shared/FinishStateCard.svelte';
-    import FeedbackModal from '@/components/shared/FeedbackModal.svelte';
-    import AdaptiveDebugPanel from '@/components/shared/AdaptiveDebugPanel.svelte';
+    import QuestionSessionCard from '@/components/layout/QuestionSessionCard.svelte';
+    import FinishStateCard from '@/components/layout/FinishStateCard.svelte';
+    import FeedbackModal from '@/components/feedback/FeedbackModal.svelte';
+    import AdaptiveDebugPanel from '@/components/layout/AdaptiveDebugPanel.svelte';
     import { untrack } from 'svelte';
     import type { Material, Question, DifficultyLevel, QuizSessionState } from '@/types';
 

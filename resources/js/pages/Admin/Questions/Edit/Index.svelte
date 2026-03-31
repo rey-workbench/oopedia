@@ -3,8 +3,8 @@
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import Button from '@/components/ui/Button.svelte';
     import QuillEditor from '@/components/ui/QuillEditor.svelte';
-    import DragDropEditor from '@/components/shared/DragDropEditor.svelte';
-    import DragDropHandle from '@/components/shared/DragDropHandle.svelte';
+    import DragDropEditor from '@/components/quiz/DragDropEditor.svelte';
+    import DragDropHandle from '@/components/quiz/DragDropHandle.svelte';
     import { ArrowLeft, RefreshCw, Plus, X } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { QuestionEditState } from '@/states/Admin/QuestionState.svelte';
@@ -52,7 +52,9 @@
                             <div class="space-y-2">
                                 <span
                                     class="font-poppins text-[10px] font-bold text-slate-400 uppercase"
-                                    >Teks Pertanyaan {#if form.question_type !== 'drag_and_drop'} (Rich Text) {/if}</span
+                                    >Teks Pertanyaan {#if form.question_type !== 'drag_and_drop'}
+                                        (Rich Text)
+                                    {/if}</span
                                 >
                                 {#if form.question_type === 'drag_and_drop'}
                                     <DragDropEditor bind:value={form.question_text} />
@@ -79,15 +81,15 @@
                                         Konfigurasi Opsi Jawaban
                                     </span>
                                     {#if form.question_type !== 'fill_in_the_blank'}
-                                    <Button
-                                        type="button"
-                                        onclick={() => state.addAnswer()}
-                                        variant="ghost"
-                                        size="sm"
-                                        icon={Plus}
-                                    >
-                                        Tambah Opsi
-                                    </Button>
+                                        <Button
+                                            type="button"
+                                            onclick={() => state.addAnswer()}
+                                            variant="ghost"
+                                            size="sm"
+                                            icon={Plus}
+                                        >
+                                            Tambah Opsi
+                                        </Button>
                                     {/if}
                                 </div>
 
@@ -108,27 +110,42 @@
                                                 </div>
                                             {:else if form.question_type === 'drag_and_drop'}
                                                 <div class="pt-2">
-                                                    <DragDropHandle data={answer.answer_text as string} />
+                                                    <DragDropHandle
+                                                        data={answer.answer_text as string}
+                                                    />
                                                 </div>
                                             {:else}
-                                                <div class="pt-2 flex flex-col items-center gap-1">
+                                                <div class="flex flex-col items-center gap-1 pt-2">
                                                     <input
                                                         type="checkbox"
                                                         checked={answer.is_correct === 1}
                                                         onchange={(e) => {
-                                                            answer.is_correct = (e.target as HTMLInputElement).checked ? 1 : 0;
+                                                            answer.is_correct = (
+                                                                e.target as HTMLInputElement
+                                                            ).checked
+                                                                ? 1
+                                                                : 0;
                                                         }}
                                                         class="text-primary-600 focus:ring-primary-500 h-5 w-5 cursor-pointer border-slate-300 transition-all"
                                                     />
-                                                    <span class="text-[8px] font-bold tracking-widest text-slate-500 uppercase">Benar</span>
+                                                    <span
+                                                        class="text-[8px] font-bold tracking-widest text-slate-500 uppercase"
+                                                        >Benar</span
+                                                    >
                                                 </div>
                                             {/if}
 
-                                            <div class="flex-1 space-y-3 w-full max-w-full overflow-hidden">
+                                            <div
+                                                class="w-full max-w-full flex-1 space-y-3 overflow-hidden"
+                                            >
                                                 {#if form.question_type === 'fill_in_the_blank'}
-                                                    <div class="w-full bg-white rounded-xl overflow-hidden border-2 border-slate-100">
+                                                    <div
+                                                        class="w-full overflow-hidden rounded-xl border-2 border-slate-100 bg-white"
+                                                    >
                                                         <QuillEditor
-                                                            bind:value={answer.answer_text as string}
+                                                            bind:value={
+                                                                answer.answer_text as string
+                                                            }
                                                             placeholder="Ketik isi / bagian rumpang di sini..."
                                                         />
                                                     </div>
@@ -156,14 +173,14 @@
                                                 />
                                             </div>
                                             {#if form.question_type !== 'fill_in_the_blank' && (form.answers || []).length > 1}
-                                            <Button
-                                                type="button"
-                                                onclick={() => state.removeAnswer(i)}
-                                                variant="ghost"
-                                                size="sm"
-                                                icon={X}
-                                                class="p-2 text-slate-300 hover:bg-rose-50 hover:text-rose-500 shrink-0"
-                                            />
+                                                <Button
+                                                    type="button"
+                                                    onclick={() => state.removeAnswer(i)}
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    icon={X}
+                                                    class="shrink-0 p-2 text-slate-300 hover:bg-rose-50 hover:text-rose-500"
+                                                />
                                             {/if}
                                         </div>
                                     </div>
