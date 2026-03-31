@@ -2,34 +2,8 @@
 
 namespace App\Rules\Adaptive;
 
-use App\Rules\Adaptive\Achievement\ModuleGraduation;
-use App\Rules\Adaptive\Achievement\GoldCertificate;
-use App\Rules\Adaptive\Achievement\SilverCertificate;
-use App\Rules\Adaptive\Achievement\BronzeCertificate;
 use App\Rules\Adaptive\Contracts\AdaptiveRuleInterface;
-use App\Rules\Adaptive\Crisis\VisualCrisisIntervention;
-use App\Rules\Adaptive\Crisis\TextualCrisisIntervention;
-use App\Rules\Adaptive\Crisis\VisualProjectRevision;
-use App\Rules\Adaptive\Crisis\TextualProjectRevision;
-use App\Rules\Adaptive\Crisis\PersistentVisualSafetyNet;
-use App\Rules\Adaptive\Crisis\PersistentTextualSafetyNet;
-use App\Rules\Adaptive\Crisis\FinalProjectVisualPersistentFail;
-use App\Rules\Adaptive\Crisis\FinalProjectTextualPersistentFail;
-use App\Rules\Adaptive\Progression\StandardPromotion;
-use App\Rules\Adaptive\Progression\AcceleratedJump;
-use App\Rules\Adaptive\Progression\AcceleratedMaterialPromotion;
-use App\Rules\Adaptive\Progression\CriticalBacktracking;
-use App\Rules\Adaptive\Progression\MasteryMedium;
-use App\Rules\Adaptive\Recovery\SyntaxRecovery;
-use App\Rules\Adaptive\Recovery\LogicRecovery;
-use App\Rules\Adaptive\Recovery\RemedialIndependent;
 
-/**
- * RuleRegistry
- *
- * Central registry for all adaptive rules.
- * Manages rule registration and provides access to rules by priority.
- */
 class RuleRegistry
 {
     protected array $rules = [];
@@ -39,62 +13,48 @@ class RuleRegistry
         $this->registerRules();
     }
 
-    /**
-     * Register all adaptive rules in priority order.
-     */
     protected function registerRules(): void
     {
-        // Crisis rules (highest priority 5-15)
-        $this->register(new PersistentVisualSafetyNet);
-        $this->register(new PersistentTextualSafetyNet);
-        $this->register(new VisualCrisisIntervention);
-        $this->register(new TextualCrisisIntervention);
-        $this->register(new VisualProjectRevision);
-        $this->register(new TextualProjectRevision);
-        $this->register(new FinalProjectVisualPersistentFail);
-        $this->register(new FinalProjectTextualPersistentFail);
+        $ruleClasses = [
+            Rule_PersistentVisualSafetyNet::class,
+            Rule_PersistentTextualSafetyNet::class,
+            Rule_VisualCrisisIntervention::class,
+            Rule_TextualCrisisIntervention::class,
+            Rule_VisualProjectRevision::class,
+            Rule_TextualProjectRevision::class,
+            Rule_FinalProjectVisualPersistentFail::class,
+            Rule_FinalProjectTextualPersistentFail::class,
+            Rule_SyntaxRecovery::class,
+            Rule_LogicRecovery::class,
+            Rule_RemedialIndependent::class,
+            Rule_GoldCertificate::class,
+            Rule_SilverCertificate::class,
+            Rule_BronzeCertificate::class,
+            Rule_ModuleGraduation::class,
+            Rule_CriticalBacktracking::class,
+            Rule_MasteryMedium::class,
+            Rule_AcceleratedMaterialPromotion::class,
+            Rule_AcceleratedJump::class,
+            Rule_StandardPromotion::class,
+        ];
 
-        // Recovery rules (priority 24-48)
-        $this->register(new SyntaxRecovery);
-        $this->register(new LogicRecovery);
-        $this->register(new RemedialIndependent);
+        foreach ($ruleClasses as $ruleClass) {
+            $this->register(new $ruleClass);
+        }
 
-        // Achievement rules (priority 20-30)
-        $this->register(new GoldCertificate);
-        $this->register(new SilverCertificate);
-        $this->register(new BronzeCertificate);
-        $this->register(new ModuleGraduation);
-
-        // Progression rules (priority 27-50)
-        $this->register(new CriticalBacktracking);
-        $this->register(new MasteryMedium);
-        $this->register(new AcceleratedMaterialPromotion);
-        $this->register(new AcceleratedJump);
-        $this->register(new StandardPromotion);
-
-        // Sort by priority (lower number = higher priority)
-        usort($this->rules, fn($a, $b) => $a->getPriority() <=> $b->getPriority());
+        usort($this->rules, fn ($a, $b) => $a->getPriority() <=> $b->getPriority());
     }
 
-    /**
-     * Register a single rule.
-     */
     protected function register(AdaptiveRuleInterface $rule): void
     {
         $this->rules[] = $rule;
     }
 
-    /**
-     * Get all registered rules in priority order.
-     */
     public function getAllRules(): array
     {
         return $this->rules;
     }
 
-    /**
-     * Get a specific rule by its ID.
-     */
     public function getRuleById(string $ruleId): ?AdaptiveRuleInterface
     {
         foreach ($this->rules as $rule) {
@@ -106,14 +66,11 @@ class RuleRegistry
         return null;
     }
 
-    /**
-     * Get rules by action code.
-     */
     public function getRulesByAction(string $actionCode): array
     {
         return array_filter(
             $this->rules,
-        fn($rule) => $rule->getActionCode() === $actionCode,
+            fn ($rule) => $rule->getActionCode() === $actionCode,
         );
     }
 }

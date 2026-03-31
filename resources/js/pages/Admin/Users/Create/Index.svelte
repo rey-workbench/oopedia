@@ -2,7 +2,8 @@
     import App from '@/layouts/App.svelte';
     import Button from '@/components/ui/Button.svelte';
     import Input from '@/components/ui/Input.svelte';
-    import { ArrowLeft, UserPlus, ChevronDown } from 'lucide-svelte';
+    import Select from '@/components/ui/Select.svelte';
+    import { ArrowLeft, UserPlus } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
     import { UserFormState } from '@/states/Admin/UserState.svelte';
 
@@ -10,6 +11,8 @@
 
     const state = new UserFormState(null);
     const form = state.form;
+
+    const roleOptions = roles.map((r) => ({ value: r.id, label: r.name }));
 </script>
 
 <App title="Pembuatan Administrator">
@@ -98,34 +101,13 @@
                                 </div>
 
                                 <div class="space-y-2">
-                                    <label
-                                        for="role_id"
-                                        class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                                        >Peran Sistem</label
-                                    >
-                                    <div class="relative">
-                                        <select
-                                            id="role_id"
-                                            bind:value={form.role_id}
-                                            class="focus:ring-primary-50 focus:border-primary-500 w-full appearance-none rounded-2xl border-2 border-slate-100 bg-white px-4 py-3 text-sm font-bold transition-all outline-none focus:ring-4"
-                                        >
-                                            <option value="">Pilih Peran</option>
-                                            {#each roles as role}
-                                                <option value={role.id}>{role.name}</option>
-                                            {/each}
-                                        </select>
-                                        <ChevronDown
-                                            size={16}
-                                            class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-slate-400"
-                                        />
-                                    </div>
-                                    {#if form.errors['role_id']}
-                                        <p
-                                            class="text-[10px] font-bold tracking-widest text-rose-500 uppercase"
-                                        >
-                                            {form.errors['role_id']}
-                                        </p>
-                                    {/if}
+                                    <Select
+                                        bind:value={form.role_id}
+                                        label="Peran Sistem"
+                                        placeholder="PILIH PERAN"
+                                        options={roleOptions}
+                                        error={form.errors['role_id']}
+                                    />
                                 </div>
                             </div>
                         </div>

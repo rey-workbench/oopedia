@@ -1,26 +1,20 @@
 <script lang="ts">
     import App from '@/layouts/App.svelte';
+    import PageHeader from '@/components/ui/PageHeader.svelte';
     import Button from '@/components/ui/Button.svelte';
     import DataTable from '@/components/ui/DataTable.svelte';
-    import Badge from '@/components/ui/Badge.svelte';
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import Pagination from '@/components/ui/Pagination.svelte';
-    import { Plus, ArrowLeft, FlaskConical, Search, Edit2, Trash2 } from 'lucide-svelte';
-    import PageHeader from '@/components/ui/PageHeader.svelte';
+    import Select from '@/components/ui/Select.svelte';
     import { ROUTES } from '@/utils/route';
-    import { untrack } from 'svelte';
+    import { FlaskConical, Plus, Eye, Pencil, Trash2, Search, Edit2 } from 'lucide-svelte';
     import { QuestionListAdminState } from '@/states/Admin/QuestionState.svelte';
+    import { untrack } from 'svelte';
+    import Badge from '@/components/ui/Badge.svelte';
 
-    let {
-        questions = { data: [] },
-        material = null,
-        search = '',
-        difficulty = '',
-    }: { questions: any; material: any; search: string; difficulty: string } = $props();
+    let { questions = [], materials = [] } = $props();
 
-    const state = untrack(
-        () => new QuestionListAdminState(questions, material, search, difficulty)
-    );
+    const state = untrack(() => new QuestionListAdminState(questions, null, '', ''));
 
     const columns = $derived([
         { key: 'question', label: 'Pertanyaan', align: 'left' },
@@ -30,11 +24,12 @@
         { key: 'actions', label: 'Aksi', align: 'right' },
     ]);
 
-    function getDifficultyColor(diff: string) {
-        if (diff === 'beginner') return 'success';
-        if (diff === 'medium') return 'warning';
-        return 'danger';
-    }
+    const difficultyOptions = [
+        { value: '', label: 'SEMUA LEVEL' },
+        { value: 'beginner', label: 'BEGINNER' },
+        { value: 'medium', label: 'MEDIUM' },
+        { value: 'hard', label: 'HARD' },
+    ];
 </script>
 
 <App title={`Kelola Bank Soal ${state.material ? ': ' + state.material.title : ''}`}>
@@ -86,23 +81,12 @@
         </div>
 
         <div class="w-full space-y-2 md:w-64">
-            <label
-                for="q-difficulty"
-                class="font-poppins ml-2 text-[10px] font-bold text-slate-400 uppercase"
-            >
-                Tingkat Kesulitan
-            </label>
-            <select
-                id="q-difficulty"
+            <Select
                 bind:value={state.difficulty}
+                placeholder="SEMUA LEVEL"
+                options={difficultyOptions}
                 onchange={() => state.setDifficulty(state.difficulty)}
-                class="focus:border-primary-600 focus:ring-primary-100 w-full cursor-pointer rounded-2xl border border-slate-100 bg-white px-6 py-4 text-[10px] font-bold tracking-widest text-slate-900 uppercase shadow-xl shadow-slate-100 transition-all focus:ring-4 focus:outline-none"
-            >
-                <option value="">SEMUA LEVEL</option>
-                <option value="beginner">BEGINNER</option>
-                <option value="medium">MEDIUM</option>
-                <option value="hard">HARD</option>
-            </select>
+            />
         </div>
     </div>
 
@@ -139,7 +123,13 @@
             <td class="px-6 py-6 text-xs font-bold text-slate-600 uppercase">
                 <div class="flex items-center gap-2">
                     <span
-                        class={`h-2 w-2 rounded-full bg-${getDifficultyColor(question.difficulty)}-500`}
+                        class={`h-2 w-2 rounded-full ${
+                            question.difficulty === 'beginner'
+                                ? 'bg-emerald-500'
+                                : question.difficulty === 'medium'
+                                  ? 'bg-amber-500'
+                                  : 'bg-rose-500'
+                        }`}
                     ></span>
                     {question.difficulty}
                 </div>

@@ -5,6 +5,7 @@
     import QuillEditor from '@/components/ui/QuillEditor.svelte';
     import DragDropEditor from '@/components/quiz/DragDropEditor.svelte';
     import DragDropHandle from '@/components/quiz/DragDropHandle.svelte';
+    import Select from '@/components/ui/Select.svelte';
     import { ArrowLeft, Save, Plus, X, CheckCircle2 } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';
@@ -13,6 +14,18 @@
     let { materials = [], material = null, subMaterials = [] } = $props();
 
     const state = untrack(() => new QuestionFormState(materials, material, subMaterials, null));
+
+    const typeOptions = [
+        { value: 'radio_button', label: 'Radio Button' },
+        { value: 'fill_in_the_blank', label: 'Fill In The Blank' },
+        { value: 'drag_and_drop', label: 'Drag And Drop' },
+    ];
+
+    const difficultyOptions = [
+        { value: 'beginner', label: 'BEGINNER' },
+        { value: 'medium', label: 'MEDIUM' },
+        { value: 'hard', label: 'HARD' },
+    ];
 </script>
 
 <App title="Buat Instrumen Baru">
@@ -202,53 +215,29 @@
 
                             <div class="space-y-6">
                                 <!-- Modul Utama -->
-                                <div class="space-y-2">
-                                    <label
-                                        for="material"
-                                        class="font-poppins text-[10px] font-bold text-slate-400 uppercase"
-                                    >
-                                        Modul Utama
-                                    </label>
-                                    <select
-                                        id="material"
-                                        bind:value={state.form.material_id}
-                                        onchange={() => state.handleMaterialChange()}
-                                        class="focus:border-primary-600 w-full cursor-pointer rounded-2xl border-2 border-slate-100 bg-slate-50 px-6 py-4 text-xs font-bold tracking-widest text-slate-900 uppercase transition-all focus:outline-none"
-                                    >
-                                        <option value="">PILIH MODUL</option>
-                                        {#each state.materials as m}
-                                            <option value={m.id}>{m.title}</option>
-                                        {/each}
-                                    </select>
-                                    {#if state.form.errors['material_id']}
-                                        <p
-                                            class="text-[10px] font-bold tracking-widest text-rose-500 uppercase"
-                                        >
-                                            {state.form.errors['material_id']}
-                                        </p>
-                                    {/if}
-                                </div>
+                                <Select
+                                    bind:value={state.form.material_id}
+                                    label="Modul Utama"
+                                    placeholder="PILIH MODUL"
+                                    options={state.materials.map((m) => ({
+                                        value: m.id,
+                                        label: m.title,
+                                    }))}
+                                    error={state.form.errors['material_id']}
+                                    onchange={() => state.handleMaterialChange()}
+                                />
 
                                 <!-- Unit Spesifik -->
-                                <div class="space-y-2">
-                                    <label
-                                        for="sub_material"
-                                        class="font-poppins text-[10px] font-bold text-slate-400 uppercase"
-                                    >
-                                        Unit Spesifik (Opsional)
-                                    </label>
-                                    <select
-                                        id="sub_material"
-                                        bind:value={state.form.sub_material_id}
-                                        class="focus:border-primary-600 w-full cursor-pointer rounded-2xl border-2 border-slate-100 bg-slate-50 px-6 py-4 text-xs font-bold tracking-widest text-slate-900 uppercase transition-all focus:outline-none disabled:opacity-50"
-                                        disabled={!state.form.material_id}
-                                    >
-                                        <option value="">TAG UNIT TERKAIT</option>
-                                        {#each state.availableSubMaterials as sm}
-                                            <option value={sm.id}>{sm.title}</option>
-                                        {/each}
-                                    </select>
-                                </div>
+                                <Select
+                                    bind:value={state.form.sub_material_id}
+                                    label="Unit Spesifik (Opsional)"
+                                    placeholder="TAG UNIT TERKAIT"
+                                    options={state.availableSubMaterials.map((sm) => ({
+                                        value: sm.id,
+                                        label: sm.title,
+                                    }))}
+                                    disabled={!state.form.material_id}
+                                />
 
                                 <!-- Tipe Algoritma -->
                                 <div class="space-y-2">
@@ -257,15 +246,15 @@
                                         >Tipe Algoritma</span
                                     >
                                     <div class="grid grid-cols-1 gap-2">
-                                        {#each ['radio_button', 'fill_in_the_blank', 'drag_and_drop'] as type}
+                                        {#each typeOptions as option}
                                             <button
                                                 type="button"
-                                                onclick={() => state.setType(type)}
+                                                onclick={() => state.setType(option.value)}
                                                 class={`flex items-center justify-between rounded-2xl border-2 px-6 py-4 text-left text-[10px] font-bold tracking-widest uppercase transition-all
-                                            ${state.form.question_type === type ? 'border-primary-600 bg-primary-50 text-primary-600' : 'border-slate-50 bg-slate-50 text-slate-400'}`}
+                                            ${state.form.question_type === option.value ? 'border-primary-600 bg-primary-50 text-primary-600' : 'border-slate-50 bg-slate-50 text-slate-400'}`}
                                             >
-                                                {type.replace(/_/g, ' ')}
-                                                {#if state.form.question_type === type}
+                                                {option.label}
+                                                {#if state.form.question_type === option.value}
                                                     <CheckCircle2 size={16} />
                                                 {/if}
                                             </button>
@@ -280,14 +269,14 @@
                                         >Level Kesulitan</span
                                     >
                                     <div class="flex gap-2">
-                                        {#each ['beginner', 'medium', 'hard'] as diff}
+                                        {#each difficultyOptions as option}
                                             <button
                                                 type="button"
-                                                onclick={() => state.setDifficulty(diff)}
+                                                onclick={() => state.setDifficulty(option.value)}
                                                 class={`flex-1 rounded-xl border-2 px-2 py-3 text-[9px] font-bold tracking-widest uppercase transition-all
-                                            ${state.form.difficulty === diff ? 'border-primary-600 bg-primary-50 text-primary-600' : 'border-slate-50 bg-slate-50 text-slate-400'}`}
+                                            ${state.form.difficulty === option.value ? 'border-primary-600 bg-primary-50 text-primary-600' : 'border-slate-50 bg-slate-50 text-slate-400'}`}
                                             >
-                                                {diff}
+                                                {option.label}
                                             </button>
                                         {/each}
                                     </div>

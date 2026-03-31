@@ -1,16 +1,14 @@
 <?php
 
-namespace App\Rules\Adaptive\Crisis;
+namespace App\Rules\Adaptive;
 
-use App\Rules\Adaptive\BaseAdaptiveRule;
+use App\Rules\Adaptive\Concerns\AppliesCrisisIntervention;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
-/**
- * Rule 15: Persistent Textual Safety Net
- * IF (G22 AND G08) THEN H15
- */
-class PersistentTextualSafetyNet extends BaseAdaptiveRule
+class Rule_PersistentTextualSafetyNet extends BaseAdaptiveRule
 {
+    use AppliesCrisisIntervention;
+
     protected string $ruleId = 'RULE_15';
 
     protected string $ruleName = 'Persistent Textual Safety Net';
@@ -29,12 +27,9 @@ class PersistentTextualSafetyNet extends BaseAdaptiveRule
 
     public function apply(array $state, array $context): array
     {
-        $state['recommendation'] = 'Bantuan Komprehensif';
-        $state['next_action'] = 'STUDY_TEXTUAL';
-        $state['message'] = 'Anda mengalami kesulitan signifikan. Mari kita ulas materi secara menyeluruh.';
-        $state['intervention_type'] = 'persistent_textual_safety';
-        $state['force_material_review'] = true;
-
-        return $state;
+        return $this->applyPersistentTextualSafety(
+            $state,
+            'Anda mengalami kesulitan signifikan. Mari kita ulas materi secara menyeluruh.',
+        );
     }
 }

@@ -1,19 +1,14 @@
 <?php
 
-namespace App\Rules\Adaptive\Recovery;
+namespace App\Rules\Adaptive;
 
-use App\Rules\Adaptive\BaseAdaptiveRule;
+use App\Rules\Adaptive\Concerns\AppliesRecovery;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
-/**
- * Rule 3: Syntax Recovery
- * IF (G02 AND G09 AND G16 AND G12) THEN H03
- *
- * Triggers when student has remedial score on medium difficulty,
- * made syntax errors, and used hints.
- */
-class SyntaxRecovery extends BaseAdaptiveRule
+class Rule_SyntaxRecovery extends BaseAdaptiveRule
 {
+    use AppliesRecovery;
+
     protected string $ruleId = 'RULE_03';
 
     protected string $ruleName = 'Syntax Recovery';
@@ -34,11 +29,9 @@ class SyntaxRecovery extends BaseAdaptiveRule
 
     public function apply(array $state, array $context): array
     {
-        $state['recommendation'] = 'Latihan Sintaksis';
-        $state['next_action'] = 'STUDY_SYNTAX';
-        $state['message'] = 'Sepertinya Anda butuh penguatan sintaks. Mari pelajari contoh kode secara mendalam.';
-        $state['recovery_type'] = 'syntax';
-
-        return $state;
+        return $this->applySyntaxRecovery(
+            $state,
+            'Sepertinya Anda butuh penguatan sintaks. Mari pelajari contoh kode secara mendalam.',
+        );
     }
 }

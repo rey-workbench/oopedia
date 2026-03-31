@@ -1,19 +1,14 @@
 <?php
 
-namespace App\Rules\Adaptive\Crisis;
+namespace App\Rules\Adaptive;
 
-use App\Rules\Adaptive\BaseAdaptiveRule;
+use App\Rules\Adaptive\Concerns\AppliesCrisisIntervention;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
-/**
- * Rule 19: Final Project Textual Persistent Fail
- * IF (G22 AND G08 AND G18) THEN H13
- *
- * Triggers when textual learner fails persistently (≥3x) during Final Project.
- * Redirects to textual project revision content.
- */
-class FinalProjectTextualPersistentFail extends BaseAdaptiveRule
+class Rule_FinalProjectTextualPersistentFail extends BaseAdaptiveRule
 {
+    use AppliesCrisisIntervention;
+
     protected string $ruleId = 'RULE_19';
 
     protected string $ruleName = 'Final Project Textual Persistent Fail';
@@ -32,12 +27,6 @@ class FinalProjectTextualPersistentFail extends BaseAdaptiveRule
 
     public function apply(array $state, array $context): array
     {
-        $state['recommendation'] = 'Revisi Proyek - Bantuan Tekstual';
-        $state['next_action'] = 'STUDY_TEXTUAL';
-        $state['message'] = 'Anda mengalami kesulitan berulang di Proyek Akhir. Mari ulas kembali materi secara mendalam sebelum mencoba lagi.';
-        $state['intervention_type'] = 'final_project_textual_persistent';
-        $state['force_material_review'] = true;
-
-        return $state;
+        return $this->applyFinalProjectTextualPersistent($state);
     }
 }

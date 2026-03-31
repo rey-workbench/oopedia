@@ -1,16 +1,14 @@
 <?php
 
-namespace App\Rules\Adaptive\Crisis;
+namespace App\Rules\Adaptive;
 
-use App\Rules\Adaptive\BaseAdaptiveRule;
+use App\Rules\Adaptive\Concerns\AppliesCrisisIntervention;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
-/**
- * Rule 14: Persistent Visual Safety Net
- * IF (G22 AND G07) THEN H14
- */
-class PersistentVisualSafetyNet extends BaseAdaptiveRule
+class Rule_PersistentVisualSafetyNet extends BaseAdaptiveRule
 {
+    use AppliesCrisisIntervention;
+
     protected string $ruleId = 'RULE_14';
 
     protected string $ruleName = 'Persistent Visual Safety Net';
@@ -29,12 +27,9 @@ class PersistentVisualSafetyNet extends BaseAdaptiveRule
 
     public function apply(array $state, array $context): array
     {
-        $state['recommendation'] = 'Bantuan Komprehensif';
-        $state['next_action'] = 'STUDY_VISUAL';
-        $state['message'] = 'Anda mengalami kesulitan signifikan. Mari kita ulas materi secara menyeluruh.';
-        $state['intervention_type'] = 'persistent_visual_safety';
-        $state['force_material_review'] = true;
-
-        return $state;
+        return $this->applyPersistentVisualSafety(
+            $state,
+            'Anda mengalami kesulitan signifikan. Mari kita ulas materi secara menyeluruh.',
+        );
     }
 }

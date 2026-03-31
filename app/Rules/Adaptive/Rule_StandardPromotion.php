@@ -1,19 +1,14 @@
 <?php
 
-namespace App\Rules\Adaptive\Progression;
+namespace App\Rules\Adaptive;
 
-use App\Rules\Adaptive\BaseAdaptiveRule;
+use App\Rules\Adaptive\Concerns\AppliesProgression;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
-/**
- * Rule 5: Standard Promotion
- * IF ((G03 OR G04) AND (G15 OR G16 OR G17)) THEN H05
- *
- * Triggers when student passes with standard or mastery score on any difficulty.
- * Normal linear progression path — acts as a catch-all for good performance.
- */
-class StandardPromotion extends BaseAdaptiveRule
+class Rule_StandardPromotion extends BaseAdaptiveRule
 {
+    use AppliesProgression;
+
     protected string $ruleId = 'RULE_05';
 
     protected string $ruleName = 'Standard Promotion';
@@ -36,11 +31,6 @@ class StandardPromotion extends BaseAdaptiveRule
 
     public function apply(array $state, array $context): array
     {
-        $state['next_action'] = 'NEXT_QUESTION';
-        $state['message'] = $context['is_correct']
-            ? 'Jawaban tepat! Mari lanjut ke soal berikutnya.'
-            : 'Jawaban kurang tepat. Mari coba lagi atau ulas kembali materi jika kesulitan.';
-
-        return $state;
+        return $this->applyStandardPromotion($state, $context['is_correct'] ?? false);
     }
 }

@@ -1,19 +1,14 @@
 <?php
 
-namespace App\Rules\Adaptive\Crisis;
+namespace App\Rules\Adaptive;
 
-use App\Rules\Adaptive\BaseAdaptiveRule;
+use App\Rules\Adaptive\Concerns\AppliesCrisisIntervention;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
-/**
- * Rule 18: Final Project Visual Persistent Fail
- * IF (G22 AND G07 AND G18) THEN H12
- *
- * Triggers when visual learner fails persistently (≥3x) during Final Project.
- * Redirects to visual project revision content.
- */
-class FinalProjectVisualPersistentFail extends BaseAdaptiveRule
+class Rule_FinalProjectVisualPersistentFail extends BaseAdaptiveRule
 {
+    use AppliesCrisisIntervention;
+
     protected string $ruleId = 'RULE_18';
 
     protected string $ruleName = 'Final Project Visual Persistent Fail';
@@ -32,12 +27,6 @@ class FinalProjectVisualPersistentFail extends BaseAdaptiveRule
 
     public function apply(array $state, array $context): array
     {
-        $state['recommendation'] = 'Revisi Proyek - Bantuan Visual';
-        $state['next_action'] = 'STUDY_VISUAL';
-        $state['message'] = 'Anda mengalami kesulitan berulang di Proyek Akhir. Mari ulas kembali materi secara visual sebelum mencoba lagi.';
-        $state['intervention_type'] = 'final_project_visual_persistent';
-        $state['force_material_review'] = true;
-
-        return $state;
+        return $this->applyFinalProjectVisualPersistent($state);
     }
 }

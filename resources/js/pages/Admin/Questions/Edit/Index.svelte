@@ -5,6 +5,7 @@
     import QuillEditor from '@/components/ui/QuillEditor.svelte';
     import DragDropEditor from '@/components/quiz/DragDropEditor.svelte';
     import DragDropHandle from '@/components/quiz/DragDropHandle.svelte';
+    import Select from '@/components/ui/Select.svelte';
     import { ArrowLeft, RefreshCw, Plus, X } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { QuestionEditState } from '@/states/Admin/QuestionState.svelte';
@@ -13,6 +14,18 @@
 
     const state = untrack(() => new QuestionEditState(question, subMaterials));
     const form = state.form;
+
+    const typeOptions = [
+        { value: 'radio_button', label: 'Radio Button' },
+        { value: 'fill_in_the_blank', label: 'Fill In The Blank' },
+        { value: 'drag_and_drop', label: 'Drag And Drop' },
+    ];
+
+    const difficultyOptions = [
+        { value: 'beginner', label: 'MUDAH', color: 'emerald' },
+        { value: 'medium', label: 'SEDANG', color: 'amber' },
+        { value: 'hard', label: 'SULIT', color: 'rose' },
+    ];
 </script>
 
 <App title={`Edit Soal #${question.id}`}>
@@ -197,41 +210,29 @@
                                 </h3>
 
                                 <div class="space-y-2">
-                                    <label
-                                        for="material_id"
-                                        class="text-[10px] font-bold text-slate-400 uppercase"
-                                        >Modul Materi</label
-                                    >
-                                    <select
-                                        id="material_id"
+                                    <Select
                                         bind:value={form.material_id}
+                                        label="Modul Materi"
+                                        placeholder="PILIH MATERI"
+                                        options={materials.map((m) => ({
+                                            value: m.id,
+                                            label: m.title,
+                                        }))}
                                         onchange={() => state.handleMaterialChange()}
-                                        class="focus:ring-primary-50 focus:border-primary-500 w-full appearance-none rounded-2xl border-2 border-slate-100 bg-white px-4 py-3 text-sm font-bold transition-all outline-none focus:ring-4"
-                                    >
-                                        <option value="">Pilih Materi</option>
-                                        {#each materials as mat}
-                                            <option value={mat.id}>{mat.title}</option>
-                                        {/each}
-                                    </select>
+                                    />
                                 </div>
 
                                 {#if state.availableSubMaterials.length > 0}
                                     <div class="space-y-2">
-                                        <label
-                                            for="sub_material_id"
-                                            class="text-[10px] font-bold text-slate-400 uppercase"
-                                            >Sub-Materi</label
-                                        >
-                                        <select
-                                            id="sub_material_id"
+                                        <Select
                                             bind:value={form.sub_material_id}
-                                            class="focus:ring-primary-50 focus:border-primary-500 w-full appearance-none rounded-2xl border-2 border-slate-100 bg-white px-4 py-3 text-sm font-bold transition-all outline-none focus:ring-4"
-                                        >
-                                            <option value="">Pilih Sub-Materi</option>
-                                            {#each state.availableSubMaterials as sub}
-                                                <option value={sub.id}>{sub.title}</option>
-                                            {/each}
-                                        </select>
+                                            label="Sub-Materi"
+                                            placeholder="PILIH SUB MATERI"
+                                            options={state.availableSubMaterials.map((s) => ({
+                                                value: s.id,
+                                                label: s.title,
+                                            }))}
+                                        />
                                     </div>
                                 {/if}
 
@@ -241,14 +242,14 @@
                                         >Algoritma Tipe</span
                                     >
                                     <div class="grid grid-cols-1 gap-3">
-                                        {#each ['radio_button', 'fill_in_the_blank', 'drag_and_drop'] as type}
+                                        {#each typeOptions as option}
                                             <button
                                                 type="button"
-                                                onclick={() => state.setType(type)}
+                                                onclick={() => state.setType(option.value)}
                                                 class={`flex items-center justify-between rounded-2xl border-2 px-4 py-3 text-left text-[10px] font-bold tracking-widest uppercase transition-all
-                                        ${form.question_type === type ? 'border-primary-600 bg-primary-50 text-primary-600' : 'border-slate-100 bg-slate-50 text-slate-400'}`}
+                                        ${form.question_type === option.value ? 'border-primary-600 bg-primary-50 text-primary-600' : 'border-slate-100 bg-slate-50 text-slate-400'}`}
                                             >
-                                                {type.replace(/_/g, ' ')}
+                                                {option.label}
                                             </button>
                                         {/each}
                                     </div>
@@ -260,12 +261,20 @@
                                         >Tingkat Kesulitan</span
                                     >
                                     <div class="space-y-2">
-                                        {#each [{ value: 'beginner', label: 'Mudah', color: 'emerald' }, { value: 'medium', label: 'Sedang', color: 'amber' }, { value: 'hard', label: 'Sulit', color: 'rose' }] as diff}
+                                        {#each difficultyOptions as diff}
                                             <button
                                                 type="button"
                                                 onclick={() => state.setDifficulty(diff.value)}
                                                 class={`w-full rounded-2xl border-2 px-4 py-3 text-left text-[10px] font-bold tracking-widest uppercase transition-all
-                                        ${form.difficulty === diff.value ? `border-${diff.color}-600 bg-${diff.color}-50 text-${diff.color}-600` : 'border-slate-100 bg-slate-50 text-slate-400'}`}
+                                        ${
+                                            form.difficulty === diff.value
+                                                ? diff.color === 'emerald'
+                                                    ? 'border-emerald-600 bg-emerald-50 text-emerald-600'
+                                                    : diff.color === 'amber'
+                                                      ? 'border-amber-600 bg-amber-50 text-amber-600'
+                                                      : 'border-rose-600 bg-rose-50 text-rose-600'
+                                                : 'border-slate-100 bg-slate-50 text-slate-400'
+                                        }`}
                                             >
                                                 {diff.label}
                                             </button>

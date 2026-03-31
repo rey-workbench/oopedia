@@ -2,10 +2,19 @@
 
 namespace App\Rules\Adaptive;
 
+use App\Rules\Adaptive\Concerns\HasDifficultyLevel;
+use App\Rules\Adaptive\Concerns\HasErrorType;
+use App\Rules\Adaptive\Concerns\HasLearningStyle;
+use App\Rules\Adaptive\Concerns\HasScoreCondition;
 use App\Rules\Adaptive\Contracts\AdaptiveRuleInterface;
 
 abstract class BaseAdaptiveRule implements AdaptiveRuleInterface
 {
+    use HasDifficultyLevel;
+    use HasErrorType;
+    use HasLearningStyle;
+    use HasScoreCondition;
+
     protected string $ruleId;
 
     protected string $ruleName;
