@@ -6,7 +6,6 @@ use App\Contracts\Services\DashboardServiceInterface;
 use App\Contracts\Services\LeaderboardServiceInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class DashboardController extends Controller
@@ -14,23 +13,22 @@ class DashboardController extends Controller
     public function __construct(
         protected DashboardServiceInterface $dashboardService,
         protected LeaderboardServiceInterface $leaderboardService,
-    ) {
-    }
+    ) {}
 
     public function index(): Response
     {
-        $data = $this->dashboardService->getDashboardIndexData(Auth::id(), $this->isGuest());
-        $leaderboard = $this->leaderboardService->getLeaderboardData(Auth::id());
+        $data                    = $this->dashboardService->getDashboardIndexData(Auth::id(), $this->isGuest());
+        $leaderboard             = $this->leaderboardService->getLeaderboardData(Auth::id());
         $data['currentUserRank'] = $leaderboard['currentUserRank'];
 
-        return Inertia::render('Mahasiswa/Dashboard/Index', $data);
+        return $this->render('Mahasiswa/Dashboard/Index', $data);
     }
 
     public function inProgress(): Response
     {
         $materialsWithStats = $this->dashboardService->getInProgressData(Auth::id(), $this->isGuest());
 
-        return Inertia::render('Mahasiswa/Dashboard/InProgress/Index', [
+        return $this->render('Mahasiswa/Dashboard/InProgress/Index', [
             'materialsWithStats' => $materialsWithStats,
         ]);
     }
@@ -39,7 +37,7 @@ class DashboardController extends Controller
     {
         $materialsWithStats = $this->dashboardService->getCompletedData(Auth::id(), $this->isGuest());
 
-        return Inertia::render('Mahasiswa/Dashboard/Completed/Index', [
+        return $this->render('Mahasiswa/Dashboard/Completed/Index', [
             'materialsWithStats' => $materialsWithStats,
         ]);
     }
@@ -48,6 +46,6 @@ class DashboardController extends Controller
     {
         $data = $this->leaderboardService->getLeaderboardData(Auth::id());
 
-        return Inertia::render('Mahasiswa/Leaderboard/Index', $data);
+        return $this->render('Mahasiswa/Leaderboard/Index', $data);
     }
 }

@@ -5,59 +5,53 @@ namespace App\Http\Controllers\Admin;
 use App\Contracts\Services\UeqSurveyServiceInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UeqSurveyController extends Controller
 {
-    public function __construct(protected
-        UeqSurveyServiceInterface $ueqService,
-        )
-    {
-    }
+    public function __construct(
+        protected UeqSurveyServiceInterface $ueqService,
+    ) {}
 
     public function index(Request $request): Response
     {
-        $class = $request->input('class');
-
-        $surveys = $this->ueqService->getAllSurveys($class);
-        $classes = $this->ueqService->getDistinctClasses();
+        $class    = $request->input('class');
+        $surveys  = $this->ueqService->getAllSurveys($class);
+        $classes  = $this->ueqService->getDistinctClasses();
         $averages = $this->ueqService->calculateAverages($surveys);
 
-        return Inertia::render('Admin/Ueq/Index', [
-            'surveys' => $surveys,
-            'averages' => $averages,
-            'classes' => $classes,
+        return $this->render('Admin/Ueq/Index', [
+            'surveys'     => $surveys,
+            'averages'    => $averages,
+            'classes'     => $classes,
             'activeClass' => $class,
         ]);
     }
 
-    /**
-     * Export UEQ Survey results filtered by class
-     */
     public function export(Request $request): StreamedResponse
     {
-        $class = $request->input('class');
-
-        // Query data
+        $class   = $request->input('class');
         $surveys = $this->ueqService->getAllSurveys($class);
 
         $headers = [
-            'Content-Type' => 'text/csv',
+            'Content-Type'        => 'text/csv',
             'Content-Disposition' => 'attachment; filename="ueq-survey-results.csv"',
-            'Pragma' => 'no-cache',
-            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires' => '0',
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
         ];
 
-        $callback = function () use ($surveys) {
+        $callback = function () use ($surveys): void {
             $file = fopen('php://output', 'w');
 
-            // Add CSV headers
             fputcsv($file, [
-                'ID', 'NIM', 'Nama Pengguna', 'Email', 'Kelas', 'Tanggal Pengisian',
-                // 26 aspek UEQ
+                'ID',
+                'NIM',
+                'Nama Pengguna',
+                'Email',
+                'Kelas',
+                'Tanggal Pengisian',
                 'Annoying - Enjoyable',
                 'Not Understandable - Understandable',
                 'Creative - Dull',
@@ -84,19 +78,18 @@ class UeqSurveyController extends Controller
                 'Attractive - Unattractive',
                 'Friendly - Unfriendly',
                 'Conservative - Innovative',
-                'Komentar', 'Saran',
+                'Komentar',
+                'Saran',
             ]);
 
-            // Add data rows
             foreach ($surveys as $survey) {
                 fputcsv($file, [
                     $survey->id,
-                    $survey->nim ?? '',
-                    optional($survey->user)->name ?? 'Tidak ada',
+                    $survey->nim                   ?? '',
+                    optional($survey->user)->name  ?? 'Tidak ada',
                     optional($survey->user)->email ?? 'Tidak ada',
-                    $survey->class ?? '',
+                    $survey->class                 ?? '',
                     $survey->created_at->format('d/m/Y H:i'),
-                    // 26 aspek UEQ
                     $survey->annoying_enjoyable,
                     $survey->not_understandable_understandable,
                     $survey->creative_dull,
@@ -123,7 +116,7 @@ class UeqSurveyController extends Controller
                     $survey->attractive_unattractive,
                     $survey->friendly_unfriendly,
                     $survey->conservative_innovative,
-                    $survey->comments ?? '',
+                    $survey->comments    ?? '',
                     $survey->suggestions ?? '',
                 ]);
             }
@@ -137,8 +130,8 @@ class UeqSurveyController extends Controller
     public function show(string $userId): Response
     {
         $survey = $this->ueqService->getStudentDetail($userId);
-        $user = $survey->user;
+        $user   = $survey->user;
 
-        return Inertia::render('Admin/Ueq/Detail/Index', compact('survey', 'user'));
+        return $this->render('Admin/Ueq/Detail/Index', compact('survey', 'user'));
     }
 }

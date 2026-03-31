@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Contracts\Services\AdminDashboardServiceInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class DashboardController extends Controller
@@ -33,7 +32,7 @@ class DashboardController extends Controller
         $popularMaterials = $this->adminDashboardService->getPopularMaterials(5);
         $studentAnalytics = $this->adminDashboardService->getStudentAnalytics();
 
-        return Inertia::render('Admin/Dashboard/Index', compact(
+        return $this->render('Admin/Dashboard/Index', compact(
             'userName',
             'userRole',
             'totalStudents',

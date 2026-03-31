@@ -9,40 +9,37 @@ use App\Http\Requests\SubMaterial\StoreSubMaterialRequest;
 use App\Http\Requests\SubMaterial\UpdateSubMaterialRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class SubMaterialController extends Controller
 {
-    public function __construct(protected
-        SubMaterialServiceInterface $subMaterialService, protected
-        MaterialRepositoryInterface $materialRepo,
-        )
-    {
-    }
+    public function __construct(
+        protected SubMaterialServiceInterface $subMaterialService,
+        protected MaterialRepositoryInterface $materialRepo,
+    ) {}
 
     public function index(string $materialId): Response|RedirectResponse
     {
         $material = $this->materialRepo->find($materialId);
-        if (!$material) {
+        if (! $material) {
             return redirect()->route('admin.materials.index')
                 ->with('error', 'Material tidak ditemukan');
         }
 
         $subMaterials = $this->subMaterialService->getSubMaterialsByMaterial($materialId);
 
-        return Inertia::render('Admin/Materials/Submaterials/Index', compact('material', 'subMaterials'));
+        return $this->render('Admin/Materials/Submaterials/Index', compact('material', 'subMaterials'));
     }
 
     public function create(string $materialId): Response|RedirectResponse
     {
         $material = $this->materialRepo->find($materialId);
-        if (!$material) {
+        if (! $material) {
             return redirect()->route('admin.materials.index')
                 ->with('error', 'Material tidak ditemukan');
         }
 
-        return Inertia::render('Admin/Materials/Submaterials/Create/Index', compact('material'));
+        return $this->render('Admin/Materials/Submaterials/Create/Index', compact('material'));
     }
 
     public function store(StoreSubMaterialRequest $request, string $materialId): RedirectResponse
@@ -55,15 +52,15 @@ class SubMaterialController extends Controller
 
     public function edit(string $materialId, string $submaterialId): Response|RedirectResponse
     {
-        $material = $this->materialRepo->find($materialId);
+        $material    = $this->materialRepo->find($materialId);
         $submaterial = $this->subMaterialService->getSubMaterialById($submaterialId);
 
-        if (!$material || !$submaterial) {
+        if (! $material || ! $submaterial) {
             return redirect()->route('admin.materials.index')
                 ->with('error', 'Material atau sub-material tidak ditemukan');
         }
 
-        return Inertia::render('Admin/Materials/Submaterials/Edit/Index', compact('material', 'submaterial'));
+        return $this->render('Admin/Materials/Submaterials/Edit/Index', compact('material', 'submaterial'));
     }
 
     public function update(UpdateSubMaterialRequest $request, string $materialId, string $submaterialId): RedirectResponse

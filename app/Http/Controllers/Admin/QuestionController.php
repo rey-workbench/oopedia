@@ -10,7 +10,6 @@ use App\Http\Requests\Question\StoreQuestionRequest;
 use App\Http\Requests\Question\UpdateQuestionRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class QuestionController extends Controller
@@ -30,7 +29,7 @@ class QuestionController extends Controller
         $material  = $materialId ? $this->materialRepo->find($materialId) : null;
         $questions = $this->questionService->getFilteredQuestions($search, $difficulty, $materialId);
 
-        return Inertia::render('Admin/Questions/Index', [
+        return $this->render('Admin/Questions/Index', [
             'questions'  => $questions,
             'material'   => $material,
             'search'     => $search,
@@ -58,7 +57,7 @@ class QuestionController extends Controller
             $materials = $this->materialService->getAllMaterials();
         }
 
-        return Inertia::render('Admin/Questions/Create/Index', compact('materials', 'material', 'subMaterials'));
+        return $this->render('Admin/Questions/Create/Index', compact('materials', 'material', 'subMaterials'));
     }
 
     public function store(StoreQuestionRequest $request): RedirectResponse
@@ -110,7 +109,7 @@ class QuestionController extends Controller
         $material     = $this->materialRepo->find($question->material_id);
         $subMaterials = $material ? $material->subMaterials()->orderBy('order')->get() : collect();
 
-        return Inertia::render('Admin/Questions/Edit/Index', compact('question', 'materials', 'material', 'subMaterials'));
+        return $this->render('Admin/Questions/Edit/Index', compact('question', 'materials', 'material', 'subMaterials'));
     }
 
     public function update(UpdateQuestionRequest $request, string $questionId): RedirectResponse

@@ -10,7 +10,6 @@ use App\Models\StudentState;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class MaterialController extends Controller
@@ -20,11 +19,15 @@ class MaterialController extends Controller
         protected GuestProgressServiceInterface $guestProgressService,
     ) {}
 
-    public function showSubMaterial(string $materialId, string $subMaterialId): Response
+    public function index(): Response
     {
-        $data = $this->materialViewService->getSubMaterialDetail($materialId, $subMaterialId, $this->isGuest());
+        $isGuest   = $this->isGuest();
+        $materials = $this->materialViewService->getMaterialsList(Auth::id(), $isGuest);
 
-        return Inertia::render('Mahasiswa/SubMaterials/Show/Index', $data);
+        return $this->render('Mahasiswa/Materials/Index', [
+            'materials' => $materials,
+            'isGuest'   => $isGuest,
+        ]);
     }
 
     public function show(string $id): RedirectResponse|Response
@@ -32,7 +35,6 @@ class MaterialController extends Controller
         $isGuest = $this->isGuest();
         $userId  = Auth::id();
 
-        // Check if material is locked
         if ($this->isMaterialLocked($id, $userId, $isGuest)) {
             return redirect()->route('mahasiswa.materials.index')
                 ->with('error', 'Materi ini masih terkunci. Selesaikan materi sebelumnya!');
@@ -40,18 +42,14 @@ class MaterialController extends Controller
 
         $data = $this->materialViewService->getMaterialDetail($id, $userId, $isGuest);
 
-        return Inertia::render('Mahasiswa/Materials/Show/Index', $data);
+        return $this->render('Mahasiswa/Materials/Show/Index', $data);
     }
 
-    public function index(): Response
+    public function showSubMaterial(string $materialId, string $subMaterialId): Response
     {
-        $isGuest   = $this->isGuest();
-        $materials = $this->materialViewService->getMaterialsList(Auth::id(), $isGuest);
+        $data = $this->materialViewService->getSubMaterialDetail($materialId, $subMaterialId, $this->isGuest());
 
-        return Inertia::render('Mahasiswa/Materials/Index', [
-            'materials' => $materials,
-            'isGuest'   => $isGuest,
-        ]);
+        return $this->render('Mahasiswa/SubMaterials/Show/Index', $data);
     }
 
     public function reset(string $id, Request $request): RedirectResponse
@@ -66,9 +64,6 @@ class MaterialController extends Controller
             ->with('success', 'Progress direset. Anda dapat mengerjakan soal kembali.');
     }
 
-    /**
-     * Check if a material is locked for the user.
-     */
     private function isMaterialLocked(string $materialId, ?string $userId, bool $isGuest): bool
     {
         $material = Material::where('id', $materialId)->first();
@@ -78,15 +73,13 @@ class MaterialController extends Controller
         }
 
         if ($isGuest) {
-            // For guests, check if material is in first half
-            $allMaterials   = Material::orderBy('created_at', 'asc')->get();
-            $totalMaterials = $allMaterials->count();
-            $materialIndex  = $allMaterials->search(fn ($m) => $m->id === $materialId);
+            $allMaterials    = Material::orderBy('created_at', 'asc')->get();
+            $totalMaterials  = $allMaterials->count();
+            $materialIndex   = $allMaterials->search(fn ($m) => $m->id === $materialId);
 
             return $materialIndex >= ceil($totalMaterials / 2);
         }
 
-        // For authenticated users, check module-based locking
         $studentState    = StudentState::where('user_id', $userId)->first();
         $unlockedModules = $studentState?->learning_profile['unlocked_modules'] ?? [];
 

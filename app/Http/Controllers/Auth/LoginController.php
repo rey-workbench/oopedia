@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Contracts\Services\UserServiceInterface;
 use App\Contracts\Services\GuestProgressServiceInterface;
+use App\Contracts\Services\UserServiceInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
@@ -11,26 +11,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Redirect;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class LoginController extends Controller
 {
-    public function __construct(protected
-        UserServiceInterface $userService, protected
-        GuestProgressServiceInterface $guestProgressService,
-        )
-    {
-    }
+    public function __construct(
+        protected UserServiceInterface $userService,
+        protected GuestProgressServiceInterface $guestProgressService,
+    ) {}
 
     public function create(): Response
     {
-        return Inertia::render('Auth/Login/Index');
+        return $this->render('Auth/Login/Index');
     }
 
     public function store(LoginRequest $request): RedirectResponse
     {
-        // Handle Guest Login
         if ($request->has('is_guest')) {
             if (Auth::check()) {
                 Auth::logout();
@@ -43,10 +39,9 @@ class LoginController extends Controller
             return Redirect::route('mahasiswa.materials.index');
         }
 
-        // Handle Standard Login
         $credentials = $request->only('email', 'password');
 
-        if (!Auth::attempt($credentials)) {
+        if (! Auth::attempt($credentials)) {
             return back()->withErrors([
                 'email' => 'Email atau password salah',
             ])->onlyInput('email');
@@ -56,23 +51,22 @@ class LoginController extends Controller
         $this->guestProgressService->clearAllProgress();
         $user = $this->userService->getUserById(Auth::id());
 
-        $clearGuest = Cookie::forget('is_guest');
+        $clearGuest    = Cookie::forget('is_guest');
         $clearProgress = Cookie::forget('guest_progress');
 
         return match (true) {
-                $user->isSuperAdmin() => redirect()->route('admin.dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
-                $user->isDosen() && $user->is_approved => redirect()->route('admin.dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
-                $user->isDosen() => redirect()->route('admin.pending-approval')->withCookie($clearGuest)->withCookie($clearProgress),
-                $user->isMahasiswa() => redirect()->route('mahasiswa.dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
-                default => redirect()->route('mahasiswa.materials.index')->withCookie($clearGuest)->withCookie($clearProgress),
-            };
+            $user->isSuperAdmin()                  => redirect()->route('admin.dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
+            $user->isDosen() && $user->is_approved => redirect()->route('admin.dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
+            $user->isDosen()                       => redirect()->route('admin.pending-approval')->withCookie($clearGuest)->withCookie($clearProgress),
+            $user->isMahasiswa()                   => redirect()->route('mahasiswa.dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
+            default                                => redirect()->route('mahasiswa.materials.index')->withCookie($clearGuest)->withCookie($clearProgress),
+        };
     }
 
     public function logout(Request $request): RedirectResponse
     {
         Auth::logout();
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return Redirect::to('/');

@@ -6,7 +6,6 @@ use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class CertificateController extends Controller
@@ -31,14 +30,14 @@ class CertificateController extends Controller
                 return [
                     'material_id'    => $materialId,
                     'material_title' => $material?->title ?? 'Object-Oriented Programming',
-                    'type'           => $type, // gold | silver | bronze
+                    'type'           => $type,
                     'issued_at'      => null,
                 ];
             })
             ->values()
             ->toArray();
 
-        return Inertia::render('Mahasiswa/Certificates/Index', [
+        return $this->render('Mahasiswa/Certificates/Index', [
             'certifications' => $certifications,
         ]);
     }

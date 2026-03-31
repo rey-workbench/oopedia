@@ -5,18 +5,20 @@ namespace App\Http\Controllers\Admin;
 use App\Contracts\Repositories\RoleRepositoryInterface;
 use App\Contracts\Services\UserServiceInterface;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\ImportAdminRequest;
 use App\Http\Requests\User\StoreAdminRequest;
 use App\Http\Requests\User\UpdateAdminRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminUserController extends Controller
 {
-    public function __construct(protected UserServiceInterface $userService, protected RoleRepositoryInterface $roleRepo,
+    public function __construct(
+        protected UserServiceInterface $userService,
+        protected RoleRepositoryInterface $roleRepo,
     ) {}
 
     public function index(Request $request): Response
@@ -25,14 +27,14 @@ class AdminUserController extends Controller
         $users              = $this->userService->getAdmins($search);
         $pendingAdminsCount = $this->userService->getPendingAdminsCount();
 
-        return Inertia::render('Admin/Users/Index', compact('users', 'pendingAdminsCount'));
+        return $this->render('Admin/Users/Index', compact('users', 'pendingAdminsCount'));
     }
 
     public function create(): Response
     {
         $roles = $this->roleRepo->all();
 
-        return Inertia::render('Admin/Users/Create/Index', compact('roles'));
+        return $this->render('Admin/Users/Create/Index', compact('roles'));
     }
 
     public function store(StoreAdminRequest $request): RedirectResponse
@@ -57,7 +59,7 @@ class AdminUserController extends Controller
                 ->with('error', 'User bukan admin');
         }
 
-        return Inertia::render('Admin/Users/Edit/Index', compact('user'));
+        return $this->render('Admin/Users/Edit/Index', compact('user'));
     }
 
     public function update(UpdateAdminRequest $request, string $userId): RedirectResponse
@@ -98,7 +100,7 @@ class AdminUserController extends Controller
                 return redirect()->route('admin.dashboard');
             }
 
-            return Inertia::render('Admin/Users/PendingApproval/Index');
+            return $this->render('Admin/Users/PendingApproval/Index');
         }
 
         if ($user->isDosen() && $user->is_approved) {
@@ -112,7 +114,7 @@ class AdminUserController extends Controller
     {
         $pendingAdmins = $this->userService->getPendingAdmins();
 
-        return Inertia::render('Admin/Users/Pending/Index', compact('pendingAdmins'));
+        return $this->render('Admin/Users/Pending/Index', compact('pendingAdmins'));
     }
 
     public function approveAdmin(string $userId): RedirectResponse
@@ -133,7 +135,7 @@ class AdminUserController extends Controller
 
     public function showImportForm(): Response
     {
-        return Inertia::render('Admin/Users/Import/Index');
+        return $this->render('Admin/Users/Import/Index');
     }
 
     public function processImport(ImportAdminRequest $request): RedirectResponse

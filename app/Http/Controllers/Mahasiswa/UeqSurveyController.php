@@ -7,15 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Survey\StoreUeqSurveyRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class UeqSurveyController extends Controller
 {
-    public function __construct(protected
-        UeqSurveyServiceInterface $ueqService,
-        )
-    {
+    public function __construct(
+        protected UeqSurveyServiceInterface $ueqService,
+    ) {
     }
 
     public function create(): Response|RedirectResponse
@@ -26,7 +24,7 @@ class UeqSurveyController extends Controller
 
         $aspects = $this->getAspects();
 
-        return Inertia::render('Mahasiswa/Ueq/Create/Index', compact('aspects'));
+        return $this->render('Mahasiswa/Ueq/Create/Index', compact('aspects'));
     }
 
     public function store(StoreUeqSurveyRequest $request): RedirectResponse
@@ -44,10 +42,10 @@ class UeqSurveyController extends Controller
 
     public function show(): Response
     {
-        return Inertia::render('Mahasiswa/Ueq/ThankYou/Index');
+        return $this->render('Mahasiswa/Ueq/ThankYou/Index');
     }
 
-    /** @return array<string, array<string, string>> */
+    /** @return array<int, array<string, string>> */
     private function getAspects(): array
     {
         return [

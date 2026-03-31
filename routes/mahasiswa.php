@@ -48,5 +48,6 @@ Route::middleware(['access:guest'])->prefix('mahasiswa')->name('mahasiswa.')->gr
     Route::get('materials/{material}/questions/levels', [MaterialQuestionController::class, 'levels'])->name('materials.questions.levels');
     Route::get('materials/{material}/questions/review/{difficulty?}', [MaterialQuestionController::class, 'review'])->name('materials.questions.review');
     Route::post('materials/{material}/questions/{question}/check', [MaterialQuestionController::class, 'checkAnswer'])->name('materials.questions.check');
+    Route::get('materials/{material}/adaptive/target-difficulty', [MaterialQuestionController::class, 'getTargetDifficulty'])->name('adaptive.target-difficulty');
     Route::get('materials/{material}/questions/{question}/attempts', [MaterialQuestionController::class, 'getAttempts'])->name('materials.questions.attempts');
 });
