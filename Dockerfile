@@ -28,7 +28,6 @@ RUN apt-get update && apt-get install -y \
         pdo \
         pdo_mysql \
         mysqli \
-        mysql \
         zip \
         opcache \
         pcntl \
