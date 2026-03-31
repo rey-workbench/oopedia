@@ -2,7 +2,7 @@
     import { Link, page, router } from '@inertiajs/svelte';
     import SidebarLink from '@/components/navigation/SidebarLink.svelte';
     import { ROUTES } from '@/utils/route';
-    import { sidebarState, closeSidebar } from '@/states/UI';
+    import { sidebarState, closeSidebar } from '@/states/ui';
     import { isAdmin, ROLE } from '@/utils/roles';
     import {
         LayoutDashboard,

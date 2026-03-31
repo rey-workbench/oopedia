@@ -3,7 +3,7 @@
     import { onMount } from 'svelte';
     import { Sidebar, Navbar } from '@/components/navigation';
     import { Alert } from '@/components/ui';
-    import { sidebarState, initSidebarResponsive } from '@/states/UI';
+    import { sidebarState, initSidebarResponsive } from '@/states/ui';
     import { ROUTES } from '@/utils/route';
     import type { SharedProps } from '@/types/inertia';
 
