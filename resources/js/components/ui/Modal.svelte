@@ -64,7 +64,7 @@
 
 {#if show}
     <div
-        class="fixed inset-0 z-[999] flex items-center justify-center overflow-y-auto px-4 py-6 sm:px-0"
+        class="fixed inset-0 z-999 flex items-center justify-center overflow-y-auto px-4 py-6 sm:px-0"
         transition:fade={{ duration: 200 }}
     >
         <div
@@ -82,7 +82,7 @@
             bind:this={dialogEl}
             role="dialog"
             aria-modal="true"
-            class={`mb-6 transform overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all sm:mx-auto sm:w-full ${maxWidthClasses[maxWidth]}`}
+            class={`mb-6 transform overflow-hidden rounded-3xl bg-white shadow-2xl transition-all sm:mx-auto sm:w-full ${maxWidthClasses[maxWidth]}`}
             transition:scale={{ duration: 200, start: 0.95 }}
         >
             {@render children?.()}

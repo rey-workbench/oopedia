@@ -62,12 +62,12 @@
             aria-describedby={error ? errorId : undefined}
             {...rest}
             class={`
-                w-full rounded-[1.5rem] border-2 px-6 py-4 text-sm font-bold transition-all outline-none resize-none
+                w-full rounded-xl border-2 px-6 py-4 text-sm font-bold transition-all outline-none resize-none
                 ${disabled ? 'cursor-not-allowed border-slate-50 bg-slate-50 text-slate-400' : 'bg-white'}
                 ${
                     error
                         ? 'border-rose-100 bg-rose-50/30 text-rose-900 focus:border-rose-500 focus:ring-4 focus:ring-rose-50'
-                        : 'hover:border-primary-200 focus:border-primary-600 focus:ring-primary-50 border-slate-50 border-slate-100 focus:ring-8'
+                        : 'hover:border-primary-200 focus:border-primary-600 focus:ring-primary-50 border-slate-50 focus:ring-8'
                 }
             `}
         ></textarea>
