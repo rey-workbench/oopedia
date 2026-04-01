@@ -98,7 +98,7 @@
             aria-expanded={open}
             aria-describedby={error ? errorId : undefined}
             class={`
-                flex w-full items-center justify-between rounded-[1.5rem] border-2 font-bold tracking-widest uppercase transition-all outline-none
+                flex w-full items-center justify-between rounded-x border-2 font-bold tracking-widest uppercase transition-all outline-none
                 ${sizes[size]}
                 ${
                     disabled

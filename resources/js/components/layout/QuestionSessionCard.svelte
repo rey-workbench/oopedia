@@ -125,7 +125,7 @@
                 </button>
                 <div class="flex items-start gap-4 pr-8">
                     <div
-                        class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-amber-400 shadow-lg shadow-amber-200"
+                        class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-400 shadow-lg shadow-amber-200"
                     >
                         <Lightbulb size={24} class="fill-white text-white" />
                     </div>

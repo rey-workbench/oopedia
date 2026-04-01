@@ -56,7 +56,7 @@
 </script>
 
 <div
-    class="fixed z-[9999] flex w-full max-w-sm flex-col gap-3 {positionClasses[
+    class="fixed z-9999 flex w-full max-w-sm flex-col gap-3 {positionClasses[
         position
     ]} pointer-events-none"
 >

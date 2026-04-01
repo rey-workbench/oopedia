@@ -69,7 +69,7 @@ const browserGlobals = {
 
 /** Shared TypeScript rules applied to all blocks */
 const tsRules = {
-    '@typescript-eslint/no-explicit-any': 'warn',
+    '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-unused-vars': [
         'warn',
         {

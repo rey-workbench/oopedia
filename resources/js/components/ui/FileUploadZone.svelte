@@ -27,7 +27,7 @@
             class="hover:border-primary-400 hover:bg-primary-50/50 flex flex-col items-center justify-center gap-6 rounded-[2rem] border-2 border-dashed border-slate-200 p-16 transition-all group-hover:shadow-inner"
         >
             <div
-                class="group-hover:bg-primary-100 group-hover:text-primary-600 flex h-16 w-16 items-center justify-center rounded-[1.5rem] bg-slate-100 text-slate-300 transition-all"
+                class="group-hover:bg-primary-100 group-hover:text-primary-600 flex h-16 w-16 items-center justify-center rounded-xl bg-slate-100 text-slate-300 transition-all"
             >
                 <FileSpreadsheet size={32} />
             </div>

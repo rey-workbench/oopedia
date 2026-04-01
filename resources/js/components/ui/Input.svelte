@@ -74,7 +74,7 @@
             aria-describedby={error ? errorId : undefined}
             {...rest}
             class={`
-        w-full rounded-[1.5rem] border-2 px-6 py-4 text-sm font-bold transition-all outline-none
+        w-full rounded-xl border-2 px-6 py-4 text-sm font-bold transition-all outline-none
         ${disabled ? 'cursor-not-allowed border-slate-50 bg-slate-50 text-slate-400' : ''}
         ${
             error
