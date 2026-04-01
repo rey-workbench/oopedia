@@ -129,9 +129,7 @@ class UserService implements UserServiceInterface
     /** @return array<string, mixed> */
     public function importAdminsFromFile(UploadedFile $file): array
     {
-        return $this->importUsersFromCsv($file, function (array $rowData) {
-            $this->createAdmin($rowData);
-        });
+        return $this->importUsersFromCsv($file, fn (array $rowData) => $this->createAdmin($rowData));
     }
 
     public function generateImportTemplate(): array

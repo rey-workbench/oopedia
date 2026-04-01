@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class ProgressRepository implements ProgressRepositoryInterface
 {
-    /** @return array<string, mixed> */
+    /** @return Collection<int, mixed> */
     public function getUserProgressStats(?string $userId): Collection
     {
         if (is_null($userId)) {
@@ -44,7 +44,6 @@ class ProgressRepository implements ProgressRepositoryInterface
             ->get();
     }
 
-    /** @return \Illuminate\Support\Collection<int, mixed> */
     public function getRecentActivities(?string $userId, int $limit = 5): \Illuminate\Support\Collection
     {
         if (is_null($userId)) {
@@ -66,14 +65,14 @@ class ProgressRepository implements ProgressRepositoryInterface
             ->groupBy('questions.material_id')
             ->pluck('count', 'material_id');
 
-        return $attempts->map(function ($attempt) use ($userId, $correctCountsByMaterial) {
+        return $attempts->map(function ($attempt) use ($correctCountsByMaterial) {
             $materialId = $attempt->question->material_id ?? 0;
             $difficulty = $attempt->question->difficulty;
 
             $previousHardCount = 0;
             if ($difficulty === 'hard') {
                 $previousHardCount = QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
-                    ->where('quiz_attempts.user_id', $userId)
+                    ->where('quiz_attempts.user_id', $attempt->user_id)
                     ->where('questions.material_id', $materialId)
                     ->where('questions.difficulty', 'hard')
                     ->where('quiz_attempts.is_correct', true)
@@ -85,7 +84,7 @@ class ProgressRepository implements ProgressRepositoryInterface
             return (object) [
                 'material_title'      => $attempt->question->material->title ?? 'Unknown',
                 'material_id'         => $materialId,
-                'difficulty'          => $attempt->question->difficulty,
+                'difficulty'          => $difficulty,
                 'created_at'          => $attempt->created_at,
                 'is_correct'          => $attempt->is_correct,
                 'previous_hard_count' => $previousHardCount,
@@ -94,11 +93,11 @@ class ProgressRepository implements ProgressRepositoryInterface
         });
     }
 
-    /** @return array<string, mixed> */
-    public function getDetailedUserProgress(?string $userId): array
+    /** @return Collection<int, mixed> */
+    public function getDetailedUserProgress(?string $userId): Collection
     {
         if (is_null($userId)) {
-            return [];
+            return new Collection;
         }
 
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
@@ -196,25 +195,25 @@ class ProgressRepository implements ProgressRepositoryInterface
 
         $state = StudentState::firstOrNew(['user_id' => $userId]);
 
-        $gamification                   = $state->gamification_data     ?? [];
-        $gamification['global_xp']      = $attributes['global_xp']      ?? ($gamification['global_xp'] ?? 0);
-        $gamification['current_level']  = $attributes['current_level']  ?? ($gamification['current_level'] ?? 'Pemula');
-        $gamification['current_streak'] = $attributes['current_streak'] ?? ($gamification['current_streak'] ?? 0);
-        $gamification['max_streak']     = $attributes['max_streak']     ?? ($gamification['max_streak'] ?? 0);
-        $state->gamification_data       = $gamification;
+        $state->gamification_data = array_merge($state->gamification_data ?? [], [
+            'global_xp'      => $attributes['global_xp']      ?? ($state->gamification_data['global_xp']      ?? 0),
+            'current_level'  => $attributes['current_level']  ?? ($state->gamification_data['current_level']  ?? 'Pemula'),
+            'current_streak' => $attributes['current_streak'] ?? ($state->gamification_data['current_streak'] ?? 0),
+            'max_streak'     => $attributes['max_streak']     ?? ($state->gamification_data['max_streak']     ?? 0),
+        ]);
 
-        $metrics                             = $state->performance_metrics             ?? [];
-        $metrics['total_questions_answered'] = $attributes['total_questions_answered'] ?? ($metrics['total_questions_answered'] ?? 0);
-        $metrics['correct_count']            = $attributes['correct_count']            ?? ($metrics['correct_count'] ?? 0);
-        $metrics['wrong_count']              = $attributes['wrong_count']              ?? ($metrics['wrong_count'] ?? 0);
-        $metrics['wrong_streak']             = $attributes['wrong_streak']             ?? ($metrics['wrong_streak'] ?? 0);
-        $metrics['hints_used_count']         = $attributes['hints_used_count']         ?? ($metrics['hints_used_count'] ?? 0);
-        $metrics['hints_available']          = $attributes['hints_available']          ?? ($metrics['hints_available'] ?? 3);
-        $state->performance_metrics          = $metrics;
+        $state->performance_metrics = array_merge($state->performance_metrics ?? [], [
+            'total_questions_answered' => $attributes['total_questions_answered'] ?? ($state->performance_metrics['total_questions_answered'] ?? 0),
+            'correct_count'            => $attributes['correct_count']            ?? ($state->performance_metrics['correct_count']            ?? 0),
+            'wrong_count'              => $attributes['wrong_count']              ?? ($state->performance_metrics['wrong_count']              ?? 0),
+            'wrong_streak'             => $attributes['wrong_streak']             ?? ($state->performance_metrics['wrong_streak']             ?? 0),
+            'hints_used_count'         => $attributes['hints_used_count']         ?? ($state->performance_metrics['hints_used_count']         ?? 0),
+            'hints_available'          => $attributes['hints_available']          ?? ($state->performance_metrics['hints_available']          ?? 3),
+        ]);
 
-        $profile                   = $state->learning_profile      ?? [];
-        $profile['learning_style'] = $attributes['learning_style'] ?? ($profile['learning_style'] ?? 'visual');
-        $state->learning_profile   = $profile;
+        $state->learning_profile = array_merge($state->learning_profile ?? [], [
+            'learning_style' => $attributes['learning_style'] ?? ($state->learning_profile['learning_style'] ?? 'visual'),
+        ]);
 
         $state->last_active_at = now();
         $state->save();

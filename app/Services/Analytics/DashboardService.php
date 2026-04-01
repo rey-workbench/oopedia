@@ -29,124 +29,99 @@ class DashboardService implements DashboardServiceInterface
     /** @return array<string, mixed> */
     public function getDashboardIndexData(string $userId, bool $isGuest): array
     {
-        // Cache user specific dashboard data for 5 minutes (300 seconds)
         return Cache::remember("dashboard_index_{$userId}_{$isGuest}", 300, function () use ($userId, $isGuest) {
-            // Get all materials
-            $allMaterials   = $this->materialRepo->getAllWithQuestions();
-            $totalMaterials = $allMaterials->count();
+            $allMaterials    = $this->materialRepo->getAllWithQuestions();
+            $totalMaterials  = $allMaterials->count();
+            $progressStats   = $this->progressRepo->getUserProgressStats($userId);
 
-            // Variables to store configured question counts
-            $configuredTotalQuestions  = 0;
-            $configuredEasyQuestions   = 0;
-            $configuredMediumQuestions = 0;
-            $configuredHardQuestions   = 0;
+            $configuredCounts = $this->calculateConfiguredCounts($allMaterials, $isGuest);
 
-            // Calculate configured question counts
-            foreach ($allMaterials as $material) {
-                $counts = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest);
-                $configuredEasyQuestions   += $counts['easy'];
-                $configuredMediumQuestions += $counts['medium'];
-                $configuredHardQuestions   += $counts['hard'];
-            }
+            $materials = $allMaterials->map(function ($material) use ($progressStats, $isGuest) {
+                $totalQuestions     = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest)['total'];
+                $materialProgress   = $progressStats->firstWhere('material_id', $material->id);
+                $correctAnswers     = $materialProgress ? $materialProgress->correct_answers : 0;
+                $progressPercentage = ProgressHelper::calculateProgressPercentage($correctAnswers, $totalQuestions);
 
-            $configuredTotalQuestions = $configuredEasyQuestions + $configuredMediumQuestions + $configuredHardQuestions;
+                return (object) [
+                    'id'                  => $material->id,
+                    'title'               => $material->title,
+                    'description'         => $material->description ?? '',
+                    'progress_percentage' => $progressPercentage,
+                    'total_questions'     => $totalQuestions,
+                    'completed_questions' => $correctAnswers,
+                ];
+            });
 
-            // Get progress statistics
-            $progressStats = $this->progressRepo->getUserProgressStats($userId);
+            $recentActivities = $this->progressRepo->getRecentActivities($userId, 10)
+                ->map(fn ($activity) => $this->addActivityType($activity))
+                ->pipe(fn ($activities) => $this->deduplicateActivities($activities, 5));
 
-            // Calculate material statistics
-            $completedMaterials    = 0;
-            $inProgressMaterials   = 0;
-            $totalMaterialProgress = 0;
-
-            // Calculate question statistics
-            $totalAnsweredQuestions = 0;
-            $totalCorrectQuestions  = 0;
-
-            $materials = $allMaterials->map(
-                function ($material) use ($progressStats, $isGuest) {
-                    // Calculate total questions (all available for logged-in, limited for guests)
-                    $totalQuestions = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest)['total'];
-
-                    $materialProgress = $progressStats->firstWhere('material_id', $material->id);
-                    $correctAnswers   = $materialProgress ? $materialProgress->correct_answers : 0;
-
-                    $progressPercentage = ProgressHelper::calculateProgressPercentage($correctAnswers, $totalQuestions);
-
-                    return (object) [
-                        'id'                  => $material->id,
-                        'title'               => $material->title,
-                        'description'         => $material->description ?? '',
-                        'progress_percentage' => $progressPercentage,
-                        'total_questions'     => $totalQuestions,
-                        'completed_questions' => $correctAnswers,
-                    ];
-                },
-            );
-
-            // Calculate overall progress percentages
-            $totalCorrectQuestions = $progressStats->sum('correct_answers');
-
-            $materialProgressPercentage = ProgressHelper::calculateProgressPercentage($completedMaterials, $totalMaterials);
-            $questionProgressPercentage = ProgressHelper::calculateProgressPercentage($totalCorrectQuestions, $configuredTotalQuestions);
-
-            // Get recent activities
-            $recentActivities = $this->progressRepo->getRecentActivities($userId, 10);
-
-            // Transform recent activities to add type
-            $recentActivities = $recentActivities->map(
-                function ($activity) {
-                    $activity->type = $this->determineActivityType($activity);
-
-                    return $activity;
-                },
-            );
-
-            // Deduplicate milestones and achievements by material to prevent spam
-            $seenMilestones   = [];
-            $seenAchievements = [];
-            $recentActivities = $recentActivities->filter(
-                function ($activity) use (&$seenMilestones, &$seenAchievements) {
-                    if ($activity->type === 'milestone') {
-                        $key = $activity->material_id . '_milestone';
-                        if (in_array($key, $seenMilestones)) {
-                            return false; // Skip duplicate milestone for same material
-                        }
-                        $seenMilestones[] = $key;
-                    } elseif ($activity->type === 'achievement') {
-                        $key = $activity->material_id . '_achievement';
-                        if (in_array($key, $seenAchievements)) {
-                            return false; // Skip duplicate achievement for same material
-                        }
-                        $seenAchievements[] = $key;
-                    }
-
-                    return true;
-                },
-            )->take(5)->values(); // Take only 5 after deduplication
-
-            // Get student state for certifications and badges
             $studentState   = StudentState::find($userId, ['*']);
-            $certifications = $studentState ? ($studentState->learning_profile['certifications'] ?? []) : [];
+            $certifications = $studentState?->learning_profile['certifications'] ?? [];
 
             return [
                 'totalMaterials'             => $totalMaterials,
-                'totalQuestions'             => $configuredTotalQuestions,
-                'easyQuestions'              => $configuredEasyQuestions,
-                'mediumQuestions'            => $configuredMediumQuestions,
-                'hardQuestions'              => $configuredHardQuestions,
-                'materialProgressPercentage' => $materialProgressPercentage,
-                'questionProgressPercentage' => $questionProgressPercentage,
-                'completedMaterials'         => $completedMaterials,
-                'inProgressMaterials'        => $inProgressMaterials,
-                'totalMaterialProgress'      => $totalMaterialProgress,
-                'totalAnsweredQuestions'     => $totalAnsweredQuestions,
-                'totalCorrectQuestions'      => $totalCorrectQuestions,
+                'totalQuestions'             => $configuredCounts['total'],
+                'easyQuestions'              => $configuredCounts['easy'],
+                'mediumQuestions'            => $configuredCounts['medium'],
+                'hardQuestions'              => $configuredCounts['hard'],
+                'materialProgressPercentage' => 0,
+                'questionProgressPercentage' => ProgressHelper::calculateProgressPercentage(
+                    $progressStats->sum('correct_answers'),
+                    $configuredCounts['total'],
+                ),
+                'completedMaterials'         => 0,
+                'inProgressMaterials'        => 0,
+                'totalMaterialProgress'      => 0,
+                'totalAnsweredQuestions'     => 0,
+                'totalCorrectQuestions'      => $progressStats->sum('correct_answers'),
                 'recentActivities'           => $recentActivities,
                 'allMaterials'               => $materials,
                 'certifications'             => $certifications,
             ];
         });
+    }
+
+    /** @return array<string, int> */
+    protected function calculateConfiguredCounts(Collection $materials, bool $isGuest): array
+    {
+        $counts = ['easy' => 0, 'medium' => 0, 'hard' => 0, 'total' => 0];
+
+        foreach ($materials as $material) {
+            $materialCounts = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest);
+            $counts['easy']   += $materialCounts['easy'];
+            $counts['medium'] += $materialCounts['medium'];
+            $counts['hard']   += $materialCounts['hard'];
+            $counts['total']  += $materialCounts['total'];
+        }
+
+        return $counts;
+    }
+
+    protected function addActivityType($activity): object
+    {
+        $activity->type = match (true) {
+            $activity->total_correct >= 5                                                                     => 'achievement',
+            $activity->difficulty === 'hard' && $activity->is_correct && $activity->previous_hard_count === 0 => 'milestone',
+            default                                                                                           => 'progress',
+        };
+
+        return $activity;
+    }
+
+    protected function deduplicateActivities($activities, int $limit): \Illuminate\Support\Collection
+    {
+        $seen = [];
+
+        return $activities->filter(function ($activity) use (&$seen) {
+            $key = $activity->material_id . '_' . $activity->type;
+            if (in_array($key, $seen)) {
+                return false;
+            }
+            $seen[] = $key;
+
+            return true;
+        })->take($limit)->values();
     }
 
     /** @return array<int, array<string, mixed>> */
@@ -294,21 +269,5 @@ class DashboardService implements DashboardServiceInterface
                 ],
             ];
         })->values()->all();
-    }
-
-    protected function determineActivityType($activity)
-    {
-        // Achievement: completing 5 or more questions in a material
-        if ($activity->total_correct >= 5) {
-            return 'achievement';
-        }
-
-        // Milestone: FIRST TIME completing a hard question in this material
-        if ($activity->difficulty === 'hard' && $activity->is_correct && $activity->previous_hard_count === 0) {
-            return 'milestone';
-        }
-
-        // Regular progress
-        return 'progress';
     }
 }

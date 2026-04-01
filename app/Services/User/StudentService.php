@@ -175,9 +175,7 @@ class StudentService implements StudentServiceInterface
     /** @return array<string, mixed> */
     public function importStudentsFromFile(UploadedFile $file): array
     {
-        return $this->importUsersFromCsv($file, function (array $rowData) {
-            $this->createStudent($rowData);
-        });
+        return $this->importUsersFromCsv($file, fn (array $rowData) => $this->createStudent($rowData));
     }
 
     /** @return array<string, mixed> */

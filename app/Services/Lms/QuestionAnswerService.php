@@ -24,110 +24,34 @@ class QuestionAnswerService implements QuestionAnswerServiceInterface
     /** @return array<string, mixed> */
     public function checkAnswer(array $data, string $userId, bool $isGuest): array
     {
-        $question           = $this->questionRepo->find($data['question_id']);
-        $isCorrect          = false;
-        $correctAnswerText  = null;
-        $selectedAnswerText = null;
-        $explanation        = null;
+        $question = $this->questionRepo->find($data['question_id']);
 
-        // Check answer based on question type
-        $isCorrect      = $this->determineCorrectness($question, $data);
-        $correctAnswers = $question->answers()->where('is_correct', true)->get();
+        $isCorrect         = $this->determineCorrectness($question, $data);
+        $correctAnswers    = $question->answers()->where('is_correct', true)->get();
+        $correctAnswerText = $correctAnswers->first()->answer_text ?? null;
+        $explanation       = $correctAnswers->first()->explanation ?? null;
 
-        if ($question->question_type === 'fill_in_the_blank') {
-            $selectedAnswerText = $data['fill_in_the_blank_answer']     ?? '';
-            $correctAnswerText  = $correctAnswers->first()->answer_text ?? null;
-        } else {
-            // Multiple choice / Radio button
-            if (! isset($data['answer']) && $question->question_type !== 'drag_and_drop') {
-                return [
-                    'status'    => 'error',
-                    'message'   => 'Pilih salah satu jawaban.',
-                    'http_code' => 422,
-                ];
-            }
+        $selectedAnswerText = $this->getSelectedAnswerText($question, $data, $correctAnswerText);
 
-            if ($question->question_type === 'drag_and_drop') {
-                $selectedAnswerText = 'Drag & Drop Answer'; // Placeholder
-                $correctAnswerText  = 'Correct Arrangement';
-            } else {
-                $selectedAnswer     = $this->answerRepo->find($data['answer']);
-                $selectedAnswerText = $selectedAnswer->answer_text          ?? 'N/A';
-                $correctAnswerText  = $correctAnswers->first()->answer_text ?? null;
-            }
-
-            $explanation = $correctAnswers->first()->explanation ?? null;
+        if (! $this->hasValidAnswer($question, $data)) {
+            return [
+                'status'    => 'error',
+                'message'   => 'Pilih salah satu jawaban.',
+                'http_code' => 422,
+            ];
         }
 
-        // Gamification & Progress
         $guestStateData = null;
         $score          = 0;
         $xpEarned       = 0;
 
         if ($isGuest) {
-            // Calculate Score
-            $difficulty = $data['difficulty'] ?? 'beginner';
-            $baseScore  = 80; // Standard base
-            $score      = $isCorrect ? $baseScore : 0;
-
-            // Guest Gamification (Session-based)
-            $gamificationState = $this->guestProgressService->getGamificationState();
-            $currentXp         = $gamificationState['xp'];
-            $currentStreak     = $gamificationState['streak'];
-
-            if ($isCorrect) {
-                // Delegate XP calculation to QuizRewardService (single owner)
-                $guestState = ['global_xp' => $currentXp];
-                $rewardData = $this->gamificationService->calculateCorrectAnswerReward(
-                    $guestState,
-                    false, // guests cannot use hints in this flow
-                    $difficulty,
-                    (int) ($data['time_spent'] ?? 0),
-                );
-                $baseXp = $rewardData['global_xp_earned'];
-
-                // Delegate streak bonus to StreakService (single owner)
-                $currentStreak++;
-                $streakBonus = $this->gamificationService->calculateStreakBonusXP($currentStreak);
-
-                $xpEarned = $baseXp + $streakBonus;
-                $currentXp += $xpEarned;
-            } else {
-                $currentStreak = 0;
-            }
-
-            // Save to Session
-            $this->guestProgressService->saveGamificationState($currentXp, $currentStreak);
-
-            // Save Progress
-            $this->guestProgressService->saveProgress($data, $isCorrect, $question->id);
-
-            // Construct State for Frontend
-            $guestStateData = [
-                'gamification' => [
-                    'global_xp'      => $currentXp,
-                    'current_streak' => $currentStreak,
-                    'current_level'  => 'Tamu',
-                    'badges'         => [],
-                ],
-                'performance' => [
-                    'hints_available'          => 3, // Static for guests
-                    'total_questions_answered' => count($this->guestProgressService->getProgress()),
-                ],
-                // Mock adaptive state to prevent frontend errors
-                'adaptive_state' => [
-                    'last_action' => 'NEXT_QUESTION',
-                    'message'     => $isCorrect ? 'Benar!' : 'Salah, tetap semangat!',
-                ],
-            ];
+            [$score, $xpEarned, $guestStateData] = $this->processGuestAnswer($data, $question, $isCorrect);
         } else {
             $this->saveAuthenticatedProgress($data, $userId, $isCorrect, $question);
-            // Score for auth users is calculated in controller/Service usually,
-            // but if this path is taken, default strictly.
             $score = $isCorrect ? 100 : 0;
         }
 
-        // Unified Response Structure
         return [
             'status'             => $isCorrect ? 'success' : 'error',
             'message'            => $isCorrect ? 'Jawaban Benar!' : 'Jawaban Salah',
@@ -138,7 +62,7 @@ class QuestionAnswerService implements QuestionAnswerServiceInterface
             'hasNextQuestion'    => true,
             'nextUrl'            => route('mahasiswa.materials.questions.levels', [
                 'material'   => $data['material_id'],
-                'difficulty' => $data['difficulty'] ?? 'beginner', // Default to prevent null
+                'difficulty' => $data['difficulty'] ?? 'beginner',
             ]),
             'adaptiveResult' => [
                 'facts'            => [],
@@ -147,6 +71,80 @@ class QuestionAnswerService implements QuestionAnswerServiceInterface
                 'new_state'        => $guestStateData,
             ],
         ];
+    }
+
+    protected function getSelectedAnswerText(Question $question, array $data, ?string $default): string
+    {
+        return match ($question->question_type) {
+            'fill_in_the_blank' => $data['fill_in_the_blank_answer'] ?? '',
+            'drag_and_drop'     => 'Drag & Drop Answer',
+            default             => $this->answerRepo->find($data['answer'])?->answer_text ?? $default ?? 'N/A',
+        };
+    }
+
+    protected function hasValidAnswer(Question $question, array $data): bool
+    {
+        if ($question->question_type === 'fill_in_the_blank') {
+            return true;
+        }
+
+        if ($question->question_type === 'drag_and_drop') {
+            return true;
+        }
+
+        return isset($data['answer']);
+    }
+
+    /** @return array{0: int, 1: int, 2: array|null} */
+    protected function processGuestAnswer(array $data, Question $question, bool $isCorrect): array
+    {
+        $difficulty    = $data['difficulty'] ?? 'beginner';
+        $baseScore     = $isCorrect ? 80 : 0;
+        $guestState    = $this->guestProgressService->getGamificationState();
+        $currentXp     = $guestState['xp'];
+        $currentStreak = $guestState['streak'];
+        $xpEarned      = 0;
+
+        if ($isCorrect) {
+            $guestStateForCalc = ['global_xp' => $currentXp];
+            $rewardData        = $this->gamificationService->calculateCorrectAnswerReward(
+                $guestStateForCalc,
+                false,
+                $difficulty,
+                (int) ($data['time_spent'] ?? 0),
+            );
+            $baseXp = $rewardData['global_xp_earned'];
+
+            $currentStreak++;
+            $streakBonus = $this->gamificationService->calculateStreakBonusXP($currentStreak);
+
+            $xpEarned   = $baseXp + $streakBonus;
+            $currentXp += $xpEarned;
+        } else {
+            $currentStreak = 0;
+        }
+
+        $this->guestProgressService->saveGamificationState($currentXp, $currentStreak);
+        $this->guestProgressService->saveProgress($data, $isCorrect, $question->id);
+
+        $guestStateData = [
+            'gamification' => [
+                'global_xp'      => $currentXp,
+                'current_streak' => $currentStreak,
+                'current_level'  => 'Tamu',
+                'badges'         => [],
+            ],
+            'performance' => [
+                'hints_available'          => 3,
+                'total_questions_answered' => count($this->guestProgressService->getProgress()),
+            ],
+            'adaptive_state' => [
+                'last_action' => 'NEXT_QUESTION',
+                'message'     => $isCorrect ? 'Benar!' : 'Salah, tetap semangat!',
+            ],
+        ];
+
+        return [$baseScore, $xpEarned, $guestStateData];
     }
 
     protected function saveAuthenticatedProgress(array $data, string $userId, bool $isCorrect, Question $question): void

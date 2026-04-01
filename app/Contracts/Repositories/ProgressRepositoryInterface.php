@@ -21,8 +21,8 @@ interface ProgressRepositoryInterface
     /** @return SupportCollection<int, mixed> */
     public function getRecentActivities(?string $userId, int $limit = 5): SupportCollection;
 
-    /** @return array<string, mixed> */
-    public function getDetailedUserProgress(?string $userId): array;
+    /** @return EloquentCollection<int, mixed> */
+    public function getDetailedUserProgress(?string $userId): EloquentCollection;
 
     /** @return EloquentCollection<int, mixed> */
     public function getCorrectAnswersWithAttempts(string $roleId): EloquentCollection;
