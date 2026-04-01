@@ -41,7 +41,7 @@ class AnswerRepository implements AnswerRepositoryInterface
     {
         $answer = $this->findOrFail($id);
 
-        return (bool)$answer->delete();
+        return (bool) $answer->delete();
     }
 
     /** @return Collection<string, Answer> */
@@ -60,6 +60,6 @@ class AnswerRepository implements AnswerRepositoryInterface
 
     public function deleteByQuestionId(string $questionId): bool
     {
-        return (bool)Answer::query()->where('question_id', '=', $questionId)->delete();
+        return (bool) Answer::query()->where('question_id', '=', $questionId)->delete();
     }
 }

@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -20,9 +20,10 @@ use Illuminate\Notifications\Notifiable;
  */
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasUlids;
+    use HasFactory, HasUlids, Notifiable;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $fillable = ['name', 'email', 'password', 'role_id', 'is_approved'];
@@ -62,10 +63,10 @@ class User extends Authenticatable
 
         if (is_numeric($rid)) {
             return match ((int) $rid) {
-                1 => $role === 'superadmin',
-                2 => $role === 'dosen',
-                3 => $role === 'mahasiswa',
-                4 => $role === 'guest',
+                1       => $role === 'superadmin',
+                2       => $role === 'dosen',
+                3       => $role === 'mahasiswa',
+                4       => $role === 'guest',
                 default => false,
             };
         }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mahasiswa;
 use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\UserServiceInterface;
+use App\DTOs\User\ProfileUpdateDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\UpdateProfileRequest;
 use Illuminate\Http\RedirectResponse;
@@ -64,15 +65,9 @@ class ProfileController extends Controller
 
     public function update(UpdateProfileRequest $request): RedirectResponse
     {
-        $user = Auth::id();
+        $dto = ProfileUpdateDTO::fromRequest($request);
 
-        $data = $request->only('name', 'email');
-
-        if ($request->filled('password')) {
-            $data['password'] = $request->password;
-        }
-
-        $this->userService->updateProfile($user, $data);
+        $this->userService->updateProfile(Auth::id(), $dto->toArray());
 
         return back()->with('success', 'Profile berhasil diperbarui');
     }

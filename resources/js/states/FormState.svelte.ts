@@ -1,5 +1,6 @@
 import { router } from '@inertiajs/svelte';
 import { BaseState } from './BaseState.svelte';
+import { toasts } from '@/stores/toast';
 
 type FormSubmitOptions = {
     forceFormData?: boolean;
@@ -7,8 +8,16 @@ type FormSubmitOptions = {
     onSuccess?: () => void;
     onError?: (errors: Record<string, string>) => void;
     onFinish?: () => void;
+    showSuccessToast?: string | boolean;
+    showErrorToast?: boolean;
     [key: string]: unknown;
 };
+
+export interface FormStateOptions {
+    isEdit?: boolean;
+    showSuccessToast?: string | boolean;
+    showErrorToast?: boolean;
+}
 
 /**
  * FormState - Svelte 5 native form state using $state runes.
@@ -20,11 +29,19 @@ export class FormState<TForm extends Record<string, any>> extends BaseState {
     >({} as any);
     isEdit = $state(false);
     private initialValues: TForm;
+    protected toastOptions: { showSuccessToast?: string | boolean; showErrorToast?: boolean } = {};
 
-    constructor(initialValues: TForm, isEdit: boolean = false) {
+    constructor(
+        initialValues: TForm,
+        options?: FormStateOptions
+    ) {
         super();
-        this.isEdit = isEdit;
+        this.isEdit = options?.isEdit ?? false;
         this.initialValues = initialValues;
+        this.toastOptions = {
+            showSuccessToast: options?.showSuccessToast ?? false,
+            showErrorToast: options?.showErrorToast ?? false,
+        };
         this.form = {
             ...initialValues,
             processing: false,
@@ -55,7 +72,16 @@ export class FormState<TForm extends Record<string, any>> extends BaseState {
         this.form.processing = true;
         this.form.errors = {};
 
-        const { forceFormData, _method, onSuccess, onError, onFinish, ...routerOptions } = options;
+        const {
+            forceFormData,
+            _method,
+            onSuccess,
+            onError,
+            onFinish,
+            showSuccessToast = this.toastOptions.showSuccessToast,
+            showErrorToast = this.toastOptions.showErrorToast,
+            ...routerOptions
+        } = options;
 
         // $state.snapshot() returns a deep plain-object clone of the reactive proxy
         const snapshot = $state.snapshot(this.form) as Record<string, any>;
@@ -81,10 +107,21 @@ export class FormState<TForm extends Record<string, any>> extends BaseState {
             onError: (errs: Record<string, string>) => {
                 this.form.errors = errs;
                 this.form.processing = false;
+                if (showErrorToast) {
+                    const firstError = Object.values(errs)[0];
+                    toasts.error(firstError || 'Terjadi kesalahan');
+                }
                 onError?.(errs);
             },
             onSuccess: () => {
                 this.form.processing = false;
+                if (showSuccessToast) {
+                    toasts.success(
+                        typeof showSuccessToast === 'string'
+                            ? showSuccessToast
+                            : 'Berhasil disimpan'
+                    );
+                }
                 onSuccess?.();
             },
             onFinish: () => {

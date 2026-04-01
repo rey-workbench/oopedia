@@ -2,7 +2,8 @@
     import { page } from '@inertiajs/svelte';
     import { onMount } from 'svelte';
     import { Sidebar, Navbar } from '@/components/navigation';
-    import { Alert } from '@/components/ui';
+    import Toast from '@/components/ui/Toast.svelte';
+    import { toasts } from '@/stores/toast';
     import { sidebarState, initSidebarResponsive } from '@/states/ui';
     import { ROUTES } from '@/utils/route';
     import type { SharedProps } from '@/types/inertia';
@@ -32,6 +33,14 @@
     onMount(() => {
         return initSidebarResponsive();
     });
+
+    $effect(() => {
+        if (flash.success) toasts.success(flash.success);
+        if (flash.error) toasts.error(flash.error);
+        if (flash.info) toasts.info(flash.info);
+        if (flash.warning) toasts.warning(flash.warning);
+        if ((flash as any).status) toasts.success((flash as any).status);
+    });
 </script>
 
 <svelte:head>
@@ -44,35 +53,7 @@
     >
         <!-- Flash Messages -->
         {#if flash.success || flash.error || flash.info || flash.warning || (flash as any).status}
-            <div
-                class="pointer-events-none fixed top-6 right-6 z-100 flex w-full max-w-sm flex-col gap-3"
-            >
-                {#if flash.success}
-                    <Alert variant="success" dismissible={true} class="pointer-events-auto"
-                        >{flash.success}</Alert
-                    >
-                {/if}
-                {#if flash.error}
-                    <Alert variant="danger" dismissible={true} class="pointer-events-auto"
-                        >{flash.error}</Alert
-                    >
-                {/if}
-                {#if flash.info}
-                    <Alert variant="info" dismissible={true} class="pointer-events-auto"
-                        >{flash.info}</Alert
-                    >
-                {/if}
-                {#if flash.warning}
-                    <Alert variant="warning" dismissible={true} class="pointer-events-auto"
-                        >{flash.warning}</Alert
-                    >
-                {/if}
-                {#if (flash as any).status}
-                    <Alert variant="success" dismissible={true} class="pointer-events-auto"
-                        >{(flash as any).status}</Alert
-                    >
-                {/if}
-            </div>
+            <Toast toasts={$toasts} position="top-right" onremove={(id) => toasts.remove(id)} />
         {/if}
 
         <!-- Decorative Background -->
@@ -143,37 +124,7 @@
                 <Navbar />
             {/if}
             <!-- Flash Messages -->
-            {#if flash.success || flash.error || flash.info || flash.warning || (flash as any).status}
-                <div
-                    class="pointer-events-none fixed top-24 right-6 z-100 flex w-full max-w-sm flex-col gap-3"
-                >
-                    {#if flash.success}
-                        <Alert variant="success" dismissible={true} class="pointer-events-auto"
-                            >{flash.success}</Alert
-                        >
-                    {/if}
-                    {#if flash.error}
-                        <Alert variant="danger" dismissible={true} class="pointer-events-auto"
-                            >{flash.error}</Alert
-                        >
-                    {/if}
-                    {#if flash.info}
-                        <Alert variant="info" dismissible={true} class="pointer-events-auto"
-                            >{flash.info}</Alert
-                        >
-                    {/if}
-                    {#if flash.warning}
-                        <Alert variant="warning" dismissible={true} class="pointer-events-auto"
-                            >{flash.warning}</Alert
-                        >
-                    {/if}
-                    {#if (flash as any).status}
-                        <Alert variant="success" dismissible={true} class="pointer-events-auto"
-                            >{(flash as any).status}</Alert
-                        >
-                    {/if}
-                </div>
-            {/if}
+            <Toast toasts={$toasts} position="top-right" onremove={(id) => toasts.remove(id)} />
 
             <main
                 class="w-full flex-1 {fullWidth

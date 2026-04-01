@@ -9,32 +9,28 @@ class ProgressHelper
     /**
      * Calculate the total number of configured questions across given materials.
      *
-     * @param  Collection  $materials  Collection of materials (needs to have 'questions' relation loaded)
-     * @return int
+     * @param Collection $materials Collection of materials (needs to have 'questions' relation loaded)
      */
     public static function calculateTotalQuestions(Collection $materials): int
     {
-        return $materials->sum(fn($m) => $m->questions->count());
+        return $materials->sum(fn ($m) => $m->questions->count());
     }
 
     /**
      * Calculate progress percentage based on answered questions and total questions.
      *
-     * @param  int  $answeredQuestions
-     * @param  int  $totalQuestions
      * @return int Progress percentage (0-100)
      */
     public static function calculateProgressPercentage(int $answeredQuestions, int $totalQuestions): int
     {
         return $totalQuestions > 0
-            ? min(100, (int)round(($answeredQuestions / $totalQuestions) * 100))
+            ? min(100, (int) round(($answeredQuestions / $totalQuestions) * 100))
             : 0;
     }
 
     /**
      * Calculate total questions grouped by difficulty.
      *
-     * @param  Collection  $materials
      * @return array<string, int> Formatted as ['beginner' => 0, 'medium' => 0, 'hard' => 0]
      */
     public static function calculateDifficultyTotals(Collection $materials): array
@@ -56,8 +52,8 @@ class ProgressHelper
      * Calculate question counts for a single material, grouped by difficulty.
      * Returns configured counts (guest caps applied) using keys 'easy','medium','hard','total'.
      *
-     * @param  mixed  $material  Material model instance with loaded questions relation
-     * @param  bool   $isGuest   Whether to apply guest limits per difficulty
+     * @param mixed $material Material model instance with loaded questions relation
+     * @param bool $isGuest Whether to apply guest limits per difficulty
      * @return array<string,int>
      */
     public static function calculateMaterialQuestionCounts($material, bool $isGuest = false): array
@@ -69,8 +65,8 @@ class ProgressHelper
         $hard     = $material->questions->where('difficulty', 'hard')->count();
 
         $configuredBeginner = $isGuest ? min($beginner, $guestLimit) : $beginner;
-        $configuredMedium   = $isGuest ? min($medium, $guestLimit)   : $medium;
-        $configuredHard     = $isGuest ? min($hard, $guestLimit)     : $hard;
+        $configuredMedium   = $isGuest ? min($medium, $guestLimit) : $medium;
+        $configuredHard     = $isGuest ? min($hard, $guestLimit) : $hard;
 
         $total = $configuredBeginner + $configuredMedium + $configuredHard;
 

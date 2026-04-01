@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Contracts\Services\UeqSurveyServiceInterface;
+use App\DTOs\Survey\UeqSurveyCreateDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Survey\StoreUeqSurveyRequest;
 use Illuminate\Http\RedirectResponse;
@@ -13,8 +14,7 @@ class UeqSurveyController extends Controller
 {
     public function __construct(
         protected UeqSurveyServiceInterface $ueqService,
-    ) {
-    }
+    ) {}
 
     public function create(): Response|RedirectResponse
     {
@@ -33,9 +33,9 @@ class UeqSurveyController extends Controller
             return redirect()->route('mahasiswa.ueq-survey.thankyou');
         }
 
-        $data = array_merge($request->validated(), ['user_id' => Auth::id()]);
+        $dto = UeqSurveyCreateDTO::fromRequest($request, (string) Auth::id());
 
-        $this->ueqService->createSurvey($data);
+        $this->ueqService->createSurvey($dto->toArray());
 
         return redirect()->route('mahasiswa.ueq-survey.thankyou');
     }

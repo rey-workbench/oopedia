@@ -36,22 +36,20 @@ class GamificationService implements GamificationServiceInterface
         ['name' => 'Ahli', 'min' => 500],
     ];
 
-    public function __construct(protected
-        ProgressRepositoryInterface $progressRepo,
-        )
-    {
-    }
+    public function __construct(
+        protected ProgressRepositoryInterface $progressRepo,
+    ) {}
 
     // ==================== REWARD ====================
 
     public function calculateCorrectAnswerReward(array $state, bool $usedHint = false, string $difficulty = 'beginner', int $timeSpent = 0): array
     {
-        $baseXp = self::BASE_XP[$difficulty] ?? self::BASE_XP['beginner'];
+        $baseXp   = self::BASE_XP[$difficulty] ?? self::BASE_XP['beginner'];
         $xpEarned = $baseXp;
 
         // Speed bonus
         $allocatedTime = AdaptiveConstants::ALLOCATED_TIME[$difficulty] ?? 60;
-        $isFast = $timeSpent > 0 && ($timeSpent / $allocatedTime * 100) < AdaptiveConstants::TIME_FAST_THRESHOLD;
+        $isFast        = $timeSpent > 0 && ($timeSpent / $allocatedTime * 100) < AdaptiveConstants::TIME_FAST_THRESHOLD;
         if ($isFast) {
             $xpEarned += self::FAST_BONUS_XP;
         }
@@ -63,9 +61,9 @@ class GamificationService implements GamificationServiceInterface
 
         return [
             'global_xp_earned' => $xpEarned,
-            'is_fast' => $isFast,
-            'base_xp' => $baseXp,
-            'updates' => [
+            'is_fast'          => $isFast,
+            'base_xp'          => $baseXp,
+            'updates'          => [
                 'global_xp' => ($state['global_xp'] ?? 0) + $xpEarned,
             ],
         ];
@@ -75,7 +73,7 @@ class GamificationService implements GamificationServiceInterface
     {
         return [
             'global_xp_earned' => 0,
-            'updates' => [
+            'updates'          => [
                 'global_xp' => $state['global_xp'] ?? 0,
             ],
         ];
@@ -97,15 +95,15 @@ class GamificationService implements GamificationServiceInterface
             'message' => 'Hint digunakan',
             'updates' => [
                 'hints_used_count' => ($state['hints_used_count'] ?? 0) + 1,
-                'hints_available' => $hintsAvailable - 1,
+                'hints_available'  => $hintsAvailable - 1,
             ],
         ];
     }
 
     public function calculateAccuracy(array $state): float
     {
-        $correct = $state['correct_count'] ?? 0;
-        $total = $state['total_questions_answered'] ?? 0;
+        $correct = $state['correct_count']            ?? 0;
+        $total   = $state['total_questions_answered'] ?? 0;
 
         if ($total === 0) {
             return 0;
@@ -121,7 +119,7 @@ class GamificationService implements GamificationServiceInterface
         return [
             'updates' => [
                 'current_streak' => ($state['current_streak'] ?? 0) + 1,
-                'wrong_streak' => 0,
+                'wrong_streak'   => 0,
             ],
         ];
     }
@@ -131,7 +129,7 @@ class GamificationService implements GamificationServiceInterface
         return [
             'updates' => [
                 'current_streak' => 0,
-                'wrong_streak' => ($state['wrong_streak'] ?? 0) + 1,
+                'wrong_streak'   => ($state['wrong_streak'] ?? 0) + 1,
             ],
         ];
     }
@@ -143,8 +141,8 @@ class GamificationService implements GamificationServiceInterface
         if ($currentStreak > 0 && $currentStreak % 5 === 0) {
             return [
                 'bonus_granted' => true,
-                'message' => "Streak {$currentStreak}! +1 Hint bonus",
-                'updates' => [
+                'message'       => "Streak {$currentStreak}! +1 Hint bonus",
+                'updates'       => [
                     'hints_available' => ($state['hints_available'] ?? 0) + 1,
                 ],
             ];
@@ -185,7 +183,7 @@ class GamificationService implements GamificationServiceInterface
 
     public function getLevelProgress(int $xp): array
     {
-        $levels = self::LEVELS;
+        $levels       = self::LEVELS;
         $currentLevel = $this->determineLevel($xp);
         $currentIndex = 0;
 
@@ -198,25 +196,25 @@ class GamificationService implements GamificationServiceInterface
 
         $nextLevel = $levels[$currentIndex + 1] ?? null;
 
-        if (!$nextLevel) {
+        if (! $nextLevel) {
             return [
                 'current_level' => $currentLevel,
-                'next_level' => null,
-                'percentage' => 100,
-                'xp_needed' => 0,
+                'next_level'    => null,
+                'percentage'    => 100,
+                'xp_needed'     => 0,
             ];
         }
 
-        $currentMin = $levels[$currentIndex]['min'];
-        $nextMin = $nextLevel['min'];
-        $progressXp = $xp - $currentMin;
+        $currentMin    = $levels[$currentIndex]['min'];
+        $nextMin       = $nextLevel['min'];
+        $progressXp    = $xp      - $currentMin;
         $totalXpNeeded = $nextMin - $currentMin;
 
         return [
             'current_level' => $currentLevel,
-            'next_level' => $nextLevel['name'],
-            'percentage' => round(($progressXp / $totalXpNeeded) * 100),
-            'xp_needed' => $nextMin - $xp,
+            'next_level'    => $nextLevel['name'],
+            'percentage'    => round(($progressXp / $totalXpNeeded) * 100),
+            'xp_needed'     => $nextMin - $xp,
         ];
     }
 }

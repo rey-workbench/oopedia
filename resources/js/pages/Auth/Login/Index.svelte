@@ -3,13 +3,12 @@
     import Card from '@/components/ui/Card.svelte';
     import Input from '@/components/ui/Input.svelte';
     import Button from '@/components/ui/Button.svelte';
-    import Alert from '@/components/ui/Alert.svelte';
     import { Link } from '@inertiajs/svelte';
     import { Loader2, ArrowRight, Ghost } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
     import { LoginState } from '@/states/Auth/AuthState.svelte';
 
-    const state = new LoginState();
+    const state = new LoginState({ showSuccessToast: 'Login berhasil!', showErrorToast: true });
 </script>
 
 <App variant="auth" title="Login - OOPedia">
@@ -30,10 +29,6 @@
             }}
             class="space-y-6"
         >
-            {#if state.form.errors['email']}
-                <Alert variant="danger" dismissible={true}>{state.form.errors['email']}</Alert>
-            {/if}
-
             <div class="space-y-2">
                 <label
                     for="email"

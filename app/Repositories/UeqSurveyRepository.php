@@ -43,7 +43,7 @@ class UeqSurveyRepository implements UeqSurveyRepositoryInterface
         $ueq = UeqSurvey::query()->find($id, ['*']);
 
         if ($ueq) {
-            return (bool)$ueq->delete();
+            return (bool) $ueq->delete();
         }
 
         return false;

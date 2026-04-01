@@ -15,4 +15,4 @@ export * from './Mahasiswa/MaterialState.svelte';
 export * from './Mahasiswa/ProfileState.svelte';
 export * from './Mahasiswa/QuizState.svelte';
 export * from './Mahasiswa/UeqSurveyState.svelte';
-export * from './UI';
+export * from './ui';

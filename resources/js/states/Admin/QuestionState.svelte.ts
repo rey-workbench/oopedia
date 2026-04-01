@@ -112,15 +112,31 @@ export class QuestionFormState extends FormState<{
                               drag_target: a.drag_target || '',
                           }))
                         : [
-                              { answer_text: '', is_correct: 0, explanation: '', drag_source: '', drag_target: '' },
-                              { answer_text: '', is_correct: 0, explanation: '', drag_source: '', drag_target: '' },
+                              {
+                                  answer_text: '',
+                                  is_correct: 0,
+                                  explanation: '',
+                                  drag_source: '',
+                                  drag_target: '',
+                              },
+                              {
+                                  answer_text: '',
+                                  is_correct: 0,
+                                  explanation: '',
+                                  drag_source: '',
+                                  drag_target: '',
+                              },
                           ],
                 correct_answer:
                     question && question.answers
                         ? question.answers.findIndex((a: Answer) => a.is_correct)
                         : null,
             },
-            !!question
+            {
+                isEdit: !!question,
+                showSuccessToast: 'Soal berhasil disimpan!',
+                showErrorToast: true,
+            }
         );
 
         this.materials = materials;
@@ -177,11 +193,7 @@ export class QuestionFormState extends FormState<{
     }
 
     async submit() {
-        if (
-            ['radio_button', 'multiple_choice'].includes(
-                this.form.question_type
-            )
-        ) {
+        if (['radio_button', 'multiple_choice'].includes(this.form.question_type)) {
             const answers = [...(this.form.answers || [])];
             answers.forEach((ans: AnswerField, i: number) => {
                 ans.is_correct = i == this.form.correct_answer ? 1 : 0;
@@ -194,17 +206,17 @@ export class QuestionFormState extends FormState<{
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = this.form.question_text;
             const dropzones = tempDiv.querySelectorAll('.dnd-dropzone');
-            
+
             // Map blanks to index
             dropzones.forEach((dz, idx) => {
                 const answerText = dz.getAttribute('data-answer');
                 dz.outerHTML = `[blank_${idx + 1}]`;
-                
+
                 // Find answer
-                const ans = this.form.answers?.find(a => a.answer_text === answerText);
+                const ans = this.form.answers?.find((a) => a.answer_text === answerText);
                 if (ans) {
                     ans.drag_target = String(idx + 1);
-                    ans.drag_source = String(idx + 1); 
+                    ans.drag_source = String(idx + 1);
                 }
             });
             this.form.question_text = tempDiv.innerHTML;
@@ -223,11 +235,16 @@ export class QuestionFormState extends FormState<{
  */
 export class QuestionEditState extends QuestionFormState {
     constructor(question: Question, subMaterials: SubMaterial[] = []) {
-        super([], (question as unknown as { material: Material | null }).material || null, subMaterials, question);
+        super(
+            [],
+            (question as unknown as { material: Material | null }).material || null,
+            subMaterials,
+            question
+        );
 
         if (question && question.question_type === 'drag_and_drop') {
             let qt = question.question_text || '';
-            (this.form.answers || []).forEach(ans => {
+            (this.form.answers || []).forEach((ans) => {
                 if (ans.drag_target) {
                     const html = `<span class="dnd-dropzone inline-block rounded border border-primary-200 bg-primary-50 px-2 py-1 mx-1 text-xs font-bold text-primary-700 shadow-sm" contenteditable="false" data-answer="${ans.answer_text}">[${ans.answer_text}]</span>`;
                     qt = qt.replace(`[blank_${ans.drag_target}]`, html);

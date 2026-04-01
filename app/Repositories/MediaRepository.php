@@ -42,7 +42,7 @@ class MediaRepository implements MediaRepositoryInterface
         $media = $this->find($id, ['*']);
 
         if ($media) {
-            return (bool)$media->delete();
+            return (bool) $media->delete();
         }
 
         return false;

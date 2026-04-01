@@ -41,9 +41,9 @@ class Question extends Model
     ];
 
     protected $casts = [
-        'material_id' => 'string',
+        'material_id'     => 'string',
         'sub_material_id' => 'string',
-        'created_by' => 'string',
+        'created_by'      => 'string',
     ];
 
     // ==================== RELATIONSHIPS ====================
@@ -60,7 +60,7 @@ class Question extends Model
 
     public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class , 'created_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function answers(): HasMany

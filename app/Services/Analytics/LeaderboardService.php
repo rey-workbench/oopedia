@@ -5,8 +5,8 @@ namespace App\Services\Analytics;
 use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\LeaderboardServiceInterface;
-use Illuminate\Support\Facades\Cache;
 use App\Helpers\ProgressHelper;
+use Illuminate\Support\Facades\Cache;
 
 class LeaderboardService implements LeaderboardServiceInterface
 {
@@ -21,7 +21,7 @@ class LeaderboardService implements LeaderboardServiceInterface
         // Cache global leaderboard data for 10 minutes (600 seconds)
         $leaderboardData = Cache::remember('global_leaderboard_data', 600, function () {
             // Get difficulty question counts from active configurations
-            $materials = $this->materialRepo->getAllWithQuestionsAndConfigs();
+            $materials       = $this->materialRepo->getAllWithQuestionsAndConfigs();
             $difficultyCount = ProgressHelper::calculateDifficultyTotals($materials);
 
             // Get correct answers with attempts for scoring
@@ -54,7 +54,6 @@ class LeaderboardService implements LeaderboardServiceInterface
             'currentUserRank' => $currentUserRank,
         ];
     }
-
 
     protected function calculateUserScores($correctAnswers)
     {
@@ -92,7 +91,6 @@ class LeaderboardService implements LeaderboardServiceInterface
 
         return $userScores;
     }
-
 
     protected function processLeaderboardData($leaderboardData, $userScores, $totalConfiguredQuestions, $difficultyCount)
     {

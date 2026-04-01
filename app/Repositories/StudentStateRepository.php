@@ -11,14 +11,14 @@ class StudentStateRepository implements StudentStateRepositoryInterface
     public function upsert(string $userId, string $materialId, array $attributes): StudentState
     {
         return StudentState::query()->updateOrCreate(
-        ['user_id' => $userId],
+            ['user_id' => $userId],
             array_merge([
-            'gamification_data' => [],
-            'learning_profile' => [],
-            'performance_metrics' => [],
-            'adaptive_state' => [],
-            'last_active_at' => now(),
-        ], $attributes),
+                'gamification_data'   => [],
+                'learning_profile'    => [],
+                'performance_metrics' => [],
+                'adaptive_state'      => [],
+                'last_active_at'      => now(),
+            ], $attributes),
         );
     }
 
@@ -36,7 +36,7 @@ class StudentStateRepository implements StudentStateRepositoryInterface
 
         $state->update([
             'performance_metrics' => $performanceMetrics,
-            'last_active_at' => now(),
+            'last_active_at'      => now(),
         ]);
     }
 
@@ -48,20 +48,20 @@ class StudentStateRepository implements StudentStateRepositoryInterface
 
     public function delete(string $userId, string $materialId): bool
     {
-        return (bool)StudentState::query()->where('user_id', '=', $userId)->delete();
+        return (bool) StudentState::query()->where('user_id', '=', $userId)->delete();
     }
 
     protected function getOrCreate(string $userId): StudentState
     {
         return StudentState::query()->firstOrCreate(
-        ['user_id' => $userId],
-        [
-            'gamification_data' => [],
-            'learning_profile' => [],
-            'performance_metrics' => [],
-            'adaptive_state' => [],
-            'last_active_at' => now(),
-        ],
+            ['user_id' => $userId],
+            [
+                'gamification_data'   => [],
+                'learning_profile'    => [],
+                'performance_metrics' => [],
+                'adaptive_state'      => [],
+                'last_active_at'      => now(),
+            ],
         );
     }
 }

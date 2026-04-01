@@ -2,10 +2,9 @@
 
 namespace App\DTOs\User;
 
-use App\Models\Role;
 use Illuminate\Http\Request;
 
-readonly class StudentCreateDTO
+readonly class AdminCreateDTO
 {
     public function __construct(
         public string $name,
@@ -25,11 +24,9 @@ readonly class StudentCreateDTO
     public function toArray(): array
     {
         return [
-            'name'        => $this->name,
-            'email'       => $this->email,
-            'password'    => $this->password, // Will be hashed in service
-            'role_id'     => Role::where('role_name', 'mahasiswa')->value('id'),
-            'is_approved' => true, // Admin-created students are auto-approved
+            'name'     => $this->name,
+            'email'    => $this->email,
+            'password' => $this->password,
         ];
     }
 }

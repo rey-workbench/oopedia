@@ -50,7 +50,7 @@ interface UserRepositoryInterface
         bool $isApproved,
         ?string $search = null,
         ?int $perPage = 10,
-        ): LengthAwarePaginator|Collection;
+    ): LengthAwarePaginator|Collection;
 
     public function countByRole(string $roleName): int;
 

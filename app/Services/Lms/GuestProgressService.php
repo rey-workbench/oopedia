@@ -7,7 +7,9 @@ use App\Contracts\Services\GuestProgressServiceInterface;
 class GuestProgressService implements GuestProgressServiceInterface
 {
     private const SESSION_KEY = 'guest_progress';
+
     private const SESSION_XP_KEY = 'guest_xp';
+
     private const SESSION_STREAK_KEY = 'guest_streak';
 
     /**
@@ -25,9 +27,9 @@ class GuestProgressService implements GuestProgressServiceInterface
     {
         $guestProgress = $this->getProgress();
 
-        $progressKey = $data['material_id'] . '_' . $questionId;
+        $progressKey                 = $data['material_id'] . '_' . $questionId;
         $guestProgress[$progressKey] = [
-            'is_correct' => $isCorrect,
+            'is_correct'     => $isCorrect,
             'attempt_number' => isset($guestProgress[$progressKey])
             ? $guestProgress[$progressKey]['attempt_number'] + 1
             : 1,
@@ -37,13 +39,13 @@ class GuestProgressService implements GuestProgressServiceInterface
 
         if ($isCorrect) {
             $materialSessionKey = self::SESSION_KEY . '.' . $data['material_id'];
-            if (!session()->has($materialSessionKey)) {
+            if (! session()->has($materialSessionKey)) {
                 session([$materialSessionKey => []]);
             }
 
-            $currentProgress = session($materialSessionKey, []);
+            $currentProgress              = session($materialSessionKey, []);
             $currentProgress[$questionId] = [
-                'is_correct' => true,
+                'is_correct'  => true,
                 'answered_at' => now()->toDateTimeString(),
             ];
 
@@ -59,7 +61,7 @@ class GuestProgressService implements GuestProgressServiceInterface
         $allProgress = $this->getProgress();
 
         $filtered = collect($allProgress)
-            ->filter(fn($v, $k) => !str_starts_with((string)$k, $materialId . '_'))
+            ->filter(fn ($v, $k) => ! str_starts_with((string) $k, $materialId . '_'))
             ->all();
 
         session([self::SESSION_KEY => $filtered]);
@@ -82,7 +84,7 @@ class GuestProgressService implements GuestProgressServiceInterface
     public function getGamificationState(): array
     {
         return [
-            'xp' => session(self::SESSION_XP_KEY, 0),
+            'xp'     => session(self::SESSION_XP_KEY, 0),
             'streak' => session(self::SESSION_STREAK_KEY, 0),
         ];
     }

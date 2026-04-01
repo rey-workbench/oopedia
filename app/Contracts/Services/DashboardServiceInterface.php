@@ -2,6 +2,7 @@
 
 namespace App\Contracts\Services;
 
+use App\Models\Material;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -12,7 +13,7 @@ interface DashboardServiceInterface
     /**
      * Get all available materials.
      *
-     * @return Collection<string, \App\Models\Material>
+     * @return Collection<string, Material>
      */
     public function getAllMaterials(): Collection;
 

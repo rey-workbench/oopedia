@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Contracts\Services\UserServiceInterface;
+use App\DTOs\User\UserRegistrationDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Models\Role;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -25,28 +25,19 @@ class RegisterController extends Controller
 
     public function store(RegisterRequest $request): RedirectResponse
     {
-        $roleName    = $request->has('register_as_admin') ? 'dosen' : 'mahasiswa';
-        $role        = Role::where('role_name', $roleName)->first();
-        $roleId      = $role?->id;
-        $isApproved  = ($roleName === 'mahasiswa');
+        $dto = UserRegistrationDTO::fromRequest($request);
 
-        $user = $this->userService->registerUser([
-            'name'        => $request->name,
-            'email'       => $request->email,
-            'password'    => $request->password,
-            'role_id'     => $roleId,
-            'is_approved' => $isApproved,
-        ]);
+        $user = $this->userService->registerUser($dto->toArray());
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        if ($roleName === 'dosen' && ! $isApproved) {
+        if ($dto->isDosen && ! $dto->is_approved) {
             return Redirect::route('admin.pending-approval');
         }
 
-        if ($roleName === 'dosen') {
+        if ($dto->isDosen) {
             return Redirect::route('admin.dashboard');
         }
 

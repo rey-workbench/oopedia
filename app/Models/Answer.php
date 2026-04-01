@@ -32,7 +32,7 @@ class Answer extends Model
     ];
 
     protected $casts = [
-        'is_correct' => 'boolean',
+        'is_correct'     => 'boolean',
         'blank_position' => 'integer',
     ];
 

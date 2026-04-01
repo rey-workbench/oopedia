@@ -1,15 +1,18 @@
-import { FormState } from '@/states/FormState.svelte';
+import { FormState, type FormStateOptions } from '@/states/FormState.svelte';
 import { ROUTES } from '@/utils/route';
 
 /**
  * Login State
  */
 export class LoginState extends FormState<{ email: string; password: string; is_guest?: boolean }> {
-    constructor() {
-        super({
-            email: '',
-            password: '',
-        });
+    constructor(options?: FormStateOptions) {
+        super(
+            {
+                email: '',
+                password: '',
+            },
+            options
+        );
     }
 
     async submit() {
@@ -32,14 +35,17 @@ export class RegisterState extends FormState<{
     password_confirmation: string;
     register_as_admin: boolean;
 }> {
-    constructor() {
-        super({
-            name: '',
-            email: '',
-            password: '',
-            password_confirmation: '',
-            register_as_admin: false,
-        });
+    constructor(options?: FormStateOptions) {
+        super(
+            {
+                name: '',
+                email: '',
+                password: '',
+                password_confirmation: '',
+                register_as_admin: false,
+            },
+            options
+        );
     }
 
     async submit() {

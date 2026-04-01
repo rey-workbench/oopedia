@@ -7,24 +7,26 @@ use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Contracts\Services\StudentServiceInterface;
 use App\Exceptions\Domain\UserNotFoundException;
+use App\Helpers\ProgressHelper;
+use App\Models\Role;
+use App\Models\StudentState;
+use App\Models\User;
 use App\Services\User\Concerns\ImportsCsvUsers;
+use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use App\Helpers\ProgressHelper;
 
 class StudentService implements StudentServiceInterface
 {
     use ImportsCsvUsers;
 
-    public function __construct(protected
-        UserRepositoryInterface $userRepo, protected
-        MaterialRepositoryInterface $materialRepo, protected
-        ProgressRepositoryInterface $progressRepo,
-        )
-    {
-    }
+    public function __construct(
+        protected UserRepositoryInterface $userRepo,
+        protected MaterialRepositoryInterface $materialRepo,
+        protected ProgressRepositoryInterface $progressRepo,
+    ) {}
 
     public function getStudentsWithProgress(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
@@ -38,7 +40,7 @@ class StudentService implements StudentServiceInterface
 
         // Add progress data to each student
         foreach ($students as $student) {
-            $progressStats = $this->progressRepo->getUserProgressStats($student->id);
+            $progressStats  = $this->progressRepo->getUserProgressStats($student->id);
             $correctAnswers = $progressStats->sum('correct_answers');
 
             $student->overall_progress = ProgressHelper::calculateProgressPercentage($correctAnswers, $totalQuestions);
@@ -54,27 +56,26 @@ class StudentService implements StudentServiceInterface
         return $this->userRepo->getStudentsList($search, $perPage);
     }
 
-    public function getStudentById(string $id): ?\App\Models\User
+    public function getStudentById(string $id): ?User
     {
         return $this->userRepo->find($id);
     }
 
-    public function createStudent(array $data): \App\Models\User
+    public function createStudent(array $data): User
     {
         // Hash password
-        $data['password'] = Hash::make($data['password']);
-        $data['role_id'] = \App\Models\Role::where('role_name', 'mahasiswa')->value('id'); // Student role
+        $data['password']    = Hash::make($data['password']);
+        $data['role_id']     = Role::where('role_name', 'mahasiswa')->value('id'); // Student role
         $data['is_approved'] = true; // Admin-created students are auto-approved
 
         return $this->userRepo->create($data);
     }
 
-    public function updateStudent(string $studentId, array $data): \App\Models\User
+    public function updateStudent(string $studentId, array $data): User
     {
-        if (isset($data['password']) && !empty($data['password'])) {
+        if (isset($data['password']) && ! empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
-        }
-        else {
+        } else {
             unset($data['password']);
         }
 
@@ -85,7 +86,7 @@ class StudentService implements StudentServiceInterface
     {
         $student = $this->userRepo->find($studentId);
 
-        if (!$student) {
+        if (! $student) {
             throw new UserNotFoundException($studentId);
         }
 
@@ -110,7 +111,7 @@ class StudentService implements StudentServiceInterface
     }
 
     /** @return array<string, mixed> */
-    public function getStudentProgressDetail(\App\Models\User $student): array
+    public function getStudentProgressDetail(User $student): array
     {
         // Get all materials
         $materials = $this->materialRepo->getAllOrdered();
@@ -126,7 +127,7 @@ class StudentService implements StudentServiceInterface
 
             // Get correct answers for this material
             $materialProgress = $progressStats->firstWhere('material_id', $material->id);
-            $correctAnswers = $materialProgress ? $materialProgress->correct_answers : 0;
+            $correctAnswers   = $materialProgress ? $materialProgress->correct_answers : 0;
 
             // Calculate progress percentage
             $progressPercentage = ProgressHelper::calculateProgressPercentage($correctAnswers, $totalQuestions);
@@ -134,13 +135,13 @@ class StudentService implements StudentServiceInterface
             // Get last access time
             $lastAccessed = $this->progressRepo->getLastAccessTime($student->id, $material->id);
 
-            $materialsWithProgress->push((object)[
-                'id' => $material->id,
-                'title' => $material->title,
-                'total_questions' => $totalQuestions,
+            $materialsWithProgress->push((object) [
+                'id'                 => $material->id,
+                'title'              => $material->title,
+                'total_questions'    => $totalQuestions,
                 'answered_questions' => $correctAnswers,
-                'progress' => $progressPercentage,
-                'last_accessed' => $lastAccessed ?\Carbon\Carbon::parse($lastAccessed) : null,
+                'progress'           => $progressPercentage,
+                'last_accessed'      => $lastAccessed ? Carbon::parse($lastAccessed) : null,
             ]);
         }
 
@@ -152,7 +153,7 @@ class StudentService implements StudentServiceInterface
             if ($missingCount > 0) {
                 $missingQuestionsByMaterial[] = [
                     'material_title' => $item->title,
-                    'missing_count' => $missingCount,
+                    'missing_count'  => $missingCount,
                 ];
             }
         }
@@ -160,14 +161,14 @@ class StudentService implements StudentServiceInterface
         // Get recent activities
         $recentActivities = $this->progressRepo->getRecentActivities($student->id, 10);
 
-        $studentState = \App\Models\StudentState::find($student->id, ['*']);
+        $studentState   = StudentState::find($student->id, ['*']);
         $certifications = $studentState ? ($studentState->learning_profile['certifications'] ?? []) : [];
 
         return [
-            'materials' => $materialsWithProgress,
-            'recent_activities' => $recentActivities,
+            'materials'                  => $materialsWithProgress,
+            'recent_activities'          => $recentActivities,
             'missingQuestionsByMaterial' => $missingQuestionsByMaterial,
-            'certifications' => $certifications,
+            'certifications'             => $certifications,
         ];
     }
 

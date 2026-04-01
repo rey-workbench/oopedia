@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Services\MaterialServiceInterface;
+use App\DTOs\Material\MaterialCreateDTO;
+use App\DTOs\Material\MaterialUpdateDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Material\StoreMaterialRequest;
 use App\Http\Requests\Material\UpdateMaterialRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
 class MaterialController extends Controller
@@ -34,8 +37,10 @@ class MaterialController extends Controller
 
     public function store(StoreMaterialRequest $request): RedirectResponse
     {
+        $dto = MaterialCreateDTO::fromRequest($request, Auth::id());
+
         $this->materialService->createMaterial(
-            $request->except('cover_image'),
+            $dto->toArray(),
             $request->file('cover_image'),
         );
 
@@ -57,9 +62,11 @@ class MaterialController extends Controller
 
     public function update(UpdateMaterialRequest $request, string $materialId): RedirectResponse
     {
+        $dto = MaterialUpdateDTO::fromRequest($request);
+
         $this->materialService->updateMaterial(
             $materialId,
-            $request->except('cover_image'),
+            $dto->toArray(),
             $request->file('cover_image'),
         );
 

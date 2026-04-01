@@ -63,7 +63,11 @@ export class MaterialFormState extends FormState<{
                 cover_image: null,
                 status: material ? material.status : 'draft',
             },
-            !!material
+            {
+                isEdit: !!material,
+                showSuccessToast: 'Materi berhasil disimpan!',
+                showErrorToast: true,
+            }
         );
 
         this.material = material;
@@ -139,7 +143,11 @@ export class SubmaterialFormState extends FormState<{
                       : 1,
                 material_id: material ? material.id : '',
             },
-            !!submaterial
+            {
+                isEdit: !!submaterial,
+                showSuccessToast: 'Sub materi berhasil disimpan!',
+                showErrorToast: true,
+            }
         );
 
         this.material = material;

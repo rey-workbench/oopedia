@@ -3,6 +3,7 @@
 namespace App\Contracts\Repositories;
 
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -17,6 +18,6 @@ interface RoleRepositoryInterface
 
     public function findByName(string $name): ?Role;
 
-    /** @return Collection<int, \App\Models\User> */
+    /** @return Collection<int, User> */
     public function getUsersByRole(string $roleId): Collection;
 }

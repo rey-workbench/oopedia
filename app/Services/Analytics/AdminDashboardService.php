@@ -7,27 +7,26 @@ use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Contracts\Services\AdminDashboardServiceInterface;
-use Carbon\Carbon;
 use App\Helpers\ProgressHelper;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
 class AdminDashboardService implements AdminDashboardServiceInterface
 {
-    public function __construct(protected
-        UserRepositoryInterface $userRepo, protected
-        MaterialRepositoryInterface $materialRepo, protected
-        ProgressRepositoryInterface $progressRepo, protected
-        QuestionRepositoryInterface $questionRepo,
-        )
-    {
-    }
+    public function __construct(
+        protected UserRepositoryInterface $userRepo,
+        protected MaterialRepositoryInterface $materialRepo,
+        protected ProgressRepositoryInterface $progressRepo,
+        protected QuestionRepositoryInterface $questionRepo,
+    ) {}
 
     /** @return array<string, int> */
     public function getDashboardStats(): array
     {
         return Cache::remember('admin_dashboard_stats', 600, function () {
             return [
-                'totalStudents' => $this->userRepo->countByRole(3),
+                'totalStudents'  => $this->userRepo->countByRole(3),
                 'totalMaterials' => $this->materialRepo->countAll(),
                 'totalQuestions' => $this->questionRepo->countAll(),
                 'activeStudents' => $this->userRepo->getActiveStudentsCount(7),
@@ -51,28 +50,30 @@ class AdminDashboardService implements AdminDashboardServiceInterface
 
             $totalConfiguredQuestions = ProgressHelper::calculateTotalQuestions($materials);
 
-            return $students->map(function ($student) use ($totalConfiguredQuestions) {
+            return $students->map(
+                function ($student) use ($totalConfiguredQuestions) {
                     $uniqueCorrectQuestions = $student->quizAttempts->where('is_correct', true)->pluck('question_id')->unique()->count();
 
                     $student->materials_progress = ProgressHelper::calculateProgressPercentage($uniqueCorrectQuestions, $totalConfiguredQuestions);
 
                     // Add last active timestamp
-                    $lastActivity = $student->quizAttempts->max('created_at');
-                    $student->last_active = $lastActivity ?Carbon::parse($lastActivity) : null;
+                    $lastActivity         = $student->quizAttempts->max('created_at');
+                    $student->last_active = $lastActivity ? Carbon::parse($lastActivity) : null;
 
                     return $student;
-                }
-                )->all();
-            });
+                },
+            )->all();
+        });
     }
 
-    public function getMaterialStatistics(): \Illuminate\Support\Collection
+    public function getMaterialStatistics(): Collection
     {
         return Cache::remember('admin_material_statistics', 600, function () {
-            $materials = $this->materialRepo->getAllWithQuestionsAndConfigs();
+            $materials    = $this->materialRepo->getAllWithQuestionsAndConfigs();
             $progressData = $this->progressRepo->getMaterialPerformanceStats();
 
-            return $materials->map(function ($material) use ($progressData) {
+            return $materials->map(
+                function ($material) use ($progressData) {
                     // Use all available questions
                     $totalConfiguredQuestions = $material->questions->count();
 
@@ -91,16 +92,16 @@ class AdminDashboardService implements AdminDashboardServiceInterface
                         ? round(($correctlyAnsweredQuestions / $totalConfiguredQuestions) * 100, 1)
                         : 0;
 
-                    return (object)[
-                        'id' => $material->id,
-                        'title' => $material->title,
+                    return (object) [
+                        'id'              => $material->id,
+                        'title'           => $material->title,
                         'questions_count' => $totalConfiguredQuestions,
                         'active_students' => $activeStudents,
                         'completion_rate' => $completionRate,
                     ];
-                }
-                );
-            });
+                },
+            );
+        });
     }
 
     public function getPopularMaterials(int $limit = 5): \Illuminate\Database\Eloquent\Collection
@@ -112,35 +113,31 @@ class AdminDashboardService implements AdminDashboardServiceInterface
     public function getStudentAnalytics(): array
     {
         return Cache::remember('admin_student_analytics', 600, function () {
-            $allStudents = $this->userRepo->getUsersByRoleAndApproval(3, true, null, null);
-            $materials = $this->materialRepo->getAllWithQuestionsAndConfigs();
+            $allStudents              = $this->userRepo->getUsersByRoleAndApproval(3, true, null, null);
+            $materials                = $this->materialRepo->getAllWithQuestionsAndConfigs();
             $totalConfiguredQuestions = ProgressHelper::calculateTotalQuestions($materials);
 
             $distribution = [
-                '0%' => 0,
-                '1-25%' => 0,
-                '26-50%' => 0,
-                '51-75%' => 0,
+                '0%'      => 0,
+                '1-25%'   => 0,
+                '26-50%'  => 0,
+                '51-75%'  => 0,
                 '76-100%' => 0,
             ];
 
             foreach ($allStudents as $student) {
                 $correctCount = $student->quizAttempts->where('is_correct', true)->pluck('question_id')->unique()->count();
-                $progress = ProgressHelper::calculateProgressPercentage($correctCount, $totalConfiguredQuestions);
+                $progress     = ProgressHelper::calculateProgressPercentage($correctCount, $totalConfiguredQuestions);
 
                 if ($progress == 0) {
                     $distribution['0%']++;
-                }
-                elseif ($progress <= 25) {
+                } elseif ($progress <= 25) {
                     $distribution['1-25%']++;
-                }
-                elseif ($progress <= 50) {
+                } elseif ($progress <= 50) {
                     $distribution['26-50%']++;
-                }
-                elseif ($progress <= 75) {
+                } elseif ($progress <= 75) {
                     $distribution['51-75%']++;
-                }
-                else {
+                } else {
                     $distribution['76-100%']++;
                 }
             }
@@ -148,10 +145,10 @@ class AdminDashboardService implements AdminDashboardServiceInterface
             $moduleStats = $this->getMaterialStatistics();
 
             return [
-                'distribution' => $distribution,
+                'distribution'      => $distribution,
                 'modulePerformance' => [
                     'labels' => $moduleStats->pluck('title'),
-                    'data' => $moduleStats->pluck('completion_rate'),
+                    'data'   => $moduleStats->pluck('completion_rate'),
                 ],
             ];
         });

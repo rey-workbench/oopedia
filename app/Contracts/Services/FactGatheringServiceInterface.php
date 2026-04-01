@@ -17,5 +17,5 @@ interface FactGatheringServiceInterface
         string $questionId,
         string $materialId,
         ?string $moduleId = null,
-        ): array;
+    ): array;
 }

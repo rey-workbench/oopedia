@@ -6,6 +6,7 @@ use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Contracts\Services\UserServiceInterface;
 use App\Exceptions\Domain\UserNotFoundException;
 use App\Mail\AdminApproved;
+use App\Models\Role;
 use App\Models\User;
 use App\Services\User\Concerns\ImportsCsvUsers;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -19,11 +20,9 @@ class UserService implements UserServiceInterface
 {
     use ImportsCsvUsers;
 
-    public function __construct(protected
-        UserRepositoryInterface $userRepo,
-        )
-    {
-    }
+    public function __construct(
+        protected UserRepositoryInterface $userRepo,
+    ) {}
 
     public function getUserById(string $id): ?User
     {
@@ -37,8 +36,8 @@ class UserService implements UserServiceInterface
 
     public function createAdmin(array $data): User
     {
-        $data['password'] = Hash::make($data['password']);
-        $data['role_id'] = \App\Models\Role::where('role_name', 'dosen')->value('id');
+        $data['password']    = Hash::make($data['password']);
+        $data['role_id']     = Role::where('role_name', 'dosen')->value('id');
         $data['is_approved'] = true;
 
         return $this->userRepo->create($data);
@@ -56,10 +55,9 @@ class UserService implements UserServiceInterface
 
     protected function updateUser(string $userId, array $data): User
     {
-        if (isset($data['password']) && !empty($data['password'])) {
+        if (isset($data['password']) && ! empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
-        }
-        else {
+        } else {
             unset($data['password']);
         }
 
@@ -70,7 +68,7 @@ class UserService implements UserServiceInterface
     {
         $user = $this->userRepo->find($userId);
 
-        if (!$user) {
+        if (! $user) {
             throw new UserNotFoundException($userId);
         }
 
@@ -95,7 +93,7 @@ class UserService implements UserServiceInterface
     {
         $user = $this->userRepo->find($userId);
 
-        if (!$user) {
+        if (! $user) {
             throw new UserNotFoundException($userId);
         }
 
@@ -114,14 +112,14 @@ class UserService implements UserServiceInterface
     {
         $data['password'] = Hash::make($data['password']);
 
-        $roleDosenId = \App\Models\Role::where('role_name', 'dosen')->value('id');
-        $roleMahasiswaId = \App\Models\Role::where('role_name', 'mahasiswa')->value('id');
+        $roleDosenId     = Role::where('role_name', 'dosen')->value('id');
+        $roleMahasiswaId = Role::where('role_name', 'mahasiswa')->value('id');
 
-        if (!isset($data['role_id'])) {
+        if (! isset($data['role_id'])) {
             $data['role_id'] = str_ends_with($data['email'], '@admin.oopedia.com') ? $roleDosenId : $roleMahasiswaId;
         }
 
-        if (!isset($data['is_approved'])) {
+        if (! isset($data['is_approved'])) {
             $data['is_approved'] = ($data['role_id'] === $roleDosenId);
         }
 

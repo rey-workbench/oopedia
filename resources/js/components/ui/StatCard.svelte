@@ -1,6 +1,6 @@
 <script lang="ts">
     import Card from '@/components/ui/Card.svelte';
-    import type { Snippet, Component } from 'svelte';
+    import type { Component } from 'svelte';
 
     type IconType = Component<{ size?: number; strokeWidth?: number }> | string;
 

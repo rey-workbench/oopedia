@@ -7,7 +7,10 @@
     import { ROUTES } from '@/utils/route';
     import { RegisterState } from '@/states/Auth/AuthState.svelte';
 
-    const state = new RegisterState();
+    const state = new RegisterState({
+        showSuccessToast: 'Registrasi berhasil!',
+        showErrorToast: true,
+    });
 </script>
 
 <App variant="auth" title="Daftar - OOPedia">

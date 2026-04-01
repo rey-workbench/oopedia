@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { AlertCircle, ChevronDown, Check } from 'lucide-svelte';
+    import { AlertCircle, ChevronDown } from 'lucide-svelte';
 
     interface Option {
         value: string | number;
@@ -54,7 +54,7 @@
         onchange?.(target.value);
     }
 
-    const selectedOption = $derived(options.find((opt) => String(opt.value) === String(value)));
+
 </script>
 
 <div class={`w-full space-y-2 ${className}`}>

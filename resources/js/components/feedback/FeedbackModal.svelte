@@ -110,7 +110,7 @@
         {:else if variant === 'intervention'}
             <InterventionFeedback
                 message={state.feedbackData.message}
-                status={state.feedbackData.status}
+                status={state.feedbackData.status as 'success' | 'wrong'}
                 {nextAction}
                 {recommendation}
                 onContinue={() => state.handleNext()}
@@ -124,7 +124,7 @@
             />
         {:else if state.feedbackData}
             <ResultFeedback
-                status={state.feedbackData.status}
+                status={state.feedbackData.status as 'success' | 'wrong'}
                 message={state.feedbackData.message}
                 {nextAction}
                 {nextActionType}

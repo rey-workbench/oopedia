@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Services\StudentServiceInterface;
+use App\DTOs\User\StudentCreateDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Student\ImportStudentRequest;
 use App\Http\Requests\Student\StoreStudentRequest;
@@ -47,7 +48,9 @@ class AdminStudentController extends Controller
 
     public function store(StoreStudentRequest $request): RedirectResponse
     {
-        $this->studentService->createStudent($request->validated());
+        $dto = StudentCreateDTO::fromRequest($request);
+
+        $this->studentService->createStudent($dto->toArray());
 
         return redirect()->route('admin.students.index')
             ->with('success', 'Mahasiswa berhasil didaftarkan secara manual.');

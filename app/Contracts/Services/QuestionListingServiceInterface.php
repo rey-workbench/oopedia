@@ -3,6 +3,7 @@
 namespace App\Contracts\Services;
 
 use App\Models\Material;
+use App\Models\Question;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as SupportCollection;
 
@@ -23,7 +24,7 @@ interface QuestionListingServiceInterface
      * Get all materials with student progress counts.
      *
      * @param array<string, mixed> $guestProgress
-     * @return Collection<int, \App\Models\Material>
+     * @return Collection<int, Material>
      */
     public function getMaterialsListWithStudentCount(string $userId, bool $isGuest, array $guestProgress = [], array $unlockedModules = []): Collection;
 
@@ -31,7 +32,7 @@ interface QuestionListingServiceInterface
      * Get questions for the review/report view.
      *
      * @param array<string, mixed> $guestProgress
-     * @return Collection<int, \App\Models\Question>
+     * @return Collection<int, Question>
      */
     public function getReviewQuestions(Material $material, ?string $difficulty, string $userId, bool $isGuest, array $guestProgress = []): Collection;
 

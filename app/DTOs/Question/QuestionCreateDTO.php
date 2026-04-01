@@ -62,6 +62,7 @@ readonly class QuestionCreateDTO
             'question_type'   => $this->question_type,
             'difficulty'      => $this->difficulty,
             'created_by'      => $this->created_by,
+            'answers'         => $this->answers,
         ];
     }
 }

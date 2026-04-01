@@ -12,7 +12,7 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
     public function create(array $data): QuizAttempt
     {
         return DB::transaction(function () use ($data) {
-            if (!isset($data['attempt_number'])) {
+            if (! isset($data['attempt_number'])) {
                 $data['attempt_number'] = QuizAttempt::query()->where('user_id', '=', $data['user_id'])
                     ->where('question_id', '=', $data['question_id'])
                     ->lockForUpdate()
@@ -93,7 +93,7 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
     /** @return array<string, mixed> */
     public function getUserStats(string $userId): array
     {
-        return (array)QuizAttempt::select(
+        return (array) QuizAttempt::select(
             DB::raw('COUNT(DISTINCT question_id) as total_attempted'),
             DB::raw('SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) as total_correct'),
             DB::raw('COUNT(*) as total_attempts'),

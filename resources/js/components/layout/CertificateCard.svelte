@@ -123,7 +123,7 @@
         style="border-color: {typeConfig.borderColor}; min-height: 380px;"
     >
         <!-- Background gradient -->
-        <div class="bg-linear-to-br {typeConfig.bgGradient} absolute inset-0" />
+        <div class="bg-linear-to-br {typeConfig.bgGradient} absolute inset-0"></div>
 
         <!-- Decorative corner patterns -->
         <div class="absolute top-0 left-0 h-28 w-28 opacity-20">
@@ -158,17 +158,17 @@
         <div
             class="absolute inset-3 rounded-xl border-2 pointer-events-none opacity-30"
             style="border-color: {typeConfig.borderColor}"
-        />
+        ></div>
 
         <!-- Content -->
         <div class="relative z-10 flex flex-col items-center px-10 py-10 text-center">
             <!-- Header -->
             <div class="mb-2 flex items-center gap-3">
-                <div class="h-px flex-1 opacity-30" style="background: {typeConfig.borderColor}" />
+                <div class="h-px flex-1 opacity-30" style="background: {typeConfig.borderColor}"></div>
                 <p class="text-[10px] font-black tracking-[0.3em] uppercase" style="color: {typeConfig.accent}">
                     OOPEDIA • POLITEKNIK NEGERI MALANG
                 </p>
-                <div class="h-px flex-1 opacity-30" style="background: {typeConfig.borderColor}" />
+                <div class="h-px flex-1 opacity-30" style="background: {typeConfig.borderColor}"></div>
             </div>
 
             <!-- Certificate of Completion text (Udemy style) -->
@@ -204,9 +204,9 @@
 
             <!-- Divider -->
             <div class="my-3 flex items-center gap-2">
-                <div class="h-px w-16 opacity-40" style="background: {typeConfig.borderColor}" />
+                <div class="h-px w-16 opacity-40" style="background: {typeConfig.borderColor}"></div>
                 <CheckCircle size={14} style="color: {typeConfig.borderColor}" />
-                <div class="h-px w-16 opacity-40" style="background: {typeConfig.borderColor}" />
+                <div class="h-px w-16 opacity-40" style="background: {typeConfig.borderColor}"></div>
             </div>
 
             <!-- Description -->

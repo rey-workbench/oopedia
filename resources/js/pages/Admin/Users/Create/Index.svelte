@@ -12,7 +12,7 @@
     const state = new UserFormState(null);
     const form = state.form;
 
-    const roleOptions = roles.map((r) => ({ value: r.id, label: r.name }));
+    const roleOptions = $derived(roles.map((r) => ({ value: r.id, label: r.name })));
 </script>
 
 <App title="Pembuatan Administrator">

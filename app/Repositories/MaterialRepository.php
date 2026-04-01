@@ -43,7 +43,7 @@ class MaterialRepository implements MaterialRepositoryInterface
         $material = Material::query()->find($id, ['*']);
 
         if ($material) {
-            return (bool)$material->delete();
+            return (bool) $material->delete();
         }
 
         return false;
@@ -116,8 +116,7 @@ class MaterialRepository implements MaterialRepositoryInterface
         ?string $search = null,
         string $sort = 'created_at',
         string $direction = 'asc',
-        ): Collection
-    {
+    ): Collection {
         $query = Material::query();
 
         if ($search) {
@@ -128,8 +127,7 @@ class MaterialRepository implements MaterialRepositoryInterface
 
         if (in_array($sort, $allowedSortFields)) {
             $query->orderBy($sort, $direction);
-        }
-        else {
+        } else {
             $query->orderBy('created_at', 'asc');
         }
 
@@ -140,7 +138,7 @@ class MaterialRepository implements MaterialRepositoryInterface
     {
         $query = Material::query();
 
-        if (!empty($relations)) {
+        if (! empty($relations)) {
             $query->with($relations);
         }
 

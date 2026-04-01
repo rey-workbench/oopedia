@@ -14,13 +14,13 @@ class StoreQuestionRequest extends BaseFormRequest
             : 'required|array|min:2';
 
         $rules = [
-            'question_text' => 'required|string',
-            'question_type' => 'required|in:radio_button,drag_and_drop,fill_in_the_blank',
-            'difficulty' => 'required|in:beginner,medium,hard',
-            'material_id' => 'required|exists:materials,id',
-            'sub_material_id' => 'nullable|exists:sub_materials,id',
-            'answers' => $answersMinRule,
-            'answers.*.is_correct' => 'required|boolean',
+            'question_text'         => 'required|string',
+            'question_type'         => 'required|in:radio_button,drag_and_drop,fill_in_the_blank',
+            'difficulty'            => 'required|in:beginner,medium,hard',
+            'material_id'           => 'required|exists:materials,id',
+            'sub_material_id'       => 'nullable|exists:sub_materials,id',
+            'answers'               => $answersMinRule,
+            'answers.*.is_correct'  => 'required|boolean',
             'answers.*.explanation' => 'nullable|string',
         ];
 
@@ -28,8 +28,7 @@ class StoreQuestionRequest extends BaseFormRequest
             $rules['answers.*.drag_source'] = 'nullable|string';
             $rules['answers.*.drag_target'] = 'nullable|string';
             $rules['answers.*.answer_text'] = 'required|string';
-        }
-        else {
+        } else {
             $rules['answers.*.answer_text'] = 'required|string';
             $rules['answers.*.drag_source'] = 'nullable|string';
             $rules['answers.*.drag_target'] = 'nullable|string';

@@ -7,12 +7,14 @@
     import Pagination from '@/components/ui/Pagination.svelte';
     import Select from '@/components/ui/Select.svelte';
     import { ROUTES } from '@/utils/route';
-    import { FlaskConical, Plus, Eye, Pencil, Trash2, Search, Edit2 } from 'lucide-svelte';
+    import { FlaskConical, Plus, Trash2, Search, Edit2, ArrowLeft } from 'lucide-svelte';
     import { QuestionListAdminState } from '@/states/Admin/QuestionState.svelte';
     import { untrack } from 'svelte';
     import Badge from '@/components/ui/Badge.svelte';
 
-    let { questions = [], materials = [] } = $props();
+    import type { Pagination as PaginationType, Question } from '@/types';
+
+    let { questions } = $props<{ questions: PaginationType<Question> }>();
 
     const state = untrack(() => new QuestionListAdminState(questions, null, '', ''));
 

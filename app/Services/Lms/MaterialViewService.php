@@ -14,7 +14,10 @@ use Illuminate\Database\Eloquent\Collection;
 
 class MaterialViewService implements MaterialViewServiceInterface
 {
-    public function __construct(protected MaterialRepositoryInterface $materialRepo, protected ProgressRepositoryInterface $progressRepo, protected SubMaterialRepositoryInterface $subMaterialRepo,
+    public function __construct(
+        protected MaterialRepositoryInterface $materialRepo,
+        protected ProgressRepositoryInterface $progressRepo,
+        protected SubMaterialRepositoryInterface $subMaterialRepo,
     ) {}
 
     /** @return Collection<int, Material> */

@@ -29,8 +29,8 @@ class Material extends Model
 
     protected $casts = [
         'is_final_project' => 'boolean',
-        'module_id' => 'string',
-        'created_by' => 'string',
+        'module_id'        => 'string',
+        'created_by'       => 'string',
     ];
 
     // ==================== RELATIONSHIPS ====================
@@ -52,7 +52,7 @@ class Material extends Model
 
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(User::class , 'created_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     // ==================== SCOPES ====================

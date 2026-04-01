@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 
 readonly class UserRegistrationDTO
 {
+    public string $roleName;
+
+    public bool $isDosen;
+
     public function __construct(
         public string $name,
         public string $email,
@@ -17,19 +21,23 @@ readonly class UserRegistrationDTO
 
     public static function fromRequest(Request $request): self
     {
-        // Determine role by email domain
         $roleName    = str_ends_with($request->input('email'), '@admin.oopedia.com') ? 'dosen' : 'mahasiswa';
         $role        = Role::where('role_name', $roleName)->first();
         $role_id     = $role?->id ?? '';
         $is_approved = $roleName === 'dosen';
 
-        return new self(
+        $dto = new self(
             name: $request->input('name'),
             email: $request->input('email'),
             password: $request->input('password'),
             role_id: $role_id,
             is_approved: $is_approved,
         );
+
+        $dto->roleName = $roleName;
+        $dto->isDosen  = $roleName === 'dosen';
+
+        return $dto;
     }
 
     public function toArray(): array

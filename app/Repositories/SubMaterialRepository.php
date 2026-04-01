@@ -28,11 +28,11 @@ class SubMaterialRepository implements SubMaterialRepositoryInterface
     {
         $subMaterial = $this->find($id, ['*']);
 
-        if (!$subMaterial) {
+        if (! $subMaterial) {
             return false;
         }
 
-        return (bool)$subMaterial->update($data);
+        return (bool) $subMaterial->update($data);
     }
 
     public function delete(string $id): bool

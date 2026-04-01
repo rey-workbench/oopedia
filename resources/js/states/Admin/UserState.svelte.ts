@@ -73,7 +73,7 @@ export class UserFormState extends FormState<{
                     : 'Pemula',
                 xp: (user as any)?.gamification ? (user as any).global_xp : 0,
             },
-            !!user
+            { isEdit: !!user }
         );
 
         this.targetUser = user;

@@ -6,6 +6,7 @@ use App\Models\Material;
 use App\Models\User;
 use Closure;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Component;
 
@@ -34,7 +35,7 @@ class Sidebar extends Component
     /**
      * Materials collection for menu.
      *
-     * @var \Illuminate\Database\Eloquent\Collection|null
+     * @var Collection|null
      */
     public $materials;
 
@@ -71,6 +72,7 @@ class Sidebar extends Component
         }
 
         $user = Auth::user();
+
         return $user->role?->role_name ?? 'guest';
     }
 
@@ -96,7 +98,7 @@ class Sidebar extends Component
     /**
      * Load materials for sidebar menu.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     protected function loadMaterials()
     {
@@ -151,6 +153,7 @@ class Sidebar extends Component
         if (! Auth::check()) {
             return 'mahasiswa.dashboard';
         }
+
         return (Auth::user()->role?->role_name ?? 'mahasiswa') === 'mahasiswa' ? 'mahasiswa.dashboard' : 'admin.dashboard';
     }
 
@@ -171,7 +174,7 @@ class Sidebar extends Component
     /**
      * Get materials for sidebar based on user role.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     public function getSidebarMaterials()
     {

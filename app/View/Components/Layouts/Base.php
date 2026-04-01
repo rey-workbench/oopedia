@@ -64,6 +64,7 @@ class Base extends Component
         }
 
         $user = Auth::user();
+
         return $user->role?->role_name ?? 'guest';
     }
 

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Repositories\RoleRepositoryInterface;
 use App\Contracts\Services\UserServiceInterface;
+use App\DTOs\User\AdminCreateDTO;
+use App\DTOs\User\AdminUpdateDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ImportAdminRequest;
 use App\Http\Requests\User\StoreAdminRequest;
@@ -39,7 +41,9 @@ class AdminUserController extends Controller
 
     public function store(StoreAdminRequest $request): RedirectResponse
     {
-        $this->userService->createAdmin($request->validated());
+        $dto = AdminCreateDTO::fromRequest($request);
+
+        $this->userService->createAdmin($dto->toArray());
 
         return redirect()->route('admin.users.index')
             ->with('success', 'Admin berhasil ditambahkan');
@@ -71,7 +75,9 @@ class AdminUserController extends Controller
                 ->with('error', 'User tidak ditemukan');
         }
 
-        $this->userService->updateAdmin($userId, $request->validated());
+        $dto = AdminUpdateDTO::fromRequest($request);
+
+        $this->userService->updateAdmin($userId, $dto->toArray());
 
         return redirect()->route('admin.users.index')
             ->with('success', 'Data admin berhasil diperbarui');

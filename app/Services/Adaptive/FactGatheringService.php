@@ -19,9 +19,11 @@ class FactGatheringService implements FactGatheringServiceInterface
 {
     // ==================== SCORE THRESHOLDS (G01-G04) ====================
     private const SCORE_CRITICAL_MAX  = 50;   // < 50  ? G01
+
     private const SCORE_REMEDIAL_MAX  = 75;   // 50-74 ? G02
+
     private const SCORE_STANDARD_MAX  = 90;   // 75-89 ? G03
-                                               // = 90  ? G04
+    // = 90  ? G04
 
     // ==================== TIME THRESHOLDS (G05-G06) ====================
     // Canonical values live in AdaptiveConstants::ALLOCATED_TIME and AdaptiveConstants::TIME_FAST_THRESHOLD
@@ -239,16 +241,16 @@ class FactGatheringService implements FactGatheringServiceInterface
     protected function hasSatisfactoryProgress(string $userId, string $materialId, string $difficulty = 'all'): bool
     {
         $answeredIds = $this->progressRepo->getAnsweredQuestionIds($userId, $materialId);
-        
+
         if ($difficulty === 'all' || $difficulty === 'final') {
             $answeredCount  = $answeredIds->count();
             $totalQuestions = $this->questionRepo->countByMaterial($materialId);
         } else {
-            $allQuestions = $this->questionRepo->getByMaterialAndDifficulty($materialId, 'all');
+            $allQuestions        = $this->questionRepo->getByMaterialAndDifficulty($materialId, 'all');
             $difficultyQuestions = $allQuestions->where('difficulty', $difficulty);
-            
+
             $totalQuestions = $difficultyQuestions->count();
-            $answeredCount = $difficultyQuestions->filter(fn($q) => $answeredIds->contains($q->id))->count();
+            $answeredCount  = $difficultyQuestions->filter(fn ($q) => $answeredIds->contains($q->id))->count();
         }
 
         if ($totalQuestions === 0) {

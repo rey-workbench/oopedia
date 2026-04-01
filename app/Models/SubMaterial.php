@@ -31,7 +31,7 @@ class SubMaterial extends Model
 
     protected $casts = [
         'material_id' => 'string',
-        'order' => 'integer',
+        'order'       => 'integer',
     ];
 
     // ==================== RELATIONSHIPS ====================

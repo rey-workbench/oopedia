@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Services\MaterialServiceInterface;
 use App\Contracts\Services\QuestionServiceInterface;
+use App\DTOs\Question\QuestionCreateDTO;
+use App\DTOs\Question\QuestionUpdateDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Question\StoreQuestionRequest;
 use App\Http\Requests\Question\UpdateQuestionRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
 class QuestionController extends Controller
@@ -62,35 +65,18 @@ class QuestionController extends Controller
 
     public function store(StoreQuestionRequest $request): RedirectResponse
     {
-        $answers = $request->input('answers', []);
+        $dto = QuestionCreateDTO::fromRequest($request, Auth::id());
 
-        if (in_array($request->question_type, ['radio_button', 'fill_in_the_blank'])) {
-            if ($request->has('correct_answer')) {
-                $correctIndex = $request->correct_answer;
-                $answers      = array_map(function ($answer, $index) use ($correctIndex) {
-                    $answer['is_correct'] = ($index == $correctIndex) ? 1 : 0;
+        $correctCount = collect($dto->answers)->where('is_correct', '1')->count();
 
-                    return $answer;
-                }, $answers, array_keys($answers));
-
-                $correctCount = collect($answers)->sum('is_correct');
-
-                if ($correctCount !== 1) {
-                    return redirect()->back()->withInput()
-                        ->with('error', ucfirst(str_replace('_', ' ', $request->question_type)) . ' questions must have exactly one correct answer.');
-                }
-            } else {
-                return redirect()->back()->withInput()
-                    ->with('error', 'Please select the correct answer.');
-            }
+        if (in_array($dto->question_type, ['radio_button', 'fill_in_the_blank']) && $correctCount !== 1) {
+            return redirect()->back()->withInput()
+                ->with('error', ucfirst(str_replace('_', ' ', $dto->question_type)) . ' questions must have exactly one correct answer.');
         }
 
-        $data            = $request->only(['question_text', 'question_type', 'difficulty', 'material_id', 'sub_material_id']);
-        $data['answers'] = $answers;
+        $this->questionService->createQuestion($dto->toArray());
 
-        $this->questionService->createQuestion($data);
-
-        $redirectParams = $request->material_id ? ['material' => $request->material_id] : [];
+        $redirectParams = $dto->material_id ? ['material' => $dto->material_id] : [];
 
         return redirect()->route('admin.questions.index', $redirectParams)
             ->with('success', 'Soal berhasil ditambahkan.');
@@ -114,23 +100,20 @@ class QuestionController extends Controller
 
     public function update(UpdateQuestionRequest $request, string $questionId): RedirectResponse
     {
-        $questionType = $request->question_type;
+        $dto = QuestionUpdateDTO::fromRequest($request);
 
-        if (in_array($questionType, ['radio_button', 'fill_in_the_blank'])) {
-            $correctCount = collect($request->answers)->where('is_correct', '1')->count();
+        if (in_array($dto->question_type, ['radio_button', 'fill_in_the_blank'])) {
+            $correctCount = collect($dto->answers)->where('is_correct', '1')->count();
 
             if ($correctCount !== 1) {
                 return back()->withInput()
-                    ->with('error', ucfirst(str_replace('_', ' ', $questionType)) . ' Pertanyaan hanya boleh memiliki 1 jawaban benar.');
+                    ->with('error', ucfirst(str_replace('_', ' ', $dto->question_type)) . ' Pertanyaan hanya boleh memiliki 1 jawaban benar.');
             }
         }
 
-        $data            = $request->only(['question_text', 'question_type', 'difficulty', 'material_id', 'sub_material_id']);
-        $data['answers'] = $request->input('answers');
+        $this->questionService->updateQuestion($questionId, $dto->toArray());
 
-        $this->questionService->updateQuestion($questionId, $data);
-
-        $redirectParams = $request->material_id ? ['material' => $request->material_id] : [];
+        $redirectParams = $dto->material_id ? ['material' => $dto->material_id] : [];
 
         return redirect()->route('admin.questions.index', $redirectParams)
             ->with('success', 'Soal berhasil diperbarui.');

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property array<string,mixed> $learning_profile
  * @property array<string,mixed> $performance_metrics
  * @property array<string,mixed> $adaptive_state
- * @property \Carbon\Carbon|null $last_active_at
+ * @property Carbon|null $last_active_at
  * @property-read int            $global_xp
  * @property-read string         $current_level
  * @property-read int            $current_streak
