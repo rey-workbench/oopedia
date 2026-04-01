@@ -74,19 +74,4 @@ class Question extends Model
     }
 
     // ==================== SCOPES ====================
-
-    public function scopeByDifficulty($query, string $difficulty)
-    {
-        return $query->where('difficulty', $difficulty);
-    }
-
-    public function scopeByTypeAdaptive($query, string $type)
-    {
-        return $query->where('question_type', $type);
-    }
-
-    public function scopeFinalProject($query)
-    {
-        return $query->where('difficulty', 'final');
-    }
 }

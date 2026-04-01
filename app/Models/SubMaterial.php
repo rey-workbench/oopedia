@@ -52,14 +52,4 @@ class SubMaterial extends Model
     {
         return $query->orderBy('order');
     }
-
-    public function scopeByJenis($query, string $jenis)
-    {
-        return $query->where('jenis_konten', $jenis);
-    }
-
-    public function scopeByLearningStyle($query, string $style)
-    {
-        return $query->where('learning_style', $style);
-    }
 }

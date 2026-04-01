@@ -54,27 +54,4 @@ class Material extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
-
-    // ==================== SCOPES ====================
-
-    public function scopeByModule($query, int $moduleId)
-    {
-        return $query->where('module_id', $moduleId);
-    }
-
-    // ==================== METHODS ====================
-
-    public function getNextMaterial(): ?self
-    {
-        return self::where('module_id', '>', $this->module_id)
-            ->orderBy('module_id', 'asc')
-            ->first();
-    }
-
-    public function getPreviousMaterial(): ?self
-    {
-        return self::where('module_id', '<', $this->module_id)
-            ->orderBy('module_id', 'desc')
-            ->first();
-    }
 }

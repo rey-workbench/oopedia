@@ -45,7 +45,7 @@ class ProfileController extends Controller
         ];
 
         /** @var array<string, string> $rawCertifications */
-        $rawCertifications = $studentState?->gamification_data['certifications'] ?? [];
+        $rawCertifications = $studentState?->learning_profile['certifications'] ?? [];
         $certifications    = collect($rawCertifications)
             ->map(function (string $type, string $materialId): array {
                 $material = $this->materialRepo->find($materialId);

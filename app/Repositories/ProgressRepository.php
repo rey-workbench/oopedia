@@ -7,6 +7,7 @@ use App\Models\Material;
 use App\Models\Question;
 use App\Models\QuizAttempt;
 use App\Models\StudentState;
+use App\Schemas\StudentStateSchema;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -196,23 +197,23 @@ class ProgressRepository implements ProgressRepositoryInterface
         $state = StudentState::firstOrNew(['user_id' => $userId]);
 
         $state->gamification_data = array_merge($state->gamification_data ?? [], [
-            'global_xp'      => $attributes['global_xp']      ?? ($state->gamification_data['global_xp']      ?? 0),
-            'current_level'  => $attributes['current_level']  ?? ($state->gamification_data['current_level']  ?? 'Pemula'),
-            'current_streak' => $attributes['current_streak'] ?? ($state->gamification_data['current_streak'] ?? 0),
-            'max_streak'     => $attributes['max_streak']     ?? ($state->gamification_data['max_streak']     ?? 0),
+            StudentStateSchema::KEY_GLOBAL_XP      => $attributes[StudentStateSchema::KEY_GLOBAL_XP]      ?? ($state->gamification_data[StudentStateSchema::KEY_GLOBAL_XP]      ?? 0),
+            StudentStateSchema::KEY_CURRENT_LEVEL  => $attributes[StudentStateSchema::KEY_CURRENT_LEVEL]  ?? ($state->gamification_data[StudentStateSchema::KEY_CURRENT_LEVEL]  ?? 'Pemula'),
+            StudentStateSchema::KEY_CURRENT_STREAK => $attributes[StudentStateSchema::KEY_CURRENT_STREAK] ?? ($state->gamification_data[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0),
+            StudentStateSchema::KEY_MAX_STREAK     => $attributes[StudentStateSchema::KEY_MAX_STREAK]     ?? ($state->gamification_data[StudentStateSchema::KEY_MAX_STREAK]     ?? 0),
         ]);
 
         $state->performance_metrics = array_merge($state->performance_metrics ?? [], [
-            'total_questions_answered' => $attributes['total_questions_answered'] ?? ($state->performance_metrics['total_questions_answered'] ?? 0),
-            'correct_count'            => $attributes['correct_count']            ?? ($state->performance_metrics['correct_count']            ?? 0),
-            'wrong_count'              => $attributes['wrong_count']              ?? ($state->performance_metrics['wrong_count']              ?? 0),
-            'wrong_streak'             => $attributes['wrong_streak']             ?? ($state->performance_metrics['wrong_streak']             ?? 0),
-            'hints_used_count'         => $attributes['hints_used_count']         ?? ($state->performance_metrics['hints_used_count']         ?? 0),
-            'hints_available'          => $attributes['hints_available']          ?? ($state->performance_metrics['hints_available']          ?? 3),
+            StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED => $attributes[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] ?? ($state->performance_metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] ?? 0),
+            StudentStateSchema::KEY_CORRECT_COUNT            => $attributes[StudentStateSchema::KEY_CORRECT_COUNT]            ?? ($state->performance_metrics[StudentStateSchema::KEY_CORRECT_COUNT]            ?? 0),
+            StudentStateSchema::KEY_WRONG_COUNT              => $attributes[StudentStateSchema::KEY_WRONG_COUNT]              ?? ($state->performance_metrics[StudentStateSchema::KEY_WRONG_COUNT]              ?? 0),
+            StudentStateSchema::KEY_WRONG_STREAK             => $attributes[StudentStateSchema::KEY_WRONG_STREAK]             ?? ($state->performance_metrics[StudentStateSchema::KEY_WRONG_STREAK]             ?? 0),
+            StudentStateSchema::KEY_HINTS_USED_COUNT         => $attributes[StudentStateSchema::KEY_HINTS_USED_COUNT]         ?? ($state->performance_metrics[StudentStateSchema::KEY_HINTS_USED_COUNT]         ?? 0),
+            StudentStateSchema::KEY_HINTS_AVAILABLE          => $attributes[StudentStateSchema::KEY_HINTS_AVAILABLE]          ?? ($state->performance_metrics[StudentStateSchema::KEY_HINTS_AVAILABLE]          ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE),
         ]);
 
         $state->learning_profile = array_merge($state->learning_profile ?? [], [
-            'learning_style' => $attributes['learning_style'] ?? ($state->learning_profile['learning_style'] ?? 'visual'),
+            StudentStateSchema::KEY_LEARNING_STYLE => $attributes[StudentStateSchema::KEY_LEARNING_STYLE] ?? ($state->learning_profile[StudentStateSchema::KEY_LEARNING_STYLE] ?? 'visual'),
         ]);
 
         $state->last_active_at = now();

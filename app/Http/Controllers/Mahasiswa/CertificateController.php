@@ -21,7 +21,7 @@ class CertificateController extends Controller
         $state  = $this->progressRepo->getOrCreateStudentState($userId);
 
         /** @var array<string, string> $rawCertifications */
-        $rawCertifications = $state->gamification_data['certifications'] ?? [];
+        $rawCertifications = $state->learning_profile['certifications'] ?? [];
 
         $certifications = collect($rawCertifications)
             ->map(function (string $type, string $materialId): array {

@@ -11,18 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Drop if exists to ensure fresh start for this refactor
         Schema::dropIfExists('student_states');
 
         Schema::create('student_states', function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->foreignUlid('user_id')->constrained()->cascadeOnDelete();
 
-            // JSON Data Structures
-            $table->json('gamification_data')->nullable(); // global_xp, current_level, current_streak, max_streak, badges
-            $table->json('learning_profile')->nullable(); // learning_style, mastery_levels, unlocked_modules
-            $table->json('performance_metrics')->nullable(); // total_questions, correct_count, wrong_count, hints
-            $table->json('adaptive_state')->nullable(); // fast_track, current_module, etc.
+            // gamification_data: { global_xp: int, current_level: string, current_streak: int, max_streak: int, badges: array }
+            $table->json('gamification_data')->nullable();
+
+            // learning_profile: { learning_style: string, unlocked_modules: array, certifications: array }
+            $table->json('learning_profile')->nullable();
+
+            // performance_metrics: { total_questions_answered: int, correct_count: int, wrong_count: int, wrong_streak: int, hints_used_count: int, hints_available: int }
+            $table->json('performance_metrics')->nullable();
+
+            // adaptive_state: { fast_track_active: bool, current_material_id: string|null, target_difficulty: string|null, module_progress: object, time_metrics: { avg_time_per_question: int, total_time_spent: int } }
+            $table->json('adaptive_state')->nullable();
 
             $table->timestamp('last_active_at')->nullable();
             $table->timestamps();
