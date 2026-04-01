@@ -99,7 +99,7 @@ class MaterialRepository implements MaterialRepositoryInterface
 
         foreach ($material->questions as $question) {
             if ($question->question_type !== 'fill_in_the_blank') {
-                $question->answers = $question->answers->shuffle();
+                $question->setRelation('answers', $question->answers->shuffled());
             }
         }
 
