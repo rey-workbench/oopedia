@@ -56,7 +56,7 @@ class DashboardService implements DashboardServiceInterface
                 ->map(fn ($activity) => $this->addActivityType($activity))
                 ->pipe(fn ($activities) => $this->deduplicateActivities($activities, 5));
 
-            $studentState   = StudentState::find($userId, ['*']);
+            $studentState   = StudentState::find($userId);
             $certifications = $studentState?->learning_profile['certifications'] ?? [];
 
             return [

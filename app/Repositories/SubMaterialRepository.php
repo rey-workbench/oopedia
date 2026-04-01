@@ -16,7 +16,7 @@ class SubMaterialRepository implements SubMaterialRepositoryInterface
 
     public function find(string $id): ?SubMaterial
     {
-        return SubMaterial::find($id, ['*']);
+        return SubMaterial::find($id);
     }
 
     public function create(array $data): SubMaterial
@@ -26,7 +26,7 @@ class SubMaterialRepository implements SubMaterialRepositoryInterface
 
     public function update(string $id, array $data): bool
     {
-        $subMaterial = $this->find($id, ['*']);
+        $subMaterial = $this->find($id);
 
         if (! $subMaterial) {
             return false;
@@ -37,7 +37,7 @@ class SubMaterialRepository implements SubMaterialRepositoryInterface
 
     public function delete(string $id): bool
     {
-        $subMaterial = $this->find($id, ['*']);
+        $subMaterial = $this->find($id);
 
         if ($subMaterial) {
             $result = $subMaterial->delete();

@@ -27,7 +27,7 @@ class MaterialRepository implements MaterialRepositoryInterface
 
     public function update(string $id, array $data): ?Material
     {
-        $material = Material::find($id, ['*']);
+        $material = Material::find($id);
 
         if ($material) {
             $material->update($data);
@@ -40,7 +40,7 @@ class MaterialRepository implements MaterialRepositoryInterface
 
     public function delete(string $id): bool
     {
-        $material = Material::find($id, ['*']);
+        $material = Material::find($id);
 
         if ($material) {
             return (bool) $material->delete();

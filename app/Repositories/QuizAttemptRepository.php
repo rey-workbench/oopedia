@@ -24,7 +24,7 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
 
     public function find(string $id): ?QuizAttempt
     {
-        return QuizAttempt::find($id, ['*']);
+        return QuizAttempt::find($id);
     }
 
     /** @return Collection<int, QuizAttempt> */

@@ -17,7 +17,7 @@ class QuestionRepository implements QuestionRepositoryInterface
 
     public function find(string $id): ?Question
     {
-        return Question::find($id, ['*']);
+        return Question::find($id);
     }
 
     public function create(array $data): Question
@@ -27,7 +27,7 @@ class QuestionRepository implements QuestionRepositoryInterface
 
     public function update(string $id, array $data): ?Question
     {
-        $question = Question::find($id, ['*']);
+        $question = Question::find($id);
 
         if ($question) {
             $question->update($data);
@@ -40,7 +40,7 @@ class QuestionRepository implements QuestionRepositoryInterface
 
     public function delete(string $id): bool
     {
-        $question = Question::find($id, ['*']);
+        $question = Question::find($id);
 
         if ($question) {
             return (bool) $question->delete();

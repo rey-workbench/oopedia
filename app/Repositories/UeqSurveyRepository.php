@@ -17,7 +17,7 @@ class UeqSurveyRepository implements UeqSurveyRepositoryInterface
 
     public function find(string $id): ?UeqSurvey
     {
-        return UeqSurvey::find($id, ['*']);
+        return UeqSurvey::find($id);
     }
 
     public function create(array $data): UeqSurvey
