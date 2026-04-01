@@ -54,7 +54,7 @@ class MaterialQuestionController extends Controller
         return $this->render('Mahasiswa/Materials/Questions/Index', compact('materials', 'isGuest'));
     }
 
-    public function show(int|string $materialId, Request $request): Response|RedirectResponse
+    public function show(int|string $materialId, Request $request, ?string $sub_material = null): Response|RedirectResponse
     {
         $material = $this->materialService->getMaterialById((string) $materialId);
         if (! $material) {
@@ -70,12 +70,13 @@ class MaterialQuestionController extends Controller
         $studentStateData = $this->resolveStudentStateData($isGuest, $userId, $materialId, $targetDifficulty);
 
         $data = $this->questionListingService->getQuizData(
-            $material,
-            'all',
-            $userId,
-            $isGuest,
-            $guestProgress,
-            $targetDifficulty,
+            material: $material,
+            difficulty: 'all',
+            userId: $userId,
+            isGuest: $isGuest,
+            guestProgress: $guestProgress,
+            subMaterialId: $sub_material,
+            targetDifficulty: $targetDifficulty,
         );
 
         return $this->render('Mahasiswa/Materials/Questions/Show/Index', array_merge($data, [

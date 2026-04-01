@@ -42,12 +42,12 @@ Route::middleware(['access:guest'])->prefix('mahasiswa')->name('mahasiswa.')->gr
     Route::post('materials/{material}/reset', [MahasiswaMaterialController::class, 'reset'])->name('materials.reset');
 
     // Questions (nested under material)
-    Route::get('materials/{material}/questions/{sub_material?}', [MaterialQuestionController::class, 'show'])
-        ->middleware(BlockQuestionParameter::class)
-        ->name('materials.questions.show');
     Route::get('materials/{material}/questions/levels', [MaterialQuestionController::class, 'levels'])->name('materials.questions.levels');
     Route::get('materials/{material}/questions/review/{difficulty?}', [MaterialQuestionController::class, 'review'])->name('materials.questions.review');
     Route::post('materials/{material}/questions/{question}/check', [MaterialQuestionController::class, 'checkAnswer'])->name('materials.questions.check');
     Route::get('materials/{material}/adaptive/target-difficulty', [MaterialQuestionController::class, 'getTargetDifficulty'])->name('adaptive.target-difficulty');
     Route::get('materials/{material}/questions/{question}/attempts', [MaterialQuestionController::class, 'getAttempts'])->name('materials.questions.attempts');
+    Route::get('materials/{material}/questions/{sub_material?}', [MaterialQuestionController::class, 'show'])
+        ->middleware(BlockQuestionParameter::class)
+        ->name('materials.questions.show');
 });

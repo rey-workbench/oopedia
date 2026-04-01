@@ -62,16 +62,16 @@ class QuestionListingService implements QuestionListingServiceInterface
         // Calculate actual answered count from the remaining pool
         $actualAnsweredCount = $questions->filter(fn ($q) => $answeredQuestionIds->contains($q->id))->count();
 
-        // Logical "completed" count (answered + skipped)
-        $effectiveAnsweredCount = $actualAnsweredCount + $skippedCount;
+        // Calculate dynamic total by subtracting skipped questions
+        $dynamicTotalQuestions = $totalFilteredQuestions - $skippedCount;
 
         return [
             'material'              => $material,
             'questions'             => $questions,
             'currentQuestion'       => $currentQuestion,
-            'currentQuestionNumber' => $effectiveAnsweredCount + 1,
-            'totalQuestions'        => $totalFilteredQuestions,
-            'answeredCount'         => $effectiveAnsweredCount,
+            'currentQuestionNumber' => $actualAnsweredCount + 1,
+            'totalQuestions'        => $dynamicTotalQuestions,
+            'answeredCount'         => $actualAnsweredCount,
             'materialAnsweredCount' => $answeredQuestionIds->count(),
             'levelProgress'         => $levelProgress,
             'difficulty'            => $difficulty,
