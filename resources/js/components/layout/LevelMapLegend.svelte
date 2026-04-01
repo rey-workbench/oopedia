@@ -25,7 +25,7 @@
         <div class="flex flex-wrap items-center gap-x-10 gap-y-4">
             <div class="group flex items-center gap-3">
                 <div
-                    class="bg-primary-600 shadow-primary-200 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl text-white shadow-lg transition-transform group-hover:scale-110"
+                    class="bg-primary-600 shadow-primary-200 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl text-white shadow-lg transition-transform group-hover:scale-110"
                 >
                     <span class="text-sm font-black italic">1</span>
                 </div>

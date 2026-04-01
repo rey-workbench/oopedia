@@ -140,7 +140,7 @@
                 {#if level.status === 'locked'}
                     <!-- LOCKED NODE -->
                     <div
-                        class="relative flex h-[5.5rem] w-[5.5rem] items-center justify-center rounded-full border-[3px] border-slate-200 bg-slate-50 shadow-sm"
+                        class="relative flex h-22 w-22 items-center justify-center rounded-full border-[3px] border-slate-200 bg-slate-50 shadow-sm"
                     >
                         <span class="text-3xl font-black text-slate-300">{level.level}</span>
                         <div
@@ -156,7 +156,7 @@
                         class="group flex flex-col items-center"
                     >
                         <div
-                            class="relative flex h-[5.5rem] w-[5.5rem] items-center justify-center rounded-full border-4 border-white bg-emerald-500 shadow-lg shadow-emerald-200 transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-emerald-300"
+                            class="relative flex h-22 w-22 items-center justify-center rounded-full border-4 border-white bg-emerald-500 shadow-lg shadow-emerald-200 transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-emerald-300"
                         >
                             <span class="text-3xl font-black text-white drop-shadow-sm"
                                 >{level.level}</span
@@ -187,7 +187,7 @@
                             ></div>
                         </div>
                         <div
-                            class="bg-primary-600 ring-primary-100 shadow-primary-900/20 group-hover:bg-primary-700 relative z-10 flex h-[5.5rem] w-[5.5rem] items-center justify-center rounded-full border-4 border-white shadow-xl ring-4 transition-all duration-300 group-hover:scale-110"
+                            class="bg-primary-600 ring-primary-100 shadow-primary-900/20 group-hover:bg-primary-700 relative z-10 flex h-22 w-22 items-center justify-center rounded-full border-4 border-white shadow-xl ring-4 transition-all duration-300 group-hover:scale-110"
                         >
                             <span class="text-3xl font-black text-white drop-shadow-sm"
                                 >{level.level}</span
