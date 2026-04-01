@@ -23,16 +23,16 @@
 </script>
 
 <nav
-    class="sticky top-0 z-40 w-full border-b border-gray-100 bg-white/80 px-4 backdrop-blur-md sm:px-6 lg:px-8"
+    class="sticky top-0 z-40 w-full border-b border-black/5 bg-[#FDFDFB]/80 px-4 backdrop-blur-xl sm:px-6 lg:px-8"
 >
     <div class="flex h-16 items-center justify-between">
         <div class="flex items-center gap-4">
             <button
                 onclick={() => sidebarState.toggle()}
                 aria-label="Toggle Sidebar"
-                class="rounded-xl p-2 text-slate-500 transition-colors hover:bg-slate-50 lg:hidden"
+                class="rounded-full p-2 text-black/50 transition-colors hover:bg-black/5 lg:hidden"
             >
-                <Menu size={20} strokeWidth={2.5} />
+                <Menu size={20} strokeWidth={1.5} />
             </button>
 
             <div
@@ -43,16 +43,16 @@
                 <nav class="flex text-sm" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-3">
                         <li class="inline-flex items-center">
-                            <span class="font-medium text-slate-400">Halaman</span>
+                            <span class="text-[10px] font-bold tracking-[0.2em] text-black/20 uppercase">Page</span>
                         </li>
                         <li>
                             <div class="flex items-center">
                                 <ChevronRight
                                     size={10}
-                                    strokeWidth={3}
-                                    class="mx-2 text-slate-300"
+                                    strokeWidth={2}
+                                    class="mx-2 text-black/20"
                                 />
-                                <span class="font-bold tracking-widest text-slate-900 uppercase"
+                                <span class="text-[10px] font-bold tracking-[0.2em] text-black uppercase"
                                     >{titlePage}</span
                                 >
                             </div>
@@ -65,21 +65,19 @@
         <div class="flex items-center gap-2 sm:gap-4">
             {#if isAuthenticated}
                 <div class="mr-2 hidden flex-col items-end md:flex">
-                    <span class="text-sm leading-none font-bold text-slate-900">{userName}</span>
-                    <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                        >{isAdminRole ? 'Administrator' : 'Mahasiswa'}</span
+                    <span class="text-xs font-bold text-black">{userName}</span>
+                    <span class="text-[10px] font-bold tracking-[0.2em] text-black/20 uppercase"
+                        >{isAdminRole ? 'Admin' : 'Student'}</span
                     >
                 </div>
 
                 <button
                     id="start-page-tour"
                     aria-label="Start Page Tour"
-                    class="hover:bg-accent-50 hover:text-accent-600 group relative rounded-xl p-2 text-slate-500 transition-all"
-                    title="Mulai Tutorial"
-                    data-intro="Klik tombol ini kapan saja jika kamu butuh bantuan atau ingin mengulang tutorial di halaman ini."
-                    data-step="4"
+                    class="group relative rounded-full p-2 text-black/40 transition-all hover:bg-black/5 hover:text-black"
+                    title="Tutorial"
                 >
-                    <CircleHelp size={20} strokeWidth={2.5} />
+                    <CircleHelp size={20} strokeWidth={1.5} />
                     <span class="absolute -top-1 -right-1 flex h-3 w-3">
                         <span
                             class="bg-accent-400 absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
@@ -95,11 +93,11 @@
                     data-step="5"
                 >
                     <button
-                        aria-label="Open project menu"
-                        class="hover:border-accent-100 group flex items-center gap-2 rounded-2xl border-2 border-transparent p-1 transition-all duration-300"
+                        aria-label="Open profile menu"
+                        class="group flex items-center gap-2 rounded-full border border-black/5 p-1 transition-all duration-300 hover:border-black/20"
                     >
                         <div
-                            class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-[inset_0_2px_4px_rgba(0,0,0,0.06)] ring-2 ring-white transition-all group-hover:ring-slate-100"
+                            class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-black/5 bg-white shadow-sm transition-all group-hover:scale-105"
                         >
                             <img
                                 src="/images/profile.gif"
@@ -110,23 +108,23 @@
                     </button>
 
                     <div
-                        class="invisible absolute right-0 mt-2 w-56 origin-top-right scale-95 transform rounded-2xl bg-white p-2 opacity-0 shadow-2xl ring-1 ring-black/5 transition-all duration-300 group-hover:visible group-hover:scale-100 group-hover:opacity-100"
+                        class="invisible absolute right-0 mt-2 w-56 origin-top-right scale-95 transform rounded-3xl bg-white p-2 opacity-0 shadow-2xl shadow-black/5 ring-1 ring-black/5 transition-all duration-300 group-hover:visible group-hover:scale-100 group-hover:opacity-100"
                     >
-                        <div class="mb-1 border-b border-slate-50 px-4 py-3">
-                            <p class="text-sm font-bold text-slate-900">
+                        <div class="mb-1 border-b border-black/5 px-4 py-3">
+                            <p class="text-xs font-bold text-black">
                                 {userName}
                             </p>
-                            <p class="truncate text-[10px] text-slate-400">
+                            <p class="truncate text-[10px] font-medium text-black/30">
                                 {user.email}
                             </p>
                         </div>
 
                         <Link
                             href={ROUTES.MAHASISWA.PROFILE}
-                            class="hover:text-accent-600 hover:bg-accent-50 flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-600 transition-all"
+                            class="flex items-center gap-3 rounded-2xl px-4 py-2.5 text-xs font-bold text-black/60 transition-all hover:bg-black/5 hover:text-black"
                         >
-                            <User size={18} strokeWidth={2.5} class="w-5" />
-                            Profil Saya
+                            <User size={16} strokeWidth={1.5} class="w-5" />
+                            My Profile
                         </Link>
 
                         <form
@@ -137,10 +135,10 @@
                         >
                             <button
                                 type="submit"
-                                class="flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-bold text-rose-600 transition-all hover:bg-rose-50"
+                                class="flex w-full items-center gap-3 rounded-2xl px-4 py-2.5 text-xs font-bold text-rose-500 transition-all hover:bg-rose-50"
                             >
-                                <LogOut size={18} strokeWidth={2.5} class="w-5" />
-                                Keluar
+                                <LogOut size={16} strokeWidth={1.5} class="w-5" />
+                                Logout
                             </button>
                         </form>
                     </div>

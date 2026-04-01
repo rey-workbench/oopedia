@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Redirect root to login page (Controller handles internal logic)
-Route::get('/', [LoginController::class, 'home']);
+Route::get('/', [LoginController::class, 'landing'])->name('landing');
+Route::get('/home', [LoginController::class, 'home'])->name('home');
 
 // Load separated logic modules
 require __DIR__ . '/auth.php';

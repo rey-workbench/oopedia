@@ -88,4 +88,9 @@ class LoginController extends Controller
 
         return Redirect::route('mahasiswa.materials.index');
     }
+
+    public function landing(): Response
+    {
+        return $this->render('Landing/Index');
+    }
 }
