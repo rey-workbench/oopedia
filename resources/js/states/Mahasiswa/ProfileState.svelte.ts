@@ -1,12 +1,5 @@
 import { FormState } from '@/states/FormState.svelte';
-import type { StudentProfile } from '@/types';
-
-type ProfileForm = {
-    name: string;
-    email: string;
-    password: string;
-    password_confirmation: string;
-};
+import type { StudentProfile, ProfileForm } from '@/types';
 
 export class ProfileState extends FormState<ProfileForm> {
     personalization = $state<StudentProfile | null>(null);

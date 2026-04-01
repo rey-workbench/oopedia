@@ -10,54 +10,54 @@
         id?: string | number | undefined;
     }
 
-    let {
-        materialTitle,
-        type = 'gold',
-        issuedAt,
-        recipientName,
-        id,
-    }: CertProps = $props();
+    let { materialTitle, type = 'gold', issuedAt, recipientName, id }: CertProps = $props();
 
     let certRef: HTMLElement;
     let isDownloading = $state(false);
 
-    const typeConfig = $derived({
-        gold: {
-            label: 'Object-Oriented Architect',
-            tier: 'GOLD',
-            gradient: 'from-amber-400 via-yellow-300 to-amber-500',
-            bgGradient: 'from-amber-50 via-yellow-50 to-amber-100',
-            borderColor: '#d97706',
-            accent: '#92400e',
-            shimmer: 'rgba(251,191,36,0.4)',
-            badgeClass: 'bg-amber-400 text-amber-900',
-        },
-        silver: {
-            label: 'Senior OOP Developer',
-            tier: 'SILVER',
-            gradient: 'from-slate-400 via-gray-300 to-slate-500',
-            bgGradient: 'from-slate-50 via-gray-50 to-slate-100',
-            borderColor: '#64748b',
-            accent: '#1e293b',
-            shimmer: 'rgba(148,163,184,0.4)',
-            badgeClass: 'bg-slate-400 text-slate-900',
-        },
-        bronze: {
-            label: 'Junior OOP Programmer',
-            tier: 'BRONZE',
-            gradient: 'from-orange-400 via-amber-300 to-orange-500',
-            bgGradient: 'from-orange-50 via-amber-50 to-orange-100',
-            borderColor: '#c2410c',
-            accent: '#7c2d12',
-            shimmer: 'rgba(251,146,60,0.4)',
-            badgeClass: 'bg-orange-400 text-orange-900',
-        },
-    }[type]);
+    const typeConfig = $derived(
+        {
+            gold: {
+                label: 'Object-Oriented Architect',
+                tier: 'GOLD',
+                gradient: 'from-amber-400 via-yellow-300 to-amber-500',
+                bgGradient: 'from-amber-50 via-yellow-50 to-amber-100',
+                borderColor: '#d97706',
+                accent: '#92400e',
+                shimmer: 'rgba(251,191,36,0.4)',
+                badgeClass: 'bg-amber-400 text-amber-900',
+            },
+            silver: {
+                label: 'Senior OOP Developer',
+                tier: 'SILVER',
+                gradient: 'from-slate-400 via-gray-300 to-slate-500',
+                bgGradient: 'from-slate-50 via-gray-50 to-slate-100',
+                borderColor: '#64748b',
+                accent: '#1e293b',
+                shimmer: 'rgba(148,163,184,0.4)',
+                badgeClass: 'bg-slate-400 text-slate-900',
+            },
+            bronze: {
+                label: 'Junior OOP Programmer',
+                tier: 'BRONZE',
+                gradient: 'from-orange-400 via-amber-300 to-orange-500',
+                bgGradient: 'from-orange-50 via-amber-50 to-orange-100',
+                borderColor: '#c2410c',
+                accent: '#7c2d12',
+                shimmer: 'rgba(251,146,60,0.4)',
+                badgeClass: 'bg-orange-400 text-orange-900',
+            },
+        }[type]
+    );
 
     interface PagePropsWithAuth {
         auth: { user: { name: string } };
     }
-    const userName = $derived(recipientName ?? (($page.props as unknown as PagePropsWithAuth)?.auth?.user?.name) ?? 'Mahasiswa');
+    const userName = $derived(
+        recipientName ??
+            ($page.props as unknown as PagePropsWithAuth)?.auth?.user?.name ??
+            'Mahasiswa'
+    );
 
     const formattedDate = $derived(
         issuedAt
@@ -127,36 +127,56 @@
 
         <!-- Decorative corner patterns -->
         <div class="absolute top-0 left-0 h-28 w-28 opacity-20">
-            <svg viewBox="0 0 100 100" class="h-full w-full" style="color: {typeConfig.borderColor}">
-                <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor" />
-                <path d="M0,0 L80,0 L80,10 L10,10 L10,80 L0,80 Z" fill="currentColor" opacity="0.5" />
+            <svg
+                viewBox="0 0 100 100"
+                class="h-full w-full"
+                style="color: {typeConfig.borderColor}"
+            >
+                <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor"></path>
+                <path d="M0,0 L80,0 L80,10 L10,10 L10,80 L0,80 Z" fill="currentColor" opacity="0.5"
+                ></path>
             </svg>
         </div>
         <div class="absolute top-0 right-0 h-28 w-28 rotate-90 opacity-20">
-            <svg viewBox="0 0 100 100" class="h-full w-full" style="color: {typeConfig.borderColor}">
-                <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor" />
-                <path d="M0,0 L80,0 L80,10 L10,10 L10,80 L0,80 Z" fill="currentColor" opacity="0.5" />
+            <svg
+                viewBox="0 0 100 100"
+                class="h-full w-full"
+                style="color: {typeConfig.borderColor}"
+            >
+                <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor"></path>
+                <path d="M0,0 L80,0 L80,10 L10,10 L10,80 L0,80 Z" fill="currentColor" opacity="0.5"
+                ></path>
             </svg>
         </div>
         <div class="absolute bottom-0 left-0 h-28 w-28 -rotate-90 opacity-20">
-            <svg viewBox="0 0 100 100" class="h-full w-full" style="color: {typeConfig.borderColor}">
-                <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor" />
+            <svg
+                viewBox="0 0 100 100"
+                class="h-full w-full"
+                style="color: {typeConfig.borderColor}"
+            >
+                <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor"></path>
             </svg>
         </div>
-        <div class="absolute bottom-0 right-0 h-28 w-28 rotate-180 opacity-20">
-            <svg viewBox="0 0 100 100" class="h-full w-full" style="color: {typeConfig.borderColor}">
-                <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor" />
+        <div class="absolute right-0 bottom-0 h-28 w-28 rotate-180 opacity-20">
+            <svg
+                viewBox="0 0 100 100"
+                class="h-full w-full"
+                style="color: {typeConfig.borderColor}"
+            >
+                <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor"></path>
             </svg>
         </div>
 
         <!-- Watermark -->
-        <div class="absolute inset-0 flex items-center justify-center opacity-[0.04] pointer-events-none">
+        <div
+            class="pointer-events-none absolute inset-0 flex items-center justify-center opacity-[0.04]"
+        >
             <Award size={320} style="color: {typeConfig.borderColor}" />
         </div>
 
         <!-- Inner border line -->
         <div
-            class="absolute inset-3 rounded-xl border-2 pointer-events-none opacity-30"
+            class="pointer-events-none absolute inset-3 rounded-xl border-2 opacity-30"
             style="border-color: {typeConfig.borderColor}"
         ></div>
 
@@ -164,15 +184,24 @@
         <div class="relative z-10 flex flex-col items-center px-10 py-10 text-center">
             <!-- Header -->
             <div class="mb-2 flex items-center gap-3">
-                <div class="h-px flex-1 opacity-30" style="background: {typeConfig.borderColor}"></div>
-                <p class="text-[10px] font-black tracking-[0.3em] uppercase" style="color: {typeConfig.accent}">
+                <div
+                    class="h-px flex-1 opacity-30"
+                    style="background: {typeConfig.borderColor}"
+                ></div>
+                <p
+                    class="text-[10px] font-black tracking-[0.3em] uppercase"
+                    style="color: {typeConfig.accent}"
+                >
                     OOPEDIA • POLITEKNIK NEGERI MALANG
                 </p>
-                <div class="h-px flex-1 opacity-30" style="background: {typeConfig.borderColor}"></div>
+                <div
+                    class="h-px flex-1 opacity-30"
+                    style="background: {typeConfig.borderColor}"
+                ></div>
             </div>
 
             <!-- Certificate of Completion text (Udemy style) -->
-            <p class="mb-1 text-sm font-bold tracking-widest uppercase text-slate-500">
+            <p class="mb-1 text-sm font-bold tracking-widest text-slate-500 uppercase">
                 Certificate of Completion
             </p>
 
@@ -204,27 +233,43 @@
 
             <!-- Divider -->
             <div class="my-3 flex items-center gap-2">
-                <div class="h-px w-16 opacity-40" style="background: {typeConfig.borderColor}"></div>
+                <div
+                    class="h-px w-16 opacity-40"
+                    style="background: {typeConfig.borderColor}"
+                ></div>
                 <CheckCircle size={14} style="color: {typeConfig.borderColor}" />
-                <div class="h-px w-16 opacity-40" style="background: {typeConfig.borderColor}"></div>
+                <div
+                    class="h-px w-16 opacity-40"
+                    style="background: {typeConfig.borderColor}"
+                ></div>
             </div>
 
             <!-- Description -->
-            <p class="mb-1 max-w-sm text-xs font-medium leading-relaxed text-slate-600">
+            <p class="mb-1 max-w-sm text-xs leading-relaxed font-medium text-slate-600">
                 telah berhasil menyelesaikan
             </p>
-            <h3 class="mb-1 text-lg font-black uppercase tracking-wider" style="color: {typeConfig.accent}">
+            <h3
+                class="mb-1 text-lg font-black tracking-wider uppercase"
+                style="color: {typeConfig.accent}"
+            >
                 {materialTitle}
             </h3>
-            <p class="mb-4 text-xs font-bold text-slate-500 uppercase tracking-widest">
+            <p class="mb-4 text-xs font-bold tracking-widest text-slate-500 uppercase">
                 Object-Oriented Programming • {typeConfig.label}
             </p>
 
             <!-- Footer -->
-            <div class="mt-4 flex w-full items-end justify-between border-t pt-4" style="border-color: {typeConfig.borderColor}40">
+            <div
+                class="mt-4 flex w-full items-end justify-between border-t pt-4"
+                style="border-color: {typeConfig.borderColor}40"
+            >
                 <div class="text-left">
-                    <p class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">Tanggal</p>
-                    <p class="text-xs font-bold" style="color: {typeConfig.accent}">{formattedDate}</p>
+                    <p class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+                        Tanggal
+                    </p>
+                    <p class="text-xs font-bold" style="color: {typeConfig.accent}">
+                        {formattedDate}
+                    </p>
                 </div>
 
                 <!-- Seal -->
@@ -236,8 +281,12 @@
                 </div>
 
                 <div class="text-right">
-                    <p class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">ID Sertifikat</p>
-                    <p class="text-xs font-bold font-mono" style="color: {typeConfig.accent}">{certId}</p>
+                    <p class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+                        ID Sertifikat
+                    </p>
+                    <p class="font-mono text-xs font-bold" style="color: {typeConfig.accent}">
+                        {certId}
+                    </p>
                 </div>
             </div>
         </div>

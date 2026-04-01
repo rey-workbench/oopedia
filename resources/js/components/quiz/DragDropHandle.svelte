@@ -18,7 +18,7 @@
 <span
     role="button"
     tabindex="0"
-    class="flex h-8 w-8 cursor-grab items-center justify-center rounded-xl bg-slate-100 text-slate-400 transition-all hover:bg-primary-50 hover:text-primary-600 hover:scale-110 active:cursor-grabbing shadow-sm"
+    class="hover:bg-primary-50 hover:text-primary-600 flex h-8 w-8 cursor-grab items-center justify-center rounded-xl bg-slate-100 text-slate-400 shadow-sm transition-all hover:scale-110 active:cursor-grabbing"
     draggable="true"
     ondragstart={dragStart}
     title="Drag ini ke dalam kotak soal!"

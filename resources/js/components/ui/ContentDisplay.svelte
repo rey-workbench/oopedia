@@ -24,7 +24,7 @@
                       'src',
                       'width',
                       'height',
-                      'title'
+                      'title',
                   ],
               })
             : ''

@@ -1,23 +1,7 @@
 import { router } from '@inertiajs/svelte';
 import { BaseState } from './BaseState.svelte';
 import { toasts } from '@/stores/toast';
-
-type FormSubmitOptions = {
-    forceFormData?: boolean;
-    _method?: string;
-    onSuccess?: () => void;
-    onError?: (errors: Record<string, string>) => void;
-    onFinish?: () => void;
-    showSuccessToast?: string | boolean;
-    showErrorToast?: boolean;
-    [key: string]: unknown;
-};
-
-export interface FormStateOptions {
-    isEdit?: boolean;
-    showSuccessToast?: string | boolean;
-    showErrorToast?: boolean;
-}
+import type { FormSubmitOptions, FormStateOptions } from '@/types';
 
 /**
  * FormState - Svelte 5 native form state using $state runes.
@@ -31,10 +15,7 @@ export class FormState<TForm extends Record<string, any>> extends BaseState {
     private initialValues: TForm;
     protected toastOptions: { showSuccessToast?: string | boolean; showErrorToast?: boolean } = {};
 
-    constructor(
-        initialValues: TForm,
-        options?: FormStateOptions
-    ) {
+    constructor(initialValues: TForm, options?: FormStateOptions) {
         super();
         this.isEdit = options?.isEdit ?? false;
         this.initialValues = initialValues;

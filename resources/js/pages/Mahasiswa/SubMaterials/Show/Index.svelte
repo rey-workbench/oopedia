@@ -52,7 +52,7 @@
         <div class="flex items-center gap-3 text-sm">
             <Link
                 href={ROUTES.MAHASISWA.MATERIALS.INDEX}
-                class="flex items-center hover:text-primary-600 font-bold text-slate-400 transition-colors"
+                class="hover:text-primary-600 flex items-center font-bold text-slate-400 transition-colors"
             >
                 <Home size={14} class="mr-1" /> Materi
             </Link>
@@ -70,13 +70,15 @@
         <!-- Header -->
 
         <!-- Header with PageHeader for consistency -->
-        <PageHeader 
+        <PageHeader
             title={state.subMaterial.title}
             subtitle={`Bagian ${state.subMaterial.order} dari modul ${state.material.title}.`}
         >
             <div class="flex flex-wrap gap-4">
                 <div class="flex items-center gap-4">
-                    <div class={`px-4 py-2 ${getBgClass(state.subMaterial.jenis_konten)} flex items-center justify-center rounded-2xl shadow-sm`}>
+                    <div
+                        class={`px-4 py-2 ${getBgClass(state.subMaterial.jenis_konten)} flex items-center justify-center rounded-2xl shadow-sm`}
+                    >
                         <span class="text-[10px] font-bold tracking-widest text-white uppercase">
                             {state.subMaterial.jenis_konten === 'sintaks' ? 'Sintaks' : 'Teori'}
                         </span>
@@ -85,28 +87,46 @@
 
                 <div class="flex flex-wrap items-center gap-4">
                     <div class="flex items-center gap-3">
-                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 shadow-inner">
+                        <div
+                            class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 shadow-inner"
+                        >
                             <Puzzle size={16} />
                         </div>
-                        <span class="text-[10px] font-bold tracking-widest text-slate-500 uppercase">
-                            {state.subMaterial.questions ? state.subMaterial.questions.length : 0} Soal Latihan
+                        <span
+                            class="text-[10px] font-bold tracking-widest text-slate-500 uppercase"
+                        >
+                            {state.subMaterial.questions ? state.subMaterial.questions.length : 0} Soal
+                            Latihan
                         </span>
                     </div>
 
                     <div class="flex items-center gap-3">
-                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 shadow-inner">
+                        <div
+                            class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 shadow-inner"
+                        >
                             <Clock size={16} />
                         </div>
-                        <span class="text-[10px] font-bold tracking-widest text-slate-500 uppercase">
-                            ~{(state.subMaterial.questions ? state.subMaterial.questions.length : 0) * 2} Menit
+                        <span
+                            class="text-[10px] font-bold tracking-widest text-slate-500 uppercase"
+                        >
+                            ~{(state.subMaterial.questions
+                                ? state.subMaterial.questions.length
+                                : 0) * 2} Menit
                         </span>
                     </div>
                 </div>
             </div>
         </PageHeader>
 
-        <div class="grid grid-cols-1 gap-12 {state.otherSubMaterials.length > 0 ? 'lg:grid-cols-4' : ''}">
-            <div bind:this={contentContainer} class={state.otherSubMaterials.length > 0 ? 'lg:col-span-3' : 'lg:col-span-4'}>
+        <div
+            class="grid grid-cols-1 gap-12 {state.otherSubMaterials.length > 0
+                ? 'lg:grid-cols-4'
+                : ''}"
+        >
+            <div
+                bind:this={contentContainer}
+                class={state.otherSubMaterials.length > 0 ? 'lg:col-span-3' : 'lg:col-span-4'}
+            >
                 <Card class="p-10 md:p-16">
                     {#snippet header()}
                         <div class="mb-10">
@@ -168,7 +188,10 @@
                         </div>
 
                         <Button
-                            href={ROUTES.MAHASISWA.MATERIALS.QUESTIONS.SHOW(state.material.id, state.subMaterial.id)}
+                            href={ROUTES.MAHASISWA.MATERIALS.QUESTIONS.SHOW(
+                                state.material.id,
+                                state.subMaterial.id
+                            )}
                             variant="primary"
                             size="xl"
                             icon={Play}

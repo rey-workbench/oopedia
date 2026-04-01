@@ -6,7 +6,7 @@
     import { toasts } from '@/stores/toast';
     import { sidebarState, initSidebarResponsive } from '@/states/ui';
     import { ROUTES } from '@/utils/route';
-    import type { SharedProps } from '@/types/inertia';
+    import type { SharedProps } from '@/types';
 
     interface Props {
         title?: string;

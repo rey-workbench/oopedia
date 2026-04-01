@@ -2,7 +2,16 @@
     import Badge from '@/components/ui/Badge.svelte';
     import Panel from '@/components/ui/Panel.svelte';
     import Card from '@/components/ui/Card.svelte';
-    import { Brain, Zap, Target, CheckCircle, ChevronUp, ChevronDown, ArrowRight, MessageSquare } from 'lucide-svelte';
+    import {
+        Brain,
+        Zap,
+        Target,
+        CheckCircle,
+        ChevronUp,
+        ChevronDown,
+        ArrowRight,
+        MessageSquare,
+    } from 'lucide-svelte';
     import { fade, scale, slide } from 'svelte/transition';
     import type { QuestionShowState } from '@/states/Mahasiswa/QuizState.svelte.ts';
 
@@ -85,7 +94,12 @@
         class="fixed right-0 bottom-0 left-0 z-[1001]"
         transition:scale={{ duration: 300, start: 0.95 }}
     >
-        <Panel variant="none" rounded="none" padding="p-0" class="border-t border-slate-200 bg-white shadow-2xl transition-all duration-300">
+        <Panel
+            variant="none"
+            rounded="none"
+            padding="p-0"
+            class="border-t border-slate-200 bg-white shadow-2xl transition-all duration-300"
+        >
             <button
                 class="bg-primary-600 hover:bg-primary-700 flex w-full cursor-pointer items-center justify-between px-6 py-2 text-white transition-all focus:outline-none"
                 onclick={toggleDebugCollapse}
@@ -145,7 +159,11 @@
                         <div
                             class="grid grid-cols-1 gap-4 border-b border-slate-100 p-4 lg:grid-cols-2"
                         >
-                            <Card variant="none" padding="p-4" class="border border-slate-200 bg-slate-50">
+                            <Card
+                                variant="none"
+                                padding="p-4"
+                                class="border border-slate-200 bg-slate-50"
+                            >
                                 <div
                                     class="mb-3 flex items-center justify-between text-[10px] font-bold tracking-wider text-slate-500 uppercase"
                                 >
@@ -155,14 +173,17 @@
                                     >
                                 </div>
 
-                                <div class="custom-scrollbar max-h-48 space-y-3 overflow-y-auto pr-2">
+                                <div
+                                    class="custom-scrollbar max-h-48 space-y-3 overflow-y-auto pr-2"
+                                >
                                     {#each Object.entries(factCategories) as [category, categoryFacts] (category)}
                                         {#if (categoryFacts as string[]).length > 0}
                                             <div transition:fade={{ duration: 200 }}>
                                                 <div
                                                     class="mb-1.5 flex items-center gap-2 text-[9px] font-bold text-slate-400 uppercase"
                                                 >
-                                                    <span class="h-1.5 w-1.5 rounded-full bg-slate-300"
+                                                    <span
+                                                        class="h-1.5 w-1.5 rounded-full bg-slate-300"
                                                     ></span>
                                                     {getCategoryLabel(category)}
                                                 </div>
@@ -175,7 +196,7 @@
                                                         >
                                                             {fact}
                                                             <span
-                                                                class="ml-1 font-sans text-[9px] opacity-60 italic"
+                                                                class="ml-1 font-sans text-[9px] italic opacity-60"
                                                             >
                                                                 • {getFactLabel(fact as string)}
                                                             </span>
@@ -202,9 +223,18 @@
                                 </div>
 
                                 {#if quizState.adaptiveTriggeredRule}
-                                    {@const newState = quizState.feedbackData?.adaptiveResult?.new_state}
-                                    <Panel variant="none" rounded="xl" padding="p-5" class="flex flex-1 flex-col justify-center border border-emerald-200 bg-emerald-50">
-                                        <div class="flex items-start gap-4" transition:fade={{ duration: 300 }}>
+                                    {@const newState =
+                                        quizState.feedbackData?.adaptiveResult?.new_state}
+                                    <Panel
+                                        variant="none"
+                                        rounded="xl"
+                                        padding="p-5"
+                                        class="flex flex-1 flex-col justify-center border border-emerald-200 bg-emerald-50"
+                                    >
+                                        <div
+                                            class="flex items-start gap-4"
+                                            transition:fade={{ duration: 300 }}
+                                        >
                                             <div
                                                 class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-100 shadow-sm"
                                             >
@@ -221,31 +251,61 @@
                                                 >
                                                     {quizState.adaptiveTriggeredRule.name}
                                                 </div>
-                                                <div class="mb-3 flex flex-wrap items-center gap-2 text-[11px]">
-                                                    <Badge variant="success" size="xs" class="font-mono lowercase">
+                                                <div
+                                                    class="mb-3 flex flex-wrap items-center gap-2 text-[11px]"
+                                                >
+                                                    <Badge
+                                                        variant="success"
+                                                        size="xs"
+                                                        class="font-mono lowercase"
+                                                    >
                                                         id: {quizState.adaptiveTriggeredRule.id}
                                                     </Badge>
-                                                    <Badge variant="primary" size="xs" class="font-mono lowercase">
-                                                        action: {quizState.adaptiveTriggeredRule.action}
+                                                    <Badge
+                                                        variant="primary"
+                                                        size="xs"
+                                                        class="font-mono lowercase"
+                                                    >
+                                                        action: {quizState.adaptiveTriggeredRule
+                                                            .action}
                                                     </Badge>
-                                                    <Badge variant="secondary" size="xs" class="text-[10px]">
-                                                        PRIORITY: {quizState.adaptiveTriggeredRule.priority}
+                                                    <Badge
+                                                        variant="secondary"
+                                                        size="xs"
+                                                        class="text-[10px]"
+                                                    >
+                                                        PRIORITY: {quizState.adaptiveTriggeredRule
+                                                            .priority}
                                                     </Badge>
                                                     {#if newState?.next_action_data?.label}
-                                                        <Badge variant="info" size="xs" class="flex items-center gap-1 text-[10px]">
+                                                        <Badge
+                                                            variant="info"
+                                                            size="xs"
+                                                            class="flex items-center gap-1 text-[10px]"
+                                                        >
                                                             <ArrowRight size={8} />
                                                             {newState.next_action_data.label}
                                                             {#if newState.next_action_data.type}
-                                                                <span class="opacity-60">({newState.next_action_data.type})</span>
+                                                                <span class="opacity-60"
+                                                                    >({newState.next_action_data
+                                                                        .type})</span
+                                                                >
                                                             {/if}
                                                         </Badge>
                                                     {/if}
                                                 </div>
 
                                                 {#if quizState.feedbackData?.message}
-                                                    <div class="mb-2 flex items-start gap-1.5 rounded-lg bg-emerald-100/60 px-3 py-2">
-                                                        <MessageSquare size={11} class="mt-0.5 flex-shrink-0 text-emerald-600" />
-                                                        <p class="text-[11px] leading-snug text-slate-700 italic">
+                                                    <div
+                                                        class="mb-2 flex items-start gap-1.5 rounded-lg bg-emerald-100/60 px-3 py-2"
+                                                    >
+                                                        <MessageSquare
+                                                            size={11}
+                                                            class="mt-0.5 flex-shrink-0 text-emerald-600"
+                                                        />
+                                                        <p
+                                                            class="text-[11px] leading-snug text-slate-700 italic"
+                                                        >
                                                             "{quizState.feedbackData.message}"
                                                         </p>
                                                     </div>
@@ -254,17 +314,29 @@
                                                 {#if newState?.recommendation || newState?.intervention_type || newState?.recovery_type}
                                                     <div class="flex flex-wrap gap-1.5">
                                                         {#if newState?.recommendation}
-                                                            <Badge variant="warning" size="xs" class="text-[10px]">
+                                                            <Badge
+                                                                variant="warning"
+                                                                size="xs"
+                                                                class="text-[10px]"
+                                                            >
                                                                 rec: {newState.recommendation}
                                                             </Badge>
                                                         {/if}
                                                         {#if newState?.intervention_type}
-                                                            <Badge variant="danger" size="xs" class="font-mono text-[10px]">
+                                                            <Badge
+                                                                variant="danger"
+                                                                size="xs"
+                                                                class="font-mono text-[10px]"
+                                                            >
                                                                 intervention: {newState.intervention_type}
                                                             </Badge>
                                                         {/if}
                                                         {#if newState?.recovery_type}
-                                                            <Badge variant="warning" size="xs" class="font-mono text-[10px]">
+                                                            <Badge
+                                                                variant="warning"
+                                                                size="xs"
+                                                                class="font-mono text-[10px]"
+                                                            >
                                                                 recovery: {newState.recovery_type}
                                                             </Badge>
                                                         {/if}

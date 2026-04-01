@@ -45,7 +45,7 @@
 
     const variantClasses = {
         white: 'bg-white text-slate-900 border-slate-100 focus:border-primary-600 focus:ring-primary-50',
-        dark: 'bg-slate-800 text-white border-slate-700/50 focus:border-primary-500 focus:ring-primary-900/30'
+        dark: 'bg-slate-800 text-white border-slate-700/50 focus:border-primary-500 focus:ring-primary-900/30',
     };
 </script>
 

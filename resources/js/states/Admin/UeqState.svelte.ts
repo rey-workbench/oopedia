@@ -1,9 +1,7 @@
 import { router } from '@inertiajs/svelte';
 import { BaseState } from '@/states/BaseState.svelte';
 import { ROUTES } from '@/utils/route';
-import type { User, UeqSurvey } from '@/types';
-
-type UeqAverages = Record<string, number>;
+import type { User, UeqSurvey, UeqAverages } from '@/types';
 
 /**
  * UEQ List State
@@ -74,7 +72,7 @@ export class UeqDetailState extends BaseState {
         { name: 'unpleasant_pleasant', left: 'Unpleasant', right: 'Pleasant' },
         { name: 'secure_not_secure', left: 'Aman', right: 'Tidak aman' },
         { name: 'motivating_demotivating', left: 'Memotivasi', right: 'Demotivating' },
-        { name: 'meets_expectations_does_not', left: 'Meets Expect.', right: "Doesn't Meet" },
+        { name: 'meets_expectations_does_not_meet', left: 'Meets Expect.', right: "Doesn't Meet" },
         { name: 'inefficient_efficient', left: 'Tidak efisien', right: 'Efisien' },
         { name: 'clear_confusing', left: 'Jelas', right: 'Membingungkan' },
         { name: 'impractical_practical', left: 'Tidak praktis', right: 'Praktis' },
@@ -110,7 +108,7 @@ export class UeqDetailState extends BaseState {
             Ketepatan:
                 (this.survey.unpredictable_predictable +
                     this.survey.secure_not_secure +
-                    this.survey.meets_expectations_does_not) /
+                    this.survey.meets_expectations_does_not_meet) /
                 3,
             Stimulasi:
                 (this.survey.valuable_inferior +

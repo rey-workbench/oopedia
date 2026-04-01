@@ -93,8 +93,6 @@
         }
         return result;
     });
-
-
 </script>
 
 <Card padding="p-0" class={`overflow-hidden ${className}`}>

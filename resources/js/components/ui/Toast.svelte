@@ -25,8 +25,6 @@
 
     let { toasts = [], onremove = () => {}, position = 'top-right' }: Props = $props();
 
-
-
     const colors = {
         success: 'bg-emerald-50 border-emerald-200 text-emerald-800',
         error: 'bg-rose-50 border-rose-200 text-rose-800',

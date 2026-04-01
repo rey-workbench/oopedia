@@ -40,13 +40,10 @@ export class MaterialListState extends BaseState {
  */
 export class MaterialFormState extends FormState<{
     title: string;
-    description: string | null;
     content: string;
-    level: string;
-    module_id: number | string | null;
+    module_id: string | null;
     is_final_project: boolean;
     cover_image: File | null;
-    status: string;
 }> {
     material = $state<Material | null>(null);
     coverPreview = $state<string | null>(null);
@@ -55,13 +52,10 @@ export class MaterialFormState extends FormState<{
         super(
             {
                 title: material ? material.title : '',
-                description: material ? material.description : '',
                 content: material ? material.content || '' : '',
-                level: material ? material.level : 'beginner',
                 module_id: material ? material.module_id : null,
                 is_final_project: material ? !!material.is_final_project : false,
                 cover_image: null,
-                status: material ? material.status : 'draft',
             },
             {
                 isEdit: !!material,
@@ -72,8 +66,9 @@ export class MaterialFormState extends FormState<{
 
         this.material = material;
 
-        if (this.material && this.material.cover_image) {
-            this.coverPreview = `/storage/${this.material.cover_image}`;
+        const coverMedia = this.material?.media?.find((m) => m.media_type === 'image');
+        if (coverMedia) {
+            this.coverPreview = coverMedia.media_url;
         }
     }
 

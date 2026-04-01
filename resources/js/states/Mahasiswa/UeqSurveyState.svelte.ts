@@ -1,12 +1,5 @@
 import { FormState } from '@/states/FormState.svelte';
-
-type UeqSurveyForm = {
-    nim: string;
-    class: string;
-    comments: string;
-    suggestions: string;
-    [key: string]: any;
-};
+import type { UeqSurveyForm } from '@/types';
 
 export class UeqSurveyState extends FormState<UeqSurveyForm> {
     aspects = $state<{ name: string }[]>([]);

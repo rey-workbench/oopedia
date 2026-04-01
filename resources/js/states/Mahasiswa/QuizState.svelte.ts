@@ -10,54 +10,10 @@ import type {
     QuestionWithAttempt,
     QuizSessionState,
     CheckAnswerResponse,
+    AdaptiveResult,
+    LevelItem,
+    AnswerPayload,
 } from '@/types';
-
-// ---------------------------------------------------------------------------
-// Shared interfaces
-// ---------------------------------------------------------------------------
-
-interface AnswerPayload {
-    question_id: number;
-    material_id: number;
-    used_hint: boolean;
-    time_spent: number;
-    difficulty: string;
-    fill_in_the_blank_answer?: string;
-    answer?: string | null;
-    drag_and_drop_answers?: string;
-}
-
-interface AdaptiveResult {
-    facts?: unknown[];
-    triggeredRule?: string | null;
-    triggered_rule?: {
-        id?: string;
-        name?: string;
-        action?: string | null;
-        priority?: number;
-    } | null;
-    new_state?: {
-        next_action_data?: {
-            label?: string;
-            type?: string;
-        };
-        recommendation?: string | null;
-        certification?: string | null;
-        intervention_type?: string | null;
-        recovery_type?: string | null;
-    } | null;
-    global_xp_earned?: number;
-    streak_bonus?: string | null;
-    [key: string]: unknown;
-}
-
-export interface LevelItem {
-    level: number;
-    status: 'completed' | 'in_progress' | 'locked';
-    question_id?: number;
-    difficulty?: DifficultyLevel;
-    [key: string]: unknown;
-}
 
 /**
  * Question List State (Selection/Catalog)

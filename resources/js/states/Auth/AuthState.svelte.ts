@@ -1,4 +1,5 @@
-import { FormState, type FormStateOptions } from '@/states/FormState.svelte';
+import { FormState } from '@/states/FormState.svelte';
+import type { FormStateOptions } from '@/types';
 import { ROUTES } from '@/utils/route';
 
 /**

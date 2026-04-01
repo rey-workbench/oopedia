@@ -9,8 +9,8 @@ export type {
     QuestionType,
     DifficultyLevel,
     JenisKonten,
-    // Domain models
-    Role,
+    LearningStyle,
+    CertificationType,
     User,
     Material,
     SubMaterial,
@@ -35,7 +35,6 @@ export type {
     QuestionWithAttempt,
     QuizSessionState,
     Certification,
-    CertificationType,
 } from '@/types/models';
 
 export type {
@@ -55,6 +54,7 @@ export type {
     MaterialStatsItem,
     MaterialWithProgress,
     MissingQuestionsItem,
+    UeqAverages,
     // Mahasiswa pages
     MahasiswaDashboardProps,
     MahasiswaInProgressProps,
@@ -69,6 +69,9 @@ export type {
     CertificatesPageProps,
     LeaderboardProps,
     UeqCreateProps,
+    ProfileForm,
+    UeqSurveyForm,
+    AnswerPayload,
     // View models
     LevelStatus,
     // API responses
@@ -78,4 +81,10 @@ export type {
     UseHintResponse,
     Pagination,
     PaginatorLink,
-} from '@/types/inertia';
+    // State interfaces
+    FormStateOptions,
+    FormSubmitOptions,
+    AdminDashboardData,
+    LevelItem,
+    Toast,
+} from '@/types/states';
