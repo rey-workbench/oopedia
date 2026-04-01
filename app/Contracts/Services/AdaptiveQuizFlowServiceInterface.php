@@ -12,5 +12,5 @@ interface AdaptiveQuizFlowServiceInterface
      *
      * @return array<string, mixed>
      */
-    public function processAdaptiveAttempt(Material $material, Question $question, int $userId, array $data): array;
+    public function processAdaptiveAttempt(Material $material, Question $question, string $userId, array $data): array;
 }

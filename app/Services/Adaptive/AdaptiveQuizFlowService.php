@@ -28,7 +28,7 @@ class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
     ) {}
 
     /** @return array<string, mixed> */
-    public function processAdaptiveAttempt(Material $material, Question $question, int $userId, array $data): array
+    public function processAdaptiveAttempt(Material $material, Question $question, string $userId, array $data): array
     {
         $isCorrect = $this->questionAnswerService->determineCorrectness($question, $data);
         $usedHint  = (bool) ($data['used_hint'] ?? false);

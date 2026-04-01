@@ -4,13 +4,14 @@ namespace App\Models;
 
 use App\Schemas\StudentStateSchema;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int $id
- * @property int $user_id
+ * @property string $id
+ * @property string $user_id
  * @property array<string,mixed> $gamification_data
  * @property array<string,mixed> $learning_profile
  * @property array<string,mixed> $performance_metrics
@@ -31,7 +32,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class StudentState extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUlids;
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
 
     protected $fillable = [
         'user_id',

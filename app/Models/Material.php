@@ -54,4 +54,32 @@ class Material extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function getNextMaterial(): ?self
+    {
+        return static::where(function ($query) {
+            $query->where('created_at', '>', $this->created_at)
+                ->orWhere(function ($q) {
+                    $q->where('created_at', '=', $this->created_at)
+                        ->where('id', '>', $this->id);
+                });
+        })
+            ->orderBy('created_at', 'asc')
+            ->orderBy('id', 'asc')
+            ->first();
+    }
+
+    public function getPreviousMaterial(): ?self
+    {
+        return static::where(function ($query) {
+            $query->where('created_at', '<', $this->created_at)
+                ->orWhere(function ($q) {
+                    $q->where('created_at', '=', $this->created_at)
+                        ->where('id', '<', $this->id);
+                });
+        })
+            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
+    }
 }

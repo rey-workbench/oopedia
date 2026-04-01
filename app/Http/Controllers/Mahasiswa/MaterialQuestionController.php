@@ -56,7 +56,7 @@ class MaterialQuestionController extends Controller
 
     public function show(int|string $materialId, Request $request): Response|RedirectResponse
     {
-        $material = $this->materialService->getMaterialById((int) $materialId);
+        $material = $this->materialService->getMaterialById((string) $materialId);
         if (! $material) {
             return redirect()->route('mahasiswa.materials.questions.index')
                 ->with('error', 'Material tidak ditemukan');
@@ -86,7 +86,7 @@ class MaterialQuestionController extends Controller
 
     public function levels(int|string $materialId, Request $request): Response|RedirectResponse
     {
-        $material = $this->materialService->getMaterialById((int) $materialId);
+        $material = $this->materialService->getMaterialById((string) $materialId);
         if (! $material) {
             return redirect()->route('mahasiswa.materials.questions.index')
                 ->with('error', 'Material tidak ditemukan');
@@ -107,7 +107,7 @@ class MaterialQuestionController extends Controller
 
     public function review(int|string $id, Request $request): Response
     {
-        $material      = $this->materialService->getMaterialWithQuestionsAndAnswers((int) $id);
+        $material      = $this->materialService->getMaterialWithQuestionsAndAnswers((string) $id);
         $materials     = $this->materialService->getAllOrdered();
         $difficulty    = $request->query('difficulty', 'all');
         $isGuest       = $this->isGuest();
@@ -142,7 +142,7 @@ class MaterialQuestionController extends Controller
                 ? $guestProgress[$progressKey]['attempt_number']
                 : 0;
         } else {
-            $attempts = $this->progressRepo->getAttemptCount(Auth::id(), (int) $materialId, (int) $questionId);
+            $attempts = $this->progressRepo->getAttemptCount(Auth::id(), (string) $materialId, (string) $questionId);
         }
 
         return $this->json(['attempts' => $attempts]);
@@ -185,7 +185,7 @@ class MaterialQuestionController extends Controller
         }
 
         $lastMaterialId = $adaptiveState['current_material_id'] ?? null;
-        if ($lastMaterialId !== null && (int) $lastMaterialId !== (int) $materialId) {
+        if ($lastMaterialId !== null && (string) $lastMaterialId !== (string) $materialId) {
             $this->resetMaterialScopedState($studentState, $adaptiveState);
         }
 
