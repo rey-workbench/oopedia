@@ -42,6 +42,7 @@
                     bind:value={state.form.email}
                     placeholder="nama@email.com"
                     required
+                    autocomplete="email"
                     error={state.form.errors['email']}
                 />
             </div>
@@ -59,6 +60,7 @@
                     bind:value={state.form.password}
                     placeholder="••••••••"
                     required
+                    autocomplete="current-password"
                     error={state.form.errors['password']}
                 />
             </div>

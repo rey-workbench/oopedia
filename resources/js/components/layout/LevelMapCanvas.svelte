@@ -2,8 +2,7 @@
     import Card from '@/components/ui/Card.svelte';
     import { Link } from '@inertiajs/svelte';
     import { Check, Lock, Star, Trophy, Zap } from 'lucide-svelte';
-    import type { Material } from '@/types';
-    import type { LevelItem } from '@/states/Mahasiswa/QuizState.svelte.ts';
+    import type { Material, LevelItem } from '@/types';
 
     interface Props {
         material: Material;
@@ -116,7 +115,7 @@
             preserveAspectRatio="xMidYMid meet"
             style="height: {totalH}px;"
         >
-            {#each mapDots as dot}
+            {#each mapDots as dot, i (i)}
                 <circle
                     cx={dot.x}
                     cy={dot.y}
@@ -128,7 +127,7 @@
         </svg>
 
         <!-- HTML NODE LAYER -->
-        {#each sortedLevels as level, i}
+        {#each sortedLevels as level, i (level.level)}
             {@const cx = nodeX(i)}
             {@const cy = nodeY(i)}
             {@const pctX = (cx / MAP_W) * 100}
@@ -169,7 +168,7 @@
                             </div>
                         </div>
                         <div class="mt-2.5 flex gap-1">
-                            {#each Array(3) as _}
+                            {#each Array(3) as _, j (j)}
                                 <Star size={13} class="fill-amber-400 text-amber-400" />
                             {/each}
                         </div>
@@ -218,7 +217,7 @@
             </div>
             {#if allCompleted}
                 <div class="mt-3 flex gap-1">
-                    {#each Array(5) as _}
+                    {#each Array(5) as _, j (j)}
                         <Star size={14} class="fill-amber-400 text-amber-400" />
                     {/each}
                 </div>

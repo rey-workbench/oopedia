@@ -9,8 +9,7 @@
     import { ROUTES } from '@/utils/route';
     import LevelMapLegend from '@/components/layout/LevelMapLegend.svelte';
     import LevelMapCanvas from '@/components/layout/LevelMapCanvas.svelte';
-    import type { Material } from '@/types';
-    import type { LevelItem } from '@/states/Mahasiswa/QuizState.svelte';
+    import type { Material, LevelItem } from '@/types';
 
     interface Props {
         material: Material;
