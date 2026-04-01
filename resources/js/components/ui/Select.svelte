@@ -78,7 +78,7 @@
             aria-describedby={error ? errorId : undefined}
             {...rest}
             class={`
-                w-full cursor-pointer appearance-none rounded-[1.5rem] border-2 font-bold tracking-widest uppercase transition-all outline-none
+                w-full cursor-pointer appearance-none rounded-full border-2 font-bold tracking-widest uppercase transition-all outline-none
                 ${sizes[size]}
                 ${
                     disabled
