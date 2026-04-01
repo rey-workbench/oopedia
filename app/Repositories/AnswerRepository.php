@@ -16,17 +16,17 @@ class AnswerRepository implements AnswerRepositoryInterface
 
     public function find(string $id): ?Answer
     {
-        return Answer::query()->find($id, ['*']);
+        return Answer::find($id);
     }
 
     public function findOrFail(string $id): Answer
     {
-        return Answer::query()->findOrFail($id);
+        return Answer::findOrFail($id);
     }
 
     public function create(array $data): Answer
     {
-        return Answer::query()->create($data);
+        return Answer::create($data);
     }
 
     public function update(string $id, array $data): ?Answer
@@ -47,19 +47,19 @@ class AnswerRepository implements AnswerRepositoryInterface
     /** @return Collection<string, Answer> */
     public function getByQuestionId(string $questionId): Collection
     {
-        return Answer::query()->where('question_id', '=', $questionId)->get();
+        return Answer::where('question_id', '=', $questionId)->get();
     }
 
     /** @return Collection<string, Answer> */
     public function getCorrectAnswers(string $questionId): Collection
     {
-        return Answer::query()->where('question_id', '=', $questionId)
+        return Answer::where('question_id', '=', $questionId)
             ->where('is_correct', '=', true)
             ->get();
     }
 
     public function deleteByQuestionId(string $questionId): bool
     {
-        return (bool) Answer::query()->where('question_id', '=', $questionId)->delete();
+        return (bool) Answer::where('question_id', '=', $questionId)->delete();
     }
 }

@@ -17,19 +17,19 @@ class RoleRepository implements RoleRepositoryInterface
 
     public function find(string $id): ?Role
     {
-        return Role::query()->find($id, ['*']);
+        return Role::find($id);
     }
 
     public function findByName(string $name): ?Role
     {
-        return Role::query()->where('role_name', '=', $name)->first();
+        return Role::where('role_name', '=', $name)->first();
     }
 
     /** @return Collection<string, User> */
     public function getUsersByRole(string $roleId): Collection
     {
-        return Role::query()->with('users')
-            ->find($roleId, ['*'])
+        return Role::with('users')
+            ->find($roleId)
             ?->users ?? collect();
     }
 }

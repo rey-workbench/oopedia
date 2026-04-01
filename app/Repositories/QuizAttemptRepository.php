@@ -5,7 +5,6 @@ namespace App\Repositories;
 use App\Contracts\Repositories\QuizAttemptRepositoryInterface;
 use App\Models\QuizAttempt;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\DB;
 
 class QuizAttemptRepository implements QuizAttemptRepositoryInterface
 {
@@ -13,25 +12,25 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
     {
         return DB::transaction(function () use ($data) {
             if (! isset($data['attempt_number'])) {
-                $data['attempt_number'] = QuizAttempt::query()->where('user_id', '=', $data['user_id'])
+                $data['attempt_number'] = QuizAttempt::where('user_id', '=', $data['user_id'])
                     ->where('question_id', '=', $data['question_id'])
                     ->lockForUpdate()
                     ->count('*') + 1;
             }
 
-            return QuizAttempt::query()->create($data);
+            return QuizAttempt::create($data);
         });
     }
 
     public function find(string $id): ?QuizAttempt
     {
-        return QuizAttempt::query()->find($id, ['*']);
+        return QuizAttempt::find($id, ['*']);
     }
 
     /** @return Collection<int, QuizAttempt> */
     public function getByUser(string $userId): Collection
     {
-        return QuizAttempt::query()->where('user_id', '=', $userId)
+        return QuizAttempt::where('user_id', '=', $userId)
             ->with(['question', 'answer'])
             ->orderBy('created_at', 'desc')
             ->get();
@@ -40,7 +39,7 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
     /** @return Collection<int, QuizAttempt> */
     public function getByUserAndQuestion(string $userId, string $questionId): Collection
     {
-        return QuizAttempt::query()->where('user_id', '=', $userId)
+        return QuizAttempt::where('user_id', '=', $userId)
             ->where('question_id', '=', $questionId)
             ->orderBy('attempt_number', 'asc')
             ->get();
@@ -58,7 +57,7 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
 
     public function getBestAttempt(string $userId, string $questionId): ?QuizAttempt
     {
-        return QuizAttempt::query()->where('user_id', '=', $userId)
+        return QuizAttempt::where('user_id', '=', $userId)
             ->where('question_id', '=', $questionId)
             ->where('is_correct', '=', true)
             ->orderBy('score', 'desc')
@@ -68,7 +67,7 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
 
     public function getLatestAttempt(string $userId, string $questionId): ?QuizAttempt
     {
-        return QuizAttempt::query()->where('user_id', '=', $userId)
+        return QuizAttempt::where('user_id', '=', $userId)
             ->where('question_id', '=', $questionId)
             ->orderBy('attempt_number', 'desc')
             ->first();
@@ -76,7 +75,7 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
 
     public function countAttempts(string $userId, string $questionId): int
     {
-        return QuizAttempt::query()->where('user_id', '=', $userId)
+        return QuizAttempt::where('user_id', '=', $userId)
             ->where('question_id', '=', $questionId)
             ->count('*');
     }
@@ -84,7 +83,7 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
     /** @return Collection<int, QuizAttempt> */
     public function getCorrectAttempts(string $userId): Collection
     {
-        return QuizAttempt::query()->where('user_id', '=', $userId)
+        return QuizAttempt::where('user_id', '=', $userId)
             ->where('is_correct', '=', true)
             ->with(['question.material'])
             ->get();
@@ -93,12 +92,21 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
     /** @return array<string, mixed> */
     public function getUserStats(string $userId): array
     {
-        return (array) QuizAttempt::select(
-            DB::raw('COUNT(DISTINCT question_id) as total_attempted'),
-            DB::raw('SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) as total_correct'),
-            DB::raw('COUNT(*) as total_attempts'),
-        )
-            ->where('user_id', '=', $userId)
-            ->first();
+        $totalAttempted = QuizAttempt::where('user_id', $userId)
+            ->distinct('question_id')
+            ->count('question_id');
+
+        $totalCorrect = QuizAttempt::where('user_id', $userId)
+            ->where('is_correct', true)
+            ->count('id');
+
+        $totalAttempts = QuizAttempt::where('user_id', $userId)
+            ->count('id');
+
+        return [
+            'total_attempted' => $totalAttempted,
+            'total_correct'   => $totalCorrect,
+            'total_attempts'  => $totalAttempts,
+        ];
     }
 }

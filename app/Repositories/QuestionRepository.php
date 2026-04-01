@@ -17,17 +17,17 @@ class QuestionRepository implements QuestionRepositoryInterface
 
     public function find(string $id): ?Question
     {
-        return Question::query()->find($id, ['*']);
+        return Question::find($id, ['*']);
     }
 
     public function create(array $data): Question
     {
-        return Question::query()->create($data);
+        return Question::create($data);
     }
 
     public function update(string $id, array $data): ?Question
     {
-        $question = Question::query()->find($id, ['*']);
+        $question = Question::find($id, ['*']);
 
         if ($question) {
             $question->update($data);
@@ -40,7 +40,7 @@ class QuestionRepository implements QuestionRepositoryInterface
 
     public function delete(string $id): bool
     {
-        $question = Question::query()->find($id, ['*']);
+        $question = Question::find($id, ['*']);
 
         if ($question) {
             return (bool) $question->delete();
@@ -51,23 +51,23 @@ class QuestionRepository implements QuestionRepositoryInterface
 
     public function paginate(int $perPage = 15): LengthAwarePaginator
     {
-        return Question::query()->paginate($perPage, ['*'], 'page', null);
+        return Question::paginate($perPage, ['*'], 'page', null);
     }
 
     public function countAll(): int
     {
-        return Question::query()->count('*');
+        return Question::count('*');
     }
 
     public function findWithAnswers(string $id): Question
     {
-        return Question::query()->with('answers')->findOrFail($id);
+        return Question::with('answers')->findOrFail($id);
     }
 
     /** @return Collection<int, Question> */
     public function getByMaterialAndDifficulty(string $materialId, ?string $difficulty = null, ?string $subMaterialId = null): Collection
     {
-        $query = Question::query()->where('material_id', '=', $materialId);
+        $query = Question::where('material_id', '=', $materialId);
 
         if ($subMaterialId) {
             $query->where('sub_material_id', '=', $subMaterialId);
@@ -85,7 +85,7 @@ class QuestionRepository implements QuestionRepositoryInterface
         ?string $difficulty = null,
         ?string $materialId = null,
     ): LengthAwarePaginator {
-        return Question::query()->with(['createdBy', 'answers', 'material'])
+        return Question::with(['createdBy', 'answers', 'material'])
             ->when($search, function ($query) use ($search) {
                 return $query->where(
                     function ($q) use ($search) {
@@ -122,7 +122,7 @@ class QuestionRepository implements QuestionRepositoryInterface
         ?string $search = null,
         ?string $difficulty = null,
     ): LengthAwarePaginator {
-        return Question::query()->with(['material', 'answers'])
+        return Question::with(['material', 'answers'])
             ->where('material_id', '=', $materialId)
             ->whereNotIn('id', $excludeIds)
             ->when($search, function ($query) use ($search) {
@@ -136,20 +136,20 @@ class QuestionRepository implements QuestionRepositoryInterface
 
     public function countByMaterialAndDifficulty(string $materialId, string $difficulty): int
     {
-        return Question::query()->where('material_id', '=', $materialId)
+        return Question::where('material_id', '=', $materialId)
             ->where('difficulty', '=', $difficulty)
             ->count('*');
     }
 
     public function existsByMaterialAndDifficulty(string $materialId, string $difficulty): bool
     {
-        return Question::query()->where('material_id', '=', $materialId)
+        return Question::where('material_id', '=', $materialId)
             ->where('difficulty', '=', $difficulty)
             ->exists();
     }
 
     public function countByMaterial(string $materialId): int
     {
-        return Question::query()->where('material_id', '=', $materialId)->count('*');
+        return Question::where('material_id', '=', $materialId)->count('*');
     }
 }

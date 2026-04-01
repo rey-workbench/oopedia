@@ -16,12 +16,12 @@ class SubMaterialRepository implements SubMaterialRepositoryInterface
 
     public function find(string $id): ?SubMaterial
     {
-        return SubMaterial::query()->find($id, ['*']);
+        return SubMaterial::find($id, ['*']);
     }
 
     public function create(array $data): SubMaterial
     {
-        return SubMaterial::query()->create($data);
+        return SubMaterial::create($data);
     }
 
     public function update(string $id, array $data): bool
@@ -51,7 +51,7 @@ class SubMaterialRepository implements SubMaterialRepositoryInterface
     /** @return Collection<int, SubMaterial> */
     public function getAllByMaterial(string $materialId): Collection
     {
-        return SubMaterial::query()->where('material_id', '=', $materialId)
+        return SubMaterial::where('material_id', '=', $materialId)
             ->ordered()
             ->get();
     }
@@ -65,7 +65,7 @@ class SubMaterialRepository implements SubMaterialRepositoryInterface
     public function reorder(string $materialId, array $orderData): void
     {
         foreach ($orderData as $order => $subMaterialId) {
-            SubMaterial::query()->where('id', '=', $subMaterialId)
+            SubMaterial::where('id', '=', $subMaterialId)
                 ->where('material_id', '=', $materialId)
                 ->update(['order' => $order + 1]);
         }
@@ -73,6 +73,6 @@ class SubMaterialRepository implements SubMaterialRepositoryInterface
 
     public function findWithQuestions(string $id): SubMaterial
     {
-        return SubMaterial::query()->with('questions')->findOrFail($id);
+        return SubMaterial::with('questions')->findOrFail($id);
     }
 }

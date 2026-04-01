@@ -50,7 +50,7 @@ class ProgressRepository implements ProgressRepositoryInterface
             return collect();
         }
 
-        $attempts = QuizAttempt::query()->with(['question.material'])
+        $attempts = QuizAttempt::with(['question.material'])
             ->where('user_id', '=', $userId)
             ->where('is_correct', '=', true)
             ->orderBy('created_at', 'desc')
@@ -153,7 +153,7 @@ class ProgressRepository implements ProgressRepositoryInterface
 
     public function getAttemptCount(string $userId, string $materialId, string $questionId): int
     {
-        return QuizAttempt::query()->where('user_id', '=', $userId)
+        return QuizAttempt::where('user_id', '=', $userId)
             ->where('question_id', '=', $questionId)
             ->count('*');
     }
@@ -162,14 +162,14 @@ class ProgressRepository implements ProgressRepositoryInterface
     {
         if (! isset($data['attempt_number'])) {
             $data['attempt_number'] = DB::transaction(function () use ($data) {
-                return QuizAttempt::query()->where('user_id', '=', $data['user_id'])
+                return QuizAttempt::where('user_id', '=', $data['user_id'])
                     ->where('question_id', '=', $data['question_id'])
                     ->lockForUpdate()
                     ->count('*') + 1;
             });
         }
 
-        $attempt = QuizAttempt::query()->create([
+        $attempt = QuizAttempt::create([
             'user_id'        => $data['user_id'],
             'question_id'    => $data['question_id'],
             'answer_id'      => $data['answer_id']           ?? null,
@@ -235,7 +235,7 @@ class ProgressRepository implements ProgressRepositoryInterface
             return collect();
         }
 
-        return QuizAttempt::query()->where('user_id', '=', $userId)
+        return QuizAttempt::where('user_id', '=', $userId)
             ->whereIn('question_id', $questionIds)
             ->orderBy('created_at', 'desc')
             ->get()
@@ -256,9 +256,9 @@ class ProgressRepository implements ProgressRepositoryInterface
 
     public function resetProgress(string $userId, string $materialId): void
     {
-        $questionIds = Question::query()->where('material_id', '=', $materialId)->pluck('id');
+        $questionIds = Question::where('material_id', '=', $materialId)->pluck('id');
 
-        QuizAttempt::query()->where('user_id', '=', $userId)
+        QuizAttempt::where('user_id', '=', $userId)
             ->whereIn('question_id', $questionIds)
             ->delete();
     }
@@ -287,7 +287,7 @@ class ProgressRepository implements ProgressRepositoryInterface
 
     public function getRecentSystemProgress(int $limit): Collection
     {
-        return QuizAttempt::query()->with(['user', 'question.material'])
+        return QuizAttempt::with(['user', 'question.material'])
             ->orderBy('created_at', 'desc')
             ->limit($limit)
             ->get();
@@ -303,26 +303,32 @@ class ProgressRepository implements ProgressRepositoryInterface
 
     public function getPopularMaterials(int $limit): Collection
     {
-        return Material::query()
-            ->leftJoin('questions', 'materials.id', '=', 'questions.material_id')
-            ->leftJoin('quiz_attempts', function ($join) {
-                $join->on('questions.id', '=', 'quiz_attempts.question_id')
-                    ->where('quiz_attempts.is_correct', '=', true);
+        return Material::withCount(['questions'])
+            ->get()
+            ->map(function ($material) {
+                $correctAttempts = QuizAttempt::whereHas('question', fn ($q) => $q->where('material_id', $material->id))
+                    ->where('is_correct', true)
+                    ->distinct('user_id')
+                    ->count('user_id');
+
+                $totalAttempts = QuizAttempt::whereHas('question', fn ($q) => $q->where('material_id', $material->id))
+                    ->distinct('id')
+                    ->count('id');
+
+                $completionRate = $totalAttempts > 0
+                    ? round(($correctAttempts / $totalAttempts) * 100, 1)
+                    : 0;
+
+                return (object) [
+                    'id'              => $material->id,
+                    'title'           => $material->title,
+                    'students_count'  => $correctAttempts,
+                    'completion_rate' => $completionRate,
+                ];
             })
-            ->select(
-                'materials.id',
-                'materials.title',
-                DB::raw('COUNT(DISTINCT quiz_attempts.user_id) as students_count'),
-                DB::raw('ROUND(
-                    (COUNT(DISTINCT CASE WHEN quiz_attempts.is_correct = 1 THEN quiz_attempts.id ELSE NULL END) * 100.0) /
-                    NULLIF(COUNT(DISTINCT quiz_attempts.id), 0),
-                    1
-                ) as completion_rate'),
-            )
-            ->groupBy('materials.id', 'materials.title')
-            ->orderByDesc('students_count')
-            ->limit($limit)
-            ->get();
+            ->sortByDesc('students_count')
+            ->take($limit)
+            ->values();
     }
 
     public function getByUserAndMaterial(string $userId, string $materialId): Collection
@@ -355,7 +361,7 @@ class ProgressRepository implements ProgressRepositoryInterface
             return 0;
         }
 
-        $attempts = QuizAttempt::query()->where('user_id', '=', $userId)
+        $attempts = QuizAttempt::where('user_id', '=', $userId)
             ->where('question_id', '=', $questionId)
             ->orderBy('created_at', 'desc')
             ->take(10)
@@ -382,7 +388,7 @@ class ProgressRepository implements ProgressRepositoryInterface
             return null;
         }
 
-        $attempt = QuizAttempt::query()->where('user_id', '=', $userId)
+        $attempt = QuizAttempt::where('user_id', '=', $userId)
             ->where('question_id', '=', $questionId)
             ->where('is_correct', '=', false)
             ->latest()
@@ -397,7 +403,7 @@ class ProgressRepository implements ProgressRepositoryInterface
             return null;
         }
 
-        return StudentState::query()->where('user_id', '=', $userId)->first();
+        return StudentState::where('user_id', '=', $userId)->first();
     }
 
     public function getOrCreateStudentState(?string $userId): StudentState
@@ -406,7 +412,7 @@ class ProgressRepository implements ProgressRepositoryInterface
             return new StudentState;
         }
 
-        return StudentState::query()->firstOrCreate(['user_id' => $userId], [
+        return StudentState::firstOrCreate(['user_id' => $userId], [
             'gamification_data'   => [],
             'learning_profile'    => [],
             'performance_metrics' => [],

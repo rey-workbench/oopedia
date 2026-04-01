@@ -17,17 +17,17 @@ class UeqSurveyRepository implements UeqSurveyRepositoryInterface
 
     public function find(string $id): ?UeqSurvey
     {
-        return UeqSurvey::query()->find($id, ['*']);
+        return UeqSurvey::find($id, ['*']);
     }
 
     public function create(array $data): UeqSurvey
     {
-        return UeqSurvey::query()->create($data);
+        return UeqSurvey::create($data);
     }
 
     public function update(string $id, array $data): ?UeqSurvey
     {
-        $ueq = UeqSurvey::query()->find($id, ['*']);
+        $ueq = UeqSurvey::find($id, ['*']);
 
         if ($ueq) {
             $ueq->update($data);
@@ -40,7 +40,7 @@ class UeqSurveyRepository implements UeqSurveyRepositoryInterface
 
     public function delete(string $id): bool
     {
-        $ueq = UeqSurvey::query()->find($id, ['*']);
+        $ueq = UeqSurvey::find($id, ['*']);
 
         if ($ueq) {
             return (bool) $ueq->delete();
@@ -51,18 +51,18 @@ class UeqSurveyRepository implements UeqSurveyRepositoryInterface
 
     public function paginate(int $perPage = 15): LengthAwarePaginator
     {
-        return UeqSurvey::query()->paginate($perPage, ['*'], 'page', null);
+        return UeqSurvey::paginate($perPage, ['*'], 'page', null);
     }
 
     public function countAll(): int
     {
-        return UeqSurvey::query()->count('*');
+        return UeqSurvey::count();
     }
 
     /** @return Collection<int, UeqSurvey> */
     public function getAllWithUser(?string $class = null): Collection
     {
-        $query = UeqSurvey::query()->with('user');
+        $query = UeqSurvey::with('user');
 
         if ($class) {
             $query->where('class', '=', $class);
@@ -79,11 +79,11 @@ class UeqSurveyRepository implements UeqSurveyRepositoryInterface
 
     public function findByUserId(string $userId): ?UeqSurvey
     {
-        return UeqSurvey::query()->where('user_id', '=', $userId)->firstOrFail();
+        return UeqSurvey::where('user_id', '=', $userId)->firstOrFail();
     }
 
     public function findSurveyByUser(string $userId): ?UeqSurvey
     {
-        return UeqSurvey::query()->where('user_id', '=', $userId)->first();
+        return UeqSurvey::where('user_id', '=', $userId)->first();
     }
 }

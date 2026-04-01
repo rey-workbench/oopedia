@@ -10,7 +10,7 @@ class StudentStateRepository implements StudentStateRepositoryInterface
 {
     public function upsert(string $userId, string $materialId, array $attributes): StudentState
     {
-        return StudentState::query()->updateOrCreate(
+        return StudentState::updateOrCreate(
             ['user_id' => $userId],
             array_merge([
                 'gamification_data'   => [],
@@ -24,7 +24,7 @@ class StudentStateRepository implements StudentStateRepositoryInterface
 
     public function getByUserAndMaterial(string $userId, string $materialId): ?StudentState
     {
-        return StudentState::query()->where('user_id', '=', $userId)->first();
+        return StudentState::where('user_id', '=', $userId)->first();
     }
 
     public function updateProgress(string $userId, string $materialId, array $progressData): void
@@ -43,17 +43,17 @@ class StudentStateRepository implements StudentStateRepositoryInterface
     /** @return Collection<string, StudentState> */
     public function getAll(string $userId): Collection
     {
-        return StudentState::query()->where('user_id', '=', $userId)->get();
+        return StudentState::where('user_id', '=', $userId)->get();
     }
 
     public function delete(string $userId, string $materialId): bool
     {
-        return (bool) StudentState::query()->where('user_id', '=', $userId)->delete();
+        return (bool) StudentState::where('user_id', '=', $userId)->delete();
     }
 
     protected function getOrCreate(string $userId): StudentState
     {
-        return StudentState::query()->firstOrCreate(
+        return StudentState::firstOrCreate(
             ['user_id' => $userId],
             [
                 'gamification_data'   => [],
