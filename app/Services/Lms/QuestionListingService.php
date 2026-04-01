@@ -224,6 +224,7 @@ class QuestionListingService implements QuestionListingServiceInterface
 
     public function getCurrentQuestion(Collection $questions, SupportCollection $answeredQuestionIds): ?Question
     {
+        /** @var Question|null $currentQuestion */
         $currentQuestion = $questions->reject(function ($question) use ($answeredQuestionIds) {
             return $answeredQuestionIds->contains($question->id);
         })->first();

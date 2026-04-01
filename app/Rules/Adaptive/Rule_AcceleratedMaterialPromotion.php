@@ -23,6 +23,7 @@ class Rule_AcceleratedMaterialPromotion extends BaseAdaptiveRule
             AdaptiveConstants::FACT_SCORE_MASTERY,
             AdaptiveConstants::FACT_TIME_FAST,
             AdaptiveConstants::FACT_NEXT_UNLOCKED,
+            AdaptiveConstants::FACT_SATISFACTORY_PROGRESS,
         ])  && $this->notHasFact($facts, AdaptiveConstants::FACT_HINT_USED)
             && $this->notHasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT);
     }

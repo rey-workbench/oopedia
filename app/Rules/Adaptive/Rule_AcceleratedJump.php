@@ -24,7 +24,6 @@ class Rule_AcceleratedJump extends BaseAdaptiveRule
             AdaptiveConstants::FACT_TIME_FAST,
             AdaptiveConstants::FACT_DIFF_BEGINNER,
         ])  && $this->notHasFact($facts, AdaptiveConstants::FACT_HINT_USED)
-            && $this->notHasFact($facts, AdaptiveConstants::FACT_NEXT_UNLOCKED)
             && $this->notHasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT);
     }
 
