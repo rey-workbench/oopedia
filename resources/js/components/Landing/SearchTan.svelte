@@ -1,7 +1,3 @@
-<script lang="ts">
-    // No additional imports needed
-</script>
-
 <section class="mx-auto mb-40 flex max-w-7xl flex-col items-center px-6">
     <div
         class="relative flex aspect-video w-full max-w-4xl justify-center overflow-hidden rounded-xl bg-[#EECA9D] py-16 shadow-lg"

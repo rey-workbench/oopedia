@@ -1,7 +1,7 @@
 <script lang="ts">
     import { Link } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils/route';
-    import { Disc2 } from 'lucide-svelte';
+    import { Disc2, ArrowRight } from 'lucide-svelte';
 </script>
 
 <section class="relative min-h-screen w-full overflow-hidden bg-[#0A0A0A]">
@@ -63,22 +63,10 @@
             </p>
             <Link
                 href={ROUTES.AUTH.REGISTER}
-                class="group relative inline-flex items-center gap-3 rounded-full bg-white px-10 py-4 text-[11px] font-black tracking-[0.2em] text-black uppercase shadow-[0_20px_50px_rgba(0,0,0,0.4)] transition-all hover:scale-105 active:scale-95"
+                class="group inline-flex items-center gap-3 rounded-full bg-white px-10 py-4 text-[11px] font-black tracking-[0.2em] text-black uppercase shadow-[0_20px_50px_rgba(0,0,0,0.4)] transition-all hover:scale-105 active:scale-95"
             >
                 <span>Daftar Sekarang</span>
-                <svg
-                    class="h-4 w-4 transition-transform group-hover:translate-x-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M17 8l4 4m0 0l-4 4m4-4H3"
-                    ></path>
-                </svg>
+                <ArrowRight size={16} class="transition-transform group-hover:translate-x-1" />
             </Link>
         </div>
     </div>

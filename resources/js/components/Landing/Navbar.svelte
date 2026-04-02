@@ -19,35 +19,27 @@
     };
 
     let isScrolled = $derived(scrollY > 50);
-    let isDarkSection = $derived(scrollY > 8000);
+    let isDark = $derived(!isScrolled && scrollY > 8000);
 
     let headerBg = $derived(
         isScrolled ? 'bg-white/95 backdrop-blur-xl border-b border-black/5' : 'bg-transparent'
     );
     let menuBtnBg = $derived(
-        isDarkSection && !isScrolled
+        isDark
             ? 'bg-black/80 text-white border border-white/10'
             : 'bg-white/80 text-black border border-black/5'
     );
     let searchBg = $derived(
-        isDarkSection && !isScrolled
-            ? 'bg-black/80 border border-white/10'
-            : 'bg-white/80 border border-black/5'
+        isDark ? 'bg-black/80 border border-white/10' : 'bg-white/80 border border-black/5'
     );
-    let searchIconColor = $derived(
-        isDarkSection && !isScrolled ? 'text-white/30' : 'text-black/30'
-    );
+    let searchIconColor = $derived(isDark ? 'text-white/30' : 'text-black/30');
     let placeholderColor = $derived(
-        isDarkSection && !isScrolled ? 'placeholder:text-white/30' : 'placeholder:text-black/30'
+        isDark ? 'placeholder:text-white/30' : 'placeholder:text-black/30'
     );
     let authTextColor = $derived(
-        isDarkSection && !isScrolled
-            ? 'text-white/60 hover:text-white'
-            : 'text-black/60 hover:text-black'
+        isDark ? 'text-white/60 hover:text-white' : 'text-black/60 hover:text-black'
     );
-    let authBtnBg = $derived(
-        isDarkSection && !isScrolled ? 'bg-white text-black' : 'bg-black text-white'
-    );
+    let authBtnBg = $derived(isDark ? 'bg-white text-black' : 'bg-black text-white');
 </script>
 
 <svelte:window bind:scrollY />

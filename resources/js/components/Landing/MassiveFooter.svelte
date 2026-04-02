@@ -7,15 +7,9 @@
         class="flex w-full flex-col items-center justify-between gap-8 px-6 pb-[2vh] text-[9px] font-black tracking-[0.2em] text-black/40 uppercase md:flex-row md:gap-0"
     >
         <div class="flex gap-6">
-            <button type="button" class="transition-colors hover:text-black focus:outline-none"
-                >Instagram</button
-            >
-            <button type="button" class="transition-colors hover:text-black focus:outline-none"
-                >Twitter</button
-            >
-            <button type="button" class="transition-colors hover:text-black focus:outline-none"
-                >YouTube</button
-            >
+            <a href="https://instagram.com" class="transition-colors hover:text-black">Instagram</a>
+            <a href="https://twitter.com" class="transition-colors hover:text-black">Twitter</a>
+            <a href="https://youtube.com" class="transition-colors hover:text-black">YouTube</a>
         </div>
 
         <div
@@ -25,15 +19,9 @@
         </div>
 
         <div class="flex gap-6">
-            <button type="button" class="transition-colors hover:text-black focus:outline-none"
-                >Kontak</button
-            >
-            <button type="button" class="transition-colors hover:text-black focus:outline-none"
-                >Ketentuan</button
-            >
-            <button type="button" class="transition-colors hover:text-black focus:outline-none"
-                >Privasi</button
-            >
+            <a href="/kontak" class="transition-colors hover:text-black">Kontak</a>
+            <a href="/ketentuan" class="transition-colors hover:text-black">Ketentuan</a>
+            <a href="/privasi" class="transition-colors hover:text-black">Privasi</a>
         </div>
     </div>
 

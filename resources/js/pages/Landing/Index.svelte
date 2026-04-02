@@ -6,6 +6,7 @@
         SearchOlive,
         SearchRust,
         SearchTan,
+        BrandLogos,
         KnowWhatLookingAt,
         CallToAction,
         MassiveFooter,
@@ -27,6 +28,7 @@
         <SearchRust />
         <SearchTan />
         <KnowWhatLookingAt />
+        <BrandLogos />
 
         <CallToAction />
         <MassiveFooter />

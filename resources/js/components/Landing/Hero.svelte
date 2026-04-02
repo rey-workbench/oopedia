@@ -6,18 +6,10 @@
     import FloatingItem from '@/components/ui/FloatingItem.svelte';
     import { Play } from 'lucide-svelte';
 
-    let scrollY = $state(0);
-
     let windowWidth = $state(1920);
     let windowHeight = $state(1080);
 
-    const parallax = spring(
-        { x: 0, y: 0 },
-        {
-            stiffness: 0.05,
-            damping: 0.5,
-        }
-    );
+    const parallax = spring({ x: 0, y: 0 }, { stiffness: 0.05, damping: 0.5 });
 
     const handleMousemove = (e: MouseEvent) => {
         const x = (e.clientX / windowWidth) * 2 - 1;
@@ -25,16 +17,9 @@
         parallax.set({ x, y });
     };
 
-    const images = [
-        '/images/landing/abstract1.png',
-        '/images/landing/abstract2.png',
-        '/images/landing/abstract3.png',
-        '/images/landing/abstract4.png',
-    ];
-
     const floatingDecor = [
         {
-            image: images[1] as string,
+            image: '/images/landing/abstract2.png',
             top: '2%',
             left: '2%',
             width: '120px',
@@ -46,7 +31,7 @@
             zIndex: 0,
         },
         {
-            image: images[0] as string,
+            image: '/images/landing/abstract1.png',
             top: '15%',
             left: '18%',
             width: '130px',
@@ -58,7 +43,7 @@
             zIndex: 10,
         },
         {
-            image: images[2] as string,
+            image: '/images/landing/abstract3.png',
             top: '35%',
             left: '6%',
             width: '140px',
@@ -70,7 +55,7 @@
             zIndex: 20,
         },
         {
-            image: images[3] as string,
+            image: '/images/landing/abstract4.png',
             top: '55%',
             left: '4%',
             width: '90px',
@@ -82,7 +67,7 @@
             zIndex: 30,
         },
         {
-            image: images[1] as string,
+            image: '/images/landing/abstract2.png',
             top: '78%',
             left: '10%',
             width: '160px',
@@ -94,7 +79,7 @@
             zIndex: 0,
         },
         {
-            image: images[2] as string,
+            image: '/images/landing/abstract3.png',
             top: '70%',
             left: '32%',
             width: '120px',
@@ -106,7 +91,7 @@
             zIndex: 10,
         },
         {
-            image: images[0] as string,
+            image: '/images/landing/abstract1.png',
             top: '-5%',
             left: '52%',
             width: '180px',
@@ -118,7 +103,7 @@
             zIndex: 0,
         },
         {
-            image: images[1] as string,
+            image: '/images/landing/abstract2.png',
             top: '22%',
             left: '42%',
             width: '90px',
@@ -130,7 +115,7 @@
             zIndex: 0,
         },
         {
-            image: images[2] as string,
+            image: '/images/landing/abstract3.png',
             top: '85%',
             left: '45%',
             width: '100px',
@@ -142,7 +127,7 @@
             zIndex: 0,
         },
         {
-            image: images[0] as string,
+            image: '/images/landing/abstract1.png',
             top: '82%',
             left: '65%',
             width: '90px',
@@ -154,7 +139,7 @@
             zIndex: 0,
         },
         {
-            image: images[3] as string,
+            image: '/images/landing/abstract4.png',
             top: '4%',
             right: '25%',
             width: '120px',
@@ -166,7 +151,7 @@
             zIndex: 0,
         },
         {
-            image: images[0] as string,
+            image: '/images/landing/abstract1.png',
             top: '25%',
             right: '18%',
             width: '120px',
@@ -178,7 +163,7 @@
             zIndex: 20,
         },
         {
-            image: images[1] as string,
+            image: '/images/landing/abstract2.png',
             top: '18%',
             right: '-2%',
             width: '150px',
@@ -190,7 +175,7 @@
             zIndex: 10,
         },
         {
-            image: images[2] as string,
+            image: '/images/landing/abstract3.png',
             top: '48%',
             right: '15%',
             width: '140px',
@@ -202,7 +187,7 @@
             zIndex: 0,
         },
         {
-            image: images[3] as string,
+            image: '/images/landing/abstract4.png',
             top: '40%',
             right: '-3%',
             width: '40px',
@@ -214,7 +199,7 @@
             zIndex: 30,
         },
         {
-            image: images[0] as string,
+            image: '/images/landing/abstract1.png',
             top: '65%',
             right: '20%',
             width: '130px',
@@ -226,7 +211,7 @@
             zIndex: 20,
         },
         {
-            image: images[1] as string,
+            image: '/images/landing/abstract2.png',
             top: '62%',
             right: '2%',
             width: '120px',
@@ -238,7 +223,7 @@
             zIndex: 0,
         },
         {
-            image: images[2] as string,
+            image: '/images/landing/abstract3.png',
             top: '85%',
             right: '6%',
             width: '130px',
@@ -253,7 +238,6 @@
 </script>
 
 <svelte:window
-    bind:scrollY
     bind:innerWidth={windowWidth}
     bind:innerHeight={windowHeight}
     onmousemove={handleMousemove}

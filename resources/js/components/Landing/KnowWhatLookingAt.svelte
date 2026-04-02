@@ -1,7 +1,3 @@
-<script lang="ts">
-    // No additional imports needed
-</script>
-
 <section class="mx-auto mb-[15vh] flex max-w-7xl flex-col items-center px-6 text-center">
     <h2 class="mb-16 font-serif text-[2.5rem] tracking-tighter text-black">
         Ketahui apa yang<br />Anda pelajari.
