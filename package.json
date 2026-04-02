@@ -43,11 +43,13 @@
         "apexcharts": "^5.10.4",
         "dompurify": "^3.3.3",
         "focus-trap": "^8.0.1",
+        "gsap": "^3.14.2",
         "highlight.js": "^11.11.1",
         "html2canvas": "^1.4.1",
         "jspdf": "^4.2.1",
         "lodash": "^4.17.23",
         "lucide-svelte": "^0.577.0",
-        "quill": "^2.0.3"
+        "quill": "^2.0.3",
+        "svelte-motion": "^0.12.2"
     }
 }

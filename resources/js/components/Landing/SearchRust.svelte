@@ -1,4 +1,36 @@
-<section class="mx-auto mb-40 flex max-w-7xl flex-col items-center px-6">
+<script lang="ts">
+    import { onMount } from 'svelte';
+    import { tweened } from 'svelte/motion';
+    import { cubicOut, backOut } from 'svelte/easing';
+
+    let element: HTMLElement;
+    const opacity = tweened(0, { duration: 800, easing: cubicOut });
+    const translateX = tweened(-60, { duration: 1000, easing: backOut });
+    const rotate = tweened(-5, { duration: 1000, easing: cubicOut });
+
+    onMount(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        opacity.set(1);
+                        translateX.set(0);
+                        rotate.set(0);
+                    }
+                });
+            },
+            { threshold: 0.2 }
+        );
+        observer.observe(element);
+        return () => observer.disconnect();
+    });
+</script>
+
+<section
+    bind:this={element}
+    class="mx-auto mb-40 flex max-w-7xl flex-col items-center px-6"
+    style="opacity: {$opacity}; transform: translateX({$translateX}px) rotate({$rotate}deg);"
+>
     <h2
         class="mb-10 max-w-sm text-center font-serif text-[2.5rem] leading-[0.95] tracking-tighter text-black"
     >
@@ -6,38 +38,40 @@
     </h2>
 
     <div
-        class="relative flex aspect-[18/9] w-full max-w-4xl items-center justify-center gap-[10%] overflow-hidden rounded-xl bg-[#C1583D] shadow-lg"
+        class="group relative flex aspect-[18/9] w-full max-w-4xl items-center justify-center gap-[10%] overflow-hidden rounded-2xl bg-[#C1583D] shadow-2xl"
     >
         <div
-            class="relative z-10 aspect-[3/4] w-[30%] overflow-hidden rounded-sm bg-orange-950/60 mix-blend-multiply shadow-[0_20px_50px_rgba(0,0,0,0.3)] contrast-125 filter transition-transform duration-700 hover:scale-105"
+            class="relative z-10 aspect-[3/4] w-[30%] overflow-hidden rounded-2xl bg-orange-950/60 shadow-2xl transition-transform duration-700 hover:scale-110 hover:rotate-3"
         >
             <img
                 src="/images/landing/abstract1.png"
                 alt=""
-                class="h-full w-full object-cover opacity-70"
+                class="h-full w-full object-cover opacity-70 mix-blend-multiply"
             />
         </div>
         <div
-            class="relative z-10 mb-10 aspect-[2/3] w-[20%] overflow-hidden rounded-sm bg-red-950/80 mix-blend-multiply shadow-[0_20px_50px_rgba(0,0,0,0.3)] contrast-150 filter transition-transform delay-100 duration-700 hover:scale-105"
+            class="relative z-10 mb-10 aspect-[2/3] w-[20%] overflow-hidden rounded-2xl bg-red-950/80 shadow-2xl transition-transform delay-100 duration-700 hover:scale-110 hover:-rotate-3"
         >
             <img
                 src="/images/landing/abstract2.png"
                 alt=""
-                class="h-full w-full object-cover opacity-90"
+                class="h-full w-full object-cover opacity-90 mix-blend-multiply"
             />
         </div>
 
         <div class="absolute top-1/2 left-1/2 z-20 -translate-x-[60%] -translate-y-1/2">
             <div
-                class="flex cursor-pointer items-center gap-3 rounded-full border border-white/10 bg-[#A43B25]/90 px-6 py-2 text-[9px] font-black tracking-[0.2em] text-white uppercase shadow-[0_10px_40px_rgba(0,0,0,0.2)] backdrop-blur-3xl transition-transform hover:scale-110"
+                class="flex cursor-pointer items-center gap-3 rounded-full border border-white/20 bg-[#A43B25]/95 px-8 py-3 text-[10px] font-black tracking-[0.2em] text-white uppercase shadow-2xl backdrop-blur-xl transition-all duration-300 hover:scale-110 hover:bg-[#A43B25]"
             >
-                <div class="h-3 w-3 rounded-full border-[2px] border-[#EB8E78]"></div>
+                <div
+                    class="h-3 w-3 animate-pulse rounded-full border-2 border-[#EB8E78] bg-[#EB8E78]"
+                ></div>
                 ARSip
             </div>
         </div>
     </div>
 
-    <p class="mt-8 text-[9px] font-black tracking-[0.2em] text-black uppercase">
+    <p class="mt-8 text-[10px] font-black tracking-[0.2em] text-black uppercase">
         berdasarkan paradigma
     </p>
 </section>
