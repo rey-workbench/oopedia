@@ -1,3 +1,5 @@
+Skip to content
+
 <laravel-boost-guidelines>
 === foundation rules ===
 

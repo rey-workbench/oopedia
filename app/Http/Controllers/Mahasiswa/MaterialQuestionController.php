@@ -197,7 +197,7 @@ class MaterialQuestionController extends Controller
         $result = $this->adaptiveQuizFlowService->processAdaptiveAttempt(
             $material,
             $question,
-            Auth::id(),
+            $this->getUserId(),
             $request->all(),
         );
 

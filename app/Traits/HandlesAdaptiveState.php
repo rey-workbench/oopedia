@@ -18,8 +18,8 @@ trait HandlesAdaptiveState
         if ($isGuest) {
             return [
                 'gamification' => [
-                    'global_xp'       => $this->getGuestProgressService()->getGamificationState()['xp'],
-                    'current_streak'  => $this->getGuestProgressService()->getGamificationState()['streak'],
+                    'global_xp'       => $this->getGuestProgressService()->getGamificationState()['global_xp'],
+                    'current_streak'  => $this->getGuestProgressService()->getGamificationState()['current_streak'],
                     'current_level'   => 'Tamu',
                 ],
                 'performance' => [

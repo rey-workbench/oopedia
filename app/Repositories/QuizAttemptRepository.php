@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Contracts\Repositories\QuizAttemptRepositoryInterface;
 use App\Models\QuizAttempt;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 class QuizAttemptRepository implements QuizAttemptRepositoryInterface
 {
@@ -15,7 +16,7 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
                 $data['attempt_number'] = QuizAttempt::where('user_id', '=', $data['user_id'])
                     ->where('question_id', '=', $data['question_id'])
                     ->lockForUpdate()
-                    ->count('*') + 1;
+                    ->count() + 1;
             }
 
             return QuizAttempt::create($data);
@@ -48,9 +49,7 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
     /** @return Collection<int, QuizAttempt> */
     public function getByMaterial(string $materialId): Collection
     {
-        return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
-            ->where('questions.material_id', $materialId)
-            ->select('quiz_attempts.*')
+        return QuizAttempt::whereHas('question', fn ($q) => $q->where('material_id', $materialId))
             ->with(['question', 'user'])
             ->get();
     }
@@ -77,7 +76,7 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
     {
         return QuizAttempt::where('user_id', '=', $userId)
             ->where('question_id', '=', $questionId)
-            ->count('*');
+            ->count();
     }
 
     /** @return Collection<int, QuizAttempt> */
@@ -98,10 +97,10 @@ class QuizAttemptRepository implements QuizAttemptRepositoryInterface
 
         $totalCorrect = QuizAttempt::where('user_id', $userId)
             ->where('is_correct', true)
-            ->count('id');
+            ->count();
 
         $totalAttempts = QuizAttempt::where('user_id', $userId)
-            ->count('id');
+            ->count();
 
         return [
             'total_attempted' => $totalAttempted,

@@ -187,8 +187,23 @@ class StudentState extends Model
         $this->performance_metrics  = $metrics;
         $this->gamification_data    = $gamification;
         $this->last_active_at       = now();
-        $this->save();
+
+        if ($this->user_id !== 'guest') {
+            $this->save();
+        }
 
         return $this;
+    }
+
+    /**
+     * Override save to prevent persisting guest data.
+     */
+    public function save(array $options = []): bool
+    {
+        if ($this->user_id === 'guest') {
+            return true;
+        }
+
+        return parent::save($options);
     }
 }

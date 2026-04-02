@@ -7,6 +7,7 @@ use App\Contracts\Services\AdaptiveEngineServiceInterface;
 use App\Contracts\Services\AdaptiveQuizFlowServiceInterface;
 use App\Contracts\Services\FactGatheringServiceInterface;
 use App\Contracts\Services\GamificationServiceInterface;
+use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\NextActionResolverServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
 use App\Contracts\Services\QuestionAnswerServiceInterface;
@@ -14,6 +15,7 @@ use App\Models\Material;
 use App\Models\Question;
 use App\Models\StudentState;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
 {
@@ -25,6 +27,7 @@ class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         protected FactGatheringServiceInterface $factGathering,
         protected AdaptiveEngineServiceInterface $adaptiveEngine,
         protected NextActionResolverServiceInterface $nextActionResolver,
+        protected GuestProgressServiceInterface $guestProgressService,
     ) {
     }
 
@@ -34,16 +37,22 @@ class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         $isCorrect = $this->questionAnswerService->determineCorrectness($question, $data);
         $usedHint  = (bool) ($data['used_hint'] ?? false);
         $timeSpent = (int) ($data['time_spent'] ?? 0);
+        $isGuest   = $userId === 'guest';
 
-        // 1. Update student performance
-        $studentState = $this->performanceService->updateStudentPerformance($userId, $isCorrect, $timeSpent, $usedHint);
+        // 1. Update student performance (Authenticated only)
+        $studentState = null;
+        if (! $isGuest) {
+            $studentState = $this->performanceService->updateStudentPerformance($userId, $isCorrect, $timeSpent, $usedHint);
 
-        // 1.5 Update Learning Style based on Real-time Interaction
-        $this->performanceService->updateLearningStyleFromInteraction(
-            $userId,
-            $question->type ?? 'teori',
-            $timeSpent,
-        );
+            // 1.5 Update Learning Style based on Real-time Interaction
+            $this->performanceService->updateLearningStyleFromInteraction(
+                $userId,
+                $question->type ?? 'teori',
+                $timeSpent,
+            );
+        } else {
+            $studentState = $this->guestProgressService->getStudentState();
+        }
 
         // 2. Calculate score with nuance (not just binary 100/0)
         $score = $this->performanceService->calculateScore($isCorrect, $usedHint, $timeSpent, $question->difficulty);
@@ -60,10 +69,18 @@ class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
 
         $baseXpEarned = $rewardResult['global_xp_earned'] ?? 0;
 
-        // 3.5-3.7 Apply all gamification rewards (XP, streak bonus, level) atomically
+        // 3.5-3.7 Apply all gamification rewards (XP, streak bonus, level)
         [$totalXpEarned, $streakBonus] = $this->applyGamificationRewards($studentState, $rewardResult, $isCorrect);
 
-        $studentState->save();
+        if (! $isGuest) {
+            $studentState->save();
+        } else {
+            // Save guest gamification state back to cookies
+            $this->guestProgressService->saveGamificationState(
+                $studentState->global_xp,
+                $studentState->current_streak,
+            );
+        }
 
         // 4. Save progress log (MANDATORY BEFORE GATHERING FACTS)
         $answerId     = null;
@@ -77,31 +94,40 @@ class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             $userResponse = $data['drag_and_drop_answers'] ?? null;
         }
 
-        $savedProgress = $this->progressRepo->saveProgress([
-            'user_id'       => $userId,
-            'material_id'   => $material->id,
-            'question_id'   => $question->id,
-            'answer_id'     => $answerId,
-            'user_response' => $userResponse,
-            'is_correct'    => $isCorrect,
-            'is_answered'   => true,
-            'attributes'    => [
-                'score'      => $score,
-                'difficulty' => $question->difficulty ?? 'beginner',
-                'used_hint'  => $usedHint,
-                'time_spent' => $timeSpent,
-            ],
-        ]);
+        if (! $isGuest) {
+            $this->progressRepo->saveProgress([
+                'user_id'       => $userId,
+                'material_id'   => $material->id,
+                'question_id'   => $question->id,
+                'answer_id'     => $answerId,
+                'user_response' => $userResponse,
+                'is_correct'    => $isCorrect,
+                'is_answered'   => true,
+                'attributes'    => [
+                    'score'      => $score,
+                    'difficulty' => $question->difficulty ?? 'beginner',
+                    'used_hint'  => $usedHint,
+                    'time_spent' => $timeSpent,
+                ],
+            ]);
 
-        // 4.5 Invalidate dashboard caches so progress is visible immediately
-        Cache::forget("dashboard_index_{$userId}_false");
-        Cache::forget("dashboard_index_{$userId}_true");
-        Cache::forget("dashboard_inprogress_{$userId}_false");
-        Cache::forget("dashboard_inprogress_{$userId}_true");
-        Cache::forget("dashboard_completed_{$userId}_false");
-        Cache::forget("dashboard_completed_{$userId}_true");
+            // 4.5 Invalidate dashboard caches
+            try {
+                Cache::forget("dashboard_index_{$userId}_false");
+                Cache::forget("dashboard_index_{$userId}_true");
+                Cache::forget("dashboard_inprogress_{$userId}_false");
+                Cache::forget("dashboard_inprogress_{$userId}_true");
+                Cache::forget("dashboard_completed_{$userId}_false");
+                Cache::forget("dashboard_completed_{$userId}_true");
+            } catch (\Throwable $e) {
+                Log::warning('Failed to clear dashboard caches: ' . $e->getMessage());
+            }
+        } else {
+            // Guest progress save
+            $this->guestProgressService->saveProgress($data, $isCorrect, $question->id);
+        }
 
-        // 5. Gather facts for adaptive engine (Uses updated progress)
+        // 5. Gather facts for adaptive engine
         $facts = $this->factGathering->gatherFacts(
             studentState: $studentState,
             isCorrect: $isCorrect,
@@ -114,7 +140,7 @@ class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             moduleId: $material->module_id ?? null,
         );
 
-        // 6. Evaluate adaptive rules (forward chaining)
+        // 6. Evaluate adaptive rules
         $adaptiveResult = $this->adaptiveEngine->evaluate($facts, $studentState->toArray(), [
             'is_correct'  => $isCorrect,
             'used_hint'   => $usedHint,
@@ -150,8 +176,8 @@ class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         }
 
         $adaptiveState['time_metrics']      = [
-            'avg_time_per_question' => $this->performanceService->calculateAverageTimeSpent($userId, $material->id),
-            'total_time_spent'      => $this->performanceService->calculateTotalTimeSpent($userId, $material->id),
+            'avg_time_per_question' => (! $isGuest) ? $this->performanceService->calculateAverageTimeSpent($userId, $material->id) : 0,
+            'total_time_spent'      => (! $isGuest) ? $this->performanceService->calculateTotalTimeSpent($userId, $material->id) : 0,
         ];
 
         // Sync learning profile changes (Urusan Unlocking Modul)
@@ -160,7 +186,12 @@ class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         }
 
         $studentState->adaptive_state = $adaptiveState;
-        $studentState->save();
+
+        if ($isGuest) {
+            $this->guestProgressService->saveStudentState($studentState);
+        } else {
+            $studentState->save();
+        }
 
         // 8. Resolve next action
         $nextActionData = $this->nextActionResolver->resolve(

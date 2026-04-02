@@ -2,6 +2,8 @@
 
 namespace App\Contracts\Services;
 
+use App\Models\StudentState;
+
 interface GuestProgressServiceInterface
 {
     /**
@@ -33,4 +35,14 @@ interface GuestProgressServiceInterface
      * Save the new XP and Streak to session.
      */
     public function saveGamificationState(int $xp, int $streak): void;
+
+    /**
+     * Get a mock StudentState object for guest users populated from cookies.
+     */
+    public function getStudentState(): StudentState;
+
+    /**
+     * Save relevant StudentState fields back into guest session/cookies.
+     */
+    public function saveStudentState(StudentState $state): void;
 }

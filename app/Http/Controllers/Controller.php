@@ -11,7 +11,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -48,13 +47,12 @@ class Controller extends BaseController
 
     protected function getUserId(): int|string
     {
-        return $this->isGuest() ? Session::getId() : Auth::id();
+        return $this->isGuest() ? 'guest' : Auth::id();
     }
 
-    /** @return array<string, mixed> */
     protected function getGuestProgress(Request $request): array
     {
-        if ($this->isGuest()) {
+        if (! $this->isGuest()) {
             return [];
         }
 

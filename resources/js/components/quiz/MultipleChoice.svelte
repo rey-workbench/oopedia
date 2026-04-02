@@ -4,13 +4,13 @@
 
     interface Props {
         question: Question;
-        selectedAnswerId?: number | null;
-        onselect?: (answerId: number) => void;
+        selectedAnswerId?: string | null;
+        onselect?: (answerId: string) => void;
     }
 
     let { question, selectedAnswerId = $bindable(null), onselect = () => {} }: Props = $props();
 
-    function handleSelect(answerId: number) {
+    function handleSelect(answerId: string) {
         selectedAnswerId = answerId;
         onselect(answerId);
     }

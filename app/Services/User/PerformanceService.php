@@ -4,6 +4,7 @@ namespace App\Services\User;
 
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\GamificationServiceInterface;
+use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
 use App\Models\Material;
 use App\Models\StudentState;
@@ -53,6 +54,7 @@ class PerformanceService implements PerformanceServiceInterface
     public function __construct(
         protected ProgressRepositoryInterface $progressRepo,
         protected GamificationServiceInterface $gamificationService,
+        protected GuestProgressServiceInterface $guestProgressService,
     ) {
     }
 
@@ -60,6 +62,10 @@ class PerformanceService implements PerformanceServiceInterface
 
     public function getStudentState(string $userId): StudentState
     {
+        if ($userId === 'guest') {
+            return $this->guestProgressService->getStudentState();
+        }
+
         return $this->progressRepo->getOrCreateStudentState($userId);
     }
 
@@ -72,11 +78,16 @@ class PerformanceService implements PerformanceServiceInterface
 
     public function setUserInitialLevel(string $userId, string $materialId, string $level): void
     {
-        $state                         = $this->progressRepo->getOrCreateStudentState($userId);
+        $state                         = $this->getStudentState($userId);
         $gamification                  = $state->gamification_data ?? [];
         $gamification['current_level'] = $level;
         $state->gamification_data      = $gamification;
-        $state->save();
+
+        if ($userId === 'guest') {
+            $this->guestProgressService->saveStudentState($state);
+        } else {
+            $state->save();
+        }
     }
 
     public function getUserLearningStyle(string $userId, string $materialId): ?string
@@ -88,11 +99,16 @@ class PerformanceService implements PerformanceServiceInterface
 
     public function setUserLearningStyle(string $userId, string $materialId, string $style): void
     {
-        $state                     = $this->progressRepo->getOrCreateStudentState($userId);
+        $state                     = $this->getStudentState($userId);
         $profile                   = $state->learning_profile ?? [];
         $profile['learning_style'] = $style;
         $state->learning_profile   = $profile;
-        $state->save();
+
+        if ($userId === 'guest') {
+            $this->guestProgressService->saveStudentState($state);
+        } else {
+            $state->save();
+        }
     }
 
     /**
@@ -131,7 +147,12 @@ class PerformanceService implements PerformanceServiceInterface
 
         $profile['learning_style'] = $newStyle;
         $state->learning_profile   = $profile;
-        $state->save();
+
+        if ($userId === 'guest') {
+            $this->guestProgressService->saveStudentState($state);
+        } else {
+            $state->save();
+        }
 
         return $newStyle;
     }
@@ -145,8 +166,12 @@ class PerformanceService implements PerformanceServiceInterface
         int $timeSpent = 0,
         bool $usedHint = false,
     ): StudentState {
-        $state = $this->progressRepo->getOrCreateStudentState($userId);
+        $state = $this->getStudentState($userId);
         $state->updatePerformance($isCorrect, $timeSpent, $usedHint);
+
+        if ($userId === 'guest') {
+            $this->guestProgressService->saveStudentState($state);
+        }
 
         return $state;
     }
@@ -253,13 +278,16 @@ class PerformanceService implements PerformanceServiceInterface
 
     public function markMaterialCompleted(string $userId, string $materialId): void
     {
-        $state = $this->progressRepo->getOrCreateStudentState($userId);
+        if ($userId === 'guest') {
+            return;
+        }
 
         // Resolve module_id from Material — unlocked_modules tracks MODULE ids,
         // not material ids, which is what getUnlockStatusFacts() checks.
         $material = Material::find($materialId);
         $moduleId = $material?->module_id ?? $materialId;
 
+        $state     = $this->getStudentState($userId);
         $profile   = $state->learning_profile     ?? [];
         $completed = $profile['unlocked_modules'] ?? [];
 
