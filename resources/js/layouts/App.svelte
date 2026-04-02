@@ -5,7 +5,6 @@
     import Toast from '@/components/ui/Toast.svelte';
     import { toasts } from '@/stores/toast';
     import { sidebarState, initSidebarResponsive } from '@/states/ui';
-    import { ROUTES } from '@/utils/route';
     import type { SharedProps } from '@/types';
 
     interface Props {
@@ -49,52 +48,17 @@
 
 {#if variant === 'auth'}
     <div
-        class="font-poppins relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-50 p-6 text-slate-600 antialiased"
+        class="font-poppins relative min-h-screen overflow-hidden bg-[#FDFDFB] text-slate-600 antialiased"
     >
         <!-- Flash Messages -->
         {#if flash.success || flash.error || flash.info || flash.warning || (flash as any).status}
-            <Toast toasts={$toasts} position="top-right" onremove={(id) => toasts.remove(id)} />
+            <div class="fixed top-6 right-6 z-50">
+                <Toast toasts={$toasts} position="top-right" onremove={(id) => toasts.remove(id)} />
+            </div>
         {/if}
 
-        <!-- Decorative Background -->
-        <div class="pointer-events-none absolute top-0 left-0 h-full w-full">
-            <div
-                class="bg-primary-600/5 absolute top-[-10%] left-[-10%] h-[40%] w-[40%] rounded-full blur-[120px]"
-            ></div>
-            <div
-                class="bg-primary-600/5 absolute right-[-10%] bottom-[-10%] h-[40%] w-[40%] rounded-full blur-[120px]"
-            ></div>
-        </div>
-
-        <div class="animate-in fade-in zoom-in relative w-full max-w-lg duration-700">
-            <!-- Logo -->
-            <div class="mb-10 flex flex-col items-center">
-                <a href={ROUTES.HOME} class="group flex items-center gap-4">
-                    <div
-                        class="flex h-16 w-16 items-center justify-center rounded-[2rem] bg-white shadow-2xl shadow-slate-200 transition-transform duration-500 group-hover:rotate-12"
-                    >
-                        <img src="/images/logo.png" alt="OOPedia" class="h-auto w-10" />
-                    </div>
-                    <div>
-                        <h2 class="text-3xl leading-none font-bold tracking-widest text-slate-900">
-                            OOPEDIA
-                        </h2>
-                        <p
-                            class="mt-1 text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                        >
-                            Learning System
-                        </p>
-                    </div>
-                </a>
-            </div>
-
+        <div class="relative min-h-screen w-full">
             {@render children?.()}
-
-            <p
-                class="mt-10 text-center text-[10px] font-bold tracking-widest text-slate-300 uppercase"
-            >
-                &copy; {new Date().getFullYear()} OOPEDIA TEAM. ALL RIGHTS RESERVED.
-            </p>
         </div>
     </div>
 {:else}

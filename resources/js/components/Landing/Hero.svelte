@@ -24,6 +24,9 @@
             left: '2%',
             width: '120px',
             height: '140px',
+            mobileWidth: '50px',
+            mobileHeight: '60px',
+            mobileZIndex: -1,
             rotation: 25,
             opacity: 0.9,
             blur: 'blur-[2px]',
@@ -36,6 +39,9 @@
             left: '18%',
             width: '130px',
             height: '130px',
+            mobileWidth: '45px',
+            mobileHeight: '45px',
+            mobileZIndex: -1,
             rotation: 40,
             opacity: 1,
             blur: '',
@@ -48,6 +54,9 @@
             left: '6%',
             width: '140px',
             height: '140px',
+            mobileWidth: '55px',
+            mobileHeight: '55px',
+            mobileZIndex: -1,
             rotation: -15,
             opacity: 1,
             blur: '',
@@ -60,6 +69,9 @@
             left: '4%',
             width: '90px',
             height: '130px',
+            mobileWidth: '40px',
+            mobileHeight: '55px',
+            mobileZIndex: -1,
             rotation: -10,
             opacity: 1,
             blur: '',
@@ -72,6 +84,9 @@
             left: '10%',
             width: '160px',
             height: '160px',
+            mobileWidth: '60px',
+            mobileHeight: '60px',
+            mobileZIndex: -1,
             rotation: 30,
             opacity: 0.9,
             blur: 'blur-sm',
@@ -84,6 +99,9 @@
             left: '32%',
             width: '120px',
             height: '120px',
+            mobileWidth: '45px',
+            mobileHeight: '45px',
+            mobileZIndex: -1,
             rotation: 45,
             opacity: 0.95,
             blur: '',
@@ -96,6 +114,9 @@
             left: '52%',
             width: '180px',
             height: '130px',
+            mobileWidth: '70px',
+            mobileHeight: '50px',
+            mobileZIndex: -1,
             rotation: -5,
             opacity: 1,
             blur: '',
@@ -108,6 +129,9 @@
             left: '42%',
             width: '90px',
             height: '90px',
+            mobileWidth: '35px',
+            mobileHeight: '35px',
+            mobileZIndex: -1,
             rotation: -8,
             opacity: 0.3,
             blur: 'blur-md',
@@ -120,6 +144,9 @@
             left: '45%',
             width: '100px',
             height: '140px',
+            mobileWidth: '40px',
+            mobileHeight: '55px',
+            mobileZIndex: -1,
             rotation: -15,
             opacity: 0.2,
             blur: 'blur-[6px]',
@@ -132,6 +159,9 @@
             left: '65%',
             width: '90px',
             height: '120px',
+            mobileWidth: '35px',
+            mobileHeight: '50px',
+            mobileZIndex: -1,
             rotation: 20,
             opacity: 0.15,
             blur: 'blur-sm',
@@ -144,6 +174,9 @@
             right: '25%',
             width: '120px',
             height: '180px',
+            mobileWidth: '50px',
+            mobileHeight: '70px',
+            mobileZIndex: -1,
             rotation: -35,
             opacity: 0.9,
             blur: 'blur-[1px]',
@@ -156,6 +189,9 @@
             right: '18%',
             width: '120px',
             height: '90px',
+            mobileWidth: '45px',
+            mobileHeight: '35px',
+            mobileZIndex: -1,
             rotation: -25,
             opacity: 1,
             blur: '',
@@ -168,6 +204,9 @@
             right: '-2%',
             width: '150px',
             height: '180px',
+            mobileWidth: '60px',
+            mobileHeight: '70px',
+            mobileZIndex: -1,
             rotation: 15,
             opacity: 1,
             blur: '',
@@ -180,6 +219,9 @@
             right: '15%',
             width: '140px',
             height: '90px',
+            mobileWidth: '55px',
+            mobileHeight: '35px',
+            mobileZIndex: -1,
             rotation: -8,
             opacity: 0.9,
             blur: 'blur-[2px]',
@@ -192,6 +234,9 @@
             right: '-3%',
             width: '40px',
             height: '160px',
+            mobileWidth: '20px',
+            mobileHeight: '65px',
+            mobileZIndex: -1,
             rotation: 0,
             opacity: 1,
             blur: '',
@@ -204,6 +249,9 @@
             right: '20%',
             width: '130px',
             height: '130px',
+            mobileWidth: '50px',
+            mobileHeight: '50px',
+            mobileZIndex: -1,
             rotation: -30,
             opacity: 1,
             blur: '',
@@ -216,6 +264,9 @@
             right: '2%',
             width: '120px',
             height: '160px',
+            mobileWidth: '50px',
+            mobileHeight: '65px',
+            mobileZIndex: -1,
             rotation: 15,
             opacity: 0.8,
             blur: 'blur-[1px]',
@@ -228,6 +279,9 @@
             right: '6%',
             width: '130px',
             height: '110px',
+            mobileWidth: '50px',
+            mobileHeight: '45px',
+            mobileZIndex: -1,
             rotation: 40,
             opacity: 0.3,
             blur: 'blur-sm',
@@ -251,17 +305,19 @@
     {/each}
 
     <div class="relative z-10 mt-12 flex flex-col items-center" in:fade={{ duration: 1500 }}>
-        <span class="mb-3 text-[17px] font-bold tracking-tight text-black">OOPEDIA</span>
+        <span class="mb-3 text-[15px] font-bold tracking-tight text-black sm:text-[17px]"
+            >OOPEDIA</span
+        >
 
         <h1
-            class="mb-10 px-4 font-sans text-[5rem] leading-[0.95] font-medium tracking-[-0.05em] text-black drop-shadow-sm md:text-[7.5rem]"
+            class="mb-10 px-4 font-sans text-[2.5rem] leading-[0.95] font-medium tracking-[-0.05em] text-black drop-shadow-sm sm:text-[3.5rem] md:text-[5rem] lg:text-[7.5rem]"
         >
             Ruang belajar Anda<br />untuk menguasai OOP
         </h1>
 
         <Link
             href={ROUTES.AUTH.REGISTER}
-            class="rounded-full bg-[#111] px-8 py-3.5 text-[15px] font-medium tracking-tight text-white shadow-lg transition-colors hover:bg-black active:scale-95"
+            class="rounded-full bg-[#111] px-6 py-3 text-[13px] font-medium tracking-tight text-white shadow-lg transition-colors hover:bg-black active:scale-95 sm:px-8 sm:py-3.5 sm:text-[15px]"
         >
             Mulai Belajar
         </Link>
