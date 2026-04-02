@@ -2,10 +2,11 @@
     import App from '@/layouts/App.svelte';
     import Input from '@/components/ui/Input.svelte';
     import { Link } from '@inertiajs/svelte';
-    import { Loader2, UserPlus, ChevronLeft } from 'lucide-svelte';
+    import { Loader2, UserPlus, ChevronLeft, Sparkles, BookOpen } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
     import { RegisterState } from '@/states/Auth/AuthState.svelte';
     import { fade, fly } from 'svelte/transition';
+    import FloatingItem from '@/components/ui/FloatingItem.svelte';
 
     const state = new RegisterState({
         showSuccessToast: 'Registrasi berhasil!',
@@ -14,102 +15,125 @@
 </script>
 
 <App variant="auth" title="Daftar - OOPedia">
-    <div class="flex min-h-screen w-full flex-col lg:flex-row">
+    <div class="flex min-h-screen w-full flex-col overflow-hidden lg:flex-row">
         <!-- Left: Cinematic Side -->
-        <div class="relative hidden w-full overflow-hidden bg-[#111] lg:flex lg:w-[45%] xl:w-[40%]">
-            <!-- Background Abstract Elements -->
-            <div class="pointer-events-none absolute inset-0">
-                <div
-                    class="absolute -top-20 -left-20 h-80 w-80 rounded-full bg-emerald-500/10 opacity-30 blur-3xl"
-                ></div>
-                <div
-                    class="absolute right-[-10%] bottom-[-10%] h-96 w-96 rounded-full bg-blue-500/10 opacity-30 blur-3xl"
-                ></div>
+        <div class="relative hidden w-full overflow-hidden bg-[#0A0A0A] lg:flex lg:w-[45%] xl:w-[42%]">
+            <!-- Noise/Grain Texture Overlay -->
+            <div
+                class="pointer-events-none absolute inset-0 z-10 opacity-15 mix-blend-overlay"
+                style="background-image: url('https://grainy-gradients.vercel.app/noise.svg');"
+            ></div>
 
-                <div class="absolute top-1/4 right-0 h-64 w-64 rotate-12 opacity-20">
-                    <img
-                        src="/images/landing/abstract3.png"
-                        alt=""
-                        class="h-full w-full object-contain"
-                    />
-                </div>
-                <div class="absolute bottom-1/4 left-0 h-48 w-48 -rotate-12 opacity-15">
-                    <img
-                        src="/images/landing/abstract4.png"
-                        alt=""
-                        class="h-full w-full object-contain"
-                    />
-                </div>
+            <!-- Dynamic Background Gradients -->
+            <div class="absolute inset-0 overflow-hidden">
+                <div
+                    class="absolute -top-[10%] -left-[10%] h-[60%] w-[60%] rounded-full bg-emerald-500/10 opacity-40 blur-[120px] animate-pulse"
+                ></div>
+                <div
+                    class="absolute -bottom-[20%] -right-[10%] h-[70%] w-[70%] rounded-full bg-blue-500/10 opacity-30 blur-[120px]"
+                ></div>
             </div>
 
-            <div class="relative z-10 flex h-full w-full flex-col justify-between p-12">
-                <!-- Branding -->
-                <Link
-                    href={ROUTES.HOME}
-                    class="flex items-center gap-3 transition-transform hover:scale-105"
-                >
-                    <div
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-xl"
-                    >
-                        <img src="/images/logo.png" alt="Logo" class="h-6 w-auto" />
-                    </div>
-                </Link>
+            <!-- Parallax Floating Elements -->
+            <div class="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+                <FloatingItem 
+                    image="/images/landing/abstract3.png" 
+                    top="15%" 
+                    right="10%" 
+                    width="280px" 
+                    height="280px" 
+                    opacity={0.25} 
+                    rotation={15} 
+                />
+                <FloatingItem 
+                    image="/images/landing/abstract4.png" 
+                    bottom="10%" 
+                    left="5%" 
+                    width="220px" 
+                    height="220px" 
+                    opacity={0.15} 
+                    rotation={-12} 
+                />
+            </div>
 
-                <!-- Content -->
-                <div in:fly={{ x: -20, duration: 1000, delay: 200 }}>
-                    <h1
-                        class="font-serif text-5xl leading-tight font-medium tracking-tight text-white italic"
+            <div class="relative z-20 flex h-full w-full flex-col justify-between p-16">
+                <!-- Branding Header -->
+                <div in:fly={{ y: -20, duration: 1000 }}>
+                    <Link
+                        href={ROUTES.HOME}
+                        class="group flex items-center gap-4 transition-all"
                     >
-                        Start Your <br /> <span class="text-white/40">Knowledge</span> Journey.
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur-xl transition-all group-hover:bg-white group-hover:scale-110"
+                        >
+                            <img src="/images/logo.png" alt="Logo" class="h-7 w-auto transition-transform group-hover:scale-90" />
+                        </div>
+                        <span class="font-serif text-xl font-medium tracking-tighter text-white italic opacity-80 group-hover:opacity-100 italic">
+                            oopedia
+                        </span>
+                    </Link>
+                </div>
+
+                <!-- Cinematic Content -->
+                <div class="max-w-md">
+                    <div class="mb-8" in:fly={{ x: -30, duration: 1000, delay: 200 }}>
+                        <span class="inline-block rounded-full bg-emerald-500/10 px-4 py-1.5 text-[10px] font-bold tracking-widest text-emerald-400 uppercase ring-1 ring-emerald-500/20">
+                            Pendaftaran Akun
+                        </span>
+                    </div>
+                    
+                    <h1
+                        class="font-serif text-6xl leading-[1.1] font-medium tracking-tight text-white italic"
+                        in:fly={{ x: -30, duration: 1000, delay: 300 }}
+                    >
+                        Design Your <br /> <span class="bg-linear-to-r from-white via-white/60 to-white/20 bg-clip-text text-transparent">Digital</span> Future.
                     </h1>
-                    <p class="mt-6 text-lg font-medium tracking-wide text-white/40">
-                        Hanya butuh beberapa detik untuk mulai belajar dengan fitur adaptif kami.
+                    
+                    <p class="mt-8 text-xl leading-relaxed font-medium tracking-normal text-white/40" in:fly={{ x: -30, duration: 1000, delay: 400 }}>
+                        Bergabunglah dan jelajahi konten pembelajaran adaptif yang dirancang khusus untuk mempercepat pemahaman Anda.
                     </p>
 
-                    <div class="mt-10 space-y-6">
-                        <div class="flex items-center gap-4">
-                            <div
-                                class="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 font-serif italic text-white"
-                            >
-                                1
+                    <div class="mt-12 space-y-10" in:fly={{ x: -20, duration: 1000, delay: 500 }}>
+                        <div class="flex items-start gap-5">
+                            <div class="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/5 ring-1 ring-white/10">
+                                <Sparkles size={12} class="text-emerald-400" />
                             </div>
-                            <span class="text-sm font-bold tracking-widest text-white/50 uppercase"
-                                >Pilih Materi</span
-                            >
+                            <div>
+                                <p class="text-sm font-bold tracking-widest text-white/60 uppercase">Adaptive Engine</p>
+                                <p class="mt-1 text-sm text-white/30">Materi yang menyesuaikan dengan tingkat kemampuan Anda secara real-time.</p>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-4">
-                            <div
-                                class="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 font-serif italic text-white"
-                            >
-                                2
+                        <div class="flex items-start gap-5">
+                            <div class="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/5 ring-1 ring-white/10">
+                                <BookOpen size={12} class="text-blue-400" />
                             </div>
-                            <span class="text-sm font-bold tracking-widest text-white/50 uppercase"
-                                >Ikuti Kuis Adaptif</span
-                            >
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <div
-                                class="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 font-serif italic text-white"
-                            >
-                                3
+                            <div>
+                                <p class="text-sm font-bold tracking-widest text-white/60 uppercase">Curated Content</p>
+                                <p class="mt-1 text-sm text-white/30">Akses ribuan materi eksklusif yang disusun oleh para ahli di bidangnya.</p>
                             </div>
-                            <span class="text-sm font-bold tracking-widest text-white/50 uppercase"
-                                >Kuasai Konsep</span
-                            >
                         </div>
                     </div>
                 </div>
 
-                <!-- Footer -->
-                <div class="text-[10px] font-bold tracking-widest text-white/20 uppercase">
-                    &copy; 2026 OOPEDIA TEAM.
+                <!-- Premium Footer -->
+                <div class="flex items-center justify-between opacity-30 transition-opacity hover:opacity-100" in:fade={{ delay: 800 }}>
+                    <span class="text-[10px] font-bold tracking-[0.3em] text-white uppercase">
+                        &copy; 2026 OOPEDIA TEAM.
+                    </span>
+                    <div class="flex gap-6">
+                        {#each ['Twitter', 'Discord', 'Github'] as social}
+                            <span class="cursor-pointer text-[10px] font-bold tracking-widest text-white uppercase hover:text-emerald-400 transition-colors">
+                                {social}
+                            </span>
+                        {/each}
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Right: Form Side -->
         <div
-            class="relative flex min-h-screen w-full items-center justify-center bg-[#FDFDFB] px-6 py-12 lg:w-[55%] xl:w-[60%]"
+            class="relative flex min-h-screen w-full items-center justify-center bg-[#FDFDFB] px-8 py-16 lg:w-[55%] xl:w-[58%]"
         >
             <!-- Decorative Elements Right Side -->
             <div class="pointer-events-none absolute inset-0 overflow-hidden">
@@ -127,33 +151,29 @@
                 </div>
             </div>
 
-            <!-- Mobile Branding -->
-            <div class="absolute top-10 left-10 lg:hidden">
-                <Link href={ROUTES.HOME} class="flex items-center gap-3">
-                    <div
-                        class="flex h-10 w-10 items-center justify-center rounded-xl border border-black/5 bg-white shadow-lg"
-                    >
-                        <img src="/images/logo.png" alt="Logo" class="h-6 w-auto" />
-                    </div>
-                </Link>
-            </div>
-
             <!-- Back to Home Button (Desktop) -->
             <Link
                 href={ROUTES.HOME}
-                class="absolute top-10 right-10 hidden items-center gap-2 text-xs font-bold tracking-widest text-black/40 uppercase transition-colors hover:text-black lg:flex"
+                class="absolute top-12 right-12 hidden items-center gap-3 text-[10px] font-bold tracking-widest text-black/40 uppercase transition-all hover:text-black hover:translate-x-[-10px] lg:flex"
             >
-                <ChevronLeft size={14} />
+                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-black/2 ring-1 ring-black/5">
+                    <ChevronLeft size={14} />
+                </div>
                 Kembali ke Beranda
             </Link>
 
             <div class="w-full max-w-xl" in:fade={{ duration: 1000, delay: 400 }}>
-                <div class="mb-10 lg:text-center">
-                    <h2 class="font-serif text-4xl font-medium tracking-tight text-black italic">
-                        Buat Akun
+                <div class="mb-12 lg:text-center">
+                    <div class="mb-4 flex justify-center lg:hidden">
+                        <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-black shadow-2xl">
+                            <img src="/images/logo.png" alt="Logo" class="h-8 w-auto invert" />
+                        </div>
+                    </div>
+                    <h2 class="font-serif text-5xl font-medium tracking-tight text-black italic">
+                        Mulai Belajar.
                     </h2>
-                    <p class="mt-3 text-base font-medium tracking-wide text-black/40">
-                        Bergabung bersama <span class="text-black">1.2k+</span> pembelajar lainnya.
+                    <p class="mt-4 text-lg font-medium tracking-wide text-black/30">
+                        Bergabunglah dengan ekosistem <span class="text-black font-semibold">1,248</span> pembelajar cerdas lainnya.
                     </p>
                 </div>
 
@@ -234,55 +254,67 @@
                     </div>
 
                     <div
-                        class="flex items-center gap-3 rounded-2xl border border-black/5 bg-black/[0.01] p-5"
+                        class="flex items-center gap-4 rounded-2xl border border-black/5 bg-black/1 p-6 transition-all hover:bg-black/3 hover:ring-1 hover:ring-black/5"
                     >
                         <div class="relative flex items-center">
                             <input
                                 type="checkbox"
                                 id="register_as_admin"
                                 bind:checked={state.form.register_as_admin}
-                                class="h-5 w-5 cursor-pointer appearance-none rounded-lg border border-black/10 bg-white transition-all checked:bg-black"
+                                class="h-6 w-6 cursor-pointer appearance-none rounded-lg border border-black/10 bg-white transition-all checked:bg-black checked:ring-4 checked:ring-black/10"
                             />
+                            <div class="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-opacity peer-checked:opacity-100">
+                                <Sparkles size={12} class="text-white" />
+                            </div>
                         </div>
                         <label
                             for="register_as_admin"
-                            class="flex-1 cursor-pointer text-xs font-bold tracking-widest text-black/40 uppercase select-none"
+                            class="flex-1 cursor-pointer select-none"
                         >
-                            Daftar sebagai Dosen <span
-                                class="ml-2 font-medium lowercase text-black/20"
-                                >(Perlu Peninjauan)</span
-                            >
+                            <span class="block text-sm font-bold tracking-widest text-black/60 uppercase">Daftar sebagai Dosen</span>
+                            <span class="mt-1 block text-xs font-medium text-black/20 italic">Akses fitur pembuatan materi dan manajemen kelas (Perlu Peninjauan)</span>
                         </label>
                     </div>
 
                     <button
                         type="submit"
-                        class="group relative h-14 w-full overflow-hidden rounded-2xl bg-[#111] font-bold tracking-widest text-white uppercase transition-all hover:bg-black active:scale-[0.98] disabled:opacity-50"
+                        class="group relative h-16 w-full overflow-hidden rounded-2xl bg-[#0F172A] font-bold tracking-widest text-white uppercase shadow-2xl transition-all hover:bg-black hover:shadow-black/20 active:scale-[0.98] disabled:opacity-50"
                         disabled={state.form.processing}
                     >
-                        <div class="relative z-10 flex items-center justify-center gap-3">
+                        <div class="relative z-10 flex items-center justify-center gap-4">
                             {#if state.form.processing}
-                                <Loader2 size={18} class="animate-spin" />
-                                <span>Mendaftarkan...</span>
+                                <Loader2 size={20} class="animate-spin" />
+                                <span>Menyiapkan Akun...</span>
                             {:else}
                                 <span>Buat Akun Sekarang</span>
-                                <UserPlus
-                                    size={18}
-                                    class="transition-transform group-hover:scale-110"
-                                />
+                                <div class="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 transition-transform group-hover:rotate-12 group-hover:scale-110">
+                                    <UserPlus size={14} />
+                                </div>
                             {/if}
                         </div>
+                        <!-- Button Shine Effect -->
+                        <div class="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/20 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
                     </button>
 
-                    <p
-                        class="mt-8 text-center text-xs font-bold tracking-widest text-black/30 uppercase"
-                    >
-                        Sudah punya akun?
+                    <div class="relative py-4 text-center">
+                        <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                            <div class="w-full border-t border-black/3"></div>
+                        </div>
+                        <span class="relative bg-[#FDFDFB] px-4 text-[10px] font-bold tracking-[0.3em] text-black/20 uppercase">
+                            Sudah punya akun?
+                        </span>
+                    </div>
+
+                    <p class="text-center">
                         <Link
                             href={ROUTES.AUTH.LOGIN}
-                            class="text-black underline underline-offset-8 transition-all hover:text-black/60"
-                            >Masuk ke Akun</Link
+                            class="group relative inline-flex items-center gap-2 text-xs font-bold tracking-widest text-black/40 uppercase transition-all hover:text-black"
                         >
+                            <span class="relative">
+                                Masuk ke Akun
+                                <span class="absolute -bottom-1 left-0 h-px w-0 bg-black transition-all group-hover:w-full"></span>
+                            </span>
+                        </Link>
                     </p>
                 </form>
             </div>

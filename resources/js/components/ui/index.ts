@@ -20,3 +20,4 @@ export { default as Section } from './Section.svelte';
 export { default as StatCard } from './StatCard.svelte';
 export { default as Textarea } from './Textarea.svelte';
 export { default as UserAvatar } from './UserAvatar.svelte';
+export { default as FloatingItem } from './FloatingItem.svelte';
