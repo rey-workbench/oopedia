@@ -12,7 +12,6 @@ use Inertia\Inertia;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Throwable;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withProviders()

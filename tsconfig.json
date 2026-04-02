@@ -9,7 +9,7 @@
         "module": "esnext",
         "moduleResolution": "bundler",
         "target": "esnext",
-        "types": ["vite/client", "svelte"],
+        "types": ["vite/client", "svelte", "@tailwindcss/vite"],
         // For nodejs:
         "lib": ["esnext", "dom", "dom.iterable"],
         // "types": ["node"],
@@ -53,9 +53,10 @@
         "resolveJsonModule": true,
         "baseUrl": ".",
         "paths": {
-            "@/*": ["resources/js/*"]
+            "@/*": ["resources/js/*"],
+            "$lib/*": ["src/*"]
         }
     },
-    "include": ["resources/js/**/*", "resources/js/**/*.svelte"],
-    "exclude": ["node_modules", "public", "vendor"]
+    "include": ["resources/js/**/*", "resources/js/**/*.svelte", "src/**/*"],
+    "exclude": ["node_modules", "public", "vendor"],
 }
