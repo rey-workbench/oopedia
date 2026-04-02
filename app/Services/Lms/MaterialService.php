@@ -20,7 +20,8 @@ class MaterialService implements MaterialServiceInterface
         protected MaterialRepositoryInterface $materialRepo,
         protected MediaRepositoryInterface $mediaRepo,
         protected ?ProgressRepositoryInterface $progressRepo = null,
-    ) {}
+    ) {
+    }
 
     /** @return Collection<int, Material> */
     public function getAllMaterials(

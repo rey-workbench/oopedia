@@ -11,7 +11,8 @@ class UeqSurveyService implements UeqSurveyServiceInterface
 {
     public function __construct(
         protected UeqSurveyRepositoryInterface $ueqRepo,
-    ) {}
+    ) {
+    }
 
     /** @return Collection<int, UeqSurvey> */
     public function getAllSurveys(?string $class = null): Collection

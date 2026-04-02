@@ -16,7 +16,8 @@ class QuestionService implements QuestionServiceInterface
     public function __construct(
         protected QuestionRepositoryInterface $questionRepo,
         protected AnswerRepositoryInterface $answerRepo,
-    ) {}
+    ) {
+    }
 
     public function getFilteredQuestions(
         ?string $search = null,

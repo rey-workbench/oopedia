@@ -38,7 +38,8 @@ class GamificationService implements GamificationServiceInterface
 
     public function __construct(
         protected ProgressRepositoryInterface $progressRepo,
-    ) {}
+    ) {
+    }
 
     // ==================== REWARD ====================
 

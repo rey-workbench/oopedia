@@ -13,7 +13,8 @@ readonly class StudentProgressDTO
         public float $progress_percentage,
         public float $accuracy_percentage,
         public array $difficulty_breakdown,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

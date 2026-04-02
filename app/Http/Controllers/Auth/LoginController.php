@@ -18,7 +18,8 @@ class LoginController extends Controller
     public function __construct(
         protected UserServiceInterface $userService,
         protected GuestProgressServiceInterface $guestProgressService,
-    ) {}
+    ) {
+    }
 
     public function create(): Response
     {

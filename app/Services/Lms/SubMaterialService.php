@@ -14,7 +14,8 @@ class SubMaterialService implements SubMaterialServiceInterface
     public function __construct(
         protected SubMaterialRepositoryInterface $subMaterialRepo,
         protected MaterialRepositoryInterface $materialRepo,
-    ) {}
+    ) {
+    }
 
     /**
      * Get all sub-materials for a material

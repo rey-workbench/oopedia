@@ -33,7 +33,8 @@ class MaterialQuestionController extends Controller
         protected PerformanceServiceInterface $performanceService,
         protected AdaptiveQuizFlowServiceInterface $adaptiveQuizFlowService,
         protected GuestProgressServiceInterface $guestProgressService,
-    ) {}
+    ) {
+    }
 
     protected function getPerformanceService(): PerformanceServiceInterface
     {

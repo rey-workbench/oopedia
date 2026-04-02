@@ -12,7 +12,8 @@ class UeqSurveyController extends Controller
 {
     public function __construct(
         protected UeqSurveyServiceInterface $ueqService,
-    ) {}
+    ) {
+    }
 
     public function index(Request $request): Response
     {

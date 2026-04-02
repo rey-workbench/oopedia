@@ -25,7 +25,8 @@ class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         protected FactGatheringServiceInterface $factGathering,
         protected AdaptiveEngineServiceInterface $adaptiveEngine,
         protected NextActionResolverServiceInterface $nextActionResolver,
-    ) {}
+    ) {
+    }
 
     /** @return array<string, mixed> */
     public function processAdaptiveAttempt(Material $material, Question $question, string $userId, array $data): array

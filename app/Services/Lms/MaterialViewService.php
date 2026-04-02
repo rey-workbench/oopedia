@@ -18,7 +18,8 @@ class MaterialViewService implements MaterialViewServiceInterface
         protected MaterialRepositoryInterface $materialRepo,
         protected ProgressRepositoryInterface $progressRepo,
         protected SubMaterialRepositoryInterface $subMaterialRepo,
-    ) {}
+    ) {
+    }
 
     /** @return Collection<int, Material> */
     public function getMaterialsList(?string $userId, bool $isGuest): Collection

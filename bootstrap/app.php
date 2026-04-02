@@ -7,11 +7,15 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Throwable;
 
 return Application::configure(basePath: dirname(__DIR__))
+    ->withProviders()
     ->withRouting(
         web: __DIR__ . '/../routes/web.php',
         api: __DIR__ . '/../routes/api.php',
@@ -31,13 +35,12 @@ return Application::configure(basePath: dirname(__DIR__))
             EnsureFrontendRequestsAreStateful::class,
         ]);
 
-        // Trust Proxies
         $middleware->trustProxies(at: [
             '*',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        // Handle domain exceptions (MaterialNotFoundException, etc.) with Inertia-aware redirect
+        // Domain exceptions - Inertia-aware redirect
         $exceptions->render(function (DomainException $e, Request $request) {
             if ($request->inertia()) {
                 return back()->with('error', $e->getMessage());
@@ -46,13 +49,30 @@ return Application::configure(basePath: dirname(__DIR__))
             return response()->json(['message' => $e->getMessage()], $e->getCode() ?: 422);
         });
 
-        // Handle HTTP exceptions with Inertia error page
+        // HTTP exceptions - Inertia error page
         $exceptions->render(function (HttpException $e, Request $request) {
             if ($request->inertia()) {
                 return Inertia::render('Error/Index', [
                     'status'  => $e->getStatusCode(),
                     'message' => $e->getMessage(),
                 ])->toResponse($request)->setStatusCode($e->getStatusCode());
+            }
+        });
+
+        // Validation exceptions - JSON response for API
+        $exceptions->render(function (ValidationException $e, Request $request) {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'message' => 'The given data was invalid.',
+                    'errors'  => $e->errors(),
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+        });
+
+        // Default exception - report for debugging in non-production
+        $exceptions->report(function (Throwable $e) {
+            if (app()->environment('local', 'development')) {
+                report($e);
             }
         });
     })->create();

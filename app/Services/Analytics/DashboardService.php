@@ -18,7 +18,8 @@ class DashboardService implements DashboardServiceInterface
         protected MaterialRepositoryInterface $materialRepo,
         protected ProgressRepositoryInterface $progressRepo,
         protected QuestionRepositoryInterface $questionRepo,
-    ) {}
+    ) {
+    }
 
     /** @return Collection<int, Material> */
     public function getAllMaterials(): Collection

@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Contracts\Repositories\AnswerRepositoryInterface;
-// Repository Interfaces
 use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\MediaRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
@@ -15,7 +14,6 @@ use App\Contracts\Repositories\SubMaterialRepositoryInterface;
 use App\Contracts\Repositories\UeqSurveyRepositoryInterface;
 use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Repositories\AnswerRepository;
-// Repository Implementations
 use App\Repositories\MaterialRepository;
 use App\Repositories\MediaRepository;
 use App\Repositories\ProgressRepository;
@@ -30,12 +28,8 @@ use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     */
     public function register(): void
     {
-        // Bind repository interfaces to implementations
         $this->app->bind(MaterialRepositoryInterface::class, MaterialRepository::class);
         $this->app->bind(ProgressRepositoryInterface::class, ProgressRepository::class);
         $this->app->bind(QuestionRepositoryInterface::class, QuestionRepository::class);
@@ -49,11 +43,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(StudentStateRepositoryInterface::class, StudentStateRepository::class);
     }
 
-    /**
-     * Bootstrap services.
-     */
     public function boot(): void
     {
-        //
     }
 }

@@ -13,7 +13,8 @@ class LeaderboardService implements LeaderboardServiceInterface
     public function __construct(
         protected MaterialRepositoryInterface $materialRepo,
         protected ProgressRepositoryInterface $progressRepo,
-    ) {}
+    ) {
+    }
 
     /** @return array<string, mixed> */
     public function getLeaderboardData(string $currentUserId): array

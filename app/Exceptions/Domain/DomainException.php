@@ -10,4 +10,6 @@ use RuntimeException;
  * All custom domain exceptions should extend this class to allow
  * centralized handling in the exception Handler.
  */
-abstract class DomainException extends RuntimeException {}
+abstract class DomainException extends RuntimeException
+{
+}

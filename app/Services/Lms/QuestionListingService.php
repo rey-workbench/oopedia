@@ -18,7 +18,8 @@ class QuestionListingService implements QuestionListingServiceInterface
         protected MaterialRepositoryInterface $materialRepo,
         protected ProgressRepositoryInterface $progressRepo,
         protected QuestionRepositoryInterface $questionRepo,
-    ) {}
+    ) {
+    }
 
     /** @return array<string, mixed> */
     public function getQuizData(

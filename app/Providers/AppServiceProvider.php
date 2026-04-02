@@ -10,29 +10,47 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
-        //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
+    {
+        $this->configureHttps();
+        $this->configureRateLimiting();
+    }
+
+    protected function configureHttps(): void
     {
         if (app()->environment('production') || str_starts_with(config('app.url'), 'https://')) {
             URL::forceScheme('https');
         }
+    }
 
+    protected function configureRateLimiting(): void
+    {
         RateLimiter::for('api', function (Request $request) {
-            return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
+            $config = config('rate_limiting.api');
+
+            return Limit::perMinutes($config['period'])
+                ->by(optional($request->user())->id ?: $request->ip())
+                ->response(function () {
+                    return response()->json([
+                        'message' => 'Too many requests. Please slow down.',
+                    ], 429);
+                });
         });
 
         RateLimiter::for('guest', function (Request $request) {
-            return Limit::perMinute(30)->by($request->ip());
+            $config = config('rate_limiting.guest');
+
+            return Limit::perMinutes($config['period'])
+                ->by($request->ip())
+                ->response(function () {
+                    return response()->json([
+                        'message' => 'Too many requests. Please slow down.',
+                    ], 429);
+                });
         });
     }
 }

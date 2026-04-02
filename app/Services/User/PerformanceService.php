@@ -53,7 +53,8 @@ class PerformanceService implements PerformanceServiceInterface
     public function __construct(
         protected ProgressRepositoryInterface $progressRepo,
         protected GamificationServiceInterface $gamificationService,
-    ) {}
+    ) {
+    }
 
     // ==================== PROFILE MANAGEMENT ====================
 

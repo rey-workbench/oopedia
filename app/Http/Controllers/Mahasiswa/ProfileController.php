@@ -18,7 +18,8 @@ class ProfileController extends Controller
         protected MaterialRepositoryInterface $materialRepo,
         protected UserServiceInterface $userService,
         protected ProgressRepositoryInterface $progressRepo,
-    ) {}
+    ) {
+    }
 
     public function show(): Response
     {

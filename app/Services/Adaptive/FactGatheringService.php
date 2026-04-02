@@ -38,7 +38,8 @@ class FactGatheringService implements FactGatheringServiceInterface
     public function __construct(
         protected ProgressRepositoryInterface $progressRepo,
         protected QuestionRepositoryInterface $questionRepo,
-    ) {}
+    ) {
+    }
 
     public function gatherFacts(
         StudentState $studentState,

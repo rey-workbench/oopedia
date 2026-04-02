@@ -11,7 +11,8 @@ class DashboardController extends Controller
 {
     public function __construct(
         protected AdminDashboardServiceInterface $adminDashboardService,
-    ) {}
+    ) {
+    }
 
     public function index(): Response
     {

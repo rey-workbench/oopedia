@@ -19,7 +19,8 @@ class HandleInertiaRequests extends Middleware
 
     public function __construct(
         protected ?MaterialServiceInterface $materialService = null,
-    ) {}
+    ) {
+    }
 
     /**
      * Determines the current asset version.

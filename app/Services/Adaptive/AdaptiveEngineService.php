@@ -18,7 +18,7 @@ class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 
     public function __construct()
     {
-        $this->ruleRegistry = new RuleRegistry;
+        $this->ruleRegistry = new RuleRegistry();
     }
 
     /**

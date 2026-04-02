@@ -17,7 +17,7 @@ class ProgressRepository implements ProgressRepositoryInterface
     public function getUserProgressStats(?string $userId): Collection
     {
         if (is_null($userId)) {
-            return new Collection;
+            return new Collection();
         }
 
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
@@ -36,7 +36,7 @@ class ProgressRepository implements ProgressRepositoryInterface
     public function getUserMaterialProgress(?string $userId): Collection
     {
         if (is_null($userId)) {
-            return new Collection;
+            return new Collection();
         }
 
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
@@ -107,7 +107,7 @@ class ProgressRepository implements ProgressRepositoryInterface
     public function getDetailedUserProgress(?string $userId): Collection
     {
         if (is_null($userId)) {
-            return new Collection;
+            return new Collection();
         }
 
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
@@ -454,7 +454,7 @@ class ProgressRepository implements ProgressRepositoryInterface
     public function getOrCreateStudentState(?string $userId): StudentState
     {
         if (is_null($userId)) {
-            return new StudentState;
+            return new StudentState();
         }
 
         return StudentState::firstOrCreate(['user_id' => $userId], [
@@ -471,8 +471,8 @@ class ProgressRepository implements ProgressRepositoryInterface
     {
         if (is_null($userId)) {
             return [
-                'state'    => new StudentState,
-                'progress' => new Collection,
+                'state'    => new StudentState(),
+                'progress' => new Collection(),
             ];
         }
 

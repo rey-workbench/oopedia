@@ -38,7 +38,8 @@ readonly class UeqSurveyCreateDTO
         public ?int $conservative_innovative = null,
         public ?string $comments = null,
         public ?string $suggestions = null,
-    ) {}
+    ) {
+    }
 
     public static function fromRequest(Request $request, string $userId): self
     {
