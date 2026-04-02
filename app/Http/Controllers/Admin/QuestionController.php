@@ -71,7 +71,11 @@ class QuestionController extends Controller
 
         if (in_array($dto->question_type, ['radio_button', 'fill_in_the_blank']) && $correctCount !== 1) {
             return redirect()->back()->withInput()
-                ->with('error', ucfirst(str_replace('_', ' ', $dto->question_type)) . ' questions must have exactly one correct answer.');
+                ->with(
+                    'error',
+                    ucfirst(str_replace('_', ' ', $dto->question_type))
+                    . ' questions must have exactly one correct answer.',
+                );
         }
 
         $this->questionService->createQuestion($dto->toArray());
@@ -95,7 +99,10 @@ class QuestionController extends Controller
         $material     = $this->materialRepo->find($question->material_id);
         $subMaterials = $material ? $material->subMaterials()->orderBy('order')->get() : collect();
 
-        return $this->render('Admin/Questions/Edit/Index', compact('question', 'materials', 'material', 'subMaterials'));
+        return $this->render(
+            'Admin/Questions/Edit/Index',
+            compact('question', 'materials', 'material', 'subMaterials'),
+        );
     }
 
     public function update(UpdateQuestionRequest $request, string $questionId): RedirectResponse
@@ -107,7 +114,11 @@ class QuestionController extends Controller
 
             if ($correctCount !== 1) {
                 return back()->withInput()
-                    ->with('error', ucfirst(str_replace('_', ' ', $dto->question_type)) . ' Pertanyaan hanya boleh memiliki 1 jawaban benar.');
+                    ->with(
+                        'error',
+                        ucfirst(str_replace('_', ' ', $dto->question_type))
+                        . ' Pertanyaan hanya boleh memiliki 1 jawaban benar.',
+                    );
             }
         }
 

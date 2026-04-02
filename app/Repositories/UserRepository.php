@@ -77,8 +77,11 @@ class UserRepository implements UserRepositoryInterface
         return $query->paginate($perPage, ['*'], 'page', null);
     }
 
-    public function getStudentsWithRole(string $roleName, ?string $search = null, int $perPage = 10): LengthAwarePaginator
-    {
+    public function getStudentsWithRole(
+        string $roleName,
+        ?string $search = null,
+        int $perPage = 10,
+    ): LengthAwarePaginator {
         $query = User::whereHas('role', function ($q) use ($roleName) {
             $q->where('role_name', $roleName);
         });

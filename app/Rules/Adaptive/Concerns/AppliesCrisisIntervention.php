@@ -72,7 +72,8 @@ trait AppliesCrisisIntervention
     {
         $state['recommendation']        = 'Revisi Proyek - Bantuan Visual';
         $state['next_action']           = AdaptiveConstants::ACTION_STUDY_VISUAL;
-        $state['message']               = 'Anda mengalami kesulitan berulang di Proyek Akhir. Mari ulas kembali materi secara visual sebelum mencoba lagi.';
+        $state['message']               = 'Anda mengalami kesulitan berulang di Proyek Akhir. '
+            . 'Mari ulas kembali materi secara visual sebelum mencoba lagi.';
         $state['intervention_type']     = AdaptiveConstants::INTERVENTION_FINAL_PROJECT_VISUAL_PERSISTENT;
         $state['force_material_review'] = true;
 
@@ -83,7 +84,8 @@ trait AppliesCrisisIntervention
     {
         $state['recommendation']        = 'Revisi Proyek - Bantuan Tekstual';
         $state['next_action']           = AdaptiveConstants::ACTION_STUDY_TEXTUAL;
-        $state['message']               = 'Anda mengalami kesulitan berulang di Proyek Akhir. Mari ulas kembali materi secara mendalam sebelum mencoba lagi.';
+        $state['message']               = 'Anda mengalami kesulitan berulang di Proyek Akhir. '
+            . 'Mari ulas kembali materi secara mendalam sebelum mencoba lagi.';
         $state['intervention_type']     = AdaptiveConstants::INTERVENTION_FINAL_PROJECT_TEXTUAL_PERSISTENT;
         $state['force_material_review'] = true;
 
@@ -100,7 +102,8 @@ trait AppliesCrisisIntervention
         if ($this->hasLogicError($facts)) {
             return $style === 'visual'
                 ? 'Logika proyek Anda perlu diperbaiki. Mari lihat diagram alur dan konsep fundamental lagi.'
-                : 'Logika pemrograman Anda perlu dipertajam. Silakan ulas penjelasan teks mendalam mengenai konsep ini.';
+                : 'Logika pemrograman Anda perlu dipertajam. '
+                    . 'Silakan ulas penjelasan teks mendalam mengenai konsep ini.';
         }
 
         return $style === 'visual'

@@ -25,55 +25,60 @@ class MaterialViewService implements MaterialViewServiceInterface
     {
         $progressStats = $userId ? $this->progressRepo->getUserProgressStats($userId) : collect();
 
-        // Use optimized listing method
         $allMaterials = $this->materialRepo->getMaterialsForListing();
 
-        // Get unlocked modules for authenticated users
         $unlockedModules = [];
         if ($userId) {
             $studentState    = $this->progressRepo->getStudentState($userId);
             $unlockedModules = $studentState?->learning_profile['unlocked_modules'] ?? [];
         }
 
-        // Determine first module ID for gating
         $firstModuleId  = $allMaterials->whereNotNull('module_id')->min('module_id');
         $totalMaterials = $allMaterials->count();
 
         if ($isGuest) {
-            // For guests, load questions for difficulty calculation
             $allMaterials->load(['questions' => function ($query) {
                 $query->select('id', 'material_id', 'difficulty');
             }]);
         }
 
-        $materials = $allMaterials->map(function ($material, $index) use ($progressStats, $isGuest, $unlockedModules, $firstModuleId, $totalMaterials) {
-            // If logged in, we use questions_count which was eager-loaded via withCount
-            // If guest, we use the loaded questions collection
-            $configuredTotalQuestions = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest)['total'];
+        $materials = $allMaterials->map(
+            function (
+                $material,
+                $index,
+            ) use (
+                $progressStats,
+                $isGuest,
+                $unlockedModules,
+                $firstModuleId,
+                $totalMaterials,
+            ) {
+                $counts                   = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest);
+                $configuredTotalQuestions = $counts['total'];
+                $materialProgress         = $progressStats->firstWhere('material_id', $material->id);
+                $correctAnswers           = $materialProgress ? $materialProgress->correct_answers : 0;
 
-            $materialProgress = $progressStats->firstWhere('material_id', $material->id);
-            $correctAnswers   = $materialProgress ? $materialProgress->correct_answers : 0;
+                $progressPercentage = ProgressHelper::calculateProgressPercentage(
+                    $correctAnswers,
+                    $configuredTotalQuestions,
+                );
 
-            $progressPercentage = ProgressHelper::calculateProgressPercentage($correctAnswers, $configuredTotalQuestions);
+                $material->progress_percentage = $progressPercentage;
+                $material->total_questions     = $configuredTotalQuestions;
+                $material->completed_questions = $correctAnswers;
 
-            $material->progress_percentage = $progressPercentage;
-            $material->total_questions     = $configuredTotalQuestions;
-            $material->completed_questions = $correctAnswers;
+                if ($isGuest) {
+                    $material->is_locked = $index >= ceil($totalMaterials / 2);
+                } else {
+                    $moduleId            = $material->module_id;
+                    $isFirstModule       = $moduleId !== null && $moduleId == $firstModuleId;
+                    $isUnlocked          = empty($moduleId) || $isFirstModule || in_array($moduleId, $unlockedModules);
+                    $material->is_locked = ! $isUnlocked;
+                }
 
-            // Calculate is_locked status
-            if ($isGuest) {
-                // Guests can access first half only
-                $material->is_locked = $index >= ceil($totalMaterials / 2);
-            } else {
-                // For authenticated users, use module-based locking
-                $moduleId            = $material->module_id;
-                $isFirstModule       = $moduleId !== null && $moduleId == $firstModuleId;
-                $isUnlocked          = empty($moduleId) || $isFirstModule || in_array($moduleId, $unlockedModules);
-                $material->is_locked = ! $isUnlocked;
-            }
-
-            return $material;
-        });
+                return $material;
+            },
+        );
 
         return $materials;
     }
@@ -81,12 +86,9 @@ class MaterialViewService implements MaterialViewServiceInterface
     /** @return array<string, mixed> */
     public function getMaterialDetail(string $materialId, ?string $userId, bool $isGuest): array
     {
-        $material = $this->materialRepo->findWithQuestionsShuffled($materialId);
-
-        // Get list of all materials for navigation
+        $material     = $this->materialRepo->findWithQuestionsShuffled($materialId);
         $allMaterials = $this->materialRepo->getAllOrdered();
 
-        // Limit materials list for guests
         if ($isGuest) {
             $totalMaterials  = $allMaterials->count();
             $materialsToShow = ceil($totalMaterials / 2);
@@ -95,16 +97,11 @@ class MaterialViewService implements MaterialViewServiceInterface
             $materials = $allMaterials;
         }
 
-        // Limit questions for guest users
         if ($isGuest) {
             $limitedQuestions = $material->questions->take(3);
             $material->setRelation('questions', $limitedQuestions);
         }
 
-        // Get answered questions and current question
-        // For guest users, we use session-based progress, so repository stats might be empty
-        // MaterialViewService currently doesn't have access to Request to get cookie progress
-        // But making repo methods nullable prevents the crash
         $answeredQuestionIds = $userId
             ? $this->progressRepo->getAnsweredQuestionIds($userId, $materialId)
             : collect();

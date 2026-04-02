@@ -20,7 +20,9 @@ use Illuminate\Notifications\Notifiable;
  */
 class User extends Authenticatable
 {
-    use HasFactory, HasUlids, Notifiable;
+    use HasFactory;
+    use HasUlids;
+    use Notifiable;
 
     public $incrementing = false;
 

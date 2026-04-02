@@ -65,8 +65,11 @@ class QuestionRepository implements QuestionRepositoryInterface
     }
 
     /** @return Collection<int, Question> */
-    public function getByMaterialAndDifficulty(string $materialId, ?string $difficulty = null, ?string $subMaterialId = null): Collection
-    {
+    public function getByMaterialAndDifficulty(
+        string $materialId,
+        ?string $difficulty = null,
+        ?string $subMaterialId = null,
+    ): Collection {
         $query = Question::where('material_id', '=', $materialId);
 
         if ($subMaterialId) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Contracts\Repositories\ProgressRepositoryInterface;
@@ -49,13 +51,20 @@ class MaterialQuestionController extends Controller
         $userId        = $this->getUserId();
         $guestProgress = $this->getGuestProgress($request);
 
-        $materials = $this->questionListingService->getMaterialsListWithStudentCount($userId, $isGuest, $guestProgress);
+        $materials = $this->questionListingService->getMaterialsListWithStudentCount(
+            $userId,
+            $isGuest,
+            $guestProgress,
+        );
 
         return $this->render('Mahasiswa/Materials/Questions/Index', compact('materials', 'isGuest'));
     }
 
-    public function show(int|string $materialId, Request $request, ?string $sub_material = null): Response|RedirectResponse
-    {
+    public function show(
+        int|string $materialId,
+        Request $request,
+        ?string $sub_material = null,
+    ): Response|RedirectResponse {
         $material = $this->materialService->getMaterialById((string) $materialId);
         if (! $material) {
             return redirect()->route('mahasiswa.materials.questions.index')
@@ -67,7 +76,12 @@ class MaterialQuestionController extends Controller
         $userId           = $this->getUserId();
         $targetDifficulty = null;
 
-        $studentStateData = $this->resolveStudentStateData($isGuest, $userId, $materialId, $targetDifficulty);
+        $studentStateData = $this->resolveStudentStateData(
+            $isGuest,
+            $userId,
+            $materialId,
+            $targetDifficulty,
+        );
 
         $data = $this->questionListingService->getQuizData(
             material: $material,
@@ -98,10 +112,18 @@ class MaterialQuestionController extends Controller
         $guestProgress = $this->getGuestProgress($request);
 
         $answeredQuestionIds = $isGuest
-            ? $this->questionListingService->getGuestAnsweredQuestionIds($material->id, $guestProgress)
+            ? $this->questionListingService->getGuestAnsweredQuestionIds(
+                $material->id,
+                $guestProgress,
+            )
             : $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
 
-        $levels = $this->questionListingService->getLevelProgress($material, 'all', $answeredQuestionIds, $isGuest);
+        $levels = $this->questionListingService->getLevelProgress(
+            $material,
+            'all',
+            $answeredQuestionIds,
+            $isGuest,
+        );
 
         return $this->render('Mahasiswa/Materials/Questions/Levels/Index', compact('material', 'levels'));
     }
@@ -132,8 +154,11 @@ class MaterialQuestionController extends Controller
         ]);
     }
 
-    public function getAttempts(int|string $materialId, int|string $questionId, Request $request): JsonResponse
-    {
+    public function getAttempts(
+        int|string $materialId,
+        int|string $questionId,
+        Request $request,
+    ): JsonResponse {
         $isGuest = $this->isGuest();
 
         if ($isGuest) {
@@ -143,14 +168,21 @@ class MaterialQuestionController extends Controller
                 ? $guestProgress[$progressKey]['attempt_number']
                 : 0;
         } else {
-            $attempts = $this->progressRepo->getAttemptCount(Auth::id(), (string) $materialId, (string) $questionId);
+            $attempts = $this->progressRepo->getAttemptCount(
+                Auth::id(),
+                (string) $materialId,
+                (string) $questionId,
+            );
         }
 
         return $this->json(['attempts' => $attempts]);
     }
 
-    public function checkAnswer(int|string $materialId, int|string $questionId, Request $request): JsonResponse
-    {
+    public function checkAnswer(
+        int|string $materialId,
+        int|string $questionId,
+        Request $request,
+    ): JsonResponse {
         $material = Material::find($materialId);
         $question = Question::find($questionId);
 

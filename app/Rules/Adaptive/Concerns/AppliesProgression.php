@@ -6,6 +6,8 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
 trait AppliesProgression
 {
+    use AppliesAchievement;
+
     protected function applyStandardPromotion(array $state, bool $isCorrect): array
     {
         $state['next_action'] = AdaptiveConstants::ACTION_NEXT_QUESTION;
@@ -21,7 +23,8 @@ trait AppliesProgression
         $state['fast_track_active'] = true;
         $state['target_difficulty'] = AdaptiveConstants::DIFFICULTY_MEDIUM;
         $state['next_action']       = AdaptiveConstants::ACTION_NEXT_QUESTION;
-        $state['message']           = 'Luar biasa! Penguasaan dan kecepatan Anda sangat baik. Lanjutkan ke level menengah.';
+        $state['message']           = 'Luar biasa! Penguasaan dan kecepatan Anda sangat baik. '
+            . 'Lanjutkan ke level menengah.';
 
         return $state;
     }
@@ -32,7 +35,8 @@ trait AppliesProgression
         $state['target_difficulty'] = AdaptiveConstants::DIFFICULTY_BEGINNER;
         $state['recommendation']    = 'Review Dasar';
         $state['next_action']       = AdaptiveConstants::ACTION_REDUCE_DIFFICULTY;
-        $state['message']           = 'Soal ini sepertinya terlalu sulit sekarang. Mari turunkan tingkat kesulitan dan perkuat fondasi Anda.';
+        $state['message']           = 'Soal ini sepertinya terlalu sulit sekarang. '
+            . 'Mari turunkan tingkat kesulitan dan perkuat fondasi Anda.';
 
         return $state;
     }
@@ -42,17 +46,19 @@ trait AppliesProgression
         $state['fast_track_active'] = true;
         $state['target_difficulty'] = AdaptiveConstants::DIFFICULTY_HARD;
         $state['next_action']       = AdaptiveConstants::ACTION_NEXT_QUESTION;
-        $state['message']           = 'Luar biasa! Penguasaan dan kecepatan Anda di level menengah sangat baik. Lanjutkan ke level sulit (Hard).';
+        $state['message']           = 'Luar biasa! Penguasaan dan kecepatan Anda di level menengah sangat baik. '
+            . 'Lanjutkan ke level sulit (Hard).';
 
         return $state;
     }
 
-    protected function applyAcceleratedMaterialPromotion(array $state): array
+    protected function applyAcceleratedMaterialPromotion(array $state, array $context): array
     {
         $state['fast_track_active'] = true;
         $state['next_action']       = AdaptiveConstants::ACTION_NEXT_MATERIAL;
-        $state['message']           = 'Luar biasa! Penguasaan materi Anda sangat baik. Mari langsung lanjut ke materi berikutnya!';
+        $state['message']           = 'Luar biasa! Penguasaan materi Anda sangat baik. '
+            . 'Mari langsung lanjut ke materi berikutnya!';
 
-        return $state;
+        return $this->applyModuleProgress($state, $context);
     }
 }

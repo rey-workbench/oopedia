@@ -154,7 +154,9 @@ class Sidebar extends Component
             return 'mahasiswa.dashboard';
         }
 
-        return (Auth::user()->role?->role_name ?? 'mahasiswa') === 'mahasiswa' ? 'mahasiswa.dashboard' : 'admin.dashboard';
+        $role = Auth::user()->role?->role_name ?? 'mahasiswa';
+
+        return $role === 'mahasiswa' ? 'mahasiswa.dashboard' : 'admin.dashboard';
     }
 
     /**

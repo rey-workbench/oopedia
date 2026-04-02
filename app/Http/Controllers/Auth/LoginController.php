@@ -55,11 +55,26 @@ class LoginController extends Controller
         $clearProgress = Cookie::forget('guest_progress');
 
         return match (true) {
-            $user->isSuperAdmin()                  => redirect()->route('admin.dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
-            $user->isDosen() && $user->is_approved => redirect()->route('admin.dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
-            $user->isDosen()                       => redirect()->route('admin.pending-approval')->withCookie($clearGuest)->withCookie($clearProgress),
-            $user->isMahasiswa()                   => redirect()->route('mahasiswa.dashboard')->withCookie($clearGuest)->withCookie($clearProgress),
-            default                                => redirect()->route('mahasiswa.materials.index')->withCookie($clearGuest)->withCookie($clearProgress),
+            $user->isSuperAdmin() => redirect()
+                ->route('admin.dashboard')
+                ->withCookie($clearGuest)
+                ->withCookie($clearProgress),
+            $user->isDosen() && $user->is_approved => redirect()
+                ->route('admin.dashboard')
+                ->withCookie($clearGuest)
+                ->withCookie($clearProgress),
+            $user->isDosen() => redirect()
+                ->route('admin.pending-approval')
+                ->withCookie($clearGuest)
+                ->withCookie($clearProgress),
+            $user->isMahasiswa() => redirect()
+                ->route('mahasiswa.dashboard')
+                ->withCookie($clearGuest)
+                ->withCookie($clearProgress),
+            default => redirect()
+                ->route('mahasiswa.materials.index')
+                ->withCookie($clearGuest)
+                ->withCookie($clearProgress),
         };
     }
 

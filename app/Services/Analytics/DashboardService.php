@@ -29,63 +29,75 @@ class DashboardService implements DashboardServiceInterface
     /** @return array<string, mixed> */
     public function getDashboardIndexData(string $userId, bool $isGuest): array
     {
-        return Cache::remember("dashboard_index_{$userId}_{$isGuest}", 300, function () use ($userId, $isGuest) {
-            $allMaterials    = $this->materialRepo->getAllWithQuestions();
-            $totalMaterials  = $allMaterials->count();
-            $progressStats   = $this->progressRepo->getUserProgressStats($userId);
+        return Cache::remember(
+            "dashboard_index_{$userId}_{$isGuest}",
+            300,
+            function () use ($userId, $isGuest) {
+                $allMaterials   = $this->materialRepo->getAllWithQuestions();
+                $totalMaterials = $allMaterials->count();
+                $progressStats  = $this->progressRepo->getUserProgressStats($userId);
 
-            $configuredCounts = $this->calculateConfiguredCounts($allMaterials, $isGuest);
+                $configuredCounts = $this->calculateConfiguredCounts($allMaterials, $isGuest);
 
-            $materials = $allMaterials->map(function ($material) use ($progressStats, $isGuest) {
-                $totalQuestions     = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest)['total'];
-                $materialProgress   = $progressStats->firstWhere('material_id', $material->id);
-                $correctAnswers     = $materialProgress ? $materialProgress->correct_answers : 0;
-                $progressPercentage = ProgressHelper::calculateProgressPercentage($correctAnswers, $totalQuestions);
+                $materials = $allMaterials->map(function ($material) use ($progressStats, $isGuest) {
+                    $totalQuestions     = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest)['total'];
+                    $materialProgress   = $progressStats->firstWhere('material_id', $material->id);
+                    $correctAnswers     = $materialProgress ? $materialProgress->correct_answers : 0;
+                    $progressPercentage = ProgressHelper::calculateProgressPercentage(
+                        $correctAnswers,
+                        $totalQuestions,
+                    );
 
-                return (object) [
-                    'id'                  => $material->id,
-                    'title'               => $material->title,
-                    'description'         => $material->description ?? '',
-                    'progress_percentage' => $progressPercentage,
-                    'total_questions'     => $totalQuestions,
-                    'completed_questions' => $correctAnswers,
+                    return (object) [
+                        'id'                  => $material->id,
+                        'title'               => $material->title,
+                        'description'         => $material->description ?? '',
+                        'progress_percentage' => $progressPercentage,
+                        'total_questions'     => $totalQuestions,
+                        'completed_questions' => $correctAnswers,
+                    ];
+                });
+
+                $recentActivities = $this->progressRepo->getRecentActivities($userId, 10)
+                    ->map(fn ($activity) => $this->addActivityType($activity))
+                    ->pipe(fn ($activities) => $this->deduplicateActivities($activities, 5));
+
+                $studentState   = StudentState::find($userId);
+                $certifications = $studentState?->learning_profile['certifications'] ?? [];
+
+                return [
+                    'totalMaterials'             => $totalMaterials,
+                    'totalQuestions'             => $configuredCounts['total'],
+                    'easyQuestions'              => $configuredCounts['easy'],
+                    'mediumQuestions'            => $configuredCounts['medium'],
+                    'hardQuestions'              => $configuredCounts['hard'],
+                    'materialProgressPercentage' => 0,
+                    'questionProgressPercentage' => ProgressHelper::calculateProgressPercentage(
+                        $progressStats->sum('correct_answers'),
+                        $configuredCounts['total'],
+                    ),
+                    'completedMaterials'     => 0,
+                    'inProgressMaterials'    => 0,
+                    'totalMaterialProgress'  => 0,
+                    'totalAnsweredQuestions' => 0,
+                    'totalCorrectQuestions'  => $progressStats->sum('correct_answers'),
+                    'recentActivities'       => $recentActivities,
+                    'allMaterials'           => $materials,
+                    'certifications'         => $certifications,
                 ];
-            });
-
-            $recentActivities = $this->progressRepo->getRecentActivities($userId, 10)
-                ->map(fn ($activity) => $this->addActivityType($activity))
-                ->pipe(fn ($activities) => $this->deduplicateActivities($activities, 5));
-
-            $studentState   = StudentState::find($userId);
-            $certifications = $studentState?->learning_profile['certifications'] ?? [];
-
-            return [
-                'totalMaterials'             => $totalMaterials,
-                'totalQuestions'             => $configuredCounts['total'],
-                'easyQuestions'              => $configuredCounts['easy'],
-                'mediumQuestions'            => $configuredCounts['medium'],
-                'hardQuestions'              => $configuredCounts['hard'],
-                'materialProgressPercentage' => 0,
-                'questionProgressPercentage' => ProgressHelper::calculateProgressPercentage(
-                    $progressStats->sum('correct_answers'),
-                    $configuredCounts['total'],
-                ),
-                'completedMaterials'         => 0,
-                'inProgressMaterials'        => 0,
-                'totalMaterialProgress'      => 0,
-                'totalAnsweredQuestions'     => 0,
-                'totalCorrectQuestions'      => $progressStats->sum('correct_answers'),
-                'recentActivities'           => $recentActivities,
-                'allMaterials'               => $materials,
-                'certifications'             => $certifications,
-            ];
-        });
+            },
+        );
     }
 
     /** @return array<string, int> */
     protected function calculateConfiguredCounts(Collection $materials, bool $isGuest): array
     {
-        $counts = ['easy' => 0, 'medium' => 0, 'hard' => 0, 'total' => 0];
+        $counts = [
+            'easy'   => 0,
+            'medium' => 0,
+            'hard'   => 0,
+            'total'  => 0,
+        ];
 
         foreach ($materials as $material) {
             $materialCounts = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest);
@@ -100,11 +112,13 @@ class DashboardService implements DashboardServiceInterface
 
     protected function addActivityType($activity): object
     {
-        $activity->type = match (true) {
-            $activity->total_correct >= 5                                                                     => 'achievement',
-            $activity->difficulty === 'hard' && $activity->is_correct && $activity->previous_hard_count === 0 => 'milestone',
-            default                                                                                           => 'progress',
-        };
+        if ($activity->total_correct >= 5) {
+            $activity->type = 'achievement';
+        } elseif ($activity->difficulty === 'hard' && $activity->is_correct && $activity->previous_hard_count === 0) {
+            $activity->type = 'milestone';
+        } else {
+            $activity->type = 'progress';
+        }
 
         return $activity;
     }
@@ -127,12 +141,14 @@ class DashboardService implements DashboardServiceInterface
     /** @return array<int, array<string, mixed>> */
     public function getInProgressData(string $userId, bool $isGuest): array
     {
-        return Cache::remember("dashboard_inprogress_{$userId}_{$isGuest}", 300, function () use ($userId, $isGuest) {
-            $progressStats    = $this->progressRepo->getDetailedUserProgress($userId);
-            $materialProgress = $this->progressRepo->getUserMaterialProgress($userId);
+        return Cache::remember(
+            "dashboard_inprogress_{$userId}_{$isGuest}",
+            300,
+            function () use ($userId, $isGuest) {
+                $progressStats    = $this->progressRepo->getDetailedUserProgress($userId);
+                $materialProgress = $this->progressRepo->getUserMaterialProgress($userId);
 
-            $materials = $this->materialRepo->getAllWithQuestions()
-                ->filter(
+                $materials = $this->materialRepo->getAllWithQuestions()->filter(
                     function ($material) use ($materialProgress) {
                         $progress       = $materialProgress->firstWhere('material_id', $material->id);
                         $totalQuestions = $material->questions->count();
@@ -147,25 +163,32 @@ class DashboardService implements DashboardServiceInterface
                     },
                 );
 
-            return $this->processMaterialsWithStats($materials, $progressStats, $isGuest);
-        });
+                return $this->processMaterialsWithStats($materials, $progressStats, $isGuest);
+            },
+        );
     }
 
     /** @return array<int, array<string, mixed>> */
     public function getCompletedData(string $userId, bool $isGuest): array
     {
-        return Cache::remember("dashboard_completed_{$userId}_{$isGuest}", 300, function () use ($userId, $isGuest) {
-            $progressStats    = $this->progressRepo->getDetailedUserProgress($userId);
-            $materialProgress = $this->progressRepo->getUserMaterialProgress($userId);
+        return Cache::remember(
+            "dashboard_completed_{$userId}_{$isGuest}",
+            300,
+            function () use ($userId, $isGuest) {
+                $progressStats    = $this->progressRepo->getDetailedUserProgress($userId);
+                $materialProgress = $this->progressRepo->getUserMaterialProgress($userId);
 
-            $materials = $this->materialRepo->getAllWithQuestions()
-                ->filter(
+                $materials = $this->materialRepo->getAllWithQuestions()->filter(
                     function ($material) use ($materialProgress, $isGuest) {
                         $progress = $materialProgress->firstWhere('material_id', $material->id);
 
                         if ($progress) {
-                            $correctAnswers           = $progress->correct_answers;
-                            $configuredTotalQuestions = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest)['total'];
+                            $correctAnswers = $progress->correct_answers;
+                            $counts         = ProgressHelper::calculateMaterialQuestionCounts(
+                                $material,
+                                $isGuest,
+                            );
+                            $configuredTotalQuestions = $counts['total'];
 
                             return $correctAnswers >= $configuredTotalQuestions;
                         }
@@ -174,45 +197,45 @@ class DashboardService implements DashboardServiceInterface
                     },
                 );
 
-            // For completed, we force 100% stats
-            return $materials->map(
-                function ($material) use ($isGuest) {
-                    $counts        = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest);
-                    $beginnerTotal = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'beginner');
-                    $mediumTotal   = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'medium');
-                    $hardTotal     = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'hard');
+                return $materials->map(
+                    function ($material) use ($isGuest) {
+                        $counts        = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest);
+                        $beginnerTotal = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'beginner');
+                        $mediumTotal   = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'medium');
+                        $hardTotal     = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'hard');
 
-                    return [
-                        'material' => $material,
-                        'stats'    => [
-                            'overall' => [
-                                'correct'    => $counts['total'],
-                                'total'      => $counts['total'],
-                                'percentage' => 100,
+                        return [
+                            'material' => $material,
+                            'stats'    => [
+                                'overall' => [
+                                    'correct'    => $counts['total'],
+                                    'total'      => $counts['total'],
+                                    'percentage' => 100,
+                                ],
+                                'beginner' => [
+                                    'correct'          => $counts['easy'],
+                                    'total'            => $beginnerTotal,
+                                    'configured_total' => $counts['easy'],
+                                    'percentage'       => 100,
+                                ],
+                                'medium' => [
+                                    'correct'          => $counts['medium'],
+                                    'total'            => $mediumTotal,
+                                    'configured_total' => $counts['medium'],
+                                    'percentage'       => 100,
+                                ],
+                                'hard' => [
+                                    'correct'          => $counts['hard'],
+                                    'total'            => $hardTotal,
+                                    'configured_total' => $counts['hard'],
+                                    'percentage'       => 100,
+                                ],
                             ],
-                            'beginner' => [
-                                'correct'          => $counts['easy'],
-                                'total'            => $beginnerTotal,
-                                'configured_total' => $counts['easy'],
-                                'percentage'       => 100,
-                            ],
-                            'medium' => [
-                                'correct'          => $counts['medium'],
-                                'total'            => $mediumTotal,
-                                'configured_total' => $counts['medium'],
-                                'percentage'       => 100,
-                            ],
-                            'hard' => [
-                                'correct'          => $counts['hard'],
-                                'total'            => $hardTotal,
-                                'configured_total' => $counts['hard'],
-                                'percentage'       => 100,
-                            ],
-                        ],
-                    ];
-                },
-            )->values()->all();
-        });
+                        ];
+                    },
+                )->values()->all();
+            },
+        );
     }
 
     protected function processMaterialsWithStats($materials, $progressStats, $isGuest)
@@ -224,16 +247,21 @@ class DashboardService implements DashboardServiceInterface
             $mediumTotal   = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'medium');
             $hardTotal     = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'hard');
 
-            // Stats
-            $beginnerStats      = $progressStats->where('material_id', $material->id)->where('difficulty', 'beginner')->first();
+            $beginnerStats = $progressStats->where('material_id', $material->id)
+                ->where('difficulty', 'beginner')
+                ->first();
             $beginnerCorrect    = $beginnerStats ? $beginnerStats->correct_answers : 0;
             $beginnerPercentage = ProgressHelper::calculateProgressPercentage($beginnerCorrect, $counts['easy']);
 
-            $mediumStats      = $progressStats->where('material_id', $material->id)->where('difficulty', 'medium')->first();
+            $mediumStats = $progressStats->where('material_id', $material->id)
+                ->where('difficulty', 'medium')
+                ->first();
             $mediumCorrect    = $mediumStats ? $mediumStats->correct_answers : 0;
             $mediumPercentage = ProgressHelper::calculateProgressPercentage($mediumCorrect, $counts['medium']);
 
-            $hardStats      = $progressStats->where('material_id', $material->id)->where('difficulty', 'hard')->first();
+            $hardStats = $progressStats->where('material_id', $material->id)
+                ->where('difficulty', 'hard')
+                ->first();
             $hardCorrect    = $hardStats ? $hardStats->correct_answers : 0;
             $hardPercentage = ProgressHelper::calculateProgressPercentage($hardCorrect, $counts['hard']);
 

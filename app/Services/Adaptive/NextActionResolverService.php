@@ -14,8 +14,12 @@ class NextActionResolverService implements NextActionResolverServiceInterface
     /**
      * Resolve dynamic next action command into URL and metadata.
      */
-    public function resolve(string $actionCommand, Material $material, Question $question, ?string $userId = null): array
-    {
+    public function resolve(
+        string $actionCommand,
+        Material $material,
+        Question $question,
+        ?string $userId = null,
+    ): array {
         $subMaterialParam = $question->sub_material_id ? ['sub_material' => $question->sub_material_id] : [];
 
         return match ($actionCommand) {
@@ -26,15 +30,23 @@ class NextActionResolverService implements NextActionResolverServiceInterface
             ],
             'REDUCE_DIFFICULTY' => [
                 'label'   => 'Soal Berikutnya',
-                'url'     => route('mahasiswa.materials.questions.show', array_merge(['material' => $material->id], $subMaterialParam)),
+                'url'     => route('mahasiswa.materials.questions.show', array_merge(
+                    ['material' => $material->id],
+                    $subMaterialParam,
+                )),
                 'type'    => 'question',
-                'message' => 'Sepertinya soal ini agak sulit. Kami menyesuaikan tingkat kesulitannya agar kamu lebih nyaman belajar!',
+                'message' => 'Sepertinya soal ini agak sulit. ' .
+                    'Kami menyesuaikan tingkat kesulitannya agar kamu lebih nyaman belajar!',
             ],
             'INCREASE_DIFFICULTY' => [
                 'label'   => 'Soal Berikutnya',
-                'url'     => route('mahasiswa.materials.questions.show', array_merge(['material' => $material->id], $subMaterialParam)),
+                'url'     => route('mahasiswa.materials.questions.show', array_merge(
+                    ['material' => $material->id],
+                    $subMaterialParam,
+                )),
                 'type'    => 'question',
-                'message' => 'Luar Biasa! Kamu menjawab dengan sangat cepat dan tepat. Tantangan selanjutnya telah menantimu di level yang lebih tinggi!',
+                'message' => 'Luar Biasa! Kamu menjawab dengan sangat cepat dan tepat. ' .
+                    'Tantangan selanjutnya telah menantimu di level yang lebih tinggi!',
             ],
             'NEXT_MATERIAL'   => $this->jumpToNextMaterial($material),
             'FINISH_MATERIAL' => [
@@ -54,7 +66,10 @@ class NextActionResolverService implements NextActionResolverServiceInterface
             'STUDY_TEXTUAL' => $this->studySubMaterial($material, null, 'Materi Tekstual', 'textual'),
             default         => [
                 'label' => 'Soal Berikutnya',
-                'url'   => route('mahasiswa.materials.questions.show', array_merge(['material' => $material->id], $subMaterialParam)),
+                'url'   => route('mahasiswa.materials.questions.show', array_merge(
+                    ['material' => $material->id],
+                    $subMaterialParam,
+                )),
                 'type'  => 'question',
             ],
         };
@@ -64,8 +79,12 @@ class NextActionResolverService implements NextActionResolverServiceInterface
      * Resolve study sub-material action.
      * Always fallback to main materials page if no sub-material found.
      */
-    protected function studySubMaterial(Material $material, ?string $jenisKonten, string $label, ?string $learningStyle = null): array
-    {
+    protected function studySubMaterial(
+        Material $material,
+        ?string $jenisKonten,
+        string $label,
+        ?string $learningStyle = null,
+    ): array {
         $query = $material->subMaterials();
 
         if ($jenisKonten) {

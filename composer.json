@@ -4,7 +4,14 @@
     "license": "MIT",
     "homepage": "https://github.com/reyworkbench/oopedia",
     "scripts": {
-        "pint": "pint"
+        "pint": "pint",
+        "phpcs": "phpcs",
+        "phpcs:fix": "phpcbf",
+        "phpcs:check": [
+            "@phpcs:fix",
+            "@pint",
+            "@phpcs"
+        ]
     },
     "keywords": [
         "Laravel",
@@ -48,5 +55,8 @@
         "jcf/boost-for-kiro-ide": "^1.0",
         "laravel/pint": "^1.27",
         "laravel/boost": "^1.8"
+    },
+    "config": {
+        "process-timeout": 1800
     }
 }

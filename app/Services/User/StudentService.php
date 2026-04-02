@@ -181,6 +181,9 @@ class StudentService implements StudentServiceInterface
     /** @return array<string, mixed> */
     public function generateImportTemplate(): array
     {
-        return $this->generateCsvTemplate('mahasiswa_template.csv', ['Nama Mahasiswa', 'mahasiswa@example.com', 'password123']);
+        return $this->generateCsvTemplate(
+            'mahasiswa_template.csv',
+            ['Nama Mahasiswa', 'mahasiswa@example.com', 'password123'],
+        );
     }
 }

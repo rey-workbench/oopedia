@@ -15,7 +15,11 @@ interface MaterialServiceInterface
      *
      * @return Collection<int, Material>
      */
-    public function getAllMaterials(?string $search = null, string $sort = 'created_at', string $direction = 'asc'): Collection;
+    public function getAllMaterials(
+        ?string $search = null,
+        string $sort = 'created_at',
+        string $direction = 'asc',
+    ): Collection;
 
     /**
      * Get all materials ordered by creation date.

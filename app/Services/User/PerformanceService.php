@@ -71,8 +71,10 @@ class PerformanceService implements PerformanceServiceInterface
 
     public function setUserInitialLevel(string $userId, string $materialId, string $level): void
     {
-        $state                = $this->progressRepo->getOrCreateStudentState($userId);
-        $state->current_level = $level;
+        $state                         = $this->progressRepo->getOrCreateStudentState($userId);
+        $gamification                  = $state->gamification_data ?? [];
+        $gamification['current_level'] = $level;
+        $state->gamification_data      = $gamification;
         $state->save();
     }
 
@@ -136,8 +138,12 @@ class PerformanceService implements PerformanceServiceInterface
     /**
      * Update student performance counters (Strict Service Layer).
      */
-    public function updateStudentPerformance(string $userId, bool $isCorrect, int $timeSpent = 0, bool $usedHint = false): StudentState
-    {
+    public function updateStudentPerformance(
+        string $userId,
+        bool $isCorrect,
+        int $timeSpent = 0,
+        bool $usedHint = false,
+    ): StudentState {
         $state = $this->progressRepo->getOrCreateStudentState($userId);
         $state->updatePerformance($isCorrect, $timeSpent, $usedHint);
 
@@ -218,7 +224,9 @@ class PerformanceService implements PerformanceServiceInterface
         $avgTime  = $this->calculateAverageTimeSpent($userId, $materialId);
         $accuracy = $this->gamificationService->calculateAccuracy($currentState);
 
-        return $avgTime > 0 && $avgTime < self::FAST_LEARNER_MAX_AVG_TIME && $accuracy >= self::FAST_LEARNER_MIN_ACCURACY;
+        return $avgTime > 0                            &&
+            $avgTime < self::FAST_LEARNER_MAX_AVG_TIME &&
+            $accuracy >= self::FAST_LEARNER_MIN_ACCURACY;
     }
 
     public function isFatigued(string $userId, string $materialId, array $currentState): bool
@@ -283,8 +291,12 @@ class PerformanceService implements PerformanceServiceInterface
      * Calculate nuanced score based on correctness, hint usage, time, and difficulty.
      * Aligned with Rule Base facts (G01-G04, G05-G06).
      */
-    public function calculateScore(bool $isCorrect, bool $usedHint, int $timeSpent, ?string $difficulty = 'beginner'): int
-    {
+    public function calculateScore(
+        bool $isCorrect,
+        bool $usedHint,
+        int $timeSpent,
+        ?string $difficulty = 'beginner',
+    ): int {
         if (! $isCorrect) {
             return 0;
         }

@@ -28,7 +28,11 @@ interface UserRepositoryInterface
 
     public function getStudentsList(?string $search = null, int $perPage = 10): LengthAwarePaginator;
 
-    public function getStudentsWithRole(string $roleName, ?string $search = null, int $perPage = 10): LengthAwarePaginator;
+    public function getStudentsWithRole(
+        string $roleName,
+        ?string $search = null,
+        int $perPage = 10,
+    ): LengthAwarePaginator;
 
     public function deleteStudentData(string $userId): void;
 

@@ -13,12 +13,21 @@ interface QuestionServiceInterface
     /**
      * Get paginated, filtered questions.
      */
-    public function getFilteredQuestions(?string $search = null, ?string $difficulty = null, ?string $materialId = null): LengthAwarePaginator;
+    public function getFilteredQuestions(
+        ?string $search = null,
+        ?string $difficulty = null,
+        ?string $materialId = null,
+    ): LengthAwarePaginator;
 
     /**
      * Get available questions for the question bank (not yet assigned).
      */
-    public function getAvailableQuestionsForBank(string $materialId, array $excludeIds, ?string $search = null, ?string $difficulty = null): LengthAwarePaginator;
+    public function getAvailableQuestionsForBank(
+        string $materialId,
+        array $excludeIds,
+        ?string $search = null,
+        ?string $difficulty = null,
+    ): LengthAwarePaginator;
 
     /**
      * Get a question by its ID.

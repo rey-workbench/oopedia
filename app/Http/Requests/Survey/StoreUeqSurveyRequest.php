@@ -51,29 +51,38 @@ class StoreUeqSurveyRequest extends BaseFormRequest
         $between = 'Skala penilaian harus bernilai antara 1 sampai 7';
 
         return array_merge(parent::messages(), [
-            'annoying_enjoyable.required'                => 'Skala penilaian antara Menyebalkan-Menyenangkan wajib diisi',
-            'not_understandable_understandable.required' => 'Skala penilaian antara Tidak dapat dipahami-Dapat dipahami wajib diisi',
+            'annoying_enjoyable.required' => 'Skala penilaian antara Menyebalkan-Menyenangkan ' .
+                'wajib diisi',
+            'not_understandable_understandable.required' => 'Skala penilaian antara Tidak dapat ' .
+                'dipahami-Dapat dipahami wajib diisi',
             'creative_dull.required'                     => 'Skala penilaian antara Kreatif-Monoton wajib diisi',
             'easy_difficult.required'                    => 'Skala penilaian antara Mudah-Sulit wajib diisi',
-            'valuable_inferior.required'                 => 'Skala penilaian antara Bermanfaat-Kurang bermanfaat wajib diisi',
+            'valuable_inferior.required'                 => 'Skala penilaian antara Bermanfaat-Kurang ' .
+                'bermanfaat wajib diisi',
             'boring_exciting.required'                   => 'Skala penilaian antara Membosankan-Menarik wajib diisi',
             'not_interesting_interesting.required'       => 'Skala penilaian antara Tidak menarik-Menarik wajib diisi',
-            'unpredictable_predictable.required'         => 'Skala penilaian antara Tidak dapat diprediksi-Dapat diprediksi wajib diisi',
+            'unpredictable_predictable.required'         => 'Skala penilaian antara Tidak dapat ' .
+                'diprediksi-Dapat diprediksi wajib diisi',
             'fast_slow.required'                         => 'Skala penilaian antara Cepat-Lambat wajib diisi',
             'inventive_conventional.required'            => 'Skala penilaian antara Inovatif-Konvensional wajib diisi',
             'obstructive_supportive.required'            => 'Skala penilaian antara Menghambat-Mendukung wajib diisi',
             'good_bad.required'                          => 'Skala penilaian antara Baik-Buruk wajib diisi',
             'complicated_easy.required'                  => 'Skala penilaian antara Rumit-Sederhana wajib diisi',
-            'unlikable_pleasing.required'                => 'Skala penilaian antara Tidak disukai-Menyenangkan wajib diisi',
+            'unlikable_pleasing.required'                => 'Skala penilaian antara Tidak disukai-' .
+                'Menyenangkan wajib diisi',
             'usual_leading_edge.required'                => 'Skala penilaian antara Biasa saja-Terdepan wajib diisi',
-            'unpleasant_pleasant.required'               => 'Skala penilaian antara Tidak menyenangkan-Menyenangkan wajib diisi',
+            'unpleasant_pleasant.required'               => 'Skala penilaian antara Tidak ' .
+                'menyenangkan-Menyenangkan wajib diisi',
             'secure_not_secure.required'                 => 'Skala penilaian antara Aman-Tidak aman wajib diisi',
-            'motivating_demotivating.required'           => 'Skala penilaian antara Memotivasi-Tidak memotivasi wajib diisi',
-            'meets_expectations_does_not_meet.required'  => 'Skala penilaian antara Memenuhi ekspektasi-Tidak memenuhi ekspektasi wajib diisi',
+            'motivating_demotivating.required'           => 'Skala penilaian antara Memotivasi-' .
+                'Tidak memotivasi wajib diisi',
+            'meets_expectations_does_not_meet.required' => 'Skala penilaian antara Memenuhi ' .
+                'ekspektasi-Tidak memenuhi ekspektasi wajib diisi',
             'inefficient_efficient.required'             => 'Skala penilaian antara Tidak efisien-Efisien wajib diisi',
             'clear_confusing.required'                   => 'Skala penilaian antara Jelas-Membingungkan wajib diisi',
             'impractical_practical.required'             => 'Skala penilaian antara Tidak praktis-Praktis wajib diisi',
-            'organized_cluttered.required'               => 'Skala penilaian antara Terorganisir-Berantakan wajib diisi',
+            'organized_cluttered.required'               => 'Skala penilaian antara Terorganisir-' .
+                'Berantakan wajib diisi',
             'attractive_unattractive.required'           => 'Skala penilaian antara Menarik-Tidak menarik wajib diisi',
             'friendly_unfriendly.required'               => 'Skala penilaian antara Ramah-Tidak ramah wajib diisi',
             'conservative_innovative.required'           => 'Skala penilaian antara Konservatif-Inovatif wajib diisi',

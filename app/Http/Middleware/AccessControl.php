@@ -15,8 +15,12 @@ class AccessControl
      * @param string|null $role - Required role (superadmin|dosen|mahasiswa|guest)
      * @param bool $requireApproval - Whether approval is required for this route
      */
-    public function handle(Request $request, Closure $next, ?string $role = null, bool $requireApproval = false): Response
-    {
+    public function handle(
+        Request $request,
+        Closure $next,
+        ?string $role = null,
+        bool $requireApproval = false,
+    ): Response {
         $user            = $request->user();
         $isAuthenticated = $user !== null;
         $userRole        = $user?->role?->role_name ?? null;

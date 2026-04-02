@@ -17,7 +17,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Material extends Model
 {
-    use HasFactory, HasUlids;
+    use HasFactory;
+    use HasUlids;
 
     protected $fillable = [
         'title',

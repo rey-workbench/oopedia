@@ -29,11 +29,24 @@ interface QuestionRepositoryInterface
     public function findWithAnswers(string $id): Question;
 
     /** @return Collection<int, Question> */
-    public function getByMaterialAndDifficulty(string $materialId, ?string $difficulty = null, ?string $subMaterialId = null): Collection;
+    public function getByMaterialAndDifficulty(
+        string $materialId,
+        ?string $difficulty = null,
+        ?string $subMaterialId = null,
+    ): Collection;
 
-    public function getFilteredQuestions(?string $search = null, ?string $difficulty = null, ?string $materialId = null): LengthAwarePaginator;
+    public function getFilteredQuestions(
+        ?string $search = null,
+        ?string $difficulty = null,
+        ?string $materialId = null,
+    ): LengthAwarePaginator;
 
-    public function getQuestionsForBank(string $materialId, array $excludeIds, ?string $search = null, ?string $difficulty = null): LengthAwarePaginator;
+    public function getQuestionsForBank(
+        string $materialId,
+        array $excludeIds,
+        ?string $search = null,
+        ?string $difficulty = null,
+    ): LengthAwarePaginator;
 
     public function countByMaterialAndDifficulty(string $materialId, string $difficulty): int;
 

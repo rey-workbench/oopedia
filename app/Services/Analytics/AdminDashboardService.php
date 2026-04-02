@@ -42,27 +42,28 @@ class AdminDashboardService implements AdminDashboardServiceInterface
     /** @return array<int, array<string, mixed>> */
     public function getStudentProgressOverview(int $limit = 5): array
     {
-        // limit applies to query, so we can cache the result based on limit
         return Cache::remember("admin_student_progress_overview_{$limit}", 600, function () use ($limit) {
-            $students = $this->userRepo->getStudentProgressOverview($limit);
-
-            $materials = $this->materialRepo->getAllWithQuestionsAndConfigs();
-
+            $students                 = $this->userRepo->getStudentProgressOverview($limit);
+            $materials                = $this->materialRepo->getAllWithQuestionsAndConfigs();
             $totalConfiguredQuestions = ProgressHelper::calculateTotalQuestions($materials);
 
-            return $students->map(
-                function ($student) use ($totalConfiguredQuestions) {
-                    $uniqueCorrectQuestions = $student->quizAttempts->where('is_correct', true)->pluck('question_id')->unique()->count();
+            return $students->map(function ($student) use ($totalConfiguredQuestions) {
+                $uniqueCorrectQuestions = $student->quizAttempts
+                    ->where('is_correct', true)
+                    ->pluck('question_id')
+                    ->unique()
+                    ->count();
 
-                    $student->materials_progress = ProgressHelper::calculateProgressPercentage($uniqueCorrectQuestions, $totalConfiguredQuestions);
+                $student->materials_progress = ProgressHelper::calculateProgressPercentage(
+                    $uniqueCorrectQuestions,
+                    $totalConfiguredQuestions,
+                );
 
-                    // Add last active timestamp
-                    $lastActivity         = $student->quizAttempts->max('created_at');
-                    $student->last_active = $lastActivity ? Carbon::parse($lastActivity) : null;
+                $lastActivity         = $student->quizAttempts->max('created_at');
+                $student->last_active = $lastActivity ? Carbon::parse($lastActivity) : null;
 
-                    return $student;
-                },
-            )->all();
+                return $student;
+            })->all();
         });
     }
 
@@ -72,35 +73,24 @@ class AdminDashboardService implements AdminDashboardServiceInterface
             $materials    = $this->materialRepo->getAllWithQuestionsAndConfigs();
             $progressData = $this->progressRepo->getMaterialPerformanceStats();
 
-            return $materials->map(
-                function ($material) use ($progressData) {
-                    // Use all available questions
-                    $totalConfiguredQuestions = $material->questions->count();
+            return $materials->map(function ($material) use ($progressData) {
+                $totalConfiguredQuestions   = $material->questions->count();
+                $materialProgress           = $progressData->where('material_id', $material->id);
+                $activeStudents             = $materialProgress->pluck('user_id')->unique()->count();
+                $correctlyAnsweredQuestions = $materialProgress->pluck('question_id')->unique()->count();
 
-                    // Filter progress data for this material
-                    // progressData contains objects with material_id (from join in repo)
-                    $materialProgress = $progressData->where('material_id', $material->id);
+                $completionRate = $totalConfiguredQuestions > 0
+                    ? round(($correctlyAnsweredQuestions / $totalConfiguredQuestions) * 100, 1)
+                    : 0;
 
-                    // Count unique users who have answered questions in this material
-                    $activeStudents = $materialProgress->pluck('user_id')->unique()->count();
-
-                    // Count unique correctly answered questions (progressData is already filtered by is_correct=true in repo)
-                    $correctlyAnsweredQuestions = $materialProgress->pluck('question_id')->unique()->count();
-
-                    // Calculate completion rate
-                    $completionRate = $totalConfiguredQuestions > 0
-                        ? round(($correctlyAnsweredQuestions / $totalConfiguredQuestions) * 100, 1)
-                        : 0;
-
-                    return (object) [
-                        'id'              => $material->id,
-                        'title'           => $material->title,
-                        'questions_count' => $totalConfiguredQuestions,
-                        'active_students' => $activeStudents,
-                        'completion_rate' => $completionRate,
-                    ];
-                },
-            );
+                return (object) [
+                    'id'              => $material->id,
+                    'title'           => $material->title,
+                    'questions_count' => $totalConfiguredQuestions,
+                    'active_students' => $activeStudents,
+                    'completion_rate' => $completionRate,
+                ];
+            });
         });
     }
 
@@ -126,8 +116,16 @@ class AdminDashboardService implements AdminDashboardServiceInterface
             ];
 
             foreach ($allStudents as $student) {
-                $correctCount = $student->quizAttempts->where('is_correct', true)->pluck('question_id')->unique()->count();
-                $progress     = ProgressHelper::calculateProgressPercentage($correctCount, $totalConfiguredQuestions);
+                $correctCount = $student->quizAttempts
+                    ->where('is_correct', true)
+                    ->pluck('question_id')
+                    ->unique()
+                    ->count();
+
+                $progress = ProgressHelper::calculateProgressPercentage(
+                    $correctCount,
+                    $totalConfiguredQuestions,
+                );
 
                 if ($progress == 0) {
                     $distribution['0%']++;

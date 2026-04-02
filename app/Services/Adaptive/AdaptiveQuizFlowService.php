@@ -49,7 +49,12 @@ class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
 
         // 3. Calculate rewards
         $rewardResult = $isCorrect
-            ? $this->gamificationService->calculateCorrectAnswerReward($studentState->toArray(), $usedHint, $question->difficulty ?? 'beginner', $timeSpent)
+            ? $this->gamificationService->calculateCorrectAnswerReward(
+                $studentState->toArray(),
+                $usedHint,
+                $question->difficulty ?? 'beginner',
+                $timeSpent,
+            )
             : $this->gamificationService->processWrongAnswer($studentState->toArray());
 
         $baseXpEarned = $rewardResult['global_xp_earned'] ?? 0;
@@ -128,21 +133,41 @@ class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         }
         $adaptiveState = $adaptiveState ?? [];
 
+        // Sync adaptive state changes from rule application
+        if (isset($ruleOutput['adaptive_state'])) {
+            // Merge existing with new rule output
+            $adaptiveState = array_merge($adaptiveState, $ruleOutput['adaptive_state']);
+        }
+
         $adaptiveState['current_material_id'] = $material->id;
         $adaptiveState['last_rule']           = $adaptiveResult['triggered_rule'] ?? null;
-        $adaptiveState['fast_track_active']   = $ruleOutput['fast_track_active']  ?? ($adaptiveState['fast_track_active'] ?? false);
+        $adaptiveState['fast_track_active']   = $ruleOutput['fast_track_active']
+            ?? ($adaptiveState['fast_track_active'] ?? false);
+
         if (isset($ruleOutput['target_difficulty'])) {
             $adaptiveState['target_difficulty'] = $ruleOutput['target_difficulty'];
         }
+
         $adaptiveState['time_metrics']      = [
             'avg_time_per_question' => $this->performanceService->calculateAverageTimeSpent($userId, $material->id),
             'total_time_spent'      => $this->performanceService->calculateTotalTimeSpent($userId, $material->id),
         ];
+
+        // Sync learning profile changes (Urusan Unlocking Modul)
+        if (isset($ruleOutput['learning_profile'])) {
+            $studentState->learning_profile = $ruleOutput['learning_profile'];
+        }
+
         $studentState->adaptive_state = $adaptiveState;
         $studentState->save();
 
         // 8. Resolve next action
-        $nextActionData = $this->nextActionResolver->resolve($ruleOutput['next_action'] ?? 'NEXT_QUESTION', $material, $question, $userId);
+        $nextActionData = $this->nextActionResolver->resolve(
+            $ruleOutput['next_action'] ?? 'NEXT_QUESTION',
+            $material,
+            $question,
+            $userId,
+        );
 
         // Sync response structure with frontend expectations
         $mappedState = [
@@ -154,7 +179,8 @@ class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
 
         return [
             'status'          => $isCorrect ? 'success' : 'error',
-            'message'         => $ruleOutput['message'] ?? ($isCorrect ? 'Jawaban benar!' : 'Jawaban salah, coba lagi.'),
+            'message'         => $ruleOutput['message']
+                ?? ($isCorrect ? 'Jawaban benar!' : 'Jawaban salah, coba lagi.'),
             'score'           => $score,
             'hasNextQuestion' => true,
             'nextUrl'         => $nextActionData['url'],

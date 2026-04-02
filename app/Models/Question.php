@@ -21,13 +21,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Question extends Model
 {
-    use HasFactory, HasUlids;
+    use HasFactory;
+    use HasUlids;
 
-    const TYPE_FILL_IN_THE_BLANK = 'fill_in_the_blank';
+    public const TYPE_FILL_IN_THE_BLANK = 'fill_in_the_blank';
 
-    const TYPE_RADIO_BUTTON = 'radio_button';
+    public const TYPE_RADIO_BUTTON      = 'radio_button';
 
-    const TYPE_DRAG_AND_DROP = 'drag_and_drop';
+    public const TYPE_DRAG_AND_DROP     = 'drag_and_drop';
 
     protected $fillable = [
         'material_id',

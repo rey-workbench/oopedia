@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Repositories\MaterialRepositoryInterface;
@@ -28,7 +30,10 @@ class SubMaterialController extends Controller
 
         $subMaterials = $this->subMaterialService->getSubMaterialsByMaterial($materialId);
 
-        return $this->render('Admin/Materials/Submaterials/Index', compact('material', 'subMaterials'));
+        return $this->render(
+            'Admin/Materials/Submaterials/Index',
+            compact('material', 'subMaterials'),
+        );
     }
 
     public function create(string $materialId): Response|RedirectResponse
@@ -60,11 +65,17 @@ class SubMaterialController extends Controller
                 ->with('error', 'Material atau sub-material tidak ditemukan');
         }
 
-        return $this->render('Admin/Materials/Submaterials/Edit/Index', compact('material', 'submaterial'));
+        return $this->render(
+            'Admin/Materials/Submaterials/Edit/Index',
+            compact('material', 'submaterial'),
+        );
     }
 
-    public function update(UpdateSubMaterialRequest $request, string $materialId, string $submaterialId): RedirectResponse
-    {
+    public function update(
+        UpdateSubMaterialRequest $request,
+        string $materialId,
+        string $submaterialId,
+    ): RedirectResponse {
         $this->subMaterialService->updateSubMaterial($submaterialId, $request->validated());
 
         return redirect()->route('admin.materials.submaterials.index', $materialId)

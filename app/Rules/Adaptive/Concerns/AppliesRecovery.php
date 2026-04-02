@@ -40,7 +40,8 @@ trait AppliesRecovery
     {
         $state['recommendation'] = 'Perkuat Pemahaman';
         $state['next_action']    = AdaptiveConstants::ACTION_STUDY_MIXED;
-        $state['message']        = 'Nilai Anda perlu sedikit perbaikan. Mari perkuat pemahaman melalui materi komprehensif sebelum melanjutkan.';
+        $state['message']        = 'Nilai Anda perlu sedikit perbaikan. '
+            . 'Mari perkuat pemahaman melalui materi komprehensif sebelum melanjutkan.';
         $state['recovery_type']  = AdaptiveConstants::RECOVERY_INDEPENDENT;
 
         return $state;

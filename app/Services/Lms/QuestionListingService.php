@@ -21,8 +21,15 @@ class QuestionListingService implements QuestionListingServiceInterface
     ) {}
 
     /** @return array<string, mixed> */
-    public function getQuizData(Material $material, string $difficulty, string $userId, bool $isGuest, array $guestProgress = [], ?string $subMaterialId = null, ?string $targetDifficulty = null): array
-    {
+    public function getQuizData(
+        Material $material,
+        string $difficulty,
+        string $userId,
+        bool $isGuest,
+        array $guestProgress = [],
+        ?string $subMaterialId = null,
+        ?string $targetDifficulty = null,
+    ): array {
         $answeredQuestionIds = $isGuest
             ? $this->getGuestAnsweredQuestionIds($material->id, $guestProgress)
             : $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
@@ -79,8 +86,12 @@ class QuestionListingService implements QuestionListingServiceInterface
     }
 
     /** @return Collection<int, Material> */
-    public function getMaterialsListWithStudentCount(string $userId, bool $isGuest, array $guestProgress = [], array $unlockedModules = []): Collection
-    {
+    public function getMaterialsListWithStudentCount(
+        string $userId,
+        bool $isGuest,
+        array $guestProgress = [],
+        array $unlockedModules = [],
+    ): Collection {
         $progressStats = $isGuest ? collect([]) : $this->progressRepo->getUserProgressStats($userId);
         $allMaterials  = $this->materialRepo->getAllWithQuestions();
 
@@ -95,13 +106,23 @@ class QuestionListingService implements QuestionListingServiceInterface
         // Determine the first module_id to always be unlocked
         $firstModuleId = $allMaterials->whereNotNull('module_id')->min('module_id');
 
-        $materials = $allMaterials->map(function ($material) use ($progressStats, $isGuest, $studentCounts, $guestProgress, $unlockedModules, $firstModuleId) {
+        $materials = $allMaterials->map(function ($material) use (
+            $progressStats,
+            $isGuest,
+            $studentCounts,
+            $guestProgress,
+            $unlockedModules,
+            $firstModuleId
+        ) {
             $configuredTotalQuestions = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest)['total'];
 
             if ($isGuest) {
                 $answeredCount = 0;
                 foreach ($guestProgress as $key => $progress) {
-                    if (strpos($key, $material->id . '_') === 0 && (isset($progress['is_correct']) || isset($progress['attempt_number']))) {
+                    if (
+                        strpos($key, $material->id . '_') === 0 &&
+                        (isset($progress['is_correct']) || isset($progress['attempt_number']))
+                    ) {
                         $answeredCount++;
                     }
                 }
@@ -110,7 +131,10 @@ class QuestionListingService implements QuestionListingServiceInterface
                 $answeredCount    = $materialProgress ? $materialProgress->answered_questions : 0;
             }
 
-            $progressPercentage = ProgressHelper::calculateProgressPercentage($answeredCount, $configuredTotalQuestions);
+            $progressPercentage = ProgressHelper::calculateProgressPercentage(
+                $answeredCount,
+                $configuredTotalQuestions,
+            );
 
             $studentCount = isset($studentCounts[$material->id]) ? $studentCounts[$material->id]->student_count : 0;
 
@@ -122,7 +146,8 @@ class QuestionListingService implements QuestionListingServiceInterface
             // Gating: locked if not guest AND module_id is set AND not in unlocked list AND not the first module
             $moduleId            = $material->module_id;
             $isFirstModule       = ($moduleId !== null && $moduleId === $firstModuleId);
-            $isUnlocked          = $isGuest || $isFirstModule || empty($moduleId) || in_array($moduleId, $unlockedModules);
+            $isUnlocked          = $isGuest || $isFirstModule || empty($moduleId) ||
+                in_array($moduleId, $unlockedModules);
             $material->is_locked = ! $isUnlocked;
 
             return $material;
@@ -132,8 +157,13 @@ class QuestionListingService implements QuestionListingServiceInterface
     }
 
     /** @return Collection<int, Question> */
-    public function getReviewQuestions(Material $material, ?string $difficulty, string $userId, bool $isGuest, array $guestProgress = []): Collection
-    {
+    public function getReviewQuestions(
+        Material $material,
+        ?string $difficulty,
+        string $userId,
+        bool $isGuest,
+        array $guestProgress = [],
+    ): Collection {
         $questions = $material->questions;
 
         if ($difficulty && $difficulty !== 'all') {
@@ -197,8 +227,12 @@ class QuestionListingService implements QuestionListingServiceInterface
         return $answeredQuestionIds;
     }
 
-    public function getFilteredQuestions(Material $material, string $difficulty, bool $isGuest, ?string $subMaterialId = null): array
-    {
+    public function getFilteredQuestions(
+        Material $material,
+        string $difficulty,
+        bool $isGuest,
+        ?string $subMaterialId = null,
+    ): array {
         $questions = $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty, $subMaterialId);
 
         if ($isGuest) {
@@ -240,8 +274,13 @@ class QuestionListingService implements QuestionListingServiceInterface
     }
 
     /** @return array<int, array<string, mixed>> */
-    public function getLevelProgress(Material $material, string $difficulty, SupportCollection $answeredQuestionIds, bool $isGuest = false, ?Collection $preloadedQuestions = null): array
-    {
+    public function getLevelProgress(
+        Material $material,
+        string $difficulty,
+        SupportCollection $answeredQuestionIds,
+        bool $isGuest = false,
+        ?Collection $preloadedQuestions = null,
+    ): array {
         if ($preloadedQuestions !== null) {
             $questions = $preloadedQuestions;
         } else {
@@ -266,6 +305,7 @@ class QuestionListingService implements QuestionListingServiceInterface
         }
 
         $isFirst = true;
+        /** @var Question $question */
         foreach ($remaining as $question) {
             $levels[] = [
                 'level'       => $index++,

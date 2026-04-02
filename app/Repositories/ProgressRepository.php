@@ -23,7 +23,10 @@ class ProgressRepository implements ProgressRepositoryInterface
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->select('questions.material_id')
             ->selectRaw('COUNT(DISTINCT quiz_attempts.question_id) as answered_questions')
-            ->selectRaw('COUNT(DISTINCT CASE WHEN quiz_attempts.is_correct = 1 THEN quiz_attempts.question_id END) as correct_answers')
+            ->selectRaw(
+                'COUNT(DISTINCT CASE WHEN quiz_attempts.is_correct = 1 '
+                . 'THEN quiz_attempts.question_id END) as correct_answers',
+            )
             ->where('quiz_attempts.user_id', $userId)
             ->groupBy('questions.material_id')
             ->get();
@@ -39,7 +42,9 @@ class ProgressRepository implements ProgressRepositoryInterface
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->select('questions.material_id')
             ->selectRaw('COUNT(DISTINCT quiz_attempts.question_id) as total_answered')
-            ->selectRaw('SUM(CASE WHEN quiz_attempts.is_correct = 1 THEN 1 ELSE 0 END) as correct_answers')
+            ->selectRaw(
+                'SUM(CASE WHEN quiz_attempts.is_correct = 1 THEN 1 ELSE 0 END) as correct_answers',
+            )
             ->where('quiz_attempts.user_id', $userId)
             ->groupBy('questions.material_id')
             ->get();
@@ -77,7 +82,11 @@ class ProgressRepository implements ProgressRepositoryInterface
                     ->where('questions.material_id', $materialId)
                     ->where('questions.difficulty', 'hard')
                     ->where('quiz_attempts.is_correct', true)
-                    ->where('quiz_attempts.created_at', '<', $attempt->created_at)
+                    ->where(
+                        'quiz_attempts.created_at',
+                        '<',
+                        $attempt->created_at,
+                    )
                     ->distinct('quiz_attempts.question_id')
                     ->count('*');
             }
@@ -104,7 +113,9 @@ class ProgressRepository implements ProgressRepositoryInterface
         return QuizAttempt::join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->select('questions.material_id', 'questions.difficulty')
             ->selectRaw('COUNT(DISTINCT quiz_attempts.question_id) as total_answered')
-            ->selectRaw('SUM(CASE WHEN quiz_attempts.is_correct = 1 THEN 1 ELSE 0 END) as correct_answers')
+            ->selectRaw(
+                'SUM(CASE WHEN quiz_attempts.is_correct = 1 THEN 1 ELSE 0 END) as correct_answers',
+            )
             ->where('quiz_attempts.user_id', $userId)
             ->groupBy('questions.material_id', 'questions.difficulty')
             ->get();
@@ -124,7 +135,11 @@ class ProgressRepository implements ProgressRepositoryInterface
             ->selectRaw('MIN(quiz_attempts.attempt_number) as attempts_needed')
             ->where('quiz_attempts.is_correct', 1)
             ->where('roles.role_name', $roleName)
-            ->groupBy('quiz_attempts.user_id', 'quiz_attempts.question_id', 'questions.difficulty')
+            ->groupBy(
+                'quiz_attempts.user_id',
+                'quiz_attempts.question_id',
+                'questions.difficulty',
+            )
             ->get();
     }
 
@@ -139,13 +154,28 @@ class ProgressRepository implements ProgressRepositoryInterface
                 'users.name',
                 'users.email',
             )
-            ->selectRaw('COUNT(DISTINCT CASE WHEN quiz_attempts.is_correct = 1 THEN quiz_attempts.question_id END) as total_correct_questions')
+            ->selectRaw(
+                'COUNT(DISTINCT CASE WHEN quiz_attempts.is_correct = 1 '
+                . 'THEN quiz_attempts.question_id END) as total_correct_questions',
+            )
             ->selectRaw('COUNT(DISTINCT quiz_attempts.question_id) as total_attempted')
             ->selectRaw('SUM(CASE WHEN quiz_attempts.is_correct = 1 THEN 1 ELSE 0 END) as correct_answers')
             ->selectRaw('MAX(quiz_attempts.updated_at) as completion_date')
-            ->selectRaw('COUNT(DISTINCT CASE WHEN quiz_attempts.is_correct = 1 AND questions.difficulty = "beginner" THEN quiz_attempts.question_id END) as beginner_completed')
-            ->selectRaw('COUNT(DISTINCT CASE WHEN quiz_attempts.is_correct = 1 AND questions.difficulty = "medium" THEN quiz_attempts.question_id END) as medium_completed')
-            ->selectRaw('COUNT(DISTINCT CASE WHEN quiz_attempts.is_correct = 1 AND questions.difficulty = "hard" THEN quiz_attempts.question_id END) as hard_completed')
+            ->selectRaw(
+                'COUNT(DISTINCT CASE WHEN quiz_attempts.is_correct = 1 '
+                . 'AND questions.difficulty = "beginner" '
+                . 'THEN quiz_attempts.question_id END) as beginner_completed',
+            )
+            ->selectRaw(
+                'COUNT(DISTINCT CASE WHEN quiz_attempts.is_correct = 1 '
+                . 'AND questions.difficulty = "medium" '
+                . 'THEN quiz_attempts.question_id END) as medium_completed',
+            )
+            ->selectRaw(
+                'COUNT(DISTINCT CASE WHEN quiz_attempts.is_correct = 1 '
+                . 'AND questions.difficulty = "hard" '
+                . 'THEN quiz_attempts.question_id END) as hard_completed',
+            )
             ->selectRaw('COUNT(quiz_attempts.id) as total_attempts')
             ->where('roles.role_name', $roleName)
             ->groupBy('users.id', 'users.name', 'users.email')
@@ -197,23 +227,37 @@ class ProgressRepository implements ProgressRepositoryInterface
         $state = StudentState::firstOrNew(['user_id' => $userId]);
 
         $state->gamification_data = array_merge($state->gamification_data ?? [], [
-            StudentStateSchema::KEY_GLOBAL_XP      => $attributes[StudentStateSchema::KEY_GLOBAL_XP]      ?? ($state->gamification_data[StudentStateSchema::KEY_GLOBAL_XP]      ?? 0),
-            StudentStateSchema::KEY_CURRENT_LEVEL  => $attributes[StudentStateSchema::KEY_CURRENT_LEVEL]  ?? ($state->gamification_data[StudentStateSchema::KEY_CURRENT_LEVEL]  ?? 'Pemula'),
-            StudentStateSchema::KEY_CURRENT_STREAK => $attributes[StudentStateSchema::KEY_CURRENT_STREAK] ?? ($state->gamification_data[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0),
-            StudentStateSchema::KEY_MAX_STREAK     => $attributes[StudentStateSchema::KEY_MAX_STREAK]     ?? ($state->gamification_data[StudentStateSchema::KEY_MAX_STREAK]     ?? 0),
+            StudentStateSchema::KEY_GLOBAL_XP => $attributes[StudentStateSchema::KEY_GLOBAL_XP]
+                ?? ($state->gamification_data[StudentStateSchema::KEY_GLOBAL_XP] ?? 0),
+            StudentStateSchema::KEY_CURRENT_LEVEL => $attributes[StudentStateSchema::KEY_CURRENT_LEVEL]
+                ?? ($state->gamification_data[StudentStateSchema::KEY_CURRENT_LEVEL] ?? 'Pemula'),
+            StudentStateSchema::KEY_CURRENT_STREAK => $attributes[StudentStateSchema::KEY_CURRENT_STREAK]
+                ?? ($state->gamification_data[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0),
+            StudentStateSchema::KEY_MAX_STREAK => $attributes[StudentStateSchema::KEY_MAX_STREAK]
+                ?? ($state->gamification_data[StudentStateSchema::KEY_MAX_STREAK] ?? 0),
         ]);
 
         $state->performance_metrics = array_merge($state->performance_metrics ?? [], [
-            StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED => $attributes[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] ?? ($state->performance_metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] ?? 0),
-            StudentStateSchema::KEY_CORRECT_COUNT            => $attributes[StudentStateSchema::KEY_CORRECT_COUNT]            ?? ($state->performance_metrics[StudentStateSchema::KEY_CORRECT_COUNT]            ?? 0),
-            StudentStateSchema::KEY_WRONG_COUNT              => $attributes[StudentStateSchema::KEY_WRONG_COUNT]              ?? ($state->performance_metrics[StudentStateSchema::KEY_WRONG_COUNT]              ?? 0),
-            StudentStateSchema::KEY_WRONG_STREAK             => $attributes[StudentStateSchema::KEY_WRONG_STREAK]             ?? ($state->performance_metrics[StudentStateSchema::KEY_WRONG_STREAK]             ?? 0),
-            StudentStateSchema::KEY_HINTS_USED_COUNT         => $attributes[StudentStateSchema::KEY_HINTS_USED_COUNT]         ?? ($state->performance_metrics[StudentStateSchema::KEY_HINTS_USED_COUNT]         ?? 0),
-            StudentStateSchema::KEY_HINTS_AVAILABLE          => $attributes[StudentStateSchema::KEY_HINTS_AVAILABLE]          ?? ($state->performance_metrics[StudentStateSchema::KEY_HINTS_AVAILABLE]          ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE),
+            StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED => $attributes[
+                StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED
+            ]
+                ?? ($state->performance_metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] ?? 0),
+            StudentStateSchema::KEY_CORRECT_COUNT => $attributes[StudentStateSchema::KEY_CORRECT_COUNT]
+                ?? ($state->performance_metrics[StudentStateSchema::KEY_CORRECT_COUNT] ?? 0),
+            StudentStateSchema::KEY_WRONG_COUNT => $attributes[StudentStateSchema::KEY_WRONG_COUNT]
+                ?? ($state->performance_metrics[StudentStateSchema::KEY_WRONG_COUNT] ?? 0),
+            StudentStateSchema::KEY_WRONG_STREAK => $attributes[StudentStateSchema::KEY_WRONG_STREAK]
+                ?? ($state->performance_metrics[StudentStateSchema::KEY_WRONG_STREAK] ?? 0),
+            StudentStateSchema::KEY_HINTS_USED_COUNT => $attributes[StudentStateSchema::KEY_HINTS_USED_COUNT]
+                ?? ($state->performance_metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] ?? 0),
+            StudentStateSchema::KEY_HINTS_AVAILABLE => $attributes[StudentStateSchema::KEY_HINTS_AVAILABLE]
+                ?? ($state->performance_metrics[StudentStateSchema::KEY_HINTS_AVAILABLE]
+                    ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE),
         ]);
 
         $state->learning_profile = array_merge($state->learning_profile ?? [], [
-            StudentStateSchema::KEY_LEARNING_STYLE => $attributes[StudentStateSchema::KEY_LEARNING_STYLE] ?? ($state->learning_profile[StudentStateSchema::KEY_LEARNING_STYLE] ?? 'visual'),
+            StudentStateSchema::KEY_LEARNING_STYLE => $attributes[StudentStateSchema::KEY_LEARNING_STYLE]
+                ?? ($state->learning_profile[StudentStateSchema::KEY_LEARNING_STYLE] ?? 'visual'),
         ]);
 
         $state->last_active_at = now();

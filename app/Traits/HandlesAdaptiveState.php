@@ -9,8 +9,12 @@ trait HandlesAdaptiveState
     abstract protected function getGuestProgressService();
 
     /** @return array<string, mixed> */
-    public function resolveStudentStateData(bool $isGuest, int|string $userId, int|string $materialId, &$targetDifficulty): array
-    {
+    public function resolveStudentStateData(
+        bool $isGuest,
+        int|string $userId,
+        int|string $materialId,
+        &$targetDifficulty,
+    ): array {
         if ($isGuest) {
             return [
                 'gamification' => [

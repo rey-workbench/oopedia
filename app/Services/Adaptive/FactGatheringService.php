@@ -168,7 +168,9 @@ class FactGatheringService implements FactGatheringServiceInterface
         $questionType = $question?->type ?? 'teori';
 
         // Syntax questions ? G09, Theory/Logic questions ? G10
-        return $questionType === 'sintaks' ? [AdaptiveConstants::FACT_ERROR_SYNTAX] : [AdaptiveConstants::FACT_ERROR_LOGIC];
+        return $questionType === 'sintaks'
+            ? [AdaptiveConstants::FACT_ERROR_SYNTAX]
+            : [AdaptiveConstants::FACT_ERROR_LOGIC];
     }
 
     /**

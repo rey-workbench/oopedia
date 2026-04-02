@@ -98,7 +98,14 @@ class Navbar extends Component
     /**
      * Get navigation items for mahasiswa role.
      *
-     * @return array<int, array{route: string, icon: string, label: string, pattern: string, badge?: string, badgeClass?: string}>
+     * @return array<int, array{
+     *     route: string,
+     *     icon: string,
+     *     label: string,
+     *     pattern: string,
+     *     badge?: string,
+     *     badgeClass?: string
+     * }>
      */
     public function getMahasiswaNavItems(): array
     {

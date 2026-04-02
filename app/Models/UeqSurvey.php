@@ -43,7 +43,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class UeqSurvey extends Model
 {
-    use HasFactory, HasUlids;
+    use HasFactory;
+    use HasUlids;
 
     protected $fillable = [
         'user_id',

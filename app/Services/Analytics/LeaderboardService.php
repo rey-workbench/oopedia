@@ -92,8 +92,12 @@ class LeaderboardService implements LeaderboardServiceInterface
         return $userScores;
     }
 
-    protected function processLeaderboardData($leaderboardData, $userScores, $totalConfiguredQuestions, $difficultyCount)
-    {
+    protected function processLeaderboardData(
+        $leaderboardData,
+        $userScores,
+        $totalConfiguredQuestions,
+        $difficultyCount,
+    ) {
         // Add weighted scores
         foreach ($leaderboardData as $data) {
             $data->weighted_score = $userScores[$data->id] ?? 0;
@@ -108,7 +112,10 @@ class LeaderboardService implements LeaderboardServiceInterface
             $data->rank = $rank++;
 
             // Calculate percentage
-            $data->percentage = ProgressHelper::calculateProgressPercentage($data->total_correct_questions, $totalConfiguredQuestions);
+            $data->percentage = ProgressHelper::calculateProgressPercentage(
+                $data->total_correct_questions,
+                $totalConfiguredQuestions,
+            );
 
             $data->formatted_score = number_format($data->weighted_score, 0, ',', '.');
 

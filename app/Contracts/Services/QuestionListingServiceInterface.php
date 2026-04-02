@@ -18,7 +18,15 @@ interface QuestionListingServiceInterface
      * @param array<string, mixed> $guestProgress
      * @return array<string, mixed>
      */
-    public function getQuizData(Material $material, string $difficulty, string $userId, bool $isGuest, array $guestProgress = [], ?string $subMaterialId = null, ?string $targetDifficulty = null): array;
+    public function getQuizData(
+        Material $material,
+        string $difficulty,
+        string $userId,
+        bool $isGuest,
+        array $guestProgress = [],
+        ?string $subMaterialId = null,
+        ?string $targetDifficulty = null,
+    ): array;
 
     /**
      * Get all materials with student progress counts.
@@ -26,7 +34,12 @@ interface QuestionListingServiceInterface
      * @param array<string, mixed> $guestProgress
      * @return Collection<int, Material>
      */
-    public function getMaterialsListWithStudentCount(string $userId, bool $isGuest, array $guestProgress = [], array $unlockedModules = []): Collection;
+    public function getMaterialsListWithStudentCount(
+        string $userId,
+        bool $isGuest,
+        array $guestProgress = [],
+        array $unlockedModules = [],
+    ): Collection;
 
     /**
      * Get questions for the review/report view.
@@ -34,7 +47,13 @@ interface QuestionListingServiceInterface
      * @param array<string, mixed> $guestProgress
      * @return Collection<int, Question>
      */
-    public function getReviewQuestions(Material $material, ?string $difficulty, string $userId, bool $isGuest, array $guestProgress = []): Collection;
+    public function getReviewQuestions(
+        Material $material,
+        ?string $difficulty,
+        string $userId,
+        bool $isGuest,
+        array $guestProgress = [],
+    ): Collection;
 
     /**
      * Get answered question IDs from guest progress cookie data.
@@ -49,5 +68,11 @@ interface QuestionListingServiceInterface
      *
      * @return array<string, mixed>
      */
-    public function getLevelProgress(Material $material, string $difficulty, SupportCollection $answeredQuestionIds, bool $isGuest = false, ?Collection $preloadedQuestions = null): array;
+    public function getLevelProgress(
+        Material $material,
+        string $difficulty,
+        SupportCollection $answeredQuestionIds,
+        bool $isGuest = false,
+        ?Collection $preloadedQuestions = null,
+    ): array;
 }

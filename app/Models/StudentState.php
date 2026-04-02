@@ -32,7 +32,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class StudentState extends Model
 {
-    use HasFactory, HasUlids;
+    use HasFactory;
+    use HasUlids;
 
     public $incrementing = false;
 
@@ -87,6 +88,13 @@ class StudentState extends Model
         return $this->gamification_data[StudentStateSchema::KEY_CURRENT_LEVEL] ?? 'Pemula';
     }
 
+    public function setCurrentLevelAttribute(string $value): void
+    {
+        $gamification                                        = $this->gamification_data ?? [];
+        $gamification[StudentStateSchema::KEY_CURRENT_LEVEL] = $value;
+        $this->gamification_data                             = $gamification;
+    }
+
     public function getCurrentStreakAttribute(): int
     {
         return $this->gamification_data[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0;
@@ -124,7 +132,8 @@ class StudentState extends Model
 
     public function getHintsAvailableAttribute(): int
     {
-        return $this->performance_metrics[StudentStateSchema::KEY_HINTS_AVAILABLE] ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE;
+        return $this->performance_metrics[StudentStateSchema::KEY_HINTS_AVAILABLE]
+            ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE;
     }
 
     public function getLearningStyleAttribute(): string
@@ -144,24 +153,34 @@ class StudentState extends Model
         $metrics      = $this->performance_metrics ?? [];
         $gamification = $this->gamification_data   ?? [];
 
-        $metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] = ($metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] ?? 0) + 1;
+        $metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] =
+            ($metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] ?? 0) + 1;
 
         if ($usedHint) {
-            $metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] = ($metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] ?? 0) + 1;
-            $metrics[StudentStateSchema::KEY_HINTS_AVAILABLE]  = max(0, ($metrics[StudentStateSchema::KEY_HINTS_AVAILABLE] ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE) - 1);
+            $metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] =
+                ($metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] ?? 0) + 1;
+            $metrics[StudentStateSchema::KEY_HINTS_AVAILABLE] = max(
+                0,
+                ($metrics[StudentStateSchema::KEY_HINTS_AVAILABLE]
+                    ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE) - 1,
+            );
         }
 
         if ($isCorrect) {
-            $metrics[StudentStateSchema::KEY_CORRECT_COUNT]            = ($metrics[StudentStateSchema::KEY_CORRECT_COUNT]            ?? 0) + 1;
-            $gamification[StudentStateSchema::KEY_CURRENT_STREAK]      = ($gamification[StudentStateSchema::KEY_CURRENT_STREAK]     ?? 0)  + 1;
-            $gamification[StudentStateSchema::KEY_MAX_STREAK]          = max(
+            $metrics[StudentStateSchema::KEY_CORRECT_COUNT] =
+                ($metrics[StudentStateSchema::KEY_CORRECT_COUNT] ?? 0) + 1;
+            $gamification[StudentStateSchema::KEY_CURRENT_STREAK] =
+                ($gamification[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0) + 1;
+            $gamification[StudentStateSchema::KEY_MAX_STREAK] = max(
                 $gamification[StudentStateSchema::KEY_MAX_STREAK]     ?? 0,
                 $gamification[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0,
             );
             $metrics[StudentStateSchema::KEY_WRONG_STREAK] = 0;
         } else {
-            $metrics[StudentStateSchema::KEY_WRONG_COUNT]         = ($metrics[StudentStateSchema::KEY_WRONG_COUNT]   ?? 0) + 1;
-            $metrics[StudentStateSchema::KEY_WRONG_STREAK]        = ($metrics[StudentStateSchema::KEY_WRONG_STREAK]  ?? 0) + 1;
+            $metrics[StudentStateSchema::KEY_WRONG_COUNT] =
+                ($metrics[StudentStateSchema::KEY_WRONG_COUNT] ?? 0) + 1;
+            $metrics[StudentStateSchema::KEY_WRONG_STREAK] =
+                ($metrics[StudentStateSchema::KEY_WRONG_STREAK] ?? 0) + 1;
             $gamification[StudentStateSchema::KEY_CURRENT_STREAK] = 0;
         }
 

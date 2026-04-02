@@ -45,7 +45,11 @@ interface MaterialRepositoryInterface
     public function findWithQuestionsAndAnswers(string $id): Material;
 
     /** @return Collection<int, Material> */
-    public function getMaterialsForAdmin(?string $search = null, string $sort = 'created_at', string $direction = 'asc'): Collection;
+    public function getMaterialsForAdmin(
+        ?string $search = null,
+        string $sort = 'created_at',
+        string $direction = 'asc',
+    ): Collection;
 
     public function findWithRelations(string $id, array $relations = []): Material;
 

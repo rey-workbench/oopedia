@@ -23,8 +23,11 @@ class MaterialService implements MaterialServiceInterface
     ) {}
 
     /** @return Collection<int, Material> */
-    public function getAllMaterials(?string $search = null, string $sort = 'created_at', string $direction = 'asc'): Collection
-    {
+    public function getAllMaterials(
+        ?string $search = null,
+        string $sort = 'created_at',
+        string $direction = 'asc',
+    ): Collection {
         return $this->materialRepo->getMaterialsForAdmin($search, $sort, $direction);
     }
 

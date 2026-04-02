@@ -18,7 +18,12 @@ interface PerformanceServiceInterface
 
     public function updateLearningStyleFromInteraction(string $userId, string $questionType, int $timeSpent): string;
 
-    public function updateStudentPerformance(string $userId, bool $isCorrect, int $timeSpent = 0, bool $usedHint = false): StudentState;
+    public function updateStudentPerformance(
+        string $userId,
+        bool $isCorrect,
+        int $timeSpent = 0,
+        bool $usedHint = false,
+    ): StudentState;
 
     public function calculateAverageTimeSpent(string $userId, string $materialId): float;
 
@@ -41,5 +46,10 @@ interface PerformanceServiceInterface
     /** @return array<string, mixed> */
     public function getPersonalizationProfile(string $userId, string $materialId, array $currentState): array;
 
-    public function calculateScore(bool $isCorrect, bool $usedHint, int $timeSpent, ?string $difficulty = 'beginner'): int;
+    public function calculateScore(
+        bool $isCorrect,
+        bool $usedHint,
+        int $timeSpent,
+        ?string $difficulty = 'beginner',
+    ): int;
 }

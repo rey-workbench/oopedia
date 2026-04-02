@@ -2,6 +2,7 @@
 
 namespace App\Rules\Adaptive\Concerns;
 
+use App\Models\Material;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
 trait AppliesAchievement
@@ -18,7 +19,8 @@ trait AppliesAchievement
     protected function applyGoldCertificate(array $state, array $context): array
     {
         $state['next_action']                   = AdaptiveConstants::ACTION_ISSUE_CERTIFICATE;
-        $state['message']                       = 'Luar Biasa! Anda layak mendapatkan Sertifikat EMAS sebagai Object-Oriented Architect.';
+        $state['message']                       = 'Luar Biasa! Anda layak mendapatkan Sertifikat EMAS '
+            . 'sebagai Object-Oriented Architect.';
         $state['certification']                 = AdaptiveConstants::CERT_GOLD;
         $state['achievement']                   = AdaptiveConstants::ACHIEVEMENT_GOLD_CERTIFICATE;
         $state['gamification_data']['badges'][] = AdaptiveConstants::BADGE_GOLD_ARCHITECT;
@@ -29,7 +31,8 @@ trait AppliesAchievement
     protected function applySilverCertificate(array $state, array $context): array
     {
         $state['next_action']                   = AdaptiveConstants::ACTION_ISSUE_CERTIFICATE;
-        $state['message']                       = 'Selamat! Anda layak mendapatkan Sertifikat PERAK sebagai Object-Oriented Developer.';
+        $state['message']                       = 'Selamat! Anda layak mendapatkan Sertifikat PERAK '
+            . 'sebagai Object-Oriented Developer.';
         $state['certification']                 = AdaptiveConstants::CERT_SILVER;
         $state['achievement']                   = AdaptiveConstants::ACHIEVEMENT_SILVER_CERTIFICATE;
         $state['gamification_data']['badges'][] = AdaptiveConstants::BADGE_SILVER_DEVELOPER;
@@ -40,7 +43,8 @@ trait AppliesAchievement
     protected function applyBronzeCertificate(array $state, array $context): array
     {
         $state['next_action']                   = AdaptiveConstants::ACTION_ISSUE_CERTIFICATE;
-        $state['message']                       = 'Bagus! Anda layak mendapatkan Sertifikat PERUNGGU sebagai Junior Object-Oriented Programmer.';
+        $state['message']                       = 'Bagus! Anda layak mendapatkan Sertifikat PERUNGGU '
+            . 'sebagai Junior Object-Oriented Programmer.';
         $state['certification']                 = AdaptiveConstants::CERT_BRONZE;
         $state['achievement']                   = AdaptiveConstants::ACHIEVEMENT_BRONZE_CERTIFICATE;
         $state['gamification_data']['badges'][] = AdaptiveConstants::BADGE_BRONZE_JUNIOR;
@@ -51,9 +55,29 @@ trait AppliesAchievement
     private function applyModuleProgress(array $state, array $context): array
     {
         if (isset($context['module_id'])) {
+            $moduleId = $context['module_id'];
+
+            // 1. Mark current module as 100% complete in adaptive_state
             $moduleProgress                             = $state['adaptive_state']['module_progress'] ?? [];
-            $moduleProgress[$context['module_id']]      = 100;
+            $moduleProgress[$moduleId]                  = 100;
             $state['adaptive_state']['module_progress'] = $moduleProgress;
+
+            // 2. Unlock NEXT module in learning_profile
+            $currentMaterial = Material::find($context['material_id'] ?? null);
+            if ($currentMaterial) {
+                $nextMaterial = $currentMaterial->getNextMaterial();
+                if ($nextMaterial && $nextMaterial->module_id) {
+                    $learningProfile      = $state['learning_profile']           ?? [];
+                    $unlockedModules      = $learningProfile['unlocked_modules'] ?? [];
+                    $nextModuleId         = $nextMaterial->module_id;
+
+                    if (! in_array($nextModuleId, $unlockedModules)) {
+                        $unlockedModules[]                   = $nextModuleId;
+                        $learningProfile['unlocked_modules'] = array_values(array_unique($unlockedModules));
+                        $state['learning_profile']           = $learningProfile;
+                    }
+                }
+            }
         }
 
         return $state;
