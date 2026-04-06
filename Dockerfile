@@ -65,7 +65,7 @@ RUN composer dump-autoload --optimize
 
 # Configure Nginx
 RUN echo 'server { \
-    listen 80; \
+    listen 8080; \
     server_name _; \
     root /var/www/html/public; \
     add_header X-Frame-Options "SAMEORIGIN"; \
@@ -119,11 +119,19 @@ autorestart=true \
 RUN cat <<'EOF' > /usr/local/bin/entrypoint.sh
 #!/bin/bash
 
+export DB_HOST=db
 export LOG_CHANNEL=stderr
 
 # Wait for database to be ready
 echo "Waiting for database..."
-sleep 5
+# Simple check if DB is reachable
+for i in {1..30}; do
+    if mysqladmin ping -h "$DB_HOST" --silent; then
+        break
+    fi
+    echo "Database is unavailable - sleeping"
+    sleep 2
+done
 
 php artisan config:clear || true
 php artisan storage:link --force || true
@@ -143,5 +151,5 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-EXPOSE 80
+EXPOSE 8080
 CMD ["/usr/local/bin/entrypoint.sh"]
