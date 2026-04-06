@@ -65,7 +65,7 @@ RUN composer dump-autoload --optimize
 
 # Configure Nginx
 RUN echo 'server { \
-    listen 8080; \
+    listen ${PORT:-8080}; \
     server_name _; \
     root /var/www/html/public; \
     add_header X-Frame-Options "SAMEORIGIN"; \
@@ -119,19 +119,23 @@ autorestart=true \
 RUN cat <<'EOF' > /usr/local/bin/entrypoint.sh
 #!/bin/bash
 
-export DB_HOST=db
+# Check if DB_HOST is already set (from compose/env), otherwise default to 'db'
+export DB_HOST=${DB_HOST:-db}
 export LOG_CHANNEL=stderr
 
 # Wait for database to be ready
-echo "Waiting for database..."
+echo "Waiting for database ($DB_HOST)..."
 # Simple check if DB is reachable
 for i in {1..30}; do
     if mysqladmin ping -h "$DB_HOST" --silent; then
         break
     fi
-    echo "Database is unavailable - sleeping"
+    echo "Database at $DB_HOST is unavailable - sleeping"
     sleep 2
 done
+
+# Ensure PORT is used in Nginx config
+sed -i "s/listen 8080;/listen ${PORT:-8080};/g" /etc/nginx/sites-available/default
 
 php artisan config:clear || true
 php artisan storage:link --force || true
@@ -139,9 +143,14 @@ php artisan config:cache || true
 php artisan route:cache || true
 php artisan view:cache || true
 php artisan event:cache || true
-php artisan migrate --force || true
 
-echo "Starting application..."
+# Only run migrations if DB is actually configured correctly
+if [ ! -z "$DB_HOST" ]; then
+    echo "Starting migrations..."
+    php artisan migrate --force || true
+fi
+
+echo "Starting application on port ${PORT:-8080}..."
 exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 EOF
 
