@@ -17,7 +17,7 @@ class ProgressRepository implements ProgressRepositoryInterface
     public function getUserProgressStats(?string $userId): Collection
     {
         if (is_null($userId) || $userId === 'guest') {
-            return new Collection;
+            return new Collection();
         }
 
         return QuizAttempt::where('user_id', $userId)
@@ -43,7 +43,7 @@ class ProgressRepository implements ProgressRepositoryInterface
     public function getUserMaterialProgress(?string $userId): Collection
     {
         if (is_null($userId) || $userId === 'guest') {
-            return new Collection;
+            return new Collection();
         }
 
         return QuizAttempt::where('user_id', $userId)
@@ -68,7 +68,7 @@ class ProgressRepository implements ProgressRepositoryInterface
     public function getRecentActivities(?string $userId, int $limit = 5): Collection
     {
         if (is_null($userId) || $userId === 'guest') {
-            return new Collection;
+            return new Collection();
         }
 
         $attempts = QuizAttempt::with(['question.material'])
@@ -111,13 +111,13 @@ class ProgressRepository implements ProgressRepositoryInterface
             ];
         })->pipe(fn($c) => new Collection($c));
     }
-    
+
 
     /** @return Collection<int, mixed> */
     public function getDetailedUserProgress(?string $userId): Collection
     {
         if (is_null($userId) || $userId === 'guest') {
-            return new Collection;
+            return new Collection();
         }
 
         return QuizAttempt::where('user_id', $userId)
@@ -334,7 +334,7 @@ class ProgressRepository implements ProgressRepositoryInterface
     public function getAnsweredQuestionIds(string $userId, string $materialId): Collection
     {
         if ($userId === 'guest') {
-            return new Collection;
+            return new Collection();
         }
 
         return QuizAttempt::where('user_id', $userId)
@@ -436,7 +436,7 @@ class ProgressRepository implements ProgressRepositoryInterface
     public function getByUserAndMaterial(string $userId, string $materialId): Collection
     {
         if ($userId === 'guest') {
-            return new Collection;
+            return new Collection();
         }
 
         return QuizAttempt::where('user_id', $userId)
@@ -449,7 +449,7 @@ class ProgressRepository implements ProgressRepositoryInterface
     public function getWrongAnswers(string $userId, string $materialId): Collection
     {
         if ($userId === 'guest') {
-            return new Collection;
+            return new Collection();
         }
 
         return QuizAttempt::where('user_id', $userId)
@@ -541,7 +541,7 @@ class ProgressRepository implements ProgressRepositoryInterface
         if (is_null($userId) || $userId === 'guest') {
             return [
                 'state' => $this->getOrCreateStudentState('guest'),
-                'progress' => new Collection,
+                'progress' => new Collection(),
             ];
         }
 
