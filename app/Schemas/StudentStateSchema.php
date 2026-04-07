@@ -36,9 +36,12 @@ final class StudentStateSchema
     ];
 
     // ==================== LEARNING PROFILE ====================
+    // Note: unlocked_modules contains module_id values from materials table
+    // module_id is INTEGER in DB, but Eloquent casts to string ('1', '2', etc.)
+    // NOT ULID - only materials.id uses ULID
     public const LEARNING_PROFILE = [
         'learning_style'   => 'visual',
-        'unlocked_modules' => [],
+        'unlocked_modules' => ['1'], // module_id '1' = "Pengantar Konsep Dasar OOP" (first module always unlocked)
         'certifications'   => [],
     ];
 

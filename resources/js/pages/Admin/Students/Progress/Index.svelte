@@ -153,7 +153,7 @@
                 </h3>
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {#each Object.entries(state.certifications) as [materialId, type]}
-                        {@const material = state.materials.find((m) => m.id === Number(materialId))}
+                        {@const material = state.materials.find((m) => m.id === materialId)}
                         <Card
                             class="relative overflow-hidden border-2 {type === 'gold'
                                 ? 'border-amber-400 bg-amber-50/10'

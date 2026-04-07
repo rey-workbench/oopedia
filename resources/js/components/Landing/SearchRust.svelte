@@ -38,10 +38,10 @@
     </h2>
 
     <div
-        class="group relative flex aspect-[18/9] w-full max-w-4xl items-center justify-center gap-[10%] overflow-hidden rounded-2xl bg-[#C1583D] shadow-2xl"
+        class="group relative flex aspect-2/1 w-full max-w-4xl items-center justify-center gap-[10%] overflow-hidden rounded-2xl bg-[#C1583D] shadow-2xl"
     >
         <div
-            class="relative z-10 aspect-[3/4] w-[30%] overflow-hidden rounded-2xl bg-orange-950/60 shadow-2xl transition-transform duration-700 hover:scale-110 hover:rotate-3"
+            class="relative z-10 aspect-3/4 w-[30%] overflow-hidden rounded-2xl bg-orange-950/60 shadow-2xl transition-transform duration-700 hover:scale-110 hover:rotate-3"
         >
             <img
                 src="/images/landing/abstract1.png"
@@ -50,7 +50,7 @@
             />
         </div>
         <div
-            class="relative z-10 mb-10 aspect-[2/3] w-[20%] overflow-hidden rounded-2xl bg-red-950/80 shadow-2xl transition-transform delay-100 duration-700 hover:scale-110 hover:-rotate-3"
+            class="relative z-10 mb-10 aspect-2/3 w-[20%] overflow-hidden rounded-2xl bg-red-950/80 shadow-2xl transition-transform delay-100 duration-700 hover:scale-110 hover:-rotate-3"
         >
             <img
                 src="/images/landing/abstract2.png"

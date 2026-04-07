@@ -32,7 +32,7 @@
 </style>
 
 <div
-    class="relative flex flex-col items-center overflow-hidden bg-gradient-to-b from-slate-900 to-slate-800 p-8 text-white md:p-12"
+    class="relative flex flex-col items-center overflow-hidden bg-linear-to-b from-slate-900 to-slate-800 p-8 text-white md:p-12"
 >
     <!-- Background accents -->
     <div

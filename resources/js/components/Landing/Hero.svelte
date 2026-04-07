@@ -298,7 +298,7 @@
 />
 
 <section
-    class="relative -mt-16 flex h-screen flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-[#F9F9F9] to-transparent px-6 text-center"
+    class="relative -mt-16 flex h-screen flex-col items-center justify-center overflow-hidden bg-linear-to-b from-[#F9F9F9] to-transparent px-6 text-center"
 >
     {#each floatingDecor as item}
         <FloatingItem {...item} parallaxX={$parallax.x} parallaxY={$parallax.y} />

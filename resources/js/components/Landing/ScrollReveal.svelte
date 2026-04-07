@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { tweened } from 'svelte/motion';
+    import { Tween } from 'svelte/motion';
     import { cubicOut, elasticOut } from 'svelte/easing';
 
     interface Props {
@@ -9,7 +9,6 @@
         y?: number;
         scale?: number;
         blur?: boolean;
-        stagger?: boolean;
         class?: string;
     }
 
@@ -19,25 +18,27 @@
         y = 60,
         scale = 0.95,
         blur = false,
-        stagger = false,
         class: className = '',
         children,
     }: Props & { children?: any } = $props();
 
     let element: HTMLElement;
-    let visible = $state(false);
 
-    const opacity = tweened(0, { duration, easing: cubicOut });
-    const translateY = tweened(y, { duration, easing: cubicOut });
-    const scaleValue = tweened(scale, { duration: duration * 1.2, easing: elasticOut });
-    const blurValue = tweened(20, { duration, easing: cubicOut });
+    // Initialize Tweens with props (captures initial values intentionally)
+    // svelte-ignore state_referenced_locally
+    const opacity = new Tween(0, { duration, easing: cubicOut });
+    // svelte-ignore state_referenced_locally
+    const translateY = new Tween(y, { duration, easing: cubicOut });
+    // svelte-ignore state_referenced_locally
+    const scaleValue = new Tween(scale, { duration: duration * 1.2, easing: elasticOut });
+    // svelte-ignore state_referenced_locally
+    const blurValue = new Tween(20, { duration, easing: cubicOut });
 
     onMount(() => {
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        visible = true;
                         setTimeout(() => {
                             opacity.set(1);
                             translateY.set(0);
@@ -55,13 +56,13 @@
         return () => observer.disconnect();
     });
 
-    let blurStyle = $derived(blur ? `filter: blur(${$blurValue}px);` : '');
+    let blurStyle = $derived(blur ? `filter: blur(${blurValue.current}px);` : '');
 </script>
 
 <div
     bind:this={element}
     class={className}
-    style="opacity: {$opacity}; transform: translateY({$translateY}px) scale({$scaleValue}); {blurStyle};"
+    style="opacity: {opacity.current}; transform: translateY({translateY.current}px) scale({scaleValue.current}); {blurStyle};"
 >
     {@render children?.()}
 </div>

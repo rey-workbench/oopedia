@@ -38,8 +38,7 @@ class FactGatheringService implements FactGatheringServiceInterface
     public function __construct(
         protected ProgressRepositoryInterface $progressRepo,
         protected QuestionRepositoryInterface $questionRepo,
-    ) {
-    }
+    ) {}
 
     public function gatherFacts(
         StudentState $studentState,
@@ -240,6 +239,11 @@ class FactGatheringService implements FactGatheringServiceInterface
 
     /**
      * Check if student has satisfied enough questions in the material (G26).
+     *
+     * Uses weighted progress calculation that gives credit for:
+     * - Overall material progress
+     * - Difficulty progression (reaching harder levels)
+     * - Performance at current difficulty
      */
     protected function hasSatisfactoryProgress(string $userId, string $materialId, string $difficulty = 'all'): bool
     {
@@ -248,20 +252,73 @@ class FactGatheringService implements FactGatheringServiceInterface
         if ($difficulty === 'all' || $difficulty === 'final') {
             $answeredCount  = $answeredIds->count();
             $totalQuestions = $this->questionRepo->countByMaterial($materialId);
-        } else {
-            $allQuestions        = $this->questionRepo->getByMaterialAndDifficulty($materialId, 'all');
-            $difficultyQuestions = $allQuestions->where('difficulty', $difficulty);
 
-            $totalQuestions = $difficultyQuestions->count();
-            $answeredCount  = $difficultyQuestions->filter(fn ($q) => $answeredIds->contains($q->id))->count();
+            if ($totalQuestions === 0) {
+                return true;
+            }
+
+            $percentage = ($answeredCount / $totalQuestions) * 100;
+
+            return $percentage >= self::SATISFACTORY_PROGRESS_THRESHOLD;
         }
 
-        if ($totalQuestions === 0) {
+        // For specific difficulty: use weighted progress calculation
+        $allQuestions     = $this->questionRepo->getByMaterialAndDifficulty($materialId, 'all');
+        $answeredIdsArray = $answeredIds->toArray();
+
+        // Count answered questions by difficulty
+        $beginnerAnswered = $allQuestions
+            ->where('difficulty', 'beginner')
+            ->filter(fn ($q) => in_array($q->id, $answeredIdsArray))
+            ->count();
+
+        $mediumAnswered = $allQuestions
+            ->where('difficulty', 'medium')
+            ->filter(fn ($q) => in_array($q->id, $answeredIdsArray))
+            ->count();
+
+        $hardAnswered = $allQuestions
+            ->where('difficulty', 'hard')
+            ->filter(fn ($q) => in_array($q->id, $answeredIdsArray))
+            ->count();
+
+        // Total questions by difficulty
+        $beginnerTotal = $allQuestions->where('difficulty', 'beginner')->count();
+        $mediumTotal   = $allQuestions->where('difficulty', 'medium')->count();
+        $hardTotal     = $allQuestions->where('difficulty', 'hard')->count();
+
+        if ($beginnerTotal + $mediumTotal + $hardTotal === 0) {
             return true;
         }
 
-        $percentage = ($answeredCount / $totalQuestions) * 100;
+        // Weighted progress calculation:
+        // - Beginner: 1x weight
+        // - Medium: 1.5x weight (harder, more valuable)
+        // - Hard: 2x weight (hardest, most valuable)
+        $weightedAnswered = ($beginnerAnswered * 1.0)    + ($mediumAnswered * 1.5) + ($hardAnswered * 2.0);
+        $weightedTotal    = ($beginnerTotal * 1.0)       + ($mediumTotal * 1.5) + ($hardTotal * 2.0);
 
-        return $percentage >= self::SATISFACTORY_PROGRESS_THRESHOLD;
+        $weightedPercentage = ($weightedAnswered / $weightedTotal) * 100;
+
+        // Difficulty progression bonus:
+        // If student reached hard difficulty and answered some hard questions,
+        // give additional credit for progression
+        $progressionBonus = 0;
+        if ($difficulty === 'hard' && $hardAnswered > 0) {
+            // Student has proven ability at hardest level
+            // Base bonus: 10% for reaching hard difficulty
+            // Additional: 5% per hard question answered (up to max 30%)
+            $progressionBonus = 10 + min(30, $hardAnswered * 5);
+        } elseif ($difficulty === 'medium' && $mediumAnswered > 0) {
+            // Student reached medium level
+            // Give 10% bonus if they answered at least 3 medium questions
+            if ($mediumAnswered >= 3) {
+                $progressionBonus = 10;
+            }
+        }
+
+        $finalPercentage = min(100, $weightedPercentage + $progressionBonus);
+
+        return $finalPercentage >= self::SATISFACTORY_PROGRESS_THRESHOLD;
     }
 }

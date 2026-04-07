@@ -1,5 +1,11 @@
 {
-    "agents": ["opencode"],
-    "editors": ["opencode"],
-    "guidelines": ["inertiajs/inertia-laravel"]
+    "agents": [
+        "opencode"
+    ],
+    "editors": [
+        "opencode"
+    ],
+    "guidelines": [
+        "inertiajs/inertia-laravel"
+    ]
 }

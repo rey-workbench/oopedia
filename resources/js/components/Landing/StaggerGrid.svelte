@@ -1,8 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { stagger, timeline } from 'svelte/motion';
-    import { fade, fly } from 'svelte/transition';
-    import { cubicOut, elasticOut, backOut } from 'svelte/easing';
+    import { cubicOut } from 'svelte/easing';
 
     interface Props {
         staggerDelay?: number;
@@ -16,15 +14,12 @@
     }: Props & { children?: any } = $props();
 
     let container: HTMLElement;
-    let visible = $state(false);
-    let childElements: HTMLElement[] = [];
 
     onMount(() => {
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
-                    if (entry.isIntersecting && !visible) {
-                        visible = true;
+                    if (entry.isIntersecting) {
                         animateChildren();
                     }
                 });

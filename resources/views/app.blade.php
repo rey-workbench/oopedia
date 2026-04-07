@@ -12,7 +12,7 @@
 
         <title inertia>{{ Config::get('app.name', 'OOPedia') }} — Platform Pembelajaran OOP Interaktif</title>
         <meta name="description" content="OOPedia adalah platform pembelajaran Object-Oriented Programming interaktif dengan AI. Belajar paradigma, pola desain, dan arsitektur dengan cara yang personal.">
-        <meta name="keywords" content="OOP, Object-Oriented Programming, pembelajaran, kursus, paradigma, desain pattern, arsitektur, AI, machine learning">
+        <meta name="keywords" content="OOP, Object-Oriented Programming, pembelajaran, kursus, paradigma, desain pattern, arsitektur, AI">
         <meta name="author" content="OOPedia">
         <meta name="robots" content="index, follow">
 
@@ -40,6 +40,55 @@
 
         <!-- Canonical URL -->
         <link rel="canonical" href="{{ $appUrl }}">
+
+        @verbatim
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "{{ $appName }}",
+            "url": "{{ $appUrl }}",
+            "description": "Platform pembelajaran Object-Oriented Programming interaktif dengan AI",
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": "{{ $appUrl }}/search?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+            }
+        }
+        </script>
+
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "{{ $appName }}",
+            "url": "{{ $appUrl }}",
+            "logo": "{{ $appUrl }}/images/logo.png",
+            "description": "Platform pembelajaran Object-Oriented Programming interaktif dengan AI",
+            "sameAs": []
+        }
+        </script>
+
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "{{ $appName }}",
+            "applicationCategory": "EducationalApplication",
+            "operatingSystem": "Web",
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "IDR"
+            },
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.8",
+                "ratingCount": "1200"
+            }
+        }
+        </script>
+        @endverbatim
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">

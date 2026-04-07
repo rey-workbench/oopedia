@@ -80,7 +80,7 @@
         in:fade={{ duration: 1500 }}
     >
         <div
-            class="h-full w-full overflow-hidden rounded-[14px] border border-black/[0.04] bg-white shadow-[0_15px_30px_rgba(0,0,0,0.1)] {blur}"
+            class="h-full w-full overflow-hidden rounded-[14px] border border-black/4 bg-white shadow-[0_15px_30px_rgba(0,0,0,0.1)] {blur}"
             style:opacity={isMobile ? opacity * 0.5 : opacity}
             style:transform={`rotate(${rotation}deg)`}
         >

@@ -1,2 +1,31 @@
+# OOPedia robots.txt
+# https://oopedia.example.com
+
 User-agent: *
-Disallow:
+Allow: /
+
+# Block admin/private areas
+Disallow: /admin/
+Disallow: /dashboard/admin/
+Disallow: /api/
+Disallow: /sanctum/*
+Disallow: /_debugbar/
+
+# Block auth-related routes that shouldn't be indexed
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+
+# Allow all static resources needed for rendering
+Allow: /images/
+Allow: /videos/
+Allow: /fonts/
+Allow: /css/
+Allow: /js/
+
+# Sitemap
+Sitemap: https://oopedia.example.com/sitemap.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1

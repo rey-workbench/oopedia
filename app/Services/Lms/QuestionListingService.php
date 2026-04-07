@@ -18,8 +18,7 @@ class QuestionListingService implements QuestionListingServiceInterface
         protected MaterialRepositoryInterface $materialRepo,
         protected ProgressRepositoryInterface $progressRepo,
         protected QuestionRepositoryInterface $questionRepo,
-    ) {
-    }
+    ) {}
 
     /** @return array<string, mixed> */
     public function getQuizData(
@@ -48,10 +47,11 @@ class QuestionListingService implements QuestionListingServiceInterface
             $difficultyOrder = ['beginner' => 1, 'medium' => 2, 'hard' => 3];
             $targetLevel     = $difficultyOrder[$targetDifficulty] ?? 1;
 
-            $questions = $questions->reject(function ($q) use ($answeredQuestionIds, $difficultyOrder, $targetLevel) {
+            $answeredArray = $answeredQuestionIds->toArray();
+            $questions     = $questions->reject(function ($q) use ($answeredArray, $difficultyOrder, $targetLevel) {
                 $qLevel = $difficultyOrder[$q->difficulty] ?? 1;
 
-                return ! $answeredQuestionIds->contains($q->id) && $qLevel < $targetLevel;
+                return ! in_array($q->id, $answeredArray) && $qLevel < $targetLevel;
             });
 
             $skippedCount = $originalQuestionsCount - $questions->count();
@@ -68,7 +68,8 @@ class QuestionListingService implements QuestionListingServiceInterface
         $currentQuestion = $this->getCurrentQuestion($questions, $answeredQuestionIds);
 
         // Calculate actual answered count from the remaining pool
-        $actualAnsweredCount = $questions->filter(fn ($q) => $answeredQuestionIds->contains($q->id))->count();
+        $answeredArray       = $answeredQuestionIds->toArray();
+        $actualAnsweredCount = $questions->filter(fn ($q) => in_array($q->id, $answeredArray))->count();
 
         // Calculate dynamic total by subtracting skipped questions
         $dynamicTotalQuestions = $totalFilteredQuestions - $skippedCount;
@@ -260,8 +261,9 @@ class QuestionListingService implements QuestionListingServiceInterface
     public function getCurrentQuestion(Collection $questions, SupportCollection $answeredQuestionIds): ?Question
     {
         /** @var Question|null $currentQuestion */
-        $currentQuestion = $questions->reject(function ($question) use ($answeredQuestionIds) {
-            return $answeredQuestionIds->contains($question->id);
+        $answeredArray   = $answeredQuestionIds->toArray();
+        $currentQuestion = $questions->reject(function ($question) use ($answeredArray) {
+            return in_array($question->id, $answeredArray);
         })->first();
 
         if ($currentQuestion && $currentQuestion->question_type !== 'fill_in_the_blank') {
@@ -291,8 +293,9 @@ class QuestionListingService implements QuestionListingServiceInterface
             }
         }
 
-        $completed = $questions->filter(fn ($q) => $answeredQuestionIds->contains($q->id));
-        $remaining = $questions->reject(fn ($q) => $answeredQuestionIds->contains($q->id));
+        $answeredArray = $answeredQuestionIds->toArray();
+        $completed     = $questions->filter(fn ($q) => in_array($q->id, $answeredArray));
+        $remaining     = $questions->reject(fn ($q) => in_array($q->id, $answeredArray));
 
         $levels = [];
         $index  = 1;

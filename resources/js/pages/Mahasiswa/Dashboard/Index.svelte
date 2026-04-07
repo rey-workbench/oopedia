@@ -19,8 +19,10 @@
     } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';
-    import { DashboardState } from '@/states/Mahasiswa/DashboardState.svelte';
-    import type { MahasiswaDashboardProps } from '@/types';
+    import {
+        DashboardState,
+        type DashboardStateProps,
+    } from '@/states/Mahasiswa/DashboardState.svelte';
 
     const {
         totalMaterials = 0,
@@ -39,7 +41,7 @@
         allMaterials = [],
         currentUserRank = null,
         certifications = {},
-    }: Omit<MahasiswaDashboardProps, 'auth' | 'flash' | 'errors'> = $props();
+    }: DashboardStateProps = $props();
 
     const state = untrack(
         () =>
@@ -139,9 +141,7 @@
                 </div>
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                     {#each Object.entries(state.certifications) as [materialId, type]}
-                        {@const material = state.allMaterials.find(
-                            (m) => m.id === Number(materialId)
-                        )}
+                        {@const material = state.allMaterials.find((m) => m.id === materialId)}
                         <a
                             href={ROUTES.MAHASISWA.CERTIFICATES.INDEX}
                             class="group relative block overflow-hidden rounded-2xl border-2 transition-transform hover:scale-[1.02] {type ===

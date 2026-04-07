@@ -4,7 +4,6 @@
     import { cubicOut, elasticOut } from 'svelte/easing';
 
     let element: HTMLElement;
-    let items: HTMLElement[] = [];
 
     const containerOpacity = tweened(0, { duration: 600, easing: cubicOut });
     const containerScale = tweened(0.8, { duration: 1000, easing: elasticOut });
@@ -49,7 +48,7 @@
         <div class="grid w-[80%] grid-cols-2 gap-8 md:grid-cols-4">
             <div
                 data-animate
-                class="aspect-[4/5] w-full overflow-hidden rounded-2xl bg-stone-800/20 shadow-xl transition-all hover:scale-105 hover:shadow-2xl"
+                class="aspect-4/5 w-full overflow-hidden rounded-2xl bg-stone-800/20 shadow-xl transition-all hover:scale-105 hover:shadow-2xl"
             >
                 <img
                     src="/images/landing/abstract3.png"
@@ -69,7 +68,7 @@
             </div>
             <div
                 data-animate
-                class="aspect-[4/5] w-full overflow-hidden rounded-2xl bg-stone-900/10 shadow-xl transition-all hover:scale-105 hover:shadow-2xl"
+                class="aspect-4/5 w-full overflow-hidden rounded-2xl bg-stone-900/10 shadow-xl transition-all hover:scale-105 hover:shadow-2xl"
             >
                 <img
                     src="/images/landing/abstract1.png"

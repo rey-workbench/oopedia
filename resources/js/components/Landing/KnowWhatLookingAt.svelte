@@ -10,7 +10,7 @@
 
         <div class="group relative mt-4 inline-block">
             <div
-                class="relative z-0 aspect-[4/5] w-[300px] overflow-hidden rounded-sm bg-[#E3E1DE] shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-transform duration-1000 group-hover:scale-105"
+                class="relative z-0 aspect-4/5 w-[300px] overflow-hidden rounded-sm bg-[#E3E1DE] shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-transform duration-1000 group-hover:scale-105"
             >
                 <img
                     src="/images/landing/abstract4.png"

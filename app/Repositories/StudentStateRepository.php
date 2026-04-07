@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\StudentStateRepositoryInterface;
 use App\Models\StudentState;
+use App\Schemas\StudentStateSchema;
 use Illuminate\Database\Eloquent\Collection;
 
 class StudentStateRepository implements StudentStateRepositoryInterface
@@ -13,10 +14,10 @@ class StudentStateRepository implements StudentStateRepositoryInterface
         return StudentState::updateOrCreate(
             ['user_id' => $userId],
             array_merge([
-                'gamification_data'   => [],
-                'learning_profile'    => [],
-                'performance_metrics' => [],
-                'adaptive_state'      => [],
+                'gamification_data'   => StudentStateSchema::getDefaultGamification(),
+                'learning_profile'    => StudentStateSchema::getDefaultLearningProfile(),
+                'performance_metrics' => StudentStateSchema::getDefaultPerformanceMetrics(),
+                'adaptive_state'      => StudentStateSchema::getDefaultAdaptiveState(),
                 'last_active_at'      => now(),
             ], $attributes),
         );
@@ -56,10 +57,10 @@ class StudentStateRepository implements StudentStateRepositoryInterface
         return StudentState::firstOrCreate(
             ['user_id' => $userId],
             [
-                'gamification_data'   => [],
-                'learning_profile'    => [],
-                'performance_metrics' => [],
-                'adaptive_state'      => [],
+                'gamification_data'   => StudentStateSchema::getDefaultGamification(),
+                'learning_profile'    => StudentStateSchema::getDefaultLearningProfile(),
+                'performance_metrics' => StudentStateSchema::getDefaultPerformanceMetrics(),
+                'adaptive_state'      => StudentStateSchema::getDefaultAdaptiveState(),
                 'last_active_at'      => now(),
             ],
         );

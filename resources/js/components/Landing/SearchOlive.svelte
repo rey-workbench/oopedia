@@ -4,7 +4,6 @@
     import { cubicOut } from 'svelte/easing';
     import { Search } from 'lucide-svelte';
 
-    let visible = $state(false);
     let element: HTMLElement;
 
     const opacity = tweened(0, { duration: 800, easing: cubicOut });
@@ -16,7 +15,6 @@
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        visible = true;
                         opacity.set(1);
                         translateY.set(0);
                         scale.set(1);
@@ -41,7 +39,7 @@
     </h2>
 
     <div
-        class="group relative flex aspect-[16/9] w-full max-w-4xl items-center justify-center overflow-hidden rounded-2xl bg-[#AEC0AD] shadow-2xl transition-transform duration-700 hover:scale-[1.02]"
+        class="group relative flex aspect-video w-full max-w-4xl items-center justify-center overflow-hidden rounded-2xl bg-[#AEC0AD] shadow-2xl transition-transform duration-700 hover:scale-[1.02]"
     >
         <div
             class="absolute top-8 aspect-video w-48 rounded-xl bg-black/10 shadow-2xl blur-[2px] transition-transform duration-1000 group-hover:translate-x-4 group-hover:-translate-y-6"
