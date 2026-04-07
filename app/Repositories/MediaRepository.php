@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Contracts\Repositories\MediaRepositoryInterface;
 use App\Models\Media;
 use Illuminate\Database\Eloquent\Collection;
 
-class MediaRepository implements MediaRepositoryInterface
+final class MediaRepository implements MediaRepositoryInterface
 {
     /** @return Collection<int, Media> */
     public function all(): Collection

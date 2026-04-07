@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $learning_style
  * @property int $order
  */
-class SubMaterial extends Model
+final class SubMaterial extends Model
 {
     use HasUlids;
 
@@ -48,7 +49,7 @@ class SubMaterial extends Model
 
     // ==================== SCOPES ====================
 
-    public function scopeOrdered($query)
+    public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('order');
     }

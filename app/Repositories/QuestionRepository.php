@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Contracts\Repositories\QuestionRepositoryInterface;
@@ -7,7 +9,7 @@ use App\Models\Question;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
-class QuestionRepository implements QuestionRepositoryInterface
+final class QuestionRepository implements QuestionRepositoryInterface
 {
     /** @return Collection<int, Question> */
     public function all(): Collection

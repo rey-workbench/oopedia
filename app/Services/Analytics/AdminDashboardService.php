@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Analytics;
 
 use App\Contracts\Repositories\MaterialRepositoryInterface;
@@ -12,13 +14,13 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
-class AdminDashboardService implements AdminDashboardServiceInterface
+final class AdminDashboardService implements AdminDashboardServiceInterface
 {
     public function __construct(
-        protected UserRepositoryInterface $userRepo,
-        protected MaterialRepositoryInterface $materialRepo,
-        protected ProgressRepositoryInterface $progressRepo,
-        protected QuestionRepositoryInterface $questionRepo,
+        public readonly UserRepositoryInterface $userRepo,
+        public readonly MaterialRepositoryInterface $materialRepo,
+        public readonly ProgressRepositoryInterface $progressRepo,
+        public readonly QuestionRepositoryInterface $questionRepo,
     ) {
     }
 
@@ -27,7 +29,7 @@ class AdminDashboardService implements AdminDashboardServiceInterface
     {
         return Cache::remember('admin_dashboard_stats', 600, function () {
             return [
-                'totalStudents'  => $this->userRepo->countByRole(3),
+                'totalStudents'  => $this->userRepo->countByRole('mahasiswa'),
                 'totalMaterials' => $this->materialRepo->countAll(),
                 'totalQuestions' => $this->questionRepo->countAll(),
                 'activeStudents' => $this->userRepo->getActiveStudentsCount(7),
@@ -104,7 +106,7 @@ class AdminDashboardService implements AdminDashboardServiceInterface
     public function getStudentAnalytics(): array
     {
         return Cache::remember('admin_student_analytics', 600, function () {
-            $allStudents              = $this->userRepo->getUsersByRoleAndApproval(3, true, null, null);
+            $allStudents              = $this->userRepo->getUsersByRoleAndApproval('mahasiswa', true, null, null);
             $materials                = $this->materialRepo->getAllWithQuestionsAndConfigs();
             $totalConfiguredQuestions = ProgressHelper::calculateTotalQuestions($materials);
 

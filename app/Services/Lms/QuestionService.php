@@ -11,11 +11,11 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class QuestionService implements QuestionServiceInterface
+final class QuestionService implements QuestionServiceInterface
 {
     public function __construct(
-        protected QuestionRepositoryInterface $questionRepo,
-        protected AnswerRepositoryInterface $answerRepo,
+        public readonly QuestionRepositoryInterface $questionRepo,
+        public readonly AnswerRepositoryInterface $answerRepo,
     ) {
     }
 
@@ -28,10 +28,10 @@ class QuestionService implements QuestionServiceInterface
 
         return $questions->through(function ($question) {
             $question->formatted_type = match ($question->question_type) {
-                'fill_in_the_blank' => 'Fill in the Blank',
-                'radio_button'      => 'Radio Button',
-                'drag_and_drop'     => 'Drag and Drop',
-                default             => $question->question_type,
+                Question::QUESTION_TYPE_FILL_IN_THE_BLANK => 'Fill in the Blank',
+                Question::QUESTION_TYPE_RADIO_BUTTON      => 'Radio Button',
+                Question::QUESTION_TYPE_DRAG_AND_DROP     => 'Drag and Drop',
+                default                                   => $question->question_type,
             };
 
             return $question;

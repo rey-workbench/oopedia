@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Analytics;
 
 use App\Contracts\Repositories\MaterialRepositoryInterface;
@@ -8,11 +10,11 @@ use App\Contracts\Services\LeaderboardServiceInterface;
 use App\Helpers\ProgressHelper;
 use Illuminate\Support\Facades\Cache;
 
-class LeaderboardService implements LeaderboardServiceInterface
+final class LeaderboardService implements LeaderboardServiceInterface
 {
     public function __construct(
-        protected MaterialRepositoryInterface $materialRepo,
-        protected ProgressRepositoryInterface $progressRepo,
+        public readonly MaterialRepositoryInterface $materialRepo,
+        public readonly ProgressRepositoryInterface $progressRepo,
     ) {
     }
 
@@ -26,13 +28,13 @@ class LeaderboardService implements LeaderboardServiceInterface
             $difficultyCount = ProgressHelper::calculateDifficultyTotals($materials);
 
             // Get correct answers with attempts for scoring
-            $correctAnswers = $this->progressRepo->getCorrectAnswersWithAttempts(3);
+            $correctAnswers = $this->progressRepo->getCorrectAnswersWithAttempts('mahasiswa');
 
             // Calculate user scores
             $userScores = $this->calculateUserScores($correctAnswers);
 
             // Get leaderboard statistics
-            $leaderboardDataRaw = $this->progressRepo->getLeaderboardStats(3);
+            $leaderboardDataRaw = $this->progressRepo->getLeaderboardStats('mahasiswa');
 
             $totalConfiguredQuestions = ProgressHelper::calculateTotalQuestions($materials);
 

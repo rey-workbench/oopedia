@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,8 +19,10 @@ use Illuminate\Notifications\Notifiable;
  * @property string $role_id
  * @property bool $is_approved
  */
-class User extends Authenticatable
+final class User extends Authenticatable
 {
+    public const string ADMIN_EMAIL_DOMAIN = '@admin.oopedia.com';
+
     use HasFactory;
     use HasUlids;
     use Notifiable;
@@ -65,10 +68,10 @@ class User extends Authenticatable
 
         if (is_numeric($rid)) {
             return match ((int) $rid) {
-                1       => $role === 'superadmin',
-                2       => $role === 'dosen',
-                3       => $role === 'mahasiswa',
-                4       => $role === 'guest',
+                1       => $role === Role::ROLE_SUPERADMIN,
+                2       => $role === Role::ROLE_DOSEN,
+                3       => $role === Role::ROLE_MAHASISWA,
+                4       => $role === Role::ROLE_GUEST,
                 default => false,
             };
         }
@@ -78,20 +81,20 @@ class User extends Authenticatable
 
     public function isSuperAdmin(): bool
     {
-        return $this->hasRole('superadmin');
+        return $this->hasRole(Role::ROLE_SUPERADMIN);
     }
 
     public function isDosen(): bool
     {
-        return $this->hasRole('dosen');
+        return $this->hasRole(Role::ROLE_DOSEN);
     }
 
     public function isMahasiswa(): bool
     {
-        return $this->hasRole('mahasiswa');
+        return $this->hasRole(Role::ROLE_MAHASISWA);
     }
 
-    public function scopeWhereRole($query, string $roleName)
+    public function scopeWhereRole(Builder $query, string $roleName): Builder
     {
         return $query->whereHas('role', function ($q) use ($roleName) {
             $q->where('role_name', $roleName);

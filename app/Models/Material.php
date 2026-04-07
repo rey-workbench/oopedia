@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $module_id
  * @property string|null $created_by
  */
-class Material extends Model
+final class Material extends Model
 {
     use HasFactory;
     use HasUlids;
@@ -58,7 +58,7 @@ class Material extends Model
 
     public function getNextMaterial(): ?self
     {
-        return static::where(function ($query) {
+        return self::where(function ($query) {
             $query->where('created_at', '>', $this->created_at)
                 ->orWhere(function ($q) {
                     $q->where('created_at', '=', $this->created_at)
@@ -72,7 +72,7 @@ class Material extends Model
 
     public function getPreviousMaterial(): ?self
     {
-        return static::where(function ($query) {
+        return self::where(function ($query) {
             $query->where('created_at', '<', $this->created_at)
                 ->orWhere(function ($q) {
                     $q->where('created_at', '=', $this->created_at)

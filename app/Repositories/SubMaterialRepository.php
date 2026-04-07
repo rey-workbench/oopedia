@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Contracts\Repositories\SubMaterialRepositoryInterface;
 use App\Models\SubMaterial;
 use Illuminate\Database\Eloquent\Collection;
 
-class SubMaterialRepository implements SubMaterialRepositoryInterface
+final class SubMaterialRepository implements SubMaterialRepositoryInterface
 {
     /** @return Collection<string, SubMaterial> */
     public function all(): Collection

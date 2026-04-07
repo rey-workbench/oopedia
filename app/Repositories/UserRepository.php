@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Contracts\Repositories\UserRepositoryInterface;
@@ -9,7 +11,7 @@ use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
-class UserRepository implements UserRepositoryInterface
+final class UserRepository implements UserRepositoryInterface
 {
     /** @return Collection<int, User> */
     public function all(): Collection

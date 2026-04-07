@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Contracts\Repositories\AnswerRepositoryInterface;
 use App\Models\Answer;
 use Illuminate\Database\Eloquent\Collection;
 
-class AnswerRepository implements AnswerRepositoryInterface
+final class AnswerRepository implements AnswerRepositoryInterface
 {
     /** @return Collection<string, Answer> */
     public function all(): Collection

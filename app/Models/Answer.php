@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $drag_target
  * @property int|null $blank_position
  */
-class Answer extends Model
+final class Answer extends Model
 {
     use HasFactory;
     use HasUlids;

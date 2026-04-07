@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Adaptive;
 
 use App\Contracts\Services\NextActionResolverServiceInterface;
@@ -9,7 +11,7 @@ use App\Models\Question;
 /**
  * Service to resolve adaptive next action commands into URLs and metadata.
  */
-class NextActionResolverService implements NextActionResolverServiceInterface
+final class NextActionResolverService implements NextActionResolverServiceInterface
 {
     /**
      * Resolve dynamic next action command into URL and metadata.

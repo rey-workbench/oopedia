@@ -30,7 +30,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read string         $learning_style
  * @property-read array<int,mixed> $unlocked_modules
  */
-class StudentState extends Model
+final class StudentState extends Model
 {
     use HasFactory;
     use HasUlids;
@@ -85,7 +85,7 @@ class StudentState extends Model
 
     public function getCurrentLevelAttribute(): string
     {
-        return $this->gamification_data[StudentStateSchema::KEY_CURRENT_LEVEL] ?? 'Pemula';
+        return $this->gamification_data[StudentStateSchema::KEY_CURRENT_LEVEL] ?? StudentStateSchema::LEVEL_PEMULA;
     }
 
     public function setCurrentLevelAttribute(string $value): void
@@ -138,7 +138,7 @@ class StudentState extends Model
 
     public function getLearningStyleAttribute(): string
     {
-        return $this->learning_profile[StudentStateSchema::KEY_LEARNING_STYLE] ?? 'visual';
+        return $this->learning_profile[StudentStateSchema::KEY_LEARNING_STYLE] ?? StudentStateSchema::STYLE_VISUAL;
     }
 
     public function getUnlockedModulesAttribute(): array

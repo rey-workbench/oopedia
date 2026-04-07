@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Analytics;
 
 use App\Contracts\Repositories\UeqSurveyRepositoryInterface;
@@ -7,10 +9,10 @@ use App\Contracts\Services\UeqSurveyServiceInterface;
 use App\Models\UeqSurvey;
 use Illuminate\Database\Eloquent\Collection;
 
-class UeqSurveyService implements UeqSurveyServiceInterface
+final class UeqSurveyService implements UeqSurveyServiceInterface
 {
     public function __construct(
-        protected UeqSurveyRepositoryInterface $ueqRepo,
+        public readonly UeqSurveyRepositoryInterface $ueqRepo,
     ) {
     }
 

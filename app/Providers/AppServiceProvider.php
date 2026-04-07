@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('api', function (Request $request) {
             $config = config('rate_limiting.api');
 
-            return Limit::perMinutes($config['period'])
+            return Limit::perMinute($config['limit'])
                 ->by(optional($request->user())->id ?: $request->ip())
                 ->response(function () {
                     return response()->json([
@@ -44,7 +44,7 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('guest', function (Request $request) {
             $config = config('rate_limiting.guest');
 
-            return Limit::perMinutes($config['period'])
+            return Limit::perMinute($config['limit'])
                 ->by($request->ip())
                 ->response(function () {
                     return response()->json([

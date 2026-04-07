@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Gamification;
 
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\GamificationServiceInterface;
+use App\Models\Question;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
+use App\Schemas\StudentStateSchema;
 
 /**
  * GamificationService
@@ -12,32 +16,10 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
  * Unified service for all gamification logic: XP rewards, streaks, and leveling.
  * Consolidates the former QuizRewardService, StreakService, and LevelingService.
  */
-class GamificationService implements GamificationServiceInterface
+final class GamificationService implements GamificationServiceInterface
 {
-    // ==================== XP CONSTANTS ====================
-    /** Base XP per difficulty level */
-    private const BASE_XP = ['beginner' => 10, 'medium' => 20, 'hard' => 30];
-
-    /** Extra XP for answering within TIME_FAST_THRESHOLD % of allocated time */
-    private const FAST_BONUS_XP = 5;
-
-    /** XP deducted for using a hint */
-    private const HINT_PENALTY_XP = 5;
-
-    // ==================== LEVEL THRESHOLDS ====================
-    /**
-     * Single source of truth for level thresholds.
-     * Entries must be ordered from lowest to highest XP minimum.
-     */
-    private const LEVELS = [
-        ['name' => 'Pemula', 'min' => 0],
-        ['name' => 'Menengah', 'min' => 50],
-        ['name' => 'Mahir', 'min' => 200],
-        ['name' => 'Ahli', 'min' => 500],
-    ];
-
     public function __construct(
-        protected ProgressRepositoryInterface $progressRepo,
+        public readonly ProgressRepositoryInterface $progressRepo,
     ) {
     }
 
@@ -46,22 +28,27 @@ class GamificationService implements GamificationServiceInterface
     public function calculateCorrectAnswerReward(
         array $state,
         bool $usedHint = false,
-        string $difficulty = 'beginner',
+        string $difficulty = Question::DIFFICULTY_BEGINNER,
         int $timeSpent = 0,
     ): array {
-        $baseXp   = self::BASE_XP[$difficulty] ?? self::BASE_XP['beginner'];
+        $baseXp = match ($difficulty) {
+            Question::DIFFICULTY_MEDIUM => StudentStateSchema::XP_REWARD_MEDIUM,
+            Question::DIFFICULTY_HARD   => StudentStateSchema::XP_REWARD_HARD,
+            Question::DIFFICULTY_FINAL  => StudentStateSchema::XP_REWARD_FINAL,
+            default                     => StudentStateSchema::XP_REWARD_BEGINNER,
+        };
         $xpEarned = $baseXp;
 
         // Speed bonus
         $allocatedTime = AdaptiveConstants::ALLOCATED_TIME[$difficulty] ?? 60;
         $isFast        = $timeSpent > 0 && ($timeSpent / $allocatedTime * 100) < AdaptiveConstants::TIME_FAST_THRESHOLD;
         if ($isFast) {
-            $xpEarned += self::FAST_BONUS_XP;
+            $xpEarned += StudentStateSchema::XP_BONUS_FAST;
         }
 
         // Penalty for using hint
         if ($usedHint) {
-            $xpEarned = max(0, $xpEarned - self::HINT_PENALTY_XP);
+            $xpEarned = max(0, $xpEarned - StudentStateSchema::XP_PENALTY_HINT);
         }
 
         return [
@@ -69,7 +56,7 @@ class GamificationService implements GamificationServiceInterface
             'is_fast'          => $isFast,
             'base_xp'          => $baseXp,
             'updates'          => [
-                'global_xp' => ($state['global_xp'] ?? 0) + $xpEarned,
+                StudentStateSchema::KEY_GLOBAL_XP => ($state[StudentStateSchema::KEY_GLOBAL_XP] ?? 0) + $xpEarned,
             ],
         ];
     }
@@ -79,14 +66,14 @@ class GamificationService implements GamificationServiceInterface
         return [
             'global_xp_earned' => 0,
             'updates'          => [
-                'global_xp' => $state['global_xp'] ?? 0,
+                StudentStateSchema::KEY_GLOBAL_XP => $state[StudentStateSchema::KEY_GLOBAL_XP] ?? 0,
             ],
         ];
     }
 
     public function useHint(array $state): array
     {
-        $hintsAvailable = $state['hints_available'] ?? 0;
+        $hintsAvailable = $state[StudentStateSchema::KEY_HINTS_AVAILABLE] ?? 0;
 
         if ($hintsAvailable <= 0) {
             return [
@@ -99,16 +86,16 @@ class GamificationService implements GamificationServiceInterface
             'success' => true,
             'message' => 'Hint digunakan',
             'updates' => [
-                'hints_used_count' => ($state['hints_used_count'] ?? 0) + 1,
-                'hints_available'  => $hintsAvailable - 1,
+                StudentStateSchema::KEY_HINTS_USED_COUNT => ($state[StudentStateSchema::KEY_HINTS_USED_COUNT] ?? 0) + 1,
+                StudentStateSchema::KEY_HINTS_AVAILABLE  => $hintsAvailable - 1,
             ],
         ];
     }
 
     public function calculateAccuracy(array $state): float
     {
-        $correct = $state['correct_count']            ?? 0;
-        $total   = $state['total_questions_answered'] ?? 0;
+        $correct = $state[StudentStateSchema::KEY_CORRECT_COUNT]            ?? 0;
+        $total   = $state[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] ?? 0;
 
         if ($total === 0) {
             return 0;
@@ -123,8 +110,8 @@ class GamificationService implements GamificationServiceInterface
     {
         return [
             'updates' => [
-                'current_streak' => ($state['current_streak'] ?? 0) + 1,
-                'wrong_streak'   => 0,
+                StudentStateSchema::KEY_CURRENT_STREAK => ($state[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0) + 1,
+                StudentStateSchema::KEY_WRONG_STREAK   => 0,
             ],
         ];
     }
@@ -133,22 +120,22 @@ class GamificationService implements GamificationServiceInterface
     {
         return [
             'updates' => [
-                'current_streak' => 0,
-                'wrong_streak'   => ($state['wrong_streak'] ?? 0) + 1,
+                StudentStateSchema::KEY_CURRENT_STREAK => 0,
+                StudentStateSchema::KEY_WRONG_STREAK   => ($state[StudentStateSchema::KEY_WRONG_STREAK] ?? 0) + 1,
             ],
         ];
     }
 
     public function checkStreakBonus(array $state): ?array
     {
-        $currentStreak = $state['current_streak'] ?? 0;
+        $currentStreak = $state[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0;
 
-        if ($currentStreak > 0 && $currentStreak % 5 === 0) {
+        if ($currentStreak > 0 && $currentStreak % StudentStateSchema::STREAK_HINT_THRESHOLD === 0) {
             return [
                 'bonus_granted' => true,
                 'message'       => "Streak {$currentStreak}! +1 Hint bonus",
                 'updates'       => [
-                    'hints_available' => ($state['hints_available'] ?? 0) + 1,
+                    StudentStateSchema::KEY_HINTS_AVAILABLE => ($state[StudentStateSchema::KEY_HINTS_AVAILABLE] ?? 0) + 1,
                 ],
             ];
         }
@@ -158,14 +145,10 @@ class GamificationService implements GamificationServiceInterface
 
     public function calculateStreakBonusXP(int $currentStreak): int
     {
-        if ($currentStreak >= 10) {
-            return 20;
-        }
-        if ($currentStreak >= 5) {
-            return 10;
-        }
-        if ($currentStreak >= 3) {
-            return 5;
+        foreach (StudentStateSchema::STREAK_XP_BONUSES as $threshold => $bonus) {
+            if ($currentStreak >= $threshold) {
+                return $bonus;
+            }
         }
 
         return 0;
@@ -175,9 +158,9 @@ class GamificationService implements GamificationServiceInterface
 
     public function determineLevel(int $xp): string
     {
-        $currentLevel = 'Pemula';
+        $currentLevel = StudentStateSchema::LEVEL_PEMULA;
 
-        foreach (self::LEVELS as $level) {
+        foreach (StudentStateSchema::LEVEL_THRESHOLDS as $level) {
             if ($xp >= $level['min']) {
                 $currentLevel = $level['name'];
             }
@@ -188,7 +171,7 @@ class GamificationService implements GamificationServiceInterface
 
     public function getLevelProgress(int $xp): array
     {
-        $levels       = self::LEVELS;
+        $levels       = StudentStateSchema::LEVEL_THRESHOLDS;
         $currentLevel = $this->determineLevel($xp);
         $currentIndex = 0;
 
@@ -218,7 +201,7 @@ class GamificationService implements GamificationServiceInterface
         return [
             'current_level' => $currentLevel,
             'next_level'    => $nextLevel['name'],
-            'percentage'    => round(($progressXp / $totalXpNeeded) * 100),
+            'percentage'    => (int) round(($progressXp / $totalXpNeeded) * 100),
             'xp_needed'     => $nextMin - $xp,
         ];
     }

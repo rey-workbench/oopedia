@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Analytics;
 
 use App\Contracts\Repositories\MaterialRepositoryInterface;
@@ -12,12 +14,12 @@ use App\Models\StudentState;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
 
-class DashboardService implements DashboardServiceInterface
+final class DashboardService implements DashboardServiceInterface
 {
     public function __construct(
-        protected MaterialRepositoryInterface $materialRepo,
-        protected ProgressRepositoryInterface $progressRepo,
-        protected QuestionRepositoryInterface $questionRepo,
+        public readonly MaterialRepositoryInterface $materialRepo,
+        public readonly ProgressRepositoryInterface $progressRepo,
+        public readonly QuestionRepositoryInterface $questionRepo,
     ) {
     }
 
@@ -30,8 +32,10 @@ class DashboardService implements DashboardServiceInterface
     /** @return array<string, mixed> */
     public function getDashboardIndexData(string $userId, bool $isGuest): array
     {
+        $cacheKey = "dashboard_index_{$userId}_" . ($isGuest ? '1' : '0');
+
         return Cache::remember(
-            "dashboard_index_{$userId}_{$isGuest}",
+            $cacheKey,
             300,
             function () use ($userId, $isGuest) {
                 $allMaterials   = $this->materialRepo->getAllWithQuestions();
@@ -142,8 +146,10 @@ class DashboardService implements DashboardServiceInterface
     /** @return array<int, array<string, mixed>> */
     public function getInProgressData(string $userId, bool $isGuest): array
     {
+        $cacheKey = "dashboard_inprogress_{$userId}_" . ($isGuest ? '1' : '0');
+
         return Cache::remember(
-            "dashboard_inprogress_{$userId}_{$isGuest}",
+            $cacheKey,
             300,
             function () use ($userId, $isGuest) {
                 $progressStats    = $this->progressRepo->getDetailedUserProgress($userId);
@@ -172,8 +178,10 @@ class DashboardService implements DashboardServiceInterface
     /** @return array<int, array<string, mixed>> */
     public function getCompletedData(string $userId, bool $isGuest): array
     {
+        $cacheKey = "dashboard_completed_{$userId}_" . ($isGuest ? '1' : '0');
+
         return Cache::remember(
-            "dashboard_completed_{$userId}_{$isGuest}",
+            $cacheKey,
             300,
             function () use ($userId, $isGuest) {
                 $progressStats    = $this->progressRepo->getDetailedUserProgress($userId);

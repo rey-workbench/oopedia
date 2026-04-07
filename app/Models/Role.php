@@ -11,10 +11,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $id
  * @property string $role_name
  */
-class Role extends Model
+final class Role extends Model
 {
     use HasFactory;
     use HasUlids;
+
+    public const string ROLE_SUPERADMIN = 'superadmin';
+
+    public const string ROLE_DOSEN      = 'dosen';
+
+    public const string ROLE_MAHASISWA  = 'mahasiswa';
+
+    public const string ROLE_GUEST      = 'guest';
 
     public $incrementing = false;
 

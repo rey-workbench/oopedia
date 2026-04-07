@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Lms;
 
 use App\Contracts\Repositories\MaterialRepositoryInterface;
@@ -14,12 +16,12 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
-class MaterialService implements MaterialServiceInterface
+final class MaterialService implements MaterialServiceInterface
 {
     public function __construct(
-        protected MaterialRepositoryInterface $materialRepo,
-        protected MediaRepositoryInterface $mediaRepo,
-        protected ?ProgressRepositoryInterface $progressRepo = null,
+        public readonly MaterialRepositoryInterface $materialRepo,
+        public readonly MediaRepositoryInterface $mediaRepo,
+        public readonly ?ProgressRepositoryInterface $progressRepo = null,
     ) {
     }
 

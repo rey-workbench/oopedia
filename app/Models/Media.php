@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $media_url
  * @property-read string $full_url
  */
-class Media extends Model
+final class Media extends Model
 {
     use HasFactory;
     use HasUlids;

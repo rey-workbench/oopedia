@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Lms;
 
 use App\Contracts\Repositories\AnswerRepositoryInterface;
@@ -11,7 +13,7 @@ use App\Contracts\Services\QuestionAnswerServiceInterface;
 use App\Models\Question;
 use Illuminate\Support\Facades\Log;
 
-class QuestionAnswerService implements QuestionAnswerServiceInterface
+final class QuestionAnswerService implements QuestionAnswerServiceInterface
 {
     public function __construct(
         protected QuestionRepositoryInterface $questionRepo,
@@ -19,8 +21,7 @@ class QuestionAnswerService implements QuestionAnswerServiceInterface
         protected ProgressRepositoryInterface $progressRepo,
         protected GamificationServiceInterface $gamificationService,
         protected GuestProgressServiceInterface $guestProgressService,
-    ) {
-    }
+    ) {}
 
     /** @return array<string, mixed> */
     public function checkAnswer(array $data, string $userId, bool $isGuest): array

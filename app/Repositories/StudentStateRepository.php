@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Contracts\Repositories\StudentStateRepositoryInterface;
@@ -7,7 +9,7 @@ use App\Models\StudentState;
 use App\Schemas\StudentStateSchema;
 use Illuminate\Database\Eloquent\Collection;
 
-class StudentStateRepository implements StudentStateRepositoryInterface
+final class StudentStateRepository implements StudentStateRepositoryInterface
 {
     public function upsert(string $userId, string $materialId, array $attributes): StudentState
     {

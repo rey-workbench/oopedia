@@ -24,10 +24,10 @@ interface ProgressRepositoryInterface
     public function getDetailedUserProgress(?string $userId): Collection;
 
     /** @return Collection<int, mixed> */
-    public function getCorrectAnswersWithAttempts(string $roleId): Collection;
+    public function getCorrectAnswersWithAttempts(string $roleName): Collection;
 
     /** @return Collection<int, mixed> */
-    public function getLeaderboardStats(string $roleId): Collection;
+    public function getLeaderboardStats(string $roleName): Collection;
 
     public function getAttemptCount(string $userId, string $materialId, string $questionId): int;
 

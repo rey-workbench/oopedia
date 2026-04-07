@@ -9,11 +9,11 @@ use App\Exceptions\Domain\MaterialNotFoundException;
 use App\Models\SubMaterial;
 use Illuminate\Database\Eloquent\Collection;
 
-class SubMaterialService implements SubMaterialServiceInterface
+final class SubMaterialService implements SubMaterialServiceInterface
 {
     public function __construct(
-        protected SubMaterialRepositoryInterface $subMaterialRepo,
-        protected MaterialRepositoryInterface $materialRepo,
+        public readonly SubMaterialRepositoryInterface $subMaterialRepo,
+        public readonly MaterialRepositoryInterface $materialRepo,
     ) {
     }
 

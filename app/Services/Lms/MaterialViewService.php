@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Lms;
 
 use App\Contracts\Repositories\MaterialRepositoryInterface;
@@ -12,14 +14,13 @@ use App\Helpers\ProgressHelper;
 use App\Models\Material;
 use Illuminate\Database\Eloquent\Collection;
 
-class MaterialViewService implements MaterialViewServiceInterface
+final class MaterialViewService implements MaterialViewServiceInterface
 {
     public function __construct(
         protected MaterialRepositoryInterface $materialRepo,
         protected ProgressRepositoryInterface $progressRepo,
         protected SubMaterialRepositoryInterface $subMaterialRepo,
-    ) {
-    }
+    ) {}
 
     /** @return Collection<int, Material> */
     public function getMaterialsList(?string $userId, bool $isGuest): Collection
@@ -92,7 +93,7 @@ class MaterialViewService implements MaterialViewServiceInterface
 
         if ($isGuest) {
             $totalMaterials  = $allMaterials->count();
-            $materialsToShow = ceil($totalMaterials / 2);
+            $materialsToShow = (int) ceil($totalMaterials / 2);
             $materials       = $allMaterials->take($materialsToShow);
         } else {
             $materials = $allMaterials;

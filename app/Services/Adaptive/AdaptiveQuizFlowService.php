@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Adaptive;
 
 use App\Contracts\Repositories\ProgressRepositoryInterface;
@@ -17,19 +19,18 @@ use App\Models\StudentState;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
-class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
+final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
 {
     public function __construct(
-        protected QuestionAnswerServiceInterface $questionAnswerService,
-        protected PerformanceServiceInterface $performanceService,
-        protected GamificationServiceInterface $gamificationService,
-        protected ProgressRepositoryInterface $progressRepo,
-        protected FactGatheringServiceInterface $factGathering,
-        protected AdaptiveEngineServiceInterface $adaptiveEngine,
-        protected NextActionResolverServiceInterface $nextActionResolver,
-        protected GuestProgressServiceInterface $guestProgressService,
-    ) {
-    }
+        public readonly QuestionAnswerServiceInterface $questionAnswerService,
+        public readonly PerformanceServiceInterface $performanceService,
+        public readonly GamificationServiceInterface $gamificationService,
+        public readonly ProgressRepositoryInterface $progressRepo,
+        public readonly FactGatheringServiceInterface $factGathering,
+        public readonly AdaptiveEngineServiceInterface $adaptiveEngine,
+        public readonly NextActionResolverServiceInterface $nextActionResolver,
+        public readonly GuestProgressServiceInterface $guestProgressService,
+    ) {}
 
     /** @return array<string, mixed> */
     public function processAdaptiveAttempt(Material $material, Question $question, string $userId, array $data): array
@@ -47,7 +48,7 @@ class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             // 1.5 Update Learning Style based on Real-time Interaction
             $this->performanceService->updateLearningStyleFromInteraction(
                 $userId,
-                $question->type ?? 'teori',
+                $question->type ?? Question::TYPE_TEORI,
                 $timeSpent,
             );
         } else {
@@ -62,7 +63,7 @@ class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             ? $this->gamificationService->calculateCorrectAnswerReward(
                 $studentState->toArray(),
                 $usedHint,
-                $question->difficulty ?? 'beginner',
+                $question->difficulty ?? Question::DIFFICULTY_BEGINNER,
                 $timeSpent,
             )
             : $this->gamificationService->processWrongAnswer($studentState->toArray());
@@ -86,11 +87,11 @@ class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         $answerId     = null;
         $userResponse = null;
 
-        if ($question->question_type === 'multiple_choice' || $question->question_type === 'radio_button') {
+        if ($question->question_type === Question::QUESTION_TYPE_RADIO_BUTTON) {
             $answerId = $data['answer'] ?? null;
-        } elseif ($question->question_type === 'fill_in_the_blank') {
+        } elseif ($question->question_type === Question::QUESTION_TYPE_FILL_IN_THE_BLANK) {
             $userResponse = $data['fill_in_the_blank_answer'] ?? null;
-        } elseif ($question->question_type === 'drag_and_drop') {
+        } elseif ($question->question_type === Question::QUESTION_TYPE_DRAG_AND_DROP) {
             $userResponse = $data['drag_and_drop_answers'] ?? null;
         }
 
@@ -105,7 +106,7 @@ class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
                 'is_answered'   => true,
                 'attributes'    => [
                     'score'      => $score,
-                    'difficulty' => $question->difficulty ?? 'beginner',
+                    'difficulty' => $question->difficulty ?? Question::DIFFICULTY_BEGINNER,
                     'used_hint'  => $usedHint,
                     'time_spent' => $timeSpent,
                 ],
@@ -134,7 +135,7 @@ class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             usedHint: $usedHint,
             score: $score,
             timeSpent: $timeSpent,
-            difficulty: $question->difficulty ?? 'beginner',
+            difficulty: $question->difficulty ?? Question::DIFFICULTY_BEGINNER,
             questionId: $question->id,
             materialId: $material->id,
             moduleId: $material->module_id ?? null,
@@ -146,7 +147,7 @@ class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             'used_hint'   => $usedHint,
             'score'       => $score,
             'time_spent'  => $timeSpent,
-            'difficulty'  => $question->difficulty ?? 'beginner',
+            'difficulty'  => $question->difficulty ?? Question::DIFFICULTY_BEGINNER,
             'question_id' => $question->id,
             'material_id' => $material->id,
             'module_id'   => $material->module_id ?? null,

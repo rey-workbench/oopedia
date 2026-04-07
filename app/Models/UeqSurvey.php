@@ -41,7 +41,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $comments
  * @property string|null $suggestions
  */
-class UeqSurvey extends Model
+final class UeqSurvey extends Model
 {
     use HasFactory;
     use HasUlids;

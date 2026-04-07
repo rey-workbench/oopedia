@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\User;
 
 use App\Contracts\Repositories\ProgressRepositoryInterface;
@@ -7,8 +9,10 @@ use App\Contracts\Services\GamificationServiceInterface;
 use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
 use App\Models\Material;
+use App\Models\Question;
 use App\Models\StudentState;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
+use App\Schemas\StudentStateSchema;
 
 /**
  * PerformanceService
@@ -16,45 +20,12 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
  * Handles PERSONALIZATION ONLY (individual user characteristics)
  * Refactored to use StudentState and QuizAttempt
  */
-class PerformanceService implements PerformanceServiceInterface
+final class PerformanceService implements PerformanceServiceInterface
 {
-    // ==================== SCORE CALCULATION CONSTANTS ====================
-    /** Base score for a correct answer */
-    private const SCORE_BASE = 80;
-
-    /** Bonus points for answering quickly (G05) */
-    private const SCORE_TIME_BONUS = 10;
-
-    /** Penalty for using a hint */
-    private const SCORE_HINT_PENALTY = 20;
-
-    /** Extra points per difficulty level */
-    private const SCORE_DIFFICULTY_BONUS = ['hard' => 10, 'medium' => 5];
-
-    // ==================== BEHAVIOURAL DETECTION CONSTANTS ====================
-    /** Average time (minutes) below which a student is considered a fast learner */
-    private const FAST_LEARNER_MAX_AVG_TIME = 15;
-
-    /** Minimum accuracy (%) required alongside fast time to confirm fast-learner */
-    private const FAST_LEARNER_MIN_ACCURACY = 90;
-
-    /** Total session time (minutes) threshold for fatigue detection */
-    private const FATIGUE_MIN_TIME = 30;
-
-    /** Wrong-answer streak threshold for fatigue detection */
-    private const FATIGUE_MIN_WRONG_STREAK = 2;
-
-    /** Accuracy (%) below which a fatigued student is flagged */
-    private const FATIGUE_MAX_ACCURACY = 70;
-
-    // ==================== LEARNING STYLE CONSTANTS ====================
-    /** If |visual − textual| / total < this ratio, the style is 'mixed' */
-    private const STYLE_MIXED_THRESHOLD = 0.20;
-
     public function __construct(
-        protected ProgressRepositoryInterface $progressRepo,
-        protected GamificationServiceInterface $gamificationService,
-        protected GuestProgressServiceInterface $guestProgressService,
+        public readonly ProgressRepositoryInterface $progressRepo,
+        public readonly GamificationServiceInterface $gamificationService,
+        public readonly GuestProgressServiceInterface $guestProgressService,
     ) {
     }
 
@@ -78,10 +49,10 @@ class PerformanceService implements PerformanceServiceInterface
 
     public function setUserInitialLevel(string $userId, string $materialId, string $level): void
     {
-        $state                         = $this->getStudentState($userId);
-        $gamification                  = $state->gamification_data ?? [];
-        $gamification['current_level'] = $level;
-        $state->gamification_data      = $gamification;
+        $state                                               = $this->getStudentState($userId);
+        $gamification                                        = $state->gamification_data ?? [];
+        $gamification[StudentStateSchema::KEY_CURRENT_LEVEL] = $level;
+        $state->gamification_data                            = $gamification;
 
         if ($userId === 'guest') {
             $this->guestProgressService->saveStudentState($state);
@@ -99,10 +70,10 @@ class PerformanceService implements PerformanceServiceInterface
 
     public function setUserLearningStyle(string $userId, string $materialId, string $style): void
     {
-        $state                     = $this->getStudentState($userId);
-        $profile                   = $state->learning_profile ?? [];
-        $profile['learning_style'] = $style;
-        $state->learning_profile   = $profile;
+        $state                                           = $this->getStudentState($userId);
+        $profile                                         = $state->learning_profile ?? [];
+        $profile[StudentStateSchema::KEY_LEARNING_STYLE] = $style;
+        $state->learning_profile                         = $profile;
 
         if ($userId === 'guest') {
             $this->guestProgressService->saveStudentState($state);
@@ -121,32 +92,35 @@ class PerformanceService implements PerformanceServiceInterface
         $profile = $state->learning_profile ?? [];
 
         // Initialize time distribution if not exists
-        if (! isset($profile['time_distribution'])) {
-            $profile['time_distribution'] = ['visual' => 0, 'textual' => 0];
+        if (! isset($profile[StudentStateSchema::KEY_TIME_DISTRIBUTION])) {
+            $profile[StudentStateSchema::KEY_TIME_DISTRIBUTION] = [
+                StudentStateSchema::STYLE_VISUAL  => 0,
+                StudentStateSchema::STYLE_TEXTUAL => 0,
+            ];
         }
 
-        // Teori → Textual; Studi Kasus / Sintaks → Visual
-        $category = ($questionType === 'teori') ? 'textual' : 'visual';
-        $profile['time_distribution'][$category] += $timeSpent;
+        // Teori -> Textual; Studi Kasus / Sintaks -> Visual
+        $category = ($questionType === Question::TYPE_SINTAKS) ? StudentStateSchema::STYLE_VISUAL : StudentStateSchema::STYLE_TEXTUAL;
+        $profile[StudentStateSchema::KEY_TIME_DISTRIBUTION][$category] += $timeSpent;
 
         // Recalculate dominant style (with mixed detection)
-        $visualTime  = $profile['time_distribution']['visual'];
-        $textualTime = $profile['time_distribution']['textual'];
+        $visualTime  = $profile[StudentStateSchema::KEY_TIME_DISTRIBUTION][StudentStateSchema::STYLE_VISUAL]  ?? 0;
+        $textualTime = $profile[StudentStateSchema::KEY_TIME_DISTRIBUTION][StudentStateSchema::STYLE_TEXTUAL] ?? 0;
         $totalTime   = $visualTime + $textualTime;
 
         if ($totalTime == 0) {
-            $newStyle = 'visual';
+            $newStyle = StudentStateSchema::STYLE_VISUAL;
         } else {
             $diff = abs($visualTime - $textualTime) / $totalTime;
-            if ($diff < self::STYLE_MIXED_THRESHOLD) {
-                $newStyle = 'mixed';
+            if ($diff < StudentStateSchema::RATIO_STYLE_MIXED) {
+                $newStyle = StudentStateSchema::STYLE_MIXED;
             } else {
-                $newStyle = $visualTime > $textualTime ? 'visual' : 'textual';
+                $newStyle = $visualTime > $textualTime ? StudentStateSchema::STYLE_VISUAL : StudentStateSchema::STYLE_TEXTUAL;
             }
         }
 
-        $profile['learning_style'] = $newStyle;
-        $state->learning_profile   = $profile;
+        $profile[StudentStateSchema::KEY_LEARNING_STYLE] = $newStyle;
+        $state->learning_profile                         = $profile;
 
         if ($userId === 'guest') {
             $this->guestProgressService->saveStudentState($state);
@@ -247,23 +221,25 @@ class PerformanceService implements PerformanceServiceInterface
 
     public function isFastLearner(string $userId, string $materialId, array $currentState): bool
     {
-        $avgTime  = $this->calculateAverageTimeSpent($userId, $materialId);
-        $accuracy = $this->gamificationService->calculateAccuracy($currentState);
+        $avgTime    = $this->calculateAverageTimeSpent($userId, $materialId);
+        $accuracy   = $this->gamificationService->calculateAccuracy($currentState);
+        $thresholds = StudentStateSchema::BEHAVIOURAL_THRESHOLDS['fast_learner'];
 
-        return $avgTime > 0                            &&
-            $avgTime < self::FAST_LEARNER_MAX_AVG_TIME &&
-            $accuracy >= self::FAST_LEARNER_MIN_ACCURACY;
+        return $avgTime > 0                             &&
+            $avgTime < $thresholds['max_avg_time_mins'] &&
+            $accuracy >= $thresholds['min_accuracy_pct'];
     }
 
     public function isFatigued(string $userId, string $materialId, array $currentState): bool
     {
         $totalTime   = $this->calculateTotalTimeSpent($userId, $materialId);
         $accuracy    = $this->gamificationService->calculateAccuracy($currentState);
-        $wrongStreak = $currentState['wrong_streak'] ?? 0;
+        $wrongStreak = $currentState[StudentStateSchema::KEY_WRONG_STREAK] ?? 0;
+        $thresholds  = StudentStateSchema::BEHAVIOURAL_THRESHOLDS['fatigue'];
 
-        return $totalTime   >= self::FATIGUE_MIN_TIME
-            && $wrongStreak >= self::FATIGUE_MIN_WRONG_STREAK
-            && $accuracy < self::FATIGUE_MAX_ACCURACY;
+        return $totalTime   >= $thresholds['min_time_mins']
+            && $wrongStreak >= $thresholds['min_wrong_streak']
+            && $accuracy < $thresholds['max_accuracy_pct'];
     }
 
     // ==================== CROSS-MATERIAL TRACKING ====================
@@ -273,7 +249,7 @@ class PerformanceService implements PerformanceServiceInterface
     {
         $state = $this->progressRepo->getOrCreateStudentState($userId);
 
-        return $state ? ($state->unlocked_modules ?? []) : [];
+        return $state ? ($state->learning_profile[StudentStateSchema::KEY_UNLOCKED_MODULES] ?? []) : [];
     }
 
     public function markMaterialCompleted(string $userId, string $materialId): void
@@ -288,13 +264,13 @@ class PerformanceService implements PerformanceServiceInterface
         $moduleId = $material?->module_id ?? $materialId;
 
         $state     = $this->getStudentState($userId);
-        $profile   = $state->learning_profile     ?? [];
-        $completed = $profile['unlocked_modules'] ?? [];
+        $profile   = $state->learning_profile                           ?? [];
+        $completed = $profile[StudentStateSchema::KEY_UNLOCKED_MODULES] ?? [];
 
         if (! in_array($moduleId, $completed)) {
-            $completed[]                 = $moduleId;
-            $profile['unlocked_modules'] = $completed;
-            $state->learning_profile     = $profile;
+            $completed[]                                       = $moduleId;
+            $profile[StudentStateSchema::KEY_UNLOCKED_MODULES] = $completed;
+            $state->learning_profile                           = $profile;
             $state->save();
         }
     }
@@ -324,26 +300,27 @@ class PerformanceService implements PerformanceServiceInterface
         bool $isCorrect,
         bool $usedHint,
         int $timeSpent,
-        ?string $difficulty = 'beginner',
+        ?string $difficulty = Question::DIFFICULTY_BEGINNER,
     ): int {
         if (! $isCorrect) {
             return 0;
         }
 
-        $score = self::SCORE_BASE;
+        $rewards = StudentStateSchema::SCORE_REWARDS;
+        $score   = $rewards['base'];
 
         // Difficulty bonus
-        $score += self::SCORE_DIFFICULTY_BONUS[$difficulty] ?? 0;
+        $score += $rewards['difficulty_bonus'][$difficulty] ?? 0;
 
         // Time bonus (G05: answered in < 50% of allocated time)
         $allocatedTime = AdaptiveConstants::ALLOCATED_TIME[$difficulty] ?? 60;
         if ($timeSpent > 0 && $timeSpent < ($allocatedTime / 2)) {
-            $score += self::SCORE_TIME_BONUS;
+            $score += $rewards['time_bonus'];
         }
 
         // Hint penalty
         if ($usedHint) {
-            $score -= self::SCORE_HINT_PENALTY;
+            $score -= $rewards['hint_penalty'];
         }
 
         return max(0, min(100, $score));

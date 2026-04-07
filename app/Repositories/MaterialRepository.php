@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Contracts\Repositories\MaterialRepositoryInterface;
@@ -7,7 +9,7 @@ use App\Models\Material;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
-class MaterialRepository implements MaterialRepositoryInterface
+final class MaterialRepository implements MaterialRepositoryInterface
 {
     /** @return Collection<int, Material> */
     public function all(): Collection

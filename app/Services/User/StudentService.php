@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\User;
 
 use App\Contracts\Repositories\MaterialRepositoryInterface;
@@ -18,14 +20,14 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class StudentService implements StudentServiceInterface
+final class StudentService implements StudentServiceInterface
 {
     use ImportsCsvUsers;
 
     public function __construct(
-        protected UserRepositoryInterface $userRepo,
-        protected MaterialRepositoryInterface $materialRepo,
-        protected ProgressRepositoryInterface $progressRepo,
+        public readonly UserRepositoryInterface $userRepo,
+        public readonly MaterialRepositoryInterface $materialRepo,
+        public readonly ProgressRepositoryInterface $progressRepo,
     ) {
     }
 
@@ -66,7 +68,7 @@ class StudentService implements StudentServiceInterface
     {
         // Hash password
         $data['password']    = Hash::make($data['password']);
-        $data['role_id']     = Role::where('role_name', 'mahasiswa')->value('id'); // Student role
+        $data['role_id']     = Role::where('role_name', Role::ROLE_MAHASISWA)->value('id'); // Student role
         $data['is_approved'] = true; // Admin-created students are auto-approved
 
         return $this->userRepo->create($data);
@@ -98,7 +100,7 @@ class StudentService implements StudentServiceInterface
 
     public function getPendingStudents(?int $perPage = null): LengthAwarePaginator
     {
-        return $this->userRepo->getUsersByRoleAndApproval('mahasiswa', false, null, $perPage ?? 10);
+        return $this->userRepo->getUsersByRoleAndApproval(Role::ROLE_MAHASISWA, false, null, $perPage ?? 10);
     }
 
     public function approveStudent(string $studentId): void

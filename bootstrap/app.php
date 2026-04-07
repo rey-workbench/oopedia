@@ -52,7 +52,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (HttpException $e, Request $request) {
             if ($request->inertia()) {
                 return Inertia::render('Error/Index', [
-                    'status' => $e->getStatusCode(),
+                    'status'  => $e->getStatusCode(),
                     'message' => $e->getMessage(),
                 ])->toResponse($request)->setStatusCode($e->getStatusCode());
             }
@@ -63,7 +63,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($request->expectsJson() || $request->is('api/*')) {
                 return response()->json([
                     'message' => 'The given data was invalid.',
-                    'errors' => $e->errors(),
+                    'errors'  => $e->errors(),
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
         });

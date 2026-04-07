@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Contracts\Repositories\UeqSurveyRepositoryInterface;
@@ -7,7 +9,7 @@ use App\Models\UeqSurvey;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
-class UeqSurveyRepository implements UeqSurveyRepositoryInterface
+final class UeqSurveyRepository implements UeqSurveyRepositoryInterface
 {
     /** @return Collection<string, UeqSurvey> */
     public function all(): Collection

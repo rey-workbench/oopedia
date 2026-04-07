@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Adaptive;
 
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Services\FactGatheringServiceInterface;
 use App\Models\Material;
+use App\Models\Question;
 use App\Models\StudentState;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
+use App\Schemas\StudentStateSchema;
 
 /**
  * FactGatheringService
@@ -15,30 +19,13 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
  * Responsible for gathering facts (G01-G25) from student state and context.
  * Facts are used by adaptive rules for decision making.
  */
-class FactGatheringService implements FactGatheringServiceInterface
+final class FactGatheringService implements FactGatheringServiceInterface
 {
-    // ==================== SCORE THRESHOLDS (G01-G04) ====================
-    private const SCORE_CRITICAL_MAX  = 50;   // < 50  ? G01
-
-    private const SCORE_REMEDIAL_MAX  = 75;   // 50-74 ? G02
-
-    private const SCORE_STANDARD_MAX  = 90;   // 75-89 ? G03
-    // = 90  ? G04
-
-    // ==================== TIME THRESHOLDS (G05-G06) ====================
-    // Canonical values live in AdaptiveConstants::ALLOCATED_TIME and AdaptiveConstants::TIME_FAST_THRESHOLD
-
-    // ==================== OTHER THRESHOLDS ====================
-    /** Consecutive failures on same question before G22 (persistent fail) */
-    private const PERSISTENT_FAIL_THRESHOLD = 2;
-
-    /** Minimum % of questions answered to be considered satisfactory (G26) */
-    private const SATISFACTORY_PROGRESS_THRESHOLD = 50;
-
     public function __construct(
-        protected ProgressRepositoryInterface $progressRepo,
-        protected QuestionRepositoryInterface $questionRepo,
-    ) {}
+        public readonly ProgressRepositoryInterface $progressRepo,
+        public readonly QuestionRepositoryInterface $questionRepo,
+    ) {
+    }
 
     public function gatherFacts(
         StudentState $studentState,
@@ -71,7 +58,7 @@ class FactGatheringService implements FactGatheringServiceInterface
         }
 
         // G13-G25: Module Facts
-        if ($moduleId && $difficulty !== 'final') {
+        if ($moduleId && $difficulty !== Question::DIFFICULTY_FINAL) {
             $facts[] = $this->getModuleFact($moduleId);
         }
 
@@ -79,7 +66,7 @@ class FactGatheringService implements FactGatheringServiceInterface
         $facts[] = $this->getDifficultyFact($difficulty);
 
         // G18: Final Project (check difficulty='final')
-        if ($difficulty === 'final') {
+        if ($difficulty === Question::DIFFICULTY_FINAL) {
             $facts[] = AdaptiveConstants::FACT_IS_FINAL_PROJECT;
         }
 
@@ -104,16 +91,17 @@ class FactGatheringService implements FactGatheringServiceInterface
      */
     protected function getScoreFacts(int $score, bool $isCorrect): array
     {
-        // Normalize score: correct answers get at least 70, wrong get max 69
-        $finalScore = $isCorrect ? max($score, 70) : min($score, 69);
+        $finalScore = $isCorrect
+            ? max($score, StudentStateSchema::SCORE_MIN_CORRECT)
+            : min($score, StudentStateSchema::SCORE_MAX_WRONG);
 
-        if ($finalScore < self::SCORE_CRITICAL_MAX) {
+        if ($finalScore < StudentStateSchema::FACT_SCORE_CRITICAL_MAX) {
             return [AdaptiveConstants::FACT_SCORE_CRITICAL];
         }
-        if ($finalScore < self::SCORE_REMEDIAL_MAX) {
+        if ($finalScore < StudentStateSchema::FACT_SCORE_REMEDIAL_MAX) {
             return [AdaptiveConstants::FACT_SCORE_REMEDIAL];
         }
-        if ($finalScore < self::SCORE_STANDARD_MAX) {
+        if ($finalScore < StudentStateSchema::FACT_SCORE_STANDARD_MAX) {
             return [AdaptiveConstants::FACT_SCORE_STANDARD];
         }
 
@@ -123,7 +111,7 @@ class FactGatheringService implements FactGatheringServiceInterface
     /**
      * Get time-based facts (G05).
      */
-    protected function getTimeFacts(int $timeSpent, string $difficulty = 'beginner'): array
+    protected function getTimeFacts(int $timeSpent, string $difficulty = Question::DIFFICULTY_BEGINNER): array
     {
         $allocatedTime = AdaptiveConstants::ALLOCATED_TIME[$difficulty] ?? 60;
         $percentage    = ($timeSpent / $allocatedTime) * 100;
@@ -141,7 +129,7 @@ class FactGatheringService implements FactGatheringServiceInterface
     {
         $style = $state->learning_style;
 
-        if ($style === 'mixed') {
+        if ($style === StudentStateSchema::STYLE_MIXED) {
             return [
                 AdaptiveConstants::FACT_STYLE_VISUAL,
                 AdaptiveConstants::FACT_STYLE_TEXTUAL,
@@ -149,7 +137,7 @@ class FactGatheringService implements FactGatheringServiceInterface
             ];
         }
 
-        return $style === 'visual'
+        return $style === StudentStateSchema::STYLE_VISUAL
             ? [AdaptiveConstants::FACT_STYLE_VISUAL]
             : [AdaptiveConstants::FACT_STYLE_TEXTUAL];
     }
@@ -168,7 +156,7 @@ class FactGatheringService implements FactGatheringServiceInterface
         $questionType = $question?->type ?? 'teori';
 
         // Syntax questions ? G09, Theory/Logic questions ? G10
-        return $questionType === 'sintaks'
+        return $questionType === Question::TYPE_SINTAKS
             ? [AdaptiveConstants::FACT_ERROR_SYNTAX]
             : [AdaptiveConstants::FACT_ERROR_LOGIC];
     }
@@ -187,10 +175,10 @@ class FactGatheringService implements FactGatheringServiceInterface
     protected function getDifficultyFact(string $difficulty): string
     {
         $difficultyMap = [
-            'beginner' => AdaptiveConstants::FACT_DIFF_BEGINNER,
-            'medium'   => AdaptiveConstants::FACT_DIFF_MEDIUM,
-            'hard'     => AdaptiveConstants::FACT_DIFF_HARD,
-            'final'    => AdaptiveConstants::FACT_DIFF_HARD, // Mapping final to hard fact
+            Question::DIFFICULTY_BEGINNER => AdaptiveConstants::FACT_DIFF_BEGINNER,
+            Question::DIFFICULTY_MEDIUM   => AdaptiveConstants::FACT_DIFF_MEDIUM,
+            Question::DIFFICULTY_HARD     => AdaptiveConstants::FACT_DIFF_HARD,
+            Question::DIFFICULTY_FINAL    => AdaptiveConstants::FACT_DIFF_HARD, // Mapping final to hard fact
         ];
 
         return $difficultyMap[$difficulty] ?? AdaptiveConstants::FACT_DIFF_BEGINNER;
@@ -234,7 +222,7 @@ class FactGatheringService implements FactGatheringServiceInterface
     {
         $consecutiveFails = $this->progressRepo->getConsecutiveFailures($userId, $questionId);
 
-        return $consecutiveFails >= self::PERSISTENT_FAIL_THRESHOLD;
+        return $consecutiveFails >= StudentStateSchema::THRESHOLD_PERSISTENT_FAIL;
     }
 
     /**
@@ -259,7 +247,7 @@ class FactGatheringService implements FactGatheringServiceInterface
 
             $percentage = ($answeredCount / $totalQuestions) * 100;
 
-            return $percentage >= self::SATISFACTORY_PROGRESS_THRESHOLD;
+            return $percentage >= StudentStateSchema::THRESHOLD_SATISFACTORY_PROGRESS;
         }
 
         // For specific difficulty: use weighted progress calculation
@@ -268,57 +256,55 @@ class FactGatheringService implements FactGatheringServiceInterface
 
         // Count answered questions by difficulty
         $beginnerAnswered = $allQuestions
-            ->where('difficulty', 'beginner')
+            ->where('difficulty', Question::DIFFICULTY_BEGINNER)
             ->filter(fn ($q) => in_array($q->id, $answeredIdsArray))
             ->count();
 
         $mediumAnswered = $allQuestions
-            ->where('difficulty', 'medium')
+            ->where('difficulty', Question::DIFFICULTY_MEDIUM)
             ->filter(fn ($q) => in_array($q->id, $answeredIdsArray))
             ->count();
 
         $hardAnswered = $allQuestions
-            ->where('difficulty', 'hard')
+            ->where('difficulty', Question::DIFFICULTY_HARD)
             ->filter(fn ($q) => in_array($q->id, $answeredIdsArray))
             ->count();
 
         // Total questions by difficulty
-        $beginnerTotal = $allQuestions->where('difficulty', 'beginner')->count();
-        $mediumTotal   = $allQuestions->where('difficulty', 'medium')->count();
-        $hardTotal     = $allQuestions->where('difficulty', 'hard')->count();
+        $beginnerTotal = $allQuestions->where('difficulty', Question::DIFFICULTY_BEGINNER)->count();
+        $mediumTotal   = $allQuestions->where('difficulty', Question::DIFFICULTY_MEDIUM)->count();
+        $hardTotal     = $allQuestions->where('difficulty', Question::DIFFICULTY_HARD)->count();
 
         if ($beginnerTotal + $mediumTotal + $hardTotal === 0) {
             return true;
         }
 
-        // Weighted progress calculation:
-        // - Beginner: 1x weight
-        // - Medium: 1.5x weight (harder, more valuable)
-        // - Hard: 2x weight (hardest, most valuable)
-        $weightedAnswered = ($beginnerAnswered * 1.0)    + ($mediumAnswered * 1.5) + ($hardAnswered * 2.0);
-        $weightedTotal    = ($beginnerTotal * 1.0)       + ($mediumTotal * 1.5) + ($hardTotal * 2.0);
+        // Weighted progress calculation
+        $weightedAnswered = ($beginnerAnswered * StudentStateSchema::WEIGHT_PROGRESS_BEGINNER)
+            + ($mediumAnswered * StudentStateSchema::WEIGHT_PROGRESS_MEDIUM)
+            + ($hardAnswered * StudentStateSchema::WEIGHT_PROGRESS_HARD);
+
+        $weightedTotal = ($beginnerTotal * StudentStateSchema::WEIGHT_PROGRESS_BEGINNER)
+            + ($mediumTotal * StudentStateSchema::WEIGHT_PROGRESS_MEDIUM)
+            + ($hardTotal * StudentStateSchema::WEIGHT_PROGRESS_HARD);
 
         $weightedPercentage = ($weightedAnswered / $weightedTotal) * 100;
 
-        // Difficulty progression bonus:
-        // If student reached hard difficulty and answered some hard questions,
-        // give additional credit for progression
+        // Difficulty progression bonus
         $progressionBonus = 0;
-        if ($difficulty === 'hard' && $hardAnswered > 0) {
+        if ($difficulty === Question::DIFFICULTY_HARD && $hardAnswered > 0) {
             // Student has proven ability at hardest level
-            // Base bonus: 10% for reaching hard difficulty
-            // Additional: 5% per hard question answered (up to max 30%)
-            $progressionBonus = 10 + min(30, $hardAnswered * 5);
-        } elseif ($difficulty === 'medium' && $mediumAnswered > 0) {
+            $progressionBonus = StudentStateSchema::BONUS_REACHING_HARD_BASE
+                + min(StudentStateSchema::BONUS_MAX_HARD_PROGRESSION, $hardAnswered * StudentStateSchema::BONUS_HARD_QUESTION_ANSWERED);
+        } elseif ($difficulty === Question::DIFFICULTY_MEDIUM && $mediumAnswered > 0) {
             // Student reached medium level
-            // Give 10% bonus if they answered at least 3 medium questions
-            if ($mediumAnswered >= 3) {
-                $progressionBonus = 10;
+            if ($mediumAnswered >= StudentStateSchema::THRESHOLD_MEDIUM_REACHED_COUNT) {
+                $progressionBonus = StudentStateSchema::BONUS_REACHING_MEDIUM_STREAK;
             }
         }
 
         $finalPercentage = min(100, $weightedPercentage + $progressionBonus);
 
-        return $finalPercentage >= self::SATISFACTORY_PROGRESS_THRESHOLD;
+        return $finalPercentage >= StudentStateSchema::THRESHOLD_SATISFACTORY_PROGRESS;
     }
 }

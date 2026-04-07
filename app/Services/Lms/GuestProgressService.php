@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Lms;
 
 use App\Contracts\Services\GuestProgressServiceInterface;
@@ -7,23 +9,22 @@ use App\Models\StudentState;
 use App\Schemas\StudentStateSchema;
 use Illuminate\Support\Facades\Cookie;
 
-class GuestProgressService implements GuestProgressServiceInterface
+final class GuestProgressService implements GuestProgressServiceInterface
 {
-    private const COOKIE_NAME = 'guest_progress';
+    public function __construct(
+        private readonly string $cookieName = 'guest_progress',
+        private readonly string $cookieXp = 'guest_xp',
+        private readonly string $cookieStreak = 'guest_streak',
+        private readonly string $cookieAdaptive = 'guest_adaptive',
+        private readonly string $cookiePerformance = 'guest_performance',
+        private readonly int $cookieLifetime = 60 * 24 * 30,
+    ) {
+    }
 
-    private const COOKIE_XP = 'guest_xp';
-
-    private const COOKIE_STREAK = 'guest_streak';
-
-    private const COOKIE_ADAPTIVE = 'guest_adaptive';
-
-    private const COOKIE_PERFORMANCE = 'guest_performance';
-
-    private const COOKIE_LIFETIME = 60 * 24 * 30;
-
+    /** @return array<string, mixed> */
     public function getProgress(): array
     {
-        $cookie = request()->cookie(self::COOKIE_NAME);
+        $cookie = request()->cookie($this->cookieName);
 
         if (! $cookie) {
             return [];
@@ -34,6 +35,7 @@ class GuestProgressService implements GuestProgressServiceInterface
         return is_array($decoded) ? $decoded : [];
     }
 
+    /** @param array<string, mixed> $data */
     public function saveProgress(array $data, bool $isCorrect, string $questionId): void
     {
         $guestProgress = $this->getProgress();
@@ -46,7 +48,7 @@ class GuestProgressService implements GuestProgressServiceInterface
                 : 1,
         ];
 
-        $this->setCookie(self::COOKIE_NAME, json_encode($guestProgress));
+        $this->setCookie($this->cookieName, json_encode($guestProgress));
 
         if ($isCorrect) {
             $materialKey = $data['material_id'];
@@ -59,7 +61,7 @@ class GuestProgressService implements GuestProgressServiceInterface
                 'answered_at' => now()->toDateTimeString(),
             ];
 
-            $this->setCookie(self::COOKIE_NAME, json_encode($guestProgress));
+            $this->setCookie($this->cookieName, json_encode($guestProgress));
         }
     }
 
@@ -72,20 +74,21 @@ class GuestProgressService implements GuestProgressServiceInterface
             ->except($materialId)
             ->all();
 
-        $this->setCookie(self::COOKIE_NAME, json_encode($filtered));
+        $this->setCookie($this->cookieName, json_encode($filtered));
     }
 
     public function clearAllProgress(): void
     {
-        $this->deleteCookie(self::COOKIE_NAME);
-        $this->deleteCookie(self::COOKIE_XP);
-        $this->deleteCookie(self::COOKIE_STREAK);
+        $this->deleteCookie($this->cookieName);
+        $this->deleteCookie($this->cookieXp);
+        $this->deleteCookie($this->cookieStreak);
     }
 
+    /** @return array<string, int> */
     public function getGamificationState(): array
     {
-        $xp     = request()->cookie(self::COOKIE_XP)     ?? 0;
-        $streak = request()->cookie(self::COOKIE_STREAK) ?? 0;
+        $xp     = request()->cookie($this->cookieXp)     ?? 0;
+        $streak = request()->cookie($this->cookieStreak) ?? 0;
 
         return [
             StudentStateSchema::KEY_GLOBAL_XP      => (int) $xp,
@@ -95,19 +98,19 @@ class GuestProgressService implements GuestProgressServiceInterface
 
     public function saveGamificationState(int $xp, int $streak): void
     {
-        $this->setCookie(self::COOKIE_XP, (string) $xp);
-        $this->setCookie(self::COOKIE_STREAK, (string) $streak);
+        $this->setCookie($this->cookieXp, (string) $xp);
+        $this->setCookie($this->cookieStreak, (string) $streak);
     }
 
     public function getStudentState(): StudentState
     {
-        $xp     = request()->cookie(self::COOKIE_XP)     ?? 0;
-        $streak = request()->cookie(self::COOKIE_STREAK) ?? 0;
+        $xp     = request()->cookie($this->cookieXp)     ?? 0;
+        $streak = request()->cookie($this->cookieStreak) ?? 0;
 
-        $adaptiveData  = request()->cookie(self::COOKIE_ADAPTIVE);
+        $adaptiveData  = request()->cookie($this->cookieAdaptive);
         $adaptiveState = $adaptiveData ? json_decode($adaptiveData, true) : [];
 
-        $perfData           = request()->cookie(self::COOKIE_PERFORMANCE);
+        $perfData           = request()->cookie($this->cookiePerformance);
         $performanceMetrics = $perfData ? json_decode($perfData, true) : [];
 
         // Build a mock state that behaves like a persisted model but won't be saved to DB
@@ -133,11 +136,11 @@ class GuestProgressService implements GuestProgressServiceInterface
         $this->saveGamificationState((int) $xp, (int) $streak);
 
         if ($state->adaptive_state) {
-            $this->setCookie(self::COOKIE_ADAPTIVE, json_encode($state->adaptive_state));
+            $this->setCookie($this->cookieAdaptive, json_encode($state->adaptive_state));
         }
 
         if ($state->performance_metrics) {
-            $this->setCookie(self::COOKIE_PERFORMANCE, json_encode($state->performance_metrics));
+            $this->setCookie($this->cookiePerformance, json_encode($state->performance_metrics));
         }
     }
 
@@ -146,7 +149,7 @@ class GuestProgressService implements GuestProgressServiceInterface
         Cookie::queue(
             $name,
             $value,
-            self::COOKIE_LIFETIME,
+            $this->cookieLifetime,
             '/',
             null,
             false,

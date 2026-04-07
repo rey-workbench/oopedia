@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Contracts\Repositories\RoleRepositoryInterface;
@@ -7,7 +9,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 
-class RoleRepository implements RoleRepositoryInterface
+final class RoleRepository implements RoleRepositoryInterface
 {
     /** @return Collection<string, Role> */
     public function all(): Collection

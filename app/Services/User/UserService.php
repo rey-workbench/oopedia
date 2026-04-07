@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\User;
 
 use App\Contracts\Repositories\UserRepositoryInterface;
@@ -16,12 +18,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
-class UserService implements UserServiceInterface
+final class UserService implements UserServiceInterface
 {
     use ImportsCsvUsers;
 
     public function __construct(
-        protected UserRepositoryInterface $userRepo,
+        public readonly UserRepositoryInterface $userRepo,
     ) {
     }
 
@@ -32,13 +34,13 @@ class UserService implements UserServiceInterface
 
     public function getAdmins(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
-        return $this->userRepo->getStudentsWithRole('dosen', $search, $perPage);
+        return $this->userRepo->getStudentsWithRole(Role::ROLE_DOSEN, $search, $perPage);
     }
 
     public function createAdmin(array $data): User
     {
         $data['password']    = Hash::make($data['password']);
-        $data['role_id']     = Role::where('role_name', 'dosen')->value('id');
+        $data['role_id']     = Role::where('role_name', Role::ROLE_DOSEN)->value('id');
         $data['is_approved'] = true;
 
         return $this->userRepo->create($data);
@@ -82,12 +84,12 @@ class UserService implements UserServiceInterface
 
     public function getPendingAdmins(?int $perPage = null): LengthAwarePaginator
     {
-        return $this->userRepo->getUsersByRoleAndApproval('dosen', false, null, $perPage ?? 10);
+        return $this->userRepo->getUsersByRoleAndApproval(Role::ROLE_DOSEN, false, null, $perPage ?? 10);
     }
 
     public function getPendingAdminsCount(): int
     {
-        return $this->userRepo->getUsersByRoleAndApproval('dosen', false, null, 10)->total();
+        return $this->userRepo->getUsersByRoleAndApproval(Role::ROLE_DOSEN, false, null, 10)->total();
     }
 
     public function approveAdmin(string $userId): void
@@ -113,11 +115,11 @@ class UserService implements UserServiceInterface
     {
         $data['password'] = Hash::make($data['password']);
 
-        $roleDosenId     = Role::where('role_name', 'dosen')->value('id');
-        $roleMahasiswaId = Role::where('role_name', 'mahasiswa')->value('id');
+        $roleDosenId     = Role::where('role_name', Role::ROLE_DOSEN)->value('id');
+        $roleMahasiswaId = Role::where('role_name', Role::ROLE_MAHASISWA)->value('id');
 
         if (! isset($data['role_id'])) {
-            $data['role_id'] = str_ends_with($data['email'], '@admin.oopedia.com') ? $roleDosenId : $roleMahasiswaId;
+            $data['role_id'] = str_ends_with($data['email'], User::ADMIN_EMAIL_DOMAIN) ? $roleDosenId : $roleMahasiswaId;
         }
 
         if (! isset($data['is_approved'])) {

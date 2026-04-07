@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Adaptive;
 
 use App\Contracts\Services\AdaptiveEngineServiceInterface;
@@ -12,7 +14,7 @@ use Illuminate\Support\Facades\Log;
  * Main orchestrator for the adaptive learning system.
  * Evaluates rules using forward chaining and returns appropriate actions.
  */
-class AdaptiveEngineService implements AdaptiveEngineServiceInterface
+final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 {
     protected RuleRegistry $ruleRegistry;
 

@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $attempt_number
  * @property int|null $time_spent
  */
-class QuizAttempt extends Model
+final class QuizAttempt extends Model
 {
     use HasFactory;
     use HasUlids;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Lms;
 
 use App\Contracts\Repositories\MaterialRepositoryInterface;
@@ -12,13 +14,14 @@ use App\Models\Question;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as SupportCollection;
 
-class QuestionListingService implements QuestionListingServiceInterface
+final class QuestionListingService implements QuestionListingServiceInterface
 {
     public function __construct(
-        protected MaterialRepositoryInterface $materialRepo,
-        protected ProgressRepositoryInterface $progressRepo,
-        protected QuestionRepositoryInterface $questionRepo,
-    ) {}
+        public readonly MaterialRepositoryInterface $materialRepo,
+        public readonly ProgressRepositoryInterface $progressRepo,
+        public readonly QuestionRepositoryInterface $questionRepo,
+    ) {
+    }
 
     /** @return array<string, mixed> */
     public function getQuizData(
@@ -44,7 +47,7 @@ class QuestionListingService implements QuestionListingServiceInterface
 
         // Enforce rule-driven target difficulty by skipping easier, unanswered questions
         if ($difficulty === 'all' && $targetDifficulty) {
-            $difficultyOrder = ['beginner' => 1, 'medium' => 2, 'hard' => 3];
+            $difficultyOrder = Question::DIFFICULTY_ORDER;
             $targetLevel     = $difficultyOrder[$targetDifficulty] ?? 1;
 
             $answeredArray = $answeredQuestionIds->toArray();
@@ -99,7 +102,7 @@ class QuestionListingService implements QuestionListingServiceInterface
 
         if ($isGuest) {
             $totalMaterials  = $allMaterials->count();
-            $materialsToShow = ceil($totalMaterials / 2);
+            $materialsToShow = (int) ceil($totalMaterials / 2);
             $allMaterials    = $allMaterials->take($materialsToShow);
         }
 
@@ -138,7 +141,7 @@ class QuestionListingService implements QuestionListingServiceInterface
                 $configuredTotalQuestions,
             );
 
-            $studentCount = isset($studentCounts[$material->id]) ? $studentCounts[$material->id]->student_count : 0;
+            $studentCount = $studentCounts->firstWhere('material_id', $material->id)?->student_count ?? 0;
 
             $material->progress_percentage = $progressPercentage;
             $material->total_questions     = $configuredTotalQuestions;
@@ -169,7 +172,7 @@ class QuestionListingService implements QuestionListingServiceInterface
         $questions = $material->questions;
 
         if ($difficulty && $difficulty !== 'all') {
-            $dbDifficulty = ($difficulty === 'advanced') ? 'hard' : $difficulty;
+            $dbDifficulty = ($difficulty === 'advanced') ? Question::DIFFICULTY_HARD : $difficulty;
             $questions    = $questions->where('difficulty', $dbDifficulty);
         }
 
@@ -239,9 +242,9 @@ class QuestionListingService implements QuestionListingServiceInterface
 
         if ($isGuest) {
             if ($difficulty === 'all') {
-                $beginnerQuestions      = $questions->where('difficulty', 'beginner')->take(3);
-                $mediumQuestions        = $questions->where('difficulty', 'medium')->take(3);
-                $hardQuestions          = $questions->where('difficulty', 'hard')->take(3);
+                $beginnerQuestions      = $questions->where('difficulty', Question::DIFFICULTY_BEGINNER)->take(3);
+                $mediumQuestions        = $questions->where('difficulty', Question::DIFFICULTY_MEDIUM)->take(3);
+                $hardQuestions          = $questions->where('difficulty', Question::DIFFICULTY_HARD)->take(3);
                 $questions              = $beginnerQuestions->concat($mediumQuestions)->concat($hardQuestions);
                 $totalFilteredQuestions = 9;
             } else {
@@ -260,13 +263,13 @@ class QuestionListingService implements QuestionListingServiceInterface
 
     public function getCurrentQuestion(Collection $questions, SupportCollection $answeredQuestionIds): ?Question
     {
-        /** @var Question|null $currentQuestion */
         $answeredArray   = $answeredQuestionIds->toArray();
+        /** @var Question|null $currentQuestion */
         $currentQuestion = $questions->reject(function ($question) use ($answeredArray) {
             return in_array($question->id, $answeredArray);
         })->first();
 
-        if ($currentQuestion && $currentQuestion->question_type !== 'fill_in_the_blank') {
+        if ($currentQuestion instanceof Question && $currentQuestion->question_type !== Question::QUESTION_TYPE_FILL_IN_THE_BLANK) {
             if (! $currentQuestion->relationLoaded('answers')) {
                 $currentQuestion->load('answers');
             }
