@@ -47,6 +47,8 @@
             <img
                 src="/images/landing/abstract2.png"
                 alt=""
+                aria-hidden="true"
+                role="presentation"
                 class="h-full w-full object-cover opacity-80"
             />
         </div>
@@ -56,6 +58,8 @@
             <img
                 src="/images/landing/abstract3.png"
                 alt=""
+                aria-hidden="true"
+                role="presentation"
                 class="h-full w-full object-cover opacity-80 mix-blend-multiply"
             />
         </div>
@@ -66,6 +70,8 @@
             <img
                 src="/images/landing/abstract4.png"
                 alt=""
+                aria-hidden="true"
+                role="presentation"
                 class="absolute inset-0 h-full w-full object-cover opacity-40 mix-blend-darken"
             />
             <div

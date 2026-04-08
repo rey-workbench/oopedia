@@ -44,7 +44,7 @@
                     <ol class="inline-flex items-center space-x-1 md:space-x-3">
                         <li class="inline-flex items-center">
                             <span
-                                class="text-[10px] font-bold tracking-[0.2em] text-black/20 uppercase"
+                                class="text-[10px] font-bold tracking-[0.2em] text-slate-500 uppercase"
                                 >Page</span
                             >
                         </li>
@@ -53,7 +53,7 @@
                                 <ChevronRight
                                     size={10}
                                     strokeWidth={2}
-                                    class="mx-2 text-black/20"
+                                    class="mx-2 text-slate-400"
                                 />
                                 <span
                                     class="text-[10px] font-bold tracking-[0.2em] text-black uppercase"
@@ -70,7 +70,7 @@
             {#if isAuthenticated}
                 <div class="mr-2 hidden flex-col items-end md:flex">
                     <span class="text-xs font-bold text-black">{userName}</span>
-                    <span class="text-[10px] font-bold tracking-[0.2em] text-black/20 uppercase"
+                    <span class="text-[10px] font-bold tracking-[0.2em] text-slate-500 uppercase"
                         >{isAdminRole ? 'Admin' : 'Student'}</span
                     >
                 </div>
@@ -118,7 +118,7 @@
                             <p class="text-xs font-bold text-black">
                                 {userName}
                             </p>
-                            <p class="truncate text-[10px] font-medium text-black/30">
+                            <p class="truncate text-[10px] font-medium text-slate-500">
                                 {user.email}
                             </p>
                         </div>

@@ -131,6 +131,8 @@
                 viewBox="0 0 100 100"
                 class="h-full w-full"
                 style="color: {typeConfig.borderColor}"
+                aria-hidden="true"
+                role="presentation"
             >
                 <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor"></path>
                 <path d="M0,0 L80,0 L80,10 L10,10 L10,80 L0,80 Z" fill="currentColor" opacity="0.5"
@@ -142,6 +144,8 @@
                 viewBox="0 0 100 100"
                 class="h-full w-full"
                 style="color: {typeConfig.borderColor}"
+                aria-hidden="true"
+                role="presentation"
             >
                 <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor"></path>
                 <path d="M0,0 L80,0 L80,10 L10,10 L10,80 L0,80 Z" fill="currentColor" opacity="0.5"
@@ -153,6 +157,8 @@
                 viewBox="0 0 100 100"
                 class="h-full w-full"
                 style="color: {typeConfig.borderColor}"
+                aria-hidden="true"
+                role="presentation"
             >
                 <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor"></path>
             </svg>
@@ -162,6 +168,8 @@
                 viewBox="0 0 100 100"
                 class="h-full w-full"
                 style="color: {typeConfig.borderColor}"
+                aria-hidden="true"
+                role="presentation"
             >
                 <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor"></path>
             </svg>

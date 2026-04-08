@@ -234,14 +234,14 @@
                     <div
                         class="mb-6 inline-block animate-pulse rounded-full border border-black/3 bg-black/2 px-3 py-1"
                     >
-                        <span class="text-[9px] font-bold tracking-widest text-black/30 uppercase"
+                        <span class="text-[9px] font-bold tracking-widest text-slate-500 uppercase"
                             >Akses Mahasiswa</span
                         >
                     </div>
                     <h2 class="font-serif text-5xl font-light tracking-tight text-black italic">
                         Masuk
                     </h2>
-                    <p class="mt-4 text-base leading-relaxed font-medium text-black/40">
+                    <p class="mt-4 text-base leading-relaxed font-medium text-slate-500">
                         Teruskan progres Anda dan capai level baru hari ini.
                     </p>
                 </div>
@@ -341,7 +341,7 @@
                     <button
                         type="button"
                         onclick={() => state.submitAsGuest()}
-                        class="group flex h-[70px] w-full items-center justify-center gap-4 rounded-[24px] border border-black/3 bg-white text-[10px] font-bold tracking-[0.2em] text-black/30 uppercase transition-all hover:bg-black/2 hover:text-black active:scale-[0.98]"
+                        class="group flex h-[70px] w-full items-center justify-center gap-4 rounded-[24px] border border-black/3 bg-white text-[10px] font-bold tracking-[0.2em] text-slate-600 uppercase transition-all hover:bg-black/2 hover:text-black active:scale-[0.98]"
                         disabled={state.form.processing}
                     >
                         <Ghost size={20} class="transition-transform group-hover:scale-110" />

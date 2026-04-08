@@ -15,6 +15,8 @@
                 <img
                     src="/images/landing/abstract4.png"
                     alt=""
+                    aria-hidden="true"
+                    role="presentation"
                     class="h-full w-full object-cover opacity-[0.85] mix-blend-multiply contrast-125 filter"
                 />
             </div>

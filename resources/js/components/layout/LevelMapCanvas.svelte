@@ -114,6 +114,8 @@
             viewBox="0 0 {MAP_W} {totalH}"
             preserveAspectRatio="xMidYMid meet"
             style="height: {totalH}px;"
+            aria-hidden="true"
+            role="presentation"
         >
             {#each mapDots as dot, i (i)}
                 <circle

@@ -8,6 +8,8 @@
     <img
         src="/images/landing/abstract3.png"
         alt=""
+        aria-hidden="true"
+        role="presentation"
         class="absolute inset-0 h-full w-full scale-150 object-cover opacity-30 mix-blend-luminosity blur-md"
     />
 

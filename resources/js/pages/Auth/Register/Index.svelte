@@ -179,6 +179,8 @@
                     <img
                         src="/images/landing/abstract2.png"
                         alt=""
+                        aria-hidden="true"
+                        role="presentation"
                         class="h-full w-full object-contain blur-sm"
                     />
                 </div>
@@ -186,6 +188,8 @@
                     <img
                         src="/images/landing/abstract3.png"
                         alt=""
+                        aria-hidden="true"
+                        role="presentation"
                         class="h-full w-full object-contain blur-md"
                     />
                 </div>
@@ -193,6 +197,8 @@
                     <img
                         src="/images/landing/abstract4.png"
                         alt=""
+                        aria-hidden="true"
+                        role="presentation"
                         class="h-full w-full object-contain blur-sm"
                     />
                 </div>
@@ -200,6 +206,8 @@
                     <img
                         src="/images/landing/abstract1.png"
                         alt=""
+                        aria-hidden="true"
+                        role="presentation"
                         class="h-full w-full object-contain blur-sm"
                     />
                 </div>
@@ -208,7 +216,7 @@
             <!-- Back to Home Button (Desktop) -->
             <Link
                 href={ROUTES.HOME}
-                class="absolute top-12 right-12 hidden items-center gap-3 text-[10px] font-bold tracking-widest text-black/40 uppercase transition-all hover:translate-x-[-10px] hover:text-black lg:flex"
+                class="absolute top-12 right-12 hidden items-center gap-3 text-[10px] font-bold tracking-widest text-slate-600 uppercase transition-all hover:translate-x-[-10px] hover:text-black lg:flex"
             >
                 <div
                     class="flex h-8 w-8 items-center justify-center rounded-full bg-black/2 ring-1 ring-black/5"
@@ -230,7 +238,7 @@
                     <h2 class="font-serif text-5xl font-medium tracking-tight text-black italic">
                         Mulai Belajar.
                     </h2>
-                    <p class="mt-4 text-lg font-medium tracking-wide text-black/30">
+                    <p class="mt-4 text-lg font-medium tracking-wide text-slate-500">
                         Bergabunglah dengan ekosistem <span class="font-semibold text-black"
                             >1,248</span
                         > pembelajar cerdas lainnya.
@@ -248,7 +256,7 @@
                         <div class="space-y-2">
                             <label
                                 for="name"
-                                class="text-[10px] font-bold tracking-widest text-black/40 uppercase"
+                                class="text-[10px] font-bold tracking-widest text-slate-600 uppercase"
                                 >Nama Lengkap</label
                             >
                             <Input
@@ -264,7 +272,7 @@
                         <div class="space-y-2">
                             <label
                                 for="email"
-                                class="text-[10px] font-bold tracking-widest text-black/40 uppercase"
+                                class="text-[10px] font-bold tracking-widest text-slate-600 uppercase"
                                 >Email</label
                             >
                             <Input
@@ -283,7 +291,7 @@
                         <div class="space-y-2">
                             <label
                                 for="password"
-                                class="text-[10px] font-bold tracking-widest text-black/40 uppercase"
+                                class="text-[10px] font-bold tracking-widest text-slate-600 uppercase"
                                 >Kata Sandi</label
                             >
                             <Input
@@ -299,7 +307,7 @@
                         <div class="space-y-2">
                             <label
                                 for="password_confirmation"
-                                class="text-[10px] font-bold tracking-widest text-black/40 uppercase"
+                                class="text-[10px] font-bold tracking-widest text-slate-600 uppercase"
                                 >Konfirmasi</label
                             >
                             <Input
@@ -334,7 +342,7 @@
                                 class="block text-sm font-bold tracking-widest text-black/60 uppercase"
                                 >Daftar sebagai Dosen</span
                             >
-                            <span class="mt-1 block text-xs font-medium text-black/20 italic"
+                            <span class="mt-1 block text-xs font-medium text-slate-500 italic"
                                 >Akses fitur pembuatan materi dan manajemen kelas (Perlu Peninjauan)</span
                             >
                         </label>
@@ -369,7 +377,7 @@
                             <div class="w-full border-t border-black/3"></div>
                         </div>
                         <span
-                            class="relative bg-[#FDFDFB] px-4 text-[10px] font-bold tracking-[0.3em] text-black/20 uppercase"
+                            class="relative bg-[#FDFDFB] px-4 text-[10px] font-bold tracking-[0.3em] text-slate-500 uppercase"
                         >
                             Sudah punya akun?
                         </span>

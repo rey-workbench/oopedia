@@ -53,6 +53,8 @@
                 <img
                     src="/images/landing/abstract3.png"
                     alt=""
+                    aria-hidden="true"
+                    role="presentation"
                     class="h-full w-full object-cover opacity-60 mix-blend-multiply"
                 />
             </div>
@@ -63,6 +65,8 @@
                 <img
                     src="/images/landing/abstract4.png"
                     alt=""
+                    aria-hidden="true"
+                    role="presentation"
                     class="h-full w-full object-cover opacity-70 mix-blend-multiply"
                 />
             </div>
@@ -73,6 +77,8 @@
                 <img
                     src="/images/landing/abstract1.png"
                     alt=""
+                    aria-hidden="true"
+                    role="presentation"
                     class="h-full w-full object-cover opacity-50 mix-blend-multiply"
                 />
             </div>
@@ -83,6 +89,8 @@
                 <img
                     src="/images/landing/abstract2.png"
                     alt=""
+                    aria-hidden="true"
+                    role="presentation"
                     class="h-full w-full object-cover opacity-80 mix-blend-multiply"
                 />
             </div>
