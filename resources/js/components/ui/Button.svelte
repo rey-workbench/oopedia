@@ -41,22 +41,20 @@
     }: Props = $props();
 
     const baseClasses =
-        'inline-flex items-center justify-center font-bold tracking-tight transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:pointer-events-none rounded-xl';
+        'inline-flex items-center justify-center font-bold tracking-tight transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:pointer-events-none rounded-xl';
 
     const variants: Record<ButtonVariant, string> = {
-        primary:
-            'bg-primary-600 text-white shadow-lg shadow-accent-950/20 hover:scale-[1.02] hover:shadow-accent-600/30',
+        primary: 'bg-primary-500 text-white hover:bg-primary-600',
         secondary:
-            'bg-white text-slate-900 border-2 border-slate-100 hover:border-accent-500 hover:text-accent-600 shadow-sm',
-        gradient:
-            'bg-accent-600 text-white shadow-lg shadow-accent-500/25 hover:shadow-accent-500/40 hover:-translate-y-0.5',
-        glass: 'glass text-primary-700 hover:bg-white/50 shadow-sm hover:shadow-md',
-        danger: 'bg-rose-500 text-white shadow-lg shadow-rose-500/20 hover:bg-rose-600',
-        success: 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20 hover:bg-emerald-600',
-        warning: 'bg-amber-400 text-amber-950 shadow-lg shadow-amber-400/20 hover:bg-amber-500',
-        ghost: 'text-slate-500 hover:text-accent-600 hover:bg-accent-50',
+            'bg-white text-cosmos-text border border-cosmos-border hover:bg-primary-50 hover:text-primary-500',
+        gradient: 'bg-accent-500 text-white hover:bg-accent-600',
+        glass: 'bg-white/10 backdrop-blur-sm text-cosmos-text border border-white/20 hover:bg-white/20',
+        danger: 'bg-rose-500 text-white hover:bg-rose-600',
+        success: 'bg-emerald-500 text-white hover:bg-emerald-600',
+        warning: 'bg-amber-400 text-amber-950 hover:bg-amber-500',
+        ghost: 'text-cosmos-muted hover:text-primary-500 hover:bg-primary-50',
         outline:
-            'bg-transparent border-2 border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white',
+            'bg-transparent border border-cosmos-border text-cosmos-text hover:bg-cosmos-text hover:text-white',
     };
 
     const sizes: Record<ButtonSize, string> = {

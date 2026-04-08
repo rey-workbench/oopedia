@@ -5,22 +5,22 @@
     let { href = '#', icon: Icon = Link2, active = false, children, ...restProps } = $props();
 
     const baseClasses =
-        'flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold tracking-tight transition-all duration-300 group';
+        'flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold tracking-tight transition-all duration-200 group';
 
     const themeClasses = $derived(
         active
-            ? 'bg-primary-600 text-white shadow-xl shadow-accent-500/20 '
-            : 'text-slate-500 hover:text-accent-600 hover:bg-accent-50'
+            ? 'bg-primary-500 text-white'
+            : 'text-cosmos-muted hover:text-primary-500 hover:bg-primary-50'
     );
 
     const iconContainerClasses = $derived(
         active
-            ? 'bg-accent-500/20 shadow-[0_0_15px_rgba(124,58,237,0.3)]'
-            : 'bg-gray-100 group-hover:bg-accent-100'
+            ? 'bg-white/10'
+            : 'bg-primary-50 group-hover:bg-primary-100/50'
     );
 
     const iconClasses = $derived(
-        active ? 'text-accent-400' : 'text-slate-400 group-hover:text-accent-600'
+        active ? 'text-white' : 'text-cosmos-muted group-hover:text-primary-500'
     );
 </script>
 

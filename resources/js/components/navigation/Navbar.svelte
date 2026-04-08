@@ -23,7 +23,7 @@
 </script>
 
 <nav
-    class="sticky top-0 z-40 w-full border-b border-slate-200 bg-[#FDFDFB]/80 px-4 backdrop-blur-xl sm:px-6 lg:px-8"
+    class="sticky top-0 z-40 w-full border-b border-cosmos-border bg-cosmos-bg/80 px-4 backdrop-blur-xl sm:px-6 lg:px-8"
 >
     <div class="flex h-16 items-center justify-between">
         <div class="flex items-center gap-4">
@@ -98,10 +98,10 @@
                 >
                     <button
                         aria-label="Open profile menu"
-                        class="group flex items-center gap-2 rounded-full border border-slate-200 p-1 transition-all duration-300 hover:border-slate-300"
+                        class="group flex items-center gap-2 rounded-full border border-cosmos-border p-1 transition-all duration-200 hover:border-primary-500/30"
                     >
                         <div
-                            class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white shadow-sm transition-all group-hover:scale-105"
+                            class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-cosmos-border bg-white transition-all duration-200"
                         >
                             <img
                                 src="/images/profile.gif"
@@ -112,7 +112,7 @@
                     </button>
 
                     <div
-                        class="invisible absolute right-0 mt-2 w-56 origin-top-right scale-95 transform rounded-3xl bg-white p-2 opacity-0 shadow-2xl ring-1 shadow-slate-900/5 ring-slate-200 transition-all duration-300 group-hover:visible group-hover:scale-100 group-hover:opacity-100"
+                        class="invisible absolute right-0 mt-2 w-56 origin-top-right scale-95 transform rounded-3xl border border-cosmos-border bg-white p-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:scale-100 group-hover:opacity-100"
                     >
                         <div class="mb-1 border-b border-slate-200 px-4 py-3">
                             <p class="text-xs font-bold text-slate-900">
@@ -156,7 +156,7 @@
                     >
                     <Link
                         href={ROUTES.AUTH.REGISTER}
-                        class="hover:bg-accent-600 rounded-xl bg-slate-900 px-6 py-2.5 text-sm font-bold tracking-widest text-white uppercase shadow-lg shadow-slate-200 transition-all"
+                        class="hover:bg-primary-600 rounded-xl bg-primary-500 px-6 py-2.5 text-sm font-bold tracking-widest text-white uppercase transition-colors duration-200"
                         >Daftar</Link
                     >
                 </div>

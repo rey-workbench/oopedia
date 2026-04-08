@@ -46,13 +46,13 @@
 
 <aside
     id="sidebar"
-    class="no-scrollbar fixed inset-y-0 left-0 z-50 w-72 overflow-y-auto border-r border-slate-100 bg-white transition-all duration-500 ease-in-out lg:w-64
+    class="no-scrollbar fixed inset-y-0 left-0 z-50 w-72 overflow-y-auto border-r border-cosmos-border bg-cosmos-bg transition-all duration-300 ease-in-out lg:w-64
   {sidebarOpen
-        ? 'translate-x-0 shadow-[0_0_50px_-12px_rgba(0,0,0,0.15)]'
-        : '-translate-x-full lg:translate-x-0 lg:shadow-none'}"
+        ? 'translate-x-0'
+        : '-translate-x-full lg:translate-x-0'}"
 >
     <div
-        class="sticky top-0 z-10 flex items-center justify-between bg-white/80 px-6 py-8 backdrop-blur-md"
+        class="sticky top-0 z-10 flex items-center justify-between bg-cosmos-bg/80 px-6 py-8 backdrop-blur-md"
         data-intro="Ini adalah Logo OOPEDIA. Kamu bisa kembali ke dashboard dengan mengklik logo ini."
         data-step="1"
     >
@@ -65,12 +65,14 @@
             class="group flex items-center gap-3"
         >
             <div
-                class="shadow-premium flex h-10 w-10 items-center justify-center rounded-2xl bg-white p-2 transition-all duration-500 group-hover:scale-110 group-hover:rotate-12"
+                class="flex h-10 w-10 items-center justify-center rounded-2xl border border-cosmos-border bg-white p-2"
             >
                 <img src="/images/logo.png" alt="OOPedia" class="h-auto w-full" />
             </div>
             <div class="flex flex-col">
-                <span class="text-xl font-black tracking-tighter text-slate-900">OOPEDIA</span>
+                <span class="font-display text-xl font-black tracking-tighter text-cosmos-text"
+                    >OOPEDIA</span
+                >
                 <span class="text-primary-500 text-[8px] font-bold tracking-[0.2em] uppercase"
                     >Learning System</span
                 >
@@ -79,14 +81,14 @@
         <button
             onclick={() => closeSidebar()}
             aria-label="Tutup sidebar"
-            class="group flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-50 text-slate-400 transition-all hover:bg-rose-50 hover:text-rose-500 lg:hidden"
+            class="group flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-50 text-cosmos-muted transition-colors hover:bg-rose-50 hover:text-rose-500 lg:hidden"
         >
-            <X size={20} strokeWidth={2.5} class="transition-transform group-hover:rotate-90" />
+            <X size={20} strokeWidth={2.5} />
         </button>
     </div>
 
     <!-- Decorative line -->
-    <div class="mx-6 mb-8 h-px bg-linear-to-r from-transparent via-slate-100 to-transparent"></div>
+    <div class="mx-6 mb-8 h-px bg-cosmos-border"></div>
 
     <nav
         aria-label="Navigasi Utama"
@@ -96,12 +98,13 @@
     >
         {#if isAdminRole}
             <div class="space-y-6">
-                <div class="flex items-center gap-2 px-4 transition-all">
-                    <div class="bg-primary-500 h-1 w-1 rounded-full"></div>
-                    <span class="text-[9px] font-extrabold tracking-widest text-slate-400 uppercase"
+                <div class="flex items-center gap-2 px-4">
+                    <div class="h-1 w-1 rounded-full bg-primary-500"></div>
+                    <span
+                        class="text-[9px] font-extrabold tracking-widest text-cosmos-muted uppercase"
                         >Utama</span
                     >
-                    <div class="h-px flex-1 bg-linear-to-r from-slate-100 to-transparent"></div>
+                    <div class="h-px flex-1 bg-cosmos-border"></div>
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
@@ -113,12 +116,13 @@
             </div>
 
             <div class="space-y-6">
-                <div class="flex items-center gap-2 px-4 transition-all">
-                    <div class="bg-primary-500 h-1 w-1 rounded-full"></div>
-                    <span class="text-[9px] font-extrabold tracking-widest text-slate-400 uppercase"
+                <div class="flex items-center gap-2 px-4">
+                    <div class="h-1 w-1 rounded-full bg-primary-500"></div>
+                    <span
+                        class="text-[9px] font-extrabold tracking-widest text-cosmos-muted uppercase"
                         >Kurikulum</span
                     >
-                    <div class="h-px flex-1 bg-linear-to-r from-slate-100 to-transparent"></div>
+                    <div class="h-px flex-1 bg-cosmos-border"></div>
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
@@ -137,12 +141,13 @@
             </div>
 
             <div class="space-y-6">
-                <div class="flex items-center gap-2 px-4 transition-all">
-                    <div class="bg-primary-500 h-1 w-1 rounded-full"></div>
-                    <span class="text-[9px] font-extrabold tracking-widest text-slate-400 uppercase"
+                <div class="flex items-center gap-2 px-4">
+                    <div class="h-1 w-1 rounded-full bg-primary-500"></div>
+                    <span
+                        class="text-[9px] font-extrabold tracking-widest text-cosmos-muted uppercase"
                         >Manajemen</span
                     >
-                    <div class="h-px flex-1 bg-linear-to-r from-slate-100 to-transparent"></div>
+                    <div class="h-px flex-1 bg-cosmos-border"></div>
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
@@ -170,9 +175,9 @@
                 </div>
             </div>
 
-            <div class="space-y-6 border-t border-slate-100 pt-10">
+            <div class="space-y-6 border-t border-cosmos-border pt-10">
                 <div
-                    class="flex items-center gap-3 px-4 text-[10px] font-bold tracking-tight text-slate-500 uppercase"
+                    class="flex items-center gap-3 px-4 text-[10px] font-bold tracking-tight text-cosmos-muted uppercase"
                 >
                     <span class="h-0.5 w-2 bg-rose-500/50"></span>
                     Sesi
@@ -186,10 +191,10 @@
                     >
                         <button
                             type="submit"
-                            class="group flex w-full items-center gap-4 rounded-2xl px-4 py-3.5 font-bold tracking-tight text-slate-500 transition-all duration-300 hover:bg-rose-50 hover:text-rose-600"
+                            class="group flex w-full items-center gap-4 rounded-2xl px-4 py-3.5 font-bold tracking-tight text-cosmos-muted transition-colors hover:bg-rose-50 hover:text-rose-600"
                         >
                             <div
-                                class="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-100 transition-colors duration-300 group-hover:bg-rose-100"
+                                class="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-50 transition-colors duration-200 group-hover:bg-rose-100"
                             >
                                 <LogOut size={18} strokeWidth={2.5} />
                             </div>
@@ -200,12 +205,13 @@
             </div>
         {:else}
             <div class="space-y-6">
-                <div class="flex items-center gap-2 px-4 transition-all">
-                    <div class="bg-primary-500 h-1 w-1 rounded-full"></div>
-                    <span class="text-[9px] font-extrabold tracking-widest text-slate-400 uppercase"
+                <div class="flex items-center gap-2 px-4">
+                    <div class="h-1 w-1 rounded-full bg-primary-500"></div>
+                    <span
+                        class="text-[9px] font-extrabold tracking-widest text-cosmos-muted uppercase"
                         >Belajar</span
                     >
-                    <div class="h-px flex-1 bg-linear-to-r from-slate-100 to-transparent"></div>
+                    <div class="h-px flex-1 bg-cosmos-border"></div>
                 </div>
                 <div class="space-y-2">
                     {#if userRole === ROLE.MAHASISWA}
@@ -222,31 +228,31 @@
                             onclick={() => (isMateriOpen = !isMateriOpen)}
                             aria-expanded={isMateriOpen}
                             aria-controls="materials-submenu"
-                            class="group flex w-full items-center gap-4 rounded-2xl px-4 py-3.5 font-bold tracking-tight transition-all duration-300
+                            class="group flex w-full items-center gap-4 rounded-2xl px-4 py-3.5 font-bold tracking-tight transition-colors duration-200
                             {isMateriOpen
-                                ? 'text-primary-600 bg-primary-50'
-                                : 'hover:text-accent-600 hover:bg-accent-50 text-slate-500'}"
+                                ? 'bg-primary-500 text-white'
+                                : 'text-cosmos-muted hover:bg-primary-50 hover:text-primary-500'}"
                         >
                             <div
-                                class="flex h-8 w-8 items-center justify-center rounded-xl transition-colors duration-300
+                                class="flex h-8 w-8 items-center justify-center rounded-xl transition-colors duration-200
                                 {isMateriOpen
-                                    ? 'bg-primary-100'
-                                    : 'group-hover:bg-accent-100 bg-gray-100'}"
+                                    ? 'bg-white/10'
+                                    : 'bg-primary-50 group-hover:bg-primary-100/50'}"
                             >
                                 <Shapes
                                     size={18}
                                     strokeWidth={2.5}
                                     class={isMateriOpen
-                                        ? 'text-primary-600'
-                                        : 'group-hover:text-accent-600 text-slate-400'}
+                                        ? 'text-white'
+                                        : 'text-cosmos-muted group-hover:text-primary-500'}
                                 />
                             </div>
                             <span class="flex-1 text-left">Materi PBO</span>
                             <ChevronDown
                                 size={16}
-                                class="transition-transform duration-300 {isMateriOpen
-                                    ? 'text-primary-600 rotate-180'
-                                    : 'text-slate-400'}"
+                                class="transition-transform duration-200 {isMateriOpen
+                                    ? 'rotate-180 text-white'
+                                    : 'text-cosmos-muted'}"
                             />
                         </button>
 
@@ -266,7 +272,7 @@
                                             title="Materi terkunci - selesaikan materi sebelumnya"
                                         >
                                             <div
-                                                class="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-100"
+                                                class="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-50"
                                                 aria-hidden="true"
                                             >
                                                 <Lock size={16} strokeWidth={2.5} />
@@ -308,13 +314,13 @@
 
             {#if userRole === ROLE.MAHASISWA}
                 <div class="space-y-6">
-                    <div class="flex items-center gap-2 px-4 transition-all">
-                        <div class="bg-primary-500 h-1 w-1 rounded-full"></div>
+                    <div class="flex items-center gap-2 px-4">
+                        <div class="h-1 w-1 rounded-full bg-primary-500"></div>
                         <span
-                            class="text-[9px] font-extrabold tracking-widest text-slate-400 uppercase"
+                            class="text-[9px] font-extrabold tracking-widest text-cosmos-muted uppercase"
                             >Pencapaian</span
                         >
-                        <div class="h-px flex-1 bg-linear-to-r from-slate-100 to-transparent"></div>
+                        <div class="h-px flex-1 bg-cosmos-border"></div>
                     </div>
                     <div class="space-y-2">
                         <SidebarLink
@@ -329,13 +335,13 @@
 
             {#if userRole === ROLE.MAHASISWA}
                 <div class="space-y-6 pb-10">
-                    <div class="flex items-center gap-2 px-4 transition-all">
-                        <div class="bg-primary-500 h-1 w-1 rounded-full"></div>
+                    <div class="flex items-center gap-2 px-4">
+                        <div class="h-1 w-1 rounded-full bg-primary-500"></div>
                         <span
-                            class="text-[9px] font-extrabold tracking-widest text-slate-400 uppercase"
+                            class="text-[9px] font-extrabold tracking-widest text-cosmos-muted uppercase"
                             >Akun</span
                         >
-                        <div class="h-px flex-1 bg-linear-to-r from-slate-100 to-transparent"></div>
+                        <div class="h-px flex-1 bg-cosmos-border"></div>
                     </div>
                     <div class="space-y-2">
                         <SidebarLink
@@ -349,12 +355,13 @@
             {/if}
 
             <div class="space-y-6 border-t border-slate-100 pt-10">
-                <div class="flex items-center gap-2 px-4 transition-all">
+                <div class="flex items-center gap-2 px-4">
                     <div class="h-1 w-1 rounded-full bg-rose-500"></div>
-                    <span class="text-[9px] font-extrabold tracking-widest text-slate-400 uppercase"
+                    <span
+                        class="text-[9px] font-extrabold tracking-widest text-cosmos-muted uppercase"
                         >Sesi</span
                     >
-                    <div class="h-px flex-1 bg-linear-to-r from-slate-100 to-transparent"></div>
+                    <div class="h-px flex-1 bg-cosmos-border"></div>
                 </div>
                 <div class="space-y-2">
                     {#if user}
@@ -366,10 +373,10 @@
                         >
                             <button
                                 type="submit"
-                                class="group flex w-full items-center gap-4 rounded-2xl px-4 py-3.5 font-bold tracking-tight text-slate-500 transition-all duration-300 hover:bg-rose-50 hover:text-rose-600"
+                                class="group flex w-full items-center gap-4 rounded-2xl px-4 py-3.5 font-bold tracking-tight text-cosmos-muted transition-colors hover:bg-rose-50 hover:text-rose-600"
                             >
                                 <div
-                                    class="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-100 transition-colors duration-300 group-hover:bg-rose-100"
+                                    class="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-50 transition-colors duration-200 group-hover:bg-rose-100"
                                 >
                                     <LogOut size={18} strokeWidth={2.5} />
                                 </div>
