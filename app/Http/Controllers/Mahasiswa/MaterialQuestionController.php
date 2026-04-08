@@ -51,10 +51,17 @@ class MaterialQuestionController extends Controller
         $userId        = $this->getUserId();
         $guestProgress = $this->getGuestProgress($request);
 
+        $unlockedModules = [];
+        if (! $isGuest) {
+            $studentState    = $this->performanceService->getStudentState($userId);
+            $unlockedModules = $studentState?->learning_profile['unlocked_modules'] ?? [];
+        }
+
         $materials = $this->questionListingService->getMaterialsListWithStudentCount(
             $userId,
             $isGuest,
             $guestProgress,
+            $unlockedModules,
         );
 
         return $this->render('Mahasiswa/Materials/Questions/Index', compact('materials', 'isGuest'));

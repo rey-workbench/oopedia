@@ -140,12 +140,12 @@ final class QuestionListingService implements QuestionListingServiceInterface
             $material->completed_questions = $answeredCount;
             $material->student_count       = $studentCount;
 
-            $moduleId            = $material->module_id;
-            $isFirstModule       = $moduleId !== null && $moduleId === $firstModuleId;
-            $isUnlocked          = $isGuest ||
-                $isFirstModule              ||
-                empty($moduleId)            ||
-                in_array($moduleId, $unlockedModules);
+            $moduleId      = $material->module_id;
+            $isFirstModule = $moduleId !== null && (string) $moduleId === (string) $firstModuleId;
+            $isUnlocked    = $isGuest ||
+                $isFirstModule        ||
+                empty($moduleId)      ||
+                in_array((string) $moduleId, array_map('strval', $unlockedModules));
             $material->is_locked = ! $isUnlocked;
 
             return $material;
