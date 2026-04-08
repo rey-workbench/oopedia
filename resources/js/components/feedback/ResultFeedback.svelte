@@ -1,8 +1,9 @@
 <script lang="ts">
-    import Panel from '@/components/ui/Panel.svelte';
     import Button from '@/components/ui/Button.svelte';
     import { DotLottieSvelte } from '@lottiefiles/dotlottie-svelte';
-    import { ArrowRight, Star, TrendingUp, RotateCcw } from 'lucide-svelte';
+    import { TrendingUp, Star, ArrowRight } from 'lucide-svelte';
+    import { onMount, onDestroy } from 'svelte';
+    import { fly } from 'svelte/transition';
 
     interface Props {
         status: 'success' | 'wrong';
@@ -29,6 +30,31 @@
     }: Props = $props();
 
     const isSuccess = $derived(status === 'success');
+    
+    // Auto-advance logic
+    let progress = $state(100);
+    let timer: ReturnType<typeof setInterval>;
+    const AUTO_ADVANCE_MS = isSuccess ? 3000 : 5000;
+    const TICK_MS = 50;
+
+    onMount(() => {
+        const startTime = Date.now();
+        timer = setInterval(() => {
+            const elapsed = Date.now() - startTime;
+            progress = Math.max(0, 100 - (elapsed / AUTO_ADVANCE_MS) * 100);
+            
+            if (progress <= 0) {
+                clearInterval(timer);
+                if (isSuccess) {
+                    onContinue();
+                }
+            }
+        }, TICK_MS);
+    });
+
+    onDestroy(() => {
+        if (timer) clearInterval(timer);
+    });
 </script>
 
 <style>
@@ -51,104 +77,91 @@
     }
 </style>
 
-<div class="p-10 pt-16 text-center">
-    <div class="mb-8 flex justify-center">
-        <div
-            class="relative flex h-44 w-44 items-center justify-center"
-        >
-            <div class="z-10 h-full w-full overflow-hidden rounded-full">
-                <DotLottieSvelte
-                    src="/assets/lottie/quiz/graduation.json"
-                    loop={true}
-                    autoplay={true}
-                    backgroundColor="transparent"
-                    renderConfig={{ devicePixelRatio: window?.devicePixelRatio || 1 }}
-                />
+<!-- Main fixed container for the bottom feedback bar -->
+<div 
+    in:fly={{ y: 100, duration: 500 }}
+    class={`fixed inset-x-0 bottom-0 z-[1000] transform transition-all duration-500 ease-out 
+    ${isSuccess ? 'bg-emerald-50 border-t-4 border-emerald-500 shadow-[0_-20px_50px_-12px_rgba(16,185,129,0.25)]' : 'bg-rose-50 border-t-4 border-rose-500 shadow-[0_-20px_50px_-12px_rgba(244,63,94,0.25)]'}`}
+>
+    <!-- Auto-advance progress bar -->
+    <div 
+        class={`absolute top-[-4px] left-0 h-1 transition-all duration-75 ease-linear
+        ${isSuccess ? 'bg-emerald-400' : 'bg-rose-400'}`}
+        style="width: {progress}%"
+    ></div>
+
+    <div class="mx-auto max-w-5xl px-6 py-4 md:py-6">
+        <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
+            
+            <!-- Left: Hero Icon & Status -->
+            <div class="flex items-center gap-5">
+                <div class={`hidden h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white shadow-md md:flex border-2 ${isSuccess ? 'border-emerald-100' : 'border-rose-100'}`}>
+                    <div class="h-10 w-10 overflow-hidden">
+                        <DotLottieSvelte
+                            src="/assets/lottie/quiz/graduation.json"
+                            loop={false}
+                            autoplay={true}
+                        />
+                    </div>
+                </div>
+                
+                <div class="text-center md:text-left">
+                    <h2 class={`text-xl font-black tracking-tight ${isSuccess ? 'text-emerald-800' : 'text-rose-800'}`}>
+                        {isSuccess ? 'Luar Biasa!' : 'Perlu Belajar Lagi'}
+                    </h2>
+                    <p class={`mt-0.5 font-bold text-sm ${isSuccess ? 'text-emerald-600/80' : 'text-rose-600/80'}`}>
+                        {message}
+                    </p>
+                    
+                    {#if recommendation}
+                         <p class="mt-1.5 flex items-center gap-2 text-[10px] font-black text-rose-500 bg-white/80 border border-rose-100 px-3 py-1 rounded-full w-fit mx-auto md:mx-0 shadow-sm">
+                            <TrendingUp size={12} />
+                            {recommendation}
+                         </p>
+                    {/if}
+                </div>
             </div>
-            <div
-                class={`animate-spin-slow absolute -inset-2 rounded-full border-4 border-dashed opacity-20 ${isSuccess ? 'border-emerald-500' : 'border-rose-500'}`}
-            ></div>
-        </div>
-    </div>
 
-    <div class="mb-2">
-        <span
-            class={`text-xs font-black tracking-[0.3em] uppercase ${isSuccess ? 'text-emerald-500' : 'text-rose-500'}`}
-        >
-            {isSuccess ? 'OK!' : 'WRONG'}
-        </span>
-    </div>
+            <!-- Middle: Stats (XP/Streak) -->
+            <div class="flex items-center gap-3">
+                {#if xpEarned > 0}
+                    <div class="flex items-center gap-2 rounded-xl bg-white/80 px-3 py-1.5 shadow-sm border-2 border-white">
+                        <Star size={16} class="fill-amber-400 text-amber-400" />
+                        <span class="text-base font-black tracking-tight text-slate-700">+{xpEarned}</span>
+                    </div>
+                {/if}
+                {#if streakBonus}
+                    <div class="flex items-center gap-2 rounded-xl bg-white/80 px-3 py-1.5 shadow-sm border-2 border-white">
+                        <TrendingUp size={16} class="text-orange-500" />
+                        <span class="text-xs font-black text-orange-600">{streakBonus}</span>
+                    </div>
+                {/if}
+            </div>
 
-    <h2
-        class={`mb-4 text-5xl font-black tracking-tighter uppercase ${isSuccess ? 'text-emerald-600' : 'text-rose-600'}`}
-    >
-        {isSuccess ? 'BENAR!' : 'KURANG TEPAT'}
-    </h2>
-
-    <p class="mx-auto mb-12 px-4 text-lg leading-relaxed font-semibold text-slate-400">
-        {message}
-    </p>
-
-    <div class="flex flex-col gap-8">
-        <div class="flex flex-wrap items-center justify-center gap-4">
-            {#if xpEarned > 0}
-                <div class="group relative">
-                    <Panel
-                        variant="none"
-                        rounded="2xl"
-                        padding="px-8 py-4"
-                        class="flex items-center gap-3 border-2 border-emerald-400 bg-slate-900 border-b-6 active:translate-y-[2px] active:border-b-4 transition-all"
+            <!-- Right: Actions -->
+            <div class="flex w-full items-center gap-3 md:w-auto">
+                {#if !isSuccess && onTryAgain}
+                    <Button
+                        variant="outline"
+                        onclick={onTryAgain}
+                        class="flex-1 border-2 border-white bg-white/50 px-6 py-3 text-xs font-black text-rose-600 shadow-sm transition-all hover:bg-white active:translate-y-1 md:flex-none uppercase tracking-widest"
                     >
-                        <Star size={20} class="fill-current text-white" />
-                        <span class="text-xl font-black tracking-tighter text-white"
-                            >+{xpEarned} XP</span
-                        >
-                    </Panel>
-                </div>
-            {/if}
-            {#if streakBonus}
-                <div class="group relative">
-                    <Panel
-                        variant="none"
-                        rounded="2xl"
-                        padding="px-8 py-4"
-                        class="flex items-center gap-3 border-2 border-amber-500 bg-slate-900 border-b-6 active:translate-y-[2px] active:border-b-4 transition-all"
-                    >
-                        <TrendingUp size={20} class="text-orange-500" />
-                        <div class="text-left">
-                            <p
-                                class="text-[14px] leading-none font-black tracking-tight text-orange-500"
-                            >
-                                {streakBonus}
-                            </p>
-                        </div>
-                    </Panel>
-                </div>
-            {/if}
-        </div>
-
-        <div class="flex flex-col justify-center gap-4 sm:flex-row">
-            {#if !isSuccess && nextActionType !== 'material' && !recommendation && onTryAgain}
+                        COBA LAGI
+                    </Button>
+                {/if}
+                
                 <Button
-                    variant="outline"
-                    onclick={onTryAgain}
-                    class="border-2 border-slate-200 border-b-4 px-10 py-4 text-xs font-black tracking-widest uppercase hover:bg-slate-50 active:translate-y-[2px] active:border-b-2"
+                    variant="primary"
+                    onclick={onContinue}
+                    class={`flex-1 px-10 py-3.5 font-black tracking-widest uppercase shadow-lg active:translate-y-1 md:w-56 group relative overflow-hidden
+                    ${isSuccess ? 'bg-emerald-500 hover:bg-emerald-600 border-emerald-700' : 'bg-rose-500 hover:bg-rose-600 border-rose-700'}`}
                 >
-                    <RotateCcw size={16} class="mr-2" /> COBA LAGI
+                    <span class="relative z-10 flex items-center justify-center gap-2">
+                        {nextAction}
+                        <ArrowRight size={18} class="transition-transform group-hover:translate-x-1" />
+                    </span>
                 </Button>
-            {/if}
-            <Button
-                variant="primary"
-                onclick={onContinue}
-                class="w-full border-b-4 border-black bg-slate-900 px-16 py-4 text-xs font-black tracking-widest uppercase hover:bg-slate-800 active:translate-y-[2px] active:border-b-2 sm:w-auto"
-            >
-                {nextAction}
-                <ArrowRight size={16} class="ml-2" />
-            </Button>
+            </div>
         </div>
-
-        <p class="text-[9px] font-bold tracking-[0.2em] text-slate-300 uppercase">
-            Sistem Adaptif oopedia • v2.1
-        </p>
     </div>
 </div>

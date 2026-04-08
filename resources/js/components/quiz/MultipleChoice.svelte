@@ -21,7 +21,7 @@
     <div class="relative overflow-hidden rounded-3xl bg-slate-900 p-8 shadow-xl">
         <!-- Subtle top accent line -->
         <div
-            class="via-primary-500/60 absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent"
+            class="bg-linear-to-r via-primary-500/60 absolute inset-x-0 top-0 h-px from-transparent to-transparent"
         ></div>
         <!-- Decorative icon -->
         <div class="pointer-events-none absolute -top-4 -right-4 text-white/4">
@@ -50,7 +50,7 @@
     </div>
 
     <!-- Answer options -->
-    <div class="space-y-3">
+    <div class="space-y-4">
         <div class="flex items-center gap-2 px-1">
             <CheckSquare size={13} class="text-primary-500" />
             <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">
@@ -59,10 +59,11 @@
             <div class="ml-2 h-px flex-1 bg-slate-100"></div>
         </div>
 
-        <div class="grid grid-cols-1 gap-3">
-            {#each question.answers as answer (answer.id)}
+        <div class="grid grid-cols-1 gap-4">
+            {#each question.answers as answer, i (answer.id)}
                 {@const isSelected = selectedAnswerId === answer.id}
-                <label class="group relative block cursor-pointer">
+                {@const label = String.fromCharCode(65 + i)}
+                <label class="group relative block cursor-pointer active:translate-y-1 transition-all">
                     <input
                         type="radio"
                         name="answer"
@@ -72,30 +73,35 @@
                         onchange={() => handleSelect(answer.id)}
                     />
                     <div
-                        class="flex items-center gap-5 rounded-2xl border-2 px-6 py-4 transition-all duration-200
+                        class="flex items-center gap-5 rounded-3xl border-2 px-6 py-5 transition-all duration-150 border-b-6
                         {isSelected
-                            ? 'border-primary-600 bg-primary-50 ring-primary-50/80 shadow-md ring-4'
-                            : 'hover:border-primary-200 border-slate-100 bg-white shadow-sm hover:bg-slate-50/50 hover:shadow-md'}"
+                            ? 'border-primary-600 bg-primary-50 border-b-primary-700 -translate-y-1'
+                            : 'hover:border-slate-300 border-slate-100 bg-white border-b-slate-200 hover:bg-slate-50 shadow-sm'}"
                     >
-                        <!-- Custom radio circle -->
+                        <!-- Letter Coin -->
                         <div
-                            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border-2 transition-all duration-200
+                            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border-2 border-b-4 transition-all duration-150
                             {isSelected
-                                ? 'border-primary-600 bg-primary-600 shadow-primary-200 shadow-lg'
-                                : 'group-hover:border-primary-300 border-slate-200'}"
+                                ? 'border-primary-600 bg-white text-primary-600 shadow-sm'
+                                : 'border-slate-200 bg-white text-slate-400 group-hover:border-slate-300'}"
                         >
-                            {#if isSelected}
-                                <div class="h-3 w-3 rounded-full bg-white shadow-sm"></div>
-                            {/if}
+                            <span class="text-lg font-black">{label}</span>
                         </div>
+                        
                         <span
-                            class="flex-1 text-base font-semibold tracking-tight transition-colors duration-200
+                            class="flex-1 text-lg font-bold tracking-tight transition-colors duration-200
                             {isSelected
                                 ? 'text-primary-900'
                                 : 'text-slate-700 group-hover:text-slate-900'}"
                         >
                             {answer.answer_text}
                         </span>
+
+                        {#if isSelected}
+                           <div class="h-6 w-6 rounded-full bg-primary-600 flex items-center justify-center shadow-lg shadow-primary-200 animate-in zoom-in-50 duration-300">
+                               <div class="h-2 w-2 rounded-full bg-white"></div>
+                           </div>
+                        {/if}
                     </div>
                 </label>
             {/each}

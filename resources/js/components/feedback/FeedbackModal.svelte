@@ -91,37 +91,44 @@
     let certDetails = $derived(getCertificateDetails());
 </script>
 
-<Modal show={state.showFeedback} maxWidth="2xl" closeable={false}>
-    <div class="bg-white/95 backdrop-blur-xl">
+    {#if state.showFeedback}
         {#if variant === 'certificate' && certDetails}
-            <CertificateFeedback
-                details={certDetails}
-                message={state.feedbackData.message}
-                {xpEarned}
-                onContinue={() => state.handleNext()}
-            />
+            <Modal show={true} maxWidth="2xl" closeable={false}>
+                <CertificateFeedback
+                    details={certDetails}
+                    message={state.feedbackData.message}
+                    {xpEarned}
+                    onContinue={() => state.handleNext()}
+                />
+            </Modal>
         {:else if variant === 'acceleration'}
-            <AccelerationFeedback
-                message={state.feedbackData.message}
-                {nextAction}
-                {xpEarned}
-                onContinue={() => state.handleNext()}
-            />
+            <Modal show={true} maxWidth="2xl" closeable={false}>
+                <AccelerationFeedback
+                    message={state.feedbackData.message}
+                    {nextAction}
+                    {xpEarned}
+                    onContinue={() => state.handleNext()}
+                />
+            </Modal>
         {:else if variant === 'intervention'}
-            <InterventionFeedback
-                message={state.feedbackData.message}
-                status={state.feedbackData.status as 'success' | 'wrong'}
-                {nextAction}
-                {recommendation}
-                onContinue={() => state.handleNext()}
-            />
+            <Modal show={true} maxWidth="2xl" closeable={false}>
+                <InterventionFeedback
+                    message={state.feedbackData.message}
+                    status={state.feedbackData.status as 'success' | 'wrong'}
+                    {nextAction}
+                    {recommendation}
+                    onContinue={() => state.handleNext()}
+                />
+            </Modal>
         {:else if variant === 'backtrack'}
-            <BacktrackFeedback
-                message={state.feedbackData.message}
-                {nextAction}
-                {recommendation}
-                onContinue={() => state.handleNext()}
-            />
+            <Modal show={true} maxWidth="2xl" closeable={false}>
+                <BacktrackFeedback
+                    message={state.feedbackData.message}
+                    {nextAction}
+                    {recommendation}
+                    onContinue={() => state.handleNext()}
+                />
+            </Modal>
         {:else if state.feedbackData}
             <ResultFeedback
                 status={state.feedbackData.status as 'success' | 'wrong'}
@@ -135,5 +142,4 @@
                 onTryAgain={() => state.handleTryAgain()}
             />
         {/if}
-    </div>
-</Modal>
+    {/if}

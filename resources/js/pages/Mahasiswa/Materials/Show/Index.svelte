@@ -15,7 +15,6 @@
         getTextClass,
         getIcon,
         getBadgeLabel,
-        getShadowClass,
     } from '@/utils/contentTypeStyles';
     import type { Material } from '@/types';
 
@@ -112,58 +111,60 @@
                         {@const SubIcon = getIcon(subMaterial.jenis_konten)}
                         <Card
                             padding="p-0"
-                            class="group overflow-hidden transition-all duration-300 hover:shadow-2xl"
+                            class="overflow-hidden rounded-3xl border-duo-lg bg-white"
                         >
                             <!-- Header with Icon -->
                             <div
-                                class={`relative h-48 ${getBgClass(subMaterial.jenis_konten)} flex shrink-0 items-center justify-center`}
+                                class={`relative h-44 ${getBgClass(subMaterial.jenis_konten)} flex shrink-0 items-center justify-center`}
                             >
-                                <div class="absolute inset-0 bg-slate-900/10"></div>
-                                <div class="absolute inset-x-0 bottom-0 h-1/2 bg-slate-900/20"></div>
-                                <div class="relative z-10">
+                                <div class="absolute inset-0 bg-black/5 opacity-0 transition-opacity group-hover:opacity-100"></div>
+                                <div class="relative z-10 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
                                     <SubIcon
-                                        size={64}
-                                        class="text-white/20 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6"
+                                        size={56}
+                                        class="text-white drop-shadow-lg"
                                     />
                                 </div>
+                                
+                                <!-- Floating Index Badge -->
                                 <div
-                                    class="absolute top-4 left-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-lg"
+                                    class="absolute top-4 left-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-white shadow-lg border-2 border-slate-100"
                                 >
                                     <span
-                                        class={`text-lg font-bold ${getTextClass(subMaterial.jenis_konten)}`}
+                                        class={`text-lg font-black tracking-tight ${getTextClass(subMaterial.jenis_konten)}`}
                                         >{subMaterial.order}</span
                                     >
                                 </div>
+
+                                <!-- Floating Status/Questions -->
                                 <div
-                                    class="absolute right-5 bottom-5 left-5 flex items-center justify-between"
+                                    class="absolute right-4 bottom-4 flex items-center gap-2 rounded-2xl border-2 border-white/30 bg-white/20 px-3 py-1.5 backdrop-blur-md"
                                 >
-                                    <div
-                                        class="rounded-xl border border-white/20 bg-white/10 px-3 py-1.5 text-[9px] font-bold tracking-widest text-white uppercase backdrop-blur-md"
-                                    >
-                                        {getBadgeLabel(subMaterial.jenis_konten)}
-                                    </div>
-                                    <div
-                                        class={`flex items-center gap-2 px-3 py-1.5 ${getBgClass(subMaterial.jenis_konten)} rounded-xl text-[9px] font-bold tracking-widest text-white uppercase shadow-xl ${getShadowClass(subMaterial.jenis_konten)}`}
-                                    >
-                                        <Puzzle size={14} />
+                                    <Puzzle size={14} class="text-white" />
+                                    <span class="text-[10px] font-black tracking-widest text-white uppercase">
                                         {subMaterial.questions ? subMaterial.questions.length : 0} Soal
-                                    </div>
+                                    </span>
                                 </div>
                             </div>
-                            <!-- Content -->
+
+                            <!-- Content Section -->
                             <div class="flex flex-1 flex-col p-6">
-                                <div class="mb-3 flex min-h-[3.5rem] items-start">
+                                <div class="mb-4">
+                                    <div class={`inline-block mb-3 px-3 py-1 rounded-full text-[9px] font-black tracking-[0.15em] uppercase text-white ${getBgClass(subMaterial.jenis_konten)} shadow-sm`}>
+                                        {getBadgeLabel(subMaterial.jenis_konten)}
+                                    </div>
                                     <h3
-                                        class={`text-xl font-bold text-slate-900 group-hover:${getTextClass(subMaterial.jenis_konten)} line-clamp-2 transition-colors`}
+                                        class="line-clamp-2 text-xl font-black leading-tight tracking-tight text-slate-900 transition-colors"
                                     >
                                         {subMaterial.title}
                                     </h3>
                                 </div>
-                                <div class="mb-6 min-h-[4.5rem]">
-                                    <p class="line-clamp-3 text-sm leading-relaxed text-slate-600">
+                                
+                                <div class="mb-6 flex-1">
+                                    <p class="line-clamp-2 text-sm font-medium leading-relaxed text-slate-500">
                                         {stripHtml(subMaterial.content)}
                                     </p>
                                 </div>
+
                                 <div class="mt-auto">
                                     <Button
                                         href={ROUTES.MAHASISWA.SUBMATERIALS.SHOW(
@@ -171,10 +172,11 @@
                                             subMaterial.id
                                         )}
                                         variant="primary"
+                                        size="md"
                                         class="w-full"
                                         icon={BookOpen}
                                     >
-                                        Lihat Materi
+                                        Mulai Belajar
                                     </Button>
                                 </div>
                             </div>

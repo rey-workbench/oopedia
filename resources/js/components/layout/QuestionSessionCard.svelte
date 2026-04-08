@@ -1,7 +1,6 @@
 <script lang="ts">
     import Badge from '@/components/ui/Badge.svelte';
     import Button from '@/components/ui/Button.svelte';
-    import Panel from '@/components/ui/Panel.svelte';
     import Card from '@/components/ui/Card.svelte';
     import MultipleChoice from '@/components/quiz/MultipleChoice.svelte';
     import FillInTheBlank from '@/components/quiz/FillInTheBlank.svelte';
@@ -20,92 +19,51 @@
 <Card
     variant="none"
     padding="p-0"
-    class="overflow-hidden rounded-3xl border-none bg-white shadow-2xl"
+    class="overflow-hidden rounded-[2.5rem] border-duo-lg bg-white"
 >
     {#if !state.isGuest}
-        <div class="border-b border-slate-100 bg-slate-50/50 p-2">
-            <Panel
-                variant="none"
-                rounded="2xl"
-                padding="p-1"
-                class="bg-white shadow-sm ring-1 ring-slate-100"
-            >
-                <div class="flex flex-col items-center justify-between gap-4 px-6 py-3 sm:flex-row">
-                    <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-8">
-                        <div class="text-center sm:text-left">
-                            <span
-                                class="mb-1 block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                                >Kesulitan</span
-                            >
-                            <Badge
-                                variant={state.difficulty === 'beginner'
-                                    ? 'success'
-                                    : state.difficulty === 'medium'
-                                      ? 'warning'
-                                      : 'danger'}
-                                size="sm"
-                                class="border-none font-bold"
-                            >
-                                {state.getDifficultyLabel(state.difficulty)}
-                            </Badge>
-                        </div>
-
-                        <div class="text-center sm:text-left">
-                            <span
-                                class="mb-1 block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                                >Level</span
-                            >
-                            <h5
-                                class="text-xl font-black tracking-tighter text-slate-800 tabular-nums"
-                            >
-                                {state.level}
-                            </h5>
-                        </div>
-
-                        <div class="text-center sm:text-left">
-                            <span
-                                class="mb-1 block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                                >XP</span
-                            >
-                            <h5
-                                class="text-primary-600 flex items-center justify-center gap-1.5 text-xl font-black tracking-tighter sm:justify-start"
-                            >
-                                <Star size={18} class="fill-current text-amber-400" />
-                                <span>{state.xp}</span>
-                            </h5>
-                        </div>
-
-                        <div class="text-center sm:text-left">
-                            <span
-                                class="mb-1 block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                                >Streak</span
-                            >
-                            <h5
-                                class="flex items-center justify-center gap-1.5 text-xl font-black tracking-tighter text-orange-600 sm:justify-start"
-                            >
-                                <Flame size={18} class="fill-current text-orange-500" />
-                                <span>{state.streak}</span>
-                            </h5>
-                        </div>
+        <div class="border-b-4 border-slate-50 bg-slate-50/30 p-4">
+            <div class="flex flex-col items-center justify-between gap-6 px-4 py-2 sm:flex-row">
+                <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+                    <!-- Difficulty Badge -->
+                    <div class="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-slate-100 bg-white px-4 py-2 shadow-sm">
+                        <span class="text-[9px] font-black tracking-widest text-slate-400 uppercase">Sulit</span>
+                        <Badge
+                            variant={state.difficulty === 'beginner'
+                                ? 'success'
+                                : state.difficulty === 'medium'
+                                  ? 'warning'
+                                  : 'danger'}
+                            size="sm"
+                            class="border-none font-black"
+                        >
+                            {state.getDifficultyLabel(state.difficulty)}
+                        </Badge>
                     </div>
 
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onclick={() => state.useHint()}
-                        disabled={state.hintsAvailable <= 0 || !state.currentQuestion?.hint}
-                        class="group border-primary-100 bg-primary-50 text-primary-700 hover:bg-primary-100 hover:text-primary-800 flex items-center gap-2 rounded-xl px-4 font-bold tracking-wide"
-                    >
-                        <div
-                            class="bg-primary-200 group-hover:bg-primary-300 flex h-7 w-7 items-center justify-center rounded-lg transition-colors"
-                        >
-                            <Lightbulb size={16} class="fill-white" />
-                        </div>
-                        Hint ({state.hintsAvailable})
-                    </Button>
+                    <!-- XP Badge -->
+                    <div class="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-amber-100 bg-white px-4 py-2 shadow-sm">
+                        <Star size={18} class="fill-amber-400 text-amber-400" />
+                        <span class="text-lg font-black tracking-tight text-slate-700">{state.xp}</span>
+                    </div>
+
+                    <!-- Streak Badge -->
+                    <div class="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-orange-100 bg-white px-4 py-2 shadow-sm">
+                        <Flame size={18} class="fill-orange-500 text-orange-500" />
+                        <span class="text-lg font-black tracking-tight text-slate-700">{state.streak}</span>
+                    </div>
                 </div>
-            </Panel>
+
+                <button
+                    type="button"
+                    onclick={() => state.useHint()}
+                    disabled={state.hintsAvailable <= 0 || !state.currentQuestion?.hint}
+                    class="group press-active flex items-center gap-3 rounded-2xl border-2 border-b-4 border-primary-200 bg-white px-5 py-2.5 font-black text-primary-600 shadow-sm transition-all hover:bg-primary-50 disabled:opacity-50 disabled:pointer-events-none"
+                >
+                    <Lightbulb size={18} class="text-primary-500 transition-transform group-hover:rotate-12" />
+                    <span class="text-sm">Hint ({state.hintsAvailable})</span>
+                </button>
+            </div>
         </div>
     {/if}
 
