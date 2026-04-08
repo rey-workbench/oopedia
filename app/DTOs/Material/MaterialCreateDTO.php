@@ -12,8 +12,7 @@ readonly class MaterialCreateDTO
         public string $module_id,
         public string $created_by,
         public bool $is_final_project = false,
-    ) {
-    }
+    ) {}
 
     public static function fromRequest(Request $request, string $userId): self
     {

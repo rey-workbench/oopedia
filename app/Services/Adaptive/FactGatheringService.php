@@ -18,8 +18,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
     public function __construct(
         public readonly ProgressRepositoryInterface $progressRepo,
         public readonly QuestionRepositoryInterface $questionRepo,
-    ) {
-    }
+    ) {}
 
     public function gatherFacts(
         StudentState $studentState,
@@ -233,8 +232,11 @@ final class FactGatheringService implements FactGatheringServiceInterface
 
         $progressionBonus = 0;
         if ($difficulty === Question::DIFFICULTY_HARD && $hardAnswered > 0) {
-            $progressionBonus = StudentStateSchema::BONUS_REACHING_HARD_BASE
-                + min(StudentStateSchema::BONUS_MAX_HARD_PROGRESSION, $hardAnswered * StudentStateSchema::BONUS_HARD_QUESTION_ANSWERED);
+            $progressionBonus = StudentStateSchema::BONUS_REACHING_HARD_BASE +
+                min(
+                    StudentStateSchema::BONUS_MAX_HARD_PROGRESSION,
+                    $hardAnswered * StudentStateSchema::BONUS_HARD_QUESTION_ANSWERED,
+                );
         } elseif ($difficulty === Question::DIFFICULTY_MEDIUM && $mediumAnswered > 0) {
             if ($mediumAnswered >= StudentStateSchema::THRESHOLD_MEDIUM_REACHED_COUNT) {
                 $progressionBonus = StudentStateSchema::BONUS_REACHING_MEDIUM_STREAK;

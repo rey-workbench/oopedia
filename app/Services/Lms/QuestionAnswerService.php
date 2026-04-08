@@ -21,8 +21,7 @@ final class QuestionAnswerService implements QuestionAnswerServiceInterface
         protected ProgressRepositoryInterface $progressRepo,
         protected GamificationServiceInterface $gamificationService,
         protected GuestProgressServiceInterface $guestProgressService,
-    ) {
-    }
+    ) {}
 
     /** @return array<string, mixed> */
     public function checkAnswer(array $data, string $userId, bool $isGuest): array

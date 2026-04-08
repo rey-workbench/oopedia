@@ -1,10 +1,7 @@
 <script lang="ts">
     import { AlertCircle } from 'lucide-svelte';
+    import { generateStableId } from '@/utils/ids';
 
-    /**
-     * @file Textarea.svelte
-     * @description A premium reusable textarea component for the Oopedia platform.
-     */
     interface Props {
         value?: string;
         placeholder?: string;
@@ -34,7 +31,7 @@
     }: Props = $props();
 
     // Generate a stable ID if not provided
-    const textareaId = $derived(id || `textarea-${Math.random().toString(36).slice(2, 11)}`);
+    const textareaId = $derived(id || generateStableId('textarea'));
     const errorId = $derived(`${textareaId}-error`);
 </script>
 

@@ -33,6 +33,9 @@ export { default as StatCard } from './StatCard.svelte';
 export { default as FileUploadZone } from './FileUploadZone.svelte';
 export { default as ImageUpload } from './ImageUpload.svelte';
 
+// Loading States
+export { default as Skeleton } from './Skeleton.svelte';
+
 // Navigation & Actions
 export { default as Button } from './Button.svelte';
 export { default as Modal } from './Modal.svelte';

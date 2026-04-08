@@ -20,8 +20,7 @@ final class QuestionListingService implements QuestionListingServiceInterface
         public readonly MaterialRepositoryInterface $materialRepo,
         public readonly ProgressRepositoryInterface $progressRepo,
         public readonly QuestionRepositoryInterface $questionRepo,
-    ) {
-    }
+    ) {}
 
     public function getQuizData(
         Material $material,
@@ -59,9 +58,11 @@ final class QuestionListingService implements QuestionListingServiceInterface
 
         $levelProgress = $this->getLevelProgress($material, $difficulty, $answeredQuestionIds, $isGuest, $questions);
 
-        $questions = new Collection($questions->groupBy('difficulty')->map(function ($group) {
+        $shuffledQuestions = $questions->groupBy('difficulty')->map(function ($group) {
             return $group->shuffle();
-        })->flatten()->all());
+        })->flatten(1);
+
+        $questions = new Collection($shuffledQuestions->all());
 
         $currentQuestion = $this->getCurrentQuestion($questions, $answeredQuestionIds);
 
@@ -127,7 +128,10 @@ final class QuestionListingService implements QuestionListingServiceInterface
                 $answeredCount    = $materialProgress ? $materialProgress->answered_questions : 0;
             }
 
-            $progressPercentage = ProgressHelper::calculateProgressPercentage($answeredCount, $configuredTotalQuestions);
+            $progressPercentage = ProgressHelper::calculateProgressPercentage(
+                $answeredCount,
+                $configuredTotalQuestions,
+            );
 
             $studentCount = $studentCounts->firstWhere('material_id', $material->id)?->student_count ?? 0;
 
@@ -138,7 +142,10 @@ final class QuestionListingService implements QuestionListingServiceInterface
 
             $moduleId            = $material->module_id;
             $isFirstModule       = $moduleId !== null && $moduleId === $firstModuleId;
-            $isUnlocked          = $isGuest || $isFirstModule || empty($moduleId) || in_array($moduleId, $unlockedModules);
+            $isUnlocked          = $isGuest ||
+                $isFirstModule              ||
+                empty($moduleId)            ||
+                in_array($moduleId, $unlockedModules);
             $material->is_locked = ! $isUnlocked;
 
             return $material;
@@ -258,7 +265,10 @@ final class QuestionListingService implements QuestionListingServiceInterface
             return in_array($question->id, $answeredArray);
         })->first();
 
-        if ($currentQuestion instanceof Question && $currentQuestion->question_type !== Question::QUESTION_TYPE_FILL_IN_THE_BLANK) {
+        $isNotFillInTheBlank = $currentQuestion instanceof Question &&
+            $currentQuestion->question_type !== Question::QUESTION_TYPE_FILL_IN_THE_BLANK;
+
+        if ($isNotFillInTheBlank) {
             if (! $currentQuestion->relationLoaded('answers')) {
                 $currentQuestion->load('answers');
             }
@@ -271,9 +281,9 @@ final class QuestionListingService implements QuestionListingServiceInterface
     public function getLevelProgress(
         Material $material,
         string $difficulty,
-        SupportCollection $answeredQuestionIds,
+        SupportCollection|Collection $answeredQuestionIds,
         bool $isGuest = false,
-        ?Collection $preloadedQuestions = null,
+        SupportCollection|Collection|null $preloadedQuestions = null,
     ): array {
         $questions = $preloadedQuestions !== null
             ? $preloadedQuestions
@@ -291,6 +301,10 @@ final class QuestionListingService implements QuestionListingServiceInterface
         $index  = 1;
 
         foreach ($completed as $question) {
+            if (! $question instanceof Question) {
+                continue;
+            }
+
             $levels[] = [
                 'level'       => $index++,
                 'question_id' => $question->id,
@@ -301,6 +315,10 @@ final class QuestionListingService implements QuestionListingServiceInterface
         $isFirst = true;
 
         foreach ($remaining as $question) {
+            if (! $question instanceof Question) {
+                continue;
+            }
+
             $levels[] = [
                 'level'       => $index++,
                 'question_id' => $question->id,

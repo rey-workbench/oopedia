@@ -1,5 +1,6 @@
 <script lang="ts">
     import { AlertCircle, ChevronDown } from 'lucide-svelte';
+    import { generateStableId } from '@/utils/ids';
 
     interface Option {
         value: string | number;
@@ -39,7 +40,7 @@
         ...rest
     }: Props = $props();
 
-    const selectId = $derived(id || `select-${Math.random().toString(36).slice(2, 11)}`);
+    const selectId = $derived(id || generateStableId('select'));
     const errorId = $derived(`${selectId}-error`);
 
     const sizes = {

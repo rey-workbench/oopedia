@@ -14,8 +14,7 @@ readonly class QuestionCreateDTO
         public string $difficulty,
         public string $created_by,
         public array $answers,
-    ) {
-    }
+    ) {}
 
     public static function fromRequest(Request $request, string $userId): self
     {

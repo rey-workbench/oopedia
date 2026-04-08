@@ -1,10 +1,7 @@
 <script lang="ts">
     import { AlertCircle } from 'lucide-svelte';
+    import { generateStableId } from '@/utils/ids';
 
-    /**
-     * @file Input.svelte
-     * @description A premium reusable input component for the Oopedia platform.
-     */
     interface Props {
         type?: string;
         value?: string | number;
@@ -39,8 +36,7 @@
         ...rest
     }: Props = $props();
 
-    // Generate a stable ID if not provided
-    const inputId = $derived(id || `input-${Math.random().toString(36).slice(2, 11)}`);
+    const inputId = $derived(id || generateStableId('input'));
     const errorId = $derived(`${inputId}-error`);
 
     const variantClasses = {

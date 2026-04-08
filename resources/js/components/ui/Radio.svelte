@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { generateStableId } from '@/utils/ids';
+
     interface Props {
         checked?: boolean;
         value?: string | number;
@@ -28,7 +30,7 @@
         ...rest
     }: Props = $props();
 
-    const radioId = $derived(id || `radio-${Math.random().toString(36).slice(2, 11)}`);
+    const radioId = $derived(id || generateStableId('radio'));
 
     function handleChange(e: Event) {
         const target = e.target as HTMLInputElement;

@@ -30,8 +30,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         public readonly AdaptiveEngineServiceInterface $adaptiveEngine,
         public readonly NextActionResolverServiceInterface $nextActionResolver,
         public readonly GuestProgressServiceInterface $guestProgressService,
-    ) {
-    }
+    ) {}
 
     /** @return array<string, mixed> */
     public function processAdaptiveAttempt(Material $material, Question $question, string $userId, array $data): array
@@ -43,7 +42,12 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
 
         $studentState = null;
         if (! $isGuest) {
-            $studentState = $this->performanceService->updateStudentPerformance($userId, $isCorrect, $timeSpent, $usedHint);
+            $studentState = $this->performanceService->updateStudentPerformance(
+                $userId,
+                $isCorrect,
+                $timeSpent,
+                $usedHint,
+            );
 
             $this->performanceService->updateLearningStyleFromInteraction(
                 $userId,
@@ -162,8 +166,12 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         }
 
         $adaptiveState['time_metrics']      = [
-            'avg_time_per_question' => (! $isGuest) ? $this->performanceService->calculateAverageTimeSpent($userId, $material->id) : 0,
-            'total_time_spent'      => (! $isGuest) ? $this->performanceService->calculateTotalTimeSpent($userId, $material->id) : 0,
+            'avg_time_per_question' => (! $isGuest)
+                ? $this->performanceService->calculateAverageTimeSpent($userId, $material->id)
+                : 0,
+            'total_time_spent'      => (! $isGuest)
+                ? $this->performanceService->calculateTotalTimeSpent($userId, $material->id)
+                : 0,
         ];
 
         if (isset($ruleOutput['learning_profile'])) {

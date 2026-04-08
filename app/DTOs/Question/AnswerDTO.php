@@ -11,8 +11,7 @@ readonly class AnswerDTO
         public bool $is_correct,
         public \DateTimeInterface $created_at,
         public \DateTimeInterface $updated_at,
-    ) {
-    }
+    ) {}
 
     public static function fromModel($answer): self
     {

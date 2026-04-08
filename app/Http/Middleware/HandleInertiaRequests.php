@@ -12,8 +12,7 @@ class HandleInertiaRequests extends Middleware
 
     public function __construct(
         protected ?MaterialServiceInterface $materialService = null,
-    ) {
-    }
+    ) {}
 
     public function share(Request $request): array
     {
@@ -26,7 +25,14 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $user,
+                'user' => $user ? [
+                    'id'    => $user->id,
+                    'name'  => $user->name,
+                    'email' => $user->email,
+                    'role'  => [
+                        'role_name' => $user->role?->role_name,
+                    ],
+                ] : null,
             ],
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),

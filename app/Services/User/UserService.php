@@ -24,8 +24,7 @@ final class UserService implements UserServiceInterface
 
     public function __construct(
         public readonly UserRepositoryInterface $userRepo,
-    ) {
-    }
+    ) {}
 
     public function getUserById(string $id): ?User
     {

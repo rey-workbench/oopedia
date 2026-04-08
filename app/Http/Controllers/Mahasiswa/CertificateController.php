@@ -13,8 +13,7 @@ class CertificateController extends Controller
     public function __construct(
         protected MaterialRepositoryInterface $materialRepo,
         protected ProgressRepositoryInterface $progressRepo,
-    ) {
-    }
+    ) {}
 
     public function index(): Response
     {

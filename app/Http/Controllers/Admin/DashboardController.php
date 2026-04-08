@@ -9,9 +9,7 @@ use Inertia\Response;
 
 class DashboardController extends Controller
 {
-    public function __construct(protected AdminDashboardServiceInterface $adminDashboardService)
-    {
-    }
+    public function __construct(protected AdminDashboardServiceInterface $adminDashboardService) {}
 
     public function index(): Response
     {

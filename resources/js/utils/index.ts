@@ -2,6 +2,7 @@ export { ROUTES } from './route';
 export type { RouteKeys } from './route';
 export { route, navigateTo, redirectTo } from './router';
 export { confirmDelete } from './confirmDelete';
+export { generateId, generateStableId } from './ids';
 export {
     getGradientClass,
     getTextClass,

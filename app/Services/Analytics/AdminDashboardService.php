@@ -21,8 +21,7 @@ final class AdminDashboardService implements AdminDashboardServiceInterface
         public readonly MaterialRepositoryInterface $materialRepo,
         public readonly ProgressRepositoryInterface $progressRepo,
         public readonly QuestionRepositoryInterface $questionRepo,
-    ) {
-    }
+    ) {}
 
     /** @return array<string, int> */
     public function getDashboardStats(): array

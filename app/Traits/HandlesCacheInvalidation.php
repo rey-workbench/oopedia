@@ -2,6 +2,4 @@
 
 namespace App\Traits;
 
-trait HandlesCacheInvalidation
-{
-}
+trait HandlesCacheInvalidation {}

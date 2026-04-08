@@ -13,8 +13,7 @@ class DashboardController extends Controller
     public function __construct(
         protected DashboardServiceInterface $dashboardService,
         protected LeaderboardServiceInterface $leaderboardService,
-    ) {
-    }
+    ) {}
 
     public function index(): Response
     {

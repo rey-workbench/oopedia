@@ -28,8 +28,7 @@ final class StudentService implements StudentServiceInterface
         public readonly UserRepositoryInterface $userRepo,
         public readonly MaterialRepositoryInterface $materialRepo,
         public readonly ProgressRepositoryInterface $progressRepo,
-    ) {
-    }
+    ) {}
 
     public function getStudentsWithProgress(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {

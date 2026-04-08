@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { generateStableId } from '@/utils/ids';
+
     interface Props {
         checked?: boolean;
         label?: string;
@@ -25,7 +27,7 @@
         ...rest
     }: Props = $props();
 
-    const toggleId = $derived(id || `toggle-${Math.random().toString(36).slice(2, 11)}`);
+    const toggleId = $derived(id || generateStableId('toggle'));
 
     function handleChange(e: Event) {
         const target = e.target as HTMLInputElement;

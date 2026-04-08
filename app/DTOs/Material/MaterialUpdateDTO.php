@@ -11,8 +11,7 @@ readonly class MaterialUpdateDTO
         public ?string $content = null,
         public ?string $module_id = null,
         public ?bool $is_final_project = null,
-    ) {
-    }
+    ) {}
 
     public static function fromRequest(Request $request): self
     {

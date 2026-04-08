@@ -1,5 +1,6 @@
 <script lang="ts">
     import { Check } from 'lucide-svelte';
+    import { generateStableId } from '@/utils/ids';
 
     interface Props {
         checked?: boolean;
@@ -33,7 +34,7 @@
         ...rest
     }: Props = $props();
 
-    const checkboxId = $derived(id || `checkbox-${Math.random().toString(36).slice(2, 11)}`);
+    const checkboxId = $derived(id || generateStableId('checkbox'));
 
     function handleChange(e: Event) {
         const target = e.target as HTMLInputElement;

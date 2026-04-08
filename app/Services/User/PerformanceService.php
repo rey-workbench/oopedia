@@ -20,8 +20,7 @@ final class PerformanceService implements PerformanceServiceInterface
         public readonly ProgressRepositoryInterface $progressRepo,
         public readonly GamificationServiceInterface $gamificationService,
         public readonly GuestProgressServiceInterface $guestProgressService,
-    ) {
-    }
+    ) {}
 
     public function getStudentState(string $userId): StudentState
     {
@@ -88,7 +87,9 @@ final class PerformanceService implements PerformanceServiceInterface
             ];
         }
 
-        $category = $questionType === Question::TYPE_SINTAKS ? StudentStateSchema::STYLE_VISUAL : StudentStateSchema::STYLE_TEXTUAL;
+        $category = $questionType === Question::TYPE_SINTAKS
+            ? StudentStateSchema::STYLE_VISUAL
+            : StudentStateSchema::STYLE_TEXTUAL;
         $profile[StudentStateSchema::KEY_TIME_DISTRIBUTION][$category] += $timeSpent;
 
         $visualTime  = $profile[StudentStateSchema::KEY_TIME_DISTRIBUTION][StudentStateSchema::STYLE_VISUAL]    ?? 0;
@@ -102,7 +103,9 @@ final class PerformanceService implements PerformanceServiceInterface
             if ($diff < StudentStateSchema::RATIO_STYLE_MIXED) {
                 $newStyle = StudentStateSchema::STYLE_MIXED;
             } else {
-                $newStyle = $visualTime > $textualTime ? StudentStateSchema::STYLE_VISUAL : StudentStateSchema::STYLE_TEXTUAL;
+                $newStyle = $visualTime > $textualTime
+                    ? StudentStateSchema::STYLE_VISUAL
+                    : StudentStateSchema::STYLE_TEXTUAL;
             }
         }
 

@@ -23,11 +23,11 @@ use Illuminate\Notifications\Notifiable;
  */
 final class User extends Authenticatable
 {
-    public const string ADMIN_EMAIL_DOMAIN = '@admin.oopedia.com';
-
     use HasFactory;
     use HasUlids;
     use Notifiable;
+
+    public const string ADMIN_EMAIL_DOMAIN = '@admin.oopedia.com';
 
     public $incrementing = false;
 

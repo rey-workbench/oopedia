@@ -10,9 +10,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UeqSurveyController extends Controller
 {
-    public function __construct(protected UeqSurveyServiceInterface $ueqService)
-    {
-    }
+    public function __construct(protected UeqSurveyServiceInterface $ueqService) {}
 
     public function index(Request $request): Response
     {

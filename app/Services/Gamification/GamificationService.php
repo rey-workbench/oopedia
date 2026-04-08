@@ -20,8 +20,7 @@ final class GamificationService implements GamificationServiceInterface
 {
     public function __construct(
         public readonly ProgressRepositoryInterface $progressRepo,
-    ) {
-    }
+    ) {}
 
     public function calculateCorrectAnswerReward(
         array $state,
@@ -129,7 +128,8 @@ final class GamificationService implements GamificationServiceInterface
                 'bonus_granted' => true,
                 'message'       => "Streak {$currentStreak}! +1 Hint bonus",
                 'updates'       => [
-                    StudentStateSchema::KEY_HINTS_AVAILABLE => ($state[StudentStateSchema::KEY_HINTS_AVAILABLE] ?? 0) + 1,
+                    StudentStateSchema::KEY_HINTS_AVAILABLE => ($state[StudentStateSchema::KEY_HINTS_AVAILABLE]
+                        ?? 0) + 1,
                 ],
             ];
         }

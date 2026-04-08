@@ -1,5 +1,6 @@
 <script lang="ts">
     import { ChevronDown } from 'lucide-svelte';
+    import { generateStableId } from '@/utils/ids';
 
     interface Option {
         value: string | number;
@@ -41,7 +42,7 @@
     let open = $state(false);
     let containerRef: HTMLDivElement | undefined = $state();
 
-    const selectId = $derived(id || `dropdown-${Math.random().toString(36).slice(2, 11)}`);
+    const selectId = $derived(id || generateStableId('dropdown'));
     const errorId = $derived(`${selectId}-error`);
 
     const sizes = {

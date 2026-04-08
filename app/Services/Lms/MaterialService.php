@@ -22,8 +22,7 @@ final class MaterialService implements MaterialServiceInterface
         public readonly MaterialRepositoryInterface $materialRepo,
         public readonly MediaRepositoryInterface $mediaRepo,
         public readonly ?ProgressRepositoryInterface $progressRepo = null,
-    ) {
-    }
+    ) {}
 
     public function getAllMaterials(
         ?string $search = null,

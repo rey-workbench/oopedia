@@ -21,8 +21,7 @@ class QuestionController extends Controller
         protected QuestionServiceInterface $questionService,
         protected MaterialServiceInterface $materialService,
         protected MaterialRepositoryInterface $materialRepo,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): Response
     {

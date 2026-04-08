@@ -16,8 +16,7 @@ class RegisterController extends Controller
 {
     public function __construct(
         protected UserServiceInterface $userService,
-    ) {
-    }
+    ) {}
 
     public function create(): Response
     {
