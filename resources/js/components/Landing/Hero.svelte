@@ -305,26 +305,26 @@
     {/each}
 
     <div class="relative z-10 mt-12 flex flex-col items-center" in:fade={{ duration: 1500 }}>
-        <span class="mb-3 text-[15px] font-bold tracking-tight text-black sm:text-[17px]"
+        <span class="mb-3 text-[15px] font-bold tracking-tight text-slate-900 sm:text-[17px]"
             >OOPEDIA</span
         >
 
         <h1
-            class="mb-10 px-4 font-sans text-[2.5rem] leading-[0.95] font-medium tracking-[-0.05em] text-black drop-shadow-sm sm:text-[3.5rem] md:text-[5rem] lg:text-[7.5rem]"
+            class="mb-10 px-4 font-sans text-[2.5rem] leading-[0.95] font-medium tracking-[-0.05em] text-slate-900 drop-shadow-sm sm:text-[3.5rem] md:text-[5rem] lg:text-[7.5rem]"
         >
             Ruang belajar Anda<br />untuk menguasai OOP
         </h1>
 
         <Link
             href={ROUTES.AUTH.REGISTER}
-            class="rounded-full bg-[#111] px-6 py-3 text-[13px] font-medium tracking-tight text-white shadow-lg transition-colors hover:bg-black active:scale-95 sm:px-8 sm:py-3.5 sm:text-[15px]"
+            class="rounded-full bg-[#111] px-6 py-3 text-[13px] font-medium tracking-tight text-white shadow-lg transition-colors hover:bg-slate-900 active:scale-95 sm:px-8 sm:py-3.5 sm:text-[15px]"
         >
             Mulai Belajar
         </Link>
     </div>
 
     <div
-        class="group absolute bottom-8 left-1/2 z-10 flex w-full -translate-x-1/2 cursor-pointer items-center justify-center gap-3 text-[14px] font-semibold text-black/50 transition-colors hover:text-black"
+        class="group absolute bottom-8 left-1/2 z-10 flex w-full -translate-x-1/2 cursor-pointer items-center justify-center gap-3 text-[14px] font-semibold text-slate-900/50 transition-colors hover:text-slate-900"
     >
         <Play size={12} class="fill-current" />
         <span>Lihat Demo</span>

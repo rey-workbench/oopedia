@@ -32,7 +32,7 @@
     style="opacity: {$opacity}; transform: translateX({$translateX}px) rotate({$rotate}deg);"
 >
     <h2
-        class="mb-10 max-w-sm text-center font-serif text-[2.5rem] leading-[0.95] tracking-tighter text-black"
+        class="mb-10 max-w-sm text-center font-serif text-[2.5rem] leading-[0.95] tracking-tighter text-slate-900"
     >
         Cari sesuai cara<br />berpikir Anda.
     </h2>
@@ -75,7 +75,7 @@
         </div>
     </div>
 
-    <p class="mt-8 text-[10px] font-black tracking-[0.2em] text-black uppercase">
+    <p class="mt-8 text-[10px] font-black tracking-[0.2em] text-slate-900 uppercase">
         berdasarkan paradigma
     </p>
 </section>

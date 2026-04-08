@@ -30,8 +30,8 @@
         <div class="w-full max-w-md">
             <div class="rounded-2xl bg-[#FDFDFB] p-8 shadow-[0_40px_80px_rgba(0,0,0,0.5)]">
                 <div class="mb-6 flex items-center gap-3">
-                    <Disc2 size={14} class="text-black" />
-                    <span class="text-[10px] font-black tracking-[0.2em] text-black uppercase"
+                    <Disc2 size={14} class="text-slate-900" />
+                    <span class="text-[10px] font-black tracking-[0.2em] text-slate-900 uppercase"
                         >OOPEDIA AI</span
                     >
                 </div>
@@ -39,19 +39,21 @@
                 <div
                     class="mb-6 flex min-h-[80px] items-center justify-center rounded-xl bg-[#F5F5F3] p-4"
                 >
-                    <p class="font-serif text-sm text-black/50">Ketik pertanyaanmu di sini...</p>
+                    <p class="font-serif text-sm text-slate-900/50">
+                        Ketik pertanyaanmu di sini...
+                    </p>
                 </div>
 
                 <div class="flex gap-3">
                     <button
                         type="button"
-                        class="flex-1 rounded-full bg-[#111] py-3.5 text-[10px] font-black tracking-[0.15em] text-white uppercase transition-colors hover:bg-black"
+                        class="flex-1 rounded-full bg-slate-900 py-3.5 text-[10px] font-black tracking-[0.15em] text-white uppercase transition-colors hover:bg-slate-800"
                     >
                         Cari
                     </button>
                     <button
                         type="button"
-                        class="flex-1 rounded-full border border-black/10 bg-white py-3.5 text-[10px] font-black tracking-[0.15em] uppercase transition-colors hover:border-black/30"
+                        class="flex-1 rounded-full border border-slate-300 bg-white py-3.5 text-[10px] font-black tracking-[0.15em] uppercase transition-colors hover:border-slate-300"
                     >
                         Hapus
                     </button>
@@ -65,7 +67,7 @@
             </p>
             <Link
                 href={ROUTES.AUTH.REGISTER}
-                class="group inline-flex items-center gap-3 rounded-full bg-white px-10 py-4 text-[11px] font-black tracking-[0.2em] text-black uppercase shadow-[0_20px_50px_rgba(0,0,0,0.4)] transition-all hover:scale-105 active:scale-95"
+                class="group inline-flex items-center gap-3 rounded-full bg-white px-10 py-4 text-[11px] font-black tracking-[0.2em] text-slate-900 uppercase shadow-[0_20px_50px_rgba(0,0,0,0.4)] transition-all hover:scale-105 active:scale-95"
             >
                 <span>Daftar Sekarang</span>
                 <ArrowRight size={16} class="transition-transform group-hover:translate-x-1" />

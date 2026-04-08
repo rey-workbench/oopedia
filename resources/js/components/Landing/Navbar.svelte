@@ -22,24 +22,24 @@
     let isDark = $derived(!isScrolled && scrollY > 8000);
 
     let headerBg = $derived(
-        isScrolled ? 'bg-white/95 backdrop-blur-xl border-b border-black/5' : 'bg-transparent'
+        isScrolled ? 'bg-white/95 backdrop-blur-xl border-b border-slate-200' : 'bg-transparent'
     );
     let menuBtnBg = $derived(
         isDark
-            ? 'bg-black/80 text-white border border-white/10'
-            : 'bg-white/80 text-black border border-black/5'
+            ? 'bg-slate-900/80 text-white border border-white/10'
+            : 'bg-white/80 text-slate-900 border border-slate-200'
     );
     let searchBg = $derived(
-        isDark ? 'bg-black/80 border border-white/10' : 'bg-white/80 border border-black/5'
+        isDark ? 'bg-slate-900/80 border border-white/10' : 'bg-white/80 border border-slate-200'
     );
-    let searchIconColor = $derived(isDark ? 'text-white/30' : 'text-black/30');
+    let searchIconColor = $derived(isDark ? 'text-white/30' : 'text-slate-900/30');
     let placeholderColor = $derived(
-        isDark ? 'placeholder:text-white/30' : 'placeholder:text-black/30'
+        isDark ? 'placeholder:text-white/30' : 'placeholder:text-slate-900/30'
     );
     let authTextColor = $derived(
-        isDark ? 'text-white/60 hover:text-white' : 'text-black/60 hover:text-black'
+        isDark ? 'text-white/60 hover:text-white' : 'text-slate-900/60 hover:text-slate-900'
     );
-    let authBtnBg = $derived(isDark ? 'bg-white text-black' : 'bg-black text-white');
+    let authBtnBg = $derived(isDark ? 'bg-white text-slate-900' : 'bg-slate-900 text-white');
 </script>
 
 <svelte:window bind:scrollY />
@@ -63,13 +63,13 @@
 
         {#if menuOpen}
             <div
-                class="absolute top-full left-0 mt-3 w-56 rounded-2xl border border-black/5 bg-white/95 p-2 shadow-2xl backdrop-blur-3xl"
+                class="absolute top-full left-0 mt-3 w-56 rounded-2xl border border-slate-200 bg-white/95 p-2 shadow-2xl backdrop-blur-3xl"
             >
                 {#each menuItems as item}
                     <Link
                         href={item.href}
                         onclick={closeMenu}
-                        class="group flex items-center justify-between rounded-xl px-4 py-3 text-[11px] font-medium tracking-wide text-black/70 transition-all hover:bg-black/5 hover:text-black"
+                        class="group flex items-center justify-between rounded-xl px-4 py-3 text-[11px] font-medium tracking-wide text-slate-900/70 transition-all hover:bg-slate-900/5 hover:text-slate-900"
                     >
                         <span>{item.label}</span>
                         <ChevronRight

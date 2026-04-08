@@ -103,7 +103,7 @@
     <\/script>`}
 </svelte:head>
 
-<div class="min-h-screen bg-[#FDFDFB] font-sans text-black antialiased">
+<div class="min-h-screen bg-[#FDFDFB] font-sans text-slate-900 antialiased">
     <Navbar />
 
     <main class="relative w-full">

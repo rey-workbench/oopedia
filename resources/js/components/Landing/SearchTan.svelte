@@ -97,7 +97,7 @@
         </div>
     </div>
 
-    <p class="mt-8 text-[10px] font-black tracking-[0.2em] text-black uppercase">
+    <p class="mt-8 text-[10px] font-black tracking-[0.2em] text-slate-900 uppercase">
         berdasarkan kesamaan visual
     </p>
 </section>

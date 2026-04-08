@@ -288,7 +288,7 @@
                             >
                                 <div class="flex items-center gap-8 p-8">
                                     <div
-                                        class={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-black/5 shadow-inner transition-colors
+                                        class={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-slate-200 shadow-inner transition-colors
                                     ${activity.type === 'achievement' ? 'bg-emerald-50 text-emerald-500' : activity.type === 'milestone' ? 'bg-amber-50 text-amber-500' : 'bg-primary-50 text-primary-500'}`}
                                     >
                                         <ActivityIcon size={24} strokeWidth={2.5} />

@@ -85,7 +85,7 @@
             {#if toast.dismissible !== false}
                 <button
                     type="button"
-                    class="shrink-0 rounded-lg p-1 transition-colors hover:bg-black/5"
+                    class="shrink-0 rounded-lg p-1 transition-colors hover:bg-slate-900/5"
                     aria-label="Dismiss"
                     onclick={() => handleRemove(toast.id)}
                 >

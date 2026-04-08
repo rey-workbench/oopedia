@@ -34,7 +34,7 @@
     class="mx-auto mb-40 flex max-w-7xl flex-col items-center px-6"
     style="opacity: {$opacity}; transform: translateY({$translateY}px) scale({$scale});"
 >
-    <h2 class="mb-10 font-serif text-4xl tracking-tighter text-black md:text-5xl">
+    <h2 class="mb-10 font-serif text-4xl tracking-tighter text-slate-900 md:text-5xl">
         Setiap pencarian membuka<br />dunia baru dalam OOP.
     </h2>
 
@@ -42,7 +42,7 @@
         class="group relative flex aspect-video w-full max-w-4xl items-center justify-center overflow-hidden rounded-2xl bg-[#AEC0AD] shadow-2xl transition-transform duration-700 hover:scale-[1.02]"
     >
         <div
-            class="absolute top-8 aspect-video w-48 rounded-xl bg-black/10 shadow-2xl blur-[2px] transition-transform duration-1000 group-hover:translate-x-4 group-hover:-translate-y-6"
+            class="absolute top-8 aspect-video w-48 rounded-xl bg-slate-900/10 shadow-2xl blur-[2px] transition-transform duration-1000 group-hover:translate-x-4 group-hover:-translate-y-6"
         >
             <img
                 src="/images/landing/abstract2.png"
@@ -53,7 +53,7 @@
             />
         </div>
         <div
-            class="absolute right-12 bottom-8 aspect-video w-48 rounded-xl bg-black/20 shadow-2xl blur-[2px] transition-transform duration-1000 group-hover:-translate-x-6 group-hover:-translate-y-4"
+            class="absolute right-12 bottom-8 aspect-video w-48 rounded-xl bg-slate-900/20 shadow-2xl blur-[2px] transition-transform duration-1000 group-hover:-translate-x-6 group-hover:-translate-y-4"
         >
             <img
                 src="/images/landing/abstract3.png"
@@ -75,7 +75,7 @@
                 class="absolute inset-0 h-full w-full object-cover opacity-40 mix-blend-darken"
             />
             <div
-                class="relative z-20 flex items-center gap-3 rounded-full border border-white/30 bg-black/50 px-6 py-3 text-[10px] font-black tracking-[0.2em] text-white shadow-xl backdrop-blur-xl"
+                class="relative z-20 flex items-center gap-3 rounded-full border border-white/30 bg-slate-900/50 px-6 py-3 text-[10px] font-black tracking-[0.2em] text-white shadow-xl backdrop-blur-xl"
             >
                 <Search size={14} class="opacity-70" />
                 <span class="uppercase">polanya</span>
@@ -83,7 +83,7 @@
         </div>
     </div>
 
-    <p class="mt-12 max-w-md text-center text-[12px] font-medium tracking-wide text-black/50">
+    <p class="mt-12 max-w-md text-center text-[12px] font-medium tracking-wide text-slate-900/50">
         Jelajahi berbagai paradigma dan pola desain OOP<br />
         <span class="opacity-60">dengan cara yang lebih personal.</span>
     </p>

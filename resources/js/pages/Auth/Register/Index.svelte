@@ -216,10 +216,10 @@
             <!-- Back to Home Button (Desktop) -->
             <Link
                 href={ROUTES.HOME}
-                class="absolute top-12 right-12 hidden items-center gap-3 text-[10px] font-bold tracking-widest text-slate-600 uppercase transition-all hover:translate-x-[-10px] hover:text-black lg:flex"
+                class="absolute top-12 right-12 hidden items-center gap-3 text-[10px] font-bold tracking-widest text-slate-600 uppercase transition-all hover:translate-x-[-10px] hover:text-slate-900 lg:flex"
             >
                 <div
-                    class="flex h-8 w-8 items-center justify-center rounded-full bg-black/2 ring-1 ring-black/5"
+                    class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-900/2 ring-1 ring-slate-200"
                 >
                     <ChevronLeft size={14} />
                 </div>
@@ -230,16 +230,18 @@
                 <div class="mb-12 lg:text-center">
                     <div class="mb-4 flex justify-center lg:hidden">
                         <div
-                            class="flex h-14 w-14 items-center justify-center rounded-2xl bg-black shadow-2xl"
+                            class="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-900 shadow-2xl"
                         >
                             <img src="/images/logo.png" alt="Logo" class="h-8 w-auto invert" />
                         </div>
                     </div>
-                    <h2 class="font-serif text-5xl font-medium tracking-tight text-black italic">
+                    <h2
+                        class="font-serif text-5xl font-medium tracking-tight text-slate-900 italic"
+                    >
                         Mulai Belajar.
                     </h2>
                     <p class="mt-4 text-lg font-medium tracking-wide text-slate-500">
-                        Bergabunglah dengan ekosistem <span class="font-semibold text-black"
+                        Bergabunglah dengan ekosistem <span class="font-semibold text-slate-900"
                             >1,248</span
                         > pembelajar cerdas lainnya.
                     </p>
@@ -266,7 +268,7 @@
                                 placeholder="Cth. John Doe"
                                 required
                                 error={state.form.errors['name']}
-                                class="h-14 rounded-2xl border-black/5 bg-black/2 px-5 focus:border-black/20 focus:bg-white"
+                                class="h-14 rounded-2xl border-slate-200 bg-slate-900/2 px-5 focus:border-slate-300 focus:bg-white"
                             />
                         </div>
                         <div class="space-y-2">
@@ -282,7 +284,7 @@
                                 placeholder="nama@email.com"
                                 required
                                 error={state.form.errors['email']}
-                                class="h-14 rounded-2xl border-black/5 bg-black/2 px-5 focus:border-black/20 focus:bg-white"
+                                class="h-14 rounded-2xl border-slate-200 bg-slate-900/2 px-5 focus:border-slate-300 focus:bg-white"
                             />
                         </div>
                     </div>
@@ -301,7 +303,7 @@
                                 placeholder="••••••••"
                                 required
                                 error={state.form.errors['password']}
-                                class="h-14 rounded-2xl border-black/5 bg-black/2 px-5 focus:border-black/20 focus:bg-white"
+                                class="h-14 rounded-2xl border-slate-200 bg-slate-900/2 px-5 focus:border-slate-300 focus:bg-white"
                             />
                         </div>
                         <div class="space-y-2">
@@ -316,20 +318,20 @@
                                 bind:value={state.form.password_confirmation}
                                 placeholder="••••••••"
                                 required
-                                class="h-14 rounded-2xl border-black/5 bg-black/2 px-5 focus:border-black/20 focus:bg-white"
+                                class="h-14 rounded-2xl border-slate-200 bg-slate-900/2 px-5 focus:border-slate-300 focus:bg-white"
                             />
                         </div>
                     </div>
 
                     <div
-                        class="flex items-center gap-4 rounded-2xl border border-black/5 bg-black/1 p-6 transition-all hover:bg-black/3 hover:ring-1 hover:ring-black/5"
+                        class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-slate-900/1 p-6 transition-all hover:bg-slate-900/3 hover:ring-1 hover:ring-slate-200"
                     >
                         <div class="relative flex items-center">
                             <input
                                 type="checkbox"
                                 id="register_as_admin"
                                 bind:checked={state.form.register_as_admin}
-                                class="h-6 w-6 cursor-pointer appearance-none rounded-lg border border-black/10 bg-white transition-all checked:bg-black checked:ring-4 checked:ring-black/10"
+                                class="h-6 w-6 cursor-pointer appearance-none rounded-lg border border-slate-300 bg-white transition-all checked:bg-slate-900 checked:ring-4 checked:ring-slate-200"
                             />
                             <div
                                 class="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-opacity peer-checked:opacity-100"
@@ -339,7 +341,7 @@
                         </div>
                         <label for="register_as_admin" class="flex-1 cursor-pointer select-none">
                             <span
-                                class="block text-sm font-bold tracking-widest text-black/60 uppercase"
+                                class="block text-sm font-bold tracking-widest text-slate-900/60 uppercase"
                                 >Daftar sebagai Dosen</span
                             >
                             <span class="mt-1 block text-xs font-medium text-slate-500 italic"
@@ -350,7 +352,7 @@
 
                     <button
                         type="submit"
-                        class="group relative h-16 w-full overflow-hidden rounded-2xl bg-[#0F172A] font-bold tracking-widest text-white uppercase shadow-2xl transition-all hover:bg-black hover:shadow-black/20 active:scale-[0.98] disabled:opacity-50"
+                        class="group relative h-16 w-full overflow-hidden rounded-2xl bg-[#0F172A] font-bold tracking-widest text-white uppercase shadow-2xl transition-all hover:bg-slate-900 hover:shadow-slate-900/20 active:scale-[0.98] disabled:opacity-50"
                         disabled={state.form.processing}
                     >
                         <div class="relative z-10 flex items-center justify-center gap-4">
@@ -374,7 +376,7 @@
 
                     <div class="relative py-4 text-center">
                         <div class="absolute inset-0 flex items-center" aria-hidden="true">
-                            <div class="w-full border-t border-black/3"></div>
+                            <div class="w-full border-t border-slate-200"></div>
                         </div>
                         <span
                             class="relative bg-[#FDFDFB] px-4 text-[10px] font-bold tracking-[0.3em] text-slate-500 uppercase"
@@ -386,12 +388,12 @@
                     <p class="text-center">
                         <Link
                             href={ROUTES.AUTH.LOGIN}
-                            class="group relative inline-flex items-center gap-2 text-xs font-bold tracking-widest text-black/40 uppercase transition-all hover:text-black"
+                            class="group relative inline-flex items-center gap-2 text-xs font-bold tracking-widest text-slate-900/40 uppercase transition-all hover:text-slate-900"
                         >
                             <span class="relative">
                                 Masuk ke Akun
                                 <span
-                                    class="absolute -bottom-1 left-0 h-px w-0 bg-black transition-all group-hover:w-full"
+                                    class="absolute -bottom-1 left-0 h-px w-0 bg-slate-900 transition-all group-hover:w-full"
                                 ></span>
                             </span>
                         </Link>

@@ -206,11 +206,11 @@
                 <div class="lg:hidden">
                     <Link href={ROUTES.HOME} class="flex items-center gap-3">
                         <div
-                            class="flex h-10 w-10 items-center justify-center rounded-xl border border-black/5 bg-white shadow-lg"
+                            class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-lg"
                         >
                             <img src="/images/logo.png" alt="Logo" class="h-6 w-auto" />
                         </div>
-                        <span class="text-xs font-bold tracking-[0.2em] text-black uppercase"
+                        <span class="text-xs font-bold tracking-[0.2em] text-slate-900 uppercase"
                             >OOPEDIA</span
                         >
                     </Link>
@@ -218,7 +218,7 @@
 
                 <Link
                     href={ROUTES.HOME}
-                    class="group ml-auto flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] text-black/40 uppercase transition-all hover:text-black"
+                    class="group ml-auto flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] text-slate-900/40 uppercase transition-all hover:text-slate-900"
                 >
                     <ChevronLeft
                         size={14}
@@ -232,13 +232,13 @@
             <div class="w-full max-w-sm" in:fade={{ duration: 1000, delay: 500 }}>
                 <div class="mb-12">
                     <div
-                        class="mb-6 inline-block animate-pulse rounded-full border border-black/3 bg-black/2 px-3 py-1"
+                        class="mb-6 inline-block animate-pulse rounded-full border border-slate-200 bg-slate-900/2 px-3 py-1"
                     >
                         <span class="text-[9px] font-bold tracking-widest text-slate-500 uppercase"
                             >Akses Mahasiswa</span
                         >
                     </div>
-                    <h2 class="font-serif text-5xl font-light tracking-tight text-black italic">
+                    <h2 class="font-serif text-5xl font-light tracking-tight text-slate-900 italic">
                         Masuk
                     </h2>
                     <p class="mt-4 text-base leading-relaxed font-medium text-slate-500">
@@ -269,7 +269,7 @@
                                 required
                                 autocomplete="email"
                                 error={state.form.errors['email']}
-                                class="h-[70px] rounded-[24px] border-black/3 bg-black/2 px-8 text-lg font-medium transition-all focus:border-black/5 focus:bg-white focus:ring-4 focus:ring-black/5"
+                                class="h-[70px] rounded-[24px] border-slate-200 bg-slate-900/2 px-8 text-lg font-medium transition-all focus:border-slate-200 focus:bg-white focus:ring-4 focus:ring-slate-200"
                             />
                         </div>
                     </div>
@@ -297,7 +297,7 @@
                                 required
                                 autocomplete="current-password"
                                 error={state.form.errors['password']}
-                                class="h-[70px] rounded-[24px] border-black/3 bg-black/2 px-8 text-lg font-medium transition-all focus:border-black/5 focus:bg-white focus:ring-4 focus:ring-black/5"
+                                class="h-[70px] rounded-[24px] border-slate-200 bg-slate-900/2 px-8 text-lg font-medium transition-all focus:border-slate-200 focus:bg-white focus:ring-4 focus:ring-slate-200"
                             />
                         </div>
                     </div>
@@ -305,7 +305,7 @@
                     <div class="pt-2">
                         <button
                             type="submit"
-                            class="group relative h-[70px] w-full overflow-hidden rounded-[24px] bg-[#111] font-bold tracking-[0.2em] text-white uppercase transition-all hover:bg-black active:scale-[0.98] disabled:opacity-50"
+                            class="group relative h-[70px] w-full overflow-hidden rounded-[24px] bg-[#111] font-bold tracking-[0.2em] text-white uppercase transition-all hover:bg-slate-900 active:scale-[0.98] disabled:opacity-50"
                             disabled={state.form.processing}
                         >
                             <!-- Shiny Highlight -->
@@ -330,7 +330,7 @@
                     </div>
 
                     <div class="relative flex items-center justify-center py-4">
-                        <div class="h-px w-full bg-black/3"></div>
+                        <div class="h-px w-full bg-slate-900/3"></div>
                         <span
                             class="absolute bg-[#FDFDFB] px-6 text-[10px] font-bold tracking-[0.3em] text-slate-400 uppercase"
                         >
@@ -341,7 +341,7 @@
                     <button
                         type="button"
                         onclick={() => state.submitAsGuest()}
-                        class="group flex h-[70px] w-full items-center justify-center gap-4 rounded-[24px] border border-black/3 bg-white text-[10px] font-bold tracking-[0.2em] text-slate-600 uppercase transition-all hover:bg-black/2 hover:text-black active:scale-[0.98]"
+                        class="group flex h-[70px] w-full items-center justify-center gap-4 rounded-[24px] border border-slate-200 bg-white text-[10px] font-bold tracking-[0.2em] text-slate-600 uppercase transition-all hover:bg-slate-900/2 hover:text-slate-900 active:scale-[0.98]"
                         disabled={state.form.processing}
                     >
                         <Ghost size={20} class="transition-transform group-hover:scale-110" />

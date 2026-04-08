@@ -118,8 +118,8 @@
                             <div
                                 class={`relative h-48 ${getBgClass(subMaterial.jenis_konten)} flex shrink-0 items-center justify-center`}
                             >
-                                <div class="absolute inset-0 bg-black/10"></div>
-                                <div class="absolute inset-x-0 bottom-0 h-1/2 bg-black/20"></div>
+                                <div class="absolute inset-0 bg-slate-900/10"></div>
+                                <div class="absolute inset-x-0 bottom-0 h-1/2 bg-slate-900/20"></div>
                                 <div class="relative z-10">
                                     <SubIcon
                                         size={64}
