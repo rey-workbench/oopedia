@@ -185,6 +185,8 @@
                     <img
                         src="/images/landing/abstract1.png"
                         alt=""
+                        aria-hidden="true"
+                        role="presentation"
                         class="h-full w-full object-contain"
                     />
                 </div>
@@ -192,6 +194,8 @@
                     <img
                         src="/images/landing/abstract2.png"
                         alt=""
+                        aria-hidden="true"
+                        role="presentation"
                         class="h-full w-full object-contain"
                     />
                 </div>
@@ -252,7 +256,7 @@
                     <div class="space-y-3">
                         <label
                             for="email"
-                            class="ml-1 text-[10px] font-bold tracking-[0.2em] text-black/40 uppercase"
+                            class="ml-1 text-[10px] font-bold tracking-[0.2em] text-slate-600 uppercase"
                         >
                             Alamat Email
                         </label>
@@ -274,13 +278,13 @@
                         <div class="ml-1 flex items-center justify-between">
                             <label
                                 for="password"
-                                class="text-[10px] font-bold tracking-[0.2em] text-black/40 uppercase"
+                                class="text-[10px] font-bold tracking-[0.2em] text-slate-600 uppercase"
                             >
                                 Kata Sandi
                             </label>
                             <Link
                                 href="#"
-                                class="text-[10px] font-bold tracking-widest text-black/20 uppercase transition-colors hover:text-black"
+                                class="text-[10px] font-bold tracking-widest text-slate-500 uppercase transition-colors hover:text-slate-700"
                                 >Lupa?</Link
                             >
                         </div>
@@ -328,7 +332,7 @@
                     <div class="relative flex items-center justify-center py-4">
                         <div class="h-px w-full bg-black/3"></div>
                         <span
-                            class="absolute bg-[#FDFDFB] px-6 text-[10px] font-bold tracking-[0.3em] text-black/10 uppercase"
+                            class="absolute bg-[#FDFDFB] px-6 text-[10px] font-bold tracking-[0.3em] text-slate-400 uppercase"
                         >
                             Atau
                         </span>
@@ -345,12 +349,12 @@
                     </button>
 
                     <p
-                        class="pt-8 text-center text-[10px] font-bold tracking-[0.2em] text-black/20 uppercase"
+                        class="pt-8 text-center text-[10px] font-bold tracking-[0.2em] text-slate-500 uppercase"
                     >
                         Belum punya akun?
                         <Link
                             href={ROUTES.AUTH.REGISTER}
-                            class="ml-2 text-black underline decoration-black/10 decoration-2 underline-offset-12 transition-all hover:text-black/60"
+                            class="ml-2 text-slate-700 underline decoration-slate-300 decoration-2 underline-offset-12 transition-all hover:text-slate-900"
                             >Mulai Sekarang</Link
                         >
                     </p>
@@ -359,7 +363,7 @@
 
             <!-- Fine Print -->
             <div
-                class="absolute right-10 bottom-10 left-10 text-center text-[10px] font-medium tracking-[0.2em] text-black/10 uppercase"
+                class="absolute right-10 bottom-10 left-10 text-center text-[10px] font-medium tracking-[0.2em] text-slate-400 uppercase"
             >
                 &mdash; Smart Learning System &mdash;
             </div>

@@ -24,7 +24,12 @@
     );
 </script>
 
-<Link {href} class="{baseClasses} {themeClasses}" {...restProps}>
+<Link
+    {href}
+    class="{baseClasses} {themeClasses}"
+    aria-current={active ? 'page' : undefined}
+    {...restProps}
+>
     <div
         class="flex h-8 w-8 items-center justify-center rounded-xl {iconContainerClasses} transition-colors duration-300"
     >

@@ -46,6 +46,14 @@
     <title>{title}</title>
 </svelte:head>
 
+<!-- Skip to main content link for keyboard users -->
+<a
+    href="#main-content"
+    class="focus:bg-primary-600 focus:ring-primary-400 sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:rounded-xl focus:px-6 focus:py-3 focus:text-sm focus:font-bold focus:text-white focus:shadow-lg focus:ring-4 focus:outline-none"
+>
+    Skip to main content
+</a>
+
 {#if variant === 'auth'}
     <div
         class="font-poppins relative min-h-screen overflow-hidden bg-[#FDFDFB] text-slate-600 antialiased"
@@ -91,6 +99,7 @@
             <Toast toasts={$toasts} position="top-right" onremove={(id) => toasts.remove(id)} />
 
             <main
+                id="main-content"
                 class="w-full flex-1 {fullWidth
                     ? ''
                     : 'mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8'}"

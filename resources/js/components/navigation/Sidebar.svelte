@@ -220,6 +220,8 @@
                     <div class="space-y-1">
                         <button
                             onclick={() => (isMateriOpen = !isMateriOpen)}
+                            aria-expanded={isMateriOpen}
+                            aria-controls="materials-submenu"
                             class="group flex w-full items-center gap-4 rounded-2xl px-4 py-3.5 font-bold tracking-tight transition-all duration-300
                             {isMateriOpen
                                 ? 'text-primary-600 bg-primary-50'
@@ -249,21 +251,32 @@
                         </button>
 
                         {#if isMateriOpen}
-                            <div transition:slide={{ duration: 300 }} class="mt-1 space-y-1 pl-4">
+                            <div
+                                id="materials-submenu"
+                                transition:slide={{ duration: 300 }}
+                                class="mt-1 space-y-1 pl-4"
+                                role="region"
+                                aria-label="Daftar Materi PBO"
+                            >
                                 {#each materials as material}
                                     {#if material.is_locked}
                                         <div
                                             class="group flex w-full cursor-not-allowed items-center gap-4 rounded-2xl px-4 py-3.5 font-bold tracking-tight text-slate-300 opacity-60"
+                                            aria-disabled="true"
+                                            title="Materi terkunci - selesaikan materi sebelumnya"
                                         >
                                             <div
                                                 class="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-100"
+                                                aria-hidden="true"
                                             >
                                                 <Lock size={16} strokeWidth={2.5} />
                                             </div>
                                             <span
                                                 class="line-clamp-1 flex-1 text-left text-sm font-medium"
-                                                >{material.title}</span
                                             >
+                                                {material.title}
+                                                <span class="sr-only">(Terkunci)</span>
+                                            </span>
                                         </div>
                                     {:else}
                                         <SidebarLink

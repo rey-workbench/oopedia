@@ -91,6 +91,7 @@
             <Search size={16} class={searchIconColor} />
             <input
                 type="text"
+                aria-label="Cari materi OOP"
                 placeholder="Cari materi OOP..."
                 class="w-full border-none bg-transparent text-xs font-medium outline-none {placeholderColor}"
             />
