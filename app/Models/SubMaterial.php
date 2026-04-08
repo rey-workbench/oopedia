@@ -37,8 +37,6 @@ final class SubMaterial extends Model
         'order'       => 'integer',
     ];
 
-    // ==================== RELATIONSHIPS ====================
-
     public function material(): BelongsTo
     {
         return $this->belongsTo(Material::class);
@@ -48,8 +46,6 @@ final class SubMaterial extends Model
     {
         return $this->hasMany(Question::class);
     }
-
-    // ==================== SCOPES ====================
 
     public function scopeOrdered(Builder $query): Builder
     {

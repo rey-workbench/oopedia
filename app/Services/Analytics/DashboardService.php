@@ -160,13 +160,13 @@ final class DashboardService implements DashboardServiceInterface
                         $progress       = $materialProgress->firstWhere('material_id', $material->id);
                         $totalQuestions = $material->questions->count();
 
-                        if ($progress && $totalQuestions > 0) {
-                            $correctAnswers = $progress->correct_answers;
-
-                            return $correctAnswers > 0 && $correctAnswers < $totalQuestions;
+                        if (! $progress || $totalQuestions <= 0) {
+                            return false;
                         }
 
-                        return false;
+                        $correctAnswers = $progress->correct_answers;
+
+                        return $correctAnswers > 0 && $correctAnswers < $totalQuestions;
                     },
                 );
 
@@ -191,18 +191,18 @@ final class DashboardService implements DashboardServiceInterface
                     function ($material) use ($materialProgress, $isGuest) {
                         $progress = $materialProgress->firstWhere('material_id', $material->id);
 
-                        if ($progress) {
-                            $correctAnswers = $progress->correct_answers;
-                            $counts         = ProgressHelper::calculateMaterialQuestionCounts(
-                                $material,
-                                $isGuest,
-                            );
-                            $configuredTotalQuestions = $counts['total'];
-
-                            return $correctAnswers >= $configuredTotalQuestions;
+                        if (! $progress) {
+                            return false;
                         }
 
-                        return false;
+                        $correctAnswers = $progress->correct_answers;
+                        $counts         = ProgressHelper::calculateMaterialQuestionCounts(
+                            $material,
+                            $isGuest,
+                        );
+                        $configuredTotalQuestions = $counts['total'];
+
+                        return $correctAnswers >= $configuredTotalQuestions;
                     },
                 );
 

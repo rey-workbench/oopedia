@@ -43,7 +43,10 @@
                 <nav class="flex text-sm" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-3">
                         <li class="inline-flex items-center">
-                            <span class="text-[10px] font-bold tracking-[0.2em] text-black/20 uppercase">Page</span>
+                            <span
+                                class="text-[10px] font-bold tracking-[0.2em] text-black/20 uppercase"
+                                >Page</span
+                            >
                         </li>
                         <li>
                             <div class="flex items-center">
@@ -52,7 +55,8 @@
                                     strokeWidth={2}
                                     class="mx-2 text-black/20"
                                 />
-                                <span class="text-[10px] font-bold tracking-[0.2em] text-black uppercase"
+                                <span
+                                    class="text-[10px] font-bold tracking-[0.2em] text-black uppercase"
                                     >{titlePage}</span
                                 >
                             </div>
@@ -108,7 +112,7 @@
                     </button>
 
                     <div
-                        class="invisible absolute right-0 mt-2 w-56 origin-top-right scale-95 transform rounded-3xl bg-white p-2 opacity-0 shadow-2xl shadow-black/5 ring-1 ring-black/5 transition-all duration-300 group-hover:visible group-hover:scale-100 group-hover:opacity-100"
+                        class="invisible absolute right-0 mt-2 w-56 origin-top-right scale-95 transform rounded-3xl bg-white p-2 opacity-0 shadow-2xl ring-1 shadow-black/5 ring-black/5 transition-all duration-300 group-hover:visible group-hover:scale-100 group-hover:opacity-100"
                     >
                         <div class="mb-1 border-b border-black/5 px-4 py-3">
                             <p class="text-xs font-bold text-black">

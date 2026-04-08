@@ -9,16 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * @property string $id
- * @property string $question_id
- * @property bool $is_correct
- * @property string|null $explanation
- * @property string|null $answer_text
- * @property string|null $drag_source
- * @property string|null $drag_target
- * @property int|null $blank_position
- */
 final class Answer extends Model
 {
     use HasFactory;

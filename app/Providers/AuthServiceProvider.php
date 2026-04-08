@@ -8,8 +8,4 @@ class AuthServiceProvider extends ServiceProvider
 {
     protected $policies = [
     ];
-
-    public function boot(): void
-    {
-    }
 }

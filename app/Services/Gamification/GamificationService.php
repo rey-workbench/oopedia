@@ -23,8 +23,6 @@ final class GamificationService implements GamificationServiceInterface
     ) {
     }
 
-    // ==================== REWARD ====================
-
     public function calculateCorrectAnswerReward(
         array $state,
         bool $usedHint = false,
@@ -39,14 +37,12 @@ final class GamificationService implements GamificationServiceInterface
         };
         $xpEarned = $baseXp;
 
-        // Speed bonus
         $allocatedTime = AdaptiveConstants::ALLOCATED_TIME[$difficulty] ?? 60;
         $isFast        = $timeSpent > 0 && ($timeSpent / $allocatedTime * 100) < AdaptiveConstants::TIME_FAST_THRESHOLD;
         if ($isFast) {
             $xpEarned += StudentStateSchema::XP_BONUS_FAST;
         }
 
-        // Penalty for using hint
         if ($usedHint) {
             $xpEarned = max(0, $xpEarned - StudentStateSchema::XP_PENALTY_HINT);
         }
@@ -104,8 +100,6 @@ final class GamificationService implements GamificationServiceInterface
         return round(($correct / $total) * 100, 2);
     }
 
-    // ==================== STREAK ====================
-
     public function updateCorrectStreak(array $state): array
     {
         return [
@@ -153,8 +147,6 @@ final class GamificationService implements GamificationServiceInterface
 
         return 0;
     }
-
-    // ==================== LEVELING ====================
 
     public function determineLevel(int $xp): string
     {

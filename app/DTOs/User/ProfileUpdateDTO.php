@@ -28,6 +28,6 @@ readonly class ProfileUpdateDTO
             'name'     => $this->name,
             'email'    => $this->email,
             'password' => $this->password,
-        ], fn ($value) => $value !== null);
+        ], static fn ($value) => $value !== null);
     }
 }

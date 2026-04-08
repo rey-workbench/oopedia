@@ -42,8 +42,4 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(QuizAttemptRepositoryInterface::class, QuizAttemptRepository::class);
         $this->app->bind(StudentStateRepositoryInterface::class, StudentStateRepository::class);
     }
-
-    public function boot(): void
-    {
-    }
 }

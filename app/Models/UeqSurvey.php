@@ -82,10 +82,6 @@ final class UeqSurvey extends Model
         'suggestions',
     ];
 
-    protected $casts = [
-        'user_id' => 'string',
-    ];
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

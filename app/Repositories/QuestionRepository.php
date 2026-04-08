@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Collection;
 
 final class QuestionRepository implements QuestionRepositoryInterface
 {
-    /** @return Collection<int, Question> */
     public function all(): Collection
     {
         return Question::all();
@@ -31,24 +30,24 @@ final class QuestionRepository implements QuestionRepositoryInterface
     {
         $question = Question::find($id);
 
-        if ($question) {
-            $question->update($data);
-
-            return $question;
+        if (! $question) {
+            return null;
         }
 
-        return null;
+        $question->update($data);
+
+        return $question;
     }
 
     public function delete(string $id): bool
     {
         $question = Question::find($id);
 
-        if ($question) {
-            return (bool) $question->delete();
+        if (! $question) {
+            return false;
         }
 
-        return false;
+        return (bool) $question->delete();
     }
 
     public function paginate(int $perPage = 15): LengthAwarePaginator
@@ -66,7 +65,6 @@ final class QuestionRepository implements QuestionRepositoryInterface
         return Question::with('answers')->findOrFail($id);
     }
 
-    /** @return Collection<int, Question> */
     public function getByMaterialAndDifficulty(
         string $materialId,
         ?string $difficulty = null,

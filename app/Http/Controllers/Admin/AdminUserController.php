@@ -100,21 +100,21 @@ class AdminUserController extends Controller
             return redirect()->route('admin.pending-admins');
         }
 
-        if ($user->isDosen() && ! $user->is_approved) {
-            $freshUser = $this->userService->getUserById($user->id);
-
-            if ($freshUser && $freshUser->is_approved) {
-                return redirect()->route('admin.dashboard');
-            }
-
-            return $this->render('Admin/Users/PendingApproval/Index');
+        if (! $user->isDosen()) {
+            return redirect()->route('mahasiswa.materials.index');
         }
 
-        if ($user->isDosen() && $user->is_approved) {
+        if ($user->is_approved) {
             return redirect()->route('admin.dashboard');
         }
 
-        return redirect()->route('mahasiswa.materials.index');
+        $freshUser = $this->userService->getUserById($user->id);
+
+        if ($freshUser && $freshUser->is_approved) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        return $this->render('Admin/Users/PendingApproval/Index');
     }
 
     public function pendingAdmins(): Response
@@ -147,16 +147,17 @@ class AdminUserController extends Controller
 
     public function processImport(ImportAdminRequest $request): RedirectResponse
     {
-        $result = $this->userService->importAdminsFromFile($request->file('excel_file'));
+        $result    = $this->userService->importAdminsFromFile($request->file('excel_file'));
+        $errorRows = $result['error_rows'] ?? [];
 
         $message = "Berhasil menambahkan {$result['success_count']} admin.";
-        if (! empty($result['error_rows'])) {
-            $message .= ' Terdapat ' . count($result['error_rows']) . ' baris dengan error.';
+        if (! empty($errorRows)) {
+            $message .= ' Terdapat ' . count($errorRows) . ' baris dengan error.';
         }
 
         return redirect()->route('admin.users.index')
             ->with('success', $message)
-            ->with('importErrors', $result['error_rows']);
+            ->with('importErrors', $errorRows);
     }
 
     public function downloadTemplate(): StreamedResponse

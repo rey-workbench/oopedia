@@ -6,21 +6,11 @@ use Illuminate\Support\Collection;
 
 class ProgressHelper
 {
-    /**
-     * Calculate the total number of configured questions across given materials.
-     *
-     * @param Collection $materials Collection of materials (needs to have 'questions' relation loaded)
-     */
     public static function calculateTotalQuestions(Collection $materials): int
     {
         return $materials->sum(fn ($m) => $m->questions->count());
     }
 
-    /**
-     * Calculate progress percentage based on answered questions and total questions.
-     *
-     * @return int Progress percentage (0-100)
-     */
     public static function calculateProgressPercentage(int $answeredQuestions, int $totalQuestions): int
     {
         return $totalQuestions > 0
@@ -28,11 +18,6 @@ class ProgressHelper
             : 0;
     }
 
-    /**
-     * Calculate total questions grouped by difficulty.
-     *
-     * @return array<string, int> Formatted as ['beginner' => 0, 'medium' => 0, 'hard' => 0]
-     */
     public static function calculateDifficultyTotals(Collection $materials): array
     {
         $totals = ['beginner' => 0, 'medium' => 0, 'hard' => 0];
@@ -49,16 +34,13 @@ class ProgressHelper
     }
 
     /**
-     * Calculate question counts for a single material, grouped by difficulty.
-     * Returns configured counts (guest caps applied) using keys 'easy','medium','hard','total'.
-     *
      * @param mixed $material Material model instance with loaded questions relation
      * @param bool $isGuest Whether to apply guest limits per difficulty
      * @return array<string,int>
      */
     public static function calculateMaterialQuestionCounts($material, bool $isGuest = false): array
     {
-        $guestLimit = 3; // guests see up to N configured questions per difficulty
+        $guestLimit = 3;
 
         $beginner = $material->questions->where('difficulty', 'beginner')->count();
         $medium   = $material->questions->where('difficulty', 'medium')->count();

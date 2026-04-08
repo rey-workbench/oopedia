@@ -15,7 +15,7 @@ class RuleVisualCrisisIntervention extends BaseAdaptiveRule
 
     protected string $actionCode = AdaptiveConstants::ACTION_VISUAL_CRISIS_INTERVENTION;
 
-    protected int $priority = 10; // Very high priority
+    protected int $priority = 10;
 
     public function evaluate(array $facts): bool
     {

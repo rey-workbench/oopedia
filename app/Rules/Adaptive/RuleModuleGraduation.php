@@ -15,7 +15,7 @@ class RuleModuleGraduation extends BaseAdaptiveRule
 
     protected string $actionCode = AdaptiveConstants::ACTION_MODULE_GRADUATION;
 
-    protected int $priority = 30; // Medium priority
+    protected int $priority = 30;
 
     public function evaluate(array $facts): bool
     {

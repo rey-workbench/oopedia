@@ -9,13 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * @property string $id
- * @property string $material_id
- * @property string $media_type
- * @property string $media_url
- * @property-read string $full_url
- */
 final class Media extends Model
 {
     use HasFactory;

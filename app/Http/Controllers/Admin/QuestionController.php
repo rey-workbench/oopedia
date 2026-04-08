@@ -43,23 +43,24 @@ class QuestionController extends Controller
 
     public function create(Request $request): Response|RedirectResponse
     {
-        $materialId   = $request->input('material');
-        $material     = null;
-        $subMaterials = collect();
+        $materialId = $request->input('material');
+        if (! $materialId) {
+            $materials    = $this->materialService->getAllMaterials();
+            $material     = null;
+            $subMaterials = collect();
 
-        if ($materialId) {
-            $material = $this->materialRepo->find($materialId);
-
-            if (! $material) {
-                return redirect()->route('admin.questions.index')
-                    ->with('error', 'Material tidak ditemukan');
-            }
-
-            $materials    = collect([$material]);
-            $subMaterials = $material->subMaterials()->orderBy('order')->get();
-        } else {
-            $materials = $this->materialService->getAllMaterials();
+            return $this->render('Admin/Questions/Create/Index', compact('materials', 'material', 'subMaterials'));
         }
+
+        $material = $this->materialRepo->find($materialId);
+
+        if (! $material) {
+            return redirect()->route('admin.questions.index')
+                ->with('error', 'Material tidak ditemukan');
+        }
+
+        $materials    = collect([$material]);
+        $subMaterials = $material->subMaterials()->orderBy('order')->get();
 
         return $this->render('Admin/Questions/Create/Index', compact('materials', 'material', 'subMaterials'));
     }

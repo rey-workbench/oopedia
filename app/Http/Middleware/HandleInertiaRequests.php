@@ -8,13 +8,6 @@ use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
 {
-    /**
-     * The root template that's loaded on the first page visit.
-     *
-     * @see https://inertiajs.com/server-side-setup#root-template
-     *
-     * @var string
-     */
     protected $rootView = 'app';
 
     public function __construct(
@@ -22,31 +15,12 @@ class HandleInertiaRequests extends Middleware
     ) {
     }
 
-    /**
-     * Determines the current asset version.
-     *
-     * @see https://inertiajs.com/asset-versioning
-     */
-    public function version(Request $request): ?string
-    {
-        return parent::version($request);
-    }
-
-    /**
-     * Define the props that are shared by default.
-     *
-     * @see https://inertiajs.com/shared-data
-     *
-     * @return array<string, mixed>
-     */
     public function share(Request $request): array
     {
-        $user    = $request->user();
-        $isGuest = ! $user;
-        $userId  = $user?->id;
+        $user = $request->user();
 
         $sidebarMaterials = $this->materialService
-            ? $this->materialService->getSidebarMaterials($userId, $isGuest)
+            ? $this->materialService->getSidebarMaterials($user?->id, ! $user)
             : collect();
 
         return [

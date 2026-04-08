@@ -10,9 +10,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UeqSurveyController extends Controller
 {
-    public function __construct(
-        protected UeqSurveyServiceInterface $ueqService,
-    ) {
+    public function __construct(protected UeqSurveyServiceInterface $ueqService)
+    {
     }
 
     public function index(Request $request): Response
@@ -86,10 +85,10 @@ class UeqSurveyController extends Controller
             foreach ($surveys as $survey) {
                 fputcsv($file, [
                     $survey->id,
-                    $survey->nim                   ?? '',
-                    optional($survey->user)->name  ?? 'Tidak ada',
-                    optional($survey->user)->email ?? 'Tidak ada',
-                    $survey->class                 ?? '',
+                    $survey->nim          ?? '',
+                    $survey->user?->name  ?? 'Tidak ada',
+                    $survey->user?->email ?? 'Tidak ada',
+                    $survey->class        ?? '',
                     $survey->created_at->format('d/m/Y H:i'),
                     $survey->annoying_enjoyable,
                     $survey->not_understandable_understandable,

@@ -19,18 +19,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property array<string,mixed> $performance_metrics
  * @property array<string,mixed> $adaptive_state
  * @property Carbon|null $last_active_at
- * @property-read int            $global_xp
- * @property-read string         $current_level
- * @property-read int            $current_streak
- * @property-read int            $max_streak
- * @property-read int            $total_questions_answered
- * @property-read int            $correct_count
- * @property-read int            $wrong_count
- * @property-read int            $wrong_streak
- * @property-read int            $hints_used_count
- * @property-read int            $hints_available
- * @property-read string         $learning_style
- * @property-read array<int,mixed> $unlocked_modules
+ * @property-read int $global_xp
+ * @property-read string $current_level
+ * @property-read int $current_streak
+ * @property-read int $max_streak
+ * @property-read int $total_questions_answered
+ * @property-read int $correct_count
+ * @property-read int $wrong_count
+ * @property-read int $wrong_streak
+ * @property-read int $hints_used_count
+ * @property-read int $hints_available
+ * @property-read string $learning_style
+ * @property-read array<int, mixed> $unlocked_modules
  */
 final class StudentState extends Model
 {
@@ -77,8 +77,6 @@ final class StudentState extends Model
     {
         return $this->belongsTo(User::class);
     }
-
-    // ==================== ACCESSORS ====================
 
     public function getGlobalXpAttribute(): int
     {
@@ -148,8 +146,6 @@ final class StudentState extends Model
         return $this->learning_profile[StudentStateSchema::KEY_UNLOCKED_MODULES] ?? [];
     }
 
-    // ==================== HELPER METHODS ====================
-
     public function updatePerformance(bool $isCorrect, int $timeSpent, bool $usedHint): self
     {
         $metrics      = $this->performance_metrics ?? [];
@@ -163,8 +159,7 @@ final class StudentState extends Model
                 ($metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] ?? 0) + 1;
             $metrics[StudentStateSchema::KEY_HINTS_AVAILABLE] = max(
                 0,
-                ($metrics[StudentStateSchema::KEY_HINTS_AVAILABLE]
-                    ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE) - 1,
+                ($metrics[StudentStateSchema::KEY_HINTS_AVAILABLE] ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE) - 1,
             );
         }
 
@@ -186,20 +181,15 @@ final class StudentState extends Model
             $gamification[StudentStateSchema::KEY_CURRENT_STREAK] = 0;
         }
 
-        $this->performance_metrics  = $metrics;
-        $this->gamification_data    = $gamification;
-        $this->last_active_at       = now();
+        $this->performance_metrics = $metrics;
+        $this->gamification_data   = $gamification;
+        $this->last_active_at      = now();
 
-        if ($this->user_id !== 'guest') {
-            $this->save();
-        }
+        $this->save();
 
         return $this;
     }
 
-    /**
-     * Override save to prevent persisting guest data.
-     */
     public function save(array $options = []): bool
     {
         if ($this->user_id === 'guest') {

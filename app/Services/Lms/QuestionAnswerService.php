@@ -87,15 +87,8 @@ final class QuestionAnswerService implements QuestionAnswerServiceInterface
 
     protected function hasValidAnswer(Question $question, array $data): bool
     {
-        if ($question->question_type === 'fill_in_the_blank') {
-            return true;
-        }
-
-        if ($question->question_type === 'drag_and_drop') {
-            return true;
-        }
-
-        return isset($data['answer']);
+        return in_array($question->question_type, ['fill_in_the_blank', 'drag_and_drop'], true)
+            || isset($data['answer']);
     }
 
     /** @return array{0: int, 1: int, 2: array|null} */
@@ -160,7 +153,6 @@ final class QuestionAnswerService implements QuestionAnswerServiceInterface
 
         $attemptNumber = $attemptsCount > 0 ? $attemptsCount + 1 : 1;
 
-        // Handle answer_id vs user_response based on question type
         $answerId     = null;
         $userResponse = null;
 
@@ -246,9 +238,6 @@ final class QuestionAnswerService implements QuestionAnswerServiceInterface
         ];
     }
 
-    /**
-     * Determine if the provided answer data is correct for the given question.
-     */
     public function determineCorrectness(Question $question, array $data): bool
     {
         if ($question->question_type === 'multiple_choice' || $question->question_type === 'radio_button') {
@@ -279,8 +268,7 @@ final class QuestionAnswerService implements QuestionAnswerServiceInterface
 
         if ($question->question_type === 'drag_and_drop') {
             $userAnswersStr = $data['drag_and_drop_answers'] ?? '[]';
-            // It might come as a JSON string or already an array depending on how it's passed
-            $userAnswers = is_array($userAnswersStr) ? $userAnswersStr : json_decode($userAnswersStr, true);
+            $userAnswers    = is_array($userAnswersStr) ? $userAnswersStr : json_decode($userAnswersStr, true);
 
             if (empty($userAnswers)) {
                 return false;
@@ -293,10 +281,8 @@ final class QuestionAnswerService implements QuestionAnswerServiceInterface
 
             foreach ($correctAnswers as $correctAns) {
                 $targetPos = $correctAns->drag_target;
-                // Check if user placed this answer text at the target position
                 $userValue = $userAnswers[$targetPos] ?? null;
 
-                // Compare values (trimming whitespace)
                 if (trim($userValue ?? '') !== trim($correctAns->answer_text)) {
                     return false;
                 }

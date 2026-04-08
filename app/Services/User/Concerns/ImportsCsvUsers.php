@@ -6,11 +6,6 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-/**
- * Shared CSV import logic for User and Student services.
- *
- * Classes using this trait must provide a `createUserFromRow(array $rowData): void` method.
- */
 trait ImportsCsvUsers
 {
     /**
@@ -82,11 +77,6 @@ trait ImportsCsvUsers
         return ['success_count' => $successCount, 'error_rows' => $errorRows];
     }
 
-    /**
-     * Generate a CSV import template.
-     *
-     * @return array{headers: array, callback: callable}
-     */
     protected function generateCsvTemplate(string $filename, array $exampleRow): array
     {
         $headers = [

@@ -4,9 +4,6 @@ namespace App\Exceptions\Domain;
 
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Thrown when a requested question cannot be found.
- */
 class QuestionNotFoundException extends DomainException
 {
     public function __construct(string $id)

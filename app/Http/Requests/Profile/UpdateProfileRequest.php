@@ -7,14 +7,11 @@ use Illuminate\Support\Facades\Auth;
 
 class UpdateProfileRequest extends BaseFormRequest
 {
-    /** @return array<string, mixed> */
     public function rules(): array
     {
-        $userId = Auth::id() ?? 0;
-
         return [
             'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email,' . $userId,
+            'email'    => 'required|email|unique:users,email,' . Auth::id(),
             'password' => 'nullable|min:6|confirmed',
         ];
     }

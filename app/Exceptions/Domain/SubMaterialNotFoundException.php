@@ -4,9 +4,6 @@ namespace App\Exceptions\Domain;
 
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Thrown when a requested sub-material cannot be found.
- */
 class SubMaterialNotFoundException extends DomainException
 {
     public function __construct(string $id)

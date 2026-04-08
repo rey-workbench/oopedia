@@ -3,21 +3,11 @@
 namespace App\Contracts\Services;
 
 use App\Models\Material;
-use App\Models\Question;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as SupportCollection;
 
-/**
- * Contract for listing and preparing quiz question data for the student view.
- */
 interface QuestionListingServiceInterface
 {
-    /**
-     * Get all quiz data for a specific material and difficulty.
-     *
-     * @param array<string, mixed> $guestProgress
-     * @return array<string, mixed>
-     */
     public function getQuizData(
         Material $material,
         string $difficulty,
@@ -28,12 +18,6 @@ interface QuestionListingServiceInterface
         ?string $targetDifficulty = null,
     ): array;
 
-    /**
-     * Get all materials with student progress counts.
-     *
-     * @param array<string, mixed> $guestProgress
-     * @return Collection<int, Material>
-     */
     public function getMaterialsListWithStudentCount(
         string $userId,
         bool $isGuest,
@@ -41,12 +25,6 @@ interface QuestionListingServiceInterface
         array $unlockedModules = [],
     ): Collection;
 
-    /**
-     * Get questions for the review/report view.
-     *
-     * @param array<string, mixed> $guestProgress
-     * @return Collection<int, Question>
-     */
     public function getReviewQuestions(
         Material $material,
         ?string $difficulty,
@@ -55,19 +33,8 @@ interface QuestionListingServiceInterface
         array $guestProgress = [],
     ): Collection;
 
-    /**
-     * Get answered question IDs from guest progress cookie data.
-     *
-     * @param array<string, mixed> $guestProgress
-     * @return SupportCollection<int, int>
-     */
     public function getGuestAnsweredQuestionIds(string $materialId, array $guestProgress = []): SupportCollection;
 
-    /**
-     * Get level-by-level progress for a material.
-     *
-     * @return array<string, mixed>
-     */
     public function getLevelProgress(
         Material $material,
         string $difficulty,

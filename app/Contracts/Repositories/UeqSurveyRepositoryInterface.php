@@ -6,12 +6,8 @@ use App\Models\UeqSurvey;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
-/**
- * Contract for UeqSurvey data access.
- */
 interface UeqSurveyRepositoryInterface
 {
-    /** @return Collection<int, UeqSurvey> */
     public function all(): Collection;
 
     public function find(string $id): ?UeqSurvey;
@@ -26,10 +22,8 @@ interface UeqSurveyRepositoryInterface
 
     public function countAll(): int;
 
-    /** @return Collection<int, UeqSurvey> */
     public function getAllWithUser(?string $class = null): Collection;
 
-    /** @return array<string> */
     public function getDistinctClasses(): array;
 
     public function findByUserId(string $userId): ?UeqSurvey;

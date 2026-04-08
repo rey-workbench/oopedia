@@ -12,21 +12,11 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 abstract class BaseFormRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * Override in child classes to add specific authorization logic.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get common validation messages in Indonesian.
-     *
-     * @return array<string, string>
-     */
     public function messages(): array
     {
         return [

@@ -15,7 +15,7 @@ class RuleFinalProjectVisualPersistentFail extends BaseAdaptiveRule
 
     protected string $actionCode = AdaptiveConstants::ACTION_VISUAL_PROJECT_REVISION;
 
-    protected int $priority = 3; // Highest priority — supersedes regular persistent rules
+    protected int $priority = 3;
 
     public function evaluate(array $facts): bool
     {

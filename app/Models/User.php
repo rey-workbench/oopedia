@@ -59,26 +59,21 @@ final class User extends Authenticatable
 
     public function hasRole(string $role): bool
     {
-        $roleName = $this->role?->role_name;
-
-        if ($roleName) {
-            return $roleName === $role;
+        if ($this->role?->role_name) {
+            return $this->role->role_name === $role;
         }
 
-        // Fallback for legacy numeric role_id values
-        $rid = $this->role_id;
-
-        if (is_numeric($rid)) {
-            return match ((int) $rid) {
-                1       => $role === Role::ROLE_SUPERADMIN,
-                2       => $role === Role::ROLE_DOSEN,
-                3       => $role === Role::ROLE_MAHASISWA,
-                4       => $role === Role::ROLE_GUEST,
-                default => false,
-            };
+        if (! is_numeric($this->role_id)) {
+            return false;
         }
 
-        return false;
+        return match ((int) $this->role_id) {
+            1       => $role === Role::ROLE_SUPERADMIN,
+            2       => $role === Role::ROLE_DOSEN,
+            3       => $role === Role::ROLE_MAHASISWA,
+            4       => $role === Role::ROLE_GUEST,
+            default => false,
+        };
     }
 
     public function isSuperAdmin(): bool

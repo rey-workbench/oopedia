@@ -6,7 +6,6 @@ use App\Models\StudentState;
 
 interface FactGatheringServiceInterface
 {
-    /** @return array<int, string> */
     public function gatherFacts(
         StudentState $studentState,
         bool $isCorrect,

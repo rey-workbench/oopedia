@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Collection;
 
 final class UserRepository implements UserRepositoryInterface
 {
-    /** @return Collection<int, User> */
     public function all(): Collection
     {
         return User::all();
@@ -33,29 +32,29 @@ final class UserRepository implements UserRepositoryInterface
     {
         $user = User::find($id);
 
-        if ($user) {
-            $user->update($data);
-
-            return $user;
+        if (! $user) {
+            return null;
         }
 
-        return null;
+        $user->update($data);
+
+        return $user;
     }
 
     public function delete(string $id): bool
     {
         $user = User::find($id);
 
-        if ($user) {
-            return (bool) $user->delete();
+        if (! $user) {
+            return false;
         }
 
-        return false;
+        return (bool) $user->delete();
     }
 
     public function paginate(int $perPage = 15): LengthAwarePaginator
     {
-        return User::paginate($perPage, ['*'], 'page', null);
+        return User::paginate($perPage);
     }
 
     public function countAll(): int
@@ -110,7 +109,6 @@ final class UserRepository implements UserRepositoryInterface
         return User::where('email', $email)->first();
     }
 
-    /** @return Collection<int, User> */
     public function getUnapprovedStudents(): Collection
     {
         return User::whereHas('role', function ($q) {
@@ -124,8 +122,6 @@ final class UserRepository implements UserRepositoryInterface
     {
         $this->update($userId, ['is_approved' => true]);
     }
-
-    // ==================== ADDITIONAL METHODS ====================
 
     public function getUsersByRoleAndApproval(
         string $roleName,

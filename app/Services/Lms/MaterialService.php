@@ -25,7 +25,6 @@ final class MaterialService implements MaterialServiceInterface
     ) {
     }
 
-    /** @return Collection<int, Material> */
     public function getAllMaterials(
         ?string $search = null,
         string $sort = 'created_at',
@@ -34,7 +33,6 @@ final class MaterialService implements MaterialServiceInterface
         return $this->materialRepo->getMaterialsForAdmin($search, $sort, $direction);
     }
 
-    /** @return Collection<int, Material> */
     public function getAllOrdered(): Collection
     {
         return $this->materialRepo->getAllOrdered();
@@ -61,7 +59,7 @@ final class MaterialService implements MaterialServiceInterface
         ]);
 
         if ($coverImage) {
-            $this->uploadCoverImage($material, $coverImage, $data['title']);
+            $this->uploadCoverImage($material, $coverImage);
         }
 
         Cache::forget('sidebar_materials_v4');
@@ -86,7 +84,7 @@ final class MaterialService implements MaterialServiceInterface
 
         if ($coverImage) {
             $this->deleteCoverImage($material);
-            $this->uploadCoverImage($material, $coverImage, $data['title']);
+            $this->uploadCoverImage($material, $coverImage);
         }
 
         Cache::forget('sidebar_materials_v4');
@@ -130,7 +128,7 @@ final class MaterialService implements MaterialServiceInterface
         return (string) $materialId;
     }
 
-    protected function uploadCoverImage(Material $material, mixed $file, string $title): void
+    protected function uploadCoverImage(Material $material, mixed $file): void
     {
         $path = $file->store('materials', 'images');
 
@@ -145,36 +143,32 @@ final class MaterialService implements MaterialServiceInterface
     {
         $existingMedia = $this->mediaRepo->findByMaterialAndType($material->id, 'image');
 
-        if ($existingMedia) {
-            $this->removeMediaFile($existingMedia->media_url);
-            $this->mediaRepo->delete($existingMedia->id);
+        if (! $existingMedia) {
+            return;
         }
+
+        $this->removeMediaFile($existingMedia->media_url);
+        $this->mediaRepo->delete($existingMedia->id);
     }
 
     protected function removeMediaFile(string $path): void
     {
-        if (str_starts_with($path, '/images/')) {
-            $path = str_replace('/images/', '', $path);
+        $disk = 'public';
 
-            if (Storage::disk('images')->exists($path)) {
-                Storage::disk('images')->delete($path);
-            }
+        if (str_starts_with($path, '/images/')) {
+            $disk = 'images';
+            $path = str_replace('/images/', '', $path);
         } elseif (str_starts_with($path, '/storage/')) {
             $path = str_replace('/storage/', '', $path);
-
-            if (Storage::disk('public')->exists($path)) {
-                Storage::disk('public')->delete($path);
-            }
         } else {
             $path = str_replace('storage/', '', $path);
+        }
 
-            if (Storage::disk('public')->exists($path)) {
-                Storage::disk('public')->delete($path);
-            }
+        if (Storage::disk($disk)->exists($path)) {
+            Storage::disk($disk)->delete($path);
         }
     }
 
-    /** @return Collection<int, Material> */
     public function getSidebarMaterials(?string $userId, bool $isGuest): Collection
     {
         $materials = Material::orderBy('created_at', 'asc')
@@ -191,7 +185,6 @@ final class MaterialService implements MaterialServiceInterface
             });
         }
 
-        // For authenticated users
         $unlockedModules = [];
         if ($userId && $this->progressRepo) {
             $studentState    = StudentState::where('user_id', $userId)->first();

@@ -5,12 +5,8 @@ namespace App\Contracts\Repositories;
 use App\Models\SubMaterial;
 use Illuminate\Database\Eloquent\Collection;
 
-/**
- * Contract for SubMaterial data access.
- */
 interface SubMaterialRepositoryInterface
 {
-    /** @return Collection<int, SubMaterial> */
     public function all(): Collection;
 
     public function find(string $id): ?SubMaterial;
@@ -21,10 +17,8 @@ interface SubMaterialRepositoryInterface
 
     public function delete(string $id): bool;
 
-    /** @return Collection<int, SubMaterial> */
     public function getAllByMaterial(string $materialId): Collection;
 
-    /** @return Collection<int, SubMaterial> */
     public function findByMaterial(string $materialId): Collection;
 
     public function reorder(string $materialId, array $orderData): void;

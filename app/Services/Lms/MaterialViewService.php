@@ -11,7 +11,6 @@ use App\Contracts\Services\MaterialViewServiceInterface;
 use App\Exceptions\Domain\MaterialNotFoundException;
 use App\Exceptions\Domain\SubMaterialNotFoundException;
 use App\Helpers\ProgressHelper;
-use App\Models\Material;
 use Illuminate\Database\Eloquent\Collection;
 
 final class MaterialViewService implements MaterialViewServiceInterface
@@ -23,7 +22,6 @@ final class MaterialViewService implements MaterialViewServiceInterface
     ) {
     }
 
-    /** @return Collection<int, Material> */
     public function getMaterialsList(?string $userId, bool $isGuest): Collection
     {
         $progressStats = $userId ? $this->progressRepo->getUserProgressStats($userId) : collect();
@@ -86,7 +84,6 @@ final class MaterialViewService implements MaterialViewServiceInterface
         return $materials;
     }
 
-    /** @return array<string, mixed> */
     public function getMaterialDetail(string $materialId, ?string $userId, bool $isGuest): array
     {
         $material     = $this->materialRepo->findWithQuestionsShuffled($materialId);
@@ -131,7 +128,6 @@ final class MaterialViewService implements MaterialViewServiceInterface
         ];
     }
 
-    /** @return array<string, mixed> */
     public function getSubMaterialDetail(string $materialId, string $subMaterialId, bool $isGuest): array
     {
         $material = $this->materialRepo->find($materialId);

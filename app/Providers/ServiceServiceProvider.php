@@ -66,8 +66,4 @@ class ServiceServiceProvider extends ServiceProvider
         $this->app->bind(FactGatheringServiceInterface::class, FactGatheringService::class);
         $this->app->bind(NextActionResolverServiceInterface::class, NextActionResolverService::class);
     }
-
-    public function boot(): void
-    {
-    }
 }

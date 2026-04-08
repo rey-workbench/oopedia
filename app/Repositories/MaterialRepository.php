@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Collection;
 
 final class MaterialRepository implements MaterialRepositoryInterface
 {
-    /** @return Collection<int, Material> */
     public function all(): Collection
     {
         return Material::all();
@@ -31,24 +30,24 @@ final class MaterialRepository implements MaterialRepositoryInterface
     {
         $material = Material::find($id);
 
-        if ($material) {
-            $material->update($data);
-
-            return $material;
+        if (! $material) {
+            return null;
         }
 
-        return null;
+        $material->update($data);
+
+        return $material;
     }
 
     public function delete(string $id): bool
     {
         $material = Material::find($id);
 
-        if ($material) {
-            return (bool) $material->delete();
+        if (! $material) {
+            return false;
         }
 
-        return false;
+        return (bool) $material->delete();
     }
 
     public function paginate(int $perPage = 15): LengthAwarePaginator
@@ -61,19 +60,16 @@ final class MaterialRepository implements MaterialRepositoryInterface
         return Material::count('*');
     }
 
-    /** @return Collection<int, Material> */
     public function getAllWithQuestions(): Collection
     {
         return Material::with(['questions'])->get();
     }
 
-    /** @return Collection<int, Material> */
     public function getAllWithQuestionsAndConfigs(): Collection
     {
         return Material::with(['questions'])->get();
     }
 
-    /** @return Collection<int, Material> */
     public function getAllWithQuestionsAndActiveConfigs(): Collection
     {
         return Material::with(['questions'])->get();
@@ -86,7 +82,6 @@ final class MaterialRepository implements MaterialRepositoryInterface
         return Material::where('title', '=', $title)->firstOrFail();
     }
 
-    /** @return Collection<int, Material> */
     public function getAllOrdered(): Collection
     {
         return Material::with(['questions', 'media', 'creator'])
@@ -113,7 +108,6 @@ final class MaterialRepository implements MaterialRepositoryInterface
         return Material::with(['questions.answers'])->findOrFail($id);
     }
 
-    /** @return Collection<int, Material> */
     public function getMaterialsForAdmin(
         ?string $search = null,
         string $sort = 'created_at',
@@ -140,7 +134,7 @@ final class MaterialRepository implements MaterialRepositoryInterface
     {
         $query = Material::newQuery();
 
-        if (! empty($relations)) {
+        if ($relations) {
             $query->with($relations);
         }
 

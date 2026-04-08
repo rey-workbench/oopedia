@@ -6,12 +6,8 @@ use App\Models\Question;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
-/**
- * Contract for Question data access.
- */
 interface QuestionRepositoryInterface
 {
-    /** @return Collection<int, Question> */
     public function all(): Collection;
 
     public function find(string $id): ?Question;
@@ -28,7 +24,6 @@ interface QuestionRepositoryInterface
 
     public function findWithAnswers(string $id): Question;
 
-    /** @return Collection<int, Question> */
     public function getByMaterialAndDifficulty(
         string $materialId,
         ?string $difficulty = null,

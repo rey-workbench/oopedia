@@ -52,31 +52,17 @@ class LoginController extends Controller
         $this->guestProgressService->clearAllProgress();
         $user = $this->userService->getUserById(Auth::id());
 
-        $clearGuest    = Cookie::forget('is_guest');
-        $clearProgress = Cookie::forget('guest_progress');
-
-        return match (true) {
-            $user->isSuperAdmin() => redirect()
-                ->route('admin.dashboard')
-                ->withCookie($clearGuest)
-                ->withCookie($clearProgress),
-            $user->isDosen() && $user->is_approved => redirect()
-                ->route('admin.dashboard')
-                ->withCookie($clearGuest)
-                ->withCookie($clearProgress),
-            $user->isDosen() => redirect()
-                ->route('admin.pending-approval')
-                ->withCookie($clearGuest)
-                ->withCookie($clearProgress),
-            $user->isMahasiswa() => redirect()
-                ->route('mahasiswa.dashboard')
-                ->withCookie($clearGuest)
-                ->withCookie($clearProgress),
-            default => redirect()
-                ->route('mahasiswa.materials.index')
-                ->withCookie($clearGuest)
-                ->withCookie($clearProgress),
+        $redirect = match (true) {
+            $user->isSuperAdmin()                  => redirect()->route('admin.dashboard'),
+            $user->isDosen() && $user->is_approved => redirect()->route('admin.dashboard'),
+            $user->isDosen()                       => redirect()->route('admin.pending-approval'),
+            $user->isMahasiswa()                   => redirect()->route('mahasiswa.dashboard'),
+            default                                => redirect()->route('mahasiswa.materials.index'),
         };
+
+        return $redirect
+            ->withCookie(Cookie::forget('is_guest'))
+            ->withCookie(Cookie::forget('guest_progress'));
     }
 
     public function logout(Request $request): RedirectResponse
@@ -90,16 +76,18 @@ class LoginController extends Controller
 
     public function home(): RedirectResponse
     {
-        if (Auth::check()) {
-            $user = Auth::user();
+        if (! Auth::check()) {
+            return Redirect::route('mahasiswa.materials.index');
+        }
 
-            if ($user->isSuperAdmin() || $user->isDosen()) {
-                return Redirect::route('admin.dashboard');
-            }
+        $user = Auth::user();
 
-            if ($user->isMahasiswa()) {
-                return Redirect::route('mahasiswa.dashboard');
-            }
+        if ($user->isSuperAdmin() || $user->isDosen()) {
+            return Redirect::route('admin.dashboard');
+        }
+
+        if ($user->isMahasiswa()) {
+            return Redirect::route('mahasiswa.dashboard');
         }
 
         return Redirect::route('mahasiswa.materials.index');

@@ -22,17 +22,10 @@ class UpdateQuestionRequest extends BaseFormRequest
             'answers'               => $answersMinRule,
             'answers.*.is_correct'  => 'required|boolean',
             'answers.*.explanation' => 'nullable|string',
+            'answers.*.answer_text' => 'required|string',
+            'answers.*.drag_source' => 'nullable|string',
+            'answers.*.drag_target' => 'nullable|string',
         ];
-
-        if ($this->input('question_type') === 'drag_and_drop') {
-            $rules['answers.*.drag_source'] = 'nullable|string';
-            $rules['answers.*.drag_target'] = 'nullable|string';
-            $rules['answers.*.answer_text'] = 'required|string';
-        } else {
-            $rules['answers.*.answer_text'] = 'required|string';
-            $rules['answers.*.drag_source'] = 'nullable|string';
-            $rules['answers.*.drag_target'] = 'nullable|string';
-        }
 
         return $rules;
     }

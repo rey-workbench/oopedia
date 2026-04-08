@@ -74,9 +74,9 @@ class MaterialController extends Controller
         }
 
         if ($isGuest) {
-            $allMaterials    = Material::orderBy('created_at', 'asc')->get();
-            $totalMaterials  = $allMaterials->count();
-            $materialIndex   = $allMaterials->search(fn ($m) => $m->id === $materialId);
+            $allMaterials   = Material::orderBy('created_at', 'asc')->get();
+            $totalMaterials = $allMaterials->count();
+            $materialIndex  = $allMaterials->search(fn ($m) => $m->id === $materialId);
 
             return $materialIndex >= ceil($totalMaterials / 2);
         }

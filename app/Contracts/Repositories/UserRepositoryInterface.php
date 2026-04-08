@@ -6,12 +6,8 @@ use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
-/**
- * Contract for User data access.
- */
 interface UserRepositoryInterface
 {
-    /** @return Collection<int, User> */
     public function all(): Collection;
 
     public function find(string $id): ?User;
@@ -38,7 +34,6 @@ interface UserRepositoryInterface
 
     public function findByEmail(string $email): ?User;
 
-    /** @return Collection<int, User> */
     public function getUnapprovedStudents(): Collection;
 
     public function approveStudent(string $userId): void;
@@ -60,6 +55,5 @@ interface UserRepositoryInterface
 
     public function getActiveStudentsCount(int $days): int;
 
-    /** @return Collection<int, User> */
     public function getStudentProgressOverview(int $limit): Collection;
 }

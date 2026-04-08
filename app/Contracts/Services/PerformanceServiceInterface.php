@@ -29,7 +29,6 @@ interface PerformanceServiceInterface
 
     public function calculateTotalTimeSpent(string $userId, string $materialId): float;
 
-    /** @return array<string, mixed> */
     public function getKnowledgeGaps(string $userId, string $materialId): array;
 
     public function getWeakestTopic(string $userId, string $materialId): ?string;
@@ -38,12 +37,10 @@ interface PerformanceServiceInterface
 
     public function isFatigued(string $userId, string $materialId, array $currentState): bool;
 
-    /** @return array<string, mixed> */
     public function getCompletedMaterials(string $userId): array;
 
     public function markMaterialCompleted(string $userId, string $materialId): void;
 
-    /** @return array<string, mixed> */
     public function getPersonalizationProfile(string $userId, string $materialId, array $currentState): array;
 
     public function calculateScore(

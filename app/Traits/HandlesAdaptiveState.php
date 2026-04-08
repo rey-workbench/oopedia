@@ -8,7 +8,6 @@ trait HandlesAdaptiveState
 
     abstract protected function getGuestProgressService();
 
-    /** @return array<string, mixed> */
     public function resolveStudentStateData(
         bool $isGuest,
         int|string $userId,

@@ -9,34 +9,16 @@ use Illuminate\View\Component;
 
 class Navbar extends Component
 {
-    /**
-     * Current page title for breadcrumb.
-     */
     public string $titlePage;
 
-    /**
-     * User role identifier.
-     */
     public string $role;
 
-    /**
-     * Navbar style variant.
-     */
     public string $variant;
 
-    /**
-     * Current route name for active state.
-     */
     public string $currentRoute;
 
-    /**
-     * User name for display.
-     */
     public string $userName;
 
-    /**
-     * Create a new component instance.
-     */
     public function __construct(
         string $titlePage = '',
         ?string $role = null,
@@ -49,47 +31,30 @@ class Navbar extends Component
         $this->userName     = Auth::check() ? Auth::user()->name : '';
     }
 
-    /**
-     * Detect user role from authentication.
-     */
     protected function detectRole(): string
     {
         if (! Auth::check()) {
             return 'guest';
         }
 
-        $user = Auth::user();
-
-        return $user->role?->role_name ?? 'guest';
+        return Auth::user()->role?->role_name ?? 'guest';
     }
 
-    /**
-     * Check if current role is admin-type.
-     */
     public function isAdminRole(): bool
     {
         return in_array($this->role, ['superadmin', 'admin']);
     }
 
-    /**
-     * Check if current role is student-type.
-     */
     public function isStudentRole(): bool
     {
         return in_array($this->role, ['mahasiswa', 'guest']);
     }
 
-    /**
-     * Check if user is authenticated.
-     */
     public function isAuthenticated(): bool
     {
         return Auth::check();
     }
 
-    /**
-     * Check if a route is currently active.
-     */
     public function isRouteActive(string $routePattern): bool
     {
         return request()->routeIs($routePattern);

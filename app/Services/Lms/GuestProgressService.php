@@ -113,7 +113,6 @@ final class GuestProgressService implements GuestProgressServiceInterface
         $perfData           = request()->cookie($this->cookiePerformance);
         $performanceMetrics = $perfData ? json_decode($perfData, true) : [];
 
-        // Build a mock state that behaves like a persisted model but won't be saved to DB
         return new StudentState([
             'user_id'             => 'guest',
             'gamification_data'   => [

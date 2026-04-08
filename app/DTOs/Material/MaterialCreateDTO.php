@@ -22,7 +22,7 @@ readonly class MaterialCreateDTO
             content: $request->input('content'),
             module_id: $request->input('module_id'),
             created_by: $userId,
-            is_final_project: $request->boolean('is_final_project', false),
+            is_final_project: $request->boolean('is_final_project'),
         );
     }
 

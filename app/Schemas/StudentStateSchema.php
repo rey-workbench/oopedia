@@ -10,7 +10,6 @@ use App\Models\Question;
  */
 final class StudentStateSchema
 {
-    // ==================== LEVELS ====================
     public const string LEVEL_PEMULA   = 'Pemula';
 
     public const string LEVEL_JUNIOR   = 'Junior';
@@ -21,7 +20,6 @@ final class StudentStateSchema
 
     public const string LEVEL_MASTER   = 'Master';
 
-    // ==================== GAMIFICATION DATA ====================
     public const array GAMIFICATION = [
         'global_xp'      => 0,
         'current_level'  => self::LEVEL_PEMULA,
@@ -54,14 +52,12 @@ final class StudentStateSchema
         self::LEVEL_MASTER,
     ];
 
-    // ==================== STYLES ====================
     public const string STYLE_VISUAL  = 'visual';
 
     public const string STYLE_TEXTUAL = 'textual';
 
     public const string STYLE_MIXED   = 'mixed';
 
-    // ==================== LEARNING PROFILE ====================
     public const array LEARNING_PROFILE = [
         'learning_style'   => self::STYLE_VISUAL,
         'unlocked_modules' => ['1'], // module_id '1' = "Pengantar Konsep Dasar OOP" (first module always unlocked)
@@ -80,7 +76,6 @@ final class StudentStateSchema
         self::STYLE_MIXED,
     ];
 
-    // ==================== PERFORMANCE METRICS ====================
     public const array PERFORMANCE_METRICS = [
         'total_questions_answered' => 0,
         'correct_count'            => 0,
@@ -90,13 +85,11 @@ final class StudentStateSchema
         'hints_available'          => 3,
     ];
 
-    // Score Fact Thresholds (G01-G04)
     public const int FACT_SCORE_CRITICAL_MAX = 40;  // < 40
 
     public const int FACT_SCORE_REMEDIAL_MAX = 70;  // 40-69
 
     public const int FACT_SCORE_STANDARD_MAX = 90;  // 70-89
-    // >= 90 is Mastery
 
     public const string KEY_TOTAL_QUESTIONS_ANSWERED = 'total_questions_answered';
 
@@ -112,7 +105,6 @@ final class StudentStateSchema
 
     public const int DEFAULT_HINTS_AVAILABLE = 3;
 
-    // ==================== ADAPTIVE STATE ====================
     public const array ADAPTIVE_STATE = [
         'fast_track_active'    => false,
         'current_material_id'  => null,
@@ -130,8 +122,6 @@ final class StudentStateSchema
         Question::DIFFICULTY_HARD,
         Question::DIFFICULTY_FINAL,
     ];
-
-    // ==================== DEFAULT VALUES ====================
 
     public static function getDefaultGamification(): array
     {
@@ -153,9 +143,6 @@ final class StudentStateSchema
         return self::ADAPTIVE_STATE;
     }
 
-    // ==================== CONFIGURATION & REWARDS ====================
-
-    // ==================== REWARD & PENALTY CONFIG ====================
     public const int XP_REWARD_BEGINNER = 10;
 
     public const int XP_REWARD_MEDIUM   = 20;
@@ -202,7 +189,6 @@ final class StudentStateSchema
         'hint_penalty' => self::SCORE_PENALTY_HINT,
     ];
 
-    // ==================== BEHAVIOURAL THRESHOLDS ====================
     public const int THRESHOLD_FAST_TIME_MINS         = 15;
 
     public const int THRESHOLD_FAST_ACCURACY_PCT      = 90;

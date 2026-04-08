@@ -124,12 +124,12 @@ final class QuestionService implements QuestionServiceInterface
         foreach ($answersData as $answer) {
             $this->answerRepo->create([
                 'question_id'    => $questionId,
-                'answer_text'    => $answer['answer_text']    ?? null,
-                'is_correct'     => $answer['is_correct']     ?? 0,
-                'explanation'    => $answer['explanation']    ?? null,
-                'drag_source'    => $answer['drag_source']    ?? null,
-                'drag_target'    => $answer['drag_target']    ?? null,
-                'blank_position' => $answer['blank_position'] ?? null,
+                'answer_text'    => $answer['answer_text']        ?? null,
+                'is_correct'     => $answer['is_correct']         ?? 0,
+                'explanation'    => $answer['explanation']        ?? null,
+                'drag_source'    => $answer['drag_source']        ?? null,
+                'drag_target'    => $answer['drag_target']        ?? null,
+                'blank_position' => $answer['blank_position']     ?? null,
             ]);
         }
     }

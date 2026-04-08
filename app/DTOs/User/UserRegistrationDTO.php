@@ -46,7 +46,7 @@ readonly class UserRegistrationDTO
         return [
             'name'        => $this->name,
             'email'       => $this->email,
-            'password'    => $this->password, // Will be hashed in service
+            'password'    => $this->password,
             'role_id'     => $this->role_id,
             'is_approved' => $this->is_approved,
         ];

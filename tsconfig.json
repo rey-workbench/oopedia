@@ -58,5 +58,5 @@
         }
     },
     "include": ["resources/js/**/*", "resources/js/**/*.svelte", "src/**/*"],
-    "exclude": ["node_modules", "public", "vendor"],
+    "exclude": ["node_modules", "public", "vendor"]
 }

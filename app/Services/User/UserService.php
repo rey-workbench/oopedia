@@ -58,11 +58,13 @@ final class UserService implements UserServiceInterface
 
     protected function updateUser(string $userId, array $data): User
     {
-        if (isset($data['password']) && ! empty($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
-        } else {
+        if (empty($data['password'] ?? null)) {
             unset($data['password']);
+
+            return $this->userRepo->update($userId, $data);
         }
+
+        $data['password'] = Hash::make($data['password']);
 
         return $this->userRepo->update($userId, $data);
     }
@@ -118,18 +120,15 @@ final class UserService implements UserServiceInterface
         $roleDosenId     = Role::where('role_name', Role::ROLE_DOSEN)->value('id');
         $roleMahasiswaId = Role::where('role_name', Role::ROLE_MAHASISWA)->value('id');
 
-        if (! isset($data['role_id'])) {
-            $data['role_id'] = str_ends_with($data['email'], User::ADMIN_EMAIL_DOMAIN) ? $roleDosenId : $roleMahasiswaId;
-        }
+        $data['role_id'] ??= str_ends_with($data['email'], User::ADMIN_EMAIL_DOMAIN)
+            ? $roleDosenId
+            : $roleMahasiswaId;
 
-        if (! isset($data['is_approved'])) {
-            $data['is_approved'] = ($data['role_id'] === $roleDosenId);
-        }
+        $data['is_approved'] ??= $data['role_id'] === $roleDosenId;
 
         return $this->userRepo->create($data);
     }
 
-    /** @return array<string, mixed> */
     public function importAdminsFromFile(UploadedFile $file): array
     {
         return $this->importUsersFromCsv($file, fn (array $rowData) => $this->createAdmin($rowData));

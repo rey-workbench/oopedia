@@ -15,7 +15,7 @@ class RuleTextualCrisisIntervention extends BaseAdaptiveRule
 
     protected string $actionCode = AdaptiveConstants::ACTION_TEXTUAL_CRISIS_INTERVENTION;
 
-    protected int $priority = 10; // High priority (crisis)
+    protected int $priority = 10;
 
     public function evaluate(array $facts): bool
     {

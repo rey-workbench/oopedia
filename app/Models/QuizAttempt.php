@@ -9,17 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * @property string $id
- * @property string $user_id
- * @property string $question_id
- * @property string|null $answer_id
- * @property string|null $user_response
- * @property bool $is_correct
- * @property int $score
- * @property int $attempt_number
- * @property int|null $time_spent
- */
 final class QuizAttempt extends Model
 {
     use HasFactory;

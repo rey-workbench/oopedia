@@ -7,10 +7,8 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface UeqSurveyServiceInterface
 {
-    /** @return Collection<int, UeqSurvey> */
     public function getAllSurveys(?string $class = null): Collection;
 
-    /** @return array<string> */
     public function getDistinctClasses(): array;
 
     public function getStudentDetail(string $userId): ?UeqSurvey;
@@ -19,6 +17,5 @@ interface UeqSurveyServiceInterface
 
     public function createSurvey(array $data): UeqSurvey;
 
-    /** @return array<string, float> */
     public function calculateAverages(Collection $surveys): array;
 }

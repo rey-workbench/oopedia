@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\DB;
 
 final class ProgressRepository implements ProgressRepositoryInterface
 {
-    /** @return Collection<int, mixed> */
     public function getUserProgressStats(?string $userId): Collection
     {
         if (is_null($userId) || $userId === 'guest') {
@@ -41,7 +40,6 @@ final class ProgressRepository implements ProgressRepositoryInterface
             ->pipe(fn ($c) => new Collection($c));
     }
 
-    /** @return Collection<int, mixed> */
     public function getUserMaterialProgress(?string $userId): Collection
     {
         if (is_null($userId) || $userId === 'guest') {
@@ -114,7 +112,6 @@ final class ProgressRepository implements ProgressRepositoryInterface
         })->pipe(fn ($c) => new Collection($c));
     }
 
-    /** @return Collection<int, mixed> */
     public function getDetailedUserProgress(?string $userId): Collection
     {
         if (is_null($userId) || $userId === 'guest') {
@@ -147,7 +144,6 @@ final class ProgressRepository implements ProgressRepositoryInterface
             ->pipe(fn ($c) => new Collection($c));
     }
 
-    /** @return Collection<int, mixed> */
     public function getCorrectAnswersWithAttempts(string $roleName = 'mahasiswa'): Collection
     {
         return QuizAttempt::where('is_correct', 1)
@@ -170,7 +166,6 @@ final class ProgressRepository implements ProgressRepositoryInterface
             ->pipe(fn ($c) => new Collection($c));
     }
 
-    /** @return Collection<int, mixed> */
     public function getLeaderboardStats(string $roleName = 'mahasiswa'): Collection
     {
         return QuizAttempt::whereHas('user.role', fn ($q) => $q->where('role_name', $roleName))
@@ -313,9 +308,6 @@ final class ProgressRepository implements ProgressRepositoryInterface
         $this->saveProgress($data);
     }
 
-    /** @param  array<int, int>  $questionIds
-     * @return Collection<int, QuizAttempt> keyed by question_id
-     */
     public function getLatestAttemptsForQuestions(string $userId, array $questionIds): Collection
     {
         if (empty($questionIds)) {
@@ -331,7 +323,6 @@ final class ProgressRepository implements ProgressRepositoryInterface
             ->pipe(fn ($c) => new Collection($c));
     }
 
-    /** @return Collection<int, int> */
     public function getAnsweredQuestionIds(string $userId, string $materialId): Collection
     {
         if ($userId === 'guest') {
@@ -460,10 +451,6 @@ final class ProgressRepository implements ProgressRepositoryInterface
             ->get();
     }
 
-    /**
-     * Get consecutive failures for a question (for G22 - Persistent Fail).
-     * Returns count of consecutive wrong attempts.
-     */
     public function getConsecutiveFailures(?string $userId, string $questionId): int
     {
         if (is_null($userId)) {
@@ -487,10 +474,6 @@ final class ProgressRepository implements ProgressRepositoryInterface
         return $consecutiveFails;
     }
 
-    /**
-     * Get error type from latest attempt (for G09/G10).
-     * Returns 'syntax', 'logic', or null.
-     */
     public function getLatestErrorType(?string $userId, string $questionId): ?string
     {
         if (is_null($userId)) {
@@ -536,7 +519,6 @@ final class ProgressRepository implements ProgressRepositoryInterface
         ]);
     }
 
-    /** @return array<string, mixed> */
     public function getUserMaterialProgressWithState(?string $userId, string $materialId): array
     {
         if (is_null($userId) || $userId === 'guest') {

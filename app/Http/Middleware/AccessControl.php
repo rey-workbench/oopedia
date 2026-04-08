@@ -25,20 +25,14 @@ class AccessControl
         $isAuthenticated = $user !== null;
         $userRole        = $user?->role?->role_name ?? null;
 
-        // Handle unauthenticated users
         if (! $isAuthenticated) {
-            // If role is required, redirect to login
             if ($role !== null && $role !== 'guest') {
                 return redirect('login');
             }
 
-            // Allow guest access for unauthenticated users
             return $next($request);
         }
 
-        // Handle authenticated users
-
-        // Check if role is required
         if ($role !== null && $role !== 'guest') {
             $requiredRoles = explode('|', $role);
             if (! in_array($userRole, $requiredRoles)) {
@@ -49,12 +43,10 @@ class AccessControl
             }
         }
 
-        // Check admin approval requirement
         if ($requireApproval && $user->isDosen() && ! $user->is_approved) {
             return redirect()->route('admin.pending-approval');
         }
 
-        // Handle guest role restrictions
         if ($userRole === 'guest') {
             $allowedRoutes = [
                 'mahasiswa.materials.index',

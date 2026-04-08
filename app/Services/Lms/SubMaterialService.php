@@ -17,17 +17,11 @@ final class SubMaterialService implements SubMaterialServiceInterface
     ) {
     }
 
-    /**
-     * Get all sub-materials for a material
-     */
     public function getSubMaterialsByMaterial(string $materialId): Collection
     {
         return $this->subMaterialRepo->findByMaterial($materialId);
     }
 
-    /**
-     * Create a new sub-material
-     */
     public function createSubMaterial(string $materialId, array $data): string
     {
         $material = $this->materialRepo->find($materialId);
@@ -43,42 +37,26 @@ final class SubMaterialService implements SubMaterialServiceInterface
         return $subMaterial->id;
     }
 
-    /**
-     * Update a sub-material
-     */
     public function updateSubMaterial(string $subMaterialId, array $data): bool
     {
         return $this->subMaterialRepo->update($subMaterialId, $data);
     }
 
-    /**
-     * Delete a sub-material
-     */
     public function deleteSubMaterial(string $subMaterialId): bool
     {
         return $this->subMaterialRepo->delete($subMaterialId);
     }
 
-    /**
-     * Get sub-material by ID
-     */
     public function getSubMaterialById(string $subMaterialId): ?SubMaterial
     {
         return $this->subMaterialRepo->find($subMaterialId);
     }
 
-    /**
-     * Get sub-materials as simple array for JSON response
-     */
     public function getSubMaterialsSimple(string $materialId): array
     {
-        $subMaterials = $this->subMaterialRepo->findByMaterial($materialId);
-
-        return $subMaterials->map(function ($sub) {
-            return [
-                'id'    => $sub->id,
-                'title' => $sub->title,
-            ];
-        })->toArray();
+        return $this->subMaterialRepo->findByMaterial($materialId)->map(fn (SubMaterial $subMaterial) => [
+            'id'    => $subMaterial->id,
+            'title' => $subMaterial->title,
+        ])->toArray();
     }
 }

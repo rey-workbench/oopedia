@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Collection;
 
 final class AnswerRepository implements AnswerRepositoryInterface
 {
-    /** @return Collection<string, Answer> */
     public function all(): Collection
     {
         return Answer::all();
@@ -46,22 +45,20 @@ final class AnswerRepository implements AnswerRepositoryInterface
         return (bool) $answer->delete();
     }
 
-    /** @return Collection<string, Answer> */
     public function getByQuestionId(string $questionId): Collection
     {
-        return Answer::where('question_id', '=', $questionId)->get();
+        return Answer::where('question_id', $questionId)->get();
     }
 
-    /** @return Collection<string, Answer> */
     public function getCorrectAnswers(string $questionId): Collection
     {
-        return Answer::where('question_id', '=', $questionId)
-            ->where('is_correct', '=', true)
+        return Answer::where('question_id', $questionId)
+            ->where('is_correct', true)
             ->get();
     }
 
     public function deleteByQuestionId(string $questionId): bool
     {
-        return (bool) Answer::where('question_id', '=', $questionId)->delete();
+        return (bool) Answer::where('question_id', $questionId)->delete();
     }
 }

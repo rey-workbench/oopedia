@@ -7,7 +7,6 @@ use Illuminate\Validation\Rules\Password;
 
 class RegisterRequest extends BaseFormRequest
 {
-    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [

@@ -8,14 +8,8 @@ use App\Contracts\Services\NextActionResolverServiceInterface;
 use App\Models\Material;
 use App\Models\Question;
 
-/**
- * Service to resolve adaptive next action commands into URLs and metadata.
- */
 final class NextActionResolverService implements NextActionResolverServiceInterface
 {
-    /**
-     * Resolve dynamic next action command into URL and metadata.
-     */
     public function resolve(
         string $actionCommand,
         Material $material,
@@ -77,10 +71,6 @@ final class NextActionResolverService implements NextActionResolverServiceInterf
         };
     }
 
-    /**
-     * Resolve study sub-material action.
-     * Always fallback to main materials page if no sub-material found.
-     */
     protected function studySubMaterial(
         Material $material,
         ?string $jenisKonten,
@@ -108,9 +98,6 @@ final class NextActionResolverService implements NextActionResolverServiceInterf
         ];
     }
 
-    /**
-     * Jump to next material in sequence (accelerated jump / fast-track).
-     */
     protected function jumpToNextMaterial(Material $currentMaterial): array
     {
         $nextMaterial = $currentMaterial->getNextMaterial();
@@ -123,7 +110,6 @@ final class NextActionResolverService implements NextActionResolverServiceInterf
             ];
         }
 
-        // No more materials - completed all modules
         return [
             'label' => 'Selesai! Kembali ke Dashboard',
             'url'   => route('mahasiswa.dashboard'),

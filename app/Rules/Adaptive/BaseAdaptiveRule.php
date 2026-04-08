@@ -21,7 +21,7 @@ abstract class BaseAdaptiveRule implements AdaptiveRuleInterface
 
     protected string $actionCode;
 
-    protected int $priority = 100; // Lower = higher priority
+    protected int $priority = 100;
 
     public function getRuleId(): string
     {
@@ -43,17 +43,11 @@ abstract class BaseAdaptiveRule implements AdaptiveRuleInterface
         return $this->priority;
     }
 
-    /**
-     * Helper: Check if a single fact exists.
-     */
     protected function hasFact(array $facts, string $fact): bool
     {
         return in_array($fact, $facts, true);
     }
 
-    /**
-     * Helper: Check if all required facts exist (AND logic).
-     */
     protected function hasAllFacts(array $facts, array $requiredFacts): bool
     {
         foreach ($requiredFacts as $required) {
@@ -65,9 +59,6 @@ abstract class BaseAdaptiveRule implements AdaptiveRuleInterface
         return true;
     }
 
-    /**
-     * Helper: Check if any of the required facts exist (OR logic).
-     */
     protected function hasAnyFact(array $facts, array $requiredFacts): bool
     {
         foreach ($requiredFacts as $required) {
@@ -79,21 +70,12 @@ abstract class BaseAdaptiveRule implements AdaptiveRuleInterface
         return false;
     }
 
-    /**
-     * Helper: Check if fact does NOT exist.
-     */
     protected function notHasFact(array $facts, string $fact): bool
     {
         return ! $this->hasFact($facts, $fact);
     }
 
-    /**
-     * Abstract method: Must be implemented by concrete rules.
-     */
     abstract public function evaluate(array $facts): bool;
 
-    /**
-     * Abstract method: Must be implemented by concrete rules.
-     */
     abstract public function apply(array $state, array $context): array;
 }

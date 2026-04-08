@@ -6,7 +6,6 @@ use App\Http\Requests\BaseFormRequest;
 
 class StoreStudentRequest extends BaseFormRequest
 {
-    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [

@@ -6,12 +6,10 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\RoleRepositoryInterface;
 use App\Models\Role;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 
 final class RoleRepository implements RoleRepositoryInterface
 {
-    /** @return Collection<string, Role> */
     public function all(): Collection
     {
         return Role::all();
@@ -27,7 +25,6 @@ final class RoleRepository implements RoleRepositoryInterface
         return Role::where('role_name', '=', $name)->first();
     }
 
-    /** @return Collection<string, User> */
     public function getUsersByRole(string $roleId): Collection
     {
         return Role::with('users')

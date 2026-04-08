@@ -41,12 +41,10 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         $timeSpent = (int) ($data['time_spent'] ?? 0);
         $isGuest   = $userId === 'guest';
 
-        // 1. Update student performance (Authenticated only)
         $studentState = null;
         if (! $isGuest) {
             $studentState = $this->performanceService->updateStudentPerformance($userId, $isCorrect, $timeSpent, $usedHint);
 
-            // 1.5 Update Learning Style based on Real-time Interaction
             $this->performanceService->updateLearningStyleFromInteraction(
                 $userId,
                 $question->type ?? Question::TYPE_TEORI,
@@ -56,10 +54,8 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             $studentState = $this->guestProgressService->getStudentState();
         }
 
-        // 2. Calculate score with nuance (not just binary 100/0)
         $score = $this->performanceService->calculateScore($isCorrect, $usedHint, $timeSpent, $question->difficulty);
 
-        // 3. Calculate rewards
         $rewardResult = $isCorrect
             ? $this->gamificationService->calculateCorrectAnswerReward(
                 $studentState->toArray(),
@@ -69,22 +65,17 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             )
             : $this->gamificationService->processWrongAnswer($studentState->toArray());
 
-        $baseXpEarned = $rewardResult['global_xp_earned'] ?? 0;
-
-        // 3.5-3.7 Apply all gamification rewards (XP, streak bonus, level)
         [$totalXpEarned, $streakBonus] = $this->applyGamificationRewards($studentState, $rewardResult, $isCorrect);
 
         if (! $isGuest) {
             $studentState->save();
         } else {
-            // Save guest gamification state back to cookies
             $this->guestProgressService->saveGamificationState(
                 $studentState->global_xp,
                 $studentState->current_streak,
             );
         }
 
-        // 4. Save progress log (MANDATORY BEFORE GATHERING FACTS)
         $answerId     = null;
         $userResponse = null;
 
@@ -113,7 +104,6 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
                 ],
             ]);
 
-            // 4.5 Invalidate dashboard caches
             try {
                 Cache::forget("dashboard_index_{$userId}_false");
                 Cache::forget("dashboard_index_{$userId}_true");
@@ -125,11 +115,9 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
                 Log::warning('Failed to clear dashboard caches: ' . $e->getMessage());
             }
         } else {
-            // Guest progress save
             $this->guestProgressService->saveProgress($data, $isCorrect, $question->id);
         }
 
-        // 5. Gather facts for adaptive engine
         $facts = $this->factGathering->gatherFacts(
             studentState: $studentState,
             isCorrect: $isCorrect,
@@ -142,7 +130,6 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             moduleId: $material->module_id ?? null,
         );
 
-        // 6. Evaluate adaptive rules
         $adaptiveResult = $this->adaptiveEngine->evaluate($facts, $studentState->toArray(), [
             'is_correct'  => $isCorrect,
             'used_hint'   => $usedHint,
@@ -154,7 +141,6 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             'module_id'   => $material->module_id ?? null,
         ]);
 
-        // 7. Apply adaptive state changes
         $ruleOutput    = $adaptiveResult['new_state'] ?? [];
         $adaptiveState = $studentState->adaptive_state;
         if (is_string($adaptiveState)) {
@@ -162,9 +148,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         }
         $adaptiveState = $adaptiveState ?? [];
 
-        // Sync adaptive state changes from rule application
         if (isset($ruleOutput['adaptive_state'])) {
-            // Merge existing with new rule output
             $adaptiveState = array_merge($adaptiveState, $ruleOutput['adaptive_state']);
         }
 
@@ -182,7 +166,6 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             'total_time_spent'      => (! $isGuest) ? $this->performanceService->calculateTotalTimeSpent($userId, $material->id) : 0,
         ];
 
-        // Sync learning profile changes (Urusan Unlocking Modul)
         if (isset($ruleOutput['learning_profile'])) {
             $studentState->learning_profile = $ruleOutput['learning_profile'];
         }
@@ -195,7 +178,6 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             $studentState->save();
         }
 
-        // 8. Resolve next action
         $nextActionData = $this->nextActionResolver->resolve(
             $ruleOutput['next_action'] ?? 'NEXT_QUESTION',
             $material,
@@ -203,7 +185,6 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             $userId,
         );
 
-        // Sync response structure with frontend expectations
         $mappedState = [
             'gamification'     => $studentState->gamification_data,
             'performance'      => $studentState->performance_metrics,
@@ -247,12 +228,10 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
     {
         $baseXpEarned = $rewardResult['global_xp_earned'] ?? 0;
 
-        // Base XP
         $gamification              = $state->gamification_data ?? [];
         $gamification['global_xp'] = ($gamification['global_xp'] ?? 0) + $baseXpEarned;
         $state->gamification_data  = $gamification;
 
-        // Streak XP bonus
         $streakXpBonus = 0;
         if ($isCorrect) {
             $streakXpBonus = $this->gamificationService->calculateStreakBonusXP($state->current_streak);
@@ -264,7 +243,6 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             }
         }
 
-        // Streak milestone rewards (e.g., bonus hints)
         $streakMilestone = $this->gamificationService->checkStreakBonus($state->toArray());
         if ($streakMilestone && isset($streakMilestone['updates'])) {
             $metrics = $state->performance_metrics ?? [];
@@ -274,7 +252,6 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             $state->performance_metrics = $metrics;
         }
 
-        // Recalculate level from cumulative XP
         $gamification                  = $state->gamification_data ?? [];
         $gamification['current_level'] = $this->gamificationService->determineLevel($gamification['global_xp'] ?? 0);
         $state->gamification_data      = $gamification;

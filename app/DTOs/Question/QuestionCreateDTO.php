@@ -35,7 +35,6 @@ readonly class QuestionCreateDTO
         $answers      = $request->input('answers', []);
         $questionType = $request->input('question_type');
 
-        // Process correct_answer for radio_button and fill_in_the_blank
         if (
             in_array($questionType, ['radio_button', 'fill_in_the_blank'])
             && $request->has('correct_answer')

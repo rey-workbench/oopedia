@@ -10,17 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/**
- * @property string $id
- * @property string $material_id
- * @property string|null $sub_material_id
- * @property string $question_text
- * @property string $question_type
- * @property string $type
- * @property string $difficulty
- * @property string|null $hint
- * @property string|null $created_by
- */
 final class Question extends Model
 {
     use HasFactory;
@@ -76,8 +65,6 @@ final class Question extends Model
         'created_by'      => 'string',
     ];
 
-    // ==================== RELATIONSHIPS ====================
-
     public function material(): BelongsTo
     {
         return $this->belongsTo(Material::class);
@@ -102,6 +89,4 @@ final class Question extends Model
     {
         return $this->hasMany(QuizAttempt::class);
     }
-
-    // ==================== SCOPES ====================
 }

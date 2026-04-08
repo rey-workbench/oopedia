@@ -14,12 +14,10 @@ final class QuizAttemptRepository implements QuizAttemptRepositoryInterface
     public function create(array $data): QuizAttempt
     {
         return DB::transaction(function () use ($data) {
-            if (! isset($data['attempt_number'])) {
-                $data['attempt_number'] = QuizAttempt::where('user_id', '=', $data['user_id'])
-                    ->where('question_id', '=', $data['question_id'])
-                    ->lockForUpdate()
-                    ->count() + 1;
-            }
+            $data['attempt_number'] ??= QuizAttempt::where('user_id', '=', $data['user_id'])
+                ->where('question_id', '=', $data['question_id'])
+                ->lockForUpdate()
+                ->count() + 1;
 
             return QuizAttempt::create($data);
         });
@@ -30,7 +28,6 @@ final class QuizAttemptRepository implements QuizAttemptRepositoryInterface
         return QuizAttempt::find($id);
     }
 
-    /** @return Collection<int, QuizAttempt> */
     public function getByUser(string $userId): Collection
     {
         return QuizAttempt::where('user_id', '=', $userId)
@@ -39,7 +36,6 @@ final class QuizAttemptRepository implements QuizAttemptRepositoryInterface
             ->get();
     }
 
-    /** @return Collection<int, QuizAttempt> */
     public function getByUserAndQuestion(string $userId, string $questionId): Collection
     {
         return QuizAttempt::where('user_id', '=', $userId)
@@ -48,7 +44,6 @@ final class QuizAttemptRepository implements QuizAttemptRepositoryInterface
             ->get();
     }
 
-    /** @return Collection<int, QuizAttempt> */
     public function getByMaterial(string $materialId): Collection
     {
         return QuizAttempt::whereHas('question', fn ($q) => $q->where('material_id', $materialId))
@@ -81,7 +76,6 @@ final class QuizAttemptRepository implements QuizAttemptRepositoryInterface
             ->count();
     }
 
-    /** @return Collection<int, QuizAttempt> */
     public function getCorrectAttempts(string $userId): Collection
     {
         return QuizAttempt::where('user_id', '=', $userId)
@@ -90,7 +84,6 @@ final class QuizAttemptRepository implements QuizAttemptRepositoryInterface
             ->get();
     }
 
-    /** @return array<string, mixed> */
     public function getUserStats(string $userId): array
     {
         $totalAttempted = QuizAttempt::where('user_id', $userId)

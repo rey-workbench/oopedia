@@ -15,7 +15,7 @@ class RulePersistentVisualSafetyNet extends BaseAdaptiveRule
 
     protected string $actionCode = AdaptiveConstants::ACTION_VISUAL_CRISIS_INTERVENTION;
 
-    protected int $priority = 5; // Highest priority
+    protected int $priority = 5;
 
     public function evaluate(array $facts): bool
     {

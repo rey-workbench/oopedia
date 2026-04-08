@@ -165,9 +165,7 @@ class MaterialQuestionController extends Controller
         if ($isGuest) {
             $progressKey   = $materialId . '_' . $questionId;
             $guestProgress = $this->getGuestProgress($request);
-            $attempts      = isset($guestProgress[$progressKey])
-                ? $guestProgress[$progressKey]['attempt_number']
-                : 0;
+            $attempts      = $guestProgress[$progressKey]['attempt_number'] ?? 0;
         } else {
             $attempts = $this->progressRepo->getAttemptCount(
                 Auth::id(),

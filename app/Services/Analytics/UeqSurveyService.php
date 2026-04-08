@@ -50,7 +50,6 @@ final class UeqSurveyService implements UeqSurveyServiceInterface
             return [];
         }
 
-        // Inisialisasi array untuk menyimpan total nilai
         $totals = [
             'attractiveness' => 0,
             'perspicuity'    => 0,
@@ -61,7 +60,6 @@ final class UeqSurveyService implements UeqSurveyServiceInterface
         ];
 
         foreach ($surveys as $survey) {
-            // Attractiveness
             $totals['attractiveness'] += (
                 $survey->annoying_enjoyable      +
                 $survey->good_bad                +
@@ -71,7 +69,6 @@ final class UeqSurveyService implements UeqSurveyServiceInterface
                 $survey->friendly_unfriendly
             ) / 6;
 
-            // Perspicuity
             $totals['perspicuity'] += (
                 $survey->not_understandable_understandable +
                 $survey->easy_difficult                    +
@@ -79,7 +76,6 @@ final class UeqSurveyService implements UeqSurveyServiceInterface
                 $survey->clear_confusing
             ) / 4;
 
-            // Efficiency
             $totals['efficiency'] += (
                 $survey->fast_slow             +
                 $survey->inefficient_efficient +
@@ -87,7 +83,6 @@ final class UeqSurveyService implements UeqSurveyServiceInterface
                 $survey->organized_cluttered
             ) / 4;
 
-            // Dependability
             $totals['dependability'] += (
                 $survey->unpredictable_predictable +
                 $survey->obstructive_supportive    +
@@ -95,7 +90,6 @@ final class UeqSurveyService implements UeqSurveyServiceInterface
                 $survey->meets_expectations_does_not_meet
             ) / 4;
 
-            // Stimulation
             $totals['stimulation'] += (
                 $survey->valuable_inferior           +
                 $survey->boring_exciting             +
@@ -103,7 +97,6 @@ final class UeqSurveyService implements UeqSurveyServiceInterface
                 $survey->motivating_demotivating
             ) / 4;
 
-            // Novelty
             $totals['novelty'] += (
                 $survey->creative_dull          +
                 $survey->inventive_conventional +
@@ -112,7 +105,6 @@ final class UeqSurveyService implements UeqSurveyServiceInterface
             ) / 4;
         }
 
-        // Hitung rata-rata
         $count    = $surveys->count();
         $averages = [];
 

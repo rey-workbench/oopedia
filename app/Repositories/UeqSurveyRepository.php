@@ -29,26 +29,26 @@ final class UeqSurveyRepository implements UeqSurveyRepositoryInterface
 
     public function update(string $id, array $data): ?UeqSurvey
     {
-        $ueq = UeqSurvey::find($id, ['*']);
+        $ueq = UeqSurvey::find($id);
 
-        if ($ueq) {
-            $ueq->update($data);
-
-            return $ueq;
+        if (! $ueq) {
+            return null;
         }
 
-        return null;
+        $ueq->update($data);
+
+        return $ueq;
     }
 
     public function delete(string $id): bool
     {
-        $ueq = UeqSurvey::find($id, ['*']);
+        $ueq = UeqSurvey::find($id);
 
-        if ($ueq) {
-            return (bool) $ueq->delete();
+        if (! $ueq) {
+            return false;
         }
 
-        return false;
+        return (bool) $ueq->delete();
     }
 
     public function paginate(int $perPage = 15): LengthAwarePaginator

@@ -6,7 +6,6 @@ use App\Http\Requests\BaseFormRequest;
 
 class UpdateAdminRequest extends BaseFormRequest
 {
-    /** @return array<string, mixed> */
     public function rules(): array
     {
         $userId = $this->route('userId') ?? $this->route('user');

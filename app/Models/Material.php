@@ -10,13 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/**
- * @property string $id
- * @property string $title
- * @property string|null $content
- * @property string|null $module_id
- * @property string|null $created_by
- */
 final class Material extends Model
 {
     use HasFactory;
@@ -35,8 +28,6 @@ final class Material extends Model
         'module_id'        => 'string',
         'created_by'       => 'string',
     ];
-
-    // ==================== RELATIONSHIPS ====================
 
     public function subMaterials(): HasMany
     {

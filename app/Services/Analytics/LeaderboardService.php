@@ -21,24 +21,18 @@ final class LeaderboardService implements LeaderboardServiceInterface
     /** @return array<string, mixed> */
     public function getLeaderboardData(string $currentUserId): array
     {
-        // Cache global leaderboard data for 10 minutes (600 seconds)
         $leaderboardData = Cache::remember('global_leaderboard_data', 600, function () {
-            // Get difficulty question counts from active configurations
             $materials       = $this->materialRepo->getAllWithQuestionsAndConfigs();
             $difficultyCount = ProgressHelper::calculateDifficultyTotals($materials);
 
-            // Get correct answers with attempts for scoring
             $correctAnswers = $this->progressRepo->getCorrectAnswersWithAttempts('mahasiswa');
 
-            // Calculate user scores
             $userScores = $this->calculateUserScores($correctAnswers);
 
-            // Get leaderboard statistics
             $leaderboardDataRaw = $this->progressRepo->getLeaderboardStats('mahasiswa');
 
             $totalConfiguredQuestions = ProgressHelper::calculateTotalQuestions($materials);
 
-            // Process leaderboard data
             return $this->processLeaderboardData(
                 $leaderboardDataRaw,
                 $userScores,
@@ -47,9 +41,6 @@ final class LeaderboardService implements LeaderboardServiceInterface
             );
         });
 
-        // Find current user rank dynamically from cached data
-        // Repository returns collection of objects (stdClass or arrays converted to collection)
-        // Access 'id' property
         $currentUserRank = $leaderboardData->firstWhere('id', $currentUserId);
 
         return [
@@ -63,15 +54,13 @@ final class LeaderboardService implements LeaderboardServiceInterface
         $userScores = [];
 
         foreach ($correctAnswers as $answer) {
-            $userId = $answer->user_id;
-            // Repository query alias: 'attempts_needed'
+            $userId   = $answer->user_id;
             $attempts = (int) $answer->attempts_needed;
 
             if (! isset($userScores[$userId])) {
                 $userScores[$userId] = 0;
             }
 
-            // Base points by difficulty
             $basePoin = match ($answer->difficulty) {
                 'beginner' => 5,
                 'medium'   => 10,
@@ -79,7 +68,6 @@ final class LeaderboardService implements LeaderboardServiceInterface
                 default    => 0
             };
 
-            // Attempt multiplier
             $attemptMultiplier = match ($attempts) {
                 1       => 1.0,
                 2       => 0.8,
@@ -101,20 +89,16 @@ final class LeaderboardService implements LeaderboardServiceInterface
         $totalConfiguredQuestions,
         $difficultyCount,
     ) {
-        // Add weighted scores
         foreach ($leaderboardData as $data) {
             $data->weighted_score = $userScores[$data->id] ?? 0;
         }
 
-        // Sort by score descending
         $leaderboardData = $leaderboardData->sortByDesc('weighted_score')->values();
 
-        // Add ranks, percentages, and badges
         $rank = 1;
         foreach ($leaderboardData as $data) {
             $data->rank = $rank++;
 
-            // Calculate percentage
             $data->percentage = ProgressHelper::calculateProgressPercentage(
                 $data->total_correct_questions,
                 $totalConfiguredQuestions,
@@ -122,7 +106,6 @@ final class LeaderboardService implements LeaderboardServiceInterface
 
             $data->formatted_score = number_format($data->weighted_score, 0, ',', '.');
 
-            // Determine badge
             $badge             = $this->determineBadge($data, $difficultyCount);
             $data->badge       = $badge['name'];
             $data->badge_color = $badge['color'];

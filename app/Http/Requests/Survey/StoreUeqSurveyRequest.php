@@ -6,7 +6,6 @@ use App\Http\Requests\BaseFormRequest;
 
 class StoreUeqSurveyRequest extends BaseFormRequest
 {
-    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [
@@ -45,7 +44,6 @@ class StoreUeqSurveyRequest extends BaseFormRequest
         ];
     }
 
-    /** @return array<string, string> */
     public function messages(): array
     {
         $between = 'Skala penilaian harus bernilai antara 1 sampai 7';

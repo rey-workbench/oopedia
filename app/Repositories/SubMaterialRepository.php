@@ -41,13 +41,11 @@ final class SubMaterialRepository implements SubMaterialRepositoryInterface
     {
         $subMaterial = $this->find($id);
 
-        if ($subMaterial) {
-            $result = $subMaterial->delete();
-
-            return $result === true;
+        if (! $subMaterial) {
+            return false;
         }
 
-        return false;
+        return (bool) $subMaterial->delete();
     }
 
     /** @return Collection<int, SubMaterial> */

@@ -15,7 +15,7 @@ class RuleFinalProjectTextualPersistentFail extends BaseAdaptiveRule
 
     protected string $actionCode = AdaptiveConstants::ACTION_TEXTUAL_PROJECT_REVISION;
 
-    protected int $priority = 3; // Highest priority — supersedes regular persistent rules
+    protected int $priority = 3;
 
     public function evaluate(array $facts): bool
     {

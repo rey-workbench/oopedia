@@ -14,12 +14,6 @@ use App\Models\StudentState;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
 use App\Schemas\StudentStateSchema;
 
-/**
- * PerformanceService
- *
- * Handles PERSONALIZATION ONLY (individual user characteristics)
- * Refactored to use StudentState and QuizAttempt
- */
 final class PerformanceService implements PerformanceServiceInterface
 {
     public function __construct(
@@ -28,8 +22,6 @@ final class PerformanceService implements PerformanceServiceInterface
         public readonly GuestProgressServiceInterface $guestProgressService,
     ) {
     }
-
-    // ==================== PROFILE MANAGEMENT ====================
 
     public function getStudentState(string $userId): StudentState
     {
@@ -77,21 +69,18 @@ final class PerformanceService implements PerformanceServiceInterface
 
         if ($userId === 'guest') {
             $this->guestProgressService->saveStudentState($state);
-        } else {
-            $state->save();
+
+            return;
         }
+
+        $state->save();
     }
 
-    /**
-     * Update learning style based on real-time interaction.
-     * Returns 'visual', 'textual', or 'mixed' (G07, G08, G27).
-     */
     public function updateLearningStyleFromInteraction(string $userId, string $questionType, int $timeSpent): string
     {
         $state   = $this->progressRepo->getOrCreateStudentState($userId);
         $profile = $state->learning_profile ?? [];
 
-        // Initialize time distribution if not exists
         if (! isset($profile[StudentStateSchema::KEY_TIME_DISTRIBUTION])) {
             $profile[StudentStateSchema::KEY_TIME_DISTRIBUTION] = [
                 StudentStateSchema::STYLE_VISUAL  => 0,
@@ -99,13 +88,11 @@ final class PerformanceService implements PerformanceServiceInterface
             ];
         }
 
-        // Teori -> Textual; Studi Kasus / Sintaks -> Visual
-        $category = ($questionType === Question::TYPE_SINTAKS) ? StudentStateSchema::STYLE_VISUAL : StudentStateSchema::STYLE_TEXTUAL;
+        $category = $questionType === Question::TYPE_SINTAKS ? StudentStateSchema::STYLE_VISUAL : StudentStateSchema::STYLE_TEXTUAL;
         $profile[StudentStateSchema::KEY_TIME_DISTRIBUTION][$category] += $timeSpent;
 
-        // Recalculate dominant style (with mixed detection)
-        $visualTime  = $profile[StudentStateSchema::KEY_TIME_DISTRIBUTION][StudentStateSchema::STYLE_VISUAL]  ?? 0;
-        $textualTime = $profile[StudentStateSchema::KEY_TIME_DISTRIBUTION][StudentStateSchema::STYLE_TEXTUAL] ?? 0;
+        $visualTime  = $profile[StudentStateSchema::KEY_TIME_DISTRIBUTION][StudentStateSchema::STYLE_VISUAL]    ?? 0;
+        $textualTime = $profile[StudentStateSchema::KEY_TIME_DISTRIBUTION][StudentStateSchema::STYLE_TEXTUAL]   ?? 0;
         $totalTime   = $visualTime + $textualTime;
 
         if ($totalTime == 0) {
@@ -131,9 +118,6 @@ final class PerformanceService implements PerformanceServiceInterface
         return $newStyle;
     }
 
-    /**
-     * Update student performance counters (Strict Service Layer).
-     */
     public function updateStudentPerformance(
         string $userId,
         bool $isCorrect,
@@ -150,8 +134,6 @@ final class PerformanceService implements PerformanceServiceInterface
         return $state;
     }
 
-    // ==================== TIME-BASED PROFILING ====================
-
     public function calculateAverageTimeSpent(string $userId, string $materialId): float
     {
         $attempts = $this->progressRepo->getByUserAndMaterial($userId, $materialId);
@@ -164,10 +146,8 @@ final class PerformanceService implements PerformanceServiceInterface
         $count     = 0;
 
         foreach ($attempts as $attempt) {
-            // QuizAttempt has time_spent
-            $timeSpent = $attempt->time_spent;
-            if ($timeSpent > 0) {
-                $totalTime += $timeSpent;
+            if ($attempt->time_spent > 0) {
+                $totalTime += $attempt->time_spent;
                 $count++;
             }
         }
@@ -181,28 +161,21 @@ final class PerformanceService implements PerformanceServiceInterface
 
         $totalSeconds = 0;
         foreach ($attempts as $attempt) {
-            $timeSpent = $attempt->time_spent;
-            if ($timeSpent > 0) {
-                $totalSeconds += $timeSpent;
+            if ($attempt->time_spent > 0) {
+                $totalSeconds += $attempt->time_spent;
             }
         }
 
-        return round($totalSeconds / 60, 2); // Minutes
+        return round($totalSeconds / 60, 2);
     }
 
-    // ==================== KNOWLEDGE GAP ANALYSIS ====================
-
-    /** @return array<string, int> */
     public function getKnowledgeGaps(string $userId, string $materialId): array
     {
         $wrongAttempts  = $this->progressRepo->getWrongAnswers($userId, $materialId);
         $topicFrequency = [];
 
         foreach ($wrongAttempts as $attempt) {
-            // Temporary: Use difficulty as 'topic' to show *something*
-            $tag = 'General';
-
-            $topicFrequency[$tag] = ($topicFrequency[$tag] ?? 0) + 1;
+            $topicFrequency['General'] = ($topicFrequency['General'] ?? 0) + 1;
         }
 
         arsort($topicFrequency);
@@ -216,8 +189,6 @@ final class PerformanceService implements PerformanceServiceInterface
 
         return empty($gaps) ? null : array_key_first($gaps);
     }
-
-    // ==================== BEHAVIORAL PATTERN DETECTION ====================
 
     public function isFastLearner(string $userId, string $materialId, array $currentState): bool
     {
@@ -242,14 +213,11 @@ final class PerformanceService implements PerformanceServiceInterface
             && $accuracy < $thresholds['max_accuracy_pct'];
     }
 
-    // ==================== CROSS-MATERIAL TRACKING ====================
-
-    /** @return array<int, int> */
     public function getCompletedMaterials(string $userId): array
     {
         $state = $this->progressRepo->getOrCreateStudentState($userId);
 
-        return $state ? ($state->learning_profile[StudentStateSchema::KEY_UNLOCKED_MODULES] ?? []) : [];
+        return $state->learning_profile[StudentStateSchema::KEY_UNLOCKED_MODULES] ?? [];
     }
 
     public function markMaterialCompleted(string $userId, string $materialId): void
@@ -258,14 +226,12 @@ final class PerformanceService implements PerformanceServiceInterface
             return;
         }
 
-        // Resolve module_id from Material — unlocked_modules tracks MODULE ids,
-        // not material ids, which is what getUnlockStatusFacts() checks.
         $material = Material::find($materialId);
         $moduleId = $material?->module_id ?? $materialId;
 
         $state     = $this->getStudentState($userId);
-        $profile   = $state->learning_profile                           ?? [];
-        $completed = $profile[StudentStateSchema::KEY_UNLOCKED_MODULES] ?? [];
+        $profile   = $state->learning_profile                             ?? [];
+        $completed = $profile[StudentStateSchema::KEY_UNLOCKED_MODULES]   ?? [];
 
         if (! in_array($moduleId, $completed)) {
             $completed[]                                       = $moduleId;
@@ -275,9 +241,6 @@ final class PerformanceService implements PerformanceServiceInterface
         }
     }
 
-    // ==================== HELPERS ====================
-
-    /** @return array<string, mixed> */
     public function getPersonalizationProfile(string $userId, string $materialId, array $currentState): array
     {
         return [
@@ -292,10 +255,6 @@ final class PerformanceService implements PerformanceServiceInterface
         ];
     }
 
-    /**
-     * Calculate nuanced score based on correctness, hint usage, time, and difficulty.
-     * Aligned with Rule Base facts (G01-G04, G05-G06).
-     */
     public function calculateScore(
         bool $isCorrect,
         bool $usedHint,
@@ -309,16 +268,13 @@ final class PerformanceService implements PerformanceServiceInterface
         $rewards = StudentStateSchema::SCORE_REWARDS;
         $score   = $rewards['base'];
 
-        // Difficulty bonus
         $score += $rewards['difficulty_bonus'][$difficulty] ?? 0;
 
-        // Time bonus (G05: answered in < 50% of allocated time)
         $allocatedTime = AdaptiveConstants::ALLOCATED_TIME[$difficulty] ?? 60;
         if ($timeSpent > 0 && $timeSpent < ($allocatedTime / 2)) {
             $score += $rewards['time_bonus'];
         }
 
-        // Hint penalty
         if ($usedHint) {
             $score -= $rewards['hint_penalty'];
         }

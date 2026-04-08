@@ -33,15 +33,10 @@ final class StudentService implements StudentServiceInterface
 
     public function getStudentsWithProgress(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
-        $students = $this->userRepo->getStudentsList($search, $perPage);
-
-        // Get all materials
-        $materials = $this->materialRepo->getAllOrdered();
-
-        // Calculate total questions
+        $students       = $this->userRepo->getStudentsList($search, $perPage);
+        $materials      = $this->materialRepo->getAllOrdered();
         $totalQuestions = ProgressHelper::calculateTotalQuestions($materials);
 
-        // Add progress data to each student
         foreach ($students as $student) {
             $progressStats  = $this->progressRepo->getUserProgressStats($student->id);
             $correctAnswers = $progressStats->sum('correct_answers');
@@ -66,10 +61,9 @@ final class StudentService implements StudentServiceInterface
 
     public function createStudent(array $data): User
     {
-        // Hash password
         $data['password']    = Hash::make($data['password']);
-        $data['role_id']     = Role::where('role_name', Role::ROLE_MAHASISWA)->value('id'); // Student role
-        $data['is_approved'] = true; // Admin-created students are auto-approved
+        $data['role_id']     = Role::where('role_name', Role::ROLE_MAHASISWA)->value('id');
+        $data['is_approved'] = true;
 
         return $this->userRepo->create($data);
     }
@@ -113,30 +107,19 @@ final class StudentService implements StudentServiceInterface
         $this->userRepo->delete($studentId);
     }
 
-    /** @return array<string, mixed> */
     public function getStudentProgressDetail(User $student): array
     {
-        // Get all materials
-        $materials = $this->materialRepo->getAllOrdered();
-
-        // Get progress data for this student
-        $progressStats = $this->progressRepo->getUserMaterialProgress($student->id);
-
-        // Build materials with progress
+        $materials             = $this->materialRepo->getAllOrdered();
+        $progressStats         = $this->progressRepo->getUserMaterialProgress($student->id);
         $materialsWithProgress = collect();
 
         foreach ($materials as $material) {
             $totalQuestions = $material->questions->count();
 
-            // Get correct answers for this material
-            $materialProgress = $progressStats->firstWhere('material_id', $material->id);
-            $correctAnswers   = $materialProgress ? $materialProgress->correct_answers : 0;
-
-            // Calculate progress percentage
+            $materialProgress   = $progressStats->firstWhere('material_id', $material->id);
+            $correctAnswers     = $materialProgress ? $materialProgress->correct_answers : 0;
             $progressPercentage = ProgressHelper::calculateProgressPercentage($correctAnswers, $totalQuestions);
-
-            // Get last access time
-            $lastAccessed = $this->progressRepo->getLastAccessTime($student->id, $material->id);
+            $lastAccessed       = $this->progressRepo->getLastAccessTime($student->id, $material->id);
 
             $materialsWithProgress->push((object) [
                 'id'                 => $material->id,
@@ -161,7 +144,6 @@ final class StudentService implements StudentServiceInterface
             }
         }
 
-        // Get recent activities
         $recentActivities = $this->progressRepo->getRecentActivities($student->id, 10);
 
         $studentState   = StudentState::find($student->id);
@@ -175,13 +157,11 @@ final class StudentService implements StudentServiceInterface
         ];
     }
 
-    /** @return array<string, mixed> */
     public function importStudentsFromFile(UploadedFile $file): array
     {
         return $this->importUsersFromCsv($file, fn (array $rowData) => $this->createStudent($rowData));
     }
 
-    /** @return array<string, mixed> */
     public function generateImportTemplate(): array
     {
         return $this->generateCsvTemplate(
