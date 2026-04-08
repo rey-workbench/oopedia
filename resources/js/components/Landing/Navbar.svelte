@@ -22,7 +22,9 @@
     let isDark = $derived(!isScrolled && scrollY > 8000);
 
     let headerBg = $derived(
-        isScrolled ? 'bg-white/95 backdrop-blur-xl border-b border-slate-200' : 'bg-transparent'
+        isScrolled
+            ? 'bg-white/95 backdrop-blur-xl border-b border-slate-200 shadow-[0_10px_35px_rgba(15,23,42,0.06)]'
+            : 'bg-transparent'
     );
     let menuBtnBg = $derived(
         isDark
@@ -45,13 +47,13 @@
 <svelte:window bind:scrollY />
 
 <header
-    class="pointer-events-none fixed top-0 right-0 left-0 z-50 flex items-center justify-between p-6 transition-all duration-300 {headerBg}"
+    class="pointer-events-none fixed top-0 right-0 left-0 z-50 flex items-center justify-between px-4 py-4 transition-all duration-300 sm:px-6 {headerBg}"
 >
     <div class="menu-container pointer-events-auto relative">
         <button
             type="button"
             onclick={() => (menuOpen = !menuOpen)}
-            class="flex cursor-pointer items-center gap-2 rounded-full px-5 py-3 text-[10px] font-black tracking-[0.2em] uppercase shadow-xl backdrop-blur-3xl transition-all hover:bg-white {menuBtnBg}"
+            class="flex min-h-11 cursor-pointer items-center gap-2 rounded-full px-5 py-3 text-[10px] font-black tracking-[0.2em] uppercase shadow-xl backdrop-blur-3xl transition-all hover:bg-white {menuBtnBg}"
         >
             {menuOpen ? 'Tutup' : 'Menu'}
             {#if menuOpen}
@@ -86,7 +88,7 @@
         class="pointer-events-auto absolute left-1/2 hidden w-full max-w-md -translate-x-1/2 md:block"
     >
         <div
-            class="flex cursor-text items-center gap-4 rounded-full px-5 py-3.5 shadow-xl backdrop-blur-3xl transition-all hover:bg-white {searchBg}"
+            class="flex min-h-12 cursor-text items-center gap-4 rounded-full px-5 py-3.5 shadow-xl backdrop-blur-3xl transition-all hover:bg-white {searchBg}"
         >
             <Search size={16} class={searchIconColor} />
             <input
@@ -98,16 +100,16 @@
         </div>
     </div>
 
-    <div class="pointer-events-auto flex items-center gap-5">
+    <div class="pointer-events-auto flex items-center gap-3 sm:gap-5">
         <Link
             href={ROUTES.AUTH.LOGIN}
-            class="text-[10px] font-black tracking-[0.2em] uppercase transition-colors {authTextColor}"
+            class="rounded-full px-3 py-2 text-[10px] font-black tracking-[0.2em] uppercase transition-colors {authTextColor}"
         >
             Masuk
         </Link>
         <Link
             href={ROUTES.AUTH.REGISTER}
-            class="rounded-full px-6 py-3.5 text-[9px] font-black tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-105 active:scale-95 {authBtnBg}"
+            class="rounded-full px-5 py-3 text-[9px] font-black tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-105 active:scale-95 sm:px-6 sm:py-3.5 {authBtnBg}"
         >
             Daftar
         </Link>

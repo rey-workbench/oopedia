@@ -298,29 +298,53 @@
 />
 
 <section
-    class="relative -mt-16 flex h-screen flex-col items-center justify-center overflow-hidden bg-linear-to-b from-[#F9F9F9] to-transparent px-6 text-center"
+    class="relative -mt-16 flex min-h-screen flex-col items-center justify-center overflow-hidden bg-linear-to-b from-[#FAFAF8] via-[#FDFDFB] to-[#F3F1EC] px-6 text-center"
 >
-    {#each floatingDecor as item}
+    <div
+        class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(210,109,63,0.1),transparent_45%),radial-gradient(circle_at_80%_20%,rgba(174,192,173,0.14),transparent_45%),radial-gradient(circle_at_50%_80%,rgba(238,202,157,0.2),transparent_50%)]"
+    ></div>
+
+    {#each floatingDecor as item (`${item.image}-${item.top}-${item.left ?? ''}-${item.right ?? ''}`)}
         <FloatingItem {...item} parallaxX={$parallax.x} parallaxY={$parallax.y} />
     {/each}
 
-    <div class="relative z-10 mt-12 flex flex-col items-center" in:fade={{ duration: 1500 }}>
-        <span class="mb-3 text-[15px] font-bold tracking-tight text-slate-900 sm:text-[17px]"
-            >OOPEDIA</span
+    <div
+        class="relative z-10 mt-12 flex max-w-5xl flex-col items-center"
+        in:fade={{ duration: 1500 }}
+    >
+        <span
+            class="shadow-soft mb-4 rounded-full border border-slate-900/10 bg-white/70 px-4 py-2 text-[11px] font-black tracking-[0.2em] text-slate-900/80 uppercase backdrop-blur"
+            >OOPEDIA · PLATFORM PEMBELAJARAN MODERN</span
         >
 
         <h1
-            class="mb-10 px-4 font-sans text-[2.5rem] leading-[0.95] font-medium tracking-[-0.05em] text-slate-900 drop-shadow-sm sm:text-[3.5rem] md:text-[5rem] lg:text-[7.5rem]"
+            class="mb-6 px-4 font-sans text-[2.4rem] leading-[0.9] font-medium tracking-[-0.05em] text-slate-900 drop-shadow-sm sm:text-[3.3rem] md:text-[4.8rem] lg:text-[7rem]"
         >
             Ruang belajar Anda<br />untuk menguasai OOP
         </h1>
 
-        <Link
-            href={ROUTES.AUTH.REGISTER}
-            class="rounded-full bg-[#111] px-6 py-3 text-[13px] font-medium tracking-tight text-white shadow-lg transition-colors hover:bg-slate-900 active:scale-95 sm:px-8 sm:py-3.5 sm:text-[15px]"
+        <p
+            class="mb-10 max-w-2xl px-6 text-sm leading-relaxed font-medium text-slate-900/60 sm:text-base"
         >
-            Mulai Belajar
-        </Link>
+            Belajar paradigma, pola desain, dan arsitektur perangkat lunak dengan pengalaman
+            interaktif yang terasa personal sejak sesi pertama.
+        </p>
+
+        <div class="flex flex-wrap items-center justify-center gap-3">
+            <Link
+                href={ROUTES.AUTH.REGISTER}
+                class="rounded-full bg-[#111] px-7 py-3.5 text-[12px] font-black tracking-[0.14em] text-white uppercase shadow-[0_15px_30px_rgba(0,0,0,0.18)] transition-all hover:-translate-y-0.5 hover:bg-slate-900 active:scale-95 sm:px-9 sm:text-[13px]"
+            >
+                Mulai Belajar
+            </Link>
+
+            <a
+                href="#fitur"
+                class="shadow-soft rounded-full border border-slate-900/20 bg-white/75 px-7 py-3.5 text-[12px] font-black tracking-[0.14em] text-slate-900 uppercase backdrop-blur transition-all hover:-translate-y-0.5 hover:border-slate-900/35 hover:bg-white"
+            >
+                Eksplor Fitur
+            </a>
+        </div>
     </div>
 
     <div

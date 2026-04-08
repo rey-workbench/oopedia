@@ -5,30 +5,36 @@
 </script>
 
 <section class="relative min-h-screen w-full overflow-hidden bg-[#0A0A0A]">
+    <div
+        class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(210,109,63,0.24),transparent_45%),radial-gradient(circle_at_80%_80%,rgba(174,192,173,0.16),transparent_50%)]"
+    ></div>
+
     <img
         src="/images/landing/abstract3.png"
         alt=""
         aria-hidden="true"
         role="presentation"
-        class="absolute inset-0 h-full w-full scale-150 object-cover opacity-30 mix-blend-luminosity blur-md"
+        class="absolute inset-0 h-full w-full scale-150 object-cover opacity-25 mix-blend-luminosity blur-md"
     />
 
     <div
         class="relative z-10 flex min-h-screen flex-col items-center justify-center gap-16 px-6 py-32"
     >
         <div class="flex flex-col items-center text-center">
-            <p class="mb-4 text-[9px] font-black tracking-[0.3em] text-[#D26D3F] uppercase">
+            <p class="mb-4 text-[9px] font-black tracking-[0.3em] text-[#E2885F] uppercase">
                 dengan Kecerdasan Buatan
             </p>
             <h2
-                class="max-w-2xl font-serif text-4xl leading-tight tracking-tight text-white md:text-6xl"
+                class="max-w-3xl font-serif text-4xl leading-[1.02] tracking-tight text-white md:text-6xl"
             >
                 Temukan pola arsitektur<br />berdasarkan konsep untuk...
             </h2>
         </div>
 
         <div class="w-full max-w-md">
-            <div class="rounded-2xl bg-[#FDFDFB] p-8 shadow-[0_40px_80px_rgba(0,0,0,0.5)]">
+            <div
+                class="rounded-2xl bg-[#FDFDFB] p-8 shadow-[0_40px_80px_rgba(0,0,0,0.5)] ring-1 ring-white/40"
+            >
                 <div class="mb-6 flex items-center gap-3">
                     <Disc2 size={14} class="text-slate-900" />
                     <span class="text-[10px] font-black tracking-[0.2em] text-slate-900 uppercase"
@@ -47,13 +53,13 @@
                 <div class="flex gap-3">
                     <button
                         type="button"
-                        class="flex-1 rounded-full bg-slate-900 py-3.5 text-[10px] font-black tracking-[0.15em] text-white uppercase transition-colors hover:bg-slate-800"
+                        class="flex-1 rounded-full bg-slate-900 py-3.5 text-[10px] font-black tracking-[0.15em] text-white uppercase shadow-[0_10px_20px_rgba(15,23,42,0.2)] transition-all hover:-translate-y-0.5 hover:bg-slate-800"
                     >
                         Cari
                     </button>
                     <button
                         type="button"
-                        class="flex-1 rounded-full border border-slate-300 bg-white py-3.5 text-[10px] font-black tracking-[0.15em] uppercase transition-colors hover:border-slate-300"
+                        class="flex-1 rounded-full border border-slate-300 bg-white py-3.5 text-[10px] font-black tracking-[0.15em] uppercase transition-colors hover:border-slate-400"
                     >
                         Hapus
                     </button>
@@ -67,7 +73,7 @@
             </p>
             <Link
                 href={ROUTES.AUTH.REGISTER}
-                class="group inline-flex items-center gap-3 rounded-full bg-white px-10 py-4 text-[11px] font-black tracking-[0.2em] text-slate-900 uppercase shadow-[0_20px_50px_rgba(0,0,0,0.4)] transition-all hover:scale-105 active:scale-95"
+                class="group inline-flex items-center gap-3 rounded-full bg-white px-10 py-4 text-[11px] font-black tracking-[0.2em] text-slate-900 uppercase shadow-[0_20px_50px_rgba(0,0,0,0.4)] transition-all hover:-translate-y-0.5 hover:scale-105 active:scale-95"
             >
                 <span>Daftar Sekarang</span>
                 <ArrowRight size={16} class="transition-transform group-hover:translate-x-1" />
