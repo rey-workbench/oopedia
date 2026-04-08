@@ -63,7 +63,7 @@
             {#each brands as brand}
                 <div
                     data-logo
-                    class="flex items-center justify-center p-6 transition-all duration-500"
+                    class="flex items-center justify-center p-6"
                 >
                     <img
                         src={brand.image}

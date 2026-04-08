@@ -3,6 +3,7 @@
     import Card from '@/components/ui/Card.svelte';
     import Button from '@/components/ui/Button.svelte';
     import GuestBanner from '@/components/layout/GuestBanner.svelte';
+    import { router } from '@inertiajs/svelte';
     import { ArrowLeft, Map as MapIcon } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { LevelMapState } from '@/states/Mahasiswa/QuizState.svelte';
@@ -19,6 +20,12 @@
     let { material, levels }: Props = $props();
 
     const state = untrack(() => new LevelMapState(material, levels as LevelItem[]));
+
+    const handleLevelClick = (level: LevelItem) => {
+        if (level.status === 'locked') return;
+
+        router.visit(ROUTES.MAHASISWA.MATERIALS.QUESTIONS.SHOW(state.material.id));
+    };
 </script>
 
 <App title={`Peta Tantangan - ${state.material.title}`}>
@@ -77,9 +84,9 @@
             <div class="space-y-10">
                 <LevelMapLegend />
                 <LevelMapCanvas
-                    material={state.material}
                     sortedLevels={state.sortedLevels}
                     allCompleted={state.allCompleted}
+                    onLevelClick={handleLevelClick}
                 />
             </div>
         {/if}

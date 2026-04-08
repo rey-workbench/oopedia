@@ -7,7 +7,7 @@
 
     // Quill syntax module expects hljs on window
     if (typeof window !== 'undefined') {
-        (window as any).hljs = hljs;
+        Object.assign(window, { hljs });
     }
 
     interface Props {
@@ -28,11 +28,11 @@
     if (value === undefined) value = '';
 
     let editorContainer: HTMLElement;
-    let quill: any;
+    let quill: Quill;
 
     onMount(() => {
         if (typeof window !== 'undefined') {
-            (window as any).hljs = hljs;
+            Object.assign(window, { hljs });
         }
 
         quill = new Quill(editorContainer, {
@@ -70,9 +70,9 @@
         border-top: none !important;
         border-left: none !important;
         border-right: none !important;
-        border-bottom: 1px solid var(--color-primary-100, #e2e8f0) !important;
-        background-color: var(--color-primary-50, #f8fafc) !important;
-        border-radius: 1.25rem 1.25rem 0 0 !important;
+        border-bottom: 2px solid var(--color-slate-200) !important;
+        background-color: var(--color-slate-50) !important;
+        padding: 0.75rem 1rem !important;
     }
     :global(.ql-container) {
         border: none !important;
@@ -85,7 +85,7 @@
         min-height: 200px;
     }
     :global(.ql-editor.ql-blank::before) {
-        color: var(--color-slate-400, #94a3b8) !important;
+        color: var(--color-slate-400) !important;
         font-style: normal !important;
     }
     :global(.ql-snow.ql-toolbar button:hover, .ql-snow .ql-toolbar button:focus) {
@@ -94,8 +94,26 @@
     :global(.ql-snow.ql-toolbar button.ql-active, .ql-snow .ql-toolbar button.ql-active) {
         color: var(--color-primary-600) !important;
     }
+    :global(
+        .ql-snow.ql-toolbar button:hover .ql-stroke,
+        .ql-snow .ql-toolbar button:focus .ql-stroke,
+        .ql-snow.ql-toolbar button.ql-active .ql-stroke,
+        .ql-snow .ql-toolbar button.ql-active .ql-stroke
+    ) {
+        stroke: var(--color-primary-600) !important;
+    }
+    :global(
+        .ql-snow.ql-toolbar button:hover .ql-fill,
+        .ql-snow .ql-toolbar button:focus .ql-fill,
+        .ql-snow.ql-toolbar button.ql-active .ql-fill,
+        .ql-snow .ql-toolbar button.ql-active .ql-fill
+    ) {
+        fill: var(--color-primary-600) !important;
+    }
 </style>
 
-<div class="quill-wrapper overflow-hidden rounded-2xl border border-slate-200 bg-white">
+<div
+    class="quill-wrapper focus-within:border-primary-500 focus-within:ring-primary-100 overflow-hidden rounded-3xl border-2 border-b-6 border-slate-200 bg-white transition-all focus-within:ring-4 hover:border-slate-300"
+>
     <div bind:this={editorContainer} style="height: {height};"></div>
 </div>

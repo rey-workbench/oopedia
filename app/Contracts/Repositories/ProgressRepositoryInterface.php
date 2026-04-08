@@ -34,6 +34,8 @@ interface ProgressRepositoryInterface
 
     public function getAnsweredQuestionIds(string $userId, string $materialId): Collection;
 
+    public function getAttemptedQuestionIds(string $userId, string $materialId): Collection;
+
     public function getConsecutiveFailures(?string $userId, string $questionId): int;
 
     public function getLatestErrorType(?string $userId, string $questionId): ?string;

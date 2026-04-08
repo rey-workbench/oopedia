@@ -44,9 +44,9 @@
     const errorId = $derived(`${selectId}-error`);
 
     const sizes = {
-        sm: 'px-4 py-2.5 text-xs',
-        md: 'px-6 py-4 text-sm',
-        lg: 'px-6 py-5 text-base',
+        sm: 'px-4 py-2.5 text-xs border-b-4',
+        md: 'px-6 py-4 text-sm border-b-6',
+        lg: 'px-6 py-5 text-base border-b-8',
     };
 
     function handleChange(e: Event) {
@@ -56,14 +56,14 @@
     }
 </script>
 
-<div class={`w-full space-y-2 ${className}`}>
+<div class={`w-full space-y-2.5 ${className}`}>
     {#if label}
         <label
             for={selectId}
-            class="ml-4 block text-[10px] font-bold tracking-widest text-slate-500 uppercase"
+            class={`ml-4 block text-[11px] font-black tracking-widest uppercase transition-colors ${error ? 'text-rose-500' : 'text-slate-500'}`}
         >
             {label}
-            {#if required}<span class="text-rose-500">*</span>{/if}
+            {#if required}<span class="text-rose-500 ml-1">*</span>{/if}
         </label>
     {/if}
 
@@ -79,14 +79,14 @@
             aria-describedby={error ? errorId : undefined}
             {...rest}
             class={`
-                w-full cursor-pointer appearance-none rounded-full border-2 font-bold tracking-widest uppercase transition-all outline-none
+                w-full cursor-pointer appearance-none rounded-3xl border-2 font-bold transition-all outline-none
                 ${sizes[size]}
                 ${
                     disabled
-                        ? 'cursor-not-allowed border-slate-50 bg-slate-50 text-slate-400'
+                        ? 'cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400 grayscale'
                         : error
-                          ? 'border-rose-100 bg-rose-50/30 text-rose-900 focus:border-rose-500 focus:ring-4 focus:ring-rose-50'
-                          : 'hover:border-primary-200 focus:border-primary-600 focus:ring-primary-50 border-slate-100 bg-white text-slate-900 focus:ring-8'
+                          ? 'border-rose-200 bg-rose-50/20 text-rose-900 focus:border-rose-500 focus:ring-4 focus:ring-rose-50'
+                          : 'hover:border-slate-300 focus:border-primary-500 border-slate-200 bg-white text-slate-900 focus:ring-4 focus:ring-primary-100'
                 }
             `}
         >

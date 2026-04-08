@@ -113,7 +113,7 @@ final class MaterialRepository implements MaterialRepositoryInterface
         string $sort = 'created_at',
         string $direction = 'asc',
     ): Collection {
-        $query = Material::newQuery();
+        $query = Material::query();
 
         if ($search) {
             $query->where('title', 'like', "%{$search}%");
@@ -132,7 +132,7 @@ final class MaterialRepository implements MaterialRepositoryInterface
 
     public function findWithRelations(string $id, array $relations = []): Material
     {
-        $query = Material::newQuery();
+        $query = Material::query();
 
         if ($relations) {
             $query->with($relations);

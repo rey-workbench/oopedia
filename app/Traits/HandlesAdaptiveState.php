@@ -53,7 +53,7 @@ trait HandlesAdaptiveState
     public function handleMaterialChange($studentState, array &$adaptiveState, int|string $materialId): void
     {
         $lastMaterialId = $adaptiveState['current_material_id'] ?? null;
-        if ($lastMaterialId !== null && (int) $lastMaterialId !== (int) $materialId) {
+        if ($lastMaterialId !== null && (string) $lastMaterialId !== (string) $materialId) {
             $adaptiveState['target_difficulty'] = null;
             $adaptiveState['fast_track_active'] = false;
             $adaptiveState['last_rule']         = null;

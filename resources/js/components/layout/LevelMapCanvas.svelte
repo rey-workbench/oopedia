@@ -1,29 +1,37 @@
 <script lang="ts">
     import Card from '@/components/ui/Card.svelte';
-    import { Link } from '@inertiajs/svelte';
     import { Check, Lock, Star, Trophy, Zap } from 'lucide-svelte';
-    import type { Material, LevelItem } from '@/types';
+    import type { LevelItem } from '@/types';
 
     interface Props {
-        material: Material;
         sortedLevels: LevelItem[];
         allCompleted: boolean;
         class?: string;
+        onLevelClick?: (level: LevelItem) => void;
     }
 
-    let { material, sortedLevels, allCompleted, class: className = '' }: Props = $props();
+    let {
+        sortedLevels,
+        allCompleted,
+        class: className = '',
+        onLevelClick = () => {},
+    }: Props = $props();
 
     // ============================================
     //   MAP COORDINATE SYSTEM
     // ============================================
-    const MAP_W = 900;
-    const START_Y = 100;
-    const GAP_Y = 200;
-    const TROPHY_GAP = 160;
+    // Responsive width bound to the container
+    let mapW = $state(900);
 
-    const X_CENTER = MAP_W / 2;
-    const X_LEFT = 180;
-    const X_RIGHT = MAP_W - 180;
+    const START_Y = 80;
+    const GAP_Y = 160;
+    const TROPHY_GAP = 140;
+
+    const X_CENTER = $derived(mapW / 2);
+    // Dynamic amplitude for the snake path so it doesn't break on small screens
+    const amplitude = $derived(Math.min(140, mapW * 0.28));
+    const X_LEFT = $derived(X_CENTER - amplitude);
+    const X_RIGHT = $derived(X_CENTER + amplitude);
 
     function nodeX(i: number): number {
         return [X_CENTER, X_LEFT, X_RIGHT][i % 3] as number;
@@ -37,9 +45,8 @@
             sortedLevels.length * GAP_Y +
             (sortedLevels.length > 0 ? TROPHY_GAP - GAP_Y + GAP_Y : 0)
     );
-    const totalH = $derived(trophyY + 120);
-    const tPctX = $derived((X_CENTER / MAP_W) * 100);
-    const tPctY = $derived((trophyY / totalH) * 100);
+    const totalH = $derived(trophyY + 140);
+    const tX = $derived(X_CENTER);
 
     // ============================================
     //   BEZIER DOT TRAIL CALCULATION
@@ -74,6 +81,9 @@
     }
 
     const mapDots = $derived.by(() => {
+        // Return empty array if mapW hasn't initialized properly or there are no levels
+        if (mapW === 0 || sortedLevels.length === 0) return [];
+
         const result: Dot[] = [];
         for (let i = 0; i < sortedLevels.length; i++) {
             const x1 = nodeX(i);
@@ -87,7 +97,7 @@
                 y2 = trophyY;
             }
             const completed = sortedLevels[i]?.status === 'completed';
-            const segDots = trailDots(x1, y1, x2, y2, 26);
+            const segDots = trailDots(x1, y1, x2, y2, 22);
             segDots.forEach((d) => result.push({ ...d, completed }));
         }
         return result;
@@ -96,110 +106,96 @@
 
 <Card padding="p-0" class={`overflow-hidden ${className}`}>
     <!-- Start Badge -->
-    <div class="pt-10 pb-3 text-center">
+    <div class="pt-8 pb-2 text-center">
         <span
-            class="inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-2 text-[10px] font-black tracking-[0.25em] text-white uppercase shadow-lg"
+            class="inline-flex items-center gap-2 rounded-full bg-slate-800 px-6 py-2 text-[10px] font-black tracking-[0.25em] text-white uppercase shadow-md"
         >
-            <Zap size={12} />
+            <Zap size={14} class="fill-amber-400 text-amber-400" />
             Start
         </span>
-        <div class="mx-auto mt-2 h-5 w-px bg-slate-200"></div>
     </div>
 
     <!-- Map Area -->
-    <div class="relative w-full px-6 pb-10" style="height: {totalH}px;">
+    <div bind:clientWidth={mapW} class="relative w-full pb-10" style="height: {totalH}px;">
         <!-- SVG DOT TRAIL LAYER -->
         <svg
             class="pointer-events-none absolute inset-0 w-full"
-            viewBox="0 0 {MAP_W} {totalH}"
-            preserveAspectRatio="xMidYMid meet"
             style="height: {totalH}px;"
             aria-hidden="true"
             role="presentation"
         >
             {#each mapDots as dot, i (i)}
-                <circle
-                    cx={dot.x}
-                    cy={dot.y}
-                    r="4"
-                    fill={dot.completed ? '#6ee7b7' : '#e2e8f0'}
-                    opacity={dot.completed ? 0.9 : 0.6}
+                <circle cx={dot.x} cy={dot.y} r="4.5" fill={dot.completed ? '#10b981' : '#cbd5e1'}
                 ></circle>
             {/each}
         </svg>
 
         <!-- HTML NODE LAYER -->
         {#each sortedLevels as level, i (level.level)}
-            {@const cx = nodeX(i)}
-            {@const cy = nodeY(i)}
-            {@const pctX = (cx / MAP_W) * 100}
-            {@const pctY = (cy / totalH) * 100}
-
             <div
                 class="absolute flex flex-col items-center"
-                style="left: {pctX}%; top: {pctY}%; transform: translate(-50%, -50%);"
+                style="left: {nodeX(i)}px; top: {nodeY(i)}px; transform: translate(-50%, -50%);"
             >
                 {#if level.status === 'locked'}
                     <!-- LOCKED NODE -->
-                    <div
-                        class="relative flex h-22 w-22 items-center justify-center rounded-full border-[3px] border-slate-200 bg-slate-50 shadow-sm"
+                    <button
+                        type="button"
+                        onclick={() => onLevelClick(level)}
+                        class="relative flex h-20 w-20 items-center justify-center rounded-full border-2 border-b-[6px] border-slate-300 bg-slate-200 shadow-sm transition-transform active:translate-y-1 sm:h-24 sm:w-24"
                     >
-                        <span class="text-3xl font-black text-slate-300">{level.level}</span>
-                        <div
-                            class="absolute -right-1 -bottom-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-slate-200 bg-white shadow-sm"
+                        <span class="text-2xl font-black text-slate-400 sm:text-3xl"
+                            >{level.level}</span
                         >
-                            <Lock size={12} class="text-slate-300" />
+                        <div
+                            class="absolute -right-1 bottom-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-slate-300 bg-slate-100 shadow-sm sm:h-8 sm:w-8"
+                        >
+                            <Lock size={14} class="text-slate-400" strokeWidth={3} />
                         </div>
-                    </div>
+                    </button>
                 {:else if level.status === 'completed'}
                     <!-- COMPLETED NODE -->
-                    <Link
-                        href={`/mahasiswa/materials/${material.id}/questions?question=${level.question_id}`}
-                        class="group flex flex-col items-center"
-                    >
-                        <div
-                            class="relative flex h-22 w-22 items-center justify-center rounded-full border-4 border-white bg-emerald-500 shadow-lg shadow-emerald-200 transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-emerald-300"
+                    <div class="group flex flex-col items-center">
+                        <button
+                            type="button"
+                            onclick={() => onLevelClick(level)}
+                            class="relative flex h-20 w-20 items-center justify-center rounded-full border-2 border-b-[6px] border-emerald-600 bg-emerald-500 shadow-lg shadow-emerald-200 transition-transform hover:scale-105 active:translate-y-1 sm:h-24 sm:w-24"
                         >
-                            <span class="text-3xl font-black text-white drop-shadow-sm"
+                            <span class="text-2xl font-black text-white drop-shadow-sm sm:text-3xl"
                                 >{level.level}</span
                             >
                             <div
-                                class="absolute -right-1 -bottom-1.5 flex h-8 w-8 items-center justify-center rounded-full border-2 border-emerald-100 bg-white shadow-md"
+                                class="absolute -right-1 bottom-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-emerald-200 bg-white shadow-md sm:h-9 sm:w-9"
                             >
-                                <Check size={16} class="text-emerald-500" strokeWidth={3} />
+                                <Check size={18} class="text-emerald-500" strokeWidth={4} />
                             </div>
-                        </div>
+                        </button>
                         <div class="mt-2.5 flex gap-1">
                             {#each Array(3) as _, j (j)}
                                 <Star size={13} class="fill-amber-400 text-amber-400" />
                             {/each}
                         </div>
-                    </Link>
+                    </div>
                 {:else}
                     <!-- ACTIVE / PLAYABLE NODE -->
-                    <Link
-                        href={`/mahasiswa/materials/${material.id}/questions?question=${level.question_id}`}
-                        class="group relative flex flex-col items-center"
-                    >
-                        <!-- Pulse ring -->
-                        <div class="absolute inset-0 flex items-start justify-center">
-                            <div
-                                class="bg-primary-400/25 h-28 w-28 animate-ping rounded-full"
-                                style="animation-duration: 2s;"
-                            ></div>
-                        </div>
-                        <div
-                            class="bg-primary-600 ring-primary-100 shadow-primary-900/20 group-hover:bg-primary-700 relative z-10 flex h-22 w-22 items-center justify-center rounded-full border-4 border-white shadow-xl ring-4 transition-all duration-300 group-hover:scale-110"
+                    <div class="group relative flex flex-col items-center">
+                        <button
+                            type="button"
+                            onclick={() => onLevelClick(level)}
+                            class="border-primary-600 bg-primary-500 hover:shadow-primary-200 relative z-10 flex h-20 w-20 items-center justify-center rounded-full border-2 border-b-[6px] shadow-xl transition-all hover:scale-110 active:translate-y-1 sm:h-24 sm:w-24"
                         >
-                            <span class="text-3xl font-black text-white drop-shadow-sm"
+                            <div
+                                class="absolute inset-0 rounded-full border-[3px] border-white/20"
+                            ></div>
+                            <span class="text-2xl font-black text-white drop-shadow-sm sm:text-3xl"
                                 >{level.level}</span
                             >
-                        </div>
+                        </button>
                         <span
-                            class="z-10 mt-3 rounded-full bg-slate-900 px-5 py-1.5 text-[10px] font-black tracking-wider text-white uppercase shadow-lg"
-                            >Play</span
+                            class="z-10 mt-3 rounded-2xl border-2 border-b-[4px] border-slate-900 bg-slate-800 px-5 py-2 text-[10px] font-black tracking-widest text-white uppercase shadow-md"
                         >
-                    </Link>
+                            Play
+                        </span>
+                    </div>
                 {/if}
             </div>
         {/each}
@@ -207,29 +203,33 @@
         <!-- TROPHY NODE -->
         <div
             class="absolute flex flex-col items-center"
-            style="left: {tPctX}%; top: {tPctY}%; transform: translate(-50%, -50%);"
+            style="left: {tX}px; top: {trophyY}px; transform: translate(-50%, -50%);"
         >
             <div
-                class={`flex h-28 w-28 items-center justify-center rounded-full border-4 border-white shadow-xl transition-all duration-700 ${allCompleted ? 'scale-110 bg-amber-400 shadow-amber-200' : 'bg-slate-50 shadow-slate-200'}`}
+                class={`relative flex h-28 w-28 items-center justify-center rounded-full border-2 border-b-[6px] transition-all duration-700 sm:h-32 sm:w-32 ${allCompleted ? 'scale-110 border-amber-600 bg-amber-400 shadow-xl shadow-amber-200' : 'border-slate-300 bg-slate-200 shadow-sm'}`}
             >
+                {#if allCompleted}
+                    <div class="absolute inset-0 rounded-full border-[4px] border-white/30"></div>
+                {/if}
                 <Trophy
-                    size={48}
-                    class={allCompleted ? 'text-white drop-shadow-md' : 'text-slate-300'}
+                    size={56}
+                    class={allCompleted ? 'z-10 text-white drop-shadow-md' : 'text-slate-400'}
+                    strokeWidth={2.5}
                 />
             </div>
             {#if allCompleted}
-                <div class="mt-3 flex gap-1">
+                <div class="mt-4 flex gap-1">
                     {#each Array(5) as _, j (j)}
-                        <Star size={14} class="fill-amber-400 text-amber-400" />
+                        <Star size={16} class="fill-amber-400 text-amber-400 drop-shadow-sm" />
                     {/each}
                 </div>
                 <span
-                    class="mt-1.5 animate-bounce rounded-full bg-amber-500 px-5 py-1.5 text-[10px] font-black tracking-wider text-white uppercase shadow-lg"
+                    class="mt-2.5 animate-bounce rounded-full border-2 border-b-[4px] border-amber-600 bg-amber-500 px-5 py-2 text-[11px] font-black tracking-wider text-white uppercase shadow-lg"
                 >
                     🎉 Completed!
                 </span>
             {:else}
-                <span class="mt-3 text-[10px] font-bold tracking-widest text-slate-300 uppercase">
+                <span class="mt-4 text-[11px] font-black tracking-widest text-slate-400 uppercase">
                     Finish
                 </span>
             {/if}

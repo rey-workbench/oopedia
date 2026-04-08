@@ -24,10 +24,10 @@
     <label class="group block w-full cursor-pointer">
         <input type="file" accept=".xlsx,.xls" onchange={onFileChange} class="hidden" />
         <div
-            class="hover:border-primary-400 hover:bg-primary-50/50 flex flex-col items-center justify-center gap-6 rounded-[2rem] border-2 border-dashed border-slate-200 p-16 transition-all group-hover:shadow-inner"
+            class="hover:border-primary-400 hover:bg-primary-50/50 flex flex-col items-center justify-center gap-6 rounded-[2rem] border-2 border-dashed border-cosmos-border p-16 transition-all"
         >
             <div
-                class="group-hover:bg-primary-100 group-hover:text-primary-600 flex h-16 w-16 items-center justify-center rounded-xl bg-slate-100 text-slate-300 transition-all"
+                class="group-hover:bg-primary-100 group-hover:text-primary-600 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-50 text-primary-300 transition-all"
             >
                 <FileSpreadsheet size={32} />
             </div>

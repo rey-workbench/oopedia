@@ -51,7 +51,7 @@
 
     <div class="relative z-10">
         <div
-            class="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl shadow-sm {variantStyles[
+            class="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border-2 {variantStyles[
                 variant
             ]}"
         >

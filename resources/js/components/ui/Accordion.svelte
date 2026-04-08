@@ -36,27 +36,27 @@
     }
 </script>
 
-<div class={`w-full space-y-2 ${className}`}>
+<div class={`w-full space-y-3 ${className}`}>
     {#each items as item (item.id)}
-        <div class="overflow-hidden rounded-xl border border-slate-100 bg-white">
+        <div class="overflow-hidden rounded-2xl border-2 border-cosmos-border bg-white">
             <button
                 type="button"
                 onclick={() => !item.disabled && toggle(item.id)}
                 disabled={item.disabled}
-                class="flex w-full items-center justify-between px-5 py-4 text-left font-bold tracking-widest uppercase transition-colors
+                class="flex w-full items-center justify-between px-6 py-4 text-left font-bold tracking-tight transition-colors
                     {item.disabled
-                    ? 'cursor-not-allowed text-slate-400'
-                    : 'text-slate-700 hover:bg-slate-50'}"
+                    ? 'cursor-not-allowed text-slate-300'
+                    : 'text-cosmos-text hover:bg-slate-50'}"
                 aria-expanded={isOpen(item.id)}
             >
                 <span>{item.title}</span>
                 <ChevronDown
-                    size={18}
-                    class={`text-slate-400 transition-transform ${isOpen(item.id) ? 'rotate-180' : ''}`}
+                    size={20}
+                    class={`text-cosmos-muted transition-transform duration-300 ${isOpen(item.id) ? 'rotate-180' : ''}`}
                 />
             </button>
             {#if isOpen(item.id)}
-                <div class="border-t border-slate-100 px-5 py-4">
+                <div class="border-t-2 border-cosmos-border px-6 py-5 text-cosmos-text">
                     {@render item.content?.()}
                 </div>
             {/if}

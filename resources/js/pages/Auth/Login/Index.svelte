@@ -24,7 +24,7 @@
     <div class="flex min-h-screen w-full flex-col lg:flex-row">
         <!-- Left: Cinematic Side (The Branding Panel) -->
         <div
-            class="relative hidden w-full overflow-hidden border-r border-white/5 bg-[#0A0A0A] lg:flex lg:w-[55%] xl:w-[60%]"
+            class="relative hidden w-full overflow-hidden border-r-2 border-slate-900 bg-[#0A0A0A] lg:flex lg:w-[55%] xl:w-[60%]"
         >
             <!-- Sophisticated Noise/Grain Texture Layer -->
             <div
@@ -98,12 +98,12 @@
                     </div>
 
                     <h1
-                        class="font-serif text-7xl leading-[1.05] font-light tracking-tight text-white italic"
+                        class="text-7xl leading-[1] font-black tracking-tight text-white uppercase"
                         in:fly={{ y: 30, duration: 1000, delay: 300 }}
                     >
                         Satu langkah <br />
-                        lebih dekat dengan <br />
-                        <span class="text-white/30">Penguasaan PBO.</span>
+                        lebih dekat <br />
+                        <span class="text-white/40">Penguasaan PBO.</span>
                     </h1>
 
                     <p
@@ -120,17 +120,17 @@
                         in:fade={{ duration: 1000, delay: 600 }}
                     >
                         <div
-                            class="group relative flex items-center gap-4 rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-2xl transition-all hover:bg-white/10"
+                            class="group relative flex items-center gap-4 rounded-3xl border-2 border-b-6 border-white/10 bg-white/5 p-8 transition-all hover:bg-white/10"
                         >
                             <div
-                                class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-400"
+                                class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/20 text-indigo-400"
                             >
-                                <Users size={24} />
+                                <Users size={24} strokeWidth={3} />
                             </div>
                             <div>
-                                <div class="text-2xl font-semibold text-white">1.2k+</div>
+                                <div class="text-3xl font-black text-white">1.2k+</div>
                                 <div
-                                    class="mt-0.5 text-[10px] font-bold tracking-widest text-white/30 uppercase"
+                                    class="mt-0.5 text-[10px] font-black tracking-widest text-white/30 uppercase"
                                 >
                                     Mahasiswa
                                 </div>
@@ -238,7 +238,7 @@
                             >Akses Mahasiswa</span
                         >
                     </div>
-                    <h2 class="font-serif text-5xl font-light tracking-tight text-slate-900 italic">
+                    <h2 class="text-5xl font-black tracking-tighter text-slate-900 uppercase">
                         Masuk
                     </h2>
                     <p class="mt-4 text-base leading-relaxed font-medium text-slate-500">
@@ -269,7 +269,7 @@
                                 required
                                 autocomplete="email"
                                 error={state.form.errors['email']}
-                                class="h-[70px] rounded-[24px] border-slate-200 bg-slate-900/2 px-8 text-lg font-medium transition-all focus:border-slate-200 focus:bg-white focus:ring-4 focus:ring-slate-200"
+                                class="h-[70px] rounded-[24px] border-2 border-b-[6px] border-slate-200 bg-slate-900/2 px-8 text-lg font-medium transition-all focus:border-b-[6px] focus:border-slate-300 focus:bg-white focus:ring-0 focus:outline-none"
                             />
                         </div>
                     </div>
@@ -297,7 +297,7 @@
                                 required
                                 autocomplete="current-password"
                                 error={state.form.errors['password']}
-                                class="h-[70px] rounded-[24px] border-slate-200 bg-slate-900/2 px-8 text-lg font-medium transition-all focus:border-slate-200 focus:bg-white focus:ring-4 focus:ring-slate-200"
+                                class="h-[70px] rounded-[24px] border-2 border-b-[6px] border-slate-200 bg-slate-900/2 px-8 text-lg font-medium transition-all focus:border-b-[6px] focus:border-slate-300 focus:bg-white focus:ring-0 focus:outline-none"
                             />
                         </div>
                     </div>
@@ -305,12 +305,12 @@
                     <div class="pt-2">
                         <button
                             type="submit"
-                            class="group relative h-[70px] w-full overflow-hidden rounded-[24px] bg-[#111] font-bold tracking-[0.2em] text-white uppercase transition-all hover:bg-slate-900 active:scale-[0.98] disabled:opacity-50"
+                            class="group relative h-[72px] w-full overflow-hidden rounded-[28px] border-2 border-b-8 border-slate-950 bg-slate-900 font-black tracking-[0.2em] text-white uppercase transition-all hover:bg-slate-800 active:translate-y-[4px] active:border-b-2 disabled:opacity-50"
                             disabled={state.form.processing}
                         >
                             <!-- Shiny Highlight -->
                             <div
-                                class="absolute inset-0 z-0 -translate-x-full bg-linear-to-r from-transparent via-white/5 to-transparent transition-transform duration-1000 group-hover:translate-x-full"
+                                class="absolute inset-0 z-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-1000 group-hover:translate-x-full"
                             ></div>
 
                             <div class="relative z-10 flex items-center justify-center gap-4">
@@ -318,11 +318,11 @@
                                     <Loader2 size={24} class="animate-spin text-white/50" />
                                     <span>Memproses...</span>
                                 {:else}
-                                    <span>Masuk</span>
+                                    <span>Masuk ke Akun</span>
                                     <div
                                         class="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 transition-all group-hover:translate-x-2 group-hover:bg-white/20"
                                     >
-                                        <ArrowRight size={18} />
+                                        <ArrowRight size={18} strokeWidth={3} />
                                     </div>
                                 {/if}
                             </div>
@@ -341,10 +341,14 @@
                     <button
                         type="button"
                         onclick={() => state.submitAsGuest()}
-                        class="group flex h-[70px] w-full items-center justify-center gap-4 rounded-[24px] border border-slate-200 bg-white text-[10px] font-bold tracking-[0.2em] text-slate-600 uppercase transition-all hover:bg-slate-900/2 hover:text-slate-900 active:scale-[0.98]"
+                        class="group flex h-[72px] w-full items-center justify-center gap-4 rounded-[28px] border-2 border-b-6 border-slate-200 bg-white text-[10px] font-black tracking-[0.2em] text-slate-700 uppercase transition-all hover:bg-slate-50 active:translate-y-[4px] active:border-b-2 disabled:opacity-50"
                         disabled={state.form.processing}
                     >
-                        <Ghost size={20} class="transition-transform group-hover:scale-110" />
+                        <Ghost
+                            size={20}
+                            class="transition-transform group-hover:scale-110"
+                            strokeWidth={3}
+                        />
                         <span>Masuk Sebagai Tamu</span>
                     </button>
 

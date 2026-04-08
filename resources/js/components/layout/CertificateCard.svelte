@@ -115,97 +115,77 @@
 </script>
 
 <!-- Certificate Card Wrapper -->
-<div class="group space-y-4">
+<div
+    class="group space-y-4"
+    style="
+        --cert-border: {typeConfig.borderColor};
+        --cert-accent: {typeConfig.accent};
+        --cert-shimmer: {typeConfig.shimmer};
+    "
+>
     <!-- The certificate itself (captured by html2canvas) -->
     <div
         bind:this={certRef}
-        class="relative overflow-hidden rounded-2xl border-4 bg-white shadow-2xl"
-        style="border-color: {typeConfig.borderColor}; min-height: 380px;"
+        class="relative min-h-[380px] overflow-hidden rounded-2xl border-4 border-[color:var(--cert-border)] bg-white shadow-2xl"
     >
         <!-- Background gradient -->
-        <div class="bg-linear-to-br {typeConfig.bgGradient} absolute inset-0"></div>
+        <div class="bg-gradient-to-br {typeConfig.bgGradient} absolute inset-0"></div>
 
         <!-- Decorative corner patterns -->
-        <div class="absolute top-0 left-0 h-28 w-28 opacity-20">
-            <svg
-                viewBox="0 0 100 100"
-                class="h-full w-full"
-                style="color: {typeConfig.borderColor}"
-                aria-hidden="true"
-                role="presentation"
-            >
+        <div class="absolute top-0 left-0 h-28 w-28 text-[color:var(--cert-border)] opacity-20">
+            <svg viewBox="0 0 100 100" class="h-full w-full" aria-hidden="true" role="presentation">
                 <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor"></path>
                 <path d="M0,0 L80,0 L80,10 L10,10 L10,80 L0,80 Z" fill="currentColor" opacity="0.5"
                 ></path>
             </svg>
         </div>
-        <div class="absolute top-0 right-0 h-28 w-28 rotate-90 opacity-20">
-            <svg
-                viewBox="0 0 100 100"
-                class="h-full w-full"
-                style="color: {typeConfig.borderColor}"
-                aria-hidden="true"
-                role="presentation"
-            >
+        <div
+            class="absolute top-0 right-0 h-28 w-28 rotate-90 text-[color:var(--cert-border)] opacity-20"
+        >
+            <svg viewBox="0 0 100 100" class="h-full w-full" aria-hidden="true" role="presentation">
                 <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor"></path>
                 <path d="M0,0 L80,0 L80,10 L10,10 L10,80 L0,80 Z" fill="currentColor" opacity="0.5"
                 ></path>
             </svg>
         </div>
-        <div class="absolute bottom-0 left-0 h-28 w-28 -rotate-90 opacity-20">
-            <svg
-                viewBox="0 0 100 100"
-                class="h-full w-full"
-                style="color: {typeConfig.borderColor}"
-                aria-hidden="true"
-                role="presentation"
-            >
+        <div
+            class="absolute bottom-0 left-0 h-28 w-28 -rotate-90 text-[color:var(--cert-border)] opacity-20"
+        >
+            <svg viewBox="0 0 100 100" class="h-full w-full" aria-hidden="true" role="presentation">
                 <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor"></path>
             </svg>
         </div>
-        <div class="absolute right-0 bottom-0 h-28 w-28 rotate-180 opacity-20">
-            <svg
-                viewBox="0 0 100 100"
-                class="h-full w-full"
-                style="color: {typeConfig.borderColor}"
-                aria-hidden="true"
-                role="presentation"
-            >
+        <div
+            class="absolute right-0 bottom-0 h-28 w-28 rotate-180 text-[color:var(--cert-border)] opacity-20"
+        >
+            <svg viewBox="0 0 100 100" class="h-full w-full" aria-hidden="true" role="presentation">
                 <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor"></path>
             </svg>
         </div>
 
         <!-- Watermark -->
         <div
-            class="pointer-events-none absolute inset-0 flex items-center justify-center opacity-[0.04]"
+            class="pointer-events-none absolute inset-0 flex items-center justify-center text-[color:var(--cert-border)] opacity-[0.04]"
         >
-            <Award size={320} style="color: {typeConfig.borderColor}" />
+            <Award size={320} />
         </div>
 
         <!-- Inner border line -->
         <div
-            class="pointer-events-none absolute inset-3 rounded-xl border-2 opacity-30"
-            style="border-color: {typeConfig.borderColor}"
+            class="pointer-events-none absolute inset-3 rounded-xl border-2 border-[color:var(--cert-border)] opacity-30"
         ></div>
 
         <!-- Content -->
         <div class="relative z-10 flex flex-col items-center px-10 py-10 text-center">
             <!-- Header -->
             <div class="mb-2 flex items-center gap-3">
-                <div
-                    class="h-px flex-1 opacity-30"
-                    style="background: {typeConfig.borderColor}"
-                ></div>
+                <div class="h-px flex-1 bg-[color:var(--cert-border)] opacity-30"></div>
                 <p
-                    class="text-[10px] font-black tracking-[0.3em] uppercase"
-                    style="color: {typeConfig.accent}"
+                    class="text-[10px] font-black tracking-[0.3em] text-[color:var(--cert-accent)] uppercase"
                 >
                     OOPEDIA • POLITEKNIK NEGERI MALANG
                 </p>
-                <div
-                    class="h-px flex-1 opacity-30"
-                    style="background: {typeConfig.borderColor}"
-                ></div>
+                <div class="h-px flex-1 bg-[color:var(--cert-border)] opacity-30"></div>
             </div>
 
             <!-- Certificate of Completion text (Udemy style) -->
@@ -215,10 +195,9 @@
 
             <!-- Trophy / Award icon -->
             <div
-                class="mb-4 flex h-20 w-20 items-center justify-center rounded-full shadow-xl ring-4"
-                style="background: linear-gradient(135deg, {typeConfig.shimmer}, white); ring-color: {typeConfig.borderColor}"
+                class="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[var(--cert-shimmer)] to-white shadow-xl ring-4 ring-[color:var(--cert-border)]"
             >
-                <Award size={40} style="color: {typeConfig.accent}" />
+                <Award size={40} class="text-[color:var(--cert-accent)]" />
             </div>
 
             <!-- Tier badge -->
@@ -233,23 +212,16 @@
 
             <!-- Recipient Name -->
             <h2
-                class="my-2 font-serif text-3xl font-black tracking-tight"
-                style="color: {typeConfig.accent}; font-family: 'Georgia', serif;"
+                class="my-2 font-serif text-3xl font-black tracking-tight text-[color:var(--cert-accent)]"
             >
                 {userName}
             </h2>
 
             <!-- Divider -->
             <div class="my-3 flex items-center gap-2">
-                <div
-                    class="h-px w-16 opacity-40"
-                    style="background: {typeConfig.borderColor}"
-                ></div>
-                <CheckCircle size={14} style="color: {typeConfig.borderColor}" />
-                <div
-                    class="h-px w-16 opacity-40"
-                    style="background: {typeConfig.borderColor}"
-                ></div>
+                <div class="h-px w-16 bg-[color:var(--cert-border)] opacity-40"></div>
+                <CheckCircle size={14} class="text-[color:var(--cert-border)]" />
+                <div class="h-px w-16 bg-[color:var(--cert-border)] opacity-40"></div>
             </div>
 
             <!-- Description -->
@@ -257,8 +229,7 @@
                 telah berhasil menyelesaikan
             </p>
             <h3
-                class="mb-1 text-lg font-black tracking-wider uppercase"
-                style="color: {typeConfig.accent}"
+                class="mb-1 text-lg font-black tracking-wider text-[color:var(--cert-accent)] uppercase"
             >
                 {materialTitle}
             </h3>
@@ -269,30 +240,30 @@
             <!-- Footer -->
             <div
                 class="mt-4 flex w-full items-end justify-between border-t pt-4"
-                style="border-color: {typeConfig.borderColor}40"
+                style="border-color: {typeConfig.borderColor}40;"
             >
                 <div class="text-left">
                     <p class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
                         Tanggal
                     </p>
-                    <p class="text-xs font-bold" style="color: {typeConfig.accent}">
+                    <p class="text-xs font-bold text-[color:var(--cert-accent)]">
                         {formattedDate}
                     </p>
                 </div>
 
                 <!-- Seal -->
                 <div
-                    class="flex h-16 w-16 items-center justify-center rounded-full shadow-inner"
-                    style="background: radial-gradient(circle, {typeConfig.shimmer}, transparent); border: 2px solid {typeConfig.borderColor}"
+                    class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-[color:var(--cert-border)] shadow-inner"
+                    style="background: radial-gradient(circle, var(--cert-shimmer), transparent);"
                 >
-                    <Shield size={28} style="color: {typeConfig.borderColor}" />
+                    <Shield size={28} class="text-[color:var(--cert-border)]" />
                 </div>
 
                 <div class="text-right">
                     <p class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
                         ID Sertifikat
                     </p>
-                    <p class="font-mono text-xs font-bold" style="color: {typeConfig.accent}">
+                    <p class="font-mono text-xs font-bold text-[color:var(--cert-accent)]">
                         {certId}
                     </p>
                 </div>
@@ -305,8 +276,7 @@
         <button
             onclick={() => downloadAs('pdf')}
             disabled={isDownloading}
-            class="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 bg-white px-4 py-3 text-xs font-bold tracking-widest uppercase shadow-sm transition-all hover:shadow-md disabled:opacity-60"
-            style="border-color: {typeConfig.borderColor}; color: {typeConfig.accent};"
+            class="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-b-[4px] border-[color:var(--cert-border)] bg-white px-4 py-3 text-xs font-bold tracking-widest text-[color:var(--cert-accent)] uppercase transition-all hover:bg-slate-50 active:translate-y-[2px] active:border-b-2 disabled:translate-y-0 disabled:border-b-[4px] disabled:opacity-60"
         >
             {#if isDownloading}
                 <span class="animate-spin">⏳</span> Mengunduh...
@@ -318,8 +288,7 @@
         <button
             onclick={() => downloadAs('png')}
             disabled={isDownloading}
-            class="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 bg-white px-4 py-3 text-xs font-bold tracking-widest uppercase shadow-sm transition-all hover:shadow-md disabled:opacity-60"
-            style="border-color: {typeConfig.borderColor}; color: {typeConfig.accent};"
+            class="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-b-[4px] border-[color:var(--cert-border)] bg-white px-4 py-3 text-xs font-bold tracking-widest text-[color:var(--cert-accent)] uppercase transition-all hover:bg-slate-50 active:translate-y-[2px] active:border-b-2 disabled:translate-y-0 disabled:border-b-[4px] disabled:opacity-60"
         >
             {#if isDownloading}
                 <span class="animate-spin">⏳</span>

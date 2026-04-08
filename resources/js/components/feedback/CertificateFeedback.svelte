@@ -21,7 +21,7 @@
     </div>
     <div class="relative z-10">
         <div
-            class="animate-in zoom-in-50 mx-auto mb-6 flex h-48 w-48 items-center justify-center duration-700"
+            class="mx-auto mb-6 flex h-48 w-48 items-center justify-center"
         >
             <div class="h-full w-full overflow-hidden rounded-full">
                 <DotLottieSvelte
@@ -37,7 +37,7 @@
             {details.title}
         </h2>
         <div
-            class="mb-4 inline-block rounded-full bg-white/30 px-6 py-2 text-[10px] font-black tracking-widest ring-1 ring-white/50 backdrop-blur-xl"
+            class="mb-4 inline-block rounded-full border-2 border-white/50 bg-white/20 px-6 py-2 text-[10px] font-black tracking-widest backdrop-blur-xl"
         >
             {details.subtitle}
         </div>
@@ -53,7 +53,7 @@
                 variant="none"
                 rounded="2xl"
                 padding="px-10 py-5"
-                class="flex items-center gap-4 border border-amber-500/30 bg-slate-900 shadow-2xl"
+                class="flex items-center gap-4 border-2 border-amber-500 bg-slate-900 border-b-6 active:translate-y-[2px] active:border-b-4 transition-all"
             >
                 <Star size={24} class="fill-current text-white" />
                 <span class="text-2xl font-black tracking-tighter text-white">+{xpEarned} XP</span>
@@ -63,7 +63,7 @@
     <Button
         variant="primary"
         onclick={onContinue}
-        class="w-full border-none bg-slate-900 py-4 text-sm font-black tracking-widest uppercase shadow-xl hover:bg-slate-800"
+        class="w-full border-b-4 border-black bg-slate-900 py-4 text-sm font-black tracking-widest uppercase hover:bg-slate-800 active:translate-y-[2px] active:border-b-2"
     >
         Lanjutkan <ArrowRight size={18} class="ml-2" />
     </Button>

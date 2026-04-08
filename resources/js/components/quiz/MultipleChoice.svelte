@@ -21,7 +21,7 @@
     <div class="relative overflow-hidden rounded-3xl bg-slate-900 p-8 shadow-xl">
         <!-- Subtle top accent line -->
         <div
-            class="via-primary-500/60 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent"
+            class="via-primary-500/60 absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent"
         ></div>
         <!-- Decorative icon -->
         <div class="pointer-events-none absolute -top-4 -right-4 text-white/4">

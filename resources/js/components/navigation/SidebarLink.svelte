@@ -5,12 +5,12 @@
     let { href = '#', icon: Icon = Link2, active = false, children, ...restProps } = $props();
 
     const baseClasses =
-        'flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold tracking-tight transition-all duration-200 group';
+        'flex items-center gap-4 px-4 py-3 rounded-2xl font-bold tracking-tight transition-all duration-100 group border-2 border-transparent border-b-4 active:translate-y-[2px] active:border-b-0 select-none';
 
     const themeClasses = $derived(
         active
-            ? 'bg-primary-500 text-white'
-            : 'text-cosmos-muted hover:text-primary-500 hover:bg-primary-50'
+            ? 'bg-primary-500 text-white border-primary-600 border-b-primary-700 translate-y-[2px] border-b-2'
+            : 'text-slate-500 hover:text-primary-500 hover:bg-slate-50 hover:border-slate-200'
     );
 
     const iconContainerClasses = $derived(
@@ -31,19 +31,20 @@
     {...restProps}
 >
     <div
-        class="flex h-8 w-8 items-center justify-center rounded-xl {iconContainerClasses} transition-colors duration-300"
+        class="flex h-8 w-8 items-center justify-center rounded-xl {iconContainerClasses} transition-colors duration-300 shadow-sm"
     >
         {#if typeof Icon === 'string'}
             <i class="{Icon} {iconClasses} transition-colors"></i>
         {:else}
             <div class={iconClasses}>
-                <Icon size={18} strokeWidth={2.5} />
+                <Icon size={18} strokeWidth={3} />
             </div>
         {/if}
     </div>
-    <span class="flex-1">{@render children?.()}</span>
+    <span class="flex-1 font-black">{@render children?.()}</span>
 
     {#if active}
         <ChevronRight size={14} class="opacity-50" />
     {/if}
 </Link>
+

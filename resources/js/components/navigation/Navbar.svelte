@@ -23,14 +23,14 @@
 </script>
 
 <nav
-    class="sticky top-0 z-40 w-full border-b border-cosmos-border bg-cosmos-bg/80 px-4 backdrop-blur-xl sm:px-6 lg:px-8"
+    class="sticky top-0 z-40 w-full border-b-2 border-cosmos-border bg-cosmos-bg/80 px-4 backdrop-blur-xl sm:px-6 lg:px-8"
 >
     <div class="flex h-16 items-center justify-between">
         <div class="flex items-center gap-4">
             <button
                 onclick={() => sidebarState.toggle()}
                 aria-label="Toggle Sidebar"
-                class="rounded-full p-2 text-slate-900/50 transition-colors hover:bg-slate-900/5 lg:hidden"
+                class="rounded-2xl border-2 border-transparent p-2 text-slate-900/50 transition-all hover:border-slate-200 hover:bg-slate-900/5 active:translate-y-0.5 lg:hidden"
             >
                 <Menu size={20} strokeWidth={1.5} />
             </button>
@@ -78,7 +78,7 @@
                 <button
                     id="start-page-tour"
                     aria-label="Start Page Tour"
-                    class="group relative rounded-full p-2 text-slate-900/40 transition-all hover:bg-slate-900/5 hover:text-slate-900"
+                    class="group relative rounded-2xl border-2 border-transparent p-2 text-slate-900/40 transition-all hover:border-accent-200 hover:bg-slate-900/5 hover:text-slate-900 active:translate-y-0.5"
                     title="Tutorial"
                 >
                     <CircleHelp size={20} strokeWidth={1.5} />
@@ -98,10 +98,10 @@
                 >
                     <button
                         aria-label="Open profile menu"
-                        class="group flex items-center gap-2 rounded-full border border-cosmos-border p-1 transition-all duration-200 hover:border-primary-500/30"
+                        class="group flex items-center gap-2 rounded-2xl border-2 border-cosmos-border p-1 transition-all duration-200 hover:border-primary-500/30"
                     >
                         <div
-                            class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-cosmos-border bg-white transition-all duration-200"
+                            class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border-2 border-cosmos-border bg-white transition-all duration-200"
                         >
                             <img
                                 src="/images/profile.gif"
@@ -112,7 +112,7 @@
                     </button>
 
                     <div
-                        class="invisible absolute right-0 mt-2 w-56 origin-top-right scale-95 transform rounded-3xl border border-cosmos-border bg-white p-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:scale-100 group-hover:opacity-100"
+                        class="invisible absolute right-0 mt-2 w-56 origin-top-right scale-95 transform rounded-2xl border-2 border-cosmos-border bg-white p-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:scale-100 group-hover:opacity-100"
                     >
                         <div class="mb-1 border-b border-slate-200 px-4 py-3">
                             <p class="text-xs font-bold text-slate-900">
@@ -156,7 +156,7 @@
                     >
                     <Link
                         href={ROUTES.AUTH.REGISTER}
-                        class="hover:bg-primary-600 rounded-xl bg-primary-500 px-6 py-2.5 text-sm font-bold tracking-widest text-white uppercase transition-colors duration-200"
+                        class="rounded-2xl border-b-4 border-primary-600 bg-primary-500 px-6 py-2.5 text-sm font-bold tracking-widest text-white uppercase transition-all duration-100 hover:bg-primary-600 active:translate-y-[2px] active:border-b-0"
                         >Daftar</Link
                     >
                 </div>

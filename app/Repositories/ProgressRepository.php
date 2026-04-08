@@ -337,6 +337,18 @@ final class ProgressRepository implements ProgressRepositoryInterface
             ->pluck('question_id');
     }
 
+    public function getAttemptedQuestionIds(string $userId, string $materialId): Collection
+    {
+        if ($userId === 'guest') {
+            return collect([]);
+        }
+
+        return QuizAttempt::where('user_id', $userId)
+            ->whereRelation('question', 'material_id', $materialId)
+            ->distinct()
+            ->pluck('question_id');
+    }
+
     public function resetProgress(string $userId, string $materialId): void
     {
         $questionIds = Question::where('material_id', '=', $materialId)->pluck('id');

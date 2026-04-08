@@ -179,72 +179,15 @@ final class FactGatheringService implements FactGatheringServiceInterface
 
     protected function hasSatisfactoryProgress(string $userId, string $materialId, string $difficulty = 'all'): bool
     {
-        $answeredIds = $this->progressRepo->getAnsweredQuestionIds($userId, $materialId);
+        $attemptedCount = $this->progressRepo->getAttemptedQuestionIds($userId, $materialId)->count();
+        $totalQuestions = $this->questionRepo->countByMaterial($materialId);
 
-        if ($difficulty === 'all' || $difficulty === 'final') {
-            $answeredCount  = $answeredIds->count();
-            $totalQuestions = $this->questionRepo->countByMaterial($materialId);
-
-            if ($totalQuestions === 0) {
-                return true;
-            }
-
-            $percentage = ($answeredCount / $totalQuestions) * 100;
-
-            return $percentage >= StudentStateSchema::THRESHOLD_SATISFACTORY_PROGRESS;
-        }
-
-        $allQuestions     = $this->questionRepo->getByMaterialAndDifficulty($materialId, 'all');
-        $answeredIdsArray = $answeredIds->toArray();
-
-        $beginnerAnswered = $allQuestions
-            ->where('difficulty', Question::DIFFICULTY_BEGINNER)
-            ->filter(fn ($q) => in_array($q->id, $answeredIdsArray))
-            ->count();
-
-        $mediumAnswered = $allQuestions
-            ->where('difficulty', Question::DIFFICULTY_MEDIUM)
-            ->filter(fn ($q) => in_array($q->id, $answeredIdsArray))
-            ->count();
-
-        $hardAnswered = $allQuestions
-            ->where('difficulty', Question::DIFFICULTY_HARD)
-            ->filter(fn ($q) => in_array($q->id, $answeredIdsArray))
-            ->count();
-
-        $beginnerTotal = $allQuestions->where('difficulty', Question::DIFFICULTY_BEGINNER)->count();
-        $mediumTotal   = $allQuestions->where('difficulty', Question::DIFFICULTY_MEDIUM)->count();
-        $hardTotal     = $allQuestions->where('difficulty', Question::DIFFICULTY_HARD)->count();
-
-        if ($beginnerTotal + $mediumTotal + $hardTotal === 0) {
+        if ($totalQuestions === 0) {
             return true;
         }
 
-        $weightedAnswered = ($beginnerAnswered * StudentStateSchema::WEIGHT_PROGRESS_BEGINNER)
-            + ($mediumAnswered * StudentStateSchema::WEIGHT_PROGRESS_MEDIUM)
-            + ($hardAnswered * StudentStateSchema::WEIGHT_PROGRESS_HARD);
+        $percentage = ($attemptedCount / $totalQuestions) * 100;
 
-        $weightedTotal = ($beginnerTotal * StudentStateSchema::WEIGHT_PROGRESS_BEGINNER)
-            + ($mediumTotal * StudentStateSchema::WEIGHT_PROGRESS_MEDIUM)
-            + ($hardTotal * StudentStateSchema::WEIGHT_PROGRESS_HARD);
-
-        $weightedPercentage = ($weightedAnswered / $weightedTotal) * 100;
-
-        $progressionBonus = 0;
-        if ($difficulty === Question::DIFFICULTY_HARD && $hardAnswered > 0) {
-            $progressionBonus = StudentStateSchema::BONUS_REACHING_HARD_BASE +
-                min(
-                    StudentStateSchema::BONUS_MAX_HARD_PROGRESSION,
-                    $hardAnswered * StudentStateSchema::BONUS_HARD_QUESTION_ANSWERED,
-                );
-        } elseif ($difficulty === Question::DIFFICULTY_MEDIUM && $mediumAnswered > 0) {
-            if ($mediumAnswered >= StudentStateSchema::THRESHOLD_MEDIUM_REACHED_COUNT) {
-                $progressionBonus = StudentStateSchema::BONUS_REACHING_MEDIUM_STREAK;
-            }
-        }
-
-        $finalPercentage = min(100, $weightedPercentage + $progressionBonus);
-
-        return $finalPercentage >= StudentStateSchema::THRESHOLD_SATISFACTORY_PROGRESS;
+        return $percentage >= StudentStateSchema::THRESHOLD_SATISFACTORY_PROGRESS;
     }
 }

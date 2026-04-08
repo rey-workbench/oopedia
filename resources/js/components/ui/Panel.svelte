@@ -40,7 +40,7 @@
     };
 
     const classes = $derived(
-        `relative overflow-hidden ${roundedClasses[rounded] || roundedClasses['3xl']} ${variantClasses[variant] || variantClasses.dark} ${className}`
+        `relative overflow-hidden border-2 border-cosmos-border transition-all ${roundedClasses[rounded] || roundedClasses['3xl']} ${variantClasses[variant] || variantClasses.dark} ${className}`
     );
 </script>
 

@@ -26,10 +26,10 @@
     let { toasts = [], onremove = () => {}, position = 'top-right' }: Props = $props();
 
     const colors = {
-        success: 'bg-emerald-50 border-emerald-200 text-emerald-800',
-        error: 'bg-rose-50 border-rose-200 text-rose-800',
-        info: 'bg-blue-50 border-blue-200 text-blue-800',
-        warning: 'bg-amber-50 border-amber-200 text-amber-800',
+        success: 'bg-emerald-50 text-emerald-900 border-emerald-200',
+        error: 'bg-rose-50 text-rose-900 border-rose-200',
+        info: 'bg-primary-50 text-primary-900 border-primary-200',
+        warning: 'bg-amber-50 text-amber-950 border-amber-200',
     };
 
     const iconColors = {
@@ -62,7 +62,7 @@
         <div
             in:fly={{ y: 20, duration: 300 }}
             out:fade={{ duration: 200 }}
-            class="pointer-events-auto flex w-full items-start gap-3 rounded-2xl border p-4 shadow-lg {colors[
+            class="pointer-events-auto flex w-full items-start gap-4 rounded-3xl border-2 p-5 {colors[
                 toast.type
             ]}"
             role="alert"
@@ -78,14 +78,14 @@
             {/if}
             <div class="flex-1">
                 {#if toast.title}
-                    <p class="text-sm font-bold">{toast.title}</p>
+                    <p class="text-xs font-extrabold tracking-widest uppercase">{toast.title}</p>
                 {/if}
-                <p class="text-sm {toast.title ? 'mt-1' : ''}">{toast.message}</p>
+                <p class="text-[11px] font-bold {toast.title ? 'mt-1 opacity-80' : ''}">{toast.message}</p>
             </div>
             {#if toast.dismissible !== false}
                 <button
                     type="button"
-                    class="shrink-0 rounded-lg p-1 transition-colors hover:bg-slate-900/5"
+                    class="shrink-0 rounded-xl p-1.5 transition-all hover:bg-black/5 active:translate-y-0.5"
                     aria-label="Dismiss"
                     onclick={() => handleRemove(toast.id)}
                 >

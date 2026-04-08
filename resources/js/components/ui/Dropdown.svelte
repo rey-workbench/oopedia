@@ -99,16 +99,16 @@
             aria-expanded={open}
             aria-describedby={error ? errorId : undefined}
             class={`
-                rounded-x flex w-full items-center justify-between border-2 font-bold tracking-widest uppercase transition-all outline-none
+                rounded-2xl flex w-full items-center justify-between border-2 font-bold tracking-widest uppercase transition-all outline-none
                 ${sizes[size]}
                 ${
                     disabled
                         ? 'cursor-not-allowed border-slate-50 bg-slate-50 text-slate-400'
                         : error
-                          ? 'border-rose-100 bg-rose-50/30 text-rose-900 hover:border-rose-300 focus:border-rose-500'
+                          ? 'border-rose-100 bg-rose-50/30 text-rose-900 hover:border-rose-300 focus:border-rose-500 ring-rose-50'
                           : open
-                            ? 'border-primary-600 bg-primary-50/30 ring-primary-50 text-slate-900 ring-4'
-                            : 'hover:border-primary-200 border-slate-100 bg-white text-slate-900'
+                            ? 'border-primary-500 bg-white ring-primary-100 text-slate-900 ring-4'
+                            : 'hover:border-primary-400 border-cosmos-border bg-white text-slate-900'
                 }
             `}
         >
@@ -123,7 +123,7 @@
 
         {#if open}
             <div
-                class="absolute z-50 mt-2 w-full overflow-hidden rounded-xl border border-slate-100 bg-white shadow-xl"
+                class="absolute z-50 mt-2 w-full overflow-hidden rounded-2xl border-2 border-cosmos-border bg-white"
                 role="listbox"
             >
                 {#if options.length === 0}
@@ -137,9 +137,9 @@
                             aria-selected={String(opt.value) === String(value)}
                             onclick={() => select(opt)}
                             class={`
-                                flex w-full items-center gap-2 px-4 py-3 text-left text-sm font-bold tracking-widest uppercase transition-colors
-                                ${opt.disabled ? 'cursor-not-allowed text-slate-300' : 'hover:bg-primary-50 text-slate-700'}
-                                ${String(opt.value) === String(value) ? 'bg-primary-50 text-primary-700' : ''}
+                                flex w-full items-center gap-2 px-4 py-3 text-left text-[10px] font-bold tracking-widest uppercase transition-colors
+                                ${opt.disabled ? 'cursor-not-allowed text-slate-300' : 'hover:bg-primary-50/50 text-slate-700'}
+                                ${String(opt.value) === String(value) ? 'bg-primary-50 text-primary-600' : ''}
                             `}
                         >
                             {#if opt.icon}

@@ -47,18 +47,15 @@
         const variantClass =
             variant === 'toggle'
                 ? 'sr-only'
-                : 'h-5 w-5 rounded border-2 border-slate-200 transition-all';
+                : 'h-6 w-6 rounded-xl border-2 border-cosmos-border transition-all';
         const disabledClass = disabled
-            ? 'cursor-not-allowed opacity-50'
+            ? 'cursor-not-allowed opacity-50 grayscale'
             : 'hover:border-primary-400';
 
         let stateClass = '';
         if (variant === 'default') {
             stateClass =
-                'checked:border-primary-600 checked:bg-primary-600 focus:ring-4 focus:ring-primary-50 focus:outline-none';
-        } else {
-            stateClass =
-                'peer-checked:bg-primary-600 peer-checked:border-primary-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-slate-300 after:bg-white after:transition-all after:content-[""] focus:ring-4 focus:ring-primary-50 focus:outline-none';
+                'checked:border-primary-500 checked:bg-primary-500 focus:ring-4 focus:ring-primary-100 focus:outline-none';
         }
 
         return `${base} ${variantClass} ${disabledClass} ${stateClass} ${inputClass}`;

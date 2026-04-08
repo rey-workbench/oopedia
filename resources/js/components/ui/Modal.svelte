@@ -82,7 +82,7 @@
             bind:this={dialogEl}
             role="dialog"
             aria-modal="true"
-            class={`mb-6 transform overflow-hidden rounded-3xl bg-white shadow-2xl transition-all sm:mx-auto sm:w-full ${maxWidthClasses[maxWidth]}`}
+            class={`mb-6 transform overflow-hidden rounded-3xl bg-white border-2 border-cosmos-border transition-all sm:mx-auto sm:w-full ${maxWidthClasses[maxWidth]}`}
             transition:scale={{ duration: 200, start: 0.95 }}
         >
             {@render children?.()}

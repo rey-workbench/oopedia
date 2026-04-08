@@ -19,7 +19,6 @@
     import Input from '@/components/ui/Input.svelte';
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import { ROUTES } from '@/utils/route';
-    import { untrack } from 'svelte';
     import { StudentListState, StudentRegisterState } from '@/states/Admin/StudentState.svelte';
 
     let { students = {} }: { students: any } = $props(); // paginated object
@@ -27,7 +26,7 @@
     let search: string = $state(new URLSearchParams(window.location.search).get('search') || '');
     let openModal: boolean = $state(false);
 
-    const listState = untrack(() => new StudentListState(students, search));
+    const listState = new StudentListState(students, search);
 
     const registerState = new StudentRegisterState();
 

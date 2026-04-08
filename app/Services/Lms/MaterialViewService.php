@@ -33,14 +33,12 @@ final class MaterialViewService implements MaterialViewServiceInterface
             $unlockedModules = $studentState?->learning_profile['unlocked_modules'] ?? [];
         }
 
+        $allMaterials->load(['questions' => function ($query) {
+            $query->select('id', 'material_id', 'difficulty');
+        }]);
+
         $firstModuleId  = $allMaterials->whereNotNull('module_id')->min('module_id');
         $totalMaterials = $allMaterials->count();
-
-        if ($isGuest) {
-            $allMaterials->load(['questions' => function ($query) {
-                $query->select('id', 'material_id', 'difficulty');
-            }]);
-        }
 
         $materials = $allMaterials->map(
             function (
@@ -83,13 +81,34 @@ final class MaterialViewService implements MaterialViewServiceInterface
         return $materials;
     }
 
-    public function getMaterialDetail(string $materialId, ?string $userId, bool $isGuest): array
+    public function getMaterialDetail(string $materialId, ?string $userId, bool $isGuest, array $guestProgress = []): array
     {
         $material     = $this->materialRepo->findWithQuestionsShuffled($materialId);
         $allMaterials = $this->materialRepo->getAllOrdered();
 
+        $firstModuleId   = $allMaterials->whereNotNull('module_id')->min('module_id');
+        $totalMaterials  = $allMaterials->count();
+        $unlockedModules = [];
+
+        if ($userId) {
+            $studentState    = $this->progressRepo->getStudentState($userId);
+            $unlockedModules = $studentState?->learning_profile['unlocked_modules'] ?? [];
+        }
+
+        $allMaterials->map(function ($m, $index) use ($isGuest, $unlockedModules, $firstModuleId, $totalMaterials) {
+            if ($isGuest) {
+                $m->is_locked = $index >= ceil($totalMaterials / 2);
+            } else {
+                $moduleId      = $m->module_id;
+                $isFirstModule = $moduleId !== null && $moduleId == $firstModuleId;
+                $isUnlocked    = empty($moduleId) || $isFirstModule || in_array($moduleId, $unlockedModules);
+                $m->is_locked  = ! $isUnlocked;
+            }
+
+            return $m;
+        });
+
         if ($isGuest) {
-            $totalMaterials  = $allMaterials->count();
             $materialsToShow = (int) ceil($totalMaterials / 2);
             $materials       = $allMaterials->take($materialsToShow);
         } else {
@@ -103,7 +122,9 @@ final class MaterialViewService implements MaterialViewServiceInterface
 
         $answeredQuestionIds = $userId
             ? $this->progressRepo->getAnsweredQuestionIds($userId, $materialId)
-            : collect();
+            : collect($guestProgress);
+
+        $answeredQuestionIds = collect($answeredQuestionIds);
 
         $currentQuestion = $material->questions
             ->whereNotIn('id', $answeredQuestionIds)
@@ -113,7 +134,7 @@ final class MaterialViewService implements MaterialViewServiceInterface
             $currentQuestion = $material->questions->first();
         }
 
-        $answeredCount         = count($answeredQuestionIds);
+        $answeredCount         = $answeredQuestionIds->count();
         $currentQuestionNumber = $answeredCount + 1;
 
         if ($answeredCount >= $material->questions->count()) {
@@ -124,6 +145,21 @@ final class MaterialViewService implements MaterialViewServiceInterface
             'material'              => $material,
             'materials'             => $materials,
             'currentQuestionNumber' => $currentQuestionNumber,
+            'currentQuestion'       => $currentQuestion,
+        ];
+    }
+
+    public function getSubMaterialsList(string $materialId, ?string $userId, bool $isGuest): array
+    {
+        $material = $this->materialRepo->findWithRelations($materialId, ['subMaterials.media', 'media']);
+
+        if (! $material) {
+            throw new MaterialNotFoundException($materialId);
+        }
+
+        return [
+            'material'     => $material,
+            'subMaterials' => $material->subMaterials,
         ];
     }
 

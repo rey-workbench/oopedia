@@ -101,11 +101,11 @@
     <div class="space-y-12">
         <PageHeader title="Dashboard" subtitle="Selamat datang di pusat kendali belajar Anda." />
 
-        <Panel rounded="full" class="shadow-2xl shadow-slate-200" padding="p-12">
+        <Panel rounded="3xl" class="border-b-6 border-slate-700" padding="p-12">
             <div class="flex flex-col items-center gap-10 md:flex-row">
                 <div class="group relative">
                     <div
-                        class="flex h-32 w-32 rotate-3 items-center justify-center overflow-hidden rounded-3xl bg-white shadow-2xl transition-transform duration-500 group-hover:rotate-0"
+                        class="flex h-32 w-32 rotate-3 items-center justify-center overflow-hidden rounded-3xl bg-white border-2 border-slate-200 border-b-6 transition-transform duration-500 group-hover:rotate-0"
                     >
                         <Star size={80} class="text-primary-500" />
                     </div>
@@ -144,7 +144,7 @@
                         {@const material = state.allMaterials.find((m) => m.id === materialId)}
                         <a
                             href={ROUTES.MAHASISWA.CERTIFICATES.INDEX}
-                            class="group relative block overflow-hidden rounded-2xl border-2 transition-transform hover:scale-[1.02] {type ===
+                            class="group relative block overflow-hidden rounded-2xl border-2 border-b-6 transition-all active:translate-y-[2px] active:border-b-2 {type ===
                             'gold'
                                 ? 'border-amber-400 bg-amber-50/10'
                                 : type === 'silver'
@@ -153,12 +153,12 @@
                         >
                             <div class="flex items-center gap-6 p-4">
                                 <div
-                                    class="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl {type ===
+                                    class="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border-2 border-b-4 {type ===
                                     'gold'
-                                        ? 'bg-amber-100 text-amber-600'
+                                        ? 'bg-amber-100 text-amber-600 border-amber-200'
                                         : type === 'silver'
-                                          ? 'bg-slate-200 text-slate-600'
-                                          : 'bg-orange-100 text-orange-600'} shadow-lg"
+                                          ? 'bg-slate-200 text-slate-600 border-slate-300'
+                                          : 'bg-orange-100 text-orange-600 border-orange-200'}"
                                 >
                                     <Trophy size={40} strokeWidth={2.5} />
                                 </div>
@@ -198,7 +198,7 @@
 
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             {#each dashboardStats as stat (stat.title)}
-                <Card hover={true} class="group relative overflow-hidden">
+                <Card class="group relative overflow-hidden border-b-6">
                     <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
                         {#if typeof stat.icon !== 'string'}
                             {@const IconComponent = stat.icon}
@@ -212,7 +212,7 @@
 
                     <div class="relative z-10">
                         <div
-                            class="glass mb-6 flex h-14 w-14 items-center justify-center rounded-2xl shadow-sm
+                            class="glass mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-b-4
                             {stat.variant === 'success'
                                 ? 'bg-emerald-100 text-emerald-600'
                                 : stat.variant === 'danger'
@@ -284,12 +284,12 @@
                                       : ClipboardList}
                             <Card
                                 padding="p-0"
-                                class="hover:border-primary-400 group overflow-hidden border-slate-100 shadow-xl transition-all"
+                                class="hover:border-primary-400 group overflow-hidden border-b-6 transition-all"
                             >
                                 <div class="flex items-center gap-8 p-8">
                                     <div
-                                        class={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-slate-200 shadow-inner transition-colors
-                                    ${activity.type === 'achievement' ? 'bg-emerald-50 text-emerald-500' : activity.type === 'milestone' ? 'bg-amber-50 text-amber-500' : 'bg-primary-50 text-primary-500'}`}
+                                        class={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-2 border-b-4 transition-colors
+                                    ${activity.type === 'achievement' ? 'bg-emerald-50 text-emerald-500 border-emerald-100' : activity.type === 'milestone' ? 'bg-amber-50 text-amber-500 border-amber-100' : 'bg-primary-50 text-primary-500 border-primary-100'}`}
                                     >
                                         <ActivityIcon size={24} strokeWidth={2.5} />
                                     </div>
@@ -370,7 +370,7 @@
                     <div class="space-y-6">
                         <Card
                             padding="p-8"
-                            class="group relative overflow-hidden border border-slate-100 bg-white shadow-2xl"
+                            class="group relative overflow-hidden border-b-6 bg-white"
                         >
                             <div
                                 class="bg-primary-100/50 absolute -top-10 -right-10 h-32 w-32 rounded-full blur-2xl transition-transform duration-1000 group-hover:scale-150"
@@ -397,7 +397,7 @@
 
                         <Card
                             padding="p-8"
-                            class="hover:border-primary-400 hover:bg-primary-50/20 group cursor-pointer border-2 border-dashed border-slate-200 shadow-none transition-all"
+                            class="hover:border-primary-400 hover:bg-primary-50/20 group cursor-pointer border-2 border-dashed border-b-6 border-slate-200 transition-all active:translate-y-[2px] active:border-b-2"
                         >
                             <Link
                                 href={ROUTES.MAHASISWA.MATERIALS.INDEX}

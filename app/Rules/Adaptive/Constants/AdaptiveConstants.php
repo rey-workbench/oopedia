@@ -269,7 +269,7 @@ final class AdaptiveConstants
             self::FACT_COMPLETED_MODULE      => 'Modul Selesai',
             self::FACT_COMPLETED_ALL_MODULES => 'Semua Modul Selesai',
             self::FACT_HIGH_ENGAGEMENT       => 'Keterlibatan Tinggi',
-            self::FACT_SATISFACTORY_PROGRESS => 'Progres Materi Memadai (>=60%)',
+            self::FACT_SATISFACTORY_PROGRESS => 'Progres Materi Memadai (>60%)',
         ];
     }
 

@@ -16,7 +16,7 @@
 
 <div class="p-12 text-center">
     <div
-        class="animate-in slide-in-from-top-4 mx-auto mb-8 flex h-40 w-40 items-center justify-center duration-500"
+        class="mx-auto mb-8 flex h-40 w-40 items-center justify-center"
     >
         <div class="h-full w-full overflow-hidden rounded-3xl">
             <DotLottieSvelte
@@ -41,7 +41,7 @@
     {#if recommendation}
         <div class="group mb-8">
             <div
-                class="relative overflow-hidden rounded-2xl border-2 border-rose-100 bg-rose-50/30 p-4 transition-all hover:shadow-sm"
+                class="relative overflow-hidden rounded-2xl border-2 border-rose-200 bg-white p-4 transition-all border-b-4"
             >
                 <div class="flex items-center justify-center gap-3">
                     <BookOpen size={20} class="text-rose-500" />
@@ -56,7 +56,7 @@
     <Button
         variant="primary"
         onclick={onContinue}
-        class="w-full border-none bg-slate-900 py-4 text-sm font-black tracking-widest uppercase shadow-xl shadow-rose-100 hover:bg-slate-800"
+        class="w-full border-b-4 border-black bg-slate-900 py-4 text-sm font-black tracking-widest uppercase hover:bg-slate-800 active:translate-y-[2px] active:border-b-2"
     >
         {nextAction}
         <ArrowRight size={18} class="ml-2" />

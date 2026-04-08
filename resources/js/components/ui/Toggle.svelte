@@ -53,15 +53,15 @@
         <label
             for={toggleId}
             class={`
-                relative inline-flex h-7 w-12 cursor-pointer items-center rounded-full transition-all
-                ${disabled ? 'cursor-not-allowed opacity-50' : 'hover:opacity-90'}
-                ${checked ? 'bg-primary-600' : 'bg-slate-200'}
+                relative inline-flex h-8 w-14 cursor-pointer items-center rounded-full transition-all border-2
+                ${disabled ? 'cursor-not-allowed opacity-50 grayscale' : ''}
+                ${checked ? 'bg-primary-500 border-primary-600' : 'bg-slate-200 border-cosmos-border'}
             `}
         >
             <span
                 class={`
-                    inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-all
-                    ${checked ? 'translate-x-6' : 'translate-x-1'}
+                    inline-block h-5 w-5 transform rounded-full bg-white transition-all duration-200 ease-out border-b-2 border-black/10
+                    ${checked ? 'translate-x-7' : 'translate-x-1'}
                 `}
             ></span>
         </label>

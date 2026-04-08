@@ -6,7 +6,6 @@
     import DataTable from '@/components/ui/DataTable.svelte';
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
-    import { untrack } from 'svelte';
     import { MaterialListState } from '@/states/Admin/MaterialState.svelte';
     import {
         Plus,
@@ -37,7 +36,7 @@
     );
 
     let search = new URLSearchParams(window.location.search).get('search') || '';
-    const listState = untrack(() => new MaterialListState(materials, search));
+    const listState = new MaterialListState(materials, search);
 
     const columns = $derived([
         { key: 'visual', label: 'Pratinjau Visual', align: 'left' },

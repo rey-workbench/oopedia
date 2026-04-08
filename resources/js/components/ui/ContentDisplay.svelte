@@ -56,12 +56,12 @@
     :global(li code),
     :global(span code) {
         background-color: var(--color-primary-50, #f0f7ff) !important;
-        color: var(--color-primary-600, #026fb1) !important;
-        padding: 0.2rem 0.4rem !important;
-        border-radius: 0.5rem !important;
+        color: var(--color-primary-600, #0c0c14) !important;
+        padding: 0.2rem 0.5rem !important;
+        border-radius: 0.75rem !important;
         font-size: 0.875em !important;
         font-weight: 700 !important;
-        border: 1px solid var(--color-primary-100, #e0effe) !important;
+        border: 2px solid var(--color-primary-100, #e2e8f0) !important;
     }
 
     /* Quill Code Block Styling - Integration with global theme */
@@ -69,9 +69,9 @@
         background-color: #282c34 !important; /* Atom One Dark background */
         color: #abb2bf !important;
         padding: 2.5rem 1.5rem 1.5rem 1.5rem !important;
-        border-radius: 1rem !important;
-        border: 1px solid rgba(0, 0, 0, 0.2) !important;
-        border-left: 6px solid var(--color-primary-500, #0e8ad9) !important;
+        border-radius: 1.5rem !important;
+        border: 2px solid rgba(0, 0, 0, 0.2) !important;
+        border-left: 8px solid var(--color-primary-500, #0c0c14) !important;
         font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !important;
         position: relative !important;
         margin-top: 2rem !important;
@@ -79,7 +79,6 @@
         overflow-x: auto !important;
         white-space: pre !important;
         display: block !important;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4) !important;
         line-height: 1.6 !important;
         font-size: 0.9rem !important;
         tab-size: 4 !important;
@@ -115,11 +114,11 @@
 
     /* Blockquote styling */
     :global(.prose blockquote) {
-        border-left: 4px solid var(--color-primary-500) !important;
+        border-left: 6px solid var(--color-primary-500) !important;
         background-color: var(--color-primary-50) !important;
         color: var(--color-primary-800) !important;
-        padding: 1rem 1.5rem !important;
-        border-radius: 0 1rem 1rem 0 !important;
+        padding: 1.25rem 1.75rem !important;
+        border-radius: 0 1.5rem 1.5rem 0 !important;
         font-style: italic !important;
         font-weight: 500 !important;
     }
@@ -127,7 +126,7 @@
     /* Images within content */
     :global(.prose img) {
         border-radius: 1.5rem !important;
-        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1) !important;
+        border: 2px solid var(--color-cosmos-border) !important;
         margin: 2rem auto !important;
     }
 

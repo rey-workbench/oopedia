@@ -203,7 +203,7 @@ final class StudentStateSchema
 
     public const int THRESHOLD_PERSISTENT_FAIL        = 2;
 
-    public const int THRESHOLD_SATISFACTORY_PROGRESS  = 50;
+    public const int THRESHOLD_SATISFACTORY_PROGRESS  = 61;
 
     public const array BEHAVIOURAL_THRESHOLDS = [
         'fast_learner' => [

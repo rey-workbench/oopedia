@@ -163,9 +163,8 @@
                 <div transition:fade>
                     <MultipleChoice
                         question={state.currentQuestion}
-                        selectedAnswerId={state.selectedMultipleChoiceAnswer as any}
-                        onselect={(answerId) =>
-                            (state.selectedMultipleChoiceAnswer = answerId as any)}
+                        selectedAnswerId={state.selectedMultipleChoiceAnswer}
+                        onselect={(answerId) => (state.selectedMultipleChoiceAnswer = answerId)}
                     />
                 </div>
             {/if}

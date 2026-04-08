@@ -17,7 +17,7 @@
 
 <div class="p-12 text-center">
     <div
-        class="mx-auto mb-6 flex h-40 w-40 items-center justify-center transition-transform duration-500 hover:scale-110"
+        class="mx-auto mb-6 flex h-40 w-40 items-center justify-center"
     >
         <div class="h-full w-full overflow-hidden rounded-3xl">
             <DotLottieSvelte
@@ -42,17 +42,17 @@
     {#if recommendation}
         <div class="group mb-8 text-left">
             <div
-                class="hover:border-primary-200 relative overflow-hidden rounded-2xl border-2 border-slate-100 bg-white p-5 shadow-sm transition-all hover:shadow-md"
+                class="relative overflow-hidden rounded-2xl border-2 border-slate-200 bg-white p-5 transition-all border-b-4"
             >
                 <div class="flex items-center gap-4">
                     <div
-                        class="bg-primary-50 text-primary-600 flex h-12 w-12 items-center justify-center rounded-xl shadow-inner"
+                        class="bg-slate-100 text-slate-600 flex h-12 w-12 items-center justify-center rounded-xl border-2 border-slate-200"
                     >
                         <BookOpen size={24} />
                     </div>
                     <div class="flex-1">
                         <span
-                            class="text-primary-500 text-[10px] font-black tracking-[0.2em] uppercase"
+                            class="text-indigo-500 text-[10px] font-black tracking-[0.2em] uppercase"
                             >Rekomendasi Materi</span
                         >
                         <p class="text-lg leading-tight font-black text-slate-800">
@@ -67,7 +67,7 @@
     <Button
         variant="primary"
         onclick={onContinue}
-        class="w-full border-none bg-slate-900 py-4 text-sm font-black tracking-widest uppercase shadow-xl hover:bg-slate-800"
+        class="w-full border-b-4 border-black bg-slate-900 py-4 text-sm font-black tracking-widest uppercase hover:bg-slate-800 active:translate-y-[2px] active:border-b-2"
     >
         {nextAction}
         <ArrowRight size={18} class="ml-2" />

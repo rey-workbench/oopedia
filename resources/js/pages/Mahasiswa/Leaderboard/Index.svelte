@@ -12,7 +12,7 @@
 
     import type { LeaderboardEntry } from '@/types';
 
-    const { leaderboardData = [] }: { leaderboardData: LeaderboardEntry[] } = $props();
+    let { leaderboardData = [] }: { leaderboardData: LeaderboardEntry[] } = $props();
 
     const state = untrack(() => new LeaderboardState(leaderboardData));
 
@@ -33,7 +33,7 @@
         />
 
         <div class="space-y-12">
-            <Card padding="p-0" hover={false} class="overflow-hidden shadow-2xl">
+            <Card padding="p-0" hover={false} class="overflow-hidden border-b-6">
                 <LeaderboardPodium top3={state.topThree} />
 
                 <DataTable
@@ -41,14 +41,14 @@
                     items={state.leaderboardData}
                     {columns}
                     hideSearch={true}
-                    rowClass={(item) => (item.id === state.user?.id ? 'bg-primary-50/50' : '')}
+                    rowClass={(item: LeaderboardEntry) => (item.id === state.user?.id ? 'bg-primary-50/50' : '')}
                 >
-                    {#snippet row(data)}
+                    {#snippet row(data: LeaderboardEntry)}
                         <td class="border-b border-slate-50 px-6 py-6">
                             {#if data.rank <= 3}
                                 <div
-                                    class={`flex h-10 w-10 items-center justify-center rounded-xl font-bold text-white shadow-lg
-                                    ${data.rank === 1 ? 'bg-amber-400 shadow-amber-100' : data.rank === 2 ? 'bg-slate-300 shadow-slate-100' : 'bg-rose-400 shadow-rose-100'}`}
+                                    class={`flex h-10 w-10 items-center justify-center rounded-xl font-bold text-white border-2 border-slate-900 border-b-4
+                                    ${data.rank === 1 ? 'bg-amber-400' : data.rank === 2 ? 'bg-slate-300' : 'bg-rose-400'}`}
                                 >
                                     {data.rank}
                                 </div>
@@ -68,13 +68,13 @@
                                     <div
                                         class="mt-0.5 text-[9px] font-bold tracking-widest text-slate-400 uppercase"
                                     >
-                                        {data.completion_date || 'Aktif Belajar'}
+                                        {'completion_date' in (data as any) ? (data as any).completion_date : 'Aktif Belajar'}
                                     </div>
                                 </div>
                             </div>
                         </td>
                         <td class="border-b border-slate-50 px-6 py-6">
-                            <Badge variant={data.badge_color} size="xs">{data.badge}</Badge>
+                            <Badge variant={data.badge_color as any} size="xs">{data.badge}</Badge>
                         </td>
                         <td class="border-b border-slate-50 px-6 py-6">
                             <div class="mx-auto w-32">
@@ -87,7 +87,7 @@
                                 <ProgressBar
                                     value={data.percentage}
                                     height="h-2"
-                                    color={data.badge_color}
+                                    color={data.badge_color as any}
                                 />
                             </div>
                         </td>

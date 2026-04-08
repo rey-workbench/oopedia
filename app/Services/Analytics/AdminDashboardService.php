@@ -96,7 +96,7 @@ final class AdminDashboardService implements AdminDashboardServiceInterface
         });
     }
 
-    public function getPopularMaterials(int $limit = 5): \Illuminate\Database\Eloquent\Collection
+    public function getPopularMaterials(int $limit = 5): Collection
     {
         return $this->progressRepo->getPopularMaterials($limit);
     }

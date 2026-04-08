@@ -27,7 +27,7 @@
 </script>
 
 <div
-    class="{sizeClass} {radiusClass} {bgClass} flex shrink-0 items-center justify-center font-bold shadow-lg shadow-slate-200 {className}"
+    class="{sizeClass} {radiusClass} {bgClass} flex shrink-0 items-center justify-center font-bold border-2 border-cosmos-border {className}"
 >
     {initial}
 </div>

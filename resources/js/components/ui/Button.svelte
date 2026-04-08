@@ -41,27 +41,27 @@
     }: Props = $props();
 
     const baseClasses =
-        'inline-flex items-center justify-center font-bold tracking-tight transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:pointer-events-none rounded-xl';
+        'group inline-flex items-center justify-center font-black tracking-widest transition-all duration-150 active:translate-y-[4px] active:border-b-2 disabled:opacity-50 disabled:pointer-events-none rounded-2xl border-2 border-b-6 uppercase';
 
     const variants: Record<ButtonVariant, string> = {
-        primary: 'bg-primary-500 text-white hover:bg-primary-600',
+        primary: 'bg-primary-500 text-white border-primary-800 hover:bg-primary-600',
         secondary:
-            'bg-white text-cosmos-text border border-cosmos-border hover:bg-primary-50 hover:text-primary-500',
-        gradient: 'bg-accent-500 text-white hover:bg-accent-600',
-        glass: 'bg-white/10 backdrop-blur-sm text-cosmos-text border border-white/20 hover:bg-white/20',
-        danger: 'bg-rose-500 text-white hover:bg-rose-600',
-        success: 'bg-emerald-500 text-white hover:bg-emerald-600',
-        warning: 'bg-amber-400 text-amber-950 hover:bg-amber-500',
-        ghost: 'text-cosmos-muted hover:text-primary-500 hover:bg-primary-50',
+            'bg-white text-slate-900 border-slate-200 border-b-slate-300 hover:bg-slate-50',
+        gradient: 'bg-accent-500 text-white border-accent-800 hover:bg-accent-600',
+        glass: 'bg-white/10 backdrop-blur-sm text-white border-white/20 border-b-white/30 hover:bg-white/20',
+        danger: 'bg-rose-500 text-white border-rose-800 hover:bg-rose-600',
+        success: 'bg-emerald-500 text-white border-emerald-800 hover:bg-emerald-600',
+        warning: 'bg-amber-400 text-amber-950 border-amber-600 hover:bg-amber-500',
+        ghost: 'text-slate-500 hover:text-primary-500 hover:bg-slate-50 border-transparent border-b-transparent active:translate-y-0',
         outline:
-            'bg-transparent border border-cosmos-border text-cosmos-text hover:bg-cosmos-text hover:text-white',
+            'bg-transparent border-2 border-slate-200 text-slate-900 hover:bg-slate-50 border-b-slate-300',
     };
 
     const sizes: Record<ButtonSize, string> = {
-        sm: 'px-4 py-2 text-[10px]',
-        md: 'px-6 py-2.5 text-xs',
-        lg: 'px-8 py-3.5 text-sm',
-        xl: 'px-10 py-4 text-base',
+        sm: 'px-4 py-2 text-[10px] border-b-4 active:translate-y-[2px]',
+        md: 'px-6 py-3 text-xs border-b-6 active:translate-y-[4px]',
+        lg: 'px-8 py-4 text-sm border-b-6 active:translate-y-[4px]',
+        xl: 'px-10 py-5 text-base border-b-8 active:translate-y-[6px]',
     };
 
     const classes = $derived(

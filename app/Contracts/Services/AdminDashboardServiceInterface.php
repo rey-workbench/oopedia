@@ -15,7 +15,7 @@ interface AdminDashboardServiceInterface
 
     public function getMaterialStatistics(): SupportCollection;
 
-    public function getPopularMaterials(int $limit = 5): Collection;
+    public function getPopularMaterials(int $limit = 5): SupportCollection;
 
     public function getStudentAnalytics(): array;
 }

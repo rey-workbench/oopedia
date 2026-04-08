@@ -40,19 +40,19 @@
     const errorId = $derived(`${inputId}-error`);
 
     const variantClasses = {
-        white: 'bg-white text-slate-900 border-slate-100 focus:border-primary-600 focus:ring-primary-50',
-        dark: 'bg-slate-800 text-white border-slate-700/50 focus:border-primary-500 focus:ring-primary-900/30',
+        white: 'bg-white text-slate-900 border-slate-200 border-b-6 focus:border-primary-500 focus:bg-white focus:ring-primary-100',
+        dark: 'bg-slate-800 text-white border-slate-700/50 border-b-6 focus:border-primary-400 focus:ring-slate-900/10',
     };
 </script>
 
-<div class={`w-full space-y-2 ${className}`}>
+<div class={`w-full space-y-2.5 ${className}`}>
     {#if label}
         <label
             for={inputId}
-            class={`ml-4 block text-[10px] font-bold tracking-widest uppercase ${variant === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}
+            class={`ml-4 block text-[11px] font-black tracking-widest uppercase transition-colors ${error ? 'text-rose-500' : (variant === 'dark' ? 'text-slate-400' : 'text-slate-500')}`}
         >
             {label}
-            {#if required}<span class="text-rose-500">*</span>{/if}
+            {#if required}<span class="text-rose-500 ml-1">*</span>{/if}
         </label>
     {/if}
 
@@ -70,15 +70,15 @@
             aria-describedby={error ? errorId : undefined}
             {...rest}
             class={`
-        w-full rounded-xl border-2 px-6 py-4 text-sm font-bold transition-all outline-none
-        ${disabled ? 'cursor-not-allowed border-slate-50 bg-slate-50 text-slate-400' : ''}
-        ${
-            error
-                ? 'border-rose-100 bg-rose-50/30 text-rose-900 focus:border-rose-500 focus:ring-4 focus:ring-rose-50'
-                : `hover:border-primary-200 focus:ring-8 ${variantClasses[variant]}`
-        }
-        ${inputClass}
-      `}
+                w-full rounded-3xl border-2 px-6 py-4 text-sm font-bold transition-all outline-none
+                ${disabled ? 'cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400 grayscale' : ''}
+                ${
+                    error
+                        ? 'border-rose-200 border-b-6 bg-rose-50/20 text-rose-900 focus:border-rose-500 focus:ring-rose-50'
+                        : `hover:border-slate-300 focus:ring-4 ${variantClasses[variant]}`
+                }
+                ${inputClass}
+            `}
         />
 
         {#if error}

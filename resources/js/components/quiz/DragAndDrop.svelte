@@ -104,7 +104,7 @@
     <!-- Question canvas: same dark terminal style as MultipleChoice -->
     <div class="relative overflow-hidden rounded-3xl bg-slate-900 shadow-xl">
         <div
-            class="via-primary-500/60 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent"
+            class="via-primary-500/60 absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent"
         ></div>
         <div class="pointer-events-none absolute -top-4 -right-4 text-white/4">
             <Terminal size={120} />
