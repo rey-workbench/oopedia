@@ -9,7 +9,8 @@
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
-        "@inertiajs/svelte": "^2.3.18",
+        "@inertiajs/svelte": "^3.0",
+        "@inertiajs/vite": "^3.0",
         "@sveltejs/vite-plugin-svelte": "^6.2.4",
         "@tailwindcss/postcss": "^4.2.2",
         "@tailwindcss/typography": "^0.5.19",
@@ -38,6 +39,7 @@
     },
     "dependencies": {
         "@jixo/mcp-pnpm": "^4.0.0",
+        "lodash-es": "^4.17.21",
         "@lottiefiles/dotlottie-svelte": "^0.9.9",
         "@tailwindcss/vite": "^4.2.2",
         "apexcharts": "^5.10.4",
