@@ -64,7 +64,7 @@
                 </EmptyState>
             {/snippet}
 
-            {#snippet row(sub)}
+            {#snippet row(sub, index)}
                 <td class="group-hover:border-primary-600 border-l-4 border-transparent px-6 py-6">
                     <div
                         class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900 text-xs font-bold text-white shadow-lg shadow-slate-200"
@@ -92,6 +92,7 @@
                 <td class="px-6 py-6">
                     <div class="flex justify-end gap-2">
                         <Button
+                            id={index === 0 ? 'btn-edit-submaterial' : undefined}
                             variant="ghost"
                             size="sm"
                             href={ROUTES.ADMIN.MATERIALS.SUBMATERIALS.EDIT(
@@ -101,6 +102,7 @@
                             icon={Edit2}
                         />
                         <Button
+                            id={index === 0 ? 'btn-delete-submaterial' : undefined}
                             variant="ghost"
                             size="sm"
                             onclick={() => state.handleDelete(sub.id)}

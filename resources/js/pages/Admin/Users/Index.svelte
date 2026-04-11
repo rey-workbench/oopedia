@@ -78,7 +78,7 @@
                 />
             {/snippet}
 
-            {#snippet row(user)}
+             {#snippet row(user, index)}
                 <td
                     class={`group-hover:border-l-primary-600 border-b border-l-4 border-slate-50 border-l-transparent px-6 py-6 ${user.role_id === 1 ? 'bg-slate-900/5' : ''}`}
                 >
@@ -127,6 +127,7 @@
                 <td class="border-b border-slate-50 px-6 py-6">
                     <div class="flex justify-end gap-2">
                         <Button
+                            id={index === 0 ? 'btn-edit-user' : undefined}
                             variant="ghost"
                             size="sm"
                             href={ROUTES.ADMIN.USERS.EDIT(user.id)}
@@ -134,6 +135,7 @@
                         />
                         {#if isSuperAdmin && user.id !== authUser.id}
                             <Button
+                                id={index === 0 ? 'btn-delete-user' : undefined}
                                 variant="ghost"
                                 size="sm"
                                 onclick={() => listState.handleDelete(user.id)}

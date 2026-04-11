@@ -20,7 +20,7 @@
         emptyTitle?: string;
         emptyDescription?: string;
         onsearch?: (e: Event) => void;
-        row?: Snippet<[any]>;
+        row?: Snippet<[any, number]>;
         empty?: Snippet;
         [key: string]: any;
     }
@@ -95,11 +95,11 @@
                         </td>
                     </tr>
                 {:else}
-                    {#each items as item (item.id || item)}
+                    {#each items as item, i (item.id || item)}
                         <tr
                             class={`group border-cosmos-border hover:bg-primary-50/30 border-b-2 transition-colors last:border-0 ${rowClass(item)}`}
                         >
-                            {@render row?.(item)}
+                            {@render row?.(item, i)}
                         </tr>
                     {/each}
                 {/if}

@@ -108,7 +108,7 @@
             />
         {/snippet}
 
-        {#snippet row(question)}
+        {#snippet row(question, index)}
             <td class="px-6 py-6">
                 <div class="flex max-w-xl flex-col gap-1">
                     <span class="line-clamp-2 text-xs leading-relaxed font-bold text-slate-900">
@@ -148,6 +148,7 @@
             <td class="px-6 py-6">
                 <div class="flex justify-end gap-2">
                     <Button
+                        id={index === 0 ? 'btn-edit-question' : undefined}
                         variant="ghost"
                         size="sm"
                         href={state.material
@@ -156,6 +157,7 @@
                         icon={Edit2}
                     />
                     <Button
+                        id={index === 0 ? 'btn-delete-question' : undefined}
                         variant="ghost"
                         size="sm"
                         onclick={() => state.handleDelete(question.id)}

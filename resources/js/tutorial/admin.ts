@@ -110,6 +110,24 @@ export function registerAdminTutorials() {
                     side: 'top',
                     align: 'center'
                 }
+            },
+            {
+                element: '#btn-edit-material',
+                popover: {
+                    title: 'Edit Materi ✏️',
+                    description: 'Ubah konten, deskripsi, atau penanda tugas akhir materi kapan saja melalui tombol modifikasi ini.',
+                    side: 'left',
+                    align: 'center'
+                }
+            },
+            {
+                element: '#btn-delete-material',
+                popover: {
+                    title: 'Hapus Materi 🗑️',
+                    description: 'Hati-hati! Tombol ini akan menghapus materi secara permanen beserta semua sub-materi dan soal di dalamnya.',
+                    side: 'left',
+                    align: 'center'
+                }
             }
         ]
     });
@@ -178,6 +196,24 @@ export function registerAdminTutorials() {
                     side: 'top',
                     align: 'center'
                 }
+            },
+            {
+                element: '#btn-edit-submaterial',
+                popover: {
+                    title: 'Edit Unit ✏️',
+                    description: 'Sesuaikan konten, tipe belajar sasaran, atau prasyarat logika dari sub-materi ini.',
+                    side: 'left',
+                    align: 'center'
+                }
+            },
+            {
+                element: '#btn-delete-submaterial',
+                popover: {
+                    title: 'Hapus Unit 🗑️',
+                    description: 'Singkirkan unit ini jika dirasa tidak relevan lagi. Pastikan alur materi utama tidak terputus!',
+                    side: 'left',
+                    align: 'center'
+                }
             }
         ]
     });
@@ -228,6 +264,24 @@ export function registerAdminTutorials() {
                     title: 'Gudang Instrumen Penilaian 📑',
                     description: 'Semua soal evaluasi dikumpulkan di sini. Anda bisa memantau tipe soal, difficulty, dan jumlah opsi jawaban yang tersedia.',
                     side: 'top',
+                    align: 'center'
+                }
+            },
+            {
+                element: '#btn-edit-question',
+                popover: {
+                    title: 'Kalibrasi Soal ✏️',
+                    description: 'Perbarui tingkat kesulitan atau perbaiki redaksi soal untuk meningkatkan kualitas evaluasi.',
+                    side: 'left',
+                    align: 'center'
+                }
+            },
+            {
+                element: '#btn-delete-question',
+                popover: {
+                    title: 'Hapus Soal 🗑️',
+                    description: 'Keluarkan soal dari peredaran jika sudah tidak relevan dengan kurikulum saat ini.',
+                    side: 'left',
                     align: 'center'
                 }
             }
@@ -314,6 +368,24 @@ export function registerAdminTutorials() {
                     title: 'Monitor Dashboard Mahasiswa 📈',
                     description: 'Tabel ini menampilkan status real-time progres mereka. Gunakan aksi "Progress" untuk melihat detail perjalanan belajar setiap individu.',
                     side: 'top',
+                    align: 'center'
+                }
+            },
+            {
+                element: '#btn-progress-student',
+                popover: {
+                    title: 'Detail Progres 📊',
+                    description: 'Intip seberapa jauh mahasiswa ini melangkah. Anda dapat melihat penguasaan tiap materi secara spesifik.',
+                    side: 'left',
+                    align: 'center'
+                }
+            },
+            {
+                element: '#btn-delete-student',
+                popover: {
+                    title: 'Hapus Mahasiswa 🗑️',
+                    description: 'Keluarkan mahasiswa ini dari sistem beserta rekam jejak progres belajarnya.',
+                    side: 'left',
                     align: 'center'
                 }
             }
@@ -452,6 +524,24 @@ export function registerAdminTutorials() {
                     title: 'Daftar Penjaga Sistem 👥',
                     description: 'Semua admin yang aktif terdaftar di sini. Pastikan hanya orang-orang terpercaya yang memiliki kunci akses ya!',
                     side: 'top',
+                    align: 'center'
+                }
+            },
+            {
+                element: '#btn-edit-user',
+                popover: {
+                    title: 'Edit Otoritas ✏️',
+                    description: 'Ubah informasi personal atau level peran administrator ini kapan saja.',
+                    side: 'left',
+                    align: 'center'
+                }
+            },
+            {
+                element: '#btn-delete-user',
+                popover: {
+                    title: 'Cabut Akses 🗑️',
+                    description: 'Cabut hak akses dan hapus admin ini dari sistem (Super Admin saja). Gunakan dengan bijak!',
+                    side: 'left',
                     align: 'center'
                 }
             }

@@ -55,11 +55,11 @@
                 {columns}
                 hideSearch={true}
             >
-                {#snippet row(admin: any)}
+                {#snippet row(admin: any, index)}
                     <td class="border-b border-slate-50 px-6 py-6">
                         <div class="flex items-center gap-4">
                             <UserAvatar name={admin.name} />
-                            <div id="pending-admin-identity" class="font-bold tracking-widest text-slate-900 uppercase">
+                            <div id={index === 0 ? "pending-admin-identity" : undefined} class="font-bold tracking-widest text-slate-900 uppercase">
                                 {admin.name}
                             </div>
                         </div>
@@ -73,7 +73,7 @@
                         </span>
                     </td>
                     <td class="border-b border-slate-50 px-6 py-6">
-                        <div id="pending-admin-actions" class="flex justify-end gap-2">
+                        <div id={index === 0 ? "pending-admin-actions" : undefined} class="flex justify-end gap-2">
                             <button
                                 onclick={() => state.handleApprove(admin.id)}
                                 class="flex items-center gap-2 rounded-xl bg-emerald-50 px-4 py-2 text-[10px] font-bold tracking-widest text-emerald-600 uppercase transition-all hover:bg-emerald-600 hover:text-white"

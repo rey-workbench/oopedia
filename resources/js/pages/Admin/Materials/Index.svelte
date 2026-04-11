@@ -173,7 +173,7 @@
                 </EmptyState>
             {/snippet}
 
-            {#snippet row(material)}
+            {#snippet row(material, index)}
                 <td class="group-hover:border-primary-600 border-l-4 border-transparent px-6 py-6">
                     {#if material.media && material.media.length > 0}
                         <div
@@ -253,12 +253,14 @@
                             title="Kelola Soal"
                         />
                         <Button
+                            id={index === 0 ? 'btn-edit-material' : undefined}
                             variant="ghost"
                             size="sm"
                             href={ROUTES.ADMIN.MATERIALS.EDIT(material.id)}
                             icon={Edit2}
                         />
                         <Button
+                            id={index === 0 ? 'btn-delete-material' : undefined}
                             variant="ghost"
                             size="sm"
                             onclick={() => listState.handleDelete(material.id)}

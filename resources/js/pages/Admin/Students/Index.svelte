@@ -93,7 +93,7 @@
                 </EmptyState>
             {/snippet}
 
-            {#snippet row(student)}
+            {#snippet row(student, index)}
                 <td class="group-hover:border-primary-600 border-l-4 border-transparent px-6 py-6">
                     <div class="flex items-center gap-4">
                         <UserAvatar name={student.name} />
@@ -131,12 +131,14 @@
                 <td class="px-6 py-6">
                     <div class="flex justify-end gap-2">
                         <Button
+                            id={index === 0 ? 'btn-progress-student' : undefined}
                             variant="ghost"
                             size="sm"
                             href={ROUTES.ADMIN.STUDENTS.SHOW(student.id)}
                             icon={LineChart}
                         />
                         <Button
+                            id={index === 0 ? 'btn-delete-student' : undefined}
                             variant="ghost"
                             size="sm"
                             onclick={() => listState.handleDelete(student.id)}
