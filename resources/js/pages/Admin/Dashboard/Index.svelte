@@ -2,6 +2,7 @@
     import App from '@/layouts/App.svelte';
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import Card from '@/components/ui/Card.svelte';
+    import DataTable from '@/components/ui/DataTable.svelte';
     import ProgressBar from '@/components/ui/ProgressBar.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
     import { untrack } from 'svelte';
@@ -67,7 +68,16 @@
     const distributionMax = $derived(Math.max(1, ...Object.values(distribution).map(Number)));
     const radarMax = $derived(Math.max(1, ...Object.values(radar).map(Number)));
     const radarColors = ['blue', 'emerald', 'amber', 'rose', 'gray'];
-
+    const materialColumns = [
+        { key: 'title', label: 'Materi', align: 'left' },
+        { key: 'questions_count', label: 'Total Soal', align: 'center' },
+        { key: 'active_students', label: 'Mahasiswa Aktif', align: 'center' },
+        {
+            key: 'completion_rate',
+            label: 'Tingkat Penyelesaian',
+            align: 'left',
+        },
+    ];
     const maxAttempts = $derived(
         Math.max(1, ...(state.popularMaterials || []).map((m) => m.total_attempts ?? 0))
     );
@@ -269,265 +279,236 @@
             <!-- Top Students -->
             <div id="admin-top-students" class="lg:col-span-2">
                 <Card hover={false}>
-                <div class="space-y-4">
-                    <div class="mb-2 flex items-center gap-3">
-                        <div
-                            class="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-500"
-                        >
-                            <Trophy size={18} />
+                    <div class="space-y-4">
+                        <div class="mb-2 flex items-center gap-3">
+                            <div
+                                class="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-500"
+                            >
+                                <Trophy size={18} />
+                            </div>
+                            <h3 class="text-sm font-bold tracking-widest text-slate-900 uppercase">
+                                Top Mahasiswa
+                            </h3>
                         </div>
-                        <h3 class="text-sm font-bold tracking-widest text-slate-900 uppercase">
-                            Top Mahasiswa
-                        </h3>
-                    </div>
 
-                    {#if state.studentProgress && state.studentProgress.length > 0}
-                        <div class="space-y-3">
-                            {#each state.studentProgress as s, i}
-                                <div class="flex items-center gap-4">
-                                    <span
-                                        class="w-5 text-center text-[10px] font-bold text-slate-400"
-                                        >{i + 1}</span
-                                    >
-                                    <UserAvatar name={s.user?.name ?? '?'} size="sm" />
-                                    <div class="min-w-0 flex-1">
-                                        <div class="mb-1 flex items-center justify-between">
-                                            <span
-                                                class="truncate text-xs font-bold tracking-widest text-slate-900 uppercase"
-                                                >{s.user?.name ?? '-'}</span
-                                            >
-                                            <span
-                                                class="ml-2 shrink-0 text-[10px] font-bold text-slate-400"
-                                                >{s.accuracy ?? 0}%</span
-                                            >
-                                        </div>
-                                        <ProgressBar
-                                            value={s.accuracy ?? 0}
-                                            color="amber"
-                                            height="h-1.5"
-                                        />
-                                    </div>
-                                    <div class="shrink-0 text-right">
-                                        <div class="text-xs font-bold text-slate-700">
-                                            {s.correct_count ?? 0}
-                                        </div>
-                                        <div
-                                            class="text-[9px] font-bold tracking-widest text-slate-400 uppercase"
+                        {#if state.studentProgress && state.studentProgress.length > 0}
+                            <div class="space-y-3">
+                                {#each state.studentProgress as s, i}
+                                    <div class="flex items-center gap-4">
+                                        <span
+                                            class="w-5 text-center text-[10px] font-bold text-slate-400"
+                                            >{i + 1}</span
                                         >
-                                            Benar
+                                        <UserAvatar name={s.user?.name ?? '?'} size="sm" />
+                                        <div class="min-w-0 flex-1">
+                                            <div class="mb-1 flex items-center justify-between">
+                                                <span
+                                                    class="truncate text-xs font-bold tracking-widest text-slate-900 uppercase"
+                                                    >{s.user?.name ?? '-'}</span
+                                                >
+                                                <span
+                                                    class="ml-2 shrink-0 text-[10px] font-bold text-slate-400"
+                                                    >{s.accuracy ?? 0}%</span
+                                                >
+                                            </div>
+                                            <ProgressBar
+                                                value={s.accuracy ?? 0}
+                                                color="amber"
+                                                height="h-1.5"
+                                            />
+                                        </div>
+                                        <div class="shrink-0 text-right">
+                                            <div class="text-xs font-bold text-slate-700">
+                                                {s.correct_count ?? 0}
+                                            </div>
+                                            <div
+                                                class="text-[9px] font-bold tracking-widest text-slate-400 uppercase"
+                                            >
+                                                Benar
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            {/each}
-                        </div>
-                    {:else}
-                        <p class="text-xs font-medium text-slate-400">Tidak ada data mahasiswa.</p>
-                    {/if}
-                </div>
-            </Card>
+                                {/each}
+                            </div>
+                        {:else}
+                            <p class="text-xs font-medium text-slate-400">
+                                Tidak ada data mahasiswa.
+                            </p>
+                        {/if}
+                    </div>
+                </Card>
             </div>
 
             <!-- Popular Materials -->
             <div id="admin-popular-materials">
-            <Card hover={false}>
-                <div class="space-y-4">
-                    <div class="mb-2 flex items-center gap-3">
-                        <div
-                            class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600"
-                        >
-                            <FolderTree size={18} />
+                <Card hover={false}>
+                    <div class="space-y-4">
+                        <div class="mb-2 flex items-center gap-3">
+                            <div
+                                class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600"
+                            >
+                                <FolderTree size={18} />
+                            </div>
+                            <h3 class="text-sm font-bold tracking-widest text-slate-900 uppercase">
+                                Materi Populer
+                            </h3>
                         </div>
-                        <h3 class="text-sm font-bold tracking-widest text-slate-900 uppercase">
-                            Materi Populer
-                        </h3>
-                    </div>
 
-                    {#if state.popularMaterials && state.popularMaterials.length > 0}
-                        <div class="space-y-4">
-                            {#each state.popularMaterials as m}
-                                <div class="space-y-1.5">
-                                    <div class="flex items-start justify-between">
-                                        <span
-                                            class="line-clamp-1 max-w-[70%] text-xs font-bold tracking-widest text-slate-900 uppercase"
-                                            >{m.title}</span
+                        {#if state.popularMaterials && state.popularMaterials.length > 0}
+                            <div class="space-y-4">
+                                {#each state.popularMaterials as m}
+                                    <div class="space-y-1.5">
+                                        <div class="flex items-start justify-between">
+                                            <span
+                                                class="line-clamp-1 max-w-[70%] text-xs font-bold tracking-widest text-slate-900 uppercase"
+                                                >{m.title}</span
+                                            >
+                                            <span
+                                                class="ml-2 shrink-0 text-[10px] font-bold text-emerald-600"
+                                                >{m.total_attempts ?? 0} percobaan</span
+                                            >
+                                        </div>
+                                        <ProgressBar
+                                            value={m.total_attempts ?? 0}
+                                            max={maxAttempts}
+                                            color="emerald"
+                                            height="h-1.5"
+                                        />
+                                        <div
+                                            class="text-[9px] font-bold tracking-widest text-slate-400 uppercase"
                                         >
-                                        <span
-                                            class="ml-2 shrink-0 text-[10px] font-bold text-emerald-600"
-                                            >{m.total_attempts ?? 0} percobaan</span
-                                        >
+                                            {m.unique_students ?? 0} mahasiswa unik
+                                        </div>
                                     </div>
-                                    <ProgressBar
-                                        value={m.total_attempts ?? 0}
-                                        max={maxAttempts}
-                                        color="emerald"
-                                        height="h-1.5"
-                                    />
-                                    <div
-                                        class="text-[9px] font-bold tracking-widest text-slate-400 uppercase"
-                                    >
-                                        {m.unique_students ?? 0} mahasiswa unik
-                                    </div>
-                                </div>
-                            {/each}
-                        </div>
-                    {:else}
-                        <p class="text-xs font-medium text-slate-400">Belum ada data materi.</p>
-                    {/if}
-                </div>
-            </Card>
+                                {/each}
+                            </div>
+                        {:else}
+                            <p class="text-xs font-medium text-slate-400">Belum ada data materi.</p>
+                        {/if}
+                    </div>
+                </Card>
             </div>
         </div>
 
         <!-- Material Statistics -->
         <div id="admin-material-stats">
-        {#if state.materialStats && state.materialStats.length > 0}
-            <Card hover={false}>
-                <div class="space-y-4">
-                    <div class="mb-2 flex items-center gap-3">
-                        <div
-                            class="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600"
-                        >
-                            <FolderTree size={18} />
-                        </div>
-                        <h3 class="text-sm font-bold tracking-widest text-slate-900 uppercase">
-                            Statistik Materi
-                        </h3>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead>
-                                <tr class="border-b border-slate-100">
-                                    <th
-                                        class="pb-3 text-left text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+            {#if state.materialStats && state.materialStats.length > 0}
+                <Card hover={false}>
+                    <DataTable
+                        id="material-stats-table"
+                        title="Statistik Materi"
+                        items={state.materialStats}
+                        hideSearch={true}
+                        columns={materialColumns}
+                        rowClass={() => ''}
+                    >
+                        {#snippet row(m)}
+                            <td class="py-4">
+                                <span
+                                    class="text-xs font-bold tracking-widest text-slate-900 uppercase"
+                                >
+                                    {m.title}
+                                </span>
+                            </td>
+                            <td class="py-4 text-center">
+                                <span class="text-xs font-bold text-slate-700">
+                                    {m.questions_count}
+                                </span>
+                            </td>
+                            <td class="py-4 text-center">
+                                <span class="text-xs font-bold text-slate-700">
+                                    {m.active_students}
+                                </span>
+                            </td>
+                            <td class="py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="flex-1">
+                                        <ProgressBar
+                                            value={m.completion_rate ?? 0}
+                                            max={100}
+                                            color={m.completion_rate >= 70
+                                                ? 'emerald'
+                                                : m.completion_rate >= 40
+                                                  ? 'amber'
+                                                  : 'rose'}
+                                            height="h-2"
+                                        />
+                                    </div>
+                                    <span
+                                        class="w-12 shrink-0 text-right text-xs font-bold text-slate-700"
                                     >
-                                        Materi
-                                    </th>
-                                    <th
-                                        class="pb-3 text-center text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                                    >
-                                        Total Soal
-                                    </th>
-                                    <th
-                                        class="pb-3 text-center text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                                    >
-                                        Mahasiswa Aktif
-                                    </th>
-                                    <th
-                                        class="pb-3 text-left text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                                    >
-                                        Tingkat Penyelesaian
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {#each state.materialStats as m}
-                                    <tr class="border-b border-slate-50">
-                                        <td class="py-4">
-                                            <span
-                                                class="text-xs font-bold tracking-widest text-slate-900 uppercase"
-                                            >
-                                                {m.title}
-                                            </span>
-                                        </td>
-                                        <td class="py-4 text-center">
-                                            <span class="text-xs font-bold text-slate-700">
-                                                {m.questions_count}
-                                            </span>
-                                        </td>
-                                        <td class="py-4 text-center">
-                                            <span class="text-xs font-bold text-slate-700">
-                                                {m.active_students}
-                                            </span>
-                                        </td>
-                                        <td class="py-4">
-                                            <div class="flex items-center gap-3">
-                                                <div class="flex-1">
-                                                    <ProgressBar
-                                                        value={m.completion_rate ?? 0}
-                                                        max={100}
-                                                        color={m.completion_rate >= 70
-                                                            ? 'emerald'
-                                                            : m.completion_rate >= 40
-                                                              ? 'amber'
-                                                              : 'rose'}
-                                                        height="h-2"
-                                                    />
-                                                </div>
-                                                <span
-                                                    class="w-12 shrink-0 text-right text-xs font-bold text-slate-700"
-                                                >
-                                                    {m.completion_rate ?? 0}%
-                                                </span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {/each}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </Card>
-        {/if}
+                                        {m.completion_rate ?? 0}%
+                                    </span>
+                                </div>
+                            </td>
+                        {/snippet}
+                    </DataTable>
+                </Card>
+            {/if}
         </div>
 
         <!-- Recent Activity Timeline -->
         <div id="admin-recent-activity">
-        <Card hover={false}>
-            <div class="space-y-4">
-                <div class="mb-2 flex items-center gap-3">
-                    <div
-                        class="bg-primary-50 text-primary-600 flex h-9 w-9 items-center justify-center rounded-xl"
-                    >
-                        <Activity size={18} />
+            <Card hover={false}>
+                <div class="space-y-4">
+                    <div class="mb-2 flex items-center gap-3">
+                        <div
+                            class="bg-primary-50 text-primary-600 flex h-9 w-9 items-center justify-center rounded-xl"
+                        >
+                            <Activity size={18} />
+                        </div>
+                        <h3 class="text-sm font-bold tracking-widest text-slate-900 uppercase">
+                            Aktivitas Terbaru
+                        </h3>
                     </div>
-                    <h3 class="text-sm font-bold tracking-widest text-slate-900 uppercase">
-                        Aktivitas Terbaru
-                    </h3>
-                </div>
 
-                {#if state.recentProgress && state.recentProgress.length > 0}
-                    <div class="space-y-4">
-                        {#each state.recentProgress as item}
-                            <div class="flex items-start gap-3">
-                                <UserAvatar name={item.user?.name ?? '?'} size="sm" />
-                                <div class="min-w-0 flex-1 space-y-1.5">
-                                    <div class="flex items-start justify-between">
-                                        <div>
+                    {#if state.recentProgress && state.recentProgress.length > 0}
+                        <div class="space-y-4">
+                            {#each state.recentProgress as item}
+                                <div class="flex items-start gap-3">
+                                    <UserAvatar name={item.user?.name ?? '?'} size="sm" />
+                                    <div class="min-w-0 flex-1 space-y-1.5">
+                                        <div class="flex items-start justify-between">
+                                            <div>
+                                                <span
+                                                    class="text-xs font-bold tracking-widest text-slate-900 uppercase"
+                                                    >{item.user?.name ?? '-'}</span
+                                                >
+                                                <span
+                                                    class="block text-[9px] font-bold tracking-widest text-slate-400 uppercase"
+                                                    >{item.material?.title ?? '-'}</span
+                                                >
+                                            </div>
                                             <span
-                                                class="text-xs font-bold tracking-widest text-slate-900 uppercase"
-                                                >{item.user?.name ?? '-'}</span
+                                                class="ml-2 shrink-0 text-[10px] font-bold text-slate-400"
                                             >
+                                                {item.updated_at
+                                                    ? formatDate(item.updated_at)
+                                                    : '-'}
+                                            </span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <ProgressBar
+                                                value={item.progress ?? 0}
+                                                color="blue"
+                                                height="h-1.5"
+                                            />
                                             <span
-                                                class="block text-[9px] font-bold tracking-widest text-slate-400 uppercase"
-                                                >{item.material?.title ?? '-'}</span
+                                                class="shrink-0 text-[10px] font-bold text-slate-500"
+                                                >{item.progress ?? 0}%</span
                                             >
                                         </div>
-                                        <span
-                                            class="ml-2 shrink-0 text-[10px] font-bold text-slate-400"
-                                        >
-                                            {item.updated_at ? formatDate(item.updated_at) : '-'}
-                                        </span>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <ProgressBar
-                                            value={item.progress ?? 0}
-                                            color="blue"
-                                            height="h-1.5"
-                                        />
-                                        <span class="shrink-0 text-[10px] font-bold text-slate-500"
-                                            >{item.progress ?? 0}%</span
-                                        >
                                     </div>
                                 </div>
-                            </div>
-                        {/each}
-                    </div>
-                {:else}
-                    <p class="text-xs font-medium text-slate-400">Belum ada aktivitas terbaru.</p>
-                {/if}
-            </div>
-        </Card>
+                            {/each}
+                        </div>
+                    {:else}
+                        <p class="text-xs font-medium text-slate-400">
+                            Belum ada aktivitas terbaru.
+                        </p>
+                    {/if}
+                </div>
+            </Card>
         </div>
     </div>
 </App>

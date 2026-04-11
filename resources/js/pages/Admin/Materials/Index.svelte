@@ -235,7 +235,7 @@
                 </td>
 
                 <td class="px-6 py-6">
-                    <div class="flex justify-end gap-3">
+                    <div id={index === 0 ? 'material-actions' : undefined} class="flex justify-end gap-3">
                         <Button
                             variant="ghost"
                             size="sm"

@@ -125,7 +125,7 @@
                     {/if}
                 </td>
                 <td class="border-b border-slate-50 px-6 py-6">
-                    <div class="flex justify-end gap-2">
+                    <div id={index === 0 ? 'user-actions' : undefined} class="flex justify-end gap-2">
                         <Button
                             id={index === 0 ? 'btn-edit-user' : undefined}
                             variant="ghost"

@@ -129,7 +129,7 @@
                     </div>
                 </td>
                 <td class="px-6 py-6">
-                    <div class="flex justify-end gap-2">
+                    <div id={index === 0 ? 'student-actions' : undefined} class="flex justify-end gap-2">
                         <Button
                             id={index === 0 ? 'btn-progress-student' : undefined}
                             variant="ghost"
