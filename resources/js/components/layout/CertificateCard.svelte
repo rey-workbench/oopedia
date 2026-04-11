@@ -55,7 +55,7 @@
     }
     const userName = $derived(
         recipientName ??
-            ($page.props as unknown as PagePropsWithAuth)?.auth?.user?.name ??
+            (page.props as unknown as PagePropsWithAuth)?.auth?.user?.name ??
             'Mahasiswa'
     );
 

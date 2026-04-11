@@ -39,8 +39,12 @@
     },
     "dependencies": {
         "@jixo/mcp-pnpm": "^4.0.0",
-        "lodash-es": "^4.17.21",
         "@lottiefiles/dotlottie-svelte": "^0.9.9",
+        "@modelcontextprotocol/client": "2.0.0-alpha.2",
+        "@modelcontextprotocol/express": "2.0.0-alpha.2",
+        "@modelcontextprotocol/hono": "2.0.0-alpha.2",
+        "@modelcontextprotocol/node": "2.0.0-alpha.2",
+        "@modelcontextprotocol/server": "2.0.0-alpha.2",
         "@tailwindcss/vite": "^4.2.2",
         "apexcharts": "^5.10.4",
         "dompurify": "^3.3.3",
@@ -49,6 +53,7 @@
         "html2canvas": "^1.4.1",
         "jspdf": "^4.2.1",
         "lodash": "^4.17.23",
+        "lodash-es": "^4.17.21",
         "lucide-svelte": "^0.577.0",
         "quill": "^2.0.3",
         "svelte-motion": "^0.12.2"

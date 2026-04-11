@@ -46,7 +46,7 @@
         { key: 'actions', label: 'Operasi', align: 'right' },
     ]);
 
-    const materialStats = $derived([
+    const materialStats = [
         {
             title: 'Total Modul',
             value: totalMaterials,
@@ -68,7 +68,7 @@
             variant: 'primary',
             footer: 'Total aset multimedia',
         },
-    ]);
+    ];
 </script>
 
 <App title="Kelola Materi">

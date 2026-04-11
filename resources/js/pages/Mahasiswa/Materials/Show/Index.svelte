@@ -10,12 +10,7 @@
     import { MaterialShowState } from '@/states/Mahasiswa/MaterialState.svelte';
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import { ROUTES } from '@/utils/route';
-    import {
-        getBgClass,
-        getTextClass,
-        getIcon,
-        getBadgeLabel,
-    } from '@/utils/contentTypeStyles';
+    import { getBgClass, getTextClass, getIcon, getBadgeLabel } from '@/utils/contentTypeStyles';
     import type { Material } from '@/types';
 
     const { material }: { material: Material } = $props();
@@ -40,7 +35,7 @@
     });
 
     // Initialize State
-    const fromAdaptive = ($page.props as any)?.flash?.from_adaptive || false;
+    const fromAdaptive = (page.props as any)?.flash?.from_adaptive || false;
     const state = untrack(() => new MaterialShowState(material, fromAdaptive));
 </script>
 
@@ -111,23 +106,24 @@
                         {@const SubIcon = getIcon(subMaterial.jenis_konten)}
                         <Card
                             padding="p-0"
-                            class="overflow-hidden rounded-3xl border-duo-lg bg-white"
+                            class="border-duo-lg overflow-hidden rounded-3xl bg-white"
                         >
                             <!-- Header with Icon -->
                             <div
                                 class={`relative h-44 ${getBgClass(subMaterial.jenis_konten)} flex shrink-0 items-center justify-center`}
                             >
-                                <div class="absolute inset-0 bg-black/5 opacity-0 transition-opacity group-hover:opacity-100"></div>
-                                <div class="relative z-10 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
-                                    <SubIcon
-                                        size={56}
-                                        class="text-white drop-shadow-lg"
-                                    />
+                                <div
+                                    class="absolute inset-0 bg-black/5 opacity-0 transition-opacity group-hover:opacity-100"
+                                ></div>
+                                <div
+                                    class="relative z-10 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3"
+                                >
+                                    <SubIcon size={56} class="text-white drop-shadow-lg" />
                                 </div>
-                                
+
                                 <!-- Floating Index Badge -->
                                 <div
-                                    class="absolute top-4 left-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-white shadow-lg border-2 border-slate-100"
+                                    class="absolute top-4 left-4 flex h-10 w-10 items-center justify-center rounded-2xl border-2 border-slate-100 bg-white shadow-lg"
                                 >
                                     <span
                                         class={`text-lg font-black tracking-tight ${getTextClass(subMaterial.jenis_konten)}`}
@@ -140,7 +136,9 @@
                                     class="absolute right-4 bottom-4 flex items-center gap-2 rounded-2xl border-2 border-white/30 bg-white/20 px-3 py-1.5 backdrop-blur-md"
                                 >
                                     <Puzzle size={14} class="text-white" />
-                                    <span class="text-[10px] font-black tracking-widest text-white uppercase">
+                                    <span
+                                        class="text-[10px] font-black tracking-widest text-white uppercase"
+                                    >
                                         {subMaterial.questions ? subMaterial.questions.length : 0} Soal
                                     </span>
                                 </div>
@@ -149,18 +147,22 @@
                             <!-- Content Section -->
                             <div class="flex flex-1 flex-col p-6">
                                 <div class="mb-4">
-                                    <div class={`inline-block mb-3 px-3 py-1 rounded-full text-[9px] font-black tracking-[0.15em] uppercase text-white ${getBgClass(subMaterial.jenis_konten)} shadow-sm`}>
+                                    <div
+                                        class={`mb-3 inline-block rounded-full px-3 py-1 text-[9px] font-black tracking-[0.15em] text-white uppercase ${getBgClass(subMaterial.jenis_konten)} shadow-sm`}
+                                    >
                                         {getBadgeLabel(subMaterial.jenis_konten)}
                                     </div>
                                     <h3
-                                        class="line-clamp-2 text-xl font-black leading-tight tracking-tight text-slate-900 transition-colors"
+                                        class="line-clamp-2 text-xl leading-tight font-black tracking-tight text-slate-900 transition-colors"
                                     >
                                         {subMaterial.title}
                                     </h3>
                                 </div>
-                                
+
                                 <div class="mb-6 flex-1">
-                                    <p class="line-clamp-2 text-sm font-medium leading-relaxed text-slate-500">
+                                    <p
+                                        class="line-clamp-2 text-sm leading-relaxed font-medium text-slate-500"
+                                    >
                                         {stripHtml(subMaterial.content)}
                                     </p>
                                 </div>

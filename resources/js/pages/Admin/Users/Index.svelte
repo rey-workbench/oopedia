@@ -20,7 +20,7 @@
 
     const listState = new UserListState(users, search);
 
-    const authUser = $derived(($page.props as any)['auth'].user);
+    const authUser = $derived((page.props as any)['auth'].user);
     const isSuperAdmin = $derived((authUser as any)?.role_id === 1);
 
     const columns = $derived([

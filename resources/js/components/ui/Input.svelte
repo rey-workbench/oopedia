@@ -49,10 +49,10 @@
     {#if label}
         <label
             for={inputId}
-            class={`ml-4 block text-[11px] font-black tracking-widest uppercase transition-colors ${error ? 'text-rose-500' : (variant === 'dark' ? 'text-slate-400' : 'text-slate-500')}`}
+            class={`ml-4 block text-[11px] font-black tracking-widest uppercase transition-colors ${error ? 'text-rose-500' : variant === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}
         >
             {label}
-            {#if required}<span class="text-rose-500 ml-1">*</span>{/if}
+            {#if required}<span class="ml-1 text-rose-500">*</span>{/if}
         </label>
     {/if}
 
@@ -70,14 +70,16 @@
             aria-describedby={error ? errorId : undefined}
             {...rest}
             class={`
-                w-full rounded-3xl border-2 px-6 py-4 text-sm font-bold transition-all outline-none
-                ${disabled ? 'cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400 grayscale' : ''}
+                w-full px-6 py-4 text-sm font-bold transition-all outline-none
+                ${
+                    inputClass ||
+                    `rounded-3xl border-2 ${disabled ? 'cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400 grayscale' : ''}
                 ${
                     error
-                        ? 'border-rose-200 border-b-6 bg-rose-50/20 text-rose-900 focus:border-rose-500 focus:ring-rose-50'
+                        ? 'border-b-6 border-rose-200 bg-rose-50/20 text-rose-900 focus:border-rose-500 focus:ring-rose-50'
                         : `hover:border-slate-300 focus:ring-4 ${variantClasses[variant]}`
+                }`
                 }
-                ${inputClass}
             `}
         />
 

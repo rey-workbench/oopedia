@@ -25,7 +25,7 @@
         children,
     }: Props = $props();
 
-    const flash = $derived(($page.props as unknown as SharedProps).flash ?? {});
+    const flash = $derived((page.props as unknown as SharedProps).flash ?? {});
     const showSidebarRender = $derived(variant === 'app' && showSidebar);
     const sidebarOpen = $derived(sidebarState.isOpen);
 

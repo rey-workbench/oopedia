@@ -1,6 +1,5 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import Quill from 'quill';
     import hljs from 'highlight.js';
     import 'quill/dist/quill.snow.css';
     import 'highlight.js/styles/atom-one-dark.css';
@@ -28,40 +27,43 @@
     if (value === undefined) value = '';
 
     let editorContainer: HTMLElement;
-    let quill: Quill;
+    let quillInstance: import('quill').default | null = null;
 
-    onMount(() => {
-        if (typeof window !== 'undefined') {
-            Object.assign(window, { hljs });
-        }
+    onMount(async () => {
+        if (typeof window === 'undefined') return; // SSR guard
 
-        quill = new Quill(editorContainer, {
-            theme: 'snow',
-            placeholder: placeholder,
-            modules: {
-                syntax: {
-                    hljs: hljs,
+        // Lazy-load Quill only on client to avoid SSR document error
+        try {
+            const Quill = (await import('quill')).default;
+
+            quillInstance = new Quill(editorContainer, {
+                theme: 'snow',
+                placeholder: placeholder,
+                modules: {
+                    syntax: { hljs },
+                    toolbar: [
+                        [{ header: [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ list: 'ordered' }, { list: 'bullet' }],
+                        ['link', 'image', 'code-block'],
+                        ['clean'],
+                    ],
                 },
-                toolbar: [
-                    [{ header: [1, 2, 3, false] }],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ list: 'ordered' }, { list: 'bullet' }],
-                    ['link', 'image', 'code-block'],
-                    ['clean'],
-                ],
-            },
-        });
+            });
 
-        // Set initial content
-        if (value) {
-            quill.root.innerHTML = value;
+            // Set initial content
+            if (value) {
+                quillInstance.root.innerHTML = value;
+            }
+
+            quillInstance.on('text-change', () => {
+                const html = quillInstance!.root.innerHTML;
+                value = html;
+                oninput(html);
+            });
+        } catch (e) {
+            console.error('Failed to load Quill:', e);
         }
-
-        quill.on('text-change', () => {
-            const html = quill.root.innerHTML;
-            value = html;
-            oninput(html);
-        });
     });
 </script>
 
