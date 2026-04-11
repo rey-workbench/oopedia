@@ -1,6 +1,7 @@
 <script lang="ts">
     import App from '@/layouts/App.svelte';
     import Button from '@/components/ui/Button.svelte';
+    import PageHeader from '@/components/ui/PageHeader.svelte';
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import Card from '@/components/ui/Card.svelte';
     import Badge from '@/components/ui/Badge.svelte';
@@ -17,28 +18,17 @@
 
 <App title="Materi Selesai">
     <div class="space-y-12 pb-20">
-        <div id="completed-header" class="mb-8">
-            <h1
-                class="font-display text-3xl leading-tight font-extrabold tracking-tight text-slate-900 md:text-4xl"
-            >
-                Hall of Fame
-            </h1>
-            <div class="mt-3 flex items-center gap-2" role="presentation">
-                <div class="bg-primary-600 h-1.5 w-12 rounded-full"></div>
-                <div class="h-1.5 w-4 rounded-full bg-slate-200"></div>
-                <div class="h-1.5 w-2 rounded-full bg-slate-100"></div>
-            </div>
-            <p class="mt-4 max-w-3xl leading-relaxed font-medium text-slate-500">
-                Kumpulan modul pembelajaran yang telah berhasil Anda kuasai sepenuhnya.
-            </p>
-            <div class="mt-6 flex flex-wrap gap-4">
-                <div>
-                    <Button href={ROUTES.MAHASISWA.DASHBOARD} variant="ghost" icon={ArrowLeft}
-                        >KEMBALI</Button
-                    >
-                </div>
-            </div>
-        </div>
+        <PageHeader
+            id="page-header"
+            title="Hall of Fame"
+            subtitle="Kumpulan modul pembelajaran yang telah berhasil Anda kuasai sepenuhnya."
+        >
+            {#snippet actions()}
+                <Button href={ROUTES.MAHASISWA.DASHBOARD} variant="ghost" icon={ArrowLeft}>
+                    KEMBALI
+                </Button>
+            {/snippet}
+        </PageHeader>
 
         {#if state.materialsWithStats.length === 0}
             <EmptyState

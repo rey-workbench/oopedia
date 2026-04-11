@@ -132,9 +132,9 @@
 .driver-active-element {
     position: relative !important;
     z-index: 100000 !important;
-    box-shadow: 0 0 0 4px var(--color-primary-50), 0 0 0 8px var(--color-primary-200) !important;
-    border-radius: var(--radius-duo, 1rem); /* Tweak based on element */
-    transition: box-shadow 0.3s ease;
+    box-shadow: 0 0 0 4px #ffffff, 0 0 0 8px var(--color-primary-500) !important;
+    border-radius: var(--radius-duo, 1.25rem) !important;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
 }
 
 /* Quill Video Embedding Responsive */
@@ -164,88 +164,156 @@
     fill: rgba(15, 23, 42, 0.6) !important; /* bg-slate-900/60 matched to Modal.svelte */
 }
 
-/* Driver.js Custom Styling - Matches Modal.svelte exactly */
+/* Driver.js Custom Styling - Gamified Gamers Aesthetic */
 .driver-popover.oopedia-driver-popover {
     background-color: #ffffff !important;
-    border: 2px solid var(--color-cosmos-border) !important;
-    border-radius: 1.5rem !important; /* rounded-3xl approx */
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
-    padding: 1.5rem !important;
-    max-width: 400px !important;
+    border: 2px solid #e2e8f0 !important;
+    border-bottom: 6px solid #e2e8f0 !important;
+    border-radius: 1.5rem !important;
+    padding: 1.5rem 1.5rem !important;
+    max-width: 440px !important;
     font-family: var(--font-body) !important;
+    animation: duo-pop-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    color: #0f172a !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05) !important;
+}
+
+.driver-active-element {
+    outline: none !important;
+    box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.4) !important;
+    border-radius: 12px !important;
 }
 
 .oopedia-driver-popover .driver-popover-title {
-    font-family: var(--font-display) !important;
-    font-weight: 800 !important;
-    font-size: 1.25rem !important;
-    color: var(--color-primary-600) !important;
-    margin-bottom: 0.75rem !important;
-    line-height: 1.2 !important;
+    font-family: var(--font-heading) !important;
+    font-size: 1.5rem !important;
+    font-weight: 900 !important;
+    margin-bottom: 0.5rem !important;
+    color: #0f172a !important;
+    letter-spacing: -0.02em !important;
 }
 
 .oopedia-driver-popover .driver-popover-description {
     font-size: 0.95rem !important;
-    color: var(--color-cosmos-muted) !important;
     line-height: 1.6 !important;
-}
-
-.oopedia-driver-popover .driver-popover-footer {
-    padding-top: 1.5rem !important;
-    display: flex !important;
-    justify-content: flex-end !important;
-    align-items: center !important;
-    gap: 0.75rem !important;
-    background-color: transparent !important;
-}
-
-.oopedia-driver-popover .driver-popover-btn {
-    text-shadow: none !important;
-    background-color: #ffffff !important;
-    color: #0f172a !important;
-    border: 2px solid #e2e8f0 !important;
-    border-bottom: 6px solid #cbd5e1 !important;
-    border-radius: 1rem !important; /* rounded-2xl */
-    padding: 0.5rem 1rem !important;
-    font-weight: 900 !important; /* font-black */
-    font-size: 0.75rem !important; /* text-xs */
-    text-transform: uppercase !important;
-    letter-spacing: 0.1em !important; /* tracking-widest */
-    transition: all 150ms !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-.oopedia-driver-popover .driver-popover-btn:hover {
-    background-color: #f8fafc !important; /* bg-slate-50 */
-}
-
-.oopedia-driver-popover .driver-popover-btn:active {
-    transform: translateY(4px) !important;
-    border-bottom-width: 2px !important;
-    margin-top: 4px !important; /* offset the border decrease */
-}
-
-.oopedia-driver-popover .driver-popover-next-btn, 
-.oopedia-driver-popover .driver-popover-close-btn {
-    background-color: var(--color-primary-500) !important;
-    color: #ffffff !important;
-    border-color: var(--color-primary-800) !important;
-    border-bottom-color: var(--color-primary-900) !important;
-}
-
-.oopedia-driver-popover .driver-popover-next-btn:hover,
-.oopedia-driver-popover .driver-popover-close-btn:hover {
-    background-color: var(--color-primary-600) !important;
+    color: #64748b !important;
+    margin-bottom: 1rem !important;
 }
 
 .oopedia-driver-popover .driver-popover-arrow {
-    border-color: var(--color-cosmos-border) !important;
+    border-width: 12px !important;
+}
+
+/* Close Button Override */
+.oopedia-driver-popover .driver-popover-close-btn {
+    top: 1rem !important;
+    right: 1.25rem !important;
+    color: #cbd5e1 !important;
+    font-size: 1.5rem !important;
+    font-weight: 400 !important;
+    background: transparent !important;
+    border: none !important;
+    transition: all 150ms !important;
+    cursor: pointer !important;
+}
+.oopedia-driver-popover .driver-popover-close-btn:hover {
+    color: #0f172a !important;
+    transform: scale(1.1) rotate(90deg) !important;
+}
+
+/* Footer & Progress Text */
+.oopedia-driver-popover .driver-popover-footer {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 1rem !important;
+    margin-top: 1.5rem !important;
+    padding-top: 1.25rem !important;
+    border-top: 2px solid #f1f5f9 !important;
+}
+
+.oopedia-driver-popover .driver-popover-navigation-btns {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    justify-content: flex-end !important;
+    flex: 1 !important;
 }
 
 .oopedia-driver-popover .driver-popover-progress-text {
-    font-size: 0.75rem;
-    color: var(--color-cosmos-muted);
-    font-weight: 600;
+    font-family: var(--font-heading) !important;
+    font-size: 0.70rem !important;
+    font-weight: 950 !important;
+    color: #94a3b8 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.15em !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+}
+
+/* General Action Buttons */
+.oopedia-driver-popover .driver-popover-footer button {
+    font-family: var(--font-heading) !important;
+    font-weight: 950 !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.15em !important;
+    text-transform: uppercase !important;
+    border-radius: 9999px !important;
+    padding: 0.65rem 1.25rem !important;
+    cursor: pointer !important;
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 1 !important;
+    white-space: nowrap !important;
+}
+
+/* Previous Button (Red Gamified) */
+.oopedia-driver-popover .driver-popover-prev-btn {
+    background-color: #f43f5e !important; /* rose-500 */
+    color: white !important;
+    text-shadow: none !important;
+    border: none !important;
+    box-shadow: 0 4px 0 #be123c !important; /* rose-700 shadow bottom */
+    margin: 0 !important;
+}
+
+.oopedia-driver-popover .driver-popover-prev-btn:hover {
+    background-color: #fb7185 !important; /* rose-400 */
+    box-shadow: 0 3px 0 #be123c !important;
+    transform: translateY(1px) !important;
+}
+
+.oopedia-driver-popover .driver-popover-prev-btn:active {
+    box-shadow: 0 0px 0 #be123c !important;
+    transform: translateY(4px) !important;
+}
+
+/* Next / Done Button (Black Gamified) */
+.oopedia-driver-popover .driver-popover-next-btn {
+    background-color: #0f172a !important; /* slate-900 */
+    color: white !important;
+    text-shadow: none !important;
+    border: none !important;
+    box-shadow: 0 4px 0 #000000 !important;
+    margin: 0 !important;
+}
+
+.oopedia-driver-popover .driver-popover-next-btn:hover {
+    background-color: #1e293b !important; /* slate-800 */
+    box-shadow: 0 3px 0 #000000 !important;
+    transform: translateY(1px) !important;
+}
+
+.oopedia-driver-popover .driver-popover-next-btn:active {
+    box-shadow: 0 0px 0 #000000 !important;
+    transform: translateY(4px) !important;
+}
+
+/* Animations */
+@keyframes duo-pop-in {
+    0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
 }

@@ -13,6 +13,7 @@
 <App title="Sertifikat Saya">
     <div class="space-y-12">
         <PageHeader
+            id="page-header"
             title="Sertifikat Saya"
             subtitle="Sertifikat yang Anda raih dari menyelesaikan Final Project OOP."
         />

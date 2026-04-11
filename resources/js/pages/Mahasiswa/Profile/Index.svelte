@@ -113,6 +113,7 @@
 <App title="Profil Mahasiswa">
     <div class="space-y-12">
         <PageHeader
+            id="page-header"
             title="Profil Saya"
             subtitle="Atur informasi akun dan keamanan Anda untuk pengalaman belajar yang lebih personal."
         ></PageHeader>
@@ -121,49 +122,52 @@
         <div id="profile-hero">
             <Panel
                 rounded="full"
-            class="hover:shadow-primary-900/20 mb-8 shadow-2xl transition-all duration-500"
-            padding="p-8 md:p-12"
-        >
-            <div class="flex flex-col items-center gap-10 md:flex-row">
-                <div class="group relative">
-                    <div
-                        class="flex h-32 w-32 rotate-3 items-center justify-center overflow-hidden rounded-3xl bg-white shadow-2xl transition-transform duration-500 group-hover:rotate-0"
-                    >
-                        <UserCircle size={80} class="text-slate-200" />
+                class="hover:shadow-primary-900/20 mb-8 shadow-2xl transition-all duration-500"
+                padding="p-8 md:p-12"
+            >
+                <div class="flex flex-col items-center gap-10 md:flex-row">
+                    <div class="group relative">
+                        <div
+                            class="flex h-32 w-32 rotate-3 items-center justify-center overflow-hidden rounded-3xl bg-white shadow-2xl transition-transform duration-500 group-hover:rotate-0"
+                        >
+                            <UserCircle size={80} class="text-slate-200" />
+                        </div>
+                        <div
+                            class="absolute -right-2 -bottom-2 flex h-10 w-10 items-center justify-center rounded-2xl border-4 border-slate-900 bg-emerald-500 text-white shadow-xl"
+                        >
+                            <Check size={18} />
+                        </div>
                     </div>
-                    <div
-                        class="absolute -right-2 -bottom-2 flex h-10 w-10 items-center justify-center rounded-2xl border-4 border-slate-900 bg-emerald-500 text-white shadow-xl"
-                    >
-                        <Check size={18} />
-                    </div>
-                </div>
 
-                <div class="text-center md:text-left">
-                    <p
-                        class="text-primary-400 mb-2 text-[10px] font-bold tracking-widest uppercase"
-                    >
-                        MEMBER SINCE {new Date(state.user.created_at).getFullYear()}
-                    </p>
-                    <h2
-                        class="mb-4 text-4xl font-bold tracking-tight text-white uppercase md:text-5xl"
-                    >
-                        {state.user.name}
-                    </h2>
-                    <div class="flex flex-wrap items-center justify-center gap-4 md:justify-start">
-                        <div
-                            class="flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-xs font-bold tracking-wider uppercase backdrop-blur-md"
+                    <div class="text-center md:text-left">
+                        <p
+                            class="text-primary-400 mb-2 text-[10px] font-bold tracking-widest uppercase"
                         >
-                            <Mail size={14} class="text-primary-400" />
-                            {state.user.email}
-                        </div>
-                        <div
-                            class="flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-xs font-bold tracking-wider uppercase backdrop-blur-md"
+                            MEMBER SINCE {new Date(state.user.created_at).getFullYear()}
+                        </p>
+                        <h2
+                            class="mb-4 text-4xl font-bold tracking-tight text-white uppercase md:text-5xl"
                         >
-                            <UserIcon size={14} class="text-primary-400" /> Mahasiswa
+                            {state.user.name}
+                        </h2>
+                        <div
+                            class="flex flex-wrap items-center justify-center gap-4 md:justify-start"
+                        >
+                            <div
+                                class="flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-xs font-bold tracking-wider uppercase backdrop-blur-md"
+                            >
+                                <Mail size={14} class="text-primary-400" />
+                                {state.user.email}
+                            </div>
+                            <div
+                                class="flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-xs font-bold tracking-wider uppercase backdrop-blur-md"
+                            >
+                                <UserIcon size={14} class="text-primary-400" /> Mahasiswa
+                            </div>
                         </div>
                     </div>
-            </div>
-        </Panel>
+                </div></Panel
+            >
         </div>
 
         <!-- Personalization Section -->
@@ -172,7 +176,10 @@
                 Data Personalisasi Pembelajaran
             </h3>
             <div id="profile-stats" class="space-y-8">
-                <div id="learning-profile-analysis" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+                <div
+                    id="learning-profile-analysis"
+                    class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
+                >
                     {#each personalizationStats as stat}
                         <Card hover={true} class="group relative overflow-hidden">
                             <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
@@ -340,7 +347,7 @@
                     >
                 {/if}
             </div>
-            
+
             <div id="profile-certificates">
                 {#if certifications.length > 0}
                     <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
@@ -354,8 +361,8 @@
                         {/each}
                     </div>
                 {:else}
-                    <EmptyState 
-                        title="Belum Ada Sertifikat" 
+                    <EmptyState
+                        title="Belum Ada Sertifikat"
                         description="Selesaikan materi dan kuis untuk mulai mengumpulkan penghargaan sertifikat."
                         icon={Trophy}
                     />
@@ -411,6 +418,7 @@
                         Oopedia.
                     </p>
                     <Button
+                        id="btn-contact-admin"
                         variant="secondary"
                         size="sm"
                         class="w-full font-bold tracking-widest uppercase">Hubungi Admin</Button
@@ -426,113 +434,115 @@
 
                 <div id="profile-settings">
                     <Card padding="p-8 md:p-12" id="profile-personal-info">
-                    {#if state.flash?.success}
-                        <Alert variant="success" class="mb-10">{(state.flash as any).success}</Alert
-                        >
-                    {/if}
-
-                    <form
-                        onsubmit={(e) => {
-                            e.preventDefault();
-                            state.submit();
-                        }}
-                        class="space-y-10"
-                    >
-                        <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-                            <div class="space-y-3">
-                                <label
-                                    for="name"
-                                    class="block px-1 text-xs font-bold tracking-widest text-slate-400 uppercase"
-                                    >Nama Lengkap</label
-                                >
-                                <Input
-                                    id="name"
-                                    type="text"
-                                    bind:value={state.form.name}
-                                    inputClass="rounded-2xl border-slate-100 bg-slate-50/50 py-4 font-bold focus:bg-white"
-                                    placeholder="Masukkan nama lengkap"
-                                    error={state.form.errors['name']}
-                                />
-                            </div>
-                            <div class="space-y-3">
-                                <label
-                                    for="email"
-                                    class="block px-1 text-xs font-bold tracking-widest text-slate-400 uppercase"
-                                    >Alamat Email</label
-                                >
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    bind:value={state.form.email}
-                                    inputClass="rounded-2xl border-slate-100 bg-slate-50/50 py-4 font-bold focus:bg-white"
-                                    placeholder="email@contoh.com"
-                                    error={state.form.errors['email']}
-                                />
-                            </div>
-                        </div>
-
-                        <div class="border-t border-slate-100 pt-10">
-                            <h4
-                                class="mb-8 text-sm font-bold tracking-widest text-slate-900 uppercase"
+                        {#if state.flash?.success}
+                            <Alert variant="success" class="mb-10"
+                                >{(state.flash as any).success}</Alert
                             >
-                                Update Password
-                            </h4>
+                        {/if}
+
+                        <form
+                            onsubmit={(e) => {
+                                e.preventDefault();
+                                state.submit();
+                            }}
+                            class="space-y-10"
+                        >
                             <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
                                 <div class="space-y-3">
                                     <label
-                                        for="password"
+                                        for="name"
                                         class="block px-1 text-xs font-bold tracking-widest text-slate-400 uppercase"
-                                        >Password Baru</label
+                                        >Nama Lengkap</label
                                     >
                                     <Input
-                                        id="password"
-                                        type="password"
-                                        bind:value={state.form.password}
+                                        id="name"
+                                        type="text"
+                                        bind:value={state.form.name}
                                         inputClass="rounded-2xl border-slate-100 bg-slate-50/50 py-4 font-bold focus:bg-white"
-                                        placeholder="••••••••"
-                                        error={state.form.errors['password']}
+                                        placeholder="Masukkan nama lengkap"
+                                        error={state.form.errors['name']}
                                     />
-                                    <p class="px-1 text-[10px] font-bold text-slate-400 italic">
-                                        * Kosongkan jika tidak ingin mengubah password
-                                    </p>
                                 </div>
                                 <div class="space-y-3">
                                     <label
-                                        for="password_confirmation"
+                                        for="email"
                                         class="block px-1 text-xs font-bold tracking-widest text-slate-400 uppercase"
-                                        >Konfirmasi Password</label
+                                        >Alamat Email</label
                                     >
                                     <Input
-                                        id="password_confirmation"
-                                        type="password"
-                                        bind:value={state.form.password_confirmation}
+                                        id="email"
+                                        type="email"
+                                        bind:value={state.form.email}
                                         inputClass="rounded-2xl border-slate-100 bg-slate-50/50 py-4 font-bold focus:bg-white"
-                                        placeholder="••••••••"
+                                        placeholder="email@contoh.com"
+                                        error={state.form.errors['email']}
                                     />
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="flex justify-end pt-10">
-                            <Button
-                                type="submit"
-                                variant="primary"
-                                size="xl"
-                                class="group w-full px-12 md:w-auto"
-                                disabled={state.form.processing}
-                            >
-                                {#if state.form.processing}
-                                    <Loader2 size={18} class="mr-2 animate-spin" /> Menyimpan...
-                                {:else}
-                                    <Save
-                                        size={18}
-                                        class="mr-2 transition-transform group-hover:scale-110"
-                                    /> Simpan Perubahan
-                                {/if}
-                            </Button>
-                        </div>
-                    </form>
-                </Card>
+                            <div class="border-t border-slate-100 pt-10">
+                                <h4
+                                    class="mb-8 text-sm font-bold tracking-widest text-slate-900 uppercase"
+                                >
+                                    Update Password
+                                </h4>
+                                <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+                                    <div class="space-y-3">
+                                        <label
+                                            for="password"
+                                            class="block px-1 text-xs font-bold tracking-widest text-slate-400 uppercase"
+                                            >Password Baru</label
+                                        >
+                                        <Input
+                                            id="password"
+                                            type="password"
+                                            bind:value={state.form.password}
+                                            inputClass="rounded-2xl border-slate-100 bg-slate-50/50 py-4 font-bold focus:bg-white"
+                                            placeholder="••••••••"
+                                            error={state.form.errors['password']}
+                                        />
+                                        <p class="px-1 text-[10px] font-bold text-slate-400 italic">
+                                            * Kosongkan jika tidak ingin mengubah password
+                                        </p>
+                                    </div>
+                                    <div class="space-y-3">
+                                        <label
+                                            for="password_confirmation"
+                                            class="block px-1 text-xs font-bold tracking-widest text-slate-400 uppercase"
+                                            >Konfirmasi Password</label
+                                        >
+                                        <Input
+                                            id="password_confirmation"
+                                            type="password"
+                                            bind:value={state.form.password_confirmation}
+                                            inputClass="rounded-2xl border-slate-100 bg-slate-50/50 py-4 font-bold focus:bg-white"
+                                            placeholder="••••••••"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end pt-10">
+                                <Button
+                                    id="btn-save-profile"
+                                    type="submit"
+                                    variant="primary"
+                                    size="xl"
+                                    class="group w-full px-12 md:w-auto"
+                                    disabled={state.form.processing}
+                                >
+                                    {#if state.form.processing}
+                                        <Loader2 size={18} class="mr-2 animate-spin" /> Menyimpan...
+                                    {:else}
+                                        <Save
+                                            size={18}
+                                            class="mr-2 transition-transform group-hover:scale-110"
+                                        /> Simpan Perubahan
+                                    {/if}
+                                </Button>
+                            </div>
+                        </form>
+                    </Card>
                 </div>
             </div>
         </div>

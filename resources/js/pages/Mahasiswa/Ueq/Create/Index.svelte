@@ -232,6 +232,7 @@
 
                     <div class="flex justify-center pt-10">
                         <Button
+                            id="btn-submit-survey"
                             type="submit"
                             variant="primary"
                             class="shadow-primary-900/20 px-20 py-6 text-sm shadow-2xl"

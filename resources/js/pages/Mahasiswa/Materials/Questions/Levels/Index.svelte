@@ -2,6 +2,7 @@
     import App from '@/layouts/App.svelte';
     import Card from '@/components/ui/Card.svelte';
     import Button from '@/components/ui/Button.svelte';
+    import PageHeader from '@/components/ui/PageHeader.svelte';
     import { LevelMapLegend, LevelMapCanvas, GuestBanner } from '@/components/layout';
     import { router } from '@inertiajs/svelte';
     import { ArrowLeft, Map as MapIcon } from 'lucide-svelte';
@@ -28,21 +29,12 @@
 
 <App title={`Peta Tantangan - ${state.material.title}`}>
     <div class="space-y-12">
-        <div id="levels-header" class="mb-8">
-            <h1
-                class="font-display text-3xl leading-tight font-extrabold tracking-tight text-slate-900 md:text-4xl"
-            >
-                Peta Tantangan
-            </h1>
-            <div class="mt-3 flex items-center gap-2" role="presentation">
-                <div class="bg-primary-600 h-1.5 w-12 rounded-full"></div>
-                <div class="h-1.5 w-4 rounded-full bg-slate-200"></div>
-                <div class="h-1.5 w-2 rounded-full bg-slate-100"></div>
-            </div>
-            <p class="mt-4 max-w-3xl leading-relaxed font-medium text-slate-500">
-                {`Selesaikan setiap level untuk menguasai ${state.material.title || 'modul ini'}.`}
-            </p>
-            <div class="mt-6 flex flex-wrap gap-4">
+        <PageHeader
+            id="page-header"
+            title="Peta Tantangan"
+            subtitle={`Selesaikan setiap level untuk menguasai ${state.material.title || 'modul ini'}.`}
+        >
+            {#snippet actions()}
                 <Button
                     href={ROUTES.MAHASISWA.MATERIALS.SHOW(state.material.id)}
                     variant="ghost"
@@ -50,8 +42,8 @@
                 >
                     Kembali
                 </Button>
-            </div>
-        </div>
+            {/snippet}
+        </PageHeader>
 
         {#if state.isGuest}
             <GuestBanner show={state.isGuest} variant="inline" />

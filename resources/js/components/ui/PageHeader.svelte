@@ -7,6 +7,7 @@
     }
 
     interface Props {
+        id?: string;
         title: string;
         subtitle?: string | null;
         centered?: boolean;
@@ -17,6 +18,7 @@
     }
 
     let {
+        id,
         title,
         subtitle = null,
         centered = false,
@@ -29,7 +31,7 @@
     const classes = $derived(`${centered ? 'text-center' : ''} mb-8 ${className}`);
 </script>
 
-<div class={classes}>
+<div {id} class={classes}>
     {#if breadcrumbs.length > 0}
         <nav class="mb-4 flex items-center gap-2 text-xs font-black tracking-widest uppercase">
             {#each breadcrumbs as breadcrumb, i}

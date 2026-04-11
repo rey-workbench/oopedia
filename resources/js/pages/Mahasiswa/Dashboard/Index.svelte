@@ -99,7 +99,11 @@
 
 <App title="Dashboard">
     <div class="space-y-12">
-        <PageHeader title="Dashboard" subtitle="Selamat datang di pusat kendali belajar Anda." />
+        <PageHeader
+            id="page-header"
+            title="Dashboard"
+            subtitle="Selamat datang di pusat kendali belajar Anda."
+        />
 
         <Panel id="dashboard-hero" rounded="3xl" class="border-b-6 border-slate-700" padding="p-12">
             <div class="flex flex-col items-center gap-10 md:flex-row">
@@ -128,7 +132,7 @@
         </Panel>
 
         {#if Object.keys(state.certifications).length > 0}
-            <div class="mb-12">
+            <div id="dashboard-certificates" class="mb-12">
                 <div class="mb-6 flex items-center justify-between">
                     <h3 class="text-xl font-bold tracking-widest text-slate-900 uppercase">
                         Sertifikat Saya
@@ -196,7 +200,10 @@
             </div>
         {/if}
 
-        <div id="student-progress-overview" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div
+            id="student-progress-overview"
+            class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
+        >
             {#each dashboardStats as stat (stat.title)}
                 <Card class="group relative overflow-hidden border-b-6">
                     <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
@@ -266,11 +273,13 @@
         <div class="grid grid-cols-1 gap-12 lg:grid-cols-3">
             <div id="activity-feed" class="space-y-8 lg:col-span-2">
                 <div class="space-y-8">
-                    <div class="flex items-center justify-between">
+                    <div id="activity-feed-header" class="flex items-center justify-between">
                         <h3 class="text-xl font-bold tracking-widest text-slate-900 uppercase">
                             Aktivitas Terbaru
                         </h3>
-                        <Button variant="ghost" size="sm">Lihat Semua</Button>
+                        <Button id="btn-view-all-activities" variant="ghost" size="sm"
+                            >Lihat Semua</Button
+                        >
                     </div>
 
                     <!-- Activity Feed Inline -->
@@ -362,7 +371,7 @@
             </div>
 
             <div id="active-materials-list" class="space-y-8">
-                <div class="space-y-8">
+                <div id="featured-materials-header" class="space-y-8">
                     <h3 class="text-xl font-bold tracking-widest text-slate-900 uppercase">
                         Materi Unggulan
                     </h3>
@@ -388,6 +397,7 @@
                                 dikuasai.
                             </p>
                             <Button
+                                id="btn-learn-now"
                                 variant="primary"
                                 size="sm"
                                 class="w-full py-4 font-bold tracking-widest uppercase"

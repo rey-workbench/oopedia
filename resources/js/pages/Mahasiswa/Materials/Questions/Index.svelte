@@ -4,6 +4,7 @@
     import Card from '@/components/ui/Card.svelte';
     import Badge from '@/components/ui/Badge.svelte';
     import Button from '@/components/ui/Button.svelte';
+    import PageHeader from '@/components/ui/PageHeader.svelte';
     import ProgressBar from '@/components/ui/ProgressBar.svelte';
     import { Shapes, Users, Puzzle, Play, Lock } from 'lucide-svelte';
     import { Link } from '@inertiajs/svelte';
@@ -18,23 +19,13 @@
     const state = untrack(() => new QuestionListState(materials));
 </script>
 
-<App title="Latihan Soal PBO">
+<App title="Latihan soal PBO">
     <div class="space-y-12">
-        <div id="quiz-header" class="mb-8">
-            <h1
-                class="font-display text-3xl leading-tight font-extrabold tracking-tight text-slate-900 md:text-4xl"
-            >
-                Latihan Soal PBO
-            </h1>
-            <div class="mt-3 flex items-center gap-2" role="presentation">
-                <div class="bg-primary-600 h-1.5 w-12 rounded-full"></div>
-                <div class="h-1.5 w-4 rounded-full bg-slate-200"></div>
-                <div class="h-1.5 w-2 rounded-full bg-slate-100"></div>
-            </div>
-            <p class="mt-4 max-w-3xl leading-relaxed font-medium text-slate-500">
-                Uji pemahaman Anda dengan mengerjakan latihan soal untuk setiap materi
-            </p>
-        </div>
+        <PageHeader
+            id="page-header"
+            title="Latihan soal PBO"
+            subtitle="Uji pemahaman Anda dengan mengerjakan latihan soal untuk setiap materi"
+        />
 
         {#if state.isGuest}
             <GuestBanner

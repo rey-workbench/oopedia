@@ -28,6 +28,7 @@
 <App title="Leaderboard">
     <div class="space-y-12">
         <PageHeader
+            id="page-header"
             title="Leaderboard"
             subtitle="Peringkat Terbaik Mahasiswa Berdasarkan Progres Pembelajaran"
         />

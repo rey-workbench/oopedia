@@ -1,4 +1,4 @@
-import { driver, type DriveStep } from 'driver.js';
+import { driver, type Driver, type DriveStep } from 'driver.js';
 import 'driver.js/dist/driver.css';
 import { BaseState } from '../BaseState.svelte';
 
@@ -16,6 +16,7 @@ export interface TutorialRegistration {
 class TutorialState extends BaseState {
     hasSeenTutorial = $state<Record<string, boolean>>({});
     private registry = $state<TutorialRegistration[]>([]);
+    private driverObj: Driver | null = null;
 
     constructor() {
         super();
@@ -114,23 +115,27 @@ class TutorialState extends BaseState {
             return;
         }
 
-        const driverObj = driver({
+        this.driverObj = driver({
             showProgress: true,
             animate: true,
             allowKeyboardControl: true,
             allowClose: true,
             stagePadding: 8,
-            stageRadius: 16,
+            stageRadius: 20, 
             popoverClass: 'oopedia-driver-popover',
+            nextBtnText: 'Lanjut &rarr;',
+            prevBtnText: '&larr; Kembali',
+            doneBtnText: 'Selesai ✓',
+            progressText: 'Langkah {{current}} dari {{total}}',
             steps: validSteps,
             onDestroyed: () => {
-                // Mark as seen when the tour is finished or closed
+                // Mark as seen
                 this.hasSeenTutorial[tourId] = true;
                 this.saveState();
             }
         });
 
-        driverObj.drive();
+        this.driverObj.drive();
     }
 
     /**

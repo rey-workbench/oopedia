@@ -2,6 +2,7 @@
     import { Link } from '@inertiajs/svelte';
     import App from '@/layouts/App.svelte';
     import Button from '@/components/ui/Button.svelte';
+    import PageHeader from '@/components/ui/PageHeader.svelte';
     import Card from '@/components/ui/Card.svelte';
     import { ArrowLeft, BookOpen, Rocket, Activity, Loader2, Book, Play } from 'lucide-svelte';
     import { untrack } from 'svelte';
@@ -18,28 +19,17 @@
 <App title="Materi Sedang Dipelajari">
     <div class="py-12">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div id="inprogress-header" class="mb-8">
-                <h1
-                    class="font-display text-3xl leading-tight font-extrabold tracking-tight text-slate-900 md:text-4xl"
-                >
-                    Materi Sedang Dipelajari
-                </h1>
-                <div class="mt-3 flex items-center gap-2" role="presentation">
-                    <div class="bg-primary-600 h-1.5 w-12 rounded-full"></div>
-                    <div class="h-1.5 w-4 rounded-full bg-slate-200"></div>
-                    <div class="h-1.5 w-2 rounded-full bg-slate-100"></div>
-                </div>
-                <p class="mt-4 max-w-3xl leading-relaxed font-medium text-slate-500">
-                    Terus asah kemampuan Anda dan selesaikan tantangan yang ada.
-                </p>
-                <div class="mt-6 flex flex-wrap gap-4">
-                    <div>
-                        <Button href={ROUTES.MAHASISWA.DASHBOARD} variant="ghost" icon={ArrowLeft}>
-                            Dashboard
-                        </Button>
-                    </div>
-                </div>
-            </div>
+            <PageHeader
+                id="page-header"
+                title="Materi Sedang Dipelajari"
+                subtitle="Terus asah kemampuan Anda dan selesaikan tantangan yang ada."
+            >
+                {#snippet actions()}
+                    <Button href={ROUTES.MAHASISWA.DASHBOARD} variant="ghost" icon={ArrowLeft}>
+                        Dashboard
+                    </Button>
+                {/snippet}
+            </PageHeader>
 
             <div id="inprogress-materials-grid" class="mt-10">
                 {#if state.materialsWithStats.length === 0}
