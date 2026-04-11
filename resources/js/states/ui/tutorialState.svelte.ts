@@ -105,7 +105,12 @@ class TutorialState extends BaseState {
         // Filter out steps where elements are missing from the DOM to handle layout variations
         const validSteps = steps.filter(step => {
             if (typeof step.element === 'string') {
-                return !!document.querySelector(step.element);
+                try {
+                    return !!document.querySelector(step.element);
+                } catch (e) {
+                    console.warn(`[Tutorial] Invalid selector encountered: "${step.element}"`, e);
+                    return false;
+                }
             }
             return true;
         });

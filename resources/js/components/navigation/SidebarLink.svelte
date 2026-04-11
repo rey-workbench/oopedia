@@ -1,8 +1,25 @@
 <script lang="ts">
     import { Link } from '@inertiajs/svelte';
     import { ChevronRight, Link2 } from 'lucide-svelte';
+    import type { Snippet } from 'svelte';
+    
+    interface Props {
+        id?: string | undefined;
+        href?: string | undefined;
+        icon?: any | undefined;
+        active?: boolean | undefined;
+        children?: Snippet | undefined;
+        [key: string]: any;
+    }
 
-    let { href = '#', icon: Icon = Link2, active = false, children, ...restProps } = $props();
+    let {
+        id,
+        href = '#',
+        icon: Icon = Link2 as any,
+        active = false,
+        children,
+        ...restProps
+    }: Props = $props();
 
     const baseClasses =
         'flex items-center gap-4 px-4 py-3 rounded-2xl font-bold tracking-tight transition-all duration-100 group border-2 border-transparent border-b-4 active:translate-y-[2px] active:border-b-0 select-none';
@@ -23,6 +40,7 @@
 </script>
 
 <Link
+    {id}
     {href}
     class="{baseClasses} {themeClasses}"
     aria-current={active ? 'page' : undefined}

@@ -15,7 +15,7 @@
     type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
 
     interface Props {
-        id?: string;
+        id?: string | undefined;
         variant?: ButtonVariant;
         size?: ButtonSize;
         type?: 'button' | 'submit' | 'reset';

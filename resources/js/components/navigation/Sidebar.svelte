@@ -305,6 +305,7 @@
                     </div>
 
                     <SidebarLink
+                        id="sidebar-quiz"
                         href={ROUTES.MAHASISWA.MATERIALS.QUESTIONS.CATALOG}
                         icon={SquareActivity}
                         active={page.url.includes('/materials/questions')}
@@ -326,6 +327,7 @@
                     </div>
                     <div class="space-y-2">
                         <SidebarLink
+                            id="sidebar-leaderboard"
                             href={ROUTES.MAHASISWA.LEADERBOARD}
                             icon={Trophy}
                             active={page.url.startsWith(ROUTES.MAHASISWA.LEADERBOARD)}
@@ -347,10 +349,12 @@
                     </div>
                     <div class="space-y-2">
                         <SidebarLink
+                            id="sidebar-profile"
                             href={ROUTES.MAHASISWA.PROFILE}
                             icon={UserRound}
                             active={page.url.startsWith(ROUTES.MAHASISWA.PROFILE)}
                             >Profil Saya</SidebarLink
+                        >
                         >
                     </div>
                 </div>
@@ -367,6 +371,7 @@
                 </div>
                 <div class="space-y-2">
                     <button
+                        id="sidebar-tutorial-button"
                         onclick={() => {
                             const tourId = getTourIdFromUrl(page.url, isAdminRole);
                             tutorialState.startTour(tourId, true);
@@ -389,6 +394,7 @@
                             }}
                         >
                             <button
+                                id="sidebar-logout-button"
                                 type="submit"
                                 class="group text-cosmos-muted flex w-full items-center gap-4 rounded-2xl border-2 border-b-4 border-transparent px-4 py-3 font-bold tracking-tight transition-all duration-100 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600 active:translate-y-[2px] active:border-b-0"
                             >
