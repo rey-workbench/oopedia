@@ -34,7 +34,7 @@
                 />
             </div>
         </div>
-        <h2 class="mb-3 text-4xl font-black tracking-widest uppercase drop-shadow-xl">
+        <h2 id="certificate-feedback-header" class="mb-3 text-4xl font-black tracking-widest uppercase drop-shadow-xl">
             {details.title}
         </h2>
         <div
@@ -62,6 +62,7 @@
         </div>
     {/if}
     <Button
+        id="certificate-continue-btn"
         variant="primary"
         onclick={onContinue}
         class="w-full border-b-4 border-black bg-slate-900 py-4 text-sm font-black tracking-widest uppercase hover:bg-slate-800 active:translate-y-[2px] active:border-b-2"

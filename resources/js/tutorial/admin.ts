@@ -198,4 +198,73 @@ export function registerAdminTutorials() {
             }
         ]
     });
+
+    tutorialState.registerSteps({
+        tourId: 'admin_question_editor',
+        steps: [
+            {
+                element: '#algorithm-type-selector',
+                popover: {
+                    title: 'Pilih Mekanisme',
+                    description: 'Tentukan tipe soal: Pilihan Ganda, Isian, atau Drag & Drop. Setiap pilihan memiliki logika penilaian yang berbeda.',
+                    side: 'left',
+                    align: 'center'
+                }
+            },
+            {
+                element: '#question-editor-container',
+                popover: {
+                    title: 'Kanvas Pertanyaan',
+                    description: 'Tuliskan inti persoalan di sini. Gunakan editor visual untuk penjelasan yang lebih kaya.',
+                    side: 'bottom',
+                    align: 'center'
+                }
+            },
+            {
+                element: '#answer-options-container',
+                popover: {
+                    title: 'Konfigurasi Jawaban',
+                    description: 'Atur jawaban benar dan berikan penjelasan (feedback) untuk membantu mahasiswa belajar dari kesalahan.',
+                    side: 'top',
+                    align: 'center'
+                }
+            },
+            {
+                element: '.drag-handle-item',
+                popover: {
+                    title: 'Handle Interaktif',
+                    description: 'Tarik ikon ini dan masukkan ke dalam area teks soal untuk menandai di mana jawaban tersebut harus diletakkan.',
+                    side: 'right',
+                    align: 'center'
+                }
+            },
+            {
+                element: '#drag-drop-guide',
+                popover: {
+                    title: 'Modus Drag & Drop',
+                    description: 'Khusus untuk tipe Drag & Drop, ikuti panduan ini: Drag handle jawaban ke dalam kotak soal untuk membuat "lubang" jawaban.',
+                    side: 'bottom',
+                    align: 'center'
+                }
+            },
+            {
+                element: '#drag-drop-view',
+                popover: {
+                    title: 'Editor Spesialis',
+                    description: 'Di sini Anda merancang soal interaktif. Area ini mendukung penyematan item yang dapat ditarik.',
+                    side: 'top',
+                    align: 'center'
+                }
+            },
+            {
+                element: '#question-metadata-panel',
+                popover: {
+                    title: 'Parameter Cerdas',
+                    description: 'Hubungkan soal dengan modul yang tepat dan tentukan tingkat kesulitan untuk mesin adaptif.',
+                    side: 'left',
+                    align: 'start'
+                }
+            }
+        ]
+    });
 }

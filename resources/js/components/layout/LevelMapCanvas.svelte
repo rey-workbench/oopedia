@@ -120,6 +120,7 @@
 
         {#each sortedLevels as level, i (level.level)}
             <div
+                id="level-node-{level.level}"
                 class="absolute flex flex-col items-center"
                 style="left: {nodeX(i)}px; top: {nodeY(i)}px; transform: translate(-50%, -50%);"
             >
@@ -185,6 +186,7 @@
         {/each}
 
         <div
+            id="level-trophy"
             class="absolute flex flex-col items-center"
             style="left: {tX}px; top: {trophyY}px; transform: translate(-50%, -50%);"
         >

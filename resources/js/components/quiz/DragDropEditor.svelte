@@ -4,10 +4,14 @@
     import { GripVertical } from 'lucide-svelte';
 
     let { value = $bindable() }: { value: string } = $props();
+
+    function handleInput(e: Event) {
+        value = (e.target as HTMLDivElement).innerHTML;
+    }
 </script>
 
 <div class="space-y-4">
-    <Alert variant="info" class="border-primary-100 bg-primary-50/50">
+    <Alert id="drag-drop-guide" variant="info" class="border-primary-100 bg-primary-50/50">
         <div class="flex flex-col gap-1 text-[11px] leading-relaxed font-medium">
             <strong class="text-primary-900 tracking-wider uppercase">Panduan Drag & Drop:</strong>
             <span class="text-primary-700/80">1. Ketik soal di dalam kotak di bawah ini.</span>
@@ -29,9 +33,12 @@
         class="focus-within:border-primary-500 overflow-hidden border-2 border-slate-100 shadow-sm transition-all duration-300 focus-within:shadow-md"
     >
         <div
+            id="drag-drop-view"
             contenteditable="true"
-            bind:innerHTML={value}
-            class="min-h-[150px] w-full resize-none bg-white px-6 py-4 text-sm font-medium tracking-wide text-slate-800 outline-none"
-        ></div>
+            oninput={handleInput}
+            class="min-h-[150px] w-full bg-white px-6 py-4 text-sm font-medium tracking-wide text-slate-800 outline-none"
+        >
+            {@html value}
+        </div>
     </Card>
 </div>

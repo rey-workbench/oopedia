@@ -7,7 +7,7 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#page-header',
                 popover: {
-                    title: 'Beranda Belajar 🏠',
+                    title: 'Beranda Belajar ',
                     description:
                         'Waktunya naik pangkat! Di sini kamu bisa memantau semua progres dan pencapaian hebatmu.',
                     side: 'bottom',
@@ -101,7 +101,7 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#material-exploration-grid',
                 popover: {
-                    title: 'Petualangan Materi 🗺️',
+                    title: 'Petualangan Materi',
                     description:
                         'Pilih modul yang menantang bagimu. Setiap modul menyimpan ilmu PBO yang berharga!',
                     side: 'top',
@@ -136,7 +136,7 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#leaderboard-podium',
                 popover: {
-                    title: 'Panggung Juara 🏆',
+                    title: 'Panggung Juara',
                     description:
                         'Lihat siapa yang sedang memimpin! Apakah namamu akan ada di sana selanjutnya?',
                     side: 'bottom',
@@ -182,7 +182,7 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#certificate-inventory',
                 popover: {
-                    title: 'Lemari Piagam 🎖️',
+                    title: 'Lemari Piagam',
                     description:
                         'Koleksi medals dan sertifikatmu! Bukti nyata bahwa kamu telah menguasai PBO.',
                     side: 'top',
@@ -364,7 +364,7 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#page-header',
                 popover: {
-                    title: 'Eksplorasi Sub-Materi 📖',
+                    title: 'Eksplorasi Sub-Materi',
                     description:
                         'Selamat datang di zona belajar! Di sini kamu akan menemukan detail materi yang mendalam.',
                     side: 'bottom',
@@ -376,27 +376,17 @@ export function registerMahasiswaTutorials() {
                 popover: {
                     title: 'Pusat Ilmu 💡',
                     description:
-                        'Baca dan pahami materi ini dengan seksama sebelum melangkah ke tantangan kuis.',
+                        'Baca dan pahami materi ini dengan seksama. Di sinilah rahasia penguasaan PBO berada!',
                     side: 'bottom',
                     align: 'start',
                 },
             },
             {
-                element: '#submaterial-quiz-section',
+                element: '#btn-start-quiz',
                 popover: {
                     title: 'Area Tantangan 🏆',
                     description:
-                        'Sudah merasa cukup paham? Persiapkan dirimu untuk menguji pemahaman di sini.',
-                    side: 'top',
-                    align: 'center',
-                },
-            },
-            {
-                element: '#btn-start-quiz',
-                popover: {
-                    title: 'Mulai Latihan 🚀',
-                    description:
-                        'Klik tombol ini untuk mulai berperang dengan soal kuis dan raih XP-mu!',
+                        'Sudah merasa cukup paham? Klik tombol ini untuk mulai menguji pemahamanmu di kuis adaptif!',
                     side: 'top',
                     align: 'center',
                 },
@@ -410,8 +400,8 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#page-header',
                 popover: {
-                    title: 'Latihan soal PBO',
-                    description: 'Pilih materi yang ingin kamu kerjakan untuk menguji pemahaman.',
+                    title: 'Latihan Soal',
+                    description: 'Saatnya mengasah otak! Pilih materi yang ingin kamu kuasai.',
                     side: 'bottom',
                     align: 'start',
                 },
@@ -419,8 +409,9 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#module-list',
                 popover: {
-                    title: 'Daftar Modul',
-                    description: 'Pilih materi dan klik "Mulai" untuk mengerjakan soal.',
+                    title: 'Daftar Tantangan',
+                    description:
+                        'Setiap kartu di sini adalah gerbang menuju penguasaan konsep PBO.',
                     side: 'top',
                     align: 'center',
                 },
@@ -435,19 +426,48 @@ export function registerMahasiswaTutorials() {
                 element: '#page-header',
                 popover: {
                     title: 'Peta Tantangan',
-                    description: 'Pilih level kesulitan yang sesuai dengan kemampuanmu.',
+                    description:
+                        'Selamat datang di Arena Tantangan! Ini adalah peta perjalananmu menguasai materi ini.',
                     side: 'bottom',
                     align: 'start',
                 },
             },
             {
+                element: '#level-map',
+                popover: {
+                    title: 'Peta Petualangan 🗺️',
+                    description: 'Lihat progres belajarmu di sini. Setiap titik adalah langkah menuju penguasaan materi!',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+            {
+                element: 'button.border-primary-600',
+                popover: {
+                    title: 'Level Saat Ini 🚀',
+                    description:
+                        'Klik level yang aktif (berwarna biru) untuk mulai mengerjakan kuis adaptif.',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#level-trophy',
+                popover: {
+                    title: 'Hadiah Utama 🏆',
+                    description:
+                        'Capai akhir peta untuk mendapatkan trofi penguasaan materi. Kamu pasti bisa!',
+                    side: 'bottom',
+                    align: 'center',
+                },
+            },
+            {
                 element: '#levels-legend',
                 popover: {
-                    title: 'Panduan Level',
-                    description:
-                        'Easy: dasar, Medium: menengah, Hard: tantangan. Sistem adaptif akan menyesuaikan.',
+                    title: 'Legenda Peta 📋',
+                    description: 'Gunakan panduan ini untuk memahami arti setiap simbol di peta petualanganmu.',
                     side: 'top',
-                    align: 'start',
+                    align: 'center',
                 },
             },
         ],
@@ -457,13 +477,194 @@ export function registerMahasiswaTutorials() {
         tourId: 'mahasiswa_quiz_session',
         steps: [
             {
+                element: '#quiz-session-header',
+                popover: {
+                    title: 'Pusat Kendali Latihan',
+                    description: 'Di sini kamu bisa melihat materi yang sedang dikerjakan dan progresmu secara keseluruhan.',
+                    side: 'bottom',
+                    align: 'center',
+                },
+            },
+            {
                 element: '#quiz-progress',
                 popover: {
-                    title: 'Progress Kuis',
+                    title: 'Jalur Keberhasilan',
                     description:
-                        'Track progres menjawab soal. Sistem adaptif menyesuaikan kesulitan berdasarkan performamu.',
+                        'Garis ini menunjukkan seberapa dekat kamu dengan garis finish level ini. Semangat!',
                     side: 'bottom',
-                    align: 'start',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#quiz-stats',
+                popover: {
+                    title: 'Panel Status',
+                    description:
+                        'Pantau tingkat kesulitan, perolehan XP, dan streak jawaban benarmu di sini.',
+                    side: 'bottom',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#quiz-hint-btn',
+                popover: {
+                    title: 'Butuh Bantuan?',
+                    description: 'Jika merasa kesulitan, jangan ragu menggunakan petunjuk adaptif kami!',
+                    side: 'left',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#quiz-question-area',
+                popover: {
+                    title: 'Arena Utama',
+                    description: 'Fokus pada soal di sini. Baca pertanyaannya dengan cermat, ya!',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#drag-drop-options-area',
+                popover: {
+                    title: 'Pilihan Jawaban 🧩',
+                    description: 'Di tipe soal ini, kamu cukup tarik (drag) jawaban yang benar dari sini.',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#drag-drop-view',
+                popover: {
+                    title: 'Area Penyusunan 🛠️',
+                    description: 'Letakkan jawabanmu pada kotak "···" di area soal ini untuk melengkapi kode.',
+                    side: 'bottom',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#fill_in_the_blank_answer',
+                popover: {
+                    title: 'Input Jawaban ✍️',
+                    description: 'Ketik jawabanmu langsung di sini. Perhatikan ejaan dan tanda baca ya!',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#quiz-submit-btn',
+                popover: {
+                    title: 'Kirim Jawaban',
+                    description: 'Sudah yakin? Klik tombol ini untuk memeriksa apakah jawabanmu tepat.',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#feedback-result-container',
+                popover: {
+                    title: 'Hasil Evaluasi',
+                    description: 'Lihat apakah jawabanmu benar dan berapa XP yang kamu peroleh.',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#adaptive-feedback-header',
+                popover: {
+                    title: 'Bantuan Khusus',
+                    description: 'Jika kamu kesulitan, sistem adaptif kami akan memberikan pesan penyemangat dan bantuan!',
+                    side: 'bottom',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#adaptive-recommendation-card',
+                popover: {
+                    title: 'Rekomendasi Pintar',
+                    description: 'Ini adalah materi yang disarankan sistem untuk membantu kamu memahami bagian yang sulit.',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#acceleration-feedback-modal',
+                popover: {
+                    title: 'Status: Akselerasi ⚡',
+                    description: 'Kamu sedang berada dalam mode percepatan karena performamu yang luar biasa!',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#intervention-feedback-modal',
+                popover: {
+                    title: 'Bantuan Adaptif 🛠️',
+                    description: 'Sistem memberikan bantuan khusus untuk membantumu memahami bagian yang sulit.',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#backtrack-feedback-modal',
+                popover: {
+                    title: 'Mode Penyesuaian ↩️',
+                    description: 'Kami menyesuaikan alur belajar agar kamu bisa menguasai konsep dasar terlebih dahulu.',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#acceleration-feedback-header',
+                popover: {
+                    title: 'Lompatan Prestasi! 🚀',
+                    description: 'Wah, kamu hebat! Sistem mendeteksi kamu sudah master di level ini, jadi kamu langsung naik ke tingkat yang lebih menantang.',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#backtrack-feedback-header',
+                popover: {
+                    title: 'Waktunya Review 🎒',
+                    description: 'Tidak apa-apa, belajar butuh proses. Kami akan membantumu mengulang fondasi agar pemahamanmu lebih kuat.',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#backtrack-recommendation-card',
+                popover: {
+                    title: 'Rekomendasi Khusus 💡',
+                    description: 'Sistem menyarankan kamu membaca materi ini kembali sebelum lanjut ke soal berikutnya.',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#active-quiz-badge',
+                popover: {
+                    title: 'Status Belajar ✨',
+                    description: 'Di sini kamu bisa melihat mode belajarmu saat ini.',
+                    side: 'bottom',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#certificate-feedback-header',
+                popover: {
+                    title: 'Pencapaian Baru! 🎖️',
+                    description: 'Selamat! Kamu telah menyelesaikan tantangan dan berhak mendapatkan sertifikat ini.',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#adaptive-continue-btn',
+                popover: {
+                    title: 'Lanjutkan Petualangan',
+                    description: 'Klik di sini untuk mengikuti rekomendasi atau lanjut ke tantangan berikutnya.',
+                    side: 'top',
+                    align: 'center',
                 },
             },
         ],

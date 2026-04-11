@@ -135,6 +135,7 @@
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <!-- svelte-ignore a11y_no_static_element_interactions -->
         <div
+            id="drag-drop-view"
             class="selection:bg-primary-500/30 relative z-10 p-8 text-xl leading-12 font-semibold text-slate-100"
             ondragover={handleDragOver}
             ondragleave={handleDragLeave}
@@ -146,7 +147,7 @@
     </div>
 
     <!-- Answer options: clean light style -->
-    <div class="space-y-3">
+    <div id="drag-drop-options-area" class="space-y-3">
         <div class="flex items-center gap-2 px-1">
             <List size={13} class="text-primary-500" />
             <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">

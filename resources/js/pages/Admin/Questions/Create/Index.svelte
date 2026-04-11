@@ -61,7 +61,7 @@
 
                 <div class="space-y-10 p-6">
                     <div class="grid grid-cols-1 gap-10 lg:grid-cols-3">
-                        <div class="space-y-8 lg:col-span-2">
+                        <div id="question-editor-container" class="space-y-8 lg:col-span-2">
                             <div class="space-y-2">
                                 <span
                                     class="font-poppins text-[10px] font-bold text-slate-400 uppercase"
@@ -87,7 +87,7 @@
                                 {/if}
                             </div>
 
-                            <div class="space-y-6">
+                            <div id="answer-options-container" class="space-y-6">
                                 <div class="flex items-center justify-between">
                                     <span
                                         class="font-poppins text-[10px] font-bold text-slate-400 uppercase"
@@ -206,7 +206,7 @@
                             </div>
                         </div>
 
-                        <div class="space-y-8 lg:col-span-1">
+                        <div id="question-metadata-panel" class="space-y-8 lg:col-span-1">
                             <h6
                                 class="mb-0 border-b border-slate-50 pb-4 text-xs font-bold tracking-widest text-slate-900 uppercase"
                             >
@@ -240,7 +240,7 @@
                                 />
 
                                 <!-- Tipe Algoritma -->
-                                <div class="space-y-2">
+                                <div id="algorithm-type-selector" class="space-y-2">
                                     <span
                                         class="font-poppins text-[10px] font-bold text-slate-400 uppercase"
                                         >Tipe Algoritma</span

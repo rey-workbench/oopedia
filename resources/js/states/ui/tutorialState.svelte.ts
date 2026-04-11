@@ -46,17 +46,23 @@ class TutorialState extends BaseState {
      * Get all steps for a specific tour, including global steps
      */
     private getStepsForTour(tourId: string): DriveStep[] {
-        const globalSteps = this.registry
-            .filter(r => r.group === 'global')
-            .sort((a, b) => (a.priority || 0) - (b.priority || 0))
-            .flatMap(r => r.steps);
-
         const pageSteps = this.registry
             .filter(r => r.tourId === tourId && r.group !== 'global')
             .sort((a, b) => (a.priority || 0) - (b.priority || 0))
             .flatMap(r => r.steps);
 
-        return [...globalSteps, ...pageSteps];
+        // Only include global steps if there are no page-specific steps
+        // This prevents the "double" tutorial feeling on content-rich pages
+        if (pageSteps.length > 0) {
+            return pageSteps;
+        }
+
+        const globalSteps = this.registry
+            .filter(r => r.group === 'global')
+            .sort((a, b) => (a.priority || 0) - (b.priority || 0))
+            .flatMap(r => r.steps);
+
+        return globalSteps;
     }
 
     /**

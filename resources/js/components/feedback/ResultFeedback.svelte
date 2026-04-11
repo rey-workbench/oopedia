@@ -78,6 +78,7 @@
 
 <!-- Main fixed container for the bottom feedback bar -->
 <div
+    id="feedback-result-container"
     in:fly={{ y: 100, duration: 500 }}
     class={`fixed inset-x-0 bottom-0 z-1000 transform transition-all duration-500 ease-out 
     ${isSuccess ? 'border-t-4 border-emerald-500 bg-emerald-50 shadow-[0_-20px_50px_-12px_rgba(16,185,129,0.25)]' : 'border-t-4 border-rose-500 bg-rose-50 shadow-[0_-20px_50px_-12px_rgba(244,63,94,0.25)]'}`}
@@ -107,6 +108,7 @@
 
                 <div class="text-center md:text-left">
                     <h2
+                        id="feedback-status-title"
                         class={`text-xl font-black tracking-tight ${isSuccess ? 'text-emerald-800' : 'text-rose-800'}`}
                     >
                         {isSuccess ? 'Luar Biasa!' : 'Perlu Belajar Lagi'}
@@ -161,6 +163,7 @@
                 {/if}
 
                 <Button
+                    id="feedback-continue-btn"
                     variant="primary"
                     onclick={onContinue}
                     class={`group relative flex-1 overflow-hidden px-10 py-3.5 font-black tracking-widest uppercase shadow-lg active:translate-y-1 md:w-56

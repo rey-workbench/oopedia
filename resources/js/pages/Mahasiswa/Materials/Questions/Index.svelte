@@ -41,6 +41,7 @@
                 {@const isLocked = !state.isGuest && !!material.is_locked}
 
                 <Card
+                    id="quiz-card-{material.id}"
                     padding="p-0"
                     hover={!isLocked}
                     class="overflow-hidden {isLocked ? 'opacity-70 grayscale' : ''}"

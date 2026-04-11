@@ -71,7 +71,7 @@
             class:pb-40={state.showFeedback}
         >
             <!-- Duolingo-style Header -->
-            <div class="mb-12">
+            <div id="quiz-session-header" class="mb-12">
                 <div class="flex items-center gap-6">
                     <!-- Progress Section -->
                     <div class="flex-1">

@@ -6,6 +6,7 @@
     type AlertVariant = 'info' | 'success' | 'warning' | 'danger' | 'primary';
 
     interface Props {
+        id?: string;
         variant?: AlertVariant;
         dismissible?: boolean;
         class?: string;
@@ -14,6 +15,7 @@
     }
 
     let {
+        id,
         variant = 'info',
         dismissible = false,
         class: className = '',
@@ -48,6 +50,7 @@
 {#if visible}
     {@const IconComponent = icons[variant] || icons.info}
     <div
+        id={id}
         transition:fade={{ duration: 200 }}
         class={`flex items-center rounded-2xl border-2 p-4 ${variants[variant] || variants.info} ${className}`}
         role="alert"

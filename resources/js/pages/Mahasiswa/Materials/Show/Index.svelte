@@ -42,7 +42,7 @@
 <App title={state.material?.title || 'Material'}>
     <div class="space-y-12">
         <div id="material-header">
-            <PageHeader title={state.material?.title || material.title} />
+            <PageHeader id="page-header" title={state.material?.title || material.title} />
         </div>
 
         <!-- Adaptive System Alert -->
