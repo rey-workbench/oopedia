@@ -19,9 +19,6 @@
         state.feedbackData?.adaptiveResult?.new_state?.next_action_data?.label ||
             (state.feedbackData?.status === 'success' ? 'Soal Berikutnya' : 'Lihat Materi')
     );
-    let nextActionType = $derived(
-        state.feedbackData?.adaptiveResult?.new_state?.next_action_data?.type || 'question'
-    );
     let recommendation = $derived(
         state.feedbackData?.adaptiveResult?.new_state?.recommendation || null
     );
@@ -134,7 +131,6 @@
             status={state.feedbackData.status as 'success' | 'wrong'}
             message={state.feedbackData.message}
             {nextAction}
-            {nextActionType}
             {xpEarned}
             {streakBonus}
             {recommendation}

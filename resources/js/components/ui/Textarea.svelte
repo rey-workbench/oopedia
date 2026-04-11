@@ -30,7 +30,6 @@
         ...rest
     }: Props = $props();
 
-    // Generate a stable ID if not provided
     const textareaId = $derived(id || generateStableId('textarea'));
     const errorId = $derived(`${textareaId}-error`);
 </script>

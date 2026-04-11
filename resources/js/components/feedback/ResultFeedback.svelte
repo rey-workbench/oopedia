@@ -9,7 +9,6 @@
         status: 'success' | 'wrong';
         message: string;
         nextAction: string;
-        nextActionType: string;
         xpEarned: number;
         streakBonus: string | null;
         recommendation: string | null;
@@ -21,7 +20,6 @@
         status,
         message,
         nextAction,
-        nextActionType,
         xpEarned,
         streakBonus,
         recommendation,
@@ -31,21 +29,21 @@
 
     const isSuccess = $derived(status === 'success');
 
-    // Auto-advance logic
     let progress = $state(100);
     let timer: ReturnType<typeof setInterval>;
-    const AUTO_ADVANCE_MS = isSuccess ? 3000 : 5000;
     const TICK_MS = 50;
 
     onMount(() => {
+        const shouldAutoAdvance = status === 'success';
+        const autoAdvanceMs = shouldAutoAdvance ? 3000 : 5000;
         const startTime = Date.now();
         timer = setInterval(() => {
             const elapsed = Date.now() - startTime;
-            progress = Math.max(0, 100 - (elapsed / AUTO_ADVANCE_MS) * 100);
+            progress = Math.max(0, 100 - (elapsed / autoAdvanceMs) * 100);
 
             if (progress <= 0) {
                 clearInterval(timer);
-                if (isSuccess) {
+                if (shouldAutoAdvance) {
                     onContinue();
                 }
             }
@@ -77,13 +75,11 @@
     }
 </style>
 
-<!-- Main fixed container for the bottom feedback bar -->
 <div
     in:fly={{ y: 100, duration: 500 }}
     class={`fixed inset-x-0 bottom-0 z-[1000] transform transition-all duration-500 ease-out 
     ${isSuccess ? 'border-t-4 border-emerald-500 bg-emerald-50 shadow-[0_-20px_50px_-12px_rgba(16,185,129,0.25)]' : 'border-t-4 border-rose-500 bg-rose-50 shadow-[0_-20px_50px_-12px_rgba(244,63,94,0.25)]'}`}
 >
-    <!-- Auto-advance progress bar -->
     <div
         class={`absolute top-[-4px] left-0 h-1 transition-all duration-75 ease-linear
         ${isSuccess ? 'bg-emerald-400' : 'bg-rose-400'}`}
@@ -92,7 +88,6 @@
 
     <div class="mx-auto max-w-5xl px-6 py-4 md:py-6">
         <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
-            <!-- Left: Hero Icon & Status -->
             <div class="flex items-center gap-5">
                 <div
                     class={`hidden h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-2 bg-white shadow-md md:flex ${isSuccess ? 'border-emerald-100' : 'border-rose-100'}`}
@@ -129,7 +124,6 @@
                 </div>
             </div>
 
-            <!-- Middle: Stats (XP/Streak) -->
             <div class="flex items-center gap-3">
                 {#if xpEarned > 0}
                     <div
@@ -151,7 +145,6 @@
                 {/if}
             </div>
 
-            <!-- Right: Actions -->
             <div class="flex w-full items-center gap-3 md:w-auto">
                 {#if !isSuccess && onTryAgain}
                     <Button

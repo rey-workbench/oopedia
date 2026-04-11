@@ -40,12 +40,10 @@
 
     const isChecked = $derived(String(groupValue) === String(value));
 
-    // Duolingo-style classes
     const baseClasses =
         'relative flex items-center gap-4 w-full p-4 rounded-2xl border-2 transition-all duration-100 cursor-pointer select-none mb-2';
     const depthClasses = 'border-b-4 active:border-b-2 active:translate-y-[2px]';
 
-    // Checked state uses Accent color (Warm Coral)
     const checkedClasses = 'border-accent-500 bg-accent-50/30 text-accent-700 border-b-accent-700';
     const uncheckedClasses =
         'border-cosmos-border bg-white text-cosmos-text border-b-slate-200 hover:bg-slate-50';

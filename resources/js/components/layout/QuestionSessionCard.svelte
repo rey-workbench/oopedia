@@ -21,7 +21,6 @@
         <div class="border-b-4 border-slate-50 bg-slate-50/30 p-4">
             <div class="flex flex-col items-center justify-between gap-6 px-4 py-2 sm:flex-row">
                 <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-                    <!-- Difficulty Badge -->
                     <div
                         class="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-slate-100 bg-white px-4 py-2 shadow-sm"
                     >
@@ -41,7 +40,6 @@
                         </Badge>
                     </div>
 
-                    <!-- XP Badge -->
                     <div
                         class="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-amber-100 bg-white px-4 py-2 shadow-sm"
                     >
@@ -51,7 +49,6 @@
                         >
                     </div>
 
-                    <!-- Streak Badge -->
                     <div
                         class="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-orange-100 bg-white px-4 py-2 shadow-sm"
                     >
@@ -113,7 +110,6 @@
         {/if}
 
         <div class="space-y-0">
-            <!-- Question type components already contain their own header & layout -->
             {#if state.currentQuestion?.question_type === 'fill_in_the_blank'}
                 <div transition:fade>
                     <FillInTheBlank

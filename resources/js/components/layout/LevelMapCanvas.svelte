@@ -17,10 +17,6 @@
         onLevelClick = () => {},
     }: Props = $props();
 
-    // ============================================
-    //   MAP COORDINATE SYSTEM
-    // ============================================
-    // Responsive width bound to the container
     let mapW = $state(900);
 
     const START_Y = 80;
@@ -28,7 +24,6 @@
     const TROPHY_GAP = 140;
 
     const X_CENTER = $derived(mapW / 2);
-    // Dynamic amplitude for the snake path so it doesn't break on small screens
     const amplitude = $derived(Math.min(140, mapW * 0.28));
     const X_LEFT = $derived(X_CENTER - amplitude);
     const X_RIGHT = $derived(X_CENTER + amplitude);
@@ -48,9 +43,6 @@
     const totalH = $derived(trophyY + 140);
     const tX = $derived(X_CENTER);
 
-    // ============================================
-    //   BEZIER DOT TRAIL CALCULATION
-    // ============================================
     function cubicBezier(t: number, p0: number, p1: number, p2: number, p3: number): number {
         const u = 1 - t;
         return u * u * u * p0 + 3 * u * u * t * p1 + 3 * u * t * t * p2 + t * t * t * p3;
@@ -81,7 +73,6 @@
     }
 
     const mapDots = $derived.by(() => {
-        // Return empty array if mapW hasn't initialized properly or there are no levels
         if (mapW === 0 || sortedLevels.length === 0) return [];
 
         const result: Dot[] = [];
@@ -105,7 +96,6 @@
 </script>
 
 <Card padding="p-0" class={`overflow-hidden ${className}`}>
-    <!-- Start Badge -->
     <div class="pt-8 pb-2 text-center">
         <span
             class="inline-flex items-center gap-2 rounded-full bg-slate-800 px-6 py-2 text-[10px] font-black tracking-[0.25em] text-white uppercase shadow-md"
@@ -115,9 +105,7 @@
         </span>
     </div>
 
-    <!-- Map Area -->
     <div bind:clientWidth={mapW} class="relative w-full pb-10" style="height: {totalH}px;">
-        <!-- SVG DOT TRAIL LAYER -->
         <svg
             class="pointer-events-none absolute inset-0 w-full"
             style="height: {totalH}px;"
@@ -130,14 +118,12 @@
             {/each}
         </svg>
 
-        <!-- HTML NODE LAYER -->
         {#each sortedLevels as level, i (level.level)}
             <div
                 class="absolute flex flex-col items-center"
                 style="left: {nodeX(i)}px; top: {nodeY(i)}px; transform: translate(-50%, -50%);"
             >
                 {#if level.status === 'locked'}
-                    <!-- LOCKED NODE -->
                     <button
                         type="button"
                         onclick={() => onLevelClick(level)}
@@ -153,7 +139,6 @@
                         </div>
                     </button>
                 {:else if level.status === 'completed'}
-                    <!-- COMPLETED NODE -->
                     <div class="group flex flex-col items-center">
                         <button
                             type="button"
@@ -176,7 +161,6 @@
                         </div>
                     </div>
                 {:else}
-                    <!-- ACTIVE / PLAYABLE NODE -->
                     <div class="group relative flex flex-col items-center">
                         <button
                             type="button"
@@ -200,7 +184,6 @@
             </div>
         {/each}
 
-        <!-- TROPHY NODE -->
         <div
             class="absolute flex flex-col items-center"
             style="left: {tX}px; top: {trophyY}px; transform: translate(-50%, -50%);"

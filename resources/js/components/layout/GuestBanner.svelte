@@ -31,7 +31,6 @@
         <div
             class="shadow-premium relative overflow-hidden rounded-3xl border border-amber-100 bg-white/70 p-8 backdrop-blur-xl sm:p-10"
         >
-            <!-- Decorative Background Icon -->
             <div class="absolute -right-10 -bottom-10 rotate-12 text-amber-500/5">
                 <ShieldAlert size={280} />
             </div>

@@ -114,7 +114,6 @@
     }
 </script>
 
-<!-- Certificate Card Wrapper -->
 <div
     class="group space-y-4"
     style="
@@ -123,15 +122,12 @@
         --cert-shimmer: {typeConfig.shimmer};
     "
 >
-    <!-- The certificate itself (captured by html2canvas) -->
     <div
         bind:this={certRef}
         class="relative min-h-[380px] overflow-hidden rounded-2xl border-4 border-(--cert-border) bg-white shadow-2xl"
     >
-        <!-- Background gradient -->
         <div class="bg-linear-to-br {typeConfig.bgGradient} absolute inset-0"></div>
 
-        <!-- Decorative corner patterns -->
         <div class="absolute top-0 left-0 h-28 w-28 text-(--cert-border) opacity-20">
             <svg viewBox="0 0 100 100" class="h-full w-full" aria-hidden="true" role="presentation">
                 <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor"></path>
@@ -157,21 +153,17 @@
             </svg>
         </div>
 
-        <!-- Watermark -->
         <div
             class="pointer-events-none absolute inset-0 flex items-center justify-center text-(--cert-border) opacity-[0.04]"
         >
             <Award size={320} />
         </div>
 
-        <!-- Inner border line -->
         <div
             class="pointer-events-none absolute inset-3 rounded-xl border-2 border-(--cert-border) opacity-30"
         ></div>
 
-        <!-- Content -->
         <div class="relative z-10 flex flex-col items-center px-10 py-10 text-center">
-            <!-- Header -->
             <div class="mb-2 flex items-center gap-3">
                 <div class="h-px flex-1 bg-(--cert-border) opacity-30"></div>
                 <p class="text-[10px] font-black tracking-[0.3em] text-(--cert-accent) uppercase">
@@ -180,41 +172,34 @@
                 <div class="h-px flex-1 bg-(--cert-border) opacity-30"></div>
             </div>
 
-            <!-- Certificate of Completion text (Udemy style) -->
             <p class="mb-1 text-sm font-bold tracking-widest text-slate-500 uppercase">
                 Certificate of Completion
             </p>
 
-            <!-- Trophy / Award icon -->
             <div
                 class="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-linear-to-br from-(--cert-shimmer) to-white shadow-xl ring-4 ring-(--cert-border)"
             >
                 <Award size={40} class="text-(--cert-accent)" />
             </div>
 
-            <!-- Tier badge -->
             <span
                 class="mb-4 rounded-full px-4 py-1 text-[10px] font-black tracking-widest uppercase shadow {typeConfig.badgeClass}"
             >
                 {typeConfig.tier} CERTIFICATE
             </span>
 
-            <!-- "This is to certify that" -->
             <p class="text-xs font-medium text-slate-500">Diberikan kepada</p>
 
-            <!-- Recipient Name -->
             <h2 class="my-2 font-serif text-3xl font-black tracking-tight text-(--cert-accent)">
                 {userName}
             </h2>
 
-            <!-- Divider -->
             <div class="my-3 flex items-center gap-2">
                 <div class="h-px w-16 bg-(--cert-border) opacity-40"></div>
                 <CheckCircle size={14} class="text-(--cert-border)" />
                 <div class="h-px w-16 bg-(--cert-border) opacity-40"></div>
             </div>
 
-            <!-- Description -->
             <p class="mb-1 max-w-sm text-xs leading-relaxed font-medium text-slate-600">
                 telah berhasil menyelesaikan
             </p>
@@ -225,7 +210,6 @@
                 Object-Oriented Programming • {typeConfig.label}
             </p>
 
-            <!-- Footer -->
             <div
                 class="mt-4 flex w-full items-end justify-between border-t pt-4"
                 style="border-color: {typeConfig.borderColor}40;"
@@ -239,7 +223,6 @@
                     </p>
                 </div>
 
-                <!-- Seal -->
                 <div
                     class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-(--cert-border) shadow-inner"
                     style="background: radial-gradient(circle, var(--cert-shimmer), transparent);"
@@ -259,7 +242,6 @@
         </div>
     </div>
 
-    <!-- Download Buttons -->
     <div class="flex gap-3">
         <button
             onclick={() => downloadAs('pdf')}

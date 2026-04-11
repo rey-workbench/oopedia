@@ -6,11 +6,6 @@ use App\Http\Requests\BaseFormRequest;
 
 class ImportStudentRequest extends BaseFormRequest
 {
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     public function rules(): array
     {
         return [

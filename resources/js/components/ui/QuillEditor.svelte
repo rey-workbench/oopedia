@@ -4,7 +4,6 @@
     import 'quill/dist/quill.snow.css';
     import 'highlight.js/styles/atom-one-dark.css';
 
-    // Quill syntax module expects hljs on window
     if (typeof window !== 'undefined') {
         Object.assign(window, { hljs });
     }
@@ -23,16 +22,14 @@
         oninput = () => {},
     }: Props = $props();
 
-    // Ensure value is never undefined to prevent Svelte 5 props_invalid_value error
     if (value === undefined) value = '';
 
     let editorContainer: HTMLElement;
     let quillInstance: import('quill').default | null = null;
 
     onMount(async () => {
-        if (typeof window === 'undefined') return; // SSR guard
+        if (typeof window === 'undefined') return;
 
-        // Lazy-load Quill only on client to avoid SSR document error
         try {
             const Quill = (await import('quill')).default;
 
@@ -51,7 +48,6 @@
                 },
             });
 
-            // Set initial content
             if (value) {
                 quillInstance.root.innerHTML = value;
             }

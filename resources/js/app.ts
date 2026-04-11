@@ -1,35 +1,29 @@
 import '@/bootstrap';
 import { createInertiaApp } from '@inertiajs/svelte';
 import { mount } from 'svelte';
-import { render } from 'svelte/server';
 
 import '../css/app.css';
 
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+
 createInertiaApp({
-    resolve: (name) => {
-        const pages = import.meta.glob<any>('./pages/**/*.svelte', { eager: true });
-        const page = pages[`./pages/${name}.svelte`];
-
-        if (!page) {
-            console.error(`Inertia Resolve Failed: "${name}"`);
-            console.log('Available Pages:', Object.keys(pages));
-            throw new Error(`Component "${name}" not found.`);
-        }
-
-        return page.default || page;
-    },
+    resolve: (name) =>
+        resolvePageComponent(
+            `./pages/${name}.svelte`,
+            import.meta.glob<any>('./pages/**/*.svelte')
+        ),
     setup({ el, App, props }) {
+        console.log('Inertia Setup', { el, App, props });
         if (el) {
+            console.log('Mounting App to', el);
             mount(App, { target: el, props });
-            return;
+            console.log('App mounted successfully');
+        } else {
+            console.error('Inertia setup called without an element (SSR context or error)');
         }
-
-        const result = render(App, { props });
-        return {
-            body: result.html,
-            head: result.head,
-        };
     },
 });
+
+
 
 

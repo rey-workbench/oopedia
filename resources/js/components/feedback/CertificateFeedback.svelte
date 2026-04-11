@@ -27,7 +27,10 @@
                     loop={true}
                     autoplay={true}
                     backgroundColor="transparent"
-                    renderConfig={{ devicePixelRatio: window?.devicePixelRatio || 1 }}
+                    renderConfig={{
+                        devicePixelRatio:
+                            typeof window !== 'undefined' ? window.devicePixelRatio : 1,
+                    }}
                 />
             </div>
         </div>

@@ -37,7 +37,6 @@
 
     $effect(() => {
         if (show && dialogEl) {
-            // Small delay so the dialog is fully rendered before trapping focus
             setTimeout(() => {
                 trap = createFocusTrap(dialogEl!, {
                     escapeDeactivates: true,
