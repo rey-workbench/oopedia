@@ -48,6 +48,7 @@
         "@tailwindcss/vite": "^4.2.2",
         "apexcharts": "^5.10.4",
         "dompurify": "^3.3.3",
+        "driver.js": "^1.4.0",
         "focus-trap": "^8.0.1",
         "highlight.js": "^11.11.1",
         "html2canvas": "^1.4.1",
