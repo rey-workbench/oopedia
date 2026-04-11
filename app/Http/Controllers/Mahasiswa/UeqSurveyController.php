@@ -14,7 +14,8 @@ class UeqSurveyController extends Controller
 {
     public function __construct(
         protected UeqSurveyServiceInterface $ueqService,
-    ) {}
+    ) {
+    }
 
     public function create(): Response|RedirectResponse
     {

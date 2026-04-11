@@ -4,12 +4,6 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-/**
- * Base FormRequest providing common authorization and helper utilities.
- *
- * All application FormRequests should extend this class to ensure
- * consistent authorization and message handling across the application.
- */
 abstract class BaseFormRequest extends FormRequest
 {
     public function authorize(): bool

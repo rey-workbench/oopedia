@@ -20,7 +20,8 @@ final class DashboardService implements DashboardServiceInterface
         public readonly MaterialRepositoryInterface $materialRepo,
         public readonly ProgressRepositoryInterface $progressRepo,
         public readonly QuestionRepositoryInterface $questionRepo,
-    ) {}
+    ) {
+    }
 
     /** @return Collection<int, Material> */
     public function getAllMaterials(): Collection

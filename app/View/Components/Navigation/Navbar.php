@@ -60,18 +60,6 @@ class Navbar extends Component
         return request()->routeIs($routePattern);
     }
 
-    /**
-     * Get navigation items for mahasiswa role.
-     *
-     * @return array<int, array{
-     *     route: string,
-     *     icon: string,
-     *     label: string,
-     *     pattern: string,
-     *     badge?: string,
-     *     badgeClass?: string
-     * }>
-     */
     public function getMahasiswaNavItems(): array
     {
         $items = [];
@@ -120,9 +108,6 @@ class Navbar extends Component
         return $items;
     }
 
-    /**
-     * Get the view / contents that represent the component.
-     */
     public function render(): View|Closure|string
     {
         return view('components.navigation.navbar');

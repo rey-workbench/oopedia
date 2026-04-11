@@ -32,7 +32,6 @@
         class={`relative h-full rounded-full border-b-4 border-black/10 shadow-sm transition-all duration-700 ease-out ${bgClass}`}
         style="width: {percentage}%"
     >
-        <!-- Glossy highlight Duolingo style -->
         <div
             class="absolute top-[10%] left-[1%] h-[30%] w-[98%] rounded-full bg-white/30 blur-[0.5px]"
         ></div>

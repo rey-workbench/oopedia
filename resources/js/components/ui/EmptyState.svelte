@@ -20,10 +20,10 @@
 </script>
 
 <div
-    class="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-cosmos-border bg-white px-6 py-20 text-center {className}"
+    class="border-cosmos-border flex flex-col items-center justify-center rounded-3xl border-2 border-dashed bg-white px-6 py-20 text-center {className}"
 >
     <div
-        class="mb-8 flex h-24 w-24 items-center justify-center rounded-[2rem] bg-primary-50/50 text-4xl text-primary-200"
+        class="bg-primary-50/50 text-primary-200 mb-8 flex h-24 w-24 items-center justify-center rounded-[2rem] text-4xl"
     >
         {#if typeof icon === 'string'}
             <i class={icon}></i>

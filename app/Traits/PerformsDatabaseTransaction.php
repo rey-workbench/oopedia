@@ -2,4 +2,6 @@
 
 namespace App\Traits;
 
-trait PerformsDatabaseTransaction {}
+trait PerformsDatabaseTransaction
+{
+}

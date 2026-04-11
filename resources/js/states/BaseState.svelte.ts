@@ -1,5 +1,4 @@
 import { page } from '@inertiajs/svelte';
-import { get } from 'svelte/store';
 import type { SharedProps } from '@/types';
 
 /**
@@ -11,7 +10,7 @@ export class BaseState {
      * Get authenticated user
      */
     get user() {
-        return (get(page).props as unknown as SharedProps).auth?.user;
+        return (page.props as unknown as SharedProps).auth?.user;
     }
 
     /**
@@ -25,14 +24,14 @@ export class BaseState {
      * Get flash messages
      */
     get flash() {
-        return (get(page).props as unknown as SharedProps).flash || {};
+        return (page.props as unknown as SharedProps).flash || {};
     }
 
     /**
      * Get current error props
      */
     get errors() {
-        return (get(page).props as unknown as SharedProps).errors || {};
+        return (page.props as unknown as SharedProps).errors || {};
     }
 
     /**

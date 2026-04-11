@@ -2,4 +2,6 @@
 
 namespace App\Traits;
 
-trait CalculatesMaterialProgress {}
+trait CalculatesMaterialProgress
+{
+}

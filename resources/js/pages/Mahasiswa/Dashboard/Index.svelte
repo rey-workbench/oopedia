@@ -105,7 +105,7 @@
             <div class="flex flex-col items-center gap-10 md:flex-row">
                 <div class="group relative">
                     <div
-                        class="flex h-32 w-32 rotate-3 items-center justify-center overflow-hidden rounded-3xl bg-white border-2 border-slate-200 border-b-6 transition-transform duration-500 group-hover:rotate-0"
+                        class="flex h-32 w-32 rotate-3 items-center justify-center overflow-hidden rounded-3xl border-2 border-b-6 border-slate-200 bg-white transition-transform duration-500 group-hover:rotate-0"
                     >
                         <Star size={80} class="text-primary-500" />
                     </div>
@@ -116,7 +116,7 @@
                         class="mb-4 text-4xl font-bold tracking-tight text-white uppercase md:text-5xl"
                     >
                         Siap Belajar, <span class="text-primary-400"
-                            >{$page.props['auth'].user.name}</span
+                            >{page.props['auth'].user.name}</span
                         >?
                     </h2>
                     <p class="max-w-xl text-lg font-medium text-slate-400">
@@ -155,10 +155,10 @@
                                 <div
                                     class="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border-2 border-b-4 {type ===
                                     'gold'
-                                        ? 'bg-amber-100 text-amber-600 border-amber-200'
+                                        ? 'border-amber-200 bg-amber-100 text-amber-600'
                                         : type === 'silver'
-                                          ? 'bg-slate-200 text-slate-600 border-slate-300'
-                                          : 'bg-orange-100 text-orange-600 border-orange-200'}"
+                                          ? 'border-slate-300 bg-slate-200 text-slate-600'
+                                          : 'border-orange-200 bg-orange-100 text-orange-600'}"
                                 >
                                     <Trophy size={40} strokeWidth={2.5} />
                                 </div>
@@ -289,7 +289,7 @@
                                 <div class="flex items-center gap-8 p-8">
                                     <div
                                         class={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-2 border-b-4 transition-colors
-                                    ${activity.type === 'achievement' ? 'bg-emerald-50 text-emerald-500 border-emerald-100' : activity.type === 'milestone' ? 'bg-amber-50 text-amber-500 border-amber-100' : 'bg-primary-50 text-primary-500 border-primary-100'}`}
+                                    ${activity.type === 'achievement' ? 'border-emerald-100 bg-emerald-50 text-emerald-500' : activity.type === 'milestone' ? 'border-amber-100 bg-amber-50 text-amber-500' : 'bg-primary-50 text-primary-500 border-primary-100'}`}
                                     >
                                         <ActivityIcon size={24} strokeWidth={2.5} />
                                     </div>
@@ -397,7 +397,7 @@
 
                         <Card
                             padding="p-8"
-                            class="hover:border-primary-400 hover:bg-primary-50/20 group cursor-pointer border-2 border-dashed border-b-6 border-slate-200 transition-all active:translate-y-[2px] active:border-b-2"
+                            class="hover:border-primary-400 hover:bg-primary-50/20 group cursor-pointer border-2 border-b-6 border-dashed border-slate-200 transition-all active:translate-y-[2px] active:border-b-2"
                         >
                             <Link
                                 href={ROUTES.MAHASISWA.MATERIALS.INDEX}

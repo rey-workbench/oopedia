@@ -38,12 +38,6 @@ interface UserRepositoryInterface
 
     public function approveStudent(string $userId): void;
 
-    /**
-     * Get users by role and approval status, paginated or as a full collection.
-     * Passing null for $perPage returns a Collection of all matching users.
-     *
-     * @return LengthAwarePaginator|Collection<int, User>
-     */
     public function getUsersByRoleAndApproval(
         string $roleName,
         bool $isApproved,

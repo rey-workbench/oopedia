@@ -63,7 +63,7 @@
             class={`ml-4 block text-[11px] font-black tracking-widest uppercase transition-colors ${error ? 'text-rose-500' : 'text-slate-500'}`}
         >
             {label}
-            {#if required}<span class="text-rose-500 ml-1">*</span>{/if}
+            {#if required}<span class="ml-1 text-rose-500">*</span>{/if}
         </label>
     {/if}
 
@@ -86,7 +86,7 @@
                         ? 'cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400 grayscale'
                         : error
                           ? 'border-rose-200 bg-rose-50/20 text-rose-900 focus:border-rose-500 focus:ring-4 focus:ring-rose-50'
-                          : 'hover:border-slate-300 focus:border-primary-500 border-slate-200 bg-white text-slate-900 focus:ring-4 focus:ring-primary-100'
+                          : 'focus:border-primary-500 focus:ring-primary-100 border-slate-200 bg-white text-slate-900 hover:border-slate-300 focus:ring-4'
                 }
             `}
         >

@@ -55,7 +55,7 @@
     }
     const userName = $derived(
         recipientName ??
-            ($page.props as unknown as PagePropsWithAuth)?.auth?.user?.name ??
+            (page.props as unknown as PagePropsWithAuth)?.auth?.user?.name ??
             'Mahasiswa'
     );
 
@@ -114,7 +114,6 @@
     }
 </script>
 
-<!-- Certificate Card Wrapper -->
 <div
     class="group space-y-4"
     style="
@@ -123,121 +122,94 @@
         --cert-shimmer: {typeConfig.shimmer};
     "
 >
-    <!-- The certificate itself (captured by html2canvas) -->
     <div
         bind:this={certRef}
-        class="relative min-h-[380px] overflow-hidden rounded-2xl border-4 border-[color:var(--cert-border)] bg-white shadow-2xl"
+        class="relative min-h-[380px] overflow-hidden rounded-2xl border-4 border-(--cert-border) bg-white shadow-2xl"
     >
-        <!-- Background gradient -->
-        <div class="bg-gradient-to-br {typeConfig.bgGradient} absolute inset-0"></div>
+        <div class="bg-linear-to-br {typeConfig.bgGradient} absolute inset-0"></div>
 
-        <!-- Decorative corner patterns -->
-        <div class="absolute top-0 left-0 h-28 w-28 text-[color:var(--cert-border)] opacity-20">
+        <div class="absolute top-0 left-0 h-28 w-28 text-(--cert-border) opacity-20">
             <svg viewBox="0 0 100 100" class="h-full w-full" aria-hidden="true" role="presentation">
                 <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor"></path>
                 <path d="M0,0 L80,0 L80,10 L10,10 L10,80 L0,80 Z" fill="currentColor" opacity="0.5"
                 ></path>
             </svg>
         </div>
-        <div
-            class="absolute top-0 right-0 h-28 w-28 rotate-90 text-[color:var(--cert-border)] opacity-20"
-        >
+        <div class="absolute top-0 right-0 h-28 w-28 rotate-90 text-(--cert-border) opacity-20">
             <svg viewBox="0 0 100 100" class="h-full w-full" aria-hidden="true" role="presentation">
                 <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor"></path>
                 <path d="M0,0 L80,0 L80,10 L10,10 L10,80 L0,80 Z" fill="currentColor" opacity="0.5"
                 ></path>
             </svg>
         </div>
-        <div
-            class="absolute bottom-0 left-0 h-28 w-28 -rotate-90 text-[color:var(--cert-border)] opacity-20"
-        >
+        <div class="absolute bottom-0 left-0 h-28 w-28 -rotate-90 text-(--cert-border) opacity-20">
             <svg viewBox="0 0 100 100" class="h-full w-full" aria-hidden="true" role="presentation">
                 <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor"></path>
             </svg>
         </div>
-        <div
-            class="absolute right-0 bottom-0 h-28 w-28 rotate-180 text-[color:var(--cert-border)] opacity-20"
-        >
+        <div class="absolute right-0 bottom-0 h-28 w-28 rotate-180 text-(--cert-border) opacity-20">
             <svg viewBox="0 0 100 100" class="h-full w-full" aria-hidden="true" role="presentation">
                 <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor"></path>
             </svg>
         </div>
 
-        <!-- Watermark -->
         <div
-            class="pointer-events-none absolute inset-0 flex items-center justify-center text-[color:var(--cert-border)] opacity-[0.04]"
+            class="pointer-events-none absolute inset-0 flex items-center justify-center text-(--cert-border) opacity-[0.04]"
         >
             <Award size={320} />
         </div>
 
-        <!-- Inner border line -->
         <div
-            class="pointer-events-none absolute inset-3 rounded-xl border-2 border-[color:var(--cert-border)] opacity-30"
+            class="pointer-events-none absolute inset-3 rounded-xl border-2 border-(--cert-border) opacity-30"
         ></div>
 
-        <!-- Content -->
         <div class="relative z-10 flex flex-col items-center px-10 py-10 text-center">
-            <!-- Header -->
             <div class="mb-2 flex items-center gap-3">
-                <div class="h-px flex-1 bg-[color:var(--cert-border)] opacity-30"></div>
-                <p
-                    class="text-[10px] font-black tracking-[0.3em] text-[color:var(--cert-accent)] uppercase"
-                >
+                <div class="h-px flex-1 bg-(--cert-border) opacity-30"></div>
+                <p class="text-[10px] font-black tracking-[0.3em] text-(--cert-accent) uppercase">
                     OOPEDIA • POLITEKNIK NEGERI MALANG
                 </p>
-                <div class="h-px flex-1 bg-[color:var(--cert-border)] opacity-30"></div>
+                <div class="h-px flex-1 bg-(--cert-border) opacity-30"></div>
             </div>
 
-            <!-- Certificate of Completion text (Udemy style) -->
             <p class="mb-1 text-sm font-bold tracking-widest text-slate-500 uppercase">
                 Certificate of Completion
             </p>
 
-            <!-- Trophy / Award icon -->
             <div
-                class="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[var(--cert-shimmer)] to-white shadow-xl ring-4 ring-[color:var(--cert-border)]"
+                class="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-linear-to-br from-(--cert-shimmer) to-white shadow-xl ring-4 ring-(--cert-border)"
             >
-                <Award size={40} class="text-[color:var(--cert-accent)]" />
+                <Award size={40} class="text-(--cert-accent)" />
             </div>
 
-            <!-- Tier badge -->
             <span
                 class="mb-4 rounded-full px-4 py-1 text-[10px] font-black tracking-widest uppercase shadow {typeConfig.badgeClass}"
             >
                 {typeConfig.tier} CERTIFICATE
             </span>
 
-            <!-- "This is to certify that" -->
             <p class="text-xs font-medium text-slate-500">Diberikan kepada</p>
 
-            <!-- Recipient Name -->
-            <h2
-                class="my-2 font-serif text-3xl font-black tracking-tight text-[color:var(--cert-accent)]"
-            >
+            <h2 class="my-2 font-serif text-3xl font-black tracking-tight text-(--cert-accent)">
                 {userName}
             </h2>
 
-            <!-- Divider -->
             <div class="my-3 flex items-center gap-2">
-                <div class="h-px w-16 bg-[color:var(--cert-border)] opacity-40"></div>
-                <CheckCircle size={14} class="text-[color:var(--cert-border)]" />
-                <div class="h-px w-16 bg-[color:var(--cert-border)] opacity-40"></div>
+                <div class="h-px w-16 bg-(--cert-border) opacity-40"></div>
+                <CheckCircle size={14} class="text-(--cert-border)" />
+                <div class="h-px w-16 bg-(--cert-border) opacity-40"></div>
             </div>
 
-            <!-- Description -->
             <p class="mb-1 max-w-sm text-xs leading-relaxed font-medium text-slate-600">
                 telah berhasil menyelesaikan
             </p>
-            <h3
-                class="mb-1 text-lg font-black tracking-wider text-[color:var(--cert-accent)] uppercase"
-            >
+            <h3 class="mb-1 text-lg font-black tracking-wider text-(--cert-accent) uppercase">
                 {materialTitle}
             </h3>
             <p class="mb-4 text-xs font-bold tracking-widest text-slate-500 uppercase">
                 Object-Oriented Programming • {typeConfig.label}
             </p>
 
-            <!-- Footer -->
             <div
                 class="mt-4 flex w-full items-end justify-between border-t pt-4"
                 style="border-color: {typeConfig.borderColor}40;"
@@ -246,24 +218,23 @@
                     <p class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
                         Tanggal
                     </p>
-                    <p class="text-xs font-bold text-[color:var(--cert-accent)]">
+                    <p class="text-xs font-bold text-(--cert-accent)">
                         {formattedDate}
                     </p>
                 </div>
 
-                <!-- Seal -->
                 <div
-                    class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-[color:var(--cert-border)] shadow-inner"
+                    class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-(--cert-border) shadow-inner"
                     style="background: radial-gradient(circle, var(--cert-shimmer), transparent);"
                 >
-                    <Shield size={28} class="text-[color:var(--cert-border)]" />
+                    <Shield size={28} class="text-(--cert-border)" />
                 </div>
 
                 <div class="text-right">
                     <p class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
                         ID Sertifikat
                     </p>
-                    <p class="font-mono text-xs font-bold text-[color:var(--cert-accent)]">
+                    <p class="font-mono text-xs font-bold text-(--cert-accent)">
                         {certId}
                     </p>
                 </div>
@@ -271,12 +242,11 @@
         </div>
     </div>
 
-    <!-- Download Buttons -->
     <div class="flex gap-3">
         <button
             onclick={() => downloadAs('pdf')}
             disabled={isDownloading}
-            class="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-b-[4px] border-[color:var(--cert-border)] bg-white px-4 py-3 text-xs font-bold tracking-widest text-[color:var(--cert-accent)] uppercase transition-all hover:bg-slate-50 active:translate-y-[2px] active:border-b-2 disabled:translate-y-0 disabled:border-b-[4px] disabled:opacity-60"
+            class="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-b-4 border-(--cert-border) bg-white px-4 py-3 text-xs font-bold tracking-widest text-(--cert-accent) uppercase transition-all hover:bg-slate-50 active:translate-y-[2px] active:border-b-2 disabled:translate-y-0 disabled:border-b-4 disabled:opacity-60"
         >
             {#if isDownloading}
                 <span class="animate-spin">⏳</span> Mengunduh...
@@ -288,7 +258,7 @@
         <button
             onclick={() => downloadAs('png')}
             disabled={isDownloading}
-            class="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-b-[4px] border-[color:var(--cert-border)] bg-white px-4 py-3 text-xs font-bold tracking-widest text-[color:var(--cert-accent)] uppercase transition-all hover:bg-slate-50 active:translate-y-[2px] active:border-b-2 disabled:translate-y-0 disabled:border-b-[4px] disabled:opacity-60"
+            class="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-b-4 border-(--cert-border) bg-white px-4 py-3 text-xs font-bold tracking-widest text-(--cert-accent) uppercase transition-all hover:bg-slate-50 active:translate-y-[2px] active:border-b-2 disabled:translate-y-0 disabled:border-b-4 disabled:opacity-60"
         >
             {#if isDownloading}
                 <span class="animate-spin">⏳</span>

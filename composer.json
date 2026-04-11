@@ -28,7 +28,7 @@
         "laravel/legacy-factories": "^1.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.11",
-        "inertiajs/inertia-laravel": "^2.0",
+        "inertiajs/inertia-laravel": "^3.0",
         "predis/predis": "^3.4",
         "laravel/octane": "^2.14",
         "spiral/roadrunner-cli": "^2.7",
@@ -57,9 +57,9 @@
         "nunomaduro/collision": "^8.1",
         "phpunit/phpunit": "^12.0",
         "spatie/laravel-ignition": "^2.4",
-        "jcf/boost-for-kiro-ide": "^1.0",
         "laravel/pint": "^1.27",
-        "laravel/boost": "^1.8"
+        "laravel/boost": "^2.0",
+        "squizlabs/php_codesniffer": "*"
     },
     "config": {
         "process-timeout": 1800

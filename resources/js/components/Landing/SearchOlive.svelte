@@ -39,7 +39,7 @@
     </h2>
 
     <div
-        class="group relative flex aspect-video w-full max-w-4xl items-center justify-center overflow-hidden rounded-2xl border-2 border-black/10 border-b-6 bg-[#AEC0AD] transition-transform duration-700 hover:scale-[1.02]"
+        class="group relative flex aspect-video w-full max-w-4xl items-center justify-center overflow-hidden rounded-2xl border-2 border-b-6 border-black/10 bg-[#AEC0AD] transition-transform duration-700 hover:scale-[1.02]"
     >
         <div
             class="absolute top-8 aspect-video w-48 rounded-xl bg-slate-900/10 shadow-2xl blur-[2px] transition-transform duration-1000 group-hover:translate-x-4 group-hover:-translate-y-6"
@@ -65,7 +65,7 @@
         </div>
 
         <div
-            class="absolute z-10 flex aspect-video w-72 items-center justify-center overflow-hidden rounded-2xl border-2 border-white/20 border-b-4 bg-white/60 backdrop-blur-sm transition-transform duration-700 group-hover:scale-110"
+            class="absolute z-10 flex aspect-video w-72 items-center justify-center overflow-hidden rounded-2xl border-2 border-b-4 border-white/20 bg-white/60 backdrop-blur-sm transition-transform duration-700 group-hover:scale-110"
         >
             <img
                 src="/images/landing/abstract4.png"
@@ -75,7 +75,7 @@
                 class="absolute inset-0 h-full w-full object-cover opacity-40 mix-blend-darken"
             />
             <div
-                class="relative z-20 flex items-center gap-3 rounded-xl border-2 border-white/30 bg-slate-900 px-6 py-3 text-[10px] font-black tracking-[0.2em] text-white border-b-4"
+                class="relative z-20 flex items-center gap-3 rounded-xl border-2 border-b-4 border-white/30 bg-slate-900 px-6 py-3 text-[10px] font-black tracking-[0.2em] text-white"
             >
                 <Search size={14} class="opacity-70" />
                 <span class="uppercase">polanya</span>

@@ -53,14 +53,14 @@
         <label
             for={toggleId}
             class={`
-                relative inline-flex h-8 w-14 cursor-pointer items-center rounded-full transition-all border-2
+                relative inline-flex h-8 w-14 cursor-pointer items-center rounded-full border-2 transition-all
                 ${disabled ? 'cursor-not-allowed opacity-50 grayscale' : ''}
-                ${checked ? 'bg-primary-500 border-primary-600' : 'bg-slate-200 border-cosmos-border'}
+                ${checked ? 'bg-primary-500 border-primary-600' : 'border-cosmos-border bg-slate-200'}
             `}
         >
             <span
                 class={`
-                    inline-block h-5 w-5 transform rounded-full bg-white transition-all duration-200 ease-out border-b-2 border-black/10
+                    inline-block h-5 w-5 transform rounded-full border-b-2 border-black/10 bg-white transition-all duration-200 ease-out
                     ${checked ? 'translate-x-7' : 'translate-x-1'}
                 `}
             ></span>

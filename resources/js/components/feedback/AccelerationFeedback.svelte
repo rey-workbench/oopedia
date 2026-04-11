@@ -27,7 +27,10 @@
                     loop={true}
                     autoplay={true}
                     backgroundColor="transparent"
-                    renderConfig={{ devicePixelRatio: window?.devicePixelRatio || 1 }}
+                    renderConfig={{
+                        devicePixelRatio:
+                            typeof window !== 'undefined' ? window.devicePixelRatio : 1,
+                    }}
                 />
             </div>
         </div>
@@ -51,7 +54,7 @@
                 variant="none"
                 rounded="2xl"
                 padding="px-10 py-5"
-                class="border-2 border-emerald-400 flex items-center gap-4 bg-slate-900 border-b-6 active:translate-y-[2px] active:border-b-4 transition-all"
+                class="flex items-center gap-4 border-2 border-b-6 border-emerald-400 bg-slate-900 transition-all active:translate-y-[2px] active:border-b-4"
             >
                 <Star size={24} class="fill-current text-white" />
                 <span class="text-2xl font-black tracking-tighter text-white">+{xpEarned} XP</span>

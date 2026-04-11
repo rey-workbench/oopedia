@@ -113,7 +113,6 @@
         {/if}
 
         <div class="space-y-0">
-            <!-- Question type components already contain their own header & layout -->
             {#if state.currentQuestion?.question_type === 'fill_in_the_blank'}
                 <div transition:fade>
                     <FillInTheBlank

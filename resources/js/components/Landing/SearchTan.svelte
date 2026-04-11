@@ -42,13 +42,13 @@
 
 <section bind:this={element} class="mx-auto mb-40 flex max-w-7xl flex-col items-center px-6">
     <div
-        class="relative flex aspect-video w-full max-w-4xl justify-center overflow-hidden rounded-2xl border-2 border-black/10 border-b-6 bg-[#EECA9D] py-16 transition-all duration-1000"
+        class="relative flex aspect-video w-full max-w-4xl justify-center overflow-hidden rounded-2xl border-2 border-b-6 border-black/10 bg-[#EECA9D] py-16 transition-all duration-1000"
         style="opacity: {$containerOpacity}; transform: scale({$containerScale});"
     >
         <div class="grid w-[80%] grid-cols-2 gap-8 md:grid-cols-4">
             <div
                 data-animate
-                class="aspect-4/5 w-full overflow-hidden rounded-2xl border-2 border-black/5 border-b-4 bg-stone-800/20 transition-all hover:scale-105"
+                class="aspect-4/5 w-full overflow-hidden rounded-2xl border-2 border-b-4 border-black/5 bg-stone-800/20 transition-all hover:scale-105"
             >
                 <img
                     src="/images/landing/abstract3.png"
@@ -60,7 +60,7 @@
             </div>
             <div
                 data-animate
-                class="mt-8 aspect-square w-full overflow-hidden rounded-2xl border-2 border-black/5 border-b-4 bg-stone-700/30 transition-all hover:scale-105"
+                class="mt-8 aspect-square w-full overflow-hidden rounded-2xl border-2 border-b-4 border-black/5 bg-stone-700/30 transition-all hover:scale-105"
             >
                 <img
                     src="/images/landing/abstract4.png"
@@ -72,7 +72,7 @@
             </div>
             <div
                 data-animate
-                class="aspect-4/5 w-full overflow-hidden rounded-2xl border-2 border-black/5 border-b-4 bg-stone-900/10 transition-all hover:scale-105"
+                class="aspect-4/5 w-full overflow-hidden rounded-2xl border-2 border-b-4 border-black/5 bg-stone-900/10 transition-all hover:scale-105"
             >
                 <img
                     src="/images/landing/abstract1.png"
@@ -84,7 +84,7 @@
             </div>
             <div
                 data-animate
-                class="mt-12 aspect-square w-full overflow-hidden rounded-2xl border-2 border-black/5 border-b-4 bg-stone-800/40 transition-all hover:scale-105"
+                class="mt-12 aspect-square w-full overflow-hidden rounded-2xl border-2 border-b-4 border-black/5 bg-stone-800/40 transition-all hover:scale-105"
             >
                 <img
                     src="/images/landing/abstract2.png"

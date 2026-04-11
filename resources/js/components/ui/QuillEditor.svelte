@@ -1,11 +1,9 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import Quill from 'quill';
     import hljs from 'highlight.js';
     import 'quill/dist/quill.snow.css';
     import 'highlight.js/styles/atom-one-dark.css';
 
-    // Quill syntax module expects hljs on window
     if (typeof window !== 'undefined') {
         Object.assign(window, { hljs });
     }
@@ -24,44 +22,44 @@
         oninput = () => {},
     }: Props = $props();
 
-    // Ensure value is never undefined to prevent Svelte 5 props_invalid_value error
     if (value === undefined) value = '';
 
     let editorContainer: HTMLElement;
-    let quill: Quill;
+    let quillInstance: import('quill').default | null = null;
 
-    onMount(() => {
-        if (typeof window !== 'undefined') {
-            Object.assign(window, { hljs });
-        }
+    onMount(async () => {
+        if (typeof window === 'undefined') return;
 
-        quill = new Quill(editorContainer, {
-            theme: 'snow',
-            placeholder: placeholder,
-            modules: {
-                syntax: {
-                    hljs: hljs,
+        try {
+            const Quill = (await import('quill')).default;
+
+            quillInstance = new Quill(editorContainer, {
+                theme: 'snow',
+                placeholder: placeholder,
+                modules: {
+                    syntax: { hljs },
+                    toolbar: [
+                        [{ header: [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ list: 'ordered' }, { list: 'bullet' }],
+                        ['link', 'image', 'code-block'],
+                        ['clean'],
+                    ],
                 },
-                toolbar: [
-                    [{ header: [1, 2, 3, false] }],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ list: 'ordered' }, { list: 'bullet' }],
-                    ['link', 'image', 'code-block'],
-                    ['clean'],
-                ],
-            },
-        });
+            });
 
-        // Set initial content
-        if (value) {
-            quill.root.innerHTML = value;
+            if (value) {
+                quillInstance.root.innerHTML = value;
+            }
+
+            quillInstance.on('text-change', () => {
+                const html = quillInstance!.root.innerHTML;
+                value = html;
+                oninput(html);
+            });
+        } catch (e) {
+            console.error('Failed to load Quill:', e);
         }
-
-        quill.on('text-change', () => {
-            const html = quill.root.innerHTML;
-            value = html;
-            oninput(html);
-        });
     });
 </script>
 

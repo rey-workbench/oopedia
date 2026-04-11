@@ -14,9 +14,7 @@
     );
 
     const iconContainerClasses = $derived(
-        active
-            ? 'bg-white/10'
-            : 'bg-primary-50 group-hover:bg-primary-100/50'
+        active ? 'bg-white/10' : 'bg-primary-50 group-hover:bg-primary-100/50'
     );
 
     const iconClasses = $derived(
@@ -31,7 +29,7 @@
     {...restProps}
 >
     <div
-        class="flex h-8 w-8 items-center justify-center rounded-xl {iconContainerClasses} transition-colors duration-300 shadow-sm"
+        class="flex h-8 w-8 items-center justify-center rounded-xl {iconContainerClasses} shadow-sm transition-colors duration-300"
     >
         {#if typeof Icon === 'string'}
             <i class="{Icon} {iconClasses} transition-colors"></i>
@@ -47,4 +45,3 @@
         <ChevronRight size={14} class="opacity-50" />
     {/if}
 </Link>
-

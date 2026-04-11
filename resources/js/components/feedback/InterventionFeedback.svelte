@@ -16,16 +16,16 @@
 </script>
 
 <div class="p-12 text-center">
-    <div
-        class="mx-auto mb-6 flex h-40 w-40 items-center justify-center"
-    >
+    <div class="mx-auto mb-6 flex h-40 w-40 items-center justify-center">
         <div class="h-full w-full overflow-hidden rounded-3xl">
             <DotLottieSvelte
                 src="/assets/lottie/quiz/graduation.json"
                 loop={true}
                 autoplay={true}
                 backgroundColor="transparent"
-                renderConfig={{ devicePixelRatio: window?.devicePixelRatio || 1 }}
+                renderConfig={{
+                    devicePixelRatio: typeof window !== 'undefined' ? window.devicePixelRatio : 1,
+                }}
             />
         </div>
     </div>
@@ -42,17 +42,17 @@
     {#if recommendation}
         <div class="group mb-8 text-left">
             <div
-                class="relative overflow-hidden rounded-2xl border-2 border-slate-200 bg-white p-5 transition-all border-b-4"
+                class="relative overflow-hidden rounded-2xl border-2 border-b-4 border-slate-200 bg-white p-5 transition-all"
             >
                 <div class="flex items-center gap-4">
                     <div
-                        class="bg-slate-100 text-slate-600 flex h-12 w-12 items-center justify-center rounded-xl border-2 border-slate-200"
+                        class="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-slate-200 bg-slate-100 text-slate-600"
                     >
                         <BookOpen size={24} />
                     </div>
                     <div class="flex-1">
                         <span
-                            class="text-indigo-500 text-[10px] font-black tracking-[0.2em] uppercase"
+                            class="text-[10px] font-black tracking-[0.2em] text-indigo-500 uppercase"
                             >Rekomendasi Materi</span
                         >
                         <p class="text-lg leading-tight font-black text-slate-800">

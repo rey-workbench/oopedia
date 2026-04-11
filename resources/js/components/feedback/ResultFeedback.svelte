@@ -9,7 +9,6 @@
         status: 'success' | 'wrong';
         message: string;
         nextAction: string;
-        nextActionType: string;
         xpEarned: number;
         streakBonus: string | null;
         recommendation: string | null;
@@ -37,6 +36,8 @@
     const TICK_MS = 50;
 
     onMount(() => {
+        const shouldAutoAdvance = status === 'success';
+        const autoAdvanceMs = shouldAutoAdvance ? 3000 : 5000;
         const startTime = Date.now();
         timer = setInterval(() => {
             const elapsed = Date.now() - startTime;
@@ -44,7 +45,7 @@
 
             if (progress <= 0) {
                 clearInterval(timer);
-                if (isSuccess) {
+                if (shouldAutoAdvance) {
                     onContinue();
                 }
             }
@@ -128,7 +129,6 @@
                 </div>
             </div>
 
-            <!-- Middle: Stats (XP/Streak) -->
             <div class="flex items-center gap-3">
                 {#if xpEarned > 0}
                     <div
@@ -150,7 +150,6 @@
                 {/if}
             </div>
 
-            <!-- Right: Actions -->
             <div class="flex w-full items-center gap-3 md:w-auto">
                 {#if !isSuccess && onTryAgain}
                     <Button

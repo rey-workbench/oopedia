@@ -25,7 +25,7 @@
         children,
     }: Props = $props();
 
-    const flash = $derived(($page.props as unknown as SharedProps).flash ?? {});
+    const flash = $derived((page.props as unknown as SharedProps).flash ?? {});
     const showSidebarRender = $derived(variant === 'app' && showSidebar);
     const sidebarOpen = $derived(sidebarState.isOpen);
 
@@ -49,7 +49,7 @@
 <!-- Skip to main content link for keyboard users -->
 <a
     href="#main-content"
-    class="focus:bg-primary-600 focus:ring-primary-400 sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:rounded-xl focus:px-6 focus:py-3 focus:text-sm focus:font-bold focus:text-white focus:shadow-lg focus:ring-4 focus:outline-none"
+    class="focus:bg-primary-600 focus:ring-primary-400 sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-100 focus:rounded-xl focus:px-6 focus:py-3 focus:text-sm focus:font-bold focus:text-white focus:shadow-lg focus:ring-4 focus:outline-none"
 >
     Skip to main content
 </a>

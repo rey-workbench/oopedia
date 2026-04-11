@@ -37,7 +37,6 @@
 
     $effect(() => {
         if (show && dialogEl) {
-            // Small delay so the dialog is fully rendered before trapping focus
             setTimeout(() => {
                 trap = createFocusTrap(dialogEl!, {
                     escapeDeactivates: true,
@@ -82,7 +81,7 @@
             bind:this={dialogEl}
             role="dialog"
             aria-modal="true"
-            class={`mb-6 transform overflow-hidden rounded-3xl bg-white border-2 border-cosmos-border transition-all sm:mx-auto sm:w-full ${maxWidthClasses[maxWidth]}`}
+            class={`border-cosmos-border mb-6 transform overflow-hidden rounded-3xl border-2 bg-white transition-all sm:mx-auto sm:w-full ${maxWidthClasses[maxWidth]}`}
             transition:scale={{ duration: 200, start: 0.95 }}
         >
             {@render children?.()}

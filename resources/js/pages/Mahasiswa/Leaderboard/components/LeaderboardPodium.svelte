@@ -63,7 +63,7 @@
                                 class="border-4 border-slate-300 bg-slate-200! text-slate-800!"
                             />
                             <div
-                                class="absolute -top-3 -right-3 flex h-8 w-8 items-center justify-center rounded-full border-2 border-slate-800 bg-slate-200 font-black text-slate-800 shadow-cosmos-shadow"
+                                class="shadow-cosmos-shadow absolute -top-3 -right-3 flex h-8 w-8 items-center justify-center rounded-full border-2 border-slate-800 bg-slate-200 font-black text-slate-800"
                             >
                                 2
                             </div>
@@ -118,7 +118,7 @@
                                 class="relative scale-110 border-[5px] border-amber-400 bg-linear-to-br! from-amber-200! to-amber-500! text-amber-950!"
                             />
                             <div
-                                class="absolute -top-3 -right-3 flex h-9 w-9 items-center justify-center rounded-full border-2 border-slate-900 bg-linear-to-br from-amber-300 to-amber-500 text-base font-black text-amber-950 shadow-cosmos-shadow md:-top-4 md:-right-4 md:h-10 md:w-10 md:text-lg"
+                                class="shadow-cosmos-shadow absolute -top-3 -right-3 flex h-9 w-9 items-center justify-center rounded-full border-2 border-slate-900 bg-linear-to-br from-amber-300 to-amber-500 text-base font-black text-amber-950 md:-top-4 md:-right-4 md:h-10 md:w-10 md:text-lg"
                             >
                                 1
                             </div>
@@ -165,7 +165,7 @@
                                 class="border-4 border-rose-400 bg-rose-300! text-rose-950!"
                             />
                             <div
-                                class="absolute -top-3 -right-3 flex h-8 w-8 items-center justify-center rounded-full border-2 border-slate-800 bg-rose-300 font-black text-rose-950 shadow-cosmos-shadow"
+                                class="shadow-cosmos-shadow absolute -top-3 -right-3 flex h-8 w-8 items-center justify-center rounded-full border-2 border-slate-800 bg-rose-300 font-black text-rose-950"
                             >
                                 3
                             </div>

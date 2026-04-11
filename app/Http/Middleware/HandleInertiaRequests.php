@@ -12,7 +12,8 @@ class HandleInertiaRequests extends Middleware
 
     public function __construct(
         protected ?MaterialServiceInterface $materialService = null,
-    ) {}
+    ) {
+    }
 
     public function share(Request $request): array
     {

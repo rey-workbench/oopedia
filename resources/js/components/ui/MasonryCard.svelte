@@ -31,20 +31,17 @@
     class={`group border-cosmos-border relative overflow-hidden rounded-3xl border-2 bg-[#161616] transition-all duration-700 hover:border-white/20 ${aspectClasses[aspect]} ${className}`}
     in:fade={{ duration: 1000 }}
 >
-    <!-- Background Image with Parallax-like hover -->
     <div class="absolute inset-0 overflow-hidden">
         <img
             src={image}
             alt={title}
             class="h-full w-full object-cover opacity-60 transition-transform duration-1000 group-hover:scale-110 group-hover:opacity-80"
         />
-        <!-- Gradient Overlay -->
         <div
             class="absolute inset-0 bg-linear-to-t from-[#0c0c0c] via-[#0c0c0c]/20 to-transparent opacity-80"
         ></div>
     </div>
 
-    <!-- Content -->
     <div class="absolute inset-0 flex flex-col justify-end p-8">
         {#if tag}
             <span
@@ -66,7 +63,6 @@
             {description}
         </p>
 
-        <!-- Accent Glow -->
         <div
             class="bg-primary-500/10 group-hover:bg-primary-500/20 absolute -right-20 -bottom-20 h-40 w-40 rounded-full blur-[80px] transition-all duration-700"
         ></div>

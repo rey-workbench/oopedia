@@ -1,4 +1,4 @@
-# Frontend Directory
+# Frontend Domain Guide
 
 **Generated:** 2026-04-02
 **Part of:** Adaptive E-Learning Platform (Svelte 5 + Inertia v3)
@@ -9,106 +9,40 @@ Svelte 5 SPA with Inertia v3 for server-rendered pages. Role-based routing (Admi
 
 ## STRUCTURE
 
-```
+```text
 resources/js/
-├── pages/          # Inertia pages by role
-│   ├── Admin/       # Admin dashboard, CRUD
-│   ├── Mahasiswa/   # Student interface
-│   ├── Auth/        # Login, register
-│   └── Landing/
-├── components/      # Reusable components
-│   ├── ui/          # Button, Card, Input, Modal, etc.
-│   ├── layout/      # Layout components
-│   ├── quiz/        # Quiz components
-│   ├── feedback/    # Feedback modals
-│   └── navigation/ # Navbar, Sidebar
-├── layouts/         # App layout wrapper
-├── states/          # Svelte 5 state classes
-├── stores/          # Zustand-like stores
-├── types/           # TypeScript types
-└── utils/           # Helper functions
+├── app.ts             # Inertia boot + dynamic page resolution
+├── pages/             # Role/feature/action page hierarchy
+├── states/            # `.svelte.ts` state classes + UI state
+├── components/        # Shared UI/navigation/feedback/quiz components
+├── types/             # Public type barrels + model/state contracts
+└── utils/             # Routing, role, formatter, helper utilities
 ```
 
-## PAGES ORGANIZATION
+## WHERE TO LOOK
 
-```
-pages/{Role}/{Feature}/{Action}/Index.svelte
+| Task                            | Location                                                       |
+| ------------------------------- | -------------------------------------------------------------- |
+| Inertia page resolution failure | `app.ts` (`import.meta.glob('./pages/**/*.svelte')`)           |
+| Shared state contracts          | `states/index.ts`, `states/**/*.svelte.ts`                     |
+| Shared type contracts           | `types/index.ts`, `types/models/*`, `types/states/*`           |
+| Navigation and route helpers    | `utils/route.ts`, `utils/router.ts`, `components/navigation/*` |
 
-Examples:
-├── Admin/Dashboard/Index.svelte
-├── Admin/Materials/Create/Index.svelte
-├── Admin/Materials/Edit/Index.svelte
-├── Mahasiswa/Dashboard/Index.svelte
-├── Mahasiswa/Materials/Questions/Show/Index.svelte
-└── Auth/Login/Index.svelte
-```
+## CONVENTIONS
 
-## STATE MANAGEMENT
+- Pages follow `pages/{Role}/{Feature}/{Action}/Index.svelte`.
+- Re-export shared APIs through barrels (`components/index.ts`, `types/index.ts`, `states/index.ts`, `utils/index.ts`).
+- Keep domain state in `.svelte.ts` classes and avoid duplicating prop-shape logic across pages.
+- Use Tailwind v4 patterns already established in project (no deprecated v3 utility syntax).
 
-### Svelte 5 $state Pattern
+## COUPLING BOUNDARIES
 
-```typescript
-// resources/js/states/Mahasiswa/QuizState.svelte.ts
-class QuizState {
-    currentQuestion = $state<Question | null>(null);
-    answers = $state<Answer[]>([]);
+- **Allowed:** Page → state class + typed props + shared utils/components.
+- **Avoid:** Duplicating route constants/role checks in pages when utilities exist.
+- **Avoid:** Defining duplicate model/state types outside `types/` barrels.
 
-    submitAnswer(answer: Answer) { ... }
-}
-```
+## ANTI-PATTERNS
 
-### State Files
-
-| Domain            | File                               |
-| ----------------- | ---------------------------------- |
-| Admin Dashboard   | Admin/DashboardState.svelte.ts     |
-| Admin Questions   | Admin/QuestionState.svelte.ts      |
-| Admin Users       | Admin/UserState.svelte.ts          |
-| Student Quiz      | Mahasiswa/QuizState.svelte.ts      |
-| Student Dashboard | Mahasiswa/DashboardState.svelte.ts |
-| Auth              | Auth/AuthState.svelte.ts           |
-
-## COMPONENTS
-
-| Category     | Components                                                                                  |
-| ------------ | ------------------------------------------------------------------------------------------- |
-| **ui**       | Button, Card, Input, Select, Modal, Badge, Toast, DataTable, Chart, Pagination, Accordion   |
-| **quiz**     | MultipleChoice, FillInTheBlank, DragAndDrop, DragDropEditor                                 |
-| **feedback** | FeedbackModal, ResultFeedback, CertificateFeedback, AccelerationFeedback, BacktrackFeedback |
-| **layout**   | LevelMapCanvas, ImportInstructions, GuestBanner, DifficultyFilterBar                        |
-
-## TYPES
-
-```
-types/
-├── models/        # Eloquent model types (Material, Question, User, etc.)
-├── states/        # State types (mahasiswa.ts, admin.ts)
-├── primitives.ts  # Shared types
-└── index.ts       # Re-exports
-```
-
-## NAVIGATION
-
-```svelte
-import {(inertia, Link)} from '@inertiajs/svelte'
-
-<a href="/admin" use:inertia>Admin</a>
-<Link href="/mahasiswa">Mahasiswa</Link>
-```
-
-## UTILITIES
-
-| File                | Purpose                 |
-| ------------------- | ----------------------- |
-| utils/route.ts      | Route helpers           |
-| utils/router.ts     | Navigation helpers      |
-| utils/quizUtils.ts  | Quiz logic              |
-| utils/formatters.ts | Date, number formatting |
-| utils/roles.ts      | Role constants          |
-
-## TAILWIND V4
-
-- CSS-first config in `resources/css/app.css`
-- Custom utilities via `@utility`
-- Dark mode via `dark:` prefix
-- NO deprecated v3 utilities (use `bg-black/_50` not `bg-opacity-50`)
+- Deep relative type imports bypassing `@/types` barrel.
+- Page-local ad-hoc type/interface drift from backend contract shapes.
+- New role/feature page trees that break existing role-first hierarchy.

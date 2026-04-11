@@ -15,7 +15,8 @@ final class LeaderboardService implements LeaderboardServiceInterface
     public function __construct(
         public readonly MaterialRepositoryInterface $materialRepo,
         public readonly ProgressRepositoryInterface $progressRepo,
-    ) {}
+    ) {
+    }
 
     /** @return array<string, mixed> */
     public function getLeaderboardData(string $currentUserId): array

@@ -2,4 +2,6 @@
 
 namespace App\Traits;
 
-trait SetsUserRole {}
+trait SetsUserRole
+{
+}

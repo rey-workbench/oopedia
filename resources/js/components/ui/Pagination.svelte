@@ -15,8 +15,8 @@
             {#if link.url}
                 <Link
                     href={link.url}
-                    class="rounded-2xl px-4 py-2 text-[10px] font-bold transition-all border-2 active:translate-y-[2px] active:border-b-2 {link.active
-                        ? 'bg-slate-900 text-white border-black border-b-4'
+                    class="rounded-2xl border-2 px-4 py-2 text-[10px] font-bold transition-all active:translate-y-[2px] active:border-b-2 {link.active
+                        ? 'border-b-4 border-black bg-slate-900 text-white'
                         : 'border-cosmos-border border-b-4 bg-white text-slate-400 hover:text-slate-900'}"
                 >
                     {@html link.label}

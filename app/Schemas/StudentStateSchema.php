@@ -85,11 +85,11 @@ final class StudentStateSchema
         'hints_available'          => 3,
     ];
 
-    public const int FACT_SCORE_CRITICAL_MAX = 40;  // < 40
+    public const int FACT_SCORE_CRITICAL_MAX = 40;
 
-    public const int FACT_SCORE_REMEDIAL_MAX = 70;  // 40-69
+    public const int FACT_SCORE_REMEDIAL_MAX = 70;
 
-    public const int FACT_SCORE_STANDARD_MAX = 90;  // 70-89
+    public const int FACT_SCORE_STANDARD_MAX = 90;
 
     public const string KEY_TOTAL_QUESTIONS_ANSWERED = 'total_questions_answered';
 

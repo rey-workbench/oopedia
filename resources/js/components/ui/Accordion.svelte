@@ -38,7 +38,7 @@
 
 <div class={`w-full space-y-3 ${className}`}>
     {#each items as item (item.id)}
-        <div class="overflow-hidden rounded-2xl border-2 border-cosmos-border bg-white">
+        <div class="border-cosmos-border overflow-hidden rounded-2xl border-2 bg-white">
             <button
                 type="button"
                 onclick={() => !item.disabled && toggle(item.id)}
@@ -56,7 +56,7 @@
                 />
             </button>
             {#if isOpen(item.id)}
-                <div class="border-t-2 border-cosmos-border px-6 py-5 text-cosmos-text">
+                <div class="border-cosmos-border text-cosmos-text border-t-2 px-6 py-5">
                     {@render item.content?.()}
                 </div>
             {/if}

@@ -29,7 +29,7 @@
     </label>
     <div
         class="group relative aspect-video rounded-3xl border-2 bg-slate-50 transition-all {preview
-            ? 'border-primary-200 border-solid border-b-4'
+            ? 'border-primary-200 border-b-4 border-solid'
             : 'border-dashed border-slate-200'} hover:border-primary-400 flex flex-col items-center justify-center overflow-hidden"
     >
         {#if preview}

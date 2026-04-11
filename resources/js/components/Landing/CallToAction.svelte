@@ -32,9 +32,7 @@
         </div>
 
         <div class="w-full max-w-md">
-            <div
-                class="rounded-3xl border-2 border-slate-200 border-b-8 bg-white p-8"
-            >
+            <div class="rounded-3xl border-2 border-b-8 border-slate-200 bg-white p-8">
                 <div class="mb-6 flex items-center gap-3">
                     <Disc2 size={14} class="text-slate-900" />
                     <span class="text-[10px] font-black tracking-[0.2em] text-slate-900 uppercase"
@@ -45,21 +43,19 @@
                 <div
                     class="mb-6 flex min-h-[80px] items-center justify-center rounded-xl border-2 border-slate-100 bg-slate-50 p-4"
                 >
-                    <p class="font-serif text-sm text-slate-400">
-                        Ketik pertanyaanmu di sini...
-                    </p>
+                    <p class="font-serif text-sm text-slate-400">Ketik pertanyaanmu di sini...</p>
                 </div>
 
                 <div class="flex gap-4">
                     <button
                         type="button"
-                        class="flex-1 rounded-2xl border-2 border-black border-b-4 bg-slate-900 py-3.5 text-[10px] font-black tracking-[0.15em] text-white uppercase transition-all hover:bg-slate-800 active:translate-y-[2px] active:border-b-2"
+                        class="flex-1 rounded-2xl border-2 border-b-4 border-black bg-slate-900 py-3.5 text-[10px] font-black tracking-[0.15em] text-white uppercase transition-all hover:bg-slate-800 active:translate-y-[2px] active:border-b-2"
                     >
                         Cari
                     </button>
                     <button
                         type="button"
-                        class="flex-1 rounded-2xl border-2 border-slate-200 border-b-4 bg-white py-3.5 text-[10px] font-black tracking-[0.15em] uppercase transition-all hover:bg-slate-50 active:translate-y-[2px] active:border-b-2"
+                        class="flex-1 rounded-2xl border-2 border-b-4 border-slate-200 bg-white py-3.5 text-[10px] font-black tracking-[0.15em] uppercase transition-all hover:bg-slate-50 active:translate-y-[2px] active:border-b-2"
                     >
                         Hapus
                     </button>
@@ -73,7 +69,7 @@
             </p>
             <Link
                 href={ROUTES.AUTH.REGISTER}
-                class="group inline-flex items-center gap-3 rounded-2xl border-2 border-white border-b-6 bg-white px-10 py-4 text-[11px] font-black tracking-[0.2em] text-slate-900 uppercase transition-all hover:bg-slate-50 active:translate-y-[2px] active:border-b-4"
+                class="group inline-flex items-center gap-3 rounded-2xl border-2 border-b-6 border-white bg-white px-10 py-4 text-[11px] font-black tracking-[0.2em] text-slate-900 uppercase transition-all hover:bg-slate-50 active:translate-y-[2px] active:border-b-4"
             >
                 <span>Daftar Sekarang</span>
                 <ArrowRight size={16} class="transition-transform group-hover:translate-x-1" />

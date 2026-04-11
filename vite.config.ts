@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import inertia from '@inertiajs/vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -16,6 +17,7 @@ export default defineConfig({
             refresh: true,
         }),
         tailwindcss(),
+        inertia(),
     ],
     resolve: {
         alias: {

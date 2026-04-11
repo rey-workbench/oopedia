@@ -45,8 +45,7 @@
 
     const variants: Record<ButtonVariant, string> = {
         primary: 'bg-primary-500 text-white border-primary-800 hover:bg-primary-600',
-        secondary:
-            'bg-white text-slate-900 border-slate-200 border-b-slate-300 hover:bg-slate-50',
+        secondary: 'bg-white text-slate-900 border-slate-200 border-b-slate-300 hover:bg-slate-50',
         gradient: 'bg-accent-500 text-white border-accent-800 hover:bg-accent-600',
         glass: 'bg-white/10 backdrop-blur-sm text-white border-white/20 border-b-white/30 hover:bg-white/20',
         danger: 'bg-rose-500 text-white border-rose-800 hover:bg-rose-600',

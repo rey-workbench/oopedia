@@ -1,66 +1,48 @@
-# Services Directory
+# Services Domain Guide
 
-**Generated:** 2026-04-02
-**Part of:** Adaptive E-Learning Platform
+**Generated:** 2026-04-11 (Asia/Bangkok)
+**Parent:** `/AGENTS.md`
 
 ## OVERVIEW
 
-Service layer implementing business logic with dependency injection via interfaces. 5 service clusters handle Adaptive Learning, Analytics, Gamification, LMS, and User management.
+Service layer orchestrates business use-cases through interface-first contracts and repository abstractions.
 
 ## STRUCTURE
 
-```
+```text
 app/Services/
-├── Adaptive/       # Forward-chaining rule engine
-├── Analytics/      # Dashboard, leaderboard, UEQ surveys
-├── Gamification/   # Points, badges, achievements
-├── Lms/            # Materials, questions, attempts
-└── User/           # Auth, profiles, CSV import
-```
-
-## SERVICE CLUSTERS
-
-| Cluster          | Purpose                         | Key Files                                                              |
-| ---------------- | ------------------------------- | ---------------------------------------------------------------------- |
-| **Adaptive**     | Rule-based learning adjustments | AdaptiveEngineService, FactGatheringService, NextActionResolverService |
-| **Analytics**    | Stats and reporting             | DashboardService, LeaderboardService, AdminDashboardService            |
-| **Lms**          | Content management              | MaterialService, QuestionService, QuestionAnswerService                |
-| **User**         | User management                 | UserService, StudentService, PerformanceService                        |
-| **Gamification** | Engagement mechanics            | GamificationService                                                    |
-
-## PATTERNS
-
-### Interface Binding
-
-```php
-// Consuming class binds to interface
-$this->app->bind(AdaptiveEngineServiceInterface::class, AdaptiveEngineService::class);
-```
-
-### Service Method Pattern
-
-```php
-public function evaluate(array $facts, array $currentState, array $context): array
-{
-    // Business logic here
-    return ['result' => $data];
-}
-```
-
-### Concern Traits
-
-```php
-// For services with shared behavior
-app/Services/User/Concerns/ImportsCsvUsers.php
+├── Adaptive/       # Rule-engine orchestration (facts, evaluation, next action)
+├── Analytics/      # Dashboard/leaderboard/survey aggregations
+├── Lms/            # Materials, questions, attempts, guest progress
+├── User/           # Registration, profile, performance
+└── Gamification/   # Points, badges, progression rewards
 ```
 
 ## WHERE TO LOOK
 
-| Task              | Service                 |
-| ----------------- | ----------------------- |
-| Quiz flow         | AdaptiveQuizFlowService |
-| Rule evaluation   | AdaptiveEngineService   |
-| Material CRUD     | MaterialService         |
-| User registration | UserService             |
-| Leaderboard       | LeaderboardService      |
-| UEQ surveys       | UeqSurveyService        |
+| Task                            | Service                                                                 |
+| ------------------------------- | ----------------------------------------------------------------------- |
+| Evaluate adaptive facts/actions | `Adaptive/AdaptiveEngineService.php`                                    |
+| Resolve quiz next step          | `Adaptive/NextActionResolverService.php`                                |
+| Material/question business flow | `Lms/MaterialService.php`, `Lms/QuestionService.php`                    |
+| Student and admin analytics     | `Analytics/DashboardService.php`, `Analytics/AdminDashboardService.php` |
+| User lifecycle                  | `User/UserService.php`, `User/StudentService.php`                       |
+
+## CONVENTIONS
+
+- Depend on `App\Contracts\Services\*Interface` in controllers/consumers.
+- Keep persistence in repositories; services coordinate rules + repositories.
+- Register bindings only in `app/Providers/ServiceServiceProvider.php`.
+- Return DTO/array structures consistent with existing service APIs; avoid ad-hoc shapes.
+
+## COUPLING BOUNDARIES
+
+- **Allowed:** Service → Repository interface, Service → Domain rules/constants, Service → DTO.
+- **Avoid:** Controller directly querying repositories/models when equivalent service exists.
+- **Avoid:** Cross-domain service calls that bypass contract boundaries.
+
+## ANTI-PATTERNS
+
+- Injecting concrete repository/service classes into controllers when an interface is already bound.
+- Re-implementing adaptive fact/action logic in non-Adaptive services.
+- Embedding request validation concerns inside service methods (keep in Form Requests).

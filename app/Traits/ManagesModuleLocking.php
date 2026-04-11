@@ -2,4 +2,6 @@
 
 namespace App\Traits;
 
-trait ManagesModuleLocking {}
+trait ManagesModuleLocking
+{
+}

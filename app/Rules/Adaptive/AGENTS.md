@@ -1,94 +1,49 @@
-# Adaptive Rules Directory
+# Adaptive Rules Domain Guide
 
-**Generated:** 2026-04-02
-**Part of:** Adaptive E-Learning Platform
+**Generated:** 2026-04-11 (Asia/Bangkok)
+**Parent:** `/AGENTS.md`
 
 ## OVERVIEW
 
-Forward-chaining rule-based system for adaptive learning. 20+ rules evaluate student facts and trigger appropriate actions (H01-H11).
+Forward-chaining adaptive engine: facts (`Gxx`) are evaluated by prioritized rules to emit actions (`Hxx`) that drive remediation, promotion, certification, and intervention.
 
-## ARCHITECTURE
+## STRUCTURE
 
-```
-Rules/Adaptive/
-├── BaseAdaptiveRule.php           # Abstract base with fact helpers
-├── Contracts/AdaptiveRuleInterface.php  # Rule contract
-├── Constants/AdaptiveConstants.php  # Fact/action codes
-├── Concerns/                      # Composable rule traits
-│   ├── HasScoreCondition.php
-│   ├── HasErrorType.php
-│   ├── HasLearningStyle.php
-│   ├── HasDifficultyLevel.php
-│   ├── AppliesProgression.php
-│   ├── AppliesAchievement.php
-│   ├── AppliesRecovery.php
-│   └── AppliesCrisisIntervention.php
-├── RuleRegistry.php               # Rule registration
-└── Rule*.php                      # 20+ concrete rules
+```text
+app/Rules/Adaptive/
+├── BaseAdaptiveRule.php            # Shared predicates/helpers for rule evaluation
+├── Contracts/AdaptiveRuleInterface.php
+├── Constants/AdaptiveConstants.php # Canonical FACT/ACTION codes
+├── Concerns/                       # Reusable apply/evaluate fragments
+├── RuleRegistry.php                # Ordered registration by priority
+└── Rule*.php                       # Concrete policy rules
 ```
 
-## FACT CODES (G01-G25)
+## WHERE TO LOOK
 
-| Code | Meaning                 |
-| ---- | ----------------------- |
-| G01  | First attempt           |
-| G04  | Low difficulty question |
-| G07  | Correct answer          |
-| G10  | Medium difficulty       |
-| G13  | Visual learning style   |
-| G20  | Failed attempt          |
+| Task                         | File                                  |
+| ---------------------------- | ------------------------------------- |
+| Add or reorder rules         | `RuleRegistry.php`                    |
+| Add new fact/action code     | `Constants/AdaptiveConstants.php`     |
+| Shared predicate/apply logic | `BaseAdaptiveRule.php`, `Concerns/*`  |
+| Rule contract expectations   | `Contracts/AdaptiveRuleInterface.php` |
 
-## ACTION CODES (H01-H11)
+## CONVENTIONS
 
-| Code | Action       |
-| ---- | ------------ |
-| H01  | Remediation  |
-| H04  | Promotion    |
-| H07  | Certificate  |
-| H10  | Intervention |
+- All rule identifiers, names, action codes, and priorities are declared on each concrete rule.
+- Priority ordering is ascending numeric in `RuleRegistry` (`lower = higher precedence`).
+- Facts/actions must use `AdaptiveConstants`; no magic literals in services/pages.
+- Rule `evaluate()` is side-effect free; state mutation happens only in `apply()`.
 
-## BASE RULE HELPERS
+## CHANGE PROTOCOL
 
-```php
-protected function hasFact(array $facts, string $fact): bool
-protected function hasAllFacts(array $facts, array $requiredFacts): bool  // AND
-protected function hasAnyFact(array $facts, array $requiredFacts): bool   // OR
-protected function notHasFact(array $facts, string $fact): bool
-protected function hasScoreCondition(string $operator, int $value): bool
-```
+1. Add/modify constants in `AdaptiveConstants` if new semantic is needed.
+2. Implement rule class extending `BaseAdaptiveRule`.
+3. Register class in `RuleRegistry` and validate priority relative to existing rules.
+4. Verify behavior through adaptive service tests (`tests/Feature/Unit/Services/Adaptive/*`).
 
-## CREATING NEW RULES
+## ANTI-PATTERNS
 
-```php
-// 1. Create rule class extending BaseAdaptiveRule
-class RuleMyNewRule extends BaseAdaptiveRule
-{
-    protected string $ruleId = 'RXXX';
-    protected string $ruleName = 'My New Rule';
-    protected string $actionCode = 'H05';
-    protected int $priority = 25;  // Lower = higher priority
-
-    public function evaluate(array $facts): bool
-    {
-        return $this->hasAllFacts($facts, ['G07', 'G10']);
-    }
-
-    public function apply(array $state, array $context): array
-    {
-        $state['next_action'] = 'PROMOTE';
-        return $state;
-    }
-}
-
-// 2. Register in RuleRegistry.php
-```
-
-## RULE CATEGORIES
-
-| Category         | Examples                                                             |
-| ---------------- | -------------------------------------------------------------------- |
-| **Certificate**  | RuleBronzeCertificate, RuleSilverCertificate, RuleGoldCertificate    |
-| **Promotion**    | RuleStandardPromotion, RuleAcceleratedJump, RuleModuleGraduation     |
-| **Recovery**     | RuleSyntaxRecovery, RuleLogicRecovery, RuleTextualCrisisIntervention |
-| **Intervention** | RuleVisualCrisisIntervention, RuleCriticalBacktracking               |
-| **Safety Net**   | RulePersistentVisualSafetyNet, RulePersistentTextualSafetyNet        |
+- Encoding hard-coded G/H codes directly in controllers/services/frontend.
+- Changing `RuleRegistry` order without considering precedence side effects.
+- Putting business side effects in `evaluate()`.
