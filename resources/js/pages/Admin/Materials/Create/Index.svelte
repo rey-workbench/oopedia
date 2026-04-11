@@ -17,6 +17,7 @@
 <App title="Tambah Materi">
     <div class="space-y-12 pb-20">
         <PageHeader
+            id="page-header"
             title="Arsitek Konten Kurikulum"
             subtitle="Publikasikan modul pembelajaran baru dengan visualisasi premium."
         >

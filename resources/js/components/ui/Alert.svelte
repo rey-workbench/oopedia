@@ -50,7 +50,7 @@
 {#if visible}
     {@const IconComponent = icons[variant] || icons.info}
     <div
-        id={id}
+        {id}
         transition:fade={{ duration: 200 }}
         class={`flex items-center rounded-2xl border-2 p-4 ${variants[variant] || variants.info} ${className}`}
         role="alert"

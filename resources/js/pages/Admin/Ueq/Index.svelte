@@ -71,8 +71,11 @@
                 Questionnaire).
             </p>
             <div class="mt-6 flex flex-wrap gap-4">
-                <Button id="ueq-export-btn" onclick={() => state.exportResults()} variant="success" icon={FileDown}
-                    >EKSPOR CSV</Button
+                <Button
+                    id="ueq-export-btn"
+                    onclick={() => state.exportResults()}
+                    variant="success"
+                    icon={FileDown}>EKSPOR CSV</Button
                 >
             </div>
         </div>
@@ -159,47 +162,54 @@
         </div>
 
         <div id="ueq-respondents-table">
-            <DataTable title="Log Responden Survey" items={state.surveys} {columns} hideSearch={true}>
-            {#snippet row(survey)}
-                <td class="border-b border-slate-50 px-6 py-6">
-                    <div class="flex items-center gap-4">
-                        <UserAvatar name={survey.user ? survey.user.name : '?'} />
-                        <div>
-                            <div class="text-sm font-bold tracking-widest text-slate-900 uppercase">
-                                {survey.user ? survey.user.name : 'Tamu'}
-                            </div>
-                            <div
-                                class="mt-0.5 text-[9px] font-bold tracking-widest text-slate-400 uppercase"
-                            >
-                                {survey.nim || '-'}
+            <DataTable
+                title="Log Responden Survey"
+                items={state.surveys}
+                {columns}
+                hideSearch={true}
+            >
+                {#snippet row(survey)}
+                    <td class="border-b border-slate-50 px-6 py-6">
+                        <div class="flex items-center gap-4">
+                            <UserAvatar name={survey.user ? survey.user.name : '?'} />
+                            <div>
+                                <div
+                                    class="text-sm font-bold tracking-widest text-slate-900 uppercase"
+                                >
+                                    {survey.user ? survey.user.name : 'Tamu'}
+                                </div>
+                                <div
+                                    class="mt-0.5 text-[9px] font-bold tracking-widest text-slate-400 uppercase"
+                                >
+                                    {survey.nim || '-'}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </td>
-                <td class="border-b border-slate-50 px-6 py-6">
-                    <span
-                        class="rounded-xl bg-slate-100 px-3 py-1.5 text-[10px] font-bold tracking-widest text-slate-600 uppercase"
-                    >
-                        {survey.class || '-'}
-                    </span>
-                </td>
-                <td class="border-b border-slate-50 px-6 py-6">
-                    <span class="text-xs font-medium text-slate-500">
-                        {survey.created_at ? formatDate(survey.created_at) : '-'}
-                    </span>
-                </td>
-                <td class="border-b border-slate-50 px-6 py-6">
-                    <div class="flex justify-end">
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            href={ROUTES.ADMIN.UEQ.SHOW(survey.id)}
-                            icon={Eye}
-                        />
-                    </div>
-                </td>
-            {/snippet}
-        </DataTable>
+                    </td>
+                    <td class="border-b border-slate-50 px-6 py-6">
+                        <span
+                            class="rounded-xl bg-slate-100 px-3 py-1.5 text-[10px] font-bold tracking-widest text-slate-600 uppercase"
+                        >
+                            {survey.class || '-'}
+                        </span>
+                    </td>
+                    <td class="border-b border-slate-50 px-6 py-6">
+                        <span class="text-xs font-medium text-slate-500">
+                            {survey.created_at ? formatDate(survey.created_at) : '-'}
+                        </span>
+                    </td>
+                    <td class="border-b border-slate-50 px-6 py-6">
+                        <div class="flex justify-end">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                href={ROUTES.ADMIN.UEQ.SHOW(survey.id)}
+                                icon={Eye}
+                            />
+                        </div>
+                    </td>
+                {/snippet}
+            </DataTable>
         </div>
 
         <Pagination links={(state.surveys as any).links || []} />

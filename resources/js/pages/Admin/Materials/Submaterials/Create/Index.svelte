@@ -17,6 +17,7 @@
 <App title={`Buat Sub-Materi untuk ${material.title}`}>
     <div class="space-y-12">
         <PageHeader
+            id="page-header"
             title="Tambah Sub-Materi"
             subtitle={`Unit pembelajaran untuk modul utama: ${material.title}`}
         >

@@ -8,10 +8,11 @@ export function registerLandingTutorials() {
                 element: '#hero-section',
                 popover: {
                     title: 'Selamat Datang di Oopedia',
-                    description: 'Platform e-learning adaptif untuk Penguasaan Pemrograman Berorientasi Objek.',
+                    description:
+                        'Platform e-learning adaptif untuk Penguasaan Pemrograman Berorientasi Objek.',
                     side: 'bottom',
-                    align: 'center'
-                }
+                    align: 'center',
+                },
             },
             {
                 element: '#feature-adaptive',
@@ -19,8 +20,8 @@ export function registerLandingTutorials() {
                     title: 'Belajar Adaptif',
                     description: 'Materi menyesuaikan dengan kemampuan Anda secara otomatis.',
                     side: 'top',
-                    align: 'center'
-                }
+                    align: 'center',
+                },
             },
             {
                 element: '#cta-register',
@@ -28,9 +29,9 @@ export function registerLandingTutorials() {
                     title: 'Mulai Sekarang',
                     description: 'Daftar sekarang untuk mencoba pengalaman belajar yang baru.',
                     side: 'bottom',
-                    align: 'center'
-                }
-            }
-        ]
+                    align: 'center',
+                },
+            },
+        ],
     });
 }

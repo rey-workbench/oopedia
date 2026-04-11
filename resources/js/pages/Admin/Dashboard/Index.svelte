@@ -117,6 +117,7 @@
 <App title="Admin Dashboard">
     <div class="space-y-12">
         <PageHeader
+            id="page-header"
             title="Dashboard"
             subtitle="Pusat kendali operasional dan visualisasi data sistem OOPedia."
         />

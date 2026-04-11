@@ -6,8 +6,4 @@ export {
     toggleSidebar,
 } from './sidebarState.svelte';
 
-export {
-    tutorialState,
-    startTutorial,
-    resetTutorialProgress
-} from './tutorialState.svelte';
+export { tutorialState, startTutorial, resetTutorialProgress } from './tutorialState.svelte';

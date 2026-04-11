@@ -106,8 +106,7 @@
                 <span
                     class="bg-accent-400 absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
                 ></span>
-                <span class="bg-accent-500 relative inline-flex h-3 w-3 rounded-full"
-                ></span>
+                <span class="bg-accent-500 relative inline-flex h-3 w-3 rounded-full"></span>
             </span>
         </button>
 

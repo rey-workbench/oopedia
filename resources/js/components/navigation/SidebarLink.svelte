@@ -2,7 +2,7 @@
     import { Link } from '@inertiajs/svelte';
     import { ChevronRight, Link2 } from 'lucide-svelte';
     import type { Snippet } from 'svelte';
-    
+
     interface Props {
         id?: string | undefined;
         href?: string | undefined;

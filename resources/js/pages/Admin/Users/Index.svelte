@@ -36,6 +36,7 @@
 <App title="Manajemen Admin">
     <div class="space-y-12">
         <PageHeader
+            id="page-header"
             title="Akses Kontrol Admin"
             subtitle="Kelola akun Administrator dan Dosen pembimbing sistem."
         >
@@ -51,7 +52,12 @@
                             {pendingAdminsCount} Permintaan Menunggu
                         </Button>
                     {/if}
-                    <Button id="add-user-btn" href={ROUTES.ADMIN.USERS.CREATE} variant="primary" icon={UserPlus}>
+                    <Button
+                        id="add-user-btn"
+                        href={ROUTES.ADMIN.USERS.CREATE}
+                        variant="primary"
+                        icon={UserPlus}
+                    >
                         Tambah User
                     </Button>
                 </div>
@@ -59,94 +65,99 @@
         </PageHeader>
 
         <div id="user-directory-table">
-        <DataTable
-            title="Direktori Pengguna Sistem"
-            items={listState.users.data}
-            bind:search
-            onsearch={() => {
-                listState.search = search;
-                listState.handleSearch();
-            }}
-            searchPlaceholder="Cari nama atau email..."
-            {columns}
-        >
-            {#snippet empty()}
-                <EmptyState
-                    title="Data Pengguna Kosong"
-                    description="Belum ada pengguna sistem yang ditemukan sesuai pencarian."
-                    icon={ShieldCheck}
-                />
-            {/snippet}
+            <DataTable
+                title="Direktori Pengguna Sistem"
+                items={listState.users.data}
+                bind:search
+                onsearch={() => {
+                    listState.search = search;
+                    listState.handleSearch();
+                }}
+                searchPlaceholder="Cari nama atau email..."
+                {columns}
+            >
+                {#snippet empty()}
+                    <EmptyState
+                        title="Data Pengguna Kosong"
+                        description="Belum ada pengguna sistem yang ditemukan sesuai pencarian."
+                        icon={ShieldCheck}
+                    />
+                {/snippet}
 
-             {#snippet row(user, index)}
-                <td
-                    class={`group-hover:border-l-primary-600 border-b border-l-4 border-slate-50 border-l-transparent px-6 py-6 ${user.role_id === 1 ? 'bg-slate-900/5' : ''}`}
-                >
-                    <div>
-                        <div class="font-bold tracking-widest text-slate-900 uppercase">
-                            {user.name}
-                        </div>
-                        <div
-                            class="mt-0.5 text-[9px] font-bold tracking-widest text-slate-400 uppercase"
-                        >
-                            ID #{user.id}
-                        </div>
-                    </div>
-                </td>
-                <td class="border-b border-slate-50 px-6 py-6">
-                    <span class="text-xs font-medium text-slate-500">{user.email}</span>
-                </td>
-                <td class="border-b border-slate-50 px-6 py-6">
-                    <Badge
-                        variant={user.role_id === 1
-                            ? 'secondary'
-                            : user.role_id === 2
-                              ? 'primary'
-                              : 'success'}
-                        size="xs"
+                {#snippet row(user, index)}
+                    <td
+                        class={`group-hover:border-l-primary-600 border-b border-l-4 border-slate-50 border-l-transparent px-6 py-6 ${user.role_id === 1 ? 'bg-slate-900/5' : ''}`}
                     >
-                        {user.role ? user.role.name : 'N/A'}
-                    </Badge>
-                </td>
-                <td class="border-b border-slate-50 px-6 py-6">
-                    {#if user.role_id === 1}
-                        <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                            >TANPA BATAS</span
+                        <div>
+                            <div class="font-bold tracking-widest text-slate-900 uppercase">
+                                {user.name}
+                            </div>
+                            <div
+                                class="mt-0.5 text-[9px] font-bold tracking-widest text-slate-400 uppercase"
+                            >
+                                ID #{user.id}
+                            </div>
+                        </div>
+                    </td>
+                    <td class="border-b border-slate-50 px-6 py-6">
+                        <span class="text-xs font-medium text-slate-500">{user.email}</span>
+                    </td>
+                    <td class="border-b border-slate-50 px-6 py-6">
+                        <Badge
+                            variant={user.role_id === 1
+                                ? 'secondary'
+                                : user.role_id === 2
+                                  ? 'primary'
+                                  : 'success'}
+                            size="xs"
                         >
-                    {:else if user.approved_at}
-                        <span
-                            class="text-[10px] font-bold tracking-widest text-emerald-600 uppercase"
-                            >DISETUJUI</span
+                            {user.role ? user.role.name : 'N/A'}
+                        </Badge>
+                    </td>
+                    <td class="border-b border-slate-50 px-6 py-6">
+                        {#if user.role_id === 1}
+                            <span
+                                class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                                >TANPA BATAS</span
+                            >
+                        {:else if user.approved_at}
+                            <span
+                                class="text-[10px] font-bold tracking-widest text-emerald-600 uppercase"
+                                >DISETUJUI</span
+                            >
+                        {:else}
+                            <span
+                                class="text-[10px] font-bold tracking-widest text-amber-600 uppercase"
+                                >MENUNGGU</span
+                            >
+                        {/if}
+                    </td>
+                    <td class="border-b border-slate-50 px-6 py-6">
+                        <div
+                            id={index === 0 ? 'user-actions' : undefined}
+                            class="flex justify-end gap-2"
                         >
-                    {:else}
-                        <span class="text-[10px] font-bold tracking-widest text-amber-600 uppercase"
-                            >MENUNGGU</span
-                        >
-                    {/if}
-                </td>
-                <td class="border-b border-slate-50 px-6 py-6">
-                    <div id={index === 0 ? 'user-actions' : undefined} class="flex justify-end gap-2">
-                        <Button
-                            id={index === 0 ? 'btn-edit-user' : undefined}
-                            variant="ghost"
-                            size="sm"
-                            href={ROUTES.ADMIN.USERS.EDIT(user.id)}
-                            icon={Edit2}
-                        />
-                        {#if isSuperAdmin && user.id !== authUser.id}
                             <Button
-                                id={index === 0 ? 'btn-delete-user' : undefined}
+                                id={index === 0 ? 'btn-edit-user' : undefined}
                                 variant="ghost"
                                 size="sm"
-                                onclick={() => listState.handleDelete(user.id)}
-                                icon={Trash2}
-                                class="text-slate-300 hover:text-rose-500"
+                                href={ROUTES.ADMIN.USERS.EDIT(user.id)}
+                                icon={Edit2}
                             />
-                        {/if}
-                    </div>
-                </td>
-            {/snippet}
-        </DataTable>
+                            {#if isSuperAdmin && user.id !== authUser.id}
+                                <Button
+                                    id={index === 0 ? 'btn-delete-user' : undefined}
+                                    variant="ghost"
+                                    size="sm"
+                                    onclick={() => listState.handleDelete(user.id)}
+                                    icon={Trash2}
+                                    class="text-slate-300 hover:text-rose-500"
+                                />
+                            {/if}
+                        </div>
+                    </td>
+                {/snippet}
+            </DataTable>
         </div>
 
         {#if listState.users.data && listState.users.data.length > 0}

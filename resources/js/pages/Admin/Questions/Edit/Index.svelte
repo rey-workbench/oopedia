@@ -31,6 +31,7 @@
 <App title={`Edit Soal #${question.id}`}>
     <div class="space-y-12 pb-20">
         <PageHeader
+            id="page-header"
             title="Rekonfigurasi Soal"
             subtitle={`Memodifikasi instrumen penilaian #${question.id} untuk optimasi validitas.`}
         >

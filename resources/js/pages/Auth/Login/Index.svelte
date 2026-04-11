@@ -2,7 +2,15 @@
     import App from '@/layouts/App.svelte';
     import Input from '@/components/ui/Input.svelte';
     import { Link } from '@inertiajs/svelte';
-    import { Loader2, ArrowRight, Ghost, ChevronLeft, Star, Users, CircleHelp } from 'lucide-svelte';
+    import {
+        Loader2,
+        ArrowRight,
+        Ghost,
+        ChevronLeft,
+        Star,
+        Users,
+        CircleHelp,
+    } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
     import { LoginState } from '@/states/Auth/AuthState.svelte';
     import { fade, fly } from 'svelte/transition';
@@ -240,7 +248,11 @@
             </div>
 
             <!-- The Form Core -->
-            <div id="login-form-container" class="w-full max-w-sm" in:fade={{ duration: 1000, delay: 500 }}>
+            <div
+                id="login-form-container"
+                class="w-full max-w-sm"
+                in:fade={{ duration: 1000, delay: 500 }}
+            >
                 <div class="mb-12">
                     <div
                         class="mb-6 inline-block animate-pulse rounded-full border border-slate-200 bg-slate-900/2 px-3 py-1"

@@ -79,16 +79,17 @@
 <App title="Kelola Materi">
     <div class="space-y-12">
         <PageHeader
+            id="page-header"
             title="Kurikulum Materi"
             subtitle="Otoritas manajemen konten dan modul pembelajaran Pemrograman Berorientasi Objek."
         >
             {#snippet actions()}
-                    <Button
-                        id="create-material-btn"
-                        href={ROUTES.ADMIN.MATERIALS.CREATE}
-                        variant="primary"
-                        icon={Plus}>Tambah Modul Baru</Button
-                    >
+                <Button
+                    id="create-material-btn"
+                    href={ROUTES.ADMIN.MATERIALS.CREATE}
+                    variant="primary"
+                    icon={Plus}>Tambah Modul Baru</Button
+                >
             {/snippet}
         </PageHeader>
 
@@ -154,123 +155,134 @@
 
         <!-- Material List -->
         <div id="material-table">
-        <DataTable
-            title="Inventaris Konten"
-            items={listState.materials}
-            bind:search={listState.search}
-            onsearch={() => listState.handleSearch()}
-            searchPlaceholder="Pindai materi..."
-            {columns}
-        >
-            {#snippet empty()}
-                <EmptyState
-                    title="Kurikulum Kosong"
-                    description="Basis data materi instruksional kosong. Lakukan injeksi modul baru untuk memulai siklus pembelajaran."
-                >
-                    <Button href={ROUTES.ADMIN.MATERIALS.CREATE} variant="primary" icon={Plus}
-                        >Inisialisasi Kurikulum</Button
+            <DataTable
+                title="Inventaris Konten"
+                items={listState.materials}
+                bind:search={listState.search}
+                onsearch={() => listState.handleSearch()}
+                searchPlaceholder="Pindai materi..."
+                {columns}
+            >
+                {#snippet empty()}
+                    <EmptyState
+                        title="Kurikulum Kosong"
+                        description="Basis data materi instruksional kosong. Lakukan injeksi modul baru untuk memulai siklus pembelajaran."
                     >
-                </EmptyState>
-            {/snippet}
-
-            {#snippet row(material, index)}
-                <td class="group-hover:border-primary-600 border-l-4 border-transparent px-6 py-6">
-                    {#if material.media && material.media.length > 0}
-                        <div
-                            class="h-14 w-20 overflow-hidden rounded-xl shadow-lg shadow-slate-200 transition-transform group-hover:scale-105"
+                        <Button href={ROUTES.ADMIN.MATERIALS.CREATE} variant="primary" icon={Plus}
+                            >Inisialisasi Kurikulum</Button
                         >
-                            <img
-                                src={`/${material.media[0].media_url}`}
-                                alt={material.title}
-                                class="h-full w-full object-cover"
+                    </EmptyState>
+                {/snippet}
+
+                {#snippet row(material, index)}
+                    <td
+                        class="group-hover:border-primary-600 border-l-4 border-transparent px-6 py-6"
+                    >
+                        {#if material.media && material.media.length > 0}
+                            <div
+                                class="h-14 w-20 overflow-hidden rounded-xl shadow-lg shadow-slate-200 transition-transform group-hover:scale-105"
+                            >
+                                <img
+                                    src={`/${material.media[0].media_url}`}
+                                    alt={material.title}
+                                    class="h-full w-full object-cover"
+                                />
+                            </div>
+                        {:else}
+                            <div
+                                class="flex h-14 w-20 items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-100 text-slate-300"
+                            >
+                                <FileText size={24} strokeWidth={2} class="opacity-30" />
+                            </div>
+                        {/if}
+                    </td>
+
+                    <td
+                        class="group-hover:border-primary-600 border-l-4 border-transparent px-6 py-6"
+                    >
+                        <div>
+                            <div class="mb-1 font-bold tracking-widest text-slate-900">
+                                {material.title}
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span
+                                    class="bg-primary-50 text-primary-600 rounded-full px-2 py-0.5 text-[9px] font-bold tracking-widest uppercase"
+                                >
+                                    MOD-{String(material.id).padStart(3, '0')}
+                                </span>
+                                <span
+                                    class="rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-bold tracking-widest text-emerald-600 uppercase"
+                                >
+                                    {material.sub_materials ? material.sub_materials.length : 0} SUB-MATERI
+                                </span>
+                                <p
+                                    class="line-clamp-1 max-w-sm text-[10px] font-medium text-slate-400"
+                                >
+                                    {material.content.replace(/<[^>]*>?/gm, '').substring(0, 60)}...
+                                </p>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td class="px-6 py-6">
+                        <div class="flex items-center gap-3">
+                            <UserAvatar name={material.creator?.name ?? 'S'} size="sm" />
+                            <span
+                                class="text-[11px] font-bold tracking-widest text-slate-600 uppercase"
+                            >
+                                {material.creator?.name || 'System Admin'}
+                            </span>
+                        </div>
+                    </td>
+
+                    <td class="px-6 py-6 text-center">
+                        <span
+                            class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                        >
+                            {new Date(material.created_at).toLocaleDateString('id-ID')}
+                        </span>
+                    </td>
+
+                    <td class="px-6 py-6">
+                        <div
+                            id={index === 0 ? 'material-actions' : undefined}
+                            class="flex justify-end gap-3"
+                        >
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                href={ROUTES.ADMIN.MATERIALS.SUBMATERIALS.INDEX(material.id)}
+                                icon={List}
+                                class="text-emerald-500 hover:text-emerald-600"
+                                title="Kelola Sub-materi"
+                            />
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                href={ROUTES.ADMIN.MATERIALS.QUESTIONS.INDEX(material.id)}
+                                icon={FlaskConical}
+                                class="text-primary-500 hover:text-primary-600"
+                                title="Kelola Soal"
+                            />
+                            <Button
+                                id={index === 0 ? 'btn-edit-material' : undefined}
+                                variant="ghost"
+                                size="sm"
+                                href={ROUTES.ADMIN.MATERIALS.EDIT(material.id)}
+                                icon={Edit2}
+                            />
+                            <Button
+                                id={index === 0 ? 'btn-delete-material' : undefined}
+                                variant="ghost"
+                                size="sm"
+                                onclick={() => listState.handleDelete(material.id)}
+                                icon={Trash2}
+                                class="text-slate-300 hover:text-rose-500"
                             />
                         </div>
-                    {:else}
-                        <div
-                            class="flex h-14 w-20 items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-100 text-slate-300"
-                        >
-                            <FileText size={24} strokeWidth={2} class="opacity-30" />
-                        </div>
-                    {/if}
-                </td>
-
-                <td class="group-hover:border-primary-600 border-l-4 border-transparent px-6 py-6">
-                    <div>
-                        <div class="mb-1 font-bold tracking-widest text-slate-900">
-                            {material.title}
-                        </div>
-                        <div class="flex flex-wrap items-center gap-2">
-                            <span
-                                class="bg-primary-50 text-primary-600 rounded-full px-2 py-0.5 text-[9px] font-bold tracking-widest uppercase"
-                            >
-                                MOD-{String(material.id).padStart(3, '0')}
-                            </span>
-                            <span
-                                class="rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-bold tracking-widest text-emerald-600 uppercase"
-                            >
-                                {material.sub_materials ? material.sub_materials.length : 0} SUB-MATERI
-                            </span>
-                            <p class="line-clamp-1 max-w-sm text-[10px] font-medium text-slate-400">
-                                {material.content.replace(/<[^>]*>?/gm, '').substring(0, 60)}...
-                            </p>
-                        </div>
-                    </div>
-                </td>
-
-                <td class="px-6 py-6">
-                    <div class="flex items-center gap-3">
-                        <UserAvatar name={material.creator?.name ?? 'S'} size="sm" />
-                        <span
-                            class="text-[11px] font-bold tracking-widest text-slate-600 uppercase"
-                        >
-                            {material.creator?.name || 'System Admin'}
-                        </span>
-                    </div>
-                </td>
-
-                <td class="px-6 py-6 text-center">
-                    <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
-                        {new Date(material.created_at).toLocaleDateString('id-ID')}
-                    </span>
-                </td>
-
-                <td class="px-6 py-6">
-                    <div id={index === 0 ? 'material-actions' : undefined} class="flex justify-end gap-3">
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            href={ROUTES.ADMIN.MATERIALS.SUBMATERIALS.INDEX(material.id)}
-                            icon={List}
-                            class="text-emerald-500 hover:text-emerald-600"
-                            title="Kelola Sub-materi"
-                        />
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            href={ROUTES.ADMIN.MATERIALS.QUESTIONS.INDEX(material.id)}
-                            icon={FlaskConical}
-                            class="text-primary-500 hover:text-primary-600"
-                            title="Kelola Soal"
-                        />
-                        <Button
-                            id={index === 0 ? 'btn-edit-material' : undefined}
-                            variant="ghost"
-                            size="sm"
-                            href={ROUTES.ADMIN.MATERIALS.EDIT(material.id)}
-                            icon={Edit2}
-                        />
-                        <Button
-                            id={index === 0 ? 'btn-delete-material' : undefined}
-                            variant="ghost"
-                            size="sm"
-                            onclick={() => listState.handleDelete(material.id)}
-                            icon={Trash2}
-                            class="text-slate-300 hover:text-rose-500"
-                        />
-                    </div>
-                </td>
-            {/snippet}
-        </DataTable>
+                    </td>
+                {/snippet}
+            </DataTable>
         </div>
     </div>
 </App>

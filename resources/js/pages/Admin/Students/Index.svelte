@@ -43,6 +43,7 @@
 <App title="Data Mahasiswa">
     <div class="space-y-12">
         <PageHeader
+            id="page-header"
             title="Database Mahasiswa"
             subtitle="Pantau progres dan aktivitas belajar seluruh mahasiswa terdaftar."
         >
@@ -63,92 +64,105 @@
         </PageHeader>
 
         <div id="student-table">
-        <DataTable
-            title="Registri Subjek"
-            items={listState.students.data || []}
-            bind:search
-            onsearch={() => {
-                listState.search = search;
-                listState.handleSearch();
-            }}
-            searchPlaceholder="Cari mahasiswa..."
-            {columns}
-        >
-            {#snippet empty()}
-                <EmptyState
-                    title="Tidak Ada Mahasiswa Terdaftar"
-                    description="Silakan daftarkan mahasiswa secara manual atau impor melalui protokol Excel."
-                    icon={GraduationCap}
-                >
-                    <div class="flex justify-center gap-4">
-                        <Button onclick={() => (openModal = true)} variant="primary" icon={UserPlus}
-                            >Daftar Individu</Button
-                        >
-                        <Button
-                            href={ROUTES.ADMIN.STUDENTS.IMPORT}
-                            variant="outline"
-                            icon={FileSpreadsheet}>Unggah Dataset</Button
-                        >
-                    </div>
-                </EmptyState>
-            {/snippet}
-
-            {#snippet row(student, index)}
-                <td class="group-hover:border-primary-600 border-l-4 border-transparent px-6 py-6">
-                    <div class="flex items-center gap-4">
-                        <UserAvatar name={student.name} />
-                        <div class="font-bold tracking-widest text-slate-900">
-                            {student.name}
-                        </div>
-                    </div>
-                </td>
-                <td class="px-6 py-6">
-                    <span
-                        class="text-xs font-bold text-slate-400 underline decoration-slate-200 underline-offset-4"
+            <DataTable
+                title="Registri Subjek"
+                items={listState.students.data || []}
+                bind:search
+                onsearch={() => {
+                    listState.search = search;
+                    listState.handleSearch();
+                }}
+                searchPlaceholder="Cari mahasiswa..."
+                {columns}
+            >
+                {#snippet empty()}
+                    <EmptyState
+                        title="Tidak Ada Mahasiswa Terdaftar"
+                        description="Silakan daftarkan mahasiswa secara manual atau impor melalui protokol Excel."
+                        icon={GraduationCap}
                     >
-                        {student.email}
-                    </span>
-                </td>
-                <td class="px-6 py-6 text-center">
-                    <div class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1">
-                        <Terminal size={10} class="text-primary-600" />
-                        <span class="text-[10px] font-bold text-slate-700"
-                            >{student.total_answered_questions ?? 0}</span
-                        >
-                    </div>
-                </td>
-                <td class="px-6 py-6">
-                    <div class="mx-auto w-40 space-y-2">
-                        <div
-                            class="flex items-center justify-between px-1 text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                        >
-                            <span>Sinkronisasi Progres</span>
-                            <span>{student.overall_progress}%</span>
+                        <div class="flex justify-center gap-4">
+                            <Button
+                                onclick={() => (openModal = true)}
+                                variant="primary"
+                                icon={UserPlus}>Daftar Individu</Button
+                            >
+                            <Button
+                                href={ROUTES.ADMIN.STUDENTS.IMPORT}
+                                variant="outline"
+                                icon={FileSpreadsheet}>Unggah Dataset</Button
+                            >
                         </div>
-                        <ProgressBar value={student.overall_progress} height="h-2" color="blue" />
-                    </div>
-                </td>
-                <td class="px-6 py-6">
-                    <div id={index === 0 ? 'student-actions' : undefined} class="flex justify-end gap-2">
-                        <Button
-                            id={index === 0 ? 'btn-progress-student' : undefined}
-                            variant="ghost"
-                            size="sm"
-                            href={ROUTES.ADMIN.STUDENTS.SHOW(student.id)}
-                            icon={LineChart}
-                        />
-                        <Button
-                            id={index === 0 ? 'btn-delete-student' : undefined}
-                            variant="ghost"
-                            size="sm"
-                            onclick={() => listState.handleDelete(student.id)}
-                            icon={UserMinus}
-                            class="text-slate-300 hover:text-rose-500"
-                        />
-                    </div>
-                </td>
-            {/snippet}
-        </DataTable>
+                    </EmptyState>
+                {/snippet}
+
+                {#snippet row(student, index)}
+                    <td
+                        class="group-hover:border-primary-600 border-l-4 border-transparent px-6 py-6"
+                    >
+                        <div class="flex items-center gap-4">
+                            <UserAvatar name={student.name} />
+                            <div class="font-bold tracking-widest text-slate-900">
+                                {student.name}
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-6">
+                        <span
+                            class="text-xs font-bold text-slate-400 underline decoration-slate-200 underline-offset-4"
+                        >
+                            {student.email}
+                        </span>
+                    </td>
+                    <td class="px-6 py-6 text-center">
+                        <div
+                            class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1"
+                        >
+                            <Terminal size={10} class="text-primary-600" />
+                            <span class="text-[10px] font-bold text-slate-700"
+                                >{student.total_answered_questions ?? 0}</span
+                            >
+                        </div>
+                    </td>
+                    <td class="px-6 py-6">
+                        <div class="mx-auto w-40 space-y-2">
+                            <div
+                                class="flex items-center justify-between px-1 text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                            >
+                                <span>Sinkronisasi Progres</span>
+                                <span>{student.overall_progress}%</span>
+                            </div>
+                            <ProgressBar
+                                value={student.overall_progress}
+                                height="h-2"
+                                color="blue"
+                            />
+                        </div>
+                    </td>
+                    <td class="px-6 py-6">
+                        <div
+                            id={index === 0 ? 'student-actions' : undefined}
+                            class="flex justify-end gap-2"
+                        >
+                            <Button
+                                id={index === 0 ? 'btn-progress-student' : undefined}
+                                variant="ghost"
+                                size="sm"
+                                href={ROUTES.ADMIN.STUDENTS.SHOW(student.id)}
+                                icon={LineChart}
+                            />
+                            <Button
+                                id={index === 0 ? 'btn-delete-student' : undefined}
+                                variant="ghost"
+                                size="sm"
+                                onclick={() => listState.handleDelete(student.id)}
+                                icon={UserMinus}
+                                class="text-slate-300 hover:text-rose-500"
+                            />
+                        </div>
+                    </td>
+                {/snippet}
+            </DataTable>
         </div>
 
         {#if listState.students.data && listState.students.data.length > 0}

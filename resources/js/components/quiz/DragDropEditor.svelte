@@ -9,11 +9,7 @@
         class?: string;
     }
 
-    let {
-        value = $bindable(''),
-        id = 'drag-drop-view',
-        class: className = '',
-    }: Props = $props();
+    let { value = $bindable(''), id = 'drag-drop-view', class: className = '' }: Props = $props();
 
     let element = $state<HTMLDivElement>();
 

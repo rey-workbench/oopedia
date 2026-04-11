@@ -126,12 +126,14 @@
                 </div>
                 <div class="space-y-2" id="sidebar-admin-curriculum">
                     <SidebarLink
+                        id="sidebar-admin-materials"
                         href={ROUTES.ADMIN.MATERIALS.INDEX}
                         icon={BookOpen}
                         active={page.url.startsWith(ROUTES.ADMIN.MATERIALS.INDEX)}
                         >Kelola Materi</SidebarLink
                     >
                     <SidebarLink
+                        id="sidebar-admin-questions"
                         href={ROUTES.ADMIN.QUESTIONS.INDEX}
                         icon={SquareActivity}
                         active={page.url.startsWith(ROUTES.ADMIN.QUESTIONS.INDEX)}
@@ -151,6 +153,7 @@
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
+                        id="sidebar-admin-students"
                         href={ROUTES.ADMIN.STUDENTS.INDEX}
                         icon={GraduationCap}
                         active={page.url.startsWith(ROUTES.ADMIN.STUDENTS.INDEX)}
@@ -158,6 +161,7 @@
                     >
                     {#if userRole === ROLE.SUPERADMIN}
                         <SidebarLink
+                            id="sidebar-admin-users"
                             href={ROUTES.ADMIN.USERS.INDEX}
                             icon={Settings}
                             active={page.url.startsWith(ROUTES.ADMIN.USERS.INDEX)}
@@ -166,6 +170,7 @@
                     {/if}
                     {#if userRole === ROLE.SUPERADMIN}
                         <SidebarLink
+                            id="sidebar-admin-ueq"
                             href={ROUTES.ADMIN.UEQ.INDEX}
                             icon={MessageSquareQuote}
                             active={page.url.startsWith(ROUTES.ADMIN.UEQ.INDEX)}
@@ -190,6 +195,7 @@
                         }}
                     >
                         <button
+                            id="sidebar-admin-logout"
                             type="submit"
                             class="group text-cosmos-muted flex w-full items-center gap-4 rounded-2xl border-2 border-b-4 border-transparent px-4 py-3 font-bold tracking-tight transition-all duration-100 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600 active:translate-y-[2px] active:border-b-0"
                         >

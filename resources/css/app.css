@@ -133,8 +133,8 @@
     position: relative !important;
     z-index: 100000 !important;
     outline: none !important;
-    box-shadow: 
-        0 0 0 4px #ffffff, 
+    box-shadow:
+        0 0 0 4px #ffffff,
         0 0 0 8px var(--color-primary-500),
         0 20px 25px -5px rgba(0, 0, 0, 0.2) !important; /* Added lift shadow */
     border-radius: var(--radius-duo, 1.25rem) !important;
@@ -240,7 +240,7 @@
 
 .oopedia-driver-popover .driver-popover-progress-text {
     font-family: var(--font-heading) !important;
-    font-size: 0.70rem !important;
+    font-size: 0.7rem !important;
     font-weight: 950 !important;
     color: #94a3b8 !important;
     text-transform: uppercase !important;
@@ -312,6 +312,12 @@
 
 /* Animations */
 @keyframes duo-pop-in {
-    0% { opacity: 0; transform: scale(0.95) translateY(10px); }
-    100% { opacity: 1; transform: scale(1) translateY(0); }
+    0% {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }

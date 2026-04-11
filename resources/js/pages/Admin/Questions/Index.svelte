@@ -36,6 +36,7 @@
 
 <App title={`Kelola Bank Soal ${state.material ? ': ' + state.material.title : ''}`}>
     <PageHeader
+        id="page-header"
         title="Repositori Evaluasi"
         subtitle={state.material
             ? `Kumpulan instrumen penilaian untuk materi: ${state.material.title}`
@@ -94,80 +95,87 @@
     </div>
 
     <div id="question-table">
-    <DataTable
-        title="Daftar Instrumen Evaluasi"
-        items={state.questions.data}
-        {columns}
-        hideSearch={true}
-    >
-        {#snippet empty()}
-            <EmptyState
-                title="Basis Data Kosong"
-                description="Tidak ditemukan instrumen evaluasi yang sesuai dengan filter pencarian."
-                icon={FlaskConical}
-            />
-        {/snippet}
+        <DataTable
+            title="Daftar Instrumen Evaluasi"
+            items={state.questions.data}
+            {columns}
+            hideSearch={true}
+        >
+            {#snippet empty()}
+                <EmptyState
+                    title="Basis Data Kosong"
+                    description="Tidak ditemukan instrumen evaluasi yang sesuai dengan filter pencarian."
+                    icon={FlaskConical}
+                />
+            {/snippet}
 
-        {#snippet row(question, index)}
-            <td class="px-6 py-6">
-                <div class="flex max-w-xl flex-col gap-1">
-                    <span class="line-clamp-2 text-xs leading-relaxed font-bold text-slate-900">
-                        {@html question.question_text}
-                    </span>
-                    <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
-                        {question.answers_count} OPSI JAWABAN
-                    </span>
-                </div>
-            </td>
-            <td class="px-6 py-6">
-                <Badge variant="secondary" size="xs">
-                    {question.question_type.replace(/_/g, ' ').toUpperCase()}
-                </Badge>
-            </td>
-            <td class="px-6 py-6 text-xs font-bold text-slate-600 uppercase">
-                <div class="flex items-center gap-2">
-                    <span
-                        class={`h-2 w-2 rounded-full ${
-                            question.difficulty === 'beginner'
-                                ? 'bg-emerald-500'
-                                : question.difficulty === 'medium'
-                                  ? 'bg-amber-500'
-                                  : 'bg-rose-500'
-                        }`}
-                    ></span>
-                    {question.difficulty}
-                </div>
-            </td>
-            {#if !state.material}
+            {#snippet row(question, index)}
                 <td class="px-6 py-6">
-                    <div class="text-primary-600 text-[10px] font-bold tracking-widest uppercase">
-                        {question.material?.title || 'GENERAL'}
+                    <div class="flex max-w-xl flex-col gap-1">
+                        <span class="line-clamp-2 text-xs leading-relaxed font-bold text-slate-900">
+                            {@html question.question_text}
+                        </span>
+                        <span
+                            class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                        >
+                            {question.answers_count} OPSI JAWABAN
+                        </span>
                     </div>
                 </td>
-            {/if}
-            <td class="px-6 py-6">
-                <div id={index === 0 ? 'question-actions' : undefined} class="flex justify-end gap-2">
-                    <Button
-                        id={index === 0 ? 'btn-edit-question' : undefined}
-                        variant="ghost"
-                        size="sm"
-                        href={state.material
-                            ? `/admin/materials/${state.material.id}/questions/${question.id}/edit`
-                            : ROUTES.ADMIN.QUESTIONS.EDIT(question.id)}
-                        icon={Edit2}
-                    />
-                    <Button
-                        id={index === 0 ? 'btn-delete-question' : undefined}
-                        variant="ghost"
-                        size="sm"
-                        onclick={() => state.handleDelete(question.id)}
-                        icon={Trash2}
-                        class="text-slate-300 hover:text-rose-500"
-                    />
-                </div>
-            </td>
-        {/snippet}
-    </DataTable>
+                <td class="px-6 py-6">
+                    <Badge variant="secondary" size="xs">
+                        {question.question_type.replace(/_/g, ' ').toUpperCase()}
+                    </Badge>
+                </td>
+                <td class="px-6 py-6 text-xs font-bold text-slate-600 uppercase">
+                    <div class="flex items-center gap-2">
+                        <span
+                            class={`h-2 w-2 rounded-full ${
+                                question.difficulty === 'beginner'
+                                    ? 'bg-emerald-500'
+                                    : question.difficulty === 'medium'
+                                      ? 'bg-amber-500'
+                                      : 'bg-rose-500'
+                            }`}
+                        ></span>
+                        {question.difficulty}
+                    </div>
+                </td>
+                {#if !state.material}
+                    <td class="px-6 py-6">
+                        <div
+                            class="text-primary-600 text-[10px] font-bold tracking-widest uppercase"
+                        >
+                            {question.material?.title || 'GENERAL'}
+                        </div>
+                    </td>
+                {/if}
+                <td class="px-6 py-6">
+                    <div
+                        id={index === 0 ? 'question-actions' : undefined}
+                        class="flex justify-end gap-2"
+                    >
+                        <Button
+                            id={index === 0 ? 'btn-edit-question' : undefined}
+                            variant="ghost"
+                            size="sm"
+                            href={state.material
+                                ? `/admin/materials/${state.material.id}/questions/${question.id}/edit`
+                                : ROUTES.ADMIN.QUESTIONS.EDIT(question.id)}
+                            icon={Edit2}
+                        />
+                        <Button
+                            id={index === 0 ? 'btn-delete-question' : undefined}
+                            variant="ghost"
+                            size="sm"
+                            onclick={() => state.handleDelete(question.id)}
+                            icon={Trash2}
+                            class="text-slate-300 hover:text-rose-500"
+                        />
+                    </div>
+                </td>
+            {/snippet}
+        </DataTable>
     </div>
 
     {#if state.questions.data.length > 0}

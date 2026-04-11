@@ -41,31 +41,29 @@
 
 <App title={state.material?.title || 'Material'}>
     <div class="space-y-12">
-        <div id="material-header">
-            <PageHeader id="page-header" title={state.material?.title || material.title} />
-        </div>
+        <PageHeader id="page-header" title={state.material?.title || material.title} />
 
         <!-- Adaptive System Alert -->
         {#if state.fromAdaptive}
             <div id="adaptive-recommendation">
                 <Card class="border-primary-500 bg-primary-50 border-l-4">
-                <div class="flex items-start gap-4">
-                    <div
-                        class="bg-primary-100 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl"
-                    >
-                        <Info size={24} class="text-primary-600" />
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="bg-primary-100 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl"
+                        >
+                            <Info size={24} class="text-primary-600" />
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-primary-900 mb-1 text-lg font-bold">
+                                Rekomendasi Sistem Adaptif
+                            </h3>
+                            <p class="text-primary-700 text-sm leading-relaxed">
+                                Sistem merekomendasikan Anda untuk mengulas kembali materi ini.
+                                Pilih sub-materi yang ingin dipelajari untuk memperkuat pemahaman.
+                            </p>
+                        </div>
                     </div>
-                    <div class="flex-1">
-                        <h3 class="text-primary-900 mb-1 text-lg font-bold">
-                            Rekomendasi Sistem Adaptif
-                        </h3>
-                        <p class="text-primary-700 text-sm leading-relaxed">
-                            Sistem merekomendasikan Anda untuk mengulas kembali materi ini. Pilih
-                            sub-materi yang ingin dipelajari untuk memperkuat pemahaman.
-                        </p>
-                    </div>
-                </div>
-            </Card>
+                </Card>
             </div>
         {/if}
 
@@ -105,7 +103,10 @@
                     </Button>
                 </Card>
             {:else}
-                <div id="sub-material-grid" class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <div
+                    id="sub-material-grid"
+                    class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
+                >
                     {#each state.subMaterials as subMaterial (subMaterial.id)}
                         {@const SubIcon = getIcon(subMaterial.jenis_konten)}
                         <Card

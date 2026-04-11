@@ -1,4 +1,4 @@
-<script lang="ts"> 
+<script lang="ts">
     import App from '@/layouts/App.svelte';
     import Button from '@/components/ui/Button.svelte';
     import DataTable from '@/components/ui/DataTable.svelte';
@@ -25,6 +25,7 @@
 <App title={`Kelola Sub-Materi: ${material.title}`}>
     <div class="space-y-12">
         <PageHeader
+            id="page-header"
             title="Organisasi Sub-Materi"
             subtitle={`Daftar unit pembelajaran untuk modul utama: ${material.title}`}
         >

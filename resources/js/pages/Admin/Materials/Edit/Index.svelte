@@ -20,6 +20,7 @@
 <App title="Edit Materi">
     <div class="space-y-12 pb-20">
         <PageHeader
+            id="page-header"
             title="Pembaruan Kurikulum"
             subtitle="Modifikasi konten instruksional dan optimasi media visual."
         >

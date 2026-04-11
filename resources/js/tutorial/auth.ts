@@ -8,10 +8,11 @@ export function registerAuthTutorials() {
                 element: '#login-form-container',
                 popover: {
                     title: 'Selamat Datang Kembali!',
-                    description: 'Silahkan masuk menggunakan email dan password yang telah terdaftar.',
+                    description:
+                        'Silahkan masuk menggunakan email dan password yang telah terdaftar.',
                     side: 'bottom',
-                    align: 'center'
-                }
+                    align: 'center',
+                },
             },
             {
                 element: '#email',
@@ -19,8 +20,8 @@ export function registerAuthTutorials() {
                     title: 'Email Anda',
                     description: 'Masukkan alamat email yang Anda gunakan saat mendaftar.',
                     side: 'top',
-                    align: 'start'
-                }
+                    align: 'start',
+                },
             },
             {
                 element: '#password',
@@ -28,8 +29,8 @@ export function registerAuthTutorials() {
                     title: 'Kata Sandi',
                     description: 'Pastikan kata sandi Anda benar dan bersifat rahasia.',
                     side: 'top',
-                    align: 'start'
-                }
+                    align: 'start',
+                },
             },
             {
                 element: '#login-submit-btn',
@@ -37,10 +38,10 @@ export function registerAuthTutorials() {
                     title: 'Masuk Sekarang',
                     description: 'Klik tombol ini untuk memulai perjalanan belajar Anda.',
                     side: 'bottom',
-                    align: 'center'
-                }
-            }
-        ]
+                    align: 'center',
+                },
+            },
+        ],
     });
 
     tutorialState.registerSteps({
@@ -50,19 +51,21 @@ export function registerAuthTutorials() {
                 element: '#register-form-container',
                 popover: {
                     title: 'Registrasi Akun',
-                    description: 'Lengkapi data diri Anda untuk bergabung dalam komunitas belajar Oopedia.',
+                    description:
+                        'Lengkapi data diri Anda untuk bergabung dalam komunitas belajar Oopedia.',
                     side: 'bottom',
-                    align: 'center'
-                }
+                    align: 'center',
+                },
             },
             {
                 element: '#name',
                 popover: {
                     title: 'Nama Lengkap',
-                    description: 'Gunakan nama asli untuk kebutuhan pencetakan sertifikat nantinya.',
+                    description:
+                        'Gunakan nama asli untuk kebutuhan pencetakan sertifikat nantinya.',
                     side: 'top',
-                    align: 'start'
-                }
+                    align: 'start',
+                },
             },
             {
                 element: '#email',
@@ -70,18 +73,19 @@ export function registerAuthTutorials() {
                     title: 'Email',
                     description: 'Masukkan alamat email aktif untuk proses verifikasi.',
                     side: 'top',
-                    align: 'start'
-                }
+                    align: 'start',
+                },
             },
             {
                 element: '#register-submit-btn',
                 popover: {
                     title: 'Buat Akun',
-                    description: 'Selesaikan pendaftaran dan nikmati fitur-fitur pembelajaran kami.',
+                    description:
+                        'Selesaikan pendaftaran dan nikmati fitur-fitur pembelajaran kami.',
                     side: 'bottom',
-                    align: 'center'
-                }
-            }
-        ]
+                    align: 'center',
+                },
+            },
+        ],
     });
 }

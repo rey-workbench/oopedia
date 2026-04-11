@@ -7,7 +7,7 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#page-header',
                 popover: {
-                    title: 'Beranda Belajar ',
+                    title: 'Beranda Belajar',
                     description:
                         'Waktunya naik pangkat! Di sini kamu bisa memantau semua progres dan pencapaian hebatmu.',
                     side: 'bottom',
@@ -374,7 +374,7 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#submaterial-content',
                 popover: {
-                    title: 'Pusat Ilmu 💡',
+                    title: 'Pusat Ilmu',
                     description:
                         'Baca dan pahami materi ini dengan seksama. Di sinilah rahasia penguasaan PBO berada!',
                     side: 'bottom',
@@ -384,7 +384,7 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#btn-start-quiz',
                 popover: {
-                    title: 'Area Tantangan 🏆',
+                    title: 'Area Tantangan',
                     description:
                         'Sudah merasa cukup paham? Klik tombol ini untuk mulai menguji pemahamanmu di kuis adaptif!',
                     side: 'top',
@@ -435,8 +435,9 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#level-map',
                 popover: {
-                    title: 'Peta Petualangan 🗺️',
-                    description: 'Lihat progres belajarmu di sini. Setiap titik adalah langkah menuju penguasaan materi!',
+                    title: 'Peta Petualangan',
+                    description:
+                        'Lihat progres belajarmu di sini. Setiap titik adalah langkah menuju penguasaan materi!',
                     side: 'top',
                     align: 'center',
                 },
@@ -444,7 +445,7 @@ export function registerMahasiswaTutorials() {
             {
                 element: 'button.border-primary-600',
                 popover: {
-                    title: 'Level Saat Ini 🚀',
+                    title: 'Level Saat Ini',
                     description:
                         'Klik level yang aktif (berwarna biru) untuk mulai mengerjakan kuis adaptif.',
                     side: 'top',
@@ -454,7 +455,7 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#level-trophy',
                 popover: {
-                    title: 'Hadiah Utama 🏆',
+                    title: 'Hadiah Utama',
                     description:
                         'Capai akhir peta untuk mendapatkan trofi penguasaan materi. Kamu pasti bisa!',
                     side: 'bottom',
@@ -464,8 +465,9 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#levels-legend',
                 popover: {
-                    title: 'Legenda Peta 📋',
-                    description: 'Gunakan panduan ini untuk memahami arti setiap simbol di peta petualanganmu.',
+                    title: 'Legenda Peta',
+                    description:
+                        'Gunakan panduan ini untuk memahami arti setiap simbol di peta petualanganmu.',
                     side: 'top',
                     align: 'center',
                 },
@@ -480,7 +482,8 @@ export function registerMahasiswaTutorials() {
                 element: '#quiz-session-header',
                 popover: {
                     title: 'Pusat Kendali Latihan',
-                    description: 'Di sini kamu bisa melihat materi yang sedang dikerjakan dan progresmu secara keseluruhan.',
+                    description:
+                        'Di sini kamu bisa melihat materi yang sedang dikerjakan dan progresmu secara keseluruhan.',
                     side: 'bottom',
                     align: 'center',
                 },
@@ -509,7 +512,8 @@ export function registerMahasiswaTutorials() {
                 element: '#quiz-hint-btn',
                 popover: {
                     title: 'Butuh Bantuan?',
-                    description: 'Jika merasa kesulitan, jangan ragu menggunakan petunjuk adaptif kami!',
+                    description:
+                        'Jika merasa kesulitan, jangan ragu menggunakan petunjuk adaptif kami!',
                     side: 'left',
                     align: 'center',
                 },
@@ -526,8 +530,9 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#drag-drop-options-area',
                 popover: {
-                    title: 'Pilihan Jawaban 🧩',
-                    description: 'Di tipe soal ini, kamu cukup tarik (drag) jawaban yang benar dari sini.',
+                    title: 'Pilihan Jawaban',
+                    description:
+                        'Di tipe soal ini, kamu cukup tarik (drag) jawaban yang benar dari sini.',
                     side: 'top',
                     align: 'center',
                 },
@@ -535,8 +540,9 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#drag-drop-view',
                 popover: {
-                    title: 'Area Penyusunan 🛠️',
-                    description: 'Letakkan jawabanmu pada kotak "···" di area soal ini untuk melengkapi kode.',
+                    title: 'Area Penyusunan',
+                    description:
+                        'Letakkan jawabanmu pada kotak "···" di area soal ini untuk melengkapi kode.',
                     side: 'bottom',
                     align: 'center',
                 },
@@ -544,8 +550,9 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#fill_in_the_blank_answer',
                 popover: {
-                    title: 'Input Jawaban ✍️',
-                    description: 'Ketik jawabanmu langsung di sini. Perhatikan ejaan dan tanda baca ya!',
+                    title: 'Input Jawaban',
+                    description:
+                        'Ketik jawabanmu langsung di sini. Perhatikan ejaan dan tanda baca ya!',
                     side: 'top',
                     align: 'center',
                 },
@@ -554,7 +561,8 @@ export function registerMahasiswaTutorials() {
                 element: '#quiz-submit-btn',
                 popover: {
                     title: 'Kirim Jawaban',
-                    description: 'Sudah yakin? Klik tombol ini untuk memeriksa apakah jawabanmu tepat.',
+                    description:
+                        'Sudah yakin? Klik tombol ini untuk memeriksa apakah jawabanmu tepat.',
                     side: 'top',
                     align: 'center',
                 },
@@ -572,7 +580,8 @@ export function registerMahasiswaTutorials() {
                 element: '#adaptive-feedback-header',
                 popover: {
                     title: 'Bantuan Khusus',
-                    description: 'Jika kamu kesulitan, sistem adaptif kami akan memberikan pesan penyemangat dan bantuan!',
+                    description:
+                        'Jika kamu kesulitan, sistem adaptif kami akan memberikan pesan penyemangat dan bantuan!',
                     side: 'bottom',
                     align: 'center',
                 },
@@ -581,7 +590,8 @@ export function registerMahasiswaTutorials() {
                 element: '#adaptive-recommendation-card',
                 popover: {
                     title: 'Rekomendasi Pintar',
-                    description: 'Ini adalah materi yang disarankan sistem untuk membantu kamu memahami bagian yang sulit.',
+                    description:
+                        'Ini adalah materi yang disarankan sistem untuk membantu kamu memahami bagian yang sulit.',
                     side: 'top',
                     align: 'center',
                 },
@@ -589,8 +599,9 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#acceleration-feedback-modal',
                 popover: {
-                    title: 'Status: Akselerasi ⚡',
-                    description: 'Kamu sedang berada dalam mode percepatan karena performamu yang luar biasa!',
+                    title: 'Status: Akselerasi',
+                    description:
+                        'Kamu sedang berada dalam mode percepatan karena performamu yang luar biasa!',
                     side: 'top',
                     align: 'center',
                 },
@@ -598,8 +609,9 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#intervention-feedback-modal',
                 popover: {
-                    title: 'Bantuan Adaptif 🛠️',
-                    description: 'Sistem memberikan bantuan khusus untuk membantumu memahami bagian yang sulit.',
+                    title: 'Bantuan Adaptif',
+                    description:
+                        'Sistem memberikan bantuan khusus untuk membantumu memahami bagian yang sulit.',
                     side: 'top',
                     align: 'center',
                 },
@@ -607,8 +619,9 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#backtrack-feedback-modal',
                 popover: {
-                    title: 'Mode Penyesuaian ↩️',
-                    description: 'Kami menyesuaikan alur belajar agar kamu bisa menguasai konsep dasar terlebih dahulu.',
+                    title: 'Mode Penyesuaian',
+                    description:
+                        'Kami menyesuaikan alur belajar agar kamu bisa menguasai konsep dasar terlebih dahulu.',
                     side: 'top',
                     align: 'center',
                 },
@@ -616,8 +629,9 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#acceleration-feedback-header',
                 popover: {
-                    title: 'Lompatan Prestasi! 🚀',
-                    description: 'Wah, kamu hebat! Sistem mendeteksi kamu sudah master di level ini, jadi kamu langsung naik ke tingkat yang lebih menantang.',
+                    title: 'Lompatan Prestasi!',
+                    description:
+                        'Wah, kamu hebat! Sistem mendeteksi kamu sudah master di level ini, jadi kamu langsung naik ke tingkat yang lebih menantang.',
                     side: 'top',
                     align: 'center',
                 },
@@ -625,8 +639,9 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#backtrack-feedback-header',
                 popover: {
-                    title: 'Waktunya Review 🎒',
-                    description: 'Tidak apa-apa, belajar butuh proses. Kami akan membantumu mengulang fondasi agar pemahamanmu lebih kuat.',
+                    title: 'Waktunya Review',
+                    description:
+                        'Tidak apa-apa, belajar butuh proses. Kami akan membantumu mengulang fondasi agar pemahamanmu lebih kuat.',
                     side: 'top',
                     align: 'center',
                 },
@@ -634,8 +649,9 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#backtrack-recommendation-card',
                 popover: {
-                    title: 'Rekomendasi Khusus 💡',
-                    description: 'Sistem menyarankan kamu membaca materi ini kembali sebelum lanjut ke soal berikutnya.',
+                    title: 'Rekomendasi Khusus',
+                    description:
+                        'Sistem menyarankan kamu membaca materi ini kembali sebelum lanjut ke soal berikutnya.',
                     side: 'top',
                     align: 'center',
                 },
@@ -643,7 +659,7 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#active-quiz-badge',
                 popover: {
-                    title: 'Status Belajar ✨',
+                    title: 'Status Belajar',
                     description: 'Di sini kamu bisa melihat mode belajarmu saat ini.',
                     side: 'bottom',
                     align: 'center',
@@ -652,8 +668,9 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#certificate-feedback-header',
                 popover: {
-                    title: 'Pencapaian Baru! 🎖️',
-                    description: 'Selamat! Kamu telah menyelesaikan tantangan dan berhak mendapatkan sertifikat ini.',
+                    title: 'Pencapaian Baru!',
+                    description:
+                        'Selamat! Kamu telah menyelesaikan tantangan dan berhak mendapatkan sertifikat ini.',
                     side: 'top',
                     align: 'center',
                 },
@@ -662,7 +679,8 @@ export function registerMahasiswaTutorials() {
                 element: '#adaptive-continue-btn',
                 popover: {
                     title: 'Lanjutkan Petualangan',
-                    description: 'Klik di sini untuk mengikuti rekomendasi atau lanjut ke tantangan berikutnya.',
+                    description:
+                        'Klik di sini untuk mengikuti rekomendasi atau lanjut ke tantangan berikutnya.',
                     side: 'top',
                     align: 'center',
                 },

@@ -28,16 +28,17 @@ class TutorialState extends BaseState {
      */
     registerSteps(registration: TutorialRegistration) {
         // Prevent duplicate registrations for the same steps
-        const exists = this.registry.some(r => 
-            r.tourId === registration.tourId && 
-            JSON.stringify(r.steps) === JSON.stringify(registration.steps)
+        const exists = this.registry.some(
+            (r) =>
+                r.tourId === registration.tourId &&
+                JSON.stringify(r.steps) === JSON.stringify(registration.steps)
         );
-        
+
         if (!exists) {
             this.registry.push({
                 group: 'page',
                 priority: 10,
-                ...registration
+                ...registration,
             });
         }
     }
@@ -47,9 +48,9 @@ class TutorialState extends BaseState {
      */
     private getStepsForTour(tourId: string): DriveStep[] {
         const pageSteps = this.registry
-            .filter(r => r.tourId === tourId && r.group !== 'global')
+            .filter((r) => r.tourId === tourId && r.group !== 'global')
             .sort((a, b) => (a.priority || 0) - (b.priority || 0))
-            .flatMap(r => r.steps);
+            .flatMap((r) => r.steps);
 
         // Only include global steps if there are no page-specific steps
         // This prevents the "double" tutorial feeling on content-rich pages
@@ -58,9 +59,9 @@ class TutorialState extends BaseState {
         }
 
         const globalSteps = this.registry
-            .filter(r => r.group === 'global')
+            .filter((r) => r.group === 'global')
             .sort((a, b) => (a.priority || 0) - (b.priority || 0))
-            .flatMap(r => r.steps);
+            .flatMap((r) => r.steps);
 
         return globalSteps;
     }
@@ -102,14 +103,14 @@ class TutorialState extends BaseState {
         }
 
         const steps = this.getStepsForTour(tourId);
-        
+
         if (steps.length === 0) {
             console.warn(`[Tutorial] No steps registered for tour ID "${tourId}".`);
             return;
         }
 
         // Filter out steps where elements are missing from the DOM to handle layout variations
-        const validSteps = steps.filter(step => {
+        const validSteps = steps.filter((step) => {
             if (typeof step.element === 'string') {
                 try {
                     return !!document.querySelector(step.element);
@@ -122,7 +123,9 @@ class TutorialState extends BaseState {
         });
 
         if (validSteps.length === 0) {
-            console.warn(`[Tutorial] Aborting tour '${tourId}': No registered elements were found in the current layout.`);
+            console.warn(
+                `[Tutorial] Aborting tour '${tourId}': No registered elements were found in the current layout.`
+            );
             return;
         }
 
@@ -132,7 +135,7 @@ class TutorialState extends BaseState {
             allowKeyboardControl: true,
             allowClose: true,
             stagePadding: 8,
-            stageRadius: 20, 
+            stageRadius: 20,
             popoverClass: 'oopedia-driver-popover',
             nextBtnText: 'Lanjut &rarr;',
             prevBtnText: '&larr; Kembali',
@@ -143,7 +146,7 @@ class TutorialState extends BaseState {
                 // Mark as seen
                 this.hasSeenTutorial[tourId] = true;
                 this.saveState();
-            }
+            },
         });
 
         this.driverObj.drive();

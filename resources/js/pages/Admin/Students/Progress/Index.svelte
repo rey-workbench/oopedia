@@ -77,18 +77,17 @@
 
 <App title="Progress Mahasiswa">
     <div class="space-y-12">
-        <div id="student-profile-card">
-            <PageHeader
-                title="Wawasan Performa Siswa"
-                subtitle={`Analisis trajectory pembelajaran untuk entitas ${state.student.name}.`}
-            >
-                {#snippet actions()}
-                    <Button href={ROUTES.ADMIN.STUDENTS.INDEX} variant="ghost" icon={ArrowLeft}
-                        >KEMBALI KE DAFTAR</Button
-                    >
-                {/snippet}
-            </PageHeader>
-        </div>
+        <PageHeader
+            id="page-header"
+            title="Wawasan Performa Siswa"
+            subtitle={`Analisis trajectory pembelajaran untuk entitas ${state.student.name}.`}
+        >
+            {#snippet actions()}
+                <Button href={ROUTES.ADMIN.STUDENTS.INDEX} variant="ghost" icon={ArrowLeft}
+                    >KEMBALI KE DAFTAR</Button
+                >
+            {/snippet}
+        </PageHeader>
 
         <!-- Summary Cards -->
         <div id="student-performance-stats" class="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -209,93 +208,96 @@
             <div id="student-quiz-history">
                 <DataTable
                     id="mastery-matrix-table"
-                title="Matriks Penguasaan Konten"
-                items={state.materials}
-                columns={matrixColumns}
-                hideSearch={true}
-            >
-                {#snippet empty()}
-                    <EmptyState
-                        title="Tidak Ada Log Interaksi"
-                        description="Subjek belum melakukan interaksi dengan modul instruksional apapun."
-                    />
-                {/snippet}
-
-                {#snippet row(material)}
-                    {@const status =
-                        material.progress === 100
-                            ? 'STABIL'
-                            : material.progress > 0
-                              ? 'PROSES'
-                              : 'BELUM DIMULAI'}
-                    <td class="border-b border-slate-50 px-6 py-6">
-                        <div class="flex items-center gap-3">
-                            <div class="bg-primary-600 h-10 w-1 rounded-full"></div>
-                            <span class="text-sm font-bold tracking-widest text-slate-900 uppercase"
-                                >{material.title}</span
-                            >
-                        </div>
-                    </td>
-                    <td class="border-b border-slate-50 px-6 py-6">
-                        <div class="w-40 space-y-1">
-                            <div class="flex items-center justify-between px-0.5">
-                                <span
-                                    class="text-[9px] font-bold tracking-widest text-slate-400 uppercase"
-                                    >{material.progress}%</span
-                                >
-                            </div>
-                            <ProgressBar value={material.progress} height="h-2" color="blue" />
-                        </div>
-                    </td>
-                    <td class="border-b border-slate-50 px-6 py-6">
-                        <Badge
-                            variant={status === 'STABIL'
-                                ? 'success'
-                                : status === 'PROSES'
-                                  ? 'warning'
-                                  : 'secondary'}
-                            size="xs"
-                        >
-                            {status}
-                        </Badge>
-                    </td>
-                    <td class="border-b border-slate-50 px-6 py-6">
-                        <span class="text-xs font-medium text-slate-400">
-                            {material.last_accessed
-                                ? formatDate(material.last_accessed)
-                                : 'Belum diakses'}
-                        </span>
-                    </td>
-                {/snippet}
-            </DataTable>
-
-            <!-- Missing Questions (Anomalies) -->
-            {#if state.missingQuestionsByMaterial.length > 0}
-                <DataTable
-                    id="missing-questions-table"
-                    title="Unit Tantangan Belum Terpecahkan"
-                    items={state.missingQuestionsByMaterial}
-                    columns={challengeColumns}
+                    title="Matriks Penguasaan Konten"
+                    items={state.materials}
+                    columns={matrixColumns}
                     hideSearch={true}
                 >
-                    {#snippet row(item)}
+                    {#snippet empty()}
+                        <EmptyState
+                            title="Tidak Ada Log Interaksi"
+                            description="Subjek belum melakukan interaksi dengan modul instruksional apapun."
+                        />
+                    {/snippet}
+
+                    {#snippet row(material)}
+                        {@const status =
+                            material.progress === 100
+                                ? 'STABIL'
+                                : material.progress > 0
+                                  ? 'PROSES'
+                                  : 'BELUM DIMULAI'}
                         <td class="border-b border-slate-50 px-6 py-6">
-                            <span class="text-sm font-bold tracking-widest text-slate-900 uppercase"
-                                >{item.material_title}</span
-                            >
-                        </td>
-                        <td class="border-b border-slate-50 px-6 py-6">
-                            <div
-                                class="inline-flex items-center rounded-xl border border-rose-100 bg-rose-50 px-3 py-1.5 text-rose-600"
-                            >
-                                <span class="text-[10px] font-bold tracking-widest uppercase"
-                                    >{item.missing_count} MENUNGGU</span
+                            <div class="flex items-center gap-3">
+                                <div class="bg-primary-600 h-10 w-1 rounded-full"></div>
+                                <span
+                                    class="text-sm font-bold tracking-widest text-slate-900 uppercase"
+                                    >{material.title}</span
                                 >
                             </div>
+                        </td>
+                        <td class="border-b border-slate-50 px-6 py-6">
+                            <div class="w-40 space-y-1">
+                                <div class="flex items-center justify-between px-0.5">
+                                    <span
+                                        class="text-[9px] font-bold tracking-widest text-slate-400 uppercase"
+                                        >{material.progress}%</span
+                                    >
+                                </div>
+                                <ProgressBar value={material.progress} height="h-2" color="blue" />
+                            </div>
+                        </td>
+                        <td class="border-b border-slate-50 px-6 py-6">
+                            <Badge
+                                variant={status === 'STABIL'
+                                    ? 'success'
+                                    : status === 'PROSES'
+                                      ? 'warning'
+                                      : 'secondary'}
+                                size="xs"
+                            >
+                                {status}
+                            </Badge>
+                        </td>
+                        <td class="border-b border-slate-50 px-6 py-6">
+                            <span class="text-xs font-medium text-slate-400">
+                                {material.last_accessed
+                                    ? formatDate(material.last_accessed)
+                                    : 'Belum diakses'}
+                            </span>
                         </td>
                     {/snippet}
                 </DataTable>
-            {/if}
+
+                <!-- Missing Questions (Anomalies) -->
+                {#if state.missingQuestionsByMaterial.length > 0}
+                    <DataTable
+                        id="missing-questions-table"
+                        title="Unit Tantangan Belum Terpecahkan"
+                        items={state.missingQuestionsByMaterial}
+                        columns={challengeColumns}
+                        hideSearch={true}
+                    >
+                        {#snippet row(item)}
+                            <td class="border-b border-slate-50 px-6 py-6">
+                                <span
+                                    class="text-sm font-bold tracking-widest text-slate-900 uppercase"
+                                    >{item.material_title}</span
+                                >
+                            </td>
+                            <td class="border-b border-slate-50 px-6 py-6">
+                                <div
+                                    class="inline-flex items-center rounded-xl border border-rose-100 bg-rose-50 px-3 py-1.5 text-rose-600"
+                                >
+                                    <span class="text-[10px] font-bold tracking-widest uppercase"
+                                        >{item.missing_count} MENUNGGU</span
+                                    >
+                                </div>
+                            </td>
+                        {/snippet}
+                    </DataTable>
+                {/if}
+            </div>
         </div>
-    </div>
-</App>
+    </div></App
+>

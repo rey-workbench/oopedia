@@ -236,7 +236,11 @@
                 </Link>
             </div>
 
-            <div id="register-form-container" class="w-full max-w-xl" in:fade={{ duration: 1000, delay: 400 }}>
+            <div
+                id="register-form-container"
+                class="w-full max-w-xl"
+                in:fade={{ duration: 1000, delay: 400 }}
+            >
                 <div class="mb-12 lg:text-center">
                     <div class="mb-4 flex justify-center lg:hidden">
                         <div
