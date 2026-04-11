@@ -42,15 +42,14 @@
             : 'Manajemen komprehensif seluruh bank soal evaluasi sistem.'}
     >
         {#snippet actions()}
-            <div id="add-question-btn">
-                <Button
-                    href={state.material
-                        ? ROUTES.ADMIN.MATERIALS.QUESTIONS.CREATE(state.material.id)
-                        : ROUTES.ADMIN.QUESTIONS.CREATE}
-                    variant="primary"
-                    icon={Plus}>TAMBAH INSTRUMEN</Button
-                >
-            </div>
+            <Button
+                id="add-question-btn"
+                href={state.material
+                    ? ROUTES.ADMIN.MATERIALS.QUESTIONS.CREATE(state.material.id)
+                    : ROUTES.ADMIN.QUESTIONS.CREATE}
+                variant="primary"
+                icon={Plus}>TAMBAH INSTRUMEN</Button
+            >
             {#if state.material}
                 <Button href={ROUTES.ADMIN.MATERIALS.INDEX} variant="ghost" icon={ArrowLeft}
                     >KEMBALI</Button

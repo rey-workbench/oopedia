@@ -10,6 +10,7 @@
     import { Clock, UserPlus, ShieldCheck, Edit2, Trash2 } from 'lucide-svelte';
     import { page } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils/route';
+    import { untrack } from 'svelte';
 
     let {
         users = { data: [] },
@@ -18,7 +19,7 @@
 
     let search: string = $state(new URLSearchParams(window.location.search).get('search') || '');
 
-    const listState = new UserListState(users, search);
+    const listState = untrack(() => new UserListState(users, search));
 
     const authUser = $derived((page.props as any)['auth'].user);
     const isSuperAdmin = $derived((authUser as any)?.role_id === 1);
@@ -41,21 +42,18 @@
             {#if isSuperAdmin}
                 <div class="flex gap-4">
                     {#if pendingAdminsCount > 0}
-                        <div id="pending-requests-btn">
-                            <Button
-                                href={ROUTES.ADMIN.PENDING_ADMINS.INDEX}
-                                variant="danger"
-                                icon={Clock}
-                            >
-                                {pendingAdminsCount} Permintaan Menunggu
-                            </Button>
-                        </div>
-                    {/if}
-                    <div id="add-user-btn">
-                        <Button href={ROUTES.ADMIN.USERS.CREATE} variant="primary" icon={UserPlus}>
-                            Tambah User
+                        <Button
+                            id="pending-requests-btn"
+                            href={ROUTES.ADMIN.PENDING_ADMINS.INDEX}
+                            variant="danger"
+                            icon={Clock}
+                        >
+                            {pendingAdminsCount} Permintaan Menunggu
                         </Button>
-                    </div>
+                    {/if}
+                    <Button id="add-user-btn" href={ROUTES.ADMIN.USERS.CREATE} variant="primary" icon={UserPlus}>
+                        Tambah User
+                    </Button>
                 </div>
             {/if}
         </PageHeader>

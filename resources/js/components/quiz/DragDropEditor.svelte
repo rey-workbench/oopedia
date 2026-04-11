@@ -3,14 +3,66 @@
     import Card from '@/components/ui/Card.svelte';
     import { GripVertical } from 'lucide-svelte';
 
-    let { value = $bindable() }: { value: string } = $props();
+    interface Props {
+        value?: string;
+        id?: string;
+        class?: string;
+    }
 
-    function handleInput(e: Event) {
-        value = (e.target as HTMLDivElement).innerHTML;
+    let {
+        value = $bindable(''),
+        id = 'drag-drop-view',
+        class: className = '',
+    }: Props = $props();
+
+    let element = $state<HTMLDivElement>();
+
+    // Sync internal HTML with value rune
+    $effect(() => {
+        if (element && element.innerHTML !== value) {
+            element.innerHTML = value || '';
+        }
+    });
+
+    function handleInput() {
+        if (element) {
+            value = element.innerHTML;
+        }
+    }
+
+    function handleDrop(e: DragEvent) {
+        e.preventDefault();
+        const data = e.dataTransfer?.getData('text/plain');
+        if (data && element) {
+            element.focus();
+            const selection = window.getSelection();
+            if (selection && selection.rangeCount > 0 && element.contains(selection.anchorNode)) {
+                const range = selection.getRangeAt(0);
+                range.deleteContents();
+                const node = document.createTextNode(data);
+                range.insertNode(node);
+
+                // Move cursor after the inserted text
+                range.setStartAfter(node);
+                range.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            } else {
+                element.innerHTML += data;
+            }
+            value = element.innerHTML;
+        }
+    }
+
+    function handleDragOver(e: DragEvent) {
+        e.preventDefault();
+        if (e.dataTransfer) {
+            e.dataTransfer.dropEffect = 'copy';
+        }
     }
 </script>
 
-<div class="space-y-4">
+<div class="space-y-4 {className}">
     <Alert id="drag-drop-guide" variant="info" class="border-primary-100 bg-primary-50/50">
         <div class="flex flex-col gap-1 text-[11px] leading-relaxed font-medium">
             <strong class="text-primary-900 tracking-wider uppercase">Panduan Drag & Drop:</strong>
@@ -22,7 +74,7 @@
                 3. <strong>Drag (Tarik)</strong> handle <GripVertical
                     size={14}
                     class="inline-block"
-                /> pada jawaban ke dalam kotak soal ini.
+                /> pada jawaban ke dalam kotak soal ini untuk menyisipkan teks.
             </span>
         </div>
     </Alert>
@@ -33,12 +85,16 @@
         class="focus-within:border-primary-500 overflow-hidden border-2 border-slate-100 shadow-sm transition-all duration-300 focus-within:shadow-md"
     >
         <div
-            id="drag-drop-view"
+            {id}
+            bind:this={element}
             contenteditable="true"
             oninput={handleInput}
+            ondrop={handleDrop}
+            ondragover={handleDragOver}
             class="min-h-[150px] w-full bg-white px-6 py-4 text-sm font-medium tracking-wide text-slate-800 outline-none"
-        >
-            {@html value}
-        </div>
+            role="textbox"
+            aria-multiline="true"
+            tabindex="0"
+        ></div>
     </Card>
 </div>

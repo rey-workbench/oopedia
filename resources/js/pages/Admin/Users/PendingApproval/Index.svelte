@@ -43,6 +43,7 @@
 
                 <div class="pt-4">
                     <Button
+                        id="logout-btn"
                         onclick={() => state.logout()}
                         variant="secondary"
                         class="px-12 py-5 shadow-xl shadow-slate-200"

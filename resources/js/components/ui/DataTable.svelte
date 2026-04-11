@@ -4,7 +4,8 @@
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import { Search } from 'lucide-svelte';
 
-    interface Props {
+    export interface Props {
+        id?: string;
         title?: string;
         items?: any[];
         search?: string;
@@ -21,9 +22,11 @@
         onsearch?: (e: Event) => void;
         row?: Snippet<[any]>;
         empty?: Snippet;
+        [key: string]: any;
     }
 
     let {
+        id,
         title = 'Data',
         items = [],
         search = $bindable(''),
@@ -36,10 +39,11 @@
         onsearch = () => {},
         row,
         empty,
+        ...rest
     }: Props = $props();
 </script>
 
-<Card padding="p-0" class="overflow-hidden">
+<Card {id} padding="p-0" class="overflow-hidden" {...rest}>
     {#snippet header()}
         <div class="flex w-full flex-col items-center justify-between gap-6 md:flex-row">
             <p class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">

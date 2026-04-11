@@ -9,7 +9,8 @@ declare global {
 }
 
 if (typeof window !== 'undefined') {
-    window._ = _;
+    // @ts-ignore Let Laravel mix/Vite bindings bypass strict lodash typing here
+    window._ = _ as any;
     window.axios = axios;
     window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 }

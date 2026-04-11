@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts"> 
     import App from '@/layouts/App.svelte';
     import Button from '@/components/ui/Button.svelte';
     import DataTable from '@/components/ui/DataTable.svelte';
@@ -30,6 +30,7 @@
         >
             {#snippet actions()}
                 <Button
+                    id="add-submaterial-btn"
                     href={ROUTES.ADMIN.MATERIALS.SUBMATERIALS.CREATE(material.id)}
                     variant="primary"
                     icon={Plus}>Tambah Sub-Materi</Button
@@ -41,6 +42,7 @@
         </PageHeader>
 
         <DataTable
+            id="submaterial-hierarchy-table"
             title="Hierarki Pembelajaran"
             items={state.subMaterials}
             hideSearch={true}

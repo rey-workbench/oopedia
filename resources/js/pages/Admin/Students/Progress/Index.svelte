@@ -23,13 +23,20 @@
         student: User;
         materials: MaterialWithProgress[];
         missingQuestionsByMaterial: MissingQuestionsItem[];
-        certifications: Record<number, string>;
+        certifications: Record<string, string>;
     } = $props();
 
     const state = untrack(
         () =>
             new StudentProgressState(student, materials, missingQuestionsByMaterial, certifications)
     );
+
+    $effect(() => {
+        state.student = student;
+        state.materials = materials;
+        state.missingQuestionsByMaterial = missingQuestionsByMaterial;
+        state.certifications = certifications;
+    });
 
     const progressStats = $derived([
         {
@@ -82,7 +89,7 @@
         </PageHeader>
 
         <!-- Summary Cards -->
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div id="student-progress-stats" class="grid grid-cols-1 gap-6 md:grid-cols-3">
             {#each progressStats as stat}
                 <Card hover={true} class="group relative overflow-hidden">
                     <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
@@ -147,7 +154,7 @@
 
         <!-- Certifications Section -->
         {#if Object.keys(state.certifications).length > 0}
-            <div class="space-y-6">
+            <div id="student-certifications" class="space-y-6">
                 <h3 class="text-xl font-bold tracking-widest text-slate-900 uppercase">
                     Pencapaian Sertifikasi
                 </h3>
@@ -198,6 +205,7 @@
         <div class="space-y-12">
             <!-- Mastery Matrix -->
             <DataTable
+                id="mastery-matrix-table"
                 title="Matriks Penguasaan Konten"
                 items={state.materials}
                 columns={matrixColumns}
@@ -261,6 +269,7 @@
             <!-- Missing Questions (Anomalies) -->
             {#if state.missingQuestionsByMaterial.length > 0}
                 <DataTable
+                    id="missing-questions-table"
                     title="Unit Tantangan Belum Terpecahkan"
                     items={state.missingQuestionsByMaterial}
                     columns={challengeColumns}

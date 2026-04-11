@@ -72,7 +72,7 @@ export class StudentProgressState extends BaseState {
         student: User,
         materials: MaterialWithProgress[],
         missingQuestionsByMaterial: MissingQuestionsItem[],
-        certifications: Record<number, string> = {}
+        certifications: Record<string, string> = {}
     ) {
         super();
         this.student = student;

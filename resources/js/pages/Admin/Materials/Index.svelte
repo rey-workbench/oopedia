@@ -83,11 +83,12 @@
             subtitle="Otoritas manajemen konten dan modul pembelajaran Pemrograman Berorientasi Objek."
         >
             {#snippet actions()}
-                <div id="create-material-btn">
-                    <Button href={ROUTES.ADMIN.MATERIALS.CREATE} variant="primary" icon={Plus}
-                        >Tambah Modul Baru</Button
+                    <Button
+                        id="create-material-btn"
+                        href={ROUTES.ADMIN.MATERIALS.CREATE}
+                        variant="primary"
+                        icon={Plus}>Tambah Modul Baru</Button
                     >
-                </div>
             {/snippet}
         </PageHeader>
 

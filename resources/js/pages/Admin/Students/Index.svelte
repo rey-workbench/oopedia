@@ -20,13 +20,14 @@
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import { ROUTES } from '@/utils/route';
     import { StudentListState, StudentRegisterState } from '@/states/Admin/StudentState.svelte';
+    import { untrack } from 'svelte';
 
     let { students = {} }: { students: any } = $props(); // paginated object
 
     let search: string = $state(new URLSearchParams(window.location.search).get('search') || '');
     let openModal: boolean = $state(false);
 
-    const listState = new StudentListState(students, search);
+    const listState = untrack(() => new StudentListState(students, search));
 
     const registerState = new StudentRegisterState();
 
@@ -46,16 +47,18 @@
             subtitle="Pantau progres dan aktivitas belajar seluruh mahasiswa terdaftar."
         >
             {#snippet actions()}
-                <div id="add-student-btn">
-                    <Button onclick={() => (openModal = true)} variant="primary" icon={UserPlus}
-                        >Daftarkan Mahasiswa</Button
-                    >
-                </div>
-                <div id="import-student-btn">
-                    <Button href={ROUTES.ADMIN.STUDENTS.IMPORT} variant="success" icon={FileSpreadsheet}
-                        >Impor Excel</Button
-                    >
-                </div>
+                <Button
+                    id="add-student-btn"
+                    onclick={() => (openModal = true)}
+                    variant="primary"
+                    icon={UserPlus}>Daftarkan Mahasiswa</Button
+                >
+                <Button
+                    id="import-student-btn"
+                    href={ROUTES.ADMIN.STUDENTS.IMPORT}
+                    variant="success"
+                    icon={FileSpreadsheet}>Impor Excel</Button
+                >
             {/snippet}
         </PageHeader>
 

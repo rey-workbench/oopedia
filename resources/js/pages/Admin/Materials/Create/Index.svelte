@@ -28,6 +28,7 @@
         </PageHeader>
 
         <form
+            id="material-editor-form"
             onsubmit={(e) => {
                 e.preventDefault();
                 state.submit();
@@ -45,6 +46,7 @@
                     <div class="grid grid-cols-1 gap-10 lg:grid-cols-3">
                         <div class="space-y-6 lg:col-span-2">
                             <Input
+                                id="material-form-title"
                                 label="Judul Modul"
                                 required
                                 bind:value={state.form.title}
@@ -66,6 +68,7 @@
                             </Alert>
 
                             <div
+                                id="material-final-project-toggle"
                                 class="flex items-center gap-4 rounded-3xl border border-slate-100 bg-slate-50/50 p-6"
                             >
                                 <Toggle
@@ -75,7 +78,7 @@
                             </div>
                         </div>
 
-                        <div class="lg:col-span-1">
+                        <div id="material-cover-upload" class="lg:col-span-1">
                             <ImageUpload
                                 preview={state.coverPreview}
                                 label="Visualisasi Sampul"
@@ -116,6 +119,7 @@
 
                         <div class="flex gap-4">
                             <Button
+                                id="material-save-btn"
                                 type="submit"
                                 variant="primary"
                                 size="lg"

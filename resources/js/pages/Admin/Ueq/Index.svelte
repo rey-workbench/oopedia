@@ -71,11 +71,9 @@
                 Questionnaire).
             </p>
             <div class="mt-6 flex flex-wrap gap-4">
-                <div id="ueq-export-btn">
-                    <Button onclick={() => state.exportResults()} variant="success" icon={FileDown}
-                        >EKSPOR CSV</Button
-                    >
-                </div>
+                <Button id="ueq-export-btn" onclick={() => state.exportResults()} variant="success" icon={FileDown}
+                    >EKSPOR CSV</Button
+                >
             </div>
         </div>
 

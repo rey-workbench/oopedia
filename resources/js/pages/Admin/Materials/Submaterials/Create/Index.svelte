@@ -55,7 +55,7 @@
                                     Judul Sub-Materi
                                 </label>
                                 <Input
-                                    id="title"
+                                    id="submaterial-title-input"
                                     bind:value={state.form.title}
                                     placeholder="Contoh: Pengenalan Class & Object"
                                     required
@@ -71,7 +71,7 @@
                                     Urutan Tampil
                                 </label>
                                 <Input
-                                    id="order"
+                                    id="submaterial-order-input"
                                     type="number"
                                     bind:value={state.form.order}
                                     required
@@ -80,7 +80,7 @@
                             </div>
                         </div>
 
-                        <div class="space-y-2">
+                        <div id="submaterial-type-selector" class="space-y-2">
                             <span
                                 class="font-poppins text-[10px] font-bold text-slate-400 uppercase"
                                 >Jenis Konten Utama</span
@@ -99,7 +99,7 @@
                             </div>
                         </div>
 
-                        <div class="space-y-2">
+                        <div id="submaterial-content-editor" class="space-y-2">
                             <span
                                 class="font-poppins text-[10px] font-bold text-slate-400 uppercase"
                             >
@@ -134,6 +134,7 @@
                                     >
                                 </Button>
                                 <Button
+                                    id="submaterial-save-btn"
                                     type="submit"
                                     variant="primary"
                                     size="lg"

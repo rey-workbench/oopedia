@@ -47,14 +47,18 @@
                     </div>
 
                     <div class="space-y-10 p-6">
-                        <ImportInstructions {items} />
-                        <FileUploadZone
-                            form={state.form}
-                            onFileChange={(e) => state.handleFileChange(e)}
-                            label="Berkas Dataset (Excel)"
-                            downloadHref="/admin/students/download-template"
-                            downloadLabel="TEMPLATE FORMAL"
-                        />
+                        <div id="import-instructions">
+                            <ImportInstructions {items} />
+                        </div>
+                        <div id="upload-zone">
+                            <FileUploadZone
+                                form={state.form}
+                                onFileChange={(e) => state.handleFileChange(e)}
+                                label="Berkas Dataset (Excel)"
+                                downloadHref="/admin/students/download-template"
+                                downloadLabel="TEMPLATE FORMAL"
+                            />
+                        </div>
 
                         <div
                             class="flex items-center justify-between gap-4 border-t border-slate-100 pt-6"
@@ -68,20 +72,21 @@
                                         >BATAL</span
                                     >
                                 </Button>
-                                <Button
-                                    type="submit"
-                                    variant="primary"
-                                    size="lg"
-                                    class="shadow-primary-900/20 shadow-xl"
-                                    icon={Upload}
-                                    disabled={state.form.processing}
-                                >
-                                    {#if state.form.processing}
-                                        Memproses...
-                                    {:else}
-                                        EKSEKUSI IMPOR DATASET
-                                    {/if}
-                                </Button>
+                                    <Button
+                                        id="execute-import-btn"
+                                        type="submit"
+                                        variant="primary"
+                                        size="lg"
+                                        class="shadow-primary-900/20 shadow-xl"
+                                        icon={Upload}
+                                        disabled={state.form.processing}
+                                    >
+                                        {#if state.form.processing}
+                                            Memproses...
+                                        {:else}
+                                            EKSEKUSI IMPOR DATASET
+                                        {/if}
+                                    </Button>
                             </div>
                         </div>
                     </div>

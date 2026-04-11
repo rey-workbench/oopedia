@@ -52,7 +52,7 @@
                     <div class="grid grid-cols-1 gap-10 lg:grid-cols-3">
                         <div class="lg:col-span-2">
                             <div class="space-y-8">
-                                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                <div id="user-identity-section" class="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     <Input
                                         label="Nama Lengkap"
                                         bind:value={form.name}
@@ -68,7 +68,7 @@
                                     />
                                 </div>
 
-                                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                <div id="user-password-section" class="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     <Input
                                         label="Password Baru (Opsional)"
                                         type="password"
@@ -102,20 +102,21 @@
                                     >BATAL</span
                                 >
                             </Button>
-                            <Button
-                                type="submit"
-                                variant="primary"
-                                size="lg"
-                                class="shadow-primary-900/20 shadow-xl"
-                                icon={Save}
-                                disabled={form.processing}
-                            >
-                                {#if form.processing}
-                                    Memproses...
-                                {:else}
-                                    SIMPAN PERUBAHAN
-                                {/if}
-                            </Button>
+                                <Button
+                                    id="user-save-btn"
+                                    type="submit"
+                                    variant="primary"
+                                    size="lg"
+                                    class="shadow-primary-900/20 shadow-xl"
+                                    icon={Save}
+                                    disabled={form.processing}
+                                >
+                                    {#if form.processing}
+                                        Memproses...
+                                    {:else}
+                                        SIMPAN PERUBAHAN
+                                    {/if}
+                                </Button>
                         </div>
                     </div>
                 </div>

@@ -1,5 +1,4 @@
 <script lang="ts">
-    import Badge from '@/components/ui/Badge.svelte';
     import Button from '@/components/ui/Button.svelte';
     import { DotLottieSvelte } from '@lottiefiles/dotlottie-svelte';
     import { ArrowRight, AlertTriangle, BookOpen } from 'lucide-svelte';
