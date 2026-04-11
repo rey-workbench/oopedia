@@ -1,5 +1,5 @@
 import { router } from '@inertiajs/svelte';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { confirmDelete } from '@/utils/confirmDelete';
 import { BaseState } from '@/states/BaseState.svelte';
 import { FormState } from '@/states/FormState.svelte';
@@ -54,9 +54,9 @@ export class StudentProgressState extends BaseState {
     avgProgress = $derived(
         this.materials.length > 0
             ? (
-                  this.materials.reduce((acc, m) => acc + (Number(m.progress) || 0), 0) /
-                  this.materials.length
-              ).toFixed(1)
+                this.materials.reduce((acc, m) => acc + (Number(m.progress) || 0), 0) /
+                this.materials.length
+            ).toFixed(1)
             : '0.0'
     );
 

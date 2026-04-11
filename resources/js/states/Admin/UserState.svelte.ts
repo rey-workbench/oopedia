@@ -1,5 +1,5 @@
 import { router } from '@inertiajs/svelte';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { confirmDelete } from '@/utils/confirmDelete';
 import { BaseState } from '@/states/BaseState.svelte';
 import { FormState } from '@/states/FormState.svelte';
