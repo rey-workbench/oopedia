@@ -95,7 +95,7 @@ export const SIDEBAR_STEPS: DriveStep[] = [
             align: 'start',
         },
     },
-{
+    {
         element: '#sidebar-tutorial-button',
         popover: {
             title: 'Bantuan Tutorial',
@@ -108,15 +108,6 @@ export const SIDEBAR_STEPS: DriveStep[] = [
         element: '#sidebar-logout-button',
         popover: {
             title: 'Logout',
-            description: 'Keluar dari sistem akun Anda.',
-            side: 'right',
-            align: 'start',
-        },
-    },
-    {
-        element: '#sidebar-logout-button',
-        popover: {
-            title: 'Keluar Sistem',
             description: 'Keluar dari sistem akun Anda.',
             side: 'right',
             align: 'start',

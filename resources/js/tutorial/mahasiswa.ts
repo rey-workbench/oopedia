@@ -362,10 +362,21 @@ export function registerMahasiswaTutorials() {
         tourId: 'mahasiswa_submaterials_show',
         steps: [
             {
+                element: '#page-header',
+                popover: {
+                    title: 'Eksplorasi Sub-Materi 📖',
+                    description:
+                        'Selamat datang di zona belajar! Di sini kamu akan menemukan detail materi yang mendalam.',
+                    side: 'bottom',
+                    align: 'start',
+                },
+            },
+            {
                 element: '#submaterial-content',
                 popover: {
-                    title: 'Konten Teori',
-                    description: 'Baca materi teori dengan seksama sebelum mengerjakan kuis.',
+                    title: 'Pusat Ilmu 💡',
+                    description:
+                        'Baca dan pahami materi ini dengan seksama sebelum melangkah ke tantangan kuis.',
                     side: 'bottom',
                     align: 'start',
                 },
@@ -373,9 +384,19 @@ export function registerMahasiswaTutorials() {
             {
                 element: '#submaterial-quiz-section',
                 popover: {
-                    title: 'Mulai Kuis',
+                    title: 'Area Tantangan 🏆',
                     description:
-                        'Setelah paham materi, klik "Mulai Latihan Soal" untuk menguji pemahaman.',
+                        'Sudah merasa cukup paham? Persiapkan dirimu untuk menguji pemahaman di sini.',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#btn-start-quiz',
+                popover: {
+                    title: 'Mulai Latihan 🚀',
+                    description:
+                        'Klik tombol ini untuk mulai berperang dengan soal kuis dan raih XP-mu!',
                     side: 'top',
                     align: 'center',
                 },

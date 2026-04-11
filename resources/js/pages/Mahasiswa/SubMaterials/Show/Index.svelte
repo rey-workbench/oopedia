@@ -71,6 +71,7 @@
 
         <!-- Header with PageHeader for consistency -->
         <PageHeader
+            id="page-header"
             title={state.subMaterial.title}
             subtitle={`Bagian ${state.subMaterial.order} dari modul ${state.material.title}.`}
         >
@@ -125,7 +126,6 @@
         >
             <div
                 bind:this={contentContainer}
-                id="submaterial-content"
                 class={state.otherSubMaterials.length > 0 ? 'lg:col-span-3' : 'lg:col-span-4'}
             >
                 <Card class="p-10 md:p-16" id="submaterial-quiz-section">
@@ -146,23 +146,25 @@
                         </div>
                     {/snippet}
 
-                    {#if state.subMaterial.content && state.subMaterial.content.trim()}
-                        <ContentDisplay content={state.subMaterial.content} />
-                    {:else}
-                        <div class="py-12 text-center">
-                            <div
-                                class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-50"
-                            >
-                                <BookOpen size={32} class="text-slate-300" />
+                    <div id="submaterial-content">
+                        {#if state.subMaterial.content && state.subMaterial.content.trim()}
+                            <ContentDisplay content={state.subMaterial.content} />
+                        {:else}
+                            <div class="py-12 text-center">
+                                <div
+                                    class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-50"
+                                >
+                                    <BookOpen size={32} class="text-slate-300" />
+                                </div>
+                                <p class="font-medium text-slate-400">
+                                    Konten materi sedang dalam pengembangan.
+                                </p>
+                                <p class="mt-2 text-sm text-slate-300">
+                                    Silakan lanjutkan ke latihan soal atau sub-materi lainnya.
+                                </p>
                             </div>
-                            <p class="font-medium text-slate-400">
-                                Konten materi sedang dalam pengembangan.
-                            </p>
-                            <p class="mt-2 text-sm text-slate-300">
-                                Silakan lanjutkan ke latihan soal atau sub-materi lainnya.
-                            </p>
-                        </div>
-                    {/if}
+                        {/if}
+                    </div>
 
                     <!-- Action Footer -->
                     <div

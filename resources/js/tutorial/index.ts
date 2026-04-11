@@ -37,7 +37,7 @@ export function getTourIdFromUrl(url: string, isAdminRole: boolean): string {
         else if (url.includes('/mahasiswa/dashboard/completed'))
             tourId = 'mahasiswa_dashboard_completed';
         else if (url.includes('/mahasiswa/dashboard')) tourId = 'mahasiswa_dashboard';
-        else if (url.includes('/mahasiswa/submaterials/')) tourId = 'mahasiswa_submaterials_show';
+        else if (url.includes('/submaterials')) tourId = 'mahasiswa_submaterials_show';
         else if (url.includes('/mahasiswa/materials/questions')) {
             if (url.includes('/review')) tourId = 'mahasiswa_quiz_review';
             else tourId = 'mahasiswa_quiz_index';
