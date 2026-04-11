@@ -43,11 +43,6 @@
     // Derived listState that properly tracks changes
     const listState = $derived(new MaterialListState(materials, search));
 
-    // Search handler - syncs local state with listState
-    function handleSearch() {
-        listState.handleSearch();
-    }
-
     const columns = $derived([
         { key: 'visual', label: 'Pratinjau Visual', align: 'left' },
         { key: 'identity', label: 'Identitas Modul', align: 'left' },

@@ -16,7 +16,7 @@
     let { state = $bindable() }: Props = $props();
 </script>
 
-<Card variant="none" padding="p-0" class="border-duo-lg overflow-hidden rounded-[2.5rem] bg-white">
+<Card variant="none" padding="p-0" class="border-duo-lg overflow-hidden rounded-3xl bg-white">
     {#if !state.isGuest}
         <div class="border-b-4 border-slate-50 bg-slate-50/30 p-4">
             <div class="flex flex-col items-center justify-between gap-6 px-4 py-2 sm:flex-row">
