@@ -1,9 +1,9 @@
 ---
 name: inertia-svelte-development
-description: "Develops Inertia.js v2 Svelte client-side applications. Activates when creating Svelte pages, forms, or navigation; using Link, Form, or router; working with deferred props, prefetching, or polling; or when user mentions Svelte with Inertia, Svelte pages, Svelte forms, or Svelte navigation."
+description: 'Develops Inertia.js v2 Svelte client-side applications. Activates when creating Svelte pages, forms, or navigation; using Link, Form, or router; working with deferred props, prefetching, or polling; or when user mentions Svelte with Inertia, Svelte pages, Svelte forms, or Svelte navigation.'
 license: MIT
 metadata:
-  author: laravel
+    author: laravel
 ---
 
 # Inertia Svelte Development
@@ -31,9 +31,10 @@ Svelte page components should be placed in the `resources/js/pages` directory.
 ### Page Component Structure
 
 <!-- Basic Svelte Page Component -->
+
 ```svelte
 <script>
-export let users
+    export let users;
 </script>
 
 <div>
@@ -53,9 +54,10 @@ export let users
 Use `<Link>` for client-side navigation instead of traditional `<a>` tags:
 
 <!-- Inertia Svelte Navigation -->
+
 ```svelte
 <script>
-import { Link } from '@inertiajs/svelte'
+    import { Link } from '@inertiajs/svelte';
 </script>
 
 <Link href="/">Home</Link>
@@ -66,9 +68,10 @@ import { Link } from '@inertiajs/svelte'
 ### Link With Method
 
 <!-- Link With POST Method -->
+
 ```svelte
 <script>
-import { Link } from '@inertiajs/svelte'
+    import { Link } from '@inertiajs/svelte';
 </script>
 
 <Link href="/logout" method="post">Logout</Link>
@@ -79,9 +82,10 @@ import { Link } from '@inertiajs/svelte'
 Prefetch pages to improve perceived performance:
 
 <!-- Prefetch on Hover -->
+
 ```svelte
 <script>
-import { Link } from '@inertiajs/svelte'
+    import { Link } from '@inertiajs/svelte';
 </script>
 
 <Link href="/users" prefetch>Users</Link>
@@ -90,22 +94,23 @@ import { Link } from '@inertiajs/svelte'
 ### Programmatic Navigation
 
 <!-- Router Visit -->
+
 ```svelte
 <script>
-import { router } from '@inertiajs/svelte'
+    import { router } from '@inertiajs/svelte';
 
-function handleClick() {
-    router.visit('/users')
-}
+    function handleClick() {
+        router.visit('/users');
+    }
 
-// Or with options
-function createUser() {
-    router.visit('/users', {
-        method: 'post',
-        data: { name: 'John' },
-        onSuccess: () => console.log('Success!'),
-    })
-}
+    // Or with options
+    function createUser() {
+        router.visit('/users', {
+            method: 'post',
+            data: { name: 'John' },
+            onSuccess: () => console.log('Success!'),
+        });
+    }
 </script>
 ```
 
@@ -116,9 +121,10 @@ function createUser() {
 The recommended way to build forms is with the `<Form>` component:
 
 <!-- Form Component Example -->
+
 ```svelte
 <script>
-import { Form } from '@inertiajs/svelte'
+    import { Form } from '@inertiajs/svelte';
 </script>
 
 <Form action="/users" method="post" let:errors let:processing let:wasSuccessful>
@@ -145,9 +151,10 @@ import { Form } from '@inertiajs/svelte'
 ### Form Component With All Props
 
 <!-- Form Component Full Example -->
+
 ```svelte
 <script>
-import { Form } from '@inertiajs/svelte'
+    import { Form } from '@inertiajs/svelte';
 </script>
 
 <Form
@@ -198,9 +205,10 @@ The `<Form>` component supports automatic resetting:
 Use the `search-docs` tool with a query of `form component resetting` for detailed guidance.
 
 <!-- Form With Reset Props -->
+
 ```svelte
 <script>
-import { Form } from '@inertiajs/svelte'
+    import { Form } from '@inertiajs/svelte';
 </script>
 
 <Form
@@ -217,9 +225,7 @@ import { Form } from '@inertiajs/svelte'
         <div>{errors.name}</div>
     {/if}
 
-    <button type="submit" disabled={processing}>
-        Submit
-    </button>
+    <button type="submit" disabled={processing}> Submit </button>
 </Form>
 ```
 
@@ -230,21 +236,22 @@ Forms can also be built using the `useForm` hook for more programmatic control. 
 For more programmatic control or to follow existing conventions, use the `useForm` hook:
 
 <!-- useForm Example -->
+
 ```svelte
 <script>
-import { useForm } from '@inertiajs/svelte'
+    import { useForm } from '@inertiajs/svelte';
 
-const form = useForm({
-    name: '',
-    email: '',
-    password: '',
-})
+    const form = useForm({
+        name: '',
+        email: '',
+        password: '',
+    });
 
-function submit() {
-    $form.post('/users', {
-        onSuccess: () => $form.reset('password'),
-    })
-}
+    function submit() {
+        $form.post('/users', {
+            onSuccess: () => $form.reset('password'),
+        });
+    }
 </script>
 
 <form on:submit|preventDefault={submit}>
@@ -263,9 +270,7 @@ function submit() {
         <div>{$form.errors.password}</div>
     {/if}
 
-    <button type="submit" disabled={$form.processing}>
-        Create User
-    </button>
+    <button type="submit" disabled={$form.processing}> Create User </button>
 </form>
 ```
 
@@ -276,17 +281,18 @@ function submit() {
 Use deferred props to load data after initial page render:
 
 <!-- Deferred Props with Empty State -->
+
 ```svelte
 <script>
-export let users
+    export let users;
 </script>
 
 <div>
     <h1>Users</h1>
     {#if !users}
         <div class="animate-pulse">
-            <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-            <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+            <div class="mb-2 h-4 w-3/4 rounded bg-gray-200"></div>
+            <div class="h-4 w-1/2 rounded bg-gray-200"></div>
         </div>
     {:else}
         <ul>
@@ -303,24 +309,25 @@ export let users
 Automatically refresh data at intervals:
 
 <!-- Polling Example -->
+
 ```svelte
 <script>
-import { router } from '@inertiajs/svelte'
-import { onMount, onDestroy } from 'svelte'
+    import { router } from '@inertiajs/svelte';
+    import { onMount, onDestroy } from 'svelte';
 
-export let stats
+    export let stats;
 
-let interval
+    let interval;
 
-onMount(() => {
-    interval = setInterval(() => {
-        router.reload({ only: ['stats'] })
-    }, 5000) // Poll every 5 seconds
-})
+    onMount(() => {
+        interval = setInterval(() => {
+            router.reload({ only: ['stats'] });
+        }, 5000); // Poll every 5 seconds
+    });
 
-onDestroy(() => {
-    clearInterval(interval)
-})
+    onDestroy(() => {
+        clearInterval(interval);
+    });
 </script>
 
 <div>
@@ -334,11 +341,12 @@ onDestroy(() => {
 Lazy-load a prop when an element scrolls into view. Useful for deferring expensive data that sits below the fold:
 
 <!-- WhenVisible Example -->
+
 ```svelte
 <script>
-import { WhenVisible } from '@inertiajs/svelte'
+    import { WhenVisible } from '@inertiajs/svelte';
 
-export let stats
+    export let stats;
 </script>
 
 <div>

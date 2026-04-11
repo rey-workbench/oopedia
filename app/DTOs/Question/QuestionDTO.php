@@ -14,7 +14,8 @@ readonly class QuestionDTO
         public ?string $created_by,
         public \DateTimeInterface $created_at,
         public \DateTimeInterface $updated_at,
-    ) {}
+    ) {
+    }
 
     public static function fromModel($question): self
     {

@@ -41,13 +41,14 @@
                     items={state.leaderboardData}
                     {columns}
                     hideSearch={true}
-                    rowClass={(item: LeaderboardEntry) => (item.id === state.user?.id ? 'bg-primary-50/50' : '')}
+                    rowClass={(item: LeaderboardEntry) =>
+                        item.id === state.user?.id ? 'bg-primary-50/50' : ''}
                 >
                     {#snippet row(data: LeaderboardEntry)}
                         <td class="border-b border-slate-50 px-6 py-6">
                             {#if data.rank <= 3}
                                 <div
-                                    class={`flex h-10 w-10 items-center justify-center rounded-xl font-bold text-white border-2 border-slate-900 border-b-4
+                                    class={`flex h-10 w-10 items-center justify-center rounded-xl border-2 border-b-4 border-slate-900 font-bold text-white
                                     ${data.rank === 1 ? 'bg-amber-400' : data.rank === 2 ? 'bg-slate-300' : 'bg-rose-400'}`}
                                 >
                                     {data.rank}
@@ -68,7 +69,9 @@
                                     <div
                                         class="mt-0.5 text-[9px] font-bold tracking-widest text-slate-400 uppercase"
                                     >
-                                        {'completion_date' in (data as any) ? (data as any).completion_date : 'Aktif Belajar'}
+                                        {'completion_date' in (data as any)
+                                            ? (data as any).completion_date
+                                            : 'Aktif Belajar'}
                                     </div>
                                 </div>
                             </div>

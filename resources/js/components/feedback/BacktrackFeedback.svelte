@@ -15,9 +15,7 @@
 </script>
 
 <div class="p-12 text-center">
-    <div
-        class="mx-auto mb-8 flex h-40 w-40 items-center justify-center"
-    >
+    <div class="mx-auto mb-8 flex h-40 w-40 items-center justify-center">
         <div class="h-full w-full overflow-hidden rounded-3xl">
             <DotLottieSvelte
                 src="/assets/lottie/quiz/graduation.json"
@@ -41,7 +39,7 @@
     {#if recommendation}
         <div class="group mb-8">
             <div
-                class="relative overflow-hidden rounded-2xl border-2 border-rose-200 bg-white p-4 transition-all border-b-4"
+                class="relative overflow-hidden rounded-2xl border-2 border-b-4 border-rose-200 bg-white p-4 transition-all"
             >
                 <div class="flex items-center justify-center gap-3">
                     <BookOpen size={20} class="text-rose-500" />

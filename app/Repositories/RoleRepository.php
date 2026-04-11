@@ -29,6 +29,6 @@ final class RoleRepository implements RoleRepositoryInterface
     {
         return Role::with('users')
             ->find($roleId)
-            ?->users ?? new Collection;
+            ?->users ?? new Collection();
     }
 }

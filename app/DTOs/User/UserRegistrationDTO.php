@@ -17,7 +17,8 @@ readonly class UserRegistrationDTO
         public string $password,
         public string $role_id,
         public bool $is_approved,
-    ) {}
+    ) {
+    }
 
     public static function fromRequest(Request $request): self
     {

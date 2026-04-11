@@ -39,7 +39,7 @@ class RuleRegistry
         ];
 
         foreach ($ruleClasses as $ruleClass) {
-            $this->register(new $ruleClass);
+            $this->register(new $ruleClass());
         }
 
         usort($this->rules, fn ($a, $b) => $a->getPriority() <=> $b->getPriority());

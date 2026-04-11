@@ -22,9 +22,7 @@
     let isDark = $derived(!isScrolled && scrollY > 8000);
 
     let headerBg = $derived(
-        isScrolled
-            ? 'bg-white/95 backdrop-blur-xl border-b-6 border-slate-200'
-            : 'bg-transparent'
+        isScrolled ? 'bg-white/95 backdrop-blur-xl border-b-6 border-slate-200' : 'bg-transparent'
     );
     let menuBtnBg = $derived(
         isDark
@@ -61,7 +59,7 @@
 
         {#if menuOpen}
             <div
-                class="absolute top-full left-0 mt-3 w-64 rounded-3xl border-2 border-slate-200 border-b-8 bg-white p-2 shadow-xl"
+                class="absolute top-full left-0 mt-3 w-64 rounded-3xl border-2 border-b-8 border-slate-200 bg-white p-2 shadow-xl"
             >
                 {#each menuItems as item}
                     <Link
@@ -84,7 +82,7 @@
         class="pointer-events-auto absolute left-1/2 hidden w-full max-w-lg -translate-x-1/2 md:block"
     >
         <div
-            class="flex min-h-12 cursor-text items-center gap-4 rounded-3xl border-2 border-slate-200 border-b-6 bg-white px-6 py-4 shadow-sm transition-all hover:border-slate-300"
+            class="flex min-h-12 cursor-text items-center gap-4 rounded-3xl border-2 border-b-6 border-slate-200 bg-white px-6 py-4 shadow-sm transition-all hover:border-slate-300"
         >
             <Search size={16} class={searchIconColor} strokeWidth={3} />
             <input
@@ -105,7 +103,7 @@
         </Link>
         <Link
             href={ROUTES.AUTH.REGISTER}
-            class="rounded-2xl border-2 border-slate-950 border-b-6 bg-slate-900 px-6 py-4 text-[9px] font-black tracking-[0.2em] uppercase text-white shadow-sm transition-all hover:bg-slate-800 active:translate-y-[4px] active:border-b-2 sm:px-8"
+            class="rounded-2xl border-2 border-b-6 border-slate-950 bg-slate-900 px-6 py-4 text-[9px] font-black tracking-[0.2em] text-white uppercase shadow-sm transition-all hover:bg-slate-800 active:translate-y-[4px] active:border-b-2 sm:px-8"
         >
             Daftar
         </Link>

@@ -14,7 +14,8 @@ final class SubMaterialService implements SubMaterialServiceInterface
     public function __construct(
         public readonly SubMaterialRepositoryInterface $subMaterialRepo,
         public readonly MaterialRepositoryInterface $materialRepo,
-    ) {}
+    ) {
+    }
 
     public function getSubMaterialsByMaterial(string $materialId): Collection
     {

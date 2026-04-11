@@ -16,18 +16,18 @@
     let { state = $bindable() }: Props = $props();
 </script>
 
-<Card
-    variant="none"
-    padding="p-0"
-    class="overflow-hidden rounded-[2.5rem] border-duo-lg bg-white"
->
+<Card variant="none" padding="p-0" class="border-duo-lg overflow-hidden rounded-[2.5rem] bg-white">
     {#if !state.isGuest}
         <div class="border-b-4 border-slate-50 bg-slate-50/30 p-4">
             <div class="flex flex-col items-center justify-between gap-6 px-4 py-2 sm:flex-row">
                 <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
                     <!-- Difficulty Badge -->
-                    <div class="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-slate-100 bg-white px-4 py-2 shadow-sm">
-                        <span class="text-[9px] font-black tracking-widest text-slate-400 uppercase">Sulit</span>
+                    <div
+                        class="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-slate-100 bg-white px-4 py-2 shadow-sm"
+                    >
+                        <span class="text-[9px] font-black tracking-widest text-slate-400 uppercase"
+                            >Sulit</span
+                        >
                         <Badge
                             variant={state.difficulty === 'beginner'
                                 ? 'success'
@@ -42,15 +42,23 @@
                     </div>
 
                     <!-- XP Badge -->
-                    <div class="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-amber-100 bg-white px-4 py-2 shadow-sm">
+                    <div
+                        class="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-amber-100 bg-white px-4 py-2 shadow-sm"
+                    >
                         <Star size={18} class="fill-amber-400 text-amber-400" />
-                        <span class="text-lg font-black tracking-tight text-slate-700">{state.xp}</span>
+                        <span class="text-lg font-black tracking-tight text-slate-700"
+                            >{state.xp}</span
+                        >
                     </div>
 
                     <!-- Streak Badge -->
-                    <div class="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-orange-100 bg-white px-4 py-2 shadow-sm">
+                    <div
+                        class="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-orange-100 bg-white px-4 py-2 shadow-sm"
+                    >
                         <Flame size={18} class="fill-orange-500 text-orange-500" />
-                        <span class="text-lg font-black tracking-tight text-slate-700">{state.streak}</span>
+                        <span class="text-lg font-black tracking-tight text-slate-700"
+                            >{state.streak}</span
+                        >
                     </div>
                 </div>
 
@@ -58,9 +66,12 @@
                     type="button"
                     onclick={() => state.useHint()}
                     disabled={state.hintsAvailable <= 0 || !state.currentQuestion?.hint}
-                    class="group press-active flex items-center gap-3 rounded-2xl border-2 border-b-4 border-primary-200 bg-white px-5 py-2.5 font-black text-primary-600 shadow-sm transition-all hover:bg-primary-50 disabled:opacity-50 disabled:pointer-events-none"
+                    class="group press-active border-primary-200 text-primary-600 hover:bg-primary-50 flex items-center gap-3 rounded-2xl border-2 border-b-4 bg-white px-5 py-2.5 font-black shadow-sm transition-all disabled:pointer-events-none disabled:opacity-50"
                 >
-                    <Lightbulb size={18} class="text-primary-500 transition-transform group-hover:rotate-12" />
+                    <Lightbulb
+                        size={18}
+                        class="text-primary-500 transition-transform group-hover:rotate-12"
+                    />
                     <span class="text-sm">Hint ({state.hintsAvailable})</span>
                 </button>
             </div>

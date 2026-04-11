@@ -99,15 +99,15 @@
             aria-expanded={open}
             aria-describedby={error ? errorId : undefined}
             class={`
-                rounded-2xl flex w-full items-center justify-between border-2 font-bold tracking-widest uppercase transition-all outline-none
+                flex w-full items-center justify-between rounded-2xl border-2 font-bold tracking-widest uppercase transition-all outline-none
                 ${sizes[size]}
                 ${
                     disabled
                         ? 'cursor-not-allowed border-slate-50 bg-slate-50 text-slate-400'
                         : error
-                          ? 'border-rose-100 bg-rose-50/30 text-rose-900 hover:border-rose-300 focus:border-rose-500 ring-rose-50'
+                          ? 'border-rose-100 bg-rose-50/30 text-rose-900 ring-rose-50 hover:border-rose-300 focus:border-rose-500'
                           : open
-                            ? 'border-primary-500 bg-white ring-primary-100 text-slate-900 ring-4'
+                            ? 'border-primary-500 ring-primary-100 bg-white text-slate-900 ring-4'
                             : 'hover:border-primary-400 border-cosmos-border bg-white text-slate-900'
                 }
             `}
@@ -123,7 +123,7 @@
 
         {#if open}
             <div
-                class="absolute z-50 mt-2 w-full overflow-hidden rounded-2xl border-2 border-cosmos-border bg-white"
+                class="border-cosmos-border absolute z-50 mt-2 w-full overflow-hidden rounded-2xl border-2 bg-white"
                 role="listbox"
             >
                 {#if options.length === 0}

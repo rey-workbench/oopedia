@@ -13,7 +13,7 @@
 <Panel rounded="3xl" class="border-2 border-slate-800" padding="p-8">
     <div class="flex items-start gap-5">
         <div
-            class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 border-2 border-white/5"
+            class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-white/5 bg-white/10"
         >
             {#if typeof icon === 'string'}
                 <i class="{icon} text-primary-400"></i>

@@ -66,7 +66,10 @@
 
 <App title={`Latihan Soal - ${material.title}`}>
     <div class="py-12">
-        <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 transition-all duration-500" class:pb-40={state.showFeedback}>
+        <div
+            class="mx-auto max-w-5xl px-4 transition-all duration-500 sm:px-6 lg:px-8"
+            class:pb-40={state.showFeedback}
+        >
             <!-- Duolingo-style Header -->
             <div class="mb-12">
                 <div class="flex items-center gap-6">
@@ -74,30 +77,37 @@
                     <div class="flex-1">
                         <div class="mb-3 flex items-center justify-between px-2">
                             <div class="flex items-center gap-3">
-                                <div class="bg-primary-100 flex h-8 w-8 items-center justify-center rounded-xl text-primary-600 shadow-inner">
+                                <div
+                                    class="bg-primary-100 text-primary-600 flex h-8 w-8 items-center justify-center rounded-xl shadow-inner"
+                                >
                                     <Terminal size={14} />
                                 </div>
-                                <span class="text-xs font-black tracking-widest text-slate-500 uppercase">
+                                <span
+                                    class="text-xs font-black tracking-widest text-slate-500 uppercase"
+                                >
                                     {material.title}
                                 </span>
                             </div>
                             <div class="flex items-center gap-2">
                                 <span class="text-sm font-black text-slate-400">
-                                    {state.currentQuestion ? currentQuestionNumber : totalQuestions} / {totalQuestions}
+                                    {state.currentQuestion ? currentQuestionNumber : totalQuestions} /
+                                    {totalQuestions}
                                 </span>
                             </div>
                         </div>
                         <div class="relative">
-                           <!-- Background Bar -->
-                           <div class="h-4 w-full rounded-full bg-slate-100 shadow-inner"></div>
-                           <!-- Active Progress -->
-                           <div 
-                                class="absolute inset-y-0 left-0 rounded-full bg-primary-500 transition-all duration-500 ease-out border-b-4 border-primary-700" 
+                            <!-- Background Bar -->
+                            <div class="h-4 w-full rounded-full bg-slate-100 shadow-inner"></div>
+                            <!-- Active Progress -->
+                            <div
+                                class="bg-primary-500 border-primary-700 absolute inset-y-0 left-0 rounded-full border-b-4 transition-all duration-500 ease-out"
                                 style="width: {progressPercentage}%"
-                           >
+                            >
                                 <!-- Shine highlight -->
-                                <div class="absolute inset-x-2 top-1 h-1 rounded-full bg-white/20"></div>
-                           </div>
+                                <div
+                                    class="absolute inset-x-2 top-1 h-1 rounded-full bg-white/20"
+                                ></div>
+                            </div>
                         </div>
                     </div>
                 </div>

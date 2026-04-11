@@ -12,7 +12,8 @@ readonly class DashboardStatsDTO
         public int $correct_answers,
         public float $accuracy_percentage,
         public array $recent_activities,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

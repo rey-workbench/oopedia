@@ -12,7 +12,8 @@ readonly class UserDTO
         public bool $is_approved,
         public \DateTimeInterface $created_at,
         public \DateTimeInterface $updated_at,
-    ) {}
+    ) {
+    }
 
     public static function fromModel($user): self
     {

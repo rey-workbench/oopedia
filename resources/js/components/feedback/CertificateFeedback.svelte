@@ -20,9 +20,7 @@
         {details.badge}
     </div>
     <div class="relative z-10">
-        <div
-            class="mx-auto mb-6 flex h-48 w-48 items-center justify-center"
-        >
+        <div class="mx-auto mb-6 flex h-48 w-48 items-center justify-center">
             <div class="h-full w-full overflow-hidden rounded-full">
                 <DotLottieSvelte
                     src="/assets/lottie/quiz/graduation.json"
@@ -53,7 +51,7 @@
                 variant="none"
                 rounded="2xl"
                 padding="px-10 py-5"
-                class="flex items-center gap-4 border-2 border-amber-500 bg-slate-900 border-b-6 active:translate-y-[2px] active:border-b-4 transition-all"
+                class="flex items-center gap-4 border-2 border-b-6 border-amber-500 bg-slate-900 transition-all active:translate-y-[2px] active:border-b-4"
             >
                 <Star size={24} class="fill-current text-white" />
                 <span class="text-2xl font-black tracking-tighter text-white">+{xpEarned} XP</span>

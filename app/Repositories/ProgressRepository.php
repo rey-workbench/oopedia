@@ -538,7 +538,7 @@ final class ProgressRepository implements ProgressRepositoryInterface
         if (is_null($userId) || $userId === 'guest') {
             return [
                 'state'    => $this->getOrCreateStudentState('guest'),
-                'progress' => new Collection,
+                'progress' => new Collection(),
             ];
         }
 

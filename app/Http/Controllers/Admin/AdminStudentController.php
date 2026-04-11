@@ -16,7 +16,8 @@ class AdminStudentController extends Controller
 {
     public function __construct(
         protected StudentServiceInterface $studentService,
-    ) {}
+    ) {
+    }
 
     public function index(Request $request): Response
     {

@@ -58,7 +58,7 @@
                             bind:value={search}
                             oninput={onsearch}
                             placeholder={searchPlaceholder}
-                            class="w-full rounded-2xl border-2 border-cosmos-border bg-white py-2.5 pr-4 pl-12 text-sm font-bold transition-all outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-100 md:w-64"
+                            class="border-cosmos-border focus:border-primary-500 focus:ring-primary-100 w-full rounded-2xl border-2 bg-white py-2.5 pr-4 pl-12 text-sm font-bold transition-all outline-none focus:ring-4 md:w-64"
                         />
                     </div>
                 </div>
@@ -72,7 +72,7 @@
                 <tr>
                     {#each columns as column}
                         <th
-                            class={`border-cosmos-border bg-slate-50/30 p-6 text-xs font-extrabold tracking-widest text-slate-400 uppercase border-b-2 ${column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : 'text-left'}`}
+                            class={`border-cosmos-border border-b-2 bg-slate-50/30 p-6 text-xs font-extrabold tracking-widest text-slate-400 uppercase ${column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : 'text-left'}`}
                         >
                             {column.label}
                         </th>
@@ -93,7 +93,7 @@
                 {:else}
                     {#each items as item (item.id || item)}
                         <tr
-                            class={`group border-cosmos-border transition-colors border-b-2 last:border-0 hover:bg-primary-50/30 ${rowClass(item)}`}
+                            class={`group border-cosmos-border hover:bg-primary-50/30 border-b-2 transition-colors last:border-0 ${rowClass(item)}`}
                         >
                             {@render row?.(item)}
                         </tr>

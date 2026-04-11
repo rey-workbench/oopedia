@@ -100,7 +100,7 @@
                     >
                         Design Your <br />
                         <span
-                            class="bg-gradient-to-r from-white via-white/60 to-white/20 bg-clip-text text-transparent"
+                            class="bg-linear-to-r from-white via-white/60 to-white/20 bg-clip-text text-transparent"
                             >Digital</span
                         > Future.
                     </h1>
@@ -355,7 +355,7 @@
                             disabled={state.form.processing}
                         >
                             <div
-                                class="absolute inset-0 z-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-1000 group-hover:translate-x-full"
+                                class="absolute inset-0 z-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent transition-transform duration-1000 group-hover:translate-x-full"
                             ></div>
 
                             <div class="relative z-10 flex items-center justify-center gap-4">

@@ -15,7 +15,8 @@ readonly class SubMaterialDTO
         public int $order,
         public ?string $created_at = null,
         public ?string $updated_at = null,
-    ) {}
+    ) {
+    }
 
     public static function fromModel(SubMaterial $subMaterial): self
     {

@@ -21,7 +21,7 @@
     <div class="relative overflow-hidden rounded-3xl bg-slate-900 p-8 shadow-xl">
         <!-- Subtle top accent line -->
         <div
-            class="bg-linear-to-r via-primary-500/60 absolute inset-x-0 top-0 h-px from-transparent to-transparent"
+            class="via-primary-500/60 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent"
         ></div>
         <!-- Decorative icon -->
         <div class="pointer-events-none absolute -top-4 -right-4 text-white/4">
@@ -63,7 +63,9 @@
             {#each question.answers as answer, i (answer.id)}
                 {@const isSelected = selectedAnswerId === answer.id}
                 {@const label = String.fromCharCode(65 + i)}
-                <label class="group relative block cursor-pointer active:translate-y-1 transition-all">
+                <label
+                    class="group relative block cursor-pointer transition-all active:translate-y-1"
+                >
                     <input
                         type="radio"
                         name="answer"
@@ -73,21 +75,21 @@
                         onchange={() => handleSelect(answer.id)}
                     />
                     <div
-                        class="flex items-center gap-5 rounded-3xl border-2 px-6 py-5 transition-all duration-150 border-b-6
+                        class="flex items-center gap-5 rounded-3xl border-2 border-b-6 px-6 py-5 transition-all duration-150
                         {isSelected
                             ? 'border-primary-600 bg-primary-50 border-b-primary-700 -translate-y-1'
-                            : 'hover:border-slate-300 border-slate-100 bg-white border-b-slate-200 hover:bg-slate-50 shadow-sm'}"
+                            : 'border-slate-100 border-b-slate-200 bg-white shadow-sm hover:border-slate-300 hover:bg-slate-50'}"
                     >
                         <!-- Letter Coin -->
                         <div
                             class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border-2 border-b-4 transition-all duration-150
                             {isSelected
-                                ? 'border-primary-600 bg-white text-primary-600 shadow-sm'
+                                ? 'border-primary-600 text-primary-600 bg-white shadow-sm'
                                 : 'border-slate-200 bg-white text-slate-400 group-hover:border-slate-300'}"
                         >
                             <span class="text-lg font-black">{label}</span>
                         </div>
-                        
+
                         <span
                             class="flex-1 text-lg font-bold tracking-tight transition-colors duration-200
                             {isSelected
@@ -98,9 +100,11 @@
                         </span>
 
                         {#if isSelected}
-                           <div class="h-6 w-6 rounded-full bg-primary-600 flex items-center justify-center shadow-lg shadow-primary-200 animate-in zoom-in-50 duration-300">
-                               <div class="h-2 w-2 rounded-full bg-white"></div>
-                           </div>
+                            <div
+                                class="bg-primary-600 shadow-primary-200 animate-in zoom-in-50 flex h-6 w-6 items-center justify-center rounded-full shadow-lg duration-300"
+                            >
+                                <div class="h-2 w-2 rounded-full bg-white"></div>
+                            </div>
                         {/if}
                     </div>
                 </label>

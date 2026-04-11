@@ -17,7 +17,8 @@ class MaterialController extends Controller
     public function __construct(
         protected MaterialViewServiceInterface $materialViewService,
         protected GuestProgressServiceInterface $guestProgressService,
-    ) {}
+    ) {
+    }
 
     public function index(): Response
     {

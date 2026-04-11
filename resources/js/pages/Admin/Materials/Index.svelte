@@ -22,21 +22,31 @@
 
     let { materials = [] }: { materials: any[] } = $props();
 
-    const totalMaterials = $derived(materials.length);
-    const recentMaterials = $derived(
-        materials.filter((m) => {
-            const date = new Date(m.created_at);
-            const thirtyDaysAgo = new Date();
-            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-            return date >= thirtyDaysAgo;
-        }).length
+    // Use $derived.by for derived values that depend on props
+    const totalMaterials = $derived.by(() => materials.length);
+    const recentMaterials = $derived.by(
+        () =>
+            materials.filter((m) => {
+                const date = new Date(m.created_at);
+                const thirtyDaysAgo = new Date();
+                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                return date >= thirtyDaysAgo;
+            }).length
     );
-    const totalMedia = $derived(
+    const totalMedia = $derived.by(() =>
         materials.reduce((acc: number, m: any) => acc + (m.media ? m.media.length : 0), 0)
     );
 
-    let search = new URLSearchParams(window.location.search).get('search') || '';
-    const listState = new MaterialListState(materials, search);
+    // Local search state - use $state for bindable props
+    let search = $state(new URLSearchParams(window.location.search).get('search') || '');
+
+    // Derived listState that properly tracks changes
+    const listState = $derived(new MaterialListState(materials, search));
+
+    // Search handler - syncs local state with listState
+    function handleSearch() {
+        listState.handleSearch();
+    }
 
     const columns = $derived([
         { key: 'visual', label: 'Pratinjau Visual', align: 'left' },
@@ -46,7 +56,7 @@
         { key: 'actions', label: 'Operasi', align: 'right' },
     ]);
 
-    const materialStats = [
+    const materialStats = $derived([
         {
             title: 'Total Modul',
             value: totalMaterials,
@@ -68,7 +78,7 @@
             variant: 'primary',
             footer: 'Total aset multimedia',
         },
-    ];
+    ]);
 </script>
 
 <App title="Kelola Materi">

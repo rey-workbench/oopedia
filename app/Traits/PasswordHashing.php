@@ -2,4 +2,6 @@
 
 namespace App\Traits;
 
-trait PasswordHashing {}
+trait PasswordHashing
+{
+}

@@ -2,11 +2,7 @@
     "mcpServers": {
         "laravel-boost": {
             "command": "wsl.exe",
-            "args": [
-                "/usr/bin/php",
-                "/home/reysilva/project/skripsi/oopedia/artisan",
-                "boost:mcp"
-            ]
+            "args": ["/usr/bin/php", "/home/reysilva/project/skripsi/oopedia/artisan", "boost:mcp"]
         }
     }
 }

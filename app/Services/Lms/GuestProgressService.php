@@ -18,7 +18,8 @@ final class GuestProgressService implements GuestProgressServiceInterface
         private readonly string $cookieAdaptive = 'guest_adaptive',
         private readonly string $cookiePerformance = 'guest_performance',
         private readonly int $cookieLifetime = 60 * 24 * 30,
-    ) {}
+    ) {
+    }
 
     /** @return array<string, mixed> */
     public function getProgress(): array

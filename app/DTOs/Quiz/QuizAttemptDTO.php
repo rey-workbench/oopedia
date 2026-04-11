@@ -15,7 +15,8 @@ readonly class QuizAttemptDTO
         public int $time_spent,
         public \DateTimeInterface $created_at,
         public \DateTimeInterface $updated_at,
-    ) {}
+    ) {
+    }
 
     public static function fromModel($attempt): self
     {

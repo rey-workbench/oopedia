@@ -333,14 +333,14 @@
         <div class="flex flex-wrap items-center justify-center gap-6">
             <Link
                 href={ROUTES.AUTH.REGISTER}
-                class="rounded-3xl border-2 border-slate-950 border-b-8 bg-slate-900 px-10 py-5 text-[14px] font-black tracking-[0.14em] text-white uppercase shadow-xl transition-all hover:bg-slate-800 active:translate-y-[4px] active:border-b-4 sm:px-12"
+                class="rounded-3xl border-2 border-b-8 border-slate-950 bg-slate-900 px-10 py-5 text-[14px] font-black tracking-[0.14em] text-white uppercase shadow-xl transition-all hover:bg-slate-800 active:translate-y-[4px] active:border-b-4 sm:px-12"
             >
                 Mulai Belajar
             </Link>
 
             <a
                 href="#fitur"
-                class="rounded-3xl border-2 border-slate-200 border-b-8 bg-white px-10 py-5 text-[14px] font-black tracking-[0.14em] text-slate-900 shadow-lg uppercase backdrop-blur transition-all hover:bg-slate-50 active:translate-y-[4px] active:border-b-4 sm:px-12"
+                class="rounded-3xl border-2 border-b-8 border-slate-200 bg-white px-10 py-5 text-[14px] font-black tracking-[0.14em] text-slate-900 uppercase shadow-lg backdrop-blur transition-all hover:bg-slate-50 active:translate-y-[4px] active:border-b-4 sm:px-12"
             >
                 Eksplor Fitur
             </a>
