@@ -15,6 +15,7 @@
     type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
 
     interface Props {
+        id?: string;
         variant?: ButtonVariant;
         size?: ButtonSize;
         type?: 'button' | 'submit' | 'reset';
@@ -28,6 +29,7 @@
     }
 
     let {
+        id,
         variant = 'primary',
         size = 'md',
         type = 'button',
@@ -70,7 +72,7 @@
 </script>
 
 {#if href}
-    <Link {href} class={classes} {...rest}>
+    <Link {id} {href} class={classes} {...rest}>
         {#if icon && iconPosition === 'left'}
             {#if typeof icon === 'string'}
                 <i
@@ -110,7 +112,7 @@
         {/if}
     </Link>
 {:else}
-    <button {type} {disabled} class={classes} {...rest}>
+    <button {id} {type} class={classes} {disabled} {...rest}>
         {#if icon && iconPosition === 'left'}
             {#if typeof icon === 'string'}
                 <i class="{icon} {hasChildren ? 'mr-3' : ''}"></i>
