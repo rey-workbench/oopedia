@@ -71,14 +71,13 @@
             {...rest}
             class={`
                 w-full px-6 py-4 text-sm font-bold transition-all outline-none
-                ${
-                    inputClass ||
-                    `rounded-3xl border-2 ${disabled ? 'cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400 grayscale' : ''}
+                ${disabled ? 'cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400 grayscale' : ''}
                 ${
                     error
                         ? 'border-b-6 border-rose-200 bg-rose-50/20 text-rose-900 focus:border-rose-500 focus:ring-rose-50'
-                        : `hover:border-slate-300 focus:ring-4 ${variantClasses[variant]}`
-                }`
+                        : inputClass
+                          ? inputClass
+                          : `rounded-3xl border-2 hover:border-slate-300 focus:ring-4 ${variantClasses[variant]}`
                 }
             `}
         />

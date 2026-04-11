@@ -126,13 +126,13 @@
     <!-- The certificate itself (captured by html2canvas) -->
     <div
         bind:this={certRef}
-        class="relative min-h-[380px] overflow-hidden rounded-2xl border-4 border-[color:var(--cert-border)] bg-white shadow-2xl"
+        class="relative min-h-[380px] overflow-hidden rounded-2xl border-4 border-(--cert-border) bg-white shadow-2xl"
     >
         <!-- Background gradient -->
-        <div class="bg-gradient-to-br {typeConfig.bgGradient} absolute inset-0"></div>
+        <div class="bg-linear-to-br {typeConfig.bgGradient} absolute inset-0"></div>
 
         <!-- Decorative corner patterns -->
-        <div class="absolute top-0 left-0 h-28 w-28 text-[color:var(--cert-border)] opacity-20">
+        <div class="absolute top-0 left-0 h-28 w-28 text-(--cert-border) opacity-20">
             <svg viewBox="0 0 100 100" class="h-full w-full" aria-hidden="true" role="presentation">
                 <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor"></path>
                 <path d="M0,0 L80,0 L80,10 L10,10 L10,80 L0,80 Z" fill="currentColor" opacity="0.5"
@@ -148,16 +148,12 @@
                 ></path>
             </svg>
         </div>
-        <div
-            class="absolute bottom-0 left-0 h-28 w-28 -rotate-90 text-[color:var(--cert-border)] opacity-20"
-        >
+        <div class="absolute bottom-0 left-0 h-28 w-28 -rotate-90 text-(--cert-border) opacity-20">
             <svg viewBox="0 0 100 100" class="h-full w-full" aria-hidden="true" role="presentation">
                 <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor"></path>
             </svg>
         </div>
-        <div
-            class="absolute right-0 bottom-0 h-28 w-28 rotate-180 text-[color:var(--cert-border)] opacity-20"
-        >
+        <div class="absolute right-0 bottom-0 h-28 w-28 rotate-180 text-(--cert-border) opacity-20">
             <svg viewBox="0 0 100 100" class="h-full w-full" aria-hidden="true" role="presentation">
                 <path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" fill="currentColor"></path>
             </svg>
@@ -179,13 +175,13 @@
         <div class="relative z-10 flex flex-col items-center px-10 py-10 text-center">
             <!-- Header -->
             <div class="mb-2 flex items-center gap-3">
-                <div class="h-px flex-1 bg-[color:var(--cert-border)] opacity-30"></div>
+                <div class="h-px flex-1 bg-(--cert-border) opacity-30"></div>
                 <p
-                    class="text-[10px] font-black tracking-[0.3em] text-[color:var(--cert-accent)] uppercase"
+                    class="text-[10px] font-black tracking-[0.3em] text-(--cert-accent) uppercase"
                 >
                     OOPEDIA • POLITEKNIK NEGERI MALANG
                 </p>
-                <div class="h-px flex-1 bg-[color:var(--cert-border)] opacity-30"></div>
+                <div class="h-px flex-1 bg-(--cert-border) opacity-30"></div>
             </div>
 
             <!-- Certificate of Completion text (Udemy style) -->
@@ -195,9 +191,9 @@
 
             <!-- Trophy / Award icon -->
             <div
-                class="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[var(--cert-shimmer)] to-white shadow-xl ring-4 ring-[color:var(--cert-border)]"
+                class="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-linear-to-br from-[var(--cert-shimmer)] to-white shadow-xl ring-4 ring-[color:var(--cert-border)]"
             >
-                <Award size={40} class="text-[color:var(--cert-accent)]" />
+                <Award size={40} class="text-(--cert-accent)" />
             </div>
 
             <!-- Tier badge -->
@@ -212,7 +208,7 @@
 
             <!-- Recipient Name -->
             <h2
-                class="my-2 font-serif text-3xl font-black tracking-tight text-[color:var(--cert-accent)]"
+                class="my-2 font-serif text-3xl font-black tracking-tight text-(--cert-accent)"
             >
                 {userName}
             </h2>
@@ -288,7 +284,7 @@
         <button
             onclick={() => downloadAs('png')}
             disabled={isDownloading}
-            class="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-b-[4px] border-[color:var(--cert-border)] bg-white px-4 py-3 text-xs font-bold tracking-widest text-[color:var(--cert-accent)] uppercase transition-all hover:bg-slate-50 active:translate-y-[2px] active:border-b-2 disabled:translate-y-0 disabled:border-b-[4px] disabled:opacity-60"
+            class="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-b-[4px] border-[color:var(--cert-border)] bg-white px-4 py-3 text-xs font-bold tracking-widest text-[color:var(--cert-accent)] uppercase transition-all hover:bg-slate-50 active:translate-y-[2px] active:border-b-2 disabled:translate-y-0 disabled:border-b-4 disabled:opacity-60"
         >
             {#if isDownloading}
                 <span class="animate-spin">⏳</span>
