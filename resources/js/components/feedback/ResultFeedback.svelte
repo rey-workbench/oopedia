@@ -37,7 +37,6 @@
 
     onMount(() => {
         const shouldAutoAdvance = status === 'success';
-        const autoAdvanceMs = shouldAutoAdvance ? 3000 : 5000;
         const startTime = Date.now();
         timer = setInterval(() => {
             const elapsed = Date.now() - startTime;
