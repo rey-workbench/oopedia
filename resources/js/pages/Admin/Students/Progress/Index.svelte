@@ -77,19 +77,21 @@
 
 <App title="Progress Mahasiswa">
     <div class="space-y-12">
-        <PageHeader
-            title="Wawasan Performa Siswa"
-            subtitle={`Analisis trajectory pembelajaran untuk entitas ${state.student.name}.`}
-        >
-            {#snippet actions()}
-                <Button href={ROUTES.ADMIN.STUDENTS.INDEX} variant="ghost" icon={ArrowLeft}
-                    >KEMBALI KE DAFTAR</Button
-                >
-            {/snippet}
-        </PageHeader>
+        <div id="student-profile-card">
+            <PageHeader
+                title="Wawasan Performa Siswa"
+                subtitle={`Analisis trajectory pembelajaran untuk entitas ${state.student.name}.`}
+            >
+                {#snippet actions()}
+                    <Button href={ROUTES.ADMIN.STUDENTS.INDEX} variant="ghost" icon={ArrowLeft}
+                        >KEMBALI KE DAFTAR</Button
+                    >
+                {/snippet}
+            </PageHeader>
+        </div>
 
         <!-- Summary Cards -->
-        <div id="student-progress-stats" class="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div id="student-performance-stats" class="grid grid-cols-1 gap-6 md:grid-cols-3">
             {#each progressStats as stat}
                 <Card hover={true} class="group relative overflow-hidden">
                     <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
@@ -154,7 +156,7 @@
 
         <!-- Certifications Section -->
         {#if Object.keys(state.certifications).length > 0}
-            <div id="student-certifications" class="space-y-6">
+            <div id="student-adaptive-metrics" class="space-y-6">
                 <h3 class="text-xl font-bold tracking-widest text-slate-900 uppercase">
                     Pencapaian Sertifikasi
                 </h3>
@@ -204,8 +206,9 @@
         <!-- Tables -->
         <div class="space-y-12">
             <!-- Mastery Matrix -->
-            <DataTable
-                id="mastery-matrix-table"
+            <div id="student-quiz-history">
+                <DataTable
+                    id="mastery-matrix-table"
                 title="Matriks Penguasaan Konten"
                 items={state.materials}
                 columns={matrixColumns}

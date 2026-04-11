@@ -46,7 +46,7 @@
                     <div class="grid grid-cols-1 gap-10 lg:grid-cols-3">
                         <div class="space-y-6 lg:col-span-2">
                             <Input
-                                id="material-form-title"
+                                id="material-title-input"
                                 label="Judul Modul"
                                 required
                                 bind:value={state.form.title}
@@ -96,7 +96,7 @@
                             >Konten Instruksional
                             <span class="text-rose-500">*</span></span
                         >
-                        <div id="content-editor">
+                        <div id="material-content-editor">
                             <QuillEditor bind:value={state.form.content} height="500px" />
                         </div>
                         {#if state.form.errors['content']}

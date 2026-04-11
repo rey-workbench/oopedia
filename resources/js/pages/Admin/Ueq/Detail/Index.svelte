@@ -40,7 +40,7 @@
         </div>
 
         <div class="grid grid-cols-1 gap-10 lg:grid-cols-3">
-            <div class="space-y-10">
+            <div id="ueq-respondent-profile" class="space-y-10">
                 <div>
                     <div
                         class="relative overflow-hidden rounded-[2rem] bg-slate-900 p-8 text-white"
@@ -108,7 +108,7 @@
                     {/if}
                 </div>
 
-                <div class="space-y-4">
+                <div id="ueq-dimension-scores" class="space-y-4">
                     {#each Object.entries(state.dimensions) as [key, value]}
                         <div class="space-y-2 rounded-2xl bg-slate-50 p-4">
                             <div class="flex items-center justify-between">
@@ -133,7 +133,7 @@
             </div>
 
             <div class="space-y-10 lg:col-span-2">
-                <div class="space-y-6">
+                <div id="ueq-user-feedback" class="space-y-6">
                     <div class="rounded-[2rem] border border-amber-100 bg-amber-50 p-6">
                         <h4
                             class="mb-3 text-[10px] font-bold tracking-widest text-amber-800 uppercase"
@@ -157,7 +157,7 @@
                     </div>
                 </div>
 
-                <div class="overflow-x-auto">
+                <div id="ueq-pola-jawaban" class="overflow-x-auto">
                     <table class="w-full">
                         <thead>
                             <tr class="border-b border-slate-100">
