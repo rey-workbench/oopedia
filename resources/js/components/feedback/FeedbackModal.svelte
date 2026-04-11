@@ -62,19 +62,19 @@
 
         const certMap: Record<string, CertificateDetails> = {
             gold: {
-                color: 'bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600',
+                color: 'bg-amber-400',
                 title: 'SERTIFIKAT EMAS',
                 badge: '🥇',
                 subtitle: 'Master Of Object-Oriented Programming',
             },
             silver: {
-                color: 'bg-gradient-to-br from-slate-300 via-slate-400 to-slate-500',
+                color: 'bg-slate-400',
                 title: 'SERTIFIKAT PERAK',
                 badge: '🥈',
                 subtitle: 'Senior Object-Oriented Programmer',
             },
             bronze: {
-                color: 'bg-gradient-to-br from-orange-300 via-orange-400 to-orange-500',
+                color: 'bg-orange-400',
                 title: 'SERTIFIKAT PERUNGGU',
                 badge: '🥉',
                 subtitle: 'Junior Object-Oriented Programmer',

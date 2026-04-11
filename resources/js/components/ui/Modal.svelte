@@ -67,7 +67,7 @@
         transition:fade={{ duration: 200 }}
     >
         <div
-            class="fixed inset-0 transform transition-all"
+            class="absolute inset-0 transform transition-all"
             onclick={close}
             role="button"
             tabindex="0"
@@ -81,7 +81,7 @@
             bind:this={dialogEl}
             role="dialog"
             aria-modal="true"
-            class={`border-cosmos-border mb-6 transform overflow-hidden rounded-3xl border-2 bg-white transition-all sm:mx-auto sm:w-full ${maxWidthClasses[maxWidth]}`}
+            class={`border-cosmos-border relative z-10 mb-6 transform overflow-hidden rounded-3xl border-2 bg-white transition-all sm:mx-auto sm:w-full ${maxWidthClasses[maxWidth]}`}
             transition:scale={{ duration: 200, start: 0.95 }}
         >
             {@render children?.()}
