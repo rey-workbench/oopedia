@@ -1,11 +1,11 @@
 # Frontend Directory
 
 **Generated:** 2026-04-02
-**Part of:** Adaptive E-Learning Platform (Svelte 5 + Inertia v2)
+**Part of:** Adaptive E-Learning Platform (Svelte 5 + Inertia v3)
 
 ## OVERVIEW
 
-Svelte 5 SPA with Inertia v2 for server-rendered pages. Role-based routing (Admin, Mahasiswa), adaptive learning UI, gamification components.
+Svelte 5 SPA with Inertia v3 for server-rendered pages. Role-based routing (Admin, Mahasiswa), adaptive learning UI, gamification components.
 
 ## STRUCTURE
 

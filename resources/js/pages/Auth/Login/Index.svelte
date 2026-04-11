@@ -98,7 +98,7 @@
                     </div>
 
                     <h1
-                        class="text-7xl leading-[1] font-black tracking-tight text-white uppercase"
+                        class="text-7xl leading-none font-black tracking-tight text-white uppercase"
                         in:fly={{ y: 30, duration: 1000, delay: 300 }}
                     >
                         Satu langkah <br />
@@ -269,7 +269,7 @@
                                 required
                                 autocomplete="email"
                                 error={state.form.errors['email']}
-                                class="h-[70px] rounded-[24px] border-2 border-b-[6px] border-slate-200 bg-slate-900/2 px-8 text-lg font-medium transition-all focus:border-b-[6px] focus:border-slate-300 focus:bg-white focus:ring-0 focus:outline-none"
+                                inputClass="h-[70px] px-8 text-lg font-medium"
                             />
                         </div>
                     </div>
@@ -297,7 +297,7 @@
                                 required
                                 autocomplete="current-password"
                                 error={state.form.errors['password']}
-                                class="h-[70px] rounded-[24px] border-2 border-b-[6px] border-slate-200 bg-slate-900/2 px-8 text-lg font-medium transition-all focus:border-b-[6px] focus:border-slate-300 focus:bg-white focus:ring-0 focus:outline-none"
+                                inputClass="h-[70px] px-8 text-lg font-medium"
                             />
                         </div>
                     </div>
@@ -310,7 +310,7 @@
                         >
                             <!-- Shiny Highlight -->
                             <div
-                                class="absolute inset-0 z-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-1000 group-hover:translate-x-full"
+                                class="absolute inset-0 z-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent transition-transform duration-1000 group-hover:translate-x-full"
                             ></div>
 
                             <div class="relative z-10 flex items-center justify-center gap-4">

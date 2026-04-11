@@ -191,7 +191,7 @@
                             >
                         </button>
                         <span
-                            class="z-10 mt-3 rounded-2xl border-2 border-b-[4px] border-slate-900 bg-slate-800 px-5 py-2 text-[10px] font-black tracking-widest text-white uppercase shadow-md"
+                            class="z-10 mt-3 rounded-2xl border-2 border-b-4 border-slate-900 bg-slate-800 px-5 py-2 text-[10px] font-black tracking-widest text-white uppercase shadow-md"
                         >
                             Play
                         </span>
@@ -206,10 +206,10 @@
             style="left: {tX}px; top: {trophyY}px; transform: translate(-50%, -50%);"
         >
             <div
-                class={`relative flex h-28 w-28 items-center justify-center rounded-full border-2 border-b-[6px] transition-all duration-700 sm:h-32 sm:w-32 ${allCompleted ? 'scale-110 border-amber-600 bg-amber-400 shadow-xl shadow-amber-200' : 'border-slate-300 bg-slate-200 shadow-sm'}`}
+                class={`relative flex h-28 w-28 items-center justify-center rounded-full border-2 border-b-6 transition-all duration-700 sm:h-32 sm:w-32 ${allCompleted ? 'scale-110 border-amber-600 bg-amber-400 shadow-xl shadow-amber-200' : 'border-slate-300 bg-slate-200 shadow-sm'}`}
             >
                 {#if allCompleted}
-                    <div class="absolute inset-0 rounded-full border-[4px] border-white/30"></div>
+                    <div class="absolute inset-0 rounded-full border-4 border-white/30"></div>
                 {/if}
                 <Trophy
                     size={56}
@@ -224,7 +224,7 @@
                     {/each}
                 </div>
                 <span
-                    class="mt-2.5 animate-bounce rounded-full border-2 border-b-[4px] border-amber-600 bg-amber-500 px-5 py-2 text-[11px] font-black tracking-wider text-white uppercase shadow-lg"
+                    class="mt-2.5 animate-bounce rounded-full border-2 border-b-4 border-amber-600 bg-amber-500 px-5 py-2 text-[11px] font-black tracking-wider text-white uppercase shadow-lg"
                 >
                     🎉 Completed!
                 </span>

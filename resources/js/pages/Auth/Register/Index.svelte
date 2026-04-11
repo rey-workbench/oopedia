@@ -100,7 +100,7 @@
                     >
                         Design Your <br />
                         <span
-                            class="bg-gradient-to-r from-white via-white/60 to-white/20 bg-clip-text text-transparent"
+                            class="bg-linear-to-r from-white via-white/60 to-white/20 bg-clip-text text-transparent"
                             >Digital</span
                         > Future.
                     </h1>
@@ -266,7 +266,7 @@
                                 placeholder="Cth. John Doe"
                                 required
                                 error={state.form.errors['name']}
-                                class="h-[70px] rounded-[24px] border-2 border-b-[6px] border-slate-200 bg-slate-900/2 px-8 text-lg font-medium transition-all focus:border-b-[6px] focus:border-slate-300 focus:bg-white focus:ring-0 focus:outline-none"
+                                inputClass="h-[70px] px-8 text-lg font-medium"
                             />
                         </div>
                         <div class="space-y-2">
@@ -282,7 +282,7 @@
                                 placeholder="nama@email.com"
                                 required
                                 error={state.form.errors['email']}
-                                class="h-[70px] rounded-[24px] border-2 border-b-[6px] border-slate-200 bg-slate-900/2 px-8 text-lg font-medium transition-all focus:border-b-[6px] focus:border-slate-300 focus:bg-white focus:ring-0 focus:outline-none"
+                                inputClass="h-[70px] px-8 text-lg font-medium"
                             />
                         </div>
                     </div>
@@ -301,7 +301,7 @@
                                 placeholder="••••••••"
                                 required
                                 error={state.form.errors['password']}
-                                class="h-[70px] rounded-[24px] border-2 border-b-[6px] border-slate-200 bg-slate-900/2 px-8 text-lg font-medium transition-all focus:border-b-[6px] focus:border-slate-300 focus:bg-white focus:ring-0 focus:outline-none"
+                                inputClass="h-[70px] px-8 text-lg font-medium"
                             />
                         </div>
                         <div class="space-y-2">
@@ -316,7 +316,8 @@
                                 bind:value={state.form.password_confirmation}
                                 placeholder="••••••••"
                                 required
-                                class="h-[70px] rounded-[24px] border-2 border-b-[6px] border-slate-200 bg-slate-900/2 px-8 text-lg font-medium transition-all focus:border-b-[6px] focus:border-slate-300 focus:bg-white focus:ring-0 focus:outline-none"
+                                class=""
+                                inputClass="h-[70px] px-8 text-lg font-medium"
                             />
                         </div>
                     </div>
@@ -355,7 +356,7 @@
                             disabled={state.form.processing}
                         >
                             <div
-                                class="absolute inset-0 z-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-1000 group-hover:translate-x-full"
+                                class="absolute inset-0 z-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent transition-transform duration-1000 group-hover:translate-x-full"
                             ></div>
 
                             <div class="relative z-10 flex items-center justify-center gap-4">

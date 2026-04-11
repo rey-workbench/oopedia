@@ -1,5 +1,182 @@
 Skip to content
 
+<!-- PROJECT CONTEXT - OOPEDIA E-LEARNING PLATFORM -->
+
+<project-context>
+
+# Oopedia - E-Learning Platform
+
+## Overview
+
+- **Type**: Interactive E-Learning Platform (Skripsi/Thesis Project)
+- **Purpose**: Adaptive learning system with forward chaining algorithm
+- **Language**: Indonesian (Bahasa Indonesia)
+
+## Tech Stack
+
+| Layer    | Technology               |
+| -------- | ------------------------ |
+| Backend  | Laravel 12.x             |
+| Frontend | Svelte 5 + Inertia.js v3 |
+| Styling  | Tailwind CSS 4           |
+| Database | MySQL                    |
+| Auth     | Laravel Sanctum v4       |
+| Build    | Vite 7                   |
+
+## Database Schema
+
+### Core Tables
+
+| Table            | Purpose                                                                                                  |
+| ---------------- | -------------------------------------------------------------------------------------------------------- |
+| `users`          | User accounts (id, name, email, password, role_id, is_approved)                                          |
+| `roles`          | User roles (admin, mahasiswa)                                                                            |
+| `materials`      | Main learning modules (title, content, module_id, is_final_project)                                      |
+| `sub_materials`  | Sub-topics within materials (title, content, jenis_konten, learning_style, order)                        |
+| `questions`      | Quiz questions (question_text, question_type, type, difficulty, hint)                                    |
+| `answers`        | Answer options (answer_text, is_correct, explanation, drag_source, drag_target, blank_position)          |
+| `quiz_attempts`  | Student quiz history (user_id, question_id, answer_id, is_correct, score, time_spent)                    |
+| `student_states` | Per-student progress tracking (gamification_data, learning_profile, performance_metrics, adaptive_state) |
+| `ueq_surveys`    | User Experience Questionnaire responses (26 Likert scale items)                                          |
+| `media`          | Media attachments (media_type, media_url)                                                                |
+
+### Question Types
+
+- `question_type`: multiple_choice, drag_drop, fill_blank
+- `difficulty`: easy, medium, hard
+- `type`: textual, visual
+
+## Models (Eloquent)
+
+```
+User, Answer, Material, Media, Question, QuizAttempt, Role, StudentState, SubMaterial, UeqSurvey
+```
+
+## Key Features
+
+### 1. Adaptive Quiz Engine
+
+- Adjusts question difficulty based on student performance
+- Uses **forward chaining algorithm** for rule evaluation
+- 26 adaptive rules in `app/Rules/Adaptive/`
+
+### 2. Rule Types
+
+| Category           | Rules                                                               |
+| ------------------ | ------------------------------------------------------------------- |
+| Promotion          | StandardPromotion, AcceleratedJump, ModuleGraduation, MasteryMedium |
+| SafetyNet          | PersistentTextualSafetyNet, PersistentVisualSafetyNet               |
+| Certificate        | BronzeCertificate, SilverCertificate, GoldCertificate               |
+| CrisisIntervention | TextualCrisisIntervention, VisualCrisisIntervention                 |
+| Recovery           | SyntaxRecovery, LogicRecovery, RemedialIndependent                  |
+| ProjectRevision    | TextualProjectRevision, VisualProjectRevision                       |
+
+### 3. Adaptive Services
+
+```
+app/Services/Adaptive/
+├── AdaptiveEngineService.php       # Main orchestrator
+├── AdaptiveQuizFlowService.php    # Quiz flow management
+├── FactGatheringService.php       # Collects student facts
+└── NextActionResolverService.php  # Determines next action
+```
+
+### 4. Additional Features
+
+- UEQ Survey (User Experience Questionnaire - 26 items)
+- Leaderboard
+- Certificates (Bronze/Silver/Gold)
+- Gamification system
+
+## Directory Structure
+
+### Backend (`app/`)
+
+```
+app/
+├── Http/           # Controllers, Middleware, Requests
+├── Models/         # Eloquent models
+├── DTOs/           # Data Transfer Objects (Analytics, Material, Question, Quiz, Survey, User)
+├── Services/       # Business logic (Adaptive, Analytics, Gamification, Lms, User)
+├── Repositories/   # Data access layer
+├── Rules/          # Adaptive rules (Adaptive/*)
+├── Schemas/        # JSON schemas
+├── Contracts/      # Interface definitions
+├── Traits/         # Reusable traits
+└── View/           # Blade views
+```
+
+### Frontend (`resources/js/`)
+
+```
+resources/js/
+├── pages/          # Inertia pages (Admin/, Auth/, Mahasiswa/, Landing/, Error/)
+├── components/     # Svelte components
+│   ├── ui/         # 33 UI components (Button, Card, Modal, etc.)
+│   ├── quiz/       # Quiz components (MultipleChoice, DragAndDrop, FillInTheBlank)
+│   ├── layout/     # Layout components
+│   ├── navigation/ # Navigation components
+│   └── feedback/   # Feedback components
+├── stores/         # Svelte stores
+├── states/         # State management
+├── types/          # TypeScript types
+└── utils/          # Utility functions
+```
+
+## Routes Overview (84 total)
+
+### Admin Routes (`/admin/*`)
+
+- `/admin/dashboard` - Admin dashboard
+- `/admin/materials/*` - Material CRUD
+- `/admin/questions/*` - Question CRUD
+- `/admin/students/*` - Student management + import
+- `/admin/users/*` - User management + approval system
+- `/admin/ueq-survey/*` - UEQ survey results
+
+### Mahasiswa Routes (`/mahasiswa/*`)
+
+- `/mahasiswa/dashboard` - Student dashboard
+- `/mahasiswa/materials/*` - Material browsing
+- `/mahasiswa/materials/{id}/questions/*` - Quiz flow
+- `/mahasiswa/profile/*` - Profile management
+- `/mahasiswa/leaderboard` - Rankings
+- `/mahasiswa/certificates` - Achievement certificates
+- `/mahasiswa/ueq-survey/*` - UEQ survey
+
+### Auth Routes
+
+- `/login`, `/register`, `/logout`
+
+## UI Components Available
+
+```
+Accordion, Alert, Badge, Button, Card, Chart, Checkbox, ContentDisplay,
+DataTable, Dropdown, EmptyState, FileUploadZone, FloatingItem, ImageUpload,
+InfoPanel, Input, MasonryCard, Modal, PageHeader, Pagination, Panel,
+ProgressBar, QuillEditor, Radio, Section, Select, Skeleton, StatCard,
+Textarea, Toast, Toggle, UserAvatar
+```
+
+## Quiz Question Types
+
+1. **MultipleChoice** - Single correct answer selection
+2. **DragAndDrop** - Drag items to targets
+3. **FillInTheBlank** - Complete the sentence
+
+## Student State JSON Structure
+
+```json
+{
+  "gamification_data": { "xp", "streak", "badges" },
+  "learning_profile": { "preferred_style", "weaknesses" },
+  "performance_metrics": { "accuracy", "avg_time", "streak" },
+  "adaptive_state": { "current_difficulty", "consecutive_correct" }
+}
+```
+
+</project-context>
+
 <laravel-boost-guidelines>
 === foundation rules ===
 
@@ -12,7 +189,7 @@ The Laravel Boost guidelines are specifically curated by Laravel maintainers for
 This application is a Laravel application and its main Laravel ecosystems package & versions are below. You are an expert with them all. Ensure you abide by these specific packages & versions.
 
 - php - 8.5.1
-- inertiajs/inertia-laravel (INERTIA) - v2
+- inertiajs/inertia-laravel (INERTIA) - v3
 - laravel/framework (LARAVEL) - v12
 - laravel/octane (OCTANE) - v2
 - laravel/prompts (PROMPTS) - v0
@@ -21,7 +198,7 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - laravel/pint (PINT) - v1
 - laravel/sail (SAIL) - v1
 - phpunit/phpunit (PHPUNIT) - v12
-- @inertiajs/svelte (INERTIA) - v2
+- @inertiajs/svelte (INERTIA) - v3
 - eslint (ESLINT) - v10
 - prettier (PRETTIER) - v3
 - tailwindcss (TAILWINDCSS) - v4
@@ -149,19 +326,20 @@ Route::get('/users', function () {
 });
 </code-snippet>
 
-=== inertia-laravel/v2 rules ===
+=== inertia-laravel/v3 rules ===
 
-## Inertia v2
+## Inertia v3
 
-- Make use of all Inertia features from v1 and v2. Check the documentation before making any changes to ensure we are taking the correct approach.
+- Make use of all Inertia features from v1, v2, and v3. Check the documentation before making any changes to ensure we are taking the correct approach.
 
-### Inertia v2 New Features
+### Inertia v3 New Features
 
-- Deferred props.
-- Infinite scrolling using merging props and `WhenVisible`.
-- Lazy loading data on scroll.
-- Polling.
-- Prefetching.
+- Enhanced deferred props with better SSR support
+- Improved lazy loading with `lazy` and `eager` options
+- New `mergeProps()` function for combining props
+- Native support for streaming responses
+- Better error boundary handling
+- Improved TypeScript types
 
 ### Deferred Props & Empty States
 
@@ -278,64 +456,12 @@ Route::get('/users', function () {
 - To run all tests in a file: `php artisan test --compact tests/Feature/ExampleTest.php`.
 - To filter on a particular test name: `php artisan test --compact --filter=testName` (recommended after making a change to a related file).
 
-=== inertia-svelte/core rules ===
+=== inertia-svelte/rules ===
 
 ## Inertia + Svelte
 
 - Use `router.visit()` or `<Link>` for navigation instead of traditional links.
-
-<code-snippet name="Inertia Client Navigation" lang="svelte">
-
-import { inertia, Link } from '@inertiajs/svelte'
-
-<a href="/" use:inertia>Home</a>
-
-<Link href="/">Home</Link>
-
-</code-snippet>
-
-=== inertia-svelte/v2/forms rules ===
-
-## Inertia v2 + Svelte Forms
-
-- There are critical differences between Svelte 4 and 5; use the `search-docs` tool for up-to-date guidance.
-
-<code-snippet name="`<Form>` Component Example" lang="svelte5">
-
-<Form action="/users" method="post">
-    {#snippet children({
-    errors,
-    hasErrors,
-    processing,
-    progress,
-    wasSuccessful,
-    recentlySuccessful,
-    setError,
-    clearErrors,
-    resetAndClearErrors,
-    defaults,
-    isDirty,
-    reset,
-    submit,
-    })}
-    <input type="text" name="name" />
-
-    {#if errors.name}
-    <div>{errors.name}</div>
-    {/if}
-
-    <button type="submit" disabled={processing}>
-        {processing ? 'Creating...' : 'Create User'}
-    </button>
-
-    {#if wasSuccessful}
-    <div>User created successfully!</div>
-    {/if}
-    {/snippet}
-
-</Form>
-
-</code-snippet>
+- Use the `<Form>` component for forms (see inertia-laravel/v3 rules for example).
 
 === tailwindcss/core rules ===
 
@@ -404,18 +530,4 @@ import { inertia, Link } from '@inertiajs/svelte'
 | decoration-slice | box-decoration-slice |
 | decoration-clone | box-decoration-clone |
 
-=== inertiajs/inertia-laravel rules ===
-
-# Inertia
-
-- Inertia creates fully client-side rendered SPAs without modern SPA complexity, leveraging existing server-side patterns.
-- Components live in `resources/js/pages` (unless specified in `vite.config.js`). Use `Inertia::render()` for server-side routing instead of Blade views.
-- ALWAYS use `search-docs` tool for version-specific Inertia documentation and updated code examples.
-- IMPORTANT: Activate `inertia-svelte-development` when working with Inertia Svelte client-side patterns.
-
-# Inertia v2
-
-- Use all Inertia features from v1 and v2. Check the documentation before making changes to ensure the correct approach.
-- New features: deferred props, infinite scroll, merging props, polling, prefetching, once props, flash data.
-- When using deferred props, add an empty state with a pulsing or animated skeleton.
-  </laravel-boost-guidelines>
+</laravel-boost-guidelines>

@@ -435,7 +435,7 @@
                                     id="name"
                                     type="text"
                                     bind:value={state.form.name}
-                                    className="rounded-2xl border-slate-100 bg-slate-50/50 py-4 font-bold focus:bg-white"
+                                    inputClass="rounded-2xl border-slate-100 bg-slate-50/50 py-4 font-bold focus:bg-white"
                                     placeholder="Masukkan nama lengkap"
                                     error={state.form.errors['name']}
                                 />
@@ -450,7 +450,7 @@
                                     id="email"
                                     type="email"
                                     bind:value={state.form.email}
-                                    className="rounded-2xl border-slate-100 bg-slate-50/50 py-4 font-bold focus:bg-white"
+                                    inputClass="rounded-2xl border-slate-100 bg-slate-50/50 py-4 font-bold focus:bg-white"
                                     placeholder="email@contoh.com"
                                     error={state.form.errors['email']}
                                 />
@@ -474,7 +474,7 @@
                                         id="password"
                                         type="password"
                                         bind:value={state.form.password}
-                                        className="rounded-2xl border-slate-100 bg-slate-50/50 py-4 font-bold focus:bg-white"
+                                        inputClass="rounded-2xl border-slate-100 bg-slate-50/50 py-4 font-bold focus:bg-white"
                                         placeholder="••••••••"
                                         error={state.form.errors['password']}
                                     />
@@ -492,7 +492,7 @@
                                         id="password_confirmation"
                                         type="password"
                                         bind:value={state.form.password_confirmation}
-                                        className="rounded-2xl border-slate-100 bg-slate-50/50 py-4 font-bold focus:bg-white"
+                                        inputClass="rounded-2xl border-slate-100 bg-slate-50/50 py-4 font-bold focus:bg-white"
                                         placeholder="••••••••"
                                     />
                                 </div>
