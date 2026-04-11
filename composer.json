@@ -57,9 +57,8 @@
         "nunomaduro/collision": "^8.1",
         "phpunit/phpunit": "^12.0",
         "spatie/laravel-ignition": "^2.4",
-        "jcf/boost-for-kiro-ide": "^1.0",
         "laravel/pint": "^1.27",
-        "laravel/boost": "^1.8"
+        "laravel/boost": "^2.0"
     },
     "config": {
         "process-timeout": 1800
