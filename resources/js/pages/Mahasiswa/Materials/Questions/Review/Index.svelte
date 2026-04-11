@@ -72,7 +72,7 @@
                 </Card>
             </div>
 
-            <div class="space-y-8 lg:col-span-3">
+            <div id="review-results" class="space-y-8 lg:col-span-3">
                 <DifficultyFilterBar
                     difficulty={state.difficulty}
                     onfilter={(d) => state.filterDifficulty(d)}

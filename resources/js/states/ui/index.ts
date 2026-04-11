@@ -5,3 +5,9 @@ export {
     closeSidebar,
     toggleSidebar,
 } from './sidebarState.svelte';
+
+export {
+    tutorialState,
+    startTutorial,
+    resetTutorialProgress
+} from './tutorialState.svelte';

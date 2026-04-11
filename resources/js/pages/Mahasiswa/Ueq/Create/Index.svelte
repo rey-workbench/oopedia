@@ -15,7 +15,7 @@
 
 <App title="UEQ Survey">
     <div class="space-y-12 pb-20">
-        <div class="space-y-6 text-center">
+        <div id="ueq-instructions" class="space-y-6 text-center">
             <div
                 class="bg-primary-50 text-primary-600 inline-flex h-20 w-20 items-center justify-center rounded-[2rem] shadow-inner"
             >
@@ -40,13 +40,14 @@
                 {/if}
 
                 <form
+                    id="ueq-survey-form"
                     onsubmit={(e) => {
                         e.preventDefault();
                         state.submit();
                     }}
                     class="space-y-16"
                 >
-                    <div class="grid grid-cols-1 gap-10 md:grid-cols-3">
+                    <div id="ueq-identitas" class="grid grid-cols-1 gap-10 md:grid-cols-3">
                         <div class="space-y-3">
                             <label
                                 for="nim"
@@ -106,7 +107,7 @@
                             </h4>
                         </div>
 
-                        <div class="-mx-12 overflow-x-auto px-12">
+                        <div id="ueq-matriks" class="-mx-12 overflow-x-auto px-12">
                             <div class="min-w-[900px]">
                                 <div
                                     class="mb-8 flex items-center px-6 text-[10px] font-bold tracking-[0.3em] text-slate-400 uppercase"
@@ -166,7 +167,7 @@
                         </div>
                     </div>
 
-                    <div class="space-y-10 border-t border-slate-50 pt-16">
+                    <div id="ueq-feedback" class="space-y-10 border-t border-slate-50 pt-16">
                         <div class="flex items-center gap-4">
                             <div
                                 class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-lg shadow-emerald-200"

@@ -20,8 +20,16 @@
         LogIn,
         UserPlus,
         Lock,
+        HelpCircle,
     } from 'lucide-svelte';
     import { slide } from 'svelte/transition';
+    import { getTourIdFromUrl, registerGlobalTutorials } from '@/tutorial';
+    import { onMount } from 'svelte';
+    import { tutorialState } from '@/states/ui/tutorialState.svelte';
+
+    onMount(() => {
+        registerGlobalTutorials();
+    });
 
     const auth = $derived(page.props['auth'] ?? {});
     const user = $derived(auth.user ?? null);
@@ -51,8 +59,6 @@
 >
     <div
         class="bg-cosmos-bg/80 sticky top-0 z-10 flex items-center justify-between px-6 py-8 backdrop-blur-md"
-        data-intro="Ini adalah Logo OOPEDIA. Kamu bisa kembali ke dashboard dengan mengklik logo ini."
-        data-step="1"
     >
         <Link
             href={isAdminRole
@@ -88,12 +94,7 @@
     <!-- Decorative line -->
     <div class="bg-cosmos-border mx-6 mb-8 h-px"></div>
 
-    <nav
-        aria-label="Navigasi Utama"
-        class="space-y-6 px-5 pb-6"
-        data-intro="Gunakan menu navigasi ini untuk menjelajahi fitur-fitur yang tesedia di OOPEDIA."
-        data-step="2"
-    >
+    <nav aria-label="Navigasi Utama" class="space-y-6 px-5 pb-6">
         {#if isAdminRole}
             <div class="space-y-6">
                 <div class="flex items-center gap-2 px-4">
@@ -106,6 +107,7 @@
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
+                        id="sidebar-admin-dashboard"
                         href={ROUTES.ADMIN.DASHBOARD}
                         icon={LayoutDashboard}
                         active={isActive(ROUTES.ADMIN.DASHBOARD)}>Dashboard</SidebarLink
@@ -122,7 +124,7 @@
                     >
                     <div class="bg-cosmos-border h-0.5 flex-1"></div>
                 </div>
-                <div class="space-y-2">
+                <div class="space-y-2" id="sidebar-admin-curriculum">
                     <SidebarLink
                         href={ROUTES.ADMIN.MATERIALS.INDEX}
                         icon={BookOpen}
@@ -214,6 +216,7 @@
                 <div class="space-y-2">
                     {#if userRole === ROLE.MAHASISWA}
                         <SidebarLink
+                            id="sidebar-mahasiswa-dashboard"
                             href={ROUTES.MAHASISWA.DASHBOARD}
                             icon={LayoutDashboard}
                             active={page.url.startsWith(ROUTES.MAHASISWA.DASHBOARD)}
@@ -223,6 +226,7 @@
 
                     <div class="space-y-1">
                         <button
+                            id="sidebar-materials"
                             onclick={() => (isMateriOpen = !isMateriOpen)}
                             aria-expanded={isMateriOpen}
                             aria-controls="materials-submenu"
@@ -362,6 +366,21 @@
                     <div class="bg-cosmos-border h-0.5 flex-1"></div>
                 </div>
                 <div class="space-y-2">
+                    <button
+                        onclick={() => {
+                            const tourId = getTourIdFromUrl(page.url, isAdminRole);
+                            tutorialState.startTour(tourId, true);
+                        }}
+                        class="group text-cosmos-muted hover:border-primary-200 hover:bg-primary-50 hover:text-primary-600 flex w-full items-center gap-4 rounded-2xl border-2 border-b-4 border-transparent px-4 py-3 font-bold tracking-tight transition-all duration-100 active:translate-y-[2px] active:border-b-0"
+                    >
+                        <div
+                            class="bg-primary-50 group-hover:bg-primary-100 flex h-8 w-8 items-center justify-center rounded-xl transition-colors duration-200"
+                        >
+                            <HelpCircle size={18} strokeWidth={2.5} />
+                        </div>
+                        <span class="flex-1 text-left">Bantuan Tutorial</span>
+                    </button>
+
                     {#if user}
                         <form
                             onsubmit={(e) => {

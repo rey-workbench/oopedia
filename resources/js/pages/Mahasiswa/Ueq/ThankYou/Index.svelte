@@ -8,7 +8,7 @@
 
 <App title="Terima Kasih">
     <div class="flex min-h-[70vh] items-center justify-center py-24">
-        <div class="w-full max-w-2xl px-4 text-center">
+        <div id="thankyou-container" class="w-full max-w-2xl px-4 text-center">
             <Card
                 padding="p-0"
                 class="group overflow-hidden rounded-[3.5rem] border-slate-100 shadow-2xl"

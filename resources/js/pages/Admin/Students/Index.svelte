@@ -46,15 +46,20 @@
             subtitle="Pantau progres dan aktivitas belajar seluruh mahasiswa terdaftar."
         >
             {#snippet actions()}
-                <Button onclick={() => (openModal = true)} variant="primary" icon={UserPlus}
-                    >Daftarkan Mahasiswa</Button
-                >
-                <Button href={ROUTES.ADMIN.STUDENTS.IMPORT} variant="success" icon={FileSpreadsheet}
-                    >Impor Excel</Button
-                >
+                <div id="add-student-btn">
+                    <Button onclick={() => (openModal = true)} variant="primary" icon={UserPlus}
+                        >Daftarkan Mahasiswa</Button
+                    >
+                </div>
+                <div id="import-student-btn">
+                    <Button href={ROUTES.ADMIN.STUDENTS.IMPORT} variant="success" icon={FileSpreadsheet}
+                        >Impor Excel</Button
+                    >
+                </div>
             {/snippet}
         </PageHeader>
 
+        <div id="student-table">
         <DataTable
             title="Registri Subjek"
             items={listState.students.data || []}
@@ -139,6 +144,7 @@
                 </td>
             {/snippet}
         </DataTable>
+        </div>
 
         {#if listState.students.data && listState.students.data.length > 0}
             <div class="mt-6">

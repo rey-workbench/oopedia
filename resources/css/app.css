@@ -128,75 +128,13 @@
     }
 }
 
-/* Intro.js Custom Styling */
-.custom-tour {
-    border-radius: 1.5rem !important;
-    padding: 1rem !important;
-    border: 1px solid var(--color-cosmos-border) !important;
-    max-width: 350px !important;
-}
-
-.custom-tour .introjs-tooltiptext {
-    font-family: 'Poppins', sans-serif !important;
-    color: #1e293b !important;
-    font-size: 0.95rem !important;
-    line-height: 1.6 !important;
-}
-
-.custom-tour .introjs-tooltip-title {
-    font-weight: 800 !important;
-    font-style: italic !important;
-    text-transform: uppercase !important;
-    letter-spacing: -0.025em !important;
-    color: #0f172a !important;
-    font-size: 1.1rem !important;
-    margin-bottom: 0.5rem !important;
-}
-
-.custom-tour .introjs-bullets ul li a {
-    background: #e2e8f0 !important;
-}
-
-.custom-tour .introjs-bullets ul li a.active {
-    background: #3b82f6 !important;
-}
-
-.custom-tour .introjs-button {
-    text-shadow: none !important;
-    background-image: none !important;
-    border-radius: 0.75rem !important;
-    padding: 0.5rem 1rem !important;
-    font-weight: 700 !important;
-    font-size: 0.875rem !important;
-    transition: all 0.3s !important;
-    border: none !important;
-}
-
-.custom-tour .introjs-prevbutton {
-    color: #475569 !important;
-    background-color: #f1f5f9 !important;
-}
-
-.custom-tour .introjs-nextbutton,
-.custom-tour .introjs-donebutton {
-    color: #ffffff !important;
-    background-color: #0f172a !important;
-}
-
-.custom-tour .introjs-nextbutton:hover,
-.custom-tour .introjs-donebutton:hover {
-    background-color: #1e293b !important;
-    transform: translateY(-1px);
-}
-
-.custom-tour .introjs-arrow {
-    border: none !important;
-}
-
-.custom-highlight {
-    border-radius: 1rem !important;
-    border: 2px solid rgba(59, 130, 246, 0.5) !important;
-    box-shadow: none !important;
+/* Highlight Effect for Selected Tutorial Element */
+.driver-active-element {
+    position: relative !important;
+    z-index: 100000 !important;
+    box-shadow: 0 0 0 4px var(--color-primary-50), 0 0 0 8px var(--color-primary-200) !important;
+    border-radius: var(--radius-duo, 1rem); /* Tweak based on element */
+    transition: box-shadow 0.3s ease;
 }
 
 /* Quill Video Embedding Responsive */
@@ -218,4 +156,96 @@
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
+}
+
+/* Driver.js Custom Overlay SVG integration */
+#driver-page-overlay {
+    backdrop-filter: blur(4px) !important;
+    fill: rgba(15, 23, 42, 0.6) !important; /* bg-slate-900/60 matched to Modal.svelte */
+}
+
+/* Driver.js Custom Styling - Matches Modal.svelte exactly */
+.driver-popover.oopedia-driver-popover {
+    background-color: #ffffff !important;
+    border: 2px solid var(--color-cosmos-border) !important;
+    border-radius: 1.5rem !important; /* rounded-3xl approx */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+    padding: 1.5rem !important;
+    max-width: 400px !important;
+    font-family: var(--font-body) !important;
+}
+
+.oopedia-driver-popover .driver-popover-title {
+    font-family: var(--font-display) !important;
+    font-weight: 800 !important;
+    font-size: 1.25rem !important;
+    color: var(--color-primary-600) !important;
+    margin-bottom: 0.75rem !important;
+    line-height: 1.2 !important;
+}
+
+.oopedia-driver-popover .driver-popover-description {
+    font-size: 0.95rem !important;
+    color: var(--color-cosmos-muted) !important;
+    line-height: 1.6 !important;
+}
+
+.oopedia-driver-popover .driver-popover-footer {
+    padding-top: 1.5rem !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    background-color: transparent !important;
+}
+
+.oopedia-driver-popover .driver-popover-btn {
+    text-shadow: none !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: 2px solid #e2e8f0 !important;
+    border-bottom: 6px solid #cbd5e1 !important;
+    border-radius: 1rem !important; /* rounded-2xl */
+    padding: 0.5rem 1rem !important;
+    font-weight: 900 !important; /* font-black */
+    font-size: 0.75rem !important; /* text-xs */
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important; /* tracking-widest */
+    transition: all 150ms !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.oopedia-driver-popover .driver-popover-btn:hover {
+    background-color: #f8fafc !important; /* bg-slate-50 */
+}
+
+.oopedia-driver-popover .driver-popover-btn:active {
+    transform: translateY(4px) !important;
+    border-bottom-width: 2px !important;
+    margin-top: 4px !important; /* offset the border decrease */
+}
+
+.oopedia-driver-popover .driver-popover-next-btn, 
+.oopedia-driver-popover .driver-popover-close-btn {
+    background-color: var(--color-primary-500) !important;
+    color: #ffffff !important;
+    border-color: var(--color-primary-800) !important;
+    border-bottom-color: var(--color-primary-900) !important;
+}
+
+.oopedia-driver-popover .driver-popover-next-btn:hover,
+.oopedia-driver-popover .driver-popover-close-btn:hover {
+    background-color: var(--color-primary-600) !important;
+}
+
+.oopedia-driver-popover .driver-popover-arrow {
+    border-color: var(--color-cosmos-border) !important;
+}
+
+.oopedia-driver-popover .driver-popover-progress-text {
+    font-size: 0.75rem;
+    color: var(--color-cosmos-muted);
+    font-weight: 600;
 }

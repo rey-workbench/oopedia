@@ -95,7 +95,7 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="relative">
+                        <div id="quiz-progress" class="relative">
                             <!-- Background Bar -->
                             <div class="h-4 w-full rounded-full bg-slate-100 shadow-inner"></div>
                             <!-- Active Progress -->

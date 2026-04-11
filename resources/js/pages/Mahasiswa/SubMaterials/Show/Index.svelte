@@ -125,9 +125,10 @@
         >
             <div
                 bind:this={contentContainer}
+                id="submaterial-content"
                 class={state.otherSubMaterials.length > 0 ? 'lg:col-span-3' : 'lg:col-span-4'}
             >
-                <Card class="p-10 md:p-16">
+                <Card class="p-10 md:p-16" id="submaterial-quiz-section">
                     {#snippet header()}
                         <div class="mb-10">
                             <h2

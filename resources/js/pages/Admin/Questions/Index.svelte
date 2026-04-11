@@ -42,13 +42,15 @@
             : 'Manajemen komprehensif seluruh bank soal evaluasi sistem.'}
     >
         {#snippet actions()}
-            <Button
-                href={state.material
-                    ? ROUTES.ADMIN.MATERIALS.QUESTIONS.CREATE(state.material.id)
-                    : ROUTES.ADMIN.QUESTIONS.CREATE}
-                variant="primary"
-                icon={Plus}>TAMBAH INSTRUMEN</Button
-            >
+            <div id="add-question-btn">
+                <Button
+                    href={state.material
+                        ? ROUTES.ADMIN.MATERIALS.QUESTIONS.CREATE(state.material.id)
+                        : ROUTES.ADMIN.QUESTIONS.CREATE}
+                    variant="primary"
+                    icon={Plus}>TAMBAH INSTRUMEN</Button
+                >
+            </div>
             {#if state.material}
                 <Button href={ROUTES.ADMIN.MATERIALS.INDEX} variant="ghost" icon={ArrowLeft}
                     >KEMBALI</Button
@@ -58,7 +60,7 @@
     </PageHeader>
 
     <div class="flex flex-col items-end gap-6 md:flex-row">
-        <div class="flex-1 space-y-2">
+        <div id="question-filter-search" class="flex-1 space-y-2">
             <label
                 for="q-search"
                 class="font-poppins ml-2 text-[10px] font-bold text-slate-400 uppercase"
@@ -82,7 +84,7 @@
             </div>
         </div>
 
-        <div class="w-full space-y-2 md:w-64">
+        <div id="question-filter-difficulty" class="w-full space-y-2 md:w-64">
             <Select
                 bind:value={state.difficulty}
                 placeholder="SEMUA LEVEL"
@@ -92,6 +94,7 @@
         </div>
     </div>
 
+    <div id="question-table">
     <DataTable
         title="Daftar Instrumen Evaluasi"
         items={state.questions.data}
@@ -164,6 +167,7 @@
             </td>
         {/snippet}
     </DataTable>
+    </div>
 
     {#if state.questions.data.length > 0}
         <Pagination links={state.questions.links} />

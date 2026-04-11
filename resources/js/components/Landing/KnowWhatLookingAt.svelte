@@ -1,4 +1,4 @@
-<section class="mx-auto mb-[15vh] flex max-w-7xl flex-col items-center px-6 text-center">
+<section id="landing-features" class="mx-auto mb-[15vh] flex max-w-7xl flex-col items-center px-6 text-center">
     <h2 class="mb-16 font-serif text-[2.5rem] tracking-tighter text-slate-900">
         Ketahui apa yang<br />Anda pelajari.
     </h2>

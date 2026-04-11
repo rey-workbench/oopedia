@@ -18,7 +18,7 @@
 <App title="Materi Sedang Dipelajari">
     <div class="py-12">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="mb-8">
+            <div id="inprogress-header" class="mb-8">
                 <h1
                     class="font-display text-3xl leading-tight font-extrabold tracking-tight text-slate-900 md:text-4xl"
                 >
@@ -41,7 +41,7 @@
                 </div>
             </div>
 
-            <div class="mt-10">
+            <div id="inprogress-materials-grid" class="mt-10">
                 {#if state.materialsWithStats.length === 0}
                     <div
                         class="rounded-[2.5rem] border border-slate-100 bg-white py-24 text-center shadow-sm"

@@ -20,7 +20,7 @@
     {#if !state.isGuest}
         <div class="border-b-4 border-slate-50 bg-slate-50/30 p-4">
             <div class="flex flex-col items-center justify-between gap-6 px-4 py-2 sm:flex-row">
-                <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+                <div id="quiz-stats" class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
                     <!-- Difficulty Badge -->
                     <div
                         class="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-slate-100 bg-white px-4 py-2 shadow-sm"
@@ -64,6 +64,7 @@
 
                 <button
                     type="button"
+                    id="quiz-hint-btn"
                     onclick={() => state.useHint()}
                     disabled={state.hintsAvailable <= 0 || !state.currentQuestion?.hint}
                     class="group press-active border-primary-200 text-primary-600 hover:bg-primary-50 flex items-center gap-3 rounded-2xl border-2 border-b-4 bg-white px-5 py-2.5 font-black shadow-sm transition-all disabled:pointer-events-none disabled:opacity-50"
@@ -112,7 +113,7 @@
             </div>
         {/if}
 
-        <div class="space-y-0">
+        <div id="quiz-question-area" class="space-y-0">
             {#if state.currentQuestion?.question_type === 'fill_in_the_blank'}
                 <div transition:fade>
                     <FillInTheBlank
@@ -138,7 +139,7 @@
             {/if}
         </div>
 
-        <div class="mt-8 border-t border-slate-50 pt-8">
+        <div id="quiz-submit-btn" class="mt-8 border-t border-slate-50 pt-8">
             <Button
                 variant="primary"
                 size="lg"

@@ -29,6 +29,7 @@
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import CertificateCard from '@/components/layout/CertificateCard.svelte';
     import { ROUTES } from '@/utils/route';
+    import EmptyState from '@/components/ui/EmptyState.svelte';
 
     import type { StudentProfile, Certification } from '@/types';
 
@@ -117,8 +118,9 @@
         ></PageHeader>
 
         <!-- Profile Hero Card -->
-        <Panel
-            rounded="full"
+        <div id="profile-hero">
+            <Panel
+                rounded="full"
             class="hover:shadow-primary-900/20 mb-8 shadow-2xl transition-all duration-500"
             padding="p-8 md:p-12"
         >
@@ -160,17 +162,17 @@
                             <UserIcon size={14} class="text-primary-400" /> Mahasiswa
                         </div>
                     </div>
-                </div>
             </div>
         </Panel>
+        </div>
 
         <!-- Personalization Section -->
         <div class="space-y-8">
             <h3 class="text-xl font-bold tracking-widest text-slate-900 uppercase">
                 Data Personalisasi Pembelajaran
             </h3>
-            <div class="space-y-8">
-                <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <div id="profile-stats" class="space-y-8">
+                <div id="learning-profile-analysis" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {#each personalizationStats as stat}
                         <Card hover={true} class="group relative overflow-hidden">
                             <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
@@ -324,31 +326,42 @@
             </div>
         </div>
 
-        {#if certifications.length > 0}
-            <!-- Certificate Section -->
-            <div class="space-y-6">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-xl font-bold tracking-widest text-slate-900 uppercase">
-                        Sertifikat Saya
-                    </h3>
+        <!-- Certificate Section -->
+        <div class="space-y-6">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-bold tracking-widest text-slate-900 uppercase">
+                    Sertifikat Saya
+                </h3>
+                {#if certifications.length > 0}
                     <a
                         href={ROUTES.MAHASISWA.CERTIFICATES.INDEX}
                         class="text-primary-600 text-[10px] font-black tracking-widest uppercase hover:underline"
                         >Lihat &amp; Unduh Semua →</a
                     >
-                </div>
-                <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
-                    {#each certifications.slice(0, 2) as cert (cert.material_id)}
-                        <CertificateCard
-                            materialTitle={cert.material_title}
-                            type={cert.type}
-                            issuedAt={cert.issued_at ?? undefined}
-                            id={cert.material_id}
-                        />
-                    {/each}
-                </div>
+                {/if}
             </div>
-        {/if}
+            
+            <div id="profile-certificates">
+                {#if certifications.length > 0}
+                    <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+                        {#each certifications.slice(0, 2) as cert (cert.material_id)}
+                            <CertificateCard
+                                materialTitle={cert.material_title}
+                                type={cert.type}
+                                issuedAt={cert.issued_at ?? undefined}
+                                id={cert.material_id}
+                            />
+                        {/each}
+                    </div>
+                {:else}
+                    <EmptyState 
+                        title="Belum Ada Sertifikat" 
+                        description="Selesaikan materi dan kuis untuk mulai mengumpulkan penghargaan sertifikat."
+                        icon={Trophy}
+                    />
+                {/if}
+            </div>
+        </div>
 
         <div class="grid grid-cols-1 gap-12 lg:grid-cols-3">
             <!-- Sidebar Info -->
@@ -411,7 +424,8 @@
                     Pengaturan Profil
                 </h3>
 
-                <Card padding="p-8 md:p-12">
+                <div id="profile-settings">
+                    <Card padding="p-8 md:p-12" id="profile-personal-info">
                     {#if state.flash?.success}
                         <Alert variant="success" class="mb-10">{(state.flash as any).success}</Alert
                         >
@@ -519,6 +533,7 @@
                         </div>
                     </form>
                 </Card>
+                </div>
             </div>
         </div>
     </div>

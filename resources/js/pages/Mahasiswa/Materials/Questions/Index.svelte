@@ -20,7 +20,7 @@
 
 <App title="Latihan Soal PBO">
     <div class="space-y-12">
-        <div class="mb-8">
+        <div id="quiz-header" class="mb-8">
             <h1
                 class="font-display text-3xl leading-tight font-extrabold tracking-tight text-slate-900 md:text-4xl"
             >
@@ -45,7 +45,7 @@
             />
         {/if}
 
-        <div class="grid grid-cols-1 gap-10">
+        <div id="module-list" class="grid grid-cols-1 gap-10">
             {#each state.materials as material (material.id)}
                 {@const isLocked = !state.isGuest && !!material.is_locked}
 

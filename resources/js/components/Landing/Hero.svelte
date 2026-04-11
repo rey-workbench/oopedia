@@ -298,6 +298,7 @@
 />
 
 <section
+    id="landing-hero"
     class="relative -mt-16 flex min-h-screen flex-col items-center justify-center overflow-hidden bg-linear-to-b from-[#FAFAF8] via-[#FDFDFB] to-[#F3F1EC] px-6 text-center"
 >
     <div

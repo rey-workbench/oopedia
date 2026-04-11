@@ -17,7 +17,7 @@
 
 <App title="Materi Pembelajaran">
     <div class="space-y-12">
-        <div class="mb-8">
+        <div id="curriculum-header" class="mb-8">
             <h1
                 class="font-display text-3xl leading-tight font-extrabold tracking-tight text-slate-900 md:text-4xl"
             >
@@ -33,12 +33,13 @@
             </p>
         </div>
 
-        <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
-            {#each state.materials as material (material.id)}
-                <Card
-                    padding="p-0 flex flex-col flex-1"
-                    class="group flex h-full flex-col overflow-hidden"
-                >
+        <div id="material-exploration-grid" class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
+            {#each state.materials as material, i (material.id)}
+                <div id={i === 0 ? 'material-item-0' : undefined}>
+                    <Card
+                        padding="p-0 flex flex-col flex-1"
+                        class="group flex h-full flex-col overflow-hidden"
+                    >
                     <!-- Image Section -->
                     <div class="relative h-60 shrink-0 overflow-hidden">
                         {#if material.media && material.media.length > 0}
@@ -181,6 +182,7 @@
                         </div>
                     </div>
                 </Card>
+                </div>
             {/each}
         </div>
     </div>

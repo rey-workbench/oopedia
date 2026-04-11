@@ -17,7 +17,7 @@
 
 <App title="Materi Selesai">
     <div class="space-y-12 pb-20">
-        <div class="mb-8">
+        <div id="completed-header" class="mb-8">
             <h1
                 class="font-display text-3xl leading-tight font-extrabold tracking-tight text-slate-900 md:text-4xl"
             >
@@ -53,7 +53,10 @@
                 >
             </EmptyState>
         {:else}
-            <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div
+                id="completed-materials-grid"
+                class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
+            >
                 {#each state.materialsWithStats as { material }}
                     <Card
                         class="hover:border-primary-400 group relative overflow-hidden border-slate-100 shadow-xl transition-all"

@@ -1,7 +1,8 @@
 <script lang="ts">
     import { Link } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils/route';
-    import { Search, Plus, X, ChevronRight } from 'lucide-svelte';
+    import { Search, Plus, X, ChevronRight, CircleHelp } from 'lucide-svelte';
+    import { tutorialState } from '@/states/ui/tutorialState.svelte';
 
     let menuOpen = $state(false);
     let scrollY = $state(0);
@@ -95,6 +96,21 @@
     </div>
 
     <div class="pointer-events-auto flex items-center gap-3 sm:gap-5">
+        <button
+            onclick={() => tutorialState.startTour('landing', true)}
+            class="group hover:border-accent-200 relative rounded-2xl border-2 border-transparent p-2 text-slate-900/40 transition-all hover:bg-slate-900/5 hover:text-slate-900 active:translate-y-0.5"
+            title="Saran: Mulai Tutorial"
+        >
+            <CircleHelp size={20} strokeWidth={1.5} />
+            <span class="absolute -top-1 -right-1 flex h-3 w-3">
+                <span
+                    class="bg-accent-400 absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
+                ></span>
+                <span class="bg-accent-500 relative inline-flex h-3 w-3 rounded-full"
+                ></span>
+            </span>
+        </button>
+
         <Link
             href={ROUTES.AUTH.LOGIN}
             class="rounded-full px-3 py-2 text-[10px] font-black tracking-[0.2em] uppercase transition-colors {authTextColor}"

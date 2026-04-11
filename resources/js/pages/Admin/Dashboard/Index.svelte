@@ -112,7 +112,7 @@
         />
 
         <!-- Main Stats -->
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div id="admin-stats-overview" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             {#each dashboardStats as stat}
                 <Card hover={true} class="group relative overflow-hidden">
                     <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
@@ -172,7 +172,7 @@
         </div>
 
         <!-- Analytics Section -->
-        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div id="admin-analytics-charts" class="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <!-- Distribution -->
             <Card hover={false}>
                 <div class="space-y-4">
@@ -265,9 +265,10 @@
             </Card>
         </div>
 
-        <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div id="admin-activity-overview" class="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <!-- Top Students -->
-            <Card hover={false} class="lg:col-span-2">
+            <div id="admin-top-students" class="lg:col-span-2">
+                <Card hover={false}>
                 <div class="space-y-4">
                     <div class="mb-2 flex items-center gap-3">
                         <div
@@ -324,8 +325,10 @@
                     {/if}
                 </div>
             </Card>
+            </div>
 
             <!-- Popular Materials -->
+            <div id="admin-popular-materials">
             <Card hover={false}>
                 <div class="space-y-4">
                     <div class="mb-2 flex items-center gap-3">
@@ -372,9 +375,11 @@
                     {/if}
                 </div>
             </Card>
+            </div>
         </div>
 
         <!-- Material Statistics -->
+        <div id="admin-material-stats">
         {#if state.materialStats && state.materialStats.length > 0}
             <Card hover={false}>
                 <div class="space-y-4">
@@ -464,8 +469,10 @@
                 </div>
             </Card>
         {/if}
+        </div>
 
         <!-- Recent Activity Timeline -->
+        <div id="admin-recent-activity">
         <Card hover={false}>
             <div class="space-y-4">
                 <div class="mb-2 flex items-center gap-3">
@@ -521,5 +528,6 @@
                 {/if}
             </div>
         </Card>
+        </div>
     </div>
 </App>

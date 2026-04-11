@@ -2,11 +2,12 @@
     import App from '@/layouts/App.svelte';
     import Input from '@/components/ui/Input.svelte';
     import { Link } from '@inertiajs/svelte';
-    import { Loader2, UserPlus, ChevronLeft, Sparkles, BookOpen } from 'lucide-svelte';
+    import { Loader2, UserPlus, ChevronLeft, Sparkles, BookOpen, CircleHelp } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
     import { RegisterState } from '@/states/Auth/AuthState.svelte';
     import { fade, fly } from 'svelte/transition';
     import FloatingItem from '@/components/ui/FloatingItem.svelte';
+    import { tutorialState } from '@/states/ui/tutorialState.svelte';
 
     const state = new RegisterState({
         showSuccessToast: 'Registrasi berhasil!',
@@ -213,20 +214,29 @@
                 </div>
             </div>
 
-            <!-- Back to Home Button (Desktop) -->
-            <Link
-                href={ROUTES.HOME}
-                class="absolute top-12 right-12 hidden items-center gap-3 text-[10px] font-bold tracking-widest text-slate-600 uppercase transition-all hover:translate-x-[-10px] hover:text-slate-900 lg:flex"
-            >
-                <div
-                    class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-900/2 ring-1 ring-slate-200"
+            <div class="absolute top-12 right-12 hidden items-center gap-6 lg:flex">
+                <button
+                    onclick={() => tutorialState.startTour('auth_register', true)}
+                    class="group hover:border-accent-200 relative rounded-2xl border-2 border-transparent p-2 text-slate-900/40 transition-all hover:bg-slate-900/5 hover:text-slate-900 active:translate-y-0.5"
+                    title="Bantuan Tutorial"
                 >
-                    <ChevronLeft size={14} />
-                </div>
-                Kembali ke Beranda
-            </Link>
+                    <CircleHelp size={20} strokeWidth={1.5} />
+                </button>
 
-            <div class="w-full max-w-xl" in:fade={{ duration: 1000, delay: 400 }}>
+                <Link
+                    href={ROUTES.HOME}
+                    class="group flex items-center gap-3 text-[10px] font-bold tracking-widest text-slate-600 uppercase transition-all hover:translate-x-[-10px] hover:text-slate-900"
+                >
+                    <div
+                        class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-900/2 ring-1 ring-slate-200"
+                    >
+                        <ChevronLeft size={14} />
+                    </div>
+                    Kembali ke Beranda
+                </Link>
+            </div>
+
+            <div id="register-form-container" class="w-full max-w-xl" in:fade={{ duration: 1000, delay: 400 }}>
                 <div class="mb-12 lg:text-center">
                     <div class="mb-4 flex justify-center lg:hidden">
                         <div
@@ -323,6 +333,7 @@
                     </div>
 
                     <div
+                        id="role-selection"
                         class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-slate-900/1 p-6 transition-all hover:bg-slate-900/3 hover:ring-1 hover:ring-slate-200"
                     >
                         <div class="relative flex items-center">
@@ -351,6 +362,7 @@
 
                     <div class="pt-2">
                         <button
+                            id="register-submit-btn"
                             type="submit"
                             class="group relative h-[72px] w-full overflow-hidden rounded-[28px] border-2 border-b-8 border-slate-950 bg-slate-900 font-black tracking-[0.2em] text-white uppercase transition-all hover:bg-slate-800 active:translate-y-[4px] active:border-b-2 disabled:opacity-50"
                             disabled={state.form.processing}

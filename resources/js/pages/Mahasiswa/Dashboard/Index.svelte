@@ -101,7 +101,7 @@
     <div class="space-y-12">
         <PageHeader title="Dashboard" subtitle="Selamat datang di pusat kendali belajar Anda." />
 
-        <Panel rounded="3xl" class="border-b-6 border-slate-700" padding="p-12">
+        <Panel id="dashboard-hero" rounded="3xl" class="border-b-6 border-slate-700" padding="p-12">
             <div class="flex flex-col items-center gap-10 md:flex-row">
                 <div class="group relative">
                     <div
@@ -196,7 +196,7 @@
             </div>
         {/if}
 
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div id="student-progress-overview" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             {#each dashboardStats as stat (stat.title)}
                 <Card class="group relative overflow-hidden border-b-6">
                     <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
@@ -264,7 +264,7 @@
         </div>
 
         <div class="grid grid-cols-1 gap-12 lg:grid-cols-3">
-            <div class="space-y-8 lg:col-span-2">
+            <div id="activity-feed" class="space-y-8 lg:col-span-2">
                 <div class="space-y-8">
                     <div class="flex items-center justify-between">
                         <h3 class="text-xl font-bold tracking-widest text-slate-900 uppercase">
@@ -361,7 +361,7 @@
                 </div>
             </div>
 
-            <div class="space-y-8">
+            <div id="active-materials-list" class="space-y-8">
                 <div class="space-y-8">
                     <h3 class="text-xl font-bold tracking-widest text-slate-900 uppercase">
                         Materi Unggulan

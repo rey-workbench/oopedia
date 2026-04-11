@@ -32,6 +32,7 @@
 </style>
 
 <div
+    id="leaderboard-top-three"
     class="relative flex flex-col items-center overflow-hidden bg-linear-to-b from-slate-900 to-slate-800 p-8 text-white md:p-12"
 >
     <!-- Background accents -->

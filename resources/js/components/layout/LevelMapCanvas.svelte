@@ -105,7 +105,7 @@
         </span>
     </div>
 
-    <div bind:clientWidth={mapW} class="relative w-full pb-10" style="height: {totalH}px;">
+    <div id="level-map" bind:clientWidth={mapW} class="relative w-full pb-10" style="height: {totalH}px;">
         <svg
             class="pointer-events-none absolute inset-0 w-full"
             style="height: {totalH}px;"

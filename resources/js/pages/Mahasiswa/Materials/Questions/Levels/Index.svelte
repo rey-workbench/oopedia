@@ -2,14 +2,12 @@
     import App from '@/layouts/App.svelte';
     import Card from '@/components/ui/Card.svelte';
     import Button from '@/components/ui/Button.svelte';
-    import GuestBanner from '@/components/layout/GuestBanner.svelte';
+    import { LevelMapLegend, LevelMapCanvas, GuestBanner } from '@/components/layout';
     import { router } from '@inertiajs/svelte';
     import { ArrowLeft, Map as MapIcon } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { LevelMapState } from '@/states/Mahasiswa/QuizState.svelte';
     import { ROUTES } from '@/utils/route';
-    import LevelMapLegend from '@/components/layout/LevelMapLegend.svelte';
-    import LevelMapCanvas from '@/components/layout/LevelMapCanvas.svelte';
     import type { Material, LevelItem } from '@/types';
 
     interface Props {
@@ -30,7 +28,7 @@
 
 <App title={`Peta Tantangan - ${state.material.title}`}>
     <div class="space-y-12">
-        <div class="mb-8">
+        <div id="levels-header" class="mb-8">
             <h1
                 class="font-display text-3xl leading-tight font-extrabold tracking-tight text-slate-900 md:text-4xl"
             >
@@ -82,7 +80,9 @@
             </Card>
         {:else}
             <div class="space-y-10">
-                <LevelMapLegend />
+                <div id="levels-legend">
+                    <LevelMapLegend />
+                </div>
                 <LevelMapCanvas
                     sortedLevels={state.sortedLevels}
                     allCompleted={state.allCompleted}

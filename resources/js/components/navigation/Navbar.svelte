@@ -3,7 +3,9 @@
     import { Menu, ChevronRight, CircleHelp, User, LogOut } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
     import { sidebarState } from '@/states/ui';
+    import { getTourIdFromUrl } from '@/tutorial';
     import { isAdmin } from '@/utils/roles';
+    import { tutorialState } from '@/states/ui/tutorialState.svelte';
 
     interface Props {
         titlePage?: string;
@@ -35,11 +37,7 @@
                 <Menu size={20} strokeWidth={1.5} />
             </button>
 
-            <div
-                class="hidden sm:block"
-                data-intro="Breadcrumbs menunjukkan di mana posisi kamu saat ini."
-                data-step="3"
-            >
+            <div class="hidden sm:block" id="navbar-breadcrumbs">
                 <nav class="flex text-sm" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-3">
                         <li class="inline-flex items-center">
@@ -77,6 +75,10 @@
 
                 <button
                     id="start-page-tour"
+                    onclick={() => {
+                        const tourId = getTourIdFromUrl(page.url, isAdminRole);
+                        tutorialState.startTour(tourId, true);
+                    }}
                     aria-label="Start Page Tour"
                     class="group hover:border-accent-200 relative rounded-2xl border-2 border-transparent p-2 text-slate-900/40 transition-all hover:bg-slate-900/5 hover:text-slate-900 active:translate-y-0.5"
                     title="Tutorial"
@@ -91,11 +93,7 @@
                     </span>
                 </button>
 
-                <div
-                    class="group relative"
-                    data-intro="Kelola profil kamu atau keluar dari akun melalui menu ini."
-                    data-step="5"
-                >
+                <div class="group relative" id="navbar-profile">
                     <button
                         aria-label="Open profile menu"
                         class="group border-cosmos-border hover:border-primary-500/30 flex items-center gap-2 rounded-2xl border-2 p-1 transition-all duration-200"

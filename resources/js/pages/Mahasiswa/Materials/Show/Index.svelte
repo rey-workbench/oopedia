@@ -41,11 +41,14 @@
 
 <App title={state.material?.title || 'Material'}>
     <div class="space-y-12">
-        <PageHeader title={state.material?.title || material.title} />
+        <div id="material-header">
+            <PageHeader title={state.material?.title || material.title} />
+        </div>
 
         <!-- Adaptive System Alert -->
         {#if state.fromAdaptive}
-            <Card class="border-primary-500 bg-primary-50 border-l-4">
+            <div id="adaptive-recommendation">
+                <Card class="border-primary-500 bg-primary-50 border-l-4">
                 <div class="flex items-start gap-4">
                     <div
                         class="bg-primary-100 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl"
@@ -63,10 +66,11 @@
                     </div>
                 </div>
             </Card>
+            </div>
         {/if}
 
         <!-- Sub-Materials Grid -->
-        <div>
+        <div id="sub-material-section">
             <div class="mb-8 flex items-center justify-between">
                 <div>
                     <h2 class="mb-2 text-3xl font-bold tracking-widest text-slate-900">
@@ -101,7 +105,7 @@
                     </Button>
                 </Card>
             {:else}
-                <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <div id="sub-material-grid" class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {#each state.subMaterials as subMaterial (subMaterial.id)}
                         {@const SubIcon = getIcon(subMaterial.jenis_konten)}
                         <Card
@@ -189,15 +193,17 @@
         </div>
 
         <!-- Material Content Section (Optional) -->
-        {#if state.material.content}
-            <Card>
-                <div class="prose max-w-none">
-                    <h3 class="mb-4 text-2xl font-bold text-slate-900">Tentang Materi Ini</h3>
-                    <div class="leading-relaxed">
-                        <ContentDisplay content={state.material.content} />
+        <div id="material-content">
+            {#if state.material.content}
+                <Card>
+                    <div class="prose max-w-none">
+                        <h3 class="mb-4 text-2xl font-bold text-slate-900">Tentang Materi Ini</h3>
+                        <div class="leading-relaxed">
+                            <ContentDisplay content={state.material.content} />
+                        </div>
                     </div>
-                </div>
-            </Card>
-        {/if}
+                </Card>
+            {/if}
+        </div>
     </div>
 </App>

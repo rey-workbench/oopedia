@@ -2,11 +2,12 @@
     import App from '@/layouts/App.svelte';
     import Input from '@/components/ui/Input.svelte';
     import { Link } from '@inertiajs/svelte';
-    import { Loader2, ArrowRight, Ghost, ChevronLeft, Star, Users } from 'lucide-svelte';
+    import { Loader2, ArrowRight, Ghost, ChevronLeft, Star, Users, CircleHelp } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
     import { LoginState } from '@/states/Auth/AuthState.svelte';
     import { fade, fly } from 'svelte/transition';
     import FloatingItem from '@/components/ui/FloatingItem.svelte';
+    import { tutorialState } from '@/states/ui/tutorialState.svelte';
 
     const state = new LoginState({
         showSuccessToast: 'Selamat datang kembali!',
@@ -216,20 +217,30 @@
                     </Link>
                 </div>
 
-                <Link
-                    href={ROUTES.HOME}
-                    class="group ml-auto flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] text-slate-900/40 uppercase transition-all hover:text-slate-900"
-                >
-                    <ChevronLeft
-                        size={14}
-                        class="transition-transform group-hover:-translate-x-1"
-                    />
-                    <span>Beranda</span>
-                </Link>
+                <div class="ml-auto flex items-center gap-4">
+                    <button
+                        onclick={() => tutorialState.startTour('auth_login', true)}
+                        class="group hover:border-accent-200 relative rounded-2xl border-2 border-transparent p-2 text-slate-900/40 transition-all hover:bg-slate-900/5 hover:text-slate-900 active:translate-y-0.5"
+                        title="Bantuan Tutorial"
+                    >
+                        <CircleHelp size={20} strokeWidth={1.5} />
+                    </button>
+
+                    <Link
+                        href={ROUTES.HOME}
+                        class="group flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] text-slate-900/40 uppercase transition-all hover:text-slate-900"
+                    >
+                        <ChevronLeft
+                            size={14}
+                            class="transition-transform group-hover:-translate-x-1"
+                        />
+                        <span>Beranda</span>
+                    </Link>
+                </div>
             </div>
 
             <!-- The Form Core -->
-            <div class="w-full max-w-sm" in:fade={{ duration: 1000, delay: 500 }}>
+            <div id="login-form-container" class="w-full max-w-sm" in:fade={{ duration: 1000, delay: 500 }}>
                 <div class="mb-12">
                     <div
                         class="mb-6 inline-block animate-pulse rounded-full border border-slate-200 bg-slate-900/2 px-3 py-1"
@@ -304,6 +315,7 @@
 
                     <div class="pt-2">
                         <button
+                            id="login-submit-btn"
                             type="submit"
                             class="group relative h-[72px] w-full overflow-hidden rounded-[28px] border-2 border-b-8 border-slate-950 bg-slate-900 font-black tracking-[0.2em] text-white uppercase transition-all hover:bg-slate-800 active:translate-y-[4px] active:border-b-2 disabled:opacity-50"
                             disabled={state.form.processing}
@@ -339,6 +351,7 @@
                     </div>
 
                     <button
+                        id="guest-login-btn"
                         type="button"
                         onclick={() => state.submitAsGuest()}
                         class="group flex h-[72px] w-full items-center justify-center gap-4 rounded-[28px] border-2 border-b-6 border-slate-200 bg-white text-[10px] font-black tracking-[0.2em] text-slate-700 uppercase transition-all hover:bg-slate-50 active:translate-y-[4px] active:border-b-2 disabled:opacity-50"

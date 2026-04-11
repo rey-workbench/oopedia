@@ -39,23 +39,28 @@
             subtitle="Kelola akun Administrator dan Dosen pembimbing sistem."
         >
             {#if isSuperAdmin}
-                <div>
+                <div class="flex gap-4">
                     {#if pendingAdminsCount > 0}
-                        <Button
-                            href={ROUTES.ADMIN.PENDING_ADMINS.INDEX}
-                            variant="danger"
-                            icon={Clock}
-                        >
-                            {pendingAdminsCount} Permintaan Menunggu
-                        </Button>
+                        <div id="pending-requests-btn">
+                            <Button
+                                href={ROUTES.ADMIN.PENDING_ADMINS.INDEX}
+                                variant="danger"
+                                icon={Clock}
+                            >
+                                {pendingAdminsCount} Permintaan Menunggu
+                            </Button>
+                        </div>
                     {/if}
-                    <Button href={ROUTES.ADMIN.USERS.CREATE} variant="primary" icon={UserPlus}>
-                        Tambah User
-                    </Button>
+                    <div id="add-user-btn">
+                        <Button href={ROUTES.ADMIN.USERS.CREATE} variant="primary" icon={UserPlus}>
+                            Tambah User
+                        </Button>
+                    </div>
                 </div>
             {/if}
         </PageHeader>
 
+        <div id="user-directory-table">
         <DataTable
             title="Direktori Pengguna Sistem"
             items={listState.users.data}
@@ -142,6 +147,7 @@
                 </td>
             {/snippet}
         </DataTable>
+        </div>
 
         {#if listState.users.data && listState.users.data.length > 0}
             <div class="mt-6">

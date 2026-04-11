@@ -71,7 +71,7 @@
                 Questionnaire).
             </p>
             <div class="mt-6 flex flex-wrap gap-4">
-                <div>
+                <div id="ueq-export-btn">
                     <Button onclick={() => state.exportResults()} variant="success" icon={FileDown}
                         >EKSPOR CSV</Button
                     >
@@ -80,7 +80,7 @@
         </div>
 
         <!-- Averages Overview -->
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div id="ueq-stats-grid" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {#each statsData as stat (stat.title)}
                 <Card hover={true} class="group relative overflow-hidden">
                     <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
@@ -147,7 +147,7 @@
             {/each}
         </div>
 
-        <div class="mb-4 flex justify-end">
+        <div id="ueq-class-filter" class="mb-4 flex justify-end">
             <select
                 onchange={(e) => state.handleFilterChange(e)}
                 class="focus:ring-primary-100 focus:border-primary-600 cursor-pointer appearance-none rounded-2xl border border-slate-200 bg-slate-50 py-2.5 pr-10 pl-4 text-xs font-bold transition-all outline-none focus:ring-4"
@@ -160,6 +160,7 @@
             </select>
         </div>
 
+        <div id="ueq-log-table">
         <DataTable title="Log Responden Survey" items={state.surveys} {columns} hideSearch={true}>
             {#snippet row(survey)}
                 <td class="border-b border-slate-50 px-6 py-6">
@@ -201,6 +202,7 @@
                 </td>
             {/snippet}
         </DataTable>
+        </div>
 
         <Pagination links={(state.surveys as any).links || []} />
     </div>

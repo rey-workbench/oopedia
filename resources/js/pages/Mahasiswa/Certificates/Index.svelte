@@ -24,7 +24,7 @@
                 icon={Award}
             />
         {:else}
-            <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
+            <div id="certificate-inventory" class="grid grid-cols-1 gap-12 lg:grid-cols-2">
                 {#each certifications as cert (cert.material_id)}
                     <CertificateCard
                         materialTitle={cert.material_title}

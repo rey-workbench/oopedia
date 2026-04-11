@@ -83,14 +83,16 @@
             subtitle="Otoritas manajemen konten dan modul pembelajaran Pemrograman Berorientasi Objek."
         >
             {#snippet actions()}
-                <Button href={ROUTES.ADMIN.MATERIALS.CREATE} variant="primary" icon={Plus}
-                    >Tambah Modul Baru</Button
-                >
+                <div id="create-material-btn">
+                    <Button href={ROUTES.ADMIN.MATERIALS.CREATE} variant="primary" icon={Plus}
+                        >Tambah Modul Baru</Button
+                    >
+                </div>
             {/snippet}
         </PageHeader>
 
         <!-- Statistics -->
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div id="material-stats" class="grid grid-cols-1 gap-6 md:grid-cols-3">
             {#each materialStats as stat}
                 <Card hover={true} class="group relative overflow-hidden">
                     <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
@@ -150,6 +152,7 @@
         </div>
 
         <!-- Material List -->
+        <div id="material-table">
         <DataTable
             title="Inventaris Konten"
             items={listState.materials}
@@ -265,5 +268,6 @@
                 </td>
             {/snippet}
         </DataTable>
+        </div>
     </div>
 </App>

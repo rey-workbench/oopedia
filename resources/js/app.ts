@@ -5,6 +5,9 @@ import { mount } from 'svelte';
 import '../css/app.css';
 
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import { initTutorials } from '@/tutorial';
+
+initTutorials();
 
 createInertiaApp({
     resolve: (name) =>
