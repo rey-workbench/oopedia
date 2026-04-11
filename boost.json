@@ -1,16 +1,8 @@
 {
-    "agents": [
-        "opencode",
-        "copilot",
-        "gemini"
-    ],
+    "agents": ["opencode", "copilot", "gemini"],
     "guidelines": true,
     "mcp": true,
     "nightwatch_mcp": false,
     "sail": false,
-    "skills": [
-        "laravel-best-practices",
-        "inertia-svelte-development",
-        "tailwindcss-development"
-    ]
+    "skills": ["laravel-best-practices", "inertia-svelte-development", "tailwindcss-development"]
 }

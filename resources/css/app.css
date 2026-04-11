@@ -208,7 +208,6 @@
     margin: 1rem 0;
 }
 
-
 /* Accessibility: respect user motion preferences */
 @media (prefers-reduced-motion: reduce) {
     *,
@@ -220,4 +219,3 @@
         scroll-behavior: auto !important;
     }
 }
-

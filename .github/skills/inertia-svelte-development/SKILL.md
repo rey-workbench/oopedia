@@ -1,9 +1,9 @@
 ---
 name: inertia-svelte-development
-description: "Develops Inertia.js v3 Svelte 5 client-side applications. Activates when creating Svelte pages, forms, or navigation; using Link, Form, useForm, useHttp, setLayoutProps, or router; working with deferred props, prefetching, optimistic updates, instant visits, or polling; or when user mentions Svelte with Inertia, Svelte pages, Svelte forms, or Svelte navigation."
+description: 'Develops Inertia.js v3 Svelte 5 client-side applications. Activates when creating Svelte pages, forms, or navigation; using Link, Form, useForm, useHttp, setLayoutProps, or router; working with deferred props, prefetching, optimistic updates, instant visits, or polling; or when user mentions Svelte with Inertia, Svelte pages, Svelte forms, or Svelte navigation.'
 license: MIT
 metadata:
-  author: laravel
+    author: laravel
 ---
 
 # Inertia Svelte Development
@@ -41,9 +41,10 @@ Svelte page components should be placed in the `resources/js/pages` directory.
 ### Page Component Structure
 
 <!-- Basic Svelte Page Component -->
+
 ```svelte
 <script>
-let { users } = $props()
+    let { users } = $props();
 </script>
 
 <div>
@@ -63,9 +64,10 @@ let { users } = $props()
 Use `<Link>` for client-side navigation instead of traditional `<a>` tags:
 
 <!-- Inertia Svelte Navigation -->
+
 ```svelte
 <script>
-import { Link } from '@inertiajs/svelte'
+    import { Link } from '@inertiajs/svelte';
 </script>
 
 <Link href="/">Home</Link>
@@ -76,9 +78,10 @@ import { Link } from '@inertiajs/svelte'
 ### Link With Method
 
 <!-- Link With POST Method -->
+
 ```svelte
 <script>
-import { Link } from '@inertiajs/svelte'
+    import { Link } from '@inertiajs/svelte';
 </script>
 
 <Link href="/logout" method="post">Logout</Link>
@@ -89,9 +92,10 @@ import { Link } from '@inertiajs/svelte'
 Prefetch pages to improve perceived performance:
 
 <!-- Prefetch on Hover -->
+
 ```svelte
 <script>
-import { Link } from '@inertiajs/svelte'
+    import { Link } from '@inertiajs/svelte';
 </script>
 
 <Link href="/users" prefetch>Users</Link>
@@ -100,22 +104,23 @@ import { Link } from '@inertiajs/svelte'
 ### Programmatic Navigation
 
 <!-- Router Visit -->
+
 ```svelte
 <script>
-import { router } from '@inertiajs/svelte'
+    import { router } from '@inertiajs/svelte';
 
-function handleClick() {
-    router.visit('/users')
-}
+    function handleClick() {
+        router.visit('/users');
+    }
 
-// Or with options
-function createUser() {
-    router.visit('/users', {
-        method: 'post',
-        data: { name: 'John' },
-        onSuccess: () => console.log('Success!'),
-    })
-}
+    // Or with options
+    function createUser() {
+        router.visit('/users', {
+            method: 'post',
+            data: { name: 'John' },
+            onSuccess: () => console.log('Success!'),
+        });
+    }
 </script>
 ```
 
@@ -126,9 +131,10 @@ function createUser() {
 The recommended way to build forms is with the `<Form>` component. In Svelte 5, use `{#snippet}` for the default slot:
 
 <!-- Form Component Example -->
+
 ```svelte
 <script>
-import { Form } from '@inertiajs/svelte'
+    import { Form } from '@inertiajs/svelte';
 </script>
 
 <Form action="/users" method="post">
@@ -157,9 +163,10 @@ import { Form } from '@inertiajs/svelte'
 ### Form Component With All Props
 
 <!-- Form Component Full Example -->
+
 ```svelte
 <script>
-import { Form } from '@inertiajs/svelte'
+    import { Form } from '@inertiajs/svelte';
 </script>
 
 <Form action="/users" method="post">
@@ -175,7 +182,7 @@ import { Form } from '@inertiajs/svelte'
         defaults,
         isDirty,
         reset,
-        submit
+        submit,
     })}
         <input type="text" name="name" value={defaults.name} />
         {#if errors.name}
@@ -210,9 +217,10 @@ The `<Form>` component supports automatic resetting:
 Use the `search-docs` tool with a query of `form component resetting` for detailed guidance.
 
 <!-- Form With Reset Props -->
+
 ```svelte
 <script>
-import { Form } from '@inertiajs/svelte'
+    import { Form } from '@inertiajs/svelte';
 </script>
 
 <Form action="/users" method="post" resetOnSuccess setDefaultsOnSuccess>
@@ -222,9 +230,7 @@ import { Form } from '@inertiajs/svelte'
             <div>{errors.name}</div>
         {/if}
 
-        <button type="submit" disabled={processing}>
-            Submit
-        </button>
+        <button type="submit" disabled={processing}> Submit </button>
     {/snippet}
 </Form>
 ```
@@ -236,22 +242,23 @@ Forms can also be built using the `useForm` hook for more programmatic control. 
 For more programmatic control or to follow existing conventions, use the `useForm` hook:
 
 <!-- useForm Example -->
+
 ```svelte
 <script>
-import { useForm } from '@inertiajs/svelte'
+    import { useForm } from '@inertiajs/svelte';
 
-const form = useForm({
-    name: '',
-    email: '',
-    password: '',
-})
+    const form = useForm({
+        name: '',
+        email: '',
+        password: '',
+    });
 
-function submit(e) {
-    e.preventDefault()
-    form.post('/users', {
-        onSuccess: () => form.reset('password'),
-    })
-}
+    function submit(e) {
+        e.preventDefault();
+        form.post('/users', {
+            onSuccess: () => form.reset('password'),
+        });
+    }
 </script>
 
 <form onsubmit={submit}>
@@ -270,9 +277,7 @@ function submit(e) {
         <div>{form.errors.password}</div>
     {/if}
 
-    <button type="submit" disabled={form.processing}>
-        Create User
-    </button>
+    <button type="submit" disabled={form.processing}> Create User </button>
 </form>
 ```
 
@@ -283,21 +288,22 @@ function submit(e) {
 Use the `useHttp` hook for standalone HTTP requests that do not trigger Inertia page visits. It provides the same developer experience as `useForm`, but for plain JSON endpoints.
 
 <!-- useHttp Example -->
+
 ```svelte
 <script>
-import { useHttp } from '@inertiajs/svelte'
+    import { useHttp } from '@inertiajs/svelte';
 
-const http = useHttp({
-    query: '',
-})
+    const http = useHttp({
+        query: '',
+    });
 
-function search() {
-    http.get('/api/search', {
-        onSuccess: (response) => {
-            console.log(response)
-        },
-    })
-}
+    function search() {
+        http.get('/api/search', {
+            onSuccess: (response) => {
+                console.log(response);
+            },
+        });
+    }
 </script>
 
 <input bind:value={http.query} oninput={search} />
@@ -311,27 +317,31 @@ function search() {
 Apply data changes instantly before the server responds, with automatic rollback on failure:
 
 <!-- Optimistic Update with Router -->
+
 ```svelte
 <script>
-import { router } from '@inertiajs/svelte'
+    import { router } from '@inertiajs/svelte';
 
-function like(post) {
-    router.optimistic((props) => ({
-        post: {
-            ...props.post,
-            likes: props.post.likes + 1,
-        },
-    })).post(`/posts/${post.id}/like`)
-}
+    function like(post) {
+        router
+            .optimistic((props) => ({
+                post: {
+                    ...props.post,
+                    likes: props.post.likes + 1,
+                },
+            }))
+            .post(`/posts/${post.id}/like`);
+    }
 </script>
 ```
 
 Optimistic updates also work with `useForm` and the `<Form>` component:
 
 <!-- Optimistic Update with Form Component -->
+
 ```svelte
 <script>
-import { Form } from '@inertiajs/svelte'
+    import { Form } from '@inertiajs/svelte';
 </script>
 
 <Form
@@ -353,20 +363,17 @@ import { Form } from '@inertiajs/svelte'
 Navigate to a new page immediately without waiting for the server response. The target component renders right away with shared props, while page-specific props load in the background.
 
 <!-- Instant Visit with Link -->
+
 ```svelte
 <script>
-import { Link, inertia } from '@inertiajs/svelte'
+    import { Link, inertia } from '@inertiajs/svelte';
 </script>
 
 <Link href="/dashboard" component="Dashboard">Dashboard</Link>
 
 <a href="/dashboard" use:inertia={{ component: 'Dashboard' }}>Dashboard</a>
 
-<Link
-    href="/posts/1"
-    component="Posts/Show"
-    pageProps={{ post: { id: 1, title: 'My Post' } }}
->
+<Link href="/posts/1" component="Posts/Show" pageProps={{ post: { id: 1, title: 'My Post' } }}>
     View Post
 </Link>
 ```
@@ -376,9 +383,10 @@ import { Link, inertia } from '@inertiajs/svelte'
 Share dynamic data between pages and persistent layouts:
 
 <!-- Layout Props in Layout -->
+
 ```svelte
 <script>
-let { title = 'My App', showSidebar = true, children } = $props()
+    let { title = 'My App', showSidebar = true, children } = $props();
 </script>
 
 <header>{title}</header>
@@ -391,14 +399,15 @@ let { title = 'My App', showSidebar = true, children } = $props()
 ```
 
 <!-- Setting Layout Props from Page -->
+
 ```svelte
 <script>
-import { setLayoutProps } from '@inertiajs/svelte'
+    import { setLayoutProps } from '@inertiajs/svelte';
 
-setLayoutProps({
-    title: 'Dashboard',
-    showSidebar: false,
-})
+    setLayoutProps({
+        title: 'Dashboard',
+        showSidebar: false,
+    });
 </script>
 
 <h1>Dashboard</h1>
@@ -409,17 +418,18 @@ setLayoutProps({
 Use deferred props to load data after initial page render:
 
 <!-- Deferred Props with Empty State -->
+
 ```svelte
 <script>
-let { users } = $props()
+    let { users } = $props();
 </script>
 
 <div>
     <h1>Users</h1>
     {#if !users}
         <div class="animate-pulse">
-            <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-            <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+            <div class="mb-2 h-4 w-3/4 rounded bg-gray-200"></div>
+            <div class="h-4 w-1/2 rounded bg-gray-200"></div>
         </div>
     {:else}
         <ul>
@@ -436,13 +446,14 @@ let { users } = $props()
 Use the `usePoll` hook to automatically refresh data at intervals. It handles cleanup on unmount and throttles polling when the tab is inactive.
 
 <!-- Basic Polling -->
+
 ```svelte
 <script>
-import { usePoll } from '@inertiajs/svelte'
+    import { usePoll } from '@inertiajs/svelte';
 
-let { stats } = $props()
+    let { stats } = $props();
 
-usePoll(5000)
+    usePoll(5000);
 </script>
 
 <div>
@@ -452,24 +463,29 @@ usePoll(5000)
 ```
 
 <!-- Polling With Request Options and Manual Control -->
+
 ```svelte
 <script>
-import { usePoll } from '@inertiajs/svelte'
+    import { usePoll } from '@inertiajs/svelte';
 
-let { stats } = $props()
+    let { stats } = $props();
 
-const { start, stop } = usePoll(5000, {
-    only: ['stats'],
-    onStart() {
-        console.log('Polling request started')
-    },
-    onFinish() {
-        console.log('Polling request finished')
-    },
-}, {
-    autoStart: false,
-    keepAlive: true,
-})
+    const { start, stop } = usePoll(
+        5000,
+        {
+            only: ['stats'],
+            onStart() {
+                console.log('Polling request started');
+            },
+            onFinish() {
+                console.log('Polling request finished');
+            },
+        },
+        {
+            autoStart: false,
+            keepAlive: true,
+        }
+    );
 </script>
 
 <div>
@@ -488,11 +504,12 @@ const { start, stop } = usePoll(5000, {
 Lazy-load a prop when an element scrolls into view. Useful for deferring expensive data that sits below the fold:
 
 <!-- WhenVisible Example -->
+
 ```svelte
 <script>
-import { WhenVisible } from '@inertiajs/svelte'
+    import { WhenVisible } from '@inertiajs/svelte';
 
-let { stats } = $props()
+    let { stats } = $props();
 </script>
 
 <div>
@@ -516,11 +533,12 @@ let { stats } = $props()
 Automatically load additional pages of paginated data as users scroll:
 
 <!-- InfiniteScroll Example -->
+
 ```svelte
 <script>
-import { InfiniteScroll } from '@inertiajs/svelte'
+    import { InfiniteScroll } from '@inertiajs/svelte';
 
-let { users } = $props()
+    let { users } = $props();
 </script>
 
 <InfiniteScroll data="users">
