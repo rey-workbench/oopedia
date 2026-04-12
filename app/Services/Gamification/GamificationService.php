@@ -20,7 +20,8 @@ final class GamificationService implements GamificationServiceInterface
 {
     public function __construct(
         public readonly ProgressRepositoryInterface $progressRepo,
-    ) {}
+    ) {
+    }
 
     public function calculateCorrectAnswerReward(
         array $state,

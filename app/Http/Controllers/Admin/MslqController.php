@@ -15,7 +15,8 @@ final class MslqController extends Controller
 {
     public function __construct(
         protected MslqServiceInterface $mslqService,
-    ) {}
+    ) {
+    }
 
     public function index(Request $request): Response
     {

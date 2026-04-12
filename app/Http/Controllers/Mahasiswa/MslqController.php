@@ -17,7 +17,8 @@ final class MslqController extends Controller
 {
     public function __construct(
         protected MslqServiceInterface $mslqService,
-    ) {}
+    ) {
+    }
 
     public function create(): Response|RedirectResponse
     {
@@ -42,15 +43,15 @@ final class MslqController extends Controller
 
         try {
             $answers = [];
-            foreach ($request->answers as $ans) {
+            foreach ($request->input('answers', []) as $ans) {
                 $answers[$ans['question_id']] = $ans['value'];
             }
 
             $this->mslqService->storeSubmission(
                 $answers,
                 (int) Auth::id(),
-                $request->nim,
-                $request->class,
+                $request->input('nim'),
+                $request->input('class'),
             );
 
             return redirect()->route('mahasiswa.mslq.thankyou');

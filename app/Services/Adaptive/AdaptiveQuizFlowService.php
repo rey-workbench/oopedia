@@ -33,7 +33,8 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         public readonly AdaptiveEngineServiceInterface $adaptiveEngine,
         public readonly NextActionResolverServiceInterface $nextActionResolver,
         public readonly GuestProgressServiceInterface $guestProgressService,
-    ) {}
+    ) {
+    }
 
     /** @return array<string, mixed> */
     public function processAdaptiveAttempt(Material $material, Question $question, string $userId, array $data): array

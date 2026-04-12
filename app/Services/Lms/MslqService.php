@@ -17,7 +17,8 @@ final class MslqService implements MslqServiceInterface
 {
     public function __construct(
         private readonly MslqRepositoryInterface $mslqRepository,
-    ) {}
+    ) {
+    }
 
     public function getAdminResults(?string $class = null): LengthAwarePaginator
     {
@@ -71,7 +72,7 @@ final class MslqService implements MslqServiceInterface
 
             foreach ($data as $questionId => $value) {
                 MslqAnswer::create([
-                    'mslq_result_id'   => $result->id,
+                    'mslq_result_id'   => $result->getKey(),
                     'mslq_question_id' => $questionId,
                     'value'            => $value,
                 ]);

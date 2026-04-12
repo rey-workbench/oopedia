@@ -4,7 +4,7 @@
     import Button from '@/components/ui/Button.svelte';
     import Alert from '@/components/ui/Alert.svelte';
     import ProgressBar from '@/components/ui/ProgressBar.svelte';
-    import { ClipboardList, Send, Brain, Target, Info } from 'lucide-svelte';
+    import { ClipboardList, Send, Target, Info } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { MslqState } from '@/states/Mahasiswa/MslqState.svelte';
     import Input from '@/components/ui/Input.svelte';
@@ -14,7 +14,6 @@
 
     const state = untrack(() => new MslqState(questions));
 
-    // Group questions by category
     const motivationQuestions = $derived(
         state.questions.filter((q) => q.category === 'motivation')
     );
@@ -33,15 +32,13 @@
 
 <App title="MSLQ Survey">
     <div class="space-y-12 pb-20">
-        <!-- Header -->
         <PageHeader
             id="page-header"
             title="Motivated Strategies for Learning"
             subtitle="Kuesioner ini membantu kami memahami bagaimana motivasi dan strategi belajar Anda mempengaruhi keberhasilan akademik."
-            centered={true}
+            centered
         />
 
-        <!-- Progress Sticky -->
         <div id="mslq-progress" class="sticky top-20 z-20">
             <div
                 class="glass flex items-center justify-between rounded-3xl border-2 border-slate-100 bg-white/80 p-6 shadow-xl backdrop-blur-xl"
@@ -95,7 +92,6 @@
                     }}
                     class="space-y-20"
                 >
-                    <!-- Identity Section -->
                     <div id="mslq-identitas" class="grid grid-cols-1 gap-10 md:grid-cols-3">
                         <div class="space-y-3">
                             <label
@@ -110,7 +106,6 @@
                                 placeholder="Contoh: 2141720000"
                                 required
                                 error={state.form.errors['nim']}
-                                class="border-duo rounded-[1.5rem] py-4"
                             />
                         </div>
                         <div class="space-y-3">
@@ -126,7 +121,6 @@
                                 placeholder="Contoh: TI-3A"
                                 required
                                 error={state.form.errors['class']}
-                                class="border-duo rounded-[1.5rem] py-4"
                             />
                         </div>
                         <div class="space-y-3">
@@ -142,7 +136,6 @@
                         </div>
                     </div>
 
-                    <!-- Motivation Section -->
                     <div id="mslq-bagian-a" class="space-y-10">
                         <div class="flex items-center gap-4">
                             <div
@@ -206,7 +199,6 @@
                         </div>
                     </div>
 
-                    <!-- Strategy Section -->
                     <div id="mslq-bagian-b" class="space-y-10">
                         <div class="flex items-center gap-4">
                             <div
@@ -270,7 +262,6 @@
                         </div>
                     </div>
 
-                    <!-- Footer / Submit -->
                     <div class="flex flex-col items-center gap-6 border-t border-slate-50 pt-16">
                         <div
                             class="flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase"

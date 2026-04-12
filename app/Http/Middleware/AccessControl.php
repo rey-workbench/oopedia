@@ -9,12 +9,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AccessControl
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param string|null $role - Required role (superadmin|dosen|mahasiswa|guest)
-     * @param bool $requireApproval - Whether approval is required for this route
-     */
     public function handle(
         Request $request,
         Closure $next,

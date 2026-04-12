@@ -22,7 +22,8 @@ final class QuestionListingService implements QuestionListingServiceInterface
         public readonly MaterialRepositoryInterface $materialRepo,
         public readonly ProgressRepositoryInterface $progressRepo,
         public readonly QuestionRepositoryInterface $questionRepo,
-    ) {}
+    ) {
+    }
 
     public function getQuizData(
         Material $material,

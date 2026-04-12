@@ -23,7 +23,8 @@ final class QuestionAnswerService implements QuestionAnswerServiceInterface
         protected ProgressRepositoryInterface $progressRepo,
         protected GamificationServiceInterface $gamificationService,
         protected GuestProgressServiceInterface $guestProgressService,
-    ) {}
+    ) {
+    }
 
     /** @return array<string, mixed> */
     public function checkAnswer(array $data, string $userId, bool $isGuest): array
@@ -32,8 +33,9 @@ final class QuestionAnswerService implements QuestionAnswerServiceInterface
 
         $isCorrect         = $this->determineCorrectness($question, $data);
         $correctAnswers    = $question->answers()->where('is_correct', true)->get();
-        $correctAnswerText = $correctAnswers->first()->answer_text ?? null;
-        $explanation       = $correctAnswers->first()->explanation ?? null;
+        $correctAnswer     = $correctAnswers->first();
+        $correctAnswerText = $correctAnswer?->answer_text;
+        $explanation       = $correctAnswer?->explanation;
 
         $selectedAnswerText = $this->getSelectedAnswerText($question, $data, $correctAnswerText);
 
@@ -178,8 +180,7 @@ final class QuestionAnswerService implements QuestionAnswerServiceInterface
             'attempt_number' => $attemptNumber,
         ]);
 
-        Log::info("User {$userId} answered question {$question->id}, attempt {$attemptNumber}, " .
-            "difficulty: {$question->difficulty}, result: " . ($isCorrect ? 'CORRECT' : 'INCORRECT'));
+        Log::info("User {$userId} answered question {$question->id}, attempt {$attemptNumber}, difficulty: {$question->difficulty}, result: " . ($isCorrect ? 'CORRECT' : 'INCORRECT'));
     }
 
     /** @return array<string, mixed> */
@@ -243,19 +244,36 @@ final class QuestionAnswerService implements QuestionAnswerServiceInterface
 
     public function determineCorrectness(Question $question, array $data): bool
     {
-        if ($question->question_type === QuestionType::RADIO_BUTTON) {
-            if (! isset($data['answer'])) {
-                return false;
+        if ($question->question_type !== QuestionType::RADIO_BUTTON) {
+            if ($question->question_type !== QuestionType::FILL_IN_THE_BLANK) {
+                if ($question->question_type !== QuestionType::DRAG_AND_DROP) {
+                    return false;
+                }
+
+                $userAnswersStr = $data['drag_and_drop_answers'] ?? '[]';
+                $userAnswers    = is_array($userAnswersStr) ? $userAnswersStr : json_decode($userAnswersStr, true);
+
+                if (empty($userAnswers)) {
+                    return false;
+                }
+
+                $correctAnswers = $question->answers()->whereNotNull('drag_target')->get();
+                if ($correctAnswers->isEmpty()) {
+                    return false;
+                }
+
+                foreach ($correctAnswers as $correctAns) {
+                    $targetPos = $correctAns->drag_target;
+                    $userValue = $userAnswers[$targetPos] ?? null;
+
+                    if (trim($userValue ?? '') !== trim($correctAns->answer_text)) {
+                        return false;
+                    }
+                }
+
+                return true;
             }
 
-            $selectedAnswer = $question->answers()
-                ->where('id', $data['answer'])
-                ->first();
-
-            return $selectedAnswer && $selectedAnswer->is_correct;
-        }
-
-        if ($question->question_type === QuestionType::FILL_IN_THE_BLANK) {
             $answer = trim(strtolower($data['fill_in_the_blank_answer'] ?? ''));
             if (empty($answer)) {
                 return false;
@@ -269,31 +287,14 @@ final class QuestionAnswerService implements QuestionAnswerServiceInterface
                 });
         }
 
-        if ($question->question_type === QuestionType::DRAG_AND_DROP) {
-            $userAnswersStr = $data['drag_and_drop_answers'] ?? '[]';
-            $userAnswers    = is_array($userAnswersStr) ? $userAnswersStr : json_decode($userAnswersStr, true);
-
-            if (empty($userAnswers)) {
-                return false;
-            }
-
-            $correctAnswers = $question->answers()->whereNotNull('drag_target')->get();
-            if ($correctAnswers->isEmpty()) {
-                return false;
-            }
-
-            foreach ($correctAnswers as $correctAns) {
-                $targetPos = $correctAns->drag_target;
-                $userValue = $userAnswers[$targetPos] ?? null;
-
-                if (trim($userValue ?? '') !== trim($correctAns->answer_text)) {
-                    return false;
-                }
-            }
-
-            return true;
+        if (! isset($data['answer'])) {
+            return false;
         }
 
-        return false;
+        $selectedAnswer = $question->answers()
+            ->where('id', $data['answer'])
+            ->first();
+
+        return $selectedAnswer && $selectedAnswer->is_correct;
     }
 }

@@ -21,7 +21,8 @@ final class PerformanceService implements PerformanceServiceInterface
         public readonly ProgressRepositoryInterface $progressRepo,
         public readonly GamificationServiceInterface $gamificationService,
         public readonly GuestProgressServiceInterface $guestProgressService,
-    ) {}
+    ) {
+    }
 
     public function getStudentState(string $userId): StudentState
     {
