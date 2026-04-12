@@ -30,6 +30,7 @@ export class MslqListState extends BaseState {
     }
 
     exportResults() {
-        window.location.href = ROUTES.ADMIN.MSLQ.EXPORT + (this.activeClass ? `?class=${this.activeClass}` : '');
+        window.location.href =
+            ROUTES.ADMIN.MSLQ.EXPORT + (this.activeClass ? `?class=${this.activeClass}` : '');
     }
 }

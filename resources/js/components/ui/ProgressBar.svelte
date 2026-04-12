@@ -2,7 +2,7 @@
     interface Props {
         value?: number;
         max?: number;
-        color?: 'blue' | 'emerald' | 'amber' | 'rose' | 'gray';
+        color?: 'blue' | 'emerald' | 'amber' | 'rose' | 'gray' | 'accent';
         height?: string;
     }
 
@@ -16,6 +16,7 @@
         amber: 'bg-amber-400',
         rose: 'bg-rose-500',
         gray: 'bg-slate-500',
+        accent: 'bg-accent-500',
     };
 
     const bgClass = $derived(colors[color] || colors.blue);

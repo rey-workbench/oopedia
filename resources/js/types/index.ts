@@ -8,7 +8,6 @@ export type {
     // Primitives
     QuestionType,
     DifficultyLevel,
-    JenisKonten,
     LearningStyle,
     CertificationType,
     User,

@@ -2,7 +2,7 @@ import type { User } from './user';
 
 export type MslqCategory = 'motivation' | 'learning_strategy';
 
-export type MslqScale = 
+export type MslqScale =
     | 'mslq_intrinsic_goal_orientation'
     | 'mslq_extrinsic_goal_orientation'
     | 'mslq_task_value'

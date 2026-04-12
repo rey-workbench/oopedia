@@ -17,15 +17,15 @@ export class MslqState extends FormState<MslqForm> {
     questions = $state<any[]>([]);
 
     constructor(questions: any[]) {
-        const initialAnswers = questions.map(q => ({
+        const initialAnswers = questions.map((q) => ({
             question_id: q.id,
-            value: null
+            value: null,
         }));
 
         super({
             nim: '',
             class: '',
-            answers: initialAnswers
+            answers: initialAnswers,
         });
 
         this.questions = questions;
@@ -33,7 +33,7 @@ export class MslqState extends FormState<MslqForm> {
 
     get progress() {
         const total = this.form.answers.length;
-        const filled = this.form.answers.filter(a => a.value !== null).length;
+        const filled = this.form.answers.filter((a) => a.value !== null).length;
         return (filled / total) * 100;
     }
 
@@ -42,7 +42,7 @@ export class MslqState extends FormState<MslqForm> {
             scrollToError: true,
             onSuccess: () => {
                 router.visit(ROUTES.MAHASISWA.MSLQ.THANK_YOU);
-            }
+            },
         });
     }
 }

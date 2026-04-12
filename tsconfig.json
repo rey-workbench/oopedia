@@ -57,6 +57,12 @@
             "$lib/*": ["src/*"]
         }
     },
-    "include": ["resources/js/**/*", "resources/js/**/*.svelte", "src/**/*", "vite.config.ts", "svelte.config.js"],
+    "include": [
+        "resources/js/**/*",
+        "resources/js/**/*.svelte",
+        "src/**/*",
+        "vite.config.ts",
+        "svelte.config.js"
+    ],
     "exclude": ["node_modules", "public", "vendor"]
 }

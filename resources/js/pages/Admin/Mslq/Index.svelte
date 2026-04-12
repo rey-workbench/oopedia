@@ -14,16 +14,16 @@
 
     import { untrack } from 'svelte';
 
-    let { 
-        results, 
-        averages = {}, 
-        classes = [], 
-        activeClass = '' 
-    }: { 
-        results: Pagination<MslqResult>, 
-        averages: Record<string, number>, 
-        classes: string[], 
-        activeClass: string 
+    let {
+        results,
+        averages = {},
+        classes = [],
+        activeClass = '',
+    }: {
+        results: Pagination<MslqResult>;
+        averages: Record<string, number>;
+        classes: string[];
+        activeClass: string;
     } = $props();
 
     const state = untrack(() => new MslqListState(results.data, averages, classes, activeClass));
@@ -33,18 +33,51 @@
     const chartOptions = {
         chart: {
             toolbar: { show: false },
-            dropShadow: { enabled: true, blur: 1, left: 1, top: 1 }
+            dropShadow: { enabled: true, blur: 1, left: 1, top: 1, color: '#000' },
         },
         xaxis: {
             categories: [
-                'Intrinsic Goal', 'Extrinsic Goal', 'Task Value', 'Control Beliefs', 'Self-Efficacy', 'Anxiety',
-                'Rehearsal', 'Elaboration', 'Organization', 'Crit. Thinking', 'Metacognitive', 'Time/Study', 'Effort', 'Peer Learning', 'Help Seeking'
-            ]
+                'Intrinsic Goal',
+                'Extrinsic Goal',
+                'Task Value',
+                'Control Beliefs',
+                'Self-Efficacy',
+                'Anxiety',
+                'Rehearsal',
+                'Elaboration',
+                'Organization',
+                'Crit. Thinking',
+                'Metacognitive',
+                'Time/Study',
+                'Effort',
+                'Peer Learning',
+                'Help Seeking',
+            ],
+            labels: {
+                style: {
+                    colors: '#64748b',
+                    fontSize: '10px',
+                    fontWeight: 700,
+                },
+            },
         },
-        colors: ['#4f46e5'],
-        fill: { opacity: 0.1 },
-        stroke: { show: true, width: 2 },
-        markers: { size: 4 }
+        colors: ['#ff5242'], // accent-500
+        fill: {
+            opacity: 0.2,
+            colors: ['#ff5242'],
+        },
+        stroke: { show: true, width: 3, colors: ['#ff5242'] },
+        markers: {
+            size: 4,
+            colors: ['#fff'],
+            strokeColors: '#ff5242',
+            strokeWidth: 2,
+        },
+        tooltip: {
+            theme: 'dark',
+            marker: { show: true },
+            x: { show: true },
+        },
     };
 
     const chartSeries = $derived([
@@ -65,16 +98,16 @@
                 averages['mslq_time_study_environment_management'] || 0,
                 averages['mslq_effort_regulation'] || 0,
                 averages['mslq_peer_learning'] || 0,
-                averages['mslq_help_seeking'] || 0
-            ]
-        }
+                averages['mslq_help_seeking'] || 0,
+            ],
+        },
     ]);
 </script>
 
 <App title="Analitik MSLQ">
     <div class="space-y-8 pb-10">
-        <PageHeader 
-            title="Analitik MSLQ" 
+        <PageHeader
+            title="Analitik MSLQ"
             subtitle="Motivated Strategies for Learning Questionnaire"
             id="mslq-header"
         >
@@ -84,70 +117,118 @@
                         placeholder="Filter Kelas"
                         value={state.activeClass}
                         onchange={(v) => state.handleFilterChange(v as any)}
-                        options={state.classes.map(c => ({ label: c, value: c }))}
-                        class="w-48"
+                        options={state.classes.map((c) => ({ label: c, value: c }))}
+                        class="border-duo w-48 rounded-xl"
                     />
-                    <Button 
-                        variant="outline" 
+                    <Button
+                        variant="outline"
+                        size="md"
                         icon={FileSpreadsheet}
-                        onclick={() => state.exportResults()}
-                    >Export Data</Button>
+                        class="border-duo"
+                        onclick={() => state.exportResults()}>Export Data</Button
+                    >
                 </div>
             {/snippet}
         </PageHeader>
 
         <!-- Chart Summary -->
         <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
-            <Card class="lg:col-span-2 overflow-hidden rounded-3xl border-slate-100 shadow-xl" id="mslq-chart-card">
+            <Card
+                padding="p-0"
+                class="border-duo overflow-hidden rounded-3xl border-slate-100 shadow-xl lg:col-span-2"
+                id="mslq-chart-card"
+            >
                 <div class="p-8">
                     <div class="mb-6 flex items-center gap-4">
-                        <div class="bg-indigo-50 text-indigo-600 flex h-10 w-10 items-center justify-center rounded-xl">
+                        <div
+                            class="bg-primary-50 text-primary-500 border-primary-100 flex h-10 w-10 items-center justify-center rounded-xl border-2"
+                        >
                             <Brain size={20} />
                         </div>
-                        <h3 class="text-lg font-bold tracking-widest text-slate-900 uppercase">Profil Belajar Mahasiswa</h3>
+                        <h3
+                            class="text-primary-500 font-display text-lg font-black tracking-widest uppercase"
+                        >
+                            Profil Belajar Mahasiswa
+                        </h3>
                     </div>
                     <Chart type="radar" series={chartSeries} options={chartOptions} height={450} />
                 </div>
             </Card>
 
             <div class="space-y-6">
-                <Card class="rounded-3xl border-slate-100 shadow-xl bg-indigo-600 text-white" id="mslq-stat-motivation">
-                    <div class="p-8">
-                        <div class="flex items-center justify-between">
+                <Card
+                    padding="p-0"
+                    class="border-duo-lg border-accent-700 bg-accent-500 shadow-accent-100 overflow-hidden rounded-3xl text-white shadow-xl"
+                    id="mslq-stat-motivation"
+                >
+                    <div class="relative p-8">
+                        <div
+                            class="absolute -top-6 -right-6 h-24 w-24 rounded-full bg-white/10 blur-2xl"
+                        ></div>
+                        <div class="relative z-10 flex items-center justify-between">
                             <div class="space-y-1">
-                                <div class="text-[10px] font-bold tracking-widest uppercase opacity-80">Rata-rata Motivasi</div>
+                                <div
+                                    class="text-[10px] font-black tracking-widest uppercase opacity-80"
+                                >
+                                    Rata-rata Motivasi
+                                </div>
                                 <div class="text-4xl font-black">
-                                    { (results.data.reduce((acc, r) => acc + r.total_motivation, 0) / (results.data.length || 1)).toFixed(2) }
+                                    {(
+                                        results.data.reduce(
+                                            (acc, r) => acc + r.total_motivation,
+                                            0
+                                        ) / (results.data.length || 1)
+                                    ).toFixed(2)}
                                 </div>
                             </div>
-                            <div class="bg-white/20 p-4 rounded-2xl">
+                            <div class="rounded-2xl border-2 border-white/20 bg-white/20 p-4">
                                 <Target size={32} />
                             </div>
                         </div>
                     </div>
                 </Card>
 
-                <Card class="rounded-3xl border-slate-100 shadow-xl bg-emerald-600 text-white" id="mslq-stat-strategy">
-                    <div class="p-8">
-                        <div class="flex items-center justify-between">
+                <Card
+                    padding="p-0"
+                    class="border-duo-lg border-primary-800 bg-primary-500 overflow-hidden rounded-3xl text-white shadow-xl shadow-slate-200"
+                    id="mslq-stat-strategy"
+                >
+                    <div class="relative p-8">
+                        <div
+                            class="absolute -top-6 -right-6 h-24 w-24 rounded-full bg-white/10 blur-2xl"
+                        ></div>
+                        <div class="relative z-10 flex items-center justify-between">
                             <div class="space-y-1">
-                                <div class="text-[10px] font-bold tracking-widest uppercase opacity-80">Rata-rata Strategi</div>
+                                <div
+                                    class="text-[10px] font-black tracking-widest uppercase opacity-80"
+                                >
+                                    Rata-rata Strategi
+                                </div>
                                 <div class="text-4xl font-black">
-                                    { (results.data.reduce((acc, r) => acc + r.total_strategy, 0) / (results.data.length || 1)).toFixed(2) }
+                                    {(
+                                        results.data.reduce((acc, r) => acc + r.total_strategy, 0) /
+                                        (results.data.length || 1)
+                                    ).toFixed(2)}
                                 </div>
                             </div>
-                            <div class="bg-white/20 p-4 rounded-2xl">
+                            <div class="rounded-2xl border-2 border-white/20 bg-white/20 p-4">
                                 <ClipboardList size={32} />
                             </div>
                         </div>
                     </div>
                 </Card>
 
-                <Card class="rounded-3xl border-slate-100 shadow-xl" id="mslq-info">
-                    <div class="p-8 space-y-4">
-                        <h4 class="text-sm font-bold tracking-widest text-slate-900 uppercase">Informasi</h4>
-                        <p class="text-xs leading-relaxed text-slate-500">
-                            Grafik radar di samping menunjukkan kekuatan dan kelemahan kolektif mahasiswa dalam motivasi dan strategi belajar. Skor berkisar antara 1 hingga 7.
+                <Card class="border-duo rounded-3xl border-slate-100 shadow-xl" id="mslq-info">
+                    <div class="space-y-4 p-8">
+                        <h4
+                            class="text-primary-500 font-display text-sm font-black tracking-widest uppercase"
+                        >
+                            Informasi
+                        </h4>
+                        <p class="text-[11px] leading-relaxed font-medium text-slate-500 uppercase">
+                            Grafik radar di samping menunjukkan kekuatan dan kelemahan kolektif
+                            mahasiswa dalam motivasi dan strategi belajar. Skor berkisar antara 1
+                            hingga 7.
                         </p>
                     </div>
                 </Card>
@@ -155,9 +236,17 @@
         </div>
 
         <!-- Data Table -->
-        <Card class="overflow-hidden rounded-3xl border-slate-100 shadow-xl" padding="p-0" id="mslq-table-card">
-            <div class="border-b border-slate-50 p-8">
-                <h3 class="text-lg font-bold tracking-widest text-slate-900 uppercase">Hasil Kuesioner Mahasiswa</h3>
+        <Card
+            class="border-duo overflow-hidden rounded-3xl border-slate-100 shadow-xl"
+            padding="p-0"
+            id="mslq-table-card"
+        >
+            <div class="border-b-2 border-slate-50 p-8">
+                <h3
+                    class="text-primary-500 font-display text-lg font-black tracking-widest uppercase"
+                >
+                    Hasil Kuesioner Mahasiswa
+                </h3>
             </div>
             <DataTable
                 items={results.data}
@@ -168,30 +257,37 @@
                     { key: 'total_motivation', label: 'Motivasi', align: 'center' },
                     { key: 'total_strategy', label: 'Strategi Belajar', align: 'center' },
                     { key: 'created_at', label: 'Tanggal Submit', align: 'left' },
-                    { key: 'actions', label: 'Aksi', align: 'right' }
+                    { key: 'actions', label: 'Aksi', align: 'right' },
                 ]}
             >
                 {#snippet row(item: MslqResult)}
-                    <td class="px-6 py-6 border-l-4 border-transparent group-hover:border-indigo-600 transition-all">
+                    <td
+                        class="group-hover:border-accent-500 border-l-4 border-transparent px-6 py-6 transition-all"
+                    >
                         <span class="font-bold text-slate-900">{item.user.name}</span>
                     </td>
                     <td class="px-6 py-6 font-medium text-slate-500">{item.nim}</td>
                     <td class="px-6 py-6">
-                        <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase bg-slate-100 px-3 py-1 rounded-full">{item.class}</span>
+                        <span
+                            class="text-primary-500 bg-primary-50 border-primary-100 rounded-full border px-3 py-1 text-[10px] font-black tracking-widest uppercase"
+                            >{item.class}</span
+                        >
                     </td>
                     <td class="px-6 py-6 text-center">
-                        <span class="font-bold text-indigo-600">{item.total_motivation}</span>
+                        <span class="text-accent-500 font-black">{item.total_motivation}</span>
                     </td>
                     <td class="px-6 py-6 text-center">
-                        <span class="font-bold text-emerald-600">{item.total_strategy}</span>
+                        <span class="text-primary-500 font-black">{item.total_strategy}</span>
                     </td>
                     <td class="px-6 py-6">
-                        <span class="text-xs text-slate-500">{new Date(item.created_at).toLocaleDateString()}</span>
+                        <span class="text-xs font-bold text-slate-400 uppercase"
+                            >{new Date(item.created_at).toLocaleDateString()}</span
+                        >
                     </td>
                     <td class="px-6 py-6">
                         <div class="flex justify-end gap-2">
                             <Link href={ROUTES.ADMIN.MSLQ.SHOW(item.id)}>
-                                <Button variant="ghost" size="sm" icon={Eye} color="primary" />
+                                <Button variant="ghost" size="sm" icon={Eye} />
                             </Link>
                         </div>
                     </td>

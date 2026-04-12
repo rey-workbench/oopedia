@@ -814,7 +814,8 @@ export function registerMahasiswaTutorials() {
                 element: 'button[type="submit"]',
                 popover: {
                     title: 'Simpan Hasil',
-                    description: 'Klik tombol ini jika kamu sudah yakin telah mengisi seluruh 81 butir pertanyaan.',
+                    description:
+                        'Klik tombol ini jika kamu sudah yakin telah mengisi seluruh 81 butir pertanyaan.',
                     side: 'top',
                     align: 'center',
                 },

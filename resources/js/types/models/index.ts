@@ -40,8 +40,4 @@ export type {
     Certification,
 } from './computed';
 
-export type {
-    MslqResult,
-    MslqQuestion,
-    MslqAnswer,
-} from './mslq';
+export type { MslqResult, MslqQuestion, MslqAnswer } from './mslq';
