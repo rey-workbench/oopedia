@@ -18,7 +18,7 @@
 
                 <div class="relative z-10 space-y-8">
                     <div
-                        class="mx-auto flex h-24 w-24 rotate-12 transform items-center justify-center rounded-[2.5rem] border border-white/30 bg-white/20 shadow-2xl backdrop-blur-md transition-transform duration-500 group-hover:rotate-0"
+                        class="mx-auto flex h-24 w-24 rotate-12 transform items-center justify-center rounded-3xl border border-white/30 bg-white/20 shadow-2xl backdrop-blur-md transition-transform duration-500 group-hover:rotate-0"
                     >
                         <Clock size={48} class="text-white" />
                     </div>
