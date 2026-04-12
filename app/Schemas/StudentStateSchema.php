@@ -2,10 +2,6 @@
 
 namespace App\Schemas;
 
-/**
- * Standardized JSON schema for StudentState model.
- * Ensures consistent key names across the entire application.
- */
 final class StudentStateSchema
 {
     public const string LEVEL_PEMULA   = 'Pemula';
@@ -58,7 +54,7 @@ final class StudentStateSchema
 
     public const array LEARNING_PROFILE = [
         'learning_style'   => self::STYLE_VISUAL,
-        'unlocked_modules' => ['1'], // module_id '1' = "Pengantar Konsep Dasar OOP" (first module always unlocked)
+        'unlocked_modules' => ['1'],
         'certifications'   => [],
     ];
 

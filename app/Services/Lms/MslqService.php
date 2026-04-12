@@ -64,7 +64,7 @@ final class MslqService implements MslqServiceInterface
                 'user_id'          => $userId,
                 'nim'              => $nim,
                 'class'            => $class,
-                'scores_by_scale'  => [], // Temporary
+                'scores_by_scale'  => [],
                 'total_motivation' => 0,
                 'total_strategy'   => 0,
             ]);
@@ -77,7 +77,6 @@ final class MslqService implements MslqServiceInterface
                 ]);
             }
 
-            // Calculate final scores
             $finalScores = $this->calculateScores($result);
             $result->update($finalScores);
 
@@ -90,9 +89,6 @@ final class MslqService implements MslqServiceInterface
         return $this->mslqRepository->getAllForCalculation($class);
     }
 
-    /**
-     * Internal calculation logic.
-     */
     private function calculateScores(MslqResult $result): array
     {
         $answers = $result->answers()->with('question')->get();

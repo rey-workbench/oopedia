@@ -74,6 +74,16 @@ export function getTourIdFromUrl(url: string, isAdminRole: boolean): string {
             return 'admin_ueq';
         }
 
+        if (path.includes('/admin/mslq')) {
+            // Check if it's a detail page (ends with ID)
+            const parts = path.split('/');
+            const lastPart = parts[parts.length - 1];
+            if (lastPart && lastPart !== 'mslq') {
+                return 'admin_mslq_detail';
+            }
+            return 'admin_mslq';
+        }
+
         if (path.includes('/admin/dashboard')) return 'admin_dashboard';
     } else {
         if (path.includes('/mahasiswa/dashboard/in-progress'))
@@ -107,6 +117,8 @@ export function getTourIdFromUrl(url: string, isAdminRole: boolean): string {
         }
 
         if (path.includes('/mahasiswa/profile')) return 'mahasiswa_profile';
+
+        if (path.includes('/mahasiswa/mslq')) return 'mahasiswa_mslq';
     }
 
     return tourId;

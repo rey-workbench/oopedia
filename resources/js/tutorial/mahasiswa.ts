@@ -772,7 +772,7 @@ export function registerMahasiswaTutorials() {
         tourId: 'mahasiswa_mslq',
         steps: [
             {
-                element: '#mslq-instructions',
+                element: '#page-header',
                 popover: {
                     title: 'MSLQ Survey',
                     description:
@@ -791,7 +791,17 @@ export function registerMahasiswaTutorials() {
                 },
             },
             {
-                element: 'h4:contains("Bagian A")',
+                element: '#mslq-progress',
+                popover: {
+                    title: 'Progress Kuesioner',
+                    description:
+                        'Pantau seberapa jauh kamu sudah mengisi kuesioner dari sini. Pastikan mencapai 100% (81 dari 81).',
+                    side: 'bottom',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#mslq-bagian-a',
                 popover: {
                     title: 'Motivasi Belajar',
                     description:
@@ -801,7 +811,7 @@ export function registerMahasiswaTutorials() {
                 },
             },
             {
-                element: 'h4:contains("Bagian B")',
+                element: '#mslq-bagian-b',
                 popover: {
                     title: 'Strategi Belajar',
                     description:

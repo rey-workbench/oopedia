@@ -94,9 +94,9 @@ final class StudentState extends Model
 
     public function setCurrentLevelAttribute(StudentLevel|string $value): void
     {
-        $val                                                 = $value instanceof StudentLevel ? $value->value : $value;
+        $level                                               = $value instanceof StudentLevel ? $value->value : $value;
         $gamification                                        = $this->gamification_data ?? [];
-        $gamification[StudentStateSchema::KEY_CURRENT_LEVEL] = $val;
+        $gamification[StudentStateSchema::KEY_CURRENT_LEVEL] = $level;
         $this->gamification_data                             = $gamification;
     }
 

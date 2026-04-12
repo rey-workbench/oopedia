@@ -38,10 +38,11 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
     /** @return array<string, mixed> */
     public function processAdaptiveAttempt(Material $material, Question $question, string $userId, array $data): array
     {
-        $isCorrect = $this->questionAnswerService->determineCorrectness($question, $data);
-        $usedHint  = (bool) ($data['used_hint'] ?? false);
-        $timeSpent = (int) ($data['time_spent'] ?? 0);
-        $isGuest   = $userId === 'guest';
+        $isCorrect  = $this->questionAnswerService->determineCorrectness($question, $data);
+        $usedHint   = (bool) ($data['used_hint'] ?? false);
+        $timeSpent  = (int) ($data['time_spent'] ?? 0);
+        $isGuest    = $userId === 'guest';
+        $difficulty = $question->difficulty ?? QuestionDifficulty::BEGINNER;
 
         $studentState = null;
         if (! $isGuest) {
@@ -61,13 +62,13 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             $studentState = $this->guestProgressService->getStudentState();
         }
 
-        $score = $this->performanceService->calculateScore($isCorrect, $usedHint, $timeSpent, $question->difficulty);
+        $score = $this->performanceService->calculateScore($isCorrect, $usedHint, $timeSpent, $difficulty);
 
         $rewardResult = $isCorrect
             ? $this->gamificationService->calculateCorrectAnswerReward(
                 $studentState->toArray(),
                 $usedHint,
-                $question->difficulty ?? QuestionDifficulty::BEGINNER,
+                $difficulty,
                 $timeSpent,
             )
             : $this->gamificationService->processWrongAnswer($studentState->toArray());
@@ -105,7 +106,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
                 'is_answered'   => true,
                 'attributes'    => [
                     'score'      => $score,
-                    'difficulty' => $question->difficulty ?? QuestionDifficulty::BEGINNER,
+                    'difficulty' => $difficulty,
                     'used_hint'  => $usedHint,
                     'time_spent' => $timeSpent,
                 ],
@@ -118,8 +119,8 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
                 Cache::forget("dashboard_inprogress_{$userId}_true");
                 Cache::forget("dashboard_completed_{$userId}_false");
                 Cache::forget("dashboard_completed_{$userId}_true");
-            } catch (\Throwable $e) {
-                Log::warning('Failed to clear dashboard caches: ' . $e->getMessage());
+            } catch (\Throwable $throwable) {
+                Log::warning('Failed to clear dashboard caches: ' . $throwable->getMessage());
             }
         } else {
             $this->guestProgressService->saveProgress($data, $isCorrect, $question->id);
@@ -131,7 +132,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             usedHint: $usedHint,
             score: $score,
             timeSpent: $timeSpent,
-            difficulty: $question->difficulty ?? QuestionDifficulty::BEGINNER,
+            difficulty: $difficulty,
             questionId: $question->id,
             materialId: $material->id,
             moduleId: $material->module_id ?? null,
@@ -142,7 +143,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             'used_hint'   => $usedHint,
             'score'       => $score,
             'time_spent'  => $timeSpent,
-            'difficulty'  => $question->difficulty ?? QuestionDifficulty::BEGINNER,
+            'difficulty'  => $difficulty,
             'question_id' => $question->id,
             'material_id' => $material->id,
             'module_id'   => $material->module_id ?? null,

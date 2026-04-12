@@ -21,7 +21,6 @@ final class MslqController extends Controller
 
     public function create(): Response|RedirectResponse
     {
-        // Check if user already submitted
         $existing = MslqResult::where('user_id', Auth::id())->first();
         if ($existing) {
             return redirect()->route('mahasiswa.mslq.thankyou');
@@ -42,7 +41,6 @@ final class MslqController extends Controller
         }
 
         try {
-            // Reformating answers for service
             $answers = [];
             foreach ($request->answers as $ans) {
                 $answers[$ans['question_id']] = $ans['value'];

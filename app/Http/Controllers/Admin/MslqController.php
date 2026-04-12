@@ -57,7 +57,6 @@ final class MslqController extends Controller
         $callback = function () use ($results): void {
             $file = fopen('php://output', 'w');
 
-            // Header for CSV
             fputcsv($file, [
                 'ID',
                 'NIM',

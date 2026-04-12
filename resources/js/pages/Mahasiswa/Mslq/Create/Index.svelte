@@ -8,6 +8,7 @@
     import { untrack } from 'svelte';
     import { MslqState } from '@/states/Mahasiswa/MslqState.svelte';
     import Input from '@/components/ui/Input.svelte';
+    import PageHeader from '@/components/ui/PageHeader.svelte';
 
     const { questions = [] } = $props();
 
@@ -33,25 +34,15 @@
 <App title="MSLQ Survey">
     <div class="space-y-12 pb-20">
         <!-- Header -->
-        <div id="mslq-instructions" class="space-y-6 text-center">
-            <div
-                class="bg-primary-50 text-primary-500 border-primary-100 inline-flex h-20 w-20 items-center justify-center rounded-[2rem] border-2 shadow-inner"
-            >
-                <Brain size={32} />
-            </div>
-            <h1
-                class="text-primary-500 font-display text-4xl font-black tracking-[0.2em] uppercase"
-            >
-                Motivated Strategies <span class="text-accent-500">for Learning</span>
-            </h1>
-            <p class="mx-auto max-w-2xl text-lg font-medium text-slate-500">
-                Kuesioner ini membantu kami memahami bagaimana motivasi dan strategi belajar Anda
-                mempengaruhi keberhasilan akademik.
-            </p>
-        </div>
+        <PageHeader
+            id="page-header"
+            title="Motivated Strategies for Learning"
+            subtitle="Kuesioner ini membantu kami memahami bagaimana motivasi dan strategi belajar Anda mempengaruhi keberhasilan akademik."
+            centered={true}
+        />
 
         <!-- Progress Sticky -->
-        <div class="sticky top-20 z-20">
+        <div id="mslq-progress" class="sticky top-20 z-20">
             <div
                 class="glass flex items-center justify-between rounded-3xl border-2 border-slate-100 bg-white/80 p-6 shadow-xl backdrop-blur-xl"
             >
@@ -152,7 +143,7 @@
                     </div>
 
                     <!-- Motivation Section -->
-                    <div class="space-y-10">
+                    <div id="mslq-bagian-a" class="space-y-10">
                         <div class="flex items-center gap-4">
                             <div
                                 class="bg-accent-500 shadow-accent-200 border-accent-700 flex h-10 w-10 items-center justify-center rounded-xl border-b-4 text-white shadow-lg"
@@ -216,7 +207,7 @@
                     </div>
 
                     <!-- Strategy Section -->
-                    <div class="space-y-10">
+                    <div id="mslq-bagian-b" class="space-y-10">
                         <div class="flex items-center gap-4">
                             <div
                                 class="bg-primary-500 flex h-10 w-10 items-center justify-center rounded-xl border-b-4 border-black text-white shadow-lg shadow-slate-200"
