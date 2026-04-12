@@ -23,8 +23,9 @@ Route::middleware(['auth', 'access:mahasiswa'])->name('mahasiswa.')->prefix('mah
 
     Route::get('certificates', [MahasiswaCertificateController::class, 'index'])->name('certificates.index');
 
-    // UEQ Survey (resource)
-    Route::resource('ueq-survey', MahasiswaUeqSurveyController::class)->only(['create', 'store', 'show']);
+    // UEQ Survey
+    Route::get('ueq-survey/thankyou', [MahasiswaUeqSurveyController::class, 'show'])->name('ueq-survey.thankyou');
+    Route::resource('ueq-survey', MahasiswaUeqSurveyController::class)->only(['create', 'store']);
 
     // MSLQ Survey
     Route::get('mslq/thankyou', [MslqController::class, 'show'])->name('mslq.thankyou');

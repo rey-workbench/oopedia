@@ -97,8 +97,8 @@ export const ROUTES = {
             INDEX: '/mahasiswa/certificates',
         },
         UEQ: {
-            CREATE: '/mahasiswa/ueq/create',
-            THANK_YOU: '/mahasiswa/ueq/thank-you',
+            CREATE: '/mahasiswa/ueq-survey/create',
+            THANK_YOU: '/mahasiswa/ueq-survey/thank-you',
         },
         MSLQ: {
             INDEX: '/mahasiswa/mslq',
