@@ -52,18 +52,13 @@ class TutorialState extends BaseState {
             .sort((a, b) => (a.priority || 0) - (b.priority || 0))
             .flatMap((r) => r.steps);
 
-        // Only include global steps if there are no page-specific steps
-        // This prevents the "double" tutorial feeling on content-rich pages
-        if (pageSteps.length > 0) {
-            return pageSteps;
-        }
-
         const globalSteps = this.registry
             .filter((r) => r.group === 'global')
             .sort((a, b) => (a.priority || 0) - (b.priority || 0))
             .flatMap((r) => r.steps);
 
-        return globalSteps;
+        // Combine global steps (sidebar & navbar) with the specific page steps
+        return [...globalSteps, ...pageSteps];
     }
 
     /**
