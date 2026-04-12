@@ -845,4 +845,108 @@ export function registerAdminTutorials() {
             },
         ],
     });
+
+    // 6.2 Admin MSLQ Analitik Tutorial
+    tutorialState.registerSteps({
+        tourId: 'admin_mslq',
+        steps: [
+            {
+                element: '#mslq-header',
+                popover: {
+                    title: 'Analitik MSLQ 🧠',
+                    description:
+                        'Selamat datang di pusat analisis motivasi dan strategi belajar! Di sini kita membedah profil psikologis pembelajar mahasiswa.',
+                    side: 'bottom',
+                    align: 'start',
+                },
+            },
+            {
+                element: '#mslq-chart-card',
+                popover: {
+                    title: 'Profil Kolektif 📊',
+                    description:
+                        'Grafik radar ini menunjukkan kekuatan dan kelemahan kolektif mahasiswa dalam 6 dimensi motivasi dan 9 dimensi strategi belajar.',
+                    side: 'right',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#mslq-stat-motivation',
+                popover: {
+                    title: 'Skor Motivasi 🎯',
+                    description:
+                        'Rata-rata tingkat motivasi seluruh mahasiswa. Skor yang tinggi menunjukkan antusiasme belajar yang kuat.',
+                    side: 'bottom',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#mslq-stat-strategy',
+                popover: {
+                    title: 'Skor Strategi 📋',
+                    description:
+                        'Rata-rata efektivitas strategi belajar yang digunakan. Membantu Anda mengidentifikasi area yang butuh bimbingan metodologi.',
+                    side: 'bottom',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#mslq-table-card',
+                popover: {
+                    title: 'Database Responden 👥',
+                    description:
+                        'Daftar detail setiap mahasiswa yang telah mengisi kuesioner. Anda bisa melihat skor individu dan mendalami hasilnya.',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+        ],
+    });
+
+    // 6.3 Admin MSLQ Detail Tutorial
+    tutorialState.registerSteps({
+        tourId: 'admin_mslq_detail',
+        steps: [
+            {
+                element: '.bg-slate-900',
+                popover: {
+                    title: 'Biodata Responden 👤',
+                    description:
+                        'Identitas mahasiswa dan ringkasan skor motivasi serta strategi mereka.',
+                    side: 'right',
+                    align: 'start',
+                },
+            },
+            {
+                element: 'h3:contains("Motivasi")',
+                popover: {
+                    title: 'Detail Motivasi 🎯',
+                    description:
+                        'Breakdown 6 sub-skala motivasi, mulai dari orientasi intrinsik hingga kecemasan ujian.',
+                    side: 'bottom',
+                    align: 'center',
+                },
+            },
+            {
+                element: 'h3:contains("Strategi Belajar")',
+                popover: {
+                    title: 'Detail Strategi 📋',
+                    description:
+                        'Breakdown 9 sub-skala strategi kognitif, metakognitif, dan manajemen sumber daya.',
+                    side: 'bottom',
+                    align: 'center',
+                },
+            },
+            {
+                element: '.divide-slate-50',
+                popover: {
+                    title: 'Respon Per Item 📝',
+                    description:
+                        'Lihat jawaban mahasiswa untuk setiap 81 butir pertanyaan MSLQ secara transparan.',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+        ],
+    });
 }

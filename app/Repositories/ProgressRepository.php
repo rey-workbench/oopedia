@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Enums\Lms\QuestionDifficulty;
 use App\Models\Material;
 use App\Models\Question;
 use App\Models\QuizAttempt;
@@ -86,14 +87,13 @@ final class ProgressRepository implements ProgressRepositoryInterface
             ->map(fn ($group) => $group->unique('question_id')->count());
 
         return $attempts->map(function ($attempt) use ($correctCountsByMaterial) {
-            $materialId = $attempt->question->material_id ?? 0;
-            $difficulty = $attempt->question->difficulty;
-
+            $materialId        = $attempt->question->material_id ?? 0;
+            $difficulty        = $attempt->question?->difficulty instanceof QuestionDifficulty ? $attempt->question->difficulty->value : $attempt->question?->difficulty;
             $previousHardCount = 0;
             if ($difficulty === 'hard') {
                 $previousHardCount = QuizAttempt::where('user_id', $attempt->user_id)
                     ->whereRelation('question', 'material_id', $materialId)
-                    ->whereRelation('question', 'difficulty', 'hard')
+                    ->whereRelation('question', 'difficulty', QuestionDifficulty::HARD)
                     ->where('is_correct', true)
                     ->where('created_at', '<', $attempt->created_at)
                     ->distinct('question_id')
@@ -123,13 +123,17 @@ final class ProgressRepository implements ProgressRepositoryInterface
             ->with('question')
             ->get()
             ->groupBy(function ($attempt) {
-                $materialId = $attempt->question?->material_id;
-                $difficulty = $attempt->question?->difficulty;
+                $question   = $attempt->question;
+                $materialId = $question?->material_id ?? 'unknown';
+                $difficulty = $question?->difficulty;
+                $diffKey    = $difficulty instanceof QuestionDifficulty ? $difficulty->value : ($difficulty ?? 'unknown');
 
-                return "{$materialId}-{$difficulty}";
+                return "{$materialId}-{$diffKey}";
             })
             ->map(function ($attempts, $key) {
-                [$materialId, $difficulty] = explode('-', $key, 2);
+                $parts                     = explode('-', (string) $key, 2);
+                $materialId                = $parts[0] ?? 'unknown';
+                $difficulty                = $parts[1] ?? 'unknown';
                 $totalAnswered             = $attempts->unique('question_id')->count();
                 $correctAnswers            = $attempts->where('is_correct', true)->unique('question_id')->count();
 
@@ -182,15 +186,15 @@ final class ProgressRepository implements ProgressRepositoryInterface
                 $completionDate        = $attempts->max('updated_at');
 
                 $beginnerCompleted = $attempts->where('is_correct', true)
-                    ->filter(fn ($a) => $a->question?->difficulty === 'beginner')
+                    ->filter(fn ($a) => ($a->question?->difficulty instanceof QuestionDifficulty ? $a->question->difficulty->value : $a->question?->difficulty) === 'beginner')
                     ->unique('question_id')
                     ->count();
                 $mediumCompleted = $attempts->where('is_correct', true)
-                    ->filter(fn ($a) => $a->question?->difficulty === 'medium')
+                    ->filter(fn ($a) => ($a->question?->difficulty instanceof QuestionDifficulty ? $a->question->difficulty->value : $a->question?->difficulty) === 'medium')
                     ->unique('question_id')
                     ->count();
                 $hardCompleted = $attempts->where('is_correct', true)
-                    ->filter(fn ($a) => $a->question?->difficulty === 'hard')
+                    ->filter(fn ($a) => ($a->question?->difficulty instanceof QuestionDifficulty ? $a->question->difficulty->value : $a->question?->difficulty) === 'hard')
                     ->unique('question_id')
                     ->count();
 
@@ -538,7 +542,7 @@ final class ProgressRepository implements ProgressRepositoryInterface
         if (is_null($userId) || $userId === 'guest') {
             return [
                 'state'    => $this->getOrCreateStudentState('guest'),
-                'progress' => new Collection(),
+                'progress' => new Collection,
             ];
         }
 

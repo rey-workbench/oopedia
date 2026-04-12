@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\Lms\MediaType;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,6 +19,7 @@ final class Media extends Model
 
     protected $casts = [
         'material_id' => 'string',
+        'media_type'  => MediaType::class,
     ];
 
     public function material(): BelongsTo

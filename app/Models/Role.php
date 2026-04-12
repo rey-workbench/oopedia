@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\User\RoleName;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,19 +15,15 @@ final class Role extends Model
     use HasFactory;
     use HasUlids;
 
-    public const string ROLE_SUPERADMIN = 'superadmin';
-
-    public const string ROLE_DOSEN = 'dosen';
-
-    public const string ROLE_MAHASISWA = 'mahasiswa';
-
-    public const string ROLE_GUEST = 'guest';
-
     public $incrementing = false;
 
     protected $keyType = 'string';
 
     protected $fillable = ['id', 'role_name'];
+
+    protected $casts = [
+        'role_name' => RoleName::class,
+    ];
 
     public function users(): HasMany
     {

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\Lms\ContentCategory;
+use App\Enums\Lms\QuestionDifficulty;
+use App\Enums\Lms\QuestionType;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,24 +18,6 @@ final class Question extends Model
     use HasFactory;
     use HasUlids;
 
-    public const string QUESTION_TYPE_FILL_IN_THE_BLANK = 'fill_in_the_blank';
-
-    public const string QUESTION_TYPE_RADIO_BUTTON      = 'radio_button';
-
-    public const string QUESTION_TYPE_DRAG_AND_DROP     = 'drag_and_drop';
-
-    public const string TYPE_TEORI   = 'teori';
-
-    public const string TYPE_SINTAKS = 'sintaks';
-
-    public const string DIFFICULTY_BEGINNER = 'beginner';
-
-    public const string DIFFICULTY_MEDIUM   = 'medium';
-
-    public const string DIFFICULTY_HARD     = 'hard';
-
-    public const string DIFFICULTY_FINAL    = 'final';
-
     public const int DIFFICULTY_RANK_BEGINNER = 1;
 
     public const int DIFFICULTY_RANK_MEDIUM   = 2;
@@ -42,10 +27,10 @@ final class Question extends Model
     public const int DIFFICULTY_RANK_FINAL    = 4;
 
     public const array DIFFICULTY_ORDER = [
-        self::DIFFICULTY_BEGINNER => self::DIFFICULTY_RANK_BEGINNER,
-        self::DIFFICULTY_MEDIUM   => self::DIFFICULTY_RANK_MEDIUM,
-        self::DIFFICULTY_HARD     => self::DIFFICULTY_RANK_HARD,
-        self::DIFFICULTY_FINAL    => self::DIFFICULTY_RANK_FINAL,
+        QuestionDifficulty::BEGINNER->value => self::DIFFICULTY_RANK_BEGINNER,
+        QuestionDifficulty::MEDIUM->value   => self::DIFFICULTY_RANK_MEDIUM,
+        QuestionDifficulty::HARD->value     => self::DIFFICULTY_RANK_HARD,
+        QuestionDifficulty::FINAL->value    => self::DIFFICULTY_RANK_FINAL,
     ];
 
     protected $fillable = [
@@ -63,6 +48,9 @@ final class Question extends Model
         'material_id'     => 'string',
         'sub_material_id' => 'string',
         'created_by'      => 'string',
+        'question_type'   => QuestionType::class,
+        'type'            => ContentCategory::class,
+        'difficulty'      => QuestionDifficulty::class,
     ];
 
     public function material(): BelongsTo

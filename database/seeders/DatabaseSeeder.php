@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             ComprehensiveQuestionsSeeder::class,
             FinalProjectSeeder::class,
             UeqSurveysSeeder::class,
+            MslqQuestionSeeder::class,
         ]);
     }
 }

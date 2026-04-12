@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\Lms\ContentCategory;
+use App\Enums\Lms\LearningStyle;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
@@ -33,8 +35,10 @@ final class SubMaterial extends Model
     ];
 
     protected $casts = [
-        'material_id' => 'string',
-        'order'       => 'integer',
+        'material_id'    => 'string',
+        'order'          => 'integer',
+        'jenis_konten'   => ContentCategory::class,
+        'learning_style' => LearningStyle::class,
     ];
 
     public function material(): BelongsTo

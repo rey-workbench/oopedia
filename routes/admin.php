@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminStudentController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\MaterialController as AdminMaterialController;
+use App\Http\Controllers\Admin\MslqController;
 use App\Http\Controllers\Admin\QuestionController as AdminQuestionController;
 use App\Http\Controllers\Admin\SubMaterialController;
 use App\Http\Controllers\Admin\UeqSurveyController;
@@ -40,6 +41,8 @@ Route::middleware('auth')->group(function () {
 
             Route::get('ueq-survey/export', [UeqSurveyController::class, 'export'])->name('ueq-survey.export');
             Route::resource('ueq-survey', UeqSurveyController::class)->only(['index', 'show']);
+
+            Route::resource('mslq', MslqController::class)->only(['index', 'show']);
         });
 
         Route::get('/media/delete/{id}', [AdminMaterialController::class, 'deleteMedia'])

@@ -2,6 +2,7 @@
 
 namespace App\Contracts\Services;
 
+use App\Enums\Lms\QuestionDifficulty;
 use App\Models\StudentState;
 
 interface FactGatheringServiceInterface
@@ -12,7 +13,7 @@ interface FactGatheringServiceInterface
         bool $usedHint,
         int $score,
         int $timeSpent,
-        string $difficulty,
+        QuestionDifficulty|string $difficulty,
         string $questionId,
         string $materialId,
         ?string $moduleId = null,

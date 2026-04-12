@@ -13,6 +13,9 @@ use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\NextActionResolverServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
 use App\Contracts\Services\QuestionAnswerServiceInterface;
+use App\Enums\Lms\ContentCategory;
+use App\Enums\Lms\QuestionDifficulty;
+use App\Enums\Lms\QuestionType;
 use App\Models\Material;
 use App\Models\Question;
 use App\Models\StudentState;
@@ -30,8 +33,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         public readonly AdaptiveEngineServiceInterface $adaptiveEngine,
         public readonly NextActionResolverServiceInterface $nextActionResolver,
         public readonly GuestProgressServiceInterface $guestProgressService,
-    ) {
-    }
+    ) {}
 
     /** @return array<string, mixed> */
     public function processAdaptiveAttempt(Material $material, Question $question, string $userId, array $data): array
@@ -52,7 +54,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
 
             $this->performanceService->updateLearningStyleFromInteraction(
                 $userId,
-                $question->type ?? Question::TYPE_TEORI,
+                $question->type ?? ContentCategory::TEORI,
                 $timeSpent,
             );
         } else {
@@ -65,7 +67,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             ? $this->gamificationService->calculateCorrectAnswerReward(
                 $studentState->toArray(),
                 $usedHint,
-                $question->difficulty ?? Question::DIFFICULTY_BEGINNER,
+                $question->difficulty ?? QuestionDifficulty::BEGINNER,
                 $timeSpent,
             )
             : $this->gamificationService->processWrongAnswer($studentState->toArray());
@@ -84,11 +86,11 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         $answerId     = null;
         $userResponse = null;
 
-        if ($question->question_type === Question::QUESTION_TYPE_RADIO_BUTTON) {
+        if ($question->question_type === QuestionType::RADIO_BUTTON) {
             $answerId = $data['answer'] ?? null;
-        } elseif ($question->question_type === Question::QUESTION_TYPE_FILL_IN_THE_BLANK) {
+        } elseif ($question->question_type === QuestionType::FILL_IN_THE_BLANK) {
             $userResponse = $data['fill_in_the_blank_answer'] ?? null;
-        } elseif ($question->question_type === Question::QUESTION_TYPE_DRAG_AND_DROP) {
+        } elseif ($question->question_type === QuestionType::DRAG_AND_DROP) {
             $userResponse = $data['drag_and_drop_answers'] ?? null;
         }
 
@@ -103,7 +105,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
                 'is_answered'   => true,
                 'attributes'    => [
                     'score'      => $score,
-                    'difficulty' => $question->difficulty ?? Question::DIFFICULTY_BEGINNER,
+                    'difficulty' => $question->difficulty ?? QuestionDifficulty::BEGINNER,
                     'used_hint'  => $usedHint,
                     'time_spent' => $timeSpent,
                 ],
@@ -129,7 +131,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             usedHint: $usedHint,
             score: $score,
             timeSpent: $timeSpent,
-            difficulty: $question->difficulty ?? Question::DIFFICULTY_BEGINNER,
+            difficulty: $question->difficulty ?? QuestionDifficulty::BEGINNER,
             questionId: $question->id,
             materialId: $material->id,
             moduleId: $material->module_id ?? null,
@@ -140,7 +142,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             'used_hint'   => $usedHint,
             'score'       => $score,
             'time_spent'  => $timeSpent,
-            'difficulty'  => $question->difficulty ?? Question::DIFFICULTY_BEGINNER,
+            'difficulty'  => $question->difficulty ?? QuestionDifficulty::BEGINNER,
             'question_id' => $question->id,
             'material_id' => $material->id,
             'module_id'   => $material->module_id ?? null,

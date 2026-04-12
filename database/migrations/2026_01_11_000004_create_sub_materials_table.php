@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\Lms\ContentCategory;
+use App\Enums\Lms\LearningStyle;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,9 +20,11 @@ return new class extends Migration
             $table->ulid('material_id');
             $table->string('title');
             $table->text('content')->nullable();
-            $table->enum('jenis_konten', ['teori', 'sintaks', 'mixed'])->default('teori')
+            $table->enum('jenis_konten', array_map(fn ($case) => $case->value, ContentCategory::cases()))
+                ->default(ContentCategory::TEORI->value)
                 ->comment('Jenis konten: teori (konsep), sintaks (kode), atau mixed');
-            $table->enum('learning_style', ['visual', 'textual', 'mixed'])->default('mixed')
+            $table->enum('learning_style', array_map(fn ($case) => $case->value, LearningStyle::cases()))
+                ->default(LearningStyle::MIXED->value)
                 ->comment('Learning style suitability: visual, textual, or mixed');
             $table->integer('order')->default(0)->comment('Urutan tampilan dalam material');
             $table->timestamps();

@@ -10,6 +10,8 @@ use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Services\GamificationServiceInterface;
 use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\QuestionAnswerServiceInterface;
+use App\Enums\Lms\QuestionDifficulty;
+use App\Enums\Lms\QuestionType;
 use App\Models\Question;
 use Illuminate\Support\Facades\Log;
 
@@ -21,8 +23,7 @@ final class QuestionAnswerService implements QuestionAnswerServiceInterface
         protected ProgressRepositoryInterface $progressRepo,
         protected GamificationServiceInterface $gamificationService,
         protected GuestProgressServiceInterface $guestProgressService,
-    ) {
-    }
+    ) {}
 
     /** @return array<string, mixed> */
     public function checkAnswer(array $data, string $userId, bool $isGuest): array
@@ -79,22 +80,24 @@ final class QuestionAnswerService implements QuestionAnswerServiceInterface
     protected function getSelectedAnswerText(Question $question, array $data, ?string $default): string
     {
         return match ($question->question_type) {
-            'fill_in_the_blank' => $data['fill_in_the_blank_answer'] ?? '',
-            'drag_and_drop'     => 'Drag & Drop Answer',
-            default             => $this->answerRepo->find($data['answer'])?->answer_text ?? $default ?? 'N/A',
+            QuestionType::FILL_IN_THE_BLANK => $data['fill_in_the_blank_answer'] ?? '',
+            QuestionType::DRAG_AND_DROP     => is_array($data['drag_and_drop_answers'] ?? null)
+                ? implode(', ', $data['drag_and_drop_answers'])
+                : 'Drag & Drop Answer',
+            default => $this->answerRepo->find($data['answer'] ?? '')?->answer_text ?? $default ?? 'N/A',
         };
     }
 
     protected function hasValidAnswer(Question $question, array $data): bool
     {
-        return in_array($question->question_type, ['fill_in_the_blank', 'drag_and_drop'], true)
+        return in_array($question->question_type, [QuestionType::FILL_IN_THE_BLANK, QuestionType::DRAG_AND_DROP], true)
             || isset($data['answer']);
     }
 
     /** @return array{0: int, 1: int, 2: array|null} */
     protected function processGuestAnswer(array $data, Question $question, bool $isCorrect): array
     {
-        $difficulty    = $data['difficulty'] ?? 'beginner';
+        $difficulty    = $data['difficulty'] ?? QuestionDifficulty::BEGINNER->value;
         $baseScore     = $isCorrect ? 80 : 0;
         $guestState    = $this->guestProgressService->getGamificationState();
         $currentXp     = $guestState['xp'];
@@ -156,11 +159,11 @@ final class QuestionAnswerService implements QuestionAnswerServiceInterface
         $answerId     = null;
         $userResponse = null;
 
-        if ($question->question_type === 'multiple_choice' || $question->question_type === 'radio_button') {
+        if ($question->question_type === QuestionType::RADIO_BUTTON) {
             $answerId = $data['answer'] ?? null;
-        } elseif ($question->question_type === 'fill_in_the_blank') {
+        } elseif ($question->question_type === QuestionType::FILL_IN_THE_BLANK) {
             $userResponse = $data['fill_in_the_blank_answer'] ?? null;
-        } elseif ($question->question_type === 'drag_and_drop') {
+        } elseif ($question->question_type === QuestionType::DRAG_AND_DROP) {
             $userResponse = $data['drag_and_drop_answers'] ?? null;
         }
 
@@ -240,7 +243,7 @@ final class QuestionAnswerService implements QuestionAnswerServiceInterface
 
     public function determineCorrectness(Question $question, array $data): bool
     {
-        if ($question->question_type === 'multiple_choice' || $question->question_type === 'radio_button') {
+        if ($question->question_type === QuestionType::RADIO_BUTTON) {
             if (! isset($data['answer'])) {
                 return false;
             }
@@ -252,7 +255,7 @@ final class QuestionAnswerService implements QuestionAnswerServiceInterface
             return $selectedAnswer && $selectedAnswer->is_correct;
         }
 
-        if ($question->question_type === 'fill_in_the_blank') {
+        if ($question->question_type === QuestionType::FILL_IN_THE_BLANK) {
             $answer = trim(strtolower($data['fill_in_the_blank_answer'] ?? ''));
             if (empty($answer)) {
                 return false;
@@ -266,7 +269,7 @@ final class QuestionAnswerService implements QuestionAnswerServiceInterface
                 });
         }
 
-        if ($question->question_type === 'drag_and_drop') {
+        if ($question->question_type === QuestionType::DRAG_AND_DROP) {
             $userAnswersStr = $data['drag_and_drop_answers'] ?? '[]';
             $userAnswers    = is_array($userAnswersStr) ? $userAnswersStr : json_decode($userAnswersStr, true);
 

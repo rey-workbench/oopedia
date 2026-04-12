@@ -767,4 +767,58 @@ export function registerMahasiswaTutorials() {
             },
         ],
     });
+
+    tutorialState.registerSteps({
+        tourId: 'mahasiswa_mslq',
+        steps: [
+            {
+                element: '#mslq-instructions',
+                popover: {
+                    title: 'MSLQ Survey',
+                    description:
+                        'Bantu kami memahami motivasi dan strategi belajarmu dengan mengisi kuesioner ini.',
+                    side: 'bottom',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#mslq-identitas',
+                popover: {
+                    title: 'Identitas Responden',
+                    description: 'Masukkan NIM dan kelas kamu untuk validasi data kuesioner.',
+                    side: 'bottom',
+                    align: 'center',
+                },
+            },
+            {
+                element: 'h4:contains("Bagian A")',
+                popover: {
+                    title: 'Motivasi Belajar',
+                    description:
+                        'Bagian pertama mengukur orientasi tujuan, nilai tugas, dan efikasi diri kamu.',
+                    side: 'top',
+                    align: 'start',
+                },
+            },
+            {
+                element: 'h4:contains("Bagian B")',
+                popover: {
+                    title: 'Strategi Belajar',
+                    description:
+                        'Bagian kedua mengukur bagaimana kamu mengelola waktu, upaya, dan cara berpikirmu.',
+                    side: 'top',
+                    align: 'start',
+                },
+            },
+            {
+                element: 'button[type="submit"]',
+                popover: {
+                    title: 'Simpan Hasil',
+                    description: 'Klik tombol ini jika kamu sudah yakin telah mengisi seluruh 81 butir pertanyaan.',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+        ],
+    });
 }

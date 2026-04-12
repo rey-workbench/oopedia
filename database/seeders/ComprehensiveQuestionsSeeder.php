@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Lms\ContentCategory;
+use App\Enums\Lms\QuestionDifficulty;
+use App\Enums\Lms\QuestionType;
 use App\Models\Answer;
 use App\Models\Question;
 use App\Models\SubMaterial;
@@ -42,14 +45,14 @@ class ComprehensiveQuestionsSeeder extends Seeder
                 for ($i = 1; $i <= 15; $i++) {
                     // Cycle through difficulty levels
                     $isFinal    = $subMaterial->material && $subMaterial->material->is_final_project;
-                    $difficulty = $isFinal ? 'final' : ($i <= 5 ? 'beginner' : ($i <= 10 ? 'medium' : 'hard'));
+                    $difficulty = $isFinal ? QuestionDifficulty::FINAL->value : ($i <= 5 ? QuestionDifficulty::BEGINNER->value : ($i <= 10 ? QuestionDifficulty::MEDIUM->value : QuestionDifficulty::HARD->value));
 
                     // Cycle through question types
-                    $typePool     = ['radio_button', 'fill_in_the_blank', 'drag_and_drop'];
+                    $typePool     = [QuestionType::RADIO_BUTTON->value, QuestionType::FILL_IN_THE_BLANK->value, QuestionType::DRAG_AND_DROP->value];
                     $questionType = $typePool[($i - 1) % 3];
 
                     // Handle mixed content type for question category
-                    $qType = $subMaterial->jenis_konten === 'mixed' ? 'teori' : 'sintaks';
+                    $qType = $subMaterial->jenis_konten === ContentCategory::MIXED ? ContentCategory::TEORI->value : ContentCategory::SINTAKS->value;
 
                     if ($questionType === 'radio_button') {
                         $this->createRadioQuestion(
@@ -118,7 +121,7 @@ class ComprehensiveQuestionsSeeder extends Seeder
             'material_id'     => $materialId,
             'sub_material_id' => $subMaterialId,
             'question_text'   => $text,
-            'question_type'   => 'radio_button',
+            'question_type'   => QuestionType::RADIO_BUTTON->value,
             'type'            => $type,
             'difficulty'      => $difficulty,
             'hint'            => $hint,
@@ -146,7 +149,7 @@ class ComprehensiveQuestionsSeeder extends Seeder
             'material_id'     => $materialId,
             'sub_material_id' => $subMaterialId,
             'question_text'   => $text,
-            'question_type'   => 'fill_in_the_blank',
+            'question_type'   => QuestionType::FILL_IN_THE_BLANK->value,
             'type'            => $type,
             'difficulty'      => $difficulty,
             'hint'            => $hint,
@@ -175,7 +178,7 @@ class ComprehensiveQuestionsSeeder extends Seeder
             'material_id'     => $materialId,
             'sub_material_id' => $subMaterialId,
             'question_text'   => $text,
-            'question_type'   => 'drag_and_drop',
+            'question_type'   => QuestionType::DRAG_AND_DROP->value,
             'type'            => $type,
             'difficulty'      => $difficulty,
             'hint'            => $hint,

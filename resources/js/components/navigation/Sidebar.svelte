@@ -176,6 +176,13 @@
                             active={page.url.startsWith(ROUTES.ADMIN.UEQ.INDEX)}
                             >Survey UEQ</SidebarLink
                         >
+                        <SidebarLink
+                            id="sidebar-admin-mslq"
+                            href={ROUTES.ADMIN.MSLQ.INDEX}
+                            icon={MessageSquareQuote}
+                            active={page.url.startsWith(ROUTES.ADMIN.MSLQ.INDEX)}
+                            >Survey MSLQ</SidebarLink
+                        >
                     {/if}
                 </div>
             </div>
@@ -360,6 +367,13 @@
                             icon={UserRound}
                             active={page.url.startsWith(ROUTES.MAHASISWA.PROFILE)}
                             >Profil Saya</SidebarLink
+                        >
+                        <SidebarLink
+                            id="sidebar-mahasiswa-mslq"
+                            href={ROUTES.MAHASISWA.MSLQ.CREATE}
+                            icon={MessageSquareQuote}
+                            active={page.url.startsWith(ROUTES.MAHASISWA.MSLQ.CREATE)}
+                            >Kuesioner MSLQ</SidebarLink
                         >
                         >
                     </div>

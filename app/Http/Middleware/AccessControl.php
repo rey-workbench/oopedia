@@ -23,7 +23,8 @@ class AccessControl
     ): Response {
         $user            = $request->user();
         $isAuthenticated = $user !== null;
-        $userRole        = $user?->role?->role_name ?? null;
+        $userRole        = $user?->role?->role_name;
+        $userRoleValue   = $userRole instanceof \BackedEnum ? $userRole->value : $userRole;
 
         if (! $isAuthenticated) {
             if ($role !== null && $role !== 'guest') {
@@ -35,8 +36,8 @@ class AccessControl
 
         if ($role !== null && $role !== 'guest') {
             $requiredRoles = explode('|', $role);
-            if (! in_array($userRole, $requiredRoles)) {
-                return Inertia::render('Error', [
+            if (! in_array($userRoleValue, $requiredRoles)) {
+                return Inertia::render('Error/Index', [
                     'status'  => 403,
                     'message' => 'Anda tidak memiliki akses untuk halaman ini',
                 ])->toResponse($request)->setStatusCode(403);
@@ -47,7 +48,7 @@ class AccessControl
             return redirect()->route('admin.pending-approval');
         }
 
-        if ($userRole === 'guest') {
+        if ($userRoleValue === 'guest') {
             $allowedRoutes = [
                 'mahasiswa.materials.index',
                 'mahasiswa.materials.show',

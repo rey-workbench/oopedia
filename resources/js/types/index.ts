@@ -35,6 +35,9 @@ export type {
     QuestionWithAttempt,
     QuizSessionState,
     Certification,
+    MslqResult,
+    MslqQuestion,
+    MslqAnswer,
 } from '@/types/models';
 
 export type {

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\User\RoleName;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -40,7 +41,7 @@ class MahasiswaSeeder extends Seeder
             ],
         ];
 
-        $role = Role::where('role_name', 'mahasiswa')->first();
+        $role = Role::where('role_name', RoleName::MAHASISWA)->first();
 
         foreach ($mahasiswaList as $mahasiswa) {
             User::firstOrCreate(

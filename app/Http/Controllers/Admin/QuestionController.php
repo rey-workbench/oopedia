@@ -7,6 +7,7 @@ use App\Contracts\Services\MaterialServiceInterface;
 use App\Contracts\Services\QuestionServiceInterface;
 use App\DTOs\Question\QuestionCreateDTO;
 use App\DTOs\Question\QuestionUpdateDTO;
+use App\Enums\Lms\QuestionType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Question\StoreQuestionRequest;
 use App\Http\Requests\Question\UpdateQuestionRequest;
@@ -21,8 +22,7 @@ class QuestionController extends Controller
         protected QuestionServiceInterface $questionService,
         protected MaterialServiceInterface $materialService,
         protected MaterialRepositoryInterface $materialRepo,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): Response
     {
@@ -71,7 +71,7 @@ class QuestionController extends Controller
 
         $correctCount = collect($dto->answers)->where('is_correct', '1')->count();
 
-        if (in_array($dto->question_type, ['radio_button', 'fill_in_the_blank']) && $correctCount !== 1) {
+        if (in_array($dto->question_type, [QuestionType::RADIO_BUTTON->value, QuestionType::FILL_IN_THE_BLANK->value]) && $correctCount !== 1) {
             return redirect()->back()->withInput()
                 ->with(
                     'error',
@@ -111,7 +111,7 @@ class QuestionController extends Controller
     {
         $dto = QuestionUpdateDTO::fromRequest($request);
 
-        if (in_array($dto->question_type, ['radio_button', 'fill_in_the_blank'])) {
+        if (in_array($dto->question_type, [QuestionType::RADIO_BUTTON->value, QuestionType::FILL_IN_THE_BLANK->value])) {
             $correctCount = collect($dto->answers)->where('is_correct', '1')->count();
 
             if ($correctCount !== 1) {

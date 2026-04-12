@@ -10,6 +10,7 @@ use App\Contracts\Services\FactGatheringServiceInterface;
 use App\Contracts\Services\GamificationServiceInterface;
 use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\LeaderboardServiceInterface;
+use App\Contracts\Services\Lms\MslqServiceInterface;
 use App\Contracts\Services\MaterialServiceInterface;
 use App\Contracts\Services\MaterialViewServiceInterface;
 use App\Contracts\Services\NextActionResolverServiceInterface;
@@ -33,6 +34,7 @@ use App\Services\Gamification\GamificationService;
 use App\Services\Lms\GuestProgressService;
 use App\Services\Lms\MaterialService;
 use App\Services\Lms\MaterialViewService;
+use App\Services\Lms\MslqService;
 use App\Services\Lms\QuestionAnswerService;
 use App\Services\Lms\QuestionListingService;
 use App\Services\Lms\QuestionService;
@@ -65,5 +67,6 @@ class ServiceServiceProvider extends ServiceProvider
         $this->app->bind(AdaptiveQuizFlowServiceInterface::class, AdaptiveQuizFlowService::class);
         $this->app->bind(FactGatheringServiceInterface::class, FactGatheringService::class);
         $this->app->bind(NextActionResolverServiceInterface::class, NextActionResolverService::class);
+        $this->app->bind(MslqServiceInterface::class, MslqService::class);
     }
 }

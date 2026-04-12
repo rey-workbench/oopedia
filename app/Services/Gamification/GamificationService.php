@@ -6,7 +6,7 @@ namespace App\Services\Gamification;
 
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\GamificationServiceInterface;
-use App\Models\Question;
+use App\Enums\Lms\QuestionDifficulty;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
 use App\Schemas\StudentStateSchema;
 
@@ -20,24 +20,24 @@ final class GamificationService implements GamificationServiceInterface
 {
     public function __construct(
         public readonly ProgressRepositoryInterface $progressRepo,
-    ) {
-    }
+    ) {}
 
     public function calculateCorrectAnswerReward(
         array $state,
         bool $usedHint = false,
-        string $difficulty = Question::DIFFICULTY_BEGINNER,
+        QuestionDifficulty|string $difficulty = QuestionDifficulty::BEGINNER->value,
         int $timeSpent = 0,
     ): array {
-        $baseXp = match ($difficulty) {
-            Question::DIFFICULTY_MEDIUM => StudentStateSchema::XP_REWARD_MEDIUM,
-            Question::DIFFICULTY_HARD   => StudentStateSchema::XP_REWARD_HARD,
-            Question::DIFFICULTY_FINAL  => StudentStateSchema::XP_REWARD_FINAL,
-            default                     => StudentStateSchema::XP_REWARD_BEGINNER,
+        $diffKey = $difficulty instanceof QuestionDifficulty ? $difficulty->value : $difficulty;
+        $baseXp  = match ($diffKey) {
+            QuestionDifficulty::MEDIUM->value  => StudentStateSchema::XP_REWARD_MEDIUM,
+            QuestionDifficulty::HARD->value    => StudentStateSchema::XP_REWARD_HARD,
+            QuestionDifficulty::FINAL->value   => StudentStateSchema::XP_REWARD_FINAL,
+            default                            => StudentStateSchema::XP_REWARD_BEGINNER,
         };
         $xpEarned = $baseXp;
 
-        $allocatedTime = AdaptiveConstants::ALLOCATED_TIME[$difficulty] ?? 60;
+        $allocatedTime = AdaptiveConstants::ALLOCATED_TIME[$diffKey] ?? 60;
         $isFast        = $timeSpent > 0 && ($timeSpent / $allocatedTime * 100) < AdaptiveConstants::TIME_FAST_THRESHOLD;
         if ($isFast) {
             $xpEarned += StudentStateSchema::XP_BONUS_FAST;

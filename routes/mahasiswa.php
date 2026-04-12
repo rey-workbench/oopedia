@@ -4,6 +4,7 @@ use App\Http\Controllers\Mahasiswa\CertificateController as MahasiswaCertificate
 use App\Http\Controllers\Mahasiswa\DashboardController as MahasiswaDashboardController;
 use App\Http\Controllers\Mahasiswa\MaterialController as MahasiswaMaterialController;
 use App\Http\Controllers\Mahasiswa\MaterialQuestionController;
+use App\Http\Controllers\Mahasiswa\MslqController;
 use App\Http\Controllers\Mahasiswa\ProfileController as MahasiswaProfileController;
 use App\Http\Controllers\Mahasiswa\UeqSurveyController as MahasiswaUeqSurveyController;
 use App\Http\Middleware\BlockQuestionParameter;
@@ -24,6 +25,10 @@ Route::middleware(['auth', 'access:mahasiswa'])->name('mahasiswa.')->prefix('mah
 
     // UEQ Survey (resource)
     Route::resource('ueq-survey', MahasiswaUeqSurveyController::class)->only(['create', 'store', 'show']);
+
+    // MSLQ Survey
+    Route::get('mslq/thankyou', [MslqController::class, 'show'])->name('mslq.thankyou');
+    Route::resource('mslq', MslqController::class)->only(['create', 'store']);
 });
 
 // Features accessible by Guests (role 4) and Authenticated Students (role 3)

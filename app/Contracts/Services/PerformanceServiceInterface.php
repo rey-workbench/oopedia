@@ -2,6 +2,8 @@
 
 namespace App\Contracts\Services;
 
+use App\Enums\Lms\ContentCategory;
+use App\Enums\Lms\QuestionDifficulty;
 use App\Models\StudentState;
 
 interface PerformanceServiceInterface
@@ -16,7 +18,7 @@ interface PerformanceServiceInterface
 
     public function setUserLearningStyle(string $userId, string $materialId, string $style): void;
 
-    public function updateLearningStyleFromInteraction(string $userId, string $questionType, int $timeSpent): string;
+    public function updateLearningStyleFromInteraction(string $userId, ContentCategory|string $questionType, int $timeSpent): string;
 
     public function updateStudentPerformance(
         string $userId,
@@ -47,6 +49,6 @@ interface PerformanceServiceInterface
         bool $isCorrect,
         bool $usedHint,
         int $timeSpent,
-        ?string $difficulty = 'beginner',
+        QuestionDifficulty|string|null $difficulty = 'beginner',
     ): int;
 }

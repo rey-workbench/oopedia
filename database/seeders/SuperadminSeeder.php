@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\User\RoleName;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -11,7 +12,7 @@ class SuperadminSeeder extends Seeder
 {
     public function run(): void
     {
-        $role = Role::where('role_name', 'superadmin')->first();
+        $role = Role::where('role_name', RoleName::SUPERADMIN)->first();
 
         // Create superadmin user
         User::firstOrCreate(

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\Lms\LearningStyle;
+use App\Enums\Lms\StudentLevel;
 use App\Schemas\StudentStateSchema;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -20,7 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property array<string,mixed> $adaptive_state
  * @property Carbon|null $last_active_at
  * @property-read int $global_xp
- * @property-read string $current_level
+ * @property-read StudentLevel $current_level
  * @property-read int $current_streak
  * @property-read int $max_streak
  * @property-read int $total_questions_answered
@@ -29,7 +31,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read int $wrong_streak
  * @property-read int $hints_used_count
  * @property-read int $hints_available
- * @property-read string $learning_style
+ * @property-read LearningStyle $learning_style
  * @property-read array<int, mixed> $unlocked_modules
  */
 final class StudentState extends Model
@@ -83,15 +85,18 @@ final class StudentState extends Model
         return $this->gamification_data[StudentStateSchema::KEY_GLOBAL_XP] ?? 0;
     }
 
-    public function getCurrentLevelAttribute(): string
+    public function getCurrentLevelAttribute(): StudentLevel
     {
-        return $this->gamification_data[StudentStateSchema::KEY_CURRENT_LEVEL] ?? StudentStateSchema::LEVEL_PEMULA;
+        $value = $this->gamification_data[StudentStateSchema::KEY_CURRENT_LEVEL] ?? StudentLevel::PEMULA->value;
+
+        return StudentLevel::tryFrom($value) ?? StudentLevel::PEMULA;
     }
 
-    public function setCurrentLevelAttribute(string $value): void
+    public function setCurrentLevelAttribute(StudentLevel|string $value): void
     {
+        $val                                                 = $value instanceof StudentLevel ? $value->value : $value;
         $gamification                                        = $this->gamification_data ?? [];
-        $gamification[StudentStateSchema::KEY_CURRENT_LEVEL] = $value;
+        $gamification[StudentStateSchema::KEY_CURRENT_LEVEL] = $val;
         $this->gamification_data                             = $gamification;
     }
 
@@ -136,9 +141,11 @@ final class StudentState extends Model
             ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE;
     }
 
-    public function getLearningStyleAttribute(): string
+    public function getLearningStyleAttribute(): LearningStyle
     {
-        return $this->learning_profile[StudentStateSchema::KEY_LEARNING_STYLE] ?? StudentStateSchema::STYLE_VISUAL;
+        $value = $this->learning_profile[StudentStateSchema::KEY_LEARNING_STYLE] ?? LearningStyle::VISUAL->value;
+
+        return LearningStyle::tryFrom($value) ?? LearningStyle::VISUAL;
     }
 
     public function getUnlockedModulesAttribute(): array

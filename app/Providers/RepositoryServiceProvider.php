@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Contracts\Repositories\AnswerRepositoryInterface;
 use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\MediaRepositoryInterface;
+use App\Contracts\Repositories\MslqRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Repositories\QuizAttemptRepositoryInterface;
@@ -16,6 +17,7 @@ use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Repositories\AnswerRepository;
 use App\Repositories\MaterialRepository;
 use App\Repositories\MediaRepository;
+use App\Repositories\MslqRepository;
 use App\Repositories\ProgressRepository;
 use App\Repositories\QuestionRepository;
 use App\Repositories\QuizAttemptRepository;
@@ -41,5 +43,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
         $this->app->bind(QuizAttemptRepositoryInterface::class, QuizAttemptRepository::class);
         $this->app->bind(StudentStateRepositoryInterface::class, StudentStateRepository::class);
+        $this->app->bind(MslqRepositoryInterface::class, MslqRepository::class);
     }
 }

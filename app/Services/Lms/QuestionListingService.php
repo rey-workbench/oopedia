@@ -8,6 +8,8 @@ use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Services\QuestionListingServiceInterface;
+use App\Enums\Lms\QuestionDifficulty;
+use App\Enums\Lms\QuestionType;
 use App\Helpers\ProgressHelper;
 use App\Models\Material;
 use App\Models\Question;
@@ -20,8 +22,7 @@ final class QuestionListingService implements QuestionListingServiceInterface
         public readonly MaterialRepositoryInterface $materialRepo,
         public readonly ProgressRepositoryInterface $progressRepo,
         public readonly QuestionRepositoryInterface $questionRepo,
-    ) {
-    }
+    ) {}
 
     public function getQuizData(
         Material $material,
@@ -49,7 +50,7 @@ final class QuestionListingService implements QuestionListingServiceInterface
 
             $answeredArray = $answeredQuestionIds->toArray();
             $questions     = $questions->reject(function ($q) use ($answeredArray, $difficultyOrder, $targetLevel) {
-                $qLevel = $difficultyOrder[$q->difficulty] ?? 1;
+                $qLevel = $difficultyOrder[$q->difficulty->value] ?? 1;
 
                 return ! in_array($q->id, $answeredArray) && $qLevel < $targetLevel;
             });
@@ -165,7 +166,7 @@ final class QuestionListingService implements QuestionListingServiceInterface
         $questions = $material->questions;
 
         if ($difficulty && $difficulty !== 'all') {
-            $dbDifficulty = $difficulty === 'advanced' ? Question::DIFFICULTY_HARD : $difficulty;
+            $dbDifficulty = $difficulty === 'advanced' ? 'hard' : $difficulty;
             $questions    = $questions->where('difficulty', $dbDifficulty);
         }
 
@@ -239,9 +240,9 @@ final class QuestionListingService implements QuestionListingServiceInterface
 
         if ($isGuest) {
             if ($difficulty === 'all') {
-                $beginnerQuestions      = $questions->where('difficulty', Question::DIFFICULTY_BEGINNER)->take(3);
-                $mediumQuestions        = $questions->where('difficulty', Question::DIFFICULTY_MEDIUM)->take(3);
-                $hardQuestions          = $questions->where('difficulty', Question::DIFFICULTY_HARD)->take(3);
+                $beginnerQuestions      = $questions->where('difficulty', QuestionDifficulty::BEGINNER->value)->take(3);
+                $mediumQuestions        = $questions->where('difficulty', QuestionDifficulty::MEDIUM->value)->take(3);
+                $hardQuestions          = $questions->where('difficulty', QuestionDifficulty::HARD->value)->take(3);
                 $questions              = $beginnerQuestions->concat($mediumQuestions)->concat($hardQuestions);
                 $totalFilteredQuestions = 9;
             } else {
@@ -267,7 +268,7 @@ final class QuestionListingService implements QuestionListingServiceInterface
         })->first();
 
         $isNotFillInTheBlank = $currentQuestion instanceof Question &&
-            $currentQuestion->question_type !== Question::QUESTION_TYPE_FILL_IN_THE_BLANK;
+            $currentQuestion->question_type !== QuestionType::FILL_IN_THE_BLANK;
 
         if ($isNotFillInTheBlank) {
             if (! $currentQuestion->relationLoaded('answers')) {

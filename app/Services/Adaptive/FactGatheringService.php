@@ -7,8 +7,9 @@ namespace App\Services\Adaptive;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Services\FactGatheringServiceInterface;
+use App\Enums\Lms\ContentCategory;
+use App\Enums\Lms\QuestionDifficulty;
 use App\Models\Material;
-use App\Models\Question;
 use App\Models\StudentState;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
 use App\Schemas\StudentStateSchema;
@@ -18,8 +19,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
     public function __construct(
         public readonly ProgressRepositoryInterface $progressRepo,
         public readonly QuestionRepositoryInterface $questionRepo,
-    ) {
-    }
+    ) {}
 
     public function gatherFacts(
         StudentState $studentState,
@@ -27,7 +27,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
         bool $usedHint,
         int $score,
         int $timeSpent,
-        string $difficulty,
+        QuestionDifficulty|string $difficulty,
         string $questionId,
         string $materialId,
         ?string $moduleId = null,
@@ -46,13 +46,13 @@ final class FactGatheringService implements FactGatheringServiceInterface
             $facts[] = AdaptiveConstants::FACT_HINT_USED;
         }
 
-        if ($moduleId && $difficulty !== Question::DIFFICULTY_FINAL) {
+        if ($moduleId && $difficulty !== QuestionDifficulty::FINAL && $difficulty !== QuestionDifficulty::FINAL->value) {
             $facts[] = $this->getModuleFact($moduleId);
         }
 
         $facts[] = $this->getDifficultyFact($difficulty);
 
-        if ($difficulty === Question::DIFFICULTY_FINAL) {
+        if ($difficulty === QuestionDifficulty::FINAL || $difficulty === QuestionDifficulty::FINAL->value) {
             $facts[] = AdaptiveConstants::FACT_IS_FINAL_PROJECT;
         }
 
@@ -88,9 +88,10 @@ final class FactGatheringService implements FactGatheringServiceInterface
         return [AdaptiveConstants::FACT_SCORE_MASTERY];
     }
 
-    protected function getTimeFacts(int $timeSpent, string $difficulty = Question::DIFFICULTY_BEGINNER): array
+    protected function getTimeFacts(int $timeSpent, QuestionDifficulty|string $difficulty = QuestionDifficulty::BEGINNER): array
     {
-        $allocatedTime = AdaptiveConstants::ALLOCATED_TIME[$difficulty] ?? 60;
+        $diffKey       = $difficulty instanceof QuestionDifficulty ? $difficulty->value : $difficulty;
+        $allocatedTime = AdaptiveConstants::ALLOCATED_TIME[$diffKey] ?? 60;
         $percentage    = ($timeSpent / $allocatedTime) * 100;
 
         return $percentage < AdaptiveConstants::TIME_FAST_THRESHOLD
@@ -122,9 +123,9 @@ final class FactGatheringService implements FactGatheringServiceInterface
         }
 
         $question     = $this->questionRepo->find($questionId);
-        $questionType = $question?->type ?? 'teori';
+        $questionType = $question?->type;
 
-        return $questionType === Question::TYPE_SINTAKS
+        return $questionType === ContentCategory::SINTAKS
             ? [AdaptiveConstants::FACT_ERROR_SYNTAX]
             : [AdaptiveConstants::FACT_ERROR_LOGIC];
     }
@@ -134,16 +135,17 @@ final class FactGatheringService implements FactGatheringServiceInterface
         return AdaptiveConstants::FACT_IN_MODULE;
     }
 
-    protected function getDifficultyFact(string $difficulty): string
+    protected function getDifficultyFact(QuestionDifficulty|string $difficulty): string
     {
+        $diffKey       = $difficulty instanceof QuestionDifficulty ? $difficulty->value : $difficulty;
         $difficultyMap = [
-            Question::DIFFICULTY_BEGINNER => AdaptiveConstants::FACT_DIFF_BEGINNER,
-            Question::DIFFICULTY_MEDIUM   => AdaptiveConstants::FACT_DIFF_MEDIUM,
-            Question::DIFFICULTY_HARD     => AdaptiveConstants::FACT_DIFF_HARD,
-            Question::DIFFICULTY_FINAL    => AdaptiveConstants::FACT_DIFF_HARD,
+            QuestionDifficulty::BEGINNER->value => AdaptiveConstants::FACT_DIFF_BEGINNER,
+            QuestionDifficulty::MEDIUM->value   => AdaptiveConstants::FACT_DIFF_MEDIUM,
+            QuestionDifficulty::HARD->value     => AdaptiveConstants::FACT_DIFF_HARD,
+            QuestionDifficulty::FINAL->value    => AdaptiveConstants::FACT_DIFF_HARD,
         ];
 
-        return $difficultyMap[$difficulty] ?? AdaptiveConstants::FACT_DIFF_BEGINNER;
+        return $difficultyMap[$diffKey] ?? AdaptiveConstants::FACT_DIFF_BEGINNER;
     }
 
     protected function getUnlockStatusFacts(StudentState $state, string $materialId): array
@@ -178,7 +180,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
         return $consecutiveFails >= StudentStateSchema::THRESHOLD_PERSISTENT_FAIL;
     }
 
-    protected function hasSatisfactoryProgress(string $userId, string $materialId, string $difficulty = 'all'): bool
+    protected function hasSatisfactoryProgress(string $userId, string $materialId, QuestionDifficulty|string $difficulty = 'all'): bool
     {
         $attemptedCount = $this->progressRepo->getAttemptedQuestionIds($userId, $materialId)->count();
         $totalQuestions = $this->questionRepo->countByMaterial($materialId);

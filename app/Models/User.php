@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\User\RoleName;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -57,44 +58,40 @@ final class User extends Authenticatable
         return $this->hasOne(StudentState::class);
     }
 
-    public function hasRole(string $role): bool
+    public function hasRole(RoleName|string $role): bool
     {
-        if ($this->role?->role_name) {
-            return $this->role->role_name === $role;
+        $roleName = $role instanceof RoleName ? $role->value : $role;
+
+        $currentRole = $this->role?->role_name;
+
+        if ($currentRole instanceof RoleName) {
+            return $currentRole->value === $roleName;
         }
 
-        if (! is_numeric($this->role_id)) {
-            return false;
-        }
-
-        return match ((int) $this->role_id) {
-            1       => $role === Role::ROLE_SUPERADMIN,
-            2       => $role === Role::ROLE_DOSEN,
-            3       => $role === Role::ROLE_MAHASISWA,
-            4       => $role === Role::ROLE_GUEST,
-            default => false,
-        };
+        return (string) $currentRole === $roleName;
     }
 
     public function isSuperAdmin(): bool
     {
-        return $this->hasRole(Role::ROLE_SUPERADMIN);
+        return $this->hasRole(RoleName::SUPERADMIN);
     }
 
     public function isDosen(): bool
     {
-        return $this->hasRole(Role::ROLE_DOSEN);
+        return $this->hasRole(RoleName::DOSEN);
     }
 
     public function isMahasiswa(): bool
     {
-        return $this->hasRole(Role::ROLE_MAHASISWA);
+        return $this->hasRole(RoleName::MAHASISWA);
     }
 
-    public function scopeWhereRole(Builder $query, string $roleName): Builder
+    public function scopeWhereRole(Builder $query, RoleName|string $roleName): Builder
     {
-        return $query->whereHas('role', function ($q) use ($roleName) {
-            $q->where('role_name', $roleName);
+        $val = $roleName instanceof RoleName ? $roleName->value : $roleName;
+
+        return $query->whereHas('role', function ($q) use ($val) {
+            $q->where('role_name', $val);
         });
     }
 }

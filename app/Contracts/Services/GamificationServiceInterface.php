@@ -2,12 +2,14 @@
 
 namespace App\Contracts\Services;
 
+use App\Enums\Lms\QuestionDifficulty;
+
 interface GamificationServiceInterface
 {
     public function calculateCorrectAnswerReward(
         array $state,
         bool $usedHint = false,
-        string $difficulty = 'beginner',
+        QuestionDifficulty|string $difficulty = 'beginner',
         int $timeSpent = 0,
     ): array;
 

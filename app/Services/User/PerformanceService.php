@@ -8,8 +8,9 @@ use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\GamificationServiceInterface;
 use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
+use App\Enums\Lms\ContentCategory;
+use App\Enums\Lms\QuestionDifficulty;
 use App\Models\Material;
-use App\Models\Question;
 use App\Models\StudentState;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
 use App\Schemas\StudentStateSchema;
@@ -20,8 +21,7 @@ final class PerformanceService implements PerformanceServiceInterface
         public readonly ProgressRepositoryInterface $progressRepo,
         public readonly GamificationServiceInterface $gamificationService,
         public readonly GuestProgressServiceInterface $guestProgressService,
-    ) {
-    }
+    ) {}
 
     public function getStudentState(string $userId): StudentState
     {
@@ -76,8 +76,9 @@ final class PerformanceService implements PerformanceServiceInterface
         $state->save();
     }
 
-    public function updateLearningStyleFromInteraction(string $userId, string $questionType, int $timeSpent): string
+    public function updateLearningStyleFromInteraction(string $userId, ContentCategory|string $questionType, int $timeSpent): string
     {
+        $typeKey = $questionType instanceof ContentCategory ? $questionType->value : $questionType;
         $state   = $this->progressRepo->getOrCreateStudentState($userId);
         $profile = $state->learning_profile ?? [];
 
@@ -88,7 +89,7 @@ final class PerformanceService implements PerformanceServiceInterface
             ];
         }
 
-        $category = $questionType === Question::TYPE_SINTAKS
+        $category = $typeKey === ContentCategory::SINTAKS->value
             ? StudentStateSchema::STYLE_VISUAL
             : StudentStateSchema::STYLE_TEXTUAL;
         $profile[StudentStateSchema::KEY_TIME_DISTRIBUTION][$category] += $timeSpent;
@@ -263,8 +264,9 @@ final class PerformanceService implements PerformanceServiceInterface
         bool $isCorrect,
         bool $usedHint,
         int $timeSpent,
-        ?string $difficulty = Question::DIFFICULTY_BEGINNER,
+        QuestionDifficulty|string|null $difficulty = 'beginner',
     ): int {
+        $diffKey = $difficulty instanceof QuestionDifficulty ? $difficulty->value : ($difficulty ?? 'beginner');
         if (! $isCorrect) {
             return 0;
         }
@@ -272,9 +274,8 @@ final class PerformanceService implements PerformanceServiceInterface
         $rewards = StudentStateSchema::SCORE_REWARDS;
         $score   = $rewards['base'];
 
-        $score += $rewards['difficulty_bonus'][$difficulty] ?? 0;
-
-        $allocatedTime = AdaptiveConstants::ALLOCATED_TIME[$difficulty] ?? 60;
+        $score += $rewards['difficulty_bonus'][$diffKey]             ?? 0;
+        $allocatedTime = AdaptiveConstants::ALLOCATED_TIME[$diffKey] ?? 60;
         if ($timeSpent > 0 && $timeSpent < ($allocatedTime / 2)) {
             $score += $rewards['time_bonus'];
         }

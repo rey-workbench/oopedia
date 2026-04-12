@@ -58,6 +58,11 @@ export const ROUTES = {
             SHOW: (id: string | number) => `/admin/ueq-survey/${id}`,
             EXPORT: '/admin/ueq-survey/export',
         },
+        MSLQ: {
+            INDEX: '/admin/mslq',
+            SHOW: (id: string | number) => `/admin/mslq/${id}`,
+            EXPORT: '/admin/mslq/export',
+        },
     },
     MAHASISWA: {
         DASHBOARD: '/mahasiswa/dashboard',
@@ -94,6 +99,12 @@ export const ROUTES = {
         UEQ: {
             CREATE: '/mahasiswa/ueq/create',
             THANK_YOU: '/mahasiswa/ueq/thank-you',
+        },
+        MSLQ: {
+            INDEX: '/mahasiswa/mslq',
+            CREATE: '/mahasiswa/mslq/create',
+            STORE: '/mahasiswa/mslq',
+            THANK_YOU: '/mahasiswa/mslq/thankyou',
         },
     },
     AUTH: {

@@ -4,7 +4,7 @@ namespace Tests\Feature\Unit\Services\Adaptive;
 
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\QuestionRepositoryInterface;
-use App\Models\Question;
+use App\Enums\Lms\QuestionDifficulty;
 use App\Models\StudentState;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
 use App\Services\Adaptive\FactGatheringService;
@@ -28,7 +28,7 @@ class FactGatheringServiceTest extends TestCase
             usedHint: false,
             score: 95,
             timeSpent: 20,
-            difficulty: Question::DIFFICULTY_MEDIUM,
+            difficulty: QuestionDifficulty::MEDIUM->value,
             questionId: 'question-1',
             materialId: 'material-1',
             moduleId: 'module-1',
@@ -53,7 +53,7 @@ class FactGatheringServiceTest extends TestCase
             usedHint: false,
             score: 95,
             timeSpent: 20,
-            difficulty: Question::DIFFICULTY_MEDIUM,
+            difficulty: QuestionDifficulty::MEDIUM->value,
             questionId: 'question-2',
             materialId: 'material-2',
             moduleId: 'module-2',

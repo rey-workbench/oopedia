@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Enums\Lms\QuestionDifficulty;
 use Illuminate\Support\Collection;
 
 class ProgressHelper
@@ -24,8 +25,9 @@ class ProgressHelper
 
         foreach ($materials as $material) {
             foreach ($material->questions as $question) {
-                if (isset($totals[$question->difficulty])) {
-                    $totals[$question->difficulty]++;
+                $difficulty = $question->difficulty instanceof QuestionDifficulty ? $question->difficulty->value : $question->difficulty;
+                if (isset($totals[$difficulty])) {
+                    $totals[$difficulty]++;
                 }
             }
         }
@@ -42,9 +44,9 @@ class ProgressHelper
     {
         $guestLimit = 3;
 
-        $beginner = $material->questions->where('difficulty', 'beginner')->count();
-        $medium   = $material->questions->where('difficulty', 'medium')->count();
-        $hard     = $material->questions->where('difficulty', 'hard')->count();
+        $beginner = $material->questions->filter(fn ($q) => ($q->difficulty instanceof QuestionDifficulty ? $q->difficulty->value : $q->difficulty) === 'beginner')->count();
+        $medium   = $material->questions->filter(fn ($q) => ($q->difficulty instanceof QuestionDifficulty ? $q->difficulty->value : $q->difficulty) === 'medium')->count();
+        $hard     = $material->questions->filter(fn ($q) => ($q->difficulty instanceof QuestionDifficulty ? $q->difficulty->value : $q->difficulty) === 'hard')->count();
 
         $configuredBeginner = $isGuest ? min($beginner, $guestLimit) : $beginner;
         $configuredMedium   = $isGuest ? min($medium, $guestLimit) : $medium;

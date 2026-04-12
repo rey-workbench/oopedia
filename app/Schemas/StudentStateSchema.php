@@ -2,8 +2,6 @@
 
 namespace App\Schemas;
 
-use App\Models\Question;
-
 /**
  * Standardized JSON schema for StudentState model.
  * Ensures consistent key names across the entire application.
@@ -117,10 +115,10 @@ final class StudentStateSchema
     ];
 
     public const array DIFFICULTIES = [
-        Question::DIFFICULTY_BEGINNER,
-        Question::DIFFICULTY_MEDIUM,
-        Question::DIFFICULTY_HARD,
-        Question::DIFFICULTY_FINAL,
+        'beginner',
+        'medium',
+        'hard',
+        'final',
     ];
 
     public static function getDefaultGamification(): array
@@ -157,10 +155,10 @@ final class StudentStateSchema
 
     public const array XP_REWARDS = [
         'base' => [
-            Question::DIFFICULTY_BEGINNER => self::XP_REWARD_BEGINNER,
-            Question::DIFFICULTY_MEDIUM   => self::XP_REWARD_MEDIUM,
-            Question::DIFFICULTY_HARD     => self::XP_REWARD_HARD,
-            Question::DIFFICULTY_FINAL    => self::XP_REWARD_FINAL,
+            'beginner' => self::XP_REWARD_BEGINNER,
+            'medium'   => self::XP_REWARD_MEDIUM,
+            'hard'     => self::XP_REWARD_HARD,
+            'final'    => self::XP_REWARD_FINAL,
         ],
         'fast_bonus'   => self::XP_BONUS_FAST,
         'hint_penalty' => self::XP_PENALTY_HINT,
@@ -181,9 +179,9 @@ final class StudentStateSchema
     public const array SCORE_REWARDS = [
         'base'             => self::SCORE_BASE_REWARD,
         'difficulty_bonus' => [
-            Question::DIFFICULTY_HARD   => self::SCORE_BONUS_HARD,
-            Question::DIFFICULTY_MEDIUM => self::SCORE_BONUS_MEDIUM,
-            Question::DIFFICULTY_FINAL  => self::SCORE_BONUS_FINAL,
+            'hard'   => self::SCORE_BONUS_HARD,
+            'medium' => self::SCORE_BONUS_MEDIUM,
+            'final'  => self::SCORE_BONUS_FINAL,
         ],
         'time_bonus'   => self::SCORE_BONUS_TIME,
         'hint_penalty' => self::SCORE_PENALTY_HINT,

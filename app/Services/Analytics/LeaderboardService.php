@@ -7,6 +7,7 @@ namespace App\Services\Analytics;
 use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\LeaderboardServiceInterface;
+use App\Enums\Lms\QuestionDifficulty;
 use App\Helpers\ProgressHelper;
 use Illuminate\Support\Facades\Cache;
 
@@ -15,8 +16,7 @@ final class LeaderboardService implements LeaderboardServiceInterface
     public function __construct(
         public readonly MaterialRepositoryInterface $materialRepo,
         public readonly ProgressRepositoryInterface $progressRepo,
-    ) {
-    }
+    ) {}
 
     /** @return array<string, mixed> */
     public function getLeaderboardData(string $currentUserId): array
@@ -61,7 +61,8 @@ final class LeaderboardService implements LeaderboardServiceInterface
                 $userScores[$userId] = 0;
             }
 
-            $basePoin = match ($answer->difficulty) {
+            $difficulty = $answer->difficulty instanceof QuestionDifficulty ? $answer->difficulty->value : $answer->difficulty;
+            $basePoin   = match ($difficulty) {
                 'beginner' => 5,
                 'medium'   => 10,
                 'hard'     => 15,
