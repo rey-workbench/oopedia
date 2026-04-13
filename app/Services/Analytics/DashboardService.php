@@ -184,7 +184,6 @@ final class DashboardService implements DashboardServiceInterface
             $cacheKey,
             300,
             function () use ($userId, $isGuest) {
-                $progressStats    = $this->progressRepo->getDetailedUserProgress($userId);
                 $materialProgress = $this->progressRepo->getUserMaterialProgress($userId);
 
                 $materials = $this->materialRepo->getAllWithQuestions()->filter(
