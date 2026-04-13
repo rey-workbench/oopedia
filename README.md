@@ -23,17 +23,18 @@ Bagian ini menjelaskan alur lengkap mesin adaptif Oopedia berbasis rule (forward
 
 ### 1. Alur End-to-End Saat Siswa Menjawab Soal
 
-1. Jawaban diproses oleh `AdaptiveQuizFlowService::processAdaptiveAttempt()`.
-2. Sistem menghitung:
+1. Jawaban diproses melalui entrypoint terpusat `AdaptiveQuizFlowService::processAdaptiveAttemptByIds()`.
+2. Service memvalidasi `materialId` dan `questionId`, lalu mendelegasikan eksekusi ke `processAdaptiveAttempt()`.
+3. Sistem menghitung:
      - Kebenaran jawaban (`is_correct`)
      - Waktu pengerjaan (`time_spent`)
      - Penggunaan hint (`used_hint`)
      - Skor akhir
-3. Sistem memperbarui performa/gamifikasi, lalu menyimpan attempt (DB untuk user login, cookie untuk guest).
-4. `FactGatheringService` membentuk fakta (`Gxx`) dari kondisi aktual siswa.
-5. `AdaptiveEngineService` menjalankan evaluasi rule sesuai urutan prioritas.
-6. Rule pertama yang cocok akan dijalankan (`first match policy`) dan evaluasi berhenti.
-7. Hasil rule diubah menjadi aksi navigasi konkret oleh `NextActionResolverService` (misalnya lanjut soal, review materi, loncat materi, atau klaim sertifikat).
+4. Sistem memperbarui performa/gamifikasi, lalu menyimpan attempt (DB untuk user login, cookie untuk guest).
+5. `FactGatheringService` membentuk fakta (`Gxx`) dari kondisi aktual siswa.
+6. `AdaptiveEngineService` menjalankan evaluasi rule sesuai urutan prioritas.
+7. Rule pertama yang cocok akan dijalankan (`first match policy`) dan evaluasi berhenti.
+8. Hasil rule diubah menjadi aksi navigasi konkret oleh `NextActionResolverService` (misalnya lanjut soal, review materi, loncat materi, atau klaim sertifikat).
 
 ### 2. Fakta (Input Ke Mesin Rule)
 
@@ -90,13 +91,14 @@ Daftar lengkap H-Code (Aksi) juga sebagai referensi:
 | H15 | ACTION_PERSISTENT_TEXTUAL_NET | Aktif | Safety net textual |
 | H16 | ACTION_ACCELERATED_MATERIAL_PROMOTION | Aktif | Percepatan antar materi |
 
-Catatan: selain H-Code, engine juga memakai action operasional non-H seperti `NEXT_QUESTION`, `NEXT_MATERIAL`, `STUDY_VISUAL`, dan `ISSUE_CERTIFICATE` pada tahap resolusi navigasi.
+Catatan: selain H-Code, engine juga memakai action operasional non-H seperti `NEXT_QUESTION`, `NEXT_MATERIAL`, `FINISH_MATERIAL`, `ISSUE_CERTIFICATE`, `REDUCE_DIFFICULTY`, `INCREASE_DIFFICULTY`, `STUDY_SYNTAX`, `STUDY_THEORY`, `STUDY_MIXED`, `STUDY_VISUAL`, dan `STUDY_TEXTUAL` pada tahap resolusi navigasi.
 
 ### 3. Aturan Evaluasi (Core Engine Behavior)
 
 Mesin rule menggunakan prinsip berikut:
 
 - Rule diambil dari `RuleRegistry` dan diurutkan menaik berdasarkan `priority` (angka kecil dieksekusi lebih dulu).
+- Jika ada `priority` yang sama, urutan ditentukan lagi berdasarkan `Rule ID` agar hasil evaluasi tetap deterministik.
 - Evaluasi bersifat `first match`: hanya rule pertama yang cocok yang dijalankan.
 - Jika tidak ada rule cocok, fallback ke aksi default: `NEXT_QUESTION`.
 - Ada guard anti-loop percepatan dalam materi yang sama:
@@ -130,7 +132,7 @@ Ada dua cara membaca urutan rule:
 | 27       | RULE_07  | Critical Backtracking                    | ACTION_CRITICAL_BACKTRACKING |
 | 30       | RULE_08  | Module Graduation                        | ACTION_MODULE_GRADUATION |
 | 35       | RULE_16  | Mastery Medium                           | ACTION_STANDARD_PROMOTION |
-| 35       | RULE_20  | Accelerated Material Promotion           | ACTION_ACCELERATED_MATERIAL_PROMOTION |
+| 36       | RULE_20  | Accelerated Material Promotion           | ACTION_ACCELERATED_MATERIAL_PROMOTION |
 | 40       | RULE_06  | Accelerated Jump                         | ACTION_ACCELERATED_JUMP |
 | 48       | RULE_17  | Remedial Independent                     | ACTION_LOGIC_RECOVERY |
 | 50       | RULE_05  | Standard Promotion                       | ACTION_STANDARD_PROMOTION |
@@ -158,7 +160,7 @@ Ada dua cara membaca urutan rule:
 | RULE_17  | 48       | Remedial Independent                     | ACTION_LOGIC_RECOVERY |
 | RULE_18  | 3        | Final Project Visual Persistent Fail     | ACTION_VISUAL_PROJECT_REVISION |
 | RULE_19  | 3        | Final Project Textual Persistent Fail    | ACTION_TEXTUAL_PROJECT_REVISION |
-| RULE_20  | 35       | Accelerated Material Promotion           | ACTION_ACCELERATED_MATERIAL_PROMOTION |
+| RULE_20  | 36       | Accelerated Material Promotion           | ACTION_ACCELERATED_MATERIAL_PROMOTION |
 
 ### 5. Bagaimana Sistem Bertindak Dalam Berbagai Kondisi
 
@@ -213,6 +215,7 @@ Berikut ringkasan perilaku sistem pada kondisi-kondisi penting:
     - Ini bukan bug kritis, namun bisa menjadi kandidat pengembangan rule berikutnya.
 - Rule order sangat menentukan hasil karena engine memakai `first match`.
     - Saat menambah rule baru, selalu pertimbangkan efek prioritas terhadap rule lama.
+    - Update terbaru memisahkan prioritas `RULE_20` ke 36 (sebelumnya setara dengan `RULE_16`) agar konflik evaluasi antar rule percepatan berkurang.
 
 Untuk referensi teknis lebih detail (narasi panjang per kategori), lihat dokumen: `docs/rule-based-adaptive-lengkap.md`.
 
