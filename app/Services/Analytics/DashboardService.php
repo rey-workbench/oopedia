@@ -8,6 +8,7 @@ use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Services\DashboardServiceInterface;
+use App\Enums\Lms\QuestionDifficulty;
 use App\Helpers\ProgressHelper;
 use App\Models\Material;
 use App\Models\StudentState;
@@ -208,9 +209,9 @@ final class DashboardService implements DashboardServiceInterface
                 return $materials->map(
                     function ($material) use ($isGuest) {
                         $counts        = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest);
-                        $beginnerTotal = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'beginner');
-                        $mediumTotal   = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'medium');
-                        $hardTotal     = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'hard');
+                        $beginnerTotal = $this->questionRepo->countByMaterialAndDifficulty($material->id, QuestionDifficulty::BEGINNER);
+                        $mediumTotal   = $this->questionRepo->countByMaterialAndDifficulty($material->id, QuestionDifficulty::MEDIUM);
+                        $hardTotal     = $this->questionRepo->countByMaterialAndDifficulty($material->id, QuestionDifficulty::HARD);
 
                         return [
                             'material' => $material,
@@ -251,9 +252,9 @@ final class DashboardService implements DashboardServiceInterface
         return $materials->map(function ($material) use ($progressStats, $isGuest) {
             $counts = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest);
 
-            $beginnerTotal = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'beginner');
-            $mediumTotal   = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'medium');
-            $hardTotal     = $this->questionRepo->countByMaterialAndDifficulty($material->id, 'hard');
+            $beginnerTotal = $this->questionRepo->countByMaterialAndDifficulty($material->id, QuestionDifficulty::BEGINNER);
+            $mediumTotal   = $this->questionRepo->countByMaterialAndDifficulty($material->id, QuestionDifficulty::MEDIUM);
+            $hardTotal     = $this->questionRepo->countByMaterialAndDifficulty($material->id, QuestionDifficulty::HARD);
 
             $beginnerStats = $progressStats->where('material_id', $material->id)
                 ->where('difficulty', 'beginner')
