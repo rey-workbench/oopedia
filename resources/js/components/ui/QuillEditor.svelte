@@ -26,9 +26,14 @@
 
     let editorContainer: HTMLElement;
     let quillInstance: import('quill').default | null = null;
+    let csrfToken = $state('');
 
     onMount(async () => {
         if (typeof window === 'undefined') return;
+
+        // Get CSRF token
+        csrfToken =
+            document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
 
         try {
             const Quill = (await import('quill')).default;
@@ -38,13 +43,18 @@
                 placeholder: placeholder,
                 modules: {
                     syntax: { hljs },
-                    toolbar: [
-                        [{ header: [1, 2, 3, false] }],
-                        ['bold', 'italic', 'underline', 'strike'],
-                        [{ list: 'ordered' }, { list: 'bullet' }],
-                        ['link', 'image', 'code-block'],
-                        ['clean'],
-                    ],
+                    toolbar: {
+                        container: [
+                            [{ header: [1, 2, 3, false] }],
+                            ['bold', 'italic', 'underline', 'strike'],
+                            [{ list: 'ordered' }, { list: 'bullet' }],
+                            ['link', 'image', 'code-block'],
+                            ['clean'],
+                        ],
+                        handlers: {
+                            image: imageHandler,
+                        },
+                    },
                 },
             });
 
@@ -61,6 +71,48 @@
             console.error('Failed to load Quill:', e);
         }
     });
+
+    async function imageHandler() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+
+        input.onchange = async () => {
+            if (!input.files || input.files.length === 0 || !quillInstance) return;
+
+            const file = input.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/admin/media/upload', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.url) {
+                    const range = quillInstance.getSelection();
+                    quillInstance.insertEmbed(range?.index || 0, 'image', data.url);
+                } else {
+                    console.error('Upload failed:', data.message);
+                    alert('Gagal mengupload gambar: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Image upload error:', error);
+                alert('Gagal mengupload gambar');
+            }
+        };
+
+        input.click();
+    }
 </script>
 
 <style>

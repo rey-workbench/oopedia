@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminStudentController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\MaterialController as AdminMaterialController;
+use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\MslqController;
 use App\Http\Controllers\Admin\QuestionController as AdminQuestionController;
 use App\Http\Controllers\Admin\SubMaterialController;
@@ -16,6 +17,9 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware(['access:superadmin|dosen,true'])->name('admin.')->prefix('admin')->group(function () {
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+        Route::post('media/upload', [MediaController::class, 'upload'])->name('media.upload');
+        Route::delete('media', [MediaController::class, 'delete'])->name('media.delete');
 
         Route::resource('materials', AdminMaterialController::class);
         Route::get('materials/{material}/submaterials/json', [SubMaterialController::class, 'getJson'])->name('materials.submaterials.json');
