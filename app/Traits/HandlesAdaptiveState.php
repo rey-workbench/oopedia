@@ -43,9 +43,7 @@ trait HandlesAdaptiveState
 
         $this->handleMaterialChange($studentState, $adaptiveState, $materialId);
 
-        $targetDifficulty = is_string($adaptiveState['target_difficulty'] ?? null)
-            ? QuestionDifficulty::tryFrom($adaptiveState['target_difficulty'])
-            : $adaptiveState['target_difficulty'];
+        $targetDifficulty = QuestionDifficulty::tryFrom($adaptiveState['target_difficulty'] ?? null);
 
         return [
             'gamification'     => $studentState->gamification_data,

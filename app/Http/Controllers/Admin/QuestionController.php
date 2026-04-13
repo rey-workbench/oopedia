@@ -29,10 +29,9 @@ final class QuestionController extends Controller
 
     public function index(Request $request): Response
     {
-        $search           = $request->input('search');
-        $difficultyString = $request->input('difficulty');
-        $difficulty       = $difficultyString ? QuestionDifficulty::tryFrom($difficultyString) : null;
-        $materialId       = $request->input('material');
+        $search     = $request->input('search');
+        $difficulty = QuestionDifficulty::tryFrom($request->input('difficulty')) ?? null;
+        $materialId = $request->input('material');
 
         $material  = $materialId ? $this->materialRepo->find((string) $materialId) : null;
         $questions = $this->questionService->getFilteredQuestions($search, $difficulty, (string) $materialId);
@@ -41,7 +40,7 @@ final class QuestionController extends Controller
             'questions'  => $questions,
             'material'   => $material,
             'search'     => $search,
-            'difficulty' => $difficultyString,
+            'difficulty' => $difficulty->value,
         ]);
     }
 

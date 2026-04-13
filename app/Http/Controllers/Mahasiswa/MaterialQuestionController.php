@@ -136,8 +136,7 @@ final class MaterialQuestionController extends Controller
     {
         $material         = $this->materialService->getMaterialWithQuestionsAndAnswers((string) $materialId);
         $materials        = $this->materialService->getAllOrdered();
-        $difficultyString = $request->validated('difficulty');
-        $difficulty       = $difficultyString ? QuestionDifficulty::tryFrom($difficultyString) : null;
+        $difficulty       = QuestionDifficulty::tryFrom($request->validated('difficulty')) ?? null;
 
         $isGuest       = $this->isGuest();
 
