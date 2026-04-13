@@ -2,21 +2,18 @@ import { registerAdminTutorials } from './admin';
 import { registerMahasiswaTutorials } from './mahasiswa';
 import { registerGlobalTutorials } from './global';
 import { registerAuthTutorials } from './auth';
-import { registerLandingTutorials } from './landing';
 
 export {
     registerAdminTutorials,
     registerMahasiswaTutorials,
     registerGlobalTutorials,
     registerAuthTutorials,
-    registerLandingTutorials,
 };
 
 export function initTutorials() {
     registerAdminTutorials();
     registerMahasiswaTutorials();
     registerAuthTutorials();
-    registerLandingTutorials();
     registerGlobalTutorials();
 }
 
