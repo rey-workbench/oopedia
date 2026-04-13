@@ -1,11 +1,11 @@
 <script lang="ts">
     import App from '@/layouts/App.svelte';
     import Input from '@/components/ui/Input.svelte';
+    import Button from '@/components/ui/Button.svelte';
     import { Link } from '@inertiajs/svelte';
-    import { Loader2, UserPlus, CircleHelp } from 'lucide-svelte';
+    import { Loader2, UserPlus, X } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
     import { RegisterState } from '@/states/Auth/AuthState.svelte';
-    import { tutorialState } from '@/states/ui/tutorialState.svelte';
 
     const state = new RegisterState({
         showSuccessToast: 'Registrasi berhasil!',
@@ -14,160 +14,120 @@
 </script>
 
 <App variant="auth" title="Daftar - OOPedia">
-    <div class="grid min-h-screen grid-cols-1 bg-[#e7e7e7] lg:grid-cols-2">
-        <section class="relative flex min-h-screen flex-col bg-[#efefef] px-6 py-8 sm:px-10 lg:px-16">
-            <div class="mb-8 flex items-center justify-between sm:mb-10">
-                <Link href={ROUTES.HOME} class="flex items-center gap-3 text-slate-900">
-                    <div
-                        class="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-300 bg-white"
-                    >
-                        <img src="/images/logo.png" alt="Logo OOPedia" class="h-7 w-auto" />
-                    </div>
-                    <span class="text-xs font-black tracking-[0.25em] uppercase">OOPedia</span>
-                </Link>
+    <div class="relative min-h-screen bg-slate-50 text-slate-900 flex flex-col px-4 py-4 font-sans antialiased">
+        <!-- Header -->
+        <div class="flex items-center justify-between w-full p-2 max-w-4xl mx-auto">
+            <Link href={ROUTES.HOME} class="p-2 text-slate-400 hover:text-slate-600 transition" aria-label="Kembali">
+                <X size={32} strokeWidth={2.5} />
+            </Link>
+            <Link href={ROUTES.AUTH.LOGIN} class="px-5 py-2.5 font-bold tracking-widest text-[13px] text-slate-500 border-2 border-b-4 border-slate-300 rounded-2xl uppercase hover:bg-slate-100 active:translate-y-[2px] active:border-b-2 transition">
+                Log In
+            </Link>
+        </div>
 
-                <button
-                    type="button"
-                    onclick={() => tutorialState.startTour('auth_register', true)}
-                    class="rounded-xl p-2 text-slate-500 transition hover:bg-white hover:text-slate-900"
-                    title="Bantuan Tutorial"
-                >
-                    <CircleHelp size={20} />
-                </button>
-            </div>
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col items-center justify-center w-full max-w-sm mx-auto pb-12 pt-4">
+            <h1 class="text-[26px] font-black text-center mb-8 tracking-tight">Create your profile</h1>
 
-            <div class="mx-auto flex w-full max-w-md flex-1 flex-col justify-center">
-                <div class="mb-8">
-                    <h1 class="text-3xl font-black tracking-tight text-slate-900">Create account</h1>
-                    <p class="mt-2 text-sm font-medium text-slate-500">
-                        Daftar untuk mulai belajar adaptif dan memantau progres Anda secara
-                        terstruktur.
-                    </p>
-                </div>
-
-                <form
-                    onsubmit={(event) => {
-                        event.preventDefault();
-                        state.submit();
-                    }}
-                    class="space-y-4"
-                >
+            <form
+                onsubmit={(event) => {
+                    event.preventDefault();
+                    state.submit();
+                }}
+                class="w-full space-y-4"
+            >
+                <div class="space-y-[14px]">
                     <Input
                         id="name"
                         type="text"
                         bind:value={state.form.name}
-                        placeholder="Nama lengkap"
+                        placeholder="Nama Lengkap"
                         autocomplete="name"
                         required
                         error={state.form.errors['name']}
-                        inputClass="h-13 rounded-2xl border border-slate-300 bg-transparent px-5 text-base font-semibold text-slate-700 placeholder:text-slate-400 focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+                        inputClass="h-14 w-full rounded-2xl border-2 border-slate-300 bg-slate-50 px-5 text-base font-bold text-slate-900 placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-0 transition-colors"
+                        label=""
                     />
 
                     <Input
                         id="email"
                         type="email"
                         bind:value={state.form.email}
-                        placeholder="Email"
+                        placeholder="Email atau nama pengguna"
                         autocomplete="email"
                         required
                         error={state.form.errors['email']}
-                        inputClass="h-13 rounded-2xl border border-slate-300 bg-transparent px-5 text-base font-semibold text-slate-700 placeholder:text-slate-400 focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+                        inputClass="h-14 w-full rounded-2xl border-2 border-slate-300 bg-slate-50 px-5 text-base font-bold text-slate-900 placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-0 transition-colors"
+                        label=""
                     />
 
                     <Input
                         id="password"
                         type="password"
                         bind:value={state.form.password}
-                        placeholder="Password"
+                        placeholder="Kata sandi"
                         autocomplete="new-password"
                         required
                         error={state.form.errors['password']}
-                        inputClass="h-13 rounded-2xl border border-slate-300 bg-transparent px-5 text-base font-semibold text-slate-700 placeholder:text-slate-400 focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+                        inputClass="h-14 w-full rounded-2xl border-2 border-slate-300 bg-slate-50 px-5 text-base font-bold text-slate-900 placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-0 transition-colors"
+                        label=""
                     />
 
                     <Input
                         id="password_confirmation"
                         type="password"
                         bind:value={state.form.password_confirmation}
-                        placeholder="Konfirmasi password"
+                        placeholder="Konfirmasi kata sandi"
                         autocomplete="new-password"
                         required
-                        inputClass="h-13 rounded-2xl border border-slate-300 bg-transparent px-5 text-base font-semibold text-slate-700 placeholder:text-slate-400 focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+                        error={state.form.errors['password_confirmation']}
+                        inputClass="h-14 w-full rounded-2xl border-2 border-slate-300 bg-slate-50 px-5 text-base font-bold text-slate-900 placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-0 transition-colors"
+                        label=""
                     />
+                </div>
 
+                <div class="pt-1">
                     <label
                         for="register_as_admin"
-                        class="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-300 bg-white/70 p-3"
+                        class="flex items-center gap-3 rounded-2xl border-2 border-slate-300 bg-slate-50 p-4 cursor-pointer hover:bg-slate-100 transition"
                     >
                         <input
                             id="register_as_admin"
                             type="checkbox"
                             bind:checked={state.form.register_as_admin}
-                            class="mt-0.5 h-4 w-4 rounded border-slate-400 text-slate-900 focus:ring-slate-400"
+                            class="h-5 w-5 rounded border-2 border-slate-300 text-primary-500 focus:ring-primary-500"
                         />
-                        <span class="text-xs font-semibold text-slate-600">
-                            Daftar sebagai dosen (akun menunggu persetujuan admin).
+                        <span class="text-sm font-bold text-slate-600 leading-snug tracking-wide">
+                            Daftar sebagai Dosen/Admin
                         </span>
                     </label>
+                </div>
 
-                    <button
-                        id="register-submit-btn"
+                <div class="pt-3">
+                    <Button
                         type="submit"
-                        class="mt-2 flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 text-sm font-black tracking-[0.12em] text-white uppercase transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+                        variant="primary"
+                        size="md"
+                        class="w-full h-12 text-[15px]"
                         disabled={state.form.processing}
                     >
                         {#if state.form.processing}
-                            <Loader2 size={18} class="animate-spin" />
-                            <span>Memproses</span>
+                            <Loader2 size={22} class="animate-spin" />
                         {:else}
-                            <UserPlus size={16} />
-                            <span>Create account</span>
+                            <UserPlus size={18} class="mr-1" />
+                            Sign up
                         {/if}
-                    </button>
-                </form>
+                    </Button>
+                </div>
+            </form>
 
-                <p class="mt-6 text-center text-xs font-bold tracking-[0.16em] text-slate-500 uppercase">
-                    Sudah punya akun?
-                    <Link href={ROUTES.AUTH.LOGIN} class="text-slate-900 underline underline-offset-4"
-                        >Sign in</Link
-                    >
-                </p>
+            <div class="mt-8 text-center text-[12px] font-bold text-slate-400 leading-relaxed max-w-[280px]">
+                By signing in to OOPedia, you agree to our <a href="#" class="font-black text-slate-500 hover:text-slate-700 transition">Terms</a> and <a href="#" class="font-black text-slate-500 hover:text-slate-700 transition">Privacy Policy</a>.
             </div>
-
-            <div class="pt-6 text-center text-3xl font-black tracking-tight text-slate-900">OOPedia</div>
-        </section>
-
-        <section class="relative hidden min-h-screen overflow-hidden bg-[#e3e3e3] p-8 lg:block xl:p-10">
-            <div class="mx-auto flex h-full max-w-[560px] flex-col justify-center gap-4">
-                <div class="ml-auto h-36 w-64 overflow-hidden rounded-sm bg-slate-300 shadow-sm xl:h-40 xl:w-72">
-                    <img
-                        src="/images/landing/polinema.png"
-                        alt="Inspirasi ruang belajar"
-                        class="h-full w-full object-cover"
-                    />
-                </div>
-
-                <div class="mx-auto h-[52vh] w-full max-w-[520px] overflow-hidden rounded-sm bg-slate-300 shadow-sm">
-                    <img
-                        src="/images/materials/XC0lP6UTySZSqR7CCALgzAf6kVoh9CBDfiIReF1F.png"
-                        alt="Ilustrasi pembelajaran"
-                        class="h-full w-full object-cover"
-                    />
-                </div>
-
-                <div class="ml-20 h-28 w-52 overflow-hidden rounded-sm bg-slate-300 shadow-sm xl:h-32 xl:w-60">
-                    <img
-                        src="/images/landing/jti.png"
-                        alt="Ekosistem kampus"
-                        class="h-full w-full object-cover"
-                    />
-                </div>
-
-                <p class="pt-2 text-xs font-bold tracking-tight text-slate-700">
-                    Akun baru langsung terhubung ke jalur belajar adaptif OOPedia dan sistem
-                    evaluasi progres.
-                </p>
+            
+            <div class="mt-4 text-center text-[11px] font-bold text-slate-400 leading-relaxed max-w-[320px]">
+                This site is protected by reCAPTCHA Enterprise and the Google <a href="#" class="font-black text-slate-500 hover:text-slate-700 transition">Privacy Policy</a> and <a href="#" class="font-black text-slate-500 hover:text-slate-700 transition">Terms of Service</a> apply.
             </div>
-        </section>
+        </div>
     </div>
 </App>

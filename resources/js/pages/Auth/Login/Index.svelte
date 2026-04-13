@@ -1,11 +1,11 @@
 <script lang="ts">
     import App from '@/layouts/App.svelte';
     import Input from '@/components/ui/Input.svelte';
+    import Button from '@/components/ui/Button.svelte';
     import { Link } from '@inertiajs/svelte';
-    import { Loader2, ArrowRight, CircleHelp, Ghost } from 'lucide-svelte';
+    import { Loader2, Ghost, X } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
     import { LoginState } from '@/states/Auth/AuthState.svelte';
-    import { tutorialState } from '@/states/ui/tutorialState.svelte';
 
     const state = new LoginState({
         showSuccessToast: 'Selamat datang kembali!',
@@ -14,136 +14,98 @@
 </script>
 
 <App variant="auth" title="Login - OOPedia">
-    <div class="grid min-h-screen grid-cols-1 bg-[#e7e7e7] lg:grid-cols-2">
-        <section class="relative flex min-h-screen flex-col bg-[#efefef] px-6 py-8 sm:px-10 lg:px-16">
-            <div class="mb-8 flex items-center justify-between sm:mb-10">
-                <Link href={ROUTES.HOME} class="flex items-center gap-3 text-slate-900">
-                    <div
-                        class="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-300 bg-white"
-                    >
-                        <img src="/images/logo.png" alt="Logo OOPedia" class="h-7 w-auto" />
-                    </div>
-                    <span class="text-xs font-black tracking-[0.25em] uppercase">OOPedia</span>
-                </Link>
+    <div class="relative min-h-screen bg-slate-50 text-slate-900 flex flex-col px-4 py-4 font-sans antialiased">
+        <!-- Header -->
+        <div class="flex items-center justify-between w-full p-2 max-w-4xl mx-auto">
+            <Link href={ROUTES.HOME} class="p-2 text-slate-400 hover:text-slate-600 transition" aria-label="Kembali">
+                <X size={32} strokeWidth={2.5} />
+            </Link>
+            <Link href={ROUTES.AUTH.REGISTER} class="px-5 py-2.5 font-bold tracking-widest text-[13px] text-slate-500 border-2 border-b-4 border-slate-300 rounded-2xl uppercase hover:bg-slate-100 active:translate-y-[2px] active:border-b-2 transition">
+                Sign Up
+            </Link>
+        </div>
 
-                <button
-                    type="button"
-                    onclick={() => tutorialState.startTour('auth_login', true)}
-                    class="rounded-xl p-2 text-slate-500 transition hover:bg-white hover:text-slate-900"
-                    title="Bantuan Tutorial"
-                >
-                    <CircleHelp size={20} />
-                </button>
-            </div>
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col items-center justify-center w-full max-w-sm mx-auto -mt-12 sm:-mt-20">
+            <h1 class="text-3xl font-black text-center mb-8 tracking-tight">Log in</h1>
 
-            <div class="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center">
-                <div class="mb-8">
-                    <h1 class="text-3xl font-black tracking-tight text-slate-900">Welcome back</h1>
-                    <p class="mt-2 text-sm font-medium text-slate-500">
-                        Masuk untuk melanjutkan progres belajar adaptif Anda di OOPedia.
-                    </p>
-                </div>
-
-                <form
-                    onsubmit={(event) => {
-                        event.preventDefault();
-                        state.submit();
-                    }}
-                    class="space-y-4"
-                >
+            <form
+                onsubmit={(event) => {
+                    event.preventDefault();
+                    state.submit();
+                }}
+                class="w-full space-y-4"
+            >
+                <div class="space-y-[14px]">
                     <Input
                         id="email"
                         type="email"
                         bind:value={state.form.email}
-                        placeholder="Email"
+                        placeholder="Email atau nama pengguna"
                         autocomplete="email"
                         required
                         error={state.form.errors['email']}
-                        inputClass="h-14 rounded-2xl border border-slate-300 bg-transparent px-5 text-base font-semibold text-slate-700 placeholder:text-slate-400 focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+                        inputClass="h-14 w-full rounded-2xl border-2 border-slate-300 bg-slate-50 px-5 text-base font-bold text-slate-900 placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-0 transition-colors"
+                        label=""
                     />
 
-                    <Input
-                        id="password"
-                        type="password"
-                        bind:value={state.form.password}
-                        placeholder="Password"
-                        autocomplete="current-password"
-                        required
-                        error={state.form.errors['password']}
-                        inputClass="h-14 rounded-2xl border border-slate-300 bg-transparent px-5 text-base font-semibold text-slate-700 placeholder:text-slate-400 focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
-                    />
+                    <div class="relative">
+                        <Input
+                            id="password"
+                            type="password"
+                            bind:value={state.form.password}
+                            placeholder="Kata sandi"
+                            autocomplete="current-password"
+                            required
+                            error={state.form.errors['password']}
+                            inputClass="h-14 w-full pr-24 rounded-2xl border-2 border-slate-300 bg-slate-50 px-5 text-base font-bold text-slate-900 placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-0 transition-colors"
+                            label=""
+                        />
+                        <button type="button" class="absolute right-5 top-1/2 -translate-y-1/2 text-[13px] font-bold tracking-widest text-[#1cb0f6] uppercase hover:text-sky-400 transition z-10">
+                            Forgot?
+                        </button>
+                    </div>
+                </div>
 
-                    <button
-                        id="login-submit-btn"
+                <div class="pt-2">
+                    <Button
                         type="submit"
-                        class="mt-2 flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 text-sm font-black tracking-[0.12em] text-white uppercase transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+                        variant="primary"
+                        size="md"
+                        class="w-full h-12 text-[15px]"
                         disabled={state.form.processing}
                     >
                         {#if state.form.processing}
-                            <Loader2 size={18} class="animate-spin" />
-                            <span>Memproses</span>
+                            <Loader2 size={22} class="animate-spin" />
                         {:else}
-                            <span>Next</span>
-                            <ArrowRight size={16} />
+                            Log in
                         {/if}
-                    </button>
-                </form>
+                    </Button>
+                </div>
+            </form>
 
-                <button
-                    id="guest-login-btn"
+            <div class="flex items-center w-full my-6 gap-4">
+                <div class="h-[2px] flex-1 bg-slate-200"></div>
+                <span class="text-sm font-bold tracking-widest text-slate-400 uppercase">Or</span>
+                <div class="h-[2px] flex-1 bg-slate-200"></div>
+            </div>
+
+            <div class="w-full space-y-3">
+                <Button
                     type="button"
+                    variant="outline"
+                    class="w-full h-12 text-[14px]"
                     onclick={() => state.submitAsGuest()}
-                    class="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white text-xs font-black tracking-[0.14em] text-slate-700 uppercase transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
                     disabled={state.form.processing}
                 >
-                    <Ghost size={16} />
-                    <span>Masuk sebagai tamu</span>
-                </button>
-
-                <p class="mt-5 text-center text-sm font-semibold text-slate-400">Forgot password?</p>
-
-                <p class="mt-6 text-center text-xs font-bold tracking-[0.16em] text-slate-500 uppercase">
-                    Belum punya akun?
-                    <Link href={ROUTES.AUTH.REGISTER} class="text-slate-900 underline underline-offset-4"
-                        >Sign up</Link
-                    >
-                </p>
+                    <Ghost size={20} class="mr-2 text-[#1cb0f6]" />
+                    <span>Tamu</span>
+                </Button>
             </div>
 
-            <div class="pt-6 text-center text-3xl font-black tracking-tight text-slate-900">OOPedia</div>
-        </section>
-
-        <section class="relative hidden min-h-screen overflow-hidden bg-[#e3e3e3] p-8 lg:block xl:p-10">
-            <div class="mx-auto flex h-full max-w-[560px] flex-col justify-center gap-4">
-                <div class="ml-auto h-36 w-64 overflow-hidden rounded-sm bg-slate-300 shadow-sm xl:h-40 xl:w-72">
-                    <img
-                        src="/images/landing/jti.png"
-                        alt="Inspirasi ruang belajar"
-                        class="h-full w-full object-cover"
-                    />
-                </div>
-
-                <div class="mx-auto h-[52vh] w-full max-w-[520px] overflow-hidden rounded-sm bg-slate-300 shadow-sm">
-                    <img
-                        src="/images/materials/C08ZSJEVqjBVu44FXcZveWyUzDnR0GcUEj374m5X.jpg"
-                        alt="Ilustrasi suasana belajar"
-                        class="h-full w-full object-cover"
-                    />
-                </div>
-
-                <div class="ml-20 h-28 w-52 overflow-hidden rounded-sm bg-slate-300 shadow-sm xl:h-32 xl:w-60">
-                    <img
-                        src="/images/landing/polinema.png"
-                        alt="Komunitas pembelajar"
-                        class="h-full w-full object-cover"
-                    />
-                </div>
-
-                <p class="pt-2 text-xs font-bold tracking-tight text-slate-700">
-                    Belajar terasa personal, bukan generik. OOPedia menyesuaikan langkah sesuai
-                    ritme Anda.
-                </p>
+            <div class="mt-8 text-center text-[12px] font-bold text-slate-400 leading-relaxed max-w-[280px]">
+                By signing in to OOPedia, you agree to our <a href="#" class="font-black text-slate-500 hover:text-slate-700 transition">Terms</a> and <a href="#" class="font-black text-slate-500 hover:text-slate-700 transition">Privacy Policy</a>.
             </div>
-        </section>
+        </div>
     </div>
 </App>
