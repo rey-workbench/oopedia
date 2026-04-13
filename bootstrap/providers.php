@@ -6,7 +6,6 @@ use App\Providers\BroadcastServiceProvider;
 use App\Providers\EventServiceProvider;
 use App\Providers\RepositoryServiceProvider;
 use App\Providers\ServiceServiceProvider;
-use Arafa\DeadcodeDetector\DeadCodeServiceProvider;
 
 return [
     AppServiceProvider::class,
@@ -15,5 +14,4 @@ return [
     EventServiceProvider::class,
     RepositoryServiceProvider::class,
     ServiceServiceProvider::class,
-    DeadCodeServiceProvider::class,
 ];
