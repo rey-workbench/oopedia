@@ -47,7 +47,7 @@
 </script>
 
 <App title={state.subMaterial.title} fullWidth={true}>
-    <div class="mx-auto max-w-[1600px] space-y-12 px-4 py-8 sm:px-6 lg:px-12">
+    <div class="mx-auto max-w-400 space-y-12 px-4 py-8 sm:px-6 lg:px-12">
         <!-- Breadcrumb Navigation -->
         <div class="flex items-center gap-3 text-sm">
             <Link

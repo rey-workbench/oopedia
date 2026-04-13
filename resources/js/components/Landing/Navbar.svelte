@@ -47,7 +47,7 @@
         <button
             type="button"
             onclick={() => (menuOpen = !menuOpen)}
-            class="flex min-h-12 cursor-pointer items-center gap-2 rounded-2xl px-6 py-3.5 text-[10px] font-black tracking-[0.2em] uppercase transition-all hover:bg-slate-50 active:translate-y-[4px] active:border-b-2 {menuBtnBg}"
+            class="flex min-h-12 cursor-pointer items-center gap-2 rounded-2xl px-6 py-3.5 text-[10px] font-black tracking-[0.2em] uppercase transition-all hover:bg-slate-50 active:translate-y-1 active:border-b-2 {menuBtnBg}"
         >
             {menuOpen ? 'Tutup' : 'Menu'}
             {#if menuOpen}
@@ -103,7 +103,7 @@
         </Link>
         <Link
             href={ROUTES.AUTH.REGISTER}
-            class="rounded-2xl border-2 border-b-6 border-slate-950 bg-slate-900 px-6 py-4 text-[9px] font-black tracking-[0.2em] text-white uppercase shadow-sm transition-all hover:bg-slate-800 active:translate-y-[4px] active:border-b-2 sm:px-8"
+            class="rounded-2xl border-2 border-b-6 border-slate-950 bg-slate-900 px-6 py-4 text-[9px] font-black tracking-[0.2em] text-white uppercase shadow-sm transition-all hover:bg-slate-800 active:translate-y-1 active:border-b-2 sm:px-8"
         >
             Daftar
         </Link>

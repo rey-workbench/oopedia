@@ -4,7 +4,7 @@ import { BaseState } from '@/states/BaseState.svelte';
 import { FormState } from '@/states/FormState.svelte';
 import { ROUTES } from '@/utils/route';
 import { handleImagePreview } from '@/utils/imagePreview';
-import type { Material, SubMaterial, JenisKonten } from '@/types';
+import type { Material, SubMaterial, ContentCategory } from '@/types';
 
 /**
  * Material List State
@@ -118,7 +118,7 @@ export class SubmaterialListState extends BaseState {
 export class SubmaterialFormState extends FormState<{
     title: string;
     content: string;
-    jenis_konten: JenisKonten | string;
+    jenis_konten: ContentCategory | string;
     order: number;
     material_id: number | string;
 }> {
@@ -160,7 +160,7 @@ export class SubmaterialFormState extends FormState<{
         await this.submitForm(this.isEdit ? 'put' : 'post', url);
     }
 
-    setJenisKonten(jenis_konten: JenisKonten | string) {
+    setJenisKonten(jenis_konten: ContentCategory | string) {
         this.form.jenis_konten = jenis_konten;
     }
 }

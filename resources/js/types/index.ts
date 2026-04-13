@@ -27,6 +27,7 @@ export type {
     // Computed / service shapes
     DifficultyStats,
     MaterialWithStats,
+    ContentCategory,
     RecentActivity,
     StudentProfile,
     LeaderboardEntry,
