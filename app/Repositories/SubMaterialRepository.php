@@ -62,15 +62,6 @@ final class SubMaterialRepository implements SubMaterialRepositoryInterface
         return $this->getAllByMaterial($materialId);
     }
 
-    public function reorder(string $materialId, array $orderData): void
-    {
-        foreach ($orderData as $order => $subMaterialId) {
-            SubMaterial::where('id', '=', $subMaterialId)
-                ->where('material_id', '=', $materialId)
-                ->update(['order' => $order + 1]);
-        }
-    }
-
     public function findWithQuestions(string $id): SubMaterial
     {
         return SubMaterial::with('questions')->findOrFail($id);

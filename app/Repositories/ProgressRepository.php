@@ -306,13 +306,6 @@ final class ProgressRepository implements ProgressRepositoryInterface
         $state->save();
     }
 
-    public function updateOrCreateProgress(array $conditions, array $values): void
-    {
-        $data = array_merge($conditions, $values);
-
-        $this->saveProgress($data);
-    }
-
     public function getLatestAttemptsForQuestions(string $userId, array $questionIds): Collection
     {
         if (empty($questionIds)) {
@@ -455,20 +448,6 @@ final class ProgressRepository implements ProgressRepositoryInterface
             ->pipe(fn ($c) => collect($c));
     }
 
-    public function getWrongAnswers(string $userId, string $materialId): Collection
-    {
-        if ($userId === 'guest') {
-            return collect();
-        }
-
-        return QuizAttempt::where('user_id', $userId)
-            ->whereRelation('question', 'material_id', $materialId)
-            ->where('is_correct', false)
-            ->with(['question', 'answer'])
-            ->get()
-            ->pipe(fn ($c) => collect($c));
-    }
-
     public function getConsecutiveFailures(?string $userId, string $questionId): int
     {
         if (is_null($userId)) {
@@ -490,21 +469,6 @@ final class ProgressRepository implements ProgressRepositoryInterface
         }
 
         return $consecutiveFails;
-    }
-
-    public function getLatestErrorType(?string $userId, string $questionId): ?string
-    {
-        if (is_null($userId)) {
-            return null;
-        }
-
-        $attempt = QuizAttempt::where('user_id', $userId)
-            ->where('question_id', $questionId)
-            ->where('is_correct', false)
-            ->latest()
-            ->first();
-
-        return $attempt?->error_type ?? 'logic';
     }
 
     public function getStudentState(?string $userId): ?StudentState
@@ -535,23 +499,5 @@ final class ProgressRepository implements ProgressRepositoryInterface
             'adaptive_state'      => StudentStateSchema::getDefaultAdaptiveState(),
             'last_active_at'      => now(),
         ]);
-    }
-
-    public function getUserMaterialProgressWithState(?string $userId, string $materialId): array
-    {
-        if (is_null($userId) || $userId === 'guest') {
-            return [
-                'state'    => $this->getOrCreateStudentState('guest'),
-                'progress' => new Collection,
-            ];
-        }
-
-        $state    = $this->getOrCreateStudentState($userId);
-        $progress = $this->getUserMaterialProgress($userId);
-
-        return [
-            'state'    => $state,
-            'progress' => $progress,
-        ];
     }
 }

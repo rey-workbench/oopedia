@@ -21,7 +21,5 @@ interface SubMaterialRepositoryInterface
 
     public function findByMaterial(string $materialId): Collection;
 
-    public function reorder(string $materialId, array $orderData): void;
-
     public function findWithQuestions(string $id): SubMaterial;
 }

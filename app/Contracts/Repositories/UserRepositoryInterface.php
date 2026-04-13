@@ -32,10 +32,6 @@ interface UserRepositoryInterface
 
     public function deleteStudentData(string $userId): void;
 
-    public function findByEmail(string $email): ?User;
-
-    public function getUnapprovedStudents(): Collection;
-
     public function approveStudent(string $userId): void;
 
     public function getUsersByRoleAndApproval(

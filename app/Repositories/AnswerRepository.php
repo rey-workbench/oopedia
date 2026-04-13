@@ -45,11 +45,6 @@ final class AnswerRepository implements AnswerRepositoryInterface
         return (bool) $answer->delete();
     }
 
-    public function getByQuestionId(string $questionId): Collection
-    {
-        return Answer::where('question_id', $questionId)->get();
-    }
-
     public function getCorrectAnswers(string $questionId): Collection
     {
         return Answer::where('question_id', $questionId)

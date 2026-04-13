@@ -15,14 +15,6 @@ interface GamificationServiceInterface
 
     public function processWrongAnswer(array $state): array;
 
-    public function useHint(array $state): array;
-
-    public function calculateAccuracy(array $state): float;
-
-    public function updateCorrectStreak(array $state): array;
-
-    public function updateWrongStreak(array $state): array;
-
     public function checkStreakBonus(array $state): ?array;
 
     public function calculateStreakBonusXP(int $currentStreak): int;

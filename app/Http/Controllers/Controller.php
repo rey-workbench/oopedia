@@ -9,7 +9,6 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -29,21 +28,6 @@ class Controller extends BaseController
     protected function render(string $page, array $data = []): Response
     {
         return Inertia::render($page, $data);
-    }
-
-    protected function redirectToIndex(string $route, string $message, string $type = 'success'): RedirectResponse
-    {
-        return redirect()->route($route)->with($type, $message);
-    }
-
-    protected function redirectBackWithError(string $message): RedirectResponse
-    {
-        return redirect()->back()->with('error', $message)->withInput();
-    }
-
-    protected function redirectBackWithSuccess(string $message): RedirectResponse
-    {
-        return redirect()->back()->with('success', $message);
     }
 
     protected function getUserId(): int|string

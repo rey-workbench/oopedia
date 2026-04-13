@@ -56,11 +56,6 @@ final class MediaRepository implements MediaRepositoryInterface
         return Media::where('material_id', '=', $materialId)->get();
     }
 
-    public function deleteByMaterial(string $materialId): bool
-    {
-        return (bool) Media::where('material_id', '=', $materialId)->delete();
-    }
-
     public function findByMaterialAndType(string $materialId, string $mediaType): ?Media
     {
         return Media::where('material_id', '=', $materialId)

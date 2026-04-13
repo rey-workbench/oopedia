@@ -11,7 +11,5 @@ interface RoleRepositoryInterface
 
     public function find(string $id): ?Role;
 
-    public function findByName(string $name): ?Role;
-
     public function getUsersByRole(string $roleId): Collection;
 }

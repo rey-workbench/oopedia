@@ -7,11 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface StudentStateRepositoryInterface
 {
-    public function upsert(string $userId, string $materialId, array $attributes): StudentState;
-
     public function getByUserAndMaterial(string $userId, string $materialId): ?StudentState;
-
-    public function updateProgress(string $userId, string $materialId, array $progressData): void;
 
     public function getAll(string $userId): Collection;
 

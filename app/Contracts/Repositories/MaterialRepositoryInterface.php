@@ -26,10 +26,6 @@ interface MaterialRepositoryInterface
 
     public function getAllWithQuestionsAndConfigs(): Collection;
 
-    public function getAllWithQuestionsAndActiveConfigs(): Collection;
-
-    public function findBySlug(string $slug): ?Material;
-
     public function getAllOrdered(): Collection;
 
     public function findWithQuestionsShuffled(string $id): Material;

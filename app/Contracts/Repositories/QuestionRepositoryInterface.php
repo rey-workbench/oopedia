@@ -36,13 +36,6 @@ interface QuestionRepositoryInterface
         ?string $materialId = null,
     ): LengthAwarePaginator;
 
-    public function getQuestionsForBank(
-        string $materialId,
-        array $excludeIds,
-        ?string $search = null,
-        ?string $difficulty = null,
-    ): LengthAwarePaginator;
-
     public function countByMaterialAndDifficulty(string $materialId, string $difficulty): int;
 
     public function existsByMaterialAndDifficulty(string $materialId, string $difficulty): bool;

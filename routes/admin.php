@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
             Route::get('ueq-survey/export', [UeqSurveyController::class, 'export'])->name('ueq-survey.export');
             Route::resource('ueq-survey', UeqSurveyController::class)->only(['index', 'show']);
 
+            Route::get('mslq/export', [MslqController::class, 'export'])->name('mslq.export');
             Route::resource('mslq', MslqController::class)->only(['index', 'show']);
         });
 

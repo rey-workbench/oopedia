@@ -92,19 +92,9 @@ final class StudentService implements StudentServiceInterface
         });
     }
 
-    public function getPendingStudents(?int $perPage = null): LengthAwarePaginator
-    {
-        return $this->userRepo->getUsersByRoleAndApproval((RoleName::MAHASISWA)->value, false, null, $perPage ?? 10);
-    }
-
     public function approveStudent(string $studentId): void
     {
         $this->userRepo->approveStudent($studentId);
-    }
-
-    public function rejectStudent(string $studentId): void
-    {
-        $this->userRepo->delete($studentId);
     }
 
     public function getStudentProgressDetail(User $student): array

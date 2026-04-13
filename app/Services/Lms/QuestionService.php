@@ -16,8 +16,7 @@ final class QuestionService implements QuestionServiceInterface
     public function __construct(
         public readonly QuestionRepositoryInterface $questionRepo,
         public readonly AnswerRepositoryInterface $answerRepo,
-    ) {
-    }
+    ) {}
 
     public function getFilteredQuestions(
         ?string $search = null,
@@ -36,15 +35,6 @@ final class QuestionService implements QuestionServiceInterface
 
             return $question;
         });
-    }
-
-    public function getAvailableQuestionsForBank(
-        string $materialId,
-        array $excludeIds,
-        ?string $search = null,
-        ?string $difficulty = null,
-    ): LengthAwarePaginator {
-        return $this->questionRepo->getQuestionsForBank($materialId, $excludeIds, $search, $difficulty);
     }
 
     public function getQuestionById(string $id): ?Question

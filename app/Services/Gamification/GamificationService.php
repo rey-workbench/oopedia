@@ -20,8 +20,7 @@ final class GamificationService implements GamificationServiceInterface
 {
     public function __construct(
         public readonly ProgressRepositoryInterface $progressRepo,
-    ) {
-    }
+    ) {}
 
     public function calculateCorrectAnswerReward(
         array $state,
@@ -64,59 +63,6 @@ final class GamificationService implements GamificationServiceInterface
             'global_xp_earned' => 0,
             'updates'          => [
                 StudentStateSchema::KEY_GLOBAL_XP => $state[StudentStateSchema::KEY_GLOBAL_XP] ?? 0,
-            ],
-        ];
-    }
-
-    public function useHint(array $state): array
-    {
-        $hintsAvailable = $state[StudentStateSchema::KEY_HINTS_AVAILABLE] ?? 0;
-
-        if ($hintsAvailable <= 0) {
-            return [
-                'success' => false,
-                'message' => 'Tidak ada hint tersedia',
-            ];
-        }
-
-        return [
-            'success' => true,
-            'message' => 'Hint digunakan',
-            'updates' => [
-                StudentStateSchema::KEY_HINTS_USED_COUNT => ($state[StudentStateSchema::KEY_HINTS_USED_COUNT] ?? 0) + 1,
-                StudentStateSchema::KEY_HINTS_AVAILABLE  => $hintsAvailable - 1,
-            ],
-        ];
-    }
-
-    public function calculateAccuracy(array $state): float
-    {
-        $correct = $state[StudentStateSchema::KEY_CORRECT_COUNT]            ?? 0;
-        $total   = $state[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] ?? 0;
-
-        if ($total === 0) {
-            return 0;
-        }
-
-        return round(($correct / $total) * 100, 2);
-    }
-
-    public function updateCorrectStreak(array $state): array
-    {
-        return [
-            'updates' => [
-                StudentStateSchema::KEY_CURRENT_STREAK => ($state[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0) + 1,
-                StudentStateSchema::KEY_WRONG_STREAK   => 0,
-            ],
-        ];
-    }
-
-    public function updateWrongStreak(array $state): array
-    {
-        return [
-            'updates' => [
-                StudentStateSchema::KEY_CURRENT_STREAK => 0,
-                StudentStateSchema::KEY_WRONG_STREAK   => ($state[StudentStateSchema::KEY_WRONG_STREAK] ?? 0) + 1,
             ],
         ];
     }

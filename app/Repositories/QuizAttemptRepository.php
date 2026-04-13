@@ -36,71 +36,10 @@ final class QuizAttemptRepository implements QuizAttemptRepositoryInterface
             ->get();
     }
 
-    public function getByUserAndQuestion(string $userId, string $questionId): Collection
-    {
-        return QuizAttempt::where('user_id', $userId)
-            ->where('question_id', $questionId)
-            ->orderBy('attempt_number', 'asc')
-            ->get();
-    }
-
     public function getByMaterial(string $materialId): Collection
     {
         return QuizAttempt::whereHas('question', fn ($q) => $q->where('material_id', $materialId))
             ->with(['question', 'user'])
             ->get();
-    }
-
-    public function getBestAttempt(string $userId, string $questionId): ?QuizAttempt
-    {
-        return QuizAttempt::where('user_id', $userId)
-            ->where('question_id', $questionId)
-            ->where('is_correct', true)
-            ->orderBy('score', 'desc')
-            ->orderBy('attempt_number', 'asc')
-            ->first();
-    }
-
-    public function getLatestAttempt(string $userId, string $questionId): ?QuizAttempt
-    {
-        return QuizAttempt::where('user_id', $userId)
-            ->where('question_id', $questionId)
-            ->orderBy('attempt_number', 'desc')
-            ->first();
-    }
-
-    public function countAttempts(string $userId, string $questionId): int
-    {
-        return QuizAttempt::where('user_id', $userId)
-            ->where('question_id', $questionId)
-            ->count();
-    }
-
-    public function getCorrectAttempts(string $userId): Collection
-    {
-        return QuizAttempt::where('user_id', $userId)
-            ->where('is_correct', true)
-            ->with(['question.material'])
-            ->get();
-    }
-
-    public function getUserStats(string $userId): array
-    {
-        $totalAttempted = QuizAttempt::where('user_id', $userId)
-            ->distinct('question_id')
-            ->count('question_id');
-
-        $totalCorrect = QuizAttempt::where('user_id', $userId)
-            ->where('is_correct', true)
-            ->count();
-
-        $totalAttempts = QuizAttempt::where('user_id', $userId)
-            ->count();
-
-        return [
-            'total_attempted' => $totalAttempted,
-            'total_correct'   => $totalCorrect,
-            'total_attempts'  => $totalAttempts,
-        ];
     }
 }

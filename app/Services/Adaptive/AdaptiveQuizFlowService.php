@@ -222,6 +222,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         array $data,
     ): void {
         if ($isGuest) {
+            $data['material_id'] = $material->id;
             $this->guestProgressService->saveProgress($data, $isCorrect, $question->id);
 
             return;

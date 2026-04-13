@@ -19,8 +19,7 @@ final class MaterialViewService implements MaterialViewServiceInterface
         protected MaterialRepositoryInterface $materialRepo,
         protected ProgressRepositoryInterface $progressRepo,
         protected SubMaterialRepositoryInterface $subMaterialRepo,
-    ) {
-    }
+    ) {}
 
     public function getMaterialsList(?string $userId, bool $isGuest): Collection
     {
@@ -147,20 +146,6 @@ final class MaterialViewService implements MaterialViewServiceInterface
             'materials'             => $materials,
             'currentQuestionNumber' => $currentQuestionNumber,
             'currentQuestion'       => $currentQuestion,
-        ];
-    }
-
-    public function getSubMaterialsList(string $materialId, ?string $userId, bool $isGuest): array
-    {
-        $material = $this->materialRepo->findWithRelations($materialId, ['subMaterials.media', 'media']);
-
-        if (! $material) {
-            throw new MaterialNotFoundException($materialId);
-        }
-
-        return [
-            'material'     => $material,
-            'subMaterials' => $material->subMaterials,
         ];
     }
 

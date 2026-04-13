@@ -19,7 +19,5 @@ interface MediaRepositoryInterface
 
     public function getByMaterial(string $materialId): Collection;
 
-    public function deleteByMaterial(string $materialId): bool;
-
     public function findByMaterialAndType(string $materialId, string $mediaType): ?Media;
 }

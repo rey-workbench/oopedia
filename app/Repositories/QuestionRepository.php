@@ -119,24 +119,6 @@ final class QuestionRepository implements QuestionRepositoryInterface
             ->paginate(15);
     }
 
-    public function getQuestionsForBank(
-        string $materialId,
-        array $excludeIds,
-        ?string $search = null,
-        ?string $difficulty = null,
-    ): LengthAwarePaginator {
-        return Question::with(['material', 'answers'])
-            ->where('material_id', '=', $materialId)
-            ->whereNotIn('id', $excludeIds)
-            ->when($search, function ($query) use ($search) {
-                $query->where('question_text', 'like', "%{$search}%");
-            })
-            ->when($difficulty, function ($query) use ($difficulty) {
-                $query->where('difficulty', '=', $difficulty);
-            })
-            ->paginate(10);
-    }
-
     public function countByMaterialAndDifficulty(string $materialId, string $difficulty): int
     {
         return Question::where('material_id', '=', $materialId)

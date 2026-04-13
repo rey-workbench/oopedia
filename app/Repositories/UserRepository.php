@@ -104,20 +104,6 @@ final class UserRepository implements UserRepositoryInterface
         User::find($userId)?->delete();
     }
 
-    public function findByEmail(string $email): ?User
-    {
-        return User::where('email', $email)->first();
-    }
-
-    public function getUnapprovedStudents(): Collection
-    {
-        return User::whereHas('role', function ($q) {
-            $q->where('role_name', 'mahasiswa');
-        })
-            ->where('is_approved', false)
-            ->get();
-    }
-
     public function approveStudent(string $userId): void
     {
         $this->update($userId, ['is_approved' => true]);

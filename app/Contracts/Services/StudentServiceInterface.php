@@ -18,11 +18,7 @@ interface StudentServiceInterface
 
     public function deleteStudent(string $studentId): void;
 
-    public function getPendingStudents(?int $perPage = null): LengthAwarePaginator;
-
     public function approveStudent(string $studentId): void;
-
-    public function rejectStudent(string $studentId): void;
 
     public function getStudentsWithProgress(?string $search = null, int $perPage = 10): LengthAwarePaginator;
 

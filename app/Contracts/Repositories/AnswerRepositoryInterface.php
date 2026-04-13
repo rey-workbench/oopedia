@@ -19,8 +19,6 @@ interface AnswerRepositoryInterface
 
     public function delete(string $id): bool;
 
-    public function getByQuestionId(string $questionId): Collection;
-
     public function getCorrectAnswers(string $questionId): Collection;
 
     public function deleteByQuestionId(string $questionId): bool;

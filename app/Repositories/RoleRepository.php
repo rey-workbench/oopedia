@@ -20,15 +20,10 @@ final class RoleRepository implements RoleRepositoryInterface
         return Role::find($id);
     }
 
-    public function findByName(string $name): ?Role
-    {
-        return Role::where('role_name', '=', $name)->first();
-    }
-
     public function getUsersByRole(string $roleId): Collection
     {
         return Role::with('users')
             ->find($roleId)
-            ?->users ?? new Collection();
+            ?->users ?? new Collection;
     }
 }

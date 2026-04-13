@@ -10,8 +10,6 @@ interface MaterialViewServiceInterface
 
     public function getMaterialDetail(string $materialId, ?string $userId, bool $isGuest, array $guestProgress = []): array;
 
-    public function getSubMaterialsList(string $materialId, ?string $userId, bool $isGuest): array;
-
     public function getSubMaterialDetail(string $materialId, string $subMaterialId, bool $isGuest): array;
 
     public function resetMaterialProgress(string $userId, string $materialId): void;

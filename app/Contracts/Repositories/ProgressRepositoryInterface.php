@@ -30,19 +30,13 @@ interface ProgressRepositoryInterface
 
     public function getOrCreateStudentState(?string $userId): StudentState;
 
-    public function getUserMaterialProgressWithState(?string $userId, string $materialId): array;
-
     public function getAnsweredQuestionIds(string $userId, string $materialId): Collection;
 
     public function getAttemptedQuestionIds(string $userId, string $materialId): Collection;
 
     public function getConsecutiveFailures(?string $userId, string $questionId): int;
 
-    public function getLatestErrorType(?string $userId, string $questionId): ?string;
-
     public function resetProgress(string $userId, string $materialId): void;
-
-    public function updateOrCreateProgress(array $conditions, array $values): void;
 
     public function getStudentCountByMaterial(): Collection;
 
@@ -53,8 +47,6 @@ interface ProgressRepositoryInterface
     public function getPopularMaterials(int $limit): Collection;
 
     public function getByUserAndMaterial(string $userId, string $materialId): Collection;
-
-    public function getWrongAnswers(string $userId, string $materialId): Collection;
 
     public function getLastAccessTime(?string $userId, string $materialId): ?string;
 

@@ -13,13 +13,6 @@ interface QuestionServiceInterface
         ?string $materialId = null,
     ): LengthAwarePaginator;
 
-    public function getAvailableQuestionsForBank(
-        string $materialId,
-        array $excludeIds,
-        ?string $search = null,
-        ?string $difficulty = null,
-    ): LengthAwarePaginator;
-
     public function getQuestionById(string $id): ?Question;
 
     public function getQuestionWithAnswers(string $id): ?Question;

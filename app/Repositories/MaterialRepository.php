@@ -70,18 +70,6 @@ final class MaterialRepository implements MaterialRepositoryInterface
         return Material::with(['questions'])->get();
     }
 
-    public function getAllWithQuestionsAndActiveConfigs(): Collection
-    {
-        return Material::with(['questions'])->get();
-    }
-
-    public function findBySlug(string $slug): ?Material
-    {
-        $title = str_replace('-', ' ', $slug);
-
-        return Material::where('title', '=', $title)->firstOrFail();
-    }
-
     public function getAllOrdered(): Collection
     {
         return Material::with(['questions', 'media', 'creator'])

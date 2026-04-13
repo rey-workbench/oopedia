@@ -6,6 +6,7 @@ namespace App\Services\User;
 
 use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Contracts\Services\UserServiceInterface;
+use App\Enums\User\RoleName;
 use App\Exceptions\Domain\UserNotFoundException;
 use App\Mail\AdminApproved;
 use App\Models\Role;
@@ -24,8 +25,7 @@ final class UserService implements UserServiceInterface
 
     public function __construct(
         public readonly UserRepositoryInterface $userRepo,
-    ) {
-    }
+    ) {}
 
     public function getUserById(string $id): ?User
     {
@@ -34,13 +34,13 @@ final class UserService implements UserServiceInterface
 
     public function getAdmins(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
-        return $this->userRepo->getStudentsWithRole(Role::ROLE_DOSEN, $search, $perPage);
+        return $this->userRepo->getStudentsWithRole(RoleName::DOSEN->value, $search, $perPage);
     }
 
     public function createAdmin(array $data): User
     {
         $data['password']    = Hash::make($data['password']);
-        $data['role_id']     = Role::where('role_name', Role::ROLE_DOSEN)->value('id');
+        $data['role_id']     = Role::where('role_name', RoleName::DOSEN->value)->value('id');
         $data['is_approved'] = true;
 
         return $this->userRepo->create($data);
@@ -86,12 +86,12 @@ final class UserService implements UserServiceInterface
 
     public function getPendingAdmins(?int $perPage = null): LengthAwarePaginator
     {
-        return $this->userRepo->getUsersByRoleAndApproval(Role::ROLE_DOSEN, false, null, $perPage ?? 10);
+        return $this->userRepo->getUsersByRoleAndApproval(RoleName::DOSEN->value, false, null, $perPage ?? 10);
     }
 
     public function getPendingAdminsCount(): int
     {
-        return $this->userRepo->getUsersByRoleAndApproval(Role::ROLE_DOSEN, false, null, 10)->total();
+        return $this->userRepo->getUsersByRoleAndApproval(RoleName::DOSEN->value, false, null, 10)->total();
     }
 
     public function approveAdmin(string $userId): void
@@ -117,8 +117,8 @@ final class UserService implements UserServiceInterface
     {
         $data['password'] = Hash::make($data['password']);
 
-        $roleDosenId     = Role::where('role_name', Role::ROLE_DOSEN)->value('id');
-        $roleMahasiswaId = Role::where('role_name', Role::ROLE_MAHASISWA)->value('id');
+        $roleDosenId     = Role::where('role_name', RoleName::DOSEN->value)->value('id');
+        $roleMahasiswaId = Role::where('role_name', RoleName::MAHASISWA->value)->value('id');
 
         $data['role_id'] ??= str_ends_with($data['email'], User::ADMIN_EMAIL_DOMAIN)
             ? $roleDosenId
