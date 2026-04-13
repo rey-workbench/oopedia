@@ -19,8 +19,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
     public function __construct(
         public readonly ProgressRepositoryInterface $progressRepo,
         public readonly QuestionRepositoryInterface $questionRepo,
-    ) {
-    }
+    ) {}
 
     public function gatherFacts(
         StudentState $studentState,
@@ -33,27 +32,26 @@ final class FactGatheringService implements FactGatheringServiceInterface
         string $materialId,
         ?string $moduleId = null,
     ): array {
-        $facts = [];
+        $facts = [
+            ...$this->getScoreFacts($score, $isCorrect),
+            ...$this->getTimeFacts($timeSpent, $difficulty),
+            ...$this->getLearningStyleFacts($studentState),
+            ...$this->getErrorTypeFacts($studentState, $questionId, $isCorrect),
+        ];
 
-        $facts = array_merge($facts, $this->getScoreFacts($score, $isCorrect));
-
-        $facts = array_merge($facts, $this->getTimeFacts($timeSpent, $difficulty));
-
-        $facts = array_merge($facts, $this->getLearningStyleFacts($studentState));
-
-        $facts = array_merge($facts, $this->getErrorTypeFacts($studentState, $questionId, $isCorrect));
+        $isFinalProject = $this->isFinalDifficulty($difficulty);
 
         if ($usedHint) {
             $facts[] = AdaptiveConstants::FACT_HINT_USED;
         }
 
-        if ($moduleId && $difficulty !== QuestionDifficulty::FINAL && $difficulty !== QuestionDifficulty::FINAL->value) {
-            $facts[] = $this->getModuleFact($moduleId);
+        if ($moduleId && ! $isFinalProject) {
+            $facts[] = AdaptiveConstants::FACT_IN_MODULE;
         }
 
         $facts[] = $this->getDifficultyFact($difficulty);
 
-        if ($difficulty === QuestionDifficulty::FINAL || $difficulty === QuestionDifficulty::FINAL->value) {
+        if ($isFinalProject) {
             $facts[] = AdaptiveConstants::FACT_IS_FINAL_PROJECT;
         }
 
@@ -63,11 +61,11 @@ final class FactGatheringService implements FactGatheringServiceInterface
             $facts[] = AdaptiveConstants::FACT_PERSISTENT_FAIL;
         }
 
-        if ($this->hasSatisfactoryProgress($studentState->user_id, $materialId, $difficulty)) {
+        if ($this->hasSatisfactoryProgress($studentState->user_id, $materialId)) {
             $facts[] = AdaptiveConstants::FACT_SATISFACTORY_PROGRESS;
         }
 
-        return array_unique($facts);
+        return array_values(array_unique($facts));
     }
 
     protected function getScoreFacts(int $score, bool $isCorrect): array
@@ -131,11 +129,6 @@ final class FactGatheringService implements FactGatheringServiceInterface
             : [AdaptiveConstants::FACT_ERROR_LOGIC];
     }
 
-    protected function getModuleFact(string $moduleId): string
-    {
-        return AdaptiveConstants::FACT_IN_MODULE;
-    }
-
     protected function getDifficultyFact(QuestionDifficulty|string $difficulty): string
     {
         $diffKey       = $difficulty instanceof QuestionDifficulty ? $difficulty->value : $difficulty;
@@ -162,12 +155,13 @@ final class FactGatheringService implements FactGatheringServiceInterface
         $prevMaterial = $currentMaterial->getPreviousMaterial();
 
         $unlockedModules = $state->learning_profile['unlocked_modules'] ?? [];
+        $unlockedSet     = array_map('strval', is_array($unlockedModules) ? $unlockedModules : []);
 
-        if ($nextMaterial && in_array($nextMaterial->module_id, $unlockedModules)) {
+        if ($nextMaterial && in_array((string) $nextMaterial->module_id, $unlockedSet, true)) {
             $facts[] = AdaptiveConstants::FACT_NEXT_UNLOCKED;
         }
 
-        if ($prevMaterial && in_array($prevMaterial->module_id, $unlockedModules)) {
+        if ($prevMaterial && in_array((string) $prevMaterial->module_id, $unlockedSet, true)) {
             $facts[] = AdaptiveConstants::FACT_PREV_UNLOCKED;
         }
 
@@ -181,7 +175,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
         return $consecutiveFails >= StudentStateSchema::THRESHOLD_PERSISTENT_FAIL;
     }
 
-    protected function hasSatisfactoryProgress(string $userId, string $materialId, QuestionDifficulty|string $difficulty = 'all'): bool
+    protected function hasSatisfactoryProgress(string $userId, string $materialId): bool
     {
         $attemptedCount = $this->progressRepo->getAttemptedQuestionIds($userId, $materialId)->count();
         $totalQuestions = $this->questionRepo->countByMaterial($materialId);
@@ -193,5 +187,14 @@ final class FactGatheringService implements FactGatheringServiceInterface
         $percentage = ($attemptedCount / $totalQuestions) * 100;
 
         return $percentage >= StudentStateSchema::THRESHOLD_SATISFACTORY_PROGRESS;
+    }
+
+    private function isFinalDifficulty(QuestionDifficulty|string $difficulty): bool
+    {
+        if ($difficulty instanceof QuestionDifficulty) {
+            return $difficulty === QuestionDifficulty::FINAL;
+        }
+
+        return $difficulty === QuestionDifficulty::FINAL->value;
     }
 }

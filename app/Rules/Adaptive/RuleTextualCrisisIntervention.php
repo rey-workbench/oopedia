@@ -19,12 +19,11 @@ class RuleTextualCrisisIntervention extends BaseAdaptiveRule
 
     public function evaluate(array $facts): bool
     {
-        return $this->hasAllFacts($facts, [
-            AdaptiveConstants::FACT_SCORE_CRITICAL,
-            AdaptiveConstants::FACT_STYLE_TEXTUAL,
-            AdaptiveConstants::FACT_DIFF_BEGINNER,
-        ])  && $this->notHasFact($facts, AdaptiveConstants::FACT_PERSISTENT_FAIL)
-            && $this->notHasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT);
+        return $this->hasCriticalScore($facts)
+            && $this->isTextualLearner($facts)
+            && $this->isBeginnerDifficulty($facts)
+            && $this->notHasFact($facts, AdaptiveConstants::FACT_PERSISTENT_FAIL)
+            && ! $this->isFinalProject($facts);
     }
 
     public function apply(array $state, array $context): array

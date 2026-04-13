@@ -19,10 +19,10 @@ class RuleCriticalBacktracking extends BaseAdaptiveRule
 
     public function evaluate(array $facts): bool
     {
-        return $this->hasFact($facts, AdaptiveConstants::FACT_SCORE_CRITICAL)
-            && $this->hasAnyFact($facts, [AdaptiveConstants::FACT_DIFF_MEDIUM, AdaptiveConstants::FACT_DIFF_HARD])
+        return $this->hasCriticalScore($facts)
+            && ($this->isMediumDifficulty($facts) || $this->isHardDifficulty($facts))
             && $this->notHasFact($facts, AdaptiveConstants::FACT_PERSISTENT_FAIL)
-            && $this->notHasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT); // Final Project has its own rules
+            && ! $this->isFinalProject($facts); // Final Project has its own rules
     }
 
     public function apply(array $state, array $context): array

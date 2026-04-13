@@ -18,39 +18,54 @@ trait AppliesAchievement
 
     protected function applyGoldCertificate(array $state, array $context): array
     {
-        $state['next_action']                   = AdaptiveConstants::ACTION_ISSUE_CERTIFICATE;
-        $state['message']                       = 'Luar Biasa! Anda layak mendapatkan Sertifikat EMAS '
-            . 'sebagai Object-Oriented Architect.';
-        $state['certification']                 = AdaptiveConstants::CERT_GOLD;
-        $state['achievement']                   = AdaptiveConstants::ACHIEVEMENT_GOLD_CERTIFICATE;
-        $state['gamification_data']['badges'][] = AdaptiveConstants::BADGE_GOLD_ARCHITECT;
-        $state                                  = $this->recordCertification($state, $context, AdaptiveConstants::CERT_GOLD);
-
-        return $this->applyModuleProgress($state, $context);
+        return $this->applyCertificate(
+            state: $state,
+            context: $context,
+            certification: AdaptiveConstants::CERT_GOLD,
+            achievement: AdaptiveConstants::ACHIEVEMENT_GOLD_CERTIFICATE,
+            badge: AdaptiveConstants::BADGE_GOLD_ARCHITECT,
+            message: 'Luar Biasa! Anda layak mendapatkan Sertifikat EMAS sebagai Object-Oriented Architect.',
+        );
     }
 
     protected function applySilverCertificate(array $state, array $context): array
     {
-        $state['next_action']                   = AdaptiveConstants::ACTION_ISSUE_CERTIFICATE;
-        $state['message']                       = 'Selamat! Anda layak mendapatkan Sertifikat PERAK '
-            . 'sebagai Object-Oriented Developer.';
-        $state['certification']                 = AdaptiveConstants::CERT_SILVER;
-        $state['achievement']                   = AdaptiveConstants::ACHIEVEMENT_SILVER_CERTIFICATE;
-        $state['gamification_data']['badges'][] = AdaptiveConstants::BADGE_SILVER_DEVELOPER;
-        $state                                  = $this->recordCertification($state, $context, AdaptiveConstants::CERT_SILVER);
-
-        return $this->applyModuleProgress($state, $context);
+        return $this->applyCertificate(
+            state: $state,
+            context: $context,
+            certification: AdaptiveConstants::CERT_SILVER,
+            achievement: AdaptiveConstants::ACHIEVEMENT_SILVER_CERTIFICATE,
+            badge: AdaptiveConstants::BADGE_SILVER_DEVELOPER,
+            message: 'Selamat! Anda layak mendapatkan Sertifikat PERAK sebagai Object-Oriented Developer.',
+        );
     }
 
     protected function applyBronzeCertificate(array $state, array $context): array
     {
+        return $this->applyCertificate(
+            state: $state,
+            context: $context,
+            certification: AdaptiveConstants::CERT_BRONZE,
+            achievement: AdaptiveConstants::ACHIEVEMENT_BRONZE_CERTIFICATE,
+            badge: AdaptiveConstants::BADGE_BRONZE_JUNIOR,
+            message: 'Bagus! Anda layak mendapatkan Sertifikat PERUNGGU sebagai Junior Object-Oriented Programmer.',
+        );
+    }
+
+    private function applyCertificate(
+        array $state,
+        array $context,
+        string $certification,
+        string $achievement,
+        string $badge,
+        string $message,
+    ): array {
         $state['next_action']                   = AdaptiveConstants::ACTION_ISSUE_CERTIFICATE;
-        $state['message']                       = 'Bagus! Anda layak mendapatkan Sertifikat PERUNGGU '
-            . 'sebagai Junior Object-Oriented Programmer.';
-        $state['certification']                 = AdaptiveConstants::CERT_BRONZE;
-        $state['achievement']                   = AdaptiveConstants::ACHIEVEMENT_BRONZE_CERTIFICATE;
-        $state['gamification_data']['badges'][] = AdaptiveConstants::BADGE_BRONZE_JUNIOR;
-        $state                                  = $this->recordCertification($state, $context, AdaptiveConstants::CERT_BRONZE);
+        $state['message']                       = $message;
+        $state['certification']                 = $certification;
+        $state['achievement']                   = $achievement;
+        $state['gamification_data']['badges'][] = $badge;
+        $state                                  = $this->recordCertification($state, $context, $certification);
 
         return $this->applyModuleProgress($state, $context);
     }

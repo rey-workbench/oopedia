@@ -19,12 +19,11 @@ class RuleAcceleratedJump extends BaseAdaptiveRule
 
     public function evaluate(array $facts): bool
     {
-        return $this->hasAllFacts($facts, [
-            AdaptiveConstants::FACT_SCORE_MASTERY,
-            AdaptiveConstants::FACT_TIME_FAST,
-            AdaptiveConstants::FACT_DIFF_BEGINNER,
-        ])  && $this->notHasFact($facts, AdaptiveConstants::FACT_HINT_USED)
-            && $this->notHasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT);
+        return $this->hasMasteryScore($facts)
+            && $this->hasFact($facts, AdaptiveConstants::FACT_TIME_FAST)
+            && $this->isBeginnerDifficulty($facts)
+            && $this->notHasFact($facts, AdaptiveConstants::FACT_HINT_USED)
+            && ! $this->isFinalProject($facts);
     }
 
     public function apply(array $state, array $context): array

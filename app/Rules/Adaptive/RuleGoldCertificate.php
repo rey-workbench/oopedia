@@ -19,12 +19,11 @@ class RuleGoldCertificate extends BaseAdaptiveRule
 
     public function evaluate(array $facts): bool
     {
-        return $this->hasAllFacts($facts, [
-            AdaptiveConstants::FACT_SCORE_MASTERY,
-            AdaptiveConstants::FACT_TIME_FAST,
-            AdaptiveConstants::FACT_IS_FINAL_PROJECT,
-            AdaptiveConstants::FACT_SATISFACTORY_PROGRESS,
-        ]) && $this->notHasFact($facts, AdaptiveConstants::FACT_HINT_USED);
+        return $this->hasMasteryScore($facts)
+            && $this->hasFact($facts, AdaptiveConstants::FACT_TIME_FAST)
+            && $this->isFinalProject($facts)
+            && $this->hasFact($facts, AdaptiveConstants::FACT_SATISFACTORY_PROGRESS)
+            && $this->notHasFact($facts, AdaptiveConstants::FACT_HINT_USED);
     }
 
     public function apply(array $state, array $context): array

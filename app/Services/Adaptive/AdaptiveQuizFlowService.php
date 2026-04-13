@@ -19,6 +19,7 @@ use App\Enums\Lms\QuestionType;
 use App\Models\Material;
 use App\Models\Question;
 use App\Models\StudentState;
+use App\Rules\Adaptive\Constants\AdaptiveConstants;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -65,23 +66,14 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         $isGuest    = $userId === 'guest';
         $difficulty = $question->difficulty ?? QuestionDifficulty::BEGINNER;
 
-        $studentState = null;
-        if (! $isGuest) {
-            $studentState = $this->performanceService->updateStudentPerformance(
-                $userId,
-                $isCorrect,
-                $timeSpent,
-                $usedHint,
-            );
-
-            $this->performanceService->updateLearningStyleFromInteraction(
-                $userId,
-                $question->type ?? ContentCategory::TEORI,
-                $timeSpent,
-            );
-        } else {
-            $studentState = $this->guestProgressService->getStudentState();
-        }
+        $studentState = $this->resolveStudentState(
+            userId: $userId,
+            isGuest: $isGuest,
+            isCorrect: $isCorrect,
+            timeSpent: $timeSpent,
+            usedHint: $usedHint,
+            questionType: $question->type ?? ContentCategory::TEORI,
+        );
 
         $score = $this->performanceService->calculateScore($isCorrect, $usedHint, $timeSpent, $difficulty);
 
@@ -105,47 +97,18 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             );
         }
 
-        $answerId     = null;
-        $userResponse = null;
-
-        if ($question->question_type === QuestionType::RADIO_BUTTON) {
-            $answerId = $data['answer'] ?? null;
-        } elseif ($question->question_type === QuestionType::FILL_IN_THE_BLANK) {
-            $userResponse = $data['fill_in_the_blank_answer'] ?? null;
-        } elseif ($question->question_type === QuestionType::DRAG_AND_DROP) {
-            $userResponse = $data['drag_and_drop_answers'] ?? null;
-        }
-
-        if (! $isGuest) {
-            $this->progressRepo->saveProgress([
-                'user_id'       => $userId,
-                'material_id'   => $material->id,
-                'question_id'   => $question->id,
-                'answer_id'     => $answerId,
-                'user_response' => $userResponse,
-                'is_correct'    => $isCorrect,
-                'is_answered'   => true,
-                'attributes'    => [
-                    'score'      => $score,
-                    'difficulty' => $difficulty,
-                    'used_hint'  => $usedHint,
-                    'time_spent' => $timeSpent,
-                ],
-            ]);
-
-            try {
-                Cache::forget("dashboard_index_{$userId}_false");
-                Cache::forget("dashboard_index_{$userId}_true");
-                Cache::forget("dashboard_inprogress_{$userId}_false");
-                Cache::forget("dashboard_inprogress_{$userId}_true");
-                Cache::forget("dashboard_completed_{$userId}_false");
-                Cache::forget("dashboard_completed_{$userId}_true");
-            } catch (\Throwable $throwable) {
-                Log::warning('Failed to clear dashboard caches: ' . $throwable->getMessage());
-            }
-        } else {
-            $this->guestProgressService->saveProgress($data, $isCorrect, $question->id);
-        }
+        $this->persistAttemptData(
+            question: $question,
+            material: $material,
+            userId: $userId,
+            isGuest: $isGuest,
+            isCorrect: $isCorrect,
+            usedHint: $usedHint,
+            timeSpent: $timeSpent,
+            score: $score,
+            difficulty: $difficulty,
+            data: $data,
+        );
 
         $adaptiveResult = $this->evaluateAdaptiveRuleSet(
             studentState: $studentState,
@@ -159,34 +122,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             moduleId: $material->module_id ?? null,
         );
 
-        $ruleOutput    = $adaptiveResult['new_state'] ?? [];
-        $adaptiveState = $studentState->adaptive_state;
-        if (is_string($adaptiveState)) {
-            $adaptiveState = json_decode($adaptiveState, true) ?? [];
-        }
-        $adaptiveState = $adaptiveState ?? [];
-
-        if (isset($ruleOutput['adaptive_state'])) {
-            $adaptiveState = array_merge($adaptiveState, $ruleOutput['adaptive_state']);
-        }
-
-        $adaptiveState['current_material_id'] = $material->id;
-        $adaptiveState['last_rule']           = $adaptiveResult['triggered_rule'] ?? null;
-        $adaptiveState['fast_track_active']   = $ruleOutput['fast_track_active']
-            ?? ($adaptiveState['fast_track_active'] ?? false);
-
-        if (isset($ruleOutput['target_difficulty'])) {
-            $adaptiveState['target_difficulty'] = $ruleOutput['target_difficulty'];
-        }
-
-        $adaptiveState['time_metrics']      = [
-            'avg_time_per_question' => (! $isGuest)
-                ? $this->performanceService->calculateAverageTimeSpent($userId, $material->id)
-                : 0,
-            'total_time_spent'      => (! $isGuest)
-                ? $this->performanceService->calculateTotalTimeSpent($userId, $material->id)
-                : 0,
-        ];
+        $ruleOutput = $adaptiveResult['new_state'] ?? [];
 
         if (isset($ruleOutput['learning_profile'])) {
             $studentState->learning_profile = $ruleOutput['learning_profile'];
@@ -200,13 +136,18 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
 
         $this->mergeAdaptiveBadges($studentState, $ruleOutput);
 
+        $adaptiveState = $this->buildAdaptiveState(
+            studentState: $studentState,
+            ruleOutput: $ruleOutput,
+            adaptiveResult: $adaptiveResult,
+            material: $material,
+            userId: $userId,
+            isGuest: $isGuest,
+        );
+
         $studentState->adaptive_state = $adaptiveState;
 
-        if ($isGuest) {
-            $this->guestProgressService->saveStudentState($studentState);
-        } else {
-            $studentState->save();
-        }
+        $this->saveStudentState($studentState, $isGuest);
 
         $nextActionData = $this->nextActionResolver->resolve(
             $ruleOutput['next_action'] ?? 'NEXT_QUESTION',
@@ -215,12 +156,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             $userId,
         );
 
-        $mappedState = [
-            'gamification'     => $studentState->gamification_data,
-            'performance'      => $studentState->performance_metrics,
-            'learning_profile' => $studentState->learning_profile,
-            'adaptive_state'   => $studentState->adaptive_state,
-        ];
+        $mappedState = $this->mapStudentStatePayload($studentState);
 
         return [
             'status'          => $isCorrect ? 'success' : 'error',
@@ -245,6 +181,185 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
                     'fast_track_active' => $adaptiveState['fast_track_active'] ?? false,
                 ]),
             ],
+        ];
+    }
+
+    private function resolveStudentState(
+        string $userId,
+        bool $isGuest,
+        bool $isCorrect,
+        int $timeSpent,
+        bool $usedHint,
+        ContentCategory $questionType,
+    ): StudentState {
+        if ($isGuest) {
+            return $this->guestProgressService->getStudentState();
+        }
+
+        $studentState = $this->performanceService->updateStudentPerformance(
+            $userId,
+            $isCorrect,
+            $timeSpent,
+            $usedHint,
+        );
+
+        $this->performanceService->updateLearningStyleFromInteraction($userId, $questionType, $timeSpent);
+
+        return $studentState;
+    }
+
+    /** @param array<string, mixed> $data */
+    private function persistAttemptData(
+        Question $question,
+        Material $material,
+        string $userId,
+        bool $isGuest,
+        bool $isCorrect,
+        bool $usedHint,
+        int $timeSpent,
+        int $score,
+        QuestionDifficulty|string $difficulty,
+        array $data,
+    ): void {
+        if ($isGuest) {
+            $this->guestProgressService->saveProgress($data, $isCorrect, $question->id);
+
+            return;
+        }
+
+        $answerPayload = $this->extractAnswerPayload($question, $data);
+
+        $this->progressRepo->saveProgress([
+            'user_id'       => $userId,
+            'material_id'   => $material->id,
+            'question_id'   => $question->id,
+            'answer_id'     => $answerPayload['answer_id'],
+            'user_response' => $answerPayload['user_response'],
+            'is_correct'    => $isCorrect,
+            'is_answered'   => true,
+            'attributes'    => [
+                'score'      => $score,
+                'difficulty' => $difficulty,
+                'used_hint'  => $usedHint,
+                'time_spent' => $timeSpent,
+            ],
+        ]);
+
+        $this->clearDashboardCaches($userId);
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     * @return array{answer_id: mixed, user_response: mixed}
+     */
+    private function extractAnswerPayload(Question $question, array $data): array
+    {
+        if ($question->question_type === QuestionType::RADIO_BUTTON) {
+            return [
+                'answer_id'     => $data['answer'] ?? null,
+                'user_response' => null,
+            ];
+        }
+
+        if ($question->question_type === QuestionType::FILL_IN_THE_BLANK) {
+            return [
+                'answer_id'     => null,
+                'user_response' => $data['fill_in_the_blank_answer'] ?? null,
+            ];
+        }
+
+        if ($question->question_type === QuestionType::DRAG_AND_DROP) {
+            return [
+                'answer_id'     => null,
+                'user_response' => $data['drag_and_drop_answers'] ?? null,
+            ];
+        }
+
+        return [
+            'answer_id'     => null,
+            'user_response' => null,
+        ];
+    }
+
+    private function clearDashboardCaches(string $userId): void
+    {
+        try {
+            Cache::forget("dashboard_index_{$userId}_false");
+            Cache::forget("dashboard_index_{$userId}_true");
+            Cache::forget("dashboard_inprogress_{$userId}_false");
+            Cache::forget("dashboard_inprogress_{$userId}_true");
+            Cache::forget("dashboard_completed_{$userId}_false");
+            Cache::forget("dashboard_completed_{$userId}_true");
+        } catch (\Throwable $throwable) {
+            Log::warning('Failed to clear dashboard caches: ' . $throwable->getMessage());
+        }
+    }
+
+    /**
+     * @param array<string, mixed> $ruleOutput
+     * @param array<string, mixed> $adaptiveResult
+     * @return array<string, mixed>
+     */
+    private function buildAdaptiveState(
+        StudentState $studentState,
+        array $ruleOutput,
+        array $adaptiveResult,
+        Material $material,
+        string $userId,
+        bool $isGuest,
+    ): array {
+        $adaptiveState = $studentState->adaptive_state;
+
+        if (is_string($adaptiveState)) {
+            $adaptiveState = json_decode($adaptiveState, true) ?? [];
+        }
+
+        $adaptiveState = is_array($adaptiveState) ? $adaptiveState : [];
+
+        if (isset($ruleOutput[AdaptiveConstants::ADAPTIVE_STATE]) && is_array($ruleOutput[AdaptiveConstants::ADAPTIVE_STATE])) {
+            $adaptiveState = array_merge($adaptiveState, $ruleOutput[AdaptiveConstants::ADAPTIVE_STATE]);
+        }
+
+        $adaptiveState['current_material_id'] = $material->id;
+        $adaptiveState['last_rule']           = $adaptiveResult['triggered_rule'] ?? null;
+        $adaptiveState['fast_track_active']   = $ruleOutput[AdaptiveConstants::FAST_TRACK_ACTIVE]
+            ?? ($adaptiveState['fast_track_active'] ?? false);
+
+        if (isset($ruleOutput[AdaptiveConstants::TARGET_DIFFICULTY])) {
+            $adaptiveState['target_difficulty'] = $ruleOutput[AdaptiveConstants::TARGET_DIFFICULTY];
+        }
+
+        $adaptiveState['time_metrics'] = [
+            'avg_time_per_question' => $isGuest
+                ? 0
+                : $this->performanceService->calculateAverageTimeSpent($userId, $material->id),
+            'total_time_spent'      => $isGuest
+                ? 0
+                : $this->performanceService->calculateTotalTimeSpent($userId, $material->id),
+        ];
+
+        return $adaptiveState;
+    }
+
+    private function saveStudentState(StudentState $studentState, bool $isGuest): void
+    {
+        if ($isGuest) {
+            $this->guestProgressService->saveStudentState($studentState);
+
+            return;
+        }
+
+        $studentState->save();
+    }
+
+    /** @return array<string, mixed> */
+    private function mapStudentStatePayload(StudentState $studentState): array
+    {
+        return [
+            'gamification'     => $studentState->gamification_data,
+            'performance'      => $studentState->performance_metrics,
+            'learning_profile' => $studentState->learning_profile,
+            'adaptive_state'   => $studentState->adaptive_state,
         ];
     }
 
@@ -343,8 +458,8 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         }
 
         $existingCertification = $certifications[$materialId] ?? null;
-        $shouldUpdate          = $this->getCertificationRank($certification)
-            >= $this->getCertificationRank(is_string($existingCertification) ? $existingCertification : null);
+        $shouldUpdate          = AdaptiveConstants::certificationRank($certification)
+            >= AdaptiveConstants::certificationRank(is_string($existingCertification) ? $existingCertification : null);
 
         if (! $shouldUpdate) {
             return;
@@ -372,15 +487,5 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
 
         $gamificationData['badges']      = array_values(array_unique(array_merge($currentBadges, $newBadges)));
         $studentState->gamification_data = $gamificationData;
-    }
-
-    private function getCertificationRank(?string $certification): int
-    {
-        return match ($certification) {
-            'gold'   => 3,
-            'silver' => 2,
-            'bronze' => 1,
-            default  => 0,
-        };
     }
 }

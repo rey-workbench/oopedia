@@ -7,6 +7,7 @@ namespace App\Services\Adaptive;
 use App\Contracts\Services\NextActionResolverServiceInterface;
 use App\Models\Material;
 use App\Models\Question;
+use App\Rules\Adaptive\Constants\AdaptiveConstants;
 
 final class NextActionResolverService implements NextActionResolverServiceInterface
 {
@@ -16,48 +17,55 @@ final class NextActionResolverService implements NextActionResolverServiceInterf
         Question $question,
         ?string $userId = null,
     ): array {
+        unset($question, $userId);
+
         return match ($actionCommand) {
             'STUDY_MATERIAL' => [
                 'label' => 'Ulas Materi: ' . $material->title,
                 'url'   => route('mahasiswa.materials.show', $material->id),
                 'type'  => 'material',
             ],
-            'REDUCE_DIFFICULTY' => [
-                'label'   => 'Soal Berikutnya',
-                'url'     => $this->questionUrl($material),
-                'type'    => 'question',
-                'message' => 'Sepertinya soal ini agak sulit. ' .
-                    'Kami menyesuaikan tingkat kesulitannya agar kamu lebih nyaman belajar!',
-            ],
-            'INCREASE_DIFFICULTY' => [
-                'label'   => 'Soal Berikutnya',
-                'url'     => $this->questionUrl($material),
-                'type'    => 'question',
-                'message' => 'Luar Biasa! Kamu menjawab dengan sangat cepat dan tepat. ' .
-                    'Tantangan selanjutnya telah menantimu di level yang lebih tinggi!',
-            ],
-            'NEXT_MATERIAL'   => $this->jumpToNextMaterial($material),
-            'FINISH_MATERIAL' => [
+            AdaptiveConstants::ACTION_REDUCE_DIFFICULTY => $this->questionAction(
+                $material,
+                'Sepertinya soal ini agak sulit. Kami menyesuaikan tingkat kesulitannya agar kamu lebih nyaman belajar!',
+            ),
+            AdaptiveConstants::ACTION_INCREASE_DIFFICULTY => $this->questionAction(
+                $material,
+                'Luar Biasa! Kamu menjawab dengan sangat cepat dan tepat. Tantangan selanjutnya telah menantimu di level yang lebih tinggi!',
+            ),
+            AdaptiveConstants::ACTION_NEXT_MATERIAL   => $this->jumpToNextMaterial($material),
+            AdaptiveConstants::ACTION_FINISH_MATERIAL => [
                 'label' => 'Selesaikan Modul',
                 'url'   => route('mahasiswa.dashboard'),
                 'type'  => 'navigation',
             ],
-            'ISSUE_CERTIFICATE' => [
+            AdaptiveConstants::ACTION_ISSUE_CERTIFICATE => [
                 'label' => 'Klaim Sertifikat',
                 'url'   => route('mahasiswa.dashboard'),
                 'type'  => 'certificate',
             ],
-            'STUDY_SYNTAX'  => $this->studySubMaterial($material, 'sintaks', 'Pelajari Sintaks'),
-            'STUDY_THEORY'  => $this->studySubMaterial($material, 'teori', 'Pahami Konsep'),
-            'STUDY_MIXED'   => $this->studySubMaterial($material, 'mixed', 'Materi Komprehensif'),
-            'STUDY_VISUAL'  => $this->studySubMaterial($material, null, 'Materi Visual', 'visual'),
-            'STUDY_TEXTUAL' => $this->studySubMaterial($material, null, 'Materi Tekstual', 'textual'),
-            default         => [
-                'label' => 'Soal Berikutnya',
-                'url'   => $this->questionUrl($material),
-                'type'  => 'question',
-            ],
+            AdaptiveConstants::ACTION_STUDY_SYNTAX   => $this->studySubMaterial($material, 'sintaks', 'Pelajari Sintaks'),
+            AdaptiveConstants::ACTION_STUDY_THEORY   => $this->studySubMaterial($material, 'teori', 'Pahami Konsep'),
+            AdaptiveConstants::ACTION_STUDY_MIXED    => $this->studySubMaterial($material, 'mixed', 'Materi Komprehensif'),
+            AdaptiveConstants::ACTION_STUDY_VISUAL   => $this->studySubMaterial($material, null, 'Materi Visual', 'visual'),
+            AdaptiveConstants::ACTION_STUDY_TEXTUAL  => $this->studySubMaterial($material, null, 'Materi Tekstual', 'textual'),
+            default                                  => $this->questionAction($material),
         };
+    }
+
+    private function questionAction(Material $material, ?string $message = null): array
+    {
+        $action = [
+            'label' => 'Soal Berikutnya',
+            'url'   => $this->questionUrl($material),
+            'type'  => 'question',
+        ];
+
+        if (is_string($message) && $message !== '') {
+            $action['message'] = $message;
+        }
+
+        return $action;
     }
 
     private function questionUrl(Material $material): string

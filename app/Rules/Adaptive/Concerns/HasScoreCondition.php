@@ -28,17 +28,11 @@ trait HasScoreCondition
 
     protected function hasPassingScore(array $facts): bool
     {
-        return $this->hasAnyFact($facts, [
-            AdaptiveConstants::FACT_SCORE_STANDARD,
-            AdaptiveConstants::FACT_SCORE_MASTERY,
-        ]);
+        return $this->hasStandardScore($facts) || $this->hasMasteryScore($facts);
     }
 
     protected function hasFailingScore(array $facts): bool
     {
-        return $this->hasAnyFact($facts, [
-            AdaptiveConstants::FACT_SCORE_CRITICAL,
-            AdaptiveConstants::FACT_SCORE_REMEDIAL,
-        ]);
+        return $this->hasCriticalScore($facts) || $this->hasRemedialScore($facts);
     }
 }

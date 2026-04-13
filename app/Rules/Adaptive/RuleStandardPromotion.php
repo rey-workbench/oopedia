@@ -19,16 +19,12 @@ class RuleStandardPromotion extends BaseAdaptiveRule
 
     public function evaluate(array $facts): bool
     {
-        return $this->hasAnyFact($facts, [
-            AdaptiveConstants::FACT_SCORE_STANDARD,
-            AdaptiveConstants::FACT_SCORE_MASTERY,
-        ])
-            && $this->hasAnyFact($facts, [
-                AdaptiveConstants::FACT_DIFF_BEGINNER,
-                AdaptiveConstants::FACT_DIFF_MEDIUM,
-                AdaptiveConstants::FACT_DIFF_HARD,
-            ])
-            && $this->notHasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT);
+        return $this->hasPassingScore($facts)
+            && ($this->isBeginnerDifficulty($facts)
+                || $this->isMediumDifficulty($facts)
+                || $this->isHardDifficulty($facts))
+            && ! $this->isFinalProject($facts)
+            && ! $this->isPractice($facts);
     }
 
     public function apply(array $state, array $context): array

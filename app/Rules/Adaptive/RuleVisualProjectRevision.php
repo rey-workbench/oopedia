@@ -19,12 +19,9 @@ class RuleVisualProjectRevision extends BaseAdaptiveRule
 
     public function evaluate(array $facts): bool
     {
-        return $this->hasAnyFact(
-            $facts,
-            [AdaptiveConstants::FACT_SCORE_CRITICAL, AdaptiveConstants::FACT_SCORE_REMEDIAL],
-        )
-            && $this->hasFact($facts, AdaptiveConstants::FACT_STYLE_VISUAL)
-            && $this->hasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT);
+        return $this->hasFailingScore($facts)
+            && $this->isVisualLearner($facts)
+            && $this->isFinalProject($facts);
     }
 
     public function apply(array $state, array $context): array

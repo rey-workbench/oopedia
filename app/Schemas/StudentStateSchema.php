@@ -38,14 +38,6 @@ final class StudentStateSchema
         ['name' => self::LEVEL_MASTER,   'min' => 1000],
     ];
 
-    public const array LEVELS = [
-        self::LEVEL_PEMULA,
-        self::LEVEL_JUNIOR,
-        self::LEVEL_MENENGAH,
-        self::LEVEL_AHLI,
-        self::LEVEL_MASTER,
-    ];
-
     public const string STYLE_VISUAL  = 'visual';
 
     public const string STYLE_TEXTUAL = 'textual';
@@ -63,12 +55,6 @@ final class StudentStateSchema
     public const string KEY_UNLOCKED_MODULES = 'unlocked_modules';
 
     public const string KEY_TIME_DISTRIBUTION = 'time_distribution';
-
-    public const array LEARNING_STYLES = [
-        self::STYLE_VISUAL,
-        self::STYLE_TEXTUAL,
-        self::STYLE_MIXED,
-    ];
 
     public const array PERFORMANCE_METRICS = [
         'total_questions_answered' => 0,
@@ -110,13 +96,6 @@ final class StudentStateSchema
         ],
     ];
 
-    public const array DIFFICULTIES = [
-        'beginner',
-        'medium',
-        'hard',
-        'final',
-    ];
-
     public static function getDefaultGamification(): array
     {
         return self::GAMIFICATION;
@@ -148,17 +127,6 @@ final class StudentStateSchema
     public const int XP_BONUS_FAST      = 5;
 
     public const int XP_PENALTY_HINT    = 5;
-
-    public const array XP_REWARDS = [
-        'base' => [
-            'beginner' => self::XP_REWARD_BEGINNER,
-            'medium'   => self::XP_REWARD_MEDIUM,
-            'hard'     => self::XP_REWARD_HARD,
-            'final'    => self::XP_REWARD_FINAL,
-        ],
-        'fast_bonus'   => self::XP_BONUS_FAST,
-        'hint_penalty' => self::XP_PENALTY_HINT,
-    ];
 
     public const int SCORE_BASE_REWARD  = 80;
 
@@ -213,23 +181,6 @@ final class StudentStateSchema
         'persistent_fail'           => self::THRESHOLD_PERSISTENT_FAIL,
         'satisfactory_progress_pct' => self::THRESHOLD_SATISFACTORY_PROGRESS,
     ];
-
-    public const float WEIGHT_PROGRESS_BEGINNER = 1.0;
-
-    public const float WEIGHT_PROGRESS_MEDIUM   = 1.5;
-
-    public const float WEIGHT_PROGRESS_HARD     = 2.0;
-
-    public const int BONUS_REACHING_HARD_BASE      = 10;
-
-    public const int BONUS_HARD_QUESTION_ANSWERED  = 5;
-
-    public const int BONUS_MAX_HARD_PROGRESSION    = 30;
-
-    public const int BONUS_REACHING_MEDIUM_STREAK  = 10;
-
-    public const int THRESHOLD_MEDIUM_REACHED_COUNT = 3;
-
     public const int SCORE_MIN_CORRECT = 70;
 
     public const int SCORE_MAX_WRONG   = 69;

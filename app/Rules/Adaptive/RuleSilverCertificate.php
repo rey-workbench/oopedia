@@ -19,14 +19,9 @@ class RuleSilverCertificate extends BaseAdaptiveRule
 
     public function evaluate(array $facts): bool
     {
-        return $this->hasAnyFact(
-            $facts,
-            [AdaptiveConstants::FACT_SCORE_STANDARD, AdaptiveConstants::FACT_SCORE_MASTERY],
-        )
-            && $this->hasAllFacts($facts, [
-                AdaptiveConstants::FACT_IS_FINAL_PROJECT,
-                AdaptiveConstants::FACT_SATISFACTORY_PROGRESS,
-            ])
+        return $this->hasPassingScore($facts)
+            && $this->isFinalProject($facts)
+            && $this->hasFact($facts, AdaptiveConstants::FACT_SATISFACTORY_PROGRESS)
             && $this->notHasFact($facts, AdaptiveConstants::FACT_HINT_USED);
     }
 

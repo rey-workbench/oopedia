@@ -19,9 +19,9 @@ class RuleRemedialIndependent extends BaseAdaptiveRule
 
     public function evaluate(array $facts): bool
     {
-        return $this->hasFact($facts, AdaptiveConstants::FACT_SCORE_REMEDIAL)
+        return $this->hasRemedialScore($facts)
             && $this->notHasFact($facts, AdaptiveConstants::FACT_HINT_USED)
-            && $this->notHasFact($facts, AdaptiveConstants::FACT_IS_FINAL_PROJECT);
+            && ! $this->isFinalProject($facts);
     }
 
     public function apply(array $state, array $context): array

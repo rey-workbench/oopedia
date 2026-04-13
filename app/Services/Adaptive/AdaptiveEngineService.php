@@ -24,36 +24,24 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
         array $currentState,
         array $context,
     ): array {
-        $triggeredRule = null;
-        $matchedRules  = [];
-        $newState      = $currentState;
-
-        foreach ($this->ruleRegistry->getAllRules() as $rule) {
-            if ($this->shouldSkipRule($rule, $currentState, $context)) {
-                continue;
-            }
-
-            if ($rule->evaluate($facts)) {
-                $matchedRules[] = $rule;
-
-                if (! $triggeredRule) {
-                    $triggeredRule    = $rule;
-                    $context['facts'] = $facts;
-                    $newState         = $rule->apply($newState, $context);
-                }
-            }
-        }
+        [$triggeredRule, $matchedRules, $newState] = $this->evaluateRegisteredRules(
+            facts: $facts,
+            currentState: $currentState,
+            context: $context,
+        );
 
         if (! $triggeredRule) {
-            $newState['next_action'] = 'NEXT_QUESTION';
-            $newState['message']     = $context['is_correct']
-                ? 'Jawaban benar! Silakan lanjut ke soal berikutnya.'
-                : 'Jawaban kurang tepat. Mari coba lagi.';
+            $newState = $this->applyDefaultFallback(
+                state: $newState,
+                isCorrect: (bool) ($context['is_correct'] ?? false),
+            );
         }
 
         Log::info('Adaptive Rule Evaluation', [
             'facts_gathered' => $facts,
-            'is_correct'     => $context['is_correct'],
+            'is_correct'     => $context['is_correct'] ?? null,
+            'triggered_rule' => $triggeredRule?->getRuleId(),
+            'matched_count'  => count($matchedRules),
             'matched_rules'  => array_map(
                 fn (AdaptiveRuleInterface $rule): string => $rule->getRuleId(),
                 $matchedRules,
@@ -69,6 +57,52 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             'new_state' => $newState,
             'facts'     => $facts,
         ];
+    }
+
+    /**
+     * @return array{0: AdaptiveRuleInterface|null, 1: array<int, AdaptiveRuleInterface>, 2: array<string, mixed>}
+     */
+    private function evaluateRegisteredRules(array $facts, array $currentState, array $context): array
+    {
+        $triggeredRule = null;
+        $matchedRules  = [];
+        $newState      = $currentState;
+
+        foreach ($this->ruleRegistry->getAllRules() as $rule) {
+            if ($this->shouldSkipRule($rule, $currentState, $context)) {
+                continue;
+            }
+
+            if (! $rule->evaluate($facts)) {
+                continue;
+            }
+
+            $matchedRules[] = $rule;
+
+            if ($triggeredRule !== null) {
+                continue;
+            }
+
+            $triggeredRule    = $rule;
+            $context['facts'] = $facts;
+            $newState         = $rule->apply($newState, $context);
+        }
+
+        return [$triggeredRule, $matchedRules, $newState];
+    }
+
+    /**
+     * @param array<string, mixed> $state
+     * @return array<string, mixed>
+     */
+    private function applyDefaultFallback(array $state, bool $isCorrect): array
+    {
+        $state['next_action'] = AdaptiveConstants::ACTION_NEXT_QUESTION;
+        $state['message']     = $isCorrect
+            ? 'Jawaban benar! Silakan lanjut ke soal berikutnya.'
+            : 'Jawaban kurang tepat. Mari coba lagi.';
+
+        return $state;
     }
 
     public function getAllRules(): array

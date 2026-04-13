@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Rules\Adaptive\Constants;
 
 /**
@@ -169,6 +171,8 @@ final class AdaptiveConstants
 
     public const string ACTION_REDUCE_DIFFICULTY = 'REDUCE_DIFFICULTY';
 
+    public const string ACTION_INCREASE_DIFFICULTY = 'INCREASE_DIFFICULTY';
+
     public const string ACTION_STUDY_VISUAL = 'STUDY_VISUAL';
 
     public const string ACTION_STUDY_TEXTUAL = 'STUDY_TEXTUAL';
@@ -237,6 +241,18 @@ final class AdaptiveConstants
 
     public const string DIFFICULTY_HARD = 'hard';
 
+    public const array QUESTION_ACTION_COMMANDS = [
+        self::ACTION_NEXT_QUESTION,
+        self::ACTION_REDUCE_DIFFICULTY,
+        self::ACTION_INCREASE_DIFFICULTY,
+    ];
+
+    public const array CERTIFICATION_RANKS = [
+        self::CERT_BRONZE => 1,
+        self::CERT_SILVER => 2,
+        self::CERT_GOLD   => 3,
+    ];
+
     /**
      * Get detailed descriptions for Fact (G) codes.
      */
@@ -296,5 +312,19 @@ final class AdaptiveConstants
             self::ACTION_PERSISTENT_TEXTUAL_NET         => 'Safety Net Tekstual (Gagal Berulang)',
             self::ACTION_ACCELERATED_MATERIAL_PROMOTION => 'Loncatan Akseleratif Modul',
         ];
+    }
+
+    public static function isQuestionActionCommand(string $actionCommand): bool
+    {
+        return in_array($actionCommand, self::QUESTION_ACTION_COMMANDS, true);
+    }
+
+    public static function certificationRank(?string $certification): int
+    {
+        if (! is_string($certification) || $certification === '') {
+            return 0;
+        }
+
+        return self::CERTIFICATION_RANKS[$certification] ?? 0;
     }
 }
