@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Profile;
 
 use App\Http\Requests\BaseFormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class UpdateProfileRequest extends BaseFormRequest
+final class UpdateProfileRequest extends BaseFormRequest
 {
     public function rules(): array
     {

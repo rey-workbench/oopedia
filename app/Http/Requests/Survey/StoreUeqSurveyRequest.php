@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Survey;
 
 use App\Http\Requests\BaseFormRequest;
 
-class StoreUeqSurveyRequest extends BaseFormRequest
+final class StoreUeqSurveyRequest extends BaseFormRequest
 {
     public function rules(): array
     {

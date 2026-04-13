@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Survey;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseFormRequest;
 
-final class StoreMslqRequest extends FormRequest
+final class StoreMslqRequest extends BaseFormRequest
 {
     public function authorize(): bool
     {

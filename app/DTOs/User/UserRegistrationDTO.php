@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DTOs\User;
 
 use App\Models\Role;
 use Illuminate\Http\Request;
 
-readonly class UserRegistrationDTO
+final readonly class UserRegistrationDTO
 {
     public string $roleName;
 
@@ -17,8 +19,7 @@ readonly class UserRegistrationDTO
         public string $password,
         public string $role_id,
         public bool $is_approved,
-    ) {
-    }
+    ) {}
 
     public static function fromRequest(Request $request): self
     {

@@ -24,6 +24,7 @@ trait AppliesAchievement
         $state['certification']                 = AdaptiveConstants::CERT_GOLD;
         $state['achievement']                   = AdaptiveConstants::ACHIEVEMENT_GOLD_CERTIFICATE;
         $state['gamification_data']['badges'][] = AdaptiveConstants::BADGE_GOLD_ARCHITECT;
+        $state                                  = $this->recordCertification($state, $context, AdaptiveConstants::CERT_GOLD);
 
         return $this->applyModuleProgress($state, $context);
     }
@@ -36,6 +37,7 @@ trait AppliesAchievement
         $state['certification']                 = AdaptiveConstants::CERT_SILVER;
         $state['achievement']                   = AdaptiveConstants::ACHIEVEMENT_SILVER_CERTIFICATE;
         $state['gamification_data']['badges'][] = AdaptiveConstants::BADGE_SILVER_DEVELOPER;
+        $state                                  = $this->recordCertification($state, $context, AdaptiveConstants::CERT_SILVER);
 
         return $this->applyModuleProgress($state, $context);
     }
@@ -48,8 +50,31 @@ trait AppliesAchievement
         $state['certification']                 = AdaptiveConstants::CERT_BRONZE;
         $state['achievement']                   = AdaptiveConstants::ACHIEVEMENT_BRONZE_CERTIFICATE;
         $state['gamification_data']['badges'][] = AdaptiveConstants::BADGE_BRONZE_JUNIOR;
+        $state                                  = $this->recordCertification($state, $context, AdaptiveConstants::CERT_BRONZE);
 
         return $this->applyModuleProgress($state, $context);
+    }
+
+    private function recordCertification(array $state, array $context, string $certification): array
+    {
+        $materialId = (string) ($context['material_id'] ?? '');
+
+        if ($materialId === '') {
+            return $state;
+        }
+
+        $learningProfile = $state['learning_profile']         ?? [];
+        $certifications  = $learningProfile['certifications'] ?? [];
+
+        if (! is_array($certifications)) {
+            $certifications = [];
+        }
+
+        $certifications[$materialId]       = $certification;
+        $learningProfile['certifications'] = $certifications;
+        $state['learning_profile']         = $learningProfile;
+
+        return $state;
     }
 
     private function applyModuleProgress(array $state, array $context): array

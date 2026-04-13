@@ -21,8 +21,7 @@ final class PerformanceService implements PerformanceServiceInterface
         public readonly ProgressRepositoryInterface $progressRepo,
         public readonly GamificationServiceInterface $gamificationService,
         public readonly GuestProgressServiceInterface $guestProgressService,
-    ) {
-    }
+    ) {}
 
     public function getStudentState(string $userId): StudentState
     {
@@ -37,7 +36,7 @@ final class PerformanceService implements PerformanceServiceInterface
     {
         $state = $this->progressRepo->getOrCreateStudentState($userId);
 
-        return $state->current_level;
+        return $state->current_level->value;
     }
 
     public function setUserInitialLevel(string $userId, string $materialId, string $level): void
@@ -58,7 +57,7 @@ final class PerformanceService implements PerformanceServiceInterface
     {
         $state = $this->progressRepo->getOrCreateStudentState($userId);
 
-        return $state->learning_style;
+        return $state->learning_style->value;
     }
 
     public function setUserLearningStyle(string $userId, string $materialId, string $style): void

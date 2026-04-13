@@ -13,13 +13,12 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Response;
 
-class SubMaterialController extends Controller
+final class SubMaterialController extends Controller
 {
     public function __construct(
         protected SubMaterialServiceInterface $subMaterialService,
         protected MaterialRepositoryInterface $materialRepo,
-    ) {
-    }
+    ) {}
 
     public function index(string $materialId): Response|RedirectResponse
     {

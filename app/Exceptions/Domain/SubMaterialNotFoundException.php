@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exceptions\Domain;
 
 use Symfony\Component\HttpFoundation\Response;
 
-class SubMaterialNotFoundException extends DomainException
+final class SubMaterialNotFoundException extends DomainException
 {
     public function __construct(string $id)
     {

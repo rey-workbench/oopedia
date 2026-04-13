@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\SubMaterial;
 
 use App\Http\Requests\BaseFormRequest;
 
-class StoreSubMaterialRequest extends BaseFormRequest
+final class StoreSubMaterialRequest extends BaseFormRequest
 {
     public function rules(): array
     {

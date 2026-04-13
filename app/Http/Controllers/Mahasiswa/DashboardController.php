@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Contracts\Services\DashboardServiceInterface;
@@ -8,13 +10,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
-class DashboardController extends Controller
+final class DashboardController extends Controller
 {
     public function __construct(
         protected DashboardServiceInterface $dashboardService,
         protected LeaderboardServiceInterface $leaderboardService,
-    ) {
-    }
+    ) {}
 
     public function index(): Response
     {

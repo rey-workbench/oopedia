@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DTOs\User;
 
 use Illuminate\Http\Request;
 
-readonly class ProfileUpdateDTO
+final readonly class ProfileUpdateDTO
 {
     public function __construct(
         public ?string $name = null,
         public ?string $email = null,
         public ?string $password = null,
-    ) {
-    }
+    ) {}
 
     public static function fromRequest(Request $request): self
     {

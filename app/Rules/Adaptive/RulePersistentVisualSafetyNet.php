@@ -13,7 +13,7 @@ class RulePersistentVisualSafetyNet extends BaseAdaptiveRule
 
     protected string $ruleName = 'Persistent Visual Safety Net';
 
-    protected string $actionCode = AdaptiveConstants::ACTION_VISUAL_CRISIS_INTERVENTION;
+    protected string $actionCode = AdaptiveConstants::ACTION_PERSISTENT_VISUAL_NET;
 
     protected int $priority = 5;
 

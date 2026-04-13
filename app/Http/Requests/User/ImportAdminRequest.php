@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\User;
 
 use App\Http\Requests\BaseFormRequest;
 
-class ImportAdminRequest extends BaseFormRequest
+final class ImportAdminRequest extends BaseFormRequest
 {
     public function rules(): array
     {

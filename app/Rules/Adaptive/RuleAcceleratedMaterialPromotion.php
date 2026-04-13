@@ -15,7 +15,7 @@ class RuleAcceleratedMaterialPromotion extends BaseAdaptiveRule
 
     protected string $actionCode = AdaptiveConstants::ACTION_ACCELERATED_MATERIAL_PROMOTION;
 
-    protected int $priority = 35;
+    protected int $priority = 36;
 
     public function evaluate(array $facts): bool
     {

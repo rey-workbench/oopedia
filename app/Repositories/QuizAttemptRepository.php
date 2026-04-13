@@ -14,8 +14,8 @@ final class QuizAttemptRepository implements QuizAttemptRepositoryInterface
     public function create(array $data): QuizAttempt
     {
         return DB::transaction(function () use ($data) {
-            $data['attempt_number'] ??= QuizAttempt::where('user_id', '=', $data['user_id'])
-                ->where('question_id', '=', $data['question_id'])
+            $data['attempt_number'] ??= QuizAttempt::where('user_id', $data['user_id'])
+                ->where('question_id', $data['question_id'])
                 ->lockForUpdate()
                 ->count() + 1;
 
@@ -30,7 +30,7 @@ final class QuizAttemptRepository implements QuizAttemptRepositoryInterface
 
     public function getByUser(string $userId): Collection
     {
-        return QuizAttempt::where('user_id', '=', $userId)
+        return QuizAttempt::where('user_id', $userId)
             ->with(['question', 'answer'])
             ->orderBy('created_at', 'desc')
             ->get();
@@ -38,8 +38,8 @@ final class QuizAttemptRepository implements QuizAttemptRepositoryInterface
 
     public function getByUserAndQuestion(string $userId, string $questionId): Collection
     {
-        return QuizAttempt::where('user_id', '=', $userId)
-            ->where('question_id', '=', $questionId)
+        return QuizAttempt::where('user_id', $userId)
+            ->where('question_id', $questionId)
             ->orderBy('attempt_number', 'asc')
             ->get();
     }
@@ -53,9 +53,9 @@ final class QuizAttemptRepository implements QuizAttemptRepositoryInterface
 
     public function getBestAttempt(string $userId, string $questionId): ?QuizAttempt
     {
-        return QuizAttempt::where('user_id', '=', $userId)
-            ->where('question_id', '=', $questionId)
-            ->where('is_correct', '=', true)
+        return QuizAttempt::where('user_id', $userId)
+            ->where('question_id', $questionId)
+            ->where('is_correct', true)
             ->orderBy('score', 'desc')
             ->orderBy('attempt_number', 'asc')
             ->first();
@@ -63,23 +63,23 @@ final class QuizAttemptRepository implements QuizAttemptRepositoryInterface
 
     public function getLatestAttempt(string $userId, string $questionId): ?QuizAttempt
     {
-        return QuizAttempt::where('user_id', '=', $userId)
-            ->where('question_id', '=', $questionId)
+        return QuizAttempt::where('user_id', $userId)
+            ->where('question_id', $questionId)
             ->orderBy('attempt_number', 'desc')
             ->first();
     }
 
     public function countAttempts(string $userId, string $questionId): int
     {
-        return QuizAttempt::where('user_id', '=', $userId)
-            ->where('question_id', '=', $questionId)
+        return QuizAttempt::where('user_id', $userId)
+            ->where('question_id', $questionId)
             ->count();
     }
 
     public function getCorrectAttempts(string $userId): Collection
     {
-        return QuizAttempt::where('user_id', '=', $userId)
-            ->where('is_correct', '=', true)
+        return QuizAttempt::where('user_id', $userId)
+            ->where('is_correct', true)
             ->with(['question.material'])
             ->get();
     }

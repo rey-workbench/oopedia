@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Contracts\Repositories\MaterialRepositoryInterface;
@@ -12,14 +14,13 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
-class ProfileController extends Controller
+final class ProfileController extends Controller
 {
     public function __construct(
         protected MaterialRepositoryInterface $materialRepo,
         protected UserServiceInterface $userService,
         protected ProgressRepositoryInterface $progressRepo,
-    ) {
-    }
+    ) {}
 
     public function show(): Response
     {

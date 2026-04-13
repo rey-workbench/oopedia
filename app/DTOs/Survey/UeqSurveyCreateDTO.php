@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DTOs\Survey;
 
 use Illuminate\Http\Request;
 
-readonly class UeqSurveyCreateDTO
+final readonly class UeqSurveyCreateDTO
 {
     public function __construct(
         public string $user_id,
@@ -38,8 +40,7 @@ readonly class UeqSurveyCreateDTO
         public ?int $conservative_innovative = null,
         public ?string $comments = null,
         public ?string $suggestions = null,
-    ) {
-    }
+    ) {}
 
     public static function fromRequest(Request $request, string $userId): self
     {

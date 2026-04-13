@@ -1,24 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\MaterialViewServiceInterface;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Material\ResetMaterialProgressRequest;
 use App\Models\Material;
 use App\Models\StudentState;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
-class MaterialController extends Controller
+final class MaterialController extends Controller
 {
     public function __construct(
         protected MaterialViewServiceInterface $materialViewService,
         protected GuestProgressServiceInterface $guestProgressService,
-    ) {
-    }
+    ) {}
 
     public function index(): Response
     {
@@ -53,15 +54,17 @@ class MaterialController extends Controller
         return $this->render('Mahasiswa/SubMaterials/Show/Index', $data);
     }
 
-    public function reset(string $id, Request $request): RedirectResponse
+    public function reset(ResetMaterialProgressRequest $request): RedirectResponse
     {
+        $materialId = (string) $request->validated('material');
+
         if ($this->isGuest()) {
-            $this->guestProgressService->resetMaterialProgress($id);
+            $this->guestProgressService->resetMaterialProgress($materialId);
         } else {
-            $this->materialViewService->resetMaterialProgress(Auth::id(), $id);
+            $this->materialViewService->resetMaterialProgress(Auth::id(), $materialId);
         }
 
-        return redirect()->route('mahasiswa.materials.questions.show', ['material' => $id])
+        return redirect()->route('mahasiswa.materials.questions.show', ['material' => $materialId])
             ->with('success', 'Progress direset. Anda dapat mengerjakan soal kembali.');
     }
 

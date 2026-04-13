@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
 use App\Contracts\Services\GuestProgressServiceInterface;
@@ -13,13 +15,12 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Response;
 
-class LoginController extends Controller
+final class LoginController extends Controller
 {
     public function __construct(
         protected UserServiceInterface $userService,
         protected GuestProgressServiceInterface $guestProgressService,
-    ) {
-    }
+    ) {}
 
     public function create(): Response
     {

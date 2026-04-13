@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DTOs\User;
 
 use Illuminate\Http\Request;
 
-readonly class AdminCreateDTO
+final readonly class AdminCreateDTO
 {
     public function __construct(
         public string $name,
         public string $email,
         public string $password,
-    ) {
-    }
+    ) {}
 
     public static function fromRequest(Request $request): self
     {

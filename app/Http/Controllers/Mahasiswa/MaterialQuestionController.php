@@ -10,31 +10,27 @@ use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\MaterialServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
 use App\Contracts\Services\QuestionListingServiceInterface;
-use App\Contracts\Services\QuestionServiceInterface;
 use App\Http\Controllers\Controller;
-use App\Models\Material;
-use App\Models\Question;
+use App\Http\Requests\Question\CheckAnswerRequest;
+use App\Http\Requests\Question\ReviewQuestionRequest;
 use App\Traits\HandlesAdaptiveState;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
-class MaterialQuestionController extends Controller
+final class MaterialQuestionController extends Controller
 {
     use HandlesAdaptiveState;
 
     public function __construct(
         protected MaterialServiceInterface $materialService,
-        protected QuestionServiceInterface $questionService,
         protected QuestionListingServiceInterface $questionListingService,
         protected ProgressRepositoryInterface $progressRepo,
         protected PerformanceServiceInterface $performanceService,
         protected AdaptiveQuizFlowServiceInterface $adaptiveQuizFlowService,
         protected GuestProgressServiceInterface $guestProgressService,
-    ) {
-    }
+    ) {}
 
     protected function getPerformanceService(): PerformanceServiceInterface
     {
@@ -46,11 +42,11 @@ class MaterialQuestionController extends Controller
         return $this->guestProgressService;
     }
 
-    public function index(Request $request): Response
+    public function index(): Response
     {
         $isGuest       = $this->isGuest();
         $userId        = $this->getUserId();
-        $guestProgress = $this->getGuestProgress($request);
+        $guestProgress = $this->getGuestProgress();
 
         $unlockedModules = [];
         if (! $isGuest) {
@@ -70,7 +66,6 @@ class MaterialQuestionController extends Controller
 
     public function show(
         int|string $materialId,
-        Request $request,
         ?string $sub_material = null,
     ): Response|RedirectResponse {
         $material = $this->materialService->getMaterialById((string) $materialId);
@@ -80,7 +75,7 @@ class MaterialQuestionController extends Controller
         }
 
         $isGuest          = $this->isGuest();
-        $guestProgress    = $this->getGuestProgress($request);
+        $guestProgress    = $this->getGuestProgress();
         $userId           = $this->getUserId();
         $targetDifficulty = null;
 
@@ -107,7 +102,7 @@ class MaterialQuestionController extends Controller
         ]));
     }
 
-    public function levels(int|string $materialId, Request $request): Response|RedirectResponse
+    public function levels(int|string $materialId): Response|RedirectResponse
     {
         $material = $this->materialService->getMaterialById((string) $materialId);
         if (! $material) {
@@ -117,7 +112,7 @@ class MaterialQuestionController extends Controller
 
         $isGuest       = $this->isGuest();
         $userId        = $this->getUserId();
-        $guestProgress = $this->getGuestProgress($request);
+        $guestProgress = $this->getGuestProgress();
 
         $answeredQuestionIds = $isGuest
             ? $this->questionListingService->getGuestAnsweredQuestionIds(
@@ -136,14 +131,14 @@ class MaterialQuestionController extends Controller
         return $this->render('Mahasiswa/Materials/Questions/Levels/Index', compact('material', 'levels'));
     }
 
-    public function review(int|string $id, Request $request): Response
+    public function review(int|string $materialId, ReviewQuestionRequest $request): Response
     {
-        $material      = $this->materialService->getMaterialWithQuestionsAndAnswers((string) $id);
+        $material      = $this->materialService->getMaterialWithQuestionsAndAnswers((string) $materialId);
         $materials     = $this->materialService->getAllOrdered();
-        $difficulty    = $request->query('difficulty', 'all');
+        $difficulty    = $request->validated('difficulty') ?? 'all';
         $isGuest       = $this->isGuest();
         $userId        = $this->getUserId();
-        $guestProgress = $this->getGuestProgress($request);
+        $guestProgress = $this->getGuestProgress();
 
         $questions = $this->questionListingService->getReviewQuestions(
             $material,
@@ -165,13 +160,12 @@ class MaterialQuestionController extends Controller
     public function getAttempts(
         int|string $materialId,
         int|string $questionId,
-        Request $request,
     ): JsonResponse {
         $isGuest = $this->isGuest();
 
         if ($isGuest) {
             $progressKey   = $materialId . '_' . $questionId;
-            $guestProgress = $this->getGuestProgress($request);
+            $guestProgress = $this->getGuestProgress();
             $attempts      = $guestProgress[$progressKey]['attempt_number'] ?? 0;
         } else {
             $attempts = $this->progressRepo->getAttemptCount(
@@ -187,26 +181,19 @@ class MaterialQuestionController extends Controller
     public function checkAnswer(
         int|string $materialId,
         int|string $questionId,
-        Request $request,
+        CheckAnswerRequest $request,
     ): JsonResponse {
-        $material = Material::find($materialId);
-        $question = Question::find($questionId);
-
-        if (! $material || ! $question) {
-            return $this->json([
-                'status'  => 'error',
-                'message' => 'Material atau soal tidak ditemukan',
-            ], 404);
-        }
-
-        $result = $this->adaptiveQuizFlowService->processAdaptiveAttempt(
-            $material,
-            $question,
+        $result = $this->adaptiveQuizFlowService->processAdaptiveAttemptByIds(
+            (string) $materialId,
+            (string) $questionId,
             $this->getUserId(),
-            $request->all(),
+            $request->validated(),
         );
 
-        return $this->json($result);
+        $statusCode = (int) ($result['status_code'] ?? 200);
+        unset($result['status_code']);
+
+        return $this->json($result, $statusCode);
     }
 
     public function getTargetDifficulty(int|string $materialId): JsonResponse

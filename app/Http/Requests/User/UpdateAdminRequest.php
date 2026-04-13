@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\User;
 
 use App\Http\Requests\BaseFormRequest;
 
-class UpdateAdminRequest extends BaseFormRequest
+final class UpdateAdminRequest extends BaseFormRequest
 {
     public function rules(): array
     {

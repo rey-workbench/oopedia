@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Question;
 
 use App\Http\Requests\BaseFormRequest;
 
-class StoreQuestionRequest extends BaseFormRequest
+final class StoreQuestionRequest extends BaseFormRequest
 {
     public function rules(): array
     {

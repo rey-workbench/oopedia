@@ -5,7 +5,7 @@
     import { QuestionShowState } from '@/states/Mahasiswa/QuizState.svelte';
     import QuestionSessionCard from '@/components/layout/QuestionSessionCard.svelte';
     import FinishStateCard from '@/components/layout/FinishStateCard.svelte';
-    import FeedbackModal from '@/components/feedback/FeedbackModal.svelte';
+    import { FeedbackModal } from '@/components/feedback';
     import AdaptiveDebugPanel from '@/components/layout/AdaptiveDebugPanel.svelte';
     import { untrack } from 'svelte';
     import type { Material, Question, DifficultyLevel, QuizSessionState } from '@/types';

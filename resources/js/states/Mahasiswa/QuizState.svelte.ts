@@ -141,7 +141,8 @@ export class QuestionShowState extends BaseState {
             material_id: this.material.id,
             used_hint: this.usedHint,
             time_spent: timeSpent,
-            difficulty: this.difficulty,
+            // Prefer the current question difficulty to avoid sending non-answer filters like "all".
+            difficulty: this.currentQuestion.difficulty ?? this.difficulty,
         };
 
         if (this.currentQuestion.question_type === 'fill_in_the_blank') {
@@ -151,6 +152,26 @@ export class QuestionShowState extends BaseState {
             payload.drag_and_drop_answers = JSON.stringify(this.dragAndDropAnswers);
         } else {
             payload.answer = this.selectedMultipleChoiceAnswer;
+        }
+
+        const hasAnswer = this.currentQuestion.question_type === 'fill_in_the_blank'
+            ? this.fillInTheBlankAnswer.trim().length > 0
+            : this.currentQuestion.question_type === 'drag_and_drop'
+              ? Object.keys(this.dragAndDropAnswers).length > 0
+              : Boolean(this.selectedMultipleChoiceAnswer);
+
+        if (!hasAnswer) {
+            this.feedbackData = {
+                status: 'error',
+                message: 'Jawaban wajib diisi.',
+                nextUrl: '',
+                adaptiveResult: null,
+                score: 0,
+            };
+            this.showFeedback = true;
+            this.isSubmitting = false;
+
+            return;
         }
 
         console.debug('[QuizState] Submitting answer payload:', payload);

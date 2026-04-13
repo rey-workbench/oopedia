@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\BaseFormRequest;
 
-class LoginRequest extends BaseFormRequest
+final class LoginRequest extends BaseFormRequest
 {
     public function rules(): array
     {

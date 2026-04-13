@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Repositories\RoleRepositoryInterface;
@@ -16,13 +18,12 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class AdminUserController extends Controller
+final class AdminUserController extends Controller
 {
     public function __construct(
         protected UserServiceInterface $userService,
         protected RoleRepositoryInterface $roleRepo,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): Response
     {

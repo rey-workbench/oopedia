@@ -13,6 +13,7 @@ use App\Enums\Lms\QuestionType;
 use App\Helpers\ProgressHelper;
 use App\Models\Material;
 use App\Models\Question;
+use App\Schemas\StudentStateSchema;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as SupportCollection;
 
@@ -22,8 +23,7 @@ final class QuestionListingService implements QuestionListingServiceInterface
         public readonly MaterialRepositoryInterface $materialRepo,
         public readonly ProgressRepositoryInterface $progressRepo,
         public readonly QuestionRepositoryInterface $questionRepo,
-    ) {
-    }
+    ) {}
 
     public function getQuizData(
         Material $material,
@@ -40,12 +40,26 @@ final class QuestionListingService implements QuestionListingServiceInterface
 
         $filteredData           = $this->getFilteredQuestions($material, $difficulty, $isGuest, $subMaterialId);
         $questions              = $filteredData['questions'];
+        $allQuestions           = $questions;
         $totalFilteredQuestions = $filteredData['totalFilteredQuestions'];
 
-        $originalQuestionsCount = $questions->count();
-        $skippedCount           = 0;
+        $appliedTargetFilter = false;
 
-        if ($difficulty === 'all' && $targetDifficulty) {
+        $shouldApplyTargetDifficulty = $difficulty === 'all' && $targetDifficulty && ! $isGuest;
+
+        if ($shouldApplyTargetDifficulty) {
+            $attemptedCount = $this->progressRepo->getAttemptedQuestionIds($userId, $material->id)->count();
+            $totalQuestions = $this->questionRepo->countByMaterial($material->id);
+
+            $progressPercentage = $totalQuestions > 0
+                ? ($attemptedCount / $totalQuestions) * 100
+                : 0;
+
+            // Only enforce fast-track filtering when learner is ready for module progression (G26).
+            $shouldApplyTargetDifficulty = $progressPercentage >= StudentStateSchema::THRESHOLD_SATISFACTORY_PROGRESS;
+        }
+
+        if ($shouldApplyTargetDifficulty) {
             $difficultyOrder = Question::DIFFICULTY_ORDER;
             $targetLevel     = $difficultyOrder[$targetDifficulty] ?? 1;
 
@@ -55,8 +69,19 @@ final class QuestionListingService implements QuestionListingServiceInterface
 
                 return ! in_array($q->id, $answeredArray) && $qLevel < $targetLevel;
             });
+            $appliedTargetFilter = true;
+        }
 
-            $skippedCount = $originalQuestionsCount - $questions->count();
+        $currentQuestion = $this->getCurrentQuestion($questions, $answeredQuestionIds);
+
+        // Fallback: if target filtering hides all remaining questions, show unanswered questions from the full set.
+        if ($appliedTargetFilter && $currentQuestion === null) {
+            $fallbackQuestion = $this->getCurrentQuestion($allQuestions, $answeredQuestionIds);
+
+            if ($fallbackQuestion !== null) {
+                $questions       = $allQuestions;
+                $currentQuestion = $fallbackQuestion;
+            }
         }
 
         $levelProgress = $this->getLevelProgress($material, $difficulty, $answeredQuestionIds, $isGuest, $questions);
@@ -67,19 +92,19 @@ final class QuestionListingService implements QuestionListingServiceInterface
 
         $questions = new Collection($shuffledQuestions->all());
 
-        $currentQuestion = $this->getCurrentQuestion($questions, $answeredQuestionIds);
+        if ($currentQuestion === null) {
+            $currentQuestion = $this->getCurrentQuestion($questions, $answeredQuestionIds);
+        }
 
         $answeredArray       = $answeredQuestionIds->toArray();
-        $actualAnsweredCount = $questions->filter(fn ($q) => in_array($q->id, $answeredArray))->count();
-
-        $dynamicTotalQuestions = $totalFilteredQuestions - $skippedCount;
+        $actualAnsweredCount = $allQuestions->filter(fn ($q) => in_array($q->id, $answeredArray))->count();
 
         return [
             'material'              => $material,
             'questions'             => $questions,
             'currentQuestion'       => $currentQuestion,
             'currentQuestionNumber' => $actualAnsweredCount + 1,
-            'totalQuestions'        => $dynamicTotalQuestions,
+            'totalQuestions'        => $totalFilteredQuestions,
             'answeredCount'         => $actualAnsweredCount,
             'materialAnsweredCount' => $answeredQuestionIds->count(),
             'levelProgress'         => $levelProgress,

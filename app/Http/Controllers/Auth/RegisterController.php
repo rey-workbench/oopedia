@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
 use App\Contracts\Services\UserServiceInterface;
@@ -12,12 +14,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Response;
 
-class RegisterController extends Controller
+final class RegisterController extends Controller
 {
     public function __construct(
         protected UserServiceInterface $userService,
-    ) {
-    }
+    ) {}
 
     public function create(): Response
     {

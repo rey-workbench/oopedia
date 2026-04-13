@@ -18,8 +18,7 @@ final class GuestProgressService implements GuestProgressServiceInterface
         private readonly string $cookieAdaptive = 'guest_adaptive',
         private readonly string $cookiePerformance = 'guest_performance',
         private readonly int $cookieLifetime = 60 * 24 * 30,
-    ) {
-    }
+    ) {}
 
     /** @return array<string, mixed> */
     public function getProgress(): array
@@ -109,20 +108,33 @@ final class GuestProgressService implements GuestProgressServiceInterface
 
         $adaptiveData  = request()->cookie($this->cookieAdaptive);
         $adaptiveState = $adaptiveData ? json_decode($adaptiveData, true) : [];
+        if (! is_array($adaptiveState)) {
+            $adaptiveState = [];
+        }
 
         $perfData           = request()->cookie($this->cookiePerformance);
         $performanceMetrics = $perfData ? json_decode($perfData, true) : [];
+        if (! is_array($performanceMetrics)) {
+            $performanceMetrics = [];
+        }
+
+        $gamification                                         = StudentStateSchema::getDefaultGamification();
+        $gamification[StudentStateSchema::KEY_GLOBAL_XP]      = (int) $xp;
+        $gamification[StudentStateSchema::KEY_CURRENT_STREAK] = (int) $streak;
+        $gamification[StudentStateSchema::KEY_CURRENT_LEVEL]  = 'Tamu';
 
         return new StudentState([
             'user_id'             => 'guest',
-            'gamification_data'   => [
-                StudentStateSchema::KEY_GLOBAL_XP      => (int) $xp,
-                StudentStateSchema::KEY_CURRENT_STREAK => (int) $streak,
-                StudentStateSchema::KEY_CURRENT_LEVEL  => 'Tamu',
-            ],
-            'learning_profile'    => [],
-            'performance_metrics' => $performanceMetrics,
-            'adaptive_state'      => $adaptiveState,
+            'gamification_data'   => $gamification,
+            'learning_profile'    => StudentStateSchema::getDefaultLearningProfile(),
+            'performance_metrics' => array_merge(
+                StudentStateSchema::getDefaultPerformanceMetrics(),
+                $performanceMetrics,
+            ),
+            'adaptive_state'      => array_merge(
+                StudentStateSchema::getDefaultAdaptiveState(),
+                $adaptiveState,
+            ),
         ]);
     }
 

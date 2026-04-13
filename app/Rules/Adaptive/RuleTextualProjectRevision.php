@@ -13,7 +13,7 @@ class RuleTextualProjectRevision extends BaseAdaptiveRule
 
     protected string $ruleName = 'Textual Project Revision';
 
-    protected string $actionCode = AdaptiveConstants::ACTION_TEXTUAL_CRISIS_INTERVENTION;
+    protected string $actionCode = AdaptiveConstants::ACTION_TEXTUAL_PROJECT_REVISION;
 
     protected int $priority = 15;
 

@@ -16,8 +16,6 @@ final class NextActionResolverService implements NextActionResolverServiceInterf
         Question $question,
         ?string $userId = null,
     ): array {
-        $subMaterialParam = $question->sub_material_id ? ['sub_material' => $question->sub_material_id] : [];
-
         return match ($actionCommand) {
             'STUDY_MATERIAL' => [
                 'label' => 'Ulas Materi: ' . $material->title,
@@ -26,20 +24,14 @@ final class NextActionResolverService implements NextActionResolverServiceInterf
             ],
             'REDUCE_DIFFICULTY' => [
                 'label'   => 'Soal Berikutnya',
-                'url'     => route('mahasiswa.materials.questions.show', array_merge(
-                    ['material' => $material->id],
-                    $subMaterialParam,
-                )),
+                'url'     => $this->questionUrl($material),
                 'type'    => 'question',
                 'message' => 'Sepertinya soal ini agak sulit. ' .
                     'Kami menyesuaikan tingkat kesulitannya agar kamu lebih nyaman belajar!',
             ],
             'INCREASE_DIFFICULTY' => [
                 'label'   => 'Soal Berikutnya',
-                'url'     => route('mahasiswa.materials.questions.show', array_merge(
-                    ['material' => $material->id],
-                    $subMaterialParam,
-                )),
+                'url'     => $this->questionUrl($material),
                 'type'    => 'question',
                 'message' => 'Luar Biasa! Kamu menjawab dengan sangat cepat dan tepat. ' .
                     'Tantangan selanjutnya telah menantimu di level yang lebih tinggi!',
@@ -62,13 +54,15 @@ final class NextActionResolverService implements NextActionResolverServiceInterf
             'STUDY_TEXTUAL' => $this->studySubMaterial($material, null, 'Materi Tekstual', 'textual'),
             default         => [
                 'label' => 'Soal Berikutnya',
-                'url'   => route('mahasiswa.materials.questions.show', array_merge(
-                    ['material' => $material->id],
-                    $subMaterialParam,
-                )),
+                'url'   => $this->questionUrl($material),
                 'type'  => 'question',
             ],
         };
+    }
+
+    private function questionUrl(Material $material): string
+    {
+        return route('mahasiswa.materials.questions.show', ['material' => $material->id]);
     }
 
     protected function studySubMaterial(

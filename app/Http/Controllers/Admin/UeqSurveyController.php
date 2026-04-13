@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Services\UeqSurveyServiceInterface;
@@ -8,11 +10,9 @@ use Illuminate\Http\Request;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class UeqSurveyController extends Controller
+final class UeqSurveyController extends Controller
 {
-    public function __construct(protected UeqSurveyServiceInterface $ueqService)
-    {
-    }
+    public function __construct(protected UeqSurveyServiceInterface $ueqService) {}
 
     public function index(Request $request): Response
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Services\StudentServiceInterface;
@@ -12,12 +14,11 @@ use Illuminate\Http\Request;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class AdminStudentController extends Controller
+final class AdminStudentController extends Controller
 {
     public function __construct(
         protected StudentServiceInterface $studentService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): Response
     {

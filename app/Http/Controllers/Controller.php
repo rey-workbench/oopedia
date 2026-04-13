@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Contracts\Services\GuestProgressServiceInterface;
@@ -8,7 +10,6 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -50,7 +51,7 @@ class Controller extends BaseController
         return $this->isGuest() ? 'guest' : Auth::id();
     }
 
-    protected function getGuestProgress(Request $request): array
+    protected function getGuestProgress(): array
     {
         if (! $this->isGuest()) {
             return [];

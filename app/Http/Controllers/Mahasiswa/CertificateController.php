@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Contracts\Repositories\MaterialRepositoryInterface;
@@ -8,13 +10,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
-class CertificateController extends Controller
+final class CertificateController extends Controller
 {
     public function __construct(
         protected MaterialRepositoryInterface $materialRepo,
         protected ProgressRepositoryInterface $progressRepo,
-    ) {
-    }
+    ) {}
 
     public function index(): Response
     {

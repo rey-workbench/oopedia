@@ -1,12 +1,9 @@
-import type { QuestionShowState } from '@/states/Mahasiswa/QuizState.svelte';
-
 export type FeedbackVariant =
     | 'certificate'
     | 'acceleration'
     | 'intervention'
     | 'backtrack'
-    | 'success'
-    | 'error';
+    | 'result';
 
 export interface FeedbackState {
     feedbackData?: {
@@ -38,17 +35,6 @@ export interface FeedbackState {
         };
     };
     showFeedback: boolean;
-}
-
-export interface FeedbackModalProps {
-    state: QuestionShowState;
-    variant: FeedbackVariant;
-    xpEarned: number;
-    streakBonus: string | null;
-    recommendation: string | null;
-    certification: string | null;
-    nextAction: string;
-    nextActionType: string;
 }
 
 export interface CertificateDetails {

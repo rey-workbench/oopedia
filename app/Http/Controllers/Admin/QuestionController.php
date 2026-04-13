@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Repositories\MaterialRepositoryInterface;
@@ -16,14 +18,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
-class QuestionController extends Controller
+final class QuestionController extends Controller
 {
     public function __construct(
         protected QuestionServiceInterface $questionService,
         protected MaterialServiceInterface $materialService,
         protected MaterialRepositoryInterface $materialRepo,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): Response
     {

@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exceptions\Domain;
 
 use Symfony\Component\HttpFoundation\Response;
 
-class QuestionNotFoundException extends DomainException
+final class QuestionNotFoundException extends DomainException
 {
     public function __construct(string $id)
     {

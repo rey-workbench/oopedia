@@ -8,6 +8,7 @@ use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Contracts\Services\StudentServiceInterface;
+use App\Enums\User\RoleName;
 use App\Exceptions\Domain\UserNotFoundException;
 use App\Helpers\ProgressHelper;
 use App\Models\Role;
@@ -28,8 +29,7 @@ final class StudentService implements StudentServiceInterface
         public readonly UserRepositoryInterface $userRepo,
         public readonly MaterialRepositoryInterface $materialRepo,
         public readonly ProgressRepositoryInterface $progressRepo,
-    ) {
-    }
+    ) {}
 
     public function getStudentsWithProgress(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
@@ -62,7 +62,7 @@ final class StudentService implements StudentServiceInterface
     public function createStudent(array $data): User
     {
         $data['password']    = Hash::make($data['password']);
-        $data['role_id']     = Role::where('role_name', Role::ROLE_MAHASISWA)->value('id');
+        $data['role_id']     = Role::where('role_name', RoleName::MAHASISWA)->value('id');
         $data['is_approved'] = true;
 
         return $this->userRepo->create($data);
@@ -94,7 +94,7 @@ final class StudentService implements StudentServiceInterface
 
     public function getPendingStudents(?int $perPage = null): LengthAwarePaginator
     {
-        return $this->userRepo->getUsersByRoleAndApproval(Role::ROLE_MAHASISWA, false, null, $perPage ?? 10);
+        return $this->userRepo->getUsersByRoleAndApproval((RoleName::MAHASISWA)->value, false, null, $perPage ?? 10);
     }
 
     public function approveStudent(string $studentId): void
@@ -146,7 +146,7 @@ final class StudentService implements StudentServiceInterface
 
         $recentActivities = $this->progressRepo->getRecentActivities($student->id, 10);
 
-        $studentState   = StudentState::find($student->id);
+        $studentState   = StudentState::where('user_id', $student->id)->first();
         $certifications = $studentState ? ($studentState->learning_profile['certifications'] ?? []) : [];
 
         return [

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Services\AdminDashboardServiceInterface;
@@ -7,11 +9,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
-class DashboardController extends Controller
+final class DashboardController extends Controller
 {
-    public function __construct(protected AdminDashboardServiceInterface $adminDashboardService)
-    {
-    }
+    public function __construct(protected AdminDashboardServiceInterface $adminDashboardService) {}
 
     public function index(): Response
     {

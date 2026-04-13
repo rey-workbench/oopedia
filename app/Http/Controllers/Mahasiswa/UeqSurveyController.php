@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Contracts\Services\UeqSurveyServiceInterface;
@@ -10,12 +12,11 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
-class UeqSurveyController extends Controller
+final class UeqSurveyController extends Controller
 {
     public function __construct(
         protected UeqSurveyServiceInterface $ueqService,
-    ) {
-    }
+    ) {}
 
     public function create(): Response|RedirectResponse
     {

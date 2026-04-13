@@ -39,10 +39,18 @@ class RuleRegistry
         ];
 
         foreach ($ruleClasses as $ruleClass) {
-            $this->register(new $ruleClass());
+            $this->register(new $ruleClass);
         }
 
-        usort($this->rules, fn ($a, $b) => $a->getPriority() <=> $b->getPriority());
+        usort($this->rules, function ($a, $b): int {
+            $priorityComparison = $a->getPriority() <=> $b->getPriority();
+
+            if ($priorityComparison !== 0) {
+                return $priorityComparison;
+            }
+
+            return strcmp($a->getRuleId(), $b->getRuleId());
+        });
     }
 
     protected function register(AdaptiveRuleInterface $rule): void

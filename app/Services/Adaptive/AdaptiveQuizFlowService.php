@@ -33,7 +33,27 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         public readonly AdaptiveEngineServiceInterface $adaptiveEngine,
         public readonly NextActionResolverServiceInterface $nextActionResolver,
         public readonly GuestProgressServiceInterface $guestProgressService,
-    ) {
+    ) {}
+
+    /** @return array<string, mixed> */
+    public function processAdaptiveAttemptByIds(
+        string $materialId,
+        string $questionId,
+        string $userId,
+        array $data,
+    ): array {
+        $material = Material::find($materialId);
+        $question = Question::find($questionId);
+
+        if (! $material || ! $question) {
+            return [
+                'status'      => 'error',
+                'message'     => 'Material atau soal tidak ditemukan',
+                'status_code' => 404,
+            ];
+        }
+
+        return $this->processAdaptiveAttempt($material, $question, $userId, $data);
     }
 
     /** @return array<string, mixed> */
@@ -127,7 +147,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             $this->guestProgressService->saveProgress($data, $isCorrect, $question->id);
         }
 
-        $facts = $this->factGathering->gatherFacts(
+        $adaptiveResult = $this->evaluateAdaptiveRuleSet(
             studentState: $studentState,
             isCorrect: $isCorrect,
             usedHint: $usedHint,
@@ -138,17 +158,6 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             materialId: $material->id,
             moduleId: $material->module_id ?? null,
         );
-
-        $adaptiveResult = $this->adaptiveEngine->evaluate($facts, $studentState->toArray(), [
-            'is_correct'  => $isCorrect,
-            'used_hint'   => $usedHint,
-            'score'       => $score,
-            'time_spent'  => $timeSpent,
-            'difficulty'  => $difficulty,
-            'question_id' => $question->id,
-            'material_id' => $material->id,
-            'module_id'   => $material->module_id ?? null,
-        ]);
 
         $ruleOutput    = $adaptiveResult['new_state'] ?? [];
         $adaptiveState = $studentState->adaptive_state;
@@ -182,6 +191,14 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         if (isset($ruleOutput['learning_profile'])) {
             $studentState->learning_profile = $ruleOutput['learning_profile'];
         }
+
+        $this->persistCertification(
+            $studentState,
+            (string) $material->id,
+            $ruleOutput['certification'] ?? null,
+        );
+
+        $this->mergeAdaptiveBadges($studentState, $ruleOutput);
 
         $studentState->adaptive_state = $adaptiveState;
 
@@ -232,6 +249,46 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
     }
 
     /**
+     * Build facts and execute the registered adaptive rule set in one place.
+     *
+     * @return array<string, mixed>
+     */
+    private function evaluateAdaptiveRuleSet(
+        StudentState $studentState,
+        bool $isCorrect,
+        bool $usedHint,
+        int $score,
+        int $timeSpent,
+        QuestionDifficulty|string $difficulty,
+        string $questionId,
+        string $materialId,
+        ?string $moduleId,
+    ): array {
+        $facts = $this->factGathering->gatherFacts(
+            studentState: $studentState,
+            isCorrect: $isCorrect,
+            usedHint: $usedHint,
+            score: $score,
+            timeSpent: $timeSpent,
+            difficulty: $difficulty,
+            questionId: $questionId,
+            materialId: $materialId,
+            moduleId: $moduleId,
+        );
+
+        return $this->adaptiveEngine->evaluate($facts, $studentState->toArray(), [
+            'is_correct'  => $isCorrect,
+            'used_hint'   => $usedHint,
+            'score'       => $score,
+            'time_spent'  => $timeSpent,
+            'difficulty'  => $difficulty,
+            'question_id' => $questionId,
+            'material_id' => $materialId,
+            'module_id'   => $moduleId,
+        ]);
+    }
+
+    /**
      * Apply all gamification rewards to StudentState atomically:
      * base XP -> streak XP bonus -> streak milestone hints -> level recalculation.
      *
@@ -270,5 +327,60 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         $state->gamification_data      = $gamification;
 
         return [$baseXpEarned + $streakXpBonus, $streakMilestone];
+    }
+
+    private function persistCertification(StudentState $studentState, string $materialId, mixed $certification): void
+    {
+        if (! is_string($certification) || $certification === '' || $materialId === '') {
+            return;
+        }
+
+        $learningProfile = $studentState->learning_profile    ?? [];
+        $certifications  = $learningProfile['certifications'] ?? [];
+
+        if (! is_array($certifications)) {
+            $certifications = [];
+        }
+
+        $existingCertification = $certifications[$materialId] ?? null;
+        $shouldUpdate          = $this->getCertificationRank($certification)
+            >= $this->getCertificationRank(is_string($existingCertification) ? $existingCertification : null);
+
+        if (! $shouldUpdate) {
+            return;
+        }
+
+        $certifications[$materialId]       = $certification;
+        $learningProfile['certifications'] = $certifications;
+        $studentState->learning_profile    = $learningProfile;
+    }
+
+    private function mergeAdaptiveBadges(StudentState $studentState, array $ruleOutput): void
+    {
+        $newBadges = $ruleOutput['gamification_data']['badges'] ?? null;
+
+        if (! is_array($newBadges) || $newBadges === []) {
+            return;
+        }
+
+        $gamificationData = $studentState->gamification_data ?? [];
+        $currentBadges    = $gamificationData['badges']      ?? [];
+
+        if (! is_array($currentBadges)) {
+            $currentBadges = [];
+        }
+
+        $gamificationData['badges']      = array_values(array_unique(array_merge($currentBadges, $newBadges)));
+        $studentState->gamification_data = $gamificationData;
+    }
+
+    private function getCertificationRank(?string $certification): int
+    {
+        return match ($certification) {
+            'gold'   => 3,
+            'silver' => 2,
+            'bronze' => 1,
+            default  => 0,
+        };
     }
 }

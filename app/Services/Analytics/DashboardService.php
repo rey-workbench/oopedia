@@ -20,8 +20,7 @@ final class DashboardService implements DashboardServiceInterface
         public readonly MaterialRepositoryInterface $materialRepo,
         public readonly ProgressRepositoryInterface $progressRepo,
         public readonly QuestionRepositoryInterface $questionRepo,
-    ) {
-    }
+    ) {}
 
     /** @return Collection<int, Material> */
     public function getAllMaterials(): Collection
@@ -67,7 +66,7 @@ final class DashboardService implements DashboardServiceInterface
                     ->map(fn ($activity) => $this->addActivityType($activity))
                     ->pipe(fn ($activities) => $this->deduplicateActivities($activities, 5));
 
-                $studentState   = StudentState::find($userId);
+                $studentState   = StudentState::where('user_id', $userId)->first();
                 $certifications = $studentState?->learning_profile['certifications'] ?? [];
 
                 return [

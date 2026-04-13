@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Services\MaterialServiceInterface;
@@ -13,12 +15,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
-class MaterialController extends Controller
+final class MaterialController extends Controller
 {
     public function __construct(
         protected MaterialServiceInterface $materialService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): Response
     {

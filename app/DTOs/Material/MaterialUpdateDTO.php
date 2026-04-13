@@ -1,18 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DTOs\Material;
 
 use Illuminate\Http\Request;
 
-readonly class MaterialUpdateDTO
+final readonly class MaterialUpdateDTO
 {
     public function __construct(
         public ?string $title = null,
         public ?string $content = null,
         public ?string $module_id = null,
         public ?bool $is_final_project = null,
-    ) {
-    }
+    ) {}
 
     public static function fromRequest(Request $request): self
     {

@@ -73,8 +73,8 @@ final class ProgressRepository implements ProgressRepositoryInterface
         }
 
         $attempts = QuizAttempt::with(['question.material'])
-            ->where('user_id', '=', $userId)
-            ->where('is_correct', '=', true)
+            ->where('user_id', $userId)
+            ->where('is_correct', true)
             ->orderBy('created_at', 'desc')
             ->take($limit)
             ->get();
@@ -222,8 +222,8 @@ final class ProgressRepository implements ProgressRepositoryInterface
             return 0;
         }
 
-        return QuizAttempt::where('user_id', '=', $userId)
-            ->where('question_id', '=', $questionId)
+        return QuizAttempt::where('user_id', $userId)
+            ->where('question_id', $questionId)
             ->count();
     }
 
@@ -235,8 +235,8 @@ final class ProgressRepository implements ProgressRepositoryInterface
 
         if (! isset($data['attempt_number'])) {
             $data['attempt_number'] = DB::transaction(function () use ($data) {
-                return QuizAttempt::where('user_id', '=', $data['user_id'])
-                    ->where('question_id', '=', $data['question_id'])
+                return QuizAttempt::where('user_id', $data['user_id'])
+                    ->where('question_id', $data['question_id'])
                     ->lockForUpdate()
                     ->count() + 1;
             });
@@ -319,7 +319,7 @@ final class ProgressRepository implements ProgressRepositoryInterface
             return collect();
         }
 
-        return QuizAttempt::where('user_id', '=', $userId)
+        return QuizAttempt::where('user_id', $userId)
             ->whereIn('question_id', $questionIds)
             ->orderBy('created_at', 'desc')
             ->get()
@@ -355,9 +355,9 @@ final class ProgressRepository implements ProgressRepositoryInterface
 
     public function resetProgress(string $userId, string $materialId): void
     {
-        $questionIds = Question::where('material_id', '=', $materialId)->pluck('id');
+        $questionIds = Question::where('material_id', $materialId)->pluck('id');
 
-        QuizAttempt::where('user_id', '=', $userId)
+        QuizAttempt::where('user_id', $userId)
             ->whereIn('question_id', $questionIds)
             ->delete();
     }
@@ -475,8 +475,8 @@ final class ProgressRepository implements ProgressRepositoryInterface
             return 0;
         }
 
-        $attempts = QuizAttempt::where('user_id', '=', $userId)
-            ->where('question_id', '=', $questionId)
+        $attempts = QuizAttempt::where('user_id', $userId)
+            ->where('question_id', $questionId)
             ->orderBy('created_at', 'desc')
             ->take(10)
             ->get();
@@ -498,9 +498,9 @@ final class ProgressRepository implements ProgressRepositoryInterface
             return null;
         }
 
-        $attempt = QuizAttempt::where('user_id', '=', $userId)
-            ->where('question_id', '=', $questionId)
-            ->where('is_correct', '=', false)
+        $attempt = QuizAttempt::where('user_id', $userId)
+            ->where('question_id', $questionId)
+            ->where('is_correct', false)
             ->latest()
             ->first();
 
@@ -513,7 +513,7 @@ final class ProgressRepository implements ProgressRepositoryInterface
             return null;
         }
 
-        return StudentState::where('user_id', '=', $userId)->first();
+        return StudentState::where('user_id', $userId)->first();
     }
 
     public function getOrCreateStudentState(?string $userId): StudentState
@@ -521,18 +521,18 @@ final class ProgressRepository implements ProgressRepositoryInterface
         if (is_null($userId) || $userId === 'guest') {
             return new StudentState([
                 'user_id'             => 'guest',
-                'gamification_data'   => [],
-                'learning_profile'    => [],
-                'performance_metrics' => [],
-                'adaptive_state'      => [],
+                'gamification_data'   => StudentStateSchema::getDefaultGamification(),
+                'learning_profile'    => StudentStateSchema::getDefaultLearningProfile(),
+                'performance_metrics' => StudentStateSchema::getDefaultPerformanceMetrics(),
+                'adaptive_state'      => StudentStateSchema::getDefaultAdaptiveState(),
             ]);
         }
 
         return StudentState::firstOrCreate(['user_id' => $userId], [
-            'gamification_data'   => [],
-            'learning_profile'    => [],
-            'performance_metrics' => [],
-            'adaptive_state'      => [],
+            'gamification_data'   => StudentStateSchema::getDefaultGamification(),
+            'learning_profile'    => StudentStateSchema::getDefaultLearningProfile(),
+            'performance_metrics' => StudentStateSchema::getDefaultPerformanceMetrics(),
+            'adaptive_state'      => StudentStateSchema::getDefaultAdaptiveState(),
             'last_active_at'      => now(),
         ]);
     }
@@ -542,7 +542,7 @@ final class ProgressRepository implements ProgressRepositoryInterface
         if (is_null($userId) || $userId === 'guest') {
             return [
                 'state'    => $this->getOrCreateStudentState('guest'),
-                'progress' => new Collection(),
+                'progress' => new Collection,
             ];
         }
 

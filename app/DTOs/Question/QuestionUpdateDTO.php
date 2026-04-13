@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DTOs\Question;
 
 use Illuminate\Http\Request;
 
-readonly class QuestionUpdateDTO
+final readonly class QuestionUpdateDTO
 {
     public function __construct(
         public ?string $material_id = null,
@@ -13,8 +15,7 @@ readonly class QuestionUpdateDTO
         public ?string $question_type = null,
         public ?string $difficulty = null,
         public ?array $answers = null,
-    ) {
-    }
+    ) {}
 
     public static function fromRequest(Request $request): self
     {

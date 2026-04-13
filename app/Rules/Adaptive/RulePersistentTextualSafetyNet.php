@@ -13,7 +13,7 @@ class RulePersistentTextualSafetyNet extends BaseAdaptiveRule
 
     protected string $ruleName = 'Persistent Textual Safety Net';
 
-    protected string $actionCode = AdaptiveConstants::ACTION_TEXTUAL_CRISIS_INTERVENTION;
+    protected string $actionCode = AdaptiveConstants::ACTION_PERSISTENT_TEXTUAL_NET;
 
     protected int $priority = 5;
 

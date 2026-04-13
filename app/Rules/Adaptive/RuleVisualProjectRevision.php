@@ -13,7 +13,7 @@ class RuleVisualProjectRevision extends BaseAdaptiveRule
 
     protected string $ruleName = 'Visual Project Revision';
 
-    protected string $actionCode = AdaptiveConstants::ACTION_VISUAL_CRISIS_INTERVENTION;
+    protected string $actionCode = AdaptiveConstants::ACTION_VISUAL_PROJECT_REVISION;
 
     protected int $priority = 15;
 
