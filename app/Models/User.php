@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\User\RoleName;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -84,14 +83,5 @@ final class User extends Authenticatable
     public function isMahasiswa(): bool
     {
         return $this->hasRole(RoleName::MAHASISWA);
-    }
-
-    public function scopeWhereRole(Builder $query, RoleName|string $roleName): Builder
-    {
-        $val = $roleName instanceof RoleName ? $roleName->value : $roleName;
-
-        return $query->whereHas('role', function ($q) use ($val) {
-            $q->where('role_name', $val);
-        });
     }
 }

@@ -4,8 +4,71 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e730d31636211d7bad41df66643689c5",
+    "content-hash": "c9e876267d8f5631e93ae33480a6f00f",
     "packages": [
+        {
+            "name": "arafa/laravel-deadcode-detector",
+            "version": "v1.2.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/arafadev/laravel-deadcode-detector.git",
+                "reference": "6a2dba9cd99a9483cea5404cf833580b8f82b106"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/arafadev/laravel-deadcode-detector/zipball/6a2dba9cd99a9483cea5404cf833580b8f82b106",
+                "reference": "6a2dba9cd99a9483cea5404cf833580b8f82b106",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "^8.0|^9.0|^10.0|^11.0|^12.0",
+                "illuminate/contracts": "^8.0|^9.0|^10.0|^11.0|^12.0",
+                "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0",
+                "nikic/php-parser": "^4.15|^5.0",
+                "php": "^8.0",
+                "psr/log": "^1.0|^2.0|^3.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^6.0|^7.0|^8.0|^9.0|^10.0",
+                "phpunit/phpunit": "^9.0|^10.0|^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Arafa\\DeadcodeDetector\\DeadCodeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Arafa\\DeadcodeDetector\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ahmed Arafa",
+                    "email": "arafa.dev@gmail.com"
+                }
+            ],
+            "description": "Detect and report dead / unused code in Laravel applications.",
+            "keywords": [
+                "cleanup",
+                "dead-code",
+                "laravel",
+                "static-analysis",
+                "unused-code"
+            ],
+            "support": {
+                "issues": "https://github.com/arafadev/laravel-deadcode-detector/issues",
+                "source": "https://github.com/arafadev/laravel-deadcode-detector/tree/v1.2.9"
+            },
+            "time": "2026-04-03T20:24:48+00:00"
+        },
         {
             "name": "brick/math",
             "version": "0.14.8",
