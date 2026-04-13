@@ -33,7 +33,7 @@ class AdaptiveEngineServiceTest extends TestCase
             ],
         );
 
-        $this->assertSame('RULE_05', $result['triggered_rule']['id'] ?? null);
+        $this->assertSame('RULE_20', $result['triggered_rule']['id'] ?? null);
         $this->assertSame(AdaptiveConstants::ACTION_STANDARD_PROMOTION, $result['triggered_rule']['action'] ?? null);
     }
 
@@ -61,7 +61,7 @@ class AdaptiveEngineServiceTest extends TestCase
             ],
         );
 
-        $this->assertSame('RULE_06', $result['triggered_rule']['id'] ?? null);
+        $this->assertSame('RULE_18', $result['triggered_rule']['id'] ?? null);
         $this->assertSame(AdaptiveConstants::ACTION_ACCELERATED_JUMP, $result['triggered_rule']['action'] ?? null);
     }
 
@@ -101,10 +101,10 @@ class AdaptiveEngineServiceTest extends TestCase
         $service = new AdaptiveEngineService;
 
         $expectedActions = [
-            'RULE_12' => AdaptiveConstants::ACTION_VISUAL_PROJECT_REVISION,
-            'RULE_13' => AdaptiveConstants::ACTION_TEXTUAL_PROJECT_REVISION,
-            'RULE_14' => AdaptiveConstants::ACTION_PERSISTENT_VISUAL_NET,
-            'RULE_15' => AdaptiveConstants::ACTION_PERSISTENT_TEXTUAL_NET,
+            'RULE_07' => AdaptiveConstants::ACTION_VISUAL_PROJECT_REVISION,
+            'RULE_08' => AdaptiveConstants::ACTION_TEXTUAL_PROJECT_REVISION,
+            'RULE_03' => AdaptiveConstants::ACTION_PERSISTENT_VISUAL_NET,
+            'RULE_04' => AdaptiveConstants::ACTION_PERSISTENT_TEXTUAL_NET,
         ];
 
         foreach ($expectedActions as $ruleId => $expectedActionCode) {
@@ -219,60 +219,60 @@ class AdaptiveEngineServiceTest extends TestCase
     public static function ruleReachabilityProvider(): array
     {
         return [
-            'RULE_14' => [[
+            'RULE_03' => [[
                 AdaptiveConstants::FACT_SCORE_CRITICAL,
                 AdaptiveConstants::FACT_PERSISTENT_FAIL,
                 AdaptiveConstants::FACT_STYLE_VISUAL,
-            ], 'RULE_14'],
-            'RULE_15' => [[
+            ], 'RULE_03'],
+            'RULE_04' => [[
                 AdaptiveConstants::FACT_SCORE_REMEDIAL,
                 AdaptiveConstants::FACT_PERSISTENT_FAIL,
                 AdaptiveConstants::FACT_STYLE_TEXTUAL,
-            ], 'RULE_15'],
+            ], 'RULE_04'],
+            'RULE_05' => [[
+                AdaptiveConstants::FACT_SCORE_CRITICAL,
+                AdaptiveConstants::FACT_STYLE_VISUAL,
+                AdaptiveConstants::FACT_DIFF_BEGINNER,
+            ], 'RULE_05'],
+            'RULE_06' => [[
+                AdaptiveConstants::FACT_SCORE_CRITICAL,
+                AdaptiveConstants::FACT_STYLE_TEXTUAL,
+                AdaptiveConstants::FACT_DIFF_BEGINNER,
+            ], 'RULE_06'],
+            'RULE_07' => [[
+                AdaptiveConstants::FACT_SCORE_REMEDIAL,
+                AdaptiveConstants::FACT_STYLE_VISUAL,
+                AdaptiveConstants::FACT_IS_FINAL_PROJECT,
+            ], 'RULE_07'],
+            'RULE_08' => [[
+                AdaptiveConstants::FACT_SCORE_CRITICAL,
+                AdaptiveConstants::FACT_STYLE_TEXTUAL,
+                AdaptiveConstants::FACT_IS_FINAL_PROJECT,
+            ], 'RULE_08'],
             'RULE_01' => [[
                 AdaptiveConstants::FACT_SCORE_CRITICAL,
+                AdaptiveConstants::FACT_PERSISTENT_FAIL,
                 AdaptiveConstants::FACT_STYLE_VISUAL,
-                AdaptiveConstants::FACT_DIFF_BEGINNER,
+                AdaptiveConstants::FACT_IS_FINAL_PROJECT,
             ], 'RULE_01'],
             'RULE_02' => [[
-                AdaptiveConstants::FACT_SCORE_CRITICAL,
+                AdaptiveConstants::FACT_SCORE_REMEDIAL,
+                AdaptiveConstants::FACT_PERSISTENT_FAIL,
                 AdaptiveConstants::FACT_STYLE_TEXTUAL,
-                AdaptiveConstants::FACT_DIFF_BEGINNER,
+                AdaptiveConstants::FACT_IS_FINAL_PROJECT,
             ], 'RULE_02'],
             'RULE_12' => [[
-                AdaptiveConstants::FACT_SCORE_REMEDIAL,
-                AdaptiveConstants::FACT_STYLE_VISUAL,
-                AdaptiveConstants::FACT_IS_FINAL_PROJECT,
-            ], 'RULE_12'],
-            'RULE_13' => [[
-                AdaptiveConstants::FACT_SCORE_CRITICAL,
-                AdaptiveConstants::FACT_STYLE_TEXTUAL,
-                AdaptiveConstants::FACT_IS_FINAL_PROJECT,
-            ], 'RULE_13'],
-            'RULE_18' => [[
-                AdaptiveConstants::FACT_SCORE_CRITICAL,
-                AdaptiveConstants::FACT_PERSISTENT_FAIL,
-                AdaptiveConstants::FACT_STYLE_VISUAL,
-                AdaptiveConstants::FACT_IS_FINAL_PROJECT,
-            ], 'RULE_18'],
-            'RULE_19' => [[
-                AdaptiveConstants::FACT_SCORE_REMEDIAL,
-                AdaptiveConstants::FACT_PERSISTENT_FAIL,
-                AdaptiveConstants::FACT_STYLE_TEXTUAL,
-                AdaptiveConstants::FACT_IS_FINAL_PROJECT,
-            ], 'RULE_19'],
-            'RULE_03' => [[
                 AdaptiveConstants::FACT_SCORE_REMEDIAL,
                 AdaptiveConstants::FACT_ERROR_SYNTAX,
                 AdaptiveConstants::FACT_DIFF_MEDIUM,
                 AdaptiveConstants::FACT_HINT_USED,
-            ], 'RULE_03'],
-            'RULE_04' => [[
+            ], 'RULE_12'],
+            'RULE_13' => [[
                 AdaptiveConstants::FACT_SCORE_REMEDIAL,
                 AdaptiveConstants::FACT_ERROR_LOGIC,
                 AdaptiveConstants::FACT_DIFF_MEDIUM,
                 AdaptiveConstants::FACT_HINT_USED,
-            ], 'RULE_04'],
+            ], 'RULE_13'],
             'RULE_09' => [[
                 AdaptiveConstants::FACT_SCORE_MASTERY,
                 AdaptiveConstants::FACT_TIME_FAST,
@@ -290,41 +290,41 @@ class AdaptiveEngineServiceTest extends TestCase
                 AdaptiveConstants::FACT_IS_FINAL_PROJECT,
                 AdaptiveConstants::FACT_SATISFACTORY_PROGRESS,
             ], 'RULE_11'],
-            'RULE_07' => [[
+            'RULE_14' => [[
                 AdaptiveConstants::FACT_SCORE_CRITICAL,
                 AdaptiveConstants::FACT_DIFF_MEDIUM,
-            ], 'RULE_07'],
-            'RULE_08' => [[
+            ], 'RULE_14'],
+            'RULE_15' => [[
                 AdaptiveConstants::FACT_SCORE_MASTERY,
                 AdaptiveConstants::FACT_TIME_FAST,
                 AdaptiveConstants::FACT_DIFF_HARD,
                 AdaptiveConstants::FACT_SATISFACTORY_PROGRESS,
                 AdaptiveConstants::FACT_IN_MODULE,
-            ], 'RULE_08'],
+            ], 'RULE_15'],
             'RULE_16' => [[
                 AdaptiveConstants::FACT_SCORE_MASTERY,
                 AdaptiveConstants::FACT_TIME_FAST,
                 AdaptiveConstants::FACT_DIFF_MEDIUM,
             ], 'RULE_16'],
-            'RULE_20' => [[
+            'RULE_17' => [[
                 AdaptiveConstants::FACT_SCORE_MASTERY,
                 AdaptiveConstants::FACT_TIME_FAST,
                 AdaptiveConstants::FACT_DIFF_BEGINNER,
                 AdaptiveConstants::FACT_NEXT_UNLOCKED,
                 AdaptiveConstants::FACT_SATISFACTORY_PROGRESS,
-            ], 'RULE_20'],
-            'RULE_06' => [[
+            ], 'RULE_17'],
+            'RULE_18' => [[
                 AdaptiveConstants::FACT_SCORE_MASTERY,
                 AdaptiveConstants::FACT_TIME_FAST,
                 AdaptiveConstants::FACT_DIFF_BEGINNER,
-            ], 'RULE_06'],
-            'RULE_17' => [[
+            ], 'RULE_18'],
+            'RULE_19' => [[
                 AdaptiveConstants::FACT_SCORE_REMEDIAL,
-            ], 'RULE_17'],
-            'RULE_05' => [[
+            ], 'RULE_19'],
+            'RULE_20' => [[
                 AdaptiveConstants::FACT_SCORE_STANDARD,
                 AdaptiveConstants::FACT_DIFF_BEGINNER,
-            ], 'RULE_05'],
+            ], 'RULE_20'],
         ];
     }
 }

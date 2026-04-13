@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use App\Enums\Lms\QuestionDifficulty;
+
 trait HandlesAdaptiveState
 {
     abstract protected function getPerformanceService();
@@ -41,7 +43,9 @@ trait HandlesAdaptiveState
 
         $this->handleMaterialChange($studentState, $adaptiveState, $materialId);
 
-        $targetDifficulty = $adaptiveState['target_difficulty'] ?? null;
+        $targetDifficulty = is_string($adaptiveState['target_difficulty'] ?? null)
+            ? QuestionDifficulty::tryFrom($adaptiveState['target_difficulty'])
+            : $adaptiveState['target_difficulty'];
 
         return [
             'gamification'     => $studentState->gamification_data,

@@ -27,12 +27,12 @@ final class QuestionListingService implements QuestionListingServiceInterface
 
     public function getQuizData(
         Material $material,
-        string $difficulty,
+        ?QuestionDifficulty $difficulty,
         string $userId,
         bool $isGuest,
         array $guestProgress = [],
         ?string $subMaterialId = null,
-        ?string $targetDifficulty = null,
+        ?QuestionDifficulty $targetDifficulty = null,
     ): array {
         $answeredQuestionIds = $isGuest
             ? $this->getGuestAnsweredQuestionIds($material->id, $guestProgress)
@@ -45,7 +45,7 @@ final class QuestionListingService implements QuestionListingServiceInterface
 
         $appliedTargetFilter = false;
 
-        $shouldApplyTargetDifficulty = $difficulty === 'all' && $targetDifficulty && ! $isGuest;
+        $shouldApplyTargetDifficulty = $difficulty === null && $targetDifficulty && ! $isGuest;
 
         if ($shouldApplyTargetDifficulty) {
             $attemptedCount = $this->progressRepo->getAttemptedQuestionIds($userId, $material->id)->count();
@@ -61,7 +61,7 @@ final class QuestionListingService implements QuestionListingServiceInterface
 
         if ($shouldApplyTargetDifficulty) {
             $difficultyOrder = Question::DIFFICULTY_ORDER;
-            $targetLevel     = $difficultyOrder[$targetDifficulty] ?? 1;
+            $targetLevel     = $difficultyOrder[$targetDifficulty->value] ?? 1;
 
             $answeredArray = $answeredQuestionIds->toArray();
             $questions     = $questions->reject(function ($q) use ($answeredArray, $difficultyOrder, $targetLevel) {
@@ -108,7 +108,7 @@ final class QuestionListingService implements QuestionListingServiceInterface
             'answeredCount'         => $actualAnsweredCount,
             'materialAnsweredCount' => $answeredQuestionIds->count(),
             'levelProgress'         => $levelProgress,
-            'difficulty'            => $difficulty,
+            'difficulty'            => $difficulty ? $difficulty->value : 'all',
         ];
     }
 
@@ -184,15 +184,15 @@ final class QuestionListingService implements QuestionListingServiceInterface
 
     public function getReviewQuestions(
         Material $material,
-        ?string $difficulty,
+        ?QuestionDifficulty $difficulty,
         string $userId,
         bool $isGuest,
         array $guestProgress = [],
     ): Collection {
         $questions = $material->questions;
 
-        if ($difficulty && $difficulty !== 'all') {
-            $dbDifficulty = $difficulty === 'advanced' ? 'hard' : $difficulty;
+        if ($difficulty !== null) {
+            $dbDifficulty = $difficulty->value;
             $questions    = $questions->where('difficulty', $dbDifficulty);
         }
 
@@ -258,14 +258,15 @@ final class QuestionListingService implements QuestionListingServiceInterface
 
     public function getFilteredQuestions(
         Material $material,
-        string $difficulty,
+        ?QuestionDifficulty $difficulty,
         bool $isGuest,
         ?string $subMaterialId = null,
     ): array {
-        $questions = $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty, $subMaterialId);
+        $diffValue = $difficulty ? $difficulty->value : 'all';
+        $questions = $this->questionRepo->getByMaterialAndDifficulty($material->id, $diffValue, $subMaterialId);
 
         if ($isGuest) {
-            if ($difficulty === 'all') {
+            if ($difficulty === null) {
                 $beginnerQuestions      = $questions->where('difficulty', QuestionDifficulty::BEGINNER->value)->take(3);
                 $mediumQuestions        = $questions->where('difficulty', QuestionDifficulty::MEDIUM->value)->take(3);
                 $hardQuestions          = $questions->where('difficulty', QuestionDifficulty::HARD->value)->take(3);
@@ -308,17 +309,17 @@ final class QuestionListingService implements QuestionListingServiceInterface
 
     public function getLevelProgress(
         Material $material,
-        string $difficulty,
+        ?QuestionDifficulty $difficulty,
         SupportCollection|Collection $answeredQuestionIds,
         bool $isGuest = false,
         SupportCollection|Collection|null $preloadedQuestions = null,
     ): array {
         $questions = $preloadedQuestions !== null
             ? $preloadedQuestions
-            : $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty);
+            : $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty ? $difficulty->value : 'all');
 
         if ($preloadedQuestions === null && $isGuest) {
-            $questions = $questions->take($difficulty === 'all' ? 9 : 3);
+            $questions = $questions->take($difficulty === null ? 9 : 3);
         }
 
         $answeredArray = $answeredQuestionIds->toArray();

@@ -14,16 +14,4 @@ final class RoleRepository implements RoleRepositoryInterface
     {
         return Role::all();
     }
-
-    public function find(string $id): ?Role
-    {
-        return Role::find($id);
-    }
-
-    public function getUsersByRole(string $roleId): Collection
-    {
-        return Role::with('users')
-            ->find($roleId)
-            ?->users ?? new Collection;
-    }
 }

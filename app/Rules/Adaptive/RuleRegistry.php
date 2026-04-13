@@ -16,25 +16,50 @@ class RuleRegistry
     protected function registerRules(): void
     {
         $ruleClasses = [
-            RulePersistentVisualSafetyNet::class,
-            RulePersistentTextualSafetyNet::class,
-            RuleVisualCrisisIntervention::class,
-            RuleTextualCrisisIntervention::class,
-            RuleVisualProjectRevision::class,
-            RuleTextualProjectRevision::class,
+            // Priority 3
             RuleFinalProjectVisualPersistentFail::class,
             RuleFinalProjectTextualPersistentFail::class,
-            RuleSyntaxRecovery::class,
-            RuleLogicRecovery::class,
-            RuleRemedialIndependent::class,
+
+            // Priority 5
+            RulePersistentVisualSafetyNet::class,
+            RulePersistentTextualSafetyNet::class,
+
+            // Priority 10
+            RuleVisualCrisisIntervention::class,
+            RuleTextualCrisisIntervention::class,
+
+            // Priority 15
+            RuleVisualProjectRevision::class,
+            RuleTextualProjectRevision::class,
+
+            // Priority 21 - 23 (Certificates)
             RuleGoldCertificate::class,
             RuleSilverCertificate::class,
             RuleBronzeCertificate::class,
-            RuleModuleGraduation::class,
+
+            // Priority 24 - 25 (Recovery)
+            RuleSyntaxRecovery::class,
+            RuleLogicRecovery::class,
+
+            // Priority 27
             RuleCriticalBacktracking::class,
+
+            // Priority 30
+            RuleModuleGraduation::class,
+
+            // Priority 35
             RuleMasteryMedium::class,
+
+            // Priority 36
             RuleAcceleratedMaterialPromotion::class,
+
+            // Priority 40
             RuleAcceleratedJump::class,
+
+            // Priority 48
+            RuleRemedialIndependent::class,
+
+            // Priority 50
             RuleStandardPromotion::class,
         ];
 
@@ -72,13 +97,5 @@ class RuleRegistry
         }
 
         return null;
-    }
-
-    public function getRulesByAction(string $actionCode): array
-    {
-        return array_filter(
-            $this->rules,
-            fn ($rule) => $rule->getActionCode() === $actionCode,
-        );
     }
 }

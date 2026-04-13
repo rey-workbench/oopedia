@@ -11,7 +11,7 @@ interface GamificationServiceInterface
     public function calculateCorrectAnswerReward(
         array $state,
         bool $usedHint = false,
-        QuestionDifficulty|string $difficulty = 'beginner',
+        QuestionDifficulty $difficulty = QuestionDifficulty::BEGINNER,
         int $timeSpent = 0,
     ): array;
 
@@ -23,8 +23,6 @@ interface GamificationServiceInterface
 
     public function determineLevel(int $xp): StudentLevel;
 
-    public function getLevelProgress(int $xp): array;
-
     public function addXp(string $userId, int $amount): StudentState;
 
     public function incrementStreak(string $userId): StudentState;
@@ -34,7 +32,7 @@ interface GamificationServiceInterface
     public function applySubmissionRewards(
         string $userId,
         bool $isCorrect,
-        QuestionDifficulty|string $difficulty,
+        QuestionDifficulty $difficulty,
         int $timeSpent,
         bool $usedHint,
     ): array;

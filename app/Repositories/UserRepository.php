@@ -13,11 +13,6 @@ use Illuminate\Database\Eloquent\Collection;
 
 final class UserRepository implements UserRepositoryInterface
 {
-    public function all(): Collection
-    {
-        return User::all();
-    }
-
     public function find(string $id): ?User
     {
         return User::find($id);
@@ -50,16 +45,6 @@ final class UserRepository implements UserRepositoryInterface
         }
 
         return (bool) $user->delete();
-    }
-
-    public function paginate(int $perPage = 15): LengthAwarePaginator
-    {
-        return User::paginate($perPage);
-    }
-
-    public function countAll(): int
-    {
-        return User::count();
     }
 
     public function getStudentsList(?string $search = null, int $perPage = 10): LengthAwarePaginator

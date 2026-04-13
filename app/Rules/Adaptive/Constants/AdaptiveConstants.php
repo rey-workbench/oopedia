@@ -42,60 +42,50 @@ final class AdaptiveConstants
 
     public const string FACT_SCORE_MASTERY = 'G04';
 
-    // Time Spent (G05 - G06)
+    // Time Spent (G05)
     public const string FACT_TIME_FAST = 'G05';
 
-    public const string FACT_TIME_SLOW = 'G06';
+    // Learning Styles (G06 - G07, G22)
+    public const string FACT_STYLE_VISUAL = 'G06';
 
-    // Learning Styles (G07 - G08, G27)
-    public const string FACT_STYLE_VISUAL = 'G07';
+    public const string FACT_STYLE_TEXTUAL = 'G07';
 
-    public const string FACT_STYLE_TEXTUAL = 'G08';
+    // Error Types (G08 - G10)
+    public const string FACT_ERROR_SYNTAX = 'G08';
 
-    // Error Types (G09 - G11)
-    public const string FACT_ERROR_SYNTAX = 'G09';
+    public const string FACT_ERROR_LOGIC = 'G09';
 
-    public const string FACT_ERROR_LOGIC = 'G10';
+    public const string FACT_NO_ERROR = 'G10';
 
-    public const string FACT_NO_ERROR = 'G11';
+    // Hint Usage (G11)
+    public const string FACT_HINT_USED = 'G11';
 
-    // Hint Usage (G12)
-    public const string FACT_HINT_USED = 'G12';
+    // Modules (G12)
+    public const string FACT_IN_MODULE = 'G12';
 
-    // Modules (G13 - G14)
-    public const string FACT_IN_MODULE = 'G13';
+    // Difficulty (G13 - G15)
+    public const string FACT_DIFF_BEGINNER = 'G13';
 
-    public const string FACT_MODULE_STARTED = 'G14';
+    public const string FACT_DIFF_MEDIUM = 'G14';
 
-    // Difficulty (G15 - G17)
-    public const string FACT_DIFF_BEGINNER = 'G15';
+    public const string FACT_DIFF_HARD = 'G15';
 
-    public const string FACT_DIFF_MEDIUM = 'G16';
+    // Special (G16 - G20)
+    public const string FACT_IS_FINAL_PROJECT = 'G16';
 
-    public const string FACT_DIFF_HARD = 'G17';
+    public const string FACT_IS_PRACTICE = 'G17';
 
-    // Special (G18 - G22)
-    public const string FACT_IS_FINAL_PROJECT = 'G18';
+    public const string FACT_NEXT_UNLOCKED = 'G18';
 
-    public const string FACT_IS_PRACTICE = 'G19';
+    public const string FACT_PREV_UNLOCKED = 'G19';
 
-    public const string FACT_NEXT_UNLOCKED = 'G20';
+    public const string FACT_PERSISTENT_FAIL = 'G20';
 
-    public const string FACT_PREV_UNLOCKED = 'G21';
+    // Progress (G21)
+    public const string FACT_SATISFACTORY_PROGRESS = 'G21';
 
-    public const string FACT_PERSISTENT_FAIL = 'G22';
-
-    // Progress (G23 - G26)
-    public const string FACT_COMPLETED_MODULE = 'G23';
-
-    public const string FACT_COMPLETED_ALL_MODULES = 'G24';
-
-    public const string FACT_HIGH_ENGAGEMENT = 'G25';
-
-    public const string FACT_SATISFACTORY_PROGRESS = 'G26';
-
-    // Additional Learning Style (G27)
-    public const string FACT_STYLE_MIXED = 'G27';
+    // Additional Learning Style (G22)
+    public const string FACT_STYLE_MIXED = 'G22';
 
     // ==================== ACTIONS (H Codes) ====================
 
@@ -241,83 +231,11 @@ final class AdaptiveConstants
 
     public const string DIFFICULTY_HARD = 'hard';
 
-    public const array QUESTION_ACTION_COMMANDS = [
-        self::ACTION_NEXT_QUESTION,
-        self::ACTION_REDUCE_DIFFICULTY,
-        self::ACTION_INCREASE_DIFFICULTY,
-    ];
-
     public const array CERTIFICATION_RANKS = [
         self::CERT_BRONZE => 1,
         self::CERT_SILVER => 2,
         self::CERT_GOLD   => 3,
     ];
-
-    /**
-     * Get detailed descriptions for Fact (G) codes.
-     */
-    public static function getFactDescriptions(): array
-    {
-        return [
-            self::FACT_SCORE_CRITICAL        => 'Skor Kritis (<40)',
-            self::FACT_SCORE_REMEDIAL        => 'Skor Remedial (40-69)',
-            self::FACT_SCORE_STANDARD        => 'Skor Standar (70-89)',
-            self::FACT_SCORE_MASTERY         => 'Skor Mahir (90-100)',
-            self::FACT_TIME_FAST             => 'Waktu Pengerjaan Cepat',
-            self::FACT_TIME_SLOW             => 'Waktu Pengerjaan Lambat',
-            self::FACT_STYLE_VISUAL          => 'Gaya Belajar Visual',
-            self::FACT_STYLE_TEXTUAL         => 'Gaya Belajar Tekstual',
-            self::FACT_STYLE_MIXED           => 'Gaya Belajar Campuran',
-            self::FACT_ERROR_SYNTAX          => 'Kesalahan Sintaksis',
-            self::FACT_ERROR_LOGIC           => 'Kesalahan Logika',
-            self::FACT_NO_ERROR              => 'Tidak Ada Kesalahan',
-            self::FACT_HINT_USED             => 'Menggunakan Hint',
-            self::FACT_IN_MODULE             => 'Dalam Modul Pembelajaran',
-            self::FACT_MODULE_STARTED        => 'Modul Dimulai',
-            self::FACT_DIFF_BEGINNER         => 'Tingkat Kesulitan: Easy',
-            self::FACT_DIFF_MEDIUM           => 'Tingkat Kesulitan: Medium',
-            self::FACT_DIFF_HARD             => 'Tingkat Kesulitan: Advanced',
-            self::FACT_IS_FINAL_PROJECT      => 'Soal Proyek Akhir',
-            self::FACT_IS_PRACTICE           => 'Soal Latihan',
-            self::FACT_NEXT_UNLOCKED         => 'Materi Berikutnya Terbuka',
-            self::FACT_PREV_UNLOCKED         => 'Materi Sebelumnya Terbuka',
-            self::FACT_PERSISTENT_FAIL       => 'Gagal Berulang (Persistent)',
-            self::FACT_COMPLETED_MODULE      => 'Modul Selesai',
-            self::FACT_COMPLETED_ALL_MODULES => 'Semua Modul Selesai',
-            self::FACT_HIGH_ENGAGEMENT       => 'Keterlibatan Tinggi',
-            self::FACT_SATISFACTORY_PROGRESS => 'Progres Materi Memadai (>60%)',
-        ];
-    }
-
-    /**
-     * Get detailed descriptions for Action (H) codes.
-     */
-    public static function getActionDescriptions(): array
-    {
-        return [
-            self::ACTION_VISUAL_CRISIS_INTERVENTION     => 'Intervensi Krisis Visual',
-            self::ACTION_TEXTUAL_CRISIS_INTERVENTION    => 'Intervensi Krisis Tekstual',
-            self::ACTION_SYNTAX_RECOVERY                => 'Pemulihan Sintaksis',
-            self::ACTION_LOGIC_RECOVERY                 => 'Pemulihan Logika',
-            self::ACTION_STANDARD_PROMOTION             => 'Promosi Standar',
-            self::ACTION_ACCELERATED_JUMP               => 'Loncatan Akselerasi (Fast Track)',
-            self::ACTION_CRITICAL_BACKTRACKING          => 'Mundur Kritis (Backtracking)',
-            self::ACTION_MODULE_GRADUATION              => 'Kelulusan Modul',
-            self::ACTION_GOLD_CERTIFICATE               => 'Sertifikat Emas',
-            self::ACTION_SILVER_CERTIFICATE             => 'Sertifikat Perak',
-            self::ACTION_BRONZE_CERTIFICATE             => 'Sertifikat Perunggu',
-            self::ACTION_VISUAL_PROJECT_REVISION        => 'Revisi Proyek Visual',
-            self::ACTION_TEXTUAL_PROJECT_REVISION       => 'Revisi Proyek Tekstual',
-            self::ACTION_PERSISTENT_VISUAL_NET          => 'Safety Net Visual (Gagal Berulang)',
-            self::ACTION_PERSISTENT_TEXTUAL_NET         => 'Safety Net Tekstual (Gagal Berulang)',
-            self::ACTION_ACCELERATED_MATERIAL_PROMOTION => 'Loncatan Akseleratif Modul',
-        ];
-    }
-
-    public static function isQuestionActionCommand(string $actionCommand): bool
-    {
-        return in_array($actionCommand, self::QUESTION_ACTION_COMMANDS, true);
-    }
 
     public static function certificationRank(?string $certification): int
     {

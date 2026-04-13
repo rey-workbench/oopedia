@@ -28,17 +28,6 @@ trait AppliesRecovery
         );
     }
 
-    protected function applyIndependentRecovery(array $state, string $message): array
-    {
-        return $this->setRecoveryState(
-            state: $state,
-            recommendation: 'Coba Secara Mandiri',
-            nextAction: AdaptiveConstants::ACTION_NEXT_QUESTION,
-            message: $message,
-            recoveryType: AdaptiveConstants::RECOVERY_INDEPENDENT,
-        );
-    }
-
     protected function applyRemedialIndependent(array $state): array
     {
         return $this->setRecoveryState(

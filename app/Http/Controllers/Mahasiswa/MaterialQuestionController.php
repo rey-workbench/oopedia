@@ -10,6 +10,7 @@ use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\MaterialServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
 use App\Contracts\Services\QuestionListingServiceInterface;
+use App\Enums\Lms\QuestionDifficulty;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Question\CheckAnswerRequest;
 use App\Http\Requests\Question\ReviewQuestionRequest;
@@ -88,7 +89,7 @@ final class MaterialQuestionController extends Controller
 
         $data = $this->questionListingService->getQuizData(
             material: $material,
-            difficulty: 'all',
+            difficulty: null,
             userId: $userId,
             isGuest: $isGuest,
             guestProgress: $guestProgress,
@@ -123,7 +124,7 @@ final class MaterialQuestionController extends Controller
 
         $levels = $this->questionListingService->getLevelProgress(
             $material,
-            'all',
+            null,
             $answeredQuestionIds,
             $isGuest,
         );
@@ -133,26 +134,26 @@ final class MaterialQuestionController extends Controller
 
     public function review(int|string $materialId, ReviewQuestionRequest $request): Response
     {
-        $material      = $this->materialService->getMaterialWithQuestionsAndAnswers((string) $materialId);
-        $materials     = $this->materialService->getAllOrdered();
-        $difficulty    = $request->validated('difficulty') ?? 'all';
-        $isGuest       = $this->isGuest();
-        $userId        = $this->getUserId();
-        $guestProgress = $this->getGuestProgress();
+        $material         = $this->materialService->getMaterialWithQuestionsAndAnswers((string) $materialId);
+        $materials        = $this->materialService->getAllOrdered();
+        $difficultyString = $request->validated('difficulty');
+        $difficulty       = $difficultyString ? QuestionDifficulty::tryFrom($difficultyString) : null;
 
-        $questions = $this->questionListingService->getReviewQuestions(
+        $isGuest       = $this->isGuest();
+
+        $questionsData = $this->questionListingService->getReviewQuestions(
             $material,
             $difficulty,
-            $userId,
+            $this->getUserId(),
             $isGuest,
-            $guestProgress,
+            $this->getGuestProgress(),
         );
 
         return $this->render('Mahasiswa/Materials/Questions/Review/Index', [
+            'questions'  => $questionsData,
             'material'   => $material,
             'materials'  => $materials,
-            'questions'  => $questions,
-            'difficulty' => $difficulty,
+            'difficulty' => $difficulty ? $difficulty->value : 'all',
             'isGuest'    => $isGuest,
         ]);
     }

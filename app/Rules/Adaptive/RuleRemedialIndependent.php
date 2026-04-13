@@ -9,7 +9,7 @@ class RuleRemedialIndependent extends BaseAdaptiveRule
 {
     use AppliesRecovery;
 
-    protected string $ruleId = 'RULE_17';
+    protected string $ruleId = 'RULE_19';
 
     protected string $ruleName = 'Remedial Independent';
 

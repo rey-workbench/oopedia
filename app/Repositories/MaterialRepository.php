@@ -6,7 +6,6 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Models\Material;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
 final class MaterialRepository implements MaterialRepositoryInterface
@@ -48,11 +47,6 @@ final class MaterialRepository implements MaterialRepositoryInterface
         }
 
         return (bool) $material->delete();
-    }
-
-    public function paginate(int $perPage = 15): LengthAwarePaginator
-    {
-        return Material::paginate($perPage, ['*'], 'page', null);
     }
 
     public function countAll(): int
@@ -116,17 +110,6 @@ final class MaterialRepository implements MaterialRepositoryInterface
         }
 
         return $query->with(['creator', 'subMaterials', 'media'])->get();
-    }
-
-    public function findWithRelations(string $id, array $relations = []): Material
-    {
-        $query = Material::query();
-
-        if ($relations) {
-            $query->with($relations);
-        }
-
-        return $query->findOrFail($id);
     }
 
     public function getMaterialsForListing(): Collection

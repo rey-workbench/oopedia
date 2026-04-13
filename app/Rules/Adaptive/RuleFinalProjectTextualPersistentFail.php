@@ -9,7 +9,7 @@ class RuleFinalProjectTextualPersistentFail extends BaseAdaptiveRule
 {
     use AppliesCrisisIntervention;
 
-    protected string $ruleId = 'RULE_19';
+    protected string $ruleId = 'RULE_02';
 
     protected string $ruleName = 'Final Project Textual Persistent Fail';
 

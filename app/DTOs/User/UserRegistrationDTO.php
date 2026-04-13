@@ -9,16 +9,13 @@ use Illuminate\Http\Request;
 
 final readonly class UserRegistrationDTO
 {
-    public string $roleName;
-
-    public bool $isDosen;
-
     public function __construct(
         public string $name,
         public string $email,
         public string $password,
         public string $role_id,
         public bool $is_approved,
+        public bool $isDosen,
     ) {}
 
     public static function fromRequest(Request $request): self
@@ -27,19 +24,16 @@ final readonly class UserRegistrationDTO
         $role        = Role::where('role_name', $roleName)->first();
         $role_id     = $role?->id ?? '';
         $is_approved = $roleName === 'dosen';
+        $isDosen     = $roleName === 'dosen';
 
-        $dto = new self(
+        return new self(
             name: $request->input('name'),
             email: $request->input('email'),
             password: $request->input('password'),
             role_id: $role_id,
             is_approved: $is_approved,
+            isDosen: $isDosen,
         );
-
-        $dto->roleName = $roleName;
-        $dto->isDosen  = $roleName === 'dosen';
-
-        return $dto;
     }
 
     public function toArray(): array

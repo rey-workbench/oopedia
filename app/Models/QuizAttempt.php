@@ -32,13 +32,6 @@ final class QuizAttempt extends Model
         'time_spent'     => 'integer',
     ];
 
-    public function setTimeSpent(int $seconds): static
-    {
-        $this->time_spent = $seconds;
-
-        return $this;
-    }
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

@@ -265,7 +265,7 @@ final class ProgressRepository implements ProgressRepositoryInterface
         return $attempt;
     }
 
-    public function updateStudentState(?string $userId, array $attributes): void
+    private function updateStudentState(?string $userId, array $attributes): void
     {
         if (is_null($userId) || $userId === 'guest') {
             return;

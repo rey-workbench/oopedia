@@ -48,17 +48,6 @@ abstract class BaseAdaptiveRule implements AdaptiveRuleInterface
         return in_array($fact, $facts, true);
     }
 
-    protected function hasAllFacts(array $facts, array $requiredFacts): bool
-    {
-        foreach ($requiredFacts as $required) {
-            if (! $this->hasFact($facts, $required)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     protected function hasAnyFact(array $facts, array $requiredFacts): bool
     {
         foreach ($requiredFacts as $required) {

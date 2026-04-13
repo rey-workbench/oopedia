@@ -9,7 +9,7 @@ class RuleModuleGraduation extends BaseAdaptiveRule
 {
     use AppliesAchievement;
 
-    protected string $ruleId = 'RULE_08';
+    protected string $ruleId = 'RULE_15';
 
     protected string $ruleName = 'Module Graduation';
 

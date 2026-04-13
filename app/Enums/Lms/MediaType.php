@@ -10,12 +10,4 @@ enum MediaType: string
     case VIDEO = 'video';
     case FILE  = 'file';
 
-    public function label(): string
-    {
-        return match ($this) {
-            self::IMAGE => 'Gambar',
-            self::VIDEO => 'Video',
-            self::FILE  => 'File',
-        };
-    }
 }

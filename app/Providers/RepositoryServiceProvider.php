@@ -8,7 +8,6 @@ use App\Contracts\Repositories\MediaRepositoryInterface;
 use App\Contracts\Repositories\MslqRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\QuestionRepositoryInterface;
-use App\Contracts\Repositories\QuizAttemptRepositoryInterface;
 use App\Contracts\Repositories\RoleRepositoryInterface;
 use App\Contracts\Repositories\StudentStateRepositoryInterface;
 use App\Contracts\Repositories\SubMaterialRepositoryInterface;
@@ -20,7 +19,6 @@ use App\Repositories\MediaRepository;
 use App\Repositories\MslqRepository;
 use App\Repositories\ProgressRepository;
 use App\Repositories\QuestionRepository;
-use App\Repositories\QuizAttemptRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\StudentStateRepository;
 use App\Repositories\SubMaterialRepository;
@@ -41,7 +39,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(MediaRepositoryInterface::class, MediaRepository::class);
         $this->app->bind(SubMaterialRepositoryInterface::class, SubMaterialRepository::class);
         $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
-        $this->app->bind(QuizAttemptRepositoryInterface::class, QuizAttemptRepository::class);
         $this->app->bind(StudentStateRepositoryInterface::class, StudentStateRepository::class);
         $this->app->bind(MslqRepositoryInterface::class, MslqRepository::class);
     }

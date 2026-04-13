@@ -9,7 +9,7 @@ class RuleAcceleratedMaterialPromotion extends BaseAdaptiveRule
 {
     use AppliesProgression;
 
-    protected string $ruleId = 'RULE_20';
+    protected string $ruleId = 'RULE_17';
 
     protected string $ruleName = 'Accelerated Material Promotion';
 

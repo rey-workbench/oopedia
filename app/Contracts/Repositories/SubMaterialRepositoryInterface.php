@@ -17,8 +17,6 @@ interface SubMaterialRepositoryInterface
 
     public function delete(string $id): bool;
 
-    public function getAllByMaterial(string $materialId): Collection;
-
     public function findByMaterial(string $materialId): Collection;
 
     public function findWithQuestions(string $id): SubMaterial;

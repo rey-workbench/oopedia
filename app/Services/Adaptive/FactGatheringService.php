@@ -27,7 +27,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
         bool $usedHint,
         int $score,
         int $timeSpent,
-        QuestionDifficulty|string $difficulty,
+        QuestionDifficulty $difficulty,
         string $questionId,
         string $materialId,
         ?string $moduleId = null,

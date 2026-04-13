@@ -9,7 +9,7 @@ class RuleVisualCrisisIntervention extends BaseAdaptiveRule
 {
     use AppliesCrisisIntervention;
 
-    protected string $ruleId = 'RULE_01';
+    protected string $ruleId = 'RULE_05';
 
     protected string $ruleName = 'Visual Crisis Intervention';
 

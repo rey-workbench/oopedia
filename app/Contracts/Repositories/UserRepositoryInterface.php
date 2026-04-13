@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface UserRepositoryInterface
 {
-    public function all(): Collection;
-
     public function find(string $id): ?User;
 
     public function create(array $data): User;
@@ -17,10 +15,6 @@ interface UserRepositoryInterface
     public function update(string $id, array $data): ?User;
 
     public function delete(string $id): bool;
-
-    public function paginate(int $perPage = 15): LengthAwarePaginator;
-
-    public function countAll(): int;
 
     public function getStudentsList(?string $search = null, int $perPage = 10): LengthAwarePaginator;
 

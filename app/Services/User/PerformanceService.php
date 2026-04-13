@@ -6,10 +6,10 @@ namespace App\Services\User;
 
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\StudentStateRepositoryInterface;
-use App\Contracts\Services\GamificationServiceInterface;
 use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
 use App\Enums\Lms\ContentCategory;
+use App\Enums\Lms\LearningStyle;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Models\StudentState;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
@@ -20,7 +20,6 @@ final class PerformanceService implements PerformanceServiceInterface
     public function __construct(
         public readonly ProgressRepositoryInterface $progressRepo,
         public readonly StudentStateRepositoryInterface $studentStateRepo,
-        public readonly GamificationServiceInterface $gamificationService,
         public readonly GuestProgressServiceInterface $guestProgressService,
     ) {}
 
@@ -33,9 +32,9 @@ final class PerformanceService implements PerformanceServiceInterface
         return $this->studentStateRepo->findOrCreate($userId);
     }
 
-    public function updateLearningStyleFromInteraction(string $userId, ContentCategory|string $questionType, int $timeSpent): string
+    public function updateLearningStyleFromInteraction(string $userId, ContentCategory $questionType, int $timeSpent): LearningStyle
     {
-        $typeKey = $questionType instanceof ContentCategory ? $questionType->value : $questionType;
+        $typeKey = $questionType->value;
         $state   = $this->getStudentState($userId);
         $profile = $state->learning_profile ?? [];
 
@@ -68,6 +67,12 @@ final class PerformanceService implements PerformanceServiceInterface
             }
         }
 
+        $newStyleEnum = match ($newStyle) {
+            StudentStateSchema::STYLE_VISUAL  => LearningStyle::VISUAL,
+            StudentStateSchema::STYLE_TEXTUAL => LearningStyle::TEXTUAL,
+            default                           => LearningStyle::MIXED,
+        };
+
         $profile[StudentStateSchema::KEY_LEARNING_STYLE] = $newStyle;
         $state->learning_profile                         = $profile;
 
@@ -75,7 +80,7 @@ final class PerformanceService implements PerformanceServiceInterface
             'learning_profile' => $profile,
         ]);
 
-        return $newStyle;
+        return $newStyleEnum;
     }
 
     public function updateStudentPerformance(
@@ -132,29 +137,6 @@ final class PerformanceService implements PerformanceServiceInterface
         return $state;
     }
 
-    public function useHint(string $userId, int $count = 1): StudentState
-    {
-        $state   = $this->getStudentState($userId);
-        $metrics = $state->performance_metrics ?? [];
-
-        $metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] = (
-            $metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] ?? 0
-        ) + $count;
-
-        $metrics[StudentStateSchema::KEY_HINTS_AVAILABLE] = max(
-            0,
-            ($metrics[StudentStateSchema::KEY_HINTS_AVAILABLE] ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE) - $count
-        );
-
-        $state->performance_metrics = $metrics;
-
-        $this->studentStateRepo->update($userId, [
-            'performance_metrics' => $metrics,
-        ]);
-
-        return $state;
-    }
-
     public function calculateAverageTimeSpent(string $userId, string $materialId): float
     {
         $attempts = $this->progressRepo->getByUserAndMaterial($userId, $materialId);
@@ -194,9 +176,9 @@ final class PerformanceService implements PerformanceServiceInterface
         bool $isCorrect,
         bool $usedHint,
         int $timeSpent,
-        QuestionDifficulty|string|null $difficulty = 'beginner',
+        QuestionDifficulty $difficulty,
     ): int {
-        $diffKey = $difficulty instanceof QuestionDifficulty ? $difficulty->value : ($difficulty ?? 'beginner');
+        $diffKey = $difficulty->value;
         if (! $isCorrect) {
             return 0;
         }
@@ -219,8 +201,8 @@ final class PerformanceService implements PerformanceServiceInterface
 
     public function resetMaterialMetrics(string $userId, array $adaptiveState): StudentState
     {
-        $state   = $this->getStudentState($userId);
-        $metrics = $state->performance_metrics ?? [];
+        $state                                         = $this->getStudentState($userId);
+        $metrics                                       = $state->performance_metrics ?? [];
         $metrics[StudentStateSchema::KEY_WRONG_STREAK] = 0;
 
         return $this->studentStateRepo->update($userId, [

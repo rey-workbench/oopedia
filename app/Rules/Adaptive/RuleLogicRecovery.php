@@ -9,7 +9,7 @@ class RuleLogicRecovery extends BaseAdaptiveRule
 {
     use AppliesRecovery;
 
-    protected string $ruleId = 'RULE_04';
+    protected string $ruleId = 'RULE_13';
 
     protected string $ruleName = 'Logic Recovery';
 

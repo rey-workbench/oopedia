@@ -87,7 +87,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         );
 
         $totalXpEarned = $rewardData['xp_reward'] ?? 0;
-        
+
         // Fetch streak bonus specifically
         $rewardedState = $this->performanceService->getStudentState($userId);
         $streakBonus   = $this->gamificationService->checkStreakBonus($rewardedState->toArray());
@@ -211,7 +211,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         bool $usedHint,
         int $timeSpent,
         int $score,
-        QuestionDifficulty|string $difficulty,
+        QuestionDifficulty $difficulty,
         array $data,
     ): void {
         if ($isGuest) {
@@ -233,7 +233,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             'is_answered'   => true,
             'attributes'    => [
                 'score'      => $score,
-                'difficulty' => $difficulty,
+                'difficulty' => $difficulty->value,
                 'used_hint'  => $usedHint,
                 'time_spent' => $timeSpent,
             ],
@@ -374,7 +374,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         bool $usedHint,
         int $score,
         int $timeSpent,
-        QuestionDifficulty|string $difficulty,
+        QuestionDifficulty $difficulty,
         string $questionId,
         string $materialId,
         ?string $moduleId,
@@ -409,7 +409,6 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
      *
      * @return array{0: int, 1: array|null} [totalXpEarned, streakMilestoneData]
      */
-
     private function persistCertification(StudentState $studentState, string $materialId, mixed $certification): void
     {
         if (! is_string($certification) || $certification === '' || $materialId === '') {

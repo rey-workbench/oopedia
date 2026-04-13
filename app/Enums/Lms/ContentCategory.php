@@ -10,12 +10,4 @@ enum ContentCategory: string
     case SINTAKS = 'sintaks';
     case MIXED   = 'mixed';
 
-    public function label(): string
-    {
-        return match ($this) {
-            self::TEORI   => 'Teori',
-            self::SINTAKS => 'Sintaks',
-            self::MIXED   => 'Mixed',
-        };
-    }
 }

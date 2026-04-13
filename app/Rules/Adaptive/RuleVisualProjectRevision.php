@@ -9,7 +9,7 @@ class RuleVisualProjectRevision extends BaseAdaptiveRule
 {
     use AppliesCrisisIntervention;
 
-    protected string $ruleId = 'RULE_12';
+    protected string $ruleId = 'RULE_07';
 
     protected string $ruleName = 'Visual Project Revision';
 

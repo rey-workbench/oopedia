@@ -19,6 +19,4 @@ interface MslqRepositoryInterface
     public function findWithRelations(string $id): MslqResult;
 
     public function create(array $data): MslqResult;
-
-    public function hasUserSubmitted(int|string $userId): bool;
 }
