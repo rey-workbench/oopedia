@@ -22,3 +22,10 @@ export { handleImagePreview } from './imagePreview';
 export { getDifficultyLabel, getDifficultyColor } from './quizUtils';
 export { isAdmin, isSuperAdmin, isStudent, ROLE } from './roles';
 export type { RoleName } from './roles';
+export {
+    activateExamProtection,
+    deactivateExamProtection,
+    isProtectionActive,
+    isDebugMode,
+} from './examProtection';
+export type { ViolationType } from './examProtection';

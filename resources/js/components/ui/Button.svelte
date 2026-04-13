@@ -47,7 +47,7 @@
 
     const variants: Record<ButtonVariant, string> = {
         primary: 'bg-primary-500 text-white border-primary-500 border-b-slate-700 hover:bg-primary-600',
-        secondary: 'bg-white text-slate-900 border-slate-200 border-b-slate-300 hover:bg-slate-50',
+        secondary: 'bg-white text-slate-500 border-slate-300 border-b-slate-400 hover:bg-slate-50 hover:text-slate-600',
         gradient: 'bg-accent-500 text-white border-accent-800 hover:bg-accent-600',
         glass: 'bg-white/10 backdrop-blur-sm text-white border-white/20 border-b-white/30 hover:bg-white/20',
         danger: 'bg-rose-500 text-white border-rose-800 hover:bg-rose-600',
@@ -55,7 +55,7 @@
         warning: 'bg-amber-400 text-amber-950 border-amber-600 hover:bg-amber-500',
         ghost: 'text-slate-500 hover:text-primary-500 hover:bg-slate-50 border-transparent border-b-transparent active:translate-y-0',
         outline:
-            'bg-transparent border-2 border-slate-20₀ text-slate-9₀ hover:bg-slate-5₀ border-b-slate-3₀',
+            'bg-white border-2 border-slate-800 text-slate-900 hover:bg-slate-50 border-b-slate-900',
     };
 
     const sizes: Record<ButtonSize, string> = {
@@ -85,7 +85,7 @@
                 <div
                     class="{hasChildren
                         ? 'mr-3'
-                        : ''} text-lg transition-transform group-hover:-translate-x-1"
+                        : ''} text-lg text-current transition-transform group-hover:-translate-x-1"
                 >
                     <Icon size={18} strokeWidth={2.5} />
                 </div>
@@ -104,7 +104,7 @@
                 <div
                     class="{hasChildren
                         ? 'ml-3'
-                        : ''} text-lg transition-transform group-hover:translate-x-1"
+                        : ''} text-lg text-current transition-transform group-hover:translate-x-1"
                 >
                     <Icon size={18} strokeWidth={2.5} />
                 </div>
@@ -118,7 +118,7 @@
                 <i class="{icon} {hasChildren ? 'mr-3' : ''}"></i>
             {:else}
                 {@const Icon = icon as any}
-                <div class={hasChildren ? 'mr-3 text-lg' : 'text-lg'}>
+                <div class={hasChildren ? 'mr-3 text-lg text-current' : 'text-lg text-current'}>
                     <Icon size={18} strokeWidth={2.5} />
                 </div>
             {/if}
@@ -133,7 +133,7 @@
                 ></i>
             {:else}
                 {@const Icon = icon as any}
-                <div class={hasChildren ? 'ml-3 text-lg' : 'text-lg'}>
+                <div class={hasChildren ? 'ml-3 text-lg text-current' : 'text-lg text-current'}>
                     <Icon size={18} strokeWidth={2.5} />
                 </div>
             {/if}

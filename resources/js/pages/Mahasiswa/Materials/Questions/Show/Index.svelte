@@ -1,13 +1,15 @@
 <script lang="ts">
     import App from '@/layouts/App.svelte';
     import GuestBanner from '@/components/layout/GuestBanner.svelte';
-    import { Terminal, UserCheck } from 'lucide-svelte';
+    import { Terminal, UserCheck, AlertTriangle } from 'lucide-svelte';
     import { QuestionShowState } from '@/states/Mahasiswa/QuizState.svelte';
     import QuestionSessionCard from '@/components/layout/QuestionSessionCard.svelte';
     import FinishStateCard from '@/components/layout/FinishStateCard.svelte';
     import { FeedbackModal } from '@/components/feedback';
     import AdaptiveDebugPanel from '@/components/layout/AdaptiveDebugPanel.svelte';
-    import { untrack } from 'svelte';
+    import Modal from '@/components/ui/Modal.svelte';
+    import { activateExamProtection, deactivateExamProtection, type ViolationType } from '@/utils';
+    import { untrack, onMount } from 'svelte';
     import type { Material, Question, DifficultyLevel, QuizSessionState } from '@/types';
 
     const {
@@ -32,9 +34,30 @@
         studentState: QuizSessionState;
     } = $props();
 
-    let state = untrack(
+    let quizState = untrack(
         () => new QuestionShowState(material, currentQuestion as Question, difficulty, studentState)
     );
+
+    let showWarning = $state(false);
+    let warningMessage = $state('');
+
+    function handleViolation(type: ViolationType, message: string) {
+        console.warn('[ExamProtection] Violation detected:', type, message);
+
+        warningMessage = message;
+        showWarning = true;
+
+        setTimeout(() => {
+            showWarning = false;
+        }, 3000);
+    }
+
+    onMount(() => {
+        activateExamProtection({
+            onViolation: handleViolation,
+        } as any);
+        return () => deactivateExamProtection();
+    });
 
     $effect(() => {
         const newMaterial = material;
@@ -43,16 +66,16 @@
         const newStudentState = studentState;
 
         untrack(() => {
-            if (state.currentQuestion?.id !== newQuestion?.id) {
-                state.selectedMultipleChoiceAnswer = null;
-                state.fillInTheBlankAnswer = '';
-                state.dragAndDropAnswers = {};
-                state.startTime = Date.now();
+            if (quizState.currentQuestion?.id !== newQuestion?.id) {
+                quizState.selectedMultipleChoiceAnswer = null;
+                quizState.fillInTheBlankAnswer = '';
+                quizState.dragAndDropAnswers = {};
+                quizState.startTime = Date.now();
             }
-            state.material = newMaterial;
-            state.currentQuestion = newQuestion;
-            state.difficulty = newDifficulty;
-            state.studentState = newStudentState;
+            quizState.material = newMaterial;
+            quizState.currentQuestion = newQuestion;
+            quizState.difficulty = newDifficulty;
+            quizState.studentState = newStudentState;
         });
     });
 
@@ -61,19 +84,17 @@
     );
 
     const DEBUG_MODE = import.meta.env['VITE_ADAPTIVE_DEBUG'] === 'true';
-    const showDebug = $derived(state.showAdaptiveIndicator && DEBUG_MODE);
+    const showDebug = $derived(quizState.showAdaptiveIndicator && DEBUG_MODE);
 </script>
 
 <App title={`Latihan Soal - ${material.title}`}>
     <div class="py-12">
         <div
             class="mx-auto max-w-5xl px-4 transition-all duration-500 sm:px-6 lg:px-8"
-            class:pb-40={state.showFeedback}
+            class:pb-40={quizState.showFeedback}
         >
-            <!-- Duolingo-style Header -->
             <div id="quiz-session-header" class="mb-12">
                 <div class="flex items-center gap-6">
-                    <!-- Progress Section -->
                     <div class="flex-1">
                         <div class="mb-3 flex items-center justify-between px-2">
                             <div class="flex items-center gap-3">
@@ -90,20 +111,19 @@
                             </div>
                             <div class="flex items-center gap-2">
                                 <span class="text-sm font-black text-slate-400">
-                                    {state.currentQuestion ? currentQuestionNumber : totalQuestions} /
+                                    {quizState.currentQuestion
+                                        ? currentQuestionNumber
+                                        : totalQuestions} /
                                     {totalQuestions}
                                 </span>
                             </div>
                         </div>
                         <div id="quiz-progress" class="relative">
-                            <!-- Background Bar -->
                             <div class="h-4 w-full rounded-full bg-slate-100 shadow-inner"></div>
-                            <!-- Active Progress -->
                             <div
                                 class="bg-primary-500 border-primary-700 absolute inset-y-0 left-0 rounded-full border-b-4 transition-all duration-500 ease-out"
                                 style="width: {progressPercentage}%"
                             >
-                                <!-- Shine highlight -->
                                 <div
                                     class="absolute inset-x-2 top-1 h-1 rounded-full bg-white/20"
                                 ></div>
@@ -113,9 +133,9 @@
                 </div>
             </div>
 
-            {#if state.isGuest}
+            {#if quizState.isGuest}
                 <GuestBanner
-                    show={state.isGuest}
+                    show={quizState.isGuest}
                     variant="inline"
                     title="Mode Tamu Aktif!"
                     message="Anda hanya dapat melihat sebagian dari soal latihan ini."
@@ -126,14 +146,33 @@
                 </GuestBanner>
             {/if}
 
-            {#if state.currentQuestion}
-                <QuestionSessionCard {state} />
+            {#if quizState.currentQuestion}
+                <QuestionSessionCard state={quizState} />
             {:else}
-                <FinishStateCard {state} {material} answeredCount={materialAnsweredCount} />
+                <FinishStateCard
+                    state={quizState}
+                    {material}
+                    answeredCount={materialAnsweredCount}
+                />
             {/if}
         </div>
     </div>
 
-    <FeedbackModal {state} />
-    <AdaptiveDebugPanel quizState={state} {showDebug} />
+    <FeedbackModal state={quizState} />
+    <AdaptiveDebugPanel {quizState} {showDebug} />
+
+    <Modal show={showWarning} maxWidth="sm" onclose={() => (showWarning = false)}>
+        <div class="p-6">
+            <div class="mb-4 flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-rose-100">
+                    <AlertTriangle class="h-5 w-5 text-rose-600" />
+                </div>
+                <h2 class="text-lg font-black text-rose-800">Peringatan!</h2>
+            </div>
+            <p class="mb-2 text-center text-base font-medium text-slate-700">
+                {warningMessage}
+            </p>
+            <p class="text-center text-sm text-slate-500">Pelanggaran akan dicatat.</p>
+        </div>
+    </Modal>
 </App>

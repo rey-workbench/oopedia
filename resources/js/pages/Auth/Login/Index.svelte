@@ -20,9 +20,9 @@
             <Link href={ROUTES.HOME} class="p-2 text-slate-400 hover:text-slate-600 transition" aria-label="Kembali">
                 <X size={32} strokeWidth={2.5} />
             </Link>
-            <Link href={ROUTES.AUTH.REGISTER} class="px-5 py-2.5 font-bold tracking-widest text-[13px] text-slate-500 border-2 border-b-4 border-slate-300 rounded-2xl uppercase hover:bg-slate-100 active:translate-y-[2px] active:border-b-2 transition">
+            <Button href={ROUTES.AUTH.REGISTER} variant="secondary" size="sm" class="text-[13px] uppercase">
                 Sign Up
-            </Link>
+            </Button>
         </div>
 
         <!-- Main Content -->
@@ -72,7 +72,7 @@
                         type="submit"
                         variant="primary"
                         size="md"
-                        class="w-full h-12 text-[15px]"
+                        class="w-full text-[15px]"
                         disabled={state.form.processing}
                     >
                         {#if state.form.processing}
@@ -93,12 +93,13 @@
             <div class="w-full space-y-3">
                 <Button
                     type="button"
-                    variant="outline"
-                    class="w-full h-12 text-[14px]"
+                    variant="secondary"
+                    size="md"
+                    class="w-full text-[15px]"
                     onclick={() => state.submitAsGuest()}
                     disabled={state.form.processing}
                 >
-                    <Ghost size={20} class="mr-2 text-[#1cb0f6]" />
+                    <Ghost size={20} class="mr-2" />
                     <span>Tamu</span>
                 </Button>
             </div>

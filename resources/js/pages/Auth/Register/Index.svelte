@@ -20,9 +20,9 @@
             <Link href={ROUTES.HOME} class="p-2 text-slate-400 hover:text-slate-600 transition" aria-label="Kembali">
                 <X size={32} strokeWidth={2.5} />
             </Link>
-            <Link href={ROUTES.AUTH.LOGIN} class="px-5 py-2.5 font-bold tracking-widest text-[13px] text-slate-500 border-2 border-b-4 border-slate-300 rounded-2xl uppercase hover:bg-slate-100 active:translate-y-[2px] active:border-b-2 transition">
+            <Button href={ROUTES.AUTH.LOGIN} variant="outline" size="sm" class="text-[13px] uppercase">
                 Log In
-            </Link>
+            </Button>
         </div>
 
         <!-- Main Content -->
@@ -108,7 +108,7 @@
                         type="submit"
                         variant="primary"
                         size="md"
-                        class="w-full h-12 text-[15px]"
+                        class="w-full text-[15px]"
                         disabled={state.form.processing}
                     >
                         {#if state.form.processing}
