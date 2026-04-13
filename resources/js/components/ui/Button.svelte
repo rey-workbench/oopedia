@@ -46,7 +46,7 @@
         'group inline-flex items-center justify-center font-black tracking-widest transition-all duration-150 active:translate-y-[4px] active:border-b-2 disabled:opacity-50 disabled:pointer-events-none rounded-2xl border-2 border-b-6 uppercase';
 
     const variants: Record<ButtonVariant, string> = {
-        primary: 'bg-primary-500 text-white border-primary-800 hover:bg-primary-600',
+        primary: 'bg-primary-500 text-white border-primary-500 border-b-slate-700 hover:bg-primary-600',
         secondary: 'bg-white text-slate-900 border-slate-200 border-b-slate-300 hover:bg-slate-50',
         gradient: 'bg-accent-500 text-white border-accent-800 hover:bg-accent-600',
         glass: 'bg-white/10 backdrop-blur-sm text-white border-white/20 border-b-white/30 hover:bg-white/20',
@@ -55,7 +55,7 @@
         warning: 'bg-amber-400 text-amber-950 border-amber-600 hover:bg-amber-500',
         ghost: 'text-slate-500 hover:text-primary-500 hover:bg-slate-50 border-transparent border-b-transparent active:translate-y-0',
         outline:
-            'bg-transparent border-2 border-slate-200 text-slate-900 hover:bg-slate-50 border-b-slate-300',
+            'bg-transparent border-2 border-slate-20₀ text-slate-9₀ hover:bg-slate-5₀ border-b-slate-3₀',
     };
 
     const sizes: Record<ButtonSize, string> = {
