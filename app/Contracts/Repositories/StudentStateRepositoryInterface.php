@@ -11,5 +11,11 @@ interface StudentStateRepositoryInterface
 
     public function getAll(string $userId): Collection;
 
+    public function findByUserId(string $userId): ?StudentState;
+
+    public function findOrCreate(string $userId): StudentState;
+
+    public function update(string $userId, array $data): StudentState;
+
     public function delete(string $userId, string $materialId): bool;
 }

@@ -58,12 +58,7 @@ trait HandlesAdaptiveState
             $adaptiveState['fast_track_active'] = false;
             $adaptiveState['last_rule']         = null;
 
-            $metrics                           = $studentState->performance_metrics ?? [];
-            $metrics['wrong_streak']           = 0;
-            $studentState->performance_metrics = $metrics;
-
-            $studentState->adaptive_state = $adaptiveState;
-            $studentState->save();
+            $this->getPerformanceService()->resetMaterialMetrics($studentState->user_id, $adaptiveState);
         }
     }
 
@@ -73,11 +68,6 @@ trait HandlesAdaptiveState
         $adaptiveState['fast_track_active'] = false;
         $adaptiveState['last_rule']         = null;
 
-        $metrics                           = $studentState->performance_metrics ?? [];
-        $metrics['wrong_streak']           = 0;
-        $studentState->performance_metrics = $metrics;
-
-        $studentState->adaptive_state = $adaptiveState;
-        $studentState->save();
+        $this->getPerformanceService()->resetMaterialMetrics($studentState->user_id, $adaptiveState);
     }
 }

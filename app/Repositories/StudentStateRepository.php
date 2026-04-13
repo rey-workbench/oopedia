@@ -22,13 +22,23 @@ final class StudentStateRepository implements StudentStateRepositoryInterface
         return StudentState::where('user_id', $userId)->get();
     }
 
-    public function delete(string $userId, string $materialId): bool
+    public function findByUserId(string $userId): ?StudentState
     {
-        return (bool) StudentState::where('user_id', $userId)->delete();
+        return StudentState::where('user_id', $userId)->first();
     }
 
-    protected function getOrCreate(string $userId): StudentState
+    public function findOrCreate(string $userId): StudentState
     {
+        if ($userId === 'guest') {
+            return new StudentState([
+                'user_id'             => 'guest',
+                'gamification_data'   => StudentStateSchema::getDefaultGamification(),
+                'learning_profile'    => StudentStateSchema::getDefaultLearningProfile(),
+                'performance_metrics' => StudentStateSchema::getDefaultPerformanceMetrics(),
+                'adaptive_state'      => StudentStateSchema::getDefaultAdaptiveState(),
+            ]);
+        }
+
         return StudentState::firstOrCreate(
             ['user_id' => $userId],
             [
@@ -39,5 +49,24 @@ final class StudentStateRepository implements StudentStateRepositoryInterface
                 'last_active_at'      => now(),
             ],
         );
+    }
+
+    public function update(string $userId, array $data): StudentState
+    {
+        $state = $this->findOrCreate($userId);
+
+        if ($userId !== 'guest') {
+            $state->update($data);
+        } else {
+            // For guests, we just update the in-memory instance
+            $state->fill($data);
+        }
+
+        return $state;
+    }
+
+    public function delete(string $userId, string $materialId): bool
+    {
+        return (bool) StudentState::where('user_id', $userId)->delete();
     }
 }

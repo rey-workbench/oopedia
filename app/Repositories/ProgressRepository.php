@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Contracts\Repositories\StudentStateRepositoryInterface;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Models\Material;
 use App\Models\Question;
@@ -16,6 +17,10 @@ use Illuminate\Support\Facades\DB;
 
 final class ProgressRepository implements ProgressRepositoryInterface
 {
+    public function __construct(
+        private readonly StudentStateRepositoryInterface $studentStateRepo,
+    ) {}
+
     public function getUserProgressStats(?string $userId): Collection
     {
         if (is_null($userId) || $userId === 'guest') {
@@ -266,9 +271,9 @@ final class ProgressRepository implements ProgressRepositoryInterface
             return;
         }
 
-        $state = StudentState::firstOrNew(['user_id' => $userId]);
+        $state = $this->studentStateRepo->findOrCreate($userId);
 
-        $state->gamification_data = array_merge($state->gamification_data ?? [], [
+        $gamification = array_merge($state->gamification_data ?? [], [
             StudentStateSchema::KEY_GLOBAL_XP => $attributes[StudentStateSchema::KEY_GLOBAL_XP]
                 ?? ($state->gamification_data[StudentStateSchema::KEY_GLOBAL_XP] ?? 0),
             StudentStateSchema::KEY_CURRENT_LEVEL => $attributes[StudentStateSchema::KEY_CURRENT_LEVEL]
@@ -279,10 +284,8 @@ final class ProgressRepository implements ProgressRepositoryInterface
                 ?? ($state->gamification_data[StudentStateSchema::KEY_MAX_STREAK] ?? 0),
         ]);
 
-        $state->performance_metrics = array_merge($state->performance_metrics ?? [], [
-            StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED => $attributes[
-                StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED
-            ]
+        $metrics = array_merge($state->performance_metrics ?? [], [
+            StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED => $attributes[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED]
                 ?? ($state->performance_metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] ?? 0),
             StudentStateSchema::KEY_CORRECT_COUNT => $attributes[StudentStateSchema::KEY_CORRECT_COUNT]
                 ?? ($state->performance_metrics[StudentStateSchema::KEY_CORRECT_COUNT] ?? 0),
@@ -297,13 +300,17 @@ final class ProgressRepository implements ProgressRepositoryInterface
                     ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE),
         ]);
 
-        $state->learning_profile = array_merge($state->learning_profile ?? [], [
+        $profile = array_merge($state->learning_profile ?? [], [
             StudentStateSchema::KEY_LEARNING_STYLE => $attributes[StudentStateSchema::KEY_LEARNING_STYLE]
                 ?? ($state->learning_profile[StudentStateSchema::KEY_LEARNING_STYLE] ?? 'visual'),
         ]);
 
-        $state->last_active_at = now();
-        $state->save();
+        $this->studentStateRepo->update($userId, [
+            'gamification_data'   => $gamification,
+            'performance_metrics' => $metrics,
+            'learning_profile'    => $profile,
+            'last_active_at'      => now(),
+        ]);
     }
 
     public function getLatestAttemptsForQuestions(string $userId, array $questionIds): Collection

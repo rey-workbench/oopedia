@@ -8,6 +8,7 @@ use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\UserServiceInterface;
 use App\DTOs\User\ProfileUpdateDTO;
+use App\Schemas\StudentStateSchema;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\UpdateProfileRequest;
 use Illuminate\Http\RedirectResponse;
@@ -30,18 +31,18 @@ final class ProfileController extends Controller
         $studentState = $this->progressRepo->getOrCreateStudentState($user->id);
 
         $personalization = [
-            'learning_style'           => $studentState->learning_style                          ?? 'visual',
-            'current_level'            => $studentState->current_level                           ?? 'Pemula',
-            'global_xp'                => $studentState->global_xp                               ?? 0,
-            'current_streak'           => $studentState->current_streak                          ?? 0,
-            'max_streak'               => $studentState->max_streak                              ?? 0,
-            'total_questions_answered' => $studentState->total_questions_answered                ?? 0,
-            'correct_count'            => $studentState->correct_count                           ?? 0,
-            'wrong_count'              => $studentState->wrong_count                             ?? 0,
-            'hints_used_count'         => $studentState->hints_used_count                        ?? 0,
-            'hints_available'          => $studentState->hints_available                         ?? 3,
-            'accuracy'                 => $studentState->total_questions_answered > 0
-                ? round(($studentState->correct_count / $studentState->total_questions_answered) * 100, 1)
+            'learning_style'           => $studentState->learning_profile[StudentStateSchema::KEY_LEARNING_STYLE] ?? 'visual',
+            'current_level'            => $studentState->gamification_data[StudentStateSchema::KEY_CURRENT_LEVEL] ?? 'Pemula',
+            'global_xp'                => $studentState->gamification_data[StudentStateSchema::KEY_GLOBAL_XP] ?? 0,
+            'current_streak'           => $studentState->gamification_data[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0,
+            'max_streak'               => $studentState->gamification_data[StudentStateSchema::KEY_MAX_STREAK] ?? 0,
+            'total_questions_answered' => $studentState->performance_metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] ?? 0,
+            'correct_count'            => $studentState->performance_metrics[StudentStateSchema::KEY_CORRECT_COUNT] ?? 0,
+            'wrong_count'              => $studentState->performance_metrics[StudentStateSchema::KEY_WRONG_COUNT] ?? 0,
+            'hints_used_count'         => $studentState->performance_metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] ?? 0,
+            'hints_available'          => $studentState->performance_metrics[StudentStateSchema::KEY_HINTS_AVAILABLE] ?? 3,
+            'accuracy'                 => ($studentState->performance_metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] ?? 0) > 0
+                ? round((($studentState->performance_metrics[StudentStateSchema::KEY_CORRECT_COUNT] ?? 0) / $studentState->performance_metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED]) * 100, 1)
                 : 0,
             'fast_track_active' => $studentState->adaptive_state['fast_track_active'] ?? false,
         ];

@@ -3,8 +3,8 @@
 namespace App\Contracts\Services;
 
 use App\Enums\Lms\ContentCategory;
-use App\Enums\Lms\QuestionDifficulty;
 use App\Models\StudentState;
+use App\Enums\Lms\QuestionDifficulty;
 
 interface PerformanceServiceInterface
 {
@@ -19,14 +19,11 @@ interface PerformanceServiceInterface
         bool $usedHint = false,
     ): StudentState;
 
+    public function useHint(string $userId, int $count = 1): StudentState;
+
     public function calculateAverageTimeSpent(string $userId, string $materialId): float;
 
     public function calculateTotalTimeSpent(string $userId, string $materialId): float;
 
-    public function calculateScore(
-        bool $isCorrect,
-        bool $usedHint,
-        int $timeSpent,
-        QuestionDifficulty|string|null $difficulty = 'beginner',
-    ): int;
+    public function resetMaterialMetrics(string $userId, array $adaptiveState): StudentState;
 }
