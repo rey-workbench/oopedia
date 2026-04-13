@@ -51,10 +51,9 @@
         "esModuleInterop": true,
         "allowJs": true,
         "resolveJsonModule": true,
-        "baseUrl": ".",
         "paths": {
-            "@/*": ["resources/js/*"],
-            "$lib/*": ["src/*"]
+            "@/*": ["./resources/js/*"],
+            "$lib/*": ["./src/*"]
         }
     },
     "include": [
