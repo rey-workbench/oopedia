@@ -65,9 +65,23 @@ final class FactGatheringService implements FactGatheringServiceInterface
             $facts[] = AdaptiveConstants::FACT_SATISFACTORY_PROGRESS;
         }
 
+        // BUG: FACT_IS_PRACTICE (G17) tidak diproduksi - rule yang menggunakan isPractice() tidak akan pernah trigger
+        //      Perlu tambahan logika untuk mendeteksi mode practice (latihan vs quiz normal)
+        //      Contoh: dari parameter request, question type, atau material type
+
         return array_values(array_unique($facts));
     }
 
+    /**
+     * TODO: Facts yang belum diproduksi (reserved tapi belum diimplementasi):
+     * - FACT_NO_ERROR (G10) - digunakan di HasErrorType::hasNoError() tapi tidak pernah diproduksi
+     * - FACT_IS_PRACTICE (G17) - digunakan di HasDifficultyLevel::isPractice() tapi tidak pernah diproduksi
+     * - FACT_MODULE_STARTED - reserved constant, tidak diproduksi
+     * - FACT_COMPLETED_MODULE - reserved constant, tidak diproduksi
+     * - FACT_COMPLETED_ALL_MODULES - reserved constant, tidak diproduksi
+     * - FACT_HIGH_ENGAGEMENT - reserved constant, tidak diproduksi
+     * - FACT_TIME_SLOW - reserved constant, tidak diproduksi
+     */
     protected function getScoreFacts(int $score, bool $isCorrect): array
     {
         $finalScore = $isCorrect
