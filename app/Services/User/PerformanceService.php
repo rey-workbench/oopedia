@@ -1,66 +1,100 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\User;
 
-use App\Repositories\ProgressRepository;
-use Illuminate\Support\Facades\Log;
+use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Contracts\Services\GamificationServiceInterface;
+use App\Contracts\Services\GuestProgressServiceInterface;
+use App\Contracts\Services\PerformanceServiceInterface;
+use App\Enums\Lms\ContentCategory;
+use App\Enums\Lms\QuestionDifficulty;
+use App\Models\StudentState;
+use App\Rules\Adaptive\Constants\AdaptiveConstants;
+use App\Schemas\StudentStateSchema;
 
-/**
- * PerformanceService
- * 
- * Handles PERSONALIZATION ONLY (individual user characteristics)
- * Refactored to use StudentState and QuizAttempt
- */
-class PerformanceService
+final class PerformanceService implements PerformanceServiceInterface
 {
-    protected $progressRepo;
+    public function __construct(
+        public readonly ProgressRepositoryInterface $progressRepo,
+        public readonly GamificationServiceInterface $gamificationService,
+        public readonly GuestProgressServiceInterface $guestProgressService,
+    ) {}
 
-    public function __construct(ProgressRepository $progressRepo)
+    public function getStudentState(string $userId): StudentState
     {
-        $this->progressRepo = $progressRepo;
+        if ($userId === 'guest') {
+            return $this->guestProgressService->getStudentState();
+        }
+
+        return $this->progressRepo->getOrCreateStudentState($userId);
     }
 
-    // ==================== PROFILE MANAGEMENT ====================
-
-    public function getUserInitialLevel($userId, $materialId): ?string
+    public function updateLearningStyleFromInteraction(string $userId, ContentCategory|string $questionType, int $timeSpent): string
     {
-        $state = $this->progressRepo->getStudentState($userId);
-        return $state->current_level;
+        $typeKey = $questionType instanceof ContentCategory ? $questionType->value : $questionType;
+        $state   = $this->progressRepo->getOrCreateStudentState($userId);
+        $profile = $state->learning_profile ?? [];
+
+        if (! isset($profile[StudentStateSchema::KEY_TIME_DISTRIBUTION])) {
+            $profile[StudentStateSchema::KEY_TIME_DISTRIBUTION] = [
+                StudentStateSchema::STYLE_VISUAL  => 0,
+                StudentStateSchema::STYLE_TEXTUAL => 0,
+            ];
+        }
+
+        $category = $typeKey === ContentCategory::SINTAKS->value
+            ? StudentStateSchema::STYLE_VISUAL
+            : StudentStateSchema::STYLE_TEXTUAL;
+        $profile[StudentStateSchema::KEY_TIME_DISTRIBUTION][$category] += $timeSpent;
+
+        $visualTime  = $profile[StudentStateSchema::KEY_TIME_DISTRIBUTION][StudentStateSchema::STYLE_VISUAL]    ?? 0;
+        $textualTime = $profile[StudentStateSchema::KEY_TIME_DISTRIBUTION][StudentStateSchema::STYLE_TEXTUAL]   ?? 0;
+        $totalTime   = $visualTime + $textualTime;
+
+        if ($totalTime == 0) {
+            $newStyle = StudentStateSchema::STYLE_VISUAL;
+        } else {
+            $diff = abs($visualTime - $textualTime) / $totalTime;
+            if ($diff < StudentStateSchema::RATIO_STYLE_MIXED) {
+                $newStyle = StudentStateSchema::STYLE_MIXED;
+            } else {
+                $newStyle = $visualTime > $textualTime
+                    ? StudentStateSchema::STYLE_VISUAL
+                    : StudentStateSchema::STYLE_TEXTUAL;
+            }
+        }
+
+        $profile[StudentStateSchema::KEY_LEARNING_STYLE] = $newStyle;
+        $state->learning_profile                         = $profile;
+
+        if ($userId === 'guest') {
+            $this->guestProgressService->saveStudentState($state);
+        } else {
+            $state->save();
+        }
+
+        return $newStyle;
     }
 
-    public function setUserInitialLevel($userId, $materialId, string $level): void
-    {
-        $state = $this->progressRepo->getStudentState($userId);
-        $state->current_level = $level;
-        $state->save();
-    }
-
-    public function getUserLearningStyle($userId, $materialId): ?string
-    {
-        $state = $this->progressRepo->getStudentState($userId);
-        return $state->learning_style;
-    }
-
-    public function setUserLearningStyle($userId, $materialId, string $style): void
-    {
-        $state = $this->progressRepo->getStudentState($userId);
-        $state->learning_style = $style;
-        $state->save();
-    }
-
-    /**
-     * Update student performance counters (Strict Service Layer).
-     */
-    public function updateStudentPerformance($userId, bool $isCorrect, int $timeSpent = 0, bool $usedHint = false)
-    {
-        $state = $this->progressRepo->getStudentState($userId);
+    public function updateStudentPerformance(
+        string $userId,
+        bool $isCorrect,
+        int $timeSpent = 0,
+        bool $usedHint = false,
+    ): StudentState {
+        $state = $this->getStudentState($userId);
         $state->updatePerformance($isCorrect, $timeSpent, $usedHint);
+
+        if ($userId === 'guest') {
+            $this->guestProgressService->saveStudentState($state);
+        }
+
         return $state;
     }
 
-    // ==================== TIME-BASED PROFILING ====================
-
-    public function calculateAverageTimeSpent($userId, $materialId): float
+    public function calculateAverageTimeSpent(string $userId, string $materialId): float
     {
         $attempts = $this->progressRepo->getByUserAndMaterial($userId, $materialId);
 
@@ -69,13 +103,11 @@ class PerformanceService
         }
 
         $totalTime = 0;
-        $count = 0;
+        $count     = 0;
 
         foreach ($attempts as $attempt) {
-            // QuizAttempt has time_spent
-            $timeSpent = $attempt->time_spent;
-            if ($timeSpent > 0) {
-                $totalTime += $timeSpent;
+            if ($attempt->time_spent > 0) {
+                $totalTime += $attempt->time_spent;
                 $count++;
             }
         }
@@ -83,101 +115,44 @@ class PerformanceService
         return $count > 0 ? round($totalTime / $count, 2) : 0;
     }
 
-    public function calculateTotalTimeSpent($userId, $materialId): float
+    public function calculateTotalTimeSpent(string $userId, string $materialId): float
     {
         $attempts = $this->progressRepo->getByUserAndMaterial($userId, $materialId);
 
         $totalSeconds = 0;
         foreach ($attempts as $attempt) {
-            $timeSpent = $attempt->time_spent;
-            if ($timeSpent > 0) {
-                $totalSeconds += $timeSpent;
+            if ($attempt->time_spent > 0) {
+                $totalSeconds += $attempt->time_spent;
             }
         }
 
-        return round($totalSeconds / 60, 2); // Minutes
+        return round($totalSeconds / 60, 2);
     }
 
-    // ==================== KNOWLEDGE GAP ANALYSIS ====================
-
-    public function getKnowledgeGaps($userId, $materialId): array
-    {
-        $wrongAttempts = $this->progressRepo->getWrongAnswers($userId, $materialId);
-        $topicFrequency = [];
-
-        foreach ($wrongAttempts as $attempt) {
-            // Temporary: Use difficulty as 'topic' to show *something*
-            $tag = 'General';
-            
-            $topicFrequency[$tag] = ($topicFrequency[$tag] ?? 0) + 1;
+    public function calculateScore(
+        bool $isCorrect,
+        bool $usedHint,
+        int $timeSpent,
+        QuestionDifficulty|string|null $difficulty = 'beginner',
+    ): int {
+        $diffKey = $difficulty instanceof QuestionDifficulty ? $difficulty->value : ($difficulty ?? 'beginner');
+        if (! $isCorrect) {
+            return 0;
         }
 
-        arsort($topicFrequency);
-        return $topicFrequency;
-    }
+        $rewards = StudentStateSchema::SCORE_REWARDS;
+        $score   = $rewards['base'];
 
-    public function getWeakestTopic($userId, $materialId): ?string
-    {
-        $gaps = $this->getKnowledgeGaps($userId, $materialId);
-        return empty($gaps) ? null : array_key_first($gaps);
-    }
-
-    // ==================== BEHAVIORAL PATTERN DETECTION ====================
-
-    public function isFastLearner($userId, $materialId, array $currentState): bool
-    {
-        $avgTime = $this->calculateAverageTimeSpent($userId, $materialId);
-        $accuracy = $this->calculateAccuracy($currentState);
-        return $avgTime > 0 && $avgTime < 15 && $accuracy >= 90;
-    }
-
-    public function isFatigued($userId, $materialId, array $currentState): bool
-    {
-        $totalTime = $this->calculateTotalTimeSpent($userId, $materialId);
-        $accuracy = $this->calculateAccuracy($currentState);
-        $wrongStreak = $currentState['wrong_streak'] ?? 0;
-        return $totalTime >= 30 && $wrongStreak >= 2 && $accuracy < 70;
-    }
-
-    // ==================== CROSS-MATERIAL TRACKING ====================
-
-    public function getCompletedMaterials($userId): array
-    {
-        $state = $this->progressRepo->getStudentState($userId);
-        return $state ? ($state->unlocked_modules ?? []) : [];
-    }
-
-    public function markMaterialCompleted($userId, $materialId): void
-    {
-        $state = $this->progressRepo->getStudentState($userId);
-        $completed = $state->unlocked_modules ?? [];
-        if (!in_array($materialId, $completed)) {
-            $completed[] = $materialId;
-            $state->unlocked_modules = $completed;
-            $state->save();
+        $score += $rewards['difficulty_bonus'][$diffKey]             ?? 0;
+        $allocatedTime = AdaptiveConstants::ALLOCATED_TIME[$diffKey] ?? 60;
+        if ($timeSpent > 0 && $timeSpent < ($allocatedTime / 2)) {
+            $score += $rewards['time_bonus'];
         }
-    }
 
-    // ==================== HELPERS ====================
+        if ($usedHint) {
+            $score -= $rewards['hint_penalty'];
+        }
 
-    protected function calculateAccuracy(array $state): float
-    {
-        $correct = $state['correct_count'] ?? 0;
-        $total = $state['total_questions_answered'] ?? 0;
-        return ($total === 0) ? 0 : round(($correct / $total) * 100, 2);
-    }
-
-    public function getPersonalizationProfile($userId, $materialId, array $currentState): array
-    {
-        return [
-            'initial_level' => $this->getUserInitialLevel($userId, $materialId),
-            'learning_style' => $this->getUserLearningStyle($userId, $materialId),
-            'avg_time_spent' => $this->calculateAverageTimeSpent($userId, $materialId),
-            'total_time_spent' => $this->calculateTotalTimeSpent($userId, $materialId),
-            'is_fast_learner' => $this->isFastLearner($userId, $materialId, $currentState),
-            'is_fatigued' => $this->isFatigued($userId, $materialId, $currentState),
-            'weakest_topic' => $this->getWeakestTopic($userId, $materialId),
-            'completed_materials' => $this->getCompletedMaterials($userId),
-        ];
+        return max(0, min(100, $score));
     }
 }

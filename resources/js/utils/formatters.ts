@@ -9,15 +9,15 @@ export function formatDate(
     dateString: string | null | undefined,
     options: Intl.DateTimeFormatOptions = {}
 ): string {
-    if (!dateString) return "";
+    if (!dateString) return '';
 
     const defaults: Intl.DateTimeFormatOptions = {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
     };
 
-    return new Date(dateString).toLocaleDateString("id-ID", {
+    return new Date(dateString).toLocaleDateString('id-ID', {
         ...defaults,
         ...options,
     });
@@ -32,7 +32,7 @@ export function formatDate(
  * @returns Relative time string, or empty string if input is falsy
  */
 export function relativeTime(isoDate: string | null | undefined): string {
-    if (!isoDate) return "";
+    if (!isoDate) return '';
 
     const date = new Date(isoDate);
     const now = new Date();

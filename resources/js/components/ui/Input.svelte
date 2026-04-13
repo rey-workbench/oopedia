@@ -1,40 +1,64 @@
-<script>
-    import { AlertCircle } from "lucide-svelte";
-    /**
-     * @file Input.svelte
-     * @description A premium reusable input component for the Oopedia platform.
-     */
-    export let type = "text";
-    export let value = "";
-    export let placeholder = "";
-    export let label = "";
-    export let error = "";
-    export let id = "";
-    export let name = "";
-    export let required = false;
-    export let disabled = false;
-    let className = "";
-    export { className as class };
-    export let autocomplete = undefined;
+<script lang="ts">
+    import { AlertCircle } from 'lucide-svelte';
+    import { generateStableId } from '@/utils/ids';
 
-    // Generate a random ID if not provided
-    const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+    interface Props {
+        type?: string;
+        value?: string | number;
+        placeholder?: string;
+        label?: string;
+        error?: string | undefined;
+        id?: string;
+        name?: string;
+        required?: boolean;
+        disabled?: boolean;
+        class?: string;
+        inputClass?: string;
+        variant?: 'white' | 'dark';
+        autocomplete?: any;
+        [key: string]: any;
+    }
+
+    let {
+        type = 'text',
+        value = $bindable(),
+        placeholder = '',
+        label = '',
+        error = '',
+        id = '',
+        name = '',
+        required = false,
+        disabled = false,
+        class: className = '',
+        inputClass = '',
+        variant = 'white',
+        autocomplete = undefined,
+        ...rest
+    }: Props = $props();
+
+    const inputId = $derived(id || generateStableId('input'));
+    const errorId = $derived(`${inputId}-error`);
+
+    const variantClasses = {
+        white: 'bg-white text-slate-900 border-slate-200 border-b-6 focus:border-primary-500 focus:bg-white focus:ring-primary-100',
+        dark: 'bg-slate-800 text-white border-slate-700/50 border-b-6 focus:border-primary-400 focus:ring-slate-900/10',
+    };
 </script>
 
-<div class={`space-y-2 w-full ${className}`}>
+<div class={`w-full space-y-2.5 ${className}`}>
     {#if label}
         <label
             for={inputId}
-            class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-4"
+            class={`ml-4 block text-[11px] font-black tracking-widest uppercase transition-colors ${error ? 'text-rose-500' : variant === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}
         >
             {label}
-            {#if required}<span class="text-rose-500">*</span>{/if}
+            {#if required}<span class="ml-1 text-rose-500">*</span>{/if}
         </label>
     {/if}
 
-    <div class="relative group">
+    <div class="group relative">
         <input
-            {id}
+            id={inputId}
             {name}
             {type}
             {placeholder}
@@ -42,25 +66,24 @@
             {disabled}
             {autocomplete}
             bind:value
-            on:input
-            on:change
-            on:focus
-            on:blur
+            aria-invalid={error ? 'true' : undefined}
+            aria-describedby={error ? errorId : undefined}
+            {...rest}
             class={`
-        w-full px-6 py-4 rounded-[1.5rem] border-2 transition-all outline-none font-bold text-sm
-        ${disabled ? "bg-slate-50 border-slate-50 text-slate-400 cursor-not-allowed" : "bg-white"}
-        ${
-            error
-                ? "border-rose-100 bg-rose-50/30 text-rose-900 focus:border-rose-500 focus:ring-4 focus:ring-rose-50"
-                : "border-slate-50 border-slate-100 hover:border-blue-200 focus:border-blue-600 focus:ring-8 focus:ring-blue-50"
-        }
-      `}
+                w-full px-6 py-4 text-sm font-bold transition-all outline-none
+                ${disabled ? 'cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400 grayscale' : ''}
+                ${
+                    error
+                        ? 'border-b-6 border-rose-200 bg-rose-50/20 text-rose-900 focus:border-rose-500 focus:ring-rose-50'
+                        : inputClass
+                          ? inputClass
+                          : `rounded-3xl border-2 hover:border-slate-300 focus:ring-4 ${variantClasses[variant]}`
+                }
+            `}
         />
 
         {#if error}
-            <div
-                class="absolute right-6 top-1/2 -translate-y-1/2 text-rose-500 animate-pulse"
-            >
+            <div class="absolute top-1/2 right-6 -translate-y-1/2 animate-pulse text-rose-500">
                 <AlertCircle size={20} />
             </div>
         {/if}
@@ -68,7 +91,9 @@
 
     {#if error}
         <p
-            class="text-[9px] font-bold text-rose-500 uppercase tracking-widest ml-4 transition-all animate-in fade-in slide-in-from-top-1"
+            id={errorId}
+            role="alert"
+            class="animate-in fade-in slide-in-from-top-1 ml-4 text-[9px] font-bold tracking-widest text-rose-500 uppercase transition-all"
         >
             {error}
         </p>

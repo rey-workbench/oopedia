@@ -1,172 +1,164 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
+use App\Contracts\Repositories\UserRepositoryInterface;
+use App\Models\QuizAttempt;
+use App\Models\StudentState;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
-class UserRepository
+final class UserRepository implements UserRepositoryInterface
 {
-    public function all()
+    public function all(): Collection
     {
         return User::all();
     }
 
-    public function find($id)
+    public function find(string $id): ?User
     {
         return User::find($id);
     }
 
-    public function create(array $data)
+    public function create(array $data): User
     {
         return User::create($data);
     }
 
-    public function update($id, array $data)
+    public function update(string $id, array $data): ?User
     {
         $user = User::find($id);
-        if ($user) {
-            $user->update($data);
-            return $user;
+
+        if (! $user) {
+            return null;
         }
-        return null;
+
+        $user->update($data);
+
+        return $user;
     }
 
-    public function delete($id)
+    public function delete(string $id): bool
     {
         $user = User::find($id);
-        if ($user) {
-            return $user->delete();
+
+        if (! $user) {
+            return false;
         }
-        return false;
+
+        return (bool) $user->delete();
     }
 
-    public function paginate($perPage = 15)
+    public function paginate(int $perPage = 15): LengthAwarePaginator
     {
         return User::paginate($perPage);
     }
 
-    public function countAll()
+    public function countAll(): int
     {
         return User::count();
     }
 
-    public function getStudentsList($search = null, $perPage = 10)
+    public function getStudentsList(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
-        $query = User::where('role_id', 3);
-        
+        $query = User::whereHas('role', function ($q) {
+            $q->where('role_name', 'mahasiswa');
+        });
+
         if ($search) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
-        
-        return $query->paginate($perPage);
+
+        return $query->paginate($perPage, ['*'], 'page', null);
     }
 
-    public function getStudentsWithRole($roleId, $search = null, $perPage = 10)
-    {
-        $query = User::where('role_id', $roleId);
-        
+    public function getStudentsWithRole(
+        string $roleName,
+        ?string $search = null,
+        int $perPage = 10,
+    ): LengthAwarePaginator {
+        $query = User::whereHas('role', function ($q) use ($roleName) {
+            $q->where('role_name', $roleName);
+        });
+
         if ($search) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
-        
-        return $query->paginate($perPage);
+
+        return $query->paginate($perPage, ['*'], 'page', null);
     }
 
-    public function deleteStudentWithRelations($userId)
+    public function deleteStudentData(string $userId): void
     {
-        DB::beginTransaction();
-        
-        try {
-            // Delete related data using Eloquent relationships where possible
-            if (Schema::hasTable('user_ranks')) {
-                DB::table('user_ranks')->where('user_id', $userId)->delete();
-            }
-            
-            // Progress table is gone, check student_states
-            if (Schema::hasTable('student_states')) {
-                DB::table('student_states')->where('user_id', $userId)->delete();
-            }
-            
-            if (Schema::hasTable('student_answers')) {
-                DB::table('student_answers')->where('student_id', $userId)->delete();
-            }
-            
-            if (Schema::hasTable('quiz_attempts')) {
-                DB::table('quiz_attempts')->where('user_id', $userId)->delete();
-            }
-            
-            // Delete the user
-            $user = User::find($userId);
-            $user->delete();
-            
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+        StudentState::where('user_id', $userId)->delete();
+        QuizAttempt::where('user_id', $userId)->delete();
+        User::find($userId)?->delete();
     }
 
-    public function createStudent(array $data)
+    public function approveStudent(string $userId): void
     {
-        $data['role_id'] = 3; // Student role
-        $data['is_approved'] = true;
-        
-        return User::create($data);
+        $this->update($userId, ['is_approved' => true]);
     }
 
-    public function getUsersByRoleAndApproval($roleId, $isApproved, $search = null, $perPage = 10, $sortBy = 'created_at', $sortOrder = 'desc')
-    {
-        $query = User::where('role_id', $roleId)
-                     ->where('is_approved', $isApproved)
-                     ->orderBy($sortBy, $sortOrder);
-        
+    public function getUsersByRoleAndApproval(
+        string $roleName,
+        bool $isApproved,
+        ?string $search = null,
+        ?int $perPage = 10,
+        string $sortBy = 'created_at',
+        string $sortOrder = 'desc',
+    ): LengthAwarePaginator|Collection {
+        $query = User::whereHas('role', function ($q) use ($roleName) {
+            $q->where('role_name', $roleName);
+        })
+            ->where('is_approved', $isApproved)
+            ->orderBy($sortBy, $sortOrder);
+
         if ($search) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
-        
-        if ($perPage) {
-            return $query->paginate($perPage);
+
+        if ($perPage === null) {
+            return $query->get();
         }
-        
-        return $query->get();
+
+        return $query->paginate($perPage, ['*'], 'page', null);
     }
 
-    public function approveUser($userId)
+    public function getActiveStudentsCount(int $days): int
     {
-        return $this->update($userId, ['is_approved' => true]);
+        return User::whereHas('role', function ($q) {
+            $q->where('role_name', 'mahasiswa');
+        })
+            ->whereHas('quizAttempts', function ($query) use ($days) {
+                $query->where('created_at', '>=', now()->subDays($days));
+            })
+            ->count();
     }
 
-    public function getActiveStudentsCount($days)
+    public function getStudentProgressOverview(int $limit): Collection
     {
-        return DB::table('users')
-            ->join('quiz_attempts', 'users.id', '=', 'quiz_attempts.user_id')
-            ->where('users.role_id', 3) // Student
-            ->where('quiz_attempts.created_at', '>=', now()->subDays($days))
-            ->distinct('users.id')
-            ->count('users.id');
-    }
-
-    public function getStudentProgressOverview($limit)
-    {
-        return User::where('role_id', 3)
-            ->withCount(['quizAttempts as completed_questions' => function($query) {
+        return User::whereHas('role', function ($q) {
+            $q->where('role_name', 'mahasiswa');
+        })
+            ->withCount(['quizAttempts as completed_questions' => function ($query) {
                 $query->where('is_correct', true);
             }])
-            ->with(['quizAttempts' => function($query) {
+            ->with(['quizAttempts' => function ($query) {
                 $query->where('is_correct', true)
-                      ->with('question.material:id,title'); // Nested relation via question
+                    ->with('question.material:id,title');
             }])
             ->having('completed_questions', '>', 0)
             ->orderByDesc('completed_questions')
@@ -174,8 +166,11 @@ class UserRepository
             ->get();
     }
 
-    public function countByRole($roleId)
+    public function countByRole(string $roleName): int
     {
-        return User::where('role_id', $roleId)->count();
+        return User::whereHas('role', function ($q) use ($roleName) {
+            $q->where('role_name', $roleName);
+        })
+            ->count();
     }
 }

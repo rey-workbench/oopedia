@@ -17,11 +17,11 @@ class DatabaseSeeder extends Seeder
             DosenSeeder::class,
             MahasiswaSeeder::class,
             MaterialsSeeder::class,
-            SubMaterialsSeeder::class, // NEW
-            QuestionsSeeder::class,
-            AnswersSeeder::class,
+            SubMaterialsSeeder::class,
+            ComprehensiveQuestionsSeeder::class,
+            FinalProjectSeeder::class,
             UeqSurveysSeeder::class,
+            MslqQuestionSeeder::class,
         ]);
-
     }
 }

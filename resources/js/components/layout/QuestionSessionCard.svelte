@@ -1,0 +1,166 @@
+<script lang="ts">
+    import Badge from '@/components/ui/Badge.svelte';
+    import Button from '@/components/ui/Button.svelte';
+    import Card from '@/components/ui/Card.svelte';
+    import MultipleChoice from '@/components/quiz/MultipleChoice.svelte';
+    import FillInTheBlank from '@/components/quiz/FillInTheBlank.svelte';
+    import DragAndDrop from '@/components/quiz/DragAndDrop.svelte';
+    import { Star, Flame, Lightbulb, Loader2, CheckCircle2, X } from 'lucide-svelte';
+    import { fade, slide } from 'svelte/transition';
+    import type { QuestionShowState } from '@/states/Mahasiswa/QuizState.svelte.ts';
+
+    interface Props {
+        state: QuestionShowState;
+    }
+
+    let { state = $bindable() }: Props = $props();
+</script>
+
+<Card variant="none" padding="p-0" class="border-duo-lg overflow-hidden rounded-3xl bg-white">
+    {#if !state.isGuest}
+        <div class="border-b-4 border-slate-50 bg-slate-50/30 p-4">
+            <div class="flex flex-col items-center justify-between gap-6 px-4 py-2 sm:flex-row">
+                <div
+                    id="quiz-stats"
+                    class="flex flex-wrap items-center justify-center gap-4 sm:gap-6"
+                >
+                    <!-- Difficulty Badge -->
+                    <div
+                        class="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-slate-100 bg-white px-4 py-2 shadow-sm"
+                    >
+                        <span class="text-[9px] font-black tracking-widest text-slate-400 uppercase"
+                            >Sulit</span
+                        >
+                        <Badge
+                            variant={state.difficulty === 'beginner'
+                                ? 'success'
+                                : state.difficulty === 'medium'
+                                  ? 'warning'
+                                  : 'danger'}
+                            size="sm"
+                            class="border-none font-black"
+                        >
+                            {state.getDifficultyLabel(state.difficulty)}
+                        </Badge>
+                    </div>
+
+                    <!-- XP Badge -->
+                    <div
+                        class="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-amber-100 bg-white px-4 py-2 shadow-sm"
+                    >
+                        <Star size={18} class="fill-amber-400 text-amber-400" />
+                        <span class="text-lg font-black tracking-tight text-slate-700"
+                            >{state.xp}</span
+                        >
+                    </div>
+
+                    <!-- Streak Badge -->
+                    <div
+                        class="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-orange-100 bg-white px-4 py-2 shadow-sm"
+                    >
+                        <Flame size={18} class="fill-orange-500 text-orange-500" />
+                        <span class="text-lg font-black tracking-tight text-slate-700"
+                            >{state.streak}</span
+                        >
+                    </div>
+                </div>
+
+                <button
+                    type="button"
+                    id="quiz-hint-btn"
+                    onclick={() => state.useHint()}
+                    disabled={state.hintsAvailable <= 0 || !state.currentQuestion?.hint}
+                    class="group press-active border-primary-200 text-primary-600 hover:bg-primary-50 flex items-center gap-3 rounded-2xl border-2 border-b-4 bg-white px-5 py-2.5 font-black shadow-sm transition-all disabled:pointer-events-none disabled:opacity-50"
+                >
+                    <Lightbulb
+                        size={18}
+                        class="text-primary-500 transition-transform group-hover:rotate-12"
+                    />
+                    <span class="text-sm">Hint ({state.hintsAvailable})</span>
+                </button>
+            </div>
+        </div>
+    {/if}
+
+    <div class="p-8 sm:p-10">
+        {#if state.showHint && state.currentQuestion?.hint}
+            <div
+                transition:slide={{ duration: 300 }}
+                class="relative mb-8 rounded-3xl border-2 border-amber-200 bg-amber-50/50 p-6 shadow-sm"
+            >
+                <button
+                    type="button"
+                    onclick={() => state.closeHint()}
+                    class="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-white text-amber-500 shadow-sm transition-all hover:scale-110 hover:text-amber-600 active:scale-95"
+                    aria-label="Tutup petunjuk"
+                >
+                    <X size={18} />
+                </button>
+                <div class="flex items-start gap-4 pr-8">
+                    <div
+                        class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-400 shadow-lg shadow-amber-200"
+                    >
+                        <Lightbulb size={24} class="fill-white text-white" />
+                    </div>
+                    <div>
+                        <h4
+                            class="mb-1 text-[11px] font-black tracking-widest text-amber-700 uppercase"
+                        >
+                            Wawasan Adaptif
+                        </h4>
+                        <p class="text-base leading-relaxed font-medium text-amber-900">
+                            {state.currentQuestion.hint}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {/if}
+
+        <div id="quiz-question-area" class="space-y-0">
+            {#if state.currentQuestion?.question_type === 'fill_in_the_blank'}
+                <div transition:fade>
+                    <FillInTheBlank
+                        question={state.currentQuestion}
+                        bind:answerText={state.fillInTheBlankAnswer}
+                    />
+                </div>
+            {:else if state.currentQuestion?.question_type === 'drag_and_drop'}
+                <div transition:fade>
+                    <DragAndDrop
+                        question={state.currentQuestion}
+                        bind:dragAndDropAnswers={state.dragAndDropAnswers}
+                    />
+                </div>
+            {:else if state.currentQuestion}
+                <div transition:fade>
+                    <MultipleChoice
+                        question={state.currentQuestion}
+                        selectedAnswerId={state.selectedMultipleChoiceAnswer}
+                        onselect={(answerId) => (state.selectedMultipleChoiceAnswer = answerId)}
+                    />
+                </div>
+            {/if}
+        </div>
+
+        <div id="quiz-submit-btn" class="mt-8 border-t border-slate-50 pt-8">
+            <Button
+                variant="primary"
+                size="lg"
+                class="shadow-primary-100 hover:shadow-primary-200 w-full py-5 text-base font-black tracking-widest uppercase shadow-xl transition-all hover:scale-[1.01] active:scale-[0.99]"
+                disabled={state.isSubmitting}
+                onclick={() => state.submitAnswer()}
+            >
+                {#if state.isSubmitting}
+                    <Loader2 size={20} class="mr-2.5 animate-spin" /> Memeriksa...
+                {:else}
+                    <CheckCircle2 size={20} class="mr-2.5" /> Periksa Jawaban
+                {/if}
+            </Button>
+            <p
+                class="mt-4 text-center text-[10px] font-bold tracking-[0.2em] text-slate-300 uppercase"
+            >
+                Sistem Adaptif Oopedia • v2.0
+            </p>
+        </div>
+    </div>
+</Card>

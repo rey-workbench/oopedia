@@ -9,8 +9,10 @@ return new class extends Migration
     public function up()
     {
         Schema::create('ueq_surveys', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->ulid('id')->primary();
+            $table->foreignUlid('user_id')->constrained()->onDelete('cascade');
+            $table->string('nim')->nullable();
+            $table->string('class')->nullable();
             // UEQ Scale items (1-7 rating)
             $table->integer('annoying_enjoyable');
             $table->integer('not_understandable_understandable');

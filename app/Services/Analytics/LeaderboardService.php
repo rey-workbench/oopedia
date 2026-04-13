@@ -1,78 +1,53 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Analytics;
 
-use App\Repositories\MaterialRepository;
-use App\Repositories\ProgressRepository;
+use App\Contracts\Repositories\MaterialRepositoryInterface;
+use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Contracts\Services\LeaderboardServiceInterface;
+use App\Enums\Lms\QuestionDifficulty;
+use App\Helpers\ProgressHelper;
+use Illuminate\Support\Facades\Cache;
 
-class LeaderboardService
+final class LeaderboardService implements LeaderboardServiceInterface
 {
-    protected $materialRepo;
-    protected $progressRepo;
-
     public function __construct(
-        MaterialRepository $materialRepo,
-        ProgressRepository $progressRepo
+        public readonly MaterialRepositoryInterface $materialRepo,
+        public readonly ProgressRepositoryInterface $progressRepo,
     ) {
-        $this->materialRepo = $materialRepo;
-        $this->progressRepo = $progressRepo;
     }
 
-    public function getLeaderboardData($currentUserId)
+    /** @return array<string, mixed> */
+    public function getLeaderboardData(string $currentUserId): array
     {
-        // Get difficulty question counts from active configurations
-        $difficultyCount = $this->calculateDifficultyTotals();
+        $leaderboardData = Cache::remember('global_leaderboard_data', 600, function () {
+            $materials       = $this->materialRepo->getAllWithQuestionsAndConfigs();
+            $difficultyCount = ProgressHelper::calculateDifficultyTotals($materials);
 
-        // Get correct answers with attempts for scoring
-        $correctAnswers = $this->progressRepo->getCorrectAnswersWithAttempts(3);
+            $correctAnswers = $this->progressRepo->getCorrectAnswersWithAttempts('mahasiswa');
 
-        // Calculate user scores
-        $userScores = $this->calculateUserScores($correctAnswers);
+            $userScores = $this->calculateUserScores($correctAnswers);
 
-        // Get leaderboard statistics
-        $leaderboardData = $this->progressRepo->getLeaderboardStats(3);
+            $leaderboardDataRaw = $this->progressRepo->getLeaderboardStats('mahasiswa');
 
-        // Get materials for calculating total questions
-        $materials = $this->materialRepo->getAllWithQuestionsAndConfigs();
-        $totalConfiguredQuestions = $this->calculateTotalConfiguredQuestions($materials);
+            $totalConfiguredQuestions = ProgressHelper::calculateTotalQuestions($materials);
 
-        // Process leaderboard data
-        $leaderboardData = $this->processLeaderboardData(
-            $leaderboardData,
-            $userScores,
-            $totalConfiguredQuestions,
-            $difficultyCount
-        );
+            return $this->processLeaderboardData(
+                $leaderboardDataRaw,
+                $userScores,
+                $totalConfiguredQuestions,
+                $difficultyCount,
+            );
+        });
 
-        // Find current user rank
-        // Repository returns collection of objects (stdClass or arrays converted to collection)
-        // Access 'id' property
         $currentUserRank = $leaderboardData->firstWhere('id', $currentUserId);
 
         return [
             'leaderboardData' => $leaderboardData,
-            'currentUserRank' => $currentUserRank
+            'currentUserRank' => $currentUserRank,
         ];
-    }
-
-    protected function calculateDifficultyTotals()
-    {
-        $totals = [
-            'beginner' => 0,
-            'medium' => 0,
-            'hard' => 0
-        ];
-
-        $materials = $this->materialRepo->getAllWithQuestionsAndConfigs();
-
-        foreach ($materials as $material) {
-            // Use all available questions
-            $totals['beginner'] += $material->questions->where('difficulty', 'beginner')->count();
-            $totals['medium'] += $material->questions->where('difficulty', 'medium')->count();
-            $totals['hard'] += $material->questions->where('difficulty', 'hard')->count();
-        }
-
-        return $totals;
     }
 
     protected function calculateUserScores($correctAnswers)
@@ -80,28 +55,26 @@ class LeaderboardService
         $userScores = [];
 
         foreach ($correctAnswers as $answer) {
-            $userId = $answer->user_id;
-            // Repository query alias: 'attempts_needed'
-            $attempts = (int)$answer->attempts_needed;
+            $userId   = $answer->user_id;
+            $attempts = (int) $answer->attempts_needed;
 
-            if (!isset($userScores[$userId])) {
+            if (! isset($userScores[$userId])) {
                 $userScores[$userId] = 0;
             }
 
-            // Base points by difficulty
-            $basePoin = match ($answer->difficulty) {
+            $difficulty = $answer->difficulty instanceof QuestionDifficulty ? $answer->difficulty->value : $answer->difficulty;
+            $basePoin   = match ($difficulty) {
                 'beginner' => 5,
-                'medium' => 10,
-                'hard' => 15,
-                default => 0  
+                'medium'   => 10,
+                'hard'     => 15,
+                default    => 0
             };
 
-            // Attempt multiplier
             $attemptMultiplier = match ($attempts) {
-                1 => 1.0,
-                2 => 0.8,
-                3 => 0.6,
-                4 => 0.4,
+                1       => 1.0,
+                2       => 0.8,
+                3       => 0.6,
+                4       => 0.4,
                 default => 0.2
             };
 
@@ -112,43 +85,31 @@ class LeaderboardService
         return $userScores;
     }
 
-    protected function calculateTotalConfiguredQuestions($materials)
-    {
-        $total = 0;
-
-        foreach ($materials as $material) {
-            // Use all available questions
-            $total += $material->questions->count();
-        }
-
-        return $total;
-    }
-
-    protected function processLeaderboardData($leaderboardData, $userScores, $totalConfiguredQuestions, $difficultyCount)
-    {
-        // Add weighted scores
+    protected function processLeaderboardData(
+        $leaderboardData,
+        $userScores,
+        $totalConfiguredQuestions,
+        $difficultyCount,
+    ) {
         foreach ($leaderboardData as $data) {
             $data->weighted_score = $userScores[$data->id] ?? 0;
         }
 
-        // Sort by score descending
         $leaderboardData = $leaderboardData->sortByDesc('weighted_score')->values();
 
-        // Add ranks, percentages, and badges
         $rank = 1;
         foreach ($leaderboardData as $data) {
             $data->rank = $rank++;
 
-            // Calculate percentage
-            $data->percentage = $totalConfiguredQuestions > 0
-                ? min(100, round(($data->total_correct_questions / $totalConfiguredQuestions) * 100))
-                : 0;
+            $data->percentage = ProgressHelper::calculateProgressPercentage(
+                $data->total_correct_questions,
+                $totalConfiguredQuestions,
+            );
 
             $data->formatted_score = number_format($data->weighted_score, 0, ',', '.');
 
-            // Determine badge
-            $badge = $this->determineBadge($data, $difficultyCount);
-            $data->badge = $badge['name'];
+            $badge             = $this->determineBadge($data, $difficultyCount);
+            $data->badge       = $badge['name'];
             $data->badge_color = $badge['color'];
         }
 
@@ -163,8 +124,8 @@ class LeaderboardService
             return ['name' => 'Medium', 'color' => 'warning'];
         } elseif ($data->beginner_completed >= $difficultyCount['beginner'] && $difficultyCount['beginner'] > 0) {
             return ['name' => 'Beginner', 'color' => 'success'];
-        } else {
-            return ['name' => 'Learner', 'color' => 'secondary'];
         }
+
+        return ['name' => 'Learner', 'color' => 'secondary'];
     }
 }

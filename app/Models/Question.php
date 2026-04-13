@@ -1,18 +1,38 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
+use App\Enums\Lms\ContentCategory;
+use App\Enums\Lms\QuestionDifficulty;
+use App\Enums\Lms\QuestionType;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Question extends Model
+final class Question extends Model
 {
     use HasFactory;
+    use HasUlids;
 
-    const TYPE_FILL_IN_THE_BLANK = 'fill_in_the_blank';
-    const TYPE_RADIO_BUTTON = 'radio_button';
-    const TYPE_DRAG_AND_DROP = 'drag_and_drop';
-    
+    public const int DIFFICULTY_RANK_BEGINNER = 1;
+
+    public const int DIFFICULTY_RANK_MEDIUM   = 2;
+
+    public const int DIFFICULTY_RANK_HARD     = 3;
+
+    public const int DIFFICULTY_RANK_FINAL    = 4;
+
+    public const array DIFFICULTY_ORDER = [
+        QuestionDifficulty::BEGINNER->value => self::DIFFICULTY_RANK_BEGINNER,
+        QuestionDifficulty::MEDIUM->value   => self::DIFFICULTY_RANK_MEDIUM,
+        QuestionDifficulty::HARD->value     => self::DIFFICULTY_RANK_HARD,
+        QuestionDifficulty::FINAL->value    => self::DIFFICULTY_RANK_FINAL,
+    ];
+
     protected $fillable = [
         'material_id',
         'sub_material_id',
@@ -21,79 +41,40 @@ class Question extends Model
         'type',
         'difficulty',
         'hint',
-        'created_by'
+        'created_by',
     ];
 
     protected $casts = [
-        'material_id' => 'integer',
-        'sub_material_id' => 'integer',
+        'material_id'     => 'string',
+        'sub_material_id' => 'string',
+        'created_by'      => 'string',
+        'question_type'   => QuestionType::class,
+        'type'            => ContentCategory::class,
+        'difficulty'      => QuestionDifficulty::class,
     ];
 
-    // ==================== RELATIONSHIPS ====================
-
-    /**
-     * Question belongs to Material.
-     */
-    public function material()
+    public function material(): BelongsTo
     {
         return $this->belongsTo(Material::class);
     }
 
-    /**
-     * Question belongs to SubMaterial.
-     */
-    public function subMaterial()
+    public function subMaterial(): BelongsTo
     {
         return $this->belongsTo(SubMaterial::class);
     }
 
-    /**
-     * Question belongs to User (creator).
-     */
-    public function createdBy()
+    public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    /**
-     * Question has many Answers.
-     */
-    public function answers()
+    public function answers(): HasMany
     {
         return $this->hasMany(Answer::class);
     }
 
-    /**
-     * Question has many QuizAttempts.
-     */
-    public function quizAttempts()
+    public function quizAttempts(): HasMany
     {
         return $this->hasMany(QuizAttempt::class);
-    }
-
-    // ==================== SCOPES ====================
-
-    /**
-     * Scope to filter by difficulty.
-     */
-    public function scopeByDifficulty($query, string $difficulty)
-    {
-        return $query->where('difficulty', $difficulty);
-    }
-
-    /**
-     * Scope to filter by question type (adaptive).
-     */
-    public function scopeByTypeAdaptive($query, string $type)
-    {
-        return $query->where('type', $type);
-    }
-
-    /**
-     * Scope to get final project questions.
-     */
-    public function scopeFinalProject($query)
-    {
-        return $query->where('difficulty', 'final');
     }
 }

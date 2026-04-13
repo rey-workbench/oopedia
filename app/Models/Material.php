@@ -1,66 +1,79 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Material extends Model
+final class Material extends Model
 {
     use HasFactory;
+    use HasUlids;
 
     protected $fillable = [
         'title',
         'content',
         'module_id',
-        'created_by'
+        'created_by',
+        'is_final_project',
     ];
 
     protected $casts = [
-        'module_id' => 'integer',
+        'is_final_project' => 'boolean',
+        'module_id'        => 'string',
+        'created_by'       => 'string',
     ];
 
-    // ==================== RELATIONSHIPS ====================
-
-    /**
-     * Material has many SubMaterials.
-     */
-    public function subMaterials()
+    public function subMaterials(): HasMany
     {
         return $this->hasMany(SubMaterial::class)->ordered();
     }
 
-    /**
-     * Material has many Questions (legacy, prefer subMaterials->questions).
-     */
-    public function questions()
+    public function questions(): HasMany
     {
         return $this->hasMany(Question::class);
     }
 
-    /**
-     * Material has many Media.
-     */
-    public function media()
+    public function media(): HasMany
     {
         return $this->hasMany(Media::class);
     }
 
-    /**
-     * Material belongs to User (creator).
-     */
-    public function creator()
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    // ==================== SCOPES ====================
-
-    /**
-     * Scope to filter by module.
-     */
-    public function scopeByModule($query, int $moduleId)
+    public function getNextMaterial(): ?self
     {
-        return $query->where('module_id', $moduleId);
+        return self::where(function ($query) {
+            $query->where('created_at', '>', $this->created_at)
+                ->orWhere(function ($q) {
+                    $q->where('created_at', '=', $this->created_at)
+                        ->where('id', '>', $this->id);
+                });
+        })
+            ->orderBy('created_at', 'asc')
+            ->orderBy('id', 'asc')
+            ->first();
+    }
+
+    public function getPreviousMaterial(): ?self
+    {
+        return self::where(function ($query) {
+            $query->where('created_at', '<', $this->created_at)
+                ->orWhere(function ($q) {
+                    $q->where('created_at', '=', $this->created_at)
+                        ->where('id', '<', $this->id);
+                });
+        })
+            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
     }
 }

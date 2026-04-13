@@ -1,119 +1,117 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Analytics;
 
-use App\Repositories\UeqSurveyRepository;
+use App\Contracts\Repositories\UeqSurveyRepositoryInterface;
+use App\Contracts\Services\UeqSurveyServiceInterface;
+use App\Models\UeqSurvey;
+use Illuminate\Database\Eloquent\Collection;
 
-class UeqSurveyService
+final class UeqSurveyService implements UeqSurveyServiceInterface
 {
-    protected $ueqRepo;
-
-    public function __construct(UeqSurveyRepository $ueqRepo)
-    {
-        $this->ueqRepo = $ueqRepo;
+    public function __construct(
+        public readonly UeqSurveyRepositoryInterface $ueqRepo,
+    ) {
     }
 
-    public function getAllSurveys($class = null)
+    /** @return Collection<int, UeqSurvey> */
+    public function getAllSurveys(?string $class = null): Collection
     {
         return $this->ueqRepo->getAllWithUser($class);
     }
 
-    public function getDistinctClasses()
+    /** @return array<string> */
+    public function getDistinctClasses(): array
     {
         return $this->ueqRepo->getDistinctClasses();
     }
 
-    public function getStudentDetail($userId)
+    public function getStudentDetail(string $userId): ?UeqSurvey
     {
         return $this->ueqRepo->findByUserId($userId);
     }
 
-    public function hasUserSubmitted($userId)
+    public function hasUserSubmitted(string $userId): bool
     {
         return $this->ueqRepo->findSurveyByUser($userId) !== null;
     }
 
-    public function createSurvey(array $data)
+    public function createSurvey(array $data): UeqSurvey
     {
         return $this->ueqRepo->create($data);
     }
 
-    public function calculateAverages($surveys)
+    /** @return array<string, float> */
+    public function calculateAverages(Collection $surveys): array
     {
         if ($surveys->isEmpty()) {
             return [];
         }
-        
-        // Inisialisasi array untuk menyimpan total nilai
+
         $totals = [
             'attractiveness' => 0,
-            'perspicuity' => 0,
-            'efficiency' => 0,
-            'dependability' => 0,
-            'stimulation' => 0,
-            'novelty' => 0
+            'perspicuity'    => 0,
+            'efficiency'     => 0,
+            'dependability'  => 0,
+            'stimulation'    => 0,
+            'novelty'        => 0,
         ];
-        
+
         foreach ($surveys as $survey) {
-            // Attractiveness
             $totals['attractiveness'] += (
-                $survey->annoying_enjoyable + 
-                $survey->good_bad + 
-                $survey->unlikable_pleasing + 
-                $survey->unpleasant_pleasant + 
-                $survey->attractive_unattractive + 
+                $survey->annoying_enjoyable      +
+                $survey->good_bad                +
+                $survey->unlikable_pleasing      +
+                $survey->unpleasant_pleasant     +
+                $survey->attractive_unattractive +
                 $survey->friendly_unfriendly
             ) / 6;
-            
-            // Perspicuity
+
             $totals['perspicuity'] += (
-                $survey->not_understandable_understandable + 
-                $survey->easy_difficult + 
-                $survey->complicated_easy + 
+                $survey->not_understandable_understandable +
+                $survey->easy_difficult                    +
+                $survey->complicated_easy                  +
                 $survey->clear_confusing
             ) / 4;
-            
-            // Efficiency
+
             $totals['efficiency'] += (
-                $survey->fast_slow + 
-                $survey->inefficient_efficient + 
-                $survey->impractical_practical + 
+                $survey->fast_slow             +
+                $survey->inefficient_efficient +
+                $survey->impractical_practical +
                 $survey->organized_cluttered
             ) / 4;
-            
-            // Dependability
+
             $totals['dependability'] += (
-                $survey->unpredictable_predictable + 
-                $survey->obstructive_supportive + 
-                $survey->secure_not_secure + 
+                $survey->unpredictable_predictable +
+                $survey->obstructive_supportive    +
+                $survey->secure_not_secure         +
                 $survey->meets_expectations_does_not_meet
             ) / 4;
-            
-            // Stimulation
+
             $totals['stimulation'] += (
-                $survey->valuable_inferior + 
-                $survey->boring_exciting + 
-                $survey->not_interesting_interesting + 
+                $survey->valuable_inferior           +
+                $survey->boring_exciting             +
+                $survey->not_interesting_interesting +
                 $survey->motivating_demotivating
             ) / 4;
-            
-            // Novelty
+
             $totals['novelty'] += (
-                $survey->creative_dull + 
-                $survey->inventive_conventional + 
-                $survey->usual_leading_edge + 
+                $survey->creative_dull          +
+                $survey->inventive_conventional +
+                $survey->usual_leading_edge     +
                 $survey->conservative_innovative
             ) / 4;
         }
-        
-        // Hitung rata-rata
-        $count = $surveys->count();
+
+        $count    = $surveys->count();
         $averages = [];
-        
+
         foreach ($totals as $key => $total) {
             $averages[$key] = $total / $count;
         }
-        
+
         return $averages;
     }
 }

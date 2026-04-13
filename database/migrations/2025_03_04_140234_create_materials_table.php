@@ -9,10 +9,11 @@ class CreateMaterialsTable extends Migration
     public function up()
     {
         Schema::create('materials', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->ulid('id')->primary();
             $table->string('title');
-            $table->text('content');
-            $table->bigInteger('created_by')->unsigned();
+            $table->longText('content');
+            $table->integer('module_id')->nullable();
+            $table->ulid('created_by');
             $table->timestamps();
         });
     }

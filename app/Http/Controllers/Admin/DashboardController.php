@@ -1,51 +1,38 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
+use App\Contracts\Services\AdminDashboardServiceInterface;
 use App\Http\Controllers\Controller;
-use App\Services\Analytics\AdminDashboardService;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Response;
 
-class DashboardController extends Controller
+final class DashboardController extends Controller
 {
-    protected $adminDashboardService;
+    public function __construct(protected AdminDashboardServiceInterface $adminDashboardService) {}
 
-    public function __construct(AdminDashboardService $adminDashboardService)
+    public function index(): Response
     {
-        $this->adminDashboardService = $adminDashboardService;
-    }
-
-    public function index()
-    {
-        // Get authenticated user data
-        $user = auth()->user();
+        $user     = Auth::user();
         $userName = $user->name;
         $userRole = $user->role->role_name;
 
-        // Get Statistics
         $stats = $this->adminDashboardService->getDashboardStats();
-        
-        $totalStudents = $stats['totalStudents'];
+
+        $totalStudents  = $stats['totalStudents'];
         $totalMaterials = $stats['totalMaterials'];
         $totalQuestions = $stats['totalQuestions'];
         $activeStudents = $stats['activeStudents'];
 
-        // Recent Student Progress
-        $recentProgress = $this->adminDashboardService->getRecentProgress(10);
-
-        // Student Progress Overview
-        $studentProgress = $this->adminDashboardService->getStudentProgressOverview(5);
-
-        // Material Statistics for Chart
-        $materialStats = $this->adminDashboardService->getMaterialStatistics();
-
-        // Popular Materials
+        $recentProgress   = $this->adminDashboardService->getRecentProgress(10);
+        $studentProgress  = $this->adminDashboardService->getStudentProgressOverview(5);
+        $materialStats    = $this->adminDashboardService->getMaterialStatistics();
         $popularMaterials = $this->adminDashboardService->getPopularMaterials(5);
-
-        // Student Analytics for Charts
         $studentAnalytics = $this->adminDashboardService->getStudentAnalytics();
 
-        return Inertia::render('Admin/Dashboard/Index', compact(
+        return $this->render('Admin/Dashboard/Index', compact(
             'userName',
             'userRole',
             'totalStudents',
@@ -56,7 +43,7 @@ class DashboardController extends Controller
             'studentProgress',
             'materialStats',
             'popularMaterials',
-            'studentAnalytics'
+            'studentAnalytics',
         ));
     }
 }

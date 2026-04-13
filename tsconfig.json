@@ -9,38 +9,59 @@
         "module": "esnext",
         "moduleResolution": "bundler",
         "target": "esnext",
-        "types": [],
+        "types": ["vite/client", "svelte", "@tailwindcss/vite"],
         // For nodejs:
-        // "lib": ["esnext"],
+        "lib": ["esnext", "dom", "dom.iterable"],
         // "types": ["node"],
         // and npm install -D @types/node
         // Other Outputs
         "noEmit": true,
         "sourceMap": true,
         // Stricter Typechecking Options
+        "strict": true,
+        "noImplicitAny": true,
+        "allowSyntheticDefaultImports": true,
+        "allowUmdGlobalAccess": false,
         "noUncheckedIndexedAccess": true,
         "exactOptionalPropertyTypes": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictBindCallApply": true,
+        "strictPropertyInitialization": true,
+        "noImplicitThis": true,
+        "useUnknownInCatchVariables": true,
+        "alwaysStrict": true,
         // Style Options
-        // "noImplicitReturns": true,
-        // "noImplicitOverride": true,
-        // "noUnusedLocals": true,
-        // "noUnusedParameters": true,
-        // "noFallthroughCasesInSwitch": true,
-        // "noPropertyAccessFromIndexSignature": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitOverride": true,
+        "forceConsistentCasingInFileNames": true,
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false,
+        "useDefineForClassFields": true,
+        "noPropertyAccessFromIndexSignature": true,
         // Recommended Options
-        "strict": true,
         "jsx": "preserve",
         "verbatimModuleSyntax": true,
         "isolatedModules": true,
         "moduleDetection": "force",
         "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowJs": true,
+        "resolveJsonModule": true,
+        "paths": {
+            "@/*": ["./resources/js/*"],
+            "$lib/*": ["./src/*"]
+        }
     },
     "include": [
-        "resources/js/**/*"
+        "resources/js/**/*",
+        "resources/js/**/*.svelte",
+        "src/**/*",
+        "vite.config.ts",
+        "svelte.config.js"
     ],
-    "exclude": [
-        "node_modules",
-        "public",
-        "vendor"
-    ]
+    "exclude": ["node_modules", "public", "vendor"]
 }

@@ -1,57 +1,99 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Mahasiswa;
 
+use App\Contracts\Services\GuestProgressServiceInterface;
+use App\Contracts\Services\MaterialViewServiceInterface;
 use App\Http\Controllers\Controller;
-use App\Services\Lms\Material\MaterialViewService;
-use Inertia\Inertia;
+use App\Http\Requests\Material\ResetMaterialProgressRequest;
+use App\Models\Material;
+use App\Models\StudentState;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Response;
 
-class MaterialController extends Controller
+final class MaterialController extends Controller
 {
-    protected $materialViewService;
+    public function __construct(
+        protected MaterialViewServiceInterface $materialViewService,
+        protected GuestProgressServiceInterface $guestProgressService,
+    ) {}
 
-    public function __construct(MaterialViewService $materialViewService)
+    public function index(): Response
     {
-        $this->materialViewService = $materialViewService;
-    }
+        $isGuest   = $this->isGuest();
+        $materials = $this->materialViewService->getMaterialsList(Auth::id(), $isGuest);
 
-    public function showSubMaterial($materialId, $subMaterialId)
-    {
-        $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4);
-        
-        $data = $this->materialViewService->getSubMaterialDetail($materialId, $subMaterialId, $isGuest);
-        
-        return Inertia::render('Mahasiswa/SubMaterials/Show', $data);
-    }
-
-    public function show($id)
-    {
-        $userId = auth()->id();
-        $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4);
-
-        $data = $this->materialViewService->getMaterialDetail($id, $userId, $isGuest);
-
-        return Inertia::render('Mahasiswa/Materials/Show', $data);
-    }
-
-    public function index()
-    {
-        $userId = auth()->id();
-        $isGuest = !auth()->check() || (auth()->check() && auth()->user()->role_id === 4);
-
-        $materials = $this->materialViewService->getMaterialsList($userId, $isGuest);
-
-        return Inertia::render('Mahasiswa/Materials/Index', [
+        return $this->render('Mahasiswa/Materials/Index', [
             'materials' => $materials,
-            'isGuest' => $isGuest
+            'isGuest'   => $isGuest,
         ]);
     }
 
-    public function reset($id)
+    public function show(string $id): RedirectResponse|Response
     {
-        $this->materialViewService->resetMaterialProgress(auth()->id(), $id);
+        $isGuest = $this->isGuest();
+        $userId  = Auth::id();
 
-        return redirect()->route('mahasiswa.materials.questions.show', ['material' => $id])
+        if ($this->isMaterialLocked($id, $userId, $isGuest)) {
+            return redirect()->route('mahasiswa.materials.index')
+                ->with('error', 'Materi ini masih terkunci. Selesaikan materi sebelumnya!');
+        }
+
+        $data = $this->materialViewService->getMaterialDetail($id, $userId, $isGuest);
+
+        return $this->render('Mahasiswa/Materials/Show/Index', $data);
+    }
+
+    public function showSubMaterial(string $materialId, string $subMaterialId): Response
+    {
+        $data = $this->materialViewService->getSubMaterialDetail($materialId, $subMaterialId, $this->isGuest());
+
+        return $this->render('Mahasiswa/SubMaterials/Show/Index', $data);
+    }
+
+    public function reset(ResetMaterialProgressRequest $request): RedirectResponse
+    {
+        $materialId = (string) $request->validated('material');
+
+        if ($this->isGuest()) {
+            $this->guestProgressService->resetMaterialProgress($materialId);
+        } else {
+            $this->materialViewService->resetMaterialProgress(Auth::id(), $materialId);
+        }
+
+        return redirect()->route('mahasiswa.materials.questions.show', ['material' => $materialId])
             ->with('success', 'Progress direset. Anda dapat mengerjakan soal kembali.');
+    }
+
+    private function isMaterialLocked(string $materialId, ?string $userId, bool $isGuest): bool
+    {
+        $material = Material::where('id', $materialId)->first();
+
+        if (! $material) {
+            return true;
+        }
+
+        if ($isGuest) {
+            $allMaterials   = Material::orderBy('created_at', 'asc')->get();
+            $totalMaterials = $allMaterials->count();
+            $materialIndex  = $allMaterials->search(fn ($m) => $m->id === $materialId);
+
+            return $materialIndex >= ceil($totalMaterials / 2);
+        }
+
+        $studentState    = StudentState::where('user_id', $userId)->first();
+        $unlockedModules = $studentState?->learning_profile['unlocked_modules'] ?? [];
+
+        $allMaterials  = Material::orderBy('created_at', 'asc')->select('id', 'module_id')->get();
+        $firstModuleId = $allMaterials->whereNotNull('module_id')->min('module_id');
+
+        $moduleId      = $material->module_id;
+        $isFirstModule = $moduleId !== null && $moduleId == $firstModuleId;
+        $isUnlocked    = empty($moduleId) || $isFirstModule || in_array($moduleId, $unlockedModules);
+
+        return ! $isUnlocked;
     }
 }

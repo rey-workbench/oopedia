@@ -1,34 +1,67 @@
 {
-    "name": "laravel-frontend-presets/material",
-    "description": "Laravel 10.x Front-end preset for material",
+    "name": "oopedia/laravel-inertia-svelte",
+    "description": "Laravel 12.x Inertia OOPedia",
     "license": "MIT",
-    "homepage": "https://github.com/creativetimofficial/material-dashboard-laravel",
-    "keywords": ["Laravel", "Preset", "Material"],
+    "homepage": "https://github.com/reyworkbench/oopedia",
+    "scripts": {
+        "pint": "pint",
+        "phpcs": "phpcs",
+        "phpcs:fix": "phpcbf",
+        "phpcs:check": [
+            "@phpcs:fix",
+            "@pint",
+            "@phpcs"
+        ]
+    },
+    "keywords": [
+        "Laravel",
+        "Skripsi",
+        "Rule Based",
+        "Forward Chaining",
+        "Adaptive Quiz",
+        "Inertia",
+        "OOPedia"
+    ],
     "require": {
-        "laravel/framework": "^10.0",
+        "php": "^8.2",
+        "laravel/framework": "^12.0",
         "laravel/legacy-factories": "^1.0",
-        "laravel/sanctum": "^3.3",
-        "laravel/tinker": "^2.10",
-        "inertiajs/inertia-laravel": "^2.0"
+        "laravel/sanctum": "^4.0",
+        "laravel/tinker": "^2.11",
+        "inertiajs/inertia-laravel": "^3.0",
+        "predis/predis": "^3.4",
+        "laravel/octane": "^2.14",
+        "spiral/roadrunner-cli": "^2.7",
+        "spiral/roadrunner-http": "^4.1"
     },
     "autoload": {
         "psr-4": {
             "App\\": "app/",
-            "LaravelFrontendPresets\\MaterialPreset\\": "src/",
             "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
-            "providers": [
-                "LaravelFrontendPresets\\MaterialPreset\\MaterialPresetServiceProvider"
-            ]
+            "dont-discover": []
         }
     },
     "require-dev": {
-        "nunomaduro/collision": "^7.12",
-        "spatie/laravel-ignition": "^2.9",
-        "laravel/sail": "^1.43",
-        "jcf/boost-for-kiro-ide": "^1.0"
+        "fakerphp/faker": "^1.23",
+        "laravel/sail": "^1.53",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.1",
+        "phpunit/phpunit": "^12.0",
+        "spatie/laravel-ignition": "^2.4",
+        "laravel/pint": "^1.27",
+        "laravel/boost": "^2.0",
+        "squizlabs/php_codesniffer": "*"
+    },
+    "config": {
+        "process-timeout": 1800
     }
 }

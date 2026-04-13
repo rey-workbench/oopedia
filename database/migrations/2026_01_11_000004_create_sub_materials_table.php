@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\Lms\ContentCategory;
+use App\Enums\Lms\LearningStyle;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,21 +16,25 @@ return new class extends Migration
     {
         // Create sub_materials table
         Schema::create('sub_materials', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('material_id');
+            $table->ulid('id')->primary();
+            $table->ulid('material_id');
             $table->string('title');
             $table->text('content')->nullable();
-            $table->enum('jenis_konten', ['teori', 'sintaks', 'mixed'])->default('teori')
+            $table->enum('jenis_konten', array_map(fn ($case) => $case->value, ContentCategory::cases()))
+                ->default(ContentCategory::TEORI->value)
                 ->comment('Jenis konten: teori (konsep), sintaks (kode), atau mixed');
+            $table->enum('learning_style', array_map(fn ($case) => $case->value, LearningStyle::cases()))
+                ->default(LearningStyle::MIXED->value)
+                ->comment('Learning style suitability: visual, textual, or mixed');
             $table->integer('order')->default(0)->comment('Urutan tampilan dalam material');
             $table->timestamps();
-            
+
             $table->foreign('material_id')->references('id')->on('materials')->onDelete('cascade');
         });
-        
+
         // Add sub_material_id to questions table
         Schema::table('questions', function (Blueprint $table) {
-            $table->unsignedBigInteger('sub_material_id')->nullable()->after('material_id');
+            $table->ulid('sub_material_id')->nullable()->after('material_id');
             $table->foreign('sub_material_id')->references('id')->on('sub_materials')->onDelete('cascade');
         });
     }
@@ -42,7 +48,7 @@ return new class extends Migration
             $table->dropForeign(['sub_material_id']);
             $table->dropColumn('sub_material_id');
         });
-        
+
         Schema::dropIfExists('sub_materials');
     }
 };

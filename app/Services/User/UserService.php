@@ -1,209 +1,141 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\User;
 
-use App\Repositories\UserRepository;
+use App\Contracts\Repositories\UserRepositoryInterface;
+use App\Contracts\Services\UserServiceInterface;
+use App\Enums\User\RoleName;
+use App\Exceptions\Domain\UserNotFoundException;
+use App\Mail\AdminApproved;
+use App\Models\Role;
 use App\Models\User;
+use App\Services\User\Concerns\ImportsCsvUsers;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\AdminApproved;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
-class UserService
+final class UserService implements UserServiceInterface
 {
-    protected $userRepo;
+    use ImportsCsvUsers;
 
-    public function __construct(UserRepository $userRepo)
-    {
-        $this->userRepo = $userRepo;
-    }
+    public function __construct(
+        public readonly UserRepositoryInterface $userRepo,
+    ) {}
 
-    public function getUserById($id)
+    public function getUserById(string $id): ?User
     {
         return $this->userRepo->find($id);
     }
 
-    public function getAdmins($search = null, $perPage = 10)
+    public function getAdmins(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
-        // Role 2 is Admin
-        return $this->userRepo->getStudentsWithRole(2, $search, $perPage);
+        return $this->userRepo->getStudentsWithRole(RoleName::DOSEN->value, $search, $perPage);
     }
 
-    public function createAdmin(array $data)
+    public function createAdmin(array $data): User
     {
-        $data['password'] = Hash::make($data['password']);
-        $data['role_id'] = 2; // Admin role
-        $data['is_approved'] = true; // Admins created by superadmin are auto-approved
-        
+        $data['password']    = Hash::make($data['password']);
+        $data['role_id']     = Role::where('role_name', RoleName::DOSEN->value)->value('id');
+        $data['is_approved'] = true;
+
         return $this->userRepo->create($data);
     }
 
-    public function updateAdmin($user, array $data)
+    public function updateAdmin(string $userId, array $data): User
     {
-        if (isset($data['password']) && !empty($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
-        } else {
+        return $this->updateUser($userId, $data);
+    }
+
+    public function updateProfile(string $userId, array $data): User
+    {
+        return $this->updateUser($userId, $data);
+    }
+
+    protected function updateUser(string $userId, array $data): User
+    {
+        if (empty($data['password'] ?? null)) {
             unset($data['password']);
-        }
-        
-        return $this->userRepo->update($user->id, $data);
-    }
 
-    public function updateProfile($user, array $data)
-    {
-        if (isset($data['password']) && !empty($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
-        } else {
-            unset($data['password']);
+            return $this->userRepo->update($userId, $data);
         }
 
-        return $this->userRepo->update($user->id, $data);
+        $data['password'] = Hash::make($data['password']);
+
+        return $this->userRepo->update($userId, $data);
     }
 
-    public function deleteAdmin($user)
+    public function deleteAdmin(string $userId): void
     {
-        // Don't allow deleting self or superadmin (role 1)
-        if ($user->id === auth()->id() || $user->role_id === 1) {
-            throw new \Exception('Tidak dapat menghapus user ini');
+        $user = $this->userRepo->find($userId);
+
+        if (! $user) {
+            throw new UserNotFoundException($userId);
         }
-        
-        return $this->userRepo->delete($user->id);
+
+        if ($user->id === Auth::id() || $user->isSuperAdmin()) {
+            throw new \RuntimeException('Tidak dapat menghapus user ini.');
+        }
+
+        $this->userRepo->delete($user->id);
     }
 
-    public function getPendingAdmins($perPage = null)
+    public function getPendingAdmins(?int $perPage = null): LengthAwarePaginator
     {
-        // Get users with role 2 (admin) who are NOT approved
-        // Pass null for perPage to get all records if needed, but keeping perPage for flexibility
-        // Default sorting is created_at desc
-        return $this->userRepo->getUsersByRoleAndApproval(2, false, null, $perPage);
+        return $this->userRepo->getUsersByRoleAndApproval(RoleName::DOSEN->value, false, null, $perPage ?? 10);
     }
 
-    public function approveAdmin($user)
+    public function getPendingAdminsCount(): int
     {
-        DB::beginTransaction();
-        try {
-            $this->userRepo->approveUser($user->id);            
+        return $this->userRepo->getUsersByRoleAndApproval(RoleName::DOSEN->value, false, null, 10)->total();
+    }
+
+    public function approveAdmin(string $userId): void
+    {
+        $user = $this->userRepo->find($userId);
+
+        if (! $user) {
+            throw new UserNotFoundException($userId);
+        }
+
+        DB::transaction(function () use ($user) {
+            $this->userRepo->approveStudent($user->id);
             Mail::to($user->email)->send(new AdminApproved($user));
-
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+        });
     }
 
-    public function rejectAdmin($user)
+    public function rejectAdmin(string $userId): void
     {
-        // Simply delete the user request
-        return $this->userRepo->delete($user->id);
+        $this->userRepo->delete($userId);
     }
 
-    public function importAdminsFromFile($file)
+    public function registerUser(array $data): User
     {
-        $path = $file->getRealPath();
-        $successCount = 0;
-        $errorRows = [];
-        
-        if (($handle = fopen($path, 'r')) !== false) {
-            // Read header
-            $header = fgetcsv($handle, 1000, ',');
-            
-            // Validate required columns
-            $requiredColumns = ['name', 'email', 'password'];
-            $missingColumns = array_diff($requiredColumns, $header);
-            
-            if (!empty($missingColumns)) {
-                throw new \Exception('File tidak memiliki kolom yang diperlukan: ' . implode(', ', $missingColumns));
-            }
-            
-            // Map column indexes
-            $nameIndex = array_search('name', $header);
-            $emailIndex = array_search('email', $header);
-            $passwordIndex = array_search('password', $header);
-            
-            // Process each row
-            $rowNumber = 1;
-            
-            while (($row = fgetcsv($handle, 1000, ',')) !== false) {
-                $rowNumber++;
-                
-                // Skip empty rows
-                if (empty($row[$nameIndex]) && empty($row[$emailIndex])) {
-                    continue;
-                }
-                
-                // Validate row data
-                $rowData = [
-                    'name' => $row[$nameIndex] ?? '',
-                    'email' => $row[$emailIndex] ?? '',
-                    'password' => $row[$passwordIndex] ?? '',
-                ];
-                
-                $validator = Validator::make($rowData, [
-                    'name' => 'required|string|max:255',
-                    'email' => [
-                        'required',
-                        'string',
-                        'email',
-                        'max:255',
-                        Rule::unique('users'),
-                    ],
-                    'password' => 'required|string|min:8',
-                ]);
-                
-                if ($validator->fails()) {
-                    $errorRows[] = [
-                        'row' => $rowNumber,
-                        'errors' => $validator->errors()->all(),
-                    ];
-                    continue;
-                }
-                
-                // Create the admin
-                try {
-                    $this->createAdmin([
-                        'name' => $row[$nameIndex],
-                        'email' => $row[$emailIndex],
-                        'password' => $row[$passwordIndex], // Will be hashed in createAdmin
-                    ]);
-                    
-                    $successCount++;
-                } catch (\Exception $e) {
-                    $errorRows[] = [
-                        'row' => $rowNumber,
-                        'errors' => [$e->getMessage()],
-                    ];
-                }
-            }
-            fclose($handle);
-        }
-        
-        return [
-            'success_count' => $successCount,
-            'error_rows' => $errorRows
-        ];
+        $data['password'] = Hash::make($data['password']);
+
+        $roleDosenId     = Role::where('role_name', RoleName::DOSEN->value)->value('id');
+        $roleMahasiswaId = Role::where('role_name', RoleName::MAHASISWA->value)->value('id');
+
+        $data['role_id'] ??= str_ends_with($data['email'], User::ADMIN_EMAIL_DOMAIN)
+            ? $roleDosenId
+            : $roleMahasiswaId;
+
+        $data['is_approved'] ??= $data['role_id'] === $roleDosenId;
+
+        return $this->userRepo->create($data);
     }
-    
-    public function generateImportTemplate()
+
+    public function importAdminsFromFile(UploadedFile $file): array
     {
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="admin_template.csv"',
-            'Pragma' => 'no-cache',
-            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires' => '0'
-        ];
-        
-        $callback = function() {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, ['name', 'email', 'password']);
-            fputcsv($file, ['Nama Admin', 'admin@example.com', 'password123']);
-            fclose($file);
-        };
-        
-        return ['headers' => $headers, 'callback' => $callback];
+        return $this->importUsersFromCsv($file, fn (array $rowData) => $this->createAdmin($rowData));
+    }
+
+    public function generateImportTemplate(): array
+    {
+        return $this->generateCsvTemplate('admin_template.csv', ['Nama Admin', 'admin@example.com', 'password123']);
     }
 }

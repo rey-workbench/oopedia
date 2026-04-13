@@ -1,70 +1,114 @@
-<script>
-    import { createEventDispatcher } from "svelte";
-    import { HelpCircle, Code, CheckSquare } from "lucide-svelte";
+<script lang="ts">
+    import { CheckSquare, Terminal } from 'lucide-svelte';
+    import type { Question } from '@/types';
 
-    export let question;
-    export let selectedAnswerId = null;
+    interface Props {
+        question: Question;
+        selectedAnswerId?: string | null;
+        onselect?: (answerId: string) => void;
+    }
 
-    const dispatch = createEventDispatcher();
+    let { question, selectedAnswerId = $bindable(null), onselect = () => {} }: Props = $props();
 
-    function handleSelect(answerId) {
+    function handleSelect(answerId: string) {
         selectedAnswerId = answerId;
-        dispatch("select", { answerId });
+        onselect(answerId);
     }
 </script>
 
-<div class="mb-8">
-    <h5
-        class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2"
-    >
-        <HelpCircle size={16} class="text-blue-500" />
-        Pertanyaan
-    </h5>
-    <div
-        class="p-6 bg-slate-900 rounded-2xl shadow-xl border-4 border-slate-800 text-slate-100 font-mono text-lg leading-relaxed relative overflow-hidden"
-    >
-        <div class="absolute top-0 right-0 p-4 opacity-10">
-            <Code size={64} />
+<div class="space-y-6">
+    <!-- Question block: consistent dark terminal style -->
+    <div class="relative overflow-hidden rounded-3xl bg-slate-900 p-8 shadow-xl">
+        <!-- Subtle top accent line -->
+        <div
+            class="via-primary-500/60 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent"
+        ></div>
+        <!-- Decorative icon -->
+        <div class="pointer-events-none absolute -top-4 -right-4 text-white/4">
+            <Terminal size={120} />
         </div>
-        <div class="relative z-10">
+
+        <!-- Header bar -->
+        <div class="mb-5 flex items-center gap-3 border-b border-white/10 pb-4">
+            <div class="flex gap-1.5">
+                <div class="h-2 w-2 rounded-full bg-rose-500/60"></div>
+                <div class="h-2 w-2 rounded-full bg-amber-500/60"></div>
+                <div class="h-2 w-2 rounded-full bg-emerald-500/60"></div>
+            </div>
+            <span
+                class="ml-1 font-mono text-[10px] font-bold tracking-widest text-slate-500 uppercase"
+            >
+                soal.txt
+            </span>
+        </div>
+
+        <div
+            class="selection:bg-primary-500/30 relative z-10 text-lg leading-relaxed font-semibold text-slate-100"
+        >
             {@html question.question_text}
         </div>
     </div>
-</div>
 
-<h5
-    class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2"
->
-    <CheckSquare size={16} class="text-indigo-500" />
-    Pilih Jawaban
-</h5>
-<div class="grid grid-cols-1 gap-4">
-    {#each question.answers as answer (answer.id)}
-        <label class="group relative block transition-all cursor-pointer">
-            <input
-                type="radio"
-                name="answer"
-                value={answer.id}
-                class="peer hidden"
-                checked={selectedAnswerId === answer.id}
-                on:change={() => handleSelect(answer.id)}
-            />
-            <div
-                class="p-5 rounded-2xl border-2 border-slate-100 bg-white shadow-sm hover:border-blue-400 hover:bg-blue-50/30 peer-checked:border-blue-600 peer-checked:bg-blue-50 peer-checked:shadow-md peer-checked:shadow-blue-100 flex items-center gap-4 transition-all"
-            >
-                <div
-                    class="w-8 h-8 rounded-full border-2 border-slate-200 group-hover:border-blue-400 peer-checked:border-blue-600 peer-checked:bg-blue-600 flex items-center justify-center shrink-0 transition-all"
+    <!-- Answer options -->
+    <div class="space-y-4">
+        <div class="flex items-center gap-2 px-1">
+            <CheckSquare size={13} class="text-primary-500" />
+            <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">
+                Pilih Jawaban Yang Tepat
+            </span>
+            <div class="ml-2 h-px flex-1 bg-slate-100"></div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4">
+            {#each question.answers as answer, i (answer.id)}
+                {@const isSelected = selectedAnswerId === answer.id}
+                {@const label = String.fromCharCode(65 + i)}
+                <label
+                    class="group relative block cursor-pointer transition-all active:translate-y-1"
                 >
+                    <input
+                        type="radio"
+                        name="answer"
+                        value={answer.id}
+                        class="peer sr-only"
+                        checked={isSelected}
+                        onchange={() => handleSelect(answer.id)}
+                    />
                     <div
-                        class="w-2.5 h-2.5 rounded-full bg-white opacity-0 peer-checked:opacity-100 transition-opacity"
-                    ></div>
-                </div>
-                <div
-                    class="flex-1 text-slate-700 font-bold group-hover:text-blue-900 peer-checked:text-blue-900 transition-colors"
-                >
-                    {answer.answer_text}
-                </div>
-            </div>
-        </label>
-    {/each}
+                        class="flex items-center gap-5 rounded-3xl border-2 border-b-6 px-6 py-5 transition-all duration-150
+                        {isSelected
+                            ? 'border-primary-600 bg-primary-50 border-b-primary-700 -translate-y-1'
+                            : 'border-slate-100 border-b-slate-200 bg-white shadow-sm hover:border-slate-300 hover:bg-slate-50'}"
+                    >
+                        <!-- Letter Coin -->
+                        <div
+                            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border-2 border-b-4 transition-all duration-150
+                            {isSelected
+                                ? 'border-primary-600 text-primary-600 bg-white shadow-sm'
+                                : 'border-slate-200 bg-white text-slate-400 group-hover:border-slate-300'}"
+                        >
+                            <span class="text-lg font-black">{label}</span>
+                        </div>
+
+                        <span
+                            class="flex-1 text-lg font-bold tracking-tight transition-colors duration-200
+                            {isSelected
+                                ? 'text-primary-900'
+                                : 'text-slate-700 group-hover:text-slate-900'}"
+                        >
+                            {answer.answer_text}
+                        </span>
+
+                        {#if isSelected}
+                            <div
+                                class="bg-primary-600 shadow-primary-200 animate-in zoom-in-50 flex h-6 w-6 items-center justify-center rounded-full shadow-lg duration-300"
+                            >
+                                <div class="h-2 w-2 rounded-full bg-white"></div>
+                            </div>
+                        {/if}
+                    </div>
+                </label>
+            {/each}
+        </div>
+    </div>
 </div>

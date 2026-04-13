@@ -1,231 +1,170 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
+use App\Contracts\Repositories\RoleRepositoryInterface;
+use App\Contracts\Services\UserServiceInterface;
+use App\DTOs\User\AdminCreateDTO;
+use App\DTOs\User\AdminUpdateDTO;
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Services\User\UserService;
+use App\Http\Requests\User\ImportAdminRequest;
+use App\Http\Requests\User\StoreAdminRequest;
+use App\Http\Requests\User\UpdateAdminRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class AdminUserController extends Controller
+final class AdminUserController extends Controller
 {
-    protected $userService;
+    public function __construct(
+        protected UserServiceInterface $userService,
+        protected RoleRepositoryInterface $roleRepo,
+    ) {}
 
-    public function __construct(UserService $userService)
+    public function index(Request $request): Response
     {
-        $this->userService = $userService;
+        $search             = $request->search;
+        $users              = $this->userService->getAdmins($search);
+        $pendingAdminsCount = $this->userService->getPendingAdminsCount();
+
+        return $this->render('Admin/Users/Index', compact('users', 'pendingAdminsCount'));
     }
 
-    public function index(Request $request)
+    public function create(): Response
     {
-        // Check superadmin access
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses untuk melihat daftar admin');
-        }
-        
-        $search = $request->search;
-        $users = $this->userService->getAdmins($search);
-        
-        $pendingAdminsCount = \App\Models\User::where('role_id', 2)->where('is_approved', false)->count();
+        $roles = $this->roleRepo->all();
 
-        return Inertia::render('Admin/Users/Index', compact('users', 'pendingAdminsCount'));
+        return $this->render('Admin/Users/Create/Index', compact('roles'));
     }
 
-    public function create()
+    public function store(StoreAdminRequest $request): RedirectResponse
     {
-        // Check superadmin access
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
-        }
-        
-        $roles = \App\Models\Role::all();
-        return Inertia::render('Admin/Users/Create', compact('roles'));
+        $dto = AdminCreateDTO::fromRequest($request);
+
+        $this->userService->createAdmin($dto->toArray());
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Admin berhasil ditambahkan');
     }
 
-    public function store(Request $request)
+    public function edit(string $userId): Response|RedirectResponse
     {
-        // Check superadmin access
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
-        }
-        
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-        
-        try {
-            $this->userService->createAdmin($request->all());
-            
+        $user = $this->userService->getUserById($userId);
+
+        if (! $user) {
             return redirect()->route('admin.users.index')
-                ->with('success', 'Admin berhasil ditambahkan');
-        } catch (\Exception $e) {
-            return back()->withInput()->with('error', 'Gagal menambahkan admin: ' . $e->getMessage());
+                ->with('error', 'User tidak ditemukan');
         }
-    }
 
-    public function edit(User $user)
-    {
-        // Check superadmin access
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
-        }
-        
-        // Ensure editable user is admin
-        if ($user->role_id != 2) {
+        if (! $user->isDosen()) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'User bukan admin');
         }
-        
-        return Inertia::render('Admin/Users/Edit', compact('user'));
+
+        return $this->render('Admin/Users/Edit/Index', compact('user'));
     }
 
-    public function update(Request $request, User $user)
+    public function update(UpdateAdminRequest $request, string $userId): RedirectResponse
     {
-        // Check superadmin access
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
-        }
-        
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8|confirmed',
-        ]);
-        
-        try {
-            $this->userService->updateAdmin($user, $request->all());
-            
+        $user = $this->userService->getUserById($userId);
+
+        if (! $user) {
             return redirect()->route('admin.users.index')
-                ->with('success', 'Data admin berhasil diperbarui');
-        } catch (\Exception $e) {
-            return back()->withInput()->with('error', 'Gagal memperbarui admin: ' . $e->getMessage());
+                ->with('error', 'User tidak ditemukan');
         }
+
+        $dto = AdminUpdateDTO::fromRequest($request);
+
+        $this->userService->updateAdmin($userId, $dto->toArray());
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Data admin berhasil diperbarui');
     }
 
-    public function destroy(User $user)
+    public function destroy(string $userId): RedirectResponse
     {
-        // Check superadmin access
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
-        }
-        
-        try {
-            $this->userService->deleteAdmin($user);
-            
-            return redirect()->route('admin.users.index')
-                ->with('success', 'Admin berhasil dihapus');
-        } catch (\Exception $e) {
-            return redirect()->route('admin.users.index')
-                ->with('error', $e->getMessage());
-        }
+        $this->userService->deleteAdmin($userId);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Admin berhasil dihapus');
     }
 
-    public function pendingAdmins()
+    public function pendingApproval(): Response|RedirectResponse
     {
-        // Check superadmin access
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
+        $user = Auth::user();
+
+        if ($user->isSuperAdmin()) {
+            return redirect()->route('admin.pending-admins');
         }
-        
+
+        if (! $user->isDosen()) {
+            return redirect()->route('mahasiswa.materials.index');
+        }
+
+        if ($user->is_approved) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        $freshUser = $this->userService->getUserById($user->id);
+
+        if ($freshUser && $freshUser->is_approved) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        return $this->render('Admin/Users/PendingApproval/Index');
+    }
+
+    public function pendingAdmins(): Response
+    {
         $pendingAdmins = $this->userService->getPendingAdmins();
-        
-        return Inertia::render('Admin/Users/Pending', compact('pendingAdmins'));
+
+        return $this->render('Admin/Users/Pending/Index', compact('pendingAdmins'));
     }
 
-    public function approveAdmin(User $user)
+    public function approveAdmin(string $userId): RedirectResponse
     {
-        // Check superadmin access
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
-        }
-        
-        try {
-            $this->userService->approveAdmin($user);
-            
-            return redirect()->route('admin.pending-admins')
-                ->with('success', 'Admin berhasil disetujui');
-        } catch (\Exception $e) {
-            return redirect()->route('admin.pending-admins')
-                ->with('error', 'Gagal menyetujui admin: ' . $e->getMessage());
-        }
+        $this->userService->approveAdmin($userId);
+
+        return redirect()->route('admin.pending-admins')
+            ->with('success', 'Admin berhasil disetujui');
     }
 
-    public function rejectAdmin(User $user)
+    public function rejectAdmin(string $userId): RedirectResponse
     {
-        // Check superadmin access
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
+        $this->userService->rejectAdmin($userId);
+
+        return redirect()->route('admin.pending-admins')
+            ->with('success', 'Permintaan admin ditolak');
+    }
+
+    public function showImportForm(): Response
+    {
+        return $this->render('Admin/Users/Import/Index');
+    }
+
+    public function processImport(ImportAdminRequest $request): RedirectResponse
+    {
+        $result    = $this->userService->importAdminsFromFile($request->file('excel_file'));
+        $errorRows = $result['error_rows'] ?? [];
+
+        $message = "Berhasil menambahkan {$result['success_count']} admin.";
+        if (! empty($errorRows)) {
+            $message .= ' Terdapat ' . count($errorRows) . ' baris dengan error.';
         }
 
-        try {
-            $this->userService->rejectAdmin($user);
-            
-            return redirect()->route('admin.pending-admins')
-                ->with('success', 'Permintaan admin ditolak');
-        } catch (\Exception $e) {
-            return redirect()->route('admin.pending-admins')
-                ->with('error', 'Gagal menolak permintaan: ' . $e->getMessage());
-        }
+        return redirect()->route('admin.users.index')
+            ->with('success', $message)
+            ->with('importErrors', $errorRows);
     }
-    
-    public function showImportForm()
+
+    public function downloadTemplate(): StreamedResponse
     {
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
-        }
-        
-        return Inertia::render('Admin/Users/Import');
-    }
-    
-    public function processImport(Request $request)
-    {
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
-        }
-        
-        $request->validate([
-            'excel_file' => 'required|file|mimes:xlsx,xls,csv,txt|max:2048',
-        ]);
-        
-        try {
-            $result = $this->userService->importAdminsFromFile($request->file('excel_file'));
-            
-            $message = "Berhasil menambahkan {$result['success_count']} admin.";
-            if (!empty($result['error_rows'])) {
-                $message .= " Terdapat " . count($result['error_rows']) . " baris dengan error.";
-            }
-            
-            return redirect()->route('admin.users.index')
-                ->with('success', $message)
-                ->with('importErrors', $result['error_rows']);
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', $e->getMessage());
-        }
-    }
-    
-    public function downloadTemplate()
-    {
-        if (auth()->user()->role_id != 1) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Anda tidak memiliki akses');
-        }
-        
         $template = $this->userService->generateImportTemplate();
-        
+
         return response()->stream($template['callback'], 200, $template['headers']);
     }
 }

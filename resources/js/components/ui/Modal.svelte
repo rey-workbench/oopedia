@@ -1,59 +1,90 @@
-<script>
-    import { createEventDispatcher } from "svelte";
-    import { fade, scale } from "svelte/transition";
+<script lang="ts">
+    import { onMount } from 'svelte';
+    import { fade, scale } from 'svelte/transition';
+    import { createFocusTrap } from 'focus-trap';
+    import type { Snippet } from 'svelte';
 
-    export let show = false;
-    export let maxWidth = "2xl"; // sm, md, lg, xl, 2xl
-    export let closeable = true;
+    interface Props {
+        show: boolean;
+        maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+        closeable?: boolean;
+        onclose?: () => void;
+        children?: Snippet;
+    }
 
-    const dispatch = createEventDispatcher();
+    let { show = false, maxWidth = '2xl', closeable = true, onclose, children }: Props = $props();
+
+    const maxWidthClasses: Record<string, string> = {
+        sm: 'sm:max-w-sm',
+        md: 'sm:max-w-md',
+        lg: 'sm:max-w-lg',
+        xl: 'sm:max-w-xl',
+        '2xl': 'sm:max-w-2xl',
+    };
+
+    let dialogEl: HTMLElement | undefined = $state();
+    let trap: ReturnType<typeof createFocusTrap> | null = null;
 
     function close() {
         if (closeable) {
-            dispatch("close");
+            onclose?.();
         }
     }
 
-    function handleKeydown(e) {
-        if (e.key === "Escape" && show) {
-            close();
-        }
+    function handleKeydown(e: KeyboardEvent) {
+        if (e.key === 'Escape' && show) close();
     }
 
-    const maxWidthClass = {
-        sm: "sm:max-w-sm",
-        md: "sm:max-w-md",
-        lg: "sm:max-w-lg",
-        xl: "sm:max-w-xl",
-        "2xl": "sm:max-w-2xl",
-    }[maxWidth];
+    $effect(() => {
+        if (show && dialogEl) {
+            setTimeout(() => {
+                trap = createFocusTrap(dialogEl!, {
+                    escapeDeactivates: true,
+                    onDeactivate: close,
+                    initialFocus: false,
+                    allowOutsideClick: true,
+                });
+                trap.activate();
+            }, 50);
+        } else {
+            trap?.deactivate();
+            trap = null;
+        }
+    });
+
+    onMount(() => {
+        return () => {
+            trap?.deactivate();
+        };
+    });
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
 {#if show}
     <div
-        class="fixed inset-0 z-[999] overflow-y-auto px-4 py-6 sm:px-0 flex items-center justify-center"
+        class="fixed inset-0 z-999 flex items-center justify-center overflow-y-auto px-4 py-6 sm:px-0"
         transition:fade={{ duration: 200 }}
     >
         <div
-            class="fixed inset-0 transform transition-all"
-            on:click={close}
+            class="absolute inset-0 transform transition-all"
+            onclick={close}
             role="button"
             tabindex="0"
-            on:keydown={(e) => e.key === "Enter" && close()}
+            onkeydown={(e) => e.key === 'Enter' && close()}
             aria-label="Close modal backdrop"
         >
-            <div
-                class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm opacity-100"
-            ></div>
+            <div class="absolute inset-0 bg-slate-900/60 opacity-100 backdrop-blur-sm"></div>
         </div>
 
         <div
-            class={`mb-6 bg-white rounded-[2.5rem] shadow-2xl overflow-hidden transform transition-all sm:w-full sm:mx-auto ${maxWidthClass}`}
+            bind:this={dialogEl}
+            role="dialog"
+            aria-modal="true"
+            class={`border-cosmos-border relative z-10 mb-6 transform overflow-hidden rounded-3xl border-2 bg-white transition-all sm:mx-auto sm:w-full ${maxWidthClasses[maxWidth]}`}
             transition:scale={{ duration: 200, start: 0.95 }}
         >
-            <slot />
+            {@render children?.()}
         </div>
     </div>
 {/if}

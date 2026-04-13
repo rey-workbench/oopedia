@@ -1,13 +1,47 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
+use App\Enums\Lms\LearningStyle;
+use App\Enums\Lms\StudentLevel;
+use App\Schemas\StudentStateSchema;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class StudentState extends Model
+/**
+ * @property string $id
+ * @property string $user_id
+ * @property array<string,mixed> $gamification_data
+ * @property array<string,mixed> $learning_profile
+ * @property array<string,mixed> $performance_metrics
+ * @property array<string,mixed> $adaptive_state
+ * @property Carbon|null $last_active_at
+ * @property-read int $global_xp
+ * @property-read StudentLevel $current_level
+ * @property-read int $current_streak
+ * @property-read int $max_streak
+ * @property-read int $total_questions_answered
+ * @property-read int $correct_count
+ * @property-read int $wrong_count
+ * @property-read int $wrong_streak
+ * @property-read int $hints_used_count
+ * @property-read int $hints_available
+ * @property-read LearningStyle $learning_style
+ * @property-read array<int, mixed> $unlocked_modules
+ */
+final class StudentState extends Model
 {
     use HasFactory;
+    use HasUlids;
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
 
     protected $fillable = [
         'user_id',
@@ -18,9 +52,6 @@ class StudentState extends Model
         'last_active_at',
     ];
 
-    /**
-     * Include virtual attributes in array/JSON representation.
-     */
     protected $appends = [
         'global_xp',
         'current_level',
@@ -36,96 +67,236 @@ class StudentState extends Model
         'unlocked_modules',
     ];
 
-    /**
-     * CRITICAL: Cast JSON columns to arrays automatically
-     * This prevents "Cannot access offset of type string on string" errors
-     * Laravel will automatically encode/decode these fields
-     */
     protected $casts = [
         'performance_metrics' => 'array',
-        'gamification_data' => 'array',
-        'learning_profile' => 'array',
-        'adaptive_state' => 'array',
-        'last_active_at' => 'datetime',
+        'gamification_data'   => 'array',
+        'learning_profile'    => 'array',
+        'adaptive_state'      => 'array',
+        'last_active_at'      => 'datetime',
     ];
 
-    /**
-     * Default values for JSON fields
-     */
-    protected $attributes = [
-        'gamification_data' => '{"global_xp":0,"current_level":"Pemula","current_streak":0,"max_streak":0,"badges":[]}',
-        'learning_profile' => '{"learning_style":"visual","mastery_levels":{},"unlocked_modules":[]}',
-        'performance_metrics' => '{"total_questions_answered":0,"correct_count":0,"wrong_count":0,"wrong_streak":0,"hints_used_count":0,"hints_available":3}',
-        'adaptive_state' => '{"fast_track_active":false,"current_module_id":null,"module_progress":{},"time_metrics":{"avg_time_per_question":0,"total_time_spent":0},"variables":{}}',
-    ];
-
-    // ==================== RELATIONSHIPS ====================
-    
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    // ==================== ACCESSORS ====================
-
-    // Gamification Data (Transparent Access)
-    public function getGlobalXpAttribute() { return $this->gamification_data['global_xp'] ?? 0; }
-    public function getCurrentLevelAttribute() { return $this->gamification_data['current_level'] ?? 'Pemula'; }
-    public function getCurrentStreakAttribute() { return $this->gamification_data['current_streak'] ?? 0; }
-    public function getMaxStreakAttribute() { return $this->gamification_data['max_streak'] ?? 0; }
-    
-    // Performance Metrics (Transparent Access)
-    public function getTotalQuestionsAnsweredAttribute() { return $this->performance_metrics['total_questions_answered'] ?? 0; }
-    public function getCorrectCountAttribute() { return $this->performance_metrics['correct_count'] ?? 0; }
-    public function getWrongCountAttribute() { return $this->performance_metrics['wrong_count'] ?? 0; }
-    public function getWrongStreakAttribute() { return $this->performance_metrics['wrong_streak'] ?? 0; }
-    public function getHintsUsedCountAttribute() { return $this->performance_metrics['hints_used_count'] ?? 0; }
-    public function getHintsAvailableAttribute() { return $this->performance_metrics['hints_available'] ?? 3; }
-
-    // Learning Profile
-    public function getLearningStyleAttribute() { return $this->learning_profile['learning_style'] ?? 'visual'; }
-    public function getUnlockedModulesAttribute() { return $this->learning_profile['unlocked_modules'] ?? []; }
-
-    // ==================== HELPER METHODS ====================
-    
-    /**
-     * Update performance counters based on answer result.
-     * No need for custom accessors/mutators - Laravel handles JSON casting automatically
-     */
-    public function updatePerformance($isCorrect, $attemptNumber, $usedHint)
+    public function getGlobalXpAttribute(): int
     {
-        // Get current metrics (already decoded by Laravel)
-        $metrics = $this->performance_metrics ?? [];
-        $gamification = $this->gamification_data ?? [];
-        
-        // Update counters
-        $metrics['total_questions_answered'] = ($metrics['total_questions_answered'] ?? 0) + 1;
-        
+        return $this->gamification_data[StudentStateSchema::KEY_GLOBAL_XP] ?? 0;
+    }
+
+    public function getCurrentLevelAttribute(): StudentLevel
+    {
+        $value = $this->gamification_data[StudentStateSchema::KEY_CURRENT_LEVEL] ?? StudentLevel::PEMULA->value;
+
+        return StudentLevel::tryFrom($value) ?? StudentLevel::PEMULA;
+    }
+
+    public function setCurrentLevelAttribute(StudentLevel|string $value): void
+    {
+        $level                                               = $value instanceof StudentLevel ? $value->value : $value;
+        $gamification                                        = $this->gamification_data ?? [];
+        $gamification[StudentStateSchema::KEY_CURRENT_LEVEL] = $level;
+        $this->gamification_data                             = $gamification;
+    }
+
+    public function getCurrentStreakAttribute(): int
+    {
+        return $this->gamification_data[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0;
+    }
+
+    public function getMaxStreakAttribute(): int
+    {
+        return $this->gamification_data[StudentStateSchema::KEY_MAX_STREAK] ?? 0;
+    }
+
+    public function getTotalQuestionsAnsweredAttribute(): int
+    {
+        return $this->performance_metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] ?? 0;
+    }
+
+    public function getCorrectCountAttribute(): int
+    {
+        return $this->performance_metrics[StudentStateSchema::KEY_CORRECT_COUNT] ?? 0;
+    }
+
+    public function getWrongCountAttribute(): int
+    {
+        return $this->performance_metrics[StudentStateSchema::KEY_WRONG_COUNT] ?? 0;
+    }
+
+    public function getWrongStreakAttribute(): int
+    {
+        return $this->performance_metrics[StudentStateSchema::KEY_WRONG_STREAK] ?? 0;
+    }
+
+    public function getHintsUsedCountAttribute(): int
+    {
+        return $this->performance_metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] ?? 0;
+    }
+
+    public function getHintsAvailableAttribute(): int
+    {
+        return $this->performance_metrics[StudentStateSchema::KEY_HINTS_AVAILABLE]
+            ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE;
+    }
+
+    public function getLearningStyleAttribute(): LearningStyle
+    {
+        $value = $this->learning_profile[StudentStateSchema::KEY_LEARNING_STYLE] ?? LearningStyle::VISUAL->value;
+
+        return LearningStyle::tryFrom($value) ?? LearningStyle::VISUAL;
+    }
+
+    public function getUnlockedModulesAttribute(): array
+    {
+        return $this->learning_profile[StudentStateSchema::KEY_UNLOCKED_MODULES] ?? [];
+    }
+
+    /**
+     * Update performance and gamification aggregates after an answer attempt.
+     *
+     * @param bool $isCorrect
+     * @param int $timeSpent seconds
+     * @param bool $usedHint
+     * @param bool $save Persist changes immediately when true (default true)
+     * @return self
+     */
+    public function updatePerformance(bool $isCorrect, int $timeSpent, bool $usedHint, bool $save = true): self
+    {
+        $metrics      = $this->performance_metrics ?? [];
+        $gamification = $this->gamification_data   ?? [];
+
+        $metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] =
+            ($metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] ?? 0) + 1;
+
         if ($usedHint) {
-            $metrics['hints_used_count'] = ($metrics['hints_used_count'] ?? 0) + 1;
-            $metrics['hints_available'] = max(0, ($metrics['hints_available'] ?? 3) - 1);
-        }
-        
-        if ($isCorrect) {
-            $metrics['correct_count'] = ($metrics['correct_count'] ?? 0) + 1;
-            $gamification['current_streak'] = ($gamification['current_streak'] ?? 0) + 1;
-            $gamification['max_streak'] = max(
-                $gamification['max_streak'] ?? 0,
-                $gamification['current_streak'] ?? 0
+            $metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] =
+                ($metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] ?? 0) + 1;
+            $metrics[StudentStateSchema::KEY_HINTS_AVAILABLE] = max(
+                0,
+                ($metrics[StudentStateSchema::KEY_HINTS_AVAILABLE] ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE) - 1,
             );
-            $metrics['wrong_streak'] = 0;
-        } else {
-            $metrics['wrong_count'] = ($metrics['wrong_count'] ?? 0) + 1;
-            $metrics['wrong_streak'] = ($metrics['wrong_streak'] ?? 0) + 1;
-            $gamification['current_streak'] = 0;
         }
-        
-        // Save back (Laravel will encode automatically)
+
+        if ($isCorrect) {
+            $metrics[StudentStateSchema::KEY_CORRECT_COUNT] =
+                ($metrics[StudentStateSchema::KEY_CORRECT_COUNT] ?? 0) + 1;
+            $gamification[StudentStateSchema::KEY_CURRENT_STREAK] =
+                ($gamification[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0) + 1;
+            $gamification[StudentStateSchema::KEY_MAX_STREAK] = max(
+                $gamification[StudentStateSchema::KEY_MAX_STREAK]     ?? 0,
+                $gamification[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0,
+            );
+            $metrics[StudentStateSchema::KEY_WRONG_STREAK] = 0;
+        } else {
+            $metrics[StudentStateSchema::KEY_WRONG_COUNT] =
+                ($metrics[StudentStateSchema::KEY_WRONG_COUNT] ?? 0) + 1;
+            $metrics[StudentStateSchema::KEY_WRONG_STREAK] =
+                ($metrics[StudentStateSchema::KEY_WRONG_STREAK] ?? 0) + 1;
+            $gamification[StudentStateSchema::KEY_CURRENT_STREAK] = 0;
+        }
+
         $this->performance_metrics = $metrics;
-        $this->gamification_data = $gamification;
-        $this->last_active_at = now();
-        $this->save();
-        
+        $this->gamification_data   = $gamification;
+        $this->last_active_at      = now();
+
+        if ($save) {
+            $this->save();
+        }
+
         return $this;
+    }
+
+    /**
+     * Add XP to gamification data.
+     */
+    public function addXp(int $xp, bool $save = true): self
+    {
+        $gamification = $this->gamification_data ?? [];
+        $gamification[StudentStateSchema::KEY_GLOBAL_XP] = (
+            $gamification[StudentStateSchema::KEY_GLOBAL_XP] ?? 0
+        ) + $xp;
+
+        $this->gamification_data = $gamification;
+
+        if ($save) {
+            $this->save();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Consume hint(s) and update performance metrics accordingly.
+     */
+    public function useHint(int $count = 1, bool $save = true): self
+    {
+        $metrics = $this->performance_metrics ?? [];
+        $metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] = (
+            $metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] ?? 0
+        ) + $count;
+
+        $metrics[StudentStateSchema::KEY_HINTS_AVAILABLE] = max(
+            0,
+            ($metrics[StudentStateSchema::KEY_HINTS_AVAILABLE] ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE) - $count
+        );
+
+        $this->performance_metrics = $metrics;
+
+        if ($save) {
+            $this->save();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Increment current streak and update max streak.
+     */
+    public function incrementStreak(bool $save = true): self
+    {
+        $gamification = $this->gamification_data ?? [];
+        $gamification[StudentStateSchema::KEY_CURRENT_STREAK] = (
+            $gamification[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0
+        ) + 1;
+
+        $gamification[StudentStateSchema::KEY_MAX_STREAK] = max(
+            $gamification[StudentStateSchema::KEY_MAX_STREAK] ?? 0,
+            $gamification[StudentStateSchema::KEY_CURRENT_STREAK]
+        );
+
+        $this->gamification_data = $gamification;
+
+        if ($save) {
+            $this->save();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Reset current streak to zero.
+     */
+    public function resetStreak(bool $save = true): self
+    {
+        $gamification = $this->gamification_data ?? [];
+        $gamification[StudentStateSchema::KEY_CURRENT_STREAK] = 0;
+        $this->gamification_data = $gamification;
+
+        if ($save) {
+            $this->save();
+        }
+
+        return $this;
+    }
+
+    public function save(array $options = []): bool
+    {
+        if ($this->user_id === 'guest') {
+            return true;
+        }
+
+        return parent::save($options);
     }
 }

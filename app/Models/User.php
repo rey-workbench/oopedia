@@ -1,39 +1,87 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
+use App\Enums\User\RoleName;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+/**
+ * @property string $id
+ * @property string $name
+ * @property string $email
+ * @property string $password
+ * @property string $role_id
+ * @property bool $is_approved
+ */
+final class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use HasUlids;
+    use Notifiable;
 
-    protected $fillable = ['name', 'email', 'password', 'role_id'];
+    public const string ADMIN_EMAIL_DOMAIN = '@admin.oopedia.com';
 
-    public function role()
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
+    protected $fillable = ['name', 'email', 'password', 'role_id', 'is_approved'];
+
+    /** @var array<int, string> */
+    protected $hidden = ['password', 'remember_token'];
+
+    protected $casts = [
+        'is_approved' => 'boolean',
+    ];
+
+    public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
     }
 
-    public function quizAttempts()
+    public function quizAttempts(): HasMany
     {
         return $this->hasMany(QuizAttempt::class);
     }
 
-    public function studentState()
+    public function studentState(): HasOne
     {
         return $this->hasOne(StudentState::class);
     }
 
-    public function answeredQuestions()
+    public function hasRole(RoleName|string $role): bool
     {
-        return $this->hasMany(QuizAttempt::class)->where('score', '>', 0); // Or distinct question_id
+        $roleName = $role instanceof RoleName ? $role->value : $role;
+
+        $currentRole = $this->role?->role_name;
+
+        if ($currentRole instanceof RoleName) {
+            return $currentRole->value === $roleName;
+        }
+
+        return (string) $currentRole === $roleName;
     }
 
-    public function hasRole($role)
+    public function isSuperAdmin(): bool
     {
-        return $this->role->role_name === $role;
+        return $this->hasRole(RoleName::SUPERADMIN);
+    }
+
+    public function isDosen(): bool
+    {
+        return $this->hasRole(RoleName::DOSEN);
+    }
+
+    public function isMahasiswa(): bool
+    {
+        return $this->hasRole(RoleName::MAHASISWA);
     }
 }

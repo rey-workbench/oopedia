@@ -1,40 +1,63 @@
-<script>
-    import { Link, page } from "@inertiajs/svelte";
-    import { ChevronRight, Link2 } from "lucide-svelte";
+<script lang="ts">
+    import { Link } from '@inertiajs/svelte';
+    import { ChevronRight, Link2 } from 'lucide-svelte';
+    import type { Snippet } from 'svelte';
 
-    export let href = "#";
-    export let icon = Link2;
-    export let active = false;
+    interface Props {
+        id?: string | undefined;
+        href?: string | undefined;
+        icon?: any | undefined;
+        active?: boolean | undefined;
+        children?: Snippet | undefined;
+        [key: string]: any;
+    }
+
+    let {
+        id,
+        href = '#',
+        icon: Icon = Link2 as any,
+        active = false,
+        children,
+        ...restProps
+    }: Props = $props();
 
     const baseClasses =
-        "flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold tracking-tight transition-all duration-300 group";
+        'flex items-center gap-4 px-4 py-3 rounded-2xl font-bold tracking-tight transition-all duration-100 group border-2 border-transparent border-b-4 active:translate-y-[2px] active:border-b-0 select-none';
 
-    $: themeClasses = active
-        ? "bg-blue-600 text-white shadow-xl shadow-blue-100 "
-        : "text-slate-500 hover:text-blue-600 hover:bg-blue-50";
+    const themeClasses = $derived(
+        active
+            ? 'bg-primary-500 text-white border-primary-600 border-b-primary-700 translate-y-[2px] border-b-2'
+            : 'text-slate-500 hover:text-primary-500 hover:bg-slate-50 hover:border-slate-200'
+    );
 
-    $: iconContainerClasses = active
-        ? "bg-white/20"
-        : "bg-gray-100 group-hover:bg-blue-100";
+    const iconContainerClasses = $derived(
+        active ? 'bg-white/10' : 'bg-primary-50 group-hover:bg-primary-100/50'
+    );
 
-    $: iconClasses = active
-        ? "text-white"
-        : "text-slate-400 group-hover:text-blue-600";
+    const iconClasses = $derived(
+        active ? 'text-white' : 'text-cosmos-muted group-hover:text-primary-500'
+    );
 </script>
 
-<Link {href} class="{baseClasses} {themeClasses}" {...$$restProps}>
+<Link
+    {id}
+    {href}
+    class="{baseClasses} {themeClasses}"
+    aria-current={active ? 'page' : undefined}
+    {...restProps}
+>
     <div
-        class="w-8 h-8 rounded-xl flex items-center justify-center {iconContainerClasses} transition-colors duration-300"
+        class="flex h-8 w-8 items-center justify-center rounded-xl {iconContainerClasses} shadow-sm transition-colors duration-300"
     >
-        {#if typeof icon === "string"}
-            <i class="{icon} {iconClasses} transition-colors"></i>
+        {#if typeof Icon === 'string'}
+            <i class="{Icon} {iconClasses} transition-colors"></i>
         {:else}
             <div class={iconClasses}>
-                <svelte:component this={icon} size={18} strokeWidth={2.5} />
+                <Icon size={18} strokeWidth={3} />
             </div>
         {/if}
     </div>
-    <span class="flex-1"><slot /></span>
+    <span class="flex-1 font-black">{@render children?.()}</span>
 
     {#if active}
         <ChevronRight size={14} class="opacity-50" />

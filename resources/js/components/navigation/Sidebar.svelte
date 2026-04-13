@@ -1,6 +1,9 @@
-<script>
-    import { Link, page, router } from "@inertiajs/svelte";
-    import SidebarLink from "./SidebarLink.svelte";
+<script lang="ts">
+    import { Link, page, router } from '@inertiajs/svelte';
+    import SidebarLink from '@/components/navigation/SidebarLink.svelte';
+    import { ROUTES } from '@/utils/route';
+    import { closeSidebar } from '@/states/ui';
+    import { isAdmin, ROLE } from '@/utils/roles';
     import {
         LayoutDashboard,
         BookOpen,
@@ -13,263 +16,438 @@
         Trophy,
         UserRound,
         X,
-    } from "lucide-svelte";
+        ChevronDown,
+        LogIn,
+        UserPlus,
+        Lock,
+        HelpCircle,
+    } from 'lucide-svelte';
+    import { fly, slide } from 'svelte/transition';
+    import { getTourIdFromUrl, registerGlobalTutorials } from '@/tutorial';
+    import { onMount } from 'svelte';
+    import { tutorialState } from '@/states/ui/tutorialState.svelte';
 
-    export let showSidebar = true;
+    onMount(() => {
+        registerGlobalTutorials();
+    });
 
-    $: auth = $page.props.auth || {};
-    $: user = auth.user;
-    $: isAuthenticated = !!user;
-    $: userRole = user ? user.role_id : null;
-    $: isAdminRole = isAuthenticated && [1, 2].includes(userRole);
-    $: isStudentRole = isAuthenticated && [3, 4].includes(userRole);
+    const auth = $derived(page.props['auth'] ?? {});
+    const user = $derived(auth.user ?? null);
+    const isAdminRole = $derived(!!user && isAdmin(user.role?.role_name));
+    const userRole = $derived(user?.role?.role_name ?? null);
 
-    // Simple check for active route based on URL start
-    const isActive = (url) =>
-        $page.url === url || $page.url.startsWith(url + "/");
+    const isActive = (url: string) => page.url === url || page.url.startsWith(url + '/');
 
     function logout() {
-        router.post("/logout");
+        router.post('/logout');
     }
 
-    function toggleSidebar() {
-        const event = new CustomEvent("toggle-sidebar");
-        window.dispatchEvent(event);
-    }
+    let isMateriOpen = $state(
+        isActive(ROUTES.MAHASISWA.MATERIALS.INDEX) ||
+            page.url.startsWith('/mahasiswa/submaterials') ||
+            page.url.startsWith('/mahasiswa/materials/')
+    );
+
+    const materials = $derived(page.props['sidebar_materials'] ?? []);
 </script>
 
 <aside
     id="sidebar"
-    class="fixed left-0 top-0 z-50 h-screen w-64 transition-transform duration-500 overflow-y-auto glass border-r border-slate-100 no-scrollbar
-  {showSidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}"
+    class="no-scrollbar border-cosmos-border bg-cosmos-bg fixed inset-y-0 left-0 z-50 w-72 overflow-y-auto border-r-2 lg:w-64"
+    in:fly={{ x: -288, duration: 300 }}
+    out:fly={{ x: -288, duration: 300 }}
 >
     <div
-        class="px-6 py-6 flex items-center justify-between"
-        data-intro="Ini adalah Logo OOPEDIA. Kamu bisa kembali ke dashboard dengan mengklik logo ini."
-        data-step="1"
+        class="bg-cosmos-bg/80 sticky top-0 z-10 flex items-center justify-between px-6 py-8 backdrop-blur-md"
     >
         <Link
-            href={isAdminRole ? "/admin/dashboard" : "/mahasiswa/dashboard"}
-            class="flex items-center gap-3 group"
+            href={isAdminRole
+                ? ROUTES.ADMIN.DASHBOARD
+                : userRole === ROLE.MAHASISWA
+                  ? ROUTES.MAHASISWA.DASHBOARD
+                  : ROUTES.MAHASISWA.MATERIALS.INDEX}
+            class="group flex items-center gap-3"
         >
             <div
-                class="w-8 h-8 bg-white rounded-xl flex items-center justify-center shadow-lg p-1.5 group-hover:rotate-12 transition-transform"
+                class="border-cosmos-border flex h-10 w-10 items-center justify-center rounded-2xl border-2 bg-white p-2"
             >
-                <img
-                    src="/images/logo.png"
-                    alt="OOPedia"
-                    class="w-full h-auto"
-                />
+                <img src="/images/logo.png" alt="OOPedia" class="h-auto w-full" />
             </div>
-            <span class="text-lg font-bold tracking-widest text-slate-900"
-                >OOPEDIA</span
-            >
+            <div class="flex flex-col">
+                <span class="font-display text-cosmos-text text-xl font-black tracking-tighter"
+                    >OOPEDIA</span
+                >
+                <span class="text-primary-500 text-[8px] font-bold tracking-[0.2em] uppercase"
+                    >Learning System</span
+                >
+            </div>
         </Link>
         <button
-            on:click={toggleSidebar}
-            aria-label="Close sidebar"
-            class="lg:hidden p-2 rounded-xl text-slate-400 hover:text-slate-900 bg-slate-100"
+            onclick={() => closeSidebar()}
+            aria-label="Tutup sidebar"
+            class="group bg-primary-50 text-cosmos-muted flex h-10 w-10 items-center justify-center rounded-2xl border-2 border-transparent transition-all hover:border-rose-200 hover:bg-rose-50 hover:text-rose-500 active:translate-y-0.5"
         >
-            <X size={20} />
+            <X size={20} strokeWidth={2.5} />
         </button>
     </div>
 
-    <nav
-        class="px-5 space-y-6 pb-6"
-        data-intro="Gunakan menu navigasi ini untuk menjelajahi fitur-fitur yang tesedia di OOPEDIA."
-        data-step="2"
-    >
+    <!-- Decorative line -->
+    <div class="bg-cosmos-border mx-6 mb-8 h-px"></div>
+
+    <nav aria-label="Navigasi Utama" class="space-y-6 px-5 pb-6">
         {#if isAdminRole}
             <div class="space-y-6">
-                <div
-                    class="px-4 text-[10px] font-bold uppercase tracking-tight text-slate-500 flex items-center gap-3"
-                >
-                    <span class="w-2 h-0.5 bg-blue-500/50"></span>
-                    Utama
+                <div class="flex items-center gap-2 px-4">
+                    <div class="bg-primary-500 h-2 w-2 rounded-full"></div>
+                    <span
+                        class="text-cosmos-muted text-[9px] font-extrabold tracking-widest uppercase"
+                        >Utama</span
+                    >
+                    <div class="bg-cosmos-border h-0.5 flex-1"></div>
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
-                        href="/admin/dashboard"
+                        id="sidebar-admin-dashboard"
+                        href={ROUTES.ADMIN.DASHBOARD}
                         icon={LayoutDashboard}
-                        active={isActive("/admin/dashboard")}
-                        >Dashboard</SidebarLink
+                        active={isActive(ROUTES.ADMIN.DASHBOARD)}>Dashboard</SidebarLink
                     >
                 </div>
             </div>
 
             <div class="space-y-6">
-                <div
-                    class="px-4 text-[10px] font-bold uppercase tracking-tight text-slate-500 flex items-center gap-3"
-                >
-                    <span class="w-2 h-0.5 bg-blue-500/50"></span>
-                    Kurikulum
+                <div class="flex items-center gap-2 px-4">
+                    <div class="bg-primary-500 h-2 w-2 rounded-full"></div>
+                    <span
+                        class="text-cosmos-muted text-[9px] font-extrabold tracking-widest uppercase"
+                        >Kurikulum</span
+                    >
+                    <div class="bg-cosmos-border h-0.5 flex-1"></div>
                 </div>
-                <div class="space-y-2">
+                <div class="space-y-2" id="sidebar-admin-curriculum">
                     <SidebarLink
-                        href="/admin/materials"
+                        id="sidebar-admin-materials"
+                        href={ROUTES.ADMIN.MATERIALS.INDEX}
                         icon={BookOpen}
-                        active={$page.url.startsWith("/admin/materials")}
+                        active={page.url.startsWith(ROUTES.ADMIN.MATERIALS.INDEX)}
                         >Kelola Materi</SidebarLink
                     >
                     <SidebarLink
-                        href="/admin/questions"
+                        id="sidebar-admin-questions"
+                        href={ROUTES.ADMIN.QUESTIONS.INDEX}
                         icon={SquareActivity}
-                        active={$page.url.startsWith("/admin/questions")}
+                        active={page.url.startsWith(ROUTES.ADMIN.QUESTIONS.INDEX)}
                         >Kelola Soal</SidebarLink
                     >
                 </div>
             </div>
 
             <div class="space-y-6">
-                <div
-                    class="px-4 text-[10px] font-bold uppercase tracking-tight text-slate-500 flex items-center gap-3"
-                >
-                    <span class="w-2 h-0.5 bg-blue-500/50"></span>
-                    Manajemen
+                <div class="flex items-center gap-2 px-4">
+                    <div class="bg-primary-500 h-2 w-2 rounded-full"></div>
+                    <span
+                        class="text-cosmos-muted text-[9px] font-extrabold tracking-widest uppercase"
+                        >Manajemen</span
+                    >
+                    <div class="bg-cosmos-border h-0.5 flex-1"></div>
                 </div>
                 <div class="space-y-2">
                     <SidebarLink
-                        href="/admin/students"
+                        id="sidebar-admin-students"
+                        href={ROUTES.ADMIN.STUDENTS.INDEX}
                         icon={GraduationCap}
-                        active={$page.url.startsWith("/admin/students")}
+                        active={page.url.startsWith(ROUTES.ADMIN.STUDENTS.INDEX)}
                         >Data Mahasiswa</SidebarLink
                     >
-                    {#if userRole === 1}
+                    {#if userRole === ROLE.SUPERADMIN}
                         <SidebarLink
-                            href="/admin/users"
+                            id="sidebar-admin-users"
+                            href={ROUTES.ADMIN.USERS.INDEX}
                             icon={Settings}
-                            active={$page.url.startsWith("/admin/users")}
+                            active={page.url.startsWith(ROUTES.ADMIN.USERS.INDEX)}
                             >Daftar Admin</SidebarLink
                         >
                     {/if}
-                    <SidebarLink
-                        href="/admin/ueq"
-                        icon={MessageSquareQuote}
-                        active={$page.url.startsWith("/admin/ueq")}
-                        >Survey UEQ</SidebarLink
-                    >
+                    {#if userRole === ROLE.SUPERADMIN}
+                        <SidebarLink
+                            id="sidebar-admin-ueq"
+                            href={ROUTES.ADMIN.UEQ.INDEX}
+                            icon={MessageSquareQuote}
+                            active={page.url.startsWith(ROUTES.ADMIN.UEQ.INDEX)}
+                            >Survey UEQ</SidebarLink
+                        >
+                        <SidebarLink
+                            id="sidebar-admin-mslq"
+                            href={ROUTES.ADMIN.MSLQ.INDEX}
+                            icon={MessageSquareQuote}
+                            active={page.url.startsWith(ROUTES.ADMIN.MSLQ.INDEX)}
+                            >Survey MSLQ</SidebarLink
+                        >
+                    {/if}
                 </div>
             </div>
 
-            <div class="space-y-6 pt-10 border-t border-slate-100">
+            <div class="border-cosmos-border space-y-6 border-t pt-10">
                 <div
-                    class="px-4 text-[10px] font-bold uppercase tracking-tight text-slate-500 flex items-center gap-3"
+                    class="text-cosmos-muted flex items-center gap-3 px-4 text-[10px] font-bold tracking-tight uppercase"
                 >
-                    <span class="w-2 h-0.5 bg-rose-500/50"></span>
+                    <span class="h-0.5 w-2 bg-rose-500/50"></span>
                     Sesi
                 </div>
                 <div class="space-y-2">
-                    <form on:submit|preventDefault={logout}>
+                    <form
+                        onsubmit={(e) => {
+                            e.preventDefault();
+                            logout();
+                        }}
+                    >
                         <button
+                            id="sidebar-admin-logout"
                             type="submit"
-                            class="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold tracking-tight transition-all duration-300 group text-slate-500 hover:text-rose-600 hover:bg-rose-50"
+                            class="group text-cosmos-muted flex w-full items-center gap-4 rounded-2xl border-2 border-b-4 border-transparent px-4 py-3 font-bold tracking-tight transition-all duration-100 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600 active:translate-y-[2px] active:border-b-0"
                         >
                             <div
-                                class="w-8 h-8 rounded-xl flex items-center justify-center bg-gray-100 group-hover:bg-rose-100 transition-colors duration-300"
+                                class="bg-primary-50 flex h-8 w-8 items-center justify-center rounded-xl transition-colors duration-200 group-hover:bg-rose-100"
                             >
-                                <svelte:component
-                                    this={LogOut}
-                                    size={18}
-                                    strokeWidth={2.5}
-                                />
+                                <LogOut size={18} strokeWidth={2.5} />
                             </div>
                             <span class="flex-1 text-left">Keluar Sistem</span>
                         </button>
                     </form>
                 </div>
             </div>
-        {:else if isStudentRole}
+        {:else}
             <div class="space-y-6">
-                <div
-                    class="px-4 text-[10px] font-bold uppercase tracking-tight text-slate-500 flex items-center gap-3"
-                >
-                    <span class="w-2 h-0.5 bg-blue-500/50"></span>
-                    Belajar
+                <div class="flex items-center gap-2 px-4">
+                    <div class="bg-primary-500 h-2 w-2 rounded-full"></div>
+                    <span
+                        class="text-cosmos-muted text-[9px] font-extrabold tracking-widest uppercase"
+                        >Belajar</span
+                    >
+                    <div class="bg-cosmos-border h-0.5 flex-1"></div>
                 </div>
                 <div class="space-y-2">
+                    {#if userRole === ROLE.MAHASISWA}
+                        <SidebarLink
+                            id="sidebar-mahasiswa-dashboard"
+                            href={ROUTES.MAHASISWA.DASHBOARD}
+                            icon={LayoutDashboard}
+                            active={page.url.startsWith(ROUTES.MAHASISWA.DASHBOARD)}
+                            >Dashboard</SidebarLink
+                        >
+                    {/if}
+
+                    <div class="space-y-1">
+                        <button
+                            id="sidebar-materials"
+                            onclick={() => (isMateriOpen = !isMateriOpen)}
+                            aria-expanded={isMateriOpen}
+                            aria-controls="materials-submenu"
+                            class="group flex w-full items-center gap-4 rounded-2xl border-2 border-b-4 border-transparent px-4 py-3 font-bold tracking-tight transition-all duration-100 select-none active:translate-y-[2px] active:border-b-0
+                            {isMateriOpen
+                                ? 'bg-primary-500 border-primary-600 text-white'
+                                : 'text-cosmos-muted hover:bg-primary-50 hover:text-primary-500 hover:border-primary-200'}"
+                        >
+                            <div
+                                class="flex h-8 w-8 items-center justify-center rounded-xl transition-colors duration-200
+                                {isMateriOpen
+                                    ? 'bg-white/10'
+                                    : 'bg-primary-50 group-hover:bg-primary-100/50'}"
+                            >
+                                <Shapes
+                                    size={18}
+                                    strokeWidth={2.5}
+                                    class={isMateriOpen
+                                        ? 'text-white'
+                                        : 'text-cosmos-muted group-hover:text-primary-500'}
+                                />
+                            </div>
+                            <span class="flex-1 text-left">Materi PBO</span>
+                            <ChevronDown
+                                size={16}
+                                class="transition-transform duration-200 {isMateriOpen
+                                    ? 'rotate-180 text-white'
+                                    : 'text-cosmos-muted'}"
+                            />
+                        </button>
+
+                        {#if isMateriOpen}
+                            <div
+                                id="materials-submenu"
+                                transition:slide={{ duration: 300 }}
+                                class="mt-1 space-y-1 pl-4"
+                                role="region"
+                                aria-label="Daftar Materi PBO"
+                            >
+                                {#each materials as material}
+                                    {#if material.is_locked}
+                                        <div
+                                            class="group flex w-full cursor-not-allowed items-center gap-4 rounded-2xl px-4 py-3.5 font-bold tracking-tight text-slate-300 opacity-60"
+                                            aria-disabled="true"
+                                            title="Materi terkunci - selesaikan materi sebelumnya"
+                                        >
+                                            <div
+                                                class="bg-primary-50 flex h-8 w-8 items-center justify-center rounded-xl"
+                                                aria-hidden="true"
+                                            >
+                                                <Lock size={16} strokeWidth={2.5} />
+                                            </div>
+                                            <span
+                                                class="line-clamp-1 flex-1 text-left text-sm font-medium"
+                                            >
+                                                {material.title}
+                                                <span class="sr-only">(Terkunci)</span>
+                                            </span>
+                                        </div>
+                                    {:else}
+                                        <SidebarLink
+                                            href="/mahasiswa/materials/{material.id}"
+                                            icon={BookOpen}
+                                            active={page.url.startsWith(
+                                                `/mahasiswa/materials/${material.id}`
+                                            )}
+                                        >
+                                            <span class="line-clamp-1 text-sm font-medium"
+                                                >{material.title}</span
+                                            >
+                                        </SidebarLink>
+                                    {/if}
+                                {/each}
+                            </div>
+                        {/if}
+                    </div>
+
                     <SidebarLink
-                        href="/mahasiswa/dashboard"
-                        icon={LayoutDashboard}
-                        active={$page.url.startsWith("/mahasiswa/dashboard")}
-                        >Dashboard</SidebarLink
-                    >
-                    <SidebarLink
-                        href="/mahasiswa/materials"
-                        icon={Shapes}
-                        active={($page.url.startsWith("/mahasiswa/materials") ||
-                            $page.url.startsWith("/mahasiswa/submaterials")) &&
-                            !$page.url.includes("/questions")}
-                    >
-                        Materi PBO
-                    </SidebarLink>
-                    <SidebarLink
-                        href="/mahasiswa/materials/questions"
+                        id="sidebar-quiz"
+                        href={ROUTES.MAHASISWA.MATERIALS.QUESTIONS.CATALOG}
                         icon={SquareActivity}
-                        active={$page.url.includes("/materials/questions")}
-                        >Latihan Soal</SidebarLink
+                        active={page.url.includes('/materials/questions')}
                     >
+                        Latihan Soal
+                    </SidebarLink>
                 </div>
             </div>
 
-            <div class="space-y-6">
-                <div
-                    class="px-4 text-[10px] font-bold uppercase tracking-tight text-slate-500 flex items-center gap-3"
-                >
-                    <span class="w-2 h-0.5 bg-blue-500/50"></span>
-                    Pencapaian
-                </div>
-                <div class="space-y-2">
-                    <SidebarLink
-                        href="/mahasiswa/leaderboard"
-                        icon={Trophy}
-                        active={$page.url.startsWith("/mahasiswa/leaderboard")}
-                        >Leaderboard</SidebarLink
-                    >
-                </div>
-            </div>
-
-            <div class="space-y-6 pb-10">
-                <div
-                    class="px-4 text-[10px] font-bold uppercase tracking-tight text-slate-500 flex items-center gap-3"
-                >
-                    <span class="w-2 h-0.5 bg-blue-500/50"></span>
-                    Akun
-                </div>
-                <div class="space-y-2">
-                    <SidebarLink
-                        href="/mahasiswa/profile"
-                        icon={UserRound}
-                        active={$page.url.startsWith("/mahasiswa/profile")}
-                        >Profil Saya</SidebarLink
-                    >
-                </div>
-            </div>
-
-            <div class="space-y-6 pt-10 border-t border-slate-100">
-                <div
-                    class="px-4 text-[10px] font-bold uppercase tracking-tight text-slate-500 flex items-center gap-3"
-                >
-                    <span class="w-2 h-0.5 bg-rose-500/50"></span>
-                    Sesi
-                </div>
-                <div class="space-y-2">
-                    <form on:submit|preventDefault={logout}>
-                        <button
-                            type="submit"
-                            class="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold tracking-tight transition-all duration-300 group text-slate-500 hover:text-rose-600 hover:bg-rose-50"
+            {#if userRole === ROLE.MAHASISWA}
+                <div class="space-y-6">
+                    <div class="flex items-center gap-2 px-4">
+                        <div class="bg-primary-500 h-2 w-2 rounded-full"></div>
+                        <span
+                            class="text-cosmos-muted text-[9px] font-extrabold tracking-widest uppercase"
+                            >Pencapaian</span
                         >
-                            <div
-                                class="w-8 h-8 rounded-xl flex items-center justify-center bg-gray-100 group-hover:bg-rose-100 transition-colors duration-300"
+                        <div class="bg-cosmos-border h-0.5 flex-1"></div>
+                    </div>
+                    <div class="space-y-2">
+                        <SidebarLink
+                            id="sidebar-leaderboard"
+                            href={ROUTES.MAHASISWA.LEADERBOARD}
+                            icon={Trophy}
+                            active={page.url.startsWith(ROUTES.MAHASISWA.LEADERBOARD)}
+                            >Leaderboard</SidebarLink
+                        >
+                    </div>
+                </div>
+            {/if}
+
+            {#if userRole === ROLE.MAHASISWA}
+                <div class="space-y-6 pb-10">
+                    <div class="flex items-center gap-2 px-4">
+                        <div class="bg-primary-500 h-2 w-2 rounded-full"></div>
+                        <span
+                            class="text-cosmos-muted text-[9px] font-extrabold tracking-widest uppercase"
+                            >Akun</span
+                        >
+                        <div class="bg-cosmos-border h-0.5 flex-1"></div>
+                    </div>
+                    <div class="space-y-2">
+                        <SidebarLink
+                            id="sidebar-profile"
+                            href={ROUTES.MAHASISWA.PROFILE}
+                            icon={UserRound}
+                            active={page.url.startsWith(ROUTES.MAHASISWA.PROFILE)}
+                            >Profil Saya</SidebarLink
+                        >
+                        <SidebarLink
+                            id="sidebar-mahasiswa-mslq"
+                            href={ROUTES.MAHASISWA.MSLQ.CREATE}
+                            icon={MessageSquareQuote}
+                            active={page.url.startsWith(ROUTES.MAHASISWA.MSLQ.CREATE)}
+                            >Kuesioner MSLQ</SidebarLink
+                        >
+                        <SidebarLink
+                            id="sidebar-mahasiswa-ueq"
+                            href={ROUTES.MAHASISWA.UEQ.CREATE}
+                            icon={MessageSquareQuote}
+                            active={page.url.startsWith(ROUTES.MAHASISWA.UEQ.CREATE)}
+                            >Kuesioner UEQ</SidebarLink
+                        >
+                    </div>
+                </div>
+            {/if}
+
+            <div class="space-y-6 border-t border-slate-100 pt-10">
+                <div class="flex items-center gap-2 px-4">
+                    <div class="h-2 w-2 rounded-full bg-rose-500"></div>
+                    <span
+                        class="text-cosmos-muted text-[9px] font-extrabold tracking-widest uppercase"
+                        >Sesi</span
+                    >
+                    <div class="bg-cosmos-border h-0.5 flex-1"></div>
+                </div>
+                <div class="space-y-2">
+                    <button
+                        id="sidebar-tutorial-button"
+                        onclick={() => {
+                            const tourId = getTourIdFromUrl(page.url, isAdminRole);
+                            tutorialState.startTour(tourId, true);
+                        }}
+                        class="group text-cosmos-muted hover:border-primary-200 hover:bg-primary-50 hover:text-primary-600 flex w-full items-center gap-4 rounded-2xl border-2 border-b-4 border-transparent px-4 py-3 font-bold tracking-tight transition-all duration-100 active:translate-y-[2px] active:border-b-0"
+                    >
+                        <div
+                            class="bg-primary-50 group-hover:bg-primary-100 flex h-8 w-8 items-center justify-center rounded-xl transition-colors duration-200"
+                        >
+                            <HelpCircle size={18} strokeWidth={2.5} />
+                        </div>
+                        <span class="flex-1 text-left">Bantuan Tutorial</span>
+                    </button>
+
+                    {#if user}
+                        <form
+                            onsubmit={(e) => {
+                                e.preventDefault();
+                                logout();
+                            }}
+                        >
+                            <button
+                                id="sidebar-logout-button"
+                                type="submit"
+                                class="group text-cosmos-muted flex w-full items-center gap-4 rounded-2xl border-2 border-b-4 border-transparent px-4 py-3 font-bold tracking-tight transition-all duration-100 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600 active:translate-y-[2px] active:border-b-0"
                             >
-                                <svelte:component
-                                    this={LogOut}
-                                    size={18}
-                                    strokeWidth={2.5}
-                                />
-                            </div>
-                            <span class="flex-1 text-left">Keluar Sistem</span>
-                        </button>
-                    </form>
+                                <div
+                                    class="bg-primary-50 flex h-8 w-8 items-center justify-center rounded-xl transition-colors duration-200 group-hover:bg-rose-100"
+                                >
+                                    <LogOut size={18} strokeWidth={2.5} />
+                                </div>
+                                <span class="flex-1 text-left">Keluar Sistem</span>
+                            </button>
+                        </form>
+                    {:else}
+                        <SidebarLink
+                            href={ROUTES.AUTH.LOGIN}
+                            icon={LogIn}
+                            active={page.url === ROUTES.AUTH.LOGIN}
+                        >
+                            Masuk
+                        </SidebarLink>
+                        <SidebarLink
+                            href={ROUTES.AUTH.REGISTER}
+                            icon={UserPlus}
+                            active={page.url === ROUTES.AUTH.REGISTER}
+                        >
+                            Daftar Akun
+                        </SidebarLink>
+                    {/if}
                 </div>
             </div>
         {/if}

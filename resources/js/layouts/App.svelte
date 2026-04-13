@@ -1,126 +1,111 @@
-<script>
-    import { page } from "@inertiajs/svelte";
-    import { onMount, onDestroy } from "svelte";
-    import Navbar from "../components/navigation/Navbar.svelte";
-    import Sidebar from "../components/navigation/Sidebar.svelte";
-    import Alert from "../components/ui/Alert.svelte";
+<script lang="ts">
+    import { page } from '@inertiajs/svelte';
+    import { onMount } from 'svelte';
+    import { Sidebar, Navbar } from '@/components/navigation';
+    import Toast from '@/components/ui/Toast.svelte';
+    import { toasts } from '@/stores/toast';
+    import { sidebarState, initSidebarResponsive } from '@/states/ui';
+    import type { SharedProps } from '@/types';
 
-    export let title = "OOPEDIAV2";
-    export let showNavbar = true;
-    export let showSidebar = true;
-    export let fullWidth = false;
-
-    let showMobileSidebar = false;
-
-    // Handle flash messages
-    $: flash = ($page && $page.props && $page.props.flash) || {};
-
-    function toggleSidebar() {
-        showMobileSidebar = !showMobileSidebar;
+    interface Props {
+        title?: string;
+        showSidebar?: boolean;
+        showNavbar?: boolean;
+        fullWidth?: boolean;
+        variant?: 'app' | 'auth';
+        children?: import('svelte').Snippet;
     }
 
-    function handleResize() {
-        if (window.innerWidth >= 1024) {
-            showMobileSidebar = false; // Reset on large screens
-        }
-    }
+    let {
+        title = 'OOPEDIAV2',
+        showSidebar = true,
+        showNavbar = true,
+        fullWidth = false,
+        variant = 'app',
+        children,
+    }: Props = $props();
+
+    const flash = $derived((page.props as unknown as SharedProps).flash ?? {});
+    const showSidebarRender = $derived(variant === 'app' && showSidebar);
+    const sidebarOpen = $derived(sidebarState.isOpen);
 
     onMount(() => {
-        window.addEventListener("resize", handleResize);
-        window.addEventListener("toggle-sidebar", toggleSidebar);
+        return initSidebarResponsive();
     });
 
-    onDestroy(() => {
-        if (typeof window !== "undefined") {
-            window.removeEventListener("resize", handleResize);
-            window.removeEventListener("toggle-sidebar", toggleSidebar);
-        }
+    $effect(() => {
+        if (flash.success) toasts.success(flash.success);
+        if (flash.error) toasts.error(flash.error);
+        if (flash.info) toasts.info(flash.info);
+        if (flash.warning) toasts.warning(flash.warning);
+        if ((flash as any).status) toasts.success((flash as any).status);
     });
-
-    $: auth = ($page && $page.props && $page.props.auth) || {};
-    $: user = auth.user;
-    $: isAuthenticated = !!user;
-    $: userRole = user ? user.role_id : null;
-    $: isAdminRole = isAuthenticated && [1, 2].includes(userRole);
-    $: isStudentRole = isAuthenticated && [3, 4].includes(userRole);
-
-    // Update showSidebar prop logic if needed based on role,
-    // but for now relying on passed prop or default.
-    // Blade logic: if (showSidebar === null) showSidebar = true;
-    // We can default showSidebar=true in props.
-
-    $: showSidebarRender = showSidebar && (isAdminRole || isStudentRole);
 </script>
 
 <svelte:head>
     <title>{title}</title>
 </svelte:head>
 
-<div
-    class="relative flex min-h-screen bg-gray-50 font-sans text-slate-900 antialiased overflow-x-hidden"
+<!-- Skip to main content link for keyboard users -->
+<a
+    href="#main-content"
+    class="focus:bg-primary-600 focus:ring-primary-400 sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-100 focus:rounded-xl focus:px-6 focus:py-3 focus:text-sm focus:font-bold focus:text-white focus:shadow-lg focus:ring-4 focus:outline-none"
 >
-    {#if showSidebarRender}
-        <Sidebar showSidebar={showMobileSidebar} />
-        {#if showMobileSidebar}
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <div
-                role="button"
-                tabindex="0"
-                aria-label="Close sidebar"
-                class="fixed inset-0 z-[45] bg-gray-900/50 backdrop-blur-sm lg:hidden transition-opacity duration-300"
-                on:click={toggleSidebar}
-                on:keydown={(e) => e.key === "Escape" && toggleSidebar()}
-            ></div>
-        {/if}
-    {/if}
+    Skip to main content
+</a>
 
+{#if variant === 'auth'}
     <div
-        class="flex-1 flex flex-col min-w-0 transition-all duration-300 {showSidebarRender
-            ? 'lg:ml-64'
-            : ''}"
+        class="font-poppins relative min-h-screen overflow-hidden bg-[#FDFDFB] text-slate-600 antialiased"
     >
-        {#if showNavbar}
-            <Navbar titlePage={title} />
-        {/if}
-
         <!-- Flash Messages -->
-        {#if flash.success || flash.error || flash.info || flash.warning || flash.status}
-            <div
-                class="fixed top-24 right-6 z-[100] flex flex-col gap-3 pointer-events-auto max-w-sm w-full"
-            >
-                {#if flash.success}
-                    <Alert variant="success" dismissible={true}
-                        >{flash.success}</Alert
-                    >
-                {/if}
-                {#if flash.error}
-                    <Alert variant="danger" dismissible={true}
-                        >{flash.error}</Alert
-                    >
-                {/if}
-                {#if flash.info}
-                    <Alert variant="info" dismissible={true}>{flash.info}</Alert
-                    >
-                {/if}
-                {#if flash.warning}
-                    <Alert variant="warning" dismissible={true}
-                        >{flash.warning}</Alert
-                    >
-                {/if}
-                {#if flash.status}
-                    <Alert variant="success" dismissible={true}
-                        >{flash.status}</Alert
-                    >
-                {/if}
+        {#if flash.success || flash.error || flash.info || flash.warning || (flash as any).status}
+            <div class="fixed top-6 right-6 z-50">
+                <Toast toasts={$toasts} position="top-right" onremove={(id) => toasts.remove(id)} />
             </div>
         {/if}
 
-        <main
-            class="flex-1 w-full {fullWidth
-                ? ''
-                : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'}"
-        >
-            <slot />
-        </main>
+        <div class="relative min-h-screen w-full">
+            {@render children?.()}
+        </div>
     </div>
-</div>
+{:else}
+    <div
+        class="relative flex min-h-screen overflow-x-hidden bg-slate-50 font-sans text-slate-900 antialiased"
+    >
+        {#if showSidebarRender}
+            <Sidebar />
+            {#if sidebarOpen}
+                <div
+                    role="button"
+                    tabindex="0"
+                    aria-label="Tutup sidebar"
+                    class="fixed inset-0 z-45 bg-gray-900/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden"
+                    onclick={() => sidebarState.close()}
+                    onkeydown={(e) => e.key === 'Escape' && sidebarState.close()}
+                ></div>
+            {/if}
+        {/if}
+
+        <div
+            class="flex min-w-0 flex-1 flex-col transition-all duration-300 {showSidebarRender
+                ? 'lg:ml-64'
+                : ''}"
+        >
+            {#if showNavbar}
+                <Navbar />
+            {/if}
+            <!-- Flash Messages -->
+            <Toast toasts={$toasts} position="top-right" onremove={(id) => toasts.remove(id)} />
+
+            <main
+                id="main-content"
+                class="w-full flex-1 {fullWidth
+                    ? ''
+                    : 'mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8'}"
+            >
+                {@render children?.()}
+            </main>
+        </div>
+    </div>
+{/if}

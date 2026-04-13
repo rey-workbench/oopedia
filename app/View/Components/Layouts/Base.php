@@ -9,74 +9,41 @@ use Illuminate\View\Component;
 
 class Base extends Component
 {
-    /**
-     * Page title.
-     */
     public string $title;
 
-    /**
-     * Additional body classes.
-     */
     public string $bodyClass;
 
-    /**
-     * Meta tags configuration.
-     *
-     * @var array<string, string>
-     */
+    /** @var array<string, string> */
     public array $meta;
 
-    /**
-     * User role identifier.
-     */
     public string $role;
 
-    /**
-     * Theme to use (admin or student).
-     */
     public string $theme;
 
-    /**
-     * Create a new component instance.
-     *
-     * @param array<string, string> $meta
-     */
     public function __construct(
         string $title = 'OOPEDIAv2',
         string $bodyClass = '',
         array $meta = [],
-        ?string $role = null
+        ?string $role = null,
     ) {
-        $this->title = $title;
+        $this->title     = $title;
         $this->bodyClass = $bodyClass;
-        $this->meta = $meta;
-        $this->role = $role ?? $this->detectRole();
-        $this->theme = $this->determineTheme();
+        $this->meta      = $meta;
+        $this->role      = $role ?? $this->detectRole();
+        $this->theme     = $this->determineTheme();
     }
 
-    /**
-     * Detect user role from authentication.
-     */
     protected function detectRole(): string
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return 'guest';
         }
 
         $user = Auth::user();
-        
-        return match ($user->role_id) {
-            1 => 'superadmin',
-            2 => 'admin',
-            3 => 'mahasiswa',
-            4 => 'guest',
-            default => 'guest',
-        };
+
+        return $user->role?->role_name ?? 'guest';
     }
 
-    /**
-     * Determine theme based on role.
-     */
     protected function determineTheme(): string
     {
         return match ($this->role) {
@@ -86,25 +53,16 @@ class Base extends Component
         };
     }
 
-    /**
-     * Check if current role is admin-type.
-     */
     public function isAdminRole(): bool
     {
         return in_array($this->role, ['superadmin', 'admin']);
     }
 
-    /**
-     * Check if current role is student-type.
-     */
     public function isStudentRole(): bool
     {
         return in_array($this->role, ['mahasiswa', 'guest']);
     }
 
-    /**
-     * Get the view / contents that represent the component.
-     */
     public function render(): View|Closure|string
     {
         return view('components.layouts.base');

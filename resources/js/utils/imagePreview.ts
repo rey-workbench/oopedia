@@ -22,7 +22,7 @@ export function handleImagePreview(
         const reader = new FileReader();
         reader.onload = (e) => {
             const result = (e.target as FileReader).result;
-            if (typeof result === "string") {
+            if (typeof result === 'string') {
                 setPreview(result);
             }
         };

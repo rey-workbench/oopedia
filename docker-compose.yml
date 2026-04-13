@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: oopedia-app
+        restart: always
+        ports:
+            - '8000:8080'
+        environment:
+            - DB_CONNECTION=mysql
+            - DB_HOST=db
+            - DB_PORT=3306
+            - DB_DATABASE=${DB_DATABASE:-oopedia}
+            - DB_USERNAME=${DB_USERNAME:-root}
+            - DB_PASSWORD=${DB_PASSWORD:-password}
+            - APP_ENV=production
+            - APP_DEBUG=false
+        env_file:
+            - .env
+        depends_on:
+            db:
+                condition: service_healthy
+        networks:
+            - oopedia-network
+
+    db:
+        image: mysql:8.0
+        container_name: oopedia-db
+        restart: always
+        ports:
+            - '3306:3306'
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE:-oopedia}
+            MYSQL_USER: ${DB_USERNAME:-root}
+            MYSQL_PASSWORD: ${DB_PASSWORD:-password}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-password}
+        volumes:
+            - db-data:/var/lib/mysql
+        networks:
+            - oopedia-network
+        healthcheck:
+            test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+networks:
+    oopedia-network:
+        driver: bridge
+
+volumes:
+    db-data:

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<ruleset name="Oopedia">
+    <description>PSR12 coding standard for Oopedia</description>
+    <rule ref="PSR12"/>
+    <rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
+        <severity>0</severity>
+    </rule>
+    <file>app/</file>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+    <exclude-pattern>*/storage/*</exclude-pattern>
+</ruleset>
