@@ -4,21 +4,32 @@
  */
 class SidebarState {
     isOpen = $state(false);
+    isClosing = $state(false);
 
     open() {
         this.isOpen = true;
+        this.isClosing = false;
     }
 
     close() {
-        this.isOpen = false;
+        this.isClosing = true;
+        setTimeout(() => {
+            this.isOpen = false;
+            this.isClosing = false;
+        }, 300); // Match transition duration
     }
 
     toggle() {
-        this.isOpen = !this.isOpen;
+        if (this.isOpen) {
+            this.close();
+        } else {
+            this.open();
+        }
     }
 
     setOpen(value: boolean) {
         this.isOpen = value;
+        this.isClosing = false;
     }
 }
 

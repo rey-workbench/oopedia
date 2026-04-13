@@ -153,7 +153,16 @@ final class StudentState extends Model
         return $this->learning_profile[StudentStateSchema::KEY_UNLOCKED_MODULES] ?? [];
     }
 
-    public function updatePerformance(bool $isCorrect, int $timeSpent, bool $usedHint): self
+    /**
+     * Update performance and gamification aggregates after an answer attempt.
+     *
+     * @param bool $isCorrect
+     * @param int $timeSpent seconds
+     * @param bool $usedHint
+     * @param bool $save Persist changes immediately when true (default true)
+     * @return self
+     */
+    public function updatePerformance(bool $isCorrect, int $timeSpent, bool $usedHint, bool $save = true): self
     {
         $metrics      = $this->performance_metrics ?? [];
         $gamification = $this->gamification_data   ?? [];
@@ -192,7 +201,92 @@ final class StudentState extends Model
         $this->gamification_data   = $gamification;
         $this->last_active_at      = now();
 
-        $this->save();
+        if ($save) {
+            $this->save();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add XP to gamification data.
+     */
+    public function addXp(int $xp, bool $save = true): self
+    {
+        $gamification = $this->gamification_data ?? [];
+        $gamification[StudentStateSchema::KEY_GLOBAL_XP] = (
+            $gamification[StudentStateSchema::KEY_GLOBAL_XP] ?? 0
+        ) + $xp;
+
+        $this->gamification_data = $gamification;
+
+        if ($save) {
+            $this->save();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Consume hint(s) and update performance metrics accordingly.
+     */
+    public function useHint(int $count = 1, bool $save = true): self
+    {
+        $metrics = $this->performance_metrics ?? [];
+        $metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] = (
+            $metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] ?? 0
+        ) + $count;
+
+        $metrics[StudentStateSchema::KEY_HINTS_AVAILABLE] = max(
+            0,
+            ($metrics[StudentStateSchema::KEY_HINTS_AVAILABLE] ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE) - $count
+        );
+
+        $this->performance_metrics = $metrics;
+
+        if ($save) {
+            $this->save();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Increment current streak and update max streak.
+     */
+    public function incrementStreak(bool $save = true): self
+    {
+        $gamification = $this->gamification_data ?? [];
+        $gamification[StudentStateSchema::KEY_CURRENT_STREAK] = (
+            $gamification[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0
+        ) + 1;
+
+        $gamification[StudentStateSchema::KEY_MAX_STREAK] = max(
+            $gamification[StudentStateSchema::KEY_MAX_STREAK] ?? 0,
+            $gamification[StudentStateSchema::KEY_CURRENT_STREAK]
+        );
+
+        $this->gamification_data = $gamification;
+
+        if ($save) {
+            $this->save();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Reset current streak to zero.
+     */
+    public function resetStreak(bool $save = true): self
+    {
+        $gamification = $this->gamification_data ?? [];
+        $gamification[StudentStateSchema::KEY_CURRENT_STREAK] = 0;
+        $this->gamification_data = $gamification;
+
+        if ($save) {
+            $this->save();
+        }
 
         return $this;
     }

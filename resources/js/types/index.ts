@@ -17,7 +17,6 @@ export type {
     Question,
     Answer,
     QuizAttempt,
-    StudentState,
     GamificationData,
     PerformanceMetrics,
     TimeMetrics,

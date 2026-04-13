@@ -24,7 +24,6 @@ export type {
     LearningProfile,
     AdaptiveState,
 } from './studentState';
-export type { StudentState } from './studentStateFull';
 
 export type { UeqSurvey } from './ueqSurvey';
 
@@ -38,6 +37,6 @@ export type {
     QuestionWithAttempt,
     QuizSessionState,
     Certification,
-} from './computed';
+} from './responses';
 
 export type { MslqResult, MslqQuestion, MslqAnswer } from './mslq';

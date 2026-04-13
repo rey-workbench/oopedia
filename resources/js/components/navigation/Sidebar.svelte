@@ -2,7 +2,7 @@
     import { Link, page, router } from '@inertiajs/svelte';
     import SidebarLink from '@/components/navigation/SidebarLink.svelte';
     import { ROUTES } from '@/utils/route';
-    import { sidebarState, closeSidebar } from '@/states/ui';
+    import { closeSidebar } from '@/states/ui';
     import { isAdmin, ROLE } from '@/utils/roles';
     import {
         LayoutDashboard,
@@ -22,7 +22,7 @@
         Lock,
         HelpCircle,
     } from 'lucide-svelte';
-    import { slide } from 'svelte/transition';
+    import { fly, slide } from 'svelte/transition';
     import { getTourIdFromUrl, registerGlobalTutorials } from '@/tutorial';
     import { onMount } from 'svelte';
     import { tutorialState } from '@/states/ui/tutorialState.svelte';
@@ -35,7 +35,6 @@
     const user = $derived(auth.user ?? null);
     const isAdminRole = $derived(!!user && isAdmin(user.role?.role_name));
     const userRole = $derived(user?.role?.role_name ?? null);
-    const sidebarOpen = $derived(sidebarState.isOpen);
 
     const isActive = (url: string) => page.url === url || page.url.startsWith(url + '/');
 
@@ -54,8 +53,9 @@
 
 <aside
     id="sidebar"
-    class="no-scrollbar border-cosmos-border bg-cosmos-bg fixed inset-y-0 left-0 z-50 w-72 overflow-y-auto border-r-2 transition-all duration-300 ease-in-out lg:w-64
-  {sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}"
+    class="no-scrollbar border-cosmos-border bg-cosmos-bg fixed inset-y-0 left-0 z-50 w-72 overflow-y-auto border-r-2 lg:w-64"
+    in:fly={{ x: -288, duration: 300 }}
+    out:fly={{ x: -288, duration: 300 }}
 >
     <div
         class="bg-cosmos-bg/80 sticky top-0 z-10 flex items-center justify-between px-6 py-8 backdrop-blur-md"
@@ -85,7 +85,7 @@
         <button
             onclick={() => closeSidebar()}
             aria-label="Tutup sidebar"
-            class="group bg-primary-50 text-cosmos-muted flex h-10 w-10 items-center justify-center rounded-2xl border-2 border-transparent transition-all hover:border-rose-200 hover:bg-rose-50 hover:text-rose-500 active:translate-y-0.5 lg:hidden"
+            class="group bg-primary-50 text-cosmos-muted flex h-10 w-10 items-center justify-center rounded-2xl border-2 border-transparent transition-all hover:border-rose-200 hover:bg-rose-50 hover:text-rose-500 active:translate-y-0.5"
         >
             <X size={20} strokeWidth={2.5} />
         </button>

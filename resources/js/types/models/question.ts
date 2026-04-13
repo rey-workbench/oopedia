@@ -1,4 +1,4 @@
-import type { QuestionType, DifficultyLevel, Answer } from './index';
+import type { QuestionType, DifficultyLevel, Answer, ContentCategory } from './index';
 
 export interface Question {
     id: string;
@@ -6,7 +6,7 @@ export interface Question {
     sub_material_id: string | null;
     question_text: string;
     question_type: QuestionType;
-    type: 'teori' | 'sintaks' | 'mixed';
+    type: ContentCategory;
     difficulty: DifficultyLevel;
     hint: string | null;
     created_by: string | null;
