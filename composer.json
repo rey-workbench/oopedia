@@ -32,8 +32,7 @@
         "predis/predis": "^3.4",
         "laravel/octane": "^2.14",
         "spiral/roadrunner-cli": "^2.7",
-        "spiral/roadrunner-http": "^4.1",
-        "arafa/laravel-deadcode-detector": "^1.2"
+        "spiral/roadrunner-http": "^4.1"
     },
     "autoload": {
         "psr-4": {
