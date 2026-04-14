@@ -22,6 +22,4 @@ rr
 .rr.yaml
 opencode.json
 .env.prod
-ai-memory.db-shm
-ai-memory.db-wal
-ai-memory.db
+
