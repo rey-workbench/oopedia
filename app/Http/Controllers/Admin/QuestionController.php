@@ -30,7 +30,7 @@ final class QuestionController extends Controller
     public function index(Request $request): Response
     {
         $search     = $request->input('search');
-        $difficulty = QuestionDifficulty::tryFrom($request->input('difficulty')) ?? null;
+        $difficulty = QuestionDifficulty::tryFrom((string) $request->input('difficulty'))?->value;
         $materialId = $request->input('material');
 
         $material  = $materialId ? $this->materialRepo->find((string) $materialId) : null;
@@ -40,7 +40,7 @@ final class QuestionController extends Controller
             'questions'  => $questions,
             'material'   => $material,
             'search'     => $search,
-            'difficulty' => $difficulty->value,
+            'difficulty' => $difficulty,
         ]);
     }
 
