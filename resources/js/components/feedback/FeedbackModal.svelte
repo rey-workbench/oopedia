@@ -21,18 +21,18 @@
         RULE_06: 'intervention', // RuleTextualCrisisIntervention
         RULE_07: 'intervention', // RuleVisualProjectRevision
         RULE_08: 'intervention', // RuleTextualProjectRevision
-        RULE_09: 'certificate',  // RuleGoldCertificate
-        RULE_10: 'certificate',  // RuleSilverCertificate
-        RULE_11: 'certificate',  // RuleBronzeCertificate
+        RULE_09: 'certificate', // RuleGoldCertificate
+        RULE_10: 'certificate', // RuleSilverCertificate
+        RULE_11: 'certificate', // RuleBronzeCertificate
         RULE_12: 'intervention', // RuleSyntaxRecovery
         RULE_13: 'intervention', // RuleLogicRecovery
-        RULE_14: 'backtrack',    // RuleCriticalBacktracking
-        RULE_15: 'certificate',  // RuleModuleGraduation
-        RULE_16: 'result',       // RuleMasteryMedium
+        RULE_14: 'backtrack', // RuleCriticalBacktracking
+        RULE_15: 'certificate', // RuleModuleGraduation
+        RULE_16: 'result', // RuleMasteryMedium
         RULE_17: 'acceleration', // RuleAcceleratedMaterialPromotion
         RULE_18: 'acceleration', // RuleAcceleratedJump
         RULE_19: 'intervention', // RuleRemedialIndependent
-        RULE_20: 'result',       // RuleStandardPromotion
+        RULE_20: 'result', // RuleStandardPromotion
     };
 
     const ACTION_TO_VARIANT: Record<string, FeedbackVariant> = {
@@ -55,7 +55,9 @@
     };
 
     let ruleId = $derived(quizState.feedbackData?.adaptiveResult?.triggered_rule?.id || null);
-    let actionCode = $derived(quizState.feedbackData?.adaptiveResult?.triggered_rule?.action || null);
+    let actionCode = $derived(
+        quizState.feedbackData?.adaptiveResult?.triggered_rule?.action || null
+    );
     let nextAction = $derived(
         quizState.feedbackData?.adaptiveResult?.new_state?.next_action_data?.label ||
             (quizState.feedbackData?.status === 'success' ? 'Soal Berikutnya' : 'Lihat Materi')
@@ -206,16 +208,15 @@
         return SUCCESS_TONE_BY_VARIANT[currentVariant] ?? SUCCESS_TONE_BY_VARIANT.result;
     }
 
-    function getFeedbackTitle(currentVariant: FeedbackVariant, status: 'success' | 'wrong'): string {
+    function getFeedbackTitle(
+        currentVariant: FeedbackVariant,
+        status: 'success' | 'wrong'
+    ): string {
         if (status === 'wrong') {
             return 'Perlu Belajar Lagi';
         }
 
-        if (
-            currentVariant === 'certificate' &&
-            actionCode === 'H08' &&
-            !certification
-        ) {
+        if (currentVariant === 'certificate' && actionCode === 'H08' && !certification) {
             return 'Kelulusan Modul Tercapai!';
         }
 
@@ -296,7 +297,10 @@
                     </div>
 
                     <div class="text-center md:text-left">
-                        <h2 id="feedback-status-title" class={`text-xl font-black tracking-tight ${feedbackTone.title}`}>
+                        <h2
+                            id="feedback-status-title"
+                            class={`text-xl font-black tracking-tight ${feedbackTone.title}`}
+                        >
                             {feedbackTitle}
                         </h2>
                         <p class={`mt-0.5 text-sm font-bold ${feedbackTone.body}`}>
@@ -320,7 +324,9 @@
                             class="flex items-center gap-2 rounded-xl border-2 border-white bg-white/80 px-3 py-1.5 shadow-sm"
                         >
                             <Star size={16} class="fill-amber-400 text-amber-400" />
-                            <span class="text-base font-black tracking-tight text-slate-700">+{xpEarned}</span>
+                            <span class="text-base font-black tracking-tight text-slate-700"
+                                >+{xpEarned}</span
+                            >
                         </div>
                     {/if}
 
@@ -353,7 +359,10 @@
                     >
                         <span class="relative z-10 flex items-center justify-center gap-2">
                             {nextAction}
-                            <ArrowRight size={18} class="transition-transform group-hover:translate-x-1" />
+                            <ArrowRight
+                                size={18}
+                                class="transition-transform group-hover:translate-x-1"
+                            />
                         </span>
                     </Button>
                 </div>
@@ -361,4 +370,3 @@
         </div>
     </div>
 {/if}
-

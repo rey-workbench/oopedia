@@ -154,11 +154,12 @@ export class QuestionShowState extends BaseState {
             payload.answer = this.selectedMultipleChoiceAnswer;
         }
 
-        const hasAnswer = this.currentQuestion.question_type === 'fill_in_the_blank'
-            ? this.fillInTheBlankAnswer.trim().length > 0
-            : this.currentQuestion.question_type === 'drag_and_drop'
-              ? Object.keys(this.dragAndDropAnswers).length > 0
-              : Boolean(this.selectedMultipleChoiceAnswer);
+        const hasAnswer =
+            this.currentQuestion.question_type === 'fill_in_the_blank'
+                ? this.fillInTheBlankAnswer.trim().length > 0
+                : this.currentQuestion.question_type === 'drag_and_drop'
+                  ? Object.keys(this.dragAndDropAnswers).length > 0
+                  : Boolean(this.selectedMultipleChoiceAnswer);
 
         if (!hasAnswer) {
             this.feedbackData = {

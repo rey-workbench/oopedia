@@ -14,20 +14,35 @@
 </script>
 
 <App variant="auth" title="Daftar - OOPedia">
-    <div class="relative min-h-screen bg-slate-50 text-slate-900 flex flex-col px-4 py-4 font-sans antialiased">
+    <div
+        class="relative flex min-h-screen flex-col bg-slate-50 px-4 py-4 font-sans text-slate-900 antialiased"
+    >
         <!-- Header -->
-        <div class="flex items-center justify-between w-full p-2 max-w-4xl mx-auto">
-            <Link href={ROUTES.HOME} class="p-2 text-slate-400 hover:text-slate-600 transition" aria-label="Kembali">
+        <div class="mx-auto flex w-full max-w-4xl items-center justify-between p-2">
+            <Link
+                href={ROUTES.HOME}
+                class="p-2 text-slate-400 transition hover:text-slate-600"
+                aria-label="Kembali"
+            >
                 <X size={32} strokeWidth={2.5} />
             </Link>
-            <Button href={ROUTES.AUTH.LOGIN} variant="outline" size="sm" class="text-[13px] uppercase">
+            <Button
+                href={ROUTES.AUTH.LOGIN}
+                variant="outline"
+                size="sm"
+                class="text-[13px] uppercase"
+            >
                 Log In
             </Button>
         </div>
 
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col items-center justify-center w-full max-w-sm mx-auto pb-12 pt-4">
-            <h1 class="text-[26px] font-black text-center mb-8 tracking-tight">Create your profile</h1>
+        <div
+            class="mx-auto flex w-full max-w-sm flex-1 flex-col items-center justify-center pt-4 pb-12"
+        >
+            <h1 class="mb-8 text-center text-[26px] font-black tracking-tight">
+                Create your profile
+            </h1>
 
             <form
                 onsubmit={(event) => {
@@ -89,15 +104,15 @@
                 <div class="pt-1">
                     <label
                         for="register_as_admin"
-                        class="flex items-center gap-3 rounded-2xl border-2 border-slate-300 bg-slate-50 p-4 cursor-pointer hover:bg-slate-100 transition"
+                        class="flex cursor-pointer items-center gap-3 rounded-2xl border-2 border-slate-300 bg-slate-50 p-4 transition hover:bg-slate-100"
                     >
                         <input
                             id="register_as_admin"
                             type="checkbox"
                             bind:checked={state.form.register_as_admin}
-                            class="h-5 w-5 rounded border-2 border-slate-300 text-primary-500 focus:ring-primary-500"
+                            class="text-primary-500 focus:ring-primary-500 h-5 w-5 rounded border-2 border-slate-300"
                         />
-                        <span class="text-sm font-bold text-slate-600 leading-snug tracking-wide">
+                        <span class="text-sm leading-snug font-bold tracking-wide text-slate-600">
                             Daftar sebagai Dosen/Admin
                         </span>
                     </label>
@@ -121,12 +136,31 @@
                 </div>
             </form>
 
-            <div class="mt-8 text-center text-[12px] font-bold text-slate-400 leading-relaxed max-w-[280px]">
-                By signing in to OOPedia, you agree to our <a href="/" class="font-black text-slate-500 hover:text-slate-700 transition">Terms</a> and <a href="/" class="font-black text-slate-500 hover:text-slate-700 transition">Privacy Policy</a>.
+            <div
+                class="mt-8 max-w-[280px] text-center text-[12px] leading-relaxed font-bold text-slate-400"
+            >
+                By signing in to OOPedia, you agree to our <a
+                    href="/"
+                    class="font-black text-slate-500 transition hover:text-slate-700">Terms</a
+                >
+                and
+                <a href="/" class="font-black text-slate-500 transition hover:text-slate-700"
+                    >Privacy Policy</a
+                >.
             </div>
-            
-            <div class="mt-4 text-center text-[11px] font-bold text-slate-400 leading-relaxed max-w-[320px]">
-                This site is protected by reCAPTCHA Enterprise and the Google <a href="/" class="font-black text-slate-500 hover:text-slate-700 transition">Privacy Policy</a> and <a href="/" class="font-black text-slate-500 hover:text-slate-700 transition">Terms of Service</a> apply.
+
+            <div
+                class="mt-4 max-w-[320px] text-center text-[11px] leading-relaxed font-bold text-slate-400"
+            >
+                This site is protected by reCAPTCHA Enterprise and the Google <a
+                    href="/"
+                    class="font-black text-slate-500 transition hover:text-slate-700"
+                    >Privacy Policy</a
+                >
+                and
+                <a href="/" class="font-black text-slate-500 transition hover:text-slate-700"
+                    >Terms of Service</a
+                > apply.
             </div>
         </div>
     </div>

@@ -25,10 +25,10 @@ Yes: "Bug in auth middleware. Token expiry check use `<` not `<=`. Fix:"
 
 ### Intensity
 
-| Level | What change |
-|-------|------------|
-| **lite** | No filler/hedging. Keep articles + full sentences. Professional but tight |
-| **full** | Drop articles, fragments OK, short synonyms. Classic caveman |
+| Level     | What change                                                                                                                  |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **lite**  | No filler/hedging. Keep articles + full sentences. Professional but tight                                                    |
+| **full**  | Drop articles, fragments OK, short synonyms. Classic caveman                                                                 |
 | **ultra** | Abbreviate (DB/auth/config/req/res/fn/impl), strip conjunctions, arrows for causality (X → Y), one word when one word enough |
 
 ### Auto-Clarity
