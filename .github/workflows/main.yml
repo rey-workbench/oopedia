@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ ongoing2, main ]
+    branches: [ main ]
   pull_request:
-    branches: [ ongoing2, main ]
+    branches: [ main ]
 
 jobs:
   tests:
@@ -62,7 +62,7 @@ jobs:
   deploy:
     name: Deploy to Server
     needs: tests
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/ongoing2' || github.ref == 'refs/heads/main')
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

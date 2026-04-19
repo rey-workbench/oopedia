@@ -18,8 +18,5 @@ yarn-error.log
 /.idea
 /.vscode
 .kiro
-rr
-.rr.yaml
-opencode.json
 .env.prod
-
+opencode.json
