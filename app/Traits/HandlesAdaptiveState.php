@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use App\Enums\Lms\QuestionDifficulty;
+
 trait HandlesAdaptiveState
 {
     abstract protected function getPerformanceService();
@@ -41,7 +43,7 @@ trait HandlesAdaptiveState
 
         $this->handleMaterialChange($studentState, $adaptiveState, $materialId);
 
-        $targetDifficulty = $adaptiveState['target_difficulty'] ?? null;
+        $targetDifficulty = QuestionDifficulty::tryFrom($adaptiveState['target_difficulty'] ?? null);
 
         return [
             'gamification'     => $studentState->gamification_data,
@@ -58,12 +60,7 @@ trait HandlesAdaptiveState
             $adaptiveState['fast_track_active'] = false;
             $adaptiveState['last_rule']         = null;
 
-            $metrics                           = $studentState->performance_metrics ?? [];
-            $metrics['wrong_streak']           = 0;
-            $studentState->performance_metrics = $metrics;
-
-            $studentState->adaptive_state = $adaptiveState;
-            $studentState->save();
+            $this->getPerformanceService()->resetMaterialMetrics($studentState->user_id, $adaptiveState);
         }
     }
 
@@ -73,11 +70,6 @@ trait HandlesAdaptiveState
         $adaptiveState['fast_track_active'] = false;
         $adaptiveState['last_rule']         = null;
 
-        $metrics                           = $studentState->performance_metrics ?? [];
-        $metrics['wrong_streak']           = 0;
-        $studentState->performance_metrics = $metrics;
-
-        $studentState->adaptive_state = $adaptiveState;
-        $studentState->save();
+        $this->getPerformanceService()->resetMaterialMetrics($studentState->user_id, $adaptiveState);
     }
 }

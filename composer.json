@@ -11,7 +11,8 @@
             "@phpcs:fix",
             "@pint",
             "@phpcs"
-        ]
+        ],
+        "deadcode": "vendor/bin/phpstan"
     },
     "keywords": [
         "Laravel",
@@ -59,7 +60,9 @@
         "spatie/laravel-ignition": "^2.4",
         "laravel/pint": "^1.27",
         "laravel/boost": "^2.0",
-        "squizlabs/php_codesniffer": "*"
+        "squizlabs/php_codesniffer": "*",
+        "shipmonk/dead-code-detector": "^1.0",
+        "larastan/larastan": "^3.9"
     },
     "config": {
         "process-timeout": 1800

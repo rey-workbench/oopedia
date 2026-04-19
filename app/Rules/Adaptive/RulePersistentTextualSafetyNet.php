@@ -9,7 +9,7 @@ class RulePersistentTextualSafetyNet extends BaseAdaptiveRule
 {
     use AppliesCrisisIntervention;
 
-    protected string $ruleId = 'RULE_15';
+    protected string $ruleId = 'RULE_04';
 
     protected string $ruleName = 'Persistent Textual Safety Net';
 

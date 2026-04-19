@@ -38,58 +38,53 @@ Bagian ini menjelaskan alur lengkap mesin adaptif Oopedia berbasis rule (forward
 
 ### 2. Fakta (Input Ke Mesin Rule)
 
-Fakta dibentuk setiap submit jawaban. Berikut daftar lengkap G-Code dari `AdaptiveConstants` beserta status implementasi saat ini:
+Fakta dibentuk setiap submit jawaban. Berikut daftar lengkap G-Code dari `AdaptiveConstants` menurut implementasi terbaru:
 
-| Kode | Constant | Status Saat Ini | Keterangan Singkat |
-| :--- | :--- | :--- | :--- |
-| G01 | FACT_SCORE_CRITICAL | Aktif | Skor kritis |
-| G02 | FACT_SCORE_REMEDIAL | Aktif | Skor remedial |
-| G03 | FACT_SCORE_STANDARD | Aktif | Skor standar |
-| G04 | FACT_SCORE_MASTERY | Aktif | Skor mastery |
-| G05 | FACT_TIME_FAST | Aktif | Waktu cepat |
-| G06 | FACT_TIME_SLOW | Reserved | Konstanta ada, belum diproduksi FactGathering |
-| G07 | FACT_STYLE_VISUAL | Aktif | Gaya visual |
-| G08 | FACT_STYLE_TEXTUAL | Aktif | Gaya textual |
-| G09 | FACT_ERROR_SYNTAX | Aktif | Error syntax |
-| G10 | FACT_ERROR_LOGIC | Aktif | Error logic |
-| G11 | FACT_NO_ERROR | Reserved | Konstanta ada, belum diproduksi FactGathering |
-| G12 | FACT_HINT_USED | Aktif | Hint digunakan |
-| G13 | FACT_IN_MODULE | Aktif | Sedang dalam modul |
-| G14 | FACT_MODULE_STARTED | Reserved | Konstanta ada, belum diproduksi FactGathering |
-| G15 | FACT_DIFF_BEGINNER | Aktif | Difficulty beginner |
-| G16 | FACT_DIFF_MEDIUM | Aktif | Difficulty medium |
-| G17 | FACT_DIFF_HARD | Aktif | Difficulty hard |
-| G18 | FACT_IS_FINAL_PROJECT | Aktif | Final project |
-| G19 | FACT_IS_PRACTICE | Reserved | Konstanta ada, belum diproduksi FactGathering |
-| G20 | FACT_NEXT_UNLOCKED | Aktif | Materi berikutnya terbuka |
-| G21 | FACT_PREV_UNLOCKED | Diproduksi, belum dipakai rule | Sudah dibentuk, belum ada rule yang baca |
-| G22 | FACT_PERSISTENT_FAIL | Aktif | Gagal berulang |
-| G23 | FACT_COMPLETED_MODULE | Reserved | Konstanta ada, belum diproduksi FactGathering |
-| G24 | FACT_COMPLETED_ALL_MODULES | Reserved | Konstanta ada, belum diproduksi FactGathering |
-| G25 | FACT_HIGH_ENGAGEMENT | Reserved | Konstanta ada, belum diproduksi FactGathering |
-| G26 | FACT_SATISFACTORY_PROGRESS | Aktif | Progress memadai (>= 61%) |
-| G27 | FACT_STYLE_MIXED | Diproduksi, belum dipakai rule | Sudah dibentuk, belum ada rule yang baca |
+| Kode | Constant | Keterangan Singkat |
+| :--- | :--- | :--- |
+| G01 | FACT_SCORE_CRITICAL | Skor < 50% |
+| G02 | FACT_SCORE_REMEDIAL | Skor 50-74% |
+| G03 | FACT_SCORE_STANDARD | Skor 75-89% |
+| G04 | FACT_SCORE_MASTERY | Skor >= 90% |
+| G05 | FACT_TIME_FAST | Waktu berlalu sangat cepat (< 70% dari alokasi waktu) |
+| G06 | FACT_STYLE_VISUAL | Gaya belajar visual |
+| G07 | FACT_STYLE_TEXTUAL | Gaya belajar tekstual |
+| G08 | FACT_ERROR_SYNTAX | Error tipe syntax |
+| G09 | FACT_ERROR_LOGIC | Error tipe logic |
+| G10 | FACT_NO_ERROR | Tidak ada error |
+| G11 | FACT_HINT_USED | Menggunakan hint |
+| G12 | FACT_IN_MODULE | Sedang berada di dalam modul |
+| G13 | FACT_DIFF_BEGINNER | Difficulty `beginner` |
+| G14 | FACT_DIFF_MEDIUM | Difficulty `medium` |
+| G15 | FACT_DIFF_HARD | Difficulty `hard` |
+| G16 | FACT_IS_FINAL_PROJECT | Soal adalah Final Project |
+| G17 | FACT_IS_PRACTICE | Mode latihan |
+| G18 | FACT_NEXT_UNLOCKED | Modul/materi selanjutnya telah terbuka |
+| G19 | FACT_PREV_UNLOCKED | Modul/materi sebelumnya telah terbuka |
+| G20 | FACT_PERSISTENT_FAIL | Gagal berturut-turut (>= 2x salah beruntun) |
+| G21 | FACT_SATISFACTORY_PROGRESS | Mencapai progress minim (>= 50% soal) pada difficulty tertentu |
+| G22 | FACT_STYLE_MIXED | Gaya belajar campuran |
 
-Daftar lengkap H-Code (Aksi) juga sebagai referensi:
+Daftar lengkap H-Code (Aksi) juga diperbarui:
 
-| Kode | Constant | Status Saat Ini | Keterangan Singkat |
-| :--- | :--- | :--- | :--- |
-| H01 | ACTION_VISUAL_CRISIS_INTERVENTION | Aktif | Intervensi krisis visual |
-| H02 | ACTION_TEXTUAL_CRISIS_INTERVENTION | Aktif | Intervensi krisis textual |
-| H03 | ACTION_SYNTAX_RECOVERY | Aktif | Recovery syntax |
-| H04 | ACTION_LOGIC_RECOVERY | Aktif | Recovery logic |
-| H05 | ACTION_STANDARD_PROMOTION | Aktif | Promosi standar |
-| H06 | ACTION_ACCELERATED_JUMP | Aktif | Percepatan level soal |
-| H07 | ACTION_CRITICAL_BACKTRACKING | Aktif | Turunkan difficulty |
-| H08 | ACTION_MODULE_GRADUATION | Aktif | Lulus modul |
-| H09 | ACTION_GOLD_CERTIFICATE | Aktif | Sertifikat emas |
-| H10 | ACTION_SILVER_CERTIFICATE | Aktif | Sertifikat perak |
-| H11 | ACTION_BRONZE_CERTIFICATE | Aktif | Sertifikat perunggu |
-| H12 | ACTION_VISUAL_PROJECT_REVISION | Aktif | Revisi proyek visual |
-| H13 | ACTION_TEXTUAL_PROJECT_REVISION | Aktif | Revisi proyek textual |
-| H14 | ACTION_PERSISTENT_VISUAL_NET | Aktif | Safety net visual |
-| H15 | ACTION_PERSISTENT_TEXTUAL_NET | Aktif | Safety net textual |
-| H16 | ACTION_ACCELERATED_MATERIAL_PROMOTION | Aktif | Percepatan antar materi |
+| Kode | Constant | Keterangan Singkat |
+| :--- | :--- | :--- |
+| H01 | ACTION_VISUAL_CRISIS_INTERVENTION | Intervensi visual untuk skor kritis |
+| H02 | ACTION_TEXTUAL_CRISIS_INTERVENTION | Intervensi textual untuk skor kritis |
+| H03 | ACTION_SYNTAX_RECOVERY | Recovery jika terjadi error syntax terus |
+| H04 | ACTION_LOGIC_RECOVERY | Recovery jika terjadi error logis terus |
+| H05 | ACTION_STANDARD_PROMOTION | Promosi materi standar |
+| H06 | ACTION_ACCELERATED_JUMP | Percepatan (loncat difficulty internal) |
+| H07 | ACTION_CRITICAL_BACKTRACKING | Mundur level (backtracking) otomatis |
+| H08 | ACTION_MODULE_GRADUATION | Kelulusan dari sebuah modul penuh |
+| H09 | ACTION_GOLD_CERTIFICATE | Reward sertifikat gold |
+| H10 | ACTION_SILVER_CERTIFICATE | Reward sertifikat silver |
+| H11 | ACTION_BRONZE_CERTIFICATE | Reward sertifikat bronze |
+| H12 | ACTION_VISUAL_PROJECT_REVISION | Mode revisi project visual |
+| H13 | ACTION_TEXTUAL_PROJECT_REVISION | Mode revisi project textual |
+| H14 | ACTION_PERSISTENT_VISUAL_NET | Jaring pengaman berulang visual |
+| H15 | ACTION_PERSISTENT_TEXTUAL_NET | Jaring pengaman berulang textual |
+| H16 | ACTION_ACCELERATED_MATERIAL_PROMOTION | Promosi loncat ke materi berikutnya |
 
 Catatan: selain H-Code, engine juga memakai action operasional non-H seperti `NEXT_QUESTION`, `NEXT_MATERIAL`, `FINISH_MATERIAL`, `ISSUE_CERTIFICATE`, `REDUCE_DIFFICULTY`, `INCREASE_DIFFICULTY`, `STUDY_SYNTAX`, `STUDY_THEORY`, `STUDY_MIXED`, `STUDY_VISUAL`, dan `STUDY_TEXTUAL` pada tahap resolusi navigasi.
 
@@ -97,6 +92,7 @@ Catatan: selain H-Code, engine juga memakai action operasional non-H seperti `NE
 
 Mesin rule menggunakan prinsip berikut:
 
+- Ada **20 Concrete Rules** yang aktif di-register dalam `RuleRegistry` yang mencakup kasus recovery, net-safety persisten, hingga kelulusan project.
 - Rule diambil dari `RuleRegistry` dan diurutkan menaik berdasarkan `priority` (angka kecil dieksekusi lebih dulu).
 - Jika ada `priority` yang sama, urutan ditentukan lagi berdasarkan `Rule ID` agar hasil evaluasi tetap deterministik.
 - Evaluasi bersifat `first match`: hanya rule pertama yang cocok yang dijalankan.
@@ -110,57 +106,34 @@ Mesin rule menggunakan prinsip berikut:
 Ada dua cara membaca urutan rule:
 
 - Urutan eksekusi engine: berdasarkan `priority` (angka lebih kecil dieksekusi lebih dahulu).
-- Urutan referensi: berdasarkan `Rule ID` (RULE_01 sampai RULE_20).
+- Urutan referensi: berdasarkan nama Class Rule.
+
+*Jumlah total aktif: 20 rules.*
 
 #### 4.1 Urutan Eksekusi (Berdasarkan Priority)
 
-| Priority | Rule ID  | Nama Rule                                | Action Code |
-| :------- | :------- | :--------------------------------------- | :---------- |
-| 3        | RULE_18  | Final Project Visual Persistent Fail     | ACTION_VISUAL_PROJECT_REVISION |
-| 3        | RULE_19  | Final Project Textual Persistent Fail    | ACTION_TEXTUAL_PROJECT_REVISION |
-| 5        | RULE_14  | Persistent Visual Safety Net             | ACTION_PERSISTENT_VISUAL_NET |
-| 5        | RULE_15  | Persistent Textual Safety Net            | ACTION_PERSISTENT_TEXTUAL_NET |
-| 10       | RULE_01  | Visual Crisis Intervention               | ACTION_VISUAL_CRISIS_INTERVENTION |
-| 10       | RULE_02  | Textual Crisis Intervention              | ACTION_TEXTUAL_CRISIS_INTERVENTION |
-| 15       | RULE_12  | Visual Project Revision                  | ACTION_VISUAL_PROJECT_REVISION |
-| 15       | RULE_13  | Textual Project Revision                 | ACTION_TEXTUAL_PROJECT_REVISION |
-| 21       | RULE_09  | Gold Certificate                         | ACTION_GOLD_CERTIFICATE |
-| 22       | RULE_10  | Silver Certificate                       | ACTION_SILVER_CERTIFICATE |
-| 23       | RULE_11  | Bronze Certificate                       | ACTION_BRONZE_CERTIFICATE |
-| 24       | RULE_03  | Syntax Recovery                          | ACTION_SYNTAX_RECOVERY |
-| 25       | RULE_04  | Logic Recovery                           | ACTION_LOGIC_RECOVERY |
-| 27       | RULE_07  | Critical Backtracking                    | ACTION_CRITICAL_BACKTRACKING |
-| 30       | RULE_08  | Module Graduation                        | ACTION_MODULE_GRADUATION |
-| 35       | RULE_16  | Mastery Medium                           | ACTION_STANDARD_PROMOTION |
-| 36       | RULE_20  | Accelerated Material Promotion           | ACTION_ACCELERATED_MATERIAL_PROMOTION |
-| 40       | RULE_06  | Accelerated Jump                         | ACTION_ACCELERATED_JUMP |
-| 48       | RULE_17  | Remedial Independent                     | ACTION_LOGIC_RECOVERY |
-| 50       | RULE_05  | Standard Promotion                       | ACTION_STANDARD_PROMOTION |
-
-#### 4.2 Urutan Referensi (Berdasarkan Rule ID)
-
-| Rule ID  | Priority | Nama Rule                                | Action Code |
-| :------- | :------- | :--------------------------------------- | :---------- |
-| RULE_01  | 10       | Visual Crisis Intervention               | ACTION_VISUAL_CRISIS_INTERVENTION |
-| RULE_02  | 10       | Textual Crisis Intervention              | ACTION_TEXTUAL_CRISIS_INTERVENTION |
-| RULE_03  | 24       | Syntax Recovery                          | ACTION_SYNTAX_RECOVERY |
-| RULE_04  | 25       | Logic Recovery                           | ACTION_LOGIC_RECOVERY |
-| RULE_05  | 50       | Standard Promotion                       | ACTION_STANDARD_PROMOTION |
-| RULE_06  | 40       | Accelerated Jump                         | ACTION_ACCELERATED_JUMP |
-| RULE_07  | 27       | Critical Backtracking                    | ACTION_CRITICAL_BACKTRACKING |
-| RULE_08  | 30       | Module Graduation                        | ACTION_MODULE_GRADUATION |
-| RULE_09  | 21       | Gold Certificate                         | ACTION_GOLD_CERTIFICATE |
-| RULE_10  | 22       | Silver Certificate                       | ACTION_SILVER_CERTIFICATE |
-| RULE_11  | 23       | Bronze Certificate                       | ACTION_BRONZE_CERTIFICATE |
-| RULE_12  | 15       | Visual Project Revision                  | ACTION_VISUAL_PROJECT_REVISION |
-| RULE_13  | 15       | Textual Project Revision                 | ACTION_TEXTUAL_PROJECT_REVISION |
-| RULE_14  | 5        | Persistent Visual Safety Net             | ACTION_PERSISTENT_VISUAL_NET |
-| RULE_15  | 5        | Persistent Textual Safety Net            | ACTION_PERSISTENT_TEXTUAL_NET |
-| RULE_16  | 35       | Mastery Medium                           | ACTION_STANDARD_PROMOTION |
-| RULE_17  | 48       | Remedial Independent                     | ACTION_LOGIC_RECOVERY |
-| RULE_18  | 3        | Final Project Visual Persistent Fail     | ACTION_VISUAL_PROJECT_REVISION |
-| RULE_19  | 3        | Final Project Textual Persistent Fail    | ACTION_TEXTUAL_PROJECT_REVISION |
-| RULE_20  | 36       | Accelerated Material Promotion           | ACTION_ACCELERATED_MATERIAL_PROMOTION |
+| Priority | Rule Class                               | Detail Singkat & Output Aksi |
+| :------- | :--------------------------------------- | :---------------------------------- |
+| 3        | `RuleFinalProjectVisualPersistentFail`     | H12 (Visual Project Revision) |
+| 3        | `RuleFinalProjectTextualPersistentFail`    | H13 (Textual Project Revision) |
+| 5        | `RulePersistentVisualSafetyNet`            | H14 (Persistent Visual Net) |
+| 5        | `RulePersistentTextualSafetyNet`           | H15 (Persistent Textual Net) |
+| 10       | `RuleVisualCrisisIntervention`             | H01 (Visual Crisis Intervention) |
+| 10       | `RuleTextualCrisisIntervention`            | H02 (Textual Crisis Intervention) |
+| 15       | `RuleVisualProjectRevision`                | H12 (Visual Project Revision) |
+| 15       | `RuleTextualProjectRevision`               | H13 (Textual Project Revision) |
+| 21       | `RuleGoldCertificate`                      | H09 (Gold Certificate) |
+| 22       | `RuleSilverCertificate`                    | H10 (Silver Certificate) |
+| 23       | `RuleBronzeCertificate`                    | H11 (Bronze Certificate) |
+| 24       | `RuleSyntaxRecovery`                       | H03 (Syntax Recovery) |
+| 25       | `RuleLogicRecovery`                        | H04 (Logic Recovery) |
+| 27       | `RuleCriticalBacktracking`                 | H07 (Critical Backtracking) |
+| 30       | `RuleModuleGraduation`                     | H08 (Module Graduation) |
+| 35       | `RuleMasteryMedium`                        | H05 (Standard Promotion) |
+| 36       | `RuleAcceleratedMaterialPromotion`         | H16 (Accelerated Material Promotion) |
+| 40       | `RuleAcceleratedJump`                      | H06 (Accelerated Jump) |
+| 48       | `RuleRemedialIndependent`                  | H04 (Logic Recovery / Independent) |
+| 50       | `RuleStandardPromotion`                    | H05 (Standard Promotion) |
 
 ### 5. Bagaimana Sistem Bertindak Dalam Berbagai Kondisi
 

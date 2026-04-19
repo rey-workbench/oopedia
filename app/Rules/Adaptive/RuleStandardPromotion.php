@@ -9,7 +9,7 @@ class RuleStandardPromotion extends BaseAdaptiveRule
 {
     use AppliesProgression;
 
-    protected string $ruleId = 'RULE_05';
+    protected string $ruleId = 'RULE_20';
 
     protected string $ruleName = 'Standard Promotion';
 

@@ -9,7 +9,7 @@ class RuleSyntaxRecovery extends BaseAdaptiveRule
 {
     use AppliesRecovery;
 
-    protected string $ruleId = 'RULE_03';
+    protected string $ruleId = 'RULE_12';
 
     protected string $ruleName = 'Syntax Recovery';
 

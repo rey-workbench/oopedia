@@ -9,6 +9,7 @@ use App\Contracts\Services\MaterialServiceInterface;
 use App\Contracts\Services\QuestionServiceInterface;
 use App\DTOs\Question\QuestionCreateDTO;
 use App\DTOs\Question\QuestionUpdateDTO;
+use App\Enums\Lms\QuestionDifficulty;
 use App\Enums\Lms\QuestionType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Question\StoreQuestionRequest;
@@ -29,11 +30,11 @@ final class QuestionController extends Controller
     public function index(Request $request): Response
     {
         $search     = $request->input('search');
-        $difficulty = $request->input('difficulty');
+        $difficulty = QuestionDifficulty::tryFrom((string) $request->input('difficulty'))?->value;
         $materialId = $request->input('material');
 
-        $material  = $materialId ? $this->materialRepo->find($materialId) : null;
-        $questions = $this->questionService->getFilteredQuestions($search, $difficulty, $materialId);
+        $material  = $materialId ? $this->materialRepo->find((string) $materialId) : null;
+        $questions = $this->questionService->getFilteredQuestions($search, $difficulty, (string) $materialId);
 
         return $this->render('Admin/Questions/Index', [
             'questions'  => $questions,

@@ -2,6 +2,7 @@
 
 namespace App\Contracts\Services;
 
+use App\Enums\Lms\QuestionDifficulty;
 use App\Models\Material;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as SupportCollection;
@@ -10,12 +11,12 @@ interface QuestionListingServiceInterface
 {
     public function getQuizData(
         Material $material,
-        string $difficulty,
+        ?QuestionDifficulty $difficulty,
         string $userId,
         bool $isGuest,
         array $guestProgress = [],
         ?string $subMaterialId = null,
-        ?string $targetDifficulty = null,
+        ?QuestionDifficulty $targetDifficulty = null,
     ): array;
 
     public function getMaterialsListWithStudentCount(
@@ -27,7 +28,7 @@ interface QuestionListingServiceInterface
 
     public function getReviewQuestions(
         Material $material,
-        ?string $difficulty,
+        ?QuestionDifficulty $difficulty,
         string $userId,
         bool $isGuest,
         array $guestProgress = [],
@@ -37,7 +38,7 @@ interface QuestionListingServiceInterface
 
     public function getLevelProgress(
         Material $material,
-        string $difficulty,
+        ?QuestionDifficulty $difficulty,
         SupportCollection $answeredQuestionIds,
         bool $isGuest = false,
         ?Collection $preloadedQuestions = null,

@@ -49,17 +49,11 @@ final class SubMaterialRepository implements SubMaterialRepositoryInterface
     }
 
     /** @return Collection<int, SubMaterial> */
-    public function getAllByMaterial(string $materialId): Collection
+    public function findByMaterial(string $materialId): Collection
     {
         return SubMaterial::where('material_id', '=', $materialId)
             ->ordered()
             ->get();
-    }
-
-    /** @return Collection<int, SubMaterial> */
-    public function findByMaterial(string $materialId): Collection
-    {
-        return $this->getAllByMaterial($materialId);
     }
 
     public function findWithQuestions(string $id): SubMaterial

@@ -4,21 +4,12 @@ declare(strict_types=1);
 
 namespace App\Services\Lms;
 
-use App\Contracts\Repositories\AnswerRepositoryInterface;
-use App\Contracts\Repositories\ProgressRepositoryInterface;
-use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Services\QuestionAnswerServiceInterface;
 use App\Enums\Lms\QuestionType;
 use App\Models\Question;
 
 final class QuestionAnswerService implements QuestionAnswerServiceInterface
 {
-    public function __construct(
-        protected QuestionRepositoryInterface $questionRepo,
-        protected AnswerRepositoryInterface $answerRepo,
-        protected ProgressRepositoryInterface $progressRepo,
-    ) {}
-
     public function determineCorrectness(Question $question, array $data): bool
     {
         if ($question->question_type !== QuestionType::RADIO_BUTTON) {

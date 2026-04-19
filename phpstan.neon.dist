@@ -1,0 +1,53 @@
+# phpstan.neon.dist
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - vendor/shipmonk/dead-code-detector/rules.neon
+
+parameters:
+    paths:
+        - app
+        - config
+        - database/seeders
+        - routes
+
+    level: 0
+
+    ignoreErrors:
+        # Constructors are invoked by the Laravel DI container (service providers),
+        # never called directly in code — suppress all constructor false positives.
+        - identifier: shipmonk.deadMethod
+          message: '#Unused .+::__construct#'
+
+        # Interface methods are "unreachable" to PHPStan when the implementing class
+        # is resolved through the DI container from a service provider binding.
+        # All Contracts (interfaces) are bound via RepositoryServiceProvider or
+        # ServiceServiceProvider and injected into controllers/commands at runtime.
+        - identifier: shipmonk.deadMethod
+          path: app/Contracts/*
+
+        # Controller methods are invoked by the Laravel Router, not called directly.
+        - identifier: shipmonk.deadMethod
+          path: app/Http/Controllers/*
+
+        # Request methods like after() are invoked by Laravel automatically.
+        - identifier: shipmonk.deadMethod
+          path: app/Http/Requests/*
+
+        # Service methods are called from controllers and other services via DI.
+        # PHPStan cannot trace callers that go through the IoC container.
+        - identifier: shipmonk.deadMethod
+          path: app/Services/*
+
+        # The FindUnusedClasses artisan command has internal helpers that are called
+        # indirectly via string references; suppress for this one-off dev tool.
+        - identifier: shipmonk.deadMethod
+          path: app/Console/Commands/FindUnusedClasses.php
+
+        # Dead properties & methods on model/schema constants — enum cases and
+        # schema constants used only via string references or dynamic access.
+        - identifier: shipmonk.deadConstant
+
+        # Properties injected via constructor are sometimes used only in subclasses
+        # or lazy-evaluated contexts that PHPStan cannot see.
+        - identifier: shipmonk.deadEnumCase
+        - identifier: shipmonk.deadProperty.neverWritten

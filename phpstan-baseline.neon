@@ -1,0 +1,547 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Access to an undefined property App\\Console\\Commands\\FindUnusedClasses\:\:\$crudNames\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Console/Commands/FindUnusedClasses.php
+
+		-
+			message: '#^Unused App\\Console\\Commands\\FindUnusedClasses\:\:ignoreCommonStuff$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Console/Commands/FindUnusedClasses.php
+
+		-
+			message: '#^Unused App\\Console\\Commands\\FindUnusedClasses\:\:mangleLaravelNames$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Console/Commands/FindUnusedClasses.php
+
+		-
+			message: '#^Unused App\\Console\\Commands\\FindUnusedClasses\:\:shouldConsider$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Console/Commands/FindUnusedClasses.php
+
+		-
+			message: '#^Unused App\\Contracts\\Repositories\\QuestionRepositoryInterface\:\:paginate$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Repositories/QuestionRepositoryInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Repositories\\QuizAttemptRepositoryInterface\:\:create$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Repositories/QuizAttemptRepositoryInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Repositories\\RoleRepositoryInterface\:\:find$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Repositories/RoleRepositoryInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Repositories\\RoleRepositoryInterface\:\:getUsersByRole$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Repositories/RoleRepositoryInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Repositories\\SubMaterialRepositoryInterface\:\:getAllByMaterial$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Repositories/SubMaterialRepositoryInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Repositories\\UeqSurveyRepositoryInterface\:\:countAll$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Repositories/UeqSurveyRepositoryInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Repositories\\UeqSurveyRepositoryInterface\:\:find$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Repositories/UeqSurveyRepositoryInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Repositories\\UeqSurveyRepositoryInterface\:\:paginate$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Repositories/UeqSurveyRepositoryInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Repositories\\UeqSurveyRepositoryInterface\:\:update$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Repositories/UeqSurveyRepositoryInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Repositories\\UserRepositoryInterface\:\:countAll$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Repositories/UserRepositoryInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Repositories\\UserRepositoryInterface\:\:paginate$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Repositories/UserRepositoryInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Services\\AdaptiveEngineServiceInterface\:\:getAllRules$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Services/AdaptiveEngineServiceInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Services\\AdaptiveEngineServiceInterface\:\:getRuleById$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Services/AdaptiveEngineServiceInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Services\\AdaptiveQuizFlowServiceInterface\:\:processAdaptiveAttempt$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Services/AdaptiveQuizFlowServiceInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Services\\DashboardServiceInterface\:\:getAllMaterials$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Services/DashboardServiceInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Services\\GamificationServiceInterface\:\:addXp$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Services/GamificationServiceInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Services\\GamificationServiceInterface\:\:calculateCorrectAnswerReward$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Services/GamificationServiceInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Services\\GamificationServiceInterface\:\:calculateStreakBonusXP$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Services/GamificationServiceInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Services\\GamificationServiceInterface\:\:determineLevel$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Services/GamificationServiceInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Services\\GamificationServiceInterface\:\:getLevelProgress$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Services/GamificationServiceInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Services\\GamificationServiceInterface\:\:incrementStreak$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Services/GamificationServiceInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Services\\GamificationServiceInterface\:\:processWrongAnswer$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Services/GamificationServiceInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Services\\GamificationServiceInterface\:\:resetStreak$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Services/GamificationServiceInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Services\\GuestProgressServiceInterface\:\:saveGamificationState$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Services/GuestProgressServiceInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Services\\PerformanceServiceInterface\:\:useHint$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Services/PerformanceServiceInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Services\\QuestionServiceInterface\:\:existsByMaterialAndDifficulty$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Services/QuestionServiceInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Services\\StudentServiceInterface\:\:approveStudent$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Services/StudentServiceInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Services\\StudentServiceInterface\:\:getStudentsList$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Services/StudentServiceInterface.php
+
+		-
+			message: '#^Unused App\\Contracts\\Services\\StudentServiceInterface\:\:updateStudent$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Contracts/Services/StudentServiceInterface.php
+
+		-
+			message: '#^Unused App\\Enums\\Lms\\MediaType\:\:FILE$#'
+			identifier: shipmonk.deadEnumCase
+			count: 1
+			path: app/Enums/Lms/MediaType.php
+
+		-
+			message: '#^Unused App\\Enums\\Lms\\MediaType\:\:IMAGE$#'
+			identifier: shipmonk.deadEnumCase
+			count: 1
+			path: app/Enums/Lms/MediaType.php
+
+		-
+			message: '#^Unused App\\Enums\\Lms\\MediaType\:\:VIDEO$#'
+			identifier: shipmonk.deadEnumCase
+			count: 1
+			path: app/Enums/Lms/MediaType.php
+
+		-
+			message: '#^Unused App\\Enums\\Lms\\MslqCategory\:\:LEARNING_STRATEGY$#'
+			identifier: shipmonk.deadEnumCase
+			count: 1
+			path: app/Enums/Lms/MslqCategory.php
+
+		-
+			message: '#^Unused App\\Http\\Controllers\\Mahasiswa\\ProfileController\:\:show$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Http/Controllers/Mahasiswa/ProfileController.php
+
+		-
+			message: '#^Unused App\\Http\\Controllers\\Mahasiswa\\ProfileController\:\:update$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Http/Controllers/Mahasiswa/ProfileController.php
+
+		-
+			message: '#^Unused App\\Http\\Requests\\Question\\CheckAnswerRequest\:\:after$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Http/Requests/Question/CheckAnswerRequest.php
+
+		-
+			message: '#^Unused App\\Models\\QuizAttempt\:\:setTimeSpent$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Models/QuizAttempt.php
+
+		-
+			message: '#^Unused App\\Repositories\\QuestionRepository\:\:paginate$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Repositories/QuestionRepository.php
+
+		-
+			message: '#^Unused App\\Repositories\\QuizAttemptRepository\:\:create$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Repositories/QuizAttemptRepository.php
+
+		-
+			message: '#^Unused App\\Repositories\\RoleRepository\:\:find$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Repositories/RoleRepository.php
+
+		-
+			message: '#^Unused App\\Repositories\\RoleRepository\:\:getUsersByRole$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Repositories/RoleRepository.php
+
+		-
+			message: '#^Unused App\\Repositories\\UeqSurveyRepository\:\:countAll$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Repositories/UeqSurveyRepository.php
+
+		-
+			message: '#^Unused App\\Repositories\\UeqSurveyRepository\:\:find$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Repositories/UeqSurveyRepository.php
+
+		-
+			message: '#^Unused App\\Repositories\\UeqSurveyRepository\:\:paginate$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Repositories/UeqSurveyRepository.php
+
+		-
+			message: '#^Unused App\\Repositories\\UeqSurveyRepository\:\:update$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Repositories/UeqSurveyRepository.php
+
+		-
+			message: '#^Unused App\\Repositories\\UserRepository\:\:countAll$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Repositories/UserRepository.php
+
+		-
+			message: '#^Unused App\\Repositories\\UserRepository\:\:paginate$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Repositories/UserRepository.php
+
+		-
+			message: '#^Property App\\Rules\\Adaptive\\BaseAdaptiveRule\:\:\$actionCode is never written$#'
+			identifier: shipmonk.deadProperty.neverWritten
+			count: 1
+			path: app/Rules/Adaptive/BaseAdaptiveRule.php
+
+		-
+			message: '#^Property App\\Rules\\Adaptive\\BaseAdaptiveRule\:\:\$ruleId is never written$#'
+			identifier: shipmonk.deadProperty.neverWritten
+			count: 1
+			path: app/Rules/Adaptive/BaseAdaptiveRule.php
+
+		-
+			message: '#^Property App\\Rules\\Adaptive\\BaseAdaptiveRule\:\:\$ruleName is never written$#'
+			identifier: shipmonk.deadProperty.neverWritten
+			count: 1
+			path: app/Rules/Adaptive/BaseAdaptiveRule.php
+
+		-
+			message: '#^Unused App\\Rules\\Adaptive\\BaseAdaptiveRule\:\:hasAllFacts$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Rules/Adaptive/BaseAdaptiveRule.php
+
+		-
+			message: '#^Unused App\\Rules\\Adaptive\\Concerns\\AppliesRecovery\:\:applyIndependentRecovery$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Rules/Adaptive/Concerns/AppliesRecovery.php
+
+		-
+			message: '#^Unused App\\Rules\\Adaptive\\Constants\\AdaptiveConstants\:\:ACHIEVEMENT$#'
+			identifier: shipmonk.deadConstant
+			count: 1
+			path: app/Rules/Adaptive/Constants/AdaptiveConstants.php
+
+		-
+			message: '#^Unused App\\Rules\\Adaptive\\Constants\\AdaptiveConstants\:\:BADGES$#'
+			identifier: shipmonk.deadConstant
+			count: 1
+			path: app/Rules/Adaptive/Constants/AdaptiveConstants.php
+
+		-
+			message: '#^Unused App\\Rules\\Adaptive\\Constants\\AdaptiveConstants\:\:BADGE_BRONZE_ARCHITECT$#'
+			identifier: shipmonk.deadConstant
+			count: 1
+			path: app/Rules/Adaptive/Constants/AdaptiveConstants.php
+
+		-
+			message: '#^Unused App\\Rules\\Adaptive\\Constants\\AdaptiveConstants\:\:BADGE_SILVER_ARCHITECT$#'
+			identifier: shipmonk.deadConstant
+			count: 1
+			path: app/Rules/Adaptive/Constants/AdaptiveConstants.php
+
+		-
+			message: '#^Unused App\\Rules\\Adaptive\\Constants\\AdaptiveConstants\:\:CERTIFICATION$#'
+			identifier: shipmonk.deadConstant
+			count: 1
+			path: app/Rules/Adaptive/Constants/AdaptiveConstants.php
+
+		-
+			message: '#^Unused App\\Rules\\Adaptive\\Constants\\AdaptiveConstants\:\:FORCE_MATERIAL_REVIEW$#'
+			identifier: shipmonk.deadConstant
+			count: 1
+			path: app/Rules/Adaptive/Constants/AdaptiveConstants.php
+
+		-
+			message: '#^Unused App\\Rules\\Adaptive\\Constants\\AdaptiveConstants\:\:GAMIFICATION_DATA$#'
+			identifier: shipmonk.deadConstant
+			count: 1
+			path: app/Rules/Adaptive/Constants/AdaptiveConstants.php
+
+		-
+			message: '#^Unused App\\Rules\\Adaptive\\Constants\\AdaptiveConstants\:\:INTERVENTION_TYPE$#'
+			identifier: shipmonk.deadConstant
+			count: 1
+			path: app/Rules/Adaptive/Constants/AdaptiveConstants.php
+
+		-
+			message: '#^Unused App\\Rules\\Adaptive\\Constants\\AdaptiveConstants\:\:MESSAGE$#'
+			identifier: shipmonk.deadConstant
+			count: 1
+			path: app/Rules/Adaptive/Constants/AdaptiveConstants.php
+
+		-
+			message: '#^Unused App\\Rules\\Adaptive\\Constants\\AdaptiveConstants\:\:MODULE_PROGRESS$#'
+			identifier: shipmonk.deadConstant
+			count: 1
+			path: app/Rules/Adaptive/Constants/AdaptiveConstants.php
+
+		-
+			message: '#^Unused App\\Rules\\Adaptive\\Constants\\AdaptiveConstants\:\:NEXT_ACTION$#'
+			identifier: shipmonk.deadConstant
+			count: 1
+			path: app/Rules/Adaptive/Constants/AdaptiveConstants.php
+
+		-
+			message: '#^Unused App\\Rules\\Adaptive\\Constants\\AdaptiveConstants\:\:RECOMMENDATION$#'
+			identifier: shipmonk.deadConstant
+			count: 1
+			path: app/Rules/Adaptive/Constants/AdaptiveConstants.php
+
+		-
+			message: '#^Unused App\\Rules\\Adaptive\\Constants\\AdaptiveConstants\:\:RECOVERY_TYPE$#'
+			identifier: shipmonk.deadConstant
+			count: 1
+			path: app/Rules/Adaptive/Constants/AdaptiveConstants.php
+
+		-
+			message: '#^Unused App\\Rules\\Adaptive\\Constants\\AdaptiveConstants\:\:getActionDescriptions$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Rules/Adaptive/Constants/AdaptiveConstants.php
+
+		-
+			message: '#^Unused App\\Rules\\Adaptive\\Constants\\AdaptiveConstants\:\:getFactDescriptions$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Rules/Adaptive/Constants/AdaptiveConstants.php
+
+		-
+			message: '#^Unused App\\Rules\\Adaptive\\Constants\\AdaptiveConstants\:\:isQuestionActionCommand$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Rules/Adaptive/Constants/AdaptiveConstants.php
+
+		-
+			message: '#^Unused App\\Rules\\Adaptive\\RuleRegistry\:\:getRulesByAction$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Rules/Adaptive/RuleRegistry.php
+
+		-
+			message: '#^Unused App\\Schemas\\StudentStateSchema\:\:BEHAVIOURAL_THRESHOLDS$#'
+			identifier: shipmonk.deadConstant
+			count: 1
+			path: app/Schemas/StudentStateSchema.php
+
+		-
+			message: '#^Unused App\\Schemas\\StudentStateSchema\:\:KEY_UNLOCKED_MODULES$#'
+			identifier: shipmonk.deadConstant
+			count: 1
+			path: app/Schemas/StudentStateSchema.php
+
+		-
+			message: '#^Unused App\\Schemas\\StudentStateSchema\:\:STREAK_HINT_THRESHOLD$#'
+			identifier: shipmonk.deadConstant
+			count: 1
+			path: app/Schemas/StudentStateSchema.php
+
+		-
+			message: '#^Unused App\\Schemas\\StudentStateSchema\:\:XP_BONUS_FAST$#'
+			identifier: shipmonk.deadConstant
+			count: 1
+			path: app/Schemas/StudentStateSchema.php
+
+		-
+			message: '#^Unused App\\Schemas\\StudentStateSchema\:\:XP_REWARD_FINAL$#'
+			identifier: shipmonk.deadConstant
+			count: 1
+			path: app/Schemas/StudentStateSchema.php
+
+		-
+			message: '#^Unused App\\Services\\Adaptive\\AdaptiveEngineService\:\:getAllRules$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Services/Adaptive/AdaptiveEngineService.php
+
+		-
+			message: '#^Unused App\\Services\\Adaptive\\AdaptiveEngineService\:\:getRuleById$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Services/Adaptive/AdaptiveEngineService.php
+
+		-
+			message: '#^Unused App\\Services\\Analytics\\DashboardService\:\:getAllMaterials$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Services/Analytics/DashboardService.php
+
+		-
+			message: '#^Unused App\\Services\\Gamification\\GamificationService\:\:getLevelProgress$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Services/Gamification/GamificationService.php
+
+		-
+			message: '#^Property App\\Services\\Lms\\QuestionAnswerService\:\:\$answerRepo is never read$#'
+			identifier: shipmonk.deadProperty.neverRead
+			count: 1
+			path: app/Services/Lms/QuestionAnswerService.php
+
+		-
+			message: '#^Property App\\Services\\Lms\\QuestionAnswerService\:\:\$progressRepo is never read$#'
+			identifier: shipmonk.deadProperty.neverRead
+			count: 1
+			path: app/Services/Lms/QuestionAnswerService.php
+
+		-
+			message: '#^Property App\\Services\\Lms\\QuestionAnswerService\:\:\$questionRepo is never read$#'
+			identifier: shipmonk.deadProperty.neverRead
+			count: 1
+			path: app/Services/Lms/QuestionAnswerService.php
+
+		-
+			message: '#^Unused App\\Services\\Lms\\QuestionService\:\:existsByMaterialAndDifficulty$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Services/Lms/QuestionService.php
+
+		-
+			message: '#^Property App\\Services\\User\\PerformanceService\:\:\$gamificationService is never read$#'
+			identifier: shipmonk.deadProperty.neverRead
+			count: 1
+			path: app/Services/User/PerformanceService.php
+
+		-
+			message: '#^Unused App\\Services\\User\\PerformanceService\:\:useHint$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Services/User/PerformanceService.php
+
+		-
+			message: '#^Unused App\\Services\\User\\StudentService\:\:approveStudent$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Services/User/StudentService.php
+
+		-
+			message: '#^Unused App\\Services\\User\\StudentService\:\:getStudentsList$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Services/User/StudentService.php
+
+		-
+			message: '#^Unused App\\Services\\User\\StudentService\:\:updateStudent$#'
+			identifier: shipmonk.deadMethod
+			count: 1
+			path: app/Services/User/StudentService.php

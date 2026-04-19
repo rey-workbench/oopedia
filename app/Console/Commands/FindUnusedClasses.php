@@ -14,6 +14,8 @@ class FindUnusedClasses extends Command
 
     protected $controllerNames = [];
 
+    protected $crudNames = ['index', 'create', 'store', 'show', 'edit', 'update', 'destroy'];
+
     protected $massiveString = '';
 
     /**

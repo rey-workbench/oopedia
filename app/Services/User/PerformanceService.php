@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Services\User;
 
 use App\Contracts\Repositories\ProgressRepositoryInterface;
-use App\Contracts\Services\GamificationServiceInterface;
+use App\Contracts\Repositories\StudentStateRepositoryInterface;
 use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
 use App\Enums\Lms\ContentCategory;
+use App\Enums\Lms\LearningStyle;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Models\StudentState;
 use App\Rules\Adaptive\Constants\AdaptiveConstants;
@@ -18,7 +19,7 @@ final class PerformanceService implements PerformanceServiceInterface
 {
     public function __construct(
         public readonly ProgressRepositoryInterface $progressRepo,
-        public readonly GamificationServiceInterface $gamificationService,
+        public readonly StudentStateRepositoryInterface $studentStateRepo,
         public readonly GuestProgressServiceInterface $guestProgressService,
     ) {}
 
@@ -28,13 +29,13 @@ final class PerformanceService implements PerformanceServiceInterface
             return $this->guestProgressService->getStudentState();
         }
 
-        return $this->progressRepo->getOrCreateStudentState($userId);
+        return $this->studentStateRepo->findOrCreate($userId);
     }
 
-    public function updateLearningStyleFromInteraction(string $userId, ContentCategory|string $questionType, int $timeSpent): string
+    public function updateLearningStyleFromInteraction(string $userId, ContentCategory $questionType, int $timeSpent): LearningStyle
     {
-        $typeKey = $questionType instanceof ContentCategory ? $questionType->value : $questionType;
-        $state   = $this->progressRepo->getOrCreateStudentState($userId);
+        $typeKey = $questionType->value;
+        $state   = $this->getStudentState($userId);
         $profile = $state->learning_profile ?? [];
 
         if (! isset($profile[StudentStateSchema::KEY_TIME_DISTRIBUTION])) {
@@ -66,16 +67,20 @@ final class PerformanceService implements PerformanceServiceInterface
             }
         }
 
+        $newStyleEnum = match ($newStyle) {
+            StudentStateSchema::STYLE_VISUAL  => LearningStyle::VISUAL,
+            StudentStateSchema::STYLE_TEXTUAL => LearningStyle::TEXTUAL,
+            default                           => LearningStyle::MIXED,
+        };
+
         $profile[StudentStateSchema::KEY_LEARNING_STYLE] = $newStyle;
         $state->learning_profile                         = $profile;
 
-        if ($userId === 'guest') {
-            $this->guestProgressService->saveStudentState($state);
-        } else {
-            $state->save();
-        }
+        $this->studentStateRepo->update($userId, [
+            'learning_profile' => $profile,
+        ]);
 
-        return $newStyle;
+        return $newStyleEnum;
     }
 
     public function updateStudentPerformance(
@@ -85,11 +90,49 @@ final class PerformanceService implements PerformanceServiceInterface
         bool $usedHint = false,
     ): StudentState {
         $state = $this->getStudentState($userId);
-        $state->updatePerformance($isCorrect, $timeSpent, $usedHint);
 
-        if ($userId === 'guest') {
-            $this->guestProgressService->saveStudentState($state);
+        $metrics      = $state->performance_metrics ?? [];
+        $gamification = $state->gamification_data   ?? [];
+
+        $metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] =
+            ($metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] ?? 0) + 1;
+
+        if ($usedHint) {
+            $metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] =
+                ($metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] ?? 0) + 1;
+            $metrics[StudentStateSchema::KEY_HINTS_AVAILABLE] = max(
+                0,
+                ($metrics[StudentStateSchema::KEY_HINTS_AVAILABLE] ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE) - 1,
+            );
         }
+
+        if ($isCorrect) {
+            $metrics[StudentStateSchema::KEY_CORRECT_COUNT] =
+                ($metrics[StudentStateSchema::KEY_CORRECT_COUNT] ?? 0) + 1;
+            $gamification[StudentStateSchema::KEY_CURRENT_STREAK] =
+                ($gamification[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0) + 1;
+            $gamification[StudentStateSchema::KEY_MAX_STREAK] = max(
+                $gamification[StudentStateSchema::KEY_MAX_STREAK]     ?? 0,
+                $gamification[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0,
+            );
+            $metrics[StudentStateSchema::KEY_WRONG_STREAK] = 0;
+        } else {
+            $metrics[StudentStateSchema::KEY_WRONG_COUNT] =
+                ($metrics[StudentStateSchema::KEY_WRONG_COUNT] ?? 0) + 1;
+            $metrics[StudentStateSchema::KEY_WRONG_STREAK] =
+                ($metrics[StudentStateSchema::KEY_WRONG_STREAK] ?? 0) + 1;
+            $gamification[StudentStateSchema::KEY_CURRENT_STREAK] = 0;
+        }
+
+        $state->performance_metrics = $metrics;
+        $state->gamification_data   = $gamification;
+        $state->last_active_at      = now();
+
+        $this->studentStateRepo->update($userId, [
+            'performance_metrics' => $metrics,
+            'gamification_data'   => $gamification,
+            'last_active_at'      => now(),
+        ]);
 
         return $state;
     }
@@ -133,9 +176,9 @@ final class PerformanceService implements PerformanceServiceInterface
         bool $isCorrect,
         bool $usedHint,
         int $timeSpent,
-        QuestionDifficulty|string|null $difficulty = 'beginner',
+        QuestionDifficulty $difficulty,
     ): int {
-        $diffKey = $difficulty instanceof QuestionDifficulty ? $difficulty->value : ($difficulty ?? 'beginner');
+        $diffKey = $difficulty->value;
         if (! $isCorrect) {
             return 0;
         }
@@ -154,5 +197,17 @@ final class PerformanceService implements PerformanceServiceInterface
         }
 
         return max(0, min(100, $score));
+    }
+
+    public function resetMaterialMetrics(string $userId, array $adaptiveState): StudentState
+    {
+        $state                                         = $this->getStudentState($userId);
+        $metrics                                       = $state->performance_metrics ?? [];
+        $metrics[StudentStateSchema::KEY_WRONG_STREAK] = 0;
+
+        return $this->studentStateRepo->update($userId, [
+            'adaptive_state'      => $adaptiveState,
+            'performance_metrics' => $metrics,
+        ]);
     }
 }

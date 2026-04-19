@@ -13,8 +13,6 @@ interface MediaRepositoryInterface
 
     public function create(array $data): Media;
 
-    public function update(string $id, array $data): ?Media;
-
     public function delete(string $id): bool;
 
     public function getByMaterial(string $materialId): Collection;

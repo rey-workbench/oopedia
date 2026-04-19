@@ -5,6 +5,8 @@ namespace App\Services\Lms;
 use App\Contracts\Repositories\AnswerRepositoryInterface;
 use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Services\QuestionServiceInterface;
+use App\Enums\Lms\QuestionDifficulty;
+use App\Enums\Lms\QuestionType;
 use App\Exceptions\Domain\QuestionNotFoundException;
 use App\Models\Question;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -20,17 +22,18 @@ final class QuestionService implements QuestionServiceInterface
 
     public function getFilteredQuestions(
         ?string $search = null,
-        ?string $difficulty = null,
+        ?QuestionDifficulty $difficulty = null,
         ?string $materialId = null,
     ): LengthAwarePaginator {
-        $questions = $this->questionRepo->getFilteredQuestions($search, $difficulty, $materialId);
+        $difficultyString = $difficulty ? $difficulty->value : null;
+        $questions        = $this->questionRepo->getFilteredQuestions($search, $difficultyString, $materialId);
 
         return $questions->through(function ($question) {
             $question->formatted_type = match ($question->question_type) {
-                Question::QUESTION_TYPE_FILL_IN_THE_BLANK => 'Fill in the Blank',
-                Question::QUESTION_TYPE_RADIO_BUTTON      => 'Radio Button',
-                Question::QUESTION_TYPE_DRAG_AND_DROP     => 'Drag and Drop',
-                default                                   => $question->question_type,
+                QuestionType::FILL_IN_THE_BLANK => 'Fill in the Blank',
+                QuestionType::RADIO_BUTTON      => 'Radio Button',
+                QuestionType::DRAG_AND_DROP     => 'Drag and Drop',
+                default                         => $question->question_type,
             };
 
             return $question;
@@ -45,11 +48,6 @@ final class QuestionService implements QuestionServiceInterface
     public function getQuestionWithAnswers(string $id): ?Question
     {
         return $this->questionRepo->findWithAnswers($id);
-    }
-
-    public function existsByMaterialAndDifficulty(string $materialId, string $difficulty): bool
-    {
-        return $this->questionRepo->existsByMaterialAndDifficulty($materialId, $difficulty);
     }
 
     public function createQuestion(array $data): Question

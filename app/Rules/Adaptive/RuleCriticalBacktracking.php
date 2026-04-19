@@ -9,7 +9,7 @@ class RuleCriticalBacktracking extends BaseAdaptiveRule
 {
     use AppliesProgression;
 
-    protected string $ruleId = 'RULE_07';
+    protected string $ruleId = 'RULE_14';
 
     protected string $ruleName = 'Critical Backtracking';
 

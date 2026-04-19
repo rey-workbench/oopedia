@@ -3,7 +3,6 @@
 namespace App\Contracts\Repositories;
 
 use App\Models\Material;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
 interface MaterialRepositoryInterface
@@ -17,8 +16,6 @@ interface MaterialRepositoryInterface
     public function update(string $id, array $data): ?Material;
 
     public function delete(string $id): bool;
-
-    public function paginate(int $perPage = 15): LengthAwarePaginator;
 
     public function countAll(): int;
 
@@ -37,8 +34,6 @@ interface MaterialRepositoryInterface
         string $sort = 'created_at',
         string $direction = 'asc',
     ): Collection;
-
-    public function findWithRelations(string $id, array $relations = []): Material;
 
     public function getMaterialsForListing(): Collection;
 }

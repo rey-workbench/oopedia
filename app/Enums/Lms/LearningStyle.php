@@ -10,12 +10,4 @@ enum LearningStyle: string
     case TEXTUAL = 'textual';
     case MIXED   = 'mixed';
 
-    public function label(): string
-    {
-        return match ($this) {
-            self::VISUAL  => 'Visual',
-            self::TEXTUAL => 'Textual',
-            self::MIXED   => 'Mixed',
-        };
-    }
 }

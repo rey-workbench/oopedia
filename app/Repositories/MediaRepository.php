@@ -26,19 +26,6 @@ final class MediaRepository implements MediaRepositoryInterface
         return Media::create($data);
     }
 
-    public function update(string $id, array $data): ?Media
-    {
-        $media = $this->find($id);
-
-        if ($media) {
-            $media->update($data);
-
-            return $media;
-        }
-
-        return null;
-    }
-
     public function delete(string $id): bool
     {
         $media = $this->find($id);

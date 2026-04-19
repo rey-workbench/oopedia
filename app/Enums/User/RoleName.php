@@ -11,13 +11,4 @@ enum RoleName: string
     case MAHASISWA  = 'mahasiswa';
     case GUEST      = 'guest';
 
-    public function label(): string
-    {
-        return match ($this) {
-            self::SUPERADMIN => 'Super Admin',
-            self::DOSEN      => 'Dosen',
-            self::MAHASISWA  => 'Mahasiswa',
-            self::GUEST      => 'Tamu',
-        };
-    }
 }

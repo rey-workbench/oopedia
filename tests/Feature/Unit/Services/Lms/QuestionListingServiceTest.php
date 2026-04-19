@@ -60,12 +60,12 @@ final class QuestionListingServiceTest extends TestCase
 
         $result = $service->getQuizData(
             material: $material,
-            difficulty: 'all',
+            difficulty: null,
             userId: 'user-1',
             isGuest: false,
             guestProgress: [],
             subMaterialId: null,
-            targetDifficulty: QuestionDifficulty::HARD->value,
+            targetDifficulty: QuestionDifficulty::HARD,
         );
 
         $this->assertNotNull($result['currentQuestion']);

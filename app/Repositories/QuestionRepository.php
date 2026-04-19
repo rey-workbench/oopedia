@@ -5,17 +5,13 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Contracts\Repositories\QuestionRepositoryInterface;
+use App\Enums\Lms\QuestionDifficulty;
 use App\Models\Question;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
 final class QuestionRepository implements QuestionRepositoryInterface
 {
-    public function all(): Collection
-    {
-        return Question::all();
-    }
-
     public function find(string $id): ?Question
     {
         return Question::find($id);
@@ -48,11 +44,6 @@ final class QuestionRepository implements QuestionRepositoryInterface
         }
 
         return (bool) $question->delete();
-    }
-
-    public function paginate(int $perPage = 15): LengthAwarePaginator
-    {
-        return Question::paginate($perPage, ['*'], 'page', null);
     }
 
     public function countAll(): int
@@ -119,22 +110,15 @@ final class QuestionRepository implements QuestionRepositoryInterface
             ->paginate(15);
     }
 
-    public function countByMaterialAndDifficulty(string $materialId, string $difficulty): int
-    {
-        return Question::where('material_id', '=', $materialId)
-            ->where('difficulty', '=', $difficulty)
-            ->count('*');
-    }
-
-    public function existsByMaterialAndDifficulty(string $materialId, string $difficulty): bool
-    {
-        return Question::where('material_id', '=', $materialId)
-            ->where('difficulty', '=', $difficulty)
-            ->exists();
-    }
-
     public function countByMaterial(string $materialId): int
     {
         return Question::where('material_id', '=', $materialId)->count('*');
+    }
+
+    public function countByMaterialAndDifficulty(string $materialId, QuestionDifficulty $difficulty): int
+    {
+        return Question::where('material_id', '=', $materialId)
+            ->where('difficulty', '=', $difficulty->value)
+            ->count('*');
     }
 }

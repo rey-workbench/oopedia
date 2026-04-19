@@ -40,9 +40,4 @@ final class MslqRepository implements MslqRepositoryInterface
     {
         return MslqResult::create($data);
     }
-
-    public function hasUserSubmitted(int|string $userId): bool
-    {
-        return MslqResult::where('user_id', $userId)->exists();
-    }
 }

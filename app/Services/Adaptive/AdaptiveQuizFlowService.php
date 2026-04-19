@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Adaptive;
 
 use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Contracts\Repositories\StudentStateRepositoryInterface;
 use App\Contracts\Services\AdaptiveEngineServiceInterface;
 use App\Contracts\Services\AdaptiveQuizFlowServiceInterface;
 use App\Contracts\Services\FactGatheringServiceInterface;
@@ -33,6 +34,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         public readonly FactGatheringServiceInterface $factGathering,
         public readonly AdaptiveEngineServiceInterface $adaptiveEngine,
         public readonly NextActionResolverServiceInterface $nextActionResolver,
+        public readonly StudentStateRepositoryInterface $studentStateRepo,
         public readonly GuestProgressServiceInterface $guestProgressService,
     ) {}
 
@@ -68,7 +70,6 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
 
         $studentState = $this->resolveStudentState(
             userId: $userId,
-            isGuest: $isGuest,
             isCorrect: $isCorrect,
             timeSpent: $timeSpent,
             usedHint: $usedHint,
@@ -77,25 +78,22 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
 
         $score = $this->performanceService->calculateScore($isCorrect, $usedHint, $timeSpent, $difficulty);
 
-        $rewardResult = $isCorrect
-            ? $this->gamificationService->calculateCorrectAnswerReward(
-                $studentState->toArray(),
-                $usedHint,
-                $difficulty,
-                $timeSpent,
-            )
-            : $this->gamificationService->processWrongAnswer($studentState->toArray());
+        $rewardData = $this->gamificationService->applySubmissionRewards(
+            $userId,
+            $isCorrect,
+            $difficulty,
+            $timeSpent,
+            $usedHint,
+        );
 
-        [$totalXpEarned, $streakBonus] = $this->applyGamificationRewards($studentState, $rewardResult, $isCorrect);
+        $totalXpEarned = $rewardData['xp_reward'] ?? 0;
 
-        if (! $isGuest) {
-            $studentState->save();
-        } else {
-            $this->guestProgressService->saveGamificationState(
-                $studentState->global_xp,
-                $studentState->current_streak,
-            );
-        }
+        // Fetch streak bonus specifically
+        $rewardedState = $this->performanceService->getStudentState($userId);
+        $streakBonus   = $this->gamificationService->checkStreakBonus($rewardedState->toArray());
+
+        // Sync state after rewards
+        $studentState = $this->performanceService->getStudentState($userId);
 
         $this->persistAttemptData(
             question: $question,
@@ -147,7 +145,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
 
         $studentState->adaptive_state = $adaptiveState;
 
-        $this->saveStudentState($studentState, $isGuest);
+        $this->saveStudentState($studentState, $isGuest, $userId);
 
         $nextActionData = $this->nextActionResolver->resolve(
             $ruleOutput['next_action'] ?? 'NEXT_QUESTION',
@@ -186,16 +184,11 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
 
     private function resolveStudentState(
         string $userId,
-        bool $isGuest,
         bool $isCorrect,
         int $timeSpent,
         bool $usedHint,
         ContentCategory $questionType,
     ): StudentState {
-        if ($isGuest) {
-            return $this->guestProgressService->getStudentState();
-        }
-
         $studentState = $this->performanceService->updateStudentPerformance(
             $userId,
             $isCorrect,
@@ -218,7 +211,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         bool $usedHint,
         int $timeSpent,
         int $score,
-        QuestionDifficulty|string $difficulty,
+        QuestionDifficulty $difficulty,
         array $data,
     ): void {
         if ($isGuest) {
@@ -240,7 +233,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             'is_answered'   => true,
             'attributes'    => [
                 'score'      => $score,
-                'difficulty' => $difficulty,
+                'difficulty' => $difficulty->value,
                 'used_hint'  => $usedHint,
                 'time_spent' => $timeSpent,
             ],
@@ -342,7 +335,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         return $adaptiveState;
     }
 
-    private function saveStudentState(StudentState $studentState, bool $isGuest): void
+    private function saveStudentState(StudentState $studentState, bool $isGuest, string $userId): void
     {
         if ($isGuest) {
             $this->guestProgressService->saveStudentState($studentState);
@@ -350,7 +343,13 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             return;
         }
 
-        $studentState->save();
+        $this->studentStateRepo->update($userId, [
+            'gamification_data'   => $studentState->gamification_data,
+            'learning_profile'    => $studentState->learning_profile,
+            'performance_metrics' => $studentState->performance_metrics,
+            'adaptive_state'      => $studentState->adaptive_state,
+            'last_active_at'      => now(),
+        ]);
     }
 
     /** @return array<string, mixed> */
@@ -375,7 +374,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         bool $usedHint,
         int $score,
         int $timeSpent,
-        QuestionDifficulty|string $difficulty,
+        QuestionDifficulty $difficulty,
         string $questionId,
         string $materialId,
         ?string $moduleId,
@@ -410,41 +409,6 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
      *
      * @return array{0: int, 1: array|null} [totalXpEarned, streakMilestoneData]
      */
-    private function applyGamificationRewards(StudentState $state, array $rewardResult, bool $isCorrect): array
-    {
-        $baseXpEarned = $rewardResult['global_xp_earned'] ?? 0;
-
-        $gamification              = $state->gamification_data ?? [];
-        $gamification['global_xp'] = ($gamification['global_xp'] ?? 0) + $baseXpEarned;
-        $state->gamification_data  = $gamification;
-
-        $streakXpBonus = 0;
-        if ($isCorrect) {
-            $streakXpBonus = $this->gamificationService->calculateStreakBonusXP($state->current_streak);
-
-            if ($streakXpBonus > 0) {
-                $gamification              = $state->gamification_data ?? [];
-                $gamification['global_xp'] = ($gamification['global_xp'] ?? 0) + $streakXpBonus;
-                $state->gamification_data  = $gamification;
-            }
-        }
-
-        $streakMilestone = $this->gamificationService->checkStreakBonus($state->toArray());
-        if ($streakMilestone && isset($streakMilestone['updates'])) {
-            $metrics = $state->performance_metrics ?? [];
-            foreach ($streakMilestone['updates'] as $key => $value) {
-                $metrics[$key] = $value;
-            }
-            $state->performance_metrics = $metrics;
-        }
-
-        $gamification                  = $state->gamification_data ?? [];
-        $gamification['current_level'] = $this->gamificationService->determineLevel($gamification['global_xp'] ?? 0);
-        $state->gamification_data      = $gamification;
-
-        return [$baseXpEarned + $streakXpBonus, $streakMilestone];
-    }
-
     private function persistCertification(StudentState $studentState, string $materialId, mixed $certification): void
     {
         if (! is_string($certification) || $certification === '' || $materialId === '') {

@@ -3,6 +3,7 @@
 namespace App\Contracts\Services;
 
 use App\Enums\Lms\ContentCategory;
+use App\Enums\Lms\LearningStyle;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Models\StudentState;
 
@@ -10,7 +11,7 @@ interface PerformanceServiceInterface
 {
     public function getStudentState(string $userId): StudentState;
 
-    public function updateLearningStyleFromInteraction(string $userId, ContentCategory|string $questionType, int $timeSpent): string;
+    public function updateLearningStyleFromInteraction(string $userId, ContentCategory $questionType, int $timeSpent): LearningStyle;
 
     public function updateStudentPerformance(
         string $userId,
@@ -27,6 +28,8 @@ interface PerformanceServiceInterface
         bool $isCorrect,
         bool $usedHint,
         int $timeSpent,
-        QuestionDifficulty|string|null $difficulty = 'beginner',
+        QuestionDifficulty $difficulty,
     ): int;
+
+    public function resetMaterialMetrics(string $userId, array $adaptiveState): StudentState;
 }

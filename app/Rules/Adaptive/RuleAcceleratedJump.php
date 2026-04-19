@@ -9,7 +9,7 @@ class RuleAcceleratedJump extends BaseAdaptiveRule
 {
     use AppliesProgression;
 
-    protected string $ruleId = 'RULE_06';
+    protected string $ruleId = 'RULE_18';
 
     protected string $ruleName = 'Accelerated Jump';
 

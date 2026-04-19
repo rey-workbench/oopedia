@@ -13,26 +13,26 @@
     let { state: quizState }: Props = $props();
 
     const RULE_TO_VARIANT: Record<string, FeedbackVariant> = {
-        RULE_01: 'intervention',
-        RULE_02: 'intervention',
-        RULE_03: 'intervention',
-        RULE_04: 'intervention',
-        RULE_05: 'result',
-        RULE_06: 'acceleration',
-        RULE_07: 'backtrack',
-        RULE_08: 'certificate',
-        RULE_09: 'certificate',
-        RULE_10: 'certificate',
-        RULE_11: 'certificate',
-        RULE_12: 'intervention',
-        RULE_13: 'intervention',
-        RULE_14: 'intervention',
-        RULE_15: 'intervention',
-        RULE_16: 'result',
-        RULE_17: 'result',
-        RULE_18: 'intervention',
-        RULE_19: 'intervention',
-        RULE_20: 'acceleration',
+        RULE_01: 'intervention', // RuleFinalProjectVisualPersistentFail
+        RULE_02: 'intervention', // RuleFinalProjectTextualPersistentFail
+        RULE_03: 'intervention', // RulePersistentVisualSafetyNet
+        RULE_04: 'intervention', // RulePersistentTextualSafetyNet
+        RULE_05: 'intervention', // RuleVisualCrisisIntervention
+        RULE_06: 'intervention', // RuleTextualCrisisIntervention
+        RULE_07: 'intervention', // RuleVisualProjectRevision
+        RULE_08: 'intervention', // RuleTextualProjectRevision
+        RULE_09: 'certificate',  // RuleGoldCertificate
+        RULE_10: 'certificate',  // RuleSilverCertificate
+        RULE_11: 'certificate',  // RuleBronzeCertificate
+        RULE_12: 'intervention', // RuleSyntaxRecovery
+        RULE_13: 'intervention', // RuleLogicRecovery
+        RULE_14: 'backtrack',    // RuleCriticalBacktracking
+        RULE_15: 'certificate',  // RuleModuleGraduation
+        RULE_16: 'result',       // RuleMasteryMedium
+        RULE_17: 'acceleration', // RuleAcceleratedMaterialPromotion
+        RULE_18: 'acceleration', // RuleAcceleratedJump
+        RULE_19: 'intervention', // RuleRemedialIndependent
+        RULE_20: 'result',       // RuleStandardPromotion
     };
 
     const ACTION_TO_VARIANT: Record<string, FeedbackVariant> = {
