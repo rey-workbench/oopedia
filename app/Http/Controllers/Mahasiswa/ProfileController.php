@@ -8,9 +8,9 @@ use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\UserServiceInterface;
 use App\DTOs\User\ProfileUpdateDTO;
-use App\Schemas\StudentStateSchema;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\UpdateProfileRequest;
+use App\Schemas\StudentStateSchema;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
@@ -31,16 +31,16 @@ final class ProfileController extends Controller
         $studentState = $this->progressRepo->getOrCreateStudentState($user->id);
 
         $personalization = [
-            'learning_style'           => $studentState->learning_profile[StudentStateSchema::KEY_LEARNING_STYLE] ?? 'visual',
-            'current_level'            => $studentState->gamification_data[StudentStateSchema::KEY_CURRENT_LEVEL] ?? 'Pemula',
-            'global_xp'                => $studentState->gamification_data[StudentStateSchema::KEY_GLOBAL_XP] ?? 0,
-            'current_streak'           => $studentState->gamification_data[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0,
-            'max_streak'               => $studentState->gamification_data[StudentStateSchema::KEY_MAX_STREAK] ?? 0,
+            'learning_style'           => $studentState->learning_profile[StudentStateSchema::KEY_LEARNING_STYLE]              ?? 'visual',
+            'current_level'            => $studentState->gamification_data[StudentStateSchema::KEY_CURRENT_LEVEL]              ?? 'Pemula',
+            'global_xp'                => $studentState->gamification_data[StudentStateSchema::KEY_GLOBAL_XP]                  ?? 0,
+            'current_streak'           => $studentState->gamification_data[StudentStateSchema::KEY_CURRENT_STREAK]             ?? 0,
+            'max_streak'               => $studentState->gamification_data[StudentStateSchema::KEY_MAX_STREAK]                 ?? 0,
             'total_questions_answered' => $studentState->performance_metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] ?? 0,
-            'correct_count'            => $studentState->performance_metrics[StudentStateSchema::KEY_CORRECT_COUNT] ?? 0,
-            'wrong_count'              => $studentState->performance_metrics[StudentStateSchema::KEY_WRONG_COUNT] ?? 0,
-            'hints_used_count'         => $studentState->performance_metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] ?? 0,
-            'hints_available'          => $studentState->performance_metrics[StudentStateSchema::KEY_HINTS_AVAILABLE] ?? 3,
+            'correct_count'            => $studentState->performance_metrics[StudentStateSchema::KEY_CORRECT_COUNT]            ?? 0,
+            'wrong_count'              => $studentState->performance_metrics[StudentStateSchema::KEY_WRONG_COUNT]              ?? 0,
+            'hints_used_count'         => $studentState->performance_metrics[StudentStateSchema::KEY_HINTS_USED_COUNT]         ?? 0,
+            'hints_available'          => $studentState->performance_metrics[StudentStateSchema::KEY_HINTS_AVAILABLE]          ?? 3,
             'accuracy'                 => ($studentState->performance_metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] ?? 0) > 0
                 ? round((($studentState->performance_metrics[StudentStateSchema::KEY_CORRECT_COUNT] ?? 0) / $studentState->performance_metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED]) * 100, 1)
                 : 0,

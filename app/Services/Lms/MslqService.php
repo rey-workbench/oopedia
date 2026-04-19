@@ -17,8 +17,7 @@ final class MslqService implements MslqServiceInterface
 {
     public function __construct(
         private readonly MslqRepositoryInterface $mslqRepository,
-    ) {
-    }
+    ) {}
 
     public function getAdminResults(?string $class = null): LengthAwarePaginator
     {

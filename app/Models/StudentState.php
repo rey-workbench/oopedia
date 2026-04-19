@@ -37,7 +37,6 @@ final class StudentState extends Model
         'last_active_at',
     ];
 
-
     protected $casts = [
         'performance_metrics' => 'array',
         'gamification_data'   => 'array',

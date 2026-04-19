@@ -13,8 +13,7 @@ final class UeqSurveyService implements UeqSurveyServiceInterface
 {
     public function __construct(
         public readonly UeqSurveyRepositoryInterface $ueqRepo,
-    ) {
-    }
+    ) {}
 
     /** @return Collection<int, UeqSurvey> */
     public function getAllSurveys(?string $class = null): Collection

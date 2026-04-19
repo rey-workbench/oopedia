@@ -181,6 +181,7 @@ final class StudentStateSchema
         'persistent_fail'           => self::THRESHOLD_PERSISTENT_FAIL,
         'satisfactory_progress_pct' => self::THRESHOLD_SATISFACTORY_PROGRESS,
     ];
+
     public const int SCORE_MIN_CORRECT = 70;
 
     public const int SCORE_MAX_WRONG   = 69;
