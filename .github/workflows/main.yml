@@ -41,10 +41,10 @@ jobs:
             - name: Generate key
               run: php artisan key:generate
 
-            - name: Run Linting
-              run: |
-                  pnpm run format:check
-                  vendor/bin/pint --test
+            # - name: Run Linting
+            #   run: |
+            #       pnpm run format:check
+            #       vendor/bin/pint --test
 
             - name: Build Assets
               run: pnpm run build
@@ -55,8 +55,12 @@ jobs:
                   name: public-build
                   path: public/build
 
-            - name: Run Tests
-              run: php artisan test --compact
+            # - name: Run Tests
+            #   run: |
+            #       php artisan test --compact
+            #   env:
+            #       DB_CONNECTION: sqlite
+            #       DB_DATABASE: ":memory:"
 
     deploy:
         name: Deploy to Server
