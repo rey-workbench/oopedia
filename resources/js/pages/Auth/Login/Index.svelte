@@ -105,7 +105,7 @@
             </div>
 
             <div class="mt-8 text-center text-[12px] font-bold text-slate-400 leading-relaxed max-w-[280px]">
-                By signing in to OOPedia, you agree to our <a href="#" class="font-black text-slate-500 hover:text-slate-700 transition">Terms</a> and <a href="#" class="font-black text-slate-500 hover:text-slate-700 transition">Privacy Policy</a>.
+                By signing in to OOPedia, you agree to our <a href="/" class="font-black text-slate-500 hover:text-slate-700 transition">Terms</a> and <a href="/" class="font-black text-slate-500 hover:text-slate-700 transition">Privacy Policy</a>.
             </div>
         </div>
     </div>
