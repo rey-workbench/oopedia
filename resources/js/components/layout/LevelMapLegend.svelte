@@ -17,7 +17,7 @@
     <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div class="flex items-center gap-2">
             <Info size={14} class="text-primary-500" />
-            <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">
+            <span class="text-xs font-black tracking-widest text-slate-400 uppercase">
                 Panduan Peta Belajar
             </span>
         </div>
@@ -34,7 +34,7 @@
                         class="mb-0.5 text-sm leading-none font-black tracking-tight text-slate-800"
                         >Aktif</span
                     >
-                    <span class="text-[10px] font-bold tracking-tighter text-slate-400 uppercase"
+                    <span class="text-xs font-bold tracking-tighter text-slate-400 uppercase"
                         >Bisa dikerjakan</span
                     >
                 </div>
@@ -51,7 +51,7 @@
                         class="mb-0.5 text-sm leading-none font-black tracking-tight text-emerald-700"
                         >Selesai</span
                     >
-                    <span class="text-[10px] font-bold tracking-tighter text-slate-400 uppercase"
+                    <span class="text-xs font-bold tracking-tighter text-slate-400 uppercase"
                         >Sudah benar</span
                     >
                 </div>
@@ -68,7 +68,7 @@
                         class="mb-0.5 text-sm leading-none font-black tracking-tight text-slate-500"
                         >Terkunci</span
                     >
-                    <span class="text-[10px] font-bold tracking-tighter text-slate-400 uppercase"
+                    <span class="text-xs font-bold tracking-tighter text-slate-400 uppercase"
                         >Butuh prasyarat</span
                     >
                 </div>
@@ -85,7 +85,7 @@
                         class="mb-0.5 text-sm leading-none font-black tracking-tight text-amber-600"
                         >Tujuan</span
                     >
-                    <span class="text-[10px] font-bold tracking-tighter text-slate-400 uppercase"
+                    <span class="text-xs font-bold tracking-tighter text-slate-400 uppercase"
                         >Hasil akhir</span
                     >
                 </div>

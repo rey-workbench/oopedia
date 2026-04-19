@@ -47,7 +47,7 @@
         <button
             type="button"
             onclick={() => (menuOpen = !menuOpen)}
-            class="flex min-h-12 cursor-pointer items-center gap-2 rounded-2xl px-6 py-3.5 text-[10px] font-black tracking-[0.2em] uppercase transition-all hover:bg-slate-50 active:translate-y-1 active:border-b-2 {menuBtnBg}"
+            class="flex min-h-12 cursor-pointer items-center gap-2 rounded-2xl px-6 py-3.5 text-xs font-black tracking-[0.2em] uppercase transition-all hover:bg-slate-50 active:translate-y-1 active:border-b-2 {menuBtnBg}"
         >
             {menuOpen ? 'Tutup' : 'Menu'}
             {#if menuOpen}
@@ -65,7 +65,7 @@
                     <Link
                         href={item.href}
                         onclick={closeMenu}
-                        class="group flex items-center justify-between rounded-2xl px-5 py-4 text-[11px] font-black tracking-widest text-slate-900/70 uppercase transition-all hover:bg-slate-900/5 hover:text-slate-900"
+                        class="group flex items-center justify-between rounded-2xl px-5 py-4 text-xs font-black tracking-widest text-slate-900/70 uppercase transition-all hover:bg-slate-900/5 hover:text-slate-900"
                     >
                         <span>{item.label}</span>
                         <ChevronRight
@@ -97,13 +97,13 @@
     <div class="pointer-events-auto flex items-center gap-3 sm:gap-5">
         <Link
             href={ROUTES.AUTH.LOGIN}
-            class="rounded-full px-3 py-2 text-[10px] font-black tracking-[0.2em] uppercase transition-colors {authTextColor}"
+            class="rounded-full px-3 py-2 text-xs font-black tracking-[0.2em] uppercase transition-colors {authTextColor}"
         >
             Masuk
         </Link>
         <Link
             href={ROUTES.AUTH.REGISTER}
-            class="rounded-2xl border-2 border-b-6 border-slate-950 bg-slate-900 px-6 py-4 text-[9px] font-black tracking-[0.2em] text-white uppercase shadow-sm transition-all hover:bg-slate-800 active:translate-y-1 active:border-b-2 sm:px-8"
+            class="rounded-2xl border-2 border-b-6 border-slate-950 bg-slate-900 px-6 py-4 text-xs font-black tracking-[0.2em] text-white uppercase shadow-sm transition-all hover:bg-slate-800 active:translate-y-1 active:border-b-2 sm:px-8"
         >
             Daftar
         </Link>

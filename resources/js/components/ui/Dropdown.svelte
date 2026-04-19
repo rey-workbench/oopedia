@@ -81,7 +81,7 @@
     {#if label}
         <label
             for={selectId}
-            class="mb-2 ml-4 block text-[10px] font-bold tracking-widest text-slate-500 uppercase"
+            class="mb-2 ml-4 block text-xs font-bold tracking-widest text-slate-500 uppercase"
         >
             {label}
             {#if required}<span class="text-rose-500">*</span>{/if}
@@ -137,7 +137,7 @@
                             aria-selected={String(opt.value) === String(value)}
                             onclick={() => select(opt)}
                             class={`
-                                flex w-full items-center gap-2 px-4 py-3 text-left text-[10px] font-bold tracking-widest uppercase transition-colors
+                                flex w-full items-center gap-2 px-4 py-3 text-left text-xs font-bold tracking-widest uppercase transition-colors
                                 ${opt.disabled ? 'cursor-not-allowed text-slate-300' : 'hover:bg-primary-50/50 text-slate-700'}
                                 ${String(opt.value) === String(value) ? 'bg-primary-50 text-primary-600' : ''}
                             `}
@@ -157,7 +157,7 @@
         <p
             id={errorId}
             role="alert"
-            class="mt-2 ml-4 text-[9px] font-bold tracking-widest text-rose-500 uppercase"
+            class="mt-2 ml-4 text-xs font-bold tracking-widest text-rose-500 uppercase"
         >
             {error}
         </p>

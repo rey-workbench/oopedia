@@ -98,7 +98,7 @@
                 </label>
             {/if}
             {#if description}
-                <span class="text-[10px] text-slate-500">{description}</span>
+                <span class="text-xs text-slate-500">{description}</span>
             {/if}
         </div>
     {/if}

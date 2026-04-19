@@ -24,6 +24,7 @@
         iconPosition?: 'left' | 'right';
         href?: string | null;
         class?: string;
+        ariaLabel?: string;
         children?: Snippet;
         [key: string]: unknown;
     }
@@ -38,12 +39,13 @@
         iconPosition = 'left',
         href = null,
         class: className = '',
+        ariaLabel = undefined,
         children,
         ...rest
     }: Props = $props();
 
     const baseClasses =
-        'group inline-flex items-center justify-center font-black tracking-widest transition-all duration-150 active:translate-y-[4px] active:border-b-2 disabled:opacity-50 disabled:pointer-events-none rounded-2xl border-2 border-b-6 uppercase';
+        'group inline-flex items-center justify-center font-black tracking-widest transition-all duration-150 active:scale-95 disabled:opacity-50 disabled:pointer-events-none rounded-2xl border-2 border-b-6 uppercase';
 
     const variants: Record<ButtonVariant, string> = {
         primary:
@@ -61,10 +63,10 @@
     };
 
     const sizes: Record<ButtonSize, string> = {
-        sm: 'px-4 py-2 text-[10px] border-b-4 active:translate-y-[2px]',
-        md: 'px-6 py-3 text-xs border-b-6 active:translate-y-[4px]',
-        lg: 'px-8 py-4 text-sm border-b-6 active:translate-y-[4px]',
-        xl: 'px-10 py-5 text-base border-b-8 active:translate-y-[6px]',
+        sm: 'px-4 py-2 text-xs border-b-4',
+        md: 'px-6 py-3 text-sm border-b-6',
+        lg: 'px-8 py-4 text-base border-b-6',
+        xl: 'px-10 py-5 text-lg border-b-8',
     };
 
     const classes = $derived(
@@ -74,7 +76,7 @@
 </script>
 
 {#if href}
-    <Link {id} {href} class={classes} {...rest}>
+    <Link {id} {href} aria-label={ariaLabel} class={classes} {...rest}>
         {#if icon && iconPosition === 'left'}
             {#if typeof icon === 'string'}
                 <i
@@ -114,7 +116,7 @@
         {/if}
     </Link>
 {:else}
-    <button {id} {type} class={classes} {disabled} {...rest}>
+    <button {id} {type} class={classes} {disabled} aria-label={ariaLabel} {...rest}>
         {#if icon && iconPosition === 'left'}
             {#if typeof icon === 'string'}
                 <i class="{icon} {hasChildren ? 'mr-3' : ''}"></i>

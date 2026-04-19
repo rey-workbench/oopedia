@@ -8,14 +8,14 @@
     import Panel from '@/components/ui/Panel.svelte';
     import {
         BookOpen,
-        Brain,
-        Flame,
         Trophy,
         Star,
         ClipboardList,
         Ghost,
         Code2,
         Plus,
+        Rocket,
+        CheckCircle2,
     } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';
@@ -67,32 +67,40 @@
 
     const dashboardStats = $derived([
         {
+            id: 'stat-total-materials',
             title: 'Materi Tersedia',
             value: state.totalMaterials,
             icon: BookOpen,
             variant: 'primary',
             footer: 'Konsep PBO dari Dasar',
+            href: ROUTES.MAHASISWA.MATERIALS.INDEX,
         },
         {
-            title: 'Total Soal',
-            value: state.totalQuestions,
-            icon: Brain,
+            id: 'stat-inprogress-materials',
+            title: 'Sedang Dipelajari',
+            value: state.inProgressMaterials,
+            icon: Rocket,
+            variant: 'info',
+            footer: 'Lanjutkan Progresmu',
+            href: ROUTES.MAHASISWA.IN_PROGRESS,
+        },
+        {
+            id: 'stat-completed-materials',
+            title: 'Materi Selesai',
+            value: state.completedMaterials,
+            icon: CheckCircle2,
             variant: 'success',
-            footer: 'Latihan & Tantangan',
+            footer: 'Hall of Fame Materi',
+            href: ROUTES.MAHASISWA.COMPLETED,
         },
         {
-            title: 'Level Hard',
-            value: state.hardQuestions,
-            icon: Flame,
-            variant: 'danger',
-            footer: 'Tingkat Kesulitan Tinggi',
-        },
-        {
+            id: 'stat-global-rank',
             title: 'Peringkat',
             value: state.currentUserRank ? `#${state.currentUserRank.rank}` : '-',
             icon: Trophy,
             variant: 'warning',
             footer: 'Peringkat global Anda',
+            href: ROUTES.MAHASISWA.LEADERBOARD,
         },
     ]);
 </script>
@@ -205,68 +213,76 @@
             class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
         >
             {#each dashboardStats as stat (stat.title)}
-                <Card class="group relative overflow-hidden border-b-6">
-                    <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
-                        {#if typeof stat.icon !== 'string'}
-                            {@const IconComponent = stat.icon}
-                            <div
-                                class="scale-[4] transition-transform duration-500 group-hover:scale-[4.5]"
-                            >
-                                <IconComponent size={24} strokeWidth={2.5} />
+                <div id={stat.id}>
+                    <Link href={stat.href} class="block h-full">
+                        <Card class="group relative h-full overflow-hidden border-b-6 transition-all hover:-translate-y-1 hover:shadow-xl">
+                            <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
+                                {#if typeof stat.icon !== 'string'}
+                                    {@const IconComponent = stat.icon}
+                                    <div
+                                        class="scale-[4] transition-transform duration-500 group-hover:scale-[4.5]"
+                                    >
+                                        <IconComponent size={24} strokeWidth={2.5} />
+                                    </div>
+                                {/if}
                             </div>
-                        {/if}
-                    </div>
 
-                    <div class="relative z-10">
-                        <div
-                            class="glass mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-b-4
-                            {stat.variant === 'success'
-                                ? 'bg-emerald-100 text-emerald-600'
-                                : stat.variant === 'danger'
-                                  ? 'bg-rose-100 text-rose-600'
-                                  : stat.variant === 'warning'
-                                    ? 'bg-amber-100 text-amber-600'
-                                    : 'bg-primary-100 text-primary-600'}"
-                        >
-                            {#if typeof stat.icon === 'string'}
-                                <i class={stat.icon}></i>
-                            {:else}
-                                {@const IconComponent = stat.icon}
-                                <IconComponent size={24} strokeWidth={2.5} />
-                            {/if}
-                        </div>
-
-                        <h3
-                            class="mb-2 text-[10px] font-bold tracking-wider text-slate-600 uppercase"
-                        >
-                            {stat.title}
-                        </h3>
-                        <div
-                            class="font-display mb-2 text-4xl font-black tracking-tight text-slate-900"
-                        >
-                            {stat.value}
-                        </div>
-
-                        {#if stat.footer}
-                            <div class="flex items-center gap-2">
+                            <div class="relative z-10">
                                 <div
-                                    class="h-1.5 w-1.5 rounded-full {stat.variant === 'success'
-                                        ? 'bg-emerald-500'
+                                    class="glass mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-b-4
+                                    {stat.variant === 'success'
+                                        ? 'bg-emerald-100 text-emerald-600 border-emerald-200'
                                         : stat.variant === 'danger'
-                                          ? 'bg-rose-500'
+                                          ? 'bg-rose-100 text-rose-600 border-rose-200'
                                           : stat.variant === 'warning'
-                                            ? 'bg-amber-500'
-                                            : 'bg-primary-500'}"
-                                ></div>
-                                <p
-                                    class="text-[10px] font-bold tracking-widest text-slate-500 uppercase"
+                                            ? 'bg-amber-100 text-amber-600 border-amber-200'
+                                            : stat.variant === 'info'
+                                              ? 'bg-sky-100 text-sky-600 border-sky-200'
+                                              : 'bg-primary-100 text-primary-600 border-primary-200'}"
                                 >
-                                    {stat.footer}
-                                </p>
+                                    {#if typeof stat.icon === 'string'}
+                                        <i class={stat.icon}></i>
+                                    {:else}
+                                        {@const IconComponent = stat.icon}
+                                        <IconComponent size={24} strokeWidth={2.5} />
+                                    {/if}
+                                </div>
+
+                                <h3
+                                    class="mb-2 text-[10px] font-bold tracking-wider text-slate-600 uppercase"
+                                >
+                                    {stat.title}
+                                </h3>
+                                <div
+                                    class="font-display mb-2 text-4xl font-black tracking-tight text-slate-900"
+                                >
+                                    {stat.value}
+                                </div>
+
+                                {#if stat.footer}
+                                    <div class="flex items-center gap-2">
+                                        <div
+                                            class="h-1.5 w-1.5 rounded-full {stat.variant === 'success'
+                                                ? 'bg-emerald-500'
+                                                : stat.variant === 'danger'
+                                                  ? 'bg-rose-500'
+                                                  : stat.variant === 'warning'
+                                                    ? 'bg-amber-500'
+                                                    : stat.variant === 'info'
+                                                      ? 'bg-sky-500'
+                                                      : 'bg-primary-500'}"
+                                        ></div>
+                                        <p
+                                            class="text-[10px] font-bold tracking-widest text-slate-500 uppercase"
+                                        >
+                                            {stat.footer}
+                                        </p>
+                                    </div>
+                                {/if}
                             </div>
-                        {/if}
-                    </div>
-                </Card>
+                        </Card>
+                    </Link>
+                </div>
             {/each}
         </div>
 

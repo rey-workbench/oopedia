@@ -23,7 +23,7 @@
 <div class="space-y-4 lg:col-span-1">
     <label
         for="cover_image"
-        class="block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+        class="block text-xs font-bold tracking-widest text-slate-400 uppercase"
     >
         {label}
     </label>
@@ -45,7 +45,7 @@
                 {:else}
                     <CloudUpload size={24} class="mx-auto mb-2 text-slate-300" />
                 {/if}
-                <p class="text-[9px] font-bold tracking-widest text-slate-400 uppercase">
+                <p class="text-xs font-bold tracking-widest text-slate-400 uppercase">
                     {emptyText}
                 </p>
             </div>

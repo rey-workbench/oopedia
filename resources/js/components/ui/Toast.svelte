@@ -80,7 +80,7 @@
                 {#if toast.title}
                     <p class="text-xs font-extrabold tracking-widest uppercase">{toast.title}</p>
                 {/if}
-                <p class="text-[11px] font-bold {toast.title ? 'mt-1 opacity-80' : ''}">
+                <p class="text-xs font-bold {toast.title ? 'mt-1 opacity-80' : ''}">
                     {toast.message}
                 </p>
             </div>

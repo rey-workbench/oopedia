@@ -75,7 +75,7 @@
                 class="absolute inset-0 h-full w-full object-cover opacity-40 mix-blend-darken"
             />
             <div
-                class="relative z-20 flex items-center gap-3 rounded-xl border-2 border-b-4 border-white/30 bg-slate-900 px-6 py-3 text-[10px] font-black tracking-[0.2em] text-white"
+                class="relative z-20 flex items-center gap-3 rounded-xl border-2 border-b-4 border-white/30 bg-slate-900 px-6 py-3 text-xs font-black tracking-[0.2em] text-white"
             >
                 <Search size={14} class="opacity-70" />
                 <span class="uppercase">polanya</span>

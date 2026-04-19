@@ -21,7 +21,7 @@
         class="relative z-10 flex min-h-screen flex-col items-center justify-center gap-16 px-6 py-32"
     >
         <div class="flex flex-col items-center text-center">
-            <p class="mb-4 text-[9px] font-black tracking-[0.3em] text-[#E2885F] uppercase">
+            <p class="mb-4 text-xs font-black tracking-[0.3em] text-[#E2885F] uppercase">
                 dengan Kecerdasan Buatan
             </p>
             <h2
@@ -35,7 +35,7 @@
             <div class="rounded-3xl border-2 border-b-8 border-slate-200 bg-white p-8">
                 <div class="mb-6 flex items-center gap-3">
                     <Disc2 size={14} class="text-slate-900" />
-                    <span class="text-[10px] font-black tracking-[0.2em] text-slate-900 uppercase"
+                    <span class="text-xs font-black tracking-[0.2em] text-slate-900 uppercase"
                         >OOPEDIA AI</span
                     >
                 </div>
@@ -49,13 +49,13 @@
                 <div class="flex gap-4">
                     <button
                         type="button"
-                        class="flex-1 rounded-2xl border-2 border-b-4 border-black bg-slate-900 py-3.5 text-[10px] font-black tracking-[0.15em] text-white uppercase transition-all hover:bg-slate-800 active:translate-y-[2px] active:border-b-2"
+                        class="flex-1 rounded-2xl border-2 border-b-4 border-black bg-slate-900 py-3.5 text-xs font-black tracking-[0.15em] text-white uppercase transition-all hover:bg-slate-800 active:translate-y-[2px] active:border-b-2"
                     >
                         Cari
                     </button>
                     <button
                         type="button"
-                        class="flex-1 rounded-2xl border-2 border-b-4 border-slate-200 bg-white py-3.5 text-[10px] font-black tracking-[0.15em] uppercase transition-all hover:bg-slate-50 active:translate-y-[2px] active:border-b-2"
+                        class="flex-1 rounded-2xl border-2 border-b-4 border-slate-200 bg-white py-3.5 text-xs font-black tracking-[0.15em] uppercase transition-all hover:bg-slate-50 active:translate-y-[2px] active:border-b-2"
                     >
                         Hapus
                     </button>
@@ -64,12 +64,12 @@
         </div>
 
         <div class="flex flex-col items-center text-center">
-            <p class="mb-6 text-[11px] font-medium tracking-wide text-white/40">
+            <p class="mb-6 text-xs font-medium tracking-wide text-white/40">
                 Atau mulai belajar sekarang
             </p>
             <Link
                 href={ROUTES.AUTH.REGISTER}
-                class="group inline-flex items-center gap-3 rounded-2xl border-2 border-b-6 border-white bg-white px-10 py-4 text-[11px] font-black tracking-[0.2em] text-slate-900 uppercase transition-all hover:bg-slate-50 active:translate-y-[2px] active:border-b-4"
+                class="group inline-flex items-center gap-3 rounded-2xl border-2 border-b-6 border-white bg-white px-10 py-4 text-xs font-black tracking-[0.2em] text-slate-900 uppercase transition-all hover:bg-slate-50 active:translate-y-[2px] active:border-b-4"
             >
                 <span>Daftar Sekarang</span>
                 <ArrowRight size={16} class="transition-transform group-hover:translate-x-1" />

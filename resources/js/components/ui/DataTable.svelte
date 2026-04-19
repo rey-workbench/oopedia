@@ -46,7 +46,7 @@
 <Card {id} padding="p-0" class="overflow-hidden" {...rest}>
     {#snippet header()}
         <div class="flex w-full flex-col items-center justify-between gap-6 md:flex-row">
-            <p class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+            <p class="text-xs font-bold tracking-widest text-slate-400 uppercase">
                 {title}
             </p>
             {#if !hideSearch}

@@ -38,7 +38,7 @@
     {#if label}
         <label
             for={textareaId}
-            class="ml-4 block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+            class="ml-4 block text-xs font-bold tracking-widest text-slate-400 uppercase"
         >
             {label}
             {#if required}<span class="text-rose-500">*</span>{/if}
@@ -79,7 +79,7 @@
         <p
             id={errorId}
             role="alert"
-            class="animate-in fade-in slide-in-from-top-1 ml-4 text-[9px] font-bold tracking-widest text-rose-500 uppercase transition-all"
+            class="animate-in fade-in slide-in-from-top-1 ml-4 text-xs font-bold tracking-widest text-rose-500 uppercase transition-all"
         >
             {error}
         </p>

@@ -49,7 +49,7 @@
     {#if label}
         <label
             for={inputId}
-            class={`ml-4 block text-[11px] font-black tracking-widest uppercase transition-colors ${error ? 'text-rose-500' : variant === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}
+            class={`ml-4 block text-xs font-black tracking-widest uppercase transition-colors ${error ? 'text-rose-500' : variant === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}
         >
             {label}
             {#if required}<span class="ml-1 text-rose-500">*</span>{/if}
@@ -93,7 +93,7 @@
         <p
             id={errorId}
             role="alert"
-            class="animate-in fade-in slide-in-from-top-1 ml-4 text-[9px] font-bold tracking-widest text-rose-500 uppercase transition-all"
+            class="animate-in fade-in slide-in-from-top-1 ml-4 text-xs font-bold tracking-widest text-rose-500 uppercase transition-all"
         >
             {error}
         </p>

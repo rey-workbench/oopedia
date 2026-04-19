@@ -60,7 +60,7 @@
 
 <div class="space-y-4 {className}">
     <Alert id="drag-drop-guide" variant="info" class="border-primary-100 bg-primary-50/50">
-        <div class="flex flex-col gap-1 text-[11px] leading-relaxed font-medium">
+        <div class="flex flex-col gap-1 text-xs leading-relaxed font-medium">
             <strong class="text-primary-900 tracking-wider uppercase">Panduan Drag & Drop:</strong>
             <span class="text-primary-700/80">1. Ketik soal di dalam kotak di bawah ini.</span>
             <span class="text-primary-700/80"

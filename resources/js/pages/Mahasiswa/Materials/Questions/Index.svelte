@@ -44,7 +44,7 @@
                     id="quiz-card-{material.id}"
                     padding="p-0"
                     hover={!isLocked}
-                    class="overflow-hidden {isLocked ? 'opacity-70 grayscale' : ''}"
+                    class="group overflow-hidden {isLocked ? 'opacity-70 grayscale' : ''}"
                 >
                     <!-- ── Graphic + Content (shared markup) ─────────────────── -->
                     {#snippet cardInner()}
@@ -122,7 +122,7 @@
                                     <div
                                         class="{isLocked
                                             ? 'bg-slate-100 text-slate-400'
-                                            : 'group-hover:bg-primary-600 bg-slate-50 text-slate-900 group-hover:text-white'} hidden h-14 w-14 items-center justify-center rounded-2xl shadow-inner transition-all sm:flex"
+                                            : 'group-hover:bg-primary-600 bg-slate-50 text-slate-900 group-hover:text-white group-active:scale-95'} hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl shadow-inner transition-all duration-150 sm:flex"
                                     >
                                         {#if isLocked}
                                             <Lock size={20} />

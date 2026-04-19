@@ -28,7 +28,7 @@
                     <div
                         class="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-slate-100 bg-white px-4 py-2 shadow-sm"
                     >
-                        <span class="text-[9px] font-black tracking-widest text-slate-400 uppercase"
+                        <span class="text-xs font-black tracking-widest text-slate-400 uppercase"
                             >Sulit</span
                         >
                         <Badge
@@ -104,7 +104,7 @@
                     </div>
                     <div>
                         <h4
-                            class="mb-1 text-[11px] font-black tracking-widest text-amber-700 uppercase"
+                            class="mb-1 text-xs font-black tracking-widest text-amber-700 uppercase"
                         >
                             Wawasan Adaptif
                         </h4>
@@ -157,7 +157,7 @@
                 {/if}
             </Button>
             <p
-                class="mt-4 text-center text-[10px] font-bold tracking-[0.2em] text-slate-300 uppercase"
+                class="mt-4 text-center text-xs font-bold tracking-[0.2em] text-slate-300 uppercase"
             >
                 Sistem Adaptif Oopedia • v2.0
             </p>

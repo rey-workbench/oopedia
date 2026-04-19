@@ -65,7 +65,7 @@
 
         <div class="absolute top-1/2 left-1/2 z-20 -translate-x-[60%] -translate-y-1/2">
             <div
-                class="flex cursor-pointer items-center gap-3 rounded-2xl border-2 border-b-4 border-white/20 bg-[#A43B25] px-8 py-4 text-[11px] font-black tracking-[0.2em] text-white uppercase transition-all duration-300 hover:scale-110 active:translate-y-[2px] active:border-b-2"
+                class="flex cursor-pointer items-center gap-3 rounded-2xl border-2 border-b-4 border-white/20 bg-[#A43B25] px-8 py-4 text-xs font-black tracking-[0.2em] text-white uppercase transition-all duration-300 hover:scale-110 active:translate-y-[2px] active:border-b-2"
             >
                 <div
                     class="h-3 w-3 animate-pulse rounded-full border-2 border-[#EB8E78] bg-[#EB8E78]"
@@ -75,7 +75,7 @@
         </div>
     </div>
 
-    <p class="mt-8 text-[10px] font-black tracking-[0.2em] text-slate-900 uppercase">
+    <p class="mt-8 text-xs font-black tracking-[0.2em] text-slate-900 uppercase">
         berdasarkan paradigma
     </p>
 </section>

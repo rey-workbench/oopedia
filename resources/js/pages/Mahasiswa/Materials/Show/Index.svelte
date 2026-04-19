@@ -3,7 +3,7 @@
     import Button from '@/components/ui/Button.svelte';
     import Card from '@/components/ui/Card.svelte';
     import ContentDisplay from '@/components/ui/ContentDisplay.svelte';
-    import { page } from '@inertiajs/svelte';
+    import { page, Link } from '@inertiajs/svelte';
     import { ArrowLeft, BookOpen, Info, Puzzle } from 'lucide-svelte';
     import { onMount, tick, untrack } from 'svelte';
     import { enhanceCodeBlocks } from '@/utils/codeBlockEnhancer';
@@ -67,6 +67,22 @@
             </div>
         {/if}
 
+        <!-- Material Content Section (Optional) -->
+        {#if state.material.content}
+            <div id="material-content">
+                <Card>
+                    <div class="prose max-w-none">
+                        <h3 class="mb-4 text-2xl font-bold tracking-widest text-slate-900">
+                            Tentang Materi Ini
+                        </h3>
+                        <div class="text-slate-600 leading-relaxed font-medium">
+                            <ContentDisplay content={state.material.content} />
+                        </div>
+                    </div>
+                </Card>
+            </div>
+        {/if}
+
         <!-- Sub-Materials Grid -->
         <div id="sub-material-section">
             <div class="mb-8 flex items-center justify-between">
@@ -103,107 +119,106 @@
                     </Button>
                 </Card>
             {:else}
-                <div
-                    id="sub-material-grid"
-                    class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
-                >
+                <div id="sub-material-grid" class="grid grid-cols-1 gap-10">
                     {#each state.subMaterials as subMaterial (subMaterial.id)}
                         {@const SubIcon = getIcon(subMaterial.jenis_konten)}
                         <Card
+                            id="sub-material-card-{subMaterial.id}"
                             padding="p-0"
-                            class="border-duo-lg overflow-hidden rounded-3xl bg-white"
+                            hover={true}
+                            class="group overflow-hidden"
                         >
-                            <!-- Header with Icon -->
-                            <div
-                                class={`relative h-44 ${getBgClass(subMaterial.jenis_konten)} flex shrink-0 items-center justify-center`}
-                            >
-                                <div
-                                    class="absolute inset-0 bg-black/5 opacity-0 transition-opacity group-hover:opacity-100"
-                                ></div>
-                                <div
-                                    class="relative z-10 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3"
-                                >
-                                    <SubIcon size={56} class="text-white drop-shadow-lg" />
-                                </div>
-
-                                <!-- Floating Index Badge -->
-                                <div
-                                    class="absolute top-4 left-4 flex h-10 w-10 items-center justify-center rounded-2xl border-2 border-slate-100 bg-white shadow-lg"
-                                >
-                                    <span
-                                        class={`text-lg font-black tracking-tight ${getTextClass(subMaterial.jenis_konten)}`}
-                                        >{subMaterial.order}</span
-                                    >
-                                </div>
-
-                                <!-- Floating Status/Questions -->
-                                <div
-                                    class="absolute right-4 bottom-4 flex items-center gap-2 rounded-2xl border-2 border-white/30 bg-white/20 px-3 py-1.5 backdrop-blur-md"
-                                >
-                                    <Puzzle size={14} class="text-white" />
-                                    <span
-                                        class="text-[10px] font-black tracking-widest text-white uppercase"
-                                    >
-                                        {subMaterial.questions ? subMaterial.questions.length : 0} Soal
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Content Section -->
-                            <div class="flex flex-1 flex-col p-6">
-                                <div class="mb-4">
+                            {#snippet cardInner()}
+                                <!-- Graphic Section -->
+                                <div class="relative shrink-0 md:w-72 lg:w-96">
                                     <div
-                                        class={`mb-3 inline-block rounded-full px-3 py-1 text-[9px] font-black tracking-[0.15em] text-white uppercase ${getBgClass(subMaterial.jenis_konten)} shadow-sm`}
+                                        class={`flex h-60 items-center justify-center md:h-full ${getBgClass(subMaterial.jenis_konten)}`}
                                     >
-                                        {getBadgeLabel(subMaterial.jenis_konten)}
+                                        <SubIcon size={96} class="text-white/10 transition-transform duration-500 group-hover:rotate-6" />
                                     </div>
-                                    <h3
-                                        class="line-clamp-2 text-xl leading-tight font-black tracking-tight text-slate-900 transition-colors"
-                                    >
-                                        {subMaterial.title}
-                                    </h3>
+                                    <div class="absolute top-6 left-6">
+                                        <div
+                                            class="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-slate-100 bg-white shadow-xl transition-transform"
+                                        >
+                                            <span
+                                                class={`text-xl font-bold tracking-widest ${getTextClass(subMaterial.jenis_konten)}`}
+                                            >
+                                                {subMaterial.order}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="mb-6 flex-1">
-                                    <p
-                                        class="line-clamp-2 text-sm leading-relaxed font-medium text-slate-500"
-                                    >
-                                        {stripHtml(subMaterial.content)}
-                                    </p>
-                                </div>
+                                <!-- Content Section -->
+                                <div class="flex flex-1 flex-col justify-between p-10">
+                                    <div>
+                                        <div class="flex items-start justify-between gap-6">
+                                            <div>
+                                                <div
+                                                    class={`mb-4 inline-block rounded-xl px-4 py-1.5 text-xs font-bold tracking-widest text-white uppercase shadow-sm ${getBgClass(subMaterial.jenis_konten)}`}
+                                                >
+                                                    {getBadgeLabel(subMaterial.jenis_konten)}
+                                                </div>
+                                                <h3
+                                                    class="group-hover:text-primary-600 mb-4 text-3xl leading-tight font-bold tracking-widest text-slate-900 transition-colors"
+                                                >
+                                                    {subMaterial.title}
+                                                </h3>
+                                                <p
+                                                    class="mb-8 line-clamp-2 text-sm leading-relaxed font-medium text-slate-500"
+                                                >
+                                                    {stripHtml(subMaterial.content)}
+                                                </p>
 
-                                <div class="mt-auto">
-                                    <Button
-                                        href={ROUTES.MAHASISWA.SUBMATERIALS.SHOW(
-                                            state.material.id,
-                                            subMaterial.id
-                                        )}
-                                        variant="primary"
-                                        size="md"
-                                        class="w-full"
-                                        icon={BookOpen}
-                                    >
-                                        Mulai Belajar
-                                    </Button>
+                                                <div class="flex flex-wrap items-center gap-6">
+                                                    <div class="flex items-center gap-2.5">
+                                                        <div
+                                                            class="group-hover:bg-primary-50 group-hover:text-primary-600 flex h-8 w-8 items-center justify-center rounded-xl bg-slate-50 text-slate-400 shadow-inner transition-colors"
+                                                        >
+                                                            <Puzzle size={14} />
+                                                        </div>
+                                                        <span
+                                                            class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                                                        >
+                                                            {subMaterial.questions
+                                                                ? subMaterial.questions.length
+                                                                : 0} Soal Tersedia
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="group-hover:bg-primary-600 bg-slate-50 text-slate-900 group-hover:text-white group-active:scale-95 hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl shadow-inner transition-all duration-150 sm:flex"
+                                            >
+                                                <BookOpen size={20} />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-10 md:hidden">
+                                        <Button
+                                            variant="primary"
+                                            class="shadow-primary-900/20 w-full shadow-lg"
+                                            icon={BookOpen}
+                                        >
+                                            Mulai Belajar
+                                        </Button>
+                                    </div>
                                 </div>
-                            </div>
+                            {/snippet}
+
+                            <Link
+                                href={ROUTES.MAHASISWA.SUBMATERIALS.SHOW(
+                                    state.material.id,
+                                    subMaterial.id
+                                )}
+                                class="flex h-full flex-col md:flex-row"
+                            >
+                                {@render cardInner()}
+                            </Link>
                         </Card>
                     {/each}
                 </div>
-            {/if}
-        </div>
-
-        <!-- Material Content Section (Optional) -->
-        <div id="material-content">
-            {#if state.material.content}
-                <Card>
-                    <div class="prose max-w-none">
-                        <h3 class="mb-4 text-2xl font-bold text-slate-900">Tentang Materi Ini</h3>
-                        <div class="leading-relaxed">
-                            <ContentDisplay content={state.material.content} />
-                        </div>
-                    </div>
-                </Card>
             {/if}
         </div>
     </div>

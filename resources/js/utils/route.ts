@@ -66,6 +66,8 @@ export const ROUTES = {
     },
     MAHASISWA: {
         DASHBOARD: '/mahasiswa/dashboard',
+        IN_PROGRESS: '/mahasiswa/dashboard/in-progress',
+        COMPLETED: '/mahasiswa/dashboard/completed',
         MATERIALS: {
             INDEX: '/mahasiswa/materials',
             SHOW: (id: string | number) => `/mahasiswa/materials/${id}`,

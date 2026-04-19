@@ -313,7 +313,7 @@
         in:fade={{ duration: 1500 }}
     >
         <span
-            class="mb-4 rounded-xl border-2 border-slate-900/10 bg-white/70 px-4 py-2 text-[11px] font-black tracking-[0.2em] text-slate-900/80 uppercase backdrop-blur"
+            class="mb-4 rounded-xl border-2 border-slate-900/10 bg-white/70 px-4 py-2 text-xs font-black tracking-[0.2em] text-slate-900/80 uppercase backdrop-blur"
             >OOPEDIA · PLATFORM PEMBELAJARAN MODERN</span
         >
 

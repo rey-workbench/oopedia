@@ -45,7 +45,7 @@
     <div class="absolute inset-0 flex flex-col justify-end p-8">
         {#if tag}
             <span
-                class="mb-3 w-fit rounded-full bg-white/10 px-3 py-1 text-[10px] font-black tracking-widest text-white/50 uppercase backdrop-blur-md"
+                class="mb-3 w-fit rounded-full bg-white/10 px-3 py-1 text-xs font-black tracking-widest text-white/50 uppercase backdrop-blur-md"
             >
                 {tag}
             </span>

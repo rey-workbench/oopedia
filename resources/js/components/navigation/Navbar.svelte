@@ -42,7 +42,7 @@
                     <ol class="inline-flex items-center space-x-1 md:space-x-3">
                         <li class="inline-flex items-center">
                             <span
-                                class="text-[10px] font-bold tracking-[0.2em] text-slate-500 uppercase"
+                                class="text-xs font-bold tracking-[0.2em] text-slate-500 uppercase"
                                 >Page</span
                             >
                         </li>
@@ -54,7 +54,7 @@
                                     class="mx-2 text-slate-400"
                                 />
                                 <span
-                                    class="text-[10px] font-bold tracking-[0.2em] text-slate-900 uppercase"
+                                    class="text-xs font-bold tracking-[0.2em] text-slate-900 uppercase"
                                     >{titlePage}</span
                                 >
                             </div>
@@ -68,7 +68,7 @@
             {#if isAuthenticated}
                 <div class="mr-2 hidden flex-col items-end md:flex">
                     <span class="text-xs font-bold text-slate-900">{userName}</span>
-                    <span class="text-[10px] font-bold tracking-[0.2em] text-slate-500 uppercase"
+                    <span class="text-xs font-bold tracking-[0.2em] text-slate-500 uppercase"
                         >{isAdminRole ? 'Admin' : 'Student'}</span
                     >
                 </div>
@@ -116,7 +116,7 @@
                             <p class="text-xs font-bold text-slate-900">
                                 {userName}
                             </p>
-                            <p class="truncate text-[10px] font-medium text-slate-500">
+                            <p class="truncate text-xs font-medium text-slate-500">
                                 {user.email}
                             </p>
                         </div>

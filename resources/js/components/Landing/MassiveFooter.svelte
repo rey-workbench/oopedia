@@ -4,7 +4,7 @@
 
 <footer class="relative flex w-full flex-col overflow-hidden pt-12">
     <div
-        class="flex w-full flex-col items-center justify-between gap-8 px-6 pb-[2vh] text-[9px] font-black tracking-[0.2em] text-slate-900/40 uppercase md:flex-row md:gap-0"
+        class="flex w-full flex-col items-center justify-between gap-8 px-6 pb-[2vh] text-xs font-black tracking-[0.2em] text-slate-900/40 uppercase md:flex-row md:gap-0"
     >
         <div class="flex gap-6">
             <a href="https://instagram.com" class="transition-colors hover:text-slate-900"

@@ -19,7 +19,7 @@
 </script>
 
 <div class="space-y-4">
-    <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">{label}</span>
+    <span class="text-xs font-bold tracking-widest text-slate-400 uppercase">{label}</span>
 
     <label class="group block w-full cursor-pointer">
         <input type="file" accept=".xlsx,.xls" onchange={onFileChange} class="hidden" />
@@ -35,20 +35,20 @@
                 <p class="mb-1 text-xs font-bold tracking-widest text-slate-600 uppercase">
                     {form.excel_file ? form.excel_file.name : 'Klik untuk memilih file'}
                 </p>
-                <p class="text-[10px] font-medium text-slate-400">Format: .xlsx, .xls</p>
+                <p class="text-xs font-medium text-slate-400">Format: .xlsx, .xls</p>
             </div>
         </div>
     </label>
 
     {#if form.errors?.excel_file}
-        <p class="text-[10px] font-bold tracking-widest text-rose-500 uppercase">
+        <p class="text-xs font-bold tracking-widest text-rose-500 uppercase">
             {form.errors.excel_file}
         </p>
     {/if}
 
     <a
         href={downloadHref}
-        class="text-primary-600 inline-flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase hover:underline"
+        class="text-primary-600 inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase hover:underline"
     >
         <Download size={12} />
         {downloadLabel}

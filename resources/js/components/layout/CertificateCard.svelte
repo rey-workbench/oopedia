@@ -166,7 +166,7 @@
         <div class="relative z-10 flex flex-col items-center px-10 py-10 text-center">
             <div class="mb-2 flex items-center gap-3">
                 <div class="h-px flex-1 bg-(--cert-border) opacity-30"></div>
-                <p class="text-[10px] font-black tracking-[0.3em] text-(--cert-accent) uppercase">
+                <p class="text-xs font-black tracking-[0.3em] text-(--cert-accent) uppercase">
                     OOPEDIA • POLITEKNIK NEGERI MALANG
                 </p>
                 <div class="h-px flex-1 bg-(--cert-border) opacity-30"></div>
@@ -183,7 +183,7 @@
             </div>
 
             <span
-                class="mb-4 rounded-full px-4 py-1 text-[10px] font-black tracking-widest uppercase shadow {typeConfig.badgeClass}"
+                class="mb-4 rounded-full px-4 py-1 text-xs font-black tracking-widest uppercase shadow {typeConfig.badgeClass}"
             >
                 {typeConfig.tier} CERTIFICATE
             </span>
@@ -215,7 +215,7 @@
                 style="border-color: {typeConfig.borderColor}40;"
             >
                 <div class="text-left">
-                    <p class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+                    <p class="text-xs font-bold tracking-widest text-slate-400 uppercase">
                         Tanggal
                     </p>
                     <p class="text-xs font-bold text-(--cert-accent)">
@@ -231,7 +231,7 @@
                 </div>
 
                 <div class="text-right">
-                    <p class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+                    <p class="text-xs font-bold tracking-widest text-slate-400 uppercase">
                         ID Sertifikat
                     </p>
                     <p class="font-mono text-xs font-bold text-(--cert-accent)">

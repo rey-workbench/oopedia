@@ -51,7 +51,7 @@
                         {answeredCount}
                     </div>
                     <div
-                        class="mt-1 text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                        class="mt-1 text-xs font-bold tracking-widest text-slate-400 uppercase"
                     >
                         Soal Dijawab
                     </div>
@@ -68,7 +68,7 @@
                         {state.xp}
                     </div>
                     <div
-                        class="mt-1 text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                        class="mt-1 text-xs font-bold tracking-widest text-slate-400 uppercase"
                     >
                         Total XP
                     </div>
@@ -83,7 +83,7 @@
                         {state.streak}
                     </div>
                     <div
-                        class="mt-1 text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                        class="mt-1 text-xs font-bold tracking-widest text-slate-400 uppercase"
                     >
                         Streak
                     </div>

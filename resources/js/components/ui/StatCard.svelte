@@ -65,7 +65,7 @@
             {/if}
         </div>
 
-        <h3 class="mb-2 text-[10px] font-bold tracking-wider text-slate-600 uppercase">
+        <h3 class="mb-2 text-xs font-bold tracking-wider text-slate-600 uppercase">
             {title}
         </h3>
         <div class="font-display mb-2 text-4xl font-black tracking-tight text-slate-900">
@@ -75,7 +75,7 @@
         {#if footer}
             <div class="flex items-center gap-2">
                 <div class="h-1.5 w-1.5 rounded-full {dotStyles[variant]}"></div>
-                <p class="text-[10px] font-bold tracking-widest text-slate-500 uppercase">
+                <p class="text-xs font-bold tracking-widest text-slate-500 uppercase">
                     {footer}
                 </p>
             </div>

@@ -35,11 +35,51 @@ export function registerMahasiswaTutorials() {
                 },
             },
             {
+                element: '#sidebar-inprogress',
+                popover: {
+                    title: 'Materi Sedang Dipelajari 🚀',
+                    description:
+                        'Akses cepat ke materi yang belum selesai dari menu samping kapan saja.',
+                    side: 'right',
+                    align: 'start',
+                },
+            },
+            {
+                element: '#sidebar-completed',
+                popover: {
+                    title: 'Materi Selesai ✅',
+                    description:
+                        'Akses cepat ke materi yang telah kamu kuasai dari menu samping.',
+                    side: 'right',
+                    align: 'start',
+                },
+            },
+            {
                 element: '#student-progress-overview',
                 popover: {
-                    title: 'Statistik Pembelajaran',
+                    title: 'Ringkasan Progres',
                     description:
-                        'Pantau jumlah materi, total soal, level hardest, dan rankingmu di sini.',
+                        'Pantau materi tersedia, materi yang sedang dipelajari, materi selesai, dan peringkatmu. Klik pada kartu statistik untuk melihat detail selengkapnya!',
+                    side: 'bottom',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#stat-inprogress-materials',
+                popover: {
+                    title: 'Progres Berjalan',
+                    description:
+                        'Klik kartu ini untuk melihat daftar lengkap materi yang sedang kamu pelajari.',
+                    side: 'bottom',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#stat-completed-materials',
+                popover: {
+                    title: 'Pencapaian Materi',
+                    description:
+                        'Klik kartu ini untuk meninjau kembali semua materi yang telah kamu selesaikan.',
                     side: 'bottom',
                     align: 'center',
                 },

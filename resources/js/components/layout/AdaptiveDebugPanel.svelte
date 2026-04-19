@@ -117,7 +117,7 @@
                                 <Badge
                                     variant="secondary"
                                     size="sm"
-                                    class="border-none bg-white/20 text-[10px] text-white"
+                                    class="border-none bg-white/20 text-xs text-white"
                                 >
                                     {quizState.adaptiveFacts.length} Facts • {quizState.adaptiveTriggeredRule
                                         ? 'Rule Active'
@@ -165,7 +165,7 @@
                                 class="border border-slate-200 bg-slate-50"
                             >
                                 <div
-                                    class="mb-3 flex items-center justify-between text-[10px] font-bold tracking-wider text-slate-500 uppercase"
+                                    class="mb-3 flex items-center justify-between text-xs font-bold tracking-wider text-slate-500 uppercase"
                                 >
                                     <span>Facts Gathered ({quizState.adaptiveFacts.length})</span>
                                     <span class="font-medium text-slate-400 normal-case"
@@ -180,7 +180,7 @@
                                         {#if (categoryFacts as string[]).length > 0}
                                             <div transition:fade={{ duration: 200 }}>
                                                 <div
-                                                    class="mb-1.5 flex items-center gap-2 text-[9px] font-bold text-slate-400 uppercase"
+                                                    class="mb-1.5 flex items-center gap-2 text-xs font-bold text-slate-400 uppercase"
                                                 >
                                                     <span
                                                         class="h-1.5 w-1.5 rounded-full bg-slate-300"
@@ -192,11 +192,11 @@
                                                         <Badge
                                                             variant="info"
                                                             size="sm"
-                                                            class="font-mono text-[10px]"
+                                                            class="font-mono text-xs"
                                                         >
                                                             {fact}
                                                             <span
-                                                                class="ml-1 font-sans text-[9px] italic opacity-60"
+                                                                class="ml-1 font-sans text-xs italic opacity-60"
                                                             >
                                                                 • {getFactLabel(fact as string)}
                                                             </span>
@@ -217,7 +217,7 @@
 
                             <div class="flex flex-col">
                                 <div
-                                    class="mb-3 text-[10px] font-bold tracking-wider text-slate-500 uppercase"
+                                    class="mb-3 text-xs font-bold tracking-wider text-slate-500 uppercase"
                                 >
                                     Rule Execution Status
                                 </div>
@@ -242,7 +242,7 @@
                                             </div>
                                             <div class="min-w-0 flex-1">
                                                 <div
-                                                    class="mb-1 text-[10px] font-black tracking-tighter text-emerald-600 uppercase"
+                                                    class="mb-1 text-xs font-black tracking-tighter text-emerald-600 uppercase"
                                                 >
                                                     Rule Successfully Triggered
                                                 </div>
@@ -252,7 +252,7 @@
                                                     {quizState.adaptiveTriggeredRule.name}
                                                 </div>
                                                 <div
-                                                    class="mb-3 flex flex-wrap items-center gap-2 text-[11px]"
+                                                    class="mb-3 flex flex-wrap items-center gap-2 text-xs"
                                                 >
                                                     <Badge
                                                         variant="success"
@@ -272,7 +272,7 @@
                                                     <Badge
                                                         variant="secondary"
                                                         size="xs"
-                                                        class="text-[10px]"
+                                                        class="text-xs"
                                                     >
                                                         PRIORITY: {quizState.adaptiveTriggeredRule
                                                             .priority}
@@ -281,7 +281,7 @@
                                                         <Badge
                                                             variant="info"
                                                             size="xs"
-                                                            class="flex items-center gap-1 text-[10px]"
+                                                            class="flex items-center gap-1 text-xs"
                                                         >
                                                             <ArrowRight size={8} />
                                                             {newState.next_action_data.label}
@@ -304,7 +304,7 @@
                                                             class="mt-0.5 flex-shrink-0 text-emerald-600"
                                                         />
                                                         <p
-                                                            class="text-[11px] leading-snug text-slate-700 italic"
+                                                            class="text-xs leading-snug text-slate-700 italic"
                                                         >
                                                             "{quizState.feedbackData.message}"
                                                         </p>
@@ -317,7 +317,7 @@
                                                             <Badge
                                                                 variant="warning"
                                                                 size="xs"
-                                                                class="text-[10px]"
+                                                                class="text-xs"
                                                             >
                                                                 rec: {newState.recommendation}
                                                             </Badge>
@@ -326,7 +326,7 @@
                                                             <Badge
                                                                 variant="danger"
                                                                 size="xs"
-                                                                class="font-mono text-[10px]"
+                                                                class="font-mono text-xs"
                                                             >
                                                                 intervention: {newState.intervention_type}
                                                             </Badge>
@@ -335,7 +335,7 @@
                                                             <Badge
                                                                 variant="warning"
                                                                 size="xs"
-                                                                class="font-mono text-[10px]"
+                                                                class="font-mono text-xs"
                                                             >
                                                                 recovery: {newState.recovery_type}
                                                             </Badge>
@@ -359,7 +359,7 @@
                                         >
                                             Awaiting Engine Inference
                                         </p>
-                                        <p class="mt-1 max-w-[200px] text-[10px] text-slate-400">
+                                        <p class="mt-1 max-w-[200px] text-xs text-slate-400">
                                             Data is being processed using Forward Chaining matching
                                             strategy.
                                         </p>
@@ -370,7 +370,7 @@
                     </div>
 
                     <div
-                        class="flex items-center justify-between border-t border-slate-50 bg-white px-6 py-2 text-[9px] font-bold tracking-widest text-slate-400 uppercase"
+                        class="flex items-center justify-between border-t border-slate-50 bg-white px-6 py-2 text-xs font-bold tracking-widest text-slate-400 uppercase"
                     >
                         <div class="flex items-center gap-4">
                             <span class="flex items-center gap-1"

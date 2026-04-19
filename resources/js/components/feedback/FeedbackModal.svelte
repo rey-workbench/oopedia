@@ -309,7 +309,7 @@
 
                         {#if recommendation}
                             <p
-                                class={`mx-auto mt-1.5 flex w-fit items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-[10px] font-black shadow-sm md:mx-0 ${feedbackTone.chipBorder} ${feedbackTone.chipText}`}
+                                class={`mx-auto mt-1.5 flex w-fit items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-black shadow-sm md:mx-0 ${feedbackTone.chipBorder} ${feedbackTone.chipText}`}
                             >
                                 <TrendingUp size={12} />
                                 {recommendation}

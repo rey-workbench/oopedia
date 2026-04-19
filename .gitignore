@@ -20,3 +20,5 @@ yarn-error.log
 .kiro
 .env.prod
 opencode.json
+.agents
+skills-lock.json

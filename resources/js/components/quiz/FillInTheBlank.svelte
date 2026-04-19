@@ -28,7 +28,7 @@
                     <div class="h-2 w-2 rounded-full bg-emerald-500/60"></div>
                 </div>
                 <span
-                    class="ml-1 font-mono text-[10px] font-bold tracking-widest text-slate-500 uppercase"
+                    class="ml-1 font-mono text-xs font-bold tracking-widest text-slate-500 uppercase"
                 >
                     soal.txt
                 </span>
@@ -45,7 +45,7 @@
     <!-- Answer input: clean light style, consistent with options in MultipleChoice -->
     <div class="space-y-3">
         <div class="flex items-center gap-2 px-1">
-            <span class="font-mono text-[10px] font-black tracking-widest text-slate-400 uppercase"
+            <span class="font-mono text-xs font-black tracking-widest text-slate-400 uppercase"
                 >&gt;_ Input Jawaban</span
             >
             <div class="ml-2 h-px flex-1 bg-slate-100"></div>
@@ -68,7 +68,7 @@
             {/if}
         </div>
 
-        <p class="px-2 text-[10px] font-bold tracking-widest text-slate-300 uppercase">
+        <p class="px-2 text-xs font-bold tracking-widest text-slate-300 uppercase">
             Masukkan teks jawaban dengan tepat
         </p>
     </div>

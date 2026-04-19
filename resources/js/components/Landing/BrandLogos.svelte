@@ -51,7 +51,7 @@
 >
     <div class="mx-auto max-w-7xl">
         <div class="mb-16 text-center">
-            <p class="mb-4 text-[9px] font-black tracking-[0.3em] text-slate-900/40 uppercase">
+            <p class="mb-4 text-xs font-black tracking-[0.3em] text-slate-900/40 uppercase">
                 Dipercaya oleh
             </p>
             <h2 class="font-serif text-4xl leading-tight tracking-tight text-slate-900 md:text-5xl">

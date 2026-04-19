@@ -98,7 +98,7 @@
 <Card padding="p-0" class={`overflow-hidden ${className}`}>
     <div class="pt-8 pb-2 text-center">
         <span
-            class="inline-flex items-center gap-2 rounded-full bg-slate-800 px-6 py-2 text-[10px] font-black tracking-[0.25em] text-white uppercase shadow-md"
+            class="inline-flex items-center gap-2 rounded-full bg-slate-800 px-6 py-2 text-xs font-black tracking-[0.25em] text-white uppercase shadow-md"
         >
             <Zap size={14} class="fill-amber-400 text-amber-400" />
             Start
@@ -181,7 +181,7 @@
                             >
                         </button>
                         <span
-                            class="z-10 mt-3 rounded-2xl border-2 border-b-4 border-slate-900 bg-slate-800 px-5 py-2 text-[10px] font-black tracking-widest text-white uppercase shadow-md"
+                            class="z-10 mt-3 rounded-2xl border-2 border-b-4 border-slate-900 bg-slate-800 px-5 py-2 text-xs font-black tracking-widest text-white uppercase shadow-md"
                         >
                             Play
                         </span>
@@ -214,12 +214,12 @@
                     {/each}
                 </div>
                 <span
-                    class="mt-2.5 animate-bounce rounded-full border-2 border-b-4 border-amber-600 bg-amber-500 px-5 py-2 text-[11px] font-black tracking-wider text-white uppercase shadow-lg"
+                    class="mt-2.5 animate-bounce rounded-full border-2 border-b-4 border-amber-600 bg-amber-500 px-5 py-2 text-xs font-black tracking-wider text-white uppercase shadow-lg"
                 >
                     🎉 Completed!
                 </span>
             {:else}
-                <span class="mt-4 text-[11px] font-black tracking-widest text-slate-400 uppercase">
+                <span class="mt-4 text-xs font-black tracking-widest text-slate-400 uppercase">
                     Finish
                 </span>
             {/if}

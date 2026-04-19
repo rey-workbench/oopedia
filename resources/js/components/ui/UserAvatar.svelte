@@ -9,7 +9,7 @@
     let { name = '', size = 'md', dark = false, class: className = '' }: Props = $props();
 
     const sizes = {
-        sm: 'w-8 h-8 text-[10px]',
+        sm: 'w-8 h-8 text-xs',
         md: 'w-10 h-10 text-xs',
         lg: 'w-20 h-20 text-2xl',
     };

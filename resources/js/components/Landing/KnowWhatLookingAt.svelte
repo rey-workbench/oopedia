@@ -20,7 +20,7 @@
         </div>
 
         <div
-            class="absolute top-[50%] left-[70%] z-10 max-w-[200px] translate-y-4 transform rounded-2xl border-2 border-b-4 border-slate-700 bg-slate-900 p-4 text-left text-[11px] leading-relaxed font-bold text-white opacity-0 backdrop-blur-xl transition-all delay-100 duration-700 group-hover:translate-y-0 group-hover:opacity-100"
+            class="absolute top-[50%] left-[70%] z-10 max-w-[200px] translate-y-4 transform rounded-2xl border-2 border-b-4 border-slate-700 bg-slate-900 p-4 text-left text-xs leading-relaxed font-bold text-white opacity-0 backdrop-blur-xl transition-all delay-100 duration-700 group-hover:translate-y-0 group-hover:opacity-100"
         >
             OOPedia dapat mengidentifikasi paradigma atau pola desain yang sedang Anda pelajari.
         </div>

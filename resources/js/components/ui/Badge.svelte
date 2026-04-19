@@ -38,8 +38,8 @@
     };
 
     const sizes: Record<BadgeSize, string> = {
-        xs: 'px-2 py-0.5 text-[9px]',
-        sm: 'px-2.5 py-1 text-[10px]',
+        xs: 'px-2 py-0.5 text-xs',
+        sm: 'px-2.5 py-1 text-xs',
         md: 'px-3.5 py-1.5 text-xs',
         lg: 'px-4 py-2 text-sm',
     };

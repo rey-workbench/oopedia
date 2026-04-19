@@ -36,7 +36,7 @@
                 <div class="h-2 w-2 rounded-full bg-emerald-500/60"></div>
             </div>
             <span
-                class="ml-1 font-mono text-[10px] font-bold tracking-widest text-slate-500 uppercase"
+                class="ml-1 font-mono text-xs font-bold tracking-widest text-slate-500 uppercase"
             >
                 soal.txt
             </span>
@@ -53,7 +53,7 @@
     <div class="space-y-4">
         <div class="flex items-center gap-2 px-1">
             <CheckSquare size={13} class="text-primary-500" />
-            <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">
+            <span class="text-xs font-black tracking-widest text-slate-400 uppercase">
                 Pilih Jawaban Yang Tepat
             </span>
             <div class="ml-2 h-px flex-1 bg-slate-100"></div>

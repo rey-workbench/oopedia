@@ -119,13 +119,13 @@
                     <div class="h-2 w-2 rounded-full bg-emerald-500/60"></div>
                 </div>
                 <span
-                    class="ml-1 font-mono text-[10px] font-bold tracking-widest text-slate-500 uppercase"
+                    class="ml-1 font-mono text-xs font-bold tracking-widest text-slate-500 uppercase"
                 >
                     drag-drop.txt
                 </span>
             </div>
             <div
-                class="flex items-center gap-1.5 text-[9px] font-bold tracking-widest text-slate-600 uppercase"
+                class="flex items-center gap-1.5 text-xs font-bold tracking-widest text-slate-600 uppercase"
             >
                 <MousePointer2 size={10} /> Klik kotak untuk batal
             </div>
@@ -150,7 +150,7 @@
     <div id="drag-drop-options-area" class="space-y-3">
         <div class="flex items-center gap-2 px-1">
             <List size={13} class="text-primary-500" />
-            <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">
+            <span class="text-xs font-black tracking-widest text-slate-400 uppercase">
                 Pilihan Komponen
             </span>
             <div class="ml-2 h-px flex-1 bg-slate-100"></div>

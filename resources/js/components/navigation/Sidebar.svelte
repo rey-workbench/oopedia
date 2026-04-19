@@ -11,16 +11,34 @@
         GraduationCap,
         Settings,
         MessageSquareQuote,
-        LogOut,
-        Shapes,
-        Trophy,
-        UserRound,
-        X,
-        ChevronDown,
-        LogIn,
-        UserPlus,
-        Lock,
         HelpCircle,
+        Rocket,
+        CheckCircle2,
+        X,
+
+        Shapes,
+
+        ChevronDown,
+
+        Lock,
+
+        Trophy,
+
+        UserRound,
+
+        LogOut,
+
+        LogIn,
+
+        UserPlus
+
+
+
+
+
+
+
+
     } from 'lucide-svelte';
     import { fly, slide } from 'svelte/transition';
     import { getTourIdFromUrl, registerGlobalTutorials } from '@/tutorial';
@@ -100,7 +118,7 @@
                 <div class="flex items-center gap-2 px-4">
                     <div class="bg-primary-500 h-2 w-2 rounded-full"></div>
                     <span
-                        class="text-cosmos-muted text-[9px] font-extrabold tracking-widest uppercase"
+                        class="text-cosmos-muted text-xs font-extrabold tracking-widest uppercase"
                         >Utama</span
                     >
                     <div class="bg-cosmos-border h-0.5 flex-1"></div>
@@ -119,7 +137,7 @@
                 <div class="flex items-center gap-2 px-4">
                     <div class="bg-primary-500 h-2 w-2 rounded-full"></div>
                     <span
-                        class="text-cosmos-muted text-[9px] font-extrabold tracking-widest uppercase"
+                        class="text-cosmos-muted text-xs font-extrabold tracking-widest uppercase"
                         >Kurikulum</span
                     >
                     <div class="bg-cosmos-border h-0.5 flex-1"></div>
@@ -146,7 +164,7 @@
                 <div class="flex items-center gap-2 px-4">
                     <div class="bg-primary-500 h-2 w-2 rounded-full"></div>
                     <span
-                        class="text-cosmos-muted text-[9px] font-extrabold tracking-widest uppercase"
+                        class="text-cosmos-muted text-xs font-extrabold tracking-widest uppercase"
                         >Manajemen</span
                     >
                     <div class="bg-cosmos-border h-0.5 flex-1"></div>
@@ -189,7 +207,7 @@
 
             <div class="border-cosmos-border space-y-6 border-t pt-10">
                 <div
-                    class="text-cosmos-muted flex items-center gap-3 px-4 text-[10px] font-bold tracking-tight uppercase"
+                    class="text-cosmos-muted flex items-center gap-3 px-4 text-xs font-bold tracking-tight uppercase"
                 >
                     <span class="h-0.5 w-2 bg-rose-500/50"></span>
                     Sesi
@@ -221,7 +239,7 @@
                 <div class="flex items-center gap-2 px-4">
                     <div class="bg-primary-500 h-2 w-2 rounded-full"></div>
                     <span
-                        class="text-cosmos-muted text-[9px] font-extrabold tracking-widest uppercase"
+                        class="text-cosmos-muted text-xs font-extrabold tracking-widest uppercase"
                         >Belajar</span
                     >
                     <div class="bg-cosmos-border h-0.5 flex-1"></div>
@@ -333,12 +351,26 @@
                     <div class="flex items-center gap-2 px-4">
                         <div class="bg-primary-500 h-2 w-2 rounded-full"></div>
                         <span
-                            class="text-cosmos-muted text-[9px] font-extrabold tracking-widest uppercase"
-                            >Pencapaian</span
+                            class="text-cosmos-muted text-xs font-extrabold tracking-widest uppercase"
+                            >Pencapaian & Progres</span
                         >
                         <div class="bg-cosmos-border h-0.5 flex-1"></div>
                     </div>
                     <div class="space-y-2">
+                        <SidebarLink
+                            id="sidebar-inprogress"
+                            href={ROUTES.MAHASISWA.IN_PROGRESS}
+                            icon={Rocket}
+                            active={page.url === ROUTES.MAHASISWA.IN_PROGRESS}
+                            >Sedang Dipelajari</SidebarLink
+                        >
+                        <SidebarLink
+                            id="sidebar-completed"
+                            href={ROUTES.MAHASISWA.COMPLETED}
+                            icon={CheckCircle2}
+                            active={page.url === ROUTES.MAHASISWA.COMPLETED}
+                            >Materi Selesai</SidebarLink
+                        >
                         <SidebarLink
                             id="sidebar-leaderboard"
                             href={ROUTES.MAHASISWA.LEADERBOARD}
@@ -355,7 +387,7 @@
                     <div class="flex items-center gap-2 px-4">
                         <div class="bg-primary-500 h-2 w-2 rounded-full"></div>
                         <span
-                            class="text-cosmos-muted text-[9px] font-extrabold tracking-widest uppercase"
+                            class="text-cosmos-muted text-xs font-extrabold tracking-widest uppercase"
                             >Akun</span
                         >
                         <div class="bg-cosmos-border h-0.5 flex-1"></div>
@@ -390,7 +422,7 @@
                 <div class="flex items-center gap-2 px-4">
                     <div class="h-2 w-2 rounded-full bg-rose-500"></div>
                     <span
-                        class="text-cosmos-muted text-[9px] font-extrabold tracking-widest uppercase"
+                        class="text-cosmos-muted text-xs font-extrabold tracking-widest uppercase"
                         >Sesi</span
                     >
                     <div class="bg-cosmos-border h-0.5 flex-1"></div>
