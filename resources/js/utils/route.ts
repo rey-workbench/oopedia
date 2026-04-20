@@ -63,6 +63,11 @@ export const ROUTES = {
             SHOW: (id: string | number) => `/admin/mslq/${id}`,
             EXPORT: '/admin/mslq/export',
         },
+        SUS: {
+            INDEX: '/admin/sus-survey',
+            SHOW: (id: string | number) => `/admin/sus-survey/${id}`,
+            EXPORT: '/admin/sus-survey/export',
+        },
     },
     MAHASISWA: {
         DASHBOARD: '/mahasiswa/dashboard',
@@ -107,6 +112,10 @@ export const ROUTES = {
             CREATE: '/mahasiswa/mslq/create',
             STORE: '/mahasiswa/mslq',
             THANK_YOU: '/mahasiswa/mslq/thankyou',
+        },
+        SUS: {
+            CREATE: '/mahasiswa/sus-survey/create',
+            THANK_YOU: '/mahasiswa/sus-survey/thank-you',
         },
     },
     AUTH: {

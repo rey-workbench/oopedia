@@ -23,6 +23,7 @@ export type {
     LearningProfile,
     AdaptiveState,
     UeqSurvey,
+    SusResult,
     // Computed / service shapes
     DifficultyStats,
     MaterialWithStats,
@@ -49,6 +50,8 @@ export type {
     AdminStudentProgressProps,
     AdminUeqIndexProps,
     AdminUeqDetailProps,
+    AdminSusIndexProps,
+    AdminSusDetailProps,
     RecentProgressItem,
     StudentProgressItem,
     PopularMaterialItem,
@@ -71,8 +74,10 @@ export type {
     CertificatesPageProps,
     LeaderboardProps,
     UeqCreateProps,
+    SusCreateProps,
     ProfileForm,
     UeqSurveyForm,
+    SusSurveyForm,
     AnswerPayload,
     // View models
     LevelStatus,

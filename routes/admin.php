@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\MslqController;
 use App\Http\Controllers\Admin\QuestionController as AdminQuestionController;
 use App\Http\Controllers\Admin\SubMaterialController;
+use App\Http\Controllers\Admin\SusSurveyController as AdminSusSurveyController;
 use App\Http\Controllers\Admin\UeqSurveyController;
 use Illuminate\Support\Facades\Route;
 
@@ -48,6 +49,9 @@ Route::middleware('auth')->group(function () {
 
             Route::get('mslq/export', [MslqController::class, 'export'])->name('mslq.export');
             Route::resource('mslq', MslqController::class)->only(['index', 'show']);
+
+            Route::get('sus-survey/export', [AdminSusSurveyController::class, 'export'])->name('sus-survey.export');
+            Route::resource('sus-survey', AdminSusSurveyController::class)->only(['index', 'show']);
         });
 
         Route::get('/media/delete/{id}', [AdminMaterialController::class, 'deleteMedia'])

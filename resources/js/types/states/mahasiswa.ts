@@ -108,6 +108,10 @@ export interface UeqCreateProps extends SharedProps {
     hasSubmitted: boolean;
 }
 
+export interface SusCreateProps extends SharedProps {
+    hasSubmitted: boolean;
+}
+
 export interface ProfileForm {
     name: string;
     email: string;
@@ -121,6 +125,23 @@ export interface UeqSurveyForm {
     comments: string;
     suggestions: string;
     [key: string]: unknown;
+}
+
+export interface SusSurveyForm {
+    nim: string;
+    class: string;
+    q1: number;
+    q2: number;
+    q3: number;
+    q4: number;
+    q5: number;
+    q6: number;
+    q7: number;
+    q8: number;
+    q9: number;
+    q10: number;
+    comments: string;
+    suggestions: string;
 }
 
 export interface AnswerPayload {

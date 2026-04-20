@@ -201,6 +201,13 @@
                             active={page.url.startsWith(ROUTES.ADMIN.MSLQ.INDEX)}
                             >Survey MSLQ</SidebarLink
                         >
+                        <SidebarLink
+                            id="sidebar-admin-sus"
+                            href={ROUTES.ADMIN.SUS.INDEX}
+                            icon={MessageSquareQuote}
+                            active={page.url.startsWith(ROUTES.ADMIN.SUS.INDEX)}
+                            >Survey SUS</SidebarLink
+                        >
                     {/if}
                 </div>
             </div>
@@ -413,6 +420,13 @@
                             icon={MessageSquareQuote}
                             active={page.url.startsWith(ROUTES.MAHASISWA.UEQ.CREATE)}
                             >Kuesioner UEQ</SidebarLink
+                        >
+                        <SidebarLink
+                            id="sidebar-mahasiswa-sus"
+                            href={ROUTES.MAHASISWA.SUS.CREATE}
+                            icon={MessageSquareQuote}
+                            active={page.url.startsWith(ROUTES.MAHASISWA.SUS.CREATE)}
+                            >Kuesioner SUS</SidebarLink
                         >
                     </div>
                 </div>

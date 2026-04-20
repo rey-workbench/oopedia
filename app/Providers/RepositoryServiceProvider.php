@@ -11,6 +11,7 @@ use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Repositories\RoleRepositoryInterface;
 use App\Contracts\Repositories\StudentStateRepositoryInterface;
 use App\Contracts\Repositories\SubMaterialRepositoryInterface;
+use App\Contracts\Repositories\SusResultRepositoryInterface;
 use App\Contracts\Repositories\UeqSurveyRepositoryInterface;
 use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Repositories\AnswerRepository;
@@ -22,6 +23,7 @@ use App\Repositories\QuestionRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\StudentStateRepository;
 use App\Repositories\SubMaterialRepository;
+use App\Repositories\SusResultRepository;
 use App\Repositories\UeqSurveyRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Support\ServiceProvider;
@@ -41,5 +43,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
         $this->app->bind(StudentStateRepositoryInterface::class, StudentStateRepository::class);
         $this->app->bind(MslqRepositoryInterface::class, MslqRepository::class);
+        $this->app->bind(SusResultRepositoryInterface::class, SusResultRepository::class);
     }
 }

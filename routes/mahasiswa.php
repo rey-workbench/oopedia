@@ -6,6 +6,7 @@ use App\Http\Controllers\Mahasiswa\MaterialController as MahasiswaMaterialContro
 use App\Http\Controllers\Mahasiswa\MaterialQuestionController;
 use App\Http\Controllers\Mahasiswa\MslqController;
 use App\Http\Controllers\Mahasiswa\ProfileController as MahasiswaProfileController;
+use App\Http\Controllers\Mahasiswa\SusSurveyController;
 use App\Http\Controllers\Mahasiswa\UeqSurveyController as MahasiswaUeqSurveyController;
 use App\Http\Middleware\BlockQuestionParameter;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,10 @@ Route::middleware(['auth', 'access:mahasiswa'])->name('mahasiswa.')->prefix('mah
     // MSLQ Survey
     Route::get('mslq/thankyou', [MslqController::class, 'show'])->name('mslq.thankyou');
     Route::resource('mslq', MslqController::class)->only(['create', 'store']);
+
+    // SUS Survey
+    Route::get('sus-survey/thankyou', [SusSurveyController::class, 'show'])->name('sus-survey.thankyou');
+    Route::resource('sus-survey', SusSurveyController::class)->only(['create', 'store']);
 });
 
 // Features accessible by Guests (role 4) and Authenticated Students (role 3)

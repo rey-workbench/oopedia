@@ -40,3 +40,4 @@ export type {
 } from './responses';
 
 export type { MslqResult, MslqQuestion, MslqAnswer } from './mslq';
+export type { SusResult } from './sus';

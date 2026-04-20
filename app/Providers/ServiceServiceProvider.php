@@ -20,6 +20,7 @@ use App\Contracts\Services\QuestionListingServiceInterface;
 use App\Contracts\Services\QuestionServiceInterface;
 use App\Contracts\Services\StudentServiceInterface;
 use App\Contracts\Services\SubMaterialServiceInterface;
+use App\Contracts\Services\SusResultServiceInterface;
 use App\Contracts\Services\UeqSurveyServiceInterface;
 use App\Contracts\Services\UserServiceInterface;
 use App\Services\Adaptive\AdaptiveEngineService;
@@ -29,6 +30,7 @@ use App\Services\Adaptive\NextActionResolverService;
 use App\Services\Analytics\AdminDashboardService;
 use App\Services\Analytics\DashboardService;
 use App\Services\Analytics\LeaderboardService;
+use App\Services\Analytics\SusResultService;
 use App\Services\Analytics\UeqSurveyService;
 use App\Services\Gamification\GamificationService;
 use App\Services\Lms\GuestProgressService;
@@ -68,5 +70,6 @@ class ServiceServiceProvider extends ServiceProvider
         $this->app->bind(FactGatheringServiceInterface::class, FactGatheringService::class);
         $this->app->bind(NextActionResolverServiceInterface::class, NextActionResolverService::class);
         $this->app->bind(MslqServiceInterface::class, MslqService::class);
+        $this->app->bind(SusResultServiceInterface::class, SusResultService::class);
     }
 }

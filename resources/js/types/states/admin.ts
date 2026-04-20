@@ -1,5 +1,30 @@
-import type { Material, User, UeqSurvey } from '@/types/models';
+import type { Material, User, UeqSurvey, SusResult } from '@/types/models';
 import type { SharedProps } from './shared';
+
+export interface AdminSusIndexProps extends SharedProps {
+    results: SusResult[];
+    averages: {
+        total: number;
+        items: Record<string, number>;
+    };
+    grading: {
+        score: number;
+        adjective: string;
+        grade: string;
+        acceptability: string;
+    };
+    classes: string[];
+    activeClass: string;
+}
+
+export interface AdminSusDetailProps extends SharedProps {
+    user: User;
+    result: SusResult;
+    calculation: {
+        item_scores: Record<string, number>;
+        total_score: number;
+    };
+}
 
 export interface MaterialStatsItem {
     id: string;
