@@ -186,12 +186,7 @@
                                                             size="sm"
                                                             class="font-mono text-xs"
                                                         >
-                                                            {fact}
-                                                            <span
-                                                                class="ml-1 font-sans text-xs italic opacity-60"
-                                                            >
-                                                                • {getFactLabel(fact as string)}
-                                                            </span>
+                                                            {fact} - {getFactLabel(fact as string)}
                                                         </Badge>
                                                     {/each}
                                                 </div>
@@ -373,7 +368,7 @@
                                 ><Target size={10} /> First Match Conflict Resolution</span
                             >
                         </div>
-                        <div class="text-primary-400">17 Rules • Adaptive Engine v2 • Stable</div>
+                        <div class="text-primary-400">21 Rules • Adaptive Engine v2 • Stable</div>
                     </div>
                 </div>
             {/if}
