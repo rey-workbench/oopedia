@@ -49,17 +49,17 @@
 
     const variants: Record<ButtonVariant, string> = {
         primary:
-            'bg-primary-500 text-white border-primary-500 border-b-slate-700 hover:bg-primary-600',
+            'bg-sky-500 text-white border-sky-500 border-b-sky-700 hover:bg-sky-600 active:bg-sky-600',
         secondary:
-            'bg-white text-slate-500 border-slate-300 border-b-slate-400 hover:bg-slate-50 hover:text-slate-600',
-        gradient: 'bg-accent-500 text-white border-accent-800 hover:bg-accent-600',
-        glass: 'bg-white/10 backdrop-blur-sm text-white border-white/20 border-b-white/30 hover:bg-white/20',
-        danger: 'bg-rose-500 text-white border-rose-800 hover:bg-rose-600',
-        success: 'bg-emerald-500 text-white border-emerald-800 hover:bg-emerald-600',
-        warning: 'bg-amber-400 text-amber-950 border-amber-600 hover:bg-amber-500',
-        ghost: 'text-slate-500 hover:text-primary-500 hover:bg-slate-50 border-transparent border-b-transparent active:translate-y-0',
+            'bg-white text-slate-600 border-slate-200 border-b-slate-300 hover:bg-slate-50 hover:text-slate-700',
+        gradient: 'bg-indigo-500 text-white border-indigo-500 border-b-indigo-700 hover:bg-indigo-600',
+        glass: 'bg-white/10 backdrop-blur-sm text-white border-white/20 border-b-white/40 hover:bg-white/20',
+        danger: 'bg-rose-500 text-white border-rose-500 border-b-rose-700 hover:bg-rose-600',
+        success: 'bg-emerald-500 text-white border-emerald-500 border-b-emerald-700 hover:bg-emerald-600',
+        warning: 'bg-amber-400 text-amber-950 border-amber-400 border-b-amber-600 hover:bg-amber-500',
+        ghost: 'text-slate-500 hover:text-sky-500 hover:bg-slate-50 border-transparent border-b-transparent active:border-b-transparent active:translate-y-0',
         outline:
-            'bg-white border-2 border-slate-800 text-slate-900 hover:bg-slate-50 border-b-slate-900',
+            'bg-white border-2 border-slate-800 text-slate-900 border-b-slate-900 hover:bg-slate-50',
     };
 
     const sizes: Record<ButtonSize, string> = {
@@ -77,7 +77,7 @@
     };
     
     const classes = $derived(
-        `${baseClasses.replace('active:translate-y-[4px] active:border-b-2', '')} ${activeStates[size] ?? activeStates.md} ${variants[variant] ?? variants.primary} ${sizes[size] ?? sizes.md} ${className}`
+        `${baseClasses} ${activeStates[size] ?? activeStates.md} ${variants[variant] ?? variants.primary} ${sizes[size] ?? sizes.md} ${className}`
     );
     const hasChildren = $derived(children !== undefined);
 </script>

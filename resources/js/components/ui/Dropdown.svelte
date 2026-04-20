@@ -108,7 +108,7 @@
                           ? 'border-rose-100 bg-rose-50/30 text-rose-900 ring-rose-50 hover:border-rose-300 focus:border-rose-500'
                           : open
                             ? 'border-primary-500 ring-primary-100 bg-white text-slate-900 ring-4'
-                            : 'hover:border-primary-400 border-cosmos-border bg-white text-slate-900'
+                            : 'hover:border-primary-400 border-cosmos-border border-b-4 bg-white text-slate-900 active:translate-y-[2px] active:border-b-2'
                 }
             `}
         >

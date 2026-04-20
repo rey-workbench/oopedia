@@ -215,7 +215,7 @@
             {#each dashboardStats as stat (stat.title)}
                 <div id={stat.id}>
                     <Link href={stat.href} class="block h-full">
-                        <Card class="group relative h-full overflow-hidden border-b-6 transition-all hover:-translate-y-1 hover:shadow-xl">
+                        <Card class="group relative h-full overflow-hidden border-b-6 transition-all hover:-translate-y-1 hover:shadow-xl active:translate-y-[2px] active:border-b-2 select-none">
                             <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
                                 {#if typeof stat.icon !== 'string'}
                                     {@const IconComponent = stat.icon}

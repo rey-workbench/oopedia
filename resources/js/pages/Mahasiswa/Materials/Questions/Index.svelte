@@ -44,6 +44,7 @@
                     id="quiz-card-{material.id}"
                     padding="p-0"
                     hover={!isLocked}
+                    interactive={!isLocked}
                     class="group overflow-hidden {isLocked ? 'opacity-70 grayscale' : ''}"
                 >
                     <!-- ── Graphic + Content (shared markup) ─────────────────── -->

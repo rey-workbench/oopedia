@@ -4,19 +4,14 @@
  */
 class SidebarState {
     isOpen = $state(false);
-    isClosing = $state(false);
+    isDesktop = $state(false);
 
     open() {
         this.isOpen = true;
-        this.isClosing = false;
     }
 
     close() {
-        this.isClosing = true;
-        setTimeout(() => {
-            this.isOpen = false;
-            this.isClosing = false;
-        }, 300); // Match transition duration
+        this.isOpen = false;
     }
 
     toggle() {
@@ -29,7 +24,6 @@ class SidebarState {
 
     setOpen(value: boolean) {
         this.isOpen = value;
-        this.isClosing = false;
     }
 }
 
@@ -38,7 +32,8 @@ export const sidebarState = new SidebarState();
 export function initSidebarResponsive() {
     if (typeof window !== 'undefined') {
         const handleResize = () => {
-            if (window.innerWidth >= 1024) {
+            sidebarState.isDesktop = window.innerWidth >= 1024;
+            if (sidebarState.isDesktop) {
                 sidebarState.setOpen(false);
             }
         };

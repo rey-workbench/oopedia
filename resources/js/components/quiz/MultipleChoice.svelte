@@ -64,7 +64,7 @@
                 {@const isSelected = selectedAnswerId === answer.id}
                 {@const label = String.fromCharCode(65 + i)}
                 <label
-                    class="group relative block cursor-pointer transition-all active:translate-y-1"
+                    class="group relative block cursor-pointer select-none"
                 >
                     <input
                         type="radio"
@@ -75,9 +75,9 @@
                         onchange={() => handleSelect(answer.id)}
                     />
                     <div
-                        class="flex items-center gap-5 rounded-3xl border-2 border-b-6 px-6 py-5 transition-all duration-150
+                        class="flex items-center gap-5 rounded-3xl border-2 border-b-6 px-6 py-5 transition-all duration-150 active:translate-y-[3px] active:border-b-2
                         {isSelected
-                            ? 'border-primary-600 bg-primary-50 border-b-primary-700 -translate-y-1'
+                            ? 'border-primary-600 bg-primary-50 border-b-primary-700'
                             : 'border-slate-100 border-b-slate-200 bg-white shadow-sm hover:border-slate-300 hover:bg-slate-50'}"
                     >
                         <!-- Letter Coin -->

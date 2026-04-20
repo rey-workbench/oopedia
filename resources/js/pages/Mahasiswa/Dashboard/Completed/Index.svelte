@@ -81,6 +81,7 @@
                             id="completed-card-{material.id}"
                             padding="p-0"
                             hover
+                            interactive
                             class="group overflow-hidden"
                         >
                             {#snippet cardInner()}

@@ -22,7 +22,7 @@
     }: Props = $props();
 
     const baseClasses =
-        'flex items-center gap-4 px-4 py-3 rounded-2xl font-bold tracking-tight transition-all duration-100 group border-2 border-transparent border-b-4 active:translate-y-[2px] active:border-b-0 select-none';
+        'flex items-center gap-4 px-4 py-3 rounded-2xl font-bold tracking-tight transition-all duration-100 group border-2 border-transparent border-b-4 active:translate-y-[2px] active:border-b-2 select-none';
 
     const themeClasses = $derived(
         active

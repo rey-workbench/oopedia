@@ -28,6 +28,8 @@
     const flash = $derived((page.props as unknown as SharedProps).flash ?? {});
     const showSidebarRender = $derived(variant === 'app' && showSidebar);
     const sidebarOpen = $derived(sidebarState.isOpen);
+    const isDesktop = $derived(sidebarState.isDesktop);
+
 
     onMount(() => {
         return initSidebarResponsive();
@@ -74,7 +76,10 @@
         class="relative flex min-h-screen overflow-x-hidden bg-slate-50 font-sans text-slate-900 antialiased"
     >
         {#if showSidebarRender}
-            <Sidebar />
+            {#if sidebarOpen || isDesktop}
+                <Sidebar />
+            {/if}
+
             {#if sidebarOpen}
                 <div
                     role="button"

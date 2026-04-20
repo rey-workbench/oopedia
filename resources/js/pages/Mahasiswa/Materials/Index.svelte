@@ -35,6 +35,7 @@
                     <Card
                         padding="p-0"
                         hover={!material.is_locked}
+                        interactive={!material.is_locked}
                         class="group overflow-hidden {material.is_locked ? 'opacity-70 grayscale' : ''}"
                     >
                         {#snippet cardInner()}

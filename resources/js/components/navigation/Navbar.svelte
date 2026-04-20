@@ -32,7 +32,7 @@
             <button
                 onclick={() => sidebarState.toggle()}
                 aria-label="Toggle Sidebar"
-                class="rounded-2xl border-2 border-transparent p-2 text-slate-900/50 transition-all hover:border-slate-200 hover:bg-slate-900/5 active:translate-y-0.5 lg:hidden"
+                class="rounded-2xl border-2 border-transparent p-2 text-slate-900/50 transition-all hover:border-slate-200 hover:bg-slate-900/5 active:translate-y-[2px] lg:hidden"
             >
                 <Menu size={20} strokeWidth={1.5} />
             </button>
@@ -80,7 +80,7 @@
                         tutorialState.startTour(tourId, true);
                     }}
                     aria-label="Start Page Tour"
-                    class="group hover:border-accent-200 relative rounded-2xl border-2 border-transparent p-2 text-slate-900/40 transition-all hover:bg-slate-900/5 hover:text-slate-900 active:translate-y-0.5"
+                    class="group hover:border-accent-200 relative rounded-2xl border-2 border-transparent p-2 text-slate-900/40 transition-all hover:bg-slate-900/5 hover:text-slate-900 active:translate-y-[2px]"
                     title="Tutorial"
                 >
                     <CircleHelp size={20} strokeWidth={1.5} />
@@ -154,7 +154,7 @@
                     >
                     <Link
                         href={ROUTES.AUTH.REGISTER}
-                        class="border-primary-600 bg-primary-500 hover:bg-primary-600 rounded-2xl border-b-4 px-6 py-2.5 text-sm font-bold tracking-widest text-white uppercase transition-all duration-100 active:translate-y-[2px] active:border-b-0"
+                        class="border-primary-600 bg-primary-500 hover:bg-primary-600 rounded-2xl border-b-4 px-6 py-2.5 text-sm font-bold tracking-widest text-white uppercase transition-all duration-100 active:translate-y-[2px] active:border-b-2"
                         >Daftar</Link
                     >
                 </div>

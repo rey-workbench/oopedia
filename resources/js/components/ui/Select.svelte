@@ -86,7 +86,7 @@
                         ? 'cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400 grayscale'
                         : error
                           ? 'border-rose-200 bg-rose-50/20 text-rose-900 focus:border-rose-500 focus:ring-4 focus:ring-rose-50'
-                          : 'focus:border-primary-500 focus:ring-primary-100 border-slate-200 bg-white text-slate-900 hover:border-slate-300 focus:ring-4'
+                          : 'focus:border-primary-500 focus:ring-primary-100 border-slate-200 bg-white text-slate-900 hover:border-slate-300 focus:ring-4 active:translate-y-[2px] active:border-b-2'
                 }
             `}
         >

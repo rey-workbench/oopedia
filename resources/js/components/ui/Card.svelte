@@ -5,6 +5,8 @@
         variant?: 'default' | 'glass' | 'none';
         padding?: string;
         class?: string;
+        hover?: boolean;
+        interactive?: boolean;
         children?: Snippet;
         header?: Snippet;
         footer?: Snippet;
@@ -15,6 +17,8 @@
         variant = 'default',
         padding = 'p-6',
         class: className = '',
+        hover = false,
+        interactive = false,
         children,
         header,
         footer,
@@ -32,7 +36,15 @@
               : 'bg-white border-slate-200 border-b-slate-300'
     );
 
-    const classes = $derived(`${baseClasses} ${variantClasses} ${className}`);
+    const classes = $derived(
+        [
+            baseClasses,
+            variantClasses,
+            hover ? 'hover:-translate-y-1 hover:shadow-xl' : '',
+            interactive ? 'active:translate-y-[2px] active:border-b-2 select-none cursor-pointer' : '',
+            className,
+        ].join(' ')
+    );
 </script>
 
 <div class={classes} {...rest}>
