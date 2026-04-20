@@ -31,45 +31,37 @@
     const factCodes = $derived(quizState.adaptiveFacts as string[]);
 
     const factCategories = $derived({
-        score: factCodes.filter((f) => ['G01', 'G02', 'G03', 'G04'].includes(f)),
-        time: factCodes.filter((f) => ['G05', 'G06'].includes(f)),
-        style: factCodes.filter((f) => ['G07', 'G08', 'G27'].includes(f)),
-        error: factCodes.filter((f) => ['G09', 'G10'].includes(f)),
-        hint: factCodes.filter((f) => ['G11', 'G12'].includes(f)),
-        module: factCodes.filter((f) => ['G13', 'G14', 'G23', 'G24', 'G25'].includes(f)),
-        difficulty: factCodes.filter((f) => ['G15', 'G16', 'G17', 'G18'].includes(f)),
-        status: factCodes.filter((f) => ['G19', 'G20', 'G21', 'G22', 'G26'].includes(f)),
+        performance: factCodes.filter((f) => ['G01', 'G02', 'G03', 'G04', 'G05', 'G21'].includes(f)),
+        style: factCodes.filter((f) => ['G06', 'G07', 'G22'].includes(f)),
+        error: factCodes.filter((f) => ['G08', 'G09', 'G10', 'G20'].includes(f)),
+        difficulty: factCodes.filter((f) => ['G13', 'G14', 'G15', 'G16'].includes(f)),
+        quiz: factCodes.filter((f) => ['G11', 'G12', 'G17', 'G18', 'G19'].includes(f)),
     });
 
     function getFactLabel(factCode: string) {
         const labels: Record<string, string> = {
-            G01: 'Critical (<40)',
-            G02: 'Remedial (40-69)',
-            G03: 'Standard (70-89)',
-            G04: 'Mastery (≥90)',
-            G05: 'Fast (<50%)',
-            G06: 'Normal (≥50%)',
-            G07: 'Visual Learner',
-            G08: 'Textual Learner',
-            G27: 'Mixed Learner',
-            G09: 'Syntax Error',
-            G10: 'Logic Error',
-            G11: 'No Hint',
-            G12: 'Used Hint',
-            G13: 'Module 1: Foundation',
-            G14: 'Module 2: Encapsulation',
-            G23: 'Module 3: Inheritance',
-            G24: 'Module 4: Polymorphism',
-            G25: 'Module 5: Abstraction',
-            G15: 'Easy Level',
-            G16: 'Medium Level',
-            G17: 'Advanced Level',
-            G18: 'Final Project',
-            G19: 'Next Locked',
-            G20: 'Next Unlocked',
-            G21: 'Prev Unlocked',
-            G22: 'Persistent Fail (≥3x)',
-            G26: 'Satisfactory Progress (≥60%)',
+            G01: 'Critical Score',
+            G02: 'Remedial Score',
+            G03: 'Standard Score',
+            G04: 'Mastery Score',
+            G05: 'Fast Response',
+            G06: 'Visual Learner',
+            G07: 'Textual Learner',
+            G08: 'Syntax Error',
+            G09: 'Logic Error',
+            G10: 'No Error',
+            G11: 'Used Hint',
+            G12: 'In Module',
+            G13: 'Beginner Level',
+            G14: 'Medium Level',
+            G15: 'Hard Level',
+            G16: 'Final Project',
+            G17: 'Practice Mode',
+            G18: 'Next Unlocked',
+            G19: 'Prev Unlocked',
+            G20: 'Persistent Fail',
+            G21: 'Sat. Progress',
+            G22: 'Mixed Learner',
         };
         return labels[factCode] || factCode;
     }
@@ -190,7 +182,7 @@
                                                 <div class="flex flex-wrap gap-1.5">
                                                     {#each categoryFacts as string[] as fact (fact)}
                                                         <Badge
-                                                            variant="info"
+                                                            variant="primary"
                                                             size="sm"
                                                             class="font-mono text-xs"
                                                         >
