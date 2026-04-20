@@ -6,14 +6,7 @@
     import Badge from '@/components/ui/Badge.svelte';
     import ProgressBar from '@/components/ui/ProgressBar.svelte';
     import { Link } from '@inertiajs/svelte';
-    import {
-        ArrowLeft,
-        BookOpen,
-        Rocket,
-        Activity,
-        Play,
-        Users,
-    } from 'lucide-svelte';
+    import { ArrowLeft, BookOpen, Rocket, Activity, Play, Users } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { InProgressState } from '@/states/Mahasiswa/MaterialState.svelte';
     import { ROUTES } from '@/utils/route';
@@ -75,10 +68,7 @@
                     </Button>
                 </div>
             {:else}
-                <div
-                    id="inprogress-materials-grid"
-                    class="grid grid-cols-1 gap-10"
-                >
+                <div id="inprogress-materials-grid" class="grid grid-cols-1 gap-10">
                     {#each state.materialsWithStats as materialData (materialData.material.id)}
                         {@const { material, stats } = materialData}
                         <Card
@@ -155,7 +145,7 @@
                                                 </div>
                                             </div>
                                             <div
-                                                class="group-hover:bg-primary-600 bg-slate-50 text-slate-900 group-hover:text-white group-active:translate-y-[2px] hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl shadow-inner transition-all duration-150 sm:flex"
+                                                class="group-hover:bg-primary-600 hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-slate-50 text-slate-900 shadow-inner transition-all duration-150 group-hover:text-white group-active:translate-y-[2px] sm:flex"
                                             >
                                                 <Play size={20} class="ml-1 fill-current" />
                                             </div>

@@ -5,7 +5,7 @@
     import Pagination from '@/components/ui/Pagination.svelte';
     import Card from '@/components/ui/Card.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
-    import { BarChart3, FileDown, Eye, Info } from 'lucide-svelte';
+    import { FileDown, Eye } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { SusListState } from '@/states/Admin/SusState.svelte';
     import { formatDate } from '@/utils/formatters';
@@ -30,11 +30,6 @@
         { key: 'actions', label: 'Aksi', align: 'right' },
     ]);
 
-    const getGradeColor = (grade: string) => {
-        if (grade === 'A+' || grade === 'A') return 'success';
-        if (grade === 'B' || grade === 'C') return 'warning';
-        return 'danger';
-    };
 </script>
 
 <App title="Hasil Survey SUS">
@@ -51,7 +46,8 @@
                 <div class="h-1.5 w-2 rounded-full bg-slate-100"></div>
             </div>
             <p class="mt-4 max-w-3xl leading-relaxed font-medium text-slate-500">
-                Data kuantitatif mengenai kebergunaan sistem berdasarkan standar kuesioner SUS internasional.
+                Data kuantitatif mengenai kebergunaan sistem berdasarkan standar kuesioner SUS
+                internasional.
             </p>
             <div class="mt-6 flex flex-wrap gap-4">
                 <Button
@@ -70,11 +66,13 @@
                     <h3 class="mb-2 text-[10px] font-bold tracking-wider text-slate-600 uppercase">
                         Rata-rata Skor
                     </h3>
-                    <div class="font-display mb-2 text-4xl font-black tracking-tight text-slate-900">
+                    <div
+                        class="font-display mb-2 text-4xl font-black tracking-tight text-slate-900"
+                    >
                         {state.averages.total.toFixed(1)}
                     </div>
                     <div class="flex items-center gap-2">
-                        <div class="h-1.5 w-1.5 rounded-full bg-primary-500"></div>
+                        <div class="bg-primary-500 h-1.5 w-1.5 rounded-full"></div>
                         <p class="text-[10px] font-bold tracking-widest text-slate-500 uppercase">
                             Skala 0-100
                         </p>
@@ -87,7 +85,9 @@
                     <h3 class="mb-2 text-[10px] font-bold tracking-wider text-slate-600 uppercase">
                         Adjective Rating
                     </h3>
-                    <div class="font-display mb-2 text-2xl font-black tracking-tight text-slate-900">
+                    <div
+                        class="font-display mb-2 text-2xl font-black tracking-tight text-slate-900"
+                    >
                         {state.grading.adjective}
                     </div>
                     <div class="flex items-center gap-2">
@@ -104,7 +104,9 @@
                     <h3 class="mb-2 text-[10px] font-bold tracking-wider text-slate-600 uppercase">
                         Grade Scale
                     </h3>
-                    <div class="font-display mb-2 text-4xl font-black tracking-tight text-slate-900">
+                    <div
+                        class="font-display mb-2 text-4xl font-black tracking-tight text-slate-900"
+                    >
                         {state.grading.grade}
                     </div>
                     <div class="flex items-center gap-2">
@@ -121,7 +123,9 @@
                     <h3 class="mb-2 text-[10px] font-bold tracking-wider text-slate-600 uppercase">
                         Acceptability
                     </h3>
-                    <div class="font-display mb-2 text-2xl font-black tracking-tight text-slate-900">
+                    <div
+                        class="font-display mb-2 text-2xl font-black tracking-tight text-slate-900"
+                    >
                         {state.grading.acceptability}
                     </div>
                     <div class="flex items-center gap-2">
@@ -148,12 +152,7 @@
         </div>
 
         <div id="sus-results-table">
-            <DataTable
-                title="Log Responden SUS"
-                items={state.results}
-                {columns}
-                hideSearch={true}
-            >
+            <DataTable title="Log Responden SUS" items={state.results} {columns} hideSearch={true}>
                 {#snippet row(result)}
                     <td class="border-b border-slate-50 px-6 py-6">
                         <div class="flex items-center gap-4">

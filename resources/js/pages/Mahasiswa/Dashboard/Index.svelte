@@ -215,7 +215,9 @@
             {#each dashboardStats as stat (stat.title)}
                 <div id={stat.id}>
                     <Link href={stat.href} class="block h-full">
-                        <Card class="group relative h-full overflow-hidden border-b-6 transition-all hover:-translate-y-1 hover:shadow-xl active:translate-y-[2px] active:border-b-2 select-none">
+                        <Card
+                            class="group relative h-full overflow-hidden border-b-6 transition-all select-none hover:-translate-y-1 hover:shadow-xl active:translate-y-[2px] active:border-b-2"
+                        >
                             <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
                                 {#if typeof stat.icon !== 'string'}
                                     {@const IconComponent = stat.icon}
@@ -231,13 +233,13 @@
                                 <div
                                     class="glass mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-b-4
                                     {stat.variant === 'success'
-                                        ? 'bg-emerald-100 text-emerald-600 border-emerald-200'
+                                        ? 'border-emerald-200 bg-emerald-100 text-emerald-600'
                                         : stat.variant === 'danger'
-                                          ? 'bg-rose-100 text-rose-600 border-rose-200'
+                                          ? 'border-rose-200 bg-rose-100 text-rose-600'
                                           : stat.variant === 'warning'
-                                            ? 'bg-amber-100 text-amber-600 border-amber-200'
+                                            ? 'border-amber-200 bg-amber-100 text-amber-600'
                                             : stat.variant === 'info'
-                                              ? 'bg-sky-100 text-sky-600 border-sky-200'
+                                              ? 'border-indigo-200 bg-indigo-100 text-indigo-600'
                                               : 'bg-primary-100 text-primary-600 border-primary-200'}"
                                 >
                                     {#if typeof stat.icon === 'string'}
@@ -262,14 +264,15 @@
                                 {#if stat.footer}
                                     <div class="flex items-center gap-2">
                                         <div
-                                            class="h-1.5 w-1.5 rounded-full {stat.variant === 'success'
+                                            class="h-1.5 w-1.5 rounded-full {stat.variant ===
+                                            'success'
                                                 ? 'bg-emerald-500'
                                                 : stat.variant === 'danger'
                                                   ? 'bg-rose-500'
                                                   : stat.variant === 'warning'
                                                     ? 'bg-amber-500'
                                                     : stat.variant === 'info'
-                                                      ? 'bg-sky-500'
+                                                      ? 'bg-indigo-500'
                                                       : 'bg-primary-500'}"
                                         ></div>
                                         <p

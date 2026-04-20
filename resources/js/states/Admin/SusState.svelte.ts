@@ -13,7 +13,7 @@ export class SusListState extends BaseState {
         score: 0,
         adjective: '',
         grade: '',
-        acceptability: ''
+        acceptability: '',
     });
     classes = $state<string[]>([]);
     activeClass = $state('');
@@ -58,23 +58,36 @@ export class SusDetailState extends BaseState {
     result = $state<SusResult>({} as SusResult);
     calculation = $state<{ item_scores: Record<string, number>; total_score: number }>({
         item_scores: {},
-        total_score: 0
+        total_score: 0,
     });
 
     questions = [
         { id: 1, text: 'Saya rasa saya akan sering menggunakan sistem ini.' },
         { id: 2, text: 'Saya merasa sistem ini tidak perlu rumit.' },
         { id: 3, text: 'Saya rasa sistem ini mudah digunakan.' },
-        { id: 4, text: 'Saya rasa saya membutuhkan bantuan orang teknis untuk dapat menggunakan sistem ini.' },
+        {
+            id: 4,
+            text: 'Saya rasa saya membutuhkan bantuan orang teknis untuk dapat menggunakan sistem ini.',
+        },
         { id: 5, text: 'Saya merasa berbagai fungsi dalam sistem ini terintegrasi dengan baik.' },
         { id: 6, text: 'Saya rasa terlalu banyak ketidakkonsistenan dalam sistem ini.' },
-        { id: 7, text: 'Saya rasa kebanyakan orang akan belajar menggunakan sistem ini dengan sangat cepat.' },
+        {
+            id: 7,
+            text: 'Saya rasa kebanyakan orang akan belajar menggunakan sistem ini dengan sangat cepat.',
+        },
         { id: 8, text: 'Saya merasa sistem ini sangat membosankan untuk digunakan.' },
         { id: 9, text: 'Saya merasa sangat percaya diri menggunakan sistem ini.' },
-        { id: 10, text: 'Saya perlu belajar banyak hal sebelum saya dapat menggunakan sistem ini.' },
+        {
+            id: 10,
+            text: 'Saya perlu belajar banyak hal sebelum saya dapat menggunakan sistem ini.',
+        },
     ];
 
-    constructor(user: User, result: SusResult, calculation: { item_scores: Record<string, number>; total_score: number }) {
+    constructor(
+        user: User,
+        result: SusResult,
+        calculation: { item_scores: Record<string, number>; total_score: number }
+    ) {
         super();
         this.targetUser = user;
         this.result = result;

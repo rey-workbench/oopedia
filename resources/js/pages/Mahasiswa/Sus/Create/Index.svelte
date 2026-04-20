@@ -16,7 +16,7 @@
         'Tidak Setuju',
         'Ragu-ragu',
         'Setuju',
-        'Sangat Setuju'
+        'Sangat Setuju',
     ];
 </script>
 
@@ -32,7 +32,8 @@
             <div class="space-y-12 p-12">
                 {#if state.form.errors && Object.keys(state.form.errors).length > 0}
                     <Alert variant="danger" dismissible={true}>
-                        Ada beberapa field yang belum valid atau belum diisi. Silakan tinjau kembali input Anda.
+                        Ada beberapa field yang belum valid atau belum diisi. Silakan tinjau kembali
+                        input Anda.
                     </Alert>
                 {/if}
 
@@ -111,22 +112,32 @@
                                     ${state.form.errors[`q${question.id}`] ? 'border-rose-100 bg-rose-50/50 ring-4 ring-rose-50' : 'border-transparent bg-white hover:border-slate-100 hover:bg-slate-50'}`}
                                 >
                                     <div class="flex items-start gap-6">
-                                        <div class="bg-slate-900 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xs font-bold text-white">
+                                        <div
+                                            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-xs font-bold text-white"
+                                        >
                                             {question.id}
                                         </div>
-                                        <p class="text-base font-bold leading-relaxed text-slate-700">
+                                        <p
+                                            class="text-base leading-relaxed font-bold text-slate-700"
+                                        >
                                             {question.text}
                                         </p>
                                     </div>
 
-                                    <div class="flex flex-wrap items-center justify-between gap-4 px-2 md:px-16">
+                                    <div
+                                        class="flex flex-wrap items-center justify-between gap-4 px-2 md:px-16"
+                                    >
                                         {#each Array(5) as _, i}
-                                            <label class="group/item relative flex flex-col items-center gap-3 cursor-pointer">
+                                            <label
+                                                class="group/item relative flex cursor-pointer flex-col items-center gap-3"
+                                            >
                                                 <input
                                                     type="radio"
                                                     name={`q${question.id}`}
                                                     value={i + 1}
-                                                    bind:group={(state.form as any)[`q${question.id}`]}
+                                                    bind:group={
+                                                        (state.form as any)[`q${question.id}`]
+                                                    }
                                                     class="peer hidden"
                                                     required
                                                 />
@@ -135,15 +146,19 @@
                                                 >
                                                     {i + 1}
                                                 </div>
-                                                <span class="text-[8px] font-bold tracking-tighter text-slate-400 uppercase opacity-0 transition-opacity group-hover/item:opacity-100 peer-checked:opacity-100">
+                                                <span
+                                                    class="text-[8px] font-bold tracking-tighter text-slate-400 uppercase opacity-0 transition-opacity group-hover/item:opacity-100 peer-checked:opacity-100"
+                                                >
                                                     {scaleLabels[i]}
                                                 </span>
                                             </label>
                                         {/each}
                                     </div>
-                                    
+
                                     {#if state.form.errors[`q${question.id}`]}
-                                        <p class="ml-16 text-[10px] font-bold tracking-widest text-rose-500 uppercase">
+                                        <p
+                                            class="ml-16 text-[10px] font-bold tracking-widest text-rose-500 uppercase"
+                                        >
                                             {state.form.errors[`q${question.id}`]}
                                         </p>
                                     {/if}

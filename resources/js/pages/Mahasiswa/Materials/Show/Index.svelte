@@ -75,7 +75,7 @@
                         <h3 class="mb-4 text-2xl font-bold tracking-widest text-slate-900">
                             Tentang Materi Ini
                         </h3>
-                        <div class="text-slate-600 leading-relaxed font-medium">
+                        <div class="leading-relaxed font-medium text-slate-600">
                             <ContentDisplay content={state.material.content} />
                         </div>
                     </div>
@@ -134,7 +134,10 @@
                                     <div
                                         class={`flex h-60 items-center justify-center md:h-full ${getBgClass(subMaterial.jenis_konten)}`}
                                     >
-                                        <SubIcon size={96} class="text-white/10 transition-transform duration-500 group-hover:rotate-6" />
+                                        <SubIcon
+                                            size={96}
+                                            class="text-white/10 transition-transform duration-500 group-hover:rotate-6"
+                                        />
                                     </div>
                                     <div class="absolute top-6 left-6">
                                         <div
@@ -188,7 +191,7 @@
                                                 </div>
                                             </div>
                                             <div
-                                                class="group-hover:bg-primary-600 bg-slate-50 text-slate-900 group-hover:text-white group-active:translate-y-[2px] hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl shadow-inner transition-all duration-150 sm:flex"
+                                                class="group-hover:bg-primary-600 hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-slate-50 text-slate-900 shadow-inner transition-all duration-150 group-hover:text-white group-active:translate-y-[2px] sm:flex"
                                             >
                                                 <BookOpen size={20} />
                                             </div>

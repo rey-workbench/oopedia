@@ -41,7 +41,9 @@
             baseClasses,
             variantClasses,
             hover ? 'hover:-translate-y-1 hover:shadow-xl' : '',
-            interactive ? 'active:translate-y-[2px] active:border-b-2 select-none cursor-pointer' : '',
+            interactive
+                ? 'active:translate-y-[2px] active:border-b-2 select-none cursor-pointer'
+                : '',
             className,
         ].join(' ')
     );

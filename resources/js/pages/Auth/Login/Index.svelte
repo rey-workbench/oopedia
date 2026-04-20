@@ -76,7 +76,7 @@
                         />
                         <button
                             type="button"
-                            class="absolute top-1/2 right-5 z-10 -translate-y-1/2 text-[13px] font-bold tracking-widest text-[#1cb0f6] uppercase transition hover:text-sky-400"
+                            class="text-primary-600 hover:text-primary-800 absolute top-1/2 right-5 z-10 -translate-y-1/2 text-[13px] font-bold tracking-widest uppercase transition"
                         >
                             Forgot?
                         </button>

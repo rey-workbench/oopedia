@@ -51,7 +51,7 @@
                     class="rounded-3xl border-2 border-dashed border-slate-200 bg-white/50 py-24 text-center shadow-sm backdrop-blur-sm"
                 >
                     <div
-                        class="bg-emerald-50 text-emerald-500 mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-3xl shadow-inner"
+                        class="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-3xl bg-emerald-50 text-emerald-500 shadow-inner"
                     >
                         <Medal size={48} strokeWidth={2} />
                     </div>
@@ -72,10 +72,7 @@
                     </Button>
                 </div>
             {:else}
-                <div
-                    id="completed-materials-grid"
-                    class="grid grid-cols-1 gap-10"
-                >
+                <div id="completed-materials-grid" class="grid grid-cols-1 gap-10">
                     {#each state.materialsWithStats as { material }}
                         <Card
                             id="completed-card-{material.id}"
@@ -100,7 +97,7 @@
                                         </div>
                                     {:else}
                                         <div
-                                            class="bg-emerald-600 flex h-60 items-center justify-center md:h-full"
+                                            class="flex h-60 items-center justify-center bg-emerald-600 md:h-full"
                                         >
                                             <Trophy
                                                 size={96}
@@ -111,14 +108,16 @@
                                     <div class="absolute inset-0 bg-slate-900/20 md:hidden"></div>
                                     <div class="absolute top-6 left-6 z-20">
                                         <div
-                                            class="bg-emerald-500 flex items-center gap-2 rounded-2xl px-4 py-2 text-[10px] font-black tracking-widest text-white uppercase shadow-xl ring-4 ring-emerald-500/20"
+                                            class="flex items-center gap-2 rounded-2xl bg-emerald-500 px-4 py-2 text-[10px] font-black tracking-widest text-white uppercase shadow-xl ring-4 ring-emerald-500/20"
                                         >
                                             <CheckCircle2 size={14} strokeWidth={3} />
                                             DIKUASAI
                                         </div>
                                     </div>
-                                    
-                                    <div class="absolute right-6 bottom-6 left-6 flex items-center justify-between md:hidden">
+
+                                    <div
+                                        class="absolute right-6 bottom-6 left-6 flex items-center justify-between md:hidden"
+                                    >
                                         <div
                                             class="rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-[10px] font-bold tracking-widest text-white uppercase backdrop-blur-md"
                                         >
@@ -127,7 +126,9 @@
                                     </div>
 
                                     <!-- Full Progress Bar at the bottom of image for mobile -->
-                                    <div class="absolute right-0 bottom-0 left-0 h-1.5 bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] md:hidden"></div>
+                                    <div
+                                        class="absolute right-0 bottom-0 left-0 h-1.5 bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] md:hidden"
+                                    ></div>
                                 </div>
 
                                 <!-- Content Section -->
@@ -136,7 +137,7 @@
                                         <div class="flex items-start justify-between gap-6">
                                             <div>
                                                 <h2
-                                                    class="group-hover:text-emerald-600 mb-3 text-3xl leading-tight font-bold tracking-widest text-slate-900 uppercase transition-colors"
+                                                    class="mb-3 text-3xl leading-tight font-bold tracking-widest text-slate-900 uppercase transition-colors group-hover:text-emerald-600"
                                                 >
                                                     {material.title}
                                                 </h2>
@@ -155,7 +156,7 @@
                                                 </div>
                                             </div>
                                             <div
-                                                class="group-hover:bg-emerald-600 bg-emerald-50 text-emerald-600 group-hover:text-white group-active:translate-y-[2px] hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl shadow-inner transition-all duration-150 sm:flex"
+                                                class="hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 shadow-inner transition-all duration-150 group-hover:bg-emerald-600 group-hover:text-white group-active:translate-y-[2px] sm:flex"
                                             >
                                                 <RotateCcw size={20} />
                                             </div>
@@ -188,7 +189,9 @@
                                             <div
                                                 class="h-2 w-full overflow-hidden rounded-full bg-slate-100"
                                             >
-                                                <div class="h-full bg-emerald-500 w-full rounded-full"></div>
+                                                <div
+                                                    class="h-full w-full rounded-full bg-emerald-500"
+                                                ></div>
                                             </div>
                                         </div>
                                     </div>
@@ -196,7 +199,7 @@
                                     <div class="mt-10 md:hidden">
                                         <Button
                                             variant="outline"
-                                            class="w-full text-emerald-600 border-emerald-200 hover:bg-emerald-50 font-black tracking-widest uppercase"
+                                            class="w-full border-emerald-200 font-black tracking-widest text-emerald-600 uppercase hover:bg-emerald-50"
                                             icon={RotateCcw}
                                         >
                                             ULAS KEMBALI

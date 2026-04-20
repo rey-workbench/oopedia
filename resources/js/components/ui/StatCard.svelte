@@ -39,7 +39,10 @@
     };
 </script>
 
-<Card hover={true} class="group relative overflow-hidden active:translate-y-[2px] active:border-b-2 select-none {className}">
+<Card
+    hover={true}
+    class="group relative overflow-hidden select-none active:translate-y-[2px] active:border-b-2 {className}"
+>
     <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
         {#if icon && typeof icon !== 'string'}
             {@const IconComponent = icon}

@@ -35,9 +35,7 @@
                 <div class="h-2 w-2 rounded-full bg-amber-500/60"></div>
                 <div class="h-2 w-2 rounded-full bg-emerald-500/60"></div>
             </div>
-            <span
-                class="ml-1 font-mono text-xs font-bold tracking-widest text-slate-500 uppercase"
-            >
+            <span class="ml-1 font-mono text-xs font-bold tracking-widest text-slate-500 uppercase">
                 soal.txt
             </span>
         </div>
@@ -63,9 +61,7 @@
             {#each question.answers as answer, i (answer.id)}
                 {@const isSelected = selectedAnswerId === answer.id}
                 {@const label = String.fromCharCode(65 + i)}
-                <label
-                    class="group relative block cursor-pointer select-none"
-                >
+                <label class="group relative block cursor-pointer select-none">
                     <input
                         type="radio"
                         name="answer"

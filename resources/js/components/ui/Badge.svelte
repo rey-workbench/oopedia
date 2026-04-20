@@ -33,7 +33,7 @@
         success: 'bg-emerald-500 text-white border-2 border-emerald-600 border-b-4',
         danger: 'bg-rose-500 text-white border-2 border-rose-600 border-b-4',
         warning: 'bg-amber-400 text-amber-950 border-2 border-amber-500 border-b-4',
-        info: 'bg-sky-500 text-white border-2 border-sky-600 border-b-4',
+        info: 'bg-indigo-500 text-white border-2 border-indigo-600 border-b-4',
         outline: 'bg-white border-2 border-slate-200 text-slate-600 border-b-4',
     };
 

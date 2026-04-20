@@ -15,30 +15,14 @@
         Rocket,
         CheckCircle2,
         X,
-
         Shapes,
-
         ChevronDown,
-
         Lock,
-
         Trophy,
-
         UserRound,
-
         LogOut,
-
         LogIn,
-
-        UserPlus
-
-
-
-
-
-
-
-
+        UserPlus,
     } from 'lucide-svelte';
     import { fly, slide } from 'svelte/transition';
     import { getTourIdFromUrl, registerGlobalTutorials } from '@/tutorial';
@@ -117,8 +101,7 @@
             <div class="space-y-6">
                 <div class="flex items-center gap-2 px-4">
                     <div class="bg-primary-500 h-2 w-2 rounded-full"></div>
-                    <span
-                        class="text-cosmos-muted text-xs font-extrabold tracking-widest uppercase"
+                    <span class="text-cosmos-muted text-xs font-extrabold tracking-widest uppercase"
                         >Utama</span
                     >
                     <div class="bg-cosmos-border h-0.5 flex-1"></div>
@@ -136,8 +119,7 @@
             <div class="space-y-6">
                 <div class="flex items-center gap-2 px-4">
                     <div class="bg-primary-500 h-2 w-2 rounded-full"></div>
-                    <span
-                        class="text-cosmos-muted text-xs font-extrabold tracking-widest uppercase"
+                    <span class="text-cosmos-muted text-xs font-extrabold tracking-widest uppercase"
                         >Kurikulum</span
                     >
                     <div class="bg-cosmos-border h-0.5 flex-1"></div>
@@ -163,8 +145,7 @@
             <div class="space-y-6">
                 <div class="flex items-center gap-2 px-4">
                     <div class="bg-primary-500 h-2 w-2 rounded-full"></div>
-                    <span
-                        class="text-cosmos-muted text-xs font-extrabold tracking-widest uppercase"
+                    <span class="text-cosmos-muted text-xs font-extrabold tracking-widest uppercase"
                         >Manajemen</span
                     >
                     <div class="bg-cosmos-border h-0.5 flex-1"></div>
@@ -245,8 +226,7 @@
             <div class="space-y-6">
                 <div class="flex items-center gap-2 px-4">
                     <div class="bg-primary-500 h-2 w-2 rounded-full"></div>
-                    <span
-                        class="text-cosmos-muted text-xs font-extrabold tracking-widest uppercase"
+                    <span class="text-cosmos-muted text-xs font-extrabold tracking-widest uppercase"
                         >Belajar</span
                     >
                     <div class="bg-cosmos-border h-0.5 flex-1"></div>
@@ -435,8 +415,7 @@
             <div class="space-y-6 border-t border-slate-100 pt-10">
                 <div class="flex items-center gap-2 px-4">
                     <div class="h-2 w-2 rounded-full bg-rose-500"></div>
-                    <span
-                        class="text-cosmos-muted text-xs font-extrabold tracking-widest uppercase"
+                    <span class="text-cosmos-muted text-xs font-extrabold tracking-widest uppercase"
                         >Sesi</span
                     >
                     <div class="bg-cosmos-border h-0.5 flex-1"></div>

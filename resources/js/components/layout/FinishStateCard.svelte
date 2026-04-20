@@ -50,9 +50,7 @@
                     <div class="text-3xl font-black tracking-tighter text-slate-800">
                         {answeredCount}
                     </div>
-                    <div
-                        class="mt-1 text-xs font-bold tracking-widest text-slate-400 uppercase"
-                    >
+                    <div class="mt-1 text-xs font-bold tracking-widest text-slate-400 uppercase">
                         Soal Dijawab
                     </div>
                 </div>
@@ -67,9 +65,7 @@
                     <div class="text-3xl font-black tracking-tighter text-slate-800">
                         {state.xp}
                     </div>
-                    <div
-                        class="mt-1 text-xs font-bold tracking-widest text-slate-400 uppercase"
-                    >
+                    <div class="mt-1 text-xs font-bold tracking-widest text-slate-400 uppercase">
                         Total XP
                     </div>
                 </div>
@@ -82,9 +78,7 @@
                     <div class="text-3xl font-black tracking-tighter text-slate-800">
                         {state.streak}
                     </div>
-                    <div
-                        class="mt-1 text-xs font-bold tracking-widest text-slate-400 uppercase"
-                    >
+                    <div class="mt-1 text-xs font-bold tracking-widest text-slate-400 uppercase">
                         Streak
                     </div>
                 </div>

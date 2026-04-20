@@ -35,7 +35,7 @@
     const iconColors = {
         success: 'text-emerald-500',
         error: 'text-rose-500',
-        info: 'text-blue-500',
+        info: 'text-indigo-500',
         warning: 'text-amber-500',
     };
 

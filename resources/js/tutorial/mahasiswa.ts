@@ -48,8 +48,7 @@ export function registerMahasiswaTutorials() {
                 element: '#sidebar-completed',
                 popover: {
                     title: 'Materi Selesai ✅',
-                    description:
-                        'Akses cepat ke materi yang telah kamu kuasai dari menu samping.',
+                    description: 'Akses cepat ke materi yang telah kamu kuasai dari menu samping.',
                     side: 'right',
                     align: 'start',
                 },

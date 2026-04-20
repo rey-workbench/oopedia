@@ -21,7 +21,12 @@
         activeClass = '',
     }: {
         results: Pagination<MslqResult>;
-        metrics: { averages: Record<string, number>; avg_motivation: number; avg_strategy: number; total_responses: number };
+        metrics: {
+            averages: Record<string, number>;
+            avg_motivation: number;
+            avg_strategy: number;
+            total_responses: number;
+        };
         classes: string[];
         activeClass: string;
     } = $props();

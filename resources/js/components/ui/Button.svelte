@@ -5,6 +5,7 @@
     type ButtonVariant =
         | 'primary'
         | 'secondary'
+        | 'dark'
         | 'gradient'
         | 'glass'
         | 'danger'
@@ -49,17 +50,21 @@
 
     const variants: Record<ButtonVariant, string> = {
         primary:
-            'bg-sky-500 text-white border-sky-500 border-b-sky-700 hover:bg-sky-600 active:bg-sky-600',
+            'bg-primary-500 text-white border-primary-500 border-b-primary-950 hover:bg-primary-600 hover:border-primary-600 hover:border-b-primary-950 active:bg-primary-600 active:border-primary-600',
         secondary:
             'bg-white text-slate-600 border-slate-200 border-b-slate-300 hover:bg-slate-50 hover:text-slate-700',
-        gradient: 'bg-indigo-500 text-white border-indigo-500 border-b-indigo-700 hover:bg-indigo-600',
+        dark: 'bg-slate-900 text-white border-slate-900 border-b-slate-950 hover:bg-slate-800 active:bg-slate-800',
+        gradient:
+            'bg-indigo-500 text-white border-indigo-500 border-b-indigo-700 hover:bg-indigo-600',
         glass: 'bg-white/10 backdrop-blur-sm text-white border-white/20 border-b-white/40 hover:bg-white/20',
         danger: 'bg-rose-500 text-white border-rose-500 border-b-rose-700 hover:bg-rose-600',
-        success: 'bg-emerald-500 text-white border-emerald-500 border-b-emerald-700 hover:bg-emerald-600',
-        warning: 'bg-amber-400 text-amber-950 border-amber-400 border-b-amber-600 hover:bg-amber-500',
-        ghost: 'text-slate-500 hover:text-sky-500 hover:bg-slate-50 border-transparent border-b-transparent active:border-b-transparent active:translate-y-0',
+        success:
+            'bg-emerald-500 text-white border-emerald-500 border-b-emerald-700 hover:bg-emerald-600',
+        warning:
+            'bg-amber-400 text-amber-950 border-amber-400 border-b-amber-600 hover:bg-amber-500',
+        ghost: 'text-slate-500 hover:text-primary-500 hover:bg-slate-50 border-transparent border-b-transparent active:border-b-transparent active:translate-y-0',
         outline:
-            'bg-white border-2 border-slate-800 text-slate-900 border-b-slate-900 hover:bg-slate-50',
+            'bg-white border-2 border-slate-800 text-slate-900 border-b-slate-900 hover:bg-slate-50 hover:border-slate-900 hover:border-b-slate-950 active:bg-slate-100',
     };
 
     const sizes: Record<ButtonSize, string> = {
@@ -70,12 +75,12 @@
     };
 
     const activeStates: Record<ButtonSize, string> = {
-        sm: 'active:translate-y-[2px] active:border-b-2',
-        md: 'active:translate-y-[4px] active:border-b-2',
-        lg: 'active:translate-y-[4px] active:border-b-2',
-        xl: 'active:translate-y-[6px] active:border-b-2',
+        sm: 'active:translate-y-[2px] active:border-b-2 shadow-none',
+        md: 'active:translate-y-[4px] active:border-b-2 shadow-none',
+        lg: 'active:translate-y-[4px] active:border-b-2 shadow-none',
+        xl: 'active:translate-y-[6px] active:border-b-2 shadow-none',
     };
-    
+
     const classes = $derived(
         `${baseClasses} ${activeStates[size] ?? activeStates.md} ${variants[variant] ?? variants.primary} ${sizes[size] ?? sizes.md} ${className}`
     );

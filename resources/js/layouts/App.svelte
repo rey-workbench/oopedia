@@ -30,7 +30,6 @@
     const sidebarOpen = $derived(sidebarState.isOpen);
     const isDesktop = $derived(sidebarState.isDesktop);
 
-
     onMount(() => {
         return initSidebarResponsive();
     });

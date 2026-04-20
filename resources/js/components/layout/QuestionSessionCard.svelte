@@ -91,7 +91,7 @@
                 <button
                     type="button"
                     onclick={() => state.closeHint()}
-                    class="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-white text-amber-500 shadow-sm transition-all hover:scale-110 hover:text-amber-600 active:translate-y-[2px]"
+                    class="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-white text-amber-500 shadow-sm transition-all hover:bg-amber-100/50 hover:text-amber-600 active:translate-y-[2px]"
                     aria-label="Tutup petunjuk"
                 >
                     <X size={18} />
@@ -146,7 +146,7 @@
             <Button
                 variant="primary"
                 size="lg"
-                class="shadow-primary-100 hover:shadow-primary-200 w-full py-5 text-base font-black tracking-widest uppercase shadow-xl transition-all hover:scale-[1.01] active:scale-[0.99]"
+                class="w-full py-5 text-base font-black tracking-widest uppercase shadow-xl shadow-slate-200 transition-all hover:shadow-slate-300"
                 disabled={state.isSubmitting}
                 onclick={() => state.submitAnswer()}
             >
@@ -156,9 +156,7 @@
                     <CheckCircle2 size={20} class="mr-2.5" /> Periksa Jawaban
                 {/if}
             </Button>
-            <p
-                class="mt-4 text-center text-xs font-bold tracking-[0.2em] text-slate-300 uppercase"
-            >
+            <p class="mt-4 text-center text-xs font-bold tracking-[0.2em] text-slate-300 uppercase">
                 Sistem Adaptif Oopedia • v2.0
             </p>
         </div>
