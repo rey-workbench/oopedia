@@ -45,7 +45,7 @@
     }: Props = $props();
 
     const baseClasses =
-        'group inline-flex items-center justify-center font-black tracking-widest transition-all duration-150 active:scale-95 disabled:opacity-50 disabled:pointer-events-none rounded-2xl border-2 border-b-6 uppercase';
+        'group inline-flex items-center justify-center font-black tracking-widest transition-all duration-150 disabled:opacity-50 disabled:pointer-events-none rounded-2xl border-2 border-b-6 uppercase select-none';
 
     const variants: Record<ButtonVariant, string> = {
         primary:
@@ -69,8 +69,15 @@
         xl: 'px-10 py-5 text-lg border-b-8',
     };
 
+    const activeStates: Record<ButtonSize, string> = {
+        sm: 'active:translate-y-[2px] active:border-b-2',
+        md: 'active:translate-y-[4px] active:border-b-2',
+        lg: 'active:translate-y-[4px] active:border-b-2',
+        xl: 'active:translate-y-[6px] active:border-b-2',
+    };
+    
     const classes = $derived(
-        `${baseClasses} ${variants[variant] ?? variants.primary} ${sizes[size] ?? sizes.md} ${className}`
+        `${baseClasses.replace('active:translate-y-[4px] active:border-b-2', '')} ${activeStates[size] ?? activeStates.md} ${variants[variant] ?? variants.primary} ${sizes[size] ?? sizes.md} ${className}`
     );
     const hasChildren = $derived(children !== undefined);
 </script>

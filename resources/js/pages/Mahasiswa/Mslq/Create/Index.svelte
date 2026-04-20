@@ -36,7 +36,6 @@
             id="page-header"
             title="Motivated Strategies for Learning"
             subtitle="Kuesioner ini membantu kami memahami bagaimana motivasi dan strategi belajar Anda mempengaruhi keberhasilan akademik."
-            centered
         />
 
         <div id="mslq-progress" class="sticky top-20 z-20">
@@ -273,7 +272,7 @@
                             type="submit"
                             variant="primary"
                             size="xl"
-                            class="group border-duo-lg h-20 px-16 transition-all hover:scale-105 active:scale-95"
+                            class="group h-20 border-duo-lg px-16 transition-all hover:scale-105 active:translate-y-[4px] active:border-b-2"
                             icon={Send}
                             disabled={state.form.processing || state.progress < 100}
                         >

@@ -154,7 +154,7 @@
                                                 </div>
                                             </div>
                                             <div
-                                                class="group-hover:bg-emerald-600 bg-emerald-50 text-emerald-600 group-hover:text-white group-active:scale-95 hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl shadow-inner transition-all duration-150 sm:flex"
+                                                class="group-hover:bg-emerald-600 bg-emerald-50 text-emerald-600 group-hover:text-white group-active:translate-y-[2px] hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl shadow-inner transition-all duration-150 sm:flex"
                                             >
                                                 <RotateCcw size={20} />
                                             </div>

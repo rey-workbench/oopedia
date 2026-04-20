@@ -4,7 +4,7 @@
     import Button from '@/components/ui/Button.svelte';
     import Alert from '@/components/ui/Alert.svelte';
     import PageHeader from '@/components/ui/PageHeader.svelte';
-    import { ClipboardList, CheckSquare, MessageSquare, Send } from 'lucide-svelte';
+    import { CheckSquare, MessageSquare, Send } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { SusSurveyState } from '@/states/Mahasiswa/SusSurveyState.svelte';
     import Input from '@/components/ui/Input.svelte';
@@ -26,7 +26,6 @@
             id="page-header"
             title="System Usability Scale"
             subtitle="Bantu kami meningkatkan kualitas platform dengan memberikan penilaian sejujur mungkin terhadap kebergunaan sistem OOPEDIA."
-            centered
         />
 
         <Card padding="p-0" class="overflow-hidden rounded-[3rem] border-slate-100 shadow-2xl">
@@ -127,7 +126,7 @@
                                                     type="radio"
                                                     name={`q${question.id}`}
                                                     value={i + 1}
-                                                    bind:group={state.form[`q${question.id}` as keyof typeof state.form]}
+                                                    bind:group={(state.form as any)[`q${question.id}`]}
                                                     class="peer hidden"
                                                     required
                                                 />

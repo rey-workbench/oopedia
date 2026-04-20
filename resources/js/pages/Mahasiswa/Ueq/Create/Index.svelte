@@ -4,7 +4,7 @@
     import Button from '@/components/ui/Button.svelte';
     import Alert from '@/components/ui/Alert.svelte';
     import PageHeader from '@/components/ui/PageHeader.svelte';
-    import { ClipboardList, CheckSquare, MessageSquare, Send } from 'lucide-svelte';
+    import { CheckSquare, Send } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { UeqSurveyState } from '@/states/Mahasiswa/UeqSurveyState.svelte';
     import Input from '@/components/ui/Input.svelte';
@@ -20,7 +20,6 @@
             id="page-header"
             title="User Experience Questionnaire"
             subtitle="Kami mengundang Anda untuk memberikan evaluasi objektif terhadap pengalaman interaksi Anda dengan platform OOPEDIA."
-            centered
         />
 
         <Card padding="p-0" class="overflow-hidden rounded-[3rem] border-slate-100 shadow-2xl">

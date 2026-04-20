@@ -91,7 +91,7 @@
                 <button
                     type="button"
                     onclick={() => state.closeHint()}
-                    class="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-white text-amber-500 shadow-sm transition-all hover:scale-110 hover:text-amber-600 active:scale-95"
+                    class="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-white text-amber-500 shadow-sm transition-all hover:scale-110 hover:text-amber-600 active:translate-y-[2px]"
                     aria-label="Tutup petunjuk"
                 >
                     <X size={18} />

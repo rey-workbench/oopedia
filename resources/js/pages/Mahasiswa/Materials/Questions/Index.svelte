@@ -120,9 +120,7 @@
                                         </div>
                                     </div>
                                     <div
-                                        class="{isLocked
-                                            ? 'bg-slate-100 text-slate-400'
-                                            : 'group-hover:bg-primary-600 bg-slate-50 text-slate-900 group-hover:text-white group-active:scale-95'} hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl shadow-inner transition-all duration-150 sm:flex"
+                                            : 'group-hover:bg-primary-600 bg-slate-50 text-slate-900 group-hover:text-white group-active:translate-y-[2px]'} hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl shadow-inner transition-all duration-150 sm:flex"
                                     >
                                         {#if isLocked}
                                             <Lock size={20} />

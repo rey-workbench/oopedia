@@ -165,7 +165,7 @@
                     class="inline-flex items-center gap-2.5 rounded-2xl border-2 px-6 py-3.5 text-sm font-black transition-all duration-200 select-none
                     {isUsed
                         ? 'cursor-not-allowed border-slate-100 bg-slate-50 text-slate-300 opacity-50'
-                        : 'hover:border-primary-300 cursor-grab border-white bg-white text-slate-800 shadow-sm ring-1 ring-slate-100 hover:-translate-y-0.5 hover:shadow-md active:scale-95 active:cursor-grabbing'}"
+                        : 'hover:border-primary-300 cursor-grab border-white bg-white text-slate-800 shadow-sm ring-1 ring-slate-100 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:cursor-grabbing'}"
                     draggable={!isUsed}
                     role="listitem"
                     ondragstart={(e) => !isUsed && handleDragStart(e, answer.answer_text ?? '')}
