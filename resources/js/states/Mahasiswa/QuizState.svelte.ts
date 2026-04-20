@@ -131,7 +131,7 @@ export class QuestionShowState extends BaseState {
     }
 
     async submitAnswer() {
-        if (this.isSubmitting || !this.currentQuestion) return;
+        if (this.isSubmitting || this.showFeedback || !this.currentQuestion) return;
         this.isSubmitting = true;
 
         const timeSpent = Math.max(0, Math.floor((Date.now() - this.startTime) / 1000));
@@ -227,11 +227,21 @@ export class QuestionShowState extends BaseState {
         }
     }
 
+    isNavigating = $state(false);
     handleNext() {
+        if (this.isNavigating) return;
+        this.isNavigating = true;
+
         this.showFeedback = false;
         this.showHint = false;
         if (this.feedbackData.nextUrl) {
-            router.visit(this.feedbackData.nextUrl);
+            router.visit(this.feedbackData.nextUrl, {
+                onFinish: () => {
+                    this.isNavigating = false;
+                },
+            });
+        } else {
+            this.isNavigating = false;
         }
     }
 

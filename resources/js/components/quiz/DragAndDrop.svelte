@@ -27,12 +27,12 @@
             const isFilled = !!dragAndDropAnswers[zoneIdStr];
 
             const baseClass =
-                'drop-zone inline-flex min-w-[110px] h-9 border-2 mx-1.5 items-center justify-center font-black rounded-xl px-4 shadow-sm transition-all duration-200 cursor-pointer text-sm';
+                'drop-zone inline-flex min-w-[110px] h-9 border-2 border-b-4 mx-1.5 items-center justify-center font-black rounded-xl px-4 shadow-sm transition-all duration-200 cursor-pointer text-sm';
             const stateClass = isActive
-                ? 'bg-primary-100 border-primary-600 scale-105 ring-4 ring-primary-200 shadow-xl text-primary-900'
+                ? 'bg-primary-100 border-primary-600 border-b-primary-700 ring-4 ring-primary-200/50 shadow-lg text-primary-900 translate-y-[1px]'
                 : isFilled
-                  ? 'bg-primary-50 border-primary-300 text-primary-800 hover:border-primary-400'
-                  : 'bg-white/10 border-white/20 text-white/50 hover:bg-white/20 hover:border-white/40';
+                  ? 'bg-primary-50 border-primary-300 border-b-primary-400 text-primary-800 hover:border-primary-400'
+                  : 'bg-white/10 border-white/20 border-b-white/10 text-white/50 hover:bg-white/20 hover:border-white/40';
 
             const zoneNum = parseInt(zoneIdStr, 10);
             if (zoneNum > maxZone) maxZone = zoneNum;
@@ -49,13 +49,13 @@
         event.dataTransfer.effectAllowed = 'move';
         if (event.target instanceof HTMLElement) {
             const el = event.target;
-            setTimeout(() => el.classList.add('opacity-30', 'scale-95', 'grayscale'), 0);
+            setTimeout(() => el.classList.add('opacity-40', 'grayscale', 'border-primary-200'), 0);
         }
     }
 
     function handleDragEnd(event: DragEvent) {
         if (event.target instanceof HTMLElement) {
-            event.target.classList.remove('opacity-30', 'scale-95', 'grayscale');
+            event.target.classList.remove('opacity-40', 'grayscale', 'border-primary-200');
         }
         activeZone = null;
     }
@@ -162,10 +162,10 @@
                     answer.answer_text ?? ''
                 )}
                 <div
-                    class="inline-flex items-center gap-2.5 rounded-2xl border-2 px-6 py-3.5 text-sm font-black transition-all duration-200 select-none
+                    class="press-active inline-flex items-center gap-2.5 rounded-2xl border-2 border-b-4 px-6 py-3.5 text-sm font-black transition-all duration-200 select-none
                     {isUsed
                         ? 'cursor-not-allowed border-slate-100 bg-slate-50 text-slate-300 opacity-50'
-                        : 'hover:border-primary-300 cursor-grab border-white bg-white text-slate-800 shadow-sm ring-1 ring-slate-100 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:cursor-grabbing'}"
+                        : 'hover:border-primary-300 hover:bg-primary-50/30 cursor-grab border-slate-200 bg-white text-slate-800 shadow-sm active:cursor-grabbing'}"
                     draggable={!isUsed}
                     role="listitem"
                     ondragstart={(e) => !isUsed && handleDragStart(e, answer.answer_text ?? '')}

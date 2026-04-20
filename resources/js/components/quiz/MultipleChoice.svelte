@@ -71,14 +71,14 @@
                         onchange={() => handleSelect(answer.id)}
                     />
                     <div
-                        class="flex items-center gap-5 rounded-3xl border-2 border-b-6 px-6 py-5 transition-all duration-150 active:translate-y-[3px] active:border-b-2
+                        class="press-active-lg flex items-center gap-5 rounded-3xl border-2 border-b-6 px-6 py-5
                         {isSelected
-                            ? 'border-primary-600 bg-primary-50 border-b-primary-700'
-                            : 'border-slate-100 border-b-slate-200 bg-white shadow-sm hover:border-slate-300 hover:bg-slate-50'}"
+                            ? 'border-primary-600 border-b-primary-700 bg-primary-100/50 shadow-primary-200 shadow-sm'
+                            : 'border-slate-100 border-b-slate-300 bg-white shadow-sm hover:border-slate-300 hover:bg-slate-50'}"
                     >
                         <!-- Letter Coin -->
                         <div
-                            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border-2 border-b-4 transition-all duration-150
+                            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border-2 border-b-4
                             {isSelected
                                 ? 'border-primary-600 text-primary-600 bg-white shadow-sm'
                                 : 'border-slate-200 bg-white text-slate-400 group-hover:border-slate-300'}"
@@ -87,9 +87,9 @@
                         </div>
 
                         <span
-                            class="flex-1 text-lg font-bold tracking-tight transition-colors duration-200
+                            class="flex-1 text-lg font-bold tracking-tight
                             {isSelected
-                                ? 'text-primary-900'
+                                ? 'text-primary-950'
                                 : 'text-slate-700 group-hover:text-slate-900'}"
                         >
                             {answer.answer_text}
@@ -97,7 +97,7 @@
 
                         {#if isSelected}
                             <div
-                                class="bg-primary-600 shadow-primary-200 animate-in zoom-in-50 flex h-6 w-6 items-center justify-center rounded-full shadow-lg duration-300"
+                                class="bg-primary-600 flex h-6 w-6 items-center justify-center rounded-full shadow-lg"
                             >
                                 <div class="h-2 w-2 rounded-full bg-white"></div>
                             </div>

@@ -29,7 +29,6 @@
         { key: 'date', label: 'Tanggal Input', align: 'center' },
         { key: 'actions', label: 'Aksi', align: 'right' },
     ]);
-
 </script>
 
 <App title="Hasil Survey SUS">

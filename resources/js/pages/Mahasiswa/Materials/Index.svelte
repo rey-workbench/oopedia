@@ -55,10 +55,7 @@
                                     <div
                                         class="bg-primary-600 flex h-60 items-center justify-center md:h-full"
                                     >
-                                        <Code
-                                            size={96}
-                                            class="text-white/10 transition-transform group-hover:rotate-6"
-                                        />
+                                        <Code size={96} class="text-white/10" />
                                     </div>
                                 {/if}
                                 <div class="absolute top-6 left-6">
@@ -137,7 +134,7 @@
                                         <div
                                             class="{material.is_locked
                                                 ? 'bg-slate-100 text-slate-400'
-                                                : 'group-hover:bg-primary-600 bg-slate-50 text-slate-900 group-hover:text-white group-active:translate-y-[2px]'} hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl shadow-inner transition-all duration-150 sm:flex"
+                                                : 'group-hover:bg-primary-600 bg-slate-50 text-slate-900 group-hover:text-white group-active:translate-y-px'} hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl shadow-inner transition-all duration-150 sm:flex"
                                         >
                                             {#if material.is_locked}
                                                 <Lock size={20} />

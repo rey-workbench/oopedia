@@ -144,10 +144,11 @@
 
         <div id="quiz-submit-btn" class="mt-8 border-t border-slate-50 pt-8">
             <Button
+                id="quiz-main-submit-btn"
                 variant="primary"
                 size="lg"
-                class="w-full py-5 text-base font-black tracking-widest uppercase shadow-xl shadow-slate-200 transition-all hover:shadow-slate-300"
-                disabled={state.isSubmitting}
+                class="w-full py-5 text-base font-black tracking-widest uppercase"
+                disabled={state.isSubmitting || state.showFeedback}
                 onclick={() => state.submitAnswer()}
             >
                 {#if state.isSubmitting}

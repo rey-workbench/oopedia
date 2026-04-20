@@ -159,7 +159,7 @@
                                 >
                                     <div class="flex gap-6">
                                         <div
-                                            class="group-hover:bg-accent-100 group-hover:text-accent-600 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-xs font-black text-slate-400 transition-all group-hover:scale-110"
+                                            class="group-hover:bg-accent-100 group-hover:text-accent-600 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-xs font-black text-slate-400 transition-all"
                                         >
                                             {question.order}
                                         </div>
@@ -222,7 +222,7 @@
                                 >
                                     <div class="flex gap-6">
                                         <div
-                                            class="group-hover:bg-primary-100 group-hover:text-primary-500 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-xs font-black text-slate-400 transition-all group-hover:scale-110"
+                                            class="group-hover:bg-primary-100 group-hover:text-primary-500 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-xs font-black text-slate-400 transition-all"
                                         >
                                             {question.order}
                                         </div>
@@ -272,7 +272,7 @@
                             type="submit"
                             variant="primary"
                             size="xl"
-                            class="group border-duo-lg h-20 px-16 transition-all hover:scale-105 active:translate-y-[4px] active:border-b-2"
+                            class="group h-20 px-16"
                             icon={Send}
                             disabled={state.form.processing || state.progress < 100}
                         >

@@ -4,7 +4,7 @@
     import Button from '@/components/ui/Button.svelte';
     import Alert from '@/components/ui/Alert.svelte';
     import PageHeader from '@/components/ui/PageHeader.svelte';
-    import { CheckSquare, Send } from 'lucide-svelte';
+    import { CheckSquare, MessageSquare, Send } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { UeqSurveyState } from '@/states/Mahasiswa/UeqSurveyState.svelte';
     import Input from '@/components/ui/Input.svelte';
@@ -22,7 +22,10 @@
             subtitle="Kami mengundang Anda untuk memberikan evaluasi objektif terhadap pengalaman interaksi Anda dengan platform OOPEDIA."
         />
 
-        <Card padding="p-0" class="overflow-hidden rounded-[3rem] border-slate-100 shadow-2xl">
+        <Card
+            padding="p-0"
+            class="border-duo-lg overflow-hidden rounded-[3rem] border-slate-100 shadow-xl"
+        >
             <div class="space-y-12 p-12">
                 {#if state.form.errors && Object.keys(state.form.errors).length > 0}
                     <Alert variant="danger" dismissible={true}>
@@ -227,7 +230,7 @@
                             id="btn-submit-survey"
                             type="submit"
                             variant="primary"
-                            class="shadow-primary-900/20 px-20 py-6 text-sm shadow-2xl"
+                            class="px-20 py-6 text-sm"
                             icon={Send}
                             disabled={state.form.processing}
                         >

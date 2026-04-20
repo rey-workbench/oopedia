@@ -117,7 +117,7 @@
                                 <Badge
                                     variant="secondary"
                                     size="sm"
-                                    class="border-none bg-white/20 text-xs text-white"
+                                    class="text-xs"
                                 >
                                     {quizState.adaptiveFacts.length} Facts • {quizState.adaptiveTriggeredRule
                                         ? 'Rule Active'

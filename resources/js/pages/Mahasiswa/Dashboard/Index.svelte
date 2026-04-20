@@ -117,7 +117,7 @@
             <div class="flex flex-col items-center gap-10 md:flex-row">
                 <div class="group relative">
                     <div
-                        class="flex h-32 w-32 rotate-3 items-center justify-center overflow-hidden rounded-3xl border-2 border-b-6 border-slate-200 bg-white transition-transform duration-500 group-hover:rotate-0"
+                        class="group-hover:border-primary-400 flex h-32 w-32 items-center justify-center overflow-hidden rounded-3xl border-2 border-b-6 border-slate-200 bg-white shadow-xl shadow-slate-200/20 transition-all duration-300 group-hover:bg-slate-50"
                     >
                         <Star size={80} class="text-primary-500" />
                     </div>
@@ -156,7 +156,7 @@
                         {@const material = state.allMaterials.find((m) => m.id === materialId)}
                         <a
                             href={ROUTES.MAHASISWA.CERTIFICATES.INDEX}
-                            class="group relative block overflow-hidden rounded-2xl border-2 border-b-6 transition-all active:translate-y-[2px] active:border-b-2 {type ===
+                            class="group press-active border-duo-lg relative block overflow-hidden rounded-2xl border-2 transition-all {type ===
                             'gold'
                                 ? 'border-amber-400 bg-amber-50/10'
                                 : type === 'silver'
@@ -216,13 +216,13 @@
                 <div id={stat.id}>
                     <Link href={stat.href} class="block h-full">
                         <Card
-                            class="group relative h-full overflow-hidden border-b-6 transition-all select-none hover:-translate-y-1 hover:shadow-xl active:translate-y-[2px] active:border-b-2"
+                            class="group press-active border-duo-lg relative h-full overflow-hidden transition-all select-none"
                         >
                             <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
                                 {#if typeof stat.icon !== 'string'}
                                     {@const IconComponent = stat.icon}
                                     <div
-                                        class="scale-[4] transition-transform duration-500 group-hover:scale-[4.5]"
+                                        class="scale-[4] opacity-5 transition-opacity duration-300 group-hover:opacity-10"
                                     >
                                         <IconComponent size={24} strokeWidth={2.5} />
                                     </div>
@@ -401,7 +401,7 @@
                             class="group relative overflow-hidden border-b-6 bg-white"
                         >
                             <div
-                                class="bg-primary-100/50 absolute -top-10 -right-10 h-32 w-32 rounded-full blur-2xl transition-transform duration-1000 group-hover:scale-150"
+                                class="bg-primary-100/50 absolute -top-10 -right-10 h-32 w-32 rounded-full blur-2xl"
                             ></div>
                             <div class="text-primary-600 mb-6">
                                 <Code2 size={32} strokeWidth={2.5} />
@@ -426,7 +426,7 @@
 
                         <Card
                             padding="p-8"
-                            class="hover:border-primary-400 hover:bg-primary-50/20 group cursor-pointer border-2 border-b-6 border-dashed border-slate-200 transition-all active:translate-y-[2px] active:border-b-2"
+                            class="group press-active hover:border-primary-400 hover:bg-primary-50/20 border-duo-lg cursor-pointer border-2 border-dashed border-slate-200 transition-all"
                         >
                             <Link
                                 href={ROUTES.MAHASISWA.MATERIALS.INDEX}

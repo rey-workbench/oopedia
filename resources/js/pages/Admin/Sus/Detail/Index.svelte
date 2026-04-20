@@ -30,7 +30,8 @@
                     size="sm"
                     href={ROUTES.ADMIN.SUS.INDEX}
                     icon={ChevronLeft}
-                    class="mb-4 text-slate-400">KEMBALI KE LIST</Button
+                    class="mb-4 text-slate-400 transition-colors hover:text-slate-900"
+                    >KEMBALI KE LIST</Button
                 >
                 <h1
                     class="font-display text-3xl leading-tight font-extrabold tracking-tight text-slate-900 md:text-4xl"
@@ -117,7 +118,8 @@
                                         <div
                                             class={`inline-flex h-10 w-10 items-center justify-center rounded-xl text-sm font-black ${getScoreVariant(state.calculation.item_scores[`q${question.id}`] ?? 0)}`}
                                         >
-                                            {state.calculation.item_scores[`q${question.id}`] ?? '-'}
+                                            {state.calculation.item_scores[`q${question.id}`] ??
+                                                '-'}
                                         </div>
                                     </div>
                                 </div>

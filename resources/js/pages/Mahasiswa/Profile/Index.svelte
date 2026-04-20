@@ -120,15 +120,11 @@
 
         <!-- Profile Hero Card -->
         <div id="profile-hero">
-            <Panel
-                rounded="full"
-                class="hover:shadow-primary-900/20 mb-8 shadow-2xl transition-all duration-500"
-                padding="p-8 md:p-12"
-            >
+            <Panel rounded="full" class="mb-8 shadow-xl" padding="p-8 md:p-12">
                 <div class="flex flex-col items-center gap-10 md:flex-row">
                     <div class="group relative">
                         <div
-                            class="flex h-32 w-32 rotate-3 items-center justify-center overflow-hidden rounded-3xl bg-white shadow-2xl transition-transform duration-500 group-hover:rotate-0"
+                            class="flex h-32 w-32 items-center justify-center overflow-hidden rounded-3xl bg-white shadow-xl"
                         >
                             <UserCircle size={80} class="text-slate-200" />
                         </div>
@@ -154,13 +150,13 @@
                             class="flex flex-wrap items-center justify-center gap-4 md:justify-start"
                         >
                             <div
-                                class="flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-xs font-bold tracking-wider uppercase backdrop-blur-md"
+                                class="flex items-center gap-2 rounded-xl border-2 border-b-4 border-white/10 bg-white/10 px-4 py-2 text-xs font-bold tracking-wider uppercase shadow-sm backdrop-blur-md"
                             >
                                 <Mail size={14} class="text-primary-400" />
                                 {state.user.email}
                             </div>
                             <div
-                                class="flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-xs font-bold tracking-wider uppercase backdrop-blur-md"
+                                class="flex items-center gap-2 rounded-xl border-2 border-b-4 border-white/10 bg-white/10 px-4 py-2 text-xs font-bold tracking-wider uppercase shadow-sm backdrop-blur-md"
                             >
                                 <UserIcon size={14} class="text-primary-400" /> Mahasiswa
                             </div>
@@ -185,9 +181,7 @@
                             <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
                                 {#if typeof stat.icon !== 'string'}
                                     {@const IconComponent = stat.icon}
-                                    <div
-                                        class="scale-[4] transition-transform duration-500 group-hover:scale-[4.5]"
-                                    >
+                                    <div class="scale-[4] opacity-50">
                                         <IconComponent size={24} strokeWidth={2.5} />
                                     </div>
                                 {/if}
@@ -268,9 +262,7 @@
                                 <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
                                     {#if typeof stat.icon !== 'string'}
                                         {@const IconComponent = stat.icon}
-                                        <div
-                                            class="scale-[4] transition-transform duration-500 group-hover:scale-[4.5]"
-                                        >
+                                        <div class="scale-[4] opacity-50">
                                             <IconComponent size={24} strokeWidth={2.5} />
                                         </div>
                                     {/if}
@@ -534,10 +526,7 @@
                                     {#if state.form.processing}
                                         <Loader2 size={18} class="mr-2 animate-spin" /> Menyimpan...
                                     {:else}
-                                        <Save
-                                            size={18}
-                                            class="mr-2 transition-transform group-hover:scale-110"
-                                        /> Simpan Perubahan
+                                        <Save size={18} class="mr-2" /> Simpan Perubahan
                                     {/if}
                                 </Button>
                             </div>

@@ -88,7 +88,8 @@
                     id="create-material-btn"
                     href={ROUTES.ADMIN.MATERIALS.CREATE}
                     variant="primary"
-                    icon={Plus}>Tambah Modul Baru</Button
+                    icon={Plus}
+                    class="transition-transform active:translate-y-0.5">Tambah Modul Baru</Button
                 >
             {/snippet}
         </PageHeader>
@@ -101,7 +102,7 @@
                         {#if typeof stat.icon !== 'string'}
                             {@const IconComponent = stat.icon}
                             <div
-                                class="scale-[4] transition-transform duration-500 group-hover:scale-[4.5]"
+                                class="opacity-5 transition-opacity duration-300 group-hover:opacity-10"
                             >
                                 <IconComponent size={24} strokeWidth={2.5} />
                             </div>
@@ -180,7 +181,7 @@
                     >
                         {#if material.media && material.media.length > 0}
                             <div
-                                class="h-14 w-20 overflow-hidden rounded-xl shadow-lg shadow-slate-200 transition-transform group-hover:scale-105"
+                                class="group-hover:border-primary-500 h-14 w-20 overflow-hidden rounded-xl shadow-lg shadow-slate-200 transition-all duration-300 group-hover:border-2"
                             >
                                 <img
                                     src={`/${material.media[0].media_url}`}
@@ -190,7 +191,7 @@
                             </div>
                         {:else}
                             <div
-                                class="flex h-14 w-20 items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-100 text-slate-300"
+                                class="group-hover:border-primary-300 group-hover:text-primary-400 flex h-14 w-20 items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-100 text-slate-300 transition-colors"
                             >
                                 <FileText size={24} strokeWidth={2} class="opacity-30" />
                             </div>

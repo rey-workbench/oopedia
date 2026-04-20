@@ -1,7 +1,7 @@
 <script lang="ts">
     import Button from '@/components/ui/Button.svelte';
     import { DotLottieSvelte } from '@lottiefiles/dotlottie-svelte';
-    import { ArrowRight, Star, TrendingUp } from 'lucide-svelte';
+    import { ArrowRight, Loader2, Star, TrendingUp } from 'lucide-svelte';
     import { fly } from 'svelte/transition';
     import type { QuestionShowState } from '@/states/Mahasiswa/QuizState.svelte';
     import type { FeedbackVariant } from './types';
@@ -87,8 +87,6 @@
         body: string;
         chipBorder: string;
         chipText: string;
-        primary: string;
-        tryAgain: string;
     };
 
     const WRONG_TONE: FeedbackTone = {
@@ -100,8 +98,6 @@
         body: 'text-rose-600/80',
         chipBorder: 'border-rose-100',
         chipText: 'text-rose-500',
-        primary: 'border-rose-700 bg-rose-500 hover:bg-rose-600',
-        tryAgain: 'text-rose-600',
     };
 
     const SUCCESS_TONE_BY_VARIANT: Record<FeedbackVariant, FeedbackTone> = {
@@ -114,8 +110,6 @@
             body: 'text-emerald-600/80',
             chipBorder: 'border-emerald-100',
             chipText: 'text-emerald-600',
-            primary: 'border-emerald-700 bg-emerald-500 hover:bg-emerald-600',
-            tryAgain: 'text-emerald-600',
         },
         acceleration: {
             container:
@@ -126,8 +120,6 @@
             body: 'text-teal-700/80',
             chipBorder: 'border-teal-100',
             chipText: 'text-teal-600',
-            primary: 'border-teal-700 bg-teal-500 hover:bg-teal-600',
-            tryAgain: 'text-teal-600',
         },
         certificate: {
             container:
@@ -138,8 +130,6 @@
             body: 'text-amber-700/80',
             chipBorder: 'border-amber-100',
             chipText: 'text-amber-600',
-            primary: 'border-amber-700 bg-amber-500 hover:bg-amber-600',
-            tryAgain: 'text-amber-600',
         },
         intervention: {
             container:
@@ -150,8 +140,6 @@
             body: 'text-indigo-700/80',
             chipBorder: 'border-indigo-100',
             chipText: 'text-indigo-600',
-            primary: 'border-indigo-700 bg-indigo-500 hover:bg-indigo-600',
-            tryAgain: 'text-indigo-600',
         },
         backtrack: {
             container:
@@ -162,8 +150,6 @@
             body: 'text-fuchsia-700/80',
             chipBorder: 'border-fuchsia-100',
             chipText: 'text-fuchsia-600',
-            primary: 'border-fuchsia-700 bg-fuchsia-500 hover:bg-fuchsia-600',
-            tryAgain: 'text-fuchsia-600',
         },
     };
 
@@ -343,11 +329,13 @@
                 <div class="flex w-full items-center gap-3 md:w-auto">
                     {#if !isSuccess}
                         <Button
-                            variant="outline"
+                            variant="secondary"
                             onclick={() => quizState.handleTryAgain()}
-                            class={`flex-1 border-2 border-white bg-white/50 px-6 py-3 text-xs font-black tracking-widest uppercase shadow-sm transition-all hover:bg-white active:translate-y-1 md:flex-none ${feedbackTone.tryAgain}`}
+                            class="flex-1 px-8 md:flex-none"
                         >
-                            COBA LAGI
+                            <span class="text-xs font-black tracking-widest uppercase">
+                                COBA LAGI
+                            </span>
                         </Button>
                     {/if}
 
@@ -355,15 +343,27 @@
                         id="feedback-continue-btn"
                         variant="primary"
                         onclick={() => quizState.handleNext()}
-                        class={`group relative flex-1 overflow-hidden px-10 py-3.5 font-black tracking-widest uppercase shadow-lg active:translate-y-1 md:w-56 ${feedbackTone.primary}`}
+                        disabled={quizState.isNavigating}
+                        class="flex-1 md:w-56"
                     >
-                        <span class="relative z-10 flex items-center justify-center gap-2">
-                            {nextAction}
-                            <ArrowRight
-                                size={18}
-                                class="transition-transform group-hover:translate-x-1"
-                            />
-                        </span>
+                        {#if quizState.isNavigating}
+                            <div
+                                class="flex items-center justify-center gap-2 text-xs font-black tracking-widest uppercase"
+                            >
+                                <Loader2 size={16} class="animate-spin" />
+                                MEMUAT...
+                            </div>
+                        {:else}
+                            <span
+                                class="flex items-center justify-center gap-2 text-xs font-black tracking-widest uppercase"
+                            >
+                                {nextAction}
+                                <ArrowRight
+                                    size={18}
+                                    class="transition-transform group-hover:translate-x-1"
+                                />
+                            </span>
+                        {/if}
                     </Button>
                 </div>
             </div>

@@ -5,7 +5,7 @@
     import Card from '@/components/ui/Card.svelte';
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
-    import { ArrowLeft, Inbox, UserCheck, UserX } from 'lucide-svelte';
+    import { ChevronLeft, Inbox, UserCheck, UserX } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
     import { formatDate } from '@/utils/formatters';
     import { untrack } from 'svelte';
@@ -40,11 +40,14 @@
                 Otorisasi permohonan akses administratif dari entitas eksternal.
             </p>
             <div class="mt-6 flex flex-wrap gap-4">
-                <div>
-                    <Button href={ROUTES.ADMIN.USERS.INDEX} variant="ghost" icon={ArrowLeft}
-                        >KEMBALI KE REPOSITORI</Button
-                    >
-                </div>
+                <Button
+                    href={ROUTES.ADMIN.USERS.INDEX}
+                    variant="ghost"
+                    size="sm"
+                    icon={ChevronLeft}
+                    class="text-slate-400 transition-colors hover:text-slate-900"
+                    >KEMBALI KE REPOSITORI</Button
+                >
             </div>
         </div>
 
@@ -82,13 +85,13 @@
                         >
                             <button
                                 onclick={() => state.handleApprove(admin.id)}
-                                class="flex items-center gap-2 rounded-xl bg-emerald-50 px-4 py-2 text-[10px] font-bold tracking-widest text-emerald-600 uppercase transition-all hover:bg-emerald-600 hover:text-white"
+                                class="flex items-center gap-2 rounded-xl border-b-2 border-emerald-100 bg-emerald-50 px-4 py-2 text-[10px] font-bold tracking-widest text-emerald-600 uppercase transition-all hover:bg-emerald-100 active:translate-y-px active:border-b-0"
                             >
                                 <UserCheck size={14} /> Setujui
                             </button>
                             <button
                                 onclick={() => state.handleReject(admin.id)}
-                                class="flex items-center gap-2 rounded-xl bg-rose-50 px-4 py-2 text-[10px] font-bold tracking-widest text-rose-600 uppercase transition-all hover:bg-rose-600 hover:text-white"
+                                class="flex items-center gap-2 rounded-xl border-b-2 border-rose-100 bg-rose-50 px-4 py-2 text-[10px] font-bold tracking-widest text-rose-600 uppercase transition-all hover:bg-rose-100 active:translate-y-px active:border-b-0"
                             >
                                 <UserX size={14} /> Tolak
                             </button>

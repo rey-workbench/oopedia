@@ -57,8 +57,7 @@
                 type="text"
                 bind:value={answerText}
                 placeholder="Ketik jawaban Anda di sini..."
-                class="hover:border-primary-200 focus:border-primary-500 focus:ring-primary-50 w-full rounded-2xl border-2 border-slate-100 bg-white px-6 py-5 text-lg font-semibold text-slate-900 shadow-sm transition-all
-                       duration-200 outline-none placeholder:text-slate-300 focus:ring-4"
+                class="focus:border-primary-500 focus:bg-primary-50/10 w-full rounded-2xl border-2 border-b-6 border-slate-200 bg-white px-6 py-5 text-lg font-bold text-slate-900 shadow-sm transition-all duration-150 outline-none placeholder:text-slate-300 focus:translate-y-[2px] focus:border-b-4"
             />
             <!-- Accent dot when typing -->
             {#if answerText?.length > 0}

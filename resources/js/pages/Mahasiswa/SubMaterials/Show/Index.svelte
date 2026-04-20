@@ -218,11 +218,11 @@
                                         state.material.id,
                                         otherSub.id
                                     )}
-                                    class={`group rounded-2xl border-2 border-slate-100 p-6 ${getHoverBorderClass(otherSub.jenis_konten)} transition-all hover:shadow-lg`}
+                                    class={`group press-active border-duo rounded-2xl border-slate-100 p-6 ${getHoverBorderClass(otherSub.jenis_konten)}`}
                                 >
                                     <div class="flex items-start gap-4">
                                         <div
-                                            class={`h-12 w-12 rounded-xl ${getSubMaterialBg(otherSub.jenis_konten)} flex shrink-0 items-center justify-center transition-transform group-hover:scale-110`}
+                                            class={`h-12 w-12 rounded-xl ${getSubMaterialBg(otherSub.jenis_konten)} flex shrink-0 items-center justify-center`}
                                         >
                                             <span
                                                 class={`text-lg font-bold ${getSubMaterialText(otherSub.jenis_konten)}`}
