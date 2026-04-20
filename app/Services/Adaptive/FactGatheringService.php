@@ -114,7 +114,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
 
     protected function getLearningStyleFacts(StudentState $state): array
     {
-        $style = $state->learning_style;
+        $style = $state->learning_profile[StudentStateSchema::KEY_LEARNING_STYLE] ?? StudentStateSchema::STYLE_VISUAL;
 
         if ($style === StudentStateSchema::STYLE_MIXED) {
             return [
