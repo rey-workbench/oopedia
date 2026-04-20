@@ -3,6 +3,7 @@
     import Card from '@/components/ui/Card.svelte';
     import Button from '@/components/ui/Button.svelte';
     import Alert from '@/components/ui/Alert.svelte';
+    import PageHeader from '@/components/ui/PageHeader.svelte';
     import { ClipboardList, CheckSquare, MessageSquare, Send } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { UeqSurveyState } from '@/states/Mahasiswa/UeqSurveyState.svelte';
@@ -15,20 +16,12 @@
 
 <App title="UEQ Survey">
     <div class="space-y-12 pb-20">
-        <div id="ueq-instructions" class="space-y-6 text-center">
-            <div
-                class="bg-primary-50 text-primary-600 inline-flex h-20 w-20 items-center justify-center rounded-[2rem] shadow-inner"
-            >
-                <ClipboardList size={32} />
-            </div>
-            <h1 class="text-4xl font-bold tracking-[0.2em] text-slate-900 uppercase">
-                User Experience <span class="text-primary-600">Questionnaire</span>
-            </h1>
-            <p class="mx-auto max-w-2xl text-lg font-medium text-slate-500">
-                Kami mengundang Anda untuk memberikan evaluasi objektif terhadap pengalaman
-                interaksi Anda dengan platform OOPEDIA.
-            </p>
-        </div>
+        <PageHeader
+            id="page-header"
+            title="User Experience Questionnaire"
+            subtitle="Kami mengundang Anda untuk memberikan evaluasi objektif terhadap pengalaman interaksi Anda dengan platform OOPEDIA."
+            centered
+        />
 
         <Card padding="p-0" class="overflow-hidden rounded-[3rem] border-slate-100 shadow-2xl">
             <div class="space-y-12 p-12">

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Mahasiswa;
 
-use App\Contracts\Services\Lms\MslqServiceInterface;
+use App\Contracts\Services\MslqServiceInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Survey\StoreMslqRequest;
 use App\Models\MslqQuestion;

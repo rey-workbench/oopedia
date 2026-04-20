@@ -3,6 +3,7 @@
     import Card from '@/components/ui/Card.svelte';
     import Button from '@/components/ui/Button.svelte';
     import Alert from '@/components/ui/Alert.svelte';
+    import PageHeader from '@/components/ui/PageHeader.svelte';
     import { ClipboardList, CheckSquare, MessageSquare, Send } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { SusSurveyState } from '@/states/Mahasiswa/SusSurveyState.svelte';
@@ -21,20 +22,12 @@
 
 <App title="SUS Survey">
     <div class="space-y-12 pb-20">
-        <div id="sus-instructions" class="space-y-6 text-center">
-            <div
-                class="bg-primary-50 text-primary-600 inline-flex h-20 w-20 items-center justify-center rounded-[2rem] shadow-inner"
-            >
-                <ClipboardList size={32} />
-            </div>
-            <h1 class="text-4xl font-bold tracking-[0.2em] text-slate-900 uppercase">
-                System Usability <span class="text-primary-600">Scale</span>
-            </h1>
-            <p class="mx-auto max-w-2xl text-lg font-medium text-slate-500">
-                Bantu kami meningkatkan kualitas platform dengan memberikan penilaian sejujur mungkin 
-                terhadap kebergunaan sistem OOPEDIA.
-            </p>
-        </div>
+        <PageHeader
+            id="page-header"
+            title="System Usability Scale"
+            subtitle="Bantu kami meningkatkan kualitas platform dengan memberikan penilaian sejujur mungkin terhadap kebergunaan sistem OOPEDIA."
+            centered
+        />
 
         <Card padding="p-0" class="overflow-hidden rounded-[3rem] border-slate-100 shadow-2xl">
             <div class="space-y-12 p-12">

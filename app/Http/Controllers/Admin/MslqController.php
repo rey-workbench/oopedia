@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
-use App\Contracts\Services\Lms\MslqServiceInterface;
+use App\Contracts\Services\MslqServiceInterface;
 use App\Enums\Lms\MslqScale;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -19,16 +19,18 @@ final class MslqController extends Controller
 
     public function index(Request $request): Response
     {
-        $class    = $request->query('class');
-        $results  = $this->mslqService->getAdminResults($class);
-        $classes  = $this->mslqService->getDistinctClasses();
-        $averages = $this->mslqService->calculateGlobalAverages($class);
+        $class       = $request->query('class');
+        $results     = $this->mslqService->getAdminResults($class);
+        $classes     = $this->mslqService->getDistinctClasses();
+        $metricsData = $this->mslqService->calculateGlobalMetrics($class);
 
         return $this->render('Admin/Mslq/Index', [
             'results'     => $results,
             'classes'     => $classes,
             'activeClass' => $class ?? '',
-            'averages'    => $averages,
+            'metrics'     => array_merge($metricsData, [
+                'total_responses' => $results->total(),
+            ]),
         ]);
     }
 

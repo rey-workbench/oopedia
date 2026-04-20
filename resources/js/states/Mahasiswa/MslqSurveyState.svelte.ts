@@ -13,7 +13,7 @@ export interface MslqForm {
     answers: MslqAnswerInput[];
 }
 
-export class MslqState extends FormState<MslqForm> {
+export class MslqSurveyState extends FormState<MslqForm> {
     questions = $state<any[]>([]);
 
     constructor(questions: any[]) {

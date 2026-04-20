@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Services\Lms;
+namespace App\Services\Analytics;
 
 use App\Contracts\Repositories\MslqRepositoryInterface;
-use App\Contracts\Services\Lms\MslqServiceInterface;
+use App\Contracts\Services\MslqServiceInterface;
 use App\Enums\Lms\MslqCategory;
 use App\Models\MslqAnswer;
 use App\Models\MslqResult;
@@ -29,19 +29,28 @@ final class MslqService implements MslqServiceInterface
         return $this->mslqRepository->getDistinctClasses();
     }
 
-    public function calculateGlobalAverages(?string $class = null): array
+    public function calculateGlobalMetrics(?string $class = null): array
     {
         $results = $this->mslqRepository->getAllForCalculation($class);
 
         if ($results->isEmpty()) {
-            return [];
+            return [
+                'averages'       => [],
+                'avg_motivation' => 0,
+                'avg_strategy'   => 0,
+            ];
         }
 
-        $allScales = [];
+        $allScales        = [];
+        $motivationTotals = [];
+        $strategyTotals   = [];
+
         foreach ($results as $res) {
             foreach ($res->scores_by_scale as $scale => $score) {
                 $allScales[$scale][] = $score;
             }
+            $motivationTotals[] = $res->total_motivation;
+            $strategyTotals[]   = $res->total_strategy;
         }
 
         $averages = [];
@@ -49,7 +58,11 @@ final class MslqService implements MslqServiceInterface
             $averages[$scale] = round(array_sum($scores) / count($scores), 2);
         }
 
-        return $averages;
+        return [
+            'averages'       => $averages,
+            'avg_motivation' => round(array_sum($motivationTotals) / count($motivationTotals), 2),
+            'avg_strategy'   => round(array_sum($strategyTotals) / count($strategyTotals), 2),
+        ];
     }
 
     public function getResultDetail(string $id): MslqResult

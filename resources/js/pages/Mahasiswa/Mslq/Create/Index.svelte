@@ -4,15 +4,15 @@
     import Button from '@/components/ui/Button.svelte';
     import Alert from '@/components/ui/Alert.svelte';
     import ProgressBar from '@/components/ui/ProgressBar.svelte';
+    import PageHeader from '@/components/ui/PageHeader.svelte';
     import { ClipboardList, Send, Target, Info } from 'lucide-svelte';
     import { untrack } from 'svelte';
-    import { MslqState } from '@/states/Mahasiswa/MslqState.svelte';
+    import { MslqSurveyState } from '@/states/Mahasiswa/MslqSurveyState.svelte';
     import Input from '@/components/ui/Input.svelte';
-    import PageHeader from '@/components/ui/PageHeader.svelte';
 
     const { questions = [] } = $props();
 
-    const state = untrack(() => new MslqState(questions));
+    const state = untrack(() => new MslqSurveyState(questions));
 
     const motivationQuestions = $derived(
         state.questions.filter((q) => q.category === 'motivation')

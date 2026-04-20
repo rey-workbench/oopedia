@@ -7,7 +7,7 @@
     import Chart from '@/components/ui/Chart.svelte';
     import Select from '@/components/ui/Select.svelte';
     import { Eye, FileSpreadsheet, Brain, Target, ClipboardList } from 'lucide-svelte';
-    import { MslqListState } from '@/states/Admin/MslqListState.svelte';
+    import { MslqState } from '@/states/Admin/MslqState.svelte';
     import { Link } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils/route';
     import type { Pagination, MslqResult } from '@/types';
@@ -16,17 +16,17 @@
 
     let {
         results,
-        averages = {},
+        metrics = { averages: {}, total_responses: 0 },
         classes = [],
         activeClass = '',
     }: {
         results: Pagination<MslqResult>;
-        averages: Record<string, number>;
+        metrics: { averages: Record<string, number>; avg_motivation: number; avg_strategy: number; total_responses: number };
         classes: string[];
         activeClass: string;
     } = $props();
 
-    const state = untrack(() => new MslqListState(results.data, averages, classes, activeClass));
+    const state = untrack(() => new MslqState(results.data, metrics, classes, activeClass));
 
     // Removed unused scale helper variables
 
@@ -84,21 +84,21 @@
         {
             name: 'Skor Rata-rata',
             data: [
-                averages['mslq_intrinsic_goal_orientation'] || 0,
-                averages['mslq_extrinsic_goal_orientation'] || 0,
-                averages['mslq_task_value'] || 0,
-                averages['mslq_control_of_learning_beliefs'] || 0,
-                averages['mslq_self_efficacy_for_learning_performance'] || 0,
-                averages['mslq_test_anxiety'] || 0,
-                averages['mslq_rehearsal'] || 0,
-                averages['mslq_elaboration'] || 0,
-                averages['mslq_organization'] || 0,
-                averages['mslq_critical_thinking'] || 0,
-                averages['mslq_metacognitive_self_regulation'] || 0,
-                averages['mslq_time_study_environment_management'] || 0,
-                averages['mslq_effort_regulation'] || 0,
-                averages['mslq_peer_learning'] || 0,
-                averages['mslq_help_seeking'] || 0,
+                metrics.averages['mslq_intrinsic_goal_orientation'] || 0,
+                metrics.averages['mslq_extrinsic_goal_orientation'] || 0,
+                metrics.averages['mslq_task_value'] || 0,
+                metrics.averages['mslq_control_of_learning_beliefs'] || 0,
+                metrics.averages['mslq_self_efficacy_for_learning_performance'] || 0,
+                metrics.averages['mslq_test_anxiety'] || 0,
+                metrics.averages['mslq_rehearsal'] || 0,
+                metrics.averages['mslq_elaboration'] || 0,
+                metrics.averages['mslq_organization'] || 0,
+                metrics.averages['mslq_critical_thinking'] || 0,
+                metrics.averages['mslq_metacognitive_self_regulation'] || 0,
+                metrics.averages['mslq_time_study_environment_management'] || 0,
+                metrics.averages['mslq_effort_regulation'] || 0,
+                metrics.averages['mslq_peer_learning'] || 0,
+                metrics.averages['mslq_help_seeking'] || 0,
             ],
         },
     ]);
@@ -173,12 +173,7 @@
                                     Rata-rata Motivasi
                                 </div>
                                 <div class="text-4xl font-black">
-                                    {(
-                                        results.data.reduce(
-                                            (acc, r) => acc + r.total_motivation,
-                                            0
-                                        ) / (results.data.length || 1)
-                                    ).toFixed(2)}
+                                    {state.avgMotivation.toFixed(2)}
                                 </div>
                             </div>
                             <div class="rounded-2xl border-2 border-white/20 bg-white/20 p-4">
@@ -205,10 +200,7 @@
                                     Rata-rata Strategi
                                 </div>
                                 <div class="text-4xl font-black">
-                                    {(
-                                        results.data.reduce((acc, r) => acc + r.total_strategy, 0) /
-                                        (results.data.length || 1)
-                                    ).toFixed(2)}
+                                    {state.avgStrategy.toFixed(2)}
                                 </div>
                             </div>
                             <div class="rounded-2xl border-2 border-white/20 bg-white/20 p-4">

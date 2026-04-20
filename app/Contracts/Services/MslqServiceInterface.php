@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Contracts\Services\Lms;
+namespace App\Contracts\Services;
 
 use App\Models\MslqResult;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -21,9 +21,9 @@ interface MslqServiceInterface
     public function getDistinctClasses(): Collection;
 
     /**
-     * Calculate global averages for a class.
+     * Calculate global metrics for a class.
      */
-    public function calculateGlobalAverages(?string $class = null): array;
+    public function calculateGlobalMetrics(?string $class = null): array;
 
     /**
      * Get single result detail.
