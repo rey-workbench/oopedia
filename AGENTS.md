@@ -6,11 +6,11 @@
 
 ## OVERVIEW
 
-Adaptive e-learning platform Laravel 12 + Inertia + Svelte 5 + Tailwind v4. Logic rule-based adaptive engine (facts/actions) connect LMS, analytics, role-based admin/mahasiswa flows.
+Adaptive e-learning platform Laravel 12 + Inertia + Svelte 5 + Tailwind v4. Rule-based adaptive engine (facts/actions) connect LMS, analytics, role-based admin/mahasiswa flows.
 
 ## STRUCTURE
 
-```text
+```
 oopedia/
 ├── app/                    # Backend domains (Contracts, Services, Repositories, Rules)
 │   ├── Rules/Adaptive/     # Forward-chaining adaptive rule engine
@@ -26,24 +26,24 @@ oopedia/
 
 ## WHERE TO LOOK
 
-| Task                      | Location                                      | Notes                                    |
+| Task | Location | Notes |
 | ------------------------- | --------------------------------------------- | ---------------------------------------- |
-| Route wiring              | `bootstrap/app.php`, `routes/*.php`           | `web.php` include auth/admin/mahasiswa   |
-| Adaptive decision flow    | `app/Rules/Adaptive`, `app/Services/Adaptive` | Rule registry + fact/action constants    |
-| Service bindings          | `app/Providers/ServiceServiceProvider.php`    | Interface→implementation map             |
-| Repository bindings       | `app/Providers/RepositoryServiceProvider.php` | Persistence abstraction map              |
-| Frontend app entry        | `resources/js/app.ts`, `vite.config.ts`       | Inertia page resolver import.meta.glob   |
-| Shared frontend contracts | `resources/js/types`, `resources/js/utils`    | Public barrels, route/role helpers       |
+| Route wiring | `bootstrap/app.php`, `routes/*.php` | `web.php` include auth/admin/mahasiswa |
+| Adaptive decision flow | `app/Rules/Adaptive`, `app/Services/Adaptive` | Rule registry + fact/action constants |
+| Service bindings | `app/Providers/ServiceServiceProvider.php` | Interface→implementation map |
+| Repository bindings | `app/Providers/RepositoryServiceProvider.php` | Persistence abstraction map |
+| Frontend app entry | `resources/js/app.ts`, `vite.config.ts` | Inertia page resolver import.meta.glob |
+| Shared frontend contracts | `resources/js/types`, `resources/js/utils` | Public barrels, route/role helpers |
 
 ## CODE MAP
 
-| Symbol / Entry                                  | Location                              | Role                             |
+| Symbol / Entry | Location | Role |
 | ----------------------------------------------- | ------------------------------------- | -------------------------------- |
-| `Application::configure(...)->withRouting(...)` | `bootstrap/app.php`                   | Backend composition root         |
-| `Route::middleware(...)->prefix('admin')`       | `routes/admin.php`                    | Admin feature surface            |
-| `Route::middleware(...)->prefix('mahasiswa')`   | `routes/mahasiswa.php`                | Student + guest learning surface |
-| `createInertiaApp({ resolve })`                 | `resources/js/app.ts`                 | Frontend boot + page resolution  |
-| `RuleRegistry::registerRules()`                 | `app/Rules/Adaptive/RuleRegistry.php` | Ordered adaptive rule set        |
+| `Application::configure(...)->withRouting(...)` | `bootstrap/app.php` | Backend composition root |
+| `Route::middleware(...)->prefix('admin')` | `routes/admin.php` | Admin feature surface |
+| `Route::middleware(...)->prefix('mahasiswa')` | `routes/mahasiswa.php` | Student + guest learning surface |
+| `createInertiaApp({ resolve })` | `resources/js/app.ts` | Frontend boot + page resolution |
+| `RuleRegistry::registerRules()` | `app/Rules/Adaptive/RuleRegistry.php` | Ordered adaptive rule set |
 
 ## CONVENTIONS (PROJECT-SPECIFIC)
 
@@ -100,31 +100,31 @@ pnpm run format:check
 
 ## Tech Stack
 
-| Layer    | Tech                     |
+| Layer | Tech |
 | -------- | ------------------------ |
-| Backend  | Laravel 12.x             |
+| Backend | Laravel 12.x |
 | Frontend | Svelte 5 + Inertia.js v3 |
-| Styling  | Tailwind CSS 4           |
-| Database | MySQL                    |
-| Auth     | Laravel Sanctum v4       |
-| Build    | Vite 7                   |
+| Styling | Tailwind CSS 4 |
+| Database | MySQL |
+| Auth | Laravel Sanctum v4 |
+| Build | Vite 7 |
 
 ## Database Schema
 
 ### Core Tables
 
-| Table            | Purpose                                                    |
+| Table | Purpose |
 | ---------------- | ---------------------------------------------------------- |
-| `users`          | User accounts (id, name, email, password, role_id)         |
-| `roles`          | User roles (admin, mahasiswa)                              |
-| `materials`      | Main learning modules (title, content, module_id)          |
-| `sub_materials`  | Sub-topics (title, content, jenis_konten, learning_style)  |
-| `questions`      | Quiz questions (text, type, difficulty, hint)              |
-| `answers`        | Answer options (text, correct, explanation)                |
-| `quiz_attempts`  | Quiz history (user_id, question_id, score, time)           |
-| `student_states` | Progress (gamification, profile, metrics, adaptive_state)  |
-| `ueq_surveys`    | UEQ responses (26 Likert items)                            |
-| `media`          | Media attachments                                          |
+| `users` | User accounts (id, name, email, password, role_id) |
+| `roles` | User roles (admin, mahasiswa) |
+| `materials` | Main learning modules (title, content, module_id) |
+| `sub_materials` | Sub-topics (title, content, jenis_konten, learning_style) |
+| `questions` | Quiz questions (text, type, difficulty, hint) |
+| `answers` | Answer options (text, correct, explanation) |
+| `quiz_attempts` | Quiz history (user_id, question_id, score, time) |
+| `student_states` | Progress (gamification, profile, metrics, adaptive_state) |
+| `ueq_surveys` | UEQ responses (26 Likert items) |
+| `media` | Media attachments |
 
 ### Question Types
 
@@ -146,14 +146,14 @@ User, Answer, Material, Media, Question, QuizAttempt, Role, StudentState, SubMat
 
 ### 2. Rule Types
 
-| Category           | Rules                                                               |
+| Category | Rules |
 | ------------------ | ------------------------------------------------------------------- |
-| Promotion          | StandardPromotion, AcceleratedJump, ModuleGraduation, MasteryMedium |
-| SafetyNet          | PersistentTextualSafetyNet, PersistentVisualSafetyNet               |
-| Certificate        | BronzeCertificate, SilverCertificate, GoldCertificate               |
-| CrisisIntervention | TextualCrisisIntervention, VisualCrisisIntervention                 |
-| Recovery           | SyntaxRecovery, LogicRecovery, RemedialIndependent                  |
-| ProjectRevision    | TextualProjectRevision, VisualProjectRevision                       |
+| Promotion | StandardPromotion, AcceleratedJump, ModuleGraduation, MasteryMedium |
+| SafetyNet | PersistentTextualSafetyNet, PersistentVisualSafetyNet |
+| Certificate | BronzeCertificate, SilverCertificate, GoldCertificate |
+| CrisisIntervention | TextualCrisisIntervention, VisualCrisisIntervention |
+| Recovery | SyntaxRecovery, LogicRecovery, RemedialIndependent |
+| ProjectRevision | TextualProjectRevision, VisualProjectRevision |
 
 ### 3. Adaptive Services
 
@@ -317,7 +317,7 @@ Activate relevant skill for domain:
 
 # Inertia v3
 
--Standalone HTTP (useHttp), optimistic updates, layout props (useLayoutProps), instant visits, simplified SSR.
+- Standalone HTTP (useHttp), optimistic updates, layout props (useLayoutProps), instant visits, simplified SSR.
 - Deferred props, infinite scroll, merge props, polling, prefetching, once props, flash data.
 - Pulse/animate skeleton for empty deferred states.
 - built-in XHR client (Axios separate if needed).
