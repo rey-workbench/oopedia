@@ -12,49 +12,6 @@
 
     let { state: quizState }: Props = $props();
 
-    const RULE_TO_VARIANT: Record<string, FeedbackVariant> = {
-        RULE_01: 'intervention', // RuleFinalProjectVisualPersistentFail
-        RULE_02: 'intervention', // RuleFinalProjectTextualPersistentFail
-        RULE_03: 'intervention', // RulePersistentVisualSafetyNet
-        RULE_04: 'intervention', // RulePersistentTextualSafetyNet
-        RULE_05: 'intervention', // RuleVisualCrisisIntervention
-        RULE_06: 'intervention', // RuleTextualCrisisIntervention
-        RULE_07: 'intervention', // RuleVisualProjectRevision
-        RULE_08: 'intervention', // RuleTextualProjectRevision
-        RULE_09: 'certificate', // RuleGoldCertificate
-        RULE_10: 'certificate', // RuleSilverCertificate
-        RULE_11: 'certificate', // RuleBronzeCertificate
-        RULE_12: 'intervention', // RuleSyntaxRecovery
-        RULE_13: 'intervention', // RuleLogicRecovery
-        RULE_14: 'backtrack', // RuleCriticalBacktracking
-        RULE_15: 'certificate', // RuleModuleGraduation
-        RULE_16: 'result', // RuleMasteryMedium
-        RULE_17: 'acceleration', // RuleAcceleratedMaterialPromotion
-        RULE_18: 'acceleration', // RuleAcceleratedJump
-        RULE_19: 'intervention', // RuleRemedialIndependent
-        RULE_20: 'result', // RuleStandardPromotion
-    };
-
-    const ACTION_TO_VARIANT: Record<string, FeedbackVariant> = {
-        H01: 'intervention',
-        H02: 'intervention',
-        H03: 'intervention',
-        H04: 'intervention',
-        H05: 'result',
-        H06: 'acceleration',
-        H07: 'backtrack',
-        H08: 'certificate',
-        H09: 'certificate',
-        H10: 'certificate',
-        H11: 'certificate',
-        H12: 'intervention',
-        H13: 'intervention',
-        H14: 'intervention',
-        H15: 'intervention',
-        H16: 'acceleration',
-    };
-
-    let ruleId = $derived(quizState.feedbackData?.adaptiveResult?.triggered_rule?.id || null);
     let actionCode = $derived(
         quizState.feedbackData?.adaptiveResult?.triggered_rule?.action || null
     );
@@ -75,8 +32,8 @@
     );
 
     const TICK_MS = 50;
-    const AUTO_ADVANCE_MS_SUCCESS = 10000000;
-    const AUTO_ADVANCE_MS_WRONG = 10000000;
+    const AUTO_ADVANCE_MS_SUCCESS = 10000;
+    const AUTO_ADVANCE_MS_WRONG = 10000;
     let progress = $state(100);
 
     type FeedbackTone = {
@@ -157,15 +114,19 @@
         return quizState.feedbackData?.status === 'success' ? 'success' : 'wrong';
     }
 
+    /**
+     * Get variant directly from backend metadata or infer it dynamically
+     */
     function getFeedbackVariant(): FeedbackVariant {
-        if (ruleId && RULE_TO_VARIANT[ruleId]) {
-            return RULE_TO_VARIANT[ruleId];
+        const ruleVariant = quizState.feedbackData?.adaptiveResult?.triggered_rule?.variant;
+
+        if (ruleVariant && [
+            'result', 'acceleration', 'certificate', 'intervention', 'backtrack'
+        ].includes(ruleVariant)) {
+            return ruleVariant as FeedbackVariant;
         }
 
-        if (actionCode && ACTION_TO_VARIANT[actionCode]) {
-            return ACTION_TO_VARIANT[actionCode];
-        }
-
+        // Fallback logic for legacy or missing metadata
         if (
             interventionType?.includes('crisis') ||
             interventionType?.includes('recovery') ||

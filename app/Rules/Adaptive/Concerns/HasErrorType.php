@@ -21,6 +21,11 @@ trait HasErrorType
         return $this->hasFact($facts, AdaptiveConstants::FACT_NO_ERROR);
     }
 
+    protected function hasNoErrorInContext(array $facts, bool $isCorrect): bool
+    {
+        return $isCorrect || $this->hasFact($facts, AdaptiveConstants::FACT_NO_ERROR);
+    }
+
     protected function hasAnyError(array $facts): bool
     {
         return $this->hasAnyFact($facts, [

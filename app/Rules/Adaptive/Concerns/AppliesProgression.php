@@ -11,8 +11,8 @@ trait AppliesProgression
     protected function applyStandardPromotion(array $state, bool $isCorrect): array
     {
         $message = $isCorrect
-            ? 'Jawaban tepat! Mari lanjut ke soal berikutnya.'
-            : 'Jawaban kurang tepat. Mari coba lagi atau ulas kembali materi jika kesulitan.';
+            ? 'Selamat! Jawabanmu benar. Mari lanjut ke tantangan berikutnya.'
+            : 'Jawaban kurang tepat. Jangan menyerah, mari coba lagi atau ulas materi jika diperlukan.';
 
         return $this->setProgressionState(
             state: $state,
@@ -26,7 +26,7 @@ trait AppliesProgression
         return $this->setProgressionState(
             state: $state,
             nextAction: AdaptiveConstants::ACTION_NEXT_QUESTION,
-            message: 'Luar biasa! Penguasaan dan kecepatan Anda sangat baik. Lanjutkan ke level menengah.',
+            message: 'Luar biasa! Kamu menguasai ini dengan sangat cepat. Mari percepat langkahmu ke tingkat menengah.',
             targetDifficulty: AdaptiveConstants::DIFFICULTY_MEDIUM,
             fastTrackActive: true,
         );
@@ -37,7 +37,7 @@ trait AppliesProgression
         return $this->setProgressionState(
             state: $state,
             nextAction: AdaptiveConstants::ACTION_REDUCE_DIFFICULTY,
-            message: 'Soal ini sepertinya terlalu sulit sekarang. Mari turunkan tingkat kesulitan dan perkuat fondasi Anda.',
+            message: 'Sepertinya topik ini cukup menantang. Tidak apa-apa, mari ulas kembali dasar-dasarnya agar fondasi belajarmu lebih kuat.',
             targetDifficulty: AdaptiveConstants::DIFFICULTY_BEGINNER,
             recommendation: 'Review Dasar',
             fastTrackActive: false,
@@ -49,19 +49,30 @@ trait AppliesProgression
         return $this->setProgressionState(
             state: $state,
             nextAction: AdaptiveConstants::ACTION_NEXT_QUESTION,
-            message: 'Luar biasa! Penguasaan dan kecepatan Anda di level menengah sangat baik. Lanjutkan ke level sulit (Hard).',
+            message: 'Fantastis! Kamu sudah sangat mahir di level menengah. Siap untuk tantangan tersulit (Hard)?',
             targetDifficulty: AdaptiveConstants::DIFFICULTY_HARD,
             fastTrackActive: true,
         );
     }
 
-    protected function applyAcceleratedMaterialPromotion(array $state, array $context): array
+    protected function applyAcceleratedMaterialPromotion(array $state, array $context = []): array
     {
         $state = $this->setProgressionState(
             state: $state,
             nextAction: AdaptiveConstants::ACTION_NEXT_MATERIAL,
-            message: 'Luar biasa! Penguasaan materi Anda sangat baik. Mari langsung lanjut ke materi berikutnya!',
+            message: 'Penguasaan materimu luar biasa! Kamu bisa melangkah langsung ke materi berikutnya.',
             fastTrackActive: true,
+        );
+
+        return $this->applyModuleProgress($state, $context);
+    }
+
+    protected function applyModuleGraduation(array $state, array $context = []): array
+    {
+        $state = $this->setProgressionState(
+            state: $state,
+            nextAction: AdaptiveConstants::ACTION_FINISH_MATERIAL,
+            message: 'Luar biasa! Dari ketepatanmu menjawab soal tingkat sulit, kamu terbukti telah menguasai modul ini sepenuhnya. Kamu lulus lebih awal, mari lanjut ke modul berikutnya!',
         );
 
         return $this->applyModuleProgress($state, $context);

@@ -23,6 +23,8 @@ abstract class BaseAdaptiveRule implements AdaptiveRuleInterface
 
     protected int $priority = 100;
 
+    protected string $variant = 'result';
+
     public function getRuleId(): string
     {
         return $this->ruleId;
@@ -41,6 +43,11 @@ abstract class BaseAdaptiveRule implements AdaptiveRuleInterface
     public function getPriority(): int
     {
         return $this->priority;
+    }
+
+    public function getVariant(): string
+    {
+        return $this->variant;
     }
 
     protected function hasFact(array $facts, string $fact): bool

@@ -85,7 +85,15 @@ export class QuestionShowState extends BaseState {
         name?: string;
         action?: string | null;
         priority?: number;
+        variant?: string;
     } | null>(null);
+    adaptiveTriggeredRules = $state<Array<{
+        id?: string;
+        name?: string;
+        action?: string | null;
+        priority?: number;
+        variant?: string;
+    }>>([]);
 
     isProcessing = $derived(this.isSubmitting);
 
@@ -200,6 +208,7 @@ export class QuestionShowState extends BaseState {
             if (adaptiveResult) {
                 this.adaptiveFacts = adaptiveResult.facts ?? [];
                 this.adaptiveTriggeredRule = adaptiveResult.triggered_rule ?? null;
+                this.adaptiveTriggeredRules = adaptiveResult.triggered_rules ?? [];
                 this.showAdaptiveIndicator = true;
             }
 

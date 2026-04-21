@@ -119,7 +119,29 @@ final class AdaptiveConstants
 
     public const string ACTION_PERSISTENT_TEXTUAL_NET = 'H15';
 
-    public const string ACTION_ACCELERATED_MATERIAL_PROMOTION = 'H16';
+    public const string ACTION_ACCELERATED_MATERIAL = 'H16';
+
+    public const string ACTION_MIXED_CRISIS_INTERVENTION = 'H17';
+
+    public const string ACTION_PERSISTENT_MIXED_NET = 'H18';
+
+    public const string ACTION_MIXED_PROJECT_REVISION = 'H19';
+
+    public const string ACTION_FINAL_PROJECT_MIXED_PERSISTENT = 'H20';
+
+    public const string ACTION_REMEDIAL_AT_BEGINNER = 'H21';
+
+    public const string ACTION_REVIEW_PREVIOUS = 'H22';
+
+    public const string ACTION_FAST_WRONG_RECOVERY = 'H23';
+
+    public const string ACTION_FINAL_PROJECT_VISUAL_PERSISTENT = 'H24';
+
+    public const string ACTION_FINAL_PROJECT_TEXTUAL_PERSISTENT = 'H25';
+
+    public const string ACTION_REMEDIAL_INDEPENDENT = 'H26';
+
+    public const string ACTION_MASTERY_MEDIUM = 'H27';
 
     // State Fields
     public const string NEXT_ACTION = 'next_action';
@@ -189,6 +211,14 @@ final class AdaptiveConstants
     public const string INTERVENTION_FINAL_PROJECT_VISUAL_PERSISTENT = 'final_project_visual_persistent';
 
     public const string INTERVENTION_FINAL_PROJECT_TEXTUAL_PERSISTENT = 'final_project_textual_persistent';
+
+    public const string INTERVENTION_MIXED_CRISIS = 'mixed_crisis';
+
+    public const string INTERVENTION_PERSISTENT_MIXED_SAFETY = 'persistent_mixed_safety';
+
+    public const string INTERVENTION_MIXED_PROJECT = 'mixed_project_revision';
+
+    public const string INTERVENTION_FINAL_PROJECT_MIXED_PERSISTENT = 'final_project_mixed_persistent';
 
     // Recovery Types
     public const string RECOVERY_SYNTAX = 'syntax';

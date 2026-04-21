@@ -33,6 +33,11 @@ interface AdaptiveRuleInterface
     public function evaluate(array $facts): bool;
 
     /**
+     * Get UI variant for this rule (result, acceleration, certificate, intervention, backtrack).
+     */
+    public function getVariant(): string;
+
+    /**
      * Apply the rule's action to the student state.
      *
      * @param array $state Current student state

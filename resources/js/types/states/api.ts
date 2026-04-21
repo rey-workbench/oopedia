@@ -18,7 +18,15 @@ export interface AdaptiveResult {
         name?: string;
         action?: string | null;
         priority?: number;
+        variant?: string;
     } | null;
+    triggered_rules?: Array<{
+        id?: string;
+        name?: string;
+        action?: string | null;
+        priority?: number;
+        variant?: string;
+    }>;
     facts?: AdaptiveFact[];
     global_xp_earned?: number;
     streak_bonus?: string | null;

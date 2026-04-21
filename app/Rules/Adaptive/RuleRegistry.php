@@ -16,51 +16,46 @@ class RuleRegistry
     protected function registerRules(): void
     {
         $ruleClasses = [
-            // Priority 3
-            RuleFinalProjectVisualPersistentFail::class,
-            RuleFinalProjectTextualPersistentFail::class,
+            // Safety Domain
+            Safety\SafetyFinalVisualPersistentRule::class,
+            Safety\SafetyFinalTextualPersistentRule::class,
+            Safety\SafetyFinalMixedPersistentRule::class,
+            Safety\SafetyVisualNetRule::class,
+            Safety\SafetyTextualNetRule::class,
+            Safety\SafetyMixedNetRule::class,
+            Safety\SafetyVisualCrisisRule::class,
+            Safety\SafetyTextualCrisisRule::class,
+            Safety\SafetyMixedCrisisRule::class,
 
-            // Priority 5
-            RulePersistentVisualSafetyNet::class,
-            RulePersistentTextualSafetyNet::class,
+            // Project Domain
+            Project\ProjectVisualRevisionRule::class,
+            Project\ProjectTextualRevisionRule::class,
+            Project\ProjectMixedRevisionRule::class,
 
-            // Priority 10
-            RuleVisualCrisisIntervention::class,
-            RuleTextualCrisisIntervention::class,
+            // Achievement Domain
+            Achievement\AwardGoldCertRule::class,
+            Achievement\AwardSilverCertRule::class,
+            Achievement\AwardBronzeCertRule::class,
 
-            // Priority 15
-            RuleVisualProjectRevision::class,
-            RuleTextualProjectRevision::class,
+            // Recovery Domain
+            Recovery\RecoverBacktrackRule::class,
+            Recovery\RecoverSyntaxRule::class,
+            Recovery\RecoverLogicRule::class,
+            Recovery\RecoverFastWrongRule::class,
+            Recovery\RecoverRemedialBeginnerRule::class,
+            Recovery\RecoverRemedialIndepRule::class,
+            Recovery\RecoverReviewPrevRule::class,
+            Recovery\RecoverRemedialHintRule::class,
 
-            // Priority 21 - 23 (Certificates)
-            RuleGoldCertificate::class,
-            RuleSilverCertificate::class,
-            RuleBronzeCertificate::class,
+            // Progression Domain
+            Progression\ProgressStandardRule::class,
+            Progression\ProgressJumpRule::class,
+            Progression\ProgressMaterialRule::class,
+            Progression\ProgressMasteryMedRule::class,
+            Progression\ProgressGraduationRule::class,
 
-            // Priority 24 - 25 (Recovery)
-            RuleSyntaxRecovery::class,
-            RuleLogicRecovery::class,
-
-            // Priority 27
-            RuleCriticalBacktracking::class,
-
-            // Priority 30
-            RuleModuleGraduation::class,
-
-            // Priority 35
-            RuleMasteryMedium::class,
-
-            // Priority 36
-            RuleAcceleratedMaterialPromotion::class,
-
-            // Priority 40
-            RuleAcceleratedJump::class,
-
-            // Priority 48
-            RuleRemedialIndependent::class,
-
-            // Priority 50
-            RuleStandardPromotion::class,
+            // Interaction Domain
+            Interaction\InteractHintSuccessRule::class,
         ];
 
         foreach ($ruleClasses as $ruleClass) {

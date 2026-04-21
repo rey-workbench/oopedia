@@ -49,8 +49,8 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
         ]);
 
         return [
-            'triggered_rule' => $triggeredRule ? $this->mapRuleMetadata($triggeredRule) : null,
-            'matched_rules'  => array_map(
+            'triggered_rule'  => $triggeredRule ? $this->mapRuleMetadata($triggeredRule) : null,
+            'triggered_rules' => array_map(
                 fn (AdaptiveRuleInterface $rule): array => $this->mapRuleMetadata($rule),
                 $matchedRules,
             ),
@@ -64,9 +64,9 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
      */
     private function evaluateRegisteredRules(array $facts, array $currentState, array $context): array
     {
-        $triggeredRule = null;
-        $matchedRules  = [];
-        $newState      = $currentState;
+        $triggeredRules   = [];
+        $finalState       = $currentState;
+        $context['facts'] = $facts;
 
         foreach ($this->ruleRegistry->getAllRules() as $rule) {
             if ($this->shouldSkipRule($rule, $currentState, $context)) {
@@ -77,18 +77,46 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
                 continue;
             }
 
-            $matchedRules[] = $rule;
+            $triggeredRules[] = $rule;
 
-            if ($triggeredRule !== null) {
-                continue;
-            }
+            // Apply rule to get its proposed state changes
+            $ruleAppliedState = $rule->apply($currentState, $context);
 
-            $triggeredRule    = $rule;
-            $context['facts'] = $facts;
-            $newState         = $rule->apply($newState, $context);
+            // Merge changes into final state, preserving keys set by higher priority rules
+            $finalState = $this->mergeRuleOutputs($finalState, $ruleAppliedState, $currentState);
         }
 
-        return [$triggeredRule, $matchedRules, $newState];
+        $mainRule = $triggeredRules[0] ?? null;
+
+        return [$mainRule, $triggeredRules, $finalState];
+    }
+
+    /**
+     * Merge proposed state from a rule into the combined state.
+     * Implements "First-Priority Wins" for each key.
+     *
+     * @param array<string, mixed> $combinedState The state being built
+     * @param array<string, mixed> $proposedState The output of rule->apply()
+     * @param array<string, mixed> $originalState The state before any rules fired
+     */
+    private function mergeRuleOutputs(array $combinedState, array $proposedState, array $originalState): array
+    {
+        foreach ($proposedState as $key => $value) {
+            // A key is considered "set" by a previous higher-priority rule if its value in combinedState
+            // is effectively different from the originalState (including if it was newly added).
+            $existsInCombined = array_key_exists($key, $combinedState);
+            $existsInOriginal = array_key_exists($key, $originalState);
+
+            $isAlreadySet = $existsInCombined && (
+                ! $existsInOriginal || $combinedState[$key] !== $originalState[$key]
+            );
+
+            if (! $isAlreadySet) {
+                $combinedState[$key] = $value;
+            }
+        }
+
+        return $combinedState;
     }
 
     /**
@@ -132,8 +160,12 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             return $this->hasReachedFastTrackTarget($adaptiveState);
         }
 
-        if ($actionCode === AdaptiveConstants::ACTION_ACCELERATED_MATERIAL_PROMOTION) {
+        if ($actionCode === AdaptiveConstants::ACTION_ACCELERATED_MATERIAL) {
             return $this->isLastActionMaterialAcceleration($adaptiveState);
+        }
+
+        if ($actionCode === AdaptiveConstants::ACTION_SYNTAX_RECOVERY || $actionCode === AdaptiveConstants::ACTION_LOGIC_RECOVERY) {
+            return $this->isRecoveryLoopPrevention($adaptiveState, $actionCode);
         }
 
         return false;
@@ -164,7 +196,19 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
     {
         $lastAction = $adaptiveState['last_rule']['action'] ?? null;
 
-        return $lastAction === AdaptiveConstants::ACTION_ACCELERATED_MATERIAL_PROMOTION;
+        return $lastAction === AdaptiveConstants::ACTION_ACCELERATED_MATERIAL;
+    }
+
+    private function isRecoveryLoopPrevention(array $adaptiveState, string $actionCode): bool
+    {
+        $recoveryCount = $adaptiveState['consecutive_recovery_count'] ?? 0;
+        $lastAction    = $adaptiveState['last_rule']['action']        ?? null;
+
+        if ($lastAction === $actionCode && $recoveryCount >= 2) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -177,6 +221,7 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             'name'     => $rule->getRuleName(),
             'action'   => $rule->getActionCode(),
             'priority' => $rule->getPriority(),
+            'variant'  => $rule->getVariant(),
         ];
     }
 }

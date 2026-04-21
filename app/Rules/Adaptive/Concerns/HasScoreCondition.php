@@ -35,4 +35,9 @@ trait HasScoreCondition
     {
         return $this->hasCriticalScore($facts) || $this->hasRemedialScore($facts);
     }
+
+    protected function hasPersistentFailure(array $facts): bool
+    {
+        return $this->hasFact($facts, AdaptiveConstants::FACT_PERSISTENT_FAIL);
+    }
 }

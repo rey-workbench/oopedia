@@ -34,7 +34,40 @@ trait AppliesRecovery
             state: $state,
             recommendation: 'Perkuat Pemahaman',
             nextAction: AdaptiveConstants::ACTION_STUDY_MIXED,
-            message: 'Nilai Anda perlu sedikit perbaikan. Mari perkuat pemahaman melalui materi komprehensif sebelum melanjutkan.',
+            message: 'Sepertinya ada beberapa konsep yang perlu diperdalam. Mari pelajari materi ulasan ini sejenak agar pemahamanmu makin mantap.',
+            recoveryType: AdaptiveConstants::RECOVERY_INDEPENDENT,
+        );
+    }
+
+    protected function applyRemedialBeginner(array $state): array
+    {
+        return $this->setRecoveryState(
+            state: $state,
+            recommendation: 'Review Menyeluruh',
+            nextAction: AdaptiveConstants::ACTION_REMEDIAL_AT_BEGINNER,
+            message: 'Jangan berkecil hati! Mari kita mulai kembali dari dasar agar kamu bisa memahami konsep ini dengan lebih jernih.',
+            recoveryType: AdaptiveConstants::RECOVERY_INDEPENDENT,
+        );
+    }
+
+    protected function applyReviewPreviousMaterial(array $state): array
+    {
+        return $this->setRecoveryState(
+            state: $state,
+            recommendation: 'Ulas Materi Sebelumnya',
+            nextAction: AdaptiveConstants::ACTION_REVIEW_PREVIOUS,
+            message: 'Topik sebelumnya sepertinya sangat berkaitan dengan ini. Yuk, ulas kembali sejenak agar kamu lebih siap!',
+            recoveryType: AdaptiveConstants::RECOVERY_INDEPENDENT,
+        );
+    }
+
+    protected function applyFastWrongRecovery(array $state): array
+    {
+        return $this->setRecoveryState(
+            state: $state,
+            recommendation: 'Ulas Kembali',
+            nextAction: AdaptiveConstants::ACTION_FAST_WRONG_RECOVERY,
+            message: 'Kamu mengerjakan sangat cepat, namun ketelitian juga penting. Yuk, pelajari kembali materinya pelan-pelan.',
             recoveryType: AdaptiveConstants::RECOVERY_INDEPENDENT,
         );
     }

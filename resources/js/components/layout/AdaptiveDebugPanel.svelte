@@ -329,6 +329,32 @@
                                                         {/if}
                                                     </div>
                                                 {/if}
+
+                                                {#if quizState.adaptiveTriggeredRules.length > 1}
+                                                    <div
+                                                        class="mt-4 border-t border-emerald-100 pt-3"
+                                                    >
+                                                        <div
+                                                            class="mb-2 text-[10px] font-bold tracking-widest text-emerald-600 uppercase"
+                                                        >
+                                                            Other Matched Rules (Shadowed)
+                                                        </div>
+                                                        <div class="flex flex-wrap gap-1.5">
+                                                            {#each quizState.adaptiveTriggeredRules.slice(1) as rule}
+                                                                <Badge
+                                                                    variant="outline"
+                                                                    size="xs"
+                                                                    class="opacity-60 transition-all hover:opacity-100"
+                                                                >
+                                                                    {rule.name}
+                                                                    <span class="ml-1 opacity-50"
+                                                                        >({rule.priority})</span
+                                                                    >
+                                                                </Badge>
+                                                            {/each}
+                                                        </div>
+                                                    </div>
+                                                {/if}
                                             </div>
                                         </div>
                                     </Panel>
@@ -368,7 +394,7 @@
                                 ><Target size={10} /> First Match Conflict Resolution</span
                             >
                         </div>
-                        <div class="text-primary-400">21 Rules • Adaptive Engine v2 • Stable</div>
+                        <div class="text-primary-400">30 Rules • Adaptive Engine v3.0.0-REFECTORED • Stable</div>
                     </div>
                 </div>
             {/if}

@@ -31,6 +31,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
         string $questionId,
         string $materialId,
         ?string $moduleId = null,
+        bool $isPracticeMode = false,
     ): array {
         $facts = [
             ...$this->getScoreFacts($score, $isCorrect),
@@ -43,6 +44,10 @@ final class FactGatheringService implements FactGatheringServiceInterface
 
         if ($usedHint) {
             $facts[] = AdaptiveConstants::FACT_HINT_USED;
+        }
+
+        if ($isPracticeMode) {
+            $facts[] = AdaptiveConstants::FACT_IS_PRACTICE;
         }
 
         if ($moduleId && ! $isFinalProject) {
@@ -116,12 +121,10 @@ final class FactGatheringService implements FactGatheringServiceInterface
     {
         $style = $state->learning_profile[StudentStateSchema::KEY_LEARNING_STYLE] ?? StudentStateSchema::STYLE_VISUAL;
 
+        // FIX: Mixed style emits only G22 to avoid rule conflicts
+        // Previously emitted G06 + G07 + G22, causing dual matches
         if ($style === StudentStateSchema::STYLE_MIXED) {
-            return [
-                AdaptiveConstants::FACT_STYLE_VISUAL,
-                AdaptiveConstants::FACT_STYLE_TEXTUAL,
-                AdaptiveConstants::FACT_STYLE_MIXED,
-            ];
+            return [AdaptiveConstants::FACT_STYLE_MIXED];
         }
 
         return $style === StudentStateSchema::STYLE_VISUAL
@@ -132,7 +135,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
     protected function getErrorTypeFacts(StudentState $state, string $questionId, bool $isCorrect): array
     {
         if ($isCorrect) {
-            return [];
+            return [AdaptiveConstants::FACT_NO_ERROR];
         }
 
         $question     = $this->questionRepo->find($questionId);

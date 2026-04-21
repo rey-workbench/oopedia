@@ -28,6 +28,17 @@ trait AppliesCrisisIntervention
         );
     }
 
+    protected function applyMixedCrisis(array $state, string $message): array
+    {
+        return $this->setInterventionState(
+            state: $state,
+            recommendation: 'Ulas Materi',
+            nextAction: AdaptiveConstants::ACTION_STUDY_MIXED,
+            message: $message,
+            interventionType: AdaptiveConstants::INTERVENTION_MIXED_CRISIS,
+        );
+    }
+
     protected function applyPersistentVisualSafety(array $state, string $message): array
     {
         return $this->setInterventionState(
@@ -48,6 +59,18 @@ trait AppliesCrisisIntervention
             nextAction: AdaptiveConstants::ACTION_STUDY_TEXTUAL,
             message: $message,
             interventionType: AdaptiveConstants::INTERVENTION_PERSISTENT_TEXTUAL_SAFETY,
+            forceMaterialReview: true,
+        );
+    }
+
+    protected function applyPersistentMixedSafety(array $state, string $message): array
+    {
+        return $this->setInterventionState(
+            state: $state,
+            recommendation: 'Bantuan Komprehensif',
+            nextAction: AdaptiveConstants::ACTION_STUDY_MIXED,
+            message: $message,
+            interventionType: AdaptiveConstants::INTERVENTION_PERSISTENT_MIXED_SAFETY,
             forceMaterialReview: true,
         );
     }
@@ -74,6 +97,17 @@ trait AppliesCrisisIntervention
         );
     }
 
+    protected function applyMixedProjectRevision(array $state, array $facts): array
+    {
+        return $this->setInterventionState(
+            state: $state,
+            recommendation: 'Revisi Proyek - Ulas Materi',
+            nextAction: AdaptiveConstants::ACTION_STUDY_MIXED,
+            message: $this->getProjectRevisionMessage($facts, 'mixed'),
+            interventionType: AdaptiveConstants::INTERVENTION_MIXED_PROJECT,
+        );
+    }
+
     protected function applyFinalProjectVisualPersistent(array $state): array
     {
         return $this->setInterventionState(
@@ -94,6 +128,18 @@ trait AppliesCrisisIntervention
             nextAction: AdaptiveConstants::ACTION_STUDY_TEXTUAL,
             message: 'Anda mengalami kesulitan berulang di Proyek Akhir. Mari ulas kembali materi secara mendalam sebelum mencoba lagi.',
             interventionType: AdaptiveConstants::INTERVENTION_FINAL_PROJECT_TEXTUAL_PERSISTENT,
+            forceMaterialReview: true,
+        );
+    }
+
+    protected function applyFinalProjectMixedPersistent(array $state): array
+    {
+        return $this->setInterventionState(
+            state: $state,
+            recommendation: 'Revisi Proyek - Bantuan Komprehensif',
+            nextAction: AdaptiveConstants::ACTION_STUDY_MIXED,
+            message: 'Anda mengalami kesulitan berulang di Proyek Akhir. Mari ulas kembali seluruh materi sebelum mencoba lagi.',
+            interventionType: AdaptiveConstants::INTERVENTION_FINAL_PROJECT_MIXED_PERSISTENT,
             forceMaterialReview: true,
         );
     }
@@ -123,26 +169,42 @@ trait AppliesCrisisIntervention
         $resolvedStyle = $this->getLearningStyle($facts) ?? $style;
 
         if ($this->hasNoError($facts) || ! $this->hasAnyError($facts)) {
-            return $resolvedStyle === 'visual'
-                ? 'Proyek Anda perlu perbaikan. Mari ulas kembali konsep fundamental secara visual.'
-                : 'Proyek Anda perlu perbaikan. Mari ulas kembali penjelasan teori secara mendalam.';
+            if ($resolvedStyle === 'visual') {
+                return 'Proyek Anda perlu perbaikan. Mari ulas kembali konsep fundamental secara visual.';
+            }
+            if ($resolvedStyle === 'mixed') {
+                return 'Proyek Anda perlu perbaikan. Silakan ulas kembali materi secara menyeluruh.';
+            }
+
+            return 'Proyek Anda perlu perbaikan. Mari ulas kembali penjelasan teori secara mendalam.';
         }
 
         if ($this->hasSyntaxError($facts)) {
-            return $resolvedStyle === 'visual'
-                ? 'Proyek Anda mengalami kendala pada penulisan kode (sintaks). Ayo ulas materi panduan visual koding!'
-                : 'Ada kesalahan penulisan kode (sintaks) pada proyek Anda. Mari baca kembali dokumentasi teknis.';
+            if ($resolvedStyle === 'visual') {
+                return 'Proyek Anda mengalami kendala pada penulisan kode (sintaks). Ayo ulas materi panduan visual koding!';
+            }
+            if ($resolvedStyle === 'mixed') {
+                return 'Ada kesalahan penulisan kode (sintaks). Mari ulas panduan koding dan dokumentasi teknis.';
+            }
+
+            return 'Ada kesalahan penulisan kode (sintaks) pada proyek Anda. Mari baca kembali dokumentasi teknis.';
         }
 
         if ($this->hasLogicError($facts)) {
-            return $resolvedStyle === 'visual'
-                ? 'Logika proyek Anda perlu diperbaiki. Mari lihat diagram alur dan konsep fundamental lagi.'
-                : 'Logika pemrograman Anda perlu dipertajam. '
-                    . 'Silakan ulas penjelasan teks mendalam mengenai konsep ini.';
+            if ($resolvedStyle === 'visual') {
+                return 'Logika proyek Anda perlu diperbaiki. Mari lihat diagram alur dan konsep fundamental lagi.';
+            }
+            if ($resolvedStyle === 'mixed') {
+                return 'Logika pemrograman Anda perlu diperbaiki. Ulas diagram alur dan teori pendukungnya.';
+            }
+
+            return 'Logika pemrograman Anda perlu dipertajam. Silakan ulas penjelasan teks mendalam mengenai konsep ini.';
         }
 
         return $resolvedStyle === 'visual'
             ? 'Proyek Anda perlu perbaikan. Mari ulas kembali konsep fundamental secara visual.'
-            : 'Proyek Anda perlu perbaikan. Mari ulas kembali penjelasan teori secara mendalam.';
+            : ($resolvedStyle === 'mixed'
+                ? 'Proyek Anda perlu perbaikan. Silakan ulas kembali materi secara menyeluruh.'
+                : 'Proyek Anda perlu perbaikan. Mari ulas kembali penjelasan teori secara mendalam.');
     }
 }
