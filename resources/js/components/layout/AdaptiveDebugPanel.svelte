@@ -83,7 +83,7 @@
 
 {#if showDebug}
     <div
-        class="fixed right-0 bottom-0 left-0 z-[1001]"
+        class="fixed right-0 bottom-0 left-0 z-1001"
         transition:scale={{ duration: 300, start: 0.95 }}
     >
         <Panel
@@ -223,7 +223,7 @@
                                             transition:fade={{ duration: 300 }}
                                         >
                                             <div
-                                                class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-100 shadow-sm"
+                                                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 shadow-sm"
                                             >
                                                 <CheckCircle size={20} class="text-emerald-600" />
                                             </div>
@@ -288,7 +288,7 @@
                                                     >
                                                         <MessageSquare
                                                             size={11}
-                                                            class="mt-0.5 flex-shrink-0 text-emerald-600"
+                                                            class="mt-0.5 shrink-0 text-emerald-600"
                                                         />
                                                         <p
                                                             class="text-xs leading-snug text-slate-700 italic"
