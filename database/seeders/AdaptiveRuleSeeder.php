@@ -103,51 +103,53 @@ class AdaptiveRuleSeeder extends Seeder
     // -------+---------------------------------------+----------------------------
     //  R01   | G18, G02, G22, G07                    | H12 Visual Proj Revision
     //  R02   | G18, G02, G22, G08                    | H13 Textual Proj Revision
-    //  R03   | G19, G02, G22, G07                    | H14 Visual Safety Net
-    //  R04   | G19, G02, G22, G08                    | H15 Textual Safety Net
-    //  R05   | G19, G01, G15, G07      (excl G22)    | H01 Visual Crisis
-    //  R06   | G19, G01, G15, G08      (excl G22)    | H02 Textual Crisis
-    //  R07   | G18, G02, G07           (excl G22)    | H12 Visual Proj Revision
-    //  R08   | G18, G02, G08           (excl G22)    | H13 Textual Proj Revision
-    //  R09   | G18, G03, G26, G05      (excl G12)    | H09 Gold Certificate
-    //  R10   | G18, G03, G26           (excl G12,G05)| H10 Silver Certificate
+    //  R03   | G02, G22, G07 (Practice Only)         | H14 Visual Safety Net
+    //  R04   | G02, G22, G08 (Practice Only)         | H15 Textual Safety Net
+    //  R05   | G01, G15, G07 (excl G22)              | H01 Visual Crisis
+    //  R06   | G01, G15, G08 (excl G22)              | H02 Textual Crisis
+    //  R07   | G18, G02, G07 (excl G22)              | H12 Visual Proj Revision
+    //  R08   | G18, G02, G08 (excl G22)              | H13 Textual Project Revision
+    //  R09   | G18, G03, G26, G05 (excl G12)         | H09 Gold Certificate
+    //  R10   | G18, G03, G26 (excl G12, G05)         | H10 Silver Certificate
     //  R11   | G18, G03, G26, G12                    | H11 Bronze Certificate
-    //  R12   | G19, G02, G16, G12, G09 (excl G22)    | H03 Syntax Recovery
-    //  R13   | G19, G02, G16, G12, G10 (excl G22)    | H04 Logic Recovery
-    //  R14   | G19, G01, G17           (excl G22)    | H07 Critical Backtracking
-    //  R15   | G19, G03, G17, G26, G05               | H08 Module Graduation
-    //  RE1   | G19, G04                               | H06 Accelerated Jump
-    //  RE2   | G19, G03                               | H05 Standard Promotion (fallback)
+    //  R12   | G02, G16, G12, G09 (excl G22)         | H03 Syntax Recovery
+    //  R13   | G02, G16, G12, G10 (excl G22)         | H04 Logic Recovery
+    //  R14   | G01, G17 (excl G22)                   | H07 Critical Backtracking
+    //  R15   | G03, G17, G26, G05                    | H08 Module Graduation
+    //  RE1   | G04                                   | H06 Accelerated Jump
+    //  RE2   | G03                                   | H05 Standard Promotion (fallback)
 
     private function seedRules(): void
     {
         $rules = [
-            // ── Proyek Akhir: Revisi ───────────────────────────────────────────
-            ['code' => 'R01', 'name' => 'Visual Project Revision (Stuck)',   'priority' =>  3, 'required' => ['G18', 'G02', 'G22', 'G07'], 'forbidden' => null,         'action' => 'H12'],
-            ['code' => 'R02', 'name' => 'Textual Project Revision (Stuck)',  'priority' =>  4, 'required' => ['G18', 'G02', 'G22', 'G08'], 'forbidden' => null,         'action' => 'H13'],
-            // ── Materi Standar: Safety Net ─────────────────────────────────────
-            ['code' => 'R03', 'name' => 'Persistent Visual Safety Net',      'priority' =>  5, 'required' => ['G19', 'G02', 'G22', 'G07'], 'forbidden' => null,         'action' => 'H14'],
-            ['code' => 'R04', 'name' => 'Persistent Textual Safety Net',     'priority' =>  6, 'required' => ['G19', 'G02', 'G22', 'G08'], 'forbidden' => null,         'action' => 'H15'],
-            // ── Materi Standar: Intervensi Kritis (Dasar) ─────────────────────
-            ['code' => 'R05', 'name' => 'Visual Crisis Intervention',        'priority' => 10, 'required' => ['G19', 'G01', 'G15', 'G07'], 'forbidden' => ['G22'],      'action' => 'H01'],
-            ['code' => 'R06', 'name' => 'Textual Crisis Intervention',       'priority' => 11, 'required' => ['G19', 'G01', 'G15', 'G08'], 'forbidden' => ['G22'],      'action' => 'H02'],
-            // ── Proyek Akhir: Revisi Pertama Kali ─────────────────────────────
-            ['code' => 'R07', 'name' => 'Visual Project Revision (New)',     'priority' => 15, 'required' => ['G18', 'G02', 'G07'],       'forbidden' => ['G22'],      'action' => 'H12'],
-            ['code' => 'R08', 'name' => 'Textual Project Revision (New)',    'priority' => 16, 'required' => ['G18', 'G02', 'G08'],       'forbidden' => ['G22'],      'action' => 'H13'],
-            // ── Proyek Akhir: Sertifikasi ──────────────────────────────────────
-            ['code' => 'R09', 'name' => 'Gold Certificate',                  'priority' => 21, 'required' => ['G18', 'G03', 'G26', 'G05'], 'forbidden' => ['G12'],      'action' => 'H09'],
-            ['code' => 'R10', 'name' => 'Silver Certificate',                'priority' => 22, 'required' => ['G18', 'G03', 'G26'],       'forbidden' => ['G12', 'G05'], 'action' => 'H10'],
-            ['code' => 'R11', 'name' => 'Bronze Certificate',                'priority' => 23, 'required' => ['G18', 'G03', 'G26', 'G12'], 'forbidden' => null,         'action' => 'H11'],
-            // ── Materi Standar: Pemulihan Menengah ─────────────────────────────
-            ['code' => 'R12', 'name' => 'Syntax Recovery',                   'priority' => 24, 'required' => ['G19', 'G02', 'G16', 'G12', 'G09'], 'forbidden' => ['G22'], 'action' => 'H03'],
-            ['code' => 'R13', 'name' => 'Logic Recovery',                    'priority' => 25, 'required' => ['G19', 'G02', 'G16', 'G12', 'G10'], 'forbidden' => ['G22'], 'action' => 'H04'],
-            // ── Materi Standar: Mundur Tingkat Sulit ──────────────────────────
-            ['code' => 'R14', 'name' => 'Critical Backtracking',             'priority' => 27, 'required' => ['G19', 'G01', 'G17'],       'forbidden' => ['G22'],      'action' => 'H07'],
-            // ── Materi Standar: Kelulusan Modul ───────────────────────────────
-            ['code' => 'R15', 'name' => 'Module Graduation',                 'priority' => 30, 'required' => ['G19', 'G03', 'G17', 'G26', 'G05'], 'forbidden' => null,   'action' => 'H08'],
-            // ── Extra: Lompatan & Fallback ─────────────────────────────────────
-            ['code' => 'RE1', 'name' => 'Accelerated Jump',                  'priority' => 40, 'required' => ['G19', 'G04'],             'forbidden' => null,         'action' => 'H06'],
-            ['code' => 'RE2', 'name' => 'Standard Promotion',                'priority' => 50, 'required' => ['G19', 'G03'],             'forbidden' => null,         'action' => 'H05'],
+            // ── Proyek Akhir: Sertifikasi (High Priority: 5-10) ───────────────
+            ['code' => 'R09', 'name' => 'Gold Certificate',                  'priority' =>  5, 'required' => ['G18', 'G03', 'G26', 'G05'], 'forbidden' => ['G12'],      'action' => 'H09'],
+            ['code' => 'R10', 'name' => 'Silver Certificate',                'priority' =>  6, 'required' => ['G18', 'G03', 'G26'],       'forbidden' => ['G12', 'G05'], 'action' => 'H10'],
+            ['code' => 'R11', 'name' => 'Bronze Certificate',                'priority' =>  7, 'required' => ['G18', 'G03', 'G26', 'G12'], 'forbidden' => null,         'action' => 'H11'],
+
+            // ── Proyek Akhir: Revisi ──────────────────────────────────────────
+            ['code' => 'R01', 'name' => 'Visual Project Revision (Stuck)',   'priority' => 10, 'required' => ['G18', 'G02', 'G22', 'G07'], 'forbidden' => null,         'action' => 'H12'],
+            ['code' => 'R02', 'name' => 'Textual Project Revision (Stuck)',  'priority' => 11, 'required' => ['G18', 'G02', 'G22', 'G08'], 'forbidden' => null,         'action' => 'H13'],
+            ['code' => 'R07', 'name' => 'Visual Project Revision (New)',     'priority' => 12, 'required' => ['G18', 'G02', 'G07'],       'forbidden' => ['G22'],      'action' => 'H12'],
+            ['code' => 'R08', 'name' => 'Textual Project Revision (New)',    'priority' => 13, 'required' => ['G18', 'G02', 'G08'],       'forbidden' => ['G22'],      'action' => 'H13'],
+
+            // ── Materi Standar: Safety Net (Persistent Failure) ────────────────
+            ['code' => 'R03', 'name' => 'Persistent Visual Safety Net',      'priority' => 15, 'required' => ['G02', 'G22', 'G07'],       'forbidden' => ['G18'],      'action' => 'H14'],
+            ['code' => 'R04', 'name' => 'Persistent Textual Safety Net',     'priority' => 16, 'required' => ['G02', 'G22', 'G08'],       'forbidden' => ['G18'],      'action' => 'H15'],
+
+            // ── Materi Standar: Intervensi Kritis & Backtracking ─────────────
+            ['code' => 'R05', 'name' => 'Visual Crisis Intervention',        'priority' => 20, 'required' => ['G01', 'G15', 'G07'],       'forbidden' => ['G22', 'G18'], 'action' => 'H01'],
+            ['code' => 'R06', 'name' => 'Textual Crisis Intervention',       'priority' => 21, 'required' => ['G01', 'G15', 'G08'],       'forbidden' => ['G22', 'G18'], 'action' => 'H02'],
+            ['code' => 'R14', 'name' => 'Critical Backtracking',             'priority' => 22, 'required' => ['G01', 'G17'],              'forbidden' => ['G22', 'G18'], 'action' => 'H07'],
+
+            // ── Materi Standar: Pemulihan Menengah ────────────────────────────
+            ['code' => 'R12', 'name' => 'Syntax Recovery',                   'priority' => 25, 'required' => ['G02', 'G16', 'G12', 'G09'], 'forbidden' => ['G22', 'G18'], 'action' => 'H03'],
+            ['code' => 'R13', 'name' => 'Logic Recovery',                    'priority' => 26, 'required' => ['G02', 'G16', 'G12', 'G10'], 'forbidden' => ['G22', 'G18'], 'action' => 'H04'],
+
+            // ── Materi Standar: Kelulusan & Promosi ───────────────────────────
+            ['code' => 'R15', 'name' => 'Module Graduation',                 'priority' => 30, 'required' => ['G03', 'G17', 'G26', 'G05'], 'forbidden' => ['G18'],      'action' => 'H08'],
+            ['code' => 'RE1', 'name' => 'Accelerated Jump',                  'priority' => 40, 'required' => ['G04'],                    'forbidden' => ['G18'],      'action' => 'H06'],
+            ['code' => 'RE2', 'name' => 'Standard Promotion',                'priority' => 50, 'required' => ['G03'],                    'forbidden' => ['G18'],      'action' => 'H05'],
         ];
 
         foreach ($rules as $rule) {
