@@ -6,6 +6,11 @@ use App\Models\AdaptiveRule as AdaptiveRuleModel;
 use App\Models\Material;
 use App\Rules\Adaptive\Contracts\AdaptiveRuleInterface;
 
+/**
+ * Eksekutor Rule Dinamis.
+ * Menangani logika forward chaining dan eksekusi aksi (H-Codes)
+ * secara dinamis berdasarkan instruksi di database.
+ */
 class DynamicAdaptiveRule implements AdaptiveRuleInterface
 {
     public function __construct(protected AdaptiveRuleModel $model) {}
@@ -33,9 +38,9 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
     }
 
     /**
-     * Forward chaining evaluation:
-     * - All required_facts must be present in $facts
-     * - None of forbidden_facts may be present in $facts
+     * Evaluasi Rule (Forward Chaining)
+     * - Semua required_facts wajib ada di $facts.
+     * - Tidak boleh ada satu pun forbidden_facts di $facts.
      */
     public function evaluate(array $facts): bool
     {
@@ -61,49 +66,62 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
         return true;
     }
 
+    /**
+     * Terapkan Aksi ke State Siswa
+     */
     public function apply(array $state, array $context): array
     {
         if (! $this->model->action_id) {
             return $state;
         }
 
-        $instructions = $this->model->relationLoaded('action') && $this->model->action
-            ? ($this->model->action->instructions ?? [])
-            : [];
+        $this->model->loadMissing('action');
+        $instructions = $this->model->action->instructions ?? [];
 
         return $this->executeAction($instructions, $state, $context);
     }
 
+    /**
+     * Eksekusi Instruksi Aksi secara dinamis.
+     * Mendukung dot-notation untuk nested state properties.
+     */
     private function executeAction(array $params, array $state, array $context): array
     {
-        if (isset($params['unlock_next_module']) && $params['unlock_next_module']) {
+        // 1. Unlock Modul Otomatis jika aksi adalah Module Completion
+        if (isset($params['next_action']) && $params['next_action'] === 'MODULE_COMPLETE') {
             $state = $this->handleModuleUnlock($state, $context);
         }
 
-        if (isset($params['certification'])) {
-            $state = $this->handleCertification($state, $context, $params['certification']);
+        // 2. Tangani Pemberian Sertifikat
+        if (isset($params['award'])) {
+            $state = $this->handleCertification($state, $context, $params['award']);
         }
 
+        // 3. Tangani Gamifikasi (Badges/XP)
         if (isset($params['badges']) && is_array($params['badges'])) {
-            $current         = $state['badges'] ?? [];
-            $state['badges'] = array_values(array_unique(array_merge($current, $params['badges'])));
+            $current = data_get($state, 'gamification_data.badges', []);
+            $newBadges = array_values(array_unique(array_merge($current, $params['badges'])));
+            data_set($state, 'gamification_data.badges', $newBadges);
         }
 
+        // 4. Update Properti State Dinamis
         foreach ($params as $key => $value) {
-            if (in_array($key, ['unlock_next_module', 'certification', 'badges'])) {
+            if (in_array($key, ['next_action', 'award', 'badges', 'message'])) {
                 continue;
             }
 
+            // Dukung increment/decrement string: "+10" atau "-5"
             if (is_string($value) && (str_starts_with($value, '+') || str_starts_with($value, '-'))) {
-                $current = data_get($state, str_replace('.', '.', $key), 0);
-                data_set($state, $key, $current + (int) $value);
+                $currentValue = data_get($state, $key, 0);
+                data_set($state, $key, $currentValue + (int) $value);
             } else {
                 data_set($state, $key, $value);
             }
         }
 
+        // 5. Lampirkan Pesan Feedback untuk UI
         if (isset($params['message'])) {
-            $state['message'] = $params['message'];
+            $state['_feedback_message'] = $params['message'];
         }
 
         return $state;
@@ -112,34 +130,30 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
     private function handleModuleUnlock(array $state, array $context): array
     {
         $materialId = $context['material_id'] ?? null;
-        if (! $materialId) {
-            return $state;
-        }
+        if (! $materialId) return $state;
 
-        $material     = Material::find($materialId);
+        $material = Material::find($materialId);
         $nextMaterial = $material?->getNextMaterial();
 
         if ($nextMaterial && $nextMaterial->module_id) {
             $unlocked = $state['unlocked_modules'] ?? [];
-            if (! in_array($nextMaterial->module_id, $unlocked)) {
-                $unlocked[]                = $nextMaterial->module_id;
-                $state['unlocked_modules'] = $unlocked;
+            if (! in_array((string)$nextMaterial->module_id, $unlocked, true)) {
+                $unlocked[] = (string)$nextMaterial->module_id;
+                $state['unlocked_modules'] = array_values(array_unique($unlocked));
             }
         }
 
         return $state;
     }
 
-    private function handleCertification(array $state, array $context, string $certification): array
+    private function handleCertification(array $state, array $context, string $award): array
     {
         $materialId = $context['material_id'] ?? null;
-        if (! $materialId) {
-            return $state;
-        }
+        if (! $materialId) return $state;
 
-        $certifications              = $state['certifications'] ?? [];
-        $certifications[$materialId] = $certification;
-        $state['certifications']     = $certifications;
+        $certs = $state['certifications'] ?? [];
+        $certs[$materialId] = $award;
+        $state['certifications'] = $certs;
 
         return $state;
     }

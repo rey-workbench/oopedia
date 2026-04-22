@@ -5,162 +5,160 @@ namespace Database\Seeders;
 use App\Models\AdaptiveAction;
 use App\Models\AdaptiveFact;
 use App\Models\AdaptiveRule;
+use App\Rules\Adaptive\Constants\AdaptiveConstants as AC;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class AdaptiveRuleSeeder extends Seeder
 {
-    /** @var array<string, int> H-code → adaptive_actions.id */
+    private array $factIds = [];
     private array $actionIds = [];
 
     public function run(): void
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        AdaptiveRule::truncate();
-        AdaptiveAction::truncate();
-        AdaptiveFact::truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-        $this->seedFacts();
-        $this->seedActions();
-        $this->seedRules();
+        DB::transaction(function () {
+            $this->clearExisting();
+            $this->seedFacts();
+            $this->seedActions();
+            $this->seedRules();
+        });
     }
 
-    // ─── Kamus G-Codes ───────────────────────────────────────────────────────
+    private function clearExisting(): void
+    {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        AdaptiveRule::truncate();
+        AdaptiveFact::truncate();
+        AdaptiveAction::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+    }
 
     private function seedFacts(): void
     {
         $facts = [
-            ['code' => 'G01', 'category' => 'Metrik Skor',  'name' => 'Score Critical',        'description' => 'Skor sangat rendah (< 40%) atau gagal total.'],
-            ['code' => 'G02', 'category' => 'Metrik Skor',  'name' => 'Score Remedial',         'description' => 'Skor perlu perbaikan (40% - 69%).'],
-            ['code' => 'G03', 'category' => 'Metrik Skor',  'name' => 'Score Standard',         'description' => 'Skor memenuhi standar kelulusan (70% - 89%).'],
-            ['code' => 'G04', 'category' => 'Metrik Skor',  'name' => 'Score Mastery',          'description' => 'Skor mahir/sempurna (90% - 100%).'],
-            ['code' => 'G05', 'category' => 'Metrik Waktu', 'name' => 'Time Fast',              'description' => 'Penyelesaian < 70% dari alokasi waktu default.'],
-            ['code' => 'G06', 'category' => 'Metrik Waktu', 'name' => 'Time Slow',              'description' => 'Penyelesaian melebihi alokasi waktu default.'],
-            ['code' => 'G07', 'category' => 'Gaya Belajar', 'name' => 'Style Visual',           'description' => 'Kecenderungan terhadap gaya belajar Visual.'],
-            ['code' => 'G08', 'category' => 'Gaya Belajar', 'name' => 'Style Textual',          'description' => 'Kecenderungan terhadap gaya belajar Tekstual.'],
-            ['code' => 'G09', 'category' => 'Tipe Error',   'name' => 'Error Syntax',           'description' => 'Kesalahan pada penulisan/sintaksis kode.'],
-            ['code' => 'G10', 'category' => 'Tipe Error',   'name' => 'Error Logic',            'description' => 'Kesalahan pada alur logika program.'],
-            ['code' => 'G11', 'category' => 'Tipe Error',   'name' => 'No Error',               'description' => 'Jawaban benar tanpa kesalahan.'],
-            ['code' => 'G12', 'category' => 'Interaksi',    'name' => 'Hint Used',              'description' => 'Menggunakan bantuan (hint) saat menjawab.'],
-            ['code' => 'G13', 'category' => 'Konteks',      'name' => 'In Module',              'description' => 'Siswa sedang berada di tengah modul.'],
-            ['code' => 'G14', 'category' => 'Konteks',      'name' => 'Module Started',         'description' => 'Modul baru saja dimulai.'],
-            ['code' => 'G15', 'category' => 'Kesulitan',    'name' => 'Diff Beginner',          'description' => 'Sedang mengerjakan tingkat kesulitan Easy.'],
-            ['code' => 'G16', 'category' => 'Kesulitan',    'name' => 'Diff Medium',            'description' => 'Sedang mengerjakan tingkat kesulitan Medium.'],
-            ['code' => 'G17', 'category' => 'Kesulitan',    'name' => 'Diff Hard',              'description' => 'Sedang mengerjakan tingkat kesulitan Advanced/Hard.'],
-            ['code' => 'G18', 'category' => 'Kesulitan',    'name' => 'Final Project',          'description' => 'Sedang mengerjakan Proyek Akhir Modul.'],
-            ['code' => 'G19', 'category' => 'Kesulitan',    'name' => 'Is Practice',            'description' => 'Soal latihan biasa (bukan proyek akhir).'],
-            ['code' => 'G20', 'category' => 'Progres',      'name' => 'Next Unlocked',          'description' => 'Materi berikutnya sudah terbuka.'],
-            ['code' => 'G21', 'category' => 'Progres',      'name' => 'Prev Unlocked',          'description' => 'Materi sebelumnya sudah terbuka.'],
-            ['code' => 'G22', 'category' => 'Riwayat',      'name' => 'Persistent Fail',        'description' => 'Gagal menjawab benar ≥ 2 kali berturut-turut.'],
-            ['code' => 'G23', 'category' => 'Progres',      'name' => 'Completed Module',       'description' => 'Modul saat ini telah diselesaikan.'],
-            ['code' => 'G24', 'category' => 'Progres',      'name' => 'Completed All',          'description' => 'Seluruh modul dalam sistem telah selesai.'],
-            ['code' => 'G25', 'category' => 'Interaksi',    'name' => 'High Engagement',        'description' => 'Tingkat keterlibatan mahasiswa tinggi.'],
-            ['code' => 'G26', 'category' => 'Progres',      'name' => 'Satisfactory Progress',  'description' => 'Progres materi memadai (> 60%).'],
-            ['code' => 'G27', 'category' => 'Gaya Belajar', 'name' => 'Style Mixed',            'description' => 'Gaya belajar campuran (Visual & Tekstual).'],
+            // Skor & Performa (G01-G08)
+            ['code' => 'G01', 'name' => AC::FACT_SCORE_FAILURE, 'description' => 'Skor rendah (<70).'],
+            ['code' => 'G02', 'name' => AC::FACT_SCORE_PASS,    'description' => 'Skor cukup (70-89).'],
+            ['code' => 'G03', 'name' => AC::FACT_SCORE_PERFECT, 'description' => 'Skor sempurna (90+).'],
+            ['code' => 'G04', 'name' => AC::FACT_SCORE_ZERO,    'description' => 'Salah total (0).'],
+            ['code' => 'G05', 'name' => AC::FACT_CONSISTENCY_HIGH, 'description' => 'Konsisten benar (streak).'],
+            ['code' => 'G06', 'name' => AC::FACT_MASTERY_BEGINNER, 'description' => 'Kuasai level beginner.'],
+            ['code' => 'G07', 'name' => AC::FACT_MASTERY_MEDIUM,   'description' => 'Kuasai level medium.'],
+            ['code' => 'G08', 'name' => AC::FACT_MASTERY_HARD,     'description' => 'Kuasai level hard.'],
+
+            // Gaya Belajar & Error (G09-G15)
+            ['code' => 'G09', 'name' => AC::FACT_STYLE_VISUAL,  'description' => 'Cenderung visual.'],
+            ['code' => 'G10', 'name' => AC::FACT_STYLE_TEXTUAL, 'description' => 'Cenderung tekstual.'],
+            ['code' => 'G11', 'name' => AC::FACT_STYLE_MIXED,   'description' => 'Gaya belajar campuran.'],
+            ['code' => 'G12', 'name' => AC::FACT_ERROR_SYNTAX,  'description' => 'Sering salah tulis.'],
+            ['code' => 'G13', 'name' => AC::FACT_ERROR_LOGIC,   'description' => 'Sering salah logika.'],
+            ['code' => 'G14', 'name' => AC::FACT_ERROR_CONCEPT, 'description' => 'Sering salah konsep.'],
+            ['code' => 'G15', 'name' => AC::FACT_NO_ERROR,      'description' => 'Tanpa kesalahan.'],
+
+            // Waktu & Usaha (G16-G20)
+            ['code' => 'G16', 'name' => AC::FACT_TIME_FAST_SUCCESS, 'description' => 'Cepat & Benar.'],
+            ['code' => 'G17', 'name' => AC::FACT_TIME_FAST_FAIL,    'description' => 'Cepat & Salah (Ceroboh).'],
+            ['code' => 'G18', 'name' => AC::FACT_TIME_SLOW_SUCCESS, 'description' => 'Lambat & Benar.'],
+            ['code' => 'G19', 'name' => AC::FACT_TIME_SLOW_FAIL,    'description' => 'Lambat & Salah (Struggle).'],
+            ['code' => 'G20', 'name' => AC::FACT_HINT_USED,         'description' => 'Menggunakan hint.'],
+
+            // Psikologis (G21-G25)
+            ['code' => 'G21', 'name' => AC::FACT_BOREDOM_SIGNS, 'description' => 'Tanda kebosanan.'],
+            ['code' => 'G22', 'name' => AC::FACT_ANXIETY_SIGNS, 'description' => 'Tanda kecemasan.'],
+            ['code' => 'G23', 'name' => AC::FACT_HIGH_STRUGGLE, 'description' => 'Kesulitan tinggi.'],
+
+            // Konteks & Progres (G26-G30)
+            ['code' => 'G26', 'name' => AC::FACT_DIFF_BEGINNER, 'description' => 'Sedang di level beginner.'],
+            ['code' => 'G27', 'name' => AC::FACT_IS_FINAL_PROJECT, 'description' => 'Sedang di Final Project.'],
+            ['code' => 'G28', 'name' => AC::FACT_PERSISTENT_FAIL,  'description' => 'Gagal berturut-turut.'],
+            ['code' => 'G29', 'name' => AC::FACT_MODULE_NEARLY_DONE, 'description' => 'Materi hampir selesai.'],
+            ['code' => 'G30', 'name' => AC::FACT_MODULE_GRADUATION,  'description' => 'Layak lulus modul.'],
         ];
 
-        foreach ($facts as $data) {
-            AdaptiveFact::create($data);
+        foreach ($facts as $fact) {
+            $created = AdaptiveFact::create($fact);
+            $this->factIds[$fact['code']] = $created->id;
         }
     }
-
-    // ─── Kamus H-Codes ───────────────────────────────────────────────────────
 
     private function seedActions(): void
     {
         $actions = [
-            ['code' => 'H01', 'name' => 'Visual Crisis Intervention',    'description' => 'Intervensi segera ke materi visual akibat kegagalan kritis.',          'instructions' => ['next_action' => 'STUDY_VISUAL',  'message' => 'Nilai sangat rendah. Tinjau kembali materi visual.']],
-            ['code' => 'H02', 'name' => 'Textual Crisis Intervention',   'description' => 'Intervensi segera ke materi tekstual akibat kegagalan kritis.',        'instructions' => ['next_action' => 'STUDY_TEXTUAL', 'message' => 'Nilai sangat rendah. Fokus pada dokumentasi teks.']],
-            ['code' => 'H03', 'name' => 'Syntax Recovery',               'description' => 'Arahan pemulihan pemahaman sintaksis kode.',                            'instructions' => ['next_action' => 'STUDY_SYNTAX',  'message' => 'Ada kesalahan penulisan. Cek kembali sintaksmu.']],
-            ['code' => 'H04', 'name' => 'Logic Recovery',                'description' => 'Arahan pemulihan pemahaman alur logika program.',                       'instructions' => ['next_action' => 'STUDY_LOGIC',   'message' => 'Logika programmu perlu diperbaiki.']],
-            ['code' => 'H05', 'name' => 'Standard Promotion',            'description' => 'Lanjut ke soal berikutnya secara normal.',                             'instructions' => ['next_action' => 'NEXT_QUESTION', 'message' => 'Bagus! Lanjut ke soal berikutnya.']],
-            ['code' => 'H06', 'name' => 'Accelerated Jump',              'description' => 'Melompati tingkat kesulitan langsung ke Hard.',                         'instructions' => ['navigation.target_difficulty' => 'hard', 'next_action' => 'NEXT_QUESTION', 'message' => 'Luar biasa! Langsung ke tantangan tersulit.']],
-            ['code' => 'H07', 'name' => 'Critical Backtracking',         'description' => 'Mundur ke tingkat kesulitan lebih rendah.',                             'instructions' => ['navigation.target_difficulty' => 'beginner', 'message' => 'Kesulitan terdeteksi. Mari perkuat dasar.']],
-            ['code' => 'H08', 'name' => 'Module Graduation',             'description' => 'Kelulusan modul dan buka akses modul berikutnya.',                      'instructions' => ['unlock_next_module' => true, 'next_action' => 'FINISH_MATERIAL', 'message' => 'Selamat! Modul selesai.']],
-            ['code' => 'H09', 'name' => 'Gold Certificate',              'description' => 'Sertifikat Emas untuk penguasaan sempurna tanpa bantuan.',              'instructions' => ['certification' => 'gold',   'message' => 'LUAR BIASA! Sertifikat EMAS diraih.']],
-            ['code' => 'H10', 'name' => 'Silver Certificate',            'description' => 'Sertifikat Perak untuk kelulusan baik tanpa bantuan hint.',             'instructions' => ['certification' => 'silver', 'message' => 'HEBAT! Sertifikat PERAK diraih.']],
-            ['code' => 'H11', 'name' => 'Bronze Certificate',            'description' => 'Sertifikat Perunggu untuk kelulusan standar dengan bantuan.',           'instructions' => ['certification' => 'bronze', 'message' => 'Bagus! Sertifikat PERUNGGU diraih.']],
-            ['code' => 'H12', 'name' => 'Visual Project Revision',       'description' => 'Revisi proyek akhir berbasis materi visual.',                           'instructions' => ['next_action' => 'STUDY_VISUAL',  'message' => 'Proyek perlu revisi. Tinjau materi visual.']],
-            ['code' => 'H13', 'name' => 'Textual Project Revision',      'description' => 'Revisi proyek akhir berbasis materi tekstual.',                         'instructions' => ['next_action' => 'STUDY_TEXTUAL', 'message' => 'Proyek perlu revisi. Pelajari dokumentasi teks.']],
-            ['code' => 'H14', 'name' => 'Persistent Visual Safety Net',  'description' => 'Jaring pengaman materi visual untuk kegagalan berulang.',               'instructions' => ['next_action' => 'STUDY_VISUAL',  'message' => 'Penguatan Visual diperlukan.']],
-            ['code' => 'H15', 'name' => 'Persistent Textual Safety Net', 'description' => 'Jaring pengaman materi tekstual untuk kegagalan berulang.',             'instructions' => ['next_action' => 'STUDY_TEXTUAL', 'message' => 'Penguatan Teks diperlukan.']],
-            ['code' => 'H16', 'name' => 'Acceleration Material',         'description' => 'Lompatan langsung ke materi atau modul berikutnya.',                    'instructions' => ['next_action' => 'NEXT_MATERIAL', 'message' => 'Akselerasi materi berhasil!']],
+            // ── Dasar (H01-H05)
+            ['code' => 'H01', 'name' => 'Standard Promotion', 'description' => 'Lanjut normal.', 'instructions' => ['next_action' => AC::ACTION_NEXT_QUESTION]],
+            ['code' => 'H02', 'name' => 'Standard Remedial',  'description' => 'Ulang soal.', 'instructions' => ['next_action' => AC::ACTION_NEXT_QUESTION]],
+            ['code' => 'H03', 'name' => 'Accelerated Jump',   'description' => 'Lompat level.', 'instructions' => ['target_difficulty' => 'hard', 'next_action' => AC::ACTION_INCREASE_DIFFICULTY]],
+            ['code' => 'H04', 'name' => 'Critical Backtrack', 'description' => 'Turun level.', 'instructions' => ['target_difficulty' => 'beginner', 'next_action' => AC::ACTION_REDUCE_DIFFICULTY]],
+            ['code' => 'H05', 'name' => 'Module Graduation',  'description' => 'Lulus modul.', 'instructions' => ['next_action' => AC::ACTION_FINISH_MATERIAL]],
+
+            // ── Intervensi Gaya Belajar (H06-H11)
+            ['code' => 'H06', 'name' => 'Study Visual',       'description' => 'Paksa visual.', 'instructions' => ['next_action' => AC::ACTION_STUDY_VISUAL]],
+            ['code' => 'H07', 'name' => 'Study Textual',      'description' => 'Paksa teks.', 'instructions' => ['next_action' => AC::ACTION_STUDY_TEXTUAL]],
+            ['code' => 'H08', 'name' => 'Visual Hint',        'description' => 'Beri diagram.', 'instructions' => ['next_action' => AC::ACTION_SHOW_VISUAL_HINT]],
+            ['code' => 'H09', 'name' => 'Textual Hint',       'description' => 'Beri teks.', 'instructions' => ['next_action' => AC::ACTION_SHOW_TEXT_HINT]],
+            ['code' => 'H10', 'name' => 'Logic Guide',        'description' => 'Panduan alur.', 'instructions' => ['next_action' => AC::ACTION_STUDY_THEORY]],
+            ['code' => 'H11', 'name' => 'Syntax Guide',       'description' => 'Panduan tulis.', 'instructions' => ['next_action' => AC::ACTION_STUDY_SYNTAX]],
+
+            // ── Proyek & Sertifikat (H12-H16)
+            ['code' => 'H12', 'name' => 'Project Review',     'description' => 'Review materi.', 'instructions' => ['next_action' => 'STUDY_MATERIAL']],
+            ['code' => 'H13', 'name' => 'Project Revision',   'description' => 'Revisi proyek.', 'instructions' => ['next_action' => AC::ACTION_REVISE_PROJECT]],
+            ['code' => 'H14', 'name' => 'Gold Medal',         'description' => 'Emas.', 'instructions' => ['award' => 'gold_cert', 'next_action' => AC::ACTION_ISSUE_CERTIFICATE]],
+            ['code' => 'H15', 'name' => 'Silver Medal',       'description' => 'Perak.', 'instructions' => ['award' => 'silver_cert', 'next_action' => AC::ACTION_ISSUE_CERTIFICATE]],
+            ['code' => 'H16', 'name' => 'Bronze Medal',       'description' => 'Perunggu.', 'instructions' => ['award' => 'bronze_cert', 'next_action' => AC::ACTION_ISSUE_CERTIFICATE]],
+
+            // ── Psikologis & Motivasi (H17-H20)
+            ['code' => 'H17', 'name' => 'Anxiety Relief',     'description' => 'Turunkan beban.', 'instructions' => ['target_difficulty' => 'beginner', 'next_action' => AC::ACTION_REDUCE_DIFFICULTY, 'message' => 'Rileks, mari kita pelan-pelan.']],
+            ['code' => 'H18', 'name' => 'Challenge Mode',      'description' => 'Beri tantangan.', 'instructions' => ['target_difficulty' => 'hard', 'next_action' => AC::ACTION_INCREASE_DIFFICULTY, 'message' => 'Sepertinya ini terlalu mudah bagimu!']],
+            ['code' => 'H19', 'name' => 'Motivational Msg',   'description' => 'Pesan semangat.', 'instructions' => ['next_action' => AC::ACTION_NEXT_QUESTION, 'message' => 'Pantang menyerah! Sikit lagi benar.']],
+            ['code' => 'H20', 'name' => 'Careful Alert',      'description' => 'Peringatan ceroboh.', 'instructions' => ['next_action' => AC::ACTION_NEXT_QUESTION, 'message' => 'Jangan terburu-buru, baca lagi teliti.']],
         ];
 
-        foreach ($actions as $data) {
-            $action                         = AdaptiveAction::create($data);
-            $this->actionIds[$data['code']] = $action->id;
+        foreach ($actions as $action) {
+            $created = AdaptiveAction::create($action);
+            $this->actionIds[$action['code']] = $created->id;
         }
     }
-
-    // ─── Rule Base (15 rules + 2 extras) ─────────────────────────────────────
-    //
-    // required_facts  = G-codes yang HARUS semua ada agar rule aktif
-    // forbidden_facts = G-codes yang TIDAK BOLEH ada (opsional, default null)
-    //
-    //  Rule  | Kondisi (G)                           | Aksi (H)
-    // -------+---------------------------------------+----------------------------
-    //  R01   | G18, G02, G22, G07                    | H12 Visual Proj Revision
-    //  R02   | G18, G02, G22, G08                    | H13 Textual Proj Revision
-    //  R03   | G02, G22, G07 (Practice Only)         | H14 Visual Safety Net
-    //  R04   | G02, G22, G08 (Practice Only)         | H15 Textual Safety Net
-    //  R05   | G01, G15, G07 (excl G22)              | H01 Visual Crisis
-    //  R06   | G01, G15, G08 (excl G22)              | H02 Textual Crisis
-    //  R07   | G18, G02, G07 (excl G22)              | H12 Visual Proj Revision
-    //  R08   | G18, G02, G08 (excl G22)              | H13 Textual Project Revision
-    //  R09   | G18, G03, G26, G05 (excl G12)         | H09 Gold Certificate
-    //  R10   | G18, G03, G26 (excl G12, G05)         | H10 Silver Certificate
-    //  R11   | G18, G03, G26, G12                    | H11 Bronze Certificate
-    //  R12   | G02, G16, G12, G09 (excl G22)         | H03 Syntax Recovery
-    //  R13   | G02, G16, G12, G10 (excl G22)         | H04 Logic Recovery
-    //  R14   | G01, G17 (excl G22)                   | H07 Critical Backtracking
-    //  R15   | G03, G17, G26, G05                    | H08 Module Graduation
-    //  RE1   | G04                                   | H06 Accelerated Jump
-    //  RE2   | G03                                   | H05 Standard Promotion (fallback)
 
     private function seedRules(): void
     {
         $rules = [
-            // ── Proyek Akhir: Sertifikasi (High Priority: 5-10) ───────────────
-            ['code' => 'R09', 'name' => 'Gold Certificate',                  'priority' =>  5, 'required' => ['G18', 'G03', 'G26', 'G05'], 'forbidden' => ['G12'],      'action' => 'H09'],
-            ['code' => 'R10', 'name' => 'Silver Certificate',                'priority' =>  6, 'required' => ['G18', 'G03', 'G26'],       'forbidden' => ['G12', 'G05'], 'action' => 'H10'],
-            ['code' => 'R11', 'name' => 'Bronze Certificate',                'priority' =>  7, 'required' => ['G18', 'G03', 'G26', 'G12'], 'forbidden' => null,         'action' => 'H11'],
+            // ── Jalur Cepat / Bosan (1-2)
+            ['code' => 'R01', 'name' => 'Boredom Challenge',  'priority' =>  1, 'required' => ['G03', 'G16', 'G21'], 'forbidden' => ['G26'], 'action' => 'H18'],
+            ['code' => 'R02', 'name' => 'Elite Jump',         'priority' =>  2, 'required' => ['G03', 'G16'],        'forbidden' => ['G20'], 'action' => 'H03'],
+            
+            // ── Proyek & Sertifikat (3-8)
+            ['code' => 'R03', 'name' => 'Gold Award',         'priority' =>  5, 'required' => ['G27', 'G03', 'G30', 'G08'], 'forbidden' => ['G20'], 'action' => 'H14'],
+            ['code' => 'R04', 'name' => 'Silver Award',       'priority' =>  6, 'required' => ['G27', 'G02', 'G30'],        'forbidden' => ['G20'], 'action' => 'H15'],
+            ['code' => 'R05', 'name' => 'Bronze Award',       'priority' =>  7, 'required' => ['G27', 'G02'],               'forbidden' => null,    'action' => 'H16'],
+            ['code' => 'R06', 'name' => 'Project Visual Rev', 'priority' =>  8, 'required' => ['G27', 'G01', 'G09'],        'forbidden' => null,    'action' => 'H13'],
+            ['code' => 'R07', 'name' => 'Project Text Rev',   'priority' =>  9, 'required' => ['G27', 'G01', 'G10'],        'forbidden' => null,    'action' => 'H13'],
+            ['code' => 'R08', 'name' => 'Project Fallback',   'priority' => 10, 'required' => ['G27', 'G01'],               'forbidden' => null,    'action' => 'H12'],
 
-            // ── Proyek Akhir: Revisi ──────────────────────────────────────────
-            ['code' => 'R01', 'name' => 'Visual Project Revision (Stuck)',   'priority' => 10, 'required' => ['G18', 'G02', 'G22', 'G07'], 'forbidden' => null,         'action' => 'H12'],
-            ['code' => 'R02', 'name' => 'Textual Project Revision (Stuck)',  'priority' => 11, 'required' => ['G18', 'G02', 'G22', 'G08'], 'forbidden' => null,         'action' => 'H13'],
-            ['code' => 'R07', 'name' => 'Visual Project Revision (New)',     'priority' => 12, 'required' => ['G18', 'G02', 'G07'],       'forbidden' => ['G22'],      'action' => 'H12'],
-            ['code' => 'R08', 'name' => 'Textual Project Revision (New)',    'priority' => 13, 'required' => ['G18', 'G02', 'G08'],       'forbidden' => ['G22'],      'action' => 'H13'],
+            // ── Cemas & Frustrasi (9-11)
+            ['code' => 'R09', 'name' => 'Anxiety Safety Net', 'priority' => 15, 'required' => ['G01', 'G22', 'G19'],        'forbidden' => null,    'action' => 'H17'],
+            ['code' => 'R10', 'name' => 'Persistent Struggle','priority' => 16, 'required' => ['G28', 'G23'],               'forbidden' => null,    'action' => 'H04'],
+            ['code' => 'R11', 'name' => 'Careless Failure',   'priority' => 17, 'required' => ['G01', 'G17'],               'forbidden' => null,    'action' => 'H20'],
 
-            // ── Materi Standar: Safety Net (Persistent Failure) ────────────────
-            ['code' => 'R03', 'name' => 'Persistent Visual Safety Net',      'priority' => 15, 'required' => ['G02', 'G22', 'G07'],       'forbidden' => ['G18'],      'action' => 'H14'],
-            ['code' => 'R04', 'name' => 'Persistent Textual Safety Net',     'priority' => 16, 'required' => ['G02', 'G22', 'G08'],       'forbidden' => ['G18'],      'action' => 'H15'],
+            // ── Gaya Belajar & Hint (12-15)
+            ['code' => 'R12', 'name' => 'Visual Preference',  'priority' => 20, 'required' => ['G01', 'G09'],               'forbidden' => null,    'action' => 'H06'],
+            ['code' => 'R13', 'name' => 'Textual Preference', 'priority' => 21, 'required' => ['G01', 'G10'],               'forbidden' => null,    'action' => 'H07'],
+            ['code' => 'R14', 'name' => 'Syntax Error Help',  'priority' => 22, 'required' => ['G12', 'G01'],               'forbidden' => null,    'action' => 'H11'],
+            ['code' => 'R15', 'name' => 'Logic Error Help',   'priority' => 23, 'required' => ['G13', 'G01'],               'forbidden' => null,    'action' => 'H10'],
 
-            // ── Materi Standar: Intervensi Kritis & Backtracking ─────────────
-            ['code' => 'R05', 'name' => 'Visual Crisis Intervention',        'priority' => 20, 'required' => ['G01', 'G15', 'G07'],       'forbidden' => ['G22', 'G18'], 'action' => 'H01'],
-            ['code' => 'R06', 'name' => 'Textual Crisis Intervention',       'priority' => 21, 'required' => ['G01', 'G15', 'G08'],       'forbidden' => ['G22', 'G18'], 'action' => 'H02'],
-            ['code' => 'R14', 'name' => 'Critical Backtracking',             'priority' => 22, 'required' => ['G01', 'G17'],              'forbidden' => ['G22', 'G18'], 'action' => 'H07'],
-
-            // ── Materi Standar: Pemulihan Menengah ────────────────────────────
-            ['code' => 'R12', 'name' => 'Syntax Recovery',                   'priority' => 25, 'required' => ['G02', 'G16', 'G12', 'G09'], 'forbidden' => ['G22', 'G18'], 'action' => 'H03'],
-            ['code' => 'R13', 'name' => 'Logic Recovery',                    'priority' => 26, 'required' => ['G02', 'G16', 'G12', 'G10'], 'forbidden' => ['G22', 'G18'], 'action' => 'H04'],
-
-            // ── Materi Standar: Kelulusan & Promosi ───────────────────────────
-            ['code' => 'R15', 'name' => 'Module Graduation',                 'priority' => 30, 'required' => ['G03', 'G17', 'G26', 'G05'], 'forbidden' => ['G18'],      'action' => 'H08'],
-            ['code' => 'RE1', 'name' => 'Accelerated Jump',                  'priority' => 40, 'required' => ['G04'],                    'forbidden' => ['G18'],      'action' => 'H06'],
-            ['code' => 'RE2', 'name' => 'Standard Promotion',                'priority' => 50, 'required' => ['G03'],                    'forbidden' => ['G18'],      'action' => 'H05'],
+            // ── Graduation & Fallback (16-17)
+            ['code' => 'R16', 'name' => 'Graduation Check',   'priority' => 25, 'required' => ['G30'],                      'forbidden' => null,    'action' => 'H05'],
+            ['code' => 'R17', 'name' => 'Default Pass',       'priority' => 30, 'required' => ['G02'],                      'forbidden' => null,    'action' => 'H01'],
         ];
 
         foreach ($rules as $rule) {
             AdaptiveRule::create([
-                'rule_code'      => $rule['code'],
-                'name'           => $rule['name'],
-                'priority'       => $rule['priority'],
-                'required_facts' => $rule['required'],
-                'forbidden_facts'=> $rule['forbidden'],
-                'action_id'      => $this->actionIds[$rule['action']],
-                'is_active'      => true,
+                'rule_code'       => $rule['code'],
+                'name'            => $rule['name'],
+                'priority'        => $rule['priority'],
+                'required_facts'  => $rule['required'],
+                'forbidden_facts' => $rule['forbidden'],
+                'action_id'       => $this->actionIds[$rule['action']],
+                'is_active'       => true,
             ]);
         }
     }
