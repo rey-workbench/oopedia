@@ -12,12 +12,14 @@ use Illuminate\Support\Facades\DB;
 class AdaptiveRuleSeeder extends Seeder
 {
     private array $factIds = [];
+
     private array $actionIds = [];
 
     public function run(): void
     {
+        $this->clearExisting();
+
         DB::transaction(function () {
-            $this->clearExisting();
             $this->seedFacts();
             $this->seedActions();
             $this->seedRules();
@@ -76,7 +78,7 @@ class AdaptiveRuleSeeder extends Seeder
         ];
 
         foreach ($facts as $fact) {
-            $created = AdaptiveFact::create($fact);
+            $created                      = AdaptiveFact::create($fact);
             $this->factIds[$fact['code']] = $created->id;
         }
     }
@@ -85,36 +87,35 @@ class AdaptiveRuleSeeder extends Seeder
     {
         $actions = [
             // ── Dasar (H01-H05)
-            ['code' => 'H01', 'name' => 'Standard Promotion', 'description' => 'Lanjut normal.', 'instructions' => ['next_action' => AC::ACTION_NEXT_QUESTION]],
-            ['code' => 'H02', 'name' => 'Standard Remedial',  'description' => 'Ulang soal.', 'instructions' => ['next_action' => AC::ACTION_NEXT_QUESTION]],
-            ['code' => 'H03', 'name' => 'Accelerated Jump',   'description' => 'Lompat level.', 'instructions' => ['target_difficulty' => 'hard', 'next_action' => AC::ACTION_INCREASE_DIFFICULTY]],
-            ['code' => 'H04', 'name' => 'Critical Backtrack', 'description' => 'Turun level.', 'instructions' => ['target_difficulty' => 'beginner', 'next_action' => AC::ACTION_REDUCE_DIFFICULTY]],
-            ['code' => 'H05', 'name' => 'Module Graduation',  'description' => 'Lulus modul.', 'instructions' => ['next_action' => AC::ACTION_FINISH_MATERIAL]],
+            ['code' => 'H01', 'name' => 'Standard Promotion', 'description' => 'Lanjut normal.', 'instructions' => ['next_action' => AC::ACTION_NEXT_QUESTION, 'label' => 'Soal Berikutnya']],
+            ['code' => 'H02', 'name' => 'Standard Remedial',  'description' => 'Ulang soal.', 'instructions' => ['next_action' => AC::ACTION_NEXT_QUESTION, 'label' => 'Coba Lagi']],
+            ['code' => 'H03', 'name' => 'Accelerated Jump',   'description' => 'Lompat level.', 'instructions' => ['target_difficulty' => 'hard', 'next_action' => AC::ACTION_INCREASE_DIFFICULTY, 'label' => 'Tantangan Baru', 'message' => 'Luar Biasa! Kamu menjawab dengan sangat cepat dan tepat. Tantangan selanjutnya telah menantimu di level yang lebih tinggi!']],
+            ['code' => 'H04', 'name' => 'Critical Backtrack', 'description' => 'Turun level.', 'instructions' => ['target_difficulty' => 'beginner', 'next_action' => AC::ACTION_REDUCE_DIFFICULTY, 'label' => 'Bimbingan Level', 'message' => 'Sepertinya soal ini agak sulit. Kami menyesuaikan tingkat kesulitannya agar kamu lebih nyaman belajar!']],
+            ['code' => 'H05', 'name' => 'Module Graduation',  'description' => 'Lulus modul.', 'instructions' => ['next_action' => AC::ACTION_FINISH_MATERIAL, 'label' => 'Selesaikan Modul']],
 
-            // ── Intervensi Gaya Belajar (H06-H11)
-            ['code' => 'H06', 'name' => 'Study Visual',       'description' => 'Paksa visual.', 'instructions' => ['next_action' => AC::ACTION_STUDY_VISUAL]],
-            ['code' => 'H07', 'name' => 'Study Textual',      'description' => 'Paksa teks.', 'instructions' => ['next_action' => AC::ACTION_STUDY_TEXTUAL]],
-            ['code' => 'H08', 'name' => 'Visual Hint',        'description' => 'Beri diagram.', 'instructions' => ['next_action' => AC::ACTION_SHOW_VISUAL_HINT]],
-            ['code' => 'H09', 'name' => 'Textual Hint',       'description' => 'Beri teks.', 'instructions' => ['next_action' => AC::ACTION_SHOW_TEXT_HINT]],
-            ['code' => 'H10', 'name' => 'Logic Guide',        'description' => 'Panduan alur.', 'instructions' => ['next_action' => AC::ACTION_STUDY_THEORY]],
-            ['code' => 'H11', 'name' => 'Syntax Guide',       'description' => 'Panduan tulis.', 'instructions' => ['next_action' => AC::ACTION_STUDY_SYNTAX]],
+            // ── Intervensi Gaya Belajar (H06-H10)
+            ['code' => 'H06', 'name' => 'Study Visual',       'description' => 'Paksa visual.', 'instructions' => ['next_action' => AC::ACTION_STUDY_VISUAL, 'label' => 'Materi Visual']],
+            ['code' => 'H07', 'name' => 'Study Textual',      'description' => 'Paksa teks.', 'instructions' => ['next_action' => AC::ACTION_STUDY_TEXTUAL, 'label' => 'Materi Tekstual']],
+            ['code' => 'H10', 'name' => 'Logic Guide',        'description' => 'Panduan alur.', 'instructions' => ['next_action' => AC::ACTION_STUDY_THEORY, 'label' => 'Pahami Konsep']],
+            ['code' => 'H11', 'name' => 'Syntax Guide',       'description' => 'Panduan tulis.', 'instructions' => ['next_action' => AC::ACTION_STUDY_SYNTAX, 'label' => 'Pelajari Sintaks']],
 
             // ── Proyek & Sertifikat (H12-H16)
-            ['code' => 'H12', 'name' => 'Project Review',     'description' => 'Review materi.', 'instructions' => ['next_action' => 'STUDY_MATERIAL']],
-            ['code' => 'H13', 'name' => 'Project Revision',   'description' => 'Revisi proyek.', 'instructions' => ['next_action' => AC::ACTION_REVISE_PROJECT]],
-            ['code' => 'H14', 'name' => 'Gold Medal',         'description' => 'Emas.', 'instructions' => ['award' => 'gold_cert', 'next_action' => AC::ACTION_ISSUE_CERTIFICATE]],
-            ['code' => 'H15', 'name' => 'Silver Medal',       'description' => 'Perak.', 'instructions' => ['award' => 'silver_cert', 'next_action' => AC::ACTION_ISSUE_CERTIFICATE]],
-            ['code' => 'H16', 'name' => 'Bronze Medal',       'description' => 'Perunggu.', 'instructions' => ['award' => 'bronze_cert', 'next_action' => AC::ACTION_ISSUE_CERTIFICATE]],
+            ['code' => 'H12', 'name' => 'Project Review',     'description' => 'Review materi.', 'instructions' => ['next_action' => AC::ACTION_STUDY_MATERIAL, 'label' => 'Ulas Materi']],
+            ['code' => 'H13', 'name' => 'Project Revision',   'description' => 'Revisi proyek.', 'instructions' => ['next_action' => AC::ACTION_REVISE_PROJECT, 'label' => 'Revisi Proyek']],
+            ['code' => 'H14', 'name' => 'Gold Medal',         'description' => 'Emas.', 'instructions' => ['award' => 'gold_cert', 'next_action' => AC::ACTION_ISSUE_CERTIFICATE, 'label' => 'Klaim Sertifikat Emas']],
+            ['code' => 'H15', 'name' => 'Silver Medal',       'description' => 'Perak.', 'instructions' => ['award' => 'silver_cert', 'next_action' => AC::ACTION_ISSUE_CERTIFICATE, 'label' => 'Klaim Sertifikat Perak']],
+            ['code' => 'H16', 'name' => 'Bronze Medal',       'description' => 'Perunggu.', 'instructions' => ['award' => 'bronze_cert', 'next_action' => AC::ACTION_ISSUE_CERTIFICATE, 'label' => 'Klaim Sertifikat Perunggu']],
 
             // ── Psikologis & Motivasi (H17-H20)
-            ['code' => 'H17', 'name' => 'Anxiety Relief',     'description' => 'Turunkan beban.', 'instructions' => ['target_difficulty' => 'beginner', 'next_action' => AC::ACTION_REDUCE_DIFFICULTY, 'message' => 'Rileks, mari kita pelan-pelan.']],
-            ['code' => 'H18', 'name' => 'Challenge Mode',      'description' => 'Beri tantangan.', 'instructions' => ['target_difficulty' => 'hard', 'next_action' => AC::ACTION_INCREASE_DIFFICULTY, 'message' => 'Sepertinya ini terlalu mudah bagimu!']],
-            ['code' => 'H19', 'name' => 'Motivational Msg',   'description' => 'Pesan semangat.', 'instructions' => ['next_action' => AC::ACTION_NEXT_QUESTION, 'message' => 'Pantang menyerah! Sikit lagi benar.']],
-            ['code' => 'H20', 'name' => 'Careful Alert',      'description' => 'Peringatan ceroboh.', 'instructions' => ['next_action' => AC::ACTION_NEXT_QUESTION, 'message' => 'Jangan terburu-buru, baca lagi teliti.']],
+            ['code' => 'H17', 'name' => 'Anxiety Relief',     'description' => 'Turunkan beban.', 'instructions' => ['target_difficulty' => 'beginner', 'next_action' => AC::ACTION_REDUCE_DIFFICULTY, 'label' => 'Mulai Santai', 'message' => 'Rileks, mari kita pelan-pelan.']],
+            ['code' => 'H18', 'name' => 'Challenge Mode',      'description' => 'Beri tantangan.', 'instructions' => ['target_difficulty' => 'hard', 'next_action' => AC::ACTION_INCREASE_DIFFICULTY, 'label' => 'Mode Tantangan', 'message' => 'Sepertinya ini terlalu mudah bagimu!']],
+            ['code' => 'H19', 'name' => 'Motivational Msg',   'description' => 'Pesan semangat.', 'instructions' => ['next_action' => AC::ACTION_NEXT_QUESTION, 'label' => 'Soal Berikutnya', 'message' => 'Pantang menyerah! Sikit lagi benar.']],
+            ['code' => 'H20', 'name' => 'Careful Alert',      'description' => 'Peringatan ceroboh.', 'instructions' => ['next_action' => AC::ACTION_NEXT_QUESTION, 'label' => 'Soal Berikutnya', 'message' => 'Jangan terburu-buru, baca lagi teliti.']],
+            ['code' => 'H21', 'name' => 'Study Mixed',        'description' => 'Materi Komprehensif.', 'instructions' => ['next_action' => AC::ACTION_STUDY_MIXED, 'label' => 'Materi Komprehensif']],
         ];
 
         foreach ($actions as $action) {
-            $created = AdaptiveAction::create($action);
+            $created                          = AdaptiveAction::create($action);
             $this->actionIds[$action['code']] = $created->id;
         }
     }
@@ -125,7 +126,7 @@ class AdaptiveRuleSeeder extends Seeder
             // ── Jalur Cepat / Bosan (1-2)
             ['code' => 'R01', 'name' => 'Boredom Challenge',  'priority' =>  1, 'required' => ['G03', 'G16', 'G21'], 'forbidden' => ['G26'], 'action' => 'H18'],
             ['code' => 'R02', 'name' => 'Elite Jump',         'priority' =>  2, 'required' => ['G03', 'G16'],        'forbidden' => ['G20'], 'action' => 'H03'],
-            
+
             // ── Proyek & Sertifikat (3-8)
             ['code' => 'R03', 'name' => 'Gold Award',         'priority' =>  5, 'required' => ['G27', 'G03', 'G30', 'G08'], 'forbidden' => ['G20'], 'action' => 'H14'],
             ['code' => 'R04', 'name' => 'Silver Award',       'priority' =>  6, 'required' => ['G27', 'G02', 'G30'],        'forbidden' => ['G20'], 'action' => 'H15'],
@@ -136,7 +137,7 @@ class AdaptiveRuleSeeder extends Seeder
 
             // ── Cemas & Frustrasi (9-11)
             ['code' => 'R09', 'name' => 'Anxiety Safety Net', 'priority' => 15, 'required' => ['G01', 'G22', 'G19'],        'forbidden' => null,    'action' => 'H17'],
-            ['code' => 'R10', 'name' => 'Persistent Struggle','priority' => 16, 'required' => ['G28', 'G23'],               'forbidden' => null,    'action' => 'H04'],
+            ['code' => 'R10', 'name' => 'Persistent Struggle', 'priority' => 16, 'required' => ['G28', 'G23'],               'forbidden' => null,    'action' => 'H04'],
             ['code' => 'R11', 'name' => 'Careless Failure',   'priority' => 17, 'required' => ['G01', 'G17'],               'forbidden' => null,    'action' => 'H20'],
 
             // ── Gaya Belajar & Hint (12-15)
@@ -144,6 +145,7 @@ class AdaptiveRuleSeeder extends Seeder
             ['code' => 'R13', 'name' => 'Textual Preference', 'priority' => 21, 'required' => ['G01', 'G10'],               'forbidden' => null,    'action' => 'H07'],
             ['code' => 'R14', 'name' => 'Syntax Error Help',  'priority' => 22, 'required' => ['G12', 'G01'],               'forbidden' => null,    'action' => 'H11'],
             ['code' => 'R15', 'name' => 'Logic Error Help',   'priority' => 23, 'required' => ['G13', 'G01'],               'forbidden' => null,    'action' => 'H10'],
+            ['code' => 'R18', 'name' => 'Mixed Preference',   'priority' => 24, 'required' => ['G01', 'G11'],               'forbidden' => null,    'action' => 'H21'],
 
             // ── Graduation & Fallback (16-17)
             ['code' => 'R16', 'name' => 'Graduation Check',   'priority' => 25, 'required' => ['G30'],                      'forbidden' => null,    'action' => 'H05'],

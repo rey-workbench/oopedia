@@ -125,7 +125,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         $this->saveStudentState($studentState->fill($ruleOutput), $isGuest, $userId);
 
         $nextActionData = $this->nextActionResolver->resolve(
-            $ruleOutput['next_action'] ?? 'NEXT_QUESTION',
+            $adaptiveResult['triggered_rule']['action'] ?? 'H01',
             $material,
             $question,
             $userId,
