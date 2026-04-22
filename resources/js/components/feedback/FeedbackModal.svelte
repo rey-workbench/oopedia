@@ -12,9 +12,6 @@
 
     let { state: quizState }: Props = $props();
 
-    let actionCode = $derived(
-        quizState.feedbackData?.adaptiveResult?.triggered_rule?.action || null
-    );
     let nextAction = $derived(
         quizState.feedbackData?.adaptiveResult?.new_state?.next_action_data?.label ||
             (quizState.feedbackData?.status === 'success' ? 'Soal Berikutnya' : 'Lihat Materi')
@@ -22,14 +19,8 @@
     let recommendation = $derived(
         quizState.feedbackData?.adaptiveResult?.new_state?.recommendation || null
     );
-    let certification = $derived(
-        quizState.feedbackData?.adaptiveResult?.new_state?.certification || null
-    );
     let xpEarned = $derived(quizState.feedbackData?.adaptiveResult?.global_xp_earned || 0);
     let streakBonus = $derived(quizState.feedbackData?.adaptiveResult?.streak_bonus || null);
-    let interventionType = $derived(
-        quizState.feedbackData?.adaptiveResult?.new_state?.intervention_type || null
-    );
 
     const TICK_MS = 50;
     const AUTO_ADVANCE_MS_SUCCESS = 10000;
@@ -114,9 +105,6 @@
         return quizState.feedbackData?.status === 'success' ? 'success' : 'wrong';
     }
 
-    /**
-     * Get variant directly from backend metadata or infer it dynamically
-     */
     function getFeedbackVariant(): FeedbackVariant {
         const ruleVariant = quizState.feedbackData?.adaptiveResult?.triggered_rule?.variant;
 
@@ -124,21 +112,6 @@
             'result', 'acceleration', 'certificate', 'intervention', 'backtrack'
         ].includes(ruleVariant)) {
             return ruleVariant as FeedbackVariant;
-        }
-
-        // Fallback logic for legacy or missing metadata
-        if (
-            interventionType?.includes('crisis') ||
-            interventionType?.includes('recovery') ||
-            interventionType?.includes('persistent') ||
-            interventionType?.includes('project_revision') ||
-            interventionType?.includes('safety')
-        ) {
-            return 'intervention';
-        }
-
-        if (certification) {
-            return 'certificate';
         }
 
         return 'result';
@@ -155,27 +128,14 @@
         return SUCCESS_TONE_BY_VARIANT[currentVariant] ?? SUCCESS_TONE_BY_VARIANT.result;
     }
 
-    function getFeedbackTitle(
-        currentVariant: FeedbackVariant,
-        status: 'success' | 'wrong'
-    ): string {
-        if (status === 'wrong') {
-            return 'Perlu Belajar Lagi';
+    function getFeedbackTitle(status: 'success' | 'wrong'): string {       
+        const backendTitle = quizState.feedbackData?.adaptiveResult?.new_state?.title;
+        if (backendTitle) {
+            return backendTitle as string;
         }
 
-        if (currentVariant === 'certificate' && actionCode === 'H08' && !certification) {
-            return 'Kelulusan Modul Tercapai!';
-        }
-
-        const titleByVariant: Record<FeedbackVariant, string> = {
-            result: 'Luar Biasa!',
-            acceleration: 'Percepatan Aktif!',
-            certificate: 'Sertifikat Tercapai!',
-            intervention: 'Bantuan Adaptif Aktif',
-            backtrack: 'Penyesuaian Alur',
-        };
-
-        return titleByVariant[currentVariant] ?? 'Luar Biasa!';
+        // Generic fallback if engine somehow didn't provide a title
+        return status === 'success' ? 'Berhasil!' : 'Belum Tepat';
     }
 
     $effect(() => {
@@ -213,7 +173,7 @@
     let feedbackStatus = $derived(getFeedbackStatus());
     let isSuccess = $derived(feedbackStatus === 'success');
     let feedbackTone = $derived(getFeedbackTone(variant, feedbackStatus));
-    let feedbackTitle = $derived(getFeedbackTitle(variant, feedbackStatus));
+    let feedbackTitle = $derived(getFeedbackTitle(feedbackStatus));
 </script>
 
 {#if quizState.showFeedback && quizState.feedbackData}

@@ -6,6 +6,17 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property string $rule_code
+ * @property string $name
+ * @property int $priority
+ * @property array $required_facts
+ * @property array $forbidden_facts
+ * @property int $action_id
+ * @property bool $is_active
+ * @property-read AdaptiveAction $action
+ */
 class AdaptiveRule extends Model
 {
     protected $fillable = [

@@ -143,6 +143,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             'adaptiveResult'  => [
                 'triggered_rule'   => $adaptiveResult['triggered_rule'],
                 'facts'            => $adaptiveResult['facts'],
+                'engine_metadata'  => $adaptiveResult['engine_metadata'] ?? null,
                 'global_xp_earned' => $totalXpEarned,
                 'streak_bonus'     => $streakBonus ? $streakBonus['message'] : null,
                 'new_state'        => array_merge($mappedState, [
@@ -150,6 +151,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
                     'next_action'       => $nextActionData['label'],
                     'next_action_data'  => $nextActionData,
                     'message'           => $ruleOutput['message']              ?? null,
+                    'title'             => $ruleOutput['title']                ?? null,
                     'certification'     => $ruleOutput['certification']        ?? null,
                     'intervention_type' => $ruleOutput['intervention_type']    ?? null,
                     'recovery_type'     => $ruleOutput['recovery_type']        ?? null,

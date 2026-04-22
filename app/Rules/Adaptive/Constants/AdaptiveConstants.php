@@ -118,4 +118,21 @@ final class AdaptiveConstants
     public const ACTION_STUDY_MATERIAL   = 'STUDY_MATERIAL';
 
     public const ACTION_REVISE_PROJECT   = 'REVISE_PROJECT';
+
+    public const ACTION_ACCELERATED_JUMP     = 'ACCELERATED_JUMP';
+
+    public const ACTION_ACCELERATED_MATERIAL = 'ACCELERATED_MATERIAL';
+
+    public const ACTION_SYNTAX_RECOVERY      = 'SYNTAX_RECOVERY';
+
+    public const ACTION_LOGIC_RECOVERY       = 'LOGIC_RECOVERY';
+
+    // ── Difficulty Level Labels (Dibutuhkan oleh AdaptiveEngineService) ──
+    public const DIFFICULTY_BEGINNER = 'beginner';
+
+    public const DIFFICULTY_MEDIUM   = 'medium';
+
+    public const DIFFICULTY_HARD     = 'hard';
+
+    public const DIFFICULTY_FINAL    = 'final';
 }

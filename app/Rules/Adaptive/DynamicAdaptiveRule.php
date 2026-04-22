@@ -20,6 +20,11 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
         return $this->model->rule_code;
     }
 
+    public function getModel(): AdaptiveRuleModel
+    {
+        return $this->model;
+    }
+
     public function getRuleName(): string
     {
         return $this->model->name;

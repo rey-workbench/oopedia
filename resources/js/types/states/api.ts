@@ -27,7 +27,13 @@ export interface AdaptiveResult {
         priority?: number;
         variant?: string;
     }>;
-    facts?: AdaptiveFact[];
+    facts?: string[];
+    engine_metadata?: {
+        rule_count: number;
+        engine_version: string;
+        fact_labels: Record<string, string>;
+        fact_categories: Record<string, string>;
+    } | null;
     global_xp_earned?: number;
     streak_bonus?: string | null;
     new_state?: {
@@ -43,6 +49,7 @@ export interface AdaptiveResult {
         recovery_type?: string | null;
         fast_track_active?: boolean;
         message?: string | null;
+        title?: string | null;
     } | null;
 }
 

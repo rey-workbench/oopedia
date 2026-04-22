@@ -79,7 +79,7 @@ export class QuestionShowState extends BaseState {
     startTime = $state(Date.now());
 
     showAdaptiveIndicator = $state(false);
-    adaptiveFacts = $state<unknown[]>([]);
+    adaptiveFacts = $state<string[]>([]);
     adaptiveTriggeredRule = $state<{
         id?: string;
         name?: string;

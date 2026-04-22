@@ -28,54 +28,35 @@
         isDebugPanelCollapsed = !isDebugPanelCollapsed;
     }
 
-    const factCodes = $derived(quizState.adaptiveFacts as string[]);
+    const metadata = $derived(quizState.feedbackData?.adaptiveResult?.engine_metadata);
+    const factCodes = $derived(quizState.adaptiveFacts);
 
-    const factCategories = $derived({
-        performance: factCodes.filter((f) => ['G01', 'G02', 'G03', 'G04', 'G05', 'G21'].includes(f)),
-        style: factCodes.filter((f) => ['G06', 'G07', 'G22'].includes(f)),
-        error: factCodes.filter((f) => ['G08', 'G09', 'G10', 'G20'].includes(f)),
-        difficulty: factCodes.filter((f) => ['G13', 'G14', 'G15', 'G16'].includes(f)),
-        quiz: factCodes.filter((f) => ['G11', 'G12', 'G17', 'G18', 'G19'].includes(f)),
+    const factCategories = $derived.by(() => {
+        if (!metadata) return {};
+
+        const groups: Record<string, string[]> = {};
+        factCodes.forEach((code) => {
+            const cat = metadata.fact_categories[code] || 'other';
+            if (!groups[cat]) groups[cat] = [];
+            groups[cat].push(code);
+        });
+        return groups;
     });
 
     function getFactLabel(factCode: string) {
-        const labels: Record<string, string> = {
-            G01: 'Skor Kritis (< 30)',
-            G02: 'Skor Remedial (30-60)',
-            G03: 'Skor Standar (61-80)',
-            G04: 'Skor Mastery (> 80)',
-            G05: 'Respon Cepat',
-            G06: 'Learner Visual',
-            G07: 'Learner Tekstual',
-            G08: 'Syntax Error (Koding)',
-            G09: 'Logic Error (Koding)',
-            G10: 'Bebas Error',
-            G11: 'Pakai Bantuan',
-            G12: 'Dalam Modul',
-            G13: 'Level Pemula',
-            G14: 'Level Menengah',
-            G15: 'Level Mahir',
-            G16: 'Proyek Akhir',
-            G17: 'Mode Latihan',
-            G18: 'Next Terbuka',
-            G19: 'Prev Terbuka',
-            G20: 'Gagal Berulang (Persistent)',
-            G21: 'Progress Memuaskan (> 60%)',
-            G22: 'Learner Campuran (Mixed)',
-        };
-        return labels[factCode] || factCode;
+        return metadata?.fact_labels[factCode] || factCode;
     }
 
     function getCategoryLabel(category: string) {
         const labels: Record<string, string> = {
-            score: 'Skor',
-            time: 'Waktu',
+            performance: 'Performa',
             style: 'Gaya Belajar',
             error: 'Tipe Error',
-            hint: 'Bantuan',
-            module: 'Modul',
+            time: 'Waktu & Usaha',
+            behaviour: 'Perilaku',
             difficulty: 'Kesulitan',
-            status: 'Status',
+            progress: 'Progres',
+            other: 'Lainnya',
         };
         return labels[category] || category;
     }
@@ -394,7 +375,9 @@
                                 ><Target size={10} /> First Match Conflict Resolution</span
                             >
                         </div>
-                        <div class="text-primary-400">29 Rules • Adaptive Engine v4.0.0-PROD • Audit Trail Active</div>
+                        <div class="text-primary-400">
+                            {metadata?.rule_count || '?'} Rules • Adaptive Engine v{metadata?.engine_version || '?.?'} • Audit Trail Active
+                        </div>
                     </div>
                 </div>
             {/if}

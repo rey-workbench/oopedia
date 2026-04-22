@@ -11,6 +11,7 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants;
 use App\Rules\Adaptive\Contracts\AdaptiveRuleInterface;
 use App\Rules\Adaptive\DynamicAdaptiveRule;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -18,7 +19,7 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 {
     public function evaluate(array $facts, array $currentState, array $context): array
     {
-        $user          = auth()->user();
+        $user          = Auth::user();
         $previousState = $currentState;
 
         [$triggeredRule, $matchedRules, $newState] = $this->evaluateRules($facts, $currentState, $context);
@@ -60,6 +61,12 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             'triggered_rules' => array_map(fn (AdaptiveRuleInterface $r) => $this->mapRule($r), $matchedRules),
             'new_state'       => $newState,
             'facts'           => $facts,
+            'engine_metadata' => [
+                'rule_count'      => Cache::remember('adaptive_rules_count', now()->addHours(24), fn () => AdaptiveRule::where('is_active', true)->count()),
+                'engine_version'  => '4.1.2-PROD',
+                'fact_labels'     => Cache::remember('adaptive_fact_labels', now()->addHours(24), fn () => \App\Models\AdaptiveFact::all()->pluck('name', 'code')->toArray()),
+                'fact_categories' => Cache::remember('adaptive_fact_categories', now()->addHours(24), fn () => \App\Models\AdaptiveFact::all()->pluck('category', 'code')->toArray()),
+            ],
         ];
     }
 
@@ -73,7 +80,7 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
      */
     private function evaluateRules(array $facts, array $currentState, array $context): array
     {
-        $lastAction = AdaptiveExecutionLog::where('user_id', auth()->id())
+        $lastAction = AdaptiveExecutionLog::where('user_id', Auth::id())
             ->latest()
             ->value('action_code');
 
@@ -126,15 +133,22 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 
         $actionCode = $rule->getActionCode();
 
-        if ($actionCode === AdaptiveConstants::ACTION_ACCELERATED_JUMP) {
+        // Guard: Jangan lompat difficulty jika sudah di target
+        if ($actionCode === AdaptiveConstants::ACTION_INCREASE_DIFFICULTY) {
             return $this->hasReachedFastTrackTarget($currentState);
         }
 
-        if ($actionCode === AdaptiveConstants::ACTION_ACCELERATED_MATERIAL) {
-            return $lastActionCode === AdaptiveConstants::ACTION_ACCELERATED_MATERIAL;
-        }
+        // Guard: Jangan ulangi aksi remedial yang sama berturut-turut
+        $nonRepeatableActions = [
+            AdaptiveConstants::ACTION_STUDY_SYNTAX,
+            AdaptiveConstants::ACTION_STUDY_THEORY,
+            AdaptiveConstants::ACTION_STUDY_VISUAL,
+            AdaptiveConstants::ACTION_STUDY_TEXTUAL,
+            AdaptiveConstants::ACTION_STUDY_MIXED,
+            AdaptiveConstants::ACTION_REDUCE_DIFFICULTY,
+        ];
 
-        if (in_array($actionCode, [AdaptiveConstants::ACTION_SYNTAX_RECOVERY, AdaptiveConstants::ACTION_LOGIC_RECOVERY], true)) {
+        if (in_array($actionCode, $nonRepeatableActions, true)) {
             return $lastActionCode === $actionCode;
         }
 
@@ -197,6 +211,7 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             'name'     => $rule->getRuleName(),
             'action'   => $rule->getActionCode(),
             'priority' => $rule->getPriority(),
+            'variant'  => $rule instanceof DynamicAdaptiveRule ? $rule->getModel()->action->variant : 'result',
         ];
     }
 }
