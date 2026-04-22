@@ -52,7 +52,7 @@ final class MaterialQuestionController extends Controller
         $unlockedModules = [];
         if (! $isGuest) {
             $studentState    = $this->performanceService->getStudentState($userId);
-            $unlockedModules = $studentState?->learning_profile['unlocked_modules'] ?? [];
+            $unlockedModules = $studentState?->unlocked_modules ?? [];
         }
 
         $materials = $this->questionListingService->getMaterialsListWithStudentCount(
@@ -205,18 +205,15 @@ final class MaterialQuestionController extends Controller
             return $this->json(['target_difficulty' => null]);
         }
 
-        $adaptiveState = $studentState->adaptive_state ?? [];
-        if (is_string($adaptiveState)) {
-            $adaptiveState = json_decode($adaptiveState, true) ?? [];
+        // Reset navigation if user switched material
+        if ($studentState->current_material_id             !== null
+            && (string) $studentState->current_material_id !== (string) $materialId
+        ) {
+            $this->performanceService->resetMaterialMetrics($userId);
+            $studentState->target_difficulty   = null;
+            $studentState->current_material_id = null;
         }
 
-        $lastMaterialId = $adaptiveState['current_material_id'] ?? null;
-        if ($lastMaterialId !== null && (string) $lastMaterialId !== (string) $materialId) {
-            $this->resetMaterialScopedState($studentState, $adaptiveState);
-        }
-
-        $targetDifficulty = $adaptiveState['target_difficulty'] ?? null;
-
-        return $this->json(['target_difficulty' => $targetDifficulty]);
+        return $this->json(['target_difficulty' => $studentState->target_difficulty]);
     }
 }

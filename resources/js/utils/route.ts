@@ -68,6 +68,7 @@ export const ROUTES = {
             SHOW: (id: string | number) => `/admin/sus-survey/${id}`,
             EXPORT: '/admin/sus-survey/export',
         },
+        ADAPTIVE_ANALYTICS: '/admin/adaptive-analytics',
     },
     MAHASISWA: {
         DASHBOARD: '/mahasiswa/dashboard',

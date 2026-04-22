@@ -187,7 +187,7 @@ final class MaterialService implements MaterialServiceInterface
         $unlockedModules = [];
         if ($userId && $this->progressRepo) {
             $studentState    = StudentState::where('user_id', $userId)->first();
-            $unlockedModules = $studentState?->learning_profile['unlocked_modules'] ?? [];
+            $unlockedModules = $studentState?->unlocked_modules ?? [];
         }
 
         $firstModuleId = $materials->whereNotNull('module_id')->min('module_id');

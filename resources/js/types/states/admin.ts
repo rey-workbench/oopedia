@@ -103,3 +103,49 @@ export interface AdminUeqDetailProps extends SharedProps {
 }
 
 export type UeqAverages = Record<string, number>;
+
+export interface AdaptiveRule {
+    id: string;
+    name: string;
+    priority: number;
+    action: string;
+}
+
+export interface AdaptiveRuleDomain {
+    domain: string;
+    count: number;
+    rules: AdaptiveRule[];
+}
+
+export interface AdaptiveTriggerItem {
+    id: number;
+    rule_id: string;
+    rule_name: string;
+    action: string;
+    user_name: string;
+    material_title: string;
+    created_at: string;
+}
+
+export interface AdaptiveStateDistribution {
+    difficulty: string;
+    count: number;
+}
+
+export interface AdaptiveRuleTriggerStat {
+    rule_id: string;
+    rule_name: string;
+    trigger_count: number;
+    percentage: number;
+}
+
+export interface AdminAdaptiveAnalyticsProps extends SharedProps {
+    totalRules: number;
+    totalFacts: number;
+    totalActions: number;
+    rulesByDomain: AdaptiveRuleDomain[];
+    adaptiveStateDistribution: AdaptiveStateDistribution[];
+    recentTriggers: AdaptiveTriggerItem[];
+    ruleTriggersStats: AdaptiveRuleTriggerStat[];
+    decisionTree: any;
+}

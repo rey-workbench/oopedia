@@ -1,278 +1,150 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Rules\Adaptive\Constants;
 
-/**
- * AdaptiveConstants
- *
- * Central registry for all Fact (G) and Action (H) codes used in the
- * ITS (Intelligent Tutoring System) adaptive engine.
- */
 final class AdaptiveConstants
 {
-    // ==================== QUIZ CONFIGURATION (Shared Thresholds) ====================
+    // Facts (G-Codes) - Tabel 3.14 Interpretasi Gejala
+    public const FACT_SCORE_CRITICAL = 'G01';
 
-    /**
-     * Allocated seconds per difficulty level.
-     * Used by PerformanceService, FactGatheringService, QuizRewardService.
-     */
-    public const array ALLOCATED_TIME = [
-        'beginner' => 45,
-        'medium'   => 90,
-        'hard'     => 150,
-        'final'    => 300,
+    public const FACT_SCORE_REMEDIAL = 'G02';
+
+    public const FACT_SCORE_STANDARD = 'G03';
+
+    public const FACT_SCORE_MASTERY  = 'G04';
+
+    public const FACT_TIME_FAST      = 'G05';
+
+    public const FACT_TIME_SLOW      = 'G06';
+
+    public const FACT_STYLE_VISUAL    = 'G07';
+
+    public const FACT_STYLE_TEXTUAL   = 'G08';
+
+    public const FACT_ERROR_SYNTAX    = 'G09';
+
+    public const FACT_ERROR_LOGIC     = 'G10';
+
+    public const FACT_NO_ERROR        = 'G11';
+
+    public const FACT_HINT_USED       = 'G12';
+
+    public const FACT_IN_MODULE       = 'G13';
+
+    public const FACT_MODULE_STARTED  = 'G14';
+
+    public const FACT_DIFF_BEGINNER   = 'G15';
+
+    public const FACT_DIFF_MEDIUM     = 'G16';
+
+    public const FACT_DIFF_HARD       = 'G17';
+
+    public const FACT_IS_FINAL_PROJECT = 'G18';
+
+    public const FACT_IS_PRACTICE     = 'G19';
+
+    public const FACT_NEXT_UNLOCKED   = 'G20';
+
+    public const FACT_PREV_UNLOCKED   = 'G21';
+
+    public const FACT_PERSISTENT_FAIL = 'G22';
+
+    public const FACT_COMPLETED_MODULE = 'G23';
+
+    public const FACT_COMPLETED_ALL    = 'G24';
+
+    public const FACT_HIGH_ENGAGEMENT  = 'G25';
+
+    public const FACT_SATISFACTORY_PROGRESS = 'G26';
+
+    public const FACT_STYLE_MIXED      = 'G27';
+
+    // Actions (H-Codes) - Tabel 3.15 Interpretasi Hasil
+    public const ACTION_VISUAL_CRISIS_INTERVENTION = 'H01';
+
+    public const ACTION_TEXTUAL_CRISIS_INTERVENTION = 'H02';
+
+    public const ACTION_SYNTAX_RECOVERY = 'H03';
+
+    public const ACTION_LOGIC_RECOVERY  = 'H04';
+
+    public const ACTION_STANDARD_PROMOTION = 'H05';
+
+    public const ACTION_ACCELERATED_JUMP = 'H06';
+
+    public const ACTION_CRITICAL_BACKTRACKING = 'H07';
+
+    public const ACTION_MODULE_GRADUATION = 'H08';
+
+    public const ACTION_GOLD_CERTIFICATE = 'H09';
+
+    public const ACTION_SILVER_CERTIFICATE = 'H10';
+
+    public const ACTION_BRONZE_CERTIFICATE = 'H11';
+
+    public const ACTION_VISUAL_PROJECT_REVISION = 'H12';
+
+    public const ACTION_TEXTUAL_PROJECT_REVISION = 'H13';
+
+    public const ACTION_PERSISTENT_VISUAL_SAFETY_NET = 'H14';
+
+    public const ACTION_PERSISTENT_TEXTUAL_SAFETY_NET = 'H15';
+
+    public const ACTION_ACCELERATED_MATERIAL = 'H16';
+
+    // Operational Action Labels (NextActionResolver)
+    public const ACTION_NEXT_QUESTION    = 'NEXT_QUESTION';
+
+    public const ACTION_NEXT_MATERIAL    = 'NEXT_MATERIAL';
+
+    public const ACTION_FINISH_MATERIAL  = 'FINISH_MATERIAL';
+
+    public const ACTION_ISSUE_CERTIFICATE = 'ISSUE_CERTIFICATE';
+
+    public const ACTION_REDUCE_DIFFICULTY = 'REDUCE_DIFFICULTY';
+
+    public const ACTION_INCREASE_DIFFICULTY = 'INCREASE_DIFFICULTY';
+
+    public const ACTION_STUDY_VISUAL     = 'STUDY_VISUAL';
+
+    public const ACTION_STUDY_TEXTUAL    = 'STUDY_TEXTUAL';
+
+    public const ACTION_STUDY_SYNTAX     = 'STUDY_SYNTAX';
+
+    public const ACTION_STUDY_THEORY     = 'STUDY_THEORY';
+
+    public const ACTION_STUDY_MIXED      = 'STUDY_MIXED';
+
+    // Difficulty Levels
+    public const DIFFICULTY_BEGINNER = 'beginner';
+
+    public const DIFFICULTY_MEDIUM   = 'medium';
+
+    public const DIFFICULTY_HARD     = 'hard';
+
+    // Thresholds
+    public const TIME_FAST_THRESHOLD = 70; // percentage
+
+    public const ALLOCATED_TIME = [
+        'beginner' => 60,
+        'medium'   => 120,
+        'hard'     => 180,
     ];
 
-    /**
-     * Answering below this % of allocated time → G05 (Fast).
-     * Used as the canonical "fast answer" threshold across all services.
-     */
-    public const int TIME_FAST_THRESHOLD = 70;
+    // State Keys
+    public const ADAPTIVE_STATE = 'adaptive_state';
 
-    // ==================== FACTS (G Codes) ====================
+    public const TARGET_DIFFICULTY = 'target_difficulty';
 
-    // Performance / Score (G01 - G04)
-    public const string FACT_SCORE_CRITICAL = 'G01';
+    public const FAST_TRACK_ACTIVE = 'fast_track_active';
 
-    public const string FACT_SCORE_REMEDIAL = 'G02';
-
-    public const string FACT_SCORE_STANDARD = 'G03';
-
-    public const string FACT_SCORE_MASTERY = 'G04';
-
-    // Time Spent (G05)
-    public const string FACT_TIME_FAST = 'G05';
-
-    // Learning Styles (G06 - G07, G22)
-    public const string FACT_STYLE_VISUAL = 'G06';
-
-    public const string FACT_STYLE_TEXTUAL = 'G07';
-
-    // Error Types (G08 - G10)
-    public const string FACT_ERROR_SYNTAX = 'G08';
-
-    public const string FACT_ERROR_LOGIC = 'G09';
-
-    public const string FACT_NO_ERROR = 'G10';
-
-    // Hint Usage (G11)
-    public const string FACT_HINT_USED = 'G11';
-
-    // Modules (G12)
-    public const string FACT_IN_MODULE = 'G12';
-
-    // Difficulty (G13 - G15)
-    public const string FACT_DIFF_BEGINNER = 'G13';
-
-    public const string FACT_DIFF_MEDIUM = 'G14';
-
-    public const string FACT_DIFF_HARD = 'G15';
-
-    // Special (G16 - G20)
-    public const string FACT_IS_FINAL_PROJECT = 'G16';
-
-    public const string FACT_IS_PRACTICE = 'G17';
-
-    public const string FACT_NEXT_UNLOCKED = 'G18';
-
-    public const string FACT_PREV_UNLOCKED = 'G19';
-
-    public const string FACT_PERSISTENT_FAIL = 'G20';
-
-    // Progress (G21)
-    public const string FACT_SATISFACTORY_PROGRESS = 'G21';
-
-    // Additional Learning Style (G22)
-    public const string FACT_STYLE_MIXED = 'G22';
-
-    // ==================== ACTIONS (H Codes) ====================
-
-    public const string ACTION_VISUAL_CRISIS_INTERVENTION = 'H01';
-
-    public const string ACTION_TEXTUAL_CRISIS_INTERVENTION = 'H02';
-
-    public const string ACTION_SYNTAX_RECOVERY = 'H03';
-
-    public const string ACTION_LOGIC_RECOVERY = 'H04';
-
-    public const string ACTION_STANDARD_PROMOTION = 'H05';
-
-    public const string ACTION_ACCELERATED_JUMP = 'H06';
-
-    public const string ACTION_CRITICAL_BACKTRACKING = 'H07';
-
-    public const string ACTION_MODULE_GRADUATION = 'H08';
-
-    public const string ACTION_GOLD_CERTIFICATE = 'H09';
-
-    public const string ACTION_SILVER_CERTIFICATE = 'H10';
-
-    public const string ACTION_BRONZE_CERTIFICATE = 'H11';
-
-    public const string ACTION_VISUAL_PROJECT_REVISION = 'H12';
-
-    public const string ACTION_TEXTUAL_PROJECT_REVISION = 'H13';
-
-    public const string ACTION_PERSISTENT_VISUAL_NET = 'H14';
-
-    public const string ACTION_PERSISTENT_TEXTUAL_NET = 'H15';
-
-    public const string ACTION_ACCELERATED_MATERIAL = 'H16';
-
-    public const string ACTION_MIXED_CRISIS_INTERVENTION = 'H17';
-
-    public const string ACTION_PERSISTENT_MIXED_NET = 'H18';
-
-    public const string ACTION_MIXED_PROJECT_REVISION = 'H19';
-
-    public const string ACTION_FINAL_PROJECT_MIXED_PERSISTENT = 'H20';
-
-    public const string ACTION_REMEDIAL_AT_BEGINNER = 'H21';
-
-    public const string ACTION_REVIEW_PREVIOUS = 'H22';
-
-    public const string ACTION_FAST_WRONG_RECOVERY = 'H23';
-
-    public const string ACTION_FINAL_PROJECT_VISUAL_PERSISTENT = 'H24';
-
-    public const string ACTION_FINAL_PROJECT_TEXTUAL_PERSISTENT = 'H25';
-
-    public const string ACTION_REMEDIAL_INDEPENDENT = 'H26';
-
-    public const string ACTION_MASTERY_MEDIUM = 'H27';
-
-    // State Fields
-    public const string NEXT_ACTION = 'next_action';
-
-    public const string MESSAGE = 'message';
-
-    public const string RECOMMENDATION = 'recommendation';
-
-    public const string INTERVENTION_TYPE = 'intervention_type';
-
-    public const string RECOVERY_TYPE = 'recovery_type';
-
-    public const string FORCE_MATERIAL_REVIEW = 'force_material_review';
-
-    public const string ACHIEVEMENT = 'achievement';
-
-    public const string CERTIFICATION = 'certification';
-
-    public const string BADGES = 'badges';
-
-    public const string GAMIFICATION_DATA = 'gamification_data';
-
-    public const string TARGET_DIFFICULTY = 'target_difficulty';
-
-    public const string FAST_TRACK_ACTIVE = 'fast_track_active';
-
-    public const string ADAPTIVE_STATE = 'adaptive_state';
-
-    public const string MODULE_PROGRESS = 'module_progress';
-
-    // Action Values
-    public const string ACTION_NEXT_QUESTION = 'NEXT_QUESTION';
-
-    public const string ACTION_NEXT_MATERIAL = 'NEXT_MATERIAL';
-
-    public const string ACTION_FINISH_MATERIAL = 'FINISH_MATERIAL';
-
-    public const string ACTION_ISSUE_CERTIFICATE = 'ISSUE_CERTIFICATE';
-
-    public const string ACTION_REDUCE_DIFFICULTY = 'REDUCE_DIFFICULTY';
-
-    public const string ACTION_INCREASE_DIFFICULTY = 'INCREASE_DIFFICULTY';
-
-    public const string ACTION_STUDY_VISUAL = 'STUDY_VISUAL';
-
-    public const string ACTION_STUDY_TEXTUAL = 'STUDY_TEXTUAL';
-
-    public const string ACTION_STUDY_SYNTAX = 'STUDY_SYNTAX';
-
-    public const string ACTION_STUDY_THEORY = 'STUDY_THEORY';
-
-    public const string ACTION_STUDY_MIXED = 'STUDY_MIXED';
-
-    // Intervention Types
-    public const string INTERVENTION_VISUAL_CRISIS = 'visual_crisis';
-
-    public const string INTERVENTION_TEXTUAL_CRISIS = 'textual_crisis';
-
-    public const string INTERVENTION_PERSISTENT_VISUAL_SAFETY = 'persistent_visual_safety';
-
-    public const string INTERVENTION_PERSISTENT_TEXTUAL_SAFETY = 'persistent_textual_safety';
-
-    public const string INTERVENTION_VISUAL_PROJECT = 'visual_project_revision';
-
-    public const string INTERVENTION_TEXTUAL_PROJECT = 'textual_project_revision';
-
-    public const string INTERVENTION_FINAL_PROJECT_VISUAL_PERSISTENT = 'final_project_visual_persistent';
-
-    public const string INTERVENTION_FINAL_PROJECT_TEXTUAL_PERSISTENT = 'final_project_textual_persistent';
-
-    public const string INTERVENTION_MIXED_CRISIS = 'mixed_crisis';
-
-    public const string INTERVENTION_PERSISTENT_MIXED_SAFETY = 'persistent_mixed_safety';
-
-    public const string INTERVENTION_MIXED_PROJECT = 'mixed_project_revision';
-
-    public const string INTERVENTION_FINAL_PROJECT_MIXED_PERSISTENT = 'final_project_mixed_persistent';
-
-    // Recovery Types
-    public const string RECOVERY_SYNTAX = 'syntax';
-
-    public const string RECOVERY_LOGIC = 'logic';
-
-    public const string RECOVERY_INDEPENDENT = 'independent';
-
-    // Achievement Values
-    public const string ACHIEVEMENT_MODULE_COMPLETED = 'module_completed';
-
-    public const string ACHIEVEMENT_GOLD_CERTIFICATE = 'gold_certificate';
-
-    public const string ACHIEVEMENT_SILVER_CERTIFICATE = 'silver_certificate';
-
-    public const string ACHIEVEMENT_BRONZE_CERTIFICATE = 'bronze_certificate';
-
-    // Certification Values
-    public const string CERT_GOLD = 'gold';
-
-    public const string CERT_SILVER = 'silver';
-
-    public const string CERT_BRONZE = 'bronze';
-
-    // Badge Values
-    public const string BADGE_GOLD_ARCHITECT = 'gold_architect';
-
-    public const string BADGE_SILVER_ARCHITECT = 'silver_architect';
-
-    public const string BADGE_SILVER_DEVELOPER = 'silver_developer';
-
-    public const string BADGE_BRONZE_ARCHITECT = 'bronze_architect';
-
-    public const string BADGE_BRONZE_JUNIOR = 'bronze_junior';
-
-    // Difficulty Values
-    public const string DIFFICULTY_BEGINNER = 'beginner';
-
-    public const string DIFFICULTY_MEDIUM = 'medium';
-
-    public const string DIFFICULTY_HARD = 'hard';
-
-    public const array CERTIFICATION_RANKS = [
-        self::CERT_BRONZE => 1,
-        self::CERT_SILVER => 2,
-        self::CERT_GOLD   => 3,
-    ];
-
-    public static function certificationRank(?string $certification): int
+    public static function certificationRank(?string $cert): int
     {
-        if (! is_string($certification) || $certification === '') {
-            return 0;
-        }
-
-        return self::CERTIFICATION_RANKS[$certification] ?? 0;
+        return match ($cert) {
+            'gold'   => 3,
+            'silver' => 2,
+            'bronze' => 1,
+            default  => 0,
+        };
     }
 }

@@ -13,10 +13,31 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property string $id
  * @property string $user_id
- * @property array<string,mixed> $gamification_data
- * @property array<string,mixed> $learning_profile
- * @property array<string,mixed> $performance_metrics
- * @property array<string,mixed> $adaptive_state
+ *
+ * Gamification
+ * @property int $xp
+ * @property string $level
+ * @property int $streak
+ * @property int $max_streak
+ * @property array<int, string> $badges
+ *
+ * Learning Profile
+ * @property string $learning_style
+ * @property array<int, string> $unlocked_modules
+ * @property array<string, string> $certifications
+ * @property array<string, int> $time_distribution
+ *
+ * Performance
+ * @property int $total_answered
+ * @property int $correct_count
+ * @property int $wrong_count
+ * @property int $wrong_streak
+ * @property int $hints_used
+ * @property int $hints_available
+ *
+ * Navigation
+ * @property string|null $current_material_id
+ * @property string|null $target_difficulty
  * @property Carbon|null $last_active_at
  */
 final class StudentState extends Model
@@ -30,19 +51,34 @@ final class StudentState extends Model
 
     protected $fillable = [
         'user_id',
-        'gamification_data',
-        'learning_profile',
-        'performance_metrics',
-        'adaptive_state',
+        // Gamification
+        'xp', 'level', 'streak', 'max_streak', 'badges',
+        // Learning profile
+        'learning_style', 'unlocked_modules', 'certifications', 'time_distribution',
+        // Performance
+        'total_answered', 'correct_count', 'wrong_count', 'wrong_streak',
+        'hints_used', 'hints_available',
+        // Navigation
+        'current_material_id', 'target_difficulty',
+        // Meta
         'last_active_at',
     ];
 
     protected $casts = [
-        'performance_metrics' => 'array',
-        'gamification_data'   => 'array',
-        'learning_profile'    => 'array',
-        'adaptive_state'      => 'array',
-        'last_active_at'      => 'datetime',
+        'xp'                 => 'integer',
+        'streak'             => 'integer',
+        'max_streak'         => 'integer',
+        'hints_used'         => 'integer',
+        'hints_available'    => 'integer',
+        'total_answered'     => 'integer',
+        'correct_count'      => 'integer',
+        'wrong_count'        => 'integer',
+        'wrong_streak'       => 'integer',
+        'badges'             => 'array',
+        'unlocked_modules'   => 'array',
+        'certifications'     => 'array',
+        'time_distribution'  => 'array',
+        'last_active_at'     => 'datetime',
     ];
 
     public function user(): BelongsTo

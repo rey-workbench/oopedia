@@ -20,7 +20,6 @@ use App\Enums\Lms\QuestionType;
 use App\Models\Material;
 use App\Models\Question;
 use App\Models\StudentState;
-use App\Rules\Adaptive\Constants\AdaptiveConstants;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -122,30 +121,8 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
 
         $ruleOutput = $adaptiveResult['new_state'] ?? [];
 
-        if (isset($ruleOutput['learning_profile'])) {
-            $studentState->learning_profile = $ruleOutput['learning_profile'];
-        }
-
-        $this->persistCertification(
-            $studentState,
-            (string) $material->id,
-            $ruleOutput['certification'] ?? null,
-        );
-
-        $this->mergeAdaptiveBadges($studentState, $ruleOutput);
-
-        $adaptiveState = $this->buildAdaptiveState(
-            studentState: $studentState,
-            ruleOutput: $ruleOutput,
-            adaptiveResult: $adaptiveResult,
-            material: $material,
-            userId: $userId,
-            isGuest: $isGuest,
-        );
-
-        $studentState->adaptive_state = $adaptiveState;
-
-        $this->saveStudentState($studentState, $isGuest, $userId);
+        // Save state directly from engine results - Repository will filter transient keys
+        $this->saveStudentState($studentState->fill($ruleOutput), $isGuest, $userId);
 
         $nextActionData = $this->nextActionResolver->resolve(
             $ruleOutput['next_action'] ?? 'NEXT_QUESTION',
@@ -176,7 +153,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
                     'certification'     => $ruleOutput['certification']        ?? null,
                     'intervention_type' => $ruleOutput['intervention_type']    ?? null,
                     'recovery_type'     => $ruleOutput['recovery_type']        ?? null,
-                    'fast_track_active' => $adaptiveState['fast_track_active'] ?? false,
+                    'fast_track_active' => $ruleOutput['fast_track_active']    ?? false,
                 ]),
             ],
         ];
@@ -289,51 +266,7 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
         }
     }
 
-    /**
-     * @param array<string, mixed> $ruleOutput
-     * @param array<string, mixed> $adaptiveResult
-     * @return array<string, mixed>
-     */
-    private function buildAdaptiveState(
-        StudentState $studentState,
-        array $ruleOutput,
-        array $adaptiveResult,
-        Material $material,
-        string $userId,
-        bool $isGuest,
-    ): array {
-        $adaptiveState = $studentState->adaptive_state;
-
-        if (is_string($adaptiveState)) {
-            $adaptiveState = json_decode($adaptiveState, true) ?? [];
-        }
-
-        $adaptiveState = is_array($adaptiveState) ? $adaptiveState : [];
-
-        if (isset($ruleOutput[AdaptiveConstants::ADAPTIVE_STATE]) && is_array($ruleOutput[AdaptiveConstants::ADAPTIVE_STATE])) {
-            $adaptiveState = array_merge($adaptiveState, $ruleOutput[AdaptiveConstants::ADAPTIVE_STATE]);
-        }
-
-        $adaptiveState['current_material_id'] = $material->id;
-        $adaptiveState['last_rule']           = $adaptiveResult['triggered_rule'] ?? null;
-        $adaptiveState['fast_track_active']   = $ruleOutput[AdaptiveConstants::FAST_TRACK_ACTIVE]
-            ?? ($adaptiveState['fast_track_active'] ?? false);
-
-        if (isset($ruleOutput[AdaptiveConstants::TARGET_DIFFICULTY])) {
-            $adaptiveState['target_difficulty'] = $ruleOutput[AdaptiveConstants::TARGET_DIFFICULTY];
-        }
-
-        $adaptiveState['time_metrics'] = [
-            'avg_time_per_question' => $isGuest
-                ? 0
-                : $this->performanceService->calculateAverageTimeSpent($userId, $material->id),
-            'total_time_spent'      => $isGuest
-                ? 0
-                : $this->performanceService->calculateTotalTimeSpent($userId, $material->id),
-        ];
-
-        return $adaptiveState;
-    }
+    // Deprecated: State management now handled by AdaptiveEngineService and Rule parameters.
 
     private function saveStudentState(StudentState $studentState, bool $isGuest, string $userId): void
     {
@@ -343,23 +276,24 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
             return;
         }
 
-        $this->studentStateRepo->update($userId, [
-            'gamification_data'   => $studentState->gamification_data,
-            'learning_profile'    => $studentState->learning_profile,
-            'performance_metrics' => $studentState->performance_metrics,
-            'adaptive_state'      => $studentState->adaptive_state,
-            'last_active_at'      => now(),
-        ]);
+        // Persist all flat columns from the engine-updated model
+        $this->studentStateRepo->update($userId, array_merge(
+            $studentState->getDirty(),
+            ['last_active_at' => now()],
+        ));
     }
 
     /** @return array<string, mixed> */
     private function mapStudentStatePayload(StudentState $studentState): array
     {
         return [
-            'gamification'     => $studentState->gamification_data,
-            'performance'      => $studentState->performance_metrics,
-            'learning_profile' => $studentState->learning_profile,
-            'adaptive_state'   => $studentState->adaptive_state,
+            'xp'                => $studentState->xp,
+            'level'             => $studentState->level,
+            'streak'            => $studentState->streak,
+            'correct_count'     => $studentState->correct_count,
+            'total_answered'    => $studentState->total_answered,
+            'learning_style'    => $studentState->learning_style,
+            'target_difficulty' => $studentState->target_difficulty,
         ];
     }
 
@@ -409,48 +343,4 @@ final class AdaptiveQuizFlowService implements AdaptiveQuizFlowServiceInterface
      *
      * @return array{0: int, 1: array|null} [totalXpEarned, streakMilestoneData]
      */
-    private function persistCertification(StudentState $studentState, string $materialId, mixed $certification): void
-    {
-        if (! is_string($certification) || $certification === '' || $materialId === '') {
-            return;
-        }
-
-        $learningProfile = $studentState->learning_profile    ?? [];
-        $certifications  = $learningProfile['certifications'] ?? [];
-
-        if (! is_array($certifications)) {
-            $certifications = [];
-        }
-
-        $existingCertification = $certifications[$materialId] ?? null;
-        $shouldUpdate          = AdaptiveConstants::certificationRank($certification)
-            >= AdaptiveConstants::certificationRank(is_string($existingCertification) ? $existingCertification : null);
-
-        if (! $shouldUpdate) {
-            return;
-        }
-
-        $certifications[$materialId]       = $certification;
-        $learningProfile['certifications'] = $certifications;
-        $studentState->learning_profile    = $learningProfile;
-    }
-
-    private function mergeAdaptiveBadges(StudentState $studentState, array $ruleOutput): void
-    {
-        $newBadges = $ruleOutput['gamification_data']['badges'] ?? null;
-
-        if (! is_array($newBadges) || $newBadges === []) {
-            return;
-        }
-
-        $gamificationData = $studentState->gamification_data ?? [];
-        $currentBadges    = $gamificationData['badges']      ?? [];
-
-        if (! is_array($currentBadges)) {
-            $currentBadges = [];
-        }
-
-        $gamificationData['badges']      = array_values(array_unique(array_merge($currentBadges, $newBadges)));
-        $studentState->gamification_data = $gamificationData;
-    }
 }

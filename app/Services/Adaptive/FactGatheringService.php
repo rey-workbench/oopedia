@@ -31,7 +31,6 @@ final class FactGatheringService implements FactGatheringServiceInterface
         string $questionId,
         string $materialId,
         ?string $moduleId = null,
-        bool $isPracticeMode = false,
     ): array {
         $facts = [
             ...$this->getScoreFacts($score, $isCorrect),
@@ -44,10 +43,6 @@ final class FactGatheringService implements FactGatheringServiceInterface
 
         if ($usedHint) {
             $facts[] = AdaptiveConstants::FACT_HINT_USED;
-        }
-
-        if ($isPracticeMode) {
-            $facts[] = AdaptiveConstants::FACT_IS_PRACTICE;
         }
 
         if ($moduleId && ! $isFinalProject) {
@@ -70,17 +65,11 @@ final class FactGatheringService implements FactGatheringServiceInterface
             $facts[] = AdaptiveConstants::FACT_SATISFACTORY_PROGRESS;
         }
 
-        // BUG: FACT_IS_PRACTICE (G17) tidak diproduksi - rule yang menggunakan isPractice() tidak akan pernah trigger
-        //      Perlu tambahan logika untuk mendeteksi mode practice (latihan vs quiz normal)
-        //      Contoh: dari parameter request, question type, atau material type
-
         return array_values(array_unique($facts));
     }
 
     /**
      * TODO: Facts yang belum diproduksi (reserved tapi belum diimplementasi):
-     * - FACT_NO_ERROR (G10) - digunakan di HasErrorType::hasNoError() tapi tidak pernah diproduksi
-     * - FACT_IS_PRACTICE (G17) - digunakan di HasDifficultyLevel::isPractice() tapi tidak pernah diproduksi
      * - FACT_MODULE_STARTED - reserved constant, tidak diproduksi
      * - FACT_COMPLETED_MODULE - reserved constant, tidak diproduksi
      * - FACT_COMPLETED_ALL_MODULES - reserved constant, tidak diproduksi
@@ -119,10 +108,9 @@ final class FactGatheringService implements FactGatheringServiceInterface
 
     protected function getLearningStyleFacts(StudentState $state): array
     {
-        $style = $state->learning_profile[StudentStateSchema::KEY_LEARNING_STYLE] ?? StudentStateSchema::STYLE_VISUAL;
+        $style = $state->learning_style ?? StudentStateSchema::STYLE_VISUAL;
 
-        // FIX: Mixed style emits only G22 to avoid rule conflicts
-        // Previously emitted G06 + G07 + G22, causing dual matches
+        // Mixed style emits only G22 to avoid rule conflicts
         if ($style === StudentStateSchema::STYLE_MIXED) {
             return [AdaptiveConstants::FACT_STYLE_MIXED];
         }
@@ -135,7 +123,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
     protected function getErrorTypeFacts(StudentState $state, string $questionId, bool $isCorrect): array
     {
         if ($isCorrect) {
-            return [AdaptiveConstants::FACT_NO_ERROR];
+            return [];
         }
 
         $question     = $this->questionRepo->find($questionId);
@@ -171,7 +159,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
         $nextMaterial = $currentMaterial->getNextMaterial();
         $prevMaterial = $currentMaterial->getPreviousMaterial();
 
-        $unlockedModules = $state->learning_profile['unlocked_modules'] ?? [];
+        $unlockedModules = $state->unlocked_modules ?? [];
         $unlockedSet     = array_map('strval', is_array($unlockedModules) ? $unlockedModules : []);
 
         if ($nextMaterial && in_array((string) $nextMaterial->module_id, $unlockedSet, true)) {

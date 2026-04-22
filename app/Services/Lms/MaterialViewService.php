@@ -30,7 +30,7 @@ final class MaterialViewService implements MaterialViewServiceInterface
         $unlockedModules = [];
         if ($userId) {
             $studentState    = $this->progressRepo->getStudentState($userId);
-            $unlockedModules = $studentState?->learning_profile['unlocked_modules'] ?? [];
+            $unlockedModules = $studentState?->unlocked_modules ?? [];
         }
 
         $allMaterials->load(['questions' => function ($query) {
@@ -92,7 +92,7 @@ final class MaterialViewService implements MaterialViewServiceInterface
 
         if ($userId) {
             $studentState    = $this->progressRepo->getStudentState($userId);
-            $unlockedModules = $studentState?->learning_profile['unlocked_modules'] ?? [];
+            $unlockedModules = $studentState?->unlocked_modules ?? [];
         }
 
         $allMaterials->map(function ($m, $index) use ($isGuest, $unlockedModules, $firstModuleId, $totalMaterials) {

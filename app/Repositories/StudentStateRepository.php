@@ -13,24 +13,15 @@ final class StudentStateRepository implements StudentStateRepositoryInterface
     public function findOrCreate(string $userId): StudentState
     {
         if ($userId === 'guest') {
-            return new StudentState([
-                'user_id'             => 'guest',
-                'gamification_data'   => StudentStateSchema::getDefaultGamification(),
-                'learning_profile'    => StudentStateSchema::getDefaultLearningProfile(),
-                'performance_metrics' => StudentStateSchema::getDefaultPerformanceMetrics(),
-                'adaptive_state'      => StudentStateSchema::getDefaultAdaptiveState(),
-            ]);
+            return new StudentState(array_merge(
+                StudentStateSchema::defaults(),
+                ['user_id' => 'guest'],
+            ));
         }
 
         return StudentState::firstOrCreate(
             ['user_id' => $userId],
-            [
-                'gamification_data'   => StudentStateSchema::getDefaultGamification(),
-                'learning_profile'    => StudentStateSchema::getDefaultLearningProfile(),
-                'performance_metrics' => StudentStateSchema::getDefaultPerformanceMetrics(),
-                'adaptive_state'      => StudentStateSchema::getDefaultAdaptiveState(),
-                'last_active_at'      => now(),
-            ],
+            array_merge(StudentStateSchema::defaults(), ['last_active_at' => now()]),
         );
     }
 
@@ -41,7 +32,6 @@ final class StudentStateRepository implements StudentStateRepositoryInterface
         if ($userId !== 'guest') {
             $state->update($data);
         } else {
-            // For guests, we just update the in-memory instance
             $state->fill($data);
         }
 

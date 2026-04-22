@@ -23,6 +23,7 @@
         LogOut,
         LogIn,
         UserPlus,
+        Brain,
     } from 'lucide-svelte';
     import { fly, slide } from 'svelte/transition';
     import { getTourIdFromUrl, registerGlobalTutorials } from '@/tutorial';
@@ -124,7 +125,7 @@
                     >
                     <div class="bg-cosmos-border h-0.5 flex-1"></div>
                 </div>
-                <div class="space-y-2" id="sidebar-admin-curriculum">
+<div class="space-y-2" id="sidebar-admin-curriculum">
                     <SidebarLink
                         id="sidebar-admin-materials"
                         href={ROUTES.ADMIN.MATERIALS.INDEX}
@@ -139,6 +140,12 @@
                         active={page.url.startsWith(ROUTES.ADMIN.QUESTIONS.INDEX)}
                         >Kelola Soal</SidebarLink
                     >
+                    <SidebarLink
+                        id="sidebar-admin-adaptive"
+                        href={ROUTES.ADMIN.ADAPTIVE_ANALYTICS}
+                        icon={Brain}
+                        active={page.url.startsWith(ROUTES.ADMIN.ADAPTIVE_ANALYTICS)}
+                        >Engine Adaptif</SidebarLink>
                 </div>
             </div>
 

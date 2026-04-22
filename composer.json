@@ -62,7 +62,8 @@
         "laravel/boost": "^2.0",
         "squizlabs/php_codesniffer": "*",
         "shipmonk/dead-code-detector": "^1.0",
-        "larastan/larastan": "^3.9"
+        "larastan/larastan": "^3.9",
+        "phpmd/phpmd": "^2.15"
     },
     "config": {
         "process-timeout": 1800

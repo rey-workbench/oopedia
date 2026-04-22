@@ -489,21 +489,57 @@ final class ProgressRepository implements ProgressRepositoryInterface
 
     public function getOrCreateStudentState(?string $userId): StudentState
     {
+        $defaults = StudentStateSchema::defaults();
+
         if (is_null($userId) || $userId === 'guest') {
             return new StudentState([
-                'user_id'             => 'guest',
-                'gamification_data'   => StudentStateSchema::getDefaultGamification(),
-                'learning_profile'    => StudentStateSchema::getDefaultLearningProfile(),
-                'performance_metrics' => StudentStateSchema::getDefaultPerformanceMetrics(),
-                'adaptive_state'      => StudentStateSchema::getDefaultAdaptiveState(),
+                'user_id' => 'guest',
+                // Gamification
+                'xp'         => $defaults['xp'],
+                'level'      => $defaults['level'],
+                'streak'     => $defaults['streak'],
+                'max_streak' => $defaults['max_streak'],
+                'badges'     => $defaults['badges'],
+                // Learning profile
+                'learning_style'    => $defaults['learning_style'],
+                'unlocked_modules'  => $defaults['unlocked_modules'],
+                'certifications'    => $defaults['certifications'],
+                'time_distribution' => $defaults['time_distribution'],
+                // Performance
+                'total_answered'  => $defaults['total_answered'],
+                'correct_count'   => $defaults['correct_count'],
+                'wrong_count'     => $defaults['wrong_count'],
+                'wrong_streak'    => $defaults['wrong_streak'],
+                'hints_used'      => $defaults['hints_used'],
+                'hints_available' => $defaults['hints_available'],
+                // Navigation
+                'current_material_id' => $defaults['current_material_id'],
+                'target_difficulty'   => $defaults['target_difficulty'],
             ]);
         }
 
         return StudentState::firstOrCreate(['user_id' => $userId], [
-            'gamification_data'   => StudentStateSchema::getDefaultGamification(),
-            'learning_profile'    => StudentStateSchema::getDefaultLearningProfile(),
-            'performance_metrics' => StudentStateSchema::getDefaultPerformanceMetrics(),
-            'adaptive_state'      => StudentStateSchema::getDefaultAdaptiveState(),
+            // Gamification
+            'xp'         => $defaults['xp'],
+            'level'      => $defaults['level'],
+            'streak'     => $defaults['streak'],
+            'max_streak' => $defaults['max_streak'],
+            'badges'     => $defaults['badges'],
+            // Learning profile
+            'learning_style'    => $defaults['learning_style'],
+            'unlocked_modules'  => $defaults['unlocked_modules'],
+            'certifications'    => $defaults['certifications'],
+            'time_distribution' => $defaults['time_distribution'],
+            // Performance
+            'total_answered'  => $defaults['total_answered'],
+            'correct_count'   => $defaults['correct_count'],
+            'wrong_count'     => $defaults['wrong_count'],
+            'wrong_streak'    => $defaults['wrong_streak'],
+            'hints_used'      => $defaults['hints_used'],
+            'hints_available' => $defaults['hints_available'],
+            // Navigation
+            'current_material_id' => $defaults['current_material_id'],
+            'target_difficulty'   => $defaults['target_difficulty'],
             'last_active_at'      => now(),
         ]);
     }

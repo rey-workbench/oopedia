@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdaptiveAnalyticsController;
 use App\Http\Controllers\Admin\AdminStudentController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -18,6 +19,7 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware(['access:superadmin|dosen,true'])->name('admin.')->prefix('admin')->group(function () {
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('adaptive-analytics', [AdaptiveAnalyticsController::class, 'index'])->name('adaptive-analytics');
 
         Route::post('media/upload', [MediaController::class, 'upload'])->name('media.upload');
         Route::delete('media', [MediaController::class, 'delete'])->name('media.delete');

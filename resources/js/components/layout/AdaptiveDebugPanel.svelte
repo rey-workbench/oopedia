@@ -40,28 +40,28 @@
 
     function getFactLabel(factCode: string) {
         const labels: Record<string, string> = {
-            G01: 'Critical Score',
-            G02: 'Remedial Score',
-            G03: 'Standard Score',
-            G04: 'Mastery Score',
-            G05: 'Fast Response',
-            G06: 'Visual Learner',
-            G07: 'Textual Learner',
-            G08: 'Syntax Error',
-            G09: 'Logic Error',
-            G10: 'No Error',
-            G11: 'Used Hint',
-            G12: 'In Module',
-            G13: 'Beginner Level',
-            G14: 'Medium Level',
-            G15: 'Hard Level',
-            G16: 'Final Project',
-            G17: 'Practice Mode',
-            G18: 'Next Unlocked',
-            G19: 'Prev Unlocked',
-            G20: 'Persistent Fail',
-            G21: 'Sat. Progress',
-            G22: 'Mixed Learner',
+            G01: 'Skor Kritis (< 30)',
+            G02: 'Skor Remedial (30-60)',
+            G03: 'Skor Standar (61-80)',
+            G04: 'Skor Mastery (> 80)',
+            G05: 'Respon Cepat',
+            G06: 'Learner Visual',
+            G07: 'Learner Tekstual',
+            G08: 'Syntax Error (Koding)',
+            G09: 'Logic Error (Koding)',
+            G10: 'Bebas Error',
+            G11: 'Pakai Bantuan',
+            G12: 'Dalam Modul',
+            G13: 'Level Pemula',
+            G14: 'Level Menengah',
+            G15: 'Level Mahir',
+            G16: 'Proyek Akhir',
+            G17: 'Mode Latihan',
+            G18: 'Next Terbuka',
+            G19: 'Prev Terbuka',
+            G20: 'Gagal Berulang (Persistent)',
+            G21: 'Progress Memuaskan (> 60%)',
+            G22: 'Learner Campuran (Mixed)',
         };
         return labels[factCode] || factCode;
     }
@@ -394,7 +394,7 @@
                                 ><Target size={10} /> First Match Conflict Resolution</span
                             >
                         </div>
-                        <div class="text-primary-400">30 Rules • Adaptive Engine v3.0.0-REFECTORED • Stable</div>
+                        <div class="text-primary-400">29 Rules • Adaptive Engine v4.0.0-PROD • Audit Trail Active</div>
                     </div>
                 </div>
             {/if}
