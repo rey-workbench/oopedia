@@ -5,6 +5,7 @@ import type {
     AdaptiveTriggerItem,
     AdaptiveRuleTriggerStat,
 } from '@/types';
+import type { AdaptiveFact, AdaptiveAction } from '@/types/models';
 
 export class AdaptiveAnalyticsState extends BaseState {
     totalRules = $state(0);
@@ -15,6 +16,8 @@ export class AdaptiveAnalyticsState extends BaseState {
     recentTriggers = $state<AdaptiveTriggerItem[]>([]);
     ruleTriggersStats = $state<AdaptiveRuleTriggerStat[]>([]);
     decisionTree = $state<any>(null);
+    allFacts = $state<AdaptiveFact[]>([]);
+    allActions = $state<AdaptiveAction[]>([]);
 
     constructor(data: {
         totalRules: number;
@@ -25,6 +28,8 @@ export class AdaptiveAnalyticsState extends BaseState {
         recentTriggers: AdaptiveTriggerItem[];
         ruleTriggersStats: AdaptiveRuleTriggerStat[];
         decisionTree: any;
+        allFacts: AdaptiveFact[];
+        allActions: AdaptiveAction[];
     }) {
         super();
         this.totalRules = data.totalRules;
@@ -35,6 +40,8 @@ export class AdaptiveAnalyticsState extends BaseState {
         this.recentTriggers = data.recentTriggers;
         this.ruleTriggersStats = data.ruleTriggersStats;
         this.decisionTree = data.decisionTree;
+        this.allFacts = data.allFacts;
+        this.allActions = data.allActions;
     }
 
     domainIcons: Record<string, string> = {

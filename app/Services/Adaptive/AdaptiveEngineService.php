@@ -16,14 +16,28 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Mesin Inferensi Forward Chaining – Detective Model.
+ *
+ * Alur kerja:
+ *  1. Mulai dengan fakta observasi awal (dari FactGatheringService).
+ *  2. Loop: cari SEMUA aturan yang cocok (Conflict Set).
+ *  3. Pilih aturan dengan prioritas tertinggi (Conflict Resolution).
+ *  4. Terapkan aksi, lalu tambahkan deduced_facts ke working memory.
+ *  5. Ulangi sampai tidak ada aturan baru yang terpicu (saturation).
+ *
+ * Tidak ada forbidden_facts. Pure Positive Logic Only.
+ */
 final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 {
+    private const MAX_INFERENCE_CYCLES = 10; // Circuit breaker anti-infinite-loop
+
     public function evaluate(array $facts, array $currentState, array $context): array
     {
         $user          = Auth::user();
         $previousState = $currentState;
 
-        [$triggeredRule, $matchedRules, $newState] = $this->evaluateRules($facts, $currentState, $context);
+        [$triggeredRule, $matchedRules, $newState, $finalFacts] = $this->runInferenceCycles($facts, $currentState, $context);
 
         if (! $triggeredRule) {
             $newState = $this->applyDefaultFallback(
@@ -32,8 +46,8 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             );
         }
 
-        $user = Auth::user();
-        if ($user) {
+        // Hanya log jika ada rule non-silent yang dieksekusi
+        if ($user && $triggeredRule) {
             $flatKeys   = ['target_difficulty', 'current_material_id', 'learning_style', 'xp', 'level'];
             $flatBefore = array_intersect_key($previousState, array_flip($flatKeys));
             $flatAfter  = array_intersect_key($newState, array_flip($flatKeys));
@@ -41,8 +55,8 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 
             AdaptiveExecutionLog::create([
                 'user_id'           => $user->id,
-                'rule_code'         => $triggeredRule?->getRuleId(),
-                'action_code'       => $triggeredRule?->getActionCode(),
+                'rule_code'         => $triggeredRule->getRuleId(),
+                'action_code'       => $triggeredRule->getActionCode(),
                 'trigger_facts'     => $facts,
                 'state_deltas'      => $delta,
                 'new_state'         => [],
@@ -50,9 +64,10 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             ]);
         }
 
-        Log::info('Adaptive Rule Evaluation', [
+        Log::info('Adaptive Inference Complete', [
             'user_id'        => $user?->id,
-            'facts'          => $facts,
+            'initial_facts'  => $facts,
+            'final_facts'    => $finalFacts,
             'triggered_rule' => $triggeredRule?->getRuleId(),
             'action_code'    => $triggeredRule?->getActionCode(),
             'matched_count'  => count($matchedRules),
@@ -62,10 +77,10 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             'triggered_rule'  => $triggeredRule ? $this->mapRule($triggeredRule) : null,
             'triggered_rules' => array_map(fn (AdaptiveRuleInterface $r) => $this->mapRule($r), $matchedRules),
             'new_state'       => $newState,
-            'facts'           => $facts,
+            'facts'           => $finalFacts,
             'engine_metadata' => [
                 'rule_count'      => Cache::remember('adaptive_rules_count', now()->addHours(24), fn () => AdaptiveRule::where('is_active', true)->count()),
-                'engine_version'  => '4.1.2-PROD',
+                'engine_version'  => '5.0.0-DETECTIVE',
                 'fact_labels'     => Cache::remember('adaptive_fact_labels', now()->addHours(24), fn () => AdaptiveFact::all()->pluck('name', 'code')->toArray()),
                 'fact_categories' => Cache::remember('adaptive_fact_categories', now()->addHours(24), fn () => AdaptiveFact::all()->pluck('category', 'code')->toArray()),
             ],
@@ -73,59 +88,104 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
     }
 
     /**
-     * Flat forward chaining:
-     * 1. Load all active rules ordered by priority (cached 24h).
-     * 2. Evaluate each rule against the gathered facts.
-     * 3. Apply the first matching rule. Continue if non-exclusive (configurable).
+     * Jalankan inference loop hingga saturasi (tidak ada aturan baru yang aktif).
+     * Ini adalah inti dari model "Detektif" / Forward Chaining Multi-Tahap.
      *
-     * @return array{0: AdaptiveRuleInterface|null, 1: AdaptiveRuleInterface[], 2: array<string, mixed>}
+     * @return array{0: AdaptiveRuleInterface|null, 1: AdaptiveRuleInterface[], 2: array, 3: array}
      */
-    private function evaluateRules(array $facts, array $currentState, array $context): array
+    private function runInferenceCycles(array $initialFacts, array $currentState, array $context): array
     {
-        $lastAction = AdaptiveExecutionLog::where('user_id', Auth::id())
-            ->latest()
-            ->value('action_code');
-
-        /** @var Collection<AdaptiveRule> $rules */
-        $rules = Cache::remember('adaptive_rules_all', now()->addHours(24), function () {
+        /** @var Collection<AdaptiveRule> $allRules */
+        $allRules = Cache::remember('adaptive_rules_all', now()->addHours(24), function () {
             return AdaptiveRule::with('action')
                 ->where('is_active', true)
                 ->ordered()
                 ->get();
         });
 
-        $triggeredRules = [];
+        $workingMemory  = $initialFacts;     // Akumulasi semua fakta (awal + deduced)
+        $firedRuleCodes = [];                // Aturan yang sudah pernah aktif (anti-loop)
+        $allTriggered   = [];
         $finalState     = $currentState;
+        $firstTrigger   = null;
 
-        foreach ($rules as $model) {
-            $rule = new DynamicAdaptiveRule($model);
+        for ($cycle = 0; $cycle < self::MAX_INFERENCE_CYCLES; $cycle++) {
+            // 1. Bangun Conflict Set: semua aturan yang cocok dan belum pernah dijalankan
+            $conflictSet = $allRules
+                ->filter(function (AdaptiveRule $model) use ($workingMemory, $firedRuleCodes) {
+                    if (in_array($model->rule_code, $firedRuleCodes, true)) {
+                        return false;
+                    }
+                    $rule = new DynamicAdaptiveRule($model);
 
-            if (! $rule->evaluate($facts)) {
+                    return $rule->evaluate($workingMemory);
+                })
+                ->values();
+
+            if ($conflictSet->isEmpty()) {
+                break; // Saturasi: tidak ada aturan baru
+            }
+
+            // 2. Conflict Resolution: pilih aturan dengan prioritas tertinggi
+            /** @var AdaptiveRule $bestModel */
+            $bestModel = $conflictSet->first(); // Sudah diurutkan by priority ASC
+            $bestRule  = new DynamicAdaptiveRule($bestModel);
+
+            if ($this->shouldSkipRule($bestRule, $finalState, $context)) {
+                $firedRuleCodes[] = $bestModel->rule_code;
                 continue;
             }
 
-            if ($this->shouldSkipRule($rule, $currentState, $context, $lastAction)) {
-                continue;
+            // 3. Fire: terapkan aksi (kecuali silent – deduksi saja menambah fakta)
+            $isSilent = $bestRule->getActionCode() === AC::ACTION_SILENT;
+
+            if (! $isSilent) {
+                $proposed       = $bestRule->apply($finalState, $context);
+                $finalState     = $this->mergeOutputs($finalState, $proposed, $currentState);
+                $allTriggered[] = $bestRule;
+
+                if (! $firstTrigger) {
+                    $firstTrigger = $bestRule;
+                }
             }
 
-            $triggeredRules[] = $rule;
+            // 4. Tambahkan deduced_facts ke working memory (chaining mechanism)
+            $deduced = $bestRule->getDeducedFacts();
+            foreach ($deduced as $deducedFact) {
+                if (! in_array($deducedFact, $workingMemory, true)) {
+                    $workingMemory[] = $deducedFact;
+                }
+            }
 
-            $proposed   = $rule->apply($currentState, $context);
-            $finalState = $this->mergeOutputs($finalState, $proposed, $currentState);
+            $firedRuleCodes[] = $bestModel->rule_code;
 
-            // First-rule-wins: stop after first match
-            break;
+            // Jika rule bukan silent dan aksinya terminal, hentikan loop
+            if (! $isSilent && $this->isTerminalAction($bestRule->getActionCode())) {
+                break;
+            }
         }
 
-        return [$triggeredRules[0] ?? null, $triggeredRules, $finalState];
+        return [$firstTrigger, $allTriggered, $finalState, $workingMemory];
     }
 
-    private function shouldSkipRule(
-        AdaptiveRuleInterface $rule,
-        array $currentState,
-        array $context,
-        ?string $lastActionCode,
-    ): bool {
+    /**
+     * Apakah aksi ini mengakhiri rantai inferensi?
+     * Aksi non-terminal (misal: study_*) tidak menghentikan loop –
+     * hasilnya bisa memicu aturan deduksi lainnya.
+     */
+    private function isTerminalAction(string $actionCode): bool
+    {
+        return in_array($actionCode, [
+            AC::ACTION_NEXT_QUESTION,
+            AC::ACTION_FINISH_MATERIAL,
+            AC::ACTION_NEXT_MATERIAL,
+            AC::ACTION_INCREASE_DIFFICULTY,
+            AC::ACTION_REDUCE_DIFFICULTY,
+        ], true);
+    }
+
+    private function shouldSkipRule(AdaptiveRuleInterface $rule, array $currentState, array $context): bool
+    {
         $currentMaterialId = (string) ($context['material_id'] ?? '');
         $stateMaterialId   = (string) ($currentState['current_material_id'] ?? '');
 
@@ -135,12 +195,12 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 
         $actionCode = $rule->getActionCode();
 
-        // Guard: Jangan lompat difficulty jika sudah di target
         if ($actionCode === AC::ACTION_INCREASE_DIFFICULTY) {
             return $this->hasReachedFastTrackTarget($currentState);
         }
 
-        // Guard: Jangan ulangi aksi remedial yang sama berturut-turut
+        $lastAction = AdaptiveExecutionLog::where('user_id', Auth::id())->latest()->value('action_code');
+
         $nonRepeatableActions = [
             AC::ACTION_STUDY_SYNTAX,
             AC::ACTION_STUDY_THEORY,
@@ -151,7 +211,7 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
         ];
 
         if (in_array($actionCode, $nonRepeatableActions, true)) {
-            return $lastActionCode === $actionCode;
+            return $lastAction === $actionCode;
         }
 
         return false;
@@ -181,8 +241,8 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 
     private function applyDefaultFallback(array $state, bool $isCorrect): array
     {
-        $state['next_action'] = AC::ACTION_NEXT_QUESTION;
-        $state['message']     = $isCorrect
+        $state['next_action']       = AC::ACTION_NEXT_QUESTION;
+        $state['_feedback_message'] = $isCorrect
             ? 'Jawaban benar! Silakan lanjut ke soal berikutnya.'
             : 'Jawaban kurang tepat. Mari coba lagi.';
 
@@ -213,7 +273,7 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             'name'     => $rule->getRuleName(),
             'action'   => $rule->getActionCode(),
             'priority' => $rule->getPriority(),
-            'variant'  => $rule instanceof DynamicAdaptiveRule ? $rule->getModel()->action->variant : 'result',
+            'variant'  => $rule instanceof DynamicAdaptiveRule ? $rule->getModel()->action?->variant : 'result',
         ];
     }
 }

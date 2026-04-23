@@ -119,6 +119,8 @@ final class AdaptiveConstants
 
     public const FACT_MODULE_GRADUATION  = 'Module Graduation';
 
+    public const FACT_INDEPENDENT_WORK   = 'Independent Work';
+
     // ─── Level Names & Thresholds ──────────────────────────────────────────────
     public const string LEVEL_PEMULA   = 'Pemula';
 
@@ -146,13 +148,13 @@ final class AdaptiveConstants
     public const string STYLE_MIXED   = 'mixed';
 
     // ─── Operational Action Labels ───────────────────────────────────────────
+    public const ACTION_SILENT             = 'NO_ACTION'; // Deduksi saja, tanpa output UI
+
     public const ACTION_NEXT_QUESTION      = 'NEXT_QUESTION';
 
     public const ACTION_NEXT_MATERIAL      = 'NEXT_MATERIAL';
 
     public const ACTION_FINISH_MATERIAL    = 'FINISH_MATERIAL';
-
-    public const ACTION_ISSUE_CERTIFICATE   = 'ISSUE_CERTIFICATE';
 
     public const ACTION_REDUCE_DIFFICULTY   = 'REDUCE_DIFFICULTY';
 
@@ -171,8 +173,6 @@ final class AdaptiveConstants
     public const ACTION_STUDY_MATERIAL     = 'STUDY_MATERIAL';
 
     public const ACTION_REVISE_PROJECT     = 'REVISE_PROJECT';
-
-
 
     // ─── Difficulty Levels ────────────────────────────────────────────────────
     public const DIFFICULTY_BEGINNER = 'beginner';

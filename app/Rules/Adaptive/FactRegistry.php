@@ -39,7 +39,31 @@ final class FactRegistry
                 $codes[] = $code;
             }
         }
+
         return $codes;
+    }
+
+    /**
+     * Ambil kode fakta (Gxx) berdasarkan raw code string (misalnya 'G01').
+     * Digunakan oleh seeder ketika kode langsung tersedia.
+     * Jika kode sudah valid (ada di DB), dikembalikan langsung.
+     */
+    public static function getCodeByRaw(string $rawCode): ?string
+    {
+        // V-codes (virtual/deduced facts) dikembalikan as-is
+        if (str_starts_with($rawCode, 'V')) {
+            return $rawCode;
+        }
+
+        // G-codes: verifikasi ada di map, lalu kembalikan
+        if (self::$map === null) {
+            self::$map = Cache::remember('adaptive_fact_codes_map', 3600, function () {
+                return AdaptiveFact::pluck('code', 'name')->toArray();
+            });
+        }
+
+        // map is name → code, so we need to find by value
+        return in_array($rawCode, self::$map, true) ? $rawCode : null;
     }
 
     /**

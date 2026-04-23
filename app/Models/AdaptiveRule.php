@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $name
  * @property int $priority
  * @property array $required_facts
- * @property array $forbidden_facts
+ * @property array|null $deduced_facts
  * @property int $action_id
  * @property bool $is_active
  * @property-read AdaptiveAction $action
@@ -25,15 +25,15 @@ class AdaptiveRule extends Model
         'domain',
         'priority',
         'required_facts',
-        'forbidden_facts',
+        'deduced_facts',
         'action_id',
         'is_active',
     ];
 
     protected $casts = [
-        'required_facts'  => 'array',
-        'forbidden_facts' => 'array',
-        'is_active'       => 'boolean',
+        'required_facts' => 'array',
+        'deduced_facts'  => 'array',
+        'is_active'      => 'boolean',
     ];
 
     public function action(): BelongsTo

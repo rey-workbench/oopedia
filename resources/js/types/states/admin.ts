@@ -106,9 +106,14 @@ export type UeqAverages = Record<string, number>;
 
 export interface AdaptiveRule {
     id: string;
+    real_id: number;
     name: string;
     priority: number;
     action: string;
+    action_id: number;
+    required_facts: string[];
+    forbidden_facts: string[];
+    is_active: boolean;
 }
 
 export interface AdaptiveRuleDomain {

@@ -8,9 +8,14 @@ use App\Rules\Adaptive\Constants\AdaptiveConstants as AC;
 use App\Rules\Adaptive\Contracts\AdaptiveRuleInterface;
 
 /**
- * Eksekutor Rule Dinamis.
- * Menangani logika forward chaining dan eksekusi aksi (H-Codes)
- * secara dinamis berdasarkan instruksi di database.
+ * Eksekutor Rule Dinamis – Pure Forward Chaining (Detective Model).
+ *
+ * Logika:
+ *  1. evaluate()  – Cek semua required_facts tersedia di working memory.
+ *  2. apply()     – Terapkan aksi ke state.
+ *  3. getDeducedFacts() – Kembalikan Virtual Facts yang dihasilkan rule ini.
+ *
+ * Catatan: forbidden_facts DIHAPUS. Kita mengandalkan fakta positif saja.
  */
 class DynamicAdaptiveRule implements AdaptiveRuleInterface
 {
@@ -44,9 +49,9 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
     }
 
     /**
-     * Evaluasi Rule (Forward Chaining)
-     * - Semua required_facts wajib ada di $facts.
-     * - Tidak boleh ada satu pun forbidden_facts di $facts.
+     * Pure Positive Evaluation (Forward Chaining).
+     * Semua required_facts wajib ada di working memory.
+     * Tidak ada logika negasi / forbidden.
      */
     public function evaluate(array $facts): bool
     {
@@ -54,8 +59,7 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
             return false;
         }
 
-        $required  = $this->model->required_facts  ?? [];
-        $forbidden = $this->model->forbidden_facts ?? [];
+        $required = $this->model->required_facts ?? [];
 
         foreach ($required as $code) {
             if (! in_array($code, $facts, true)) {
@@ -63,13 +67,17 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
             }
         }
 
-        foreach ($forbidden as $code) {
-            if (in_array($code, $facts, true)) {
-                return false;
-            }
-        }
-
         return true;
+    }
+
+    /**
+     * Kembalikan fakta virtual yang dihasilkan rule ini.
+     * Digunakan dalam inference loop untuk menambah working memory.
+     * Fakta virtual didefinisikan di kolom `deduced_facts` (JSON).
+     */
+    public function getDeducedFacts(): array
+    {
+        return $this->model->deduced_facts ?? [];
     }
 
     /**
@@ -98,21 +106,15 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
             $state = $this->handleModuleUnlock($state, $context);
         }
 
-        // 2. Tangani Pemberian Sertifikat
-        if (isset($params['award'])) {
-            $state = $this->handleCertification($state, $context, $params['award']);
-        }
-
-        // 3. Tangani Gamifikasi (Badges/XP)
+        // 2. Tangani Gamifikasi (Badges/XP)
         if (isset($params['badges']) && is_array($params['badges'])) {
-            $current   = $state['badges'] ?? [];
-            $newBadges = array_values(array_unique(array_merge($current, $params['badges'])));
-            $state['badges'] = $newBadges;
+            $current         = $state['badges'] ?? [];
+            $state['badges'] = array_values(array_unique(array_merge($current, $params['badges'])));
         }
 
-        // 4. Update Properti State Dinamis
+        // 3. Update Properti State Dinamis
         foreach ($params as $key => $value) {
-            if (in_array($key, ['next_action', 'award', 'badges', 'message'])) {
+            if (in_array($key, ['next_action', 'badges', 'message', 'title', 'label'])) {
                 continue;
             }
 
@@ -125,9 +127,15 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
             }
         }
 
-        // 5. Lampirkan Pesan Feedback untuk UI
+        // 4. Lampirkan Feedback untuk UI
+        if (isset($params['next_action'])) {
+            $state['next_action'] = $params['next_action'];
+        }
         if (isset($params['message'])) {
             $state['_feedback_message'] = $params['message'];
+        }
+        if (isset($params['title'])) {
+            $state['_feedback_title'] = $params['title'];
         }
 
         return $state;
@@ -150,20 +158,6 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
                 $state['unlocked_modules'] = array_values(array_unique($unlocked));
             }
         }
-
-        return $state;
-    }
-
-    private function handleCertification(array $state, array $context, string $award): array
-    {
-        $materialId = $context['material_id'] ?? null;
-        if (! $materialId) {
-            return $state;
-        }
-
-        $certs                   = $state['certifications'] ?? [];
-        $certs[$materialId]      = $award;
-        $state['certifications'] = $certs;
 
         return $state;
     }

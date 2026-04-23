@@ -16,7 +16,8 @@ export interface AdaptiveAction {
 }
 
 export interface AdaptiveRule {
-    id: number;
+    id: string | number; // rule_code in some contexts
+    real_id: number;     // database primary key
     rule_code: string;
     name: string;
     domain: string;

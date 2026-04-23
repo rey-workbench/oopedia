@@ -19,7 +19,7 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware(['access:superadmin|dosen,true'])->name('admin.')->prefix('admin')->group(function () {
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-        Route::get('adaptive-analytics', [AdaptiveAnalyticsController::class, 'index'])->name('adaptive-analytics');
+        Route::resource('adaptive-analytics', AdaptiveAnalyticsController::class);
 
         Route::post('media/upload', [MediaController::class, 'upload'])->name('media.upload');
         Route::delete('media', [MediaController::class, 'delete'])->name('media.delete');

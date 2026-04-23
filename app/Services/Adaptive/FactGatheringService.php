@@ -46,6 +46,9 @@ final class FactGatheringService implements FactGatheringServiceInterface
 
         if ($usedHint) {
             $facts[] = FactRegistry::getCode(AC::FACT_HINT_USED);
+        } else {
+            // Pure Positive Logic: jika tidak pakai hint, ini fakta positif "Bekerja Mandiri"
+            $facts[] = FactRegistry::getCode(AC::FACT_INDEPENDENT_WORK);
         }
 
         if ($moduleId && ! $isFinalProject) {
