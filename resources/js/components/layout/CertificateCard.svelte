@@ -1,5 +1,6 @@
 <script lang="ts">
     import { Download, FileImage } from 'lucide-svelte';
+    import { page } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils';
 
     interface CertProps {
@@ -15,7 +16,7 @@
     let isDownloading = $state(false);
 
     const previewUrl = $derived(
-        id ? ROUTES.MAHASISWA.CERTIFICATES.PREVIEW(id) : '#'
+        id ? ROUTES.MAHASISWA.CERTIFICATES.PREVIEW(id, page.props['auth']?.user?.id) : '#'
     );
 
     const downloadAs = async () => {

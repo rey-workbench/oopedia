@@ -29,31 +29,40 @@
         <!-- Konten Utama -->
         <div class="relative flex h-full w-full flex-col items-center bg-white p-16 text-center shadow-sm">
 
-            <!-- Logo Oopedia -->
-            <div class="absolute top-10 left-10">
+            <!-- Logo & Branding Oopedia -->
+            <div class="absolute top-10 left-10 flex items-center gap-4">
                 <img src="{{ $logo_image }}" class="h-14 w-auto" alt="Logo">
+                <div class="flex flex-col text-left border-l-2 pl-4" style="border-color: rgba(255, 208, 63);">
+                    <span class="text-2xl font-black tracking-tighter text-slate-900 leading-none">
+                        <span style="color: rgb(240, 182, 7);">OOP</span>edia
+                    </span>
+                    <span class="text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase leading-none mt-1">
+                        OOP e-Learning
+                    </span>
+                </div>
             </div>
 
             <!-- Judul Utama -->
-            <div class="mt-10">
-                <h1 class="text-5xl font-black tracking-[0.1em] text-slate-900 uppercase">
+            <div class="mt-14">
+                <h1 class="whitespace-nowrap text-5xl font-black tracking-[0.15em] text-slate-900 uppercase">
                     Sertifikat Kelulusan
                 </h1>
-                <p class="mt-2 text-lg font-bold tracking-widest text-slate-400 uppercase">
+                <p class="mt-2 text-lg font-bold tracking-[0.3em] text-slate-400 uppercase opacity-70">
                     Certificate of Completion
                 </p>
             </div>
 
             <!-- Teks Penerima -->
-            <div class="mt-12">
-                <p class="text-xl font-medium italic text-slate-500">diberikan kepada:</p>
-                    <h2 class="text-7xl font-black tracking-tight text-slate-900" style="border-bottom: 4px solid {{ $tier_color }};">
-                        {{ $student_name }}
-                    </h2>
+            <div class="mt-10">
+                <p class="text-xl font-medium italic text-slate-400 mb-2">diberikan kepada:</p>
+                <h2 class="text-6xl font-black tracking-tight text-slate-900 px-8 inline-block"
+                    style="border-bottom: 4px solid {{ $tier_color }};">
+                    {{ $student_name }}
+                </h2>
             </div>
 
             <!-- Detail Kelulusan -->
-            <div class="mt-8 max-w-3xl">
+            <div class="mt-6 max-w-3xl">
                 <p class="text-xl font-medium leading-relaxed text-slate-600">
                     atas kelulusannya pada kelas <span class="font-bold text-slate-900">{{ $material_title }}</span>
                 </p>
@@ -86,12 +95,12 @@
 
                     <!-- Tanda Tangan Dr. Oopedia -->
                     <div class="mb-6 min-w-[280px]">
-                        <p class="mb-1 text-sm font-bold text-slate-600">Malang, {{ $date }}</p>
-                    <div class="h-32 flex items-center">
-                        <img src="{{ $sign_image }}" class="h-28 w-auto mix-blend-multiply" alt="Signature">
-                    </div>
+                        <p class="mt-6 text-xs font-bold text-slate-500">Malang, {{ $date }}</p>
+                        <div class="h-32 flex items-center">
+                            <img src="{{ $sign_image }}" class="h-28 w-auto mix-blend-multiply" alt="Signature">
+                        </div>
                         <div class="border-t border-slate-400 pt-3">
-                            <p class="text-lg font-bold text-slate-900">Eka Larasati, S.T. M.T</p>
+                            <p class="text-lg font-bold text-slate-900">Eka Larasati Amalia, S.T. M.T</p>
                             <p class="text-sm font-medium text-slate-500">Ketua Program • OOPedia Indonesia</p>
                             <p class="mt-2 text-[10px] italic text-slate-400">
                                 Sertifikat ini berlaku hingga
@@ -101,23 +110,14 @@
                     </div>
                 </div>
 
-                <!-- Sisi Kanan: QR Code Verifikasi -->
                 <div class="mb-6 max-w-[250px] text-right">
                     <div
-                        class="ml-auto mb-4 flex h-24 w-24 items-center justify-center border border-slate-200 bg-slate-50 p-2">
-                        <!-- Mock QR Code menggunakan SVG -->
-                        <svg width="100%" height="100%" viewBox="0 0 24 24" fill="#1e293b">
-                            <path
-                                d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm-3 0h2v2h-2v-2zm3 3h3v2h-3v-2zm-3 0h2v2h-2v-2zm3 3h3v2h-3v-2zm-3 0h2v2h-2v-2z">
-                            </path>
-                        </svg>
+                        class="ml-auto mb-4 flex h-32 w-32 items-center justify-center border border-slate-200 bg-slate-50 p-2 shadow-sm">
+                        <img src="{{ $qr_code }}" class="h-full w-full" alt="QR Code">
                     </div>
                     <div class="space-y-1">
-                        <p class="text-[10px] font-bold leading-tight text-slate-400 uppercase">
-                            Scan QR Code untuk verifikasi portfolio
-                        </p>
                         <p class="text-[10px] italic text-slate-700">
-                            https://oopedia.id/verify/{{ $material_id }}
+                            ID: {{ $material_id }}
                         </p>
                     </div>
                 </div>

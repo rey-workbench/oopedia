@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
 
+    // --- Public Certificate Preview ---
+    Route::get('certificates/preview/{material}/{user?}', [MahasiswaCertificateController::class, 'preview'])
+        ->name('certificates.preview');
+
     // --- Private Mahasiswa Routes (Role 3 Only) ---
     Route::middleware(['auth', 'access:mahasiswa'])->group(function () {
         // Dashboard
@@ -28,7 +32,6 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
         Route::prefix('certificates')->name('certificates.')->controller(MahasiswaCertificateController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('{material}/download', 'download')->name('download');
-            Route::get('{material}/preview', 'preview')->name('preview');
         });
 
         // Surveys (UEQ, MSLQ, SUS)

@@ -104,7 +104,8 @@ export const ROUTES = {
         CERTIFICATES: {
             INDEX: '/mahasiswa/certificates',
             DOWNLOAD: (id: string | number) => `/mahasiswa/certificates/${id}/download`,
-            PREVIEW: (id: string | number) => `/mahasiswa/certificates/${id}/preview`,
+            PREVIEW: (id: string | number, userId?: string | number) => 
+                userId ? `/mahasiswa/certificates/preview/${id}/${userId}` : `/mahasiswa/certificates/preview/${id}`,
         },
         UEQ: {
             CREATE: '/mahasiswa/surveys/ueq/create',
