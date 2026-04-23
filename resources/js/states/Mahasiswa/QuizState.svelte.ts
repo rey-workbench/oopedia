@@ -68,24 +68,42 @@ export class QuestionShowState extends BaseState {
         nextUrl: string;
         adaptiveResult: AdaptiveResult | null;
         score: number;
+        ui?: {
+            label?: string;
+            title?: string;
+            type?: string;
+            url?: string;
+            message?: string;
+        } | null;
     }>({
         status: 'success',
         message: '',
         nextUrl: '',
         adaptiveResult: null,
         score: 0,
+        ui: null,
     });
     usedHint = $state(false);
     startTime = $state(Date.now());
 
     showAdaptiveIndicator = $state(false);
-    adaptiveFacts = $state<unknown[]>([]);
+    adaptiveFacts = $state<string[]>([]);
     adaptiveTriggeredRule = $state<{
         id?: string;
         name?: string;
         action?: string | null;
         priority?: number;
+        variant?: string;
     } | null>(null);
+    adaptiveTriggeredRules = $state<
+        Array<{
+            id?: string;
+            name?: string;
+            action?: string | null;
+            priority?: number;
+            variant?: string;
+        }>
+    >([]);
 
     isProcessing = $derived(this.isSubmitting);
 
@@ -195,11 +213,13 @@ export class QuestionShowState extends BaseState {
                 nextUrl: data.nextUrl,
                 adaptiveResult,
                 score: data.xpEarned || 0,
+                ui: (data as any).ui ?? null,
             };
 
             if (adaptiveResult) {
                 this.adaptiveFacts = adaptiveResult.facts ?? [];
                 this.adaptiveTriggeredRule = adaptiveResult.triggered_rule ?? null;
+                this.adaptiveTriggeredRules = adaptiveResult.triggered_rules ?? [];
                 this.showAdaptiveIndicator = true;
             }
 

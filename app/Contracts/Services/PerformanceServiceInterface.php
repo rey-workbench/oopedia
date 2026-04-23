@@ -31,5 +31,5 @@ interface PerformanceServiceInterface
         QuestionDifficulty $difficulty,
     ): int;
 
-    public function resetMaterialMetrics(string $userId, array $adaptiveState): StudentState;
+    public function resetMaterialMetrics(string $userId): StudentState;
 }

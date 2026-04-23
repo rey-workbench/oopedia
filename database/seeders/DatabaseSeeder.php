@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             FinalProjectSeeder::class,
             UeqSurveysSeeder::class,
             MslqQuestionSeeder::class,
+            AdaptiveRuleSeeder::class,
         ]);
     }
 }

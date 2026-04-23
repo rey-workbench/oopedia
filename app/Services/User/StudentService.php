@@ -137,7 +137,7 @@ final class StudentService implements StudentServiceInterface
         $recentActivities = $this->progressRepo->getRecentActivities($student->id, 10);
 
         $studentState   = StudentState::where('user_id', $student->id)->first();
-        $certifications = $studentState ? ($studentState->learning_profile['certifications'] ?? []) : [];
+        $certifications = $studentState ? ($studentState->certifications ?? []) : [];
 
         return [
             'materials'                  => $materialsWithProgress,

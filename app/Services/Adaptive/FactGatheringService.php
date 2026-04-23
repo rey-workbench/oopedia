@@ -11,14 +11,14 @@ use App\Enums\Lms\ContentCategory;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Models\Material;
 use App\Models\StudentState;
-use App\Rules\Adaptive\Constants\AdaptiveConstants;
-use App\Schemas\StudentStateSchema;
+use App\Rules\Adaptive\Constants\AdaptiveConstants as AC;
+use App\Rules\Adaptive\FactRegistry;
 
 final class FactGatheringService implements FactGatheringServiceInterface
 {
     public function __construct(
-        public readonly ProgressRepositoryInterface $progressRepo,
-        public readonly QuestionRepositoryInterface $questionRepo,
+        protected readonly ProgressRepositoryInterface $progressRepo,
+        protected readonly QuestionRepositoryInterface $questionRepo,
     ) {}
 
     public function gatherFacts(
@@ -27,188 +27,262 @@ final class FactGatheringService implements FactGatheringServiceInterface
         bool $usedHint,
         int $score,
         int $timeSpent,
-        QuestionDifficulty $difficulty,
+        QuestionDifficulty|string $difficulty,
         string $questionId,
         string $materialId,
         ?string $moduleId = null,
     ): array {
         $facts = [
             ...$this->getScoreFacts($score, $isCorrect),
-            ...$this->getTimeFacts($timeSpent, $difficulty),
+            ...$this->getTimeFacts($timeSpent, $difficulty, $isCorrect),
             ...$this->getLearningStyleFacts($studentState),
-            ...$this->getErrorTypeFacts($studentState, $questionId, $isCorrect),
+            ...$this->getErrorTypeFacts($questionId, $isCorrect),
+            ...$this->getConsistencyFacts($studentState),
+            ...$this->getMasteryFacts($studentState, $materialId),
+            ...$this->getBehaviouralFacts($studentState, $timeSpent, $difficulty, $isCorrect),
         ];
 
         $isFinalProject = $this->isFinalDifficulty($difficulty);
 
         if ($usedHint) {
-            $facts[] = AdaptiveConstants::FACT_HINT_USED;
+            $facts[] = FactRegistry::getCode(AC::FACT_HINT_USED);
+        } else {
+            // Pure Positive Logic: jika tidak pakai hint, ini fakta positif "Bekerja Mandiri"
+            $facts[] = FactRegistry::getCode(AC::FACT_INDEPENDENT_WORK);
         }
 
         if ($moduleId && ! $isFinalProject) {
-            $facts[] = AdaptiveConstants::FACT_IN_MODULE;
+            $facts[] = FactRegistry::getCode(AC::FACT_IN_MODULE);
         }
 
         $facts[] = $this->getDifficultyFact($difficulty);
 
         if ($isFinalProject) {
-            $facts[] = AdaptiveConstants::FACT_IS_FINAL_PROJECT;
+            $facts[] = FactRegistry::getCode(AC::FACT_IS_FINAL_PROJECT);
         }
 
         $facts = array_merge($facts, $this->getUnlockStatusFacts($studentState, $materialId));
 
-        if ($this->isPersistentFail($studentState->user_id, $questionId)) {
-            $facts[] = AdaptiveConstants::FACT_PERSISTENT_FAIL;
+        if ($this->isPersistentFail((string) $studentState->user_id, $questionId)) {
+            $facts[] = FactRegistry::getCode(AC::FACT_PERSISTENT_FAIL);
         }
 
-        if ($this->hasSatisfactoryProgress($studentState->user_id, $materialId)) {
-            $facts[] = AdaptiveConstants::FACT_SATISFACTORY_PROGRESS;
+        if ($this->hasSatisfactoryProgress((string) $studentState->user_id, $materialId)) {
+            $facts[] = FactRegistry::getCode(AC::FACT_SATISFACTORY_PROGRESS);
         }
 
-        // BUG: FACT_IS_PRACTICE (G17) tidak diproduksi - rule yang menggunakan isPractice() tidak akan pernah trigger
-        //      Perlu tambahan logika untuk mendeteksi mode practice (latihan vs quiz normal)
-        //      Contoh: dari parameter request, question type, atau material type
+        if ($this->isModuleNearlyDone((string) $studentState->user_id, $materialId)) {
+            $facts[] = FactRegistry::getCode(AC::FACT_MODULE_NEARLY_DONE);
+        }
 
-        return array_values(array_unique($facts));
+        if ($this->isEligibleForGraduation((string) $studentState->user_id, $materialId)) {
+            $facts[] = FactRegistry::getCode(AC::FACT_MODULE_GRADUATION);
+        }
+
+        return array_values(array_unique(array_filter($facts)));
     }
 
-    /**
-     * TODO: Facts yang belum diproduksi (reserved tapi belum diimplementasi):
-     * - FACT_NO_ERROR (G10) - digunakan di HasErrorType::hasNoError() tapi tidak pernah diproduksi
-     * - FACT_IS_PRACTICE (G17) - digunakan di HasDifficultyLevel::isPractice() tapi tidak pernah diproduksi
-     * - FACT_MODULE_STARTED - reserved constant, tidak diproduksi
-     * - FACT_COMPLETED_MODULE - reserved constant, tidak diproduksi
-     * - FACT_COMPLETED_ALL_MODULES - reserved constant, tidak diproduksi
-     * - FACT_HIGH_ENGAGEMENT - reserved constant, tidak diproduksi
-     * - FACT_TIME_SLOW - reserved constant, tidak diproduksi
-     */
-    protected function getScoreFacts(int $score, bool $isCorrect): array
+    private function getScoreFacts(int $score, bool $isCorrect): array
     {
-        $finalScore = $isCorrect
-            ? max($score, StudentStateSchema::SCORE_MIN_CORRECT)
-            : min($score, StudentStateSchema::SCORE_MAX_WRONG);
-
-        if ($finalScore < StudentStateSchema::FACT_SCORE_CRITICAL_MAX) {
-            return [AdaptiveConstants::FACT_SCORE_CRITICAL];
-        }
-        if ($finalScore < StudentStateSchema::FACT_SCORE_REMEDIAL_MAX) {
-            return [AdaptiveConstants::FACT_SCORE_REMEDIAL];
-        }
-        if ($finalScore < StudentStateSchema::FACT_SCORE_STANDARD_MAX) {
-            return [AdaptiveConstants::FACT_SCORE_STANDARD];
+        if ($isCorrect) {
+            return $score >= 90
+                ? [FactRegistry::getCode(AC::FACT_SCORE_PERFECT)]
+                : [FactRegistry::getCode(AC::FACT_SCORE_PASS)];
         }
 
-        return [AdaptiveConstants::FACT_SCORE_MASTERY];
+        return $score <= 0
+            ? [FactRegistry::getCode(AC::FACT_SCORE_ZERO)]
+            : [FactRegistry::getCode(AC::FACT_SCORE_FAILURE)];
     }
 
-    protected function getTimeFacts(int $timeSpent, QuestionDifficulty|string $difficulty = QuestionDifficulty::BEGINNER): array
+    private function getTimeFacts(int $timeSpent, QuestionDifficulty|string $difficulty, bool $isCorrect): array
     {
         $diffKey       = $difficulty instanceof QuestionDifficulty ? $difficulty->value : $difficulty;
-        $allocatedTime = AdaptiveConstants::ALLOCATED_TIME[$diffKey] ?? 60;
-        $percentage    = ($timeSpent / $allocatedTime) * 100;
+        $allocatedTime = AC::ALLOCATED_TIME[$diffKey] ?? 60;
+        $percentage    = ($allocatedTime > 0) ? ($timeSpent / $allocatedTime) * 100 : 100;
 
-        return $percentage < AdaptiveConstants::TIME_FAST_THRESHOLD
-            ? [AdaptiveConstants::FACT_TIME_FAST]
+        if ($percentage < AC::TIME_FAST_THRESHOLD) {
+            return $isCorrect
+                ? [FactRegistry::getCode(AC::FACT_TIME_FAST_SUCCESS)]
+                : [FactRegistry::getCode(AC::FACT_TIME_FAST_FAIL)];
+        }
+
+        if ($percentage >= 100) {
+            return $isCorrect
+                ? [FactRegistry::getCode(AC::FACT_TIME_SLOW_SUCCESS)]
+                : [FactRegistry::getCode(AC::FACT_TIME_SLOW_FAIL)];
+        }
+
+        return [];
+    }
+
+    private function getLearningStyleFacts(StudentState $state): array
+    {
+        $style = $state->learning_style ?? AC::STYLE_VISUAL;
+
+        return match ($style) {
+            AC::STYLE_MIXED                   => [FactRegistry::getCode(AC::FACT_STYLE_MIXED)],
+            AC::STYLE_TEXTUAL                 => [FactRegistry::getCode(AC::FACT_STYLE_TEXTUAL)],
+            default                           => [FactRegistry::getCode(AC::FACT_STYLE_VISUAL)],
+        };
+    }
+
+    private function getErrorTypeFacts(string $questionId, bool $isCorrect): array
+    {
+        if ($isCorrect) {
+            return [FactRegistry::getCode(AC::FACT_NO_ERROR)];
+        }
+
+        $question = $this->questionRepo->find($questionId);
+        $type     = $question?->type;
+
+        return match ($type) {
+            ContentCategory::SINTAKS => [FactRegistry::getCode(AC::FACT_ERROR_SYNTAX)],
+            ContentCategory::MIXED   => [FactRegistry::getCode(AC::FACT_ERROR_CONCEPT)],
+            default                  => [FactRegistry::getCode(AC::FACT_ERROR_LOGIC)],
+        };
+    }
+
+    private function getConsistencyFacts(StudentState $state): array
+    {
+        return ($state->streak ?? 0) >= AC::THRESHOLD_CONSISTENCY_STREAK
+            ? [FactRegistry::getCode(AC::FACT_CONSISTENCY_HIGH)]
             : [];
     }
 
-    protected function getLearningStyleFacts(StudentState $state): array
+    private function getMasteryFacts(StudentState $state, string $materialId): array
     {
-        $style = $state->learning_profile[StudentStateSchema::KEY_LEARNING_STYLE] ?? StudentStateSchema::STYLE_VISUAL;
+        $facts    = [];
+        $attempts = $this->progressRepo->getByUserAndMaterial((string) $state->user_id, $materialId);
 
-        if ($style === StudentStateSchema::STYLE_MIXED) {
-            return [
-                AdaptiveConstants::FACT_STYLE_VISUAL,
-                AdaptiveConstants::FACT_STYLE_TEXTUAL,
-                AdaptiveConstants::FACT_STYLE_MIXED,
-            ];
-        }
-
-        return $style === StudentStateSchema::STYLE_VISUAL
-            ? [AdaptiveConstants::FACT_STYLE_VISUAL]
-            : [AdaptiveConstants::FACT_STYLE_TEXTUAL];
-    }
-
-    protected function getErrorTypeFacts(StudentState $state, string $questionId, bool $isCorrect): array
-    {
-        if ($isCorrect) {
+        if ($attempts->isEmpty()) {
             return [];
         }
 
-        $question     = $this->questionRepo->find($questionId);
-        $questionType = $question?->type;
+        $grouped = $attempts->groupBy(fn ($a) => $a->attributes['difficulty'] ?? 'beginner');
 
-        return $questionType === ContentCategory::SINTAKS
-            ? [AdaptiveConstants::FACT_ERROR_SYNTAX]
-            : [AdaptiveConstants::FACT_ERROR_LOGIC];
-    }
+        foreach ($grouped as $diffKey => $diffAttempts) {
+            if ($diffAttempts->count() < AC::THRESHOLD_MASTERY_MIN_ATTEMPTS) {
+                continue;
+            }
 
-    protected function getDifficultyFact(QuestionDifficulty|string $difficulty): string
-    {
-        $diffKey       = $difficulty instanceof QuestionDifficulty ? $difficulty->value : $difficulty;
-        $difficultyMap = [
-            QuestionDifficulty::BEGINNER->value => AdaptiveConstants::FACT_DIFF_BEGINNER,
-            QuestionDifficulty::MEDIUM->value   => AdaptiveConstants::FACT_DIFF_MEDIUM,
-            QuestionDifficulty::HARD->value     => AdaptiveConstants::FACT_DIFF_HARD,
-            QuestionDifficulty::FINAL->value    => AdaptiveConstants::FACT_DIFF_HARD,
-        ];
+            $accuracy = ($diffAttempts->where('is_correct', true)->count() / $diffAttempts->count()) * 100;
+            if ($accuracy < AC::THRESHOLD_MASTERY_ACCURACY) {
+                continue;
+            }
 
-        return $difficultyMap[$diffKey] ?? AdaptiveConstants::FACT_DIFF_BEGINNER;
-    }
+            $factName = match ($diffKey) {
+                QuestionDifficulty::BEGINNER->value => AC::FACT_MASTERY_BEGINNER,
+                QuestionDifficulty::MEDIUM->value   => AC::FACT_MASTERY_MEDIUM,
+                default                             => AC::FACT_MASTERY_HARD,
+            };
 
-    protected function getUnlockStatusFacts(StudentState $state, string $materialId): array
-    {
-        $facts = [];
-
-        $currentMaterial = Material::find($materialId);
-        if (! $currentMaterial) {
-            return [];
-        }
-
-        $nextMaterial = $currentMaterial->getNextMaterial();
-        $prevMaterial = $currentMaterial->getPreviousMaterial();
-
-        $unlockedModules = $state->learning_profile['unlocked_modules'] ?? [];
-        $unlockedSet     = array_map('strval', is_array($unlockedModules) ? $unlockedModules : []);
-
-        if ($nextMaterial && in_array((string) $nextMaterial->module_id, $unlockedSet, true)) {
-            $facts[] = AdaptiveConstants::FACT_NEXT_UNLOCKED;
-        }
-
-        if ($prevMaterial && in_array((string) $prevMaterial->module_id, $unlockedSet, true)) {
-            $facts[] = AdaptiveConstants::FACT_PREV_UNLOCKED;
+            if ($factName) {
+                $facts[] = FactRegistry::getCode($factName);
+            }
         }
 
         return $facts;
     }
 
-    protected function isPersistentFail(string $userId, string $questionId): bool
+    private function getBehaviouralFacts(StudentState $state, int $timeSpent, QuestionDifficulty|string $difficulty, bool $isCorrect): array
     {
-        $consecutiveFails = $this->progressRepo->getConsecutiveFailures($userId, $questionId);
+        $facts         = [];
+        $diffKey       = $difficulty instanceof QuestionDifficulty ? $difficulty->value : $difficulty;
+        $allocatedTime = AC::ALLOCATED_TIME[$diffKey] ?? 60;
+        $isFast        = (($timeSpent / $allocatedTime) * 100) < AC::TIME_FAST_THRESHOLD;
+        $isSlow        = (($timeSpent / $allocatedTime) * 100) >= 100;
 
-        return $consecutiveFails >= StudentStateSchema::THRESHOLD_PERSISTENT_FAIL;
+        if ($isCorrect && $isFast && ($state->streak ?? 0) >= AC::THRESHOLD_BOREDOM_STREAK) {
+            $facts[] = FactRegistry::getCode(AC::FACT_BOREDOM_SIGNS);
+        }
+
+        if (! $isCorrect && $isSlow && ($state->wrong_streak ?? 0) >= AC::THRESHOLD_ANXIETY_STREAK) {
+            $facts[] = FactRegistry::getCode(AC::FACT_ANXIETY_SIGNS);
+        }
+
+        if (! $isCorrect && $isSlow && ($state->wrong_streak ?? 0) >= AC::THRESHOLD_PERSISTENT_FAIL) {
+            $facts[] = FactRegistry::getCode(AC::FACT_HIGH_STRUGGLE);
+        }
+
+        return $facts;
     }
 
-    protected function hasSatisfactoryProgress(string $userId, string $materialId): bool
+    private function getDifficultyFact(QuestionDifficulty|string $difficulty): ?string
     {
-        $attemptedCount = $this->progressRepo->getAttemptedQuestionIds($userId, $materialId)->count();
-        $totalQuestions = $this->questionRepo->countByMaterial($materialId);
+        $diffKey = $difficulty instanceof QuestionDifficulty ? $difficulty->value : $difficulty;
+        $name    = match ($diffKey) {
+            QuestionDifficulty::MEDIUM->value => AC::FACT_DIFF_MEDIUM,
+            QuestionDifficulty::HARD->value, QuestionDifficulty::FINAL->value => AC::FACT_DIFF_HARD,
+            default => AC::FACT_DIFF_BEGINNER,
+        };
 
-        if ($totalQuestions === 0) {
+        return FactRegistry::getCode($name);
+    }
+
+    private function getUnlockStatusFacts(StudentState $state, string $materialId): array
+    {
+        $facts    = [];
+        $material = Material::find($materialId);
+        if (! $material) {
+            return [];
+        }
+
+        $unlockedSet = array_map('strval', $state->unlocked_modules ?? []);
+
+        $next = $material->getNextMaterial();
+        if ($next && in_array((string) $next->module_id, $unlockedSet, true)) {
+            $facts[] = FactRegistry::getCode(AC::FACT_NEXT_UNLOCKED);
+        }
+
+        $prev = $material->getPreviousMaterial();
+        if ($prev && in_array((string) $prev->module_id, $unlockedSet, true)) {
+            $facts[] = FactRegistry::getCode(AC::FACT_PREV_UNLOCKED);
+        }
+
+        return $facts;
+    }
+
+    private function isPersistentFail(string $userId, string $questionId): bool
+    {
+        return $this->progressRepo->getConsecutiveFailures($userId, $questionId) >= AC::THRESHOLD_PERSISTENT_FAIL;
+    }
+
+    private function hasSatisfactoryProgress(string $userId, string $materialId): bool
+    {
+        $total = $this->questionRepo->countByMaterial($materialId);
+        if ($total === 0) {
             return true;
         }
 
-        $percentage = ($attemptedCount / $totalQuestions) * 100;
+        return ($this->progressRepo->getAttemptedQuestionIds($userId, $materialId)->count() / $total * 100) >= AC::THRESHOLD_SATISFACTORY_PROGRESS;
+    }
 
-        return $percentage >= StudentStateSchema::THRESHOLD_SATISFACTORY_PROGRESS;
+    private function isModuleNearlyDone(string $userId, string $materialId): bool
+    {
+        $total = $this->questionRepo->countByMaterial($materialId);
+        if ($total === 0) {
+            return false;
+        }
+
+        return ($this->progressRepo->getAttemptedQuestionIds($userId, $materialId)->count() / $total * 100) >= AC::THRESHOLD_MODULE_NEARLY_DONE_PCT;
+    }
+
+    private function isEligibleForGraduation(string $userId, string $materialId): bool
+    {
+        if (! $this->hasSatisfactoryProgress($userId, $materialId)) {
+            return false;
+        }
+        $attempts = $this->progressRepo->getByUserAndMaterial($userId, $materialId);
+        if ($attempts->isEmpty()) {
+            return false;
+        }
+
+        return ($attempts->where('is_correct', true)->count() / $attempts->count() * 100) >= AC::THRESHOLD_MASTERY_ACCURACY;
     }
 
     private function isFinalDifficulty(QuestionDifficulty|string $difficulty): bool
     {
-        if ($difficulty instanceof QuestionDifficulty) {
-            return $difficulty === QuestionDifficulty::FINAL;
-        }
-
-        return $difficulty === QuestionDifficulty::FINAL->value;
+        return ($difficulty instanceof QuestionDifficulty) ? $difficulty === QuestionDifficulty::FINAL : $difficulty === QuestionDifficulty::FINAL->value;
     }
 }

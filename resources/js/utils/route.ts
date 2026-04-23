@@ -54,20 +54,21 @@ export const ROUTES = {
             INDEX: '/admin/pending-admins',
         },
         UEQ: {
-            INDEX: '/admin/ueq-survey',
-            SHOW: (id: string | number) => `/admin/ueq-survey/${id}`,
-            EXPORT: '/admin/ueq-survey/export',
+            INDEX: '/admin/surveys/ueq',
+            SHOW: (id: string | number) => `/admin/surveys/ueq/${id}`,
+            EXPORT: '/admin/surveys/ueq/export',
         },
         MSLQ: {
-            INDEX: '/admin/mslq',
-            SHOW: (id: string | number) => `/admin/mslq/${id}`,
-            EXPORT: '/admin/mslq/export',
+            INDEX: '/admin/surveys/mslq',
+            SHOW: (id: string | number) => `/admin/surveys/mslq/${id}`,
+            EXPORT: '/admin/surveys/mslq/export',
         },
         SUS: {
-            INDEX: '/admin/sus-survey',
-            SHOW: (id: string | number) => `/admin/sus-survey/${id}`,
-            EXPORT: '/admin/sus-survey/export',
+            INDEX: '/admin/surveys/sus',
+            SHOW: (id: string | number) => `/admin/surveys/sus/${id}`,
+            EXPORT: '/admin/surveys/sus/export',
         },
+        ADAPTIVE_ANALYTICS: '/admin/adaptive-analytics',
     },
     MAHASISWA: {
         DASHBOARD: '/mahasiswa/dashboard',
@@ -102,20 +103,23 @@ export const ROUTES = {
         PROFILE: '/mahasiswa/profile',
         CERTIFICATES: {
             INDEX: '/mahasiswa/certificates',
+            DOWNLOAD: (id: string | number) => `/mahasiswa/certificates/${id}/download`,
+            PREVIEW: (id: string | number, userId?: string | number) => 
+                userId ? `/mahasiswa/certificates/preview/${id}/${userId}` : `/mahasiswa/certificates/preview/${id}`,
         },
         UEQ: {
-            CREATE: '/mahasiswa/ueq-survey/create',
-            THANK_YOU: '/mahasiswa/ueq-survey/thank-you',
+            CREATE: '/mahasiswa/surveys/ueq/create',
+            THANK_YOU: '/mahasiswa/surveys/ueq/thank-you',
         },
         MSLQ: {
-            INDEX: '/mahasiswa/mslq',
-            CREATE: '/mahasiswa/mslq/create',
-            STORE: '/mahasiswa/mslq',
-            THANK_YOU: '/mahasiswa/mslq/thankyou',
+            INDEX: '/mahasiswa/surveys/mslq',
+            CREATE: '/mahasiswa/surveys/mslq/create',
+            STORE: '/mahasiswa/surveys/mslq',
+            THANK_YOU: '/mahasiswa/surveys/mslq/thankyou',
         },
         SUS: {
-            CREATE: '/mahasiswa/sus-survey/create',
-            THANK_YOU: '/mahasiswa/sus-survey/thank-you',
+            CREATE: '/mahasiswa/surveys/sus/create',
+            THANK_YOU: '/mahasiswa/surveys/sus/thank-you',
         },
     },
     AUTH: {

@@ -85,7 +85,7 @@ final class MaterialController extends Controller
         }
 
         $studentState    = StudentState::where('user_id', $userId)->first();
-        $unlockedModules = $studentState?->learning_profile['unlocked_modules'] ?? [];
+        $unlockedModules = $studentState?->unlocked_modules ?? [];
 
         $allMaterials  = Material::orderBy('created_at', 'asc')->select('id', 'module_id')->get();
         $firstModuleId = $allMaterials->whereNotNull('module_id')->min('module_id');
