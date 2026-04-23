@@ -112,7 +112,12 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
             $state['badges'] = array_values(array_unique(array_merge($current, $params['badges'])));
         }
 
-        // 3. Update Properti State Dinamis
+        // 3. Tangani Sertifikat (Persistent)
+        if (isset($params['certification'])) {
+            $state = $this->handleCertification($params['certification'], $state, $context);
+        }
+
+        // 4. Update Properti State Dinamis
         foreach ($params as $key => $value) {
             if (in_array($key, ['next_action', 'badges', 'message', 'title', 'label'])) {
                 continue;
@@ -158,6 +163,21 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
                 $state['unlocked_modules'] = array_values(array_unique($unlocked));
             }
         }
+
+        return $state;
+    }
+
+    private function handleCertification(string $tier, array $state, array $context): array
+    {
+        $materialId = $context['material_id'] ?? null;
+        if (! $materialId) {
+            return $state;
+        }
+
+        $certs = $state['certifications'] ?? [];
+        // Format: [material_id => tier]
+        $certs[(string) $materialId] = strtolower($tier);
+        $state['certifications']     = $certs;
 
         return $state;
     }

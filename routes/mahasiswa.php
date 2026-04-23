@@ -25,7 +25,11 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
 
         // Profile & Certificates
         Route::singleton('profile', MahasiswaProfileController::class)->only(['show', 'update']);
-        Route::get('certificates', [MahasiswaCertificateController::class, 'index'])->name('certificates.index');
+        Route::prefix('certificates')->name('certificates.')->controller(MahasiswaCertificateController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('{material}/download', 'download')->name('download');
+            Route::get('{material}/preview', 'preview')->name('preview');
+        });
 
         // Surveys (UEQ, MSLQ, SUS)
         Route::prefix('surveys')->name('surveys.')->group(function () {

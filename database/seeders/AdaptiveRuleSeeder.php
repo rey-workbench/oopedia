@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
  * Filosofi:
  *  - TIDAK ada forbidden_facts. Semua kondisi direpresentasikan sebagai fakta positif.
  *  - Beberapa aturan menghasilkan deduced_facts (Virtual Facts) untuk memicu aturan lain.
- *  - TIDAK ada aksi sertifikat/gamifikasi di mesin inferensi ini.
+ *  - Mendukung Sertifikat (Bronze, Silver, Gold) dan Achievement Badges via Action Instructions.
  */
 class AdaptiveRuleSeeder extends Seeder
 {
@@ -134,7 +134,14 @@ class AdaptiveRuleSeeder extends Seeder
             ['code' => 'H04', 'variant' => 'backtrack',    'name' => 'Critical Backtrack',  'description' => 'Turun level.',           'instructions' => ['target_difficulty' => 'beginner', 'next_action' => AC::ACTION_REDUCE_DIFFICULTY, 'label' => 'Bimbingan Level', 'message' => 'Kami menyesuaikan tingkat untuk kenyamanan belajarmu.', 'title' => 'Penyesuaian Alur']],
 
             // ── Kelulusan Modul (H05)
-            ['code' => 'H05', 'variant' => 'result',       'name' => 'Module Graduation',   'description' => 'Lulus modul.',           'instructions' => ['next_action' => AC::ACTION_FINISH_MATERIAL, 'label' => 'Selesaikan Modul', 'message' => 'Selamat! Kamu telah menyelesaikan modul ini.', 'title' => 'Kelulusan Modul!']],
+            ['code' => 'H05', 'variant' => 'result',       'name' => 'Module Graduation',   'description' => 'Lulus modul.',           'instructions' => [
+                'next_action'   => AC::ACTION_FINISH_MATERIAL,
+                'label'         => 'Selesaikan Modul',
+                'message'       => 'Selamat! Kamu telah menyelesaikan modul ini.',
+                'title'         => 'Kelulusan Modul!',
+                'certification' => 'silver',
+                'badges'        => ['module_complete', 'persistent_learner'],
+            ]],
 
             // ── Intervensi Gaya Belajar (H06-H08, H11, H21)
             ['code' => 'H06', 'variant' => 'intervention', 'name' => 'Study Visual',        'description' => 'Arahkan ke materi visual.',   'instructions' => ['next_action' => AC::ACTION_STUDY_VISUAL,   'label' => 'Materi Visual',        'title' => 'Bantuan Adaptif']],

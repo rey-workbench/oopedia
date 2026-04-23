@@ -103,6 +103,8 @@ export const ROUTES = {
         PROFILE: '/mahasiswa/profile',
         CERTIFICATES: {
             INDEX: '/mahasiswa/certificates',
+            DOWNLOAD: (id: string | number) => `/mahasiswa/certificates/${id}/download`,
+            PREVIEW: (id: string | number) => `/mahasiswa/certificates/${id}/preview`,
         },
         UEQ: {
             CREATE: '/mahasiswa/surveys/ueq/create',

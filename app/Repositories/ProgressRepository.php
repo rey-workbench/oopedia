@@ -271,45 +271,20 @@ final class ProgressRepository implements ProgressRepositoryInterface
             return;
         }
 
-        $state = $this->studentStateRepo->findOrCreate($userId);
-
-        $gamification = array_merge($state->gamification_data ?? [], [
-            AC::KEY_GLOBAL_XP => $attributes[AC::KEY_GLOBAL_XP]
-                ?? ($state->gamification_data[AC::KEY_GLOBAL_XP] ?? 0),
-            AC::KEY_CURRENT_LEVEL => $attributes[AC::KEY_CURRENT_LEVEL]
-                ?? ($state->gamification_data[AC::KEY_CURRENT_LEVEL] ?? 'Pemula'),
-            AC::KEY_CURRENT_STREAK => $attributes[AC::KEY_CURRENT_STREAK]
-                ?? ($state->gamification_data[AC::KEY_CURRENT_STREAK] ?? 0),
-            AC::KEY_MAX_STREAK => $attributes[AC::KEY_MAX_STREAK]
-                ?? ($state->gamification_data[AC::KEY_MAX_STREAK] ?? 0),
-        ]);
-
-        $metrics = array_merge($state->performance_metrics ?? [], [
-            AC::KEY_TOTAL_QUESTIONS_ANSWERED => $attributes[AC::KEY_TOTAL_QUESTIONS_ANSWERED]
-                ?? ($state->performance_metrics[AC::KEY_TOTAL_QUESTIONS_ANSWERED] ?? 0),
-            AC::KEY_CORRECT_COUNT => $attributes[AC::KEY_CORRECT_COUNT]
-                ?? ($state->performance_metrics[AC::KEY_CORRECT_COUNT] ?? 0),
-            AC::KEY_WRONG_COUNT => $attributes[AC::KEY_WRONG_COUNT]
-                ?? ($state->performance_metrics[AC::KEY_WRONG_COUNT] ?? 0),
-            AC::KEY_WRONG_STREAK => $attributes[AC::KEY_WRONG_STREAK]
-                ?? ($state->performance_metrics[AC::KEY_WRONG_STREAK] ?? 0),
-            AC::KEY_HINTS_USED_COUNT => $attributes[AC::KEY_HINTS_USED_COUNT]
-                ?? ($state->performance_metrics[AC::KEY_HINTS_USED_COUNT] ?? 0),
-            AC::KEY_HINTS_AVAILABLE => $attributes[AC::KEY_HINTS_AVAILABLE]
-                ?? ($state->performance_metrics[AC::KEY_HINTS_AVAILABLE]
-                    ?? AC::DEFAULT_HINTS_AVAILABLE),
-        ]);
-
-        $profile = array_merge($state->learning_profile ?? [], [
-            AC::KEY_LEARNING_STYLE => $attributes[AC::KEY_LEARNING_STYLE]
-                ?? ($state->learning_profile[AC::KEY_LEARNING_STYLE] ?? 'visual'),
-        ]);
-
+        // StudentState sudah di-flatten, update kolom secara langsung
         $this->studentStateRepo->update($userId, [
-            'gamification_data'   => $gamification,
-            'performance_metrics' => $metrics,
-            'learning_profile'    => $profile,
-            'last_active_at'      => now(),
+            AC::KEY_GLOBAL_XP                => $attributes[AC::KEY_GLOBAL_XP] ?? null,
+            AC::KEY_CURRENT_LEVEL            => $attributes[AC::KEY_CURRENT_LEVEL] ?? null,
+            AC::KEY_CURRENT_STREAK           => $attributes[AC::KEY_CURRENT_STREAK] ?? null,
+            AC::KEY_MAX_STREAK               => $attributes[AC::KEY_MAX_STREAK] ?? null,
+            AC::KEY_TOTAL_QUESTIONS_ANSWERED => $attributes[AC::KEY_TOTAL_QUESTIONS_ANSWERED] ?? null,
+            AC::KEY_CORRECT_COUNT            => $attributes[AC::KEY_CORRECT_COUNT] ?? null,
+            AC::KEY_WRONG_COUNT              => $attributes[AC::KEY_WRONG_COUNT] ?? null,
+            AC::KEY_WRONG_STREAK             => $attributes[AC::KEY_WRONG_STREAK] ?? null,
+            AC::KEY_HINTS_USED_COUNT         => $attributes[AC::KEY_HINTS_USED_COUNT] ?? null,
+            AC::KEY_HINTS_AVAILABLE          => $attributes[AC::KEY_HINTS_AVAILABLE] ?? null,
+            AC::KEY_LEARNING_STYLE           => $attributes[AC::KEY_LEARNING_STYLE] ?? null,
+            'last_active_at'                 => now(),
         ]);
     }
 
