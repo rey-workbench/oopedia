@@ -18,16 +18,14 @@ class MaterialsSeeder extends Seeder
                 <p>OOP hadir untuk mengatasi masalah tersebut dengan mengelompokkan data (atribut) dan perilaku (method) ke dalam satu kesatuan yang disebut <strong>Objek</strong>. Dengan memodelkan sistem sebagai kumpulan objek yang saling berinteraksi, kita dapat mencapai tingkat <em>modularity</em> yang tinggi. Hal ini memungkinkan pengembang untuk fokus pada bagian-bagian kecil sistem tanpa harus memahami seluruh isi kode secara mendalam.</p>
                 <p>Penerapan OOP di industri modern menjadi standar karena mendukung prinsip-prinsip pengembangan yang tangguh, seperti <em>Code Reusability</em> (penggunaan kembali kode) dan <em>Extensibility</em> (kemudahan pengembangan fitur baru). Memahami dasar OOP adalah langkah krusial bagi setiap pengembang yang ingin membangun sistem skala besar yang efisien dan mudah dúvah.</p>',
                 'module_id'  => '1',
-                'created_by' => 2,
             ],
             [
                 'title'   => 'Class dan Object',
                 'content' => '<h2>Blueprint vs State: Memahami Entitas dan Instansiasi</h2>
                 <p>Dalam dunia pengembangan perangkat lunak, seringkali kita perlu membuat banyak entitas yang memiliki jenis yang sama namun data yang berbeda. Di sinilah peran <strong>Class</strong> sebagai <em>blueprint</em> atau cetakan. Sebuah Class mendefinisikan struktur data dan kemampuan apa saja yang akan dimiliki oleh objek masa depan, namun Class itu sendiri tidak menyimpan data spesifik dan tidak menempati memori operasional secara aktif untuk data objek.</p>
-                <p><strong>Object</strong> adalah wujud nyata atau <em>instance</em> dari sebuah Class. Ketika sebuah objek dibuat, sistem akan mengalokasikan ruang di memori (biasanya di area <em>Heap</em>) untuk menyimpan status atau data unik milik objek tersebut. Misalnya, jika Class adalah "MobilePhone", maka Object-nya adalah ponsel fisik yang Anda genggam, lengkap dengan nomor seri, warna, dan level baterai yang spesifik.</p>
+                <p><strong>Object</strong> adalah wujud nyata atau <em>instance</em> dari sebuah Class. Ketika sebuah objek dibuat, sistem akan mengalokasikan ruang di memori (binary data atau <em>Heap</em>) untuk menyimpan status atau data unik milik objek tersebut. Misalnya, jika Class adalah "MobilePhone", maka Object-nya adalah ponsel fisik yang Anda genggam, lengkap dengan nomor seri, warna, dan level baterai yang spesifik.</p>
                 <p>Memahami siklus hidup objek (Object Lifecycle)—mulai dari pembuatan (instansiasi) hingga penghancuran (garbage collection)—adalah kunci untuk mengelola performa aplikasi. Penggunaan Class yang efisien memastikan bahwa aplikasi kita memiliki struktur yang rapi, sementara pemanfaatan Object yang tepat memungkinkan manajemen data yang dinamis dan terisolasi dengan baik.</p>',
                 'module_id'  => '2',
-                'created_by' => 2,
             ],
             [
                 'title'   => 'Enkapsulasi (Encapsulation)',
@@ -36,7 +34,6 @@ class MaterialsSeeder extends Seeder
                 <p>Melalui penggunaan <strong>Access Modifiers</strong> seperti <code>private</code>, <code>protected</code>, dan <code>public</code>, kita dapat mengontrol siapa saja yang boleh melihat atau memodifikasi atribut objek. Sebagai gantinya, kita menyediakan metode publik yang disebut <em>Getter</em> dan <em>Setter</em>. Metode ini bertindak sebagai "penjaga gerbang" yang dapat melakukan validasi data sebelum perubahan benar-benar disimpan ke dalam atribut internal.</p>
                 <p>Dengan menerapkan enkapsulasi yang ketat, kita menciptakan sistem yang lebih aman dan terstruktur. Objek menjadi sebuah "Black Box" di mana pengguna hanya perlu tahu cara menggunakannya melalui antarmuka (interface) publik yang disediakan, tanpa perlu tahu kerumitan logika di dalamnya. Hal ini sangat mendukung prinsip <em>Loosely Coupled</em>, di mana perubahan internal di satu kelas tidak akan merusak kelas lain yang menggunakannya.</p>',
                 'module_id'  => '3',
-                'created_by' => 2,
             ],
             [
                 'title'   => 'Relasi Class (Class Relations)',
@@ -45,7 +42,6 @@ class MaterialsSeeder extends Seeder
                 <p>Terdapat beberapa tingkatan relasi yang harus dipahami oleh developer profesional. <strong>Association</strong> adalah hubungan fungsional yang paling umum, di mana satu objek menggunakan jasa objek lain. Namun, ketika bicara tentang kepemilikan, kita mengenal <strong>Aggregation</strong> (hubungan "has-a" yang lemah, di mana bagian bisa hidup tanpa induk) dan <strong>Composition</strong> (hubungan "has-a" yang kuat, di mana bagian akan hancur jika induknya hancur).</p>
                 <p>Memilih jenis relasi yang tepat sangat berpengaruh pada fleksibilitas kode. Desain modern sangat menyarankan prinsip <em>"Favor composition over inheritance"</em>. Dengan menggunakan komposisi, kita dapat merakit objek-objek kecil dengan cara yang lebih dinamis dan fleksibel saat runtime, dibandingkan dengan inheritance yang bersifat kaku dan terikat pada hierarki statis sejak waktu kompilasi.</p>',
                 'module_id'  => '4',
-                'created_by' => 2,
             ],
             [
                 'title'   => 'Inheritance (Pewarisan)',
@@ -54,7 +50,6 @@ class MaterialsSeeder extends Seeder
                 <p>Pewarisan menciptakan hubungan logis <strong>"Is-A"</strong>. Misalnya, "Manager is a Karyawan". Namun, penggunaan inheritance harus dilakukan dengan hati-hati untuk menghindari "Deep Class Hierarchies" yang terlalu rumit. Jika hierarki terlalu dalam, perubahan kecil di kelas induk paling atas dapat menyebabkan efek domino yang merusak banyak kelas di bawahnya—masalah ini sering dikenal sebagai <em>Fragile Base Class</em>.</p>
                 <p>Dalam pengembangan profesional, inheritance digunakan untuk menentukan kategori umum dan memungkinkan spesialisasi di kelas anak. Namun, developer yang bijak akan selalu memastikan bahwa relasi inheritance benar-benar mencerminkan hubungan identitas yang logis, bukan sekadar cara cepat untuk membagikan kode antar kelas yang tidak berhubungan.</p>',
                 'module_id'  => '5',
-                'created_by' => 2,
             ],
             [
                 'title'   => 'Overriding dan Overloading',
@@ -63,7 +58,6 @@ class MaterialsSeeder extends Seeder
                 <p>Di sisi lain, <strong>Method Overriding</strong> (Polimorfisme Dinamis) terjadi ketika kelas turunan memberikan implementasi spesifik untuk metode yang sudah ada di kelas induknya. Ini memungkinkan objek anak untuk menyesuaikan perilakunya dengan tetap mempertahankan antarmuka yang sama dengan induknya. Misalnya, setiap "Hewan" bisa "Bersuara", tetapi "Anjing" melakukan override untuk "Menggonggong" sementara "Kucing" melakukan override untuk "Mengeong".</p>
                 <p>Memahami perbedaan antara kedua konsep ini sangat penting dalam perancangan API dan kerangka kerja (framework). Overloading memudahkan variasi input, sementara Overriding memungkinkan sistem kita untuk mendukung perilaku kustom yang baru tanpa harus mengubah logika pemanggil aslinya di tingkat abstraksi yang lebih tinggi.</p>',
                 'module_id'  => '6',
-                'created_by' => 2,
             ],
             [
                 'title'   => 'Abstract Class',
@@ -72,7 +66,6 @@ class MaterialsSeeder extends Seeder
                 <p>Keunikan dari Abstract Class adalah kemampuannya menyimpan <strong>Abstract Method</strong>—metode tanpa isi yang WAJIB diimplementasikan oleh kelas turunan yang konkrit. Hal ini menjamin bahwa setiap anak pasti akan memiliki fungsionalitas tersebut, namun dengan cara mereka masing-masing. Di saat yang sama, Abstract Class juga boleh memiliki metode biasa dengan implementasi penuh untuk membagikan logika yang sama ke semua anak.</p>
                 <p>Secara arsitektural, Abstract Class sangat berguna ketika kita ingin mendefinisikan identitas bersama. Misalnya, dalam sistem perbankan, kita mungkin memiliki Abstract Class "Account" yang mendefinisikan perilaku dasar seperti cek saldo, namun menyerahkannya pada "SavingsAccount" atau "CreditAccount" untuk menentukan bagaimana detail perhitungan bunga dilakukan.</p>',
                 'module_id'  => '7',
-                'created_by' => 2,
             ],
             [
                 'title'   => 'Interface',
@@ -81,7 +74,6 @@ class MaterialsSeeder extends Seeder
                 <p>Interface adalah alat utama untuk mencapai <em>Decoupling</em> dalam arsitektur perangkat lunak. Dengan mendesain sistem berdasarkan Interface (<em>Programming to an Interface, not an Implementation</em>), kita dapat menukar satu modul dengan modul lain tanpa merusak sistem secara keseluruhan, asalkan keduanya mematuhi kontrak Interface yang sama.</p>
                 <p>Selain itu, Interface memungkinkan satu kelas untuk memiliki banyak kemampuan sekaligus (Multiple Inheritance melalui Interface), sesuatu yang tidak bisa dilakukan dengan kelas biasa di banyak bahasa seperti Java. Hal ini memberikan fleksibilitas luar biasa dalam merakit objek yang kompleks dengan berbagai kemampuan yang saling lepas, menjadikannya fondasi utama dalam pola desain (Design Patterns) modern.</p>',
                 'module_id'  => '8',
-                'created_by' => 2,
             ],
             [
                 'title'   => 'Polimorfisme (Polymorphism)',
@@ -90,7 +82,14 @@ class MaterialsSeeder extends Seeder
                 <p>Konsep yang sangat krusial di sini adalah <strong>Dynamic Binding</strong> atau Late Binding. Saat aplikasi berjalan, sistem secara otomatis akan menentukan metode mana yang harus dipanggil berdasarkan objek aslinya, bukan berdasarkan tipe variabelnya. Ini memungkinkan kita membuat fungsi yang memproses daftar "Shape" (bentuk) dan memanggil metode <code>draw()</code>, di mana sistem akan tahu sendiri kapan harus menggambar lingkaran, persegi, atau segitiga saat runtime.</p>
                 <p>Polimorfisme membuat aplikasi kita menjadi sangat <em>Extensible</em>. Kita bisa menambahkan ribuan kelas baru ke dalam sistem di masa depan, dan selama kelas-kelas tersebut mengikuti hierarki atau interface yang sudah ada, kode lama kita akan otomatis bisa bekerja dengan kelas-kelas baru tersebut tanpa perlu diubah sedikit pun. Inilah rahasia di balik sistem yang elastis dan tahan lama.</p>',
                 'module_id'  => '9',
-                'created_by' => 2,
+            ],
+            [
+                'title'   => 'Proyek Akhir: Arsitektur Sistem Terintegrasi',
+                'content' => '<h2>Studi Kasus Nyata: Menggabungkan Semua Pilar OOP</h2>
+                <p>Setelah memahami pilar-pilar dasar OOP secara terpisah, tantangan sebenarnya adalah bagaimana menggabungkan semuanya dalam satu sistem yang harmonis. Proyek akhir ini dirancang untuk menguji pemahaman Anda dalam merancang arsitektur sistem dari nol, mulai dari pendefinisian entitas hingga pengaturan interaksi antar objek yang kompleks.</p>
+                <p>Dalam modul ini, Anda akan belajar cara melakukan <em>Requirement Analysis</em> dan menerjemahkannya ke dalam diagram kelas. Anda akan ditantang untuk menerapkan Enkapsulasi untuk melindungi data sistem, Inheritance untuk membangun hierarki yang logis, serta Polimorfisme untuk menciptakan sistem yang fleksibel terhadap perubahan di masa depan.</p>
+                <p>Keberhasilan dalam modul ini bukan hanya dinilai dari apakah kode Anda berjalan, melainkan seberapa bersih (clean code) dan seberapa mudah arsitektur Anda untuk dipelihara dan dikembangkan. Ini adalah simulasi nyata dari dunia kerja profesional, di mana kualitas desain perangkat lunak jauh lebih berharga daripada sekadar fungsionalitas dasar.</p>',
+                'module_id'  => '10',
             ],
         ];
 
