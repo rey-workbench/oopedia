@@ -74,20 +74,6 @@ final class CertificateController extends Controller
         $qrUrl = route('mahasiswa.certificates.preview', [$materialId, $userId]);
 
         $logoPath = public_path("images/logo.png");
-        $bwLogoPath = storage_path("app/public/bw_logo.png");
-
-        // Only generate BW logo if it doesn't exist to save CPU
-        if (!file_exists($bwLogoPath)) {
-            if (!file_exists(dirname($bwLogoPath))) {
-                mkdir(dirname($bwLogoPath), 0755, true);
-            }
-
-            $img = \imagecreatefrompng($logoPath);
-            \imagealphablending($img, false);
-            \imagesavealpha($img, true);
-            \imagefilter($img, IMG_FILTER_GRAYSCALE);
-            \imagepng($img, $bwLogoPath);
-        }
 
         $builder = new Builder(
             data: $qrUrl,
@@ -96,9 +82,9 @@ final class CertificateController extends Controller
             size: 300,
             margin: 10,
             roundBlockSizeMode: RoundBlockSizeMode::Margin,
-            logoPath: $bwLogoPath,
-            logoResizeToWidth: 100,
-            logoPunchoutBackground: false
+            logoPath: $logoPath,
+            logoResizeToWidth: 80,
+            logoPunchoutBackground: true
         );
 
         $result = $builder->build();
