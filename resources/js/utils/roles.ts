@@ -3,12 +3,14 @@
  * Single source of truth for role IDs — no more magic numbers scattered across the codebase.
  */
 
-export const ROLE = {
-    SUPERADMIN: 'superadmin',
+export interface ROLE extends  {
+     SUPERADMIN: 'superadmin',
     ADMIN: 'dosen',
     MAHASISWA: 'mahasiswa',
     PENDING: 'pending',
-} as const;
+}
+
+
 
 export type RoleName = (typeof ROLE)[keyof typeof ROLE];
 

@@ -45,7 +45,7 @@ export class SusSurveyState extends FormState<SusSurveyForm> {
     }
 
     submit() {
-        this.submitForm('post', '/mahasiswa/sus-survey', {
+        this.submitForm('post', '/mahasiswa/surveys/sus', {
             scrollToError: true,
         });
     }

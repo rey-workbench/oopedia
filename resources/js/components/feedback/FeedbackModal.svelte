@@ -13,7 +13,8 @@
     let { state: quizState }: Props = $props();
 
     let nextAction = $derived(
-        quizState.feedbackData?.adaptiveResult?.new_state?.next_action_data?.label ||
+        quizState.feedbackData?.ui?.label ||
+            quizState.feedbackData?.adaptiveResult?.new_state?.next_action_data?.label ||
             (quizState.feedbackData?.status === 'success' ? 'Soal Berikutnya' : 'Lihat Materi')
     );
     let recommendation = $derived(
@@ -132,6 +133,10 @@
     }
 
     function getFeedbackTitle(status: 'success' | 'wrong'): string {
+        if (quizState.feedbackData?.ui?.title) {
+            return quizState.feedbackData.ui.title;
+        }
+
         const backendTitle = quizState.feedbackData?.adaptiveResult?.new_state?.title;
         if (backendTitle) {
             return backendTitle as string;

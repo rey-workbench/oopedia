@@ -178,7 +178,7 @@ final class AdaptiveAnalyticsController extends Controller
             ->map(fn($log) => [
                 'id' => $log->id,
                 'rule_id' => $log->rule_code,
-                'rule_name' => AdaptiveRule::where('code', $log->rule_code)->value('name') ?? $log->rule_code,
+                'rule_name' => AdaptiveRule::where('rule_code', $log->rule_code)->value('name') ?? $log->rule_code,
                 'action' => $log->action_code,
                 'user_name' => $log->user->name ?? 'System',
                 'material_title' => $log->execution_context['material_title'] ?? 'General',
@@ -202,7 +202,7 @@ final class AdaptiveAnalyticsController extends Controller
             ->orderByDesc('count')
             ->get()
             ->map(function ($stat) use ($totalLogs) {
-                $rule = AdaptiveRule::where('code', $stat->rule_code)->first();
+                $rule = AdaptiveRule::where('rule_code', $stat->rule_code)->first();
 
                 return [
                     'rule_id' => $stat->rule_code,

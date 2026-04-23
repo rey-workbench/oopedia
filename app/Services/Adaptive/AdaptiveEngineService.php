@@ -268,12 +268,19 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 
     private function mapRule(AdaptiveRuleInterface $rule): array
     {
+        $action = $rule instanceof DynamicAdaptiveRule ? $rule->getModel()->action : null;
+        $instructions = $action ? ($action->instructions ?? []) : [];
+
         return [
-            'id'       => $rule->getRuleId(),
-            'name'     => $rule->getRuleName(),
-            'action'   => $rule->getActionCode(),
-            'priority' => $rule->getPriority(),
-            'variant'  => $rule instanceof DynamicAdaptiveRule ? $rule->getModel()->action?->variant : 'result',
+            'id'          => $rule->getRuleId(),
+            'name'        => $rule->getRuleName(),
+            'action'      => $instructions['next_action'] ?? $rule->getActionCode(),
+            'action_code' => $rule->getActionCode(),
+            'priority'    => $rule->getPriority(),
+            'variant'     => $action?->variant ?? 'result',
+            'label'       => $instructions['label'] ?? null,
+            'message'     => $instructions['message'] ?? null,
+            'title'       => $instructions['title'] ?? null,
         ];
     }
 }

@@ -68,12 +68,20 @@ export class QuestionShowState extends BaseState {
         nextUrl: string;
         adaptiveResult: AdaptiveResult | null;
         score: number;
+        ui?: {
+            label?: string;
+            title?: string;
+            type?: string;
+            url?: string;
+            message?: string;
+        } | null;
     }>({
         status: 'success',
         message: '',
         nextUrl: '',
         adaptiveResult: null,
         score: 0,
+        ui: null,
     });
     usedHint = $state(false);
     startTime = $state(Date.now());
@@ -205,6 +213,7 @@ export class QuestionShowState extends BaseState {
                 nextUrl: data.nextUrl,
                 adaptiveResult,
                 score: data.xpEarned || 0,
+                ui: (data as any).ui ?? null,
             };
 
             if (adaptiveResult) {
