@@ -6,7 +6,7 @@ namespace App\Services\Lms;
 
 use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Models\StudentState;
-use App\Schemas\StudentStateSchema;
+use App\Rules\Adaptive\Constants\AdaptiveConstants as AC;
 use Illuminate\Support\Facades\Cookie;
 
 final class GuestProgressService implements GuestProgressServiceInterface
@@ -110,7 +110,7 @@ final class GuestProgressService implements GuestProgressServiceInterface
             $performanceMetrics = [];
         }
 
-        $defaults = StudentStateSchema::defaults();
+        $defaults = AC::defaults();
 
         return new StudentState(array_merge($defaults, [
             'user_id'         => 'guest',
@@ -122,7 +122,7 @@ final class GuestProgressService implements GuestProgressServiceInterface
             'wrong_count'     => $performanceMetrics['wrong_count']      ?? 0,
             'wrong_streak'    => $performanceMetrics['wrong_streak']     ?? 0,
             'hints_used'      => $performanceMetrics['hints_used']       ?? 0,
-            'hints_available' => $performanceMetrics['hints_available']  ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE,
+            'hints_available' => $performanceMetrics['hints_available']  ?? AC::DEFAULT_HINTS_AVAILABLE,
         ]));
     }
 

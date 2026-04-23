@@ -12,8 +12,7 @@ use App\Enums\Lms\ContentCategory;
 use App\Enums\Lms\LearningStyle;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Models\StudentState;
-use App\Rules\Adaptive\Constants\AdaptiveConstants;
-use App\Schemas\StudentStateSchema;
+use App\Rules\Adaptive\Constants\AdaptiveConstants as AC;
 
 final class PerformanceService implements PerformanceServiceInterface
 {
@@ -39,27 +38,27 @@ final class PerformanceService implements PerformanceServiceInterface
         $distribution = $state->time_distribution ?? [];
         if (empty($distribution)) {
             $distribution = [
-                StudentStateSchema::STYLE_VISUAL  => 0,
-                StudentStateSchema::STYLE_TEXTUAL => 0,
+                AC::STYLE_VISUAL  => 0,
+                AC::STYLE_TEXTUAL => 0,
             ];
         }
 
         $category = $questionType->value === ContentCategory::SINTAKS->value
-            ? StudentStateSchema::STYLE_VISUAL
-            : StudentStateSchema::STYLE_TEXTUAL;
+            ? AC::STYLE_VISUAL
+            : AC::STYLE_TEXTUAL;
         $distribution[$category] = ($distribution[$category] ?? 0) + $timeSpent;
 
-        $visualTime  = $distribution[StudentStateSchema::STYLE_VISUAL]  ?? 0;
-        $textualTime = $distribution[StudentStateSchema::STYLE_TEXTUAL] ?? 0;
+        $visualTime  = $distribution[AC::STYLE_VISUAL]  ?? 0;
+        $textualTime = $distribution[AC::STYLE_TEXTUAL] ?? 0;
         $totalTime   = $visualTime + $textualTime;
 
         if ($totalTime === 0) {
-            $newStyle = StudentStateSchema::STYLE_VISUAL;
+            $newStyle = AC::STYLE_VISUAL;
         } else {
             $diff     = abs($visualTime - $textualTime) / $totalTime;
-            $newStyle = $diff < StudentStateSchema::RATIO_STYLE_MIXED
-                ? StudentStateSchema::STYLE_MIXED
-                : ($visualTime > $textualTime ? StudentStateSchema::STYLE_VISUAL : StudentStateSchema::STYLE_TEXTUAL);
+            $newStyle = $diff < AC::RATIO_STYLE_MIXED
+                ? AC::STYLE_MIXED
+                : ($visualTime > $textualTime ? AC::STYLE_VISUAL : AC::STYLE_TEXTUAL);
         }
 
         $this->studentStateRepo->update($userId, [
@@ -68,8 +67,8 @@ final class PerformanceService implements PerformanceServiceInterface
         ]);
 
         return match ($newStyle) {
-            StudentStateSchema::STYLE_VISUAL  => LearningStyle::VISUAL,
-            StudentStateSchema::STYLE_TEXTUAL => LearningStyle::TEXTUAL,
+            AC::STYLE_VISUAL                  => LearningStyle::VISUAL,
+            AC::STYLE_TEXTUAL                 => LearningStyle::TEXTUAL,
             default                           => LearningStyle::MIXED,
         };
     }
@@ -152,11 +151,11 @@ final class PerformanceService implements PerformanceServiceInterface
         }
 
         $diffKey = $difficulty->value;
-        $rewards = StudentStateSchema::SCORE_REWARDS;
+        $rewards = AC::SCORE_REWARDS;
         $score   = $rewards['base'];
 
         $score += $rewards['difficulty_bonus'][$diffKey]             ?? 0;
-        $allocatedTime = AdaptiveConstants::ALLOCATED_TIME[$diffKey] ?? 60;
+        $allocatedTime = AC::ALLOCATED_TIME[$diffKey]                ?? 60;
         if ($timeSpent > 0 && $timeSpent < ($allocatedTime / 2)) {
             $score += $rewards['time_bonus'];
         }

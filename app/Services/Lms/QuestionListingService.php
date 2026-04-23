@@ -13,7 +13,6 @@ use App\Enums\Lms\QuestionType;
 use App\Helpers\ProgressHelper;
 use App\Models\Material;
 use App\Models\Question;
-use App\Schemas\StudentStateSchema;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as SupportCollection;
 

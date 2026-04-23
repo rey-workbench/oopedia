@@ -13,7 +13,6 @@ use App\Models\Material;
 use App\Models\StudentState;
 use App\Rules\Adaptive\Constants\AdaptiveConstants as AC;
 use App\Rules\Adaptive\FactRegistry;
-use App\Schemas\StudentStateSchema;
 
 final class FactGatheringService implements FactGatheringServiceInterface
 {
@@ -116,11 +115,11 @@ final class FactGatheringService implements FactGatheringServiceInterface
 
     private function getLearningStyleFacts(StudentState $state): array
     {
-        $style = $state->learning_style ?? StudentStateSchema::STYLE_VISUAL;
+        $style = $state->learning_style ?? AC::STYLE_VISUAL;
 
         return match ($style) {
-            StudentStateSchema::STYLE_MIXED   => [FactRegistry::getCode(AC::FACT_STYLE_MIXED)],
-            StudentStateSchema::STYLE_TEXTUAL => [FactRegistry::getCode(AC::FACT_STYLE_TEXTUAL)],
+            AC::STYLE_MIXED                   => [FactRegistry::getCode(AC::FACT_STYLE_MIXED)],
+            AC::STYLE_TEXTUAL                 => [FactRegistry::getCode(AC::FACT_STYLE_TEXTUAL)],
             default                           => [FactRegistry::getCode(AC::FACT_STYLE_VISUAL)],
         };
     }
@@ -199,7 +198,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
             $facts[] = FactRegistry::getCode(AC::FACT_ANXIETY_SIGNS);
         }
 
-        if (! $isCorrect && $isSlow && ($state->wrong_streak ?? 0) >= StudentStateSchema::THRESHOLD_PERSISTENT_FAIL) {
+        if (! $isCorrect && $isSlow && ($state->wrong_streak ?? 0) >= AC::THRESHOLD_PERSISTENT_FAIL) {
             $facts[] = FactRegistry::getCode(AC::FACT_HIGH_STRUGGLE);
         }
 
@@ -243,7 +242,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
 
     private function isPersistentFail(string $userId, string $questionId): bool
     {
-        return $this->progressRepo->getConsecutiveFailures($userId, $questionId) >= StudentStateSchema::THRESHOLD_PERSISTENT_FAIL;
+        return $this->progressRepo->getConsecutiveFailures($userId, $questionId) >= AC::THRESHOLD_PERSISTENT_FAIL;
     }
 
     private function hasSatisfactoryProgress(string $userId, string $materialId): bool
@@ -253,7 +252,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
             return true;
         }
 
-        return ($this->progressRepo->getAttemptedQuestionIds($userId, $materialId)->count() / $total * 100) >= StudentStateSchema::THRESHOLD_SATISFACTORY_PROGRESS;
+        return ($this->progressRepo->getAttemptedQuestionIds($userId, $materialId)->count() / $total * 100) >= AC::THRESHOLD_SATISFACTORY_PROGRESS;
     }
 
     private function isModuleNearlyDone(string $userId, string $materialId): bool

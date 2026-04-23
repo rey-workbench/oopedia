@@ -7,7 +7,7 @@ use App\Contracts\Services\GamificationServiceInterface;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Enums\Lms\StudentLevel;
 use App\Models\StudentState;
-use App\Schemas\StudentStateSchema;
+use App\Rules\Adaptive\Constants\AdaptiveConstants as AC;
 
 class GamificationService implements GamificationServiceInterface
 {
@@ -22,7 +22,7 @@ class GamificationService implements GamificationServiceInterface
 
     public function determineLevel(int $xp): StudentLevel
     {
-        foreach (array_reverse(StudentStateSchema::LEVEL_THRESHOLDS) as $level) {
+        foreach (array_reverse(AC::LEVEL_THRESHOLDS) as $level) {
             if ($xp >= $level['min']) {
                 return StudentLevel::tryFrom($level['name']) ?? StudentLevel::PEMULA;
             }
@@ -65,13 +65,13 @@ class GamificationService implements GamificationServiceInterface
         int $timeSpent = 0,
     ): array {
         $xpReward = match ($difficulty) {
-            QuestionDifficulty::HARD   => StudentStateSchema::XP_REWARD_HARD,
-            QuestionDifficulty::MEDIUM => StudentStateSchema::XP_REWARD_MEDIUM,
-            default                    => StudentStateSchema::XP_REWARD_BEGINNER,
+            QuestionDifficulty::HARD   => AC::XP_REWARD_HARD,
+            QuestionDifficulty::MEDIUM => AC::XP_REWARD_MEDIUM,
+            default                    => AC::XP_REWARD_BEGINNER,
         };
 
         if ($usedHint) {
-            $xpReward = max(0, $xpReward - StudentStateSchema::XP_PENALTY_HINT);
+            $xpReward = max(0, $xpReward - AC::XP_PENALTY_HINT);
         }
 
         return [
@@ -90,7 +90,7 @@ class GamificationService implements GamificationServiceInterface
 
     public function calculateStreakBonusXP(int $currentStreak): int
     {
-        foreach (StudentStateSchema::STREAK_XP_BONUSES as $threshold => $bonus) {
+        foreach (AC::STREAK_XP_BONUSES as $threshold => $bonus) {
             if ($currentStreak >= $threshold) {
                 return $bonus;
             }

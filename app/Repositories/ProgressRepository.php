@@ -11,7 +11,7 @@ use App\Models\Material;
 use App\Models\Question;
 use App\Models\QuizAttempt;
 use App\Models\StudentState;
-use App\Schemas\StudentStateSchema;
+use App\Rules\Adaptive\Constants\AdaptiveConstants as AC;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -274,35 +274,35 @@ final class ProgressRepository implements ProgressRepositoryInterface
         $state = $this->studentStateRepo->findOrCreate($userId);
 
         $gamification = array_merge($state->gamification_data ?? [], [
-            StudentStateSchema::KEY_GLOBAL_XP => $attributes[StudentStateSchema::KEY_GLOBAL_XP]
-                ?? ($state->gamification_data[StudentStateSchema::KEY_GLOBAL_XP] ?? 0),
-            StudentStateSchema::KEY_CURRENT_LEVEL => $attributes[StudentStateSchema::KEY_CURRENT_LEVEL]
-                ?? ($state->gamification_data[StudentStateSchema::KEY_CURRENT_LEVEL] ?? 'Pemula'),
-            StudentStateSchema::KEY_CURRENT_STREAK => $attributes[StudentStateSchema::KEY_CURRENT_STREAK]
-                ?? ($state->gamification_data[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0),
-            StudentStateSchema::KEY_MAX_STREAK => $attributes[StudentStateSchema::KEY_MAX_STREAK]
-                ?? ($state->gamification_data[StudentStateSchema::KEY_MAX_STREAK] ?? 0),
+            AC::KEY_GLOBAL_XP => $attributes[AC::KEY_GLOBAL_XP]
+                ?? ($state->gamification_data[AC::KEY_GLOBAL_XP] ?? 0),
+            AC::KEY_CURRENT_LEVEL => $attributes[AC::KEY_CURRENT_LEVEL]
+                ?? ($state->gamification_data[AC::KEY_CURRENT_LEVEL] ?? 'Pemula'),
+            AC::KEY_CURRENT_STREAK => $attributes[AC::KEY_CURRENT_STREAK]
+                ?? ($state->gamification_data[AC::KEY_CURRENT_STREAK] ?? 0),
+            AC::KEY_MAX_STREAK => $attributes[AC::KEY_MAX_STREAK]
+                ?? ($state->gamification_data[AC::KEY_MAX_STREAK] ?? 0),
         ]);
 
         $metrics = array_merge($state->performance_metrics ?? [], [
-            StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED => $attributes[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED]
-                ?? ($state->performance_metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] ?? 0),
-            StudentStateSchema::KEY_CORRECT_COUNT => $attributes[StudentStateSchema::KEY_CORRECT_COUNT]
-                ?? ($state->performance_metrics[StudentStateSchema::KEY_CORRECT_COUNT] ?? 0),
-            StudentStateSchema::KEY_WRONG_COUNT => $attributes[StudentStateSchema::KEY_WRONG_COUNT]
-                ?? ($state->performance_metrics[StudentStateSchema::KEY_WRONG_COUNT] ?? 0),
-            StudentStateSchema::KEY_WRONG_STREAK => $attributes[StudentStateSchema::KEY_WRONG_STREAK]
-                ?? ($state->performance_metrics[StudentStateSchema::KEY_WRONG_STREAK] ?? 0),
-            StudentStateSchema::KEY_HINTS_USED_COUNT => $attributes[StudentStateSchema::KEY_HINTS_USED_COUNT]
-                ?? ($state->performance_metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] ?? 0),
-            StudentStateSchema::KEY_HINTS_AVAILABLE => $attributes[StudentStateSchema::KEY_HINTS_AVAILABLE]
-                ?? ($state->performance_metrics[StudentStateSchema::KEY_HINTS_AVAILABLE]
-                    ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE),
+            AC::KEY_TOTAL_QUESTIONS_ANSWERED => $attributes[AC::KEY_TOTAL_QUESTIONS_ANSWERED]
+                ?? ($state->performance_metrics[AC::KEY_TOTAL_QUESTIONS_ANSWERED] ?? 0),
+            AC::KEY_CORRECT_COUNT => $attributes[AC::KEY_CORRECT_COUNT]
+                ?? ($state->performance_metrics[AC::KEY_CORRECT_COUNT] ?? 0),
+            AC::KEY_WRONG_COUNT => $attributes[AC::KEY_WRONG_COUNT]
+                ?? ($state->performance_metrics[AC::KEY_WRONG_COUNT] ?? 0),
+            AC::KEY_WRONG_STREAK => $attributes[AC::KEY_WRONG_STREAK]
+                ?? ($state->performance_metrics[AC::KEY_WRONG_STREAK] ?? 0),
+            AC::KEY_HINTS_USED_COUNT => $attributes[AC::KEY_HINTS_USED_COUNT]
+                ?? ($state->performance_metrics[AC::KEY_HINTS_USED_COUNT] ?? 0),
+            AC::KEY_HINTS_AVAILABLE => $attributes[AC::KEY_HINTS_AVAILABLE]
+                ?? ($state->performance_metrics[AC::KEY_HINTS_AVAILABLE]
+                    ?? AC::DEFAULT_HINTS_AVAILABLE),
         ]);
 
         $profile = array_merge($state->learning_profile ?? [], [
-            StudentStateSchema::KEY_LEARNING_STYLE => $attributes[StudentStateSchema::KEY_LEARNING_STYLE]
-                ?? ($state->learning_profile[StudentStateSchema::KEY_LEARNING_STYLE] ?? 'visual'),
+            AC::KEY_LEARNING_STYLE => $attributes[AC::KEY_LEARNING_STYLE]
+                ?? ($state->learning_profile[AC::KEY_LEARNING_STYLE] ?? 'visual'),
         ]);
 
         $this->studentStateRepo->update($userId, [
@@ -489,7 +489,7 @@ final class ProgressRepository implements ProgressRepositoryInterface
 
     public function getOrCreateStudentState(?string $userId): StudentState
     {
-        $defaults = StudentStateSchema::defaults();
+        $defaults = AC::defaults();
 
         if (is_null($userId) || $userId === 'guest') {
             return new StudentState([

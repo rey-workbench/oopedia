@@ -6,7 +6,7 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\StudentStateRepositoryInterface;
 use App\Models\StudentState;
-use App\Schemas\StudentStateSchema;
+use App\Rules\Adaptive\Constants\AdaptiveConstants as AC;
 
 final class StudentStateRepository implements StudentStateRepositoryInterface
 {
@@ -14,14 +14,14 @@ final class StudentStateRepository implements StudentStateRepositoryInterface
     {
         if ($userId === 'guest') {
             return new StudentState(array_merge(
-                StudentStateSchema::defaults(),
+                AC::defaults(),
                 ['user_id' => 'guest'],
             ));
         }
 
         return StudentState::firstOrCreate(
             ['user_id' => $userId],
-            array_merge(StudentStateSchema::defaults(), ['last_active_at' => now()]),
+            array_merge(AC::defaults(), ['last_active_at' => now()]),
         );
     }
 
