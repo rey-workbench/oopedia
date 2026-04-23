@@ -82,12 +82,11 @@ final class CertificateController extends Controller
                 mkdir(dirname($bwLogoPath), 0755, true);
             }
 
-            $img = imagecreatefrompng($logoPath);
-            imagealphablending($img, false);
-            imagesavealpha($img, true);
-            imagefilter($img, IMG_FILTER_GRAYSCALE);
-            imagepng($img, $bwLogoPath);
-            imagedestroy($img);
+            $img = \imagecreatefrompng($logoPath);
+            \imagealphablending($img, false);
+            \imagesavealpha($img, true);
+            \imagefilter($img, IMG_FILTER_GRAYSCALE);
+            \imagepng($img, $bwLogoPath);
         }
 
         $builder = new Builder(
