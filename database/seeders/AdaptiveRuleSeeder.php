@@ -75,6 +75,14 @@ class AdaptiveRuleSeeder extends Seeder
             ['code' => 'G28', 'category' => 'progress', 'name' => AC::FACT_PERSISTENT_FAIL,  'description' => 'Gagal berturut-turut.'],
             ['code' => 'G29', 'category' => 'progress', 'name' => AC::FACT_MODULE_NEARLY_DONE, 'description' => 'Materi hampir selesai.'],
             ['code' => 'G30', 'category' => 'progress', 'name' => AC::FACT_MODULE_GRADUATION,  'description' => 'Layak lulus modul.'],
+
+            // Modul tambahan & Status Unlock (G31-G36)
+            ['code' => 'G31', 'category' => 'difficulty', 'name' => AC::FACT_DIFF_MEDIUM,     'description' => 'Sedang di level medium.'],
+            ['code' => 'G32', 'category' => 'difficulty', 'name' => AC::FACT_DIFF_HARD,       'description' => 'Sedang di level hard.'],
+            ['code' => 'G33', 'category' => 'progress',   'name' => AC::FACT_IN_MODULE,       'description' => 'Sedang dalam modul pembelajaran.'],
+            ['code' => 'G34', 'category' => 'progress',   'name' => AC::FACT_SATISFACTORY_PROGRESS, 'description' => 'Progres memadai.'],
+            ['code' => 'G35', 'category' => 'progress',   'name' => AC::FACT_NEXT_UNLOCKED,   'description' => 'Modul berikutnya sudah terbuka.'],
+            ['code' => 'G36', 'category' => 'progress',   'name' => AC::FACT_PREV_UNLOCKED,   'description' => 'Modul sebelumnya sudah terbuka.'],
         ];
 
         foreach ($facts as $fact) {
@@ -127,80 +135,46 @@ class AdaptiveRuleSeeder extends Seeder
     private function seedRules(): void
     {
         $rules = [
-            // ══════════════════════════════════════════════════════════════
-            // TIER 1: Jalur Cepat / Bosan (priority 1-4)
-            // ══════════════════════════════════════════════════════════════
-            // R01: Perfect + Fast + Boredom → Naikkan difficulty (tantangan)
-            ['code' => 'R01', 'name' => 'Boredom Challenge',  'priority' =>  1, 'required' => ['G03', 'G16', 'G21'], 'forbidden' => ['G24'], 'action' => 'H18'],
-            // R02: Perfect + Fast (tanpa hint) → Lompat ke hard
-            ['code' => 'R02', 'name' => 'Elite Jump',         'priority' =>  2, 'required' => ['G03', 'G16'],        'forbidden' => ['G20'], 'action' => 'H03'],
+            // TIER 1: Jalur Cepat / Krisis (priority 1-4)
+            ['code' => 'R19', 'name' => 'Zero Score Crisis',  'priority' =>  1, 'domain' => 'Safety',      'required' => ['G04'],               'forbidden' => null,    'action' => 'H22'],
+            ['code' => 'R01', 'name' => 'Boredom Challenge',  'priority' =>  2, 'domain' => 'Progression', 'required' => ['G03', 'G16', 'G21'], 'forbidden' => null,    'action' => 'H18'],
+            ['code' => 'R02', 'name' => 'Elite Jump',         'priority' =>  3, 'domain' => 'Progression', 'required' => ['G03', 'G16'],        'forbidden' => ['G20'], 'action' => 'H03'],
 
-            // ══════════════════════════════════════════════════════════════
             // TIER 2: Proyek & Sertifikat (priority 5-10)
-            // ══════════════════════════════════════════════════════════════
-            // R03: Final Project + Perfect + Graduation + Mastery Hard → Gold
-            ['code' => 'R03', 'name' => 'Gold Award',         'priority' =>  5, 'required' => ['G27', 'G03', 'G30'], 'forbidden' => ['G20'], 'action' => 'H14'],
-            // R04: Final Project + Pass + Graduation → Silver
-            ['code' => 'R04', 'name' => 'Silver Award',       'priority' =>  6, 'required' => ['G27', 'G02', 'G30'], 'forbidden' => ['G20'], 'action' => 'H15'],
-            // R05: Final Project + Pass + Satisfactory Progress → Bronze
-            ['code' => 'R05', 'name' => 'Bronze Award',       'priority' =>  7, 'required' => ['G27', 'G02', 'G32'], 'forbidden' => null,    'action' => 'H16'],
-            // R06: Final Project + Fail + Visual → Revisi visual
-            ['code' => 'R06', 'name' => 'Project Visual Rev', 'priority' =>  8, 'required' => ['G27', 'G01', 'G09'], 'forbidden' => null,    'action' => 'H13'],
-            // R07: Final Project + Fail + Textual → Revisi tekstual
-            ['code' => 'R07', 'name' => 'Project Text Rev',   'priority' =>  9, 'required' => ['G27', 'G01', 'G10'], 'forbidden' => null,    'action' => 'H13'],
-            // R08: Final Project + Fail (fallback) → Review materi
-            ['code' => 'R08', 'name' => 'Project Fallback',   'priority' => 10, 'required' => ['G27', 'G01'],        'forbidden' => null,    'action' => 'H12'],
+            ['code' => 'R03', 'name' => 'Gold Award',         'priority' =>  5, 'domain' => 'Project',     'required' => ['G27', 'G03', 'G30'], 'forbidden' => ['G20'], 'action' => 'H14'],
+            ['code' => 'R04', 'name' => 'Silver Award',       'priority' =>  6, 'domain' => 'Project',     'required' => ['G27', 'G02', 'G30'], 'forbidden' => ['G20'], 'action' => 'H15'],
+            ['code' => 'R05', 'name' => 'Bronze Award',       'priority' =>  7, 'domain' => 'Project',     'required' => ['G27', 'G01', 'G30'], 'forbidden' => null,    'action' => 'H16'],
+            ['code' => 'R06', 'name' => 'Project Visual Rev', 'priority' =>  8, 'domain' => 'Project',     'required' => ['G27', 'G01', 'G09'], 'forbidden' => null,    'action' => 'H13'],
+            ['code' => 'R07', 'name' => 'Project Text Rev',   'priority' =>  9, 'domain' => 'Project',     'required' => ['G27', 'G01', 'G10'], 'forbidden' => null,    'action' => 'H13'],
+            ['code' => 'R08', 'name' => 'Project Fallback',   'priority' => 10, 'domain' => 'Project',     'required' => ['G27', 'G01'],        'forbidden' => null,    'action' => 'H12'],
 
-            // ══════════════════════════════════════════════════════════════
-            // TIER 3: Intervensi Krisis (priority 12-17)
-            // ══════════════════════════════════════════════════════════════
-            // R19: Score Zero → Intervensi krisis, arahkan ke materi
-            ['code' => 'R19', 'name' => 'Zero Score Crisis',  'priority' => 12, 'required' => ['G04'],               'forbidden' => null,    'action' => 'H22'],
-            // R09: Fail + Anxiety + Slow Fail → Turunkan beban
-            ['code' => 'R09', 'name' => 'Anxiety Safety Net', 'priority' => 13, 'required' => ['G01', 'G22'],        'forbidden' => null,    'action' => 'H17'],
-            // R10: Persistent Fail → Backtrack ke beginner
-            ['code' => 'R10', 'name' => 'Persistent Struggle', 'priority' => 14, 'required' => ['G28', 'G01'],       'forbidden' => null,    'action' => 'H23'],
-            // R20: High Struggle → Backtrack ke beginner
-            ['code' => 'R20', 'name' => 'High Struggle Aid',  'priority' => 15, 'required' => ['G23', 'G01'],        'forbidden' => null,    'action' => 'H04'],
-            // R11: Fail + Fast Fail → Peringatan ceroboh
-            ['code' => 'R11', 'name' => 'Careless Failure',   'priority' => 17, 'required' => ['G01', 'G17'],        'forbidden' => null,    'action' => 'H20'],
+            // TIER 3: Intervensi Safety (priority 13-17)
+            ['code' => 'R09', 'name' => 'Anxiety Safety Net', 'priority' => 13, 'domain' => 'Safety',      'required' => ['G01', 'G22'],        'forbidden' => null,    'action' => 'H17'],
+            ['code' => 'R10', 'name' => 'Persistent Struggle', 'priority' => 14, 'domain' => 'Safety',      'required' => ['G28', 'G01'],       'forbidden' => null,    'action' => 'H23'],
+            ['code' => 'R20', 'name' => 'High Struggle Aid',  'priority' => 15, 'domain' => 'Safety',      'required' => ['G23', 'G01'],        'forbidden' => null,    'action' => 'H04'],
+            ['code' => 'R11', 'name' => 'Careless Failure',   'priority' => 17, 'domain' => 'Recovery',    'required' => ['G01', 'G17'],        'forbidden' => null,    'action' => 'H20'],
 
-            // ══════════════════════════════════════════════════════════════
             // TIER 4: Error-Specific Remediation (priority 18-19)
-            // Prioritas lebih tinggi dari gaya belajar generik
-            // ══════════════════════════════════════════════════════════════
-            // R14: Syntax Error + Fail → Panduan sintaks
-            ['code' => 'R14', 'name' => 'Syntax Error Help',  'priority' => 18, 'required' => ['G12', 'G01'],        'forbidden' => null,    'action' => 'H11'],
-            // R15: Logic Error + Fail → Panduan logika
-            ['code' => 'R15', 'name' => 'Logic Error Help',   'priority' => 19, 'required' => ['G13', 'G01'],        'forbidden' => null,    'action' => 'H10'],
+            ['code' => 'R14', 'name' => 'Syntax Error Help',  'priority' => 18, 'domain' => 'Recovery',    'required' => ['G12', 'G01'],        'forbidden' => null,    'action' => 'H11'],
+            ['code' => 'R15', 'name' => 'Logic Error Help',   'priority' => 19, 'domain' => 'Recovery',    'required' => ['G13', 'G01'],        'forbidden' => null,    'action' => 'H10'],
 
-            // ══════════════════════════════════════════════════════════════
-            // TIER 5: Gaya Belajar Generik (priority 20-24)
-            // ══════════════════════════════════════════════════════════════
-            // R12: Fail + Visual → Materi visual
-            ['code' => 'R12', 'name' => 'Visual Preference',  'priority' => 20, 'required' => ['G01', 'G09'],        'forbidden' => ['G12', 'G13'], 'action' => 'H06'],
-            // R13: Fail + Textual → Materi tekstual
-            ['code' => 'R13', 'name' => 'Textual Preference', 'priority' => 21, 'required' => ['G01', 'G10'],        'forbidden' => ['G12', 'G13'], 'action' => 'H07'],
-            // R18: Fail + Mixed → Materi komprehensif
-            ['code' => 'R18', 'name' => 'Mixed Preference',   'priority' => 22, 'required' => ['G01', 'G11'],        'forbidden' => ['G12', 'G13'], 'action' => 'H21'],
+            // TIER 5: Gaya Belajar (priority 20-22)
+            ['code' => 'R12', 'name' => 'Visual Preference',  'priority' => 20, 'domain' => 'Style',       'required' => ['G01', 'G09'],        'forbidden' => null,    'action' => 'H06'],
+            ['code' => 'R13', 'name' => 'Textual Preference', 'priority' => 21, 'domain' => 'Style',       'required' => ['G01', 'G10'],        'forbidden' => null,    'action' => 'H07'],
+            ['code' => 'R18', 'name' => 'Mixed Preference',   'priority' => 22, 'domain' => 'Style',       'required' => ['G01', 'G11'],        'forbidden' => null,    'action' => 'H21'],
 
-            // ══════════════════════════════════════════════════════════════
             // TIER 6: Graduation & Fallback (priority 25-35)
-            // ══════════════════════════════════════════════════════════════
-            // R16: Module Graduation → Selesaikan modul
-            ['code' => 'R16', 'name' => 'Graduation Check',   'priority' => 25, 'required' => ['G30', 'G32'],        'forbidden' => null,    'action' => 'H05'],
-            // R21: Slow Success → Pesan motivasi (hati-hati tapi benar)
-            ['code' => 'R21', 'name' => 'Slow But Steady',    'priority' => 28, 'required' => ['G02', 'G18'],        'forbidden' => null,    'action' => 'H19'],
-            // R17: Pass (fallback) → Lanjut normal
-            ['code' => 'R17', 'name' => 'Default Pass',       'priority' => 30, 'required' => ['G02'],               'forbidden' => null,    'action' => 'H01'],
-            // R22: Fail generik (fallback terakhir sebelum engine fallback)
-            ['code' => 'R22', 'name' => 'Default Remedial',   'priority' => 35, 'required' => ['G01'],               'forbidden' => null,    'action' => 'H02'],
+            ['code' => 'R16', 'name' => 'Graduation Check',   'priority' => 25, 'domain' => 'Progression', 'required' => ['G30', 'G34'],        'forbidden' => null,    'action' => 'H05'],
+            ['code' => 'R21', 'name' => 'Slow But Steady',    'priority' => 28, 'domain' => 'Progression', 'required' => ['G02', 'G18'],        'forbidden' => null,    'action' => 'H19'],
+            ['code' => 'R17', 'name' => 'Default Pass',       'priority' => 30, 'domain' => 'Progression', 'required' => ['G02'],               'forbidden' => null,    'action' => 'H01'],
+            ['code' => 'R22', 'name' => 'Default Remedial',   'priority' => 35, 'domain' => 'Progression', 'required' => ['G01'],               'forbidden' => null,    'action' => 'H02'],
         ];
 
         foreach ($rules as $rule) {
             AdaptiveRule::create([
                 'rule_code'       => $rule['code'],
                 'name'            => $rule['name'],
+                'domain'          => $rule['domain'],
                 'priority'        => $rule['priority'],
                 'required_facts'  => $rule['required'],
                 'forbidden_facts' => $rule['forbidden'],

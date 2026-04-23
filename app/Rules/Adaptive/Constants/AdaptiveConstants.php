@@ -92,6 +92,19 @@ final class AdaptiveConstants
 
     public const FAST_TRACK_ACTIVE = 'fast_track_active';
 
+    // ── Global Thresholds ───────────────────────────────────────────
+    public const THRESHOLD_CONSISTENCY_STREAK = 3;
+
+    public const THRESHOLD_BOREDOM_STREAK      = 3;
+
+    public const THRESHOLD_ANXIETY_STREAK      = 2;
+
+    public const THRESHOLD_MASTERY_ACCURACY    = 70;
+
+    public const THRESHOLD_MASTERY_MIN_ATTEMPTS = 3;
+
+    public const THRESHOLD_MODULE_NEARLY_DONE_PCT = 80;
+
     // ── Operational Action Labels (Dibutuhkan oleh NextActionResolverService) ──
     public const ACTION_NEXT_QUESTION    = 'NEXT_QUESTION';
 

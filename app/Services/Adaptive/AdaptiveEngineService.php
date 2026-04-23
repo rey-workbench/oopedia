@@ -6,8 +6,9 @@ namespace App\Services\Adaptive;
 
 use App\Contracts\Services\AdaptiveEngineServiceInterface;
 use App\Models\AdaptiveExecutionLog;
+use App\Models\AdaptiveFact;
 use App\Models\AdaptiveRule;
-use App\Rules\Adaptive\Constants\AdaptiveConstants;
+use App\Rules\Adaptive\Constants\AdaptiveConstants as AC;
 use App\Rules\Adaptive\Contracts\AdaptiveRuleInterface;
 use App\Rules\Adaptive\DynamicAdaptiveRule;
 use Illuminate\Database\Eloquent\Collection;
@@ -31,6 +32,7 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             );
         }
 
+        $user = Auth::user();
         if ($user) {
             $flatKeys   = ['target_difficulty', 'current_material_id', 'learning_style', 'xp', 'level'];
             $flatBefore = array_intersect_key($previousState, array_flip($flatKeys));
@@ -64,8 +66,8 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             'engine_metadata' => [
                 'rule_count'      => Cache::remember('adaptive_rules_count', now()->addHours(24), fn () => AdaptiveRule::where('is_active', true)->count()),
                 'engine_version'  => '4.1.2-PROD',
-                'fact_labels'     => Cache::remember('adaptive_fact_labels', now()->addHours(24), fn () => \App\Models\AdaptiveFact::all()->pluck('name', 'code')->toArray()),
-                'fact_categories' => Cache::remember('adaptive_fact_categories', now()->addHours(24), fn () => \App\Models\AdaptiveFact::all()->pluck('category', 'code')->toArray()),
+                'fact_labels'     => Cache::remember('adaptive_fact_labels', now()->addHours(24), fn () => AdaptiveFact::all()->pluck('name', 'code')->toArray()),
+                'fact_categories' => Cache::remember('adaptive_fact_categories', now()->addHours(24), fn () => AdaptiveFact::all()->pluck('category', 'code')->toArray()),
             ],
         ];
     }
@@ -134,18 +136,18 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
         $actionCode = $rule->getActionCode();
 
         // Guard: Jangan lompat difficulty jika sudah di target
-        if ($actionCode === AdaptiveConstants::ACTION_INCREASE_DIFFICULTY) {
+        if ($actionCode === AC::ACTION_INCREASE_DIFFICULTY) {
             return $this->hasReachedFastTrackTarget($currentState);
         }
 
         // Guard: Jangan ulangi aksi remedial yang sama berturut-turut
         $nonRepeatableActions = [
-            AdaptiveConstants::ACTION_STUDY_SYNTAX,
-            AdaptiveConstants::ACTION_STUDY_THEORY,
-            AdaptiveConstants::ACTION_STUDY_VISUAL,
-            AdaptiveConstants::ACTION_STUDY_TEXTUAL,
-            AdaptiveConstants::ACTION_STUDY_MIXED,
-            AdaptiveConstants::ACTION_REDUCE_DIFFICULTY,
+            AC::ACTION_STUDY_SYNTAX,
+            AC::ACTION_STUDY_THEORY,
+            AC::ACTION_STUDY_VISUAL,
+            AC::ACTION_STUDY_TEXTUAL,
+            AC::ACTION_STUDY_MIXED,
+            AC::ACTION_REDUCE_DIFFICULTY,
         ];
 
         if (in_array($actionCode, $nonRepeatableActions, true)) {
@@ -158,8 +160,8 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
     private function hasReachedFastTrackTarget(array $state): bool
     {
         return in_array($state['target_difficulty'] ?? null, [
-            AdaptiveConstants::DIFFICULTY_MEDIUM,
-            AdaptiveConstants::DIFFICULTY_HARD,
+            AC::DIFFICULTY_MEDIUM,
+            AC::DIFFICULTY_HARD,
         ], true);
     }
 
@@ -179,7 +181,7 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 
     private function applyDefaultFallback(array $state, bool $isCorrect): array
     {
-        $state['next_action'] = AdaptiveConstants::ACTION_NEXT_QUESTION;
+        $state['next_action'] = AC::ACTION_NEXT_QUESTION;
         $state['message']     = $isCorrect
             ? 'Jawaban benar! Silakan lanjut ke soal berikutnya.'
             : 'Jawaban kurang tepat. Mari coba lagi.';

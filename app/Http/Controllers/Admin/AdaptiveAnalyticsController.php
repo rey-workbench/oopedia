@@ -37,6 +37,8 @@ final class AdaptiveAnalyticsController extends Controller
             'recentTriggers'            => $recentTriggers,
             'ruleTriggersStats'         => $ruleTriggersStats,
             'decisionTree'              => $this->getDecisionTreeData(),
+            'allFacts'                  => AdaptiveFact::all(),
+            'allActions'                => AdaptiveAction::all(),
         ]);
     }
 
@@ -54,56 +56,24 @@ final class AdaptiveAnalyticsController extends Controller
     {
         $rules = AdaptiveRule::with('action')->ordered()->get();
 
-        $domains = [
-            'Safety'      => [],
-            'Project'     => [],
-            'Achievement' => [],
-            'Recovery'    => [],
-            'Progression' => [],
-        ];
-
-        foreach ($rules as $rule) {
-            $domain             = $this->categorizeRule($rule->rule_code);
-            $domains[$domain][] = [
-                'id'       => $rule->rule_code,
-                'name'     => $rule->name,
-                'priority' => $rule->priority,
-                'action'   => $rule->action?->code ?? 'H00',
-            ];
-        }
+        // Group by domain from DB
+        $grouped = $rules->groupBy('domain');
 
         $result = [];
-        foreach ($domains as $name => $ruleList) {
-            if (empty($ruleList)) {
-                continue;
-            }
-
+        foreach ($grouped as $domainName => $ruleList) {
             $result[] = [
-                'domain' => $name,
-                'count'  => count($ruleList),
-                'rules'  => $ruleList,
+                'domain' => $domainName ?? 'Uncategorized',
+                'count'  => $ruleList->count(),
+                'rules'  => $ruleList->map(fn ($rule) => [
+                    'id'       => $rule->rule_code,
+                    'name'     => $rule->name,
+                    'priority' => $rule->priority,
+                    'action'   => $rule->action?->code ?? 'H00',
+                ]),
             ];
         }
 
         return $result;
-    }
-
-    private function categorizeRule(string $code): string
-    {
-        if (in_array($code, ['R03', 'R04', 'R05', 'R06', 'R14'])) {
-            return 'Safety';
-        }
-        if (in_array($code, ['R01', 'R02', 'R07', 'R08'])) {
-            return 'Project';
-        }
-        if (in_array($code, ['R09', 'R10', 'R11'])) {
-            return 'Achievement';
-        }
-        if (in_array($code, ['R12', 'R13'])) {
-            return 'Recovery';
-        }
-
-        return 'Progression';
     }
 
     /**

@@ -22,6 +22,7 @@ class AdaptiveRule extends Model
     protected $fillable = [
         'rule_code',
         'name',
+        'domain',
         'priority',
         'required_facts',
         'forbidden_facts',

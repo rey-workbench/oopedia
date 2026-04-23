@@ -1,4 +1,4 @@
-import type { Material, User, UeqSurvey, SusResult } from '@/types/models';
+import type { Material, User, UeqSurvey, SusResult, AdaptiveFact, AdaptiveAction } from '@/types/models';
 import type { SharedProps } from './shared';
 
 export interface AdminSusIndexProps extends SharedProps {
@@ -148,4 +148,6 @@ export interface AdminAdaptiveAnalyticsProps extends SharedProps {
     recentTriggers: AdaptiveTriggerItem[];
     ruleTriggersStats: AdaptiveRuleTriggerStat[];
     decisionTree: any;
+    allFacts: AdaptiveFact[];
+    allActions: AdaptiveAction[];
 }

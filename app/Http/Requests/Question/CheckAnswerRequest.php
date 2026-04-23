@@ -14,6 +14,7 @@ final class CheckAnswerRequest extends BaseFormRequest
         return [
             'used_hint'                => 'required|boolean',
             'time_spent'               => 'required|integer|min:0',
+            'score'                    => 'nullable|integer|min:0',
             'difficulty'               => 'nullable|in:all,beginner,medium,hard,final',
             'answer'                   => 'nullable|string',
             'fill_in_the_blank_answer' => 'nullable|string',

@@ -4,6 +4,7 @@ namespace App\Rules\Adaptive;
 
 use App\Models\AdaptiveRule as AdaptiveRuleModel;
 use App\Models\Material;
+use App\Rules\Adaptive\Constants\AdaptiveConstants as AC;
 use App\Rules\Adaptive\Contracts\AdaptiveRuleInterface;
 
 /**
@@ -93,7 +94,7 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
     private function executeAction(array $params, array $state, array $context): array
     {
         // 1. Unlock Modul Otomatis jika aksi adalah Module Completion
-        if (isset($params['next_action']) && $params['next_action'] === 'MODULE_COMPLETE') {
+        if (isset($params['next_action']) && $params['next_action'] === AC::ACTION_FINISH_MATERIAL) {
             $state = $this->handleModuleUnlock($state, $context);
         }
 
@@ -104,9 +105,9 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
 
         // 3. Tangani Gamifikasi (Badges/XP)
         if (isset($params['badges']) && is_array($params['badges'])) {
-            $current = data_get($state, 'gamification_data.badges', []);
+            $current   = $state['badges'] ?? [];
             $newBadges = array_values(array_unique(array_merge($current, $params['badges'])));
-            data_set($state, 'gamification_data.badges', $newBadges);
+            $state['badges'] = $newBadges;
         }
 
         // 4. Update Properti State Dinamis
@@ -135,15 +136,17 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
     private function handleModuleUnlock(array $state, array $context): array
     {
         $materialId = $context['material_id'] ?? null;
-        if (! $materialId) return $state;
+        if (! $materialId) {
+            return $state;
+        }
 
-        $material = Material::find($materialId);
+        $material     = Material::find($materialId);
         $nextMaterial = $material?->getNextMaterial();
 
         if ($nextMaterial && $nextMaterial->module_id) {
             $unlocked = $state['unlocked_modules'] ?? [];
-            if (! in_array((string)$nextMaterial->module_id, $unlocked, true)) {
-                $unlocked[] = (string)$nextMaterial->module_id;
+            if (! in_array((string) $nextMaterial->module_id, $unlocked, true)) {
+                $unlocked[]                = (string) $nextMaterial->module_id;
                 $state['unlocked_modules'] = array_values(array_unique($unlocked));
             }
         }
@@ -154,10 +157,12 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
     private function handleCertification(array $state, array $context, string $award): array
     {
         $materialId = $context['material_id'] ?? null;
-        if (! $materialId) return $state;
+        if (! $materialId) {
+            return $state;
+        }
 
-        $certs = $state['certifications'] ?? [];
-        $certs[$materialId] = $award;
+        $certs                   = $state['certifications'] ?? [];
+        $certs[$materialId]      = $award;
         $state['certifications'] = $certs;
 
         return $state;

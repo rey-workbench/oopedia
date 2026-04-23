@@ -41,3 +41,4 @@ export type {
 
 export type { MslqResult, MslqQuestion, MslqAnswer } from './mslq';
 export type { SusResult } from './sus';
+export type { AdaptiveFact, AdaptiveAction, AdaptiveRule } from './adaptive';
