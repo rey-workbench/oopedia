@@ -48,7 +48,7 @@ final class CertificateController extends Controller
     public function preview(string $materialId): \Illuminate\View\View
     {
         $userId = Auth::id();
-        $user = \Auth::user();
+        $user = Auth::user();
         $state = $this->progressRepo->getOrCreateStudentState($userId);
         $material = $this->materialRepo->find($materialId);
 
