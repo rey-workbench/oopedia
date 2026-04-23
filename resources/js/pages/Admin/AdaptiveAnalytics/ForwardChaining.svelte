@@ -1,4 +1,5 @@
 <script lang="ts">
+    /// <reference types="d3" />
     import { onMount, untrack } from 'svelte';
     import * as d3 from 'd3';
     import type { AdaptiveAnalyticsState } from '@/states/Admin/AdaptiveAnalyticsState.svelte';
@@ -478,7 +479,17 @@
     onMount(() => {
         initSchematic();
         window.addEventListener('resize', initSchematic);
-        return () => window.removeEventListener('resize', initSchematic);
+        
+        const handleFullscreenChange = () => {
+            isFullscreen = !!document.fullscreenElement;
+            setTimeout(initSchematic, 100);
+        };
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        
+        return () => {
+            window.removeEventListener('resize', initSchematic);
+            document.removeEventListener('fullscreenchange', handleFullscreenChange);
+        };
     });
 
     $effect(() => {
@@ -487,9 +498,20 @@
         }
     });
 
-    function toggleFullscreen() {
-        isFullscreen = !isFullscreen;
-        setTimeout(initSchematic, 100);
+    async function toggleFullscreen() {
+        if (!containerRef) return;
+        
+        if (!document.fullscreenElement) {
+            try {
+                await containerRef.requestFullscreen();
+            } catch (err) {
+                console.error('Error attempting to enable fullscreen:', err);
+            }
+        } else {
+            if (document.exitFullscreen) {
+                await document.exitFullscreen();
+            }
+        }
     }
 </script>
 
@@ -513,40 +535,16 @@
     }
 </style>
 
-<!-- svelte-ignore element_invalid_self_closing_tag -->
-<reference types="d3"></reference>
-
 <div
     class="relative w-full overflow-hidden bg-white {isFullscreen
-        ? 'fixed inset-0 z-50'
+        ? 'h-full rounded-none'
         : 'h-[750px] rounded-3xl border-2 border-slate-100 shadow-xl'}"
     bind:this={containerRef}
 >
     <!-- Header -->
     <div
-        class="pointer-events-none absolute top-6 right-6 left-6 z-10 flex items-center justify-between"
+        class="pointer-events-none absolute top-6 right-6 left-6 z-10 flex items-center justify-end"
     >
-        <div
-            class="pointer-events-auto flex items-center gap-4 rounded-2xl border border-slate-200 bg-white/80 p-3 px-5 shadow-lg backdrop-blur-xl"
-        >
-            <div class="rounded-xl bg-slate-900 p-2.5 text-white shadow-inner">
-                <Brain size={22} />
-            </div>
-            <div>
-                <h3 class="mb-1 text-lg leading-none font-black tracking-tight text-slate-900">
-                    Mesin Inferensi
-                </h3>
-                <div class="flex items-center gap-2">
-                    <div class="h-1.5 w-1.5 animate-pulse rounded-full bg-blue-500"></div>
-                    <p
-                        class="text-[10px] font-bold tracking-widest text-slate-500 uppercase text-shadow-sm"
-                    >
-                        Diagram Skematik Forward Chaining
-                    </p>
-                </div>
-            </div>
-        </div>
-
         <div class="pointer-events-auto flex items-center gap-2">
             <div
                 class="mr-2 flex items-center gap-1 rounded-xl border border-slate-200 bg-white/80 p-1.5 shadow-lg backdrop-blur-xl"
