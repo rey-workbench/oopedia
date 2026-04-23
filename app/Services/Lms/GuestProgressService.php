@@ -6,18 +6,17 @@ namespace App\Services\Lms;
 
 use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Models\StudentState;
-use App\Schemas\StudentStateSchema;
+use App\Rules\Adaptive\Constants\AdaptiveConstants as AC;
 use Illuminate\Support\Facades\Cookie;
 
 final class GuestProgressService implements GuestProgressServiceInterface
 {
     public function __construct(
-        private readonly string $cookieName = 'guest_progress',
-        private readonly string $cookieXp = 'guest_xp',
-        private readonly string $cookieStreak = 'guest_streak',
-        private readonly string $cookieAdaptive = 'guest_adaptive',
+        private readonly string $cookieName        = 'guest_progress',
+        private readonly string $cookieXp          = 'guest_xp',
+        private readonly string $cookieStreak      = 'guest_streak',
         private readonly string $cookiePerformance = 'guest_performance',
-        private readonly int $cookieLifetime = 60 * 24 * 30,
+        private readonly int $cookieLifetime    = 60 * 24 * 30,
     ) {}
 
     /** @return array<string, mixed> */
@@ -90,8 +89,8 @@ final class GuestProgressService implements GuestProgressServiceInterface
         $streak = request()->cookie($this->cookieStreak) ?? 0;
 
         return [
-            StudentStateSchema::KEY_GLOBAL_XP      => (int) $xp,
-            StudentStateSchema::KEY_CURRENT_STREAK => (int) $streak,
+            'xp'     => (int) $xp,
+            'streak' => (int) $streak,
         ];
     }
 
@@ -103,14 +102,7 @@ final class GuestProgressService implements GuestProgressServiceInterface
 
     public function getStudentState(): StudentState
     {
-        $xp     = request()->cookie($this->cookieXp)     ?? 0;
-        $streak = request()->cookie($this->cookieStreak) ?? 0;
-
-        $adaptiveData  = request()->cookie($this->cookieAdaptive);
-        $adaptiveState = $adaptiveData ? json_decode($adaptiveData, true) : [];
-        if (! is_array($adaptiveState)) {
-            $adaptiveState = [];
-        }
+        $gamification = $this->getGamificationState();
 
         $perfData           = request()->cookie($this->cookiePerformance);
         $performanceMetrics = $perfData ? json_decode($perfData, true) : [];
@@ -118,55 +110,39 @@ final class GuestProgressService implements GuestProgressServiceInterface
             $performanceMetrics = [];
         }
 
-        $gamification                                         = StudentStateSchema::getDefaultGamification();
-        $gamification[StudentStateSchema::KEY_GLOBAL_XP]      = (int) $xp;
-        $gamification[StudentStateSchema::KEY_CURRENT_STREAK] = (int) $streak;
-        $gamification[StudentStateSchema::KEY_CURRENT_LEVEL]  = 'Tamu';
+        $defaults = AC::defaults();
 
-        return new StudentState([
-            'user_id'             => 'guest',
-            'gamification_data'   => $gamification,
-            'learning_profile'    => StudentStateSchema::getDefaultLearningProfile(),
-            'performance_metrics' => array_merge(
-                StudentStateSchema::getDefaultPerformanceMetrics(),
-                $performanceMetrics,
-            ),
-            'adaptive_state'      => array_merge(
-                StudentStateSchema::getDefaultAdaptiveState(),
-                $adaptiveState,
-            ),
-        ]);
+        return new StudentState(array_merge($defaults, [
+            'user_id'         => 'guest',
+            'xp'              => $gamification['xp'],
+            'streak'          => $gamification['streak'],
+            'level'           => 'Tamu',
+            'total_answered'  => $performanceMetrics['total_answered']   ?? 0,
+            'correct_count'   => $performanceMetrics['correct_count']    ?? 0,
+            'wrong_count'     => $performanceMetrics['wrong_count']      ?? 0,
+            'wrong_streak'    => $performanceMetrics['wrong_streak']     ?? 0,
+            'hints_used'      => $performanceMetrics['hints_used']       ?? 0,
+            'hints_available' => $performanceMetrics['hints_available']  ?? AC::DEFAULT_HINTS_AVAILABLE,
+        ]));
     }
 
     public function saveStudentState(StudentState $state): void
     {
-        $gamification = $state->gamification_data;
-        $xp           = $gamification[StudentStateSchema::KEY_GLOBAL_XP]      ?? 0;
-        $streak       = $gamification[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0;
+        $this->saveGamificationState($state->xp, $state->streak);
 
-        $this->saveGamificationState((int) $xp, (int) $streak);
-
-        if ($state->adaptive_state) {
-            $this->setCookie($this->cookieAdaptive, json_encode($state->adaptive_state));
-        }
-
-        if ($state->performance_metrics) {
-            $this->setCookie($this->cookiePerformance, json_encode($state->performance_metrics));
-        }
+        $this->setCookie($this->cookiePerformance, json_encode([
+            'total_answered'  => $state->total_answered,
+            'correct_count'   => $state->correct_count,
+            'wrong_count'     => $state->wrong_count,
+            'wrong_streak'    => $state->wrong_streak,
+            'hints_used'      => $state->hints_used,
+            'hints_available' => $state->hints_available,
+        ]));
     }
 
     private function setCookie(string $name, string $value): void
     {
-        Cookie::queue(
-            $name,
-            $value,
-            $this->cookieLifetime,
-            '/',
-            null,
-            false,
-            false,
-            'lax',
-        );
+        Cookie::queue($name, $value, $this->cookieLifetime, '/', null, false, false, 'lax');
     }
 
     private function deleteCookie(string $name): void

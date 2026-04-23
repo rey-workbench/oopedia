@@ -23,6 +23,7 @@
         LogOut,
         LogIn,
         UserPlus,
+        Brain,
     } from 'lucide-svelte';
     import { fly, slide } from 'svelte/transition';
     import { getTourIdFromUrl, registerGlobalTutorials } from '@/tutorial';
@@ -138,6 +139,13 @@
                         icon={SquareActivity}
                         active={page.url.startsWith(ROUTES.ADMIN.QUESTIONS.INDEX)}
                         >Kelola Soal</SidebarLink
+                    >
+                    <SidebarLink
+                        id="sidebar-admin-adaptive"
+                        href={ROUTES.ADMIN.ADAPTIVE_ANALYTICS}
+                        icon={Brain}
+                        active={page.url.startsWith(ROUTES.ADMIN.ADAPTIVE_ANALYTICS)}
+                        >Engine Adaptif</SidebarLink
                     >
                 </div>
             </div>

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Contracts\Services;
 
 use App\Enums\Lms\QuestionDifficulty;
@@ -13,7 +15,7 @@ interface FactGatheringServiceInterface
         bool $usedHint,
         int $score,
         int $timeSpent,
-        QuestionDifficulty $difficulty,
+        QuestionDifficulty|string $difficulty,
         string $questionId,
         string $materialId,
         ?string $moduleId = null,

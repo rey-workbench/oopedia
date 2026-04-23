@@ -61,7 +61,7 @@ export function getTourIdFromUrl(url: string, isAdminRole: boolean): string {
 
         if (path.includes('/admin/pending-admins')) return 'admin_pending_admins';
 
-        if (path.includes('/admin/ueq-survey')) {
+        if (path.includes('/admin/surveys/ueq')) {
             // Check if it's a detail page (ends with ID or has export)
             const parts = path.split('/');
             const lastPart = parts[parts.length - 1];
@@ -71,7 +71,7 @@ export function getTourIdFromUrl(url: string, isAdminRole: boolean): string {
             return 'admin_ueq';
         }
 
-        if (path.includes('/admin/mslq')) {
+        if (path.includes('/admin/surveys/mslq')) {
             // Check if it's a detail page (ends with ID)
             const parts = path.split('/');
             const lastPart = parts[parts.length - 1];
@@ -107,7 +107,7 @@ export function getTourIdFromUrl(url: string, isAdminRole: boolean): string {
         if (path.includes('/mahasiswa/leaderboard')) return 'mahasiswa_leaderboard';
         if (path.includes('/mahasiswa/certificates')) return 'mahasiswa_certificates';
 
-        if (path.includes('/mahasiswa/ueq-survey')) {
+        if (path.includes('/mahasiswa/surveys/ueq')) {
             if (path.includes('/thank-you') || path.includes('/thankyou'))
                 return 'mahasiswa_ueq_thankyou';
             return 'mahasiswa_ueq';
@@ -115,7 +115,7 @@ export function getTourIdFromUrl(url: string, isAdminRole: boolean): string {
 
         if (path.includes('/mahasiswa/profile')) return 'mahasiswa_profile';
 
-        if (path.includes('/mahasiswa/mslq')) return 'mahasiswa_mslq';
+        if (path.includes('/mahasiswa/surveys/mslq')) return 'mahasiswa_mslq';
     }
 
     return tourId;

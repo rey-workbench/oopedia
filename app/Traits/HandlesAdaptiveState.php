@@ -17,15 +17,17 @@ trait HandlesAdaptiveState
         &$targetDifficulty,
     ): array {
         if ($isGuest) {
+            $guestSvc = $this->getGuestProgressService();
+
             return [
                 'gamification' => [
-                    'global_xp'       => $this->getGuestProgressService()->getGamificationState()['global_xp'],
-                    'current_streak'  => $this->getGuestProgressService()->getGamificationState()['current_streak'],
-                    'current_level'   => 'Tamu',
+                    'xp'             => $guestSvc->getGamificationState()['xp'],
+                    'streak'         => $guestSvc->getGamificationState()['streak'],
+                    'level'          => 'Tamu',
                 ],
                 'performance' => [
-                    'hints_available'          => 3,
-                    'total_questions_answered' => count($this->getGuestProgressService()->getProgress()),
+                    'hints_available' => 3,
+                    'total_answered'  => count($guestSvc->getProgress()),
                 ],
                 'learning_profile' => [],
             ];
@@ -36,40 +38,30 @@ trait HandlesAdaptiveState
             return [];
         }
 
-        $adaptiveState = $studentState->adaptive_state ?? [];
-        if (is_string($adaptiveState)) {
-            $adaptiveState = json_decode($adaptiveState, true) ?? [];
+        // Reset navigation if user switched material
+    if ($studentState->current_material_id             !== null
+            && (string) $studentState->current_material_id !== (string) $materialId
+        ) {
+            $this->getPerformanceService()->resetMaterialMetrics($userId);
+            $studentState->target_difficulty   = null;
+            $studentState->current_material_id = null;
         }
 
-        $this->handleMaterialChange($studentState, $adaptiveState, $materialId);
-
-        $targetDifficulty = QuestionDifficulty::tryFrom($adaptiveState['target_difficulty'] ?? null);
+        $targetDifficulty = QuestionDifficulty::tryFrom($studentState->target_difficulty);
 
         return [
-            'gamification'     => $studentState->gamification_data,
-            'performance'      => $studentState->performance_metrics,
-            'learning_profile' => $studentState->learning_profile,
+            'xp'             => $studentState->xp,
+            'level'          => $studentState->level,
+            'streak'         => $studentState->streak,
+            'learning_style' => $studentState->learning_style,
+            'total_answered' => $studentState->total_answered,
+            'hints_available'=> $studentState->hints_available,
         ];
     }
 
-    public function handleMaterialChange($studentState, array &$adaptiveState, int|string $materialId): void
+    /** Kept for backward compat in MaterialQuestionController — delegates to resetMaterialMetrics */
+    public function resetMaterialScopedState($studentState, int|string $materialId): void
     {
-        $lastMaterialId = $adaptiveState['current_material_id'] ?? null;
-        if ($lastMaterialId !== null && (string) $lastMaterialId !== (string) $materialId) {
-            $adaptiveState['target_difficulty'] = null;
-            $adaptiveState['fast_track_active'] = false;
-            $adaptiveState['last_rule']         = null;
-
-            $this->getPerformanceService()->resetMaterialMetrics($studentState->user_id, $adaptiveState);
-        }
-    }
-
-    public function resetMaterialScopedState($studentState, array &$adaptiveState): void
-    {
-        $adaptiveState['target_difficulty'] = null;
-        $adaptiveState['fast_track_active'] = false;
-        $adaptiveState['last_rule']         = null;
-
-        $this->getPerformanceService()->resetMaterialMetrics($studentState->user_id, $adaptiveState);
+        $this->getPerformanceService()->resetMaterialMetrics($studentState->user_id);
     }
 }

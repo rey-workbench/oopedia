@@ -51,7 +51,7 @@ export class UeqSurveyState extends FormState<UeqSurveyForm> {
     }
 
     submit() {
-        this.submitForm('post', '/mahasiswa/ueq-survey', {
+        this.submitForm('post', '/mahasiswa/surveys/ueq', {
             scrollToError: true,
         });
     }

@@ -28,54 +28,35 @@
         isDebugPanelCollapsed = !isDebugPanelCollapsed;
     }
 
-    const factCodes = $derived(quizState.adaptiveFacts as string[]);
+    const metadata = $derived(quizState.feedbackData?.adaptiveResult?.engine_metadata);
+    const factCodes = $derived(quizState.adaptiveFacts);
 
-    const factCategories = $derived({
-        performance: factCodes.filter((f) => ['G01', 'G02', 'G03', 'G04', 'G05', 'G21'].includes(f)),
-        style: factCodes.filter((f) => ['G06', 'G07', 'G22'].includes(f)),
-        error: factCodes.filter((f) => ['G08', 'G09', 'G10', 'G20'].includes(f)),
-        difficulty: factCodes.filter((f) => ['G13', 'G14', 'G15', 'G16'].includes(f)),
-        quiz: factCodes.filter((f) => ['G11', 'G12', 'G17', 'G18', 'G19'].includes(f)),
+    const factCategories = $derived.by(() => {
+        if (!metadata) return {};
+
+        const groups: Record<string, string[]> = {};
+        factCodes.forEach((code) => {
+            const cat = metadata.fact_categories[code] || 'other';
+            if (!groups[cat]) groups[cat] = [];
+            groups[cat].push(code);
+        });
+        return groups;
     });
 
     function getFactLabel(factCode: string) {
-        const labels: Record<string, string> = {
-            G01: 'Critical Score',
-            G02: 'Remedial Score',
-            G03: 'Standard Score',
-            G04: 'Mastery Score',
-            G05: 'Fast Response',
-            G06: 'Visual Learner',
-            G07: 'Textual Learner',
-            G08: 'Syntax Error',
-            G09: 'Logic Error',
-            G10: 'No Error',
-            G11: 'Used Hint',
-            G12: 'In Module',
-            G13: 'Beginner Level',
-            G14: 'Medium Level',
-            G15: 'Hard Level',
-            G16: 'Final Project',
-            G17: 'Practice Mode',
-            G18: 'Next Unlocked',
-            G19: 'Prev Unlocked',
-            G20: 'Persistent Fail',
-            G21: 'Sat. Progress',
-            G22: 'Mixed Learner',
-        };
-        return labels[factCode] || factCode;
+        return metadata?.fact_labels[factCode] || factCode;
     }
 
     function getCategoryLabel(category: string) {
         const labels: Record<string, string> = {
-            score: 'Skor',
-            time: 'Waktu',
+            performance: 'Performa',
             style: 'Gaya Belajar',
             error: 'Tipe Error',
-            hint: 'Bantuan',
-            module: 'Modul',
+            time: 'Waktu & Usaha',
+            behaviour: 'Perilaku',
             difficulty: 'Kesulitan',
-            status: 'Status',
+            progress: 'Progres',
+            other: 'Lainnya',
         };
         return labels[category] || category;
     }
@@ -83,7 +64,7 @@
 
 {#if showDebug}
     <div
-        class="fixed right-0 bottom-0 left-0 z-[1001]"
+        class="fixed right-0 bottom-0 left-0 z-1001"
         transition:scale={{ duration: 300, start: 0.95 }}
     >
         <Panel
@@ -106,11 +87,7 @@
                         <h3 class="flex items-center gap-2 text-xs font-bold tracking-wide">
                             Adaptive Debug Panel
                             {#if isDebugPanelCollapsed}
-                                <Badge
-                                    variant="secondary"
-                                    size="sm"
-                                    class="text-xs"
-                                >
+                                <Badge variant="secondary" size="sm" class="text-xs">
                                     {quizState.adaptiveFacts.length} Facts • {quizState.adaptiveTriggeredRule
                                         ? 'Rule Active'
                                         : 'No Rule'}
@@ -223,7 +200,7 @@
                                             transition:fade={{ duration: 300 }}
                                         >
                                             <div
-                                                class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-100 shadow-sm"
+                                                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 shadow-sm"
                                             >
                                                 <CheckCircle size={20} class="text-emerald-600" />
                                             </div>
@@ -288,7 +265,7 @@
                                                     >
                                                         <MessageSquare
                                                             size={11}
-                                                            class="mt-0.5 flex-shrink-0 text-emerald-600"
+                                                            class="mt-0.5 shrink-0 text-emerald-600"
                                                         />
                                                         <p
                                                             class="text-xs leading-snug text-slate-700 italic"
@@ -327,6 +304,32 @@
                                                                 recovery: {newState.recovery_type}
                                                             </Badge>
                                                         {/if}
+                                                    </div>
+                                                {/if}
+
+                                                {#if quizState.adaptiveTriggeredRules.length > 1}
+                                                    <div
+                                                        class="mt-4 border-t border-emerald-100 pt-3"
+                                                    >
+                                                        <div
+                                                            class="mb-2 text-[10px] font-bold tracking-widest text-emerald-600 uppercase"
+                                                        >
+                                                            Other Matched Rules (Shadowed)
+                                                        </div>
+                                                        <div class="flex flex-wrap gap-1.5">
+                                                            {#each quizState.adaptiveTriggeredRules.slice(1) as rule}
+                                                                <Badge
+                                                                    variant="outline"
+                                                                    size="xs"
+                                                                    class="opacity-60 transition-all hover:opacity-100"
+                                                                >
+                                                                    {rule.name}
+                                                                    <span class="ml-1 opacity-50"
+                                                                        >({rule.priority})</span
+                                                                    >
+                                                                </Badge>
+                                                            {/each}
+                                                        </div>
                                                     </div>
                                                 {/if}
                                             </div>
@@ -368,7 +371,10 @@
                                 ><Target size={10} /> First Match Conflict Resolution</span
                             >
                         </div>
-                        <div class="text-primary-400">21 Rules • Adaptive Engine v2 • Stable</div>
+                        <div class="text-primary-400">
+                            {metadata?.rule_count || '?'} Rules • Adaptive Engine v{metadata?.engine_version ||
+                                '?.?'} • Audit Trail Active
+                        </div>
                     </div>
                 </div>
             {/if}

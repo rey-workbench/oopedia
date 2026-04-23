@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Question;
 
+use App\Enums\Lms\QuestionDifficulty;
+use App\Enums\Lms\QuestionType;
 use App\Http\Requests\BaseFormRequest;
+use Illuminate\Validation\Rule;
 
 final class UpdateQuestionRequest extends BaseFormRequest
 {
@@ -12,11 +15,11 @@ final class UpdateQuestionRequest extends BaseFormRequest
     {
         return [
             'question_text'         => 'required|string',
-            'question_type'         => 'required|in:radio_button,drag_and_drop,fill_in_the_blank',
-            'difficulty'            => 'required|in:beginner,medium,hard',
+            'question_type'         => ['required', Rule::in(QuestionType::cases())],
+            'difficulty'            => ['required', Rule::in(QuestionDifficulty::cases())],
             'material_id'           => 'required|exists:materials,id',
             'sub_material_id'       => 'nullable|exists:sub_materials,id',
-            'answers'               => $this->input('question_type') === 'fill_in_the_blank'
+            'answers'               => $this->input('question_type') === QuestionType::FILL_IN_THE_BLANK->value
                 ? 'required|array|min:1'
                 : 'required|array|min:2',
             'answers.*.is_correct'  => 'required|boolean',

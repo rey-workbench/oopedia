@@ -68,7 +68,7 @@ final class DashboardService implements DashboardServiceInterface
                     ->pipe(fn ($activities) => $this->deduplicateActivities($activities, 5));
 
                 $studentState   = StudentState::where('user_id', $userId)->first();
-                $certifications = $studentState?->learning_profile['certifications'] ?? [];
+                $certifications = $studentState?->certifications ?? [];
 
                 return [
                     'totalMaterials'             => $totalMaterials,

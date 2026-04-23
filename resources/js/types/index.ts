@@ -60,6 +60,12 @@ export type {
     MaterialWithProgress,
     MissingQuestionsItem,
     UeqAverages,
+    AdaptiveRule,
+    AdaptiveRuleDomain,
+    AdaptiveTriggerItem,
+    AdaptiveStateDistribution,
+    AdaptiveRuleTriggerStat,
+    AdminAdaptiveAnalyticsProps,
     // Mahasiswa pages
     MahasiswaDashboardProps,
     MahasiswaInProgressProps,

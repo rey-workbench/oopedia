@@ -11,7 +11,7 @@ use App\Models\Material;
 use App\Models\Question;
 use App\Models\QuizAttempt;
 use App\Models\StudentState;
-use App\Schemas\StudentStateSchema;
+use App\Rules\Adaptive\Constants\AdaptiveConstants as AC;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -271,45 +271,20 @@ final class ProgressRepository implements ProgressRepositoryInterface
             return;
         }
 
-        $state = $this->studentStateRepo->findOrCreate($userId);
-
-        $gamification = array_merge($state->gamification_data ?? [], [
-            StudentStateSchema::KEY_GLOBAL_XP => $attributes[StudentStateSchema::KEY_GLOBAL_XP]
-                ?? ($state->gamification_data[StudentStateSchema::KEY_GLOBAL_XP] ?? 0),
-            StudentStateSchema::KEY_CURRENT_LEVEL => $attributes[StudentStateSchema::KEY_CURRENT_LEVEL]
-                ?? ($state->gamification_data[StudentStateSchema::KEY_CURRENT_LEVEL] ?? 'Pemula'),
-            StudentStateSchema::KEY_CURRENT_STREAK => $attributes[StudentStateSchema::KEY_CURRENT_STREAK]
-                ?? ($state->gamification_data[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0),
-            StudentStateSchema::KEY_MAX_STREAK => $attributes[StudentStateSchema::KEY_MAX_STREAK]
-                ?? ($state->gamification_data[StudentStateSchema::KEY_MAX_STREAK] ?? 0),
-        ]);
-
-        $metrics = array_merge($state->performance_metrics ?? [], [
-            StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED => $attributes[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED]
-                ?? ($state->performance_metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] ?? 0),
-            StudentStateSchema::KEY_CORRECT_COUNT => $attributes[StudentStateSchema::KEY_CORRECT_COUNT]
-                ?? ($state->performance_metrics[StudentStateSchema::KEY_CORRECT_COUNT] ?? 0),
-            StudentStateSchema::KEY_WRONG_COUNT => $attributes[StudentStateSchema::KEY_WRONG_COUNT]
-                ?? ($state->performance_metrics[StudentStateSchema::KEY_WRONG_COUNT] ?? 0),
-            StudentStateSchema::KEY_WRONG_STREAK => $attributes[StudentStateSchema::KEY_WRONG_STREAK]
-                ?? ($state->performance_metrics[StudentStateSchema::KEY_WRONG_STREAK] ?? 0),
-            StudentStateSchema::KEY_HINTS_USED_COUNT => $attributes[StudentStateSchema::KEY_HINTS_USED_COUNT]
-                ?? ($state->performance_metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] ?? 0),
-            StudentStateSchema::KEY_HINTS_AVAILABLE => $attributes[StudentStateSchema::KEY_HINTS_AVAILABLE]
-                ?? ($state->performance_metrics[StudentStateSchema::KEY_HINTS_AVAILABLE]
-                    ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE),
-        ]);
-
-        $profile = array_merge($state->learning_profile ?? [], [
-            StudentStateSchema::KEY_LEARNING_STYLE => $attributes[StudentStateSchema::KEY_LEARNING_STYLE]
-                ?? ($state->learning_profile[StudentStateSchema::KEY_LEARNING_STYLE] ?? 'visual'),
-        ]);
-
+        // StudentState sudah di-flatten, update kolom secara langsung
         $this->studentStateRepo->update($userId, [
-            'gamification_data'   => $gamification,
-            'performance_metrics' => $metrics,
-            'learning_profile'    => $profile,
-            'last_active_at'      => now(),
+            AC::KEY_GLOBAL_XP                => $attributes[AC::KEY_GLOBAL_XP] ?? null,
+            AC::KEY_CURRENT_LEVEL            => $attributes[AC::KEY_CURRENT_LEVEL] ?? null,
+            AC::KEY_CURRENT_STREAK           => $attributes[AC::KEY_CURRENT_STREAK] ?? null,
+            AC::KEY_MAX_STREAK               => $attributes[AC::KEY_MAX_STREAK] ?? null,
+            AC::KEY_TOTAL_QUESTIONS_ANSWERED => $attributes[AC::KEY_TOTAL_QUESTIONS_ANSWERED] ?? null,
+            AC::KEY_CORRECT_COUNT            => $attributes[AC::KEY_CORRECT_COUNT] ?? null,
+            AC::KEY_WRONG_COUNT              => $attributes[AC::KEY_WRONG_COUNT] ?? null,
+            AC::KEY_WRONG_STREAK             => $attributes[AC::KEY_WRONG_STREAK] ?? null,
+            AC::KEY_HINTS_USED_COUNT         => $attributes[AC::KEY_HINTS_USED_COUNT] ?? null,
+            AC::KEY_HINTS_AVAILABLE          => $attributes[AC::KEY_HINTS_AVAILABLE] ?? null,
+            AC::KEY_LEARNING_STYLE           => $attributes[AC::KEY_LEARNING_STYLE] ?? null,
+            'last_active_at'                 => now(),
         ]);
     }
 
@@ -489,21 +464,57 @@ final class ProgressRepository implements ProgressRepositoryInterface
 
     public function getOrCreateStudentState(?string $userId): StudentState
     {
+        $defaults = AC::defaults();
+
         if (is_null($userId) || $userId === 'guest') {
             return new StudentState([
-                'user_id'             => 'guest',
-                'gamification_data'   => StudentStateSchema::getDefaultGamification(),
-                'learning_profile'    => StudentStateSchema::getDefaultLearningProfile(),
-                'performance_metrics' => StudentStateSchema::getDefaultPerformanceMetrics(),
-                'adaptive_state'      => StudentStateSchema::getDefaultAdaptiveState(),
+                'user_id' => 'guest',
+                // Gamification
+                'xp'         => $defaults['xp'],
+                'level'      => $defaults['level'],
+                'streak'     => $defaults['streak'],
+                'max_streak' => $defaults['max_streak'],
+                'badges'     => $defaults['badges'],
+                // Learning profile
+                'learning_style'    => $defaults['learning_style'],
+                'unlocked_modules'  => $defaults['unlocked_modules'],
+                'certifications'    => $defaults['certifications'],
+                'time_distribution' => $defaults['time_distribution'],
+                // Performance
+                'total_answered'  => $defaults['total_answered'],
+                'correct_count'   => $defaults['correct_count'],
+                'wrong_count'     => $defaults['wrong_count'],
+                'wrong_streak'    => $defaults['wrong_streak'],
+                'hints_used'      => $defaults['hints_used'],
+                'hints_available' => $defaults['hints_available'],
+                // Navigation
+                'current_material_id' => $defaults['current_material_id'],
+                'target_difficulty'   => $defaults['target_difficulty'],
             ]);
         }
 
         return StudentState::firstOrCreate(['user_id' => $userId], [
-            'gamification_data'   => StudentStateSchema::getDefaultGamification(),
-            'learning_profile'    => StudentStateSchema::getDefaultLearningProfile(),
-            'performance_metrics' => StudentStateSchema::getDefaultPerformanceMetrics(),
-            'adaptive_state'      => StudentStateSchema::getDefaultAdaptiveState(),
+            // Gamification
+            'xp'         => $defaults['xp'],
+            'level'      => $defaults['level'],
+            'streak'     => $defaults['streak'],
+            'max_streak' => $defaults['max_streak'],
+            'badges'     => $defaults['badges'],
+            // Learning profile
+            'learning_style'    => $defaults['learning_style'],
+            'unlocked_modules'  => $defaults['unlocked_modules'],
+            'certifications'    => $defaults['certifications'],
+            'time_distribution' => $defaults['time_distribution'],
+            // Performance
+            'total_answered'  => $defaults['total_answered'],
+            'correct_count'   => $defaults['correct_count'],
+            'wrong_count'     => $defaults['wrong_count'],
+            'wrong_streak'    => $defaults['wrong_streak'],
+            'hints_used'      => $defaults['hints_used'],
+            'hints_available' => $defaults['hints_available'],
+            // Navigation
+            'current_material_id' => $defaults['current_material_id'],
+            'target_difficulty'   => $defaults['target_difficulty'],
             'last_active_at'      => now(),
         ]);
     }

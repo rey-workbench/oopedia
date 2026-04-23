@@ -6,10 +6,45 @@
       "sourceType": "github",
       "computedHash": "494d59fffe67c87b485f4ee2fb1abd73fc9d0d508c4c8bd9c43a9edd3242f730"
     },
+    "agent-skill-creator": {
+      "source": "smithery.ai",
+      "sourceType": "well-known",
+      "computedHash": "0da1573e3cae1fe55c0d16f288925c0217f3a2705633fbecc07976dee9675d99"
+    },
     "baseline-ui": {
       "source": "ibelick/ui-skills",
       "sourceType": "github",
       "computedHash": "e6340729e5db277987e5a8deb7f2e8e282bbd07f84ed6b98bb2dfb2a4b05b55f"
+    },
+    "caveman": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "computedHash": "ac5fb2168c653fa5d660b5f510a4688d210717c7e10eb8fd91ef0d9b59f4e96e"
+    },
+    "caveman-commit": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "computedHash": "89fd592e14079fc99a3ccd4dfca5d609bac6a0252e4ec4e3939f1497e53c4cbe"
+    },
+    "caveman-compress": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "computedHash": "4f3cad023d7153f247fa6d9fda7b39477ee9c0c08054b8740c9a9dd9ec26aed7"
+    },
+    "caveman-help": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "computedHash": "3468ac41877d388fc19d902ed9d442cd36609bd9e8d16205c41b362f481ea731"
+    },
+    "caveman-review": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "computedHash": "368a26f2b079ffe0d584f48006524f65cf997cb9369411aa8c6ead216dee22eb"
+    },
+    "compress": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "computedHash": "f71138e885d3e0df8c78b4814554ae146a1a6dbe76bafcc32e95f2ba6d4073c9"
     },
     "fixing-accessibility": {
       "source": "ibelick/ui-skills",
@@ -45,6 +80,11 @@
       "source": "sickn33/antigravity-awesome-skills",
       "sourceType": "github",
       "computedHash": "9f8d3f268624c4757f4039617942d3e8ddcf420b9295cb943bea3bf9feb37e9d"
+    },
+    "opencode-config": {
+      "source": "smithery.ai",
+      "sourceType": "well-known",
+      "computedHash": "8fb524fccd8c36a76f45e8e479cc54652c42f4804ec8f1e4db5005b1d8c4d8f6"
     },
     "seo": {
       "source": "addyosmani/web-quality-skills",

@@ -1,4 +1,11 @@
-import type { Material, User, UeqSurvey, SusResult } from '@/types/models';
+import type {
+    Material,
+    User,
+    UeqSurvey,
+    SusResult,
+    AdaptiveFact,
+    AdaptiveAction,
+} from '@/types/models';
 import type { SharedProps } from './shared';
 
 export interface AdminSusIndexProps extends SharedProps {
@@ -103,3 +110,57 @@ export interface AdminUeqDetailProps extends SharedProps {
 }
 
 export type UeqAverages = Record<string, number>;
+
+export interface AdaptiveRule {
+    deduced_facts: any;
+    id: string;
+    real_id: number;
+    name: string;
+    priority: number;
+    action: string;
+    action_id: number;
+    required_facts: string[];
+    forbidden_facts: string[];
+    is_active: boolean;
+}
+
+export interface AdaptiveRuleDomain {
+    domain: string;
+    count: number;
+    rules: AdaptiveRule[];
+}
+
+export interface AdaptiveTriggerItem {
+    id: number;
+    rule_id: string;
+    rule_name: string;
+    action: string;
+    user_name: string;
+    material_title: string;
+    created_at: string;
+}
+
+export interface AdaptiveStateDistribution {
+    difficulty: string;
+    count: number;
+}
+
+export interface AdaptiveRuleTriggerStat {
+    rule_id: string;
+    rule_name: string;
+    trigger_count: number;
+    percentage: number;
+}
+
+export interface AdminAdaptiveAnalyticsProps extends SharedProps {
+    totalRules: number;
+    totalFacts: number;
+    totalActions: number;
+    rulesByDomain: AdaptiveRuleDomain[];
+    adaptiveStateDistribution: AdaptiveStateDistribution[];
+    recentTriggers: AdaptiveTriggerItem[];
+    ruleTriggersStats: AdaptiveRuleTriggerStat[];
+    decisionTree: any;
+    allFacts: AdaptiveFact[];
+    allActions: AdaptiveAction[];
+}

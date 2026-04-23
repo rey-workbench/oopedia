@@ -7,7 +7,7 @@ use App\Contracts\Services\GamificationServiceInterface;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Enums\Lms\StudentLevel;
 use App\Models\StudentState;
-use App\Schemas\StudentStateSchema;
+use App\Rules\Adaptive\Constants\AdaptiveConstants as AC;
 
 class GamificationService implements GamificationServiceInterface
 {
@@ -22,7 +22,7 @@ class GamificationService implements GamificationServiceInterface
 
     public function determineLevel(int $xp): StudentLevel
     {
-        foreach (array_reverse(StudentStateSchema::LEVEL_THRESHOLDS) as $level) {
+        foreach (array_reverse(AC::LEVEL_THRESHOLDS) as $level) {
             if ($xp >= $level['min']) {
                 return StudentLevel::tryFrom($level['name']) ?? StudentLevel::PEMULA;
             }
@@ -33,50 +33,29 @@ class GamificationService implements GamificationServiceInterface
 
     public function addXp(string $userId, int $amount): StudentState
     {
-        $state        = $this->getStudentState($userId);
-        $gamification = $state->gamification_data ?? [];
-
-        $oldXp = $gamification[StudentStateSchema::KEY_GLOBAL_XP] ?? 0;
-        $newXp = $oldXp + $amount;
-
-        $gamification[StudentStateSchema::KEY_GLOBAL_XP] = $newXp;
-
-        // Recalculate level
-        $newLevel                                            = $this->determineLevel($newXp);
-        $gamification[StudentStateSchema::KEY_CURRENT_LEVEL] = $newLevel->value;
+        $state = $this->getStudentState($userId);
+        $newXp = $state->xp + $amount;
 
         return $this->studentStateRepo->update($userId, [
-            'gamification_data' => $gamification,
+            'xp'    => $newXp,
+            'level' => $this->determineLevel($newXp)->value,
         ]);
     }
 
     public function incrementStreak(string $userId): StudentState
     {
-        $state        = $this->getStudentState($userId);
-        $gamification = $state->gamification_data ?? [];
-
-        $currentStreak                                        = ($gamification[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0) + 1;
-        $gamification[StudentStateSchema::KEY_CURRENT_STREAK] = $currentStreak;
-        $gamification[StudentStateSchema::KEY_MAX_STREAK]     = max(
-            $gamification[StudentStateSchema::KEY_MAX_STREAK] ?? 0,
-            $currentStreak,
-        );
+        $state     = $this->getStudentState($userId);
+        $newStreak = $state->streak + 1;
 
         return $this->studentStateRepo->update($userId, [
-            'gamification_data' => $gamification,
+            'streak'     => $newStreak,
+            'max_streak' => max($state->max_streak, $newStreak),
         ]);
     }
 
     public function resetStreak(string $userId): StudentState
     {
-        $state        = $this->getStudentState($userId);
-        $gamification = $state->gamification_data ?? [];
-
-        $gamification[StudentStateSchema::KEY_CURRENT_STREAK] = 0;
-
-        return $this->studentStateRepo->update($userId, [
-            'gamification_data' => $gamification,
-        ]);
+        return $this->studentStateRepo->update($userId, ['streak' => 0]);
     }
 
     public function calculateCorrectAnswerReward(
@@ -86,13 +65,13 @@ class GamificationService implements GamificationServiceInterface
         int $timeSpent = 0,
     ): array {
         $xpReward = match ($difficulty) {
-            QuestionDifficulty::HARD   => StudentStateSchema::XP_REWARD_HARD,
-            QuestionDifficulty::MEDIUM => StudentStateSchema::XP_REWARD_MEDIUM,
-            default                    => StudentStateSchema::XP_REWARD_BEGINNER,
+            QuestionDifficulty::HARD   => AC::XP_REWARD_HARD,
+            QuestionDifficulty::MEDIUM => AC::XP_REWARD_MEDIUM,
+            default                    => AC::XP_REWARD_BEGINNER,
         };
 
         if ($usedHint) {
-            $xpReward = max(0, $xpReward - StudentStateSchema::XP_PENALTY_HINT);
+            $xpReward = max(0, $xpReward - AC::XP_PENALTY_HINT);
         }
 
         return [
@@ -111,7 +90,7 @@ class GamificationService implements GamificationServiceInterface
 
     public function calculateStreakBonusXP(int $currentStreak): int
     {
-        foreach (StudentStateSchema::STREAK_XP_BONUSES as $threshold => $bonus) {
+        foreach (AC::STREAK_XP_BONUSES as $threshold => $bonus) {
             if ($currentStreak >= $threshold) {
                 return $bonus;
             }
@@ -122,13 +101,13 @@ class GamificationService implements GamificationServiceInterface
 
     public function checkStreakBonus(array $state): ?array
     {
-        $streak = $state['gamification_data'][StudentStateSchema::KEY_CURRENT_STREAK] ?? 0;
+        $streak = $state['streak'] ?? 0;
         $bonus  = $this->calculateStreakBonusXP($streak);
 
         if ($bonus > 0) {
             return [
                 'bonus_xp' => $bonus,
-                'message'  => "Streak {$streak}! Bonus " . $bonus . ' XP.',
+                'message'  => "Streak {$streak}! Bonus {$bonus} XP.",
             ];
         }
 
@@ -142,9 +121,7 @@ class GamificationService implements GamificationServiceInterface
         int $timeSpent,
         bool $usedHint,
     ): array {
-        $state        = $this->getStudentState($userId);
-        $gamification = $state->gamification_data ?? [];
-
+        $state      = $this->getStudentState($userId);
         $rewardData = $isCorrect
             ? $this->calculateCorrectAnswerReward($state->toArray(), $usedHint, $difficulty, $timeSpent)
             : $this->processWrongAnswer($state->toArray());
@@ -158,36 +135,25 @@ class GamificationService implements GamificationServiceInterface
             $updatedState = $this->resetStreak($userId);
         }
 
-        // Updated gamification for UI feedback
-        $updatedGamification  = $updatedState->gamification_data                             ?? [];
-        $currentStreak        = $updatedGamification[StudentStateSchema::KEY_CURRENT_STREAK] ?? 0;
+        // Update performance metrics (all flat columns)
+        $newCorrect = $state->correct_count + ($isCorrect ? 1 : 0);
+        $newWrong   = $state->wrong_count   + ($isCorrect ? 0 : 1);
 
-        // Update performance metrics
-        $metrics                                                   = $state->performance_metrics ?? [];
-        $metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] = ($metrics[StudentStateSchema::KEY_TOTAL_QUESTIONS_ANSWERED] ?? 0) + 1;
-
-        if ($isCorrect) {
-            $metrics[StudentStateSchema::KEY_CORRECT_COUNT]  = ($metrics[StudentStateSchema::KEY_CORRECT_COUNT] ?? 0) + 1;
-            $metrics[StudentStateSchema::KEY_WRONG_STREAK]   = 0;
-        } else {
-            $metrics[StudentStateSchema::KEY_WRONG_COUNT]  = ($metrics[StudentStateSchema::KEY_WRONG_COUNT] ?? 0)  + 1;
-            $metrics[StudentStateSchema::KEY_WRONG_STREAK] = ($metrics[StudentStateSchema::KEY_WRONG_STREAK] ?? 0) + 1;
-        }
-
-        $metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] = ($metrics[StudentStateSchema::KEY_HINTS_USED_COUNT] ?? 0) + ($usedHint ? 1 : 0);
-
-        // Save performance metrics
         $this->studentStateRepo->update($userId, [
-            'performance_metrics' => $metrics,
-            'last_active_at'      => now(),
+            'total_answered' => $state->total_answered + 1,
+            'correct_count'  => $newCorrect,
+            'wrong_count'    => $newWrong,
+            'wrong_streak'   => $isCorrect ? 0 : $state->wrong_streak + 1,
+            'hints_used'     => $state->hints_used                    + ($usedHint ? 1 : 0),
+            'last_active_at' => now(),
         ]);
 
         return [
             'xp_reward'  => $xpReward,
             'is_correct' => $isCorrect,
-            'new_xp'     => $updatedGamification[StudentStateSchema::KEY_GLOBAL_XP]     ?? 0,
-            'new_level'  => $updatedGamification[StudentStateSchema::KEY_CURRENT_LEVEL] ?? StudentLevel::PEMULA->value,
-            'streak'     => $currentStreak,
+            'new_xp'     => $updatedState->xp,
+            'new_level'  => $updatedState->level,
+            'streak'     => $updatedState->streak,
             'message'    => $rewardData['message'],
         ];
     }

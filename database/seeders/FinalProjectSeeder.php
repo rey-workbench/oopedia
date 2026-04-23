@@ -2,6 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Lms\ContentCategory;
+use App\Enums\Lms\LearningStyle;
+use App\Enums\Lms\QuestionDifficulty;
+use App\Enums\Lms\QuestionType;
 use App\Models\Answer;
 use App\Models\Material;
 use App\Models\Question;
@@ -35,8 +39,8 @@ class FinalProjectSeeder extends Seeder
             ['material_id' => $material->id, 'title' => 'Instruksi Proyek Akhir'],
             [
                 'content'        => 'Selesaikan pertanyaan berikut dengan tingkat akurasi tinggi untuk mendapatkan sertifikasi.',
-                'jenis_konten'   => 'teori',
-                'learning_style' => 'mixed',
+                'jenis_konten'   => ContentCategory::TEORI->value,
+                'learning_style' => LearningStyle::MIXED->value,
                 'order'          => 1,
             ],
         );
@@ -47,9 +51,9 @@ class FinalProjectSeeder extends Seeder
             [
                 'material_id'     => $material->id,
                 'sub_material_id' => $subMaterial->id,
-                'question_type'   => 'radio_button',
-                'type'            => 'teori',
-                'difficulty'      => 'final', // Identification via ModuleID (G18)
+                'question_type'   => QuestionType::RADIO_BUTTON->value,
+                'type'            => ContentCategory::TEORI->value,
+                'difficulty'      => QuestionDifficulty::FINAL->value,
                 'hint'            => 'Satu antarmuka, banyak wujud.',
                 'created_by'      => $dosenId,
             ],
@@ -71,9 +75,9 @@ class FinalProjectSeeder extends Seeder
             [
                 'material_id'     => $material->id,
                 'sub_material_id' => $subMaterial->id,
-                'question_type'   => 'radio_button',
-                'type'            => 'sintaks',
-                'difficulty'      => 'final',
+                'question_type'   => QuestionType::RADIO_BUTTON->value,
+                'type'            => ContentCategory::SINTAKS->value,
+                'difficulty'      => QuestionDifficulty::FINAL->value,
                 'hint'            => 'Urutannya adalah extends lalu implements.',
                 'created_by'      => $dosenId,
             ],

@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Contracts\Services\AdaptiveEngineServiceInterface;
-use App\Contracts\Services\AdaptiveQuizFlowServiceInterface;
 use App\Contracts\Services\AdminDashboardServiceInterface;
 use App\Contracts\Services\DashboardServiceInterface;
 use App\Contracts\Services\FactGatheringServiceInterface;
@@ -13,7 +12,6 @@ use App\Contracts\Services\LeaderboardServiceInterface;
 use App\Contracts\Services\MaterialServiceInterface;
 use App\Contracts\Services\MaterialViewServiceInterface;
 use App\Contracts\Services\MslqServiceInterface;
-use App\Contracts\Services\NextActionResolverServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
 use App\Contracts\Services\QuestionAnswerServiceInterface;
 use App\Contracts\Services\QuestionListingServiceInterface;
@@ -24,9 +22,7 @@ use App\Contracts\Services\SusResultServiceInterface;
 use App\Contracts\Services\UeqSurveyServiceInterface;
 use App\Contracts\Services\UserServiceInterface;
 use App\Services\Adaptive\AdaptiveEngineService;
-use App\Services\Adaptive\AdaptiveQuizFlowService;
 use App\Services\Adaptive\FactGatheringService;
-use App\Services\Adaptive\NextActionResolverService;
 use App\Services\Analytics\AdminDashboardService;
 use App\Services\Analytics\DashboardService;
 use App\Services\Analytics\LeaderboardService;
@@ -65,10 +61,8 @@ class ServiceServiceProvider extends ServiceProvider
         $this->app->bind(AdminDashboardServiceInterface::class, AdminDashboardService::class);
         $this->app->bind(UeqSurveyServiceInterface::class, UeqSurveyService::class);
         $this->app->bind(GamificationServiceInterface::class, GamificationService::class);
-        $this->app->bind(AdaptiveEngineServiceInterface::class, AdaptiveEngineService::class);
-        $this->app->bind(AdaptiveQuizFlowServiceInterface::class, AdaptiveQuizFlowService::class);
+        $this->app->singleton(AdaptiveEngineServiceInterface::class, AdaptiveEngineService::class);
         $this->app->bind(FactGatheringServiceInterface::class, FactGatheringService::class);
-        $this->app->bind(NextActionResolverServiceInterface::class, NextActionResolverService::class);
         $this->app->bind(MslqServiceInterface::class, MslqService::class);
         $this->app->bind(SusResultServiceInterface::class, SusResultService::class);
     }

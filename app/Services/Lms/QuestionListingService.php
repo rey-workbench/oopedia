@@ -13,7 +13,6 @@ use App\Enums\Lms\QuestionType;
 use App\Helpers\ProgressHelper;
 use App\Models\Material;
 use App\Models\Question;
-use App\Schemas\StudentStateSchema;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as SupportCollection;
 
@@ -47,17 +46,7 @@ final class QuestionListingService implements QuestionListingServiceInterface
 
         $shouldApplyTargetDifficulty = $difficulty === null && $targetDifficulty && ! $isGuest;
 
-        if ($shouldApplyTargetDifficulty) {
-            $attemptedCount = $this->progressRepo->getAttemptedQuestionIds($userId, $material->id)->count();
-            $totalQuestions = $this->questionRepo->countByMaterial($material->id);
-
-            $progressPercentage = $totalQuestions > 0
-                ? ($attemptedCount / $totalQuestions) * 100
-                : 0;
-
-            // Only enforce fast-track filtering when learner is ready for module progression (G26).
-            $shouldApplyTargetDifficulty = $progressPercentage >= StudentStateSchema::THRESHOLD_SATISFACTORY_PROGRESS;
-        }
+        // Rely purely on the Adaptive Engine's targetDifficulty assignment
 
         if ($shouldApplyTargetDifficulty) {
             $difficultyOrder = Question::DIFFICULTY_ORDER;

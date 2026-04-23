@@ -22,3 +22,5 @@ yarn-error.log
 opencode.json
 .agents
 skills-lock.json
+.opencode
+graphify-out/
