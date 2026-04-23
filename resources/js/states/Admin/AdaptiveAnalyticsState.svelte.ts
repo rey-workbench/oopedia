@@ -62,11 +62,7 @@ export class AdaptiveAnalyticsState extends BaseState {
         Interaction: 'cyan',
     };
 
-    maxTriggerCount = $derived(
-        Math.max(1, ...this.ruleTriggersStats.map((r) => r.trigger_count))
-    );
+    maxTriggerCount = $derived(Math.max(1, ...this.ruleTriggersStats.map((r) => r.trigger_count)));
 
-    maxStateCount = $derived(
-        Math.max(1, ...this.adaptiveStateDistribution.map((s) => s.count))
-    );
+    maxStateCount = $derived(Math.max(1, ...this.adaptiveStateDistribution.map((s) => s.count)));
 }

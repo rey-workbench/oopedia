@@ -108,9 +108,12 @@
     function getFeedbackVariant(): FeedbackVariant {
         const ruleVariant = quizState.feedbackData?.adaptiveResult?.triggered_rule?.variant;
 
-        if (ruleVariant && [
-            'result', 'acceleration', 'certificate', 'intervention', 'backtrack'
-        ].includes(ruleVariant)) {
+        if (
+            ruleVariant &&
+            ['result', 'acceleration', 'certificate', 'intervention', 'backtrack'].includes(
+                ruleVariant
+            )
+        ) {
             return ruleVariant as FeedbackVariant;
         }
 
@@ -128,7 +131,7 @@
         return SUCCESS_TONE_BY_VARIANT[currentVariant] ?? SUCCESS_TONE_BY_VARIANT.result;
     }
 
-    function getFeedbackTitle(status: 'success' | 'wrong'): string {       
+    function getFeedbackTitle(status: 'success' | 'wrong'): string {
         const backendTitle = quizState.feedbackData?.adaptiveResult?.new_state?.title;
         if (backendTitle) {
             return backendTitle as string;

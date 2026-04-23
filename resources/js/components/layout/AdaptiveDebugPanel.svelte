@@ -87,11 +87,7 @@
                         <h3 class="flex items-center gap-2 text-xs font-bold tracking-wide">
                             Adaptive Debug Panel
                             {#if isDebugPanelCollapsed}
-                                <Badge
-                                    variant="secondary"
-                                    size="sm"
-                                    class="text-xs"
-                                >
+                                <Badge variant="secondary" size="sm" class="text-xs">
                                     {quizState.adaptiveFacts.length} Facts • {quizState.adaptiveTriggeredRule
                                         ? 'Rule Active'
                                         : 'No Rule'}
@@ -376,7 +372,8 @@
                             >
                         </div>
                         <div class="text-primary-400">
-                            {metadata?.rule_count || '?'} Rules • Adaptive Engine v{metadata?.engine_version || '?.?'} • Audit Trail Active
+                            {metadata?.rule_count || '?'} Rules • Adaptive Engine v{metadata?.engine_version ||
+                                '?.?'} • Audit Trail Active
                         </div>
                     </div>
                 </div>

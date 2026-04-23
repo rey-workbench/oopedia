@@ -87,13 +87,15 @@ export class QuestionShowState extends BaseState {
         priority?: number;
         variant?: string;
     } | null>(null);
-    adaptiveTriggeredRules = $state<Array<{
-        id?: string;
-        name?: string;
-        action?: string | null;
-        priority?: number;
-        variant?: string;
-    }>>([]);
+    adaptiveTriggeredRules = $state<
+        Array<{
+            id?: string;
+            name?: string;
+            action?: string | null;
+            priority?: number;
+            variant?: string;
+        }>
+    >([]);
 
     isProcessing = $derived(this.isSubmitting);
 

@@ -1,4 +1,11 @@
-import type { Material, User, UeqSurvey, SusResult, AdaptiveFact, AdaptiveAction } from '@/types/models';
+import type {
+    Material,
+    User,
+    UeqSurvey,
+    SusResult,
+    AdaptiveFact,
+    AdaptiveAction,
+} from '@/types/models';
 import type { SharedProps } from './shared';
 
 export interface AdminSusIndexProps extends SharedProps {
@@ -105,6 +112,7 @@ export interface AdminUeqDetailProps extends SharedProps {
 export type UeqAverages = Record<string, number>;
 
 export interface AdaptiveRule {
+    deduced_facts: any;
     id: string;
     real_id: number;
     name: string;

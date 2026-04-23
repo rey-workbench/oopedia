@@ -12,12 +12,13 @@ Laravel app. Ecosystem packages + versions below. Follow these versions.
 - php 8.4
 - inertiajs/inertia-laravel v3
 - laravel/framework v12
-... (Keep package list) ...
+  ... (Keep package list) ...
 - tailwindcss v4
 
 ## Skills Activation
 
 Activate relevant skill for domain:
+
 - laravel-best-practices: Backend PHP code patterns.
 - inertia-svelte-development: Inertia.js v3 Svelte 5 client-side.
 - tailwindcss-development: Tailwind utility classes in templates.
@@ -94,7 +95,7 @@ Activate relevant skill for domain:
 # PHP
 
 - Curly braces for all control structures.
-- PHP 8 constructor property promotion. No empty zero-param __construct().
+- PHP 8 constructor property promotion. No empty zero-param \_\_construct().
 - Type hints + return type declarations for all methods.
 - TitleCase Enum keys (FavoritePerson).
 - PHPDoc blocks preferred. Inline only for complex logic.
@@ -112,6 +113,7 @@ Activate relevant skill for domain:
 # Inertia v3
 
 -Standalone HTTP (useHttp), optimistic updates, layout props (useLayoutProps), instant visits, simplified SSR.
+
 - Deferred props, infinite scroll, merge props, polling, prefetching, once props, flash data.
 - Pulse/animate skeleton for empty deferred states.
 - built-in XHR client (Axios separate if needed).
@@ -200,4 +202,4 @@ Activate relevant skill for domain:
 # Inertia + Svelte
 
 - Activate inertia-svelte-development.
-</laravel-boost-guidelines>
+  </laravel-boost-guidelines>

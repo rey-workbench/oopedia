@@ -38,60 +38,60 @@ Oopedia's adaptive learning engine is a forward-chaining ITS (Intelligent Tutori
 
 ## Facts (G-Codes)
 
-| Code | Constant | Description |
-| :--- | :--- | :--- |
-| G01 | FACT_SCORE_CRITICAL | Score < 50% |
-| G02 | FACT_SCORE_REMEDIAL | Score 50-74% |
-| G03 | FACT_SCORE_STANDARD | Score 75-89% |
-| G04 | FACT_SCORE_MASTERY | Score >= 90% |
-| G05 | FACT_TIME_FAST | Answered < 70% allocated time |
-| G06 | FACT_STYLE_VISUAL | Learner prefers visual content |
-| G07 | FACT_STYLE_TEXTUAL | Learner prefers textual content |
-| G08 | FACT_ERROR_SYNTAX | Syntax error detected |
-| G09 | FACT_ERROR_LOGIC | Logic error detected |
-| G10 | FACT_NO_ERROR | No error (correct answer) |
-| G11 | FACT_HINT_USED | Hint was used |
-| G12 | FACT_IN_MODULE | Within a module |
-| G13 | FACT_DIFF_BEGINNER | Current difficulty: beginner |
-| G14 | FACT_DIFF_MEDIUM | Current difficulty: medium |
-| G15 | FACT_DIFF_HARD | Current difficulty: hard |
-| G16 | FACT_IS_FINAL_PROJECT | Final project question |
-| G17 | FACT_IS_PRACTICE | Practice question |
-| G18 | FACT_NEXT_UNLOCKED | Next question unlocked |
-| G19 | FACT_PREV_UNLOCKED | Previous question unlocked |
-| G20 | FACT_PERSISTENT_FAIL | 3+ consecutive failures |
-| G21 | FACT_SATISFACTORY_PROGRESS | Progress is satisfactory |
-| G22 | FACT_STYLE_MIXED | Mixed learning style |
+| Code | Constant                   | Description                     |
+| :--- | :------------------------- | :------------------------------ |
+| G01  | FACT_SCORE_CRITICAL        | Score < 50%                     |
+| G02  | FACT_SCORE_REMEDIAL        | Score 50-74%                    |
+| G03  | FACT_SCORE_STANDARD        | Score 75-89%                    |
+| G04  | FACT_SCORE_MASTERY         | Score >= 90%                    |
+| G05  | FACT_TIME_FAST             | Answered < 70% allocated time   |
+| G06  | FACT_STYLE_VISUAL          | Learner prefers visual content  |
+| G07  | FACT_STYLE_TEXTUAL         | Learner prefers textual content |
+| G08  | FACT_ERROR_SYNTAX          | Syntax error detected           |
+| G09  | FACT_ERROR_LOGIC           | Logic error detected            |
+| G10  | FACT_NO_ERROR              | No error (correct answer)       |
+| G11  | FACT_HINT_USED             | Hint was used                   |
+| G12  | FACT_IN_MODULE             | Within a module                 |
+| G13  | FACT_DIFF_BEGINNER         | Current difficulty: beginner    |
+| G14  | FACT_DIFF_MEDIUM           | Current difficulty: medium      |
+| G15  | FACT_DIFF_HARD             | Current difficulty: hard        |
+| G16  | FACT_IS_FINAL_PROJECT      | Final project question          |
+| G17  | FACT_IS_PRACTICE           | Practice question               |
+| G18  | FACT_NEXT_UNLOCKED         | Next question unlocked          |
+| G19  | FACT_PREV_UNLOCKED         | Previous question unlocked      |
+| G20  | FACT_PERSISTENT_FAIL       | 3+ consecutive failures         |
+| G21  | FACT_SATISFACTORY_PROGRESS | Progress is satisfactory        |
+| G22  | FACT_STYLE_MIXED           | Mixed learning style            |
 
 ---
 
 ## Actions (H-Codes)
 
-| Code | Constant | Action |
-| :--- | :--- | :--- |
-| H01 | ACTION_VISUAL_CRISIS_INTERVENTION | Crisis干预 - visual learner |
-| H02 | ACTION_TEXTUAL_CRISIS_INTERVENTION | Crisis干预 - textual learner |
-| H03 | ACTION_SYNTAX_RECOVERY | 恢复语法 |
-| H04 | ACTION_LOGIC_RECOVERY | 恢复逻辑 |
-| H05 | ACTION_STANDARD_PROMOTION | 标准升级 - next question |
-| H06 | ACTION_ACCELERATED_JUMP | 快速跳过 - bypass levels |
-| H07 | ACTION_CRITICAL_BACKTRACKING | 后退到beginner |
-| H08 | ACTION_MODULE_GRADUATION | 模块完成 |
-| H09 | ACTION_GOLD_CERTIFICATE | 颁发金证书 |
-| H10 | ACTION_SILVER_CERTIFICATE | 颁发银证书 |
-| H11 | ACTION_BRONZE_CERTIFICATE | 颁发铜证书 |
-| H12 | ACTION_VISUAL_PROJECT_REVISION | 项目修订 - visual |
-| H13 | ACTION_TEXTUAL_PROJECT_REVISION | 项目修订 - textual |
-| H14 | ACTION_PERSISTENT_VISUAL_NET | 安全网 - visual |
-| H15 | ACTION_PERSISTENT_TEXTUAL_NET | 安全网 - textual |
-| H16 | ACTION_ACCELERATED_MATERIAL | 跳转学习材料 |
-| H17 | ACTION_MIXED_CRISIS_INTERVENTION | 混合危机干预 |
-| H18 | ACTION_PERSISTENT_MIXED_NET | 混合安全网 |
-| H21 | ACTION_REMEDIAL_AT_BEGINNER | 从头恢复 |
-| H22 | ACTION_REVIEW_PREVIOUS | 复习 previous |
-| H23 | ACTION_FAST_WRONG_RECOVERY | 快速错误恢复 |
-| H26 | ACTION_REMEDIAL_INDEPENDENT | 独立复习 |
-| H27 | ACTION_MASTERY_MEDIUM | 中级掌握 |
+| Code | Constant                           | Action                       |
+| :--- | :--------------------------------- | :--------------------------- |
+| H01  | ACTION_VISUAL_CRISIS_INTERVENTION  | Crisis干预 - visual learner  |
+| H02  | ACTION_TEXTUAL_CRISIS_INTERVENTION | Crisis干预 - textual learner |
+| H03  | ACTION_SYNTAX_RECOVERY             | 恢复语法                     |
+| H04  | ACTION_LOGIC_RECOVERY              | 恢复逻辑                     |
+| H05  | ACTION_STANDARD_PROMOTION          | 标准升级 - next question     |
+| H06  | ACTION_ACCELERATED_JUMP            | 快速跳过 - bypass levels     |
+| H07  | ACTION_CRITICAL_BACKTRACKING       | 后退到beginner               |
+| H08  | ACTION_MODULE_GRADUATION           | 模块完成                     |
+| H09  | ACTION_GOLD_CERTIFICATE            | 颁发金证书                   |
+| H10  | ACTION_SILVER_CERTIFICATE          | 颁发银证书                   |
+| H11  | ACTION_BRONZE_CERTIFICATE          | 颁发铜证书                   |
+| H12  | ACTION_VISUAL_PROJECT_REVISION     | 项目修订 - visual            |
+| H13  | ACTION_TEXTUAL_PROJECT_REVISION    | 项目修订 - textual           |
+| H14  | ACTION_PERSISTENT_VISUAL_NET       | 安全网 - visual              |
+| H15  | ACTION_PERSISTENT_TEXTUAL_NET      | 安全网 - textual             |
+| H16  | ACTION_ACCELERATED_MATERIAL        | 跳转学习材料                 |
+| H17  | ACTION_MIXED_CRISIS_INTERVENTION   | 混合危机干预                 |
+| H18  | ACTION_PERSISTENT_MIXED_NET        | 混合安全网                   |
+| H21  | ACTION_REMEDIAL_AT_BEGINNER        | 从头恢复                     |
+| H22  | ACTION_REVIEW_PREVIOUS             | 复习 previous                |
+| H23  | ACTION_FAST_WRONG_RECOVERY         | 快速错误恢复                 |
+| H26  | ACTION_REMEDIAL_INDEPENDENT        | 独立复习                     |
+| H27  | ACTION_MASTERY_MEDIUM              | 中级掌握                     |
 
 ---
 
@@ -103,17 +103,17 @@ Rules are evaluated in priority order (lower = higher precedence).
 
 **Purpose**: Crisis intervention and persistent failure safety nets.
 
-| Rule | ID | Priority | Trigger |
-| :--- | :--- | :--- | :--- |
-| SafetyFinalVisualPersistentRule | RULE_01 | 1 | Final + persistent fail + visual |
-| SafetyFinalTextualPersistentRule | RULE_02 | 2 | Final + persistent fail + textual |
-| SafetyFinalMixedPersistentRule | RULE_03 | 3 | Final + persistent fail + mixed |
-| SafetyVisualNetRule | RULE_04 | 4 | Persistent fail + visual |
-| SafetyTextualNetRule | RULE_05 | 5 | Persistent fail + textual |
-| SafetyMixedNetRule | RULE_07 | 7 | Persistent fail + mixed |
-| SafetyVisualCrisisRule | RULE_08 | 8 | Critical score + beginner + visual |
-| SafetyTextualCrisisRule | RULE_06 | 10 | Critical score + beginner + textual |
-| SafetyMixedCrisisRule | RULE_09 | 9 | Critical score + beginner + mixed |
+| Rule                             | ID      | Priority | Trigger                             |
+| :------------------------------- | :------ | :------- | :---------------------------------- |
+| SafetyFinalVisualPersistentRule  | RULE_01 | 1        | Final + persistent fail + visual    |
+| SafetyFinalTextualPersistentRule | RULE_02 | 2        | Final + persistent fail + textual   |
+| SafetyFinalMixedPersistentRule   | RULE_03 | 3        | Final + persistent fail + mixed     |
+| SafetyVisualNetRule              | RULE_04 | 4        | Persistent fail + visual            |
+| SafetyTextualNetRule             | RULE_05 | 5        | Persistent fail + textual           |
+| SafetyMixedNetRule               | RULE_07 | 7        | Persistent fail + mixed             |
+| SafetyVisualCrisisRule           | RULE_08 | 8        | Critical score + beginner + visual  |
+| SafetyTextualCrisisRule          | RULE_06 | 10       | Critical score + beginner + textual |
+| SafetyMixedCrisisRule            | RULE_09 | 9        | Critical score + beginner + mixed   |
 
 **Behavior**: If student fails persistently or hits critical threshold, trigger intervention instead of progression.
 
@@ -121,11 +121,11 @@ Rules are evaluated in priority order (lower = higher precedence).
 
 ### 2. Project Domain (Priority 11-13)
 
-| Rule | ID | Priority | Trigger |
-| :--- | :--- | :--- | :--- |
-| ProjectVisualRevisionRule | RULE_10 | 11 | Final project + visual learner |
-| ProjectTextualRevisionRule | RULE_11 | 12 | Final project + textual learner |
-| ProjectMixedRevisionRule | RULE_13 | 13 | Final project + mixed learner |
+| Rule                       | ID      | Priority | Trigger                         |
+| :------------------------- | :------ | :------- | :------------------------------ |
+| ProjectVisualRevisionRule  | RULE_10 | 11       | Final project + visual learner  |
+| ProjectTextualRevisionRule | RULE_11 | 12       | Final project + textual learner |
+| ProjectMixedRevisionRule   | RULE_13 | 13       | Final project + mixed learner   |
 
 **Behavior**: Request project revision instead of allowing graduation.
 
@@ -133,11 +133,11 @@ Rules are evaluated in priority order (lower = higher precedence).
 
 ### 3. Achievement Domain (Priority 20-22)
 
-| Rule | ID | Priority | Trigger |
-| :--- | :--- | :--- | :--- |
-| AwardGoldCertRule | RULE_20 | 20 | Mastery + 5+ consecutive correct |
-| AwardSilverCertRule | RULE_21 | 21 | Standard + 5+ consecutive correct |
-| AwardBronzeCertRule | RULE_22 | 22 | Remedial + module completed |
+| Rule                | ID      | Priority | Trigger                           |
+| :------------------ | :------ | :------- | :-------------------------------- |
+| AwardGoldCertRule   | RULE_20 | 20       | Mastery + 5+ consecutive correct  |
+| AwardSilverCertRule | RULE_21 | 21       | Standard + 5+ consecutive correct |
+| AwardBronzeCertRule | RULE_22 | 22       | Remedial + module completed       |
 
 **Behavior**: Issue certificates based on performance tier.
 
@@ -145,16 +145,16 @@ Rules are evaluated in priority order (lower = higher precedence).
 
 ### 4. Recovery Domain (Priority 30-37)
 
-| Rule | ID | Priority | Trigger |
-| :--- | :--- | :--- | :--- |
-| RecoverBacktrackRule | RULE_30 | 30 | Syntax/logic error + fast answer |
-| RecoverSyntaxRule | RULE_31 | 31 | Syntax error detected |
-| RecoverLogicRule | RULE_32 | 32 | Logic error detected |
-| RecoverFastWrongRule | RULE_33 | 33 | Fast + wrong answer |
-| RecoverRemedialBeginnerRule | RULE_34 | 34 | Multiple remedial scores |
-| RecoverRemedialIndepRule | RULE_35 | 35 | Independent remedial |
-| RecoverReviewPrevRule | RULE_36 | 36 | Review previous material |
-| RecoverRemedialHintRule | RULE_37 | 37 | Hint used + wrong |
+| Rule                        | ID      | Priority | Trigger                          |
+| :-------------------------- | :------ | :------- | :------------------------------- |
+| RecoverBacktrackRule        | RULE_30 | 30       | Syntax/logic error + fast answer |
+| RecoverSyntaxRule           | RULE_31 | 31       | Syntax error detected            |
+| RecoverLogicRule            | RULE_32 | 32       | Logic error detected             |
+| RecoverFastWrongRule        | RULE_33 | 33       | Fast + wrong answer              |
+| RecoverRemedialBeginnerRule | RULE_34 | 34       | Multiple remedial scores         |
+| RecoverRemedialIndepRule    | RULE_35 | 35       | Independent remedial             |
+| RecoverReviewPrevRule       | RULE_36 | 36       | Review previous material         |
+| RecoverRemedialHintRule     | RULE_37 | 37       | Hint used + wrong                |
 
 **Behavior**: Provide targeted remediation based on error type.
 
@@ -162,13 +162,13 @@ Rules are evaluated in priority order (lower = higher precedence).
 
 ### 5. Progression Domain (Priority 50-55)
 
-| Rule | ID | Priority | Trigger |
-| :--- | :--- | :--- | :--- |
-| ProgressStandardRule | RULE_12 | 50 | Passing score (75%+) |
-| ProgressJumpRule | RULE_14 | 52 | Mastery + fast answer |
-| ProgressMaterialRule | RULE_15 | 53 | Accelerated material |
-| ProgressMasteryMedRule | RULE_16 | 54 | Mastery at medium |
-| ProgressGraduationRule | RULE_17 | 55 | Module completion |
+| Rule                   | ID      | Priority | Trigger               |
+| :--------------------- | :------ | :------- | :-------------------- |
+| ProgressStandardRule   | RULE_12 | 50       | Passing score (75%+)  |
+| ProgressJumpRule       | RULE_14 | 52       | Mastery + fast answer |
+| ProgressMaterialRule   | RULE_15 | 53       | Accelerated material  |
+| ProgressMasteryMedRule | RULE_16 | 54       | Mastery at medium     |
+| ProgressGraduationRule | RULE_17 | 55       | Module completion     |
 
 **Behavior**: Standard progression, fast-track jumps, and module graduation.
 
@@ -176,9 +176,9 @@ Rules are evaluated in priority order (lower = higher precedence).
 
 ### 6. Interaction Domain (Priority 60)
 
-| Rule | ID | Priority | Trigger |
-| :--- | :--- | :--- | :--- |
-| InteractHintSuccessRule | RULE_18 | 60 | Hint used + correct answer |
+| Rule                    | ID      | Priority | Trigger                    |
+| :---------------------- | :------ | :------- | :------------------------- |
+| InteractHintSuccessRule | RULE_18 | 60       | Hint used + correct answer |
 
 **Behavior**: Reward hint usage with positive feedback.
 
@@ -190,13 +190,13 @@ The engine maintains `adaptive_state` in `student_states` table:
 
 ```json
 {
-  "current_difficulty": "beginner",
-  "consecutive_correct": 0,
-  "consecutive_recovery_count": 0,
-  "last_rule": { "id": "RULE_12", "action": "H05" },
-  "target_difficulty": null,
-  "fast_track_active": false,
-  "current_material_id": "m1"
+    "current_difficulty": "beginner",
+    "consecutive_correct": 0,
+    "consecutive_recovery_count": 0,
+    "last_rule": { "id": "RULE_12", "action": "H05" },
+    "target_difficulty": null,
+    "fast_track_active": false,
+    "current_material_id": "m1"
 }
 ```
 
@@ -207,6 +207,7 @@ The engine maintains `adaptive_state` in `student_states` table:
 ### FactGatheringService
 
 Transforms quiz attempt into G-codes:
+
 - Score band → G01-G04
 - Time ratio → G05
 - Learning style → G06/G07/G22
@@ -224,6 +225,7 @@ Transforms quiz attempt into G-codes:
 ### NextActionResolverService
 
 Maps H-codes to UI actions:
+
 - H01/H02 → `next_action: REVIEW_MATERIAL`
 - H05 → `next_action: NEXT_QUESTION`
 - H06 → `next_action: ACCELERATED_JUMP`
@@ -255,21 +257,21 @@ Maps H-codes to UI actions:
 From `AdaptiveConstants`:
 
 | Difficulty | Allocated Time (seconds) |
-| :--- | :--- |
-| beginner | 45 |
-| medium | 90 |
-| hard | 150 |
-| final | 300 |
+| :--------- | :----------------------- |
+| beginner   | 45                       |
+| medium     | 90                       |
+| hard       | 150                      |
+| final      | 300                      |
 
-| Score Band | Threshold |
-| :--- | :--- |
-| Critical (G01) | < 50% |
-| Remedial (G02) | 50-74% |
-| Standard (G03) | 75-89% |
-| Mastery (G04) | >= 90% |
+| Score Band     | Threshold |
+| :------------- | :-------- |
+| Critical (G01) | < 50%     |
+| Remedial (G02) | 50-74%    |
+| Standard (G03) | 75-89%    |
+| Mastery (G04)  | >= 90%    |
 
-| Time | Threshold |
-| :--- | :--- |
+| Time       | Threshold          |
+| :--------- | :----------------- |
 | Fast (G05) | < 70% of allocated |
 
 ---
@@ -377,6 +379,7 @@ To add new adaptive behavior:
 6. Set priority relative to existing rules
 
 Example:
+
 ```php
 final class MyNewRule extends BaseAdaptiveRule
 {
@@ -384,13 +387,13 @@ final class MyNewRule extends BaseAdaptiveRule
     public function getRuleName(): string { return 'My New Rule'; }
     public function getPriority(): int { return 25; } // Between achievement & recovery
     public function getActionCode(): string { return AdaptiveConstants::ACTION_NEW_ACTION; }
-    
+
     public function evaluate(array $facts): bool
     {
         return $this->hasFact($facts, AdaptiveConstants::FACT_SCORE_MASTERY)
             && $this->hasFact($facts, AdaptiveConstants::FACT_TIME_FAST);
     }
-    
+
     public function apply(array $state, array $context): array
     {
         return ['next_action' => 'SPECIAL_REWARD', 'bonus_points' => 50];

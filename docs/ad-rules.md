@@ -46,21 +46,21 @@ abstract class BaseAdaptiveRule implements AdaptiveRuleInterface
     use HasDifficultyLevel;     // isBeginnerDifficulty(), isMediumDifficulty()
     use HasLearningStyle;        // isVisualLearner(), isTextualLearner()
     use HasErrorType;            // hasSyntaxError(), hasLogicError()
-    
+
     // Action appliers
     use AppliesProgression;     // applyStandardPromotion(), applyAcceleratedJump()
     use AppliesAchievement;      // applyGoldCertificate(), dll
     use AppliesCrisisIntervention;
     use AppliesRecovery;
-    
+
     protected string $ruleId;      // 'RULE_01', 'RULE_02', dll
     protected string $ruleName;   // 'Gold Certificate', dll
     protected string $actionCode;// 'H09', 'H10', dll
     protected int $priority;     // 1-100 (lower = higher precedence)
-    
+
     // Side-effect free - hanya cek kondisi
     abstract public function evaluate(array $facts): bool;
-    
+
     // Mutate state - hanya di sini state berubah
     abstract public function apply(array $state, array $context): array;
 }
@@ -72,12 +72,12 @@ abstract class BaseAdaptiveRule implements AdaptiveRuleInterface
 class RuleStandardPromotion extends BaseAdaptiveRule
 {
     use AppliesProgression;
-    
+
     protected string $ruleId = 'RULE_20';
     protected string $ruleName = 'Standard Promotion';
     protected string $actionCode = AdaptiveConstants::ACTION_STANDARD_PROMOTION;
     protected int $priority = 50;
-    
+
     public function evaluate(array $facts): bool
     {
         return $this->hasPassingScore($facts)                    // G03 atau G04
@@ -87,7 +87,7 @@ class RuleStandardPromotion extends BaseAdaptiveRule
             && !$this->isFinalProject($facts)                    // bukan G16
             && !$this->isPractice($facts);                       // bukan G17
     }
-    
+
     public function apply(array $state, array $context): array
     {
         return $this->applyStandardPromotion($state, $context['is_correct'] ?? false);
@@ -101,30 +101,30 @@ class RuleStandardPromotion extends BaseAdaptiveRule
 
 Facts dikumpulkan oleh `FactGatheringService` dari kondisi siswa saat submit jawaban:
 
-| Kode | Constant | Predikat |
-|------|----------|--------|
-| G01 | FACT_SCORE_CRITICAL | Skor < 50% |
-| G02 | FACT_SCORE_REMEDIAL | Skor 50-74% |
-| G03 | FACT_SCORE_STANDARD | Skor 75-89% |
-| G04 | FACT_SCORE_MASTERY | Skor >= 90% |
-| G05 | FACT_TIME_FAST | Waktu < 70% alokasi |
-| G06 | FACT_STYLE_VISUAL | Gaya belajar visual |
-| G07 | FACT_STYLE_TEXTUAL | Gaya belajar tekstual |
-| G08 | FACT_ERROR_SYNTAX | Error syntax |
-| G09 | FACT_ERROR_LOGIC | Error logic |
-| G10 | FACT_NO_ERROR | Tidak ada error |
-| G11 | FACT_HINT_USED | menggunakan hint |
-| G12 | FACT_IN_MODULE | Sedang di modul |
-| G13 | FACT_DIFF_BEGINNER | Difficulty beginner |
-| G14 | FACT_DIFF_MEDIUM | Difficulty medium |
-| G15 | FACT_DIFF_HARD | Difficulty hard |
-| G16 | FACT_IS_FINAL_PROJECT | Final project |
-| G17 | FACT_IS_PRACTICE | Mode latihan |
-| G18 | FACT_NEXT_UNLOCKED | Materi berikutnya unlock |
-| G19 | FACT_PREV_UNLOCKED | Materi sebelumnya unlock |
-| G20 | FACT_PERSISTENT_FAIL | Gagal >= 2x beruntun |
-| G21 | FACT_SATISFACTORY_PROGRESS | Progress >= 50% di difficulty |
-| G22 | FACT_STYLE_MIXED | Gaya campuran |
+| Kode | Constant                   | Predikat                      |
+| ---- | -------------------------- | ----------------------------- |
+| G01  | FACT_SCORE_CRITICAL        | Skor < 50%                    |
+| G02  | FACT_SCORE_REMEDIAL        | Skor 50-74%                   |
+| G03  | FACT_SCORE_STANDARD        | Skor 75-89%                   |
+| G04  | FACT_SCORE_MASTERY         | Skor >= 90%                   |
+| G05  | FACT_TIME_FAST             | Waktu < 70% alokasi           |
+| G06  | FACT_STYLE_VISUAL          | Gaya belajar visual           |
+| G07  | FACT_STYLE_TEXTUAL         | Gaya belajar tekstual         |
+| G08  | FACT_ERROR_SYNTAX          | Error syntax                  |
+| G09  | FACT_ERROR_LOGIC           | Error logic                   |
+| G10  | FACT_NO_ERROR              | Tidak ada error               |
+| G11  | FACT_HINT_USED             | menggunakan hint              |
+| G12  | FACT_IN_MODULE             | Sedang di modul               |
+| G13  | FACT_DIFF_BEGINNER         | Difficulty beginner           |
+| G14  | FACT_DIFF_MEDIUM           | Difficulty medium             |
+| G15  | FACT_DIFF_HARD             | Difficulty hard               |
+| G16  | FACT_IS_FINAL_PROJECT      | Final project                 |
+| G17  | FACT_IS_PRACTICE           | Mode latihan                  |
+| G18  | FACT_NEXT_UNLOCKED         | Materi berikutnya unlock      |
+| G19  | FACT_PREV_UNLOCKED         | Materi sebelumnya unlock      |
+| G20  | FACT_PERSISTENT_FAIL       | Gagal >= 2x beruntun          |
+| G21  | FACT_SATISFACTORY_PROGRESS | Progress >= 50% di difficulty |
+| G22  | FACT_STYLE_MIXED           | Gaya campuran                 |
 
 ### Helper Predikat di BaseAdaptiveRule
 
@@ -144,39 +144,39 @@ protected function hasFailingScore(array $facts): bool;       // G01 || G02
 
 ## 4. Actions (H-Codes) - Output dari Engine
 
-| Kode | Constant | Aksi |
-|------|----------|------|
-| H01 | ACTION_VISUAL_CRISIS_INTERVENTION | Intervensi visual |
-| H02 | ACTION_TEXTUAL_CRISIS_INTERVENTION | Intervensi textual |
-| H03 | ACTION_SYNTAX_RECOVERY | Recovery syntax |
-| H04 | ACTION_LOGIC_RECOVERY | Recovery logic |
-| H05 | ACTION_STANDARD_PROMOTION | Next question reguler |
-| H06 | ACTION_ACCELERATED_JUMP | Loncat difficulty |
-| H07 | ACTION_CRITICAL_BACKTRACKING | Turunkan difficulty |
-| H08 | ACTION_MODULE_GRADUATION | Lulus modul |
-| H09 | ACTION_GOLD_CERTIFICATE | Klaim gold |
-| H10 | ACTION_SILVER_CERTIFICATE | Klaim silver |
-| H11 | ACTION_BRONZE_CERTIFICATE | Klaim bronze |
-| H12 | ACTION_VISUAL_PROJECT_REVISION | Revisi project visual |
-| H13 | ACTION_TEXTUAL_PROJECT_REVISION | Revisi project textual |
-| H14 | ACTION_PERSISTENT_VISUAL_NET | Safety net visual |
-| H15 | ACTION_PERSISTENT_TEXTUAL_NET | Safety net textual |
-| H16 | ACTION_ACCELERATED_MATERIAL_PROMOTION | Loncat materi |
+| Kode | Constant                              | Aksi                   |
+| ---- | ------------------------------------- | ---------------------- |
+| H01  | ACTION_VISUAL_CRISIS_INTERVENTION     | Intervensi visual      |
+| H02  | ACTION_TEXTUAL_CRISIS_INTERVENTION    | Intervensi textual     |
+| H03  | ACTION_SYNTAX_RECOVERY                | Recovery syntax        |
+| H04  | ACTION_LOGIC_RECOVERY                 | Recovery logic         |
+| H05  | ACTION_STANDARD_PROMOTION             | Next question reguler  |
+| H06  | ACTION_ACCELERATED_JUMP               | Loncat difficulty      |
+| H07  | ACTION_CRITICAL_BACKTRACKING          | Turunkan difficulty    |
+| H08  | ACTION_MODULE_GRADUATION              | Lulus modul            |
+| H09  | ACTION_GOLD_CERTIFICATE               | Klaim gold             |
+| H10  | ACTION_SILVER_CERTIFICATE             | Klaim silver           |
+| H11  | ACTION_BRONZE_CERTIFICATE             | Klaim bronze           |
+| H12  | ACTION_VISUAL_PROJECT_REVISION        | Revisi project visual  |
+| H13  | ACTION_TEXTUAL_PROJECT_REVISION       | Revisi project textual |
+| H14  | ACTION_PERSISTENT_VISUAL_NET          | Safety net visual      |
+| H15  | ACTION_PERSISTENT_TEXTUAL_NET         | Safety net textual     |
+| H16  | ACTION_ACCELERATED_MATERIAL_PROMOTION | Loncat materi          |
 
 ### Operational Actions (Non-H)
 
- Setelah H-code ditentukan oleh rule, `NextActionResolverService` mengkonversi ke aksi nyata:
+Setelah H-code ditentukan oleh rule, `NextActionResolverService` mengkonversi ke aksi nyata:
 
-| Action | makna |
-|--------|-------|
-| NEXT_QUESTION | Lanjut soal berikutnya |
-| NEXT_MATERIAL | Lanjut materi berikutnya |
-| FINISH_MATERIAL | Selesai materi |
-| ISSUE_CERTIFICATE | Klaim sertifikat |
-| REDUCE_DIFFICULTY | Turunkan level |
-| INCREASE_DIFFICULTY | Naikkan level |
-| STUDY_VISUAL | Tampilkan materi visual |
-| STUDY_TEXTUAL | Tampilkan materi tekstual |
+| Action              | makna                     |
+| ------------------- | ------------------------- |
+| NEXT_QUESTION       | Lanjut soal berikutnya    |
+| NEXT_MATERIAL       | Lanjut materi berikutnya  |
+| FINISH_MATERIAL     | Selesai materi            |
+| ISSUE_CERTIFICATE   | Klaim sertifikat          |
+| REDUCE_DIFFICULTY   | Turunkan level            |
+| INCREASE_DIFFICULTY | Naikkan level             |
+| STUDY_VISUAL        | Tampilkan materi visual   |
+| STUDY_TEXTUAL       | Tampilkan materi tekstual |
 
 ---
 
@@ -184,28 +184,28 @@ protected function hasFailingScore(array $facts): bool;       // G01 || G02
 
 RuleRegistry mengurutkan rules ascending berdasar priority (angka kecil = execute lebih dulu):
 
-| Priority | Rule Id | Rule Name | Action |
-|-----------|---------|-----------|--------|
-| 3 | RULE_01 | FinalProjectVisualPersistentFail | H12 |
-| 3 | RULE_02 | FinalProjectTextualPersistentFail | H13 |
-| 5 | RULE_03 | PersistentVisualSafetyNet | H14 |
-| 5 | RULE_04 | PersistentTextualSafetyNet | H15 |
-| 10 | RULE_05 | VisualCrisisIntervention | H01 |
-| 10 | RULE_06 | TextualCrisisIntervention | H02 |
-| 15 | RULE_07 | VisualProjectRevision | H12 |
-| 15 | RULE_08 | TextualProjectRevision | H13 |
-| 21 | RULE_09 | GoldCertificate | H09 |
-| 22 | RULE_10 | SilverCertificate | H10 |
-| 23 | RULE_11 | BronzeCertificate | H11 |
-| 24 | RULE_12 | SyntaxRecovery | H03 |
-| 25 | RULE_13 | LogicRecovery | H04 |
-| 27 | RULE_14 | CriticalBacktracking | H07 |
-| 30 | RULE_15 | ModuleGraduation | H08 |
-| 35 | RULE_16 | MasteryMedium | H05 |
-| 36 | RULE_17 | AcceleratedMaterialPromotion | H16 |
-| 40 | RULE_18 | AcceleratedJump | H06 |
-| 48 | RULE_19 | RemedialIndependent | H04 |
-| 50 | RULE_20 | StandardPromotion | H05 |
+| Priority | Rule Id | Rule Name                         | Action |
+| -------- | ------- | --------------------------------- | ------ |
+| 3        | RULE_01 | FinalProjectVisualPersistentFail  | H12    |
+| 3        | RULE_02 | FinalProjectTextualPersistentFail | H13    |
+| 5        | RULE_03 | PersistentVisualSafetyNet         | H14    |
+| 5        | RULE_04 | PersistentTextualSafetyNet        | H15    |
+| 10       | RULE_05 | VisualCrisisIntervention          | H01    |
+| 10       | RULE_06 | TextualCrisisIntervention         | H02    |
+| 15       | RULE_07 | VisualProjectRevision             | H12    |
+| 15       | RULE_08 | TextualProjectRevision            | H13    |
+| 21       | RULE_09 | GoldCertificate                   | H09    |
+| 22       | RULE_10 | SilverCertificate                 | H10    |
+| 23       | RULE_11 | BronzeCertificate                 | H11    |
+| 24       | RULE_12 | SyntaxRecovery                    | H03    |
+| 25       | RULE_13 | LogicRecovery                     | H04    |
+| 27       | RULE_14 | CriticalBacktracking              | H07    |
+| 30       | RULE_15 | ModuleGraduation                  | H08    |
+| 35       | RULE_16 | MasteryMedium                     | H05    |
+| 36       | RULE_17 | AcceleratedMaterialPromotion      | H16    |
+| 40       | RULE_18 | AcceleratedJump                   | H06    |
+| 48       | RULE_19 | RemedialIndependent               | H04    |
+| 50       | RULE_20 | StandardPromotion                 | H05    |
 
 ---
 
@@ -416,34 +416,34 @@ State disimpan di `student_states` table (user) atau cookie (guest):
 
 ```json
 {
-  "adaptive_state": {
-    "current_material_id": "material_01",
-    "current_difficulty": "beginner",
-    "target_difficulty": "medium",
-    "fast_track_active": false,
-    "last_rule": {
-      "id": "RULE_18",
-      "name": "Accelerated Jump",
-      "action": "H06"
+    "adaptive_state": {
+        "current_material_id": "material_01",
+        "current_difficulty": "beginner",
+        "target_difficulty": "medium",
+        "fast_track_active": false,
+        "last_rule": {
+            "id": "RULE_18",
+            "name": "Accelerated Jump",
+            "action": "H06"
+        },
+        "consecutive_correct": 3
     },
-    "consecutive_correct": 3
-  },
-  "gamification_data": {
-    "xp": 250,
-    "streak": 5,
-    "badges": ["bronze_junior"]
-  },
-  "learning_profile": {
-    "preferred_style": "visual",
-    "weaknesses": ["syntax"]
-  },
-  "performance_metrics": {
-    "accuracy": 0.85,
-    "avg_time": 35
-  },
-  "certifications": {
-    "material_01": "gold"
-  }
+    "gamification_data": {
+        "xp": 250,
+        "streak": 5,
+        "badges": ["bronze_junior"]
+    },
+    "learning_profile": {
+        "preferred_style": "visual",
+        "weaknesses": ["syntax"]
+    },
+    "performance_metrics": {
+        "accuracy": 0.85,
+        "avg_time": 35
+    },
+    "certifications": {
+        "material_01": "gold"
+    }
 }
 ```
 
@@ -469,13 +469,13 @@ class RuleNewFeature extends BaseAdaptiveRule
     protected string $ruleName = 'New Feature';
     protected string $actionCode = AdaptiveConstants::ACTION_NEW_ACTION;
     protected int $priority = 45; // sesuai urutan yang diinginkan
-    
+
     public function evaluate(array $facts): bool
     {
         return $this->hasFact($facts, AdaptiveConstants::FACT_NEW_FACT)
             && $this->isBeginnerDifficulty($facts);
     }
-    
+
     public function apply(array $state, array $context): array
     {
         $state['next_action'] = AdaptiveConstants::ACTION_NEW_ACTION;
@@ -512,17 +512,17 @@ php artisan test --filter Adaptive --verbose
 
 ## 12. Files Reference
 
-| File | Peran |
-|------|------|
-| `app/Rules/Adaptive/RuleRegistry.php` | Kumpulan semua rule |
-| `app/Rules/Adaptive/BaseAdaptiveRule.php` | Abstract base class |
-| `app/Rules/Adaptive/Contracts/AdaptiveRuleInterface.php` | Interface contract |
-| `app/Rules/Adaptive/Constants/AdaptiveConstants.php` | G-codes & H-codes |
-| `app/Rules/Adaptive/Concerns/*.php` | Traits untuk evaluate & apply |
-| `app/Rules/Adaptive/Rule*.php` | 20 concrete rule implementations |
-| `app/Services/Adaptive/AdaptiveEngineService.php` | Engine orchestrator |
-| `app/Services/Adaptive/FactGatheringService.php` | Fact collector |
-| `app/Services/Adaptive/NextActionResolverService.php` | Action resolver |
+| File                                                     | Peran                            |
+| -------------------------------------------------------- | -------------------------------- |
+| `app/Rules/Adaptive/RuleRegistry.php`                    | Kumpulan semua rule              |
+| `app/Rules/Adaptive/BaseAdaptiveRule.php`                | Abstract base class              |
+| `app/Rules/Adaptive/Contracts/AdaptiveRuleInterface.php` | Interface contract               |
+| `app/Rules/Adaptive/Constants/AdaptiveConstants.php`     | G-codes & H-codes                |
+| `app/Rules/Adaptive/Concerns/*.php`                      | Traits untuk evaluate & apply    |
+| `app/Rules/Adaptive/Rule*.php`                           | 20 concrete rule implementations |
+| `app/Services/Adaptive/AdaptiveEngineService.php`        | Engine orchestrator              |
+| `app/Services/Adaptive/FactGatheringService.php`         | Fact collector                   |
+| `app/Services/Adaptive/NextActionResolverService.php`    | Action resolver                  |
 
 ---
 

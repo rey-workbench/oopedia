@@ -6,12 +6,12 @@ Dokumen ini mengidentifikasi celah, inkonsistensi, dan area perbaikan dalam sist
 
 ## 1. Facts Tidak Diproduksi (Dead Facts)
 
-| Constant | Didefinisikan | Diproduksi | Masalah |
-|----------|--------------|------------|-----------|
-| `FACT_NO_ERROR` (G10) | ✅ | ❌ Dead code | Helper ada tapi tidak pernah digunakan |
-| `FACT_IS_PRACTICE` (G17) | ✅ | ❌ Dead code | Tidak ada logika deteksi practice mode |
-| `FACT_PREV_UNLOCKED` (G19) | ✅ | ⚠️ Tidak dipakai rule | Tidak ada rule yang menggunakan |
-| `FACT_STYLE_MIXED` (G22) | ✅ | ⚠️ Tidak dipakai rule | Ada di facts, tapi tidak触发 rule |
+| Constant                   | Didefinisikan | Diproduksi            | Masalah                                |
+| -------------------------- | ------------- | --------------------- | -------------------------------------- |
+| `FACT_NO_ERROR` (G10)      | ✅            | ❌ Dead code          | Helper ada tapi tidak pernah digunakan |
+| `FACT_IS_PRACTICE` (G17)   | ✅            | ❌ Dead code          | Tidak ada logika deteksi practice mode |
+| `FACT_PREV_UNLOCKED` (G19) | ✅            | ⚠️ Tidak dipakai rule | Tidak ada rule yang menggunakan        |
+| `FACT_STYLE_MIXED` (G22)   | ✅            | ⚠️ Tidak dipakai rule | Ada di facts, tapi tidak触发 rule      |
 
 ### Celah 1.1: G17 (Practice Mode)
 
@@ -63,6 +63,7 @@ Priority 40: RuleAcceleratedJump  (G04 + G05 + G13 + bukan G11 + bukan G16)
 **Masalah**: Di beginner难度 mastery + fast = bisa trigger accelerated jump SEBELUM mastery medium. Ini tidak logis.
 
 **Contoh scenario**:
+
 - Siswa di beginner
 - Skor mastery (G04)
 - Waktu fast (G05)
@@ -116,6 +117,7 @@ RuleRemedialAtBeginner
 ### Celah 3.4: Hint Usage dengan Good Score
 
 Tidak ada handling untuk:
+
 - G04 (mastery) + G11 (hint used)
 - G03 (standard) + G11 (hint used)
 
@@ -154,6 +156,7 @@ RuleMasteryMedium: G04 + G05 + G14 + bukan G11 + bukan G16
 ### Celah 4.4: RepeatMaterial Tidak Ada
 
 Tidak ada rule untuk:
+
 - Jika semua materi sudah selesai = finish course
 - Jika gagal berkali-kali di materi sama = repeat/review material
 
@@ -161,13 +164,13 @@ Tidak ada rule untuk:
 
 ## 5. Missing Facts (Reserved tapi Tidak Ada)
 
-| Constant | Keterangan |
-|----------|------------|
-| `FACT_MODULE_STARTED` | Reserved, tidak diproduksi |
+| Constant                | Keterangan                 |
+| ----------------------- | -------------------------- |
+| `FACT_MODULE_STARTED`   | Reserved, tidak diproduksi |
 | `FACT_COMPLETED_MODULE` | Reserved, tidak diproduksi |
-| `FACT_COMPLETED_ALL` | Reserved, tidak diproduksi |
-| `FACT_HIGH_ENGAGEMENT` | Reserved, tidak diproduksi |
-| `FACT_TIME_SLOW` | Reserved, tidak diproduksi |
+| `FACT_COMPLETED_ALL`    | Reserved, tidak diproduksi |
+| `FACT_HIGH_ENGAGEMENT`  | Reserved, tidak diproduksi |
+| `FACT_TIME_SLOW`        | Reserved, tidak diproduksi |
 
 **Impact**: Tidak bisa detect engagement patterns atau slow learners.
 
@@ -219,6 +222,7 @@ return $this->hasStandardScore($facts)  // G03 saja - lebih strict
 ```
 
 **Masalah**: Urutan priority:
+
 - Priority 21: RuleGoldCertificate (G04 + G05 + G16 + G21 + bukan G11)
 - Priority 22: RuleSilverCertificate (G03 + G16 + G21)
 - Priority 23: RuleBronzeCertificate (G03/G04 + G16 + G21)
@@ -267,6 +271,7 @@ Priority 23: RuleBronzeCertificate        → (G03|G04) + G16 + G21
 ```
 
 **Yang TIDAK ADA**:
+
 - Guard untuk multiple graduation attempts
 - Guard untuk certificate claims
 - Guard untuk backtracking loops
@@ -298,6 +303,7 @@ $state['next_action'] = $nextAction;
 ```
 
 Yang TIDAK ada tracking:
+
 - Last difficulty
 - Last action timestamp untuk timing analysis
 - Recovery count per error type
@@ -308,42 +314,42 @@ Yang TIDAK ada tracking:
 
 ### Priority 1 (Critical)
 
-1. **Perbaiki Fact Production**: 
-   - Implementasikan G17 (Practice mode)
-   - Hapus atau gunakan G10 (No Error)
-   - Fix G22 (Mixed) behavior
+1. **Perbaiki Fact Production**:
+    - Implementasikan G17 (Practice mode)
+    - Hapus atau gunakan G10 (No Error)
+    - Fix G22 (Mixed) behavior
 
 2. **Tambah Missing Rules**:
-   - RuleRemedialAtBeginner
-   - RuleCriticalAtBeginner
-   - RuleMasteryAtHard (for max level students)
+    - RuleRemedialAtBeginner
+    - RuleCriticalAtBeginner
+    - RuleMasteryAtHard (for max level students)
 
 3. **Fix Priority Conflicts**:
-   - Pindahkan recovery rules ke priority lebih tinggi
-   - Review certificate vs revision priority
+    - Pindahkan recovery rules ke priority lebih tinggi
+    - Review certificate vs revision priority
 
 ### Priority 2 (High)
 
 4. **Tambah Facts**:
-   - FACT_CONSECUTIVE_CORRECT
-   - FACT_TIME_SLOW
-   - FACT_HIGH_ENGAGEMENT
+    - FACT_CONSECUTIVE_CORRECT
+    - FACT_TIME_SLOW
+    - FACT_HIGH_ENGAGEMENT
 
 5. **Tambah Edge Case Handling**:
-   - Mastery + hint used
-   - Fast + wrong
-   - Hard + mastery (max level)
+    - Mastery + hint used
+    - Fast + wrong
+    - Hard + mastery (max level)
 
 ### Priority 3 (Medium)
 
 6. **Implementasikan Anti-Loops**:
-   - Certificate claim guard
-   - Recovery loop guard
-   - Multiple graduation guard
+    - Certificate claim guard
+    - Recovery loop guard
+    - Multiple graduation guard
 
 7. **State Improvements**:
-   - Consistent last action tracking
-   - Consecutive counters as facts
+    - Consistent last action tracking
+    - Consecutive counters as facts
 
 ---
 
@@ -376,7 +382,7 @@ public function evaluate(array $facts): bool {
 // RuleMasteryAtHard - untuk max difficulty students
 class RuleMasteryAtHard extends BaseAdaptiveRule {
     protected int $priority = 55;  // setelah standard promotion
-    
+
     public function evaluate(array $facts): bool {
         return $this->hasMasteryScore($facts)
             && $this->isHardDifficulty($facts)
@@ -389,7 +395,7 @@ class RuleMasteryAtHard extends BaseAdaptiveRule {
 // RuleHintUsedWithMastery - hint dengan skor baik = downgrade
 class RuleHintUsedWithMastery extends BaseAdaptiveRule {
     protected int $priority = 45;
-    
+
     public function evaluate(array $facts): bool {
         return $this->hasMasteryScore($facts)
             && $this->hasFact($facts, AdaptiveConstants::FACT_HINT_USED);
