@@ -2,6 +2,8 @@
 // Types for API Responses
 // =============================================================================
 
+import type { QuizSessionState } from '@/types/models';
+
 export interface CheckAnswerResponse {
     status: 'success' | 'wrong' | 'error';
     message: string;
@@ -10,6 +12,7 @@ export interface CheckAnswerResponse {
     xpEarned?: number;
     newLevel?: string | null;
     streakBonus?: boolean;
+    studentState?: QuizSessionState | null;
 }
 
 export interface AdaptiveResult {

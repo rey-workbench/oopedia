@@ -33,13 +33,13 @@ final class FactGatheringService implements FactGatheringServiceInterface
         ?string $moduleId = null,
     ): array {
         $facts = [
-            ...$this->getScoreFacts($score, $isCorrect),
-            ...$this->getTimeFacts($timeSpent, $difficulty, $isCorrect),
-            ...$this->getLearningStyleFacts($studentState),
-            ...$this->getErrorTypeFacts($questionId, $isCorrect),
-            ...$this->getConsistencyFacts($studentState),
-            ...$this->getMasteryFacts($studentState, $materialId),
-            ...$this->getBehaviouralFacts($studentState, $timeSpent, $difficulty, $isCorrect),
+            ...$this->evaluateScore($score, $isCorrect),
+            ...$this->evaluateTimeEfficiency($timeSpent, $difficulty, $isCorrect),
+            ...$this->determineLearningStyle($studentState),
+            ...$this->diagnoseError($questionId, $isCorrect),
+            ...$this->checkConsistency($studentState),
+            ...$this->evaluateMastery($studentState, $materialId),
+            ...$this->detectBehaviouralSigns($studentState, $timeSpent, $difficulty, $isCorrect),
         ];
 
         $isFinalProject = $this->isFinalDifficulty($difficulty);
@@ -55,13 +55,13 @@ final class FactGatheringService implements FactGatheringServiceInterface
             $facts[] = FactRegistry::getCode(AC::FACT_IN_MODULE);
         }
 
-        $facts[] = $this->getDifficultyFact($difficulty);
+        $facts[] = $this->getCurrentDifficulty($difficulty);
 
         if ($isFinalProject) {
             $facts[] = FactRegistry::getCode(AC::FACT_IS_FINAL_PROJECT);
         }
 
-        $facts = array_merge($facts, $this->getUnlockStatusFacts($studentState, $materialId));
+        $facts = array_merge($facts, $this->checkModuleProgression($studentState, $materialId));
 
         if ($this->isPersistentFail((string) $studentState->user_id, $questionId)) {
             $facts[] = FactRegistry::getCode(AC::FACT_PERSISTENT_FAIL);
@@ -82,7 +82,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
         return array_values(array_unique(array_filter($facts)));
     }
 
-    private function getScoreFacts(int $score, bool $isCorrect): array
+    private function evaluateScore(int $score, bool $isCorrect): array
     {
         if ($isCorrect) {
             return $score >= 90
@@ -95,7 +95,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
             : [FactRegistry::getCode(AC::FACT_SCORE_FAILURE)];
     }
 
-    private function getTimeFacts(int $timeSpent, QuestionDifficulty|string $difficulty, bool $isCorrect): array
+    private function evaluateTimeEfficiency(int $timeSpent, QuestionDifficulty|string $difficulty, bool $isCorrect): array
     {
         $diffKey       = $difficulty instanceof QuestionDifficulty ? $difficulty->value : $difficulty;
         $allocatedTime = AC::ALLOCATED_TIME[$diffKey] ?? 60;
@@ -116,7 +116,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
         return [];
     }
 
-    private function getLearningStyleFacts(StudentState $state): array
+    private function determineLearningStyle(StudentState $state): array
     {
         $style = $state->learning_style ?? AC::STYLE_VISUAL;
 
@@ -127,7 +127,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
         };
     }
 
-    private function getErrorTypeFacts(string $questionId, bool $isCorrect): array
+    private function diagnoseError(string $questionId, bool $isCorrect): array
     {
         if ($isCorrect) {
             return [FactRegistry::getCode(AC::FACT_NO_ERROR)];
@@ -143,14 +143,14 @@ final class FactGatheringService implements FactGatheringServiceInterface
         };
     }
 
-    private function getConsistencyFacts(StudentState $state): array
+    private function checkConsistency(StudentState $state): array
     {
         return ($state->streak ?? 0) >= AC::THRESHOLD_CONSISTENCY_STREAK
             ? [FactRegistry::getCode(AC::FACT_CONSISTENCY_HIGH)]
             : [];
     }
 
-    private function getMasteryFacts(StudentState $state, string $materialId): array
+    private function evaluateMastery(StudentState $state, string $materialId): array
     {
         $facts    = [];
         $attempts = $this->progressRepo->getByUserAndMaterial((string) $state->user_id, $materialId);
@@ -185,7 +185,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
         return $facts;
     }
 
-    private function getBehaviouralFacts(StudentState $state, int $timeSpent, QuestionDifficulty|string $difficulty, bool $isCorrect): array
+    private function detectBehaviouralSigns(StudentState $state, int $timeSpent, QuestionDifficulty|string $difficulty, bool $isCorrect): array
     {
         $facts         = [];
         $diffKey       = $difficulty instanceof QuestionDifficulty ? $difficulty->value : $difficulty;
@@ -208,7 +208,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
         return $facts;
     }
 
-    private function getDifficultyFact(QuestionDifficulty|string $difficulty): ?string
+    private function getCurrentDifficulty(QuestionDifficulty|string $difficulty): ?string
     {
         $diffKey = $difficulty instanceof QuestionDifficulty ? $difficulty->value : $difficulty;
         $name    = match ($diffKey) {
@@ -220,7 +220,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
         return FactRegistry::getCode($name);
     }
 
-    private function getUnlockStatusFacts(StudentState $state, string $materialId): array
+    private function checkModuleProgression(StudentState $state, string $materialId): array
     {
         $facts    = [];
         $material = Material::find($materialId);

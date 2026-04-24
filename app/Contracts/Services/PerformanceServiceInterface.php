@@ -32,4 +32,6 @@ interface PerformanceServiceInterface
     ): int;
 
     public function resetMaterialMetrics(string $userId): StudentState;
+
+    public function getStudentSessionState(string $userId): array;
 }

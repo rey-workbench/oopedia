@@ -19,7 +19,9 @@ use App\Rules\Adaptive\Contracts\AdaptiveRuleInterface;
  */
 class DynamicAdaptiveRule implements AdaptiveRuleInterface
 {
-    public function __construct(protected AdaptiveRuleModel $model) {}
+    public function __construct(protected AdaptiveRuleModel $model)
+    {
+    }
 
     public function getRuleId(): string
     {
@@ -40,7 +42,7 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
     {
         return $this->model->relationLoaded('action') && $this->model->action
             ? $this->model->action->code
-            : 'H00';
+            : AC::ACTION_DEDUCTION;
     }
 
     public function getPriority(): int
@@ -55,14 +57,14 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
      */
     public function evaluate(array $facts): bool
     {
-        if (! $this->model->is_active) {
+        if (!$this->model->is_active) {
             return false;
         }
 
         $required = $this->model->required_facts ?? [];
 
         foreach ($required as $code) {
-            if (! in_array($code, $facts, true)) {
+            if (!in_array($code, $facts, true)) {
                 return false;
             }
         }
@@ -85,7 +87,7 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
      */
     public function apply(array $state, array $context): array
     {
-        if (! $this->model->action_id) {
+        if (!$this->model->action_id) {
             return $state;
         }
 
@@ -108,7 +110,7 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
 
         // 2. Tangani Gamifikasi (Badges/XP)
         if (isset($params['badges']) && is_array($params['badges'])) {
-            $current         = $state['badges'] ?? [];
+            $current = $state['badges'] ?? [];
             $state['badges'] = array_values(array_unique(array_merge($current, $params['badges'])));
         }
 
@@ -149,17 +151,17 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
     private function handleModuleUnlock(array $state, array $context): array
     {
         $materialId = $context['material_id'] ?? null;
-        if (! $materialId) {
+        if (!$materialId) {
             return $state;
         }
 
-        $material     = Material::find($materialId);
+        $material = Material::find($materialId);
         $nextMaterial = $material?->getNextMaterial();
 
         if ($nextMaterial && $nextMaterial->module_id) {
             $unlocked = $state['unlocked_modules'] ?? [];
-            if (! in_array((string) $nextMaterial->module_id, $unlocked, true)) {
-                $unlocked[]                = (string) $nextMaterial->module_id;
+            if (!in_array((string) $nextMaterial->module_id, $unlocked, true)) {
+                $unlocked[] = (string) $nextMaterial->module_id;
                 $state['unlocked_modules'] = array_values(array_unique($unlocked));
             }
         }
@@ -170,14 +172,14 @@ class DynamicAdaptiveRule implements AdaptiveRuleInterface
     private function handleCertification(string $tier, array $state, array $context): array
     {
         $materialId = $context['material_id'] ?? null;
-        if (! $materialId) {
+        if (!$materialId) {
             return $state;
         }
 
         $certs = $state['certifications'] ?? [];
         // Format: [material_id => tier]
         $certs[(string) $materialId] = strtolower($tier);
-        $state['certifications']     = $certs;
+        $state['certifications'] = $certs;
 
         return $state;
     }

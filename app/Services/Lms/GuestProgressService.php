@@ -123,6 +123,7 @@ final class GuestProgressService implements GuestProgressServiceInterface
             'wrong_streak'    => $performanceMetrics['wrong_streak']     ?? 0,
             'hints_used'      => $performanceMetrics['hints_used']       ?? 0,
             'hints_available' => $performanceMetrics['hints_available']  ?? AC::DEFAULT_HINTS_AVAILABLE,
+            'target_difficulty' => $performanceMetrics['target_difficulty'] ?? null,
         ]));
     }
 
@@ -131,12 +132,13 @@ final class GuestProgressService implements GuestProgressServiceInterface
         $this->saveGamificationState($state->xp, $state->streak);
 
         $this->setCookie($this->cookiePerformance, json_encode([
-            'total_answered'  => $state->total_answered,
-            'correct_count'   => $state->correct_count,
-            'wrong_count'     => $state->wrong_count,
-            'wrong_streak'    => $state->wrong_streak,
-            'hints_used'      => $state->hints_used,
-            'hints_available' => $state->hints_available,
+            'total_answered'    => $state->total_answered,
+            'correct_count'     => $state->correct_count,
+            'wrong_count'       => $state->wrong_count,
+            'wrong_streak'      => $state->wrong_streak,
+            'hints_used'        => $state->hints_used,
+            'hints_available'   => $state->hints_available,
+            'target_difficulty' => $state->target_difficulty,
         ]));
     }
 

@@ -34,55 +34,52 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 
     public function evaluate(array $facts, array $currentState, array $context): array
     {
-        $user          = Auth::user();
+        $user = Auth::user();
         $previousState = $currentState;
 
         [$triggeredRule, $matchedRules, $newState, $finalFacts] = $this->runInferenceCycles($facts, $currentState, $context);
 
         if (! $triggeredRule) {
-            $newState = $this->applyDefaultFallback(
-                state: $newState,
-                isCorrect: (bool) ($context['is_correct'] ?? false),
-            );
+            $newState = $this->createDefaultNextQuestionState($newState, (bool) ($context['is_correct'] ?? false));
         }
 
         // Hanya log jika ada rule non-silent yang dieksekusi
         if ($user && $triggeredRule) {
-            $flatKeys   = ['target_difficulty', 'current_material_id', 'learning_style', 'xp', 'level'];
+            $flatKeys = ['target_difficulty', 'current_material_id', 'learning_style', 'xp', 'level'];
             $flatBefore = array_intersect_key($previousState, array_flip($flatKeys));
-            $flatAfter  = array_intersect_key($newState, array_flip($flatKeys));
-            $delta      = array_diff_assoc($flatAfter, $flatBefore);
+            $flatAfter = array_intersect_key($newState, array_flip($flatKeys));
+            $delta = array_diff_assoc($flatAfter, $flatBefore);
 
             AdaptiveExecutionLog::create([
-                'user_id'           => $user->id,
-                'rule_code'         => $triggeredRule->getRuleId(),
-                'action_code'       => $triggeredRule->getActionCode(),
-                'trigger_facts'     => $facts,
-                'state_deltas'      => $delta,
-                'new_state'         => [],
+                'user_id' => $user->id,
+                'rule_code' => $triggeredRule->getRuleId(),
+                'action_code' => $triggeredRule->getActionCode(),
+                'trigger_facts' => $facts,
+                'state_deltas' => $delta ?: [],
+                'new_state' => [],
                 'execution_context' => $context,
             ]);
         }
 
         Log::info('Adaptive Inference Complete', [
-            'user_id'        => $user?->id,
-            'initial_facts'  => $facts,
-            'final_facts'    => $finalFacts,
+            'user_id' => $user?->id,
+            'initial_facts' => $facts,
+            'final_facts' => $finalFacts,
             'triggered_rule' => $triggeredRule?->getRuleId(),
-            'action_code'    => $triggeredRule?->getActionCode(),
-            'matched_count'  => count($matchedRules),
+            'action_code' => $triggeredRule?->getActionCode(),
+            'matched_count' => count($matchedRules),
         ]);
 
         return [
-            'triggered_rule'  => $triggeredRule ? $this->mapRule($triggeredRule) : null,
-            'triggered_rules' => array_map(fn (AdaptiveRuleInterface $r) => $this->mapRule($r), $matchedRules),
-            'new_state'       => $newState,
-            'facts'           => $finalFacts,
+            'triggered_rule' => $triggeredRule ? $this->mapRule($triggeredRule) : null,
+            'triggered_rules' => array_map(fn(AdaptiveRuleInterface $r) => $this->mapRule($r), $matchedRules),
+            'new_state' => $newState,
+            'facts' => $finalFacts,
             'engine_metadata' => [
-                'rule_count'      => Cache::remember('adaptive_rules_count', now()->addHours(24), fn () => AdaptiveRule::where('is_active', true)->count()),
-                'engine_version'  => '5.0.0-DETECTIVE',
-                'fact_labels'     => Cache::remember('adaptive_fact_labels', now()->addHours(24), fn () => AdaptiveFact::all()->pluck('name', 'code')->toArray()),
-                'fact_categories' => Cache::remember('adaptive_fact_categories', now()->addHours(24), fn () => AdaptiveFact::all()->pluck('category', 'code')->toArray()),
+                'rule_count' => Cache::remember('adaptive_rules_count', now()->addHours(24), fn() => AdaptiveRule::where('is_active', true)->count()),
+                'engine_version' => '5.0.0-DETECTIVE',
+                'fact_labels' => Cache::remember('adaptive_fact_labels', now()->addHours(24), fn() => AdaptiveFact::all()->pluck('name', 'code')->toArray()),
+                'fact_categories' => Cache::remember('adaptive_fact_categories', now()->addHours(24), fn() => AdaptiveFact::all()->pluck('category', 'code')->toArray()),
             ],
         ];
     }
@@ -103,11 +100,11 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
                 ->get();
         });
 
-        $workingMemory  = $initialFacts;     // Akumulasi semua fakta (awal + deduced)
+        $workingMemory = $initialFacts;     // Akumulasi semua fakta (awal + deduced)
         $firedRuleCodes = [];                // Aturan yang sudah pernah aktif (anti-loop)
-        $allTriggered   = [];
-        $finalState     = $currentState;
-        $firstTrigger   = null;
+        $allTriggered = [];
+        $finalState = $currentState;
+        $firstTrigger = null;
 
         for ($cycle = 0; $cycle < self::MAX_INFERENCE_CYCLES; $cycle++) {
             // 1. Bangun Conflict Set: semua aturan yang cocok dan belum pernah dijalankan
@@ -129,9 +126,9 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             // 2. Conflict Resolution: pilih aturan dengan prioritas tertinggi
             /** @var AdaptiveRule $bestModel */
             $bestModel = $conflictSet->first(); // Sudah diurutkan by priority ASC
-            $bestRule  = new DynamicAdaptiveRule($bestModel);
+            $bestRule = new DynamicAdaptiveRule($bestModel);
 
-            if ($this->shouldSkipRule($bestRule, $finalState, $context)) {
+            if ($this->isRuleBlockedByConstraints($bestRule, $finalState, $context)) {
                 $firedRuleCodes[] = $bestModel->rule_code;
                 continue;
             }
@@ -140,12 +137,12 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             $actionCode = $bestRule->getActionCode();
             $isSilent = $actionCode === AC::ACTION_SILENT || $actionCode === AC::ACTION_DEDUCTION;
 
-            if (! $isSilent) {
-                $proposed       = $bestRule->apply($finalState, $context);
-                $finalState     = $this->mergeOutputs($finalState, $proposed, $currentState);
+            if (!$isSilent) {
+                $proposed = $bestRule->apply($finalState, $context);
+                $finalState = $this->mergeStateDeltas($finalState, $proposed, $currentState);
                 $allTriggered[] = $bestRule;
 
-                if (! $firstTrigger) {
+                if (!$firstTrigger) {
                     $firstTrigger = $bestRule;
                 }
             }
@@ -153,7 +150,7 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             // 4. Tambahkan deduced_facts ke working memory (chaining mechanism)
             $deduced = $bestRule->getDeducedFacts();
             foreach ($deduced as $deducedFact) {
-                if (! in_array($deducedFact, $workingMemory, true)) {
+                if (!in_array($deducedFact, $workingMemory, true)) {
                     $workingMemory[] = $deducedFact;
                 }
             }
@@ -161,7 +158,7 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             $firedRuleCodes[] = $bestModel->rule_code;
 
             // Jika rule bukan silent dan aksinya terminal, hentikan loop
-            if (! $isSilent && $this->isTerminalAction($bestRule->getActionCode())) {
+            if (!$isSilent && $this->isTerminalAction($this->getSemanticNextAction($bestRule))) {
                 break;
             }
         }
@@ -170,39 +167,52 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
     }
 
     /**
+     * Helper to dynamically extract the semantic next_action from instructions if available.
+     */
+    private function getSemanticNextAction(AdaptiveRuleInterface $rule): string
+    {
+        $actionCode = $rule->getActionCode();
+        if ($rule instanceof \App\Rules\Adaptive\DynamicAdaptiveRule) {
+            $model = $rule->getModel();
+            if ($model->relationLoaded('action') && $model->action) {
+                return $model->action->instructions['next_action'] ?? $actionCode;
+            }
+        }
+        return $actionCode;
+    }
+
+    /**
      * Apakah aksi ini mengakhiri rantai inferensi?
      * Aksi non-terminal (misal: study_*) tidak menghentikan loop –
      * hasilnya bisa memicu aturan deduksi lainnya.
      */
-    private function isTerminalAction(string $actionCode): bool
+    private function isTerminalAction(string $nextAction): bool
     {
-        return in_array($actionCode, [
+        return in_array($nextAction, [
             AC::ACTION_NEXT_QUESTION,
             AC::ACTION_FINISH_MATERIAL,
             AC::ACTION_NEXT_MATERIAL,
             AC::ACTION_INCREASE_DIFFICULTY,
             AC::ACTION_REDUCE_DIFFICULTY,
-            'H01', // Standard Promotion
-            'H03', // Accelerated Jump
-            'H05', // Module Graduation
         ], true);
     }
 
-    private function shouldSkipRule(AdaptiveRuleInterface $rule, array $currentState, array $context): bool
+    private function isRuleBlockedByConstraints(AdaptiveRuleInterface $rule, array $currentState, array $context): bool
     {
         $currentMaterialId = (string) ($context['material_id'] ?? '');
-        $stateMaterialId   = (string) ($currentState['current_material_id'] ?? '');
+        $stateMaterialId = (string) ($currentState['current_material_id'] ?? '');
 
         if ($currentMaterialId === '' || $stateMaterialId === '' || $currentMaterialId !== $stateMaterialId) {
             return false;
         }
 
-        $actionCode = $rule->getActionCode();
-
-        if ($actionCode === AC::ACTION_INCREASE_DIFFICULTY) {
-            return $this->hasReachedFastTrackTarget($currentState);
+        $nextAction = $this->getSemanticNextAction($rule);
+        
+        if ($nextAction === AC::ACTION_INCREASE_DIFFICULTY) {
+            return $this->isAtMaxDifficulty($currentState);
         }
 
+        $actionCode = $rule->getActionCode();
         $lastAction = AdaptiveExecutionLog::where('user_id', Auth::id())->latest()->value('action_code');
 
         $nonRepeatableActions = [
@@ -221,21 +231,18 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
         return false;
     }
 
-    private function hasReachedFastTrackTarget(array $state): bool
+    private function isAtMaxDifficulty(array $state): bool
     {
-        return in_array($state['target_difficulty'] ?? null, [
-            AC::DIFFICULTY_MEDIUM,
-            AC::DIFFICULTY_HARD,
-        ], true);
+        return ($state['target_difficulty'] ?? null) === AC::DIFFICULTY_HARD;
     }
 
-    private function mergeOutputs(array $combined, array $proposed, array $original): array
+    private function mergeStateDeltas(array $combined, array $proposed, array $original): array
     {
         foreach ($proposed as $key => $value) {
             $alreadySet = array_key_exists($key, $combined)
-                && (! array_key_exists($key, $original) || $combined[$key] !== $original[$key]);
+                && (!array_key_exists($key, $original) || $combined[$key] !== $original[$key]);
 
-            if (! $alreadySet) {
+            if (!$alreadySet) {
                 $combined[$key] = $value;
             }
         }
@@ -243,9 +250,9 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
         return $combined;
     }
 
-    private function applyDefaultFallback(array $state, bool $isCorrect): array
+    private function createDefaultNextQuestionState(array $state, bool $isCorrect): array
     {
-        $state['next_action']       = AC::ACTION_NEXT_QUESTION;
+        $state['next_action'] = AC::ACTION_NEXT_QUESTION;
         $state['_feedback_message'] = $isCorrect
             ? 'Jawaban benar! Silakan lanjut ke soal berikutnya.'
             : 'Jawaban kurang tepat. Mari coba lagi.';
@@ -259,7 +266,7 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             ->where('is_active', true)
             ->ordered()
             ->get()
-            ->map(fn (AdaptiveRule $m) => new DynamicAdaptiveRule($m))
+            ->map(fn(AdaptiveRule $m) => new DynamicAdaptiveRule($m))
             ->toArray();
     }
 
@@ -276,15 +283,15 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
         $instructions = $action ? ($action->instructions ?? []) : [];
 
         return [
-            'id'          => $rule->getRuleId(),
-            'name'        => $rule->getRuleName(),
-            'action'      => $instructions['next_action'] ?? $rule->getActionCode(),
+            'id' => $rule->getRuleId(),
+            'name' => $rule->getRuleName(),
+            'action' => $instructions['next_action'] ?? $rule->getActionCode(),
             'action_code' => $rule->getActionCode(),
-            'priority'    => $rule->getPriority(),
-            'variant'     => $action?->variant ?? 'result',
-            'label'       => $instructions['label'] ?? null,
-            'message'     => $instructions['message'] ?? null,
-            'title'       => $instructions['title'] ?? null,
+            'priority' => $rule->getPriority(),
+            'variant' => $action?->variant ?? 'result',
+            'label' => $instructions['label'] ?? null,
+            'message' => $instructions['message'] ?? null,
+            'title' => $instructions['title'] ?? null,
         ];
     }
 }

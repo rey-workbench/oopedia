@@ -111,19 +111,22 @@ final class MaterialQuestionController extends Controller
         $userId = (string) $this->getUserId();
         $isGuest = $this->isGuest();
 
+        $targetDifficulty = null;
         if (!$isGuest) {
-            $this->performanceService->resetMaterialMetrics($userId);
+            $studentState = $this->performanceService->getStudentState($userId);
+            
+            if ($studentState->current_material_id !== $materialId) {
+                $studentState = $this->performanceService->resetMaterialMetrics($userId);
+                $studentState->current_material_id = $materialId;
+                $studentState->save();
+            }
+
+            $targetDifficulty = $studentState->target_difficulty ? QuestionDifficulty::tryFrom((string) $studentState->target_difficulty) : null;
         }
 
         $diffEnum = QuestionDifficulty::tryFrom((string) $difficulty);
         $subMaterialId = $diffEnum ? null : $difficulty;
         $guestProgress = $this->getGuestProgress();
-
-        $targetDifficulty = null;
-        if (!$isGuest) {
-            $studentState = $this->performanceService->getStudentState($userId);
-            $targetDifficulty = $studentState->target_difficulty ? QuestionDifficulty::tryFrom((string) $studentState->target_difficulty) : null;
-        }
 
         $quizData = $this->quizService->getQuizData(
             material: $material,
@@ -149,6 +152,7 @@ final class MaterialQuestionController extends Controller
     {
         $material = $this->materialService->getMaterialById($materialId);
         $userId = $this->getUserId();
+        $isGuest = $this->isGuest();
 
         $result = $this->quizService->handleSubmission(
             userId: (string) $userId,
@@ -172,6 +176,7 @@ final class MaterialQuestionController extends Controller
             'isCorrect' => $isCorrect,
             'adaptiveResult' => $engineResult,
             'ui' => $uiResponse,
+            'studentState' => $isGuest ? null : $this->performanceService->getStudentSessionState((string) $userId),
         ]);
     }
 
@@ -232,7 +237,7 @@ final class MaterialQuestionController extends Controller
                 'type' => 'continue',
                 'url' => route('mahasiswa.materials.questions.show', [
                     'material' => $material,
-                    'difficulty' => $engineResult['new_state']['target_difficulty'] ?? null
+                    'sub_material' => $engineResult['new_state']['target_difficulty'] ?? null
                 ]),
                 'label' => $inst['label'] ?? 'Lanjut',
             ]

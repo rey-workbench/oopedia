@@ -184,7 +184,7 @@ final class PerformanceService implements PerformanceServiceInterface
         return [
             'gamification' => [
                 'global_xp'      => $state->xp,
-                'current_level'  => $state->learning_style ?? 'Pemula',
+                'current_level'  => $state->level ?? 'Pemula',
                 'current_streak' => $state->streak,
                 'max_streak'     => $state->max_streak,
             ],

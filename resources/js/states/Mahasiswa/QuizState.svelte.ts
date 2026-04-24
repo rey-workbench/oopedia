@@ -224,6 +224,10 @@ export class QuestionShowState extends BaseState {
                 this.showAdaptiveIndicator = true;
             }
 
+            if (data.studentState) {
+                this.studentState = data.studentState;
+            }
+
             this.showHint = false;
             this.showFeedback = true;
 
