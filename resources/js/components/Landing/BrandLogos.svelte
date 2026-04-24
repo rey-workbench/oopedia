@@ -1,74 +1,40 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import { tweened } from 'svelte/motion';
-    import { cubicOut, backOut } from 'svelte/easing';
+    import { scrollReveal } from '@/utils/animations';
 
     const brands = [
         { name: 'JTI', image: '/images/landing/jti.png' },
         { name: 'Polinema', image: '/images/landing/polinema.png' },
     ];
-
-    let element: HTMLElement;
-    const opacity = tweened(0, { duration: 800, easing: cubicOut });
-    const translateY = tweened(50, { duration: 1000, easing: backOut });
-
-    onMount(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        opacity.set(1);
-                        translateY.set(0);
-                        animateLogos();
-                    }
-                });
-            },
-            { threshold: 0.2 }
-        );
-        observer.observe(element);
-        return () => observer.disconnect();
-    });
-
-    const animateLogos = () => {
-        const logos = element.querySelectorAll('[data-logo]');
-        logos.forEach((logo, i) => {
-            const el = logo as HTMLElement;
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(30px) scale(0.8)';
-            setTimeout(() => {
-                el.style.transition = `all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 150}ms`;
-                el.style.opacity = '1';
-                el.style.transform = 'translateY(0) scale(1)';
-            }, 300);
-        });
-    };
 </script>
 
-<section
-    bind:this={element}
-    class="bg-white px-6 py-24"
-    style="opacity: {$opacity}; transform: translateY({$translateY}px);"
->
-    <div class="mx-auto max-w-7xl">
-        <div class="mb-16 text-center">
-            <p class="mb-4 text-xs font-black tracking-[0.3em] text-slate-900/40 uppercase">
-                Dipercaya oleh
-            </p>
-            <h2 class="font-serif text-4xl leading-tight tracking-tight text-slate-900 md:text-5xl">
-                Institusi terkemuka.
-            </h2>
+<section class="relative z-10 py-32 px-6 overflow-hidden">
+    <!-- Subtle Gradient Connection -->
+    <div class="absolute inset-0 bg-linear-to-b from-transparent via-white/50 to-transparent opacity-50"></div>
+
+    <div class="relative mx-auto max-w-7xl">
+        <div class="mb-16 text-center" use:scrollReveal>
+            <span class="inline-block px-4 py-1 rounded-full border border-slate-900/5 bg-white/40 text-[10px] font-black tracking-[0.4em] text-slate-900/30 uppercase backdrop-blur-sm">
+                Dipercaya oleh institusi terkemuka
+            </span>
         </div>
 
-        <div class="flex flex-wrap justify-center gap-12 md:gap-20">
-            {#each brands as brand}
-                <div data-logo class="flex items-center justify-center p-6">
+        <div class="flex flex-wrap justify-center items-center gap-16 md:gap-40">
+            {#each brands as brand, i}
+                <div 
+                    use:scrollReveal={{ delay: i * 150, y: 20 }}
+                    class="group relative flex items-center justify-center transition-all duration-500 hover:scale-110"
+                >
+                    <!-- Background Glow on Hover -->
+                    <div class="absolute inset-0 -z-10 scale-0 rounded-full bg-accent-500/10 blur-3xl transition-transform duration-500 group-hover:scale-150"></div>
+                    
                     <img
                         src={brand.image}
                         alt={brand.name}
-                        class="h-16 w-auto object-contain opacity-40 grayscale transition-all duration-500 hover:opacity-60 md:h-24"
+                        class="h-12 w-auto object-contain md:h-16 grayscale opacity-30 transition-all duration-500 group-hover:grayscale-0 group-hover:opacity-100"
                     />
                 </div>
             {/each}
         </div>
     </div>
 </section>
+

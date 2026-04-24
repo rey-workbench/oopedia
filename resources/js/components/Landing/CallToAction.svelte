@@ -1,79 +1,60 @@
 <script lang="ts">
     import { Link } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils/route';
-    import { Disc2, ArrowRight } from 'lucide-svelte';
+    import { ArrowRight, Sparkles } from 'lucide-svelte';
+    import { scrollReveal } from '@/utils/animations';
+    import { Motion } from 'svelte-motion';
 </script>
 
-<section class="relative min-h-screen w-full overflow-hidden bg-[#0A0A0A]">
-    <div
-        class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(210,109,63,0.24),transparent_45%),radial-gradient(circle_at_80%_80%,rgba(174,192,173,0.16),transparent_50%)]"
-    ></div>
-
-    <img
-        src="/images/landing/abstract3.png"
-        alt=""
-        aria-hidden="true"
-        role="presentation"
-        class="absolute inset-0 h-full w-full scale-150 object-cover opacity-25 mix-blend-luminosity blur-md"
-    />
-
-    <div
-        class="relative z-10 flex min-h-screen flex-col items-center justify-center gap-16 px-6 py-32"
-    >
-        <div class="flex flex-col items-center text-center">
-            <p class="mb-4 text-xs font-black tracking-[0.3em] text-[#E2885F] uppercase">
-                dengan Kecerdasan Buatan
-            </p>
-            <h2
-                class="max-w-3xl font-serif text-4xl leading-[1.02] tracking-tight text-white md:text-6xl"
-            >
-                Temukan pola arsitektur<br />berdasarkan konsep untuk...
-            </h2>
-        </div>
-
-        <div class="w-full max-w-md">
-            <div class="rounded-3xl border-2 border-b-8 border-slate-200 bg-white p-8">
-                <div class="mb-6 flex items-center gap-3">
-                    <Disc2 size={14} class="text-slate-900" />
-                    <span class="text-xs font-black tracking-[0.2em] text-slate-900 uppercase"
-                        >OOPEDIA AI</span
-                    >
-                </div>
-
-                <div
-                    class="mb-6 flex min-h-[80px] items-center justify-center rounded-xl border-2 border-slate-100 bg-slate-50 p-4"
-                >
-                    <p class="font-serif text-sm text-slate-400">Ketik pertanyaanmu di sini...</p>
-                </div>
-
-                <div class="flex gap-4">
-                    <button
-                        type="button"
-                        class="flex-1 rounded-2xl border-2 border-b-4 border-black bg-slate-900 py-3.5 text-xs font-black tracking-[0.15em] text-white uppercase transition-all hover:bg-slate-800 active:translate-y-[2px] active:border-b-2"
-                    >
-                        Cari
-                    </button>
-                    <button
-                        type="button"
-                        class="flex-1 rounded-2xl border-2 border-b-4 border-slate-200 bg-white py-3.5 text-xs font-black tracking-[0.15em] uppercase transition-all hover:bg-slate-50 active:translate-y-[2px] active:border-b-2"
-                    >
-                        Hapus
-                    </button>
-                </div>
+<section class="relative overflow-hidden py-32 sm:py-48">
+    <div class="relative z-10 mx-auto max-w-6xl px-6">
+        <div 
+            use:scrollReveal={{ y: 80, scale: 0.95 }}
+            class="relative flex flex-col items-center overflow-hidden rounded-[4rem] border-2 border-slate-950/5 bg-white/40 p-12 text-center backdrop-blur-3xl shadow-2xl md:p-24"
+        >
+            <!-- Decorative Accents inside card -->
+            <div class="pointer-events-none absolute inset-0 -z-10 opacity-30">
+                <div class="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-[#D26D3F]/20 blur-[100px]"></div>
+                <div class="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-[#AEC0AD]/20 blur-[100px]"></div>
             </div>
-        </div>
 
-        <div class="flex flex-col items-center text-center">
-            <p class="mb-6 text-xs font-medium tracking-wide text-white/40">
-                Atau mulai belajar sekarang
+            <div class="mb-10 inline-flex items-center gap-3 rounded-full border border-slate-950/5 bg-slate-950/5 px-6 py-2.5 text-[10px] font-black tracking-[0.3em] text-slate-900/40 uppercase">
+                <Sparkles size={14} class="text-[#D26D3F]" />
+                Mulai Masa Depan Belajar Anda
+            </div>
+
+            <h2 class="mb-10 font-display text-[2.5rem] leading-[1.1] font-black tracking-tight text-slate-900 sm:text-[4rem] md:text-[5rem]">
+                Siap untuk menguasai<br />
+                <span class="text-[#D26D3F]">Paradigma Modern?</span>
+            </h2>
+
+            <p class="mb-16 max-w-2xl text-lg font-medium text-slate-900/40 md:text-xl">
+                Bergabunglah dengan ribuan pembelajar lainnya dan mulai petualangan 
+                interaktif Anda dalam dunia Object-Oriented Programming hari ini.
             </p>
-            <Link
-                href={ROUTES.AUTH.REGISTER}
-                class="group inline-flex items-center gap-3 rounded-2xl border-2 border-b-6 border-white bg-white px-10 py-4 text-xs font-black tracking-[0.2em] text-slate-900 uppercase transition-all hover:bg-slate-50 active:translate-y-[2px] active:border-b-4"
-            >
-                <span>Daftar Sekarang</span>
-                <ArrowRight size={16} class="transition-transform group-hover:translate-x-1" />
-            </Link>
+
+            <div class="flex flex-wrap items-center justify-center gap-8">
+                <Motion whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} let:motion>
+                    <div use:motion>
+                        <Link
+                            href={ROUTES.AUTH.REGISTER}
+                            class="group flex items-center gap-4 rounded-full border-2 border-b-8 border-slate-950 bg-slate-900 px-12 py-6 text-sm font-black tracking-widest text-white uppercase transition-all hover:bg-slate-800 active:translate-y-[4px] active:border-b-4 shadow-xl"
+                        >
+                            <span>Daftar Gratis</span>
+                            <ArrowRight size={20} class="transition-transform group-hover:translate-x-2" />
+                        </Link>
+                    </div>
+                </Motion>
+
+                <Link
+                    href={ROUTES.AUTH.LOGIN}
+                    class="rounded-full px-8 py-4 text-xs font-black tracking-widest text-slate-900/40 uppercase transition-colors hover:text-slate-900"
+                >
+                    Masuk ke Akun
+                </Link>
+            </div>
         </div>
     </div>
 </section>
+
+

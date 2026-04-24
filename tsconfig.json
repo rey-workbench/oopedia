@@ -51,6 +51,7 @@
         "esModuleInterop": true,
         "allowJs": true,
         "resolveJsonModule": true,
+        "allowArbitraryExtensions": true,
         "paths": {
             "@/*": ["./resources/js/*"],
             "$lib/*": ["./src/*"]

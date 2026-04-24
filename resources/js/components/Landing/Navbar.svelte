@@ -1,111 +1,128 @@
 <script lang="ts">
     import { Link } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils/route';
-    import { Search, Plus, X, ChevronRight } from 'lucide-svelte';
+    import { Search, Menu as MenuIcon } from 'lucide-svelte';
+    import { Motion } from 'svelte-motion';
 
     let menuOpen = $state(false);
     let scrollY = $state(0);
+    let searchFocused = $state(false);
 
     const menuItems = [
         { label: 'Beranda', href: '/' },
         { label: 'Tentang', href: '/#tentang' },
         { label: 'Fitur', href: '/#fitur' },
         { label: 'Materi', href: '/materi' },
-        { label: 'Harga', href: '/#harga' },
     ];
 
-    const closeMenu = () => {
-        menuOpen = false;
-    };
-
-    let isScrolled = $derived(scrollY > 50);
-    let isDark = $derived(!isScrolled && scrollY > 8000);
-
-    let headerBg = $derived(
-        isScrolled ? 'bg-white/95 backdrop-blur-xl border-b-6 border-slate-200' : 'bg-transparent'
-    );
-    let menuBtnBg = $derived(
-        isDark
-            ? 'bg-slate-900 border-2 border-slate-700 border-b-6 text-white'
-            : 'bg-white border-2 border-slate-200 border-b-6 text-slate-900 shadow-sm'
-    );
-    let searchIconColor = $derived(isDark ? 'text-white/30' : 'text-slate-900/30');
-    let placeholderColor = $derived(
-        isDark ? 'placeholder:text-white/30' : 'placeholder:text-slate-900/30'
-    );
-    let authTextColor = $derived(
-        isDark ? 'text-white/60 hover:text-white' : 'text-slate-900/60 hover:text-slate-900'
-    );
+    let isScrolled = $derived(scrollY > 20);
 </script>
 
 <svelte:window bind:scrollY />
 
 <header
-    class="pointer-events-none fixed top-0 right-0 left-0 z-50 flex items-center justify-between px-4 py-4 transition-all duration-300 sm:px-6 {headerBg}"
+    class="fixed top-0 right-0 left-0 z-50 transition-all duration-500 {isScrolled ? 'py-3' : 'py-6'}"
 >
-    <div class="menu-container pointer-events-auto relative">
-        <button
-            type="button"
-            onclick={() => (menuOpen = !menuOpen)}
-            class="flex min-h-12 cursor-pointer items-center gap-2 rounded-2xl px-6 py-3.5 text-xs font-black tracking-[0.2em] uppercase transition-all hover:bg-slate-50 active:translate-y-1 active:border-b-2 {menuBtnBg}"
-        >
-            {menuOpen ? 'Tutup' : 'Menu'}
-            {#if menuOpen}
-                <X size={12} class="stroke-[3px] opacity-40" />
-            {:else}
-                <Plus size={12} class="stroke-[3px] opacity-40" />
-            {/if}
-        </button>
-
-        {#if menuOpen}
-            <div
-                class="absolute top-full left-0 mt-3 w-64 rounded-3xl border-2 border-b-8 border-slate-200 bg-white p-2 shadow-xl"
-            >
-                {#each menuItems as item}
-                    <Link
-                        href={item.href}
-                        onclick={closeMenu}
-                        class="group flex items-center justify-between rounded-2xl px-5 py-4 text-xs font-black tracking-widest text-slate-900/70 uppercase transition-all hover:bg-slate-900/5 hover:text-slate-900"
-                    >
-                        <span>{item.label}</span>
-                        <ChevronRight
-                            size={14}
-                            class="opacity-0 transition-opacity group-hover:opacity-40"
-                        />
-                    </Link>
-                {/each}
-            </div>
-        {/if}
-    </div>
-
-    <div
-        class="pointer-events-auto absolute left-1/2 hidden w-full max-w-lg -translate-x-1/2 md:block"
-    >
-        <div
-            class="flex min-h-12 cursor-text items-center gap-4 rounded-3xl border-2 border-b-6 border-slate-200 bg-white px-6 py-4 shadow-sm transition-all hover:border-slate-300"
-        >
-            <Search size={16} class={searchIconColor} strokeWidth={3} />
-            <input
-                type="text"
-                aria-label="Cari materi OOP"
-                placeholder="Cari materi OOP..."
-                class="w-full border-none bg-transparent text-xs font-black tracking-widest uppercase outline-none {placeholderColor}"
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-6">
+        <!-- Logo & Brand -->
+        <Link href="/" class="group flex items-center gap-3">
+            <img 
+                src="/images/logo.png" 
+                alt="OOPedia Logo" 
+                class="h-10 w-auto transition-transform group-hover:rotate-6" 
             />
+            <span class="hidden text-xl font-black tracking-tighter sm:block">
+                <span class="mr-2 text-slate-900/20">|</span>
+                <span class="text-brand-yellow">OOP</span><span class="text-slate-900">edia</span>
+            </span>
+        </Link>
+
+        <!-- Centered Navigation (Desktop) -->
+        <nav class="hidden items-center gap-1 rounded-full border border-slate-900/5 bg-white/40 p-1 backdrop-blur-xl shadow-sm md:flex">
+            {#each menuItems as item}
+                <Link
+                    href={item.href}
+                    class="rounded-full px-5 py-2.5 text-[11px] font-black tracking-widest text-slate-900/60 uppercase transition-all hover:bg-slate-900/5 hover:text-slate-900"
+                >
+                    {item.label}
+                </Link>
+            {/each}
+        </nav>
+
+        <!-- Right Actions -->
+        <div class="flex items-center gap-4">
+            <!-- Search Bar (Expandable) -->
+            <div class="hidden items-center md:flex">
+                <Motion 
+                    animate={{ width: searchFocused ? 280 : 44 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    let:motion
+                >
+                    <div 
+                        use:motion
+                        class="relative flex h-11 items-center overflow-hidden rounded-full border border-slate-900/5 bg-white/40 backdrop-blur-md transition-colors {searchFocused ? 'border-slate-900/20 bg-white/80' : ''}"
+                    >
+                        <Search size={16} class="absolute left-3.5 text-slate-900/30" strokeWidth={3} />
+                        <input
+                            type="text"
+                            onfocus={() => searchFocused = true}
+                            onblur={() => searchFocused = false}
+                            placeholder="CARI MATERI..."
+                            class="h-full w-full border-none bg-transparent pl-11 pr-4 text-[10px] font-black tracking-widest uppercase outline-none placeholder:text-slate-900/20"
+                        />
+                    </div>
+                </Motion>
+            </div>
+
+            <!-- Auth Buttons -->
+            <div class="flex items-center gap-2">
+                <Link
+                    href={ROUTES.AUTH.LOGIN}
+                    class="hidden rounded-full px-5 py-2.5 text-[11px] font-black tracking-widest text-slate-900/50 uppercase transition-colors hover:text-slate-900 lg:block"
+                >
+                    Masuk
+                </Link>
+                <Link
+                    href={ROUTES.AUTH.REGISTER}
+                    class="rounded-full border-2 border-b-4 border-slate-950 bg-slate-900 px-6 py-2.5 text-[11px] font-black tracking-widest text-white uppercase transition-all hover:bg-slate-800 active:translate-y-1 active:border-b-2"
+                >
+                    Daftar
+                </Link>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button
+                type="button"
+                onclick={() => menuOpen = !menuOpen}
+                class="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-900/5 bg-white/40 text-slate-900 backdrop-blur-md md:hidden"
+            >
+                <MenuIcon size={20} strokeWidth={3} />
+            </button>
         </div>
     </div>
 
-    <div class="pointer-events-auto flex items-center gap-3 sm:gap-5">
-        <Link
-            href={ROUTES.AUTH.LOGIN}
-            class="rounded-full px-3 py-2 text-xs font-black tracking-[0.2em] uppercase transition-colors {authTextColor}"
+    <!-- Mobile Navigation Drawer -->
+    {#if menuOpen}
+        <Motion
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            let:motion
         >
-            Masuk
-        </Link>
-        <Link
-            href={ROUTES.AUTH.REGISTER}
-            class="rounded-2xl border-2 border-b-6 border-slate-950 bg-slate-900 px-6 py-4 text-xs font-black tracking-[0.2em] text-white uppercase shadow-sm transition-all hover:bg-slate-800 active:translate-y-1 active:border-b-2 sm:px-8"
-        >
-            Daftar
-        </Link>
-    </div>
+            <div use:motion class="absolute top-full left-0 w-full bg-white/95 p-6 backdrop-blur-2xl md:hidden">
+                <nav class="flex flex-col gap-2">
+                    {#each menuItems as item}
+                        <Link
+                            href={item.href}
+                            onclick={() => menuOpen = false}
+                            class="rounded-2xl px-6 py-4 text-sm font-black tracking-widest text-slate-900/60 uppercase transition-colors hover:bg-slate-900/5 hover:text-slate-900"
+                        >
+                            {item.label}
+                        </Link>
+                    {/each}
+                </nav>
+            </div>
+        </Motion>
+    {/if}
 </header>
+

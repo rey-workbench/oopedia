@@ -1,10 +1,11 @@
 <script lang="ts">
     import { Link } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils/route';
-    import { fade } from 'svelte/transition';
     import { spring } from 'svelte/motion';
+    import { Motion } from 'svelte-motion';
     import FloatingItem from '@/components/ui/FloatingItem.svelte';
-    import { Play } from 'lucide-svelte';
+    import BackgroundMesh from '@/components/ui/BackgroundMesh.svelte';
+    import { ArrowRight, Sparkles, MousePointer2 } from 'lucide-svelte';
 
     let windowWidth = $state(1920);
     let windowHeight = $state(1080);
@@ -18,278 +19,18 @@
     };
 
     const floatingDecor = [
-        {
-            image: '/images/landing/abstract2.png',
-            top: '2%',
-            left: '2%',
-            width: '120px',
-            height: '140px',
-            mobileWidth: '50px',
-            mobileHeight: '60px',
-            mobileZIndex: -1,
-            rotation: 25,
-            opacity: 0.9,
-            blur: 'blur-[2px]',
-            depth: -20,
-            zIndex: 0,
-        },
-        {
-            image: '/images/landing/abstract1.png',
-            top: '15%',
-            left: '18%',
-            width: '130px',
-            height: '130px',
-            mobileWidth: '45px',
-            mobileHeight: '45px',
-            mobileZIndex: -1,
-            rotation: 40,
-            opacity: 1,
-            blur: '',
-            depth: 35,
-            zIndex: 10,
-        },
-        {
-            image: '/images/landing/abstract3.png',
-            top: '35%',
-            left: '6%',
-            width: '140px',
-            height: '140px',
-            mobileWidth: '55px',
-            mobileHeight: '55px',
-            mobileZIndex: -1,
-            rotation: -15,
-            opacity: 1,
-            blur: '',
-            depth: 45,
-            zIndex: 20,
-        },
-        {
-            image: '/images/landing/abstract4.png',
-            top: '55%',
-            left: '4%',
-            width: '90px',
-            height: '130px',
-            mobileWidth: '40px',
-            mobileHeight: '55px',
-            mobileZIndex: -1,
-            rotation: -10,
-            opacity: 1,
-            blur: '',
-            depth: 50,
-            zIndex: 30,
-        },
-        {
-            image: '/images/landing/abstract2.png',
-            top: '78%',
-            left: '10%',
-            width: '160px',
-            height: '160px',
-            mobileWidth: '60px',
-            mobileHeight: '60px',
-            mobileZIndex: -1,
-            rotation: 30,
-            opacity: 0.9,
-            blur: 'blur-sm',
-            depth: 25,
-            zIndex: 0,
-        },
-        {
-            image: '/images/landing/abstract3.png',
-            top: '70%',
-            left: '32%',
-            width: '120px',
-            height: '120px',
-            mobileWidth: '45px',
-            mobileHeight: '45px',
-            mobileZIndex: -1,
-            rotation: 45,
-            opacity: 0.95,
-            blur: '',
-            depth: 15,
-            zIndex: 10,
-        },
-        {
-            image: '/images/landing/abstract1.png',
-            top: '-5%',
-            left: '52%',
-            width: '180px',
-            height: '130px',
-            mobileWidth: '70px',
-            mobileHeight: '50px',
-            mobileZIndex: -1,
-            rotation: -5,
-            opacity: 1,
-            blur: '',
-            depth: -10,
-            zIndex: 0,
-        },
-        {
-            image: '/images/landing/abstract2.png',
-            top: '22%',
-            left: '42%',
-            width: '90px',
-            height: '90px',
-            mobileWidth: '35px',
-            mobileHeight: '35px',
-            mobileZIndex: -1,
-            rotation: -8,
-            opacity: 0.3,
-            blur: 'blur-md',
-            depth: -30,
-            zIndex: 0,
-        },
-        {
-            image: '/images/landing/abstract3.png',
-            top: '85%',
-            left: '45%',
-            width: '100px',
-            height: '140px',
-            mobileWidth: '40px',
-            mobileHeight: '55px',
-            mobileZIndex: -1,
-            rotation: -15,
-            opacity: 0.2,
-            blur: 'blur-[6px]',
-            depth: -40,
-            zIndex: 0,
-        },
-        {
-            image: '/images/landing/abstract1.png',
-            top: '82%',
-            left: '65%',
-            width: '90px',
-            height: '120px',
-            mobileWidth: '35px',
-            mobileHeight: '50px',
-            mobileZIndex: -1,
-            rotation: 20,
-            opacity: 0.15,
-            blur: 'blur-sm',
-            depth: -25,
-            zIndex: 0,
-        },
-        {
-            image: '/images/landing/abstract4.png',
-            top: '4%',
-            right: '25%',
-            width: '120px',
-            height: '180px',
-            mobileWidth: '50px',
-            mobileHeight: '70px',
-            mobileZIndex: -1,
-            rotation: -35,
-            opacity: 0.9,
-            blur: 'blur-[1px]',
-            depth: 10,
-            zIndex: 0,
-        },
-        {
-            image: '/images/landing/abstract1.png',
-            top: '25%',
-            right: '18%',
-            width: '120px',
-            height: '90px',
-            mobileWidth: '45px',
-            mobileHeight: '35px',
-            mobileZIndex: -1,
-            rotation: -25,
-            opacity: 1,
-            blur: '',
-            depth: 40,
-            zIndex: 20,
-        },
-        {
-            image: '/images/landing/abstract2.png',
-            top: '18%',
-            right: '-2%',
-            width: '150px',
-            height: '180px',
-            mobileWidth: '60px',
-            mobileHeight: '70px',
-            mobileZIndex: -1,
-            rotation: 15,
-            opacity: 1,
-            blur: '',
-            depth: 50,
-            zIndex: 10,
-        },
-        {
-            image: '/images/landing/abstract3.png',
-            top: '48%',
-            right: '15%',
-            width: '140px',
-            height: '90px',
-            mobileWidth: '55px',
-            mobileHeight: '35px',
-            mobileZIndex: -1,
-            rotation: -8,
-            opacity: 0.9,
-            blur: 'blur-[2px]',
-            depth: 20,
-            zIndex: 0,
-        },
-        {
-            image: '/images/landing/abstract4.png',
-            top: '40%',
-            right: '-3%',
-            width: '40px',
-            height: '160px',
-            mobileWidth: '20px',
-            mobileHeight: '65px',
-            mobileZIndex: -1,
-            rotation: 0,
-            opacity: 1,
-            blur: '',
-            depth: 60,
-            zIndex: 30,
-        },
-        {
-            image: '/images/landing/abstract1.png',
-            top: '65%',
-            right: '20%',
-            width: '130px',
-            height: '130px',
-            mobileWidth: '50px',
-            mobileHeight: '50px',
-            mobileZIndex: -1,
-            rotation: -30,
-            opacity: 1,
-            blur: '',
-            depth: 45,
-            zIndex: 20,
-        },
-        {
-            image: '/images/landing/abstract2.png',
-            top: '62%',
-            right: '2%',
-            width: '120px',
-            height: '160px',
-            mobileWidth: '50px',
-            mobileHeight: '65px',
-            mobileZIndex: -1,
-            rotation: 15,
-            opacity: 0.8,
-            blur: 'blur-[1px]',
-            depth: 30,
-            zIndex: 0,
-        },
-        {
-            image: '/images/landing/abstract3.png',
-            top: '85%',
-            right: '6%',
-            width: '130px',
-            height: '110px',
-            mobileWidth: '50px',
-            mobileHeight: '45px',
-            mobileZIndex: -1,
-            rotation: 40,
-            opacity: 0.3,
-            blur: 'blur-sm',
-            depth: -15,
-            zIndex: 0,
-        },
+        { image: '/images/landing/abstract1.png', top: '8%', left: '4%', width: '150px', depth: 40, rotation: 12, blur: 'blur-[2px]' },
+        { image: '/images/landing/abstract2.png', top: '12%', right: '6%', width: '130px', depth: -35, rotation: -18, blur: 'blur-[1px]' },
+        { image: '/images/landing/abstract3.png', bottom: '15%', left: '8%', width: '180px', depth: 25, rotation: 35, blur: 'blur-[3px]' },
+        { image: '/images/landing/abstract4.png', bottom: '10%', right: '10%', width: '140px', depth: 55, rotation: -12 },
+        { image: '/images/landing/abstract2.png', top: '45%', right: '4%', width: '60px', depth: 70, rotation: 25, opacity: 0.6 },
+        { image: '/images/landing/abstract1.png', top: '55%', left: '2%', width: '80px', depth: -50, rotation: -10, opacity: 0.4, blur: 'blur-md' },
     ];
+
+    const title = "Ruang belajar Anda menguasai OOP";
+    const words = title.split(" ");
 </script>
+
 
 <svelte:window
     bind:innerWidth={windowWidth}
@@ -298,59 +39,115 @@
 />
 
 <section
-    class="relative -mt-16 flex min-h-screen flex-col items-center justify-center overflow-hidden bg-linear-to-b from-[#FAFAF8] via-[#FDFDFB] to-[#F3F1EC] px-6 text-center"
+    class="relative -mt-16 flex min-h-screen flex-col items-center justify-center overflow-hidden bg-transparent px-6 text-center"
 >
-    <div
-        class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(210,109,63,0.1),transparent_45%),radial-gradient(circle_at_80%_20%,rgba(174,192,173,0.14),transparent_45%),radial-gradient(circle_at_50%_80%,rgba(238,202,157,0.2),transparent_50%)]"
-    ></div>
-
-    {#each floatingDecor as item (`${item.image}-${item.top}-${item.left ?? ''}-${item.right ?? ''}`)}
-        <FloatingItem {...item} parallaxX={$parallax.x} parallaxY={$parallax.y} />
+    <!-- Floating Decorative Items -->
+    {#each floatingDecor as item, i (i)}
+        <FloatingItem 
+            {...item} 
+            parallaxX={$parallax.x} 
+            parallaxY={$parallax.y} 
+            delay={300 + i * 150}
+        />
     {/each}
 
-    <div
-        class="relative z-10 mt-12 flex max-w-5xl flex-col items-center"
-        in:fade={{ duration: 1500 }}
-    >
-        <span
-            class="mb-4 rounded-xl border-2 border-slate-900/10 bg-white/70 px-4 py-2 text-xs font-black tracking-[0.2em] text-slate-900/80 uppercase backdrop-blur"
-            >OOPEDIA · PLATFORM PEMBELAJARAN MODERN</span
+    <div class="relative z-10 flex max-w-7xl flex-col items-center pt-24">
+        <!-- Floating Badge -->
+        <Motion
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+            let:motion
         >
+            <div use:motion class="mb-10 flex items-center gap-3 rounded-full border border-slate-900/5 bg-white/40 px-5 py-2 text-[10px] font-black tracking-[0.25em] text-slate-900/50 uppercase backdrop-blur-md shadow-sm">
+                <div class="flex -space-x-2">
+                    <div class="h-4 w-4 rounded-full border-2 border-white bg-accent-500"></div>
+                    <div class="h-4 w-4 rounded-full border-2 border-white bg-primary-500"></div>
+                </div>
+                Platform Pembelajaran Modern
+                <Sparkles size={12} class="text-accent-500 animate-pulse" />
+            </div>
+        </Motion>
 
-        <h1
-            class="mb-6 px-4 font-sans text-[2.8rem] leading-[0.95] font-black tracking-[-0.05em] text-slate-900 drop-shadow-sm sm:text-[3.8rem] md:text-[5.5rem] lg:text-[7.5rem]"
-        >
-            Ruang belajar Anda<br />menguasai OOP
+        <!-- Staggered Character Headline Reveal -->
+        <h1 class="mb-8 flex flex-wrap justify-center gap-x-[0.25em] px-4 text-center font-display text-[3rem] leading-[0.9] font-black tracking-[-0.05em] text-slate-900 sm:text-[4.5rem] md:text-[6rem] lg:text-[7rem] xl:text-[8rem]">
+            {#each words as word, wi}
+                <Motion
+                    initial={{ opacity: 0, y: 60, filter: 'blur(12px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    transition={{ duration: 0.9, delay: 0.3 + wi * 0.12, ease: [0.21, 0.47, 0.32, 0.98] }}
+                    let:motion
+                >
+                    <span use:motion class="inline-block">{word}</span>
+                </Motion>
+            {/each}
         </h1>
 
-        <p
-            class="mb-10 max-w-2xl px-6 text-sm leading-relaxed font-medium text-slate-900/60 sm:text-base"
+
+
+        <!-- Subtext Reveal with Highlight -->
+        <Motion
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, delay: 1.4 }}
+            let:motion
         >
-            Belajar paradigma, pola desain, dan arsitektur perangkat lunak dengan pengalaman
-            interaktif yang terasa personal sejak sesi pertama.
-        </p>
+            <p use:motion class="mb-14 max-w-3xl px-6 text-lg leading-relaxed font-medium text-slate-900/40 sm:text-xl">
+                Belajar paradigma, pola desain, dan arsitektur perangkat lunak dengan pengalaman 
+                interaktif yang terasa <span class="relative inline-block text-slate-900 font-bold italic">
+                    personal
+                    <span class="absolute bottom-1 left-0 h-2 w-full -rotate-1 bg-accent-500/20 -z-10 rounded-sm"></span>
+                </span> sejak sesi pertama.
+            </p>
+        </Motion>
 
-        <div class="flex flex-wrap items-center justify-center gap-6">
-            <Link
-                href={ROUTES.AUTH.REGISTER}
-                class="rounded-3xl border-2 border-b-8 border-slate-950 bg-slate-900 px-10 py-5 text-[14px] font-black tracking-[0.14em] text-white uppercase shadow-xl transition-all hover:bg-slate-800 active:translate-y-[4px] active:border-b-4 sm:px-12"
+        <!-- CTA Section with Premium Hover Effects -->
+        <div class="flex flex-wrap items-center justify-center gap-8">
+            <Motion
+                whileHover={{ scale: 1.05, y: -4 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 1.6 }}
+                let:motion
             >
-                Mulai Belajar
-            </Link>
+                <div use:motion>
+                    <Link
+                        href={ROUTES.AUTH.REGISTER}
+                        class="group relative flex items-center gap-4 rounded-full border-2 border-b-8 border-slate-950 bg-slate-900 px-12 py-6 text-[15px] font-black tracking-[0.15em] text-white uppercase shadow-2xl transition-colors hover:bg-slate-800 active:translate-y-[4px] active:border-b-4"
+                    >
+                        <span>Mulai Belajar</span>
+                        <ArrowRight size={20} class="transition-transform group-hover:translate-x-2" />
+                    </Link>
+                </div>
+            </Motion>
 
-            <a
-                href="#fitur"
-                class="rounded-3xl border-2 border-b-8 border-slate-200 bg-white px-10 py-5 text-[14px] font-black tracking-[0.14em] text-slate-900 uppercase shadow-lg backdrop-blur transition-all hover:bg-slate-50 active:translate-y-[4px] active:border-b-4 sm:px-12"
+            <Motion
+                whileHover={{ scale: 1.05, y: -4 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 1.7 }}
+                let:motion
             >
-                Eksplor Fitur
-            </a>
+                <div use:motion>
+                    <a
+                        href="#fitur"
+                        class="rounded-full border-2 border-b-8 border-slate-200 bg-white px-12 py-6 text-[15px] font-black tracking-[0.15em] text-slate-900 uppercase shadow-lg transition-colors hover:bg-slate-50 active:translate-y-[4px] active:border-b-4"
+                    >
+                        Eksplor Fitur
+                    </a>
+                </div>
+            </Motion>
         </div>
     </div>
-
-    <div
-        class="group absolute bottom-8 left-1/2 z-10 flex w-full -translate-x-1/2 cursor-pointer items-center justify-center gap-3 text-[14px] font-semibold text-slate-900/50 transition-colors hover:text-slate-900"
-    >
-        <Play size={12} class="fill-current" />
-        <span>Lihat Demo</span>
+    <!-- Interactive Mouse Follower Hint -->
+    <div class="pointer-events-none absolute bottom-12 right-12 z-10 hidden flex-col items-end gap-2 text-[10px] font-bold text-slate-900/10 lg:flex">
+        <MousePointer2 size={16} />
+        <span class="tracking-widest">INTERAKTIF</span>
     </div>
 </section>
+
+
+
+
