@@ -110,6 +110,7 @@ final class AdaptiveConstants
     public const FACT_SATISFACTORY_PROGRESS = 'Satisfactory Progress';
 
     public const FACT_NEXT_UNLOCKED      = 'Next Module Unlocked';
+    public const FACT_NEXT_LOCKED        = 'Next Module Locked';
 
     public const FACT_PREV_UNLOCKED      = 'Previous Module Unlocked';
 

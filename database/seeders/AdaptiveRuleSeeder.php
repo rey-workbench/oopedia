@@ -97,6 +97,7 @@ class AdaptiveRuleSeeder extends Seeder
             ['code' => 'G33', 'category' => 'progress', 'name' => AC::FACT_IN_MODULE,             'description' => 'Sedang dalam modul pembelajaran.'],
             ['code' => 'G34', 'category' => 'progress', 'name' => AC::FACT_SATISFACTORY_PROGRESS, 'description' => 'Progres memadai.'],
             ['code' => 'G35', 'category' => 'progress', 'name' => AC::FACT_NEXT_UNLOCKED,         'description' => 'Modul berikutnya sudah terbuka.'],
+            ['code' => 'G38', 'category' => 'progress', 'name' => AC::FACT_NEXT_LOCKED,           'description' => 'Modul berikutnya masih terkunci.'],
             ['code' => 'G36', 'category' => 'progress', 'name' => AC::FACT_PREV_UNLOCKED,         'description' => 'Modul sebelumnya sudah terbuka.'],
 
             // ── Virtual / Deduced Facts (V01-V07) – Dihasilkan oleh aturan lain, bukan observasi langsung
@@ -220,7 +221,7 @@ class AdaptiveRuleSeeder extends Seeder
             ['code' => 'R38', 'name' => 'Hard Mastery Graduation', 'priority' => 38, 'domain' => 'Progression', 'required' => ['G08', 'G15'],  'deduced' => null, 'action' => 'H05'],
             ['code' => 'R39', 'name' => 'Struggle Near End',       'priority' => 39, 'domain' => 'Recovery',    'required' => ['G29', 'G01'],  'deduced' => null, 'action' => 'H19'],
             ['code' => 'R40', 'name' => 'Hard Struggle Backtrack', 'priority' => 40, 'domain' => 'Recovery',    'required' => ['G32', 'G28'],  'deduced' => null, 'action' => 'H04'],
-            ['code' => 'R41', 'name' => 'Fast Track Next Module',  'priority' => 30, 'domain' => 'Progression', 'required' => ['G35', 'G03'],  'deduced' => null, 'action' => 'H05'],
+            ['code' => 'R41', 'name' => 'Fast Track Next Module',  'priority' => 30, 'domain' => 'Progression', 'required' => ['G38', 'G21'],  'deduced' => null, 'action' => 'H05'],
             ['code' => 'R42', 'name' => 'Review Previous Module',  'priority' => 25, 'domain' => 'Recovery',    'required' => ['G36', 'G23'],  'deduced' => null, 'action' => 'H22'],
             ['code' => 'R43', 'name' => 'In-Module Theory Review', 'priority' => 26, 'domain' => 'Recovery',    'required' => ['G33', 'G04'],  'deduced' => null, 'action' => 'H10'],
             ['code' => 'R31', 'name' => 'Graduation Check',        'priority' => 41, 'domain' => 'Progression', 'required' => ['G30', 'G34'],  'deduced' => null, 'action' => 'H05'],

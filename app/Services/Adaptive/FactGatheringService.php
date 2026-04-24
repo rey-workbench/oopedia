@@ -233,6 +233,8 @@ final class FactGatheringService implements FactGatheringServiceInterface
         $next = $material->getNextMaterial();
         if ($next && in_array((string) $next->module_id, $unlockedSet, true)) {
             $facts[] = FactRegistry::getCode(AC::FACT_NEXT_UNLOCKED);
+        } else if ($next) {
+            $facts[] = FactRegistry::getCode(AC::FACT_NEXT_LOCKED);
         }
 
         $prev = $material->getPreviousMaterial();
