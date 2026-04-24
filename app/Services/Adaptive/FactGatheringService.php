@@ -45,38 +45,38 @@ final class FactGatheringService implements FactGatheringServiceInterface
         $isFinalProject = $this->isFinalDifficulty($difficulty);
 
         if ($usedHint) {
-            $facts[] = FactRegistry::getCode(AC::FACT_HINT_USED);
+            $facts[] = AC::FACT_HINT_USED;
         } else {
             // Pure Positive Logic: jika tidak pakai hint, ini fakta positif "Bekerja Mandiri"
-            $facts[] = FactRegistry::getCode(AC::FACT_INDEPENDENT_WORK);
+            $facts[] = AC::FACT_INDEPENDENT_WORK;
         }
 
         if ($moduleId && ! $isFinalProject) {
-            $facts[] = FactRegistry::getCode(AC::FACT_IN_MODULE);
+            $facts[] = AC::FACT_IN_MODULE;
         }
 
         $facts[] = $this->getCurrentDifficulty($difficulty);
 
         if ($isFinalProject) {
-            $facts[] = FactRegistry::getCode(AC::FACT_IS_FINAL_PROJECT);
+            $facts[] = AC::FACT_IS_FINAL_PROJECT;
         }
 
         $facts = array_merge($facts, $this->checkModuleProgression($studentState, $materialId));
 
         if ($this->isPersistentFail((string) $studentState->user_id, $questionId)) {
-            $facts[] = FactRegistry::getCode(AC::FACT_PERSISTENT_FAIL);
+            $facts[] = AC::FACT_PERSISTENT_FAIL;
         }
 
         if ($this->hasSatisfactoryProgress((string) $studentState->user_id, $materialId)) {
-            $facts[] = FactRegistry::getCode(AC::FACT_SATISFACTORY_PROGRESS);
+            $facts[] = AC::FACT_SATISFACTORY_PROGRESS;
         }
 
         if ($this->isModuleNearlyDone((string) $studentState->user_id, $materialId)) {
-            $facts[] = FactRegistry::getCode(AC::FACT_MODULE_NEARLY_DONE);
+            $facts[] = AC::FACT_MODULE_NEARLY_DONE;
         }
 
         if ($this->isEligibleForGraduation((string) $studentState->user_id, $materialId)) {
-            $facts[] = FactRegistry::getCode(AC::FACT_MODULE_GRADUATION);
+            $facts[] = AC::FACT_MODULE_GRADUATION;
         }
 
         return array_values(array_unique(array_filter($facts)));
@@ -86,13 +86,13 @@ final class FactGatheringService implements FactGatheringServiceInterface
     {
         if ($isCorrect) {
             return $score >= 90
-                ? [FactRegistry::getCode(AC::FACT_SCORE_PERFECT)]
-                : [FactRegistry::getCode(AC::FACT_SCORE_PASS)];
+                ? [AC::FACT_SCORE_PERFECT]
+                : [AC::FACT_SCORE_PASS];
         }
 
         return $score <= 0
-            ? [FactRegistry::getCode(AC::FACT_SCORE_ZERO)]
-            : [FactRegistry::getCode(AC::FACT_SCORE_FAILURE)];
+            ? [AC::FACT_SCORE_ZERO]
+            : [AC::FACT_SCORE_FAILURE];
     }
 
     private function evaluateTimeEfficiency(int $timeSpent, QuestionDifficulty|string $difficulty, bool $isCorrect): array
@@ -103,14 +103,14 @@ final class FactGatheringService implements FactGatheringServiceInterface
 
         if ($percentage < AC::TIME_FAST_THRESHOLD) {
             return $isCorrect
-                ? [FactRegistry::getCode(AC::FACT_TIME_FAST_SUCCESS)]
-                : [FactRegistry::getCode(AC::FACT_TIME_FAST_FAIL)];
+                ? [AC::FACT_TIME_FAST_SUCCESS]
+                : [AC::FACT_TIME_FAST_FAIL];
         }
 
         if ($percentage >= 100) {
             return $isCorrect
-                ? [FactRegistry::getCode(AC::FACT_TIME_SLOW_SUCCESS)]
-                : [FactRegistry::getCode(AC::FACT_TIME_SLOW_FAIL)];
+                ? [AC::FACT_TIME_SLOW_SUCCESS]
+                : [AC::FACT_TIME_SLOW_FAIL];
         }
 
         return [];
@@ -121,32 +121,32 @@ final class FactGatheringService implements FactGatheringServiceInterface
         $style = $state->learning_style ?? AC::STYLE_VISUAL;
 
         return match ($style) {
-            AC::STYLE_MIXED                   => [FactRegistry::getCode(AC::FACT_STYLE_MIXED)],
-            AC::STYLE_TEXTUAL                 => [FactRegistry::getCode(AC::FACT_STYLE_TEXTUAL)],
-            default                           => [FactRegistry::getCode(AC::FACT_STYLE_VISUAL)],
+            AC::STYLE_MIXED                   => [AC::FACT_STYLE_MIXED],
+            AC::STYLE_TEXTUAL                 => [AC::FACT_STYLE_TEXTUAL],
+            default                           => [AC::FACT_STYLE_VISUAL],
         };
     }
 
     private function diagnoseError(string $questionId, bool $isCorrect): array
     {
         if ($isCorrect) {
-            return [FactRegistry::getCode(AC::FACT_NO_ERROR)];
+            return [AC::FACT_NO_ERROR];
         }
 
         $question = $this->questionRepo->find($questionId);
         $type     = $question?->type;
 
         return match ($type) {
-            ContentCategory::SINTAKS => [FactRegistry::getCode(AC::FACT_ERROR_SYNTAX)],
-            ContentCategory::MIXED   => [FactRegistry::getCode(AC::FACT_ERROR_CONCEPT)],
-            default                  => [FactRegistry::getCode(AC::FACT_ERROR_LOGIC)],
+            ContentCategory::SINTAKS => [AC::FACT_ERROR_SYNTAX],
+            ContentCategory::MIXED   => [AC::FACT_ERROR_CONCEPT],
+            default                  => [AC::FACT_ERROR_LOGIC],
         };
     }
 
     private function checkConsistency(StudentState $state): array
     {
         return ($state->streak ?? 0) >= AC::THRESHOLD_CONSISTENCY_STREAK
-            ? [FactRegistry::getCode(AC::FACT_CONSISTENCY_HIGH)]
+            ? [AC::FACT_CONSISTENCY_HIGH]
             : [];
     }
 
@@ -185,7 +185,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
             };
 
             if ($factName) {
-                $facts[] = FactRegistry::getCode($factName);
+                $facts[] = $factName;
             }
         }
 
@@ -201,15 +201,15 @@ final class FactGatheringService implements FactGatheringServiceInterface
         $isSlow        = (($timeSpent / $allocatedTime) * 100) >= 100;
 
         if ($isCorrect && $isFast && ($state->streak ?? 0) >= AC::THRESHOLD_BOREDOM_STREAK) {
-            $facts[] = FactRegistry::getCode(AC::FACT_BOREDOM_SIGNS);
+            $facts[] = AC::FACT_BOREDOM_SIGNS;
         }
 
         if (! $isCorrect && $isSlow && ($state->wrong_streak ?? 0) >= AC::THRESHOLD_ANXIETY_STREAK) {
-            $facts[] = FactRegistry::getCode(AC::FACT_ANXIETY_SIGNS);
+            $facts[] = AC::FACT_ANXIETY_SIGNS;
         }
 
         if (! $isCorrect && $isSlow && ($state->wrong_streak ?? 0) >= AC::THRESHOLD_PERSISTENT_FAIL) {
-            $facts[] = FactRegistry::getCode(AC::FACT_HIGH_STRUGGLE);
+            $facts[] = AC::FACT_HIGH_STRUGGLE;
         }
 
         return $facts;
@@ -224,7 +224,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
             default => AC::FACT_DIFF_BEGINNER,
         };
 
-        return FactRegistry::getCode($name);
+        return $name;
     }
 
     private function checkModuleProgression(StudentState $state, string $materialId): array
@@ -239,14 +239,14 @@ final class FactGatheringService implements FactGatheringServiceInterface
 
         $next = $material->getNextMaterial();
         if ($next && in_array((string) $next->module_id, $unlockedSet, true)) {
-            $facts[] = FactRegistry::getCode(AC::FACT_NEXT_UNLOCKED);
+            $facts[] = AC::FACT_NEXT_UNLOCKED;
         } elseif ($next) {
-            $facts[] = FactRegistry::getCode(AC::FACT_NEXT_LOCKED);
+            $facts[] = AC::FACT_NEXT_LOCKED;
         }
 
         $prev = $material->getPreviousMaterial();
         if ($prev && in_array((string) $prev->module_id, $unlockedSet, true)) {
-            $facts[] = FactRegistry::getCode(AC::FACT_PREV_UNLOCKED);
+            $facts[] = AC::FACT_PREV_UNLOCKED;
         }
 
         return $facts;

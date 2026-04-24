@@ -48,69 +48,69 @@ class AdaptiveRuleSeeder extends Seeder
     {
         $facts = [
             // ── Performa Skor (G01-G04)
-            ['code' => 'G01', 'category' => 'performance', 'name' => AC::FACT_SCORE_FAILURE,  'description' => 'Skor rendah (<70).'],
-            ['code' => 'G02', 'category' => 'performance', 'name' => AC::FACT_SCORE_PASS,     'description' => 'Skor cukup (70-89).'],
-            ['code' => 'G03', 'category' => 'performance', 'name' => AC::FACT_SCORE_PERFECT,  'description' => 'Skor sempurna (90+).'],
-            ['code' => 'G04', 'category' => 'performance', 'name' => AC::FACT_SCORE_ZERO,     'description' => 'Salah total (0).'],
+            ['code' => AC::FACT_SCORE_FAILURE,  'category' => 'performance', 'name' => AC::FACT_NAMES[AC::FACT_SCORE_FAILURE],  'description' => 'Skor rendah (<70).'],
+            ['code' => AC::FACT_SCORE_PASS,     'category' => 'performance', 'name' => AC::FACT_NAMES[AC::FACT_SCORE_PASS],     'description' => 'Skor cukup (70-89).'],
+            ['code' => AC::FACT_SCORE_PERFECT,  'category' => 'performance', 'name' => AC::FACT_NAMES[AC::FACT_SCORE_PERFECT],  'description' => 'Skor sempurna (90+).'],
+            ['code' => AC::FACT_SCORE_ZERO,     'category' => 'performance', 'name' => AC::FACT_NAMES[AC::FACT_SCORE_ZERO],     'description' => 'Salah total (0).'],
 
             // ── Konsistensi & Penguasaan (G05-G08)
-            ['code' => 'G05', 'category' => 'performance', 'name' => AC::FACT_CONSISTENCY_HIGH,  'description' => 'Konsisten benar (streak ≥3).'],
-            ['code' => 'G06', 'category' => 'performance', 'name' => AC::FACT_MASTERY_BEGINNER,  'description' => 'Kuasai level beginner.'],
-            ['code' => 'G07', 'category' => 'performance', 'name' => AC::FACT_MASTERY_MEDIUM,    'description' => 'Kuasai level medium.'],
-            ['code' => 'G08', 'category' => 'performance', 'name' => AC::FACT_MASTERY_HARD,      'description' => 'Kuasai level hard.'],
+            ['code' => AC::FACT_CONSISTENCY_HIGH,  'category' => 'performance', 'name' => AC::FACT_NAMES[AC::FACT_CONSISTENCY_HIGH],  'description' => 'Konsisten benar (streak ≥3).'],
+            ['code' => AC::FACT_MASTERY_BEGINNER,  'category' => 'performance', 'name' => AC::FACT_NAMES[AC::FACT_MASTERY_BEGINNER],  'description' => 'Kuasai level beginner.'],
+            ['code' => AC::FACT_MASTERY_MEDIUM,    'category' => 'performance', 'name' => AC::FACT_NAMES[AC::FACT_MASTERY_MEDIUM],    'description' => 'Kuasai level medium.'],
+            ['code' => AC::FACT_MASTERY_HARD,      'category' => 'performance', 'name' => AC::FACT_NAMES[AC::FACT_MASTERY_HARD],      'description' => 'Kuasai level hard.'],
 
             // ── Gaya Belajar (G09-G11)
-            ['code' => 'G09', 'category' => 'style', 'name' => AC::FACT_STYLE_VISUAL,   'description' => 'Cenderung visual.'],
-            ['code' => 'G10', 'category' => 'style', 'name' => AC::FACT_STYLE_TEXTUAL,  'description' => 'Cenderung tekstual.'],
-            ['code' => 'G11', 'category' => 'style', 'name' => AC::FACT_STYLE_MIXED,    'description' => 'Gaya belajar campuran.'],
+            ['code' => AC::FACT_STYLE_VISUAL,   'category' => 'style', 'name' => AC::FACT_NAMES[AC::FACT_STYLE_VISUAL],   'description' => 'Cenderung visual.'],
+            ['code' => AC::FACT_STYLE_TEXTUAL,  'category' => 'style', 'name' => AC::FACT_NAMES[AC::FACT_STYLE_TEXTUAL],  'description' => 'Cenderung tekstual.'],
+            ['code' => AC::FACT_STYLE_MIXED,    'category' => 'style', 'name' => AC::FACT_NAMES[AC::FACT_STYLE_MIXED],    'description' => 'Gaya belajar campuran.'],
 
             // ── Tipe Error (G12-G15)
-            ['code' => 'G12', 'category' => 'error', 'name' => AC::FACT_ERROR_SYNTAX,   'description' => 'Sering salah tulis (syntax).'],
-            ['code' => 'G13', 'category' => 'error', 'name' => AC::FACT_ERROR_LOGIC,    'description' => 'Sering salah logika.'],
-            ['code' => 'G14', 'category' => 'error', 'name' => AC::FACT_ERROR_CONCEPT,  'description' => 'Sering salah konsep.'],
-            ['code' => 'G15', 'category' => 'error', 'name' => AC::FACT_NO_ERROR,       'description' => 'Tanpa kesalahan.'],
+            ['code' => AC::FACT_ERROR_SYNTAX,   'category' => 'error', 'name' => AC::FACT_NAMES[AC::FACT_ERROR_SYNTAX],   'description' => 'Sering salah tulis (syntax).'],
+            ['code' => AC::FACT_ERROR_LOGIC,    'category' => 'error', 'name' => AC::FACT_NAMES[AC::FACT_ERROR_LOGIC],    'description' => 'Sering salah logika.'],
+            ['code' => AC::FACT_ERROR_CONCEPT,  'category' => 'error', 'name' => AC::FACT_NAMES[AC::FACT_ERROR_CONCEPT],  'description' => 'Sering salah konsep.'],
+            ['code' => AC::FACT_NO_ERROR,       'category' => 'error', 'name' => AC::FACT_NAMES[AC::FACT_NO_ERROR],       'description' => 'Tanpa kesalahan.'],
 
             // ── Waktu (G16-G19)
-            ['code' => 'G16', 'category' => 'time', 'name' => AC::FACT_TIME_FAST_SUCCESS,  'description' => 'Cepat & Benar.'],
-            ['code' => 'G17', 'category' => 'time', 'name' => AC::FACT_TIME_FAST_FAIL,     'description' => 'Cepat & Salah (Ceroboh).'],
-            ['code' => 'G18', 'category' => 'time', 'name' => AC::FACT_TIME_SLOW_SUCCESS,  'description' => 'Lambat & Benar.'],
-            ['code' => 'G19', 'category' => 'time', 'name' => AC::FACT_TIME_SLOW_FAIL,     'description' => 'Lambat & Salah (Struggle).'],
+            ['code' => AC::FACT_TIME_FAST_SUCCESS,  'category' => 'time', 'name' => AC::FACT_NAMES[AC::FACT_TIME_FAST_SUCCESS],  'description' => 'Cepat & Benar.'],
+            ['code' => AC::FACT_TIME_FAST_FAIL,     'category' => 'time', 'name' => AC::FACT_NAMES[AC::FACT_TIME_FAST_FAIL],     'description' => 'Cepat & Salah (Ceroboh).'],
+            ['code' => AC::FACT_TIME_SLOW_SUCCESS,  'category' => 'time', 'name' => AC::FACT_NAMES[AC::FACT_TIME_SLOW_SUCCESS],  'description' => 'Lambat & Benar.'],
+            ['code' => AC::FACT_TIME_SLOW_FAIL,     'category' => 'time', 'name' => AC::FACT_NAMES[AC::FACT_TIME_SLOW_FAIL],     'description' => 'Lambat & Salah (Struggle).'],
 
             // ── Kemandirian & Hint (G20, G37)
-            ['code' => 'G20', 'category' => 'behaviour', 'name' => AC::FACT_HINT_USED,        'description' => 'Menggunakan hint.'],
-            ['code' => 'G37', 'category' => 'behaviour', 'name' => AC::FACT_INDEPENDENT_WORK, 'description' => 'Bekerja tanpa hint.'],
+            ['code' => AC::FACT_HINT_USED,        'category' => 'behaviour', 'name' => AC::FACT_NAMES[AC::FACT_HINT_USED],        'description' => 'Menggunakan hint.'],
+            ['code' => AC::FACT_INDEPENDENT_WORK, 'category' => 'behaviour', 'name' => AC::FACT_NAMES[AC::FACT_INDEPENDENT_WORK], 'description' => 'Bekerja tanpa hint.'],
 
             // ── Perilaku Psikologis (G21-G23)
-            ['code' => 'G21', 'category' => 'behaviour', 'name' => AC::FACT_BOREDOM_SIGNS,  'description' => 'Tanda kebosanan.'],
-            ['code' => 'G22', 'category' => 'behaviour', 'name' => AC::FACT_ANXIETY_SIGNS,   'description' => 'Tanda kecemasan.'],
-            ['code' => 'G23', 'category' => 'behaviour', 'name' => AC::FACT_HIGH_STRUGGLE,   'description' => 'Kesulitan tinggi.'],
+            ['code' => AC::FACT_BOREDOM_SIGNS,  'category' => 'behaviour', 'name' => AC::FACT_NAMES[AC::FACT_BOREDOM_SIGNS],  'description' => 'Tanda kebosanan.'],
+            ['code' => AC::FACT_ANXIETY_SIGNS,   'category' => 'behaviour', 'name' => AC::FACT_NAMES[AC::FACT_ANXIETY_SIGNS],   'description' => 'Tanda kecemasan.'],
+            ['code' => AC::FACT_HIGH_STRUGGLE,   'category' => 'behaviour', 'name' => AC::FACT_NAMES[AC::FACT_HIGH_STRUGGLE],   'description' => 'Kesulitan tinggi.'],
 
             // ── Tingkat Kesulitan Saat Ini (G26, G31, G32)
-            ['code' => 'G26', 'category' => 'difficulty', 'name' => AC::FACT_DIFF_BEGINNER,  'description' => 'Sedang di level beginner.'],
-            ['code' => 'G31', 'category' => 'difficulty', 'name' => AC::FACT_DIFF_MEDIUM,    'description' => 'Sedang di level medium.'],
-            ['code' => 'G32', 'category' => 'difficulty', 'name' => AC::FACT_DIFF_HARD,      'description' => 'Sedang di level hard.'],
+            ['code' => AC::FACT_DIFF_BEGINNER,  'category' => 'difficulty', 'name' => AC::FACT_NAMES[AC::FACT_DIFF_BEGINNER],  'description' => 'Sedang di level beginner.'],
+            ['code' => AC::FACT_DIFF_MEDIUM,    'category' => 'difficulty', 'name' => AC::FACT_NAMES[AC::FACT_DIFF_MEDIUM],    'description' => 'Sedang di level medium.'],
+            ['code' => AC::FACT_DIFF_HARD,      'category' => 'difficulty', 'name' => AC::FACT_NAMES[AC::FACT_DIFF_HARD],      'description' => 'Sedang di level hard.'],
 
             // ── Progres & Modul (G28-G36)
-            ['code' => 'G28', 'category' => 'progress', 'name' => AC::FACT_PERSISTENT_FAIL,       'description' => 'Gagal berturut-turut.'],
-            ['code' => 'G29', 'category' => 'progress', 'name' => AC::FACT_MODULE_NEARLY_DONE,    'description' => 'Materi hampir selesai.'],
-            ['code' => 'G30', 'category' => 'progress', 'name' => AC::FACT_MODULE_GRADUATION,     'description' => 'Layak lulus modul.'],
-            ['code' => 'G33', 'category' => 'progress', 'name' => AC::FACT_IN_MODULE,             'description' => 'Sedang dalam modul pembelajaran.'],
-            ['code' => 'G34', 'category' => 'progress', 'name' => AC::FACT_SATISFACTORY_PROGRESS, 'description' => 'Progres memadai.'],
-            ['code' => 'G35', 'category' => 'progress', 'name' => AC::FACT_NEXT_UNLOCKED,         'description' => 'Modul berikutnya sudah terbuka.'],
-            ['code' => 'G38', 'category' => 'progress', 'name' => AC::FACT_NEXT_LOCKED,           'description' => 'Modul berikutnya masih terkunci.'],
-            ['code' => 'G36', 'category' => 'progress', 'name' => AC::FACT_PREV_UNLOCKED,         'description' => 'Modul sebelumnya sudah terbuka.'],
+            ['code' => AC::FACT_PERSISTENT_FAIL,       'category' => 'progress', 'name' => AC::FACT_NAMES[AC::FACT_PERSISTENT_FAIL],       'description' => 'Gagal berturut-turut.'],
+            ['code' => AC::FACT_MODULE_NEARLY_DONE,    'category' => 'progress', 'name' => AC::FACT_NAMES[AC::FACT_MODULE_NEARLY_DONE],    'description' => 'Materi hampir selesai.'],
+            ['code' => AC::FACT_MODULE_GRADUATION,     'category' => 'progress', 'name' => AC::FACT_NAMES[AC::FACT_MODULE_GRADUATION],     'description' => 'Layak lulus modul.'],
+            ['code' => AC::FACT_IN_MODULE,             'category' => 'progress', 'name' => AC::FACT_NAMES[AC::FACT_IN_MODULE],             'description' => 'Sedang dalam modul pembelajaran.'],
+            ['code' => AC::FACT_SATISFACTORY_PROGRESS, 'category' => 'progress', 'name' => AC::FACT_NAMES[AC::FACT_SATISFACTORY_PROGRESS], 'description' => 'Progres memadai.'],
+            ['code' => AC::FACT_NEXT_UNLOCKED,         'category' => 'progress', 'name' => AC::FACT_NAMES[AC::FACT_NEXT_UNLOCKED],         'description' => 'Modul berikutnya sudah terbuka.'],
+            ['code' => AC::FACT_NEXT_LOCKED,           'category' => 'progress', 'name' => AC::FACT_NAMES[AC::FACT_NEXT_LOCKED],           'description' => 'Modul berikutnya masih terkunci.'],
+            ['code' => AC::FACT_PREV_UNLOCKED,         'category' => 'progress', 'name' => AC::FACT_NAMES[AC::FACT_PREV_UNLOCKED],         'description' => 'Modul sebelumnya sudah terbuka.'],
 
-            // ── Virtual / Deduced Facts (V01-V07) – Dihasilkan oleh aturan lain, bukan observasi langsung
-            ['code' => 'V01', 'category' => 'deduced', 'name' => 'High Performer',              'description' => 'Deduksi: siswa berkinerja tinggi dan mandiri.'],
-            ['code' => 'V02', 'category' => 'deduced', 'name' => 'Needs Foundation',            'description' => 'Deduksi: siswa perlu penguatan dasar.'],
-            ['code' => 'V03', 'category' => 'deduced', 'name' => 'In Crisis',                   'description' => 'Deduksi: siswa dalam kondisi krisis belajar.'],
-            ['code' => 'V04', 'category' => 'deduced', 'name' => 'Style Mismatch Visual',       'description' => 'Deduksi: siswa visual gagal karena soal berbasis logika/teks.'],
-            ['code' => 'V05', 'category' => 'deduced', 'name' => 'Style Mismatch Textual',      'description' => 'Deduksi: siswa tekstual gagal karena soal berbasis sintaks.'],
-            ['code' => 'V06', 'category' => 'deduced', 'name' => 'Mastery Ready Intermediate',  'description' => 'Deduksi: siswa siap naik dari Beginner ke Medium.'],
-            ['code' => 'V07', 'category' => 'deduced', 'name' => 'Mastery Ready Advanced',      'description' => 'Deduksi: siswa siap naik dari Medium ke Hard.'],
-            ['code' => 'V08', 'category' => 'deduced', 'name' => 'Conceptual Gap Detected',     'description' => 'Deduksi: siswa memiliki celah pemahaman konsep fundamental.'],
-            ['code' => 'V09', 'category' => 'deduced', 'name' => 'Careless Pattern',            'description' => 'Deduksi: siswa cenderung terburu-buru meski mampu.'],
-            ['code' => 'V10', 'category' => 'deduced', 'name' => 'Struggle Pattern',             'description' => 'Deduksi: siswa menunjukkan pola kesulitan yang konsisten.'],
+            // ── Virtual / Deduced Facts (V01-V07)
+            ['code' => AC::V01_HIGH_PERFORMER,        'category' => 'deduced', 'name' => AC::VIRTUAL_NAMES[AC::V01_HIGH_PERFORMER],        'description' => 'Deduksi: siswa berkinerja tinggi dan mandiri.'],
+            ['code' => AC::V02_NEEDS_FOUNDATION,      'category' => 'deduced', 'name' => AC::VIRTUAL_NAMES[AC::V02_NEEDS_FOUNDATION],      'description' => 'Deduksi: siswa perlu penguatan dasar.'],
+            ['code' => AC::V03_IN_CRISIS,             'category' => 'deduced', 'name' => AC::VIRTUAL_NAMES[AC::V03_IN_CRISIS],             'description' => 'Deduksi: siswa dalam kondisi krisis belajar.'],
+            ['code' => AC::V04_STYLE_MISMATCH_VISUAL, 'category' => 'deduced', 'name' => AC::VIRTUAL_NAMES[AC::V04_STYLE_MISMATCH_VISUAL], 'description' => 'Deduksi: siswa visual gagal karena soal berbasis logika/teks.'],
+            ['code' => AC::V05_STYLE_MISMATCH_TEXTUAL, 'category' => 'deduced', 'name' => AC::VIRTUAL_NAMES[AC::V05_STYLE_MISMATCH_TEXTUAL], 'description' => 'Deduksi: siswa tekstual gagal karena soal berbasis sintaks.'],
+            ['code' => AC::V06_MASTERY_READY_BEGINNER, 'category' => 'deduced', 'name' => AC::VIRTUAL_NAMES[AC::V06_MASTERY_READY_BEGINNER], 'description' => 'Deduksi: siswa siap naik dari Beginner ke Medium.'],
+            ['code' => AC::V07_MASTERY_READY_MEDIUM,   'category' => 'deduced', 'name' => AC::VIRTUAL_NAMES[AC::V07_MASTERY_READY_MEDIUM],   'description' => 'Deduksi: siswa siap naik dari Medium ke Hard.'],
+            ['code' => AC::V08_CONCEPTUAL_GAP,         'category' => 'deduced', 'name' => AC::VIRTUAL_NAMES[AC::V08_CONCEPTUAL_GAP],         'description' => 'Deduksi: siswa memiliki celah pemahaman konsep fundamental.'],
+            ['code' => AC::V09_CARELESS_PATTERN,       'category' => 'deduced', 'name' => AC::VIRTUAL_NAMES[AC::V09_CARELESS_PATTERN],       'description' => 'Deduksi: siswa cenderung terburu-buru meski mampu.'],
+            ['code' => AC::V10_STRUGGLE_PATTERN,       'category' => 'deduced', 'name' => AC::VIRTUAL_NAMES[AC::V10_STRUGGLE_PATTERN],       'description' => 'Deduksi: siswa menunjukkan pola kesulitan yang konsisten.'],
         ];
 
         foreach ($facts as $fact) {
@@ -122,44 +122,46 @@ class AdaptiveRuleSeeder extends Seeder
     private function seedActions(): void
     {
         $actions = [
-            // ── H00: Silent – Khusus untuk rule Deduksi, tidak ada output UI
-            // Mesin hanya menambah virtual facts ke working memory, lalu lanjut ke siklus berikutnya.
-            ['code' => 'H00', 'variant' => 'silent', 'name' => 'Silent Deduction', 'description' => 'Tidak ada aksi UI. Hanya menghasilkan virtual facts.', 'instructions' => ['next_action' => AC::ACTION_SILENT]],
+            // ── H00: Silent – Khusus untuk rule Deduksi
+            ['code' => AC::ACTION_DEDUCTION, 'variant' => 'silent', 'name' => AC::ACTION_NAMES[AC::ACTION_DEDUCTION], 'description' => 'Tidak ada aksi UI. Hanya menghasilkan virtual facts.', 'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_SILENT]],
 
             // ── Navigasi Soal (H01-H02)
-            ['code' => 'H01', 'variant' => 'result',       'name' => 'Standard Promotion',  'description' => 'Lanjut normal.',         'instructions' => ['next_action' => AC::ACTION_NEXT_QUESTION,      'label' => 'Soal Berikutnya', 'title' => 'Luar Biasa!']],
-            ['code' => 'H02', 'variant' => 'result',       'name' => 'Standard Remedial',   'description' => 'Ulang soal.',            'instructions' => ['next_action' => AC::ACTION_NEXT_QUESTION,      'label' => 'Coba Lagi',       'message' => 'Jawaban kurang tepat. Ayo coba lagi!', 'title' => 'Jangan Menyerah!']],
+            ['code' => AC::ACTION_STANDARD_PROMOTION, 'variant' => 'result',       'name' => AC::ACTION_NAMES[AC::ACTION_STANDARD_PROMOTION],  'description' => 'Lanjut normal.',         'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_NEXT_QUESTION,      AC::KEY_LABEL => 'Soal Berikutnya', AC::KEY_TITLE => 'Luar Biasa!']],
+            ['code' => AC::ACTION_STANDARD_REMEDIAL,  'variant' => 'result',       'name' => AC::ACTION_NAMES[AC::ACTION_STANDARD_REMEDIAL],   'description' => 'Ulang soal.',            'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_NEXT_QUESTION,      AC::KEY_LABEL => 'Coba Lagi',       AC::KEY_MESSAGE => 'Jawaban kurang tepat. Ayo coba lagi!', AC::KEY_TITLE => 'Jangan Menyerah!']],
 
             // ── Percepatan & Penurunan Difficulty (H03-H04)
-            ['code' => 'H03', 'variant' => 'acceleration', 'name' => 'Accelerated Jump',    'description' => 'Lompat level.',          'instructions' => ['target_difficulty' => 'hard', 'next_action' => AC::ACTION_INCREASE_DIFFICULTY, 'label' => 'Tantangan Baru', 'message' => 'Luar Biasa! Tantangan level lebih tinggi menantimu!', 'title' => 'Percepatan Aktif!']],
-            ['code' => 'H04', 'variant' => 'backtrack',    'name' => 'Critical Backtrack',  'description' => 'Turun level.',           'instructions' => ['target_difficulty' => 'beginner', 'next_action' => AC::ACTION_REDUCE_DIFFICULTY, 'label' => 'Bimbingan Level', 'message' => 'Kami menyesuaikan tingkat untuk kenyamanan belajarmu.', 'title' => 'Penyesuaian Alur']],
+            ['code' => AC::ACTION_ACCELERATED_JUMP,   'variant' => 'acceleration', 'name' => AC::ACTION_NAMES[AC::ACTION_ACCELERATED_JUMP],    'description' => 'Lompat level.',          'instructions' => [AC::KEY_TARGET_DIFFICULTY => AC::DIFFICULTY_HARD, AC::KEY_NEXT_ACTION => AC::ACTION_INCREASE_DIFFICULTY, AC::KEY_LABEL => 'Tantangan Baru', AC::KEY_MESSAGE => 'Luar Biasa! Tantangan level lebih tinggi menantimu!', AC::KEY_TITLE => 'Percepatan Aktif!']],
+            ['code' => AC::ACTION_CRITICAL_BACKTRACK, 'variant' => 'backtrack',    'name' => AC::ACTION_NAMES[AC::ACTION_CRITICAL_BACKTRACK],  'description' => 'Turun level.',           'instructions' => [AC::KEY_TARGET_DIFFICULTY => AC::DIFFICULTY_BEGINNER, AC::KEY_NEXT_ACTION => AC::ACTION_REDUCE_DIFFICULTY, AC::KEY_LABEL => 'Bimbingan Level', AC::KEY_MESSAGE => 'Kami menyesuaikan tingkat untuk kenyamanan belajarmu.', AC::KEY_TITLE => 'Penyesuaian Alur']],
 
             // ── Kelulusan Modul (H05)
-            ['code' => 'H05', 'variant' => 'result',       'name' => 'Module Graduation',   'description' => 'Lulus modul.',           'instructions' => [
-                'next_action'   => AC::ACTION_FINISH_MATERIAL,
-                'label'         => 'Selesaikan Modul',
-                'message'       => 'Selamat! Kamu telah menyelesaikan modul ini.',
-                'title'         => 'Kelulusan Modul!',
-                'certification' => 'silver',
-                'badges'        => ['module_complete', 'persistent_learner'],
+            ['code' => AC::ACTION_MODULE_GRADUATION, 'variant' => 'result',       'name' => AC::ACTION_NAMES[AC::ACTION_MODULE_GRADUATION],   'description' => 'Lulus modul.',           'instructions' => [
+                AC::KEY_NEXT_ACTION   => AC::ACTION_FINISH_MATERIAL,
+                AC::KEY_LABEL         => 'Selesaikan Modul',
+                AC::KEY_MESSAGE       => 'Selamat! Kamu telah menyelesaikan modul ini.',
+                AC::KEY_TITLE         => 'Kelulusan Modul!',
+                AC::KEY_CERTIFICATION => 'silver',
+                AC::KEY_BADGES        => ['module_complete', 'persistent_learner'],
             ]],
 
-            // ── Intervensi Gaya Belajar (H06-H08, H11, H21)
-            ['code' => 'H06', 'variant' => 'intervention', 'name' => 'Study Visual',        'description' => 'Arahkan ke materi visual.',   'instructions' => ['next_action' => AC::ACTION_STUDY_VISUAL,   'label' => 'Materi Visual',        'title' => 'Bantuan Adaptif']],
-            ['code' => 'H07', 'variant' => 'intervention', 'name' => 'Study Textual',       'description' => 'Arahkan ke materi teks.',     'instructions' => ['next_action' => AC::ACTION_STUDY_TEXTUAL,  'label' => 'Materi Tekstual',      'title' => 'Bantuan Adaptif']],
-            ['code' => 'H10', 'variant' => 'intervention', 'name' => 'Logic Guide',         'description' => 'Panduan logika/teori.',        'instructions' => ['next_action' => AC::ACTION_STUDY_THEORY,   'label' => 'Pahami Konsep',        'title' => 'Bantuan Adaptif']],
-            ['code' => 'H11', 'variant' => 'intervention', 'name' => 'Syntax Guide',        'description' => 'Panduan sintaks.',             'instructions' => ['next_action' => AC::ACTION_STUDY_SYNTAX,   'label' => 'Pelajari Sintaks',     'title' => 'Bantuan Adaptif']],
-            ['code' => 'H21', 'variant' => 'intervention', 'name' => 'Study Mixed',         'description' => 'Materi komprehensif.',         'instructions' => ['next_action' => AC::ACTION_STUDY_MIXED,    'label' => 'Materi Komprehensif',  'title' => 'Bantuan Adaptif']],
+            // ── Intervensi Gaya Belajar (H06-H08, H10-H11, H21)
+            ['code' => AC::ACTION_STUDY_VISUAL_MAT,    'variant' => 'intervention', 'name' => AC::ACTION_NAMES[AC::ACTION_STUDY_VISUAL_MAT],    'description' => 'Arahkan ke materi visual.',   'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_STUDY_VISUAL,   AC::KEY_LABEL => 'Materi Visual',        AC::KEY_TITLE => 'Bantuan Adaptif']],
+            ['code' => AC::ACTION_STUDY_TEXTUAL_MAT,   'variant' => 'intervention', 'name' => AC::ACTION_NAMES[AC::ACTION_STUDY_TEXTUAL_MAT],   'description' => 'Arahkan ke materi teks.',     'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_STUDY_TEXTUAL,  AC::KEY_LABEL => 'Materi Tekstual',      AC::KEY_TITLE => 'Bantuan Adaptif']],
+            ['code' => AC::ACTION_LOGIC_GUIDE,         'variant' => 'intervention', 'name' => AC::ACTION_NAMES[AC::ACTION_LOGIC_GUIDE],         'description' => 'Panduan logika/teori.',        'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_STUDY_THEORY,   AC::KEY_LABEL => 'Pahami Konsep',        AC::KEY_TITLE => 'Bantuan Adaptif']],
+            ['code' => AC::ACTION_SYNTAX_GUIDE,        'variant' => 'intervention', 'name' => AC::ACTION_NAMES[AC::ACTION_SYNTAX_GUIDE],        'description' => 'Panduan sintaks.',             'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_STUDY_SYNTAX,   AC::KEY_LABEL => 'Pelajari Sintaks',     AC::KEY_TITLE => 'Bantuan Adaptif']],
+            ['code' => AC::ACTION_STUDY_MIXED_MAT,     'variant' => 'intervention', 'name' => AC::ACTION_NAMES[AC::ACTION_STUDY_MIXED_MAT],     'description' => 'Materi komprehensif.',         'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_STUDY_MIXED,    AC::KEY_LABEL => 'Materi Komprehensif',  AC::KEY_TITLE => 'Bantuan Adaptif']],
 
             // ── Psikologis & Motivasi (H17-H20)
-            ['code' => 'H17', 'variant' => 'backtrack',    'name' => 'Anxiety Relief',      'description' => 'Turunkan beban cemas.',   'instructions' => ['target_difficulty' => 'beginner', 'next_action' => AC::ACTION_REDUCE_DIFFICULTY,  'label' => 'Mulai Santai',   'message' => 'Rileks, mari pelan-pelan. Kamu pasti bisa!', 'title' => 'Penyesuaian Alur']],
-            ['code' => 'H18', 'variant' => 'acceleration', 'name' => 'Challenge Mode',      'description' => 'Beri tantangan tinggi.',  'instructions' => ['target_difficulty' => 'hard',    'next_action' => AC::ACTION_INCREASE_DIFFICULTY, 'label' => 'Mode Tantangan', 'message' => 'Terlalu mudah? Ayo naik level!', 'title' => 'Percepatan Aktif!']],
-            ['code' => 'H19', 'variant' => 'result',       'name' => 'Motivational Msg',    'description' => 'Pesan semangat.',         'instructions' => ['next_action' => AC::ACTION_NEXT_QUESTION, 'label' => 'Soal Berikutnya', 'message' => 'Pantang menyerah! Sedikit lagi benar.', 'title' => 'Tetap Semangat!']],
-            ['code' => 'H20', 'variant' => 'result',       'name' => 'Careful Alert',       'description' => 'Peringatan ceroboh.',     'instructions' => ['next_action' => AC::ACTION_NEXT_QUESTION, 'label' => 'Soal Berikutnya', 'message' => 'Jangan terburu-buru, baca lagi dengan teliti.', 'title' => 'Hati-hati!']],
+            ['code' => AC::ACTION_ANXIETY_RELIEF,      'variant' => 'backtrack',    'name' => AC::ACTION_NAMES[AC::ACTION_ANXIETY_RELIEF],      'description' => 'Turunkan beban cemas.',   'instructions' => [AC::KEY_TARGET_DIFFICULTY => AC::DIFFICULTY_BEGINNER, AC::KEY_NEXT_ACTION => AC::ACTION_REDUCE_DIFFICULTY,  AC::KEY_LABEL => 'Mulai Santai',   AC::KEY_MESSAGE => 'Rileks, mari pelan-pelan. Kamu pasti bisa!', AC::KEY_TITLE => 'Penyesuaian Alur']],
+            ['code' => AC::ACTION_CHALLENGE_MODE,      'variant' => 'acceleration', 'name' => AC::ACTION_NAMES[AC::ACTION_CHALLENGE_MODE],      'description' => 'Beri tantangan tinggi.',  'instructions' => [AC::KEY_TARGET_DIFFICULTY => AC::DIFFICULTY_HARD,    AC::KEY_NEXT_ACTION => AC::ACTION_INCREASE_DIFFICULTY, AC::KEY_LABEL => 'Mode Tantangan', AC::KEY_MESSAGE => 'Terlalu mudah? Ayo naik level!', AC::KEY_TITLE => 'Percepatan Aktif!']],
+            ['code' => AC::ACTION_MOTIVATIONAL_MSG,    'variant' => 'result',       'name' => AC::ACTION_NAMES[AC::ACTION_MOTIVATIONAL_MSG],    'description' => 'Pesan semangat.',         'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_NEXT_QUESTION, AC::KEY_LABEL => 'Soal Berikutnya', AC::KEY_MESSAGE => 'Pantang menyerah! Sedikit lagi benar.', AC::KEY_TITLE => 'Tetap Semangat!']],
+            ['code' => AC::ACTION_CAREFUL_ALERT,       'variant' => 'result',       'name' => AC::ACTION_NAMES[AC::ACTION_CAREFUL_ALERT],       'description' => 'Peringatan ceroboh.',     'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_NEXT_QUESTION, AC::KEY_LABEL => 'Soal Berikutnya', AC::KEY_MESSAGE => 'Jangan terburu-buru, baca lagi dengan teliti.', AC::KEY_TITLE => 'Hati-hati!']],
 
             // ── Krisis (H22-H23)
-            ['code' => 'H22', 'variant' => 'intervention', 'name' => 'Crisis Intervention', 'description' => 'Intervensi skor nol.',    'instructions' => ['target_difficulty' => 'beginner', 'next_action' => AC::ACTION_STUDY_MATERIAL, 'label' => 'Pelajari Materi Dulu', 'message' => 'Sepertinya perlu mempelajari materinya lebih dulu. Mari mulai dari dasar!', 'title' => 'Bantuan Adaptif']],
-            ['code' => 'H23', 'variant' => 'backtrack',    'name' => 'Persistent Fail Aid', 'description' => 'Bantuan gagal berturut.', 'instructions' => ['target_difficulty' => 'beginner', 'next_action' => AC::ACTION_REDUCE_DIFFICULTY, 'label' => 'Bimbingan Khusus', 'message' => 'Mari coba pendekatan berbeda dengan soal yang lebih mudah.', 'title' => 'Bantuan Adaptif']],
+            ['code' => AC::ACTION_CRISIS_INTERVENTION, 'variant' => 'intervention', 'name' => AC::ACTION_NAMES[AC::ACTION_CRISIS_INTERVENTION], 'description' => 'Intervensi skor nol.',    'instructions' => [AC::KEY_TARGET_DIFFICULTY => AC::DIFFICULTY_BEGINNER, AC::KEY_NEXT_ACTION => AC::ACTION_STUDY_MATERIAL, AC::KEY_LABEL => 'Pelajari Materi Dulu', AC::KEY_MESSAGE => 'Sepertinya perlu mempelajari materinya lebih dulu. Mari mulai dari dasar!', AC::KEY_TITLE => 'Bantuan Adaptif']],
+            ['code' => AC::ACTION_PREMIUM_PRAISE,      'variant' => 'result',       'name' => AC::ACTION_NAMES[AC::ACTION_PREMIUM_PRAISE],      'description' => 'Apresiasi kinerja tinggi.', 'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_NEXT_QUESTION, AC::KEY_LABEL => 'Lanjutkan!', AC::KEY_MESSAGE => 'Performa luar biasa! Kamu menunjukkan penguasaan materi yang sangat mendalam.', AC::KEY_TITLE => 'Kinerja Elite!']],
+            ['code' => AC::ACTION_PERSISTENT_FAIL_AID, 'variant' => 'backtrack',    'name' => AC::ACTION_NAMES[AC::ACTION_PERSISTENT_FAIL_AID], 'description' => 'Bantuan gagal berturut.', 'instructions' => [AC::KEY_TARGET_DIFFICULTY => AC::DIFFICULTY_BEGINNER, AC::KEY_NEXT_ACTION => AC::ACTION_REDUCE_DIFFICULTY, AC::KEY_LABEL => 'Bimbingan Khusus', AC::KEY_MESSAGE => 'Mari coba pendekatan berbeda dengan soal yang lebih mudah.', AC::KEY_TITLE => 'Bantuan Adaptif']],
+            ['code' => AC::ACTION_BOOST_TO_MEDIUM,     'variant' => 'acceleration', 'name' => AC::ACTION_NAMES[AC::ACTION_BOOST_TO_MEDIUM],     'description' => 'Naik ke level medium.',  'instructions' => [AC::KEY_TARGET_DIFFICULTY => AC::DIFFICULTY_MEDIUM, AC::KEY_NEXT_ACTION => AC::ACTION_INCREASE_DIFFICULTY, AC::KEY_LABEL => 'Naik Level', AC::KEY_MESSAGE => 'Bagus! Kamu siap untuk tantangan menengah.', AC::KEY_TITLE => 'Progres Cepat']],
+            ['code' => AC::ACTION_BOOST_TO_HARD,       'variant' => 'acceleration', 'name' => AC::ACTION_NAMES[AC::ACTION_BOOST_TO_HARD],       'description' => 'Naik ke level hard.',    'instructions' => [AC::KEY_TARGET_DIFFICULTY => AC::DIFFICULTY_HARD, AC::KEY_NEXT_ACTION => AC::ACTION_INCREASE_DIFFICULTY, AC::KEY_LABEL => 'Tantangan Ahli', AC::KEY_MESSAGE => 'Luar biasa! Mari uji kemampuanmu di level tersulit.', AC::KEY_TITLE => 'Percepatan Aktif!']],
         ];
 
         foreach ($actions as $action) {
@@ -172,77 +174,94 @@ class AdaptiveRuleSeeder extends Seeder
     {
         // ──────────────────────────────────────────────────────────────────
         // TIER 1: DEDUKSI (RD01 - RD10)
-        // Fokus: Menghasilkan Virtual Facts (V-codes). Action selalu H00.
         // ──────────────────────────────────────────────────────────────────
         $rules = [
-            ['code' => 'RD01', 'name' => 'Detect High Performer',           'priority' =>  1, 'domain' => 'Deduction', 'required' => ['G03', 'G16', 'G37'], 'deduced' => ['V01'], 'action' => 'H00'],
-            ['code' => 'RD02', 'name' => 'Detect Needs Foundation',         'priority' =>  2, 'domain' => 'Deduction', 'required' => ['G04'],               'deduced' => ['V02'], 'action' => 'H00'],
-            ['code' => 'RD03', 'name' => 'Detect Crisis State',             'priority' =>  3, 'domain' => 'Deduction', 'required' => ['G28', 'G23'],         'deduced' => ['V03'], 'action' => 'H00'],
-            ['code' => 'RD04', 'name' => 'Detect Style Mismatch Visual',    'priority' =>  4, 'domain' => 'Deduction', 'required' => ['G01', 'G09', 'G13'],  'deduced' => ['V04'], 'action' => 'H00'],
-            ['code' => 'RD05', 'name' => 'Detect Style Mismatch Textual',   'priority' =>  5, 'domain' => 'Deduction', 'required' => ['G01', 'G10', 'G12'],  'deduced' => ['V05'], 'action' => 'H00'],
-            ['code' => 'RD06', 'name' => 'Detect Mastery Ready (Beginner)', 'priority' =>  6, 'domain' => 'Deduction', 'required' => ['G06', 'G02'],          'deduced' => ['V06'], 'action' => 'H00'],
-            ['code' => 'RD07', 'name' => 'Detect Mastery Ready (Medium)',   'priority' =>  7, 'domain' => 'Deduction', 'required' => ['G07', 'G02'],          'deduced' => ['V07'], 'action' => 'H00'],
-            ['code' => 'RD08', 'name' => 'Detect Conceptual Gap',           'priority' =>  8, 'domain' => 'Deduction', 'required' => ['G01', 'G14'],          'deduced' => ['V08'], 'action' => 'H00'],
-            ['code' => 'RD09', 'name' => 'Detect Careless Pattern',         'priority' =>  9, 'domain' => 'Deduction', 'required' => ['G01', 'G17'],          'deduced' => ['V09'], 'action' => 'H00'],
-            ['code' => 'RD10', 'name' => 'Detect Struggle Pattern',         'priority' => 10, 'domain' => 'Deduction', 'required' => ['G01', 'G19'],          'deduced' => ['V10'], 'action' => 'H00'],
+            ['code' => 'RD01', 'name' => 'Detect High Performer',           'priority' =>  1, 'domain' => 'Deduction', 'required' => [AC::FACT_SCORE_PERFECT, AC::FACT_TIME_FAST_SUCCESS, AC::FACT_INDEPENDENT_WORK, AC::FACT_CONSISTENCY_HIGH], 'deduced' => [AC::V01_HIGH_PERFORMER], 'action' => AC::ACTION_DEDUCTION],
+            ['code' => 'RD02', 'name' => 'Detect Needs Foundation',         'priority' =>  2, 'domain' => 'Deduction', 'required' => [AC::FACT_SCORE_ZERO],               'deduced' => [AC::V02_NEEDS_FOUNDATION], 'action' => AC::ACTION_DEDUCTION],
+            ['code' => 'RD03', 'name' => 'Detect Crisis State',             'priority' =>  3, 'domain' => 'Deduction', 'required' => [AC::FACT_PERSISTENT_FAIL, AC::FACT_HIGH_STRUGGLE],         'deduced' => [AC::V03_IN_CRISIS], 'action' => AC::ACTION_DEDUCTION],
+            ['code' => 'RD04', 'name' => 'Detect Style Mismatch Visual',    'priority' =>  4, 'domain' => 'Deduction', 'required' => [AC::FACT_SCORE_FAILURE, AC::FACT_STYLE_VISUAL, AC::FACT_ERROR_LOGIC],  'deduced' => [AC::V04_STYLE_MISMATCH_VISUAL], 'action' => AC::ACTION_DEDUCTION],
+            ['code' => 'RD05', 'name' => 'Detect Style Mismatch Textual',   'priority' =>  5, 'domain' => 'Deduction', 'required' => [AC::FACT_SCORE_FAILURE, AC::FACT_STYLE_TEXTUAL, AC::FACT_ERROR_SYNTAX],  'deduced' => [AC::V05_STYLE_MISMATCH_TEXTUAL], 'action' => AC::ACTION_DEDUCTION],
+            ['code' => 'RD06', 'name' => 'Detect Mastery Ready (Beginner)', 'priority' =>  6, 'domain' => 'Deduction', 'required' => [AC::FACT_MASTERY_BEGINNER, AC::FACT_SCORE_PASS],          'deduced' => [AC::V06_MASTERY_READY_BEGINNER], 'action' => AC::ACTION_DEDUCTION],
+            ['code' => 'RD07', 'name' => 'Detect Mastery Ready (Medium)',   'priority' =>  7, 'domain' => 'Deduction', 'required' => [AC::FACT_MASTERY_MEDIUM, AC::FACT_SCORE_PASS],          'deduced' => [AC::V07_MASTERY_READY_MEDIUM], 'action' => AC::ACTION_DEDUCTION],
+            ['code' => 'RD08', 'name' => 'Detect Conceptual Gap',           'priority' =>  8, 'domain' => 'Deduction', 'required' => [AC::FACT_SCORE_FAILURE, AC::FACT_ERROR_CONCEPT],          'deduced' => [AC::V08_CONCEPTUAL_GAP], 'action' => AC::ACTION_DEDUCTION],
+            ['code' => 'RD09', 'name' => 'Detect Careless Pattern',         'priority' =>  9, 'domain' => 'Deduction', 'required' => [AC::FACT_SCORE_FAILURE, AC::FACT_TIME_FAST_FAIL],          'deduced' => [AC::V09_CARELESS_PATTERN], 'action' => AC::ACTION_DEDUCTION],
+            ['code' => 'RD10', 'name' => 'Detect Struggle Pattern',         'priority' => 10, 'domain' => 'Deduction', 'required' => [AC::FACT_SCORE_FAILURE, AC::FACT_TIME_SLOW_FAIL],          'deduced' => [AC::V10_STRUGGLE_PATTERN], 'action' => AC::ACTION_DEDUCTION],
+            ['code' => 'RD11', 'name' => 'Detect Speed Demon',              'priority' => 11, 'domain' => 'Deduction', 'required' => [AC::FACT_TIME_FAST_SUCCESS, AC::FACT_CONSISTENCY_HIGH], 'deduced' => [AC::V11_SPEED_DEMON], 'action' => AC::ACTION_DEDUCTION],
+            ['code' => 'RD12', 'name' => 'Detect Meticulous Solver',        'priority' => 12, 'domain' => 'Deduction', 'required' => [AC::FACT_TIME_SLOW_SUCCESS, AC::FACT_NO_ERROR],         'deduced' => [AC::V12_METICULOUS_SOLVER], 'action' => AC::ACTION_DEDUCTION],
+            ['code' => 'RD13', 'name' => 'Detect Unstoppable Force',        'priority' => 13, 'domain' => 'Deduction', 'required' => [AC::FACT_MASTERY_HARD, AC::FACT_SCORE_PERFECT],          'deduced' => [AC::V13_UNSTOPPABLE_FORCE], 'action' => AC::ACTION_DEDUCTION],
 
             // ──────────────────────────────────────────────────────────────────
-            // TIER 2: AKSI DARI VIRTUAL FACTS (R11 - R21)
-            // Fokus: Menanggapi hasil deduksi Tier 1.
+            // TIER 2: AKSI PERSONA & PERCEPATAN (R11 - R12, R44 - R47)
             // ──────────────────────────────────────────────────────────────────
-            ['code' => 'R11', 'name' => 'Boredom Challenge',       'priority' => 11, 'domain' => 'Progression', 'required' => ['V01', 'G21'],   'deduced' => null, 'action' => 'H18'],
-            ['code' => 'R12', 'name' => 'Elite Jump',              'priority' => 12, 'domain' => 'Progression', 'required' => ['V01'],          'deduced' => null, 'action' => 'H03'],
-            ['code' => 'R13', 'name' => 'Anxiety Safety Net',      'priority' => 13, 'domain' => 'Safety',      'required' => ['V03', 'G22'],   'deduced' => null, 'action' => 'H17'],
-            ['code' => 'R14', 'name' => 'Promote to Medium',       'priority' => 14, 'domain' => 'Progression', 'required' => ['V06', 'G26'],    'deduced' => null, 'action' => 'H03'],
-            ['code' => 'R15', 'name' => 'Promote to Hard',         'priority' => 15, 'domain' => 'Progression', 'required' => ['V07', 'G31'],    'deduced' => null, 'action' => 'H03'],
-            ['code' => 'R16', 'name' => 'Foundation Recovery',     'priority' => 16, 'domain' => 'Safety',      'required' => ['V02'],           'deduced' => null, 'action' => 'H22'],
-            ['code' => 'R17', 'name' => 'Concept Theory Guide',    'priority' => 17, 'domain' => 'Recovery',    'required' => ['V08'],           'deduced' => null, 'action' => 'H10'],
-            ['code' => 'R18', 'name' => 'Careless Behavior Alert', 'priority' => 18, 'domain' => 'Recovery',    'required' => ['V09'],           'deduced' => null, 'action' => 'H20'],
-            ['code' => 'R19', 'name' => 'Struggle Motivation',     'priority' => 19, 'domain' => 'Recovery',    'required' => ['V10'],           'deduced' => null, 'action' => 'H19'],
-            ['code' => 'R20', 'name' => 'Direct to Visual (V)',    'priority' => 20, 'domain' => 'Style',       'required' => ['V04'],           'deduced' => null, 'action' => 'H06'],
-            ['code' => 'R21', 'name' => 'Direct to Textual (V)',   'priority' => 21, 'domain' => 'Style',       'required' => ['V05'],           'deduced' => null, 'action' => 'H07'],
+            ['code' => 'R11', 'name' => 'Boredom Challenge',       'priority' => 11, 'domain' => 'Progression', 'required' => [AC::V01_HIGH_PERFORMER, AC::FACT_BOREDOM_SIGNS],   'deduced' => null, 'action' => AC::ACTION_CHALLENGE_MODE],
+            ['code' => 'R12', 'name' => 'Elite Jump to Medium',    'priority' => 12, 'domain' => 'Progression', 'required' => [AC::V01_HIGH_PERFORMER, AC::FACT_DIFF_BEGINNER], 'deduced' => null, 'action' => AC::ACTION_BOOST_TO_MEDIUM],
+            ['code' => 'R44', 'name' => 'Speed Praise',            'priority' =>  5, 'domain' => 'Progression', 'required' => [AC::V11_SPEED_DEMON],           'deduced' => null, 'action' => AC::ACTION_PREMIUM_PRAISE],
+            ['code' => 'R45', 'name' => 'Diligence Praise',        'priority' =>  6, 'domain' => 'Progression', 'required' => [AC::V12_METICULOUS_SOLVER],     'deduced' => null, 'action' => AC::ACTION_PREMIUM_PRAISE],
+            ['code' => 'R46', 'name' => 'Elite Mastery Praise',    'priority' =>  1, 'domain' => 'Progression', 'required' => [AC::V13_UNSTOPPABLE_FORCE],     'deduced' => null, 'action' => AC::ACTION_PREMIUM_PRAISE],
+            ['code' => 'R47', 'name' => 'Elite Jump to Hard',      'priority' => 12, 'domain' => 'Progression', 'required' => [AC::V01_HIGH_PERFORMER, AC::FACT_DIFF_MEDIUM],   'deduced' => null, 'action' => AC::ACTION_BOOST_TO_HARD],
 
             // ──────────────────────────────────────────────────────────────────
-            // TIER 3: INTERVENSI LANGSUNG (R22 - R26)
-            // Fokus: Recovery dan Style berdasarkan observasi G-facts.
+            // TIER 3: INTERVENSI & GAYA BELAJAR (R13 - R26)
             // ──────────────────────────────────────────────────────────────────
-            ['code' => 'R22', 'name' => 'Syntax Error Help',       'priority' => 22, 'domain' => 'Recovery',   'required' => ['G12', 'G01'],   'deduced' => null, 'action' => 'H11'],
-            ['code' => 'R23', 'name' => 'Logic Error Help',        'priority' => 23, 'domain' => 'Recovery',   'required' => ['G13', 'G01'],   'deduced' => null, 'action' => 'H10'],
-            ['code' => 'R24', 'name' => 'Visual Preference',       'priority' => 24, 'domain' => 'Style',      'required' => ['G01', 'G09'],   'deduced' => null, 'action' => 'H06'],
-            ['code' => 'R25', 'name' => 'Textual Preference',      'priority' => 25, 'domain' => 'Style',      'required' => ['G01', 'G10'],   'deduced' => null, 'action' => 'H07'],
-            ['code' => 'R26', 'name' => 'Mixed Preference',        'priority' => 26, 'domain' => 'Style',      'required' => ['G01', 'G11'],   'deduced' => null, 'action' => 'H21'],
+            ['code' => 'R13', 'name' => 'Anxiety Safety Net',      'priority' => 13, 'domain' => 'Safety',      'required' => [AC::V03_IN_CRISIS, AC::FACT_ANXIETY_SIGNS],   'deduced' => null, 'action' => AC::ACTION_ANXIETY_RELIEF],
+            ['code' => 'R16', 'name' => 'Foundation Recovery',     'priority' => 16, 'domain' => 'Safety',      'required' => [AC::V02_NEEDS_FOUNDATION],           'deduced' => null, 'action' => AC::ACTION_CRISIS_INTERVENTION],
+            ['code' => 'R17', 'name' => 'Concept Theory Guide',    'priority' => 17, 'domain' => 'Recovery',    'required' => [AC::V08_CONCEPTUAL_GAP],           'deduced' => null, 'action' => AC::ACTION_LOGIC_GUIDE],
+            ['code' => 'R18', 'name' => 'Careless Behavior Alert', 'priority' => 18, 'domain' => 'Recovery',    'required' => [AC::V09_CARELESS_PATTERN],           'deduced' => null, 'action' => AC::ACTION_CAREFUL_ALERT],
+            ['code' => 'R19', 'name' => 'Struggle Motivation',     'priority' => 19, 'domain' => 'Recovery',    'required' => [AC::V10_STRUGGLE_PATTERN],           'deduced' => null, 'action' => AC::ACTION_MOTIVATIONAL_MSG],
+            ['code' => 'R20', 'name' => 'Direct to Visual (V)',    'priority' => 20, 'domain' => 'Style',       'required' => [AC::V04_STYLE_MISMATCH_VISUAL],           'deduced' => null, 'action' => AC::ACTION_STUDY_VISUAL_MAT],
+            ['code' => 'R21', 'name' => 'Direct to Textual (V)',   'priority' => 21, 'domain' => 'Style',       'required' => [AC::V05_STYLE_MISMATCH_TEXTUAL],          'deduced' => null, 'action' => AC::ACTION_STUDY_TEXTUAL_MAT],
+            ['code' => 'R22', 'name' => 'Syntax Error Help',       'priority' => 22, 'domain' => 'Recovery',   'required' => [AC::FACT_ERROR_SYNTAX, AC::FACT_SCORE_FAILURE],   'deduced' => null, 'action' => AC::ACTION_SYNTAX_GUIDE],
+            ['code' => 'R23', 'name' => 'Logic Error Help',        'priority' => 23, 'domain' => 'Recovery',   'required' => [AC::FACT_ERROR_LOGIC, AC::FACT_SCORE_FAILURE],   'deduced' => null, 'action' => AC::ACTION_LOGIC_GUIDE],
+            ['code' => 'R24', 'name' => 'Visual Preference',       'priority' => 24, 'domain' => 'Style',      'required' => [AC::FACT_SCORE_FAILURE, AC::FACT_STYLE_VISUAL],   'deduced' => null, 'action' => AC::ACTION_STUDY_VISUAL_MAT],
+            ['code' => 'R25', 'name' => 'Textual Preference',      'priority' => 25, 'domain' => 'Style',      'required' => [AC::FACT_SCORE_FAILURE, AC::FACT_STYLE_TEXTUAL],   'deduced' => null, 'action' => AC::ACTION_STUDY_TEXTUAL_MAT],
+            ['code' => 'R26', 'name' => 'Mixed Preference',        'priority' => 26, 'domain' => 'Style',      'required' => [AC::FACT_SCORE_FAILURE, AC::FACT_STYLE_MIXED],   'deduced' => null, 'action' => AC::ACTION_STUDY_MIXED_MAT],
 
             // ──────────────────────────────────────────────────────────────────
-            // TIER 4: KELULUSAN & FALLBACK (R31 - R39)
-            // Fokus: Alur standar dan penyelesaian.
+            // TIER 4: PROGRESI & PEMULIHAN (R14 - R43)
             // ──────────────────────────────────────────────────────────────────
-            ['code' => 'R36', 'name' => 'Streak Reward Promotion', 'priority' => 36, 'domain' => 'Progression', 'required' => ['G05', 'G02'],  'deduced' => null, 'action' => 'H03'],
-            ['code' => 'R37', 'name' => 'Hint Dependent Guide',    'priority' => 37, 'domain' => 'Recovery',    'required' => ['G20', 'G02'],  'deduced' => null, 'action' => 'H10'],
-            ['code' => 'R38', 'name' => 'Hard Mastery Graduation', 'priority' => 38, 'domain' => 'Progression', 'required' => ['G08', 'G15', 'G05', 'G33'],  'deduced' => null, 'action' => 'H05'],
-            ['code' => 'R39', 'name' => 'Struggle Near End',       'priority' => 39, 'domain' => 'Recovery',    'required' => ['G29', 'G01'],  'deduced' => null, 'action' => 'H19'],
-            ['code' => 'R40', 'name' => 'Hard Struggle Backtrack', 'priority' => 40, 'domain' => 'Recovery',    'required' => ['G32', 'G28'],  'deduced' => null, 'action' => 'H04'],
-            ['code' => 'R41', 'name' => 'Fast Track Next Module',  'priority' => 30, 'domain' => 'Progression', 'required' => ['G38', 'G21', 'G05', 'G33'],  'deduced' => null, 'action' => 'H05'],
-            ['code' => 'R42', 'name' => 'Review Previous Module',  'priority' => 25, 'domain' => 'Recovery',    'required' => ['G36', 'G23'],  'deduced' => null, 'action' => 'H22'],
-            ['code' => 'R43', 'name' => 'In-Module Theory Review', 'priority' => 26, 'domain' => 'Recovery',    'required' => ['G33', 'G04'],  'deduced' => null, 'action' => 'H10'],
-            ['code' => 'R31', 'name' => 'Graduation Check',        'priority' => 41, 'domain' => 'Progression', 'required' => ['G30', 'G34'],  'deduced' => null, 'action' => 'H05'],
-            ['code' => 'R32', 'name' => 'Careless Failure',        'priority' => 42, 'domain' => 'Recovery',    'required' => ['G01', 'G17'],  'deduced' => null, 'action' => 'H20'],
-            ['code' => 'R33', 'name' => 'Slow But Steady',         'priority' => 43, 'domain' => 'Progression', 'required' => ['G02', 'G18'],  'deduced' => null, 'action' => 'H19'],
-            ['code' => 'R34', 'name' => 'Default Pass',            'priority' => 44, 'domain' => 'Progression', 'required' => ['G02'],         'deduced' => null, 'action' => 'H01'],
-            ['code' => 'R35', 'name' => 'Default Remedial',        'priority' => 45, 'domain' => 'Progression', 'required' => ['G01'],         'deduced' => null, 'action' => 'H02'],
+            ['code' => 'R14', 'name' => 'Promote to Medium',       'priority' => 14, 'domain' => 'Progression', 'required' => [AC::V06_MASTERY_READY_BEGINNER, AC::FACT_DIFF_BEGINNER],    'deduced' => null, 'action' => AC::ACTION_BOOST_TO_MEDIUM],
+            ['code' => 'R15', 'name' => 'Promote to Hard',         'priority' => 15, 'domain' => 'Progression', 'required' => [AC::V07_MASTERY_READY_MEDIUM, AC::FACT_DIFF_MEDIUM],    'deduced' => null, 'action' => AC::ACTION_BOOST_TO_HARD],
+            ['code' => 'R32', 'name' => 'Careless Failure',        'priority' => 42, 'domain' => 'Recovery',    'required' => [AC::FACT_SCORE_FAILURE, AC::FACT_TIME_FAST_FAIL],  'deduced' => null, 'action' => AC::ACTION_CAREFUL_ALERT],
+            ['code' => 'R33', 'name' => 'Slow But Steady',         'priority' => 43, 'domain' => 'Progression', 'required' => [AC::FACT_SCORE_PASS, AC::FACT_TIME_SLOW_SUCCESS],  'deduced' => null, 'action' => AC::ACTION_MOTIVATIONAL_MSG],
+            ['code' => 'R36', 'name' => 'Streak Reward Promotion', 'priority' => 36, 'domain' => 'Progression', 'required' => [AC::FACT_CONSISTENCY_HIGH, AC::FACT_SCORE_PASS],  'deduced' => null, 'action' => AC::ACTION_BOOST_TO_MEDIUM],
+            ['code' => 'R37', 'name' => 'Hint Dependent Guide',    'priority' => 37, 'domain' => 'Recovery',    'required' => [AC::FACT_HINT_USED, AC::FACT_SCORE_PASS],  'deduced' => null, 'action' => AC::ACTION_LOGIC_GUIDE],
+            ['code' => 'R39', 'name' => 'Struggle Near End',       'priority' => 39, 'domain' => 'Recovery',    'required' => [AC::FACT_MODULE_NEARLY_DONE, AC::FACT_SCORE_FAILURE],  'deduced' => null, 'action' => AC::ACTION_MOTIVATIONAL_MSG],
+            ['code' => 'R40', 'name' => 'Hard Struggle Backtrack', 'priority' => 40, 'domain' => 'Recovery',    'required' => [AC::FACT_DIFF_HARD, AC::FACT_PERSISTENT_FAIL],  'deduced' => null, 'action' => AC::ACTION_CRITICAL_BACKTRACK],
+            ['code' => 'R42', 'name' => 'Review Previous Module',  'priority' => 25, 'domain' => 'Recovery',    'required' => [AC::FACT_PREV_UNLOCKED, AC::FACT_HIGH_STRUGGLE],  'deduced' => null, 'action' => AC::ACTION_CRISIS_INTERVENTION],
+            ['code' => 'R43', 'name' => 'In-Module Theory Review', 'priority' => 26, 'domain' => 'Recovery',    'required' => [AC::FACT_IN_MODULE, AC::FACT_SCORE_ZERO],  'deduced' => null, 'action' => AC::ACTION_LOGIC_GUIDE],
+
+            // ──────────────────────────────────────────────────────────────────
+            // TIER 5: KELULUSAN (GRADUATION) (R31, R38, R41)
+            // ──────────────────────────────────────────────────────────────────
+            ['code' => 'R31', 'name' => 'Graduation Check',        'priority' => 41, 'domain' => 'Progression', 'required' => [AC::FACT_MODULE_GRADUATION, AC::FACT_SATISFACTORY_PROGRESS],  'deduced' => null, 'action' => AC::ACTION_MODULE_GRADUATION],
+            ['code' => 'R38', 'name' => 'Hard Mastery Graduation', 'priority' => 38, 'domain' => 'Progression', 'required' => [AC::FACT_MASTERY_HARD, AC::FACT_NO_ERROR, AC::FACT_MODULE_GRADUATION, AC::FACT_IN_MODULE, AC::FACT_SATISFACTORY_PROGRESS],  'deduced' => null, 'action' => AC::ACTION_MODULE_GRADUATION],
+            ['code' => 'R41', 'name' => 'Fast Track Next Module',  'priority' => 30, 'domain' => 'Progression', 'required' => [AC::FACT_NEXT_LOCKED, AC::FACT_BOREDOM_SIGNS, AC::FACT_MODULE_GRADUATION, AC::FACT_IN_MODULE, AC::FACT_SATISFACTORY_PROGRESS],  'deduced' => null, 'action' => AC::ACTION_MODULE_GRADUATION],
+
+            // ──────────────────────────────────────────────────────────────────
+            // TIER 6: FALLBACK (R34, R35)
+            // ──────────────────────────────────────────────────────────────────
+            ['code' => 'R34', 'name' => 'Default Pass',            'priority' => 44, 'domain' => 'Progression', 'required' => [AC::FACT_SCORE_PASS],         'deduced' => null, 'action' => AC::ACTION_STANDARD_PROMOTION],
+            ['code' => 'R35', 'name' => 'Default Remedial',        'priority' => 45, 'domain' => 'Progression', 'required' => [AC::FACT_SCORE_FAILURE],         'deduced' => null, 'action' => AC::ACTION_STANDARD_REMEDIAL],
         ];
 
         foreach ($rules as $rule) {
-            AdaptiveRule::create([
-                'rule_code'      => $rule['code'],
-                'name'           => $rule['name'],
-                'domain'         => $rule['domain'],
-                'priority'       => $rule['priority'],
-                'required_facts' => $this->resolveFactCodes($rule['required']),
-                'deduced_facts'  => $rule['deduced'] ? $this->resolveFactCodes($rule['deduced']) : null,
-                'action_id'      => $this->actionIds[$rule['action']],
-                'is_active'      => true,
-            ]);
+            AdaptiveRule::updateOrCreate(
+                ['rule_code' => $rule['code']],
+                [
+                    'name'           => $rule['name'],
+                    'domain'         => $rule['domain'],
+                    'priority'       => $rule['priority'],
+                    'required_facts' => $this->resolveFactCodes($rule['required']),
+                    'deduced_facts'  => $rule['deduced'] ? $this->resolveFactCodes($rule['deduced']) : null,
+                    'action_id'      => $this->actionIds[$rule['action']],
+                    'is_active'      => true,
+                ]
+            );
         }
+
+        // Clear adaptive rules cache
+        \Illuminate\Support\Facades\Cache::forget('adaptive_rules_all');
+        \Illuminate\Support\Facades\Cache::forget('adaptive_rules_count');
     }
 
     /**

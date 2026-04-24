@@ -19,7 +19,6 @@ use App\Helpers\ProgressHelper;
 use App\Models\Material;
 use App\Models\Question;
 use App\Models\StudentState;
-use App\Rules\Adaptive\Constants\AdaptiveConstants as AC;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as SupportCollection;
@@ -57,6 +56,7 @@ final class QuizService implements QuizServiceInterface
                 QuestionType::DRAG_AND_DROP     => 'Drag and Drop',
                 default                         => $question->question_type,
             };
+
             return $question;
         });
     }
@@ -84,6 +84,7 @@ final class QuizService implements QuizServiceInterface
             ]);
 
             $this->createAnswers($question->id, $data['answers']);
+
             return $question;
         });
     }
@@ -91,7 +92,9 @@ final class QuizService implements QuizServiceInterface
     public function updateQuestion(string $questionId, array $data): Question
     {
         $question = $this->questionRepo->find($questionId);
-        if (!$question) throw new QuestionNotFoundException($questionId);
+        if (! $question) {
+            throw new QuestionNotFoundException($questionId);
+        }
 
         return DB::transaction(function () use ($question, $data) {
             $this->questionRepo->update($question->id, [
@@ -113,7 +116,9 @@ final class QuizService implements QuizServiceInterface
     public function deleteQuestion(string $questionId): void
     {
         $question = $this->questionRepo->find($questionId);
-        if (!$question) throw new QuestionNotFoundException($questionId);
+        if (! $question) {
+            throw new QuestionNotFoundException($questionId);
+        }
 
         DB::transaction(function () use ($question) {
             $this->answerRepo->deleteByQuestionId($question->id);
@@ -153,12 +158,12 @@ final class QuizService implements QuizServiceInterface
             ? $this->getGuestAnsweredQuestionIds($material->id, $guestProgress)
             : $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
 
-        $filteredData = $this->getFilteredQuestionsForQuiz($material, $difficulty, $isGuest, $subMaterialId);
-        $questions = $filteredData['questions'];
-        $allQuestions = $questions;
+        $filteredData           = $this->getFilteredQuestionsForQuiz($material, $difficulty, $isGuest, $subMaterialId);
+        $questions              = $filteredData['questions'];
+        $allQuestions           = $questions;
         $totalFilteredQuestions = $filteredData['totalFilteredQuestions'];
 
-        $appliedTargetFilter = false;
+        $appliedTargetFilter         = false;
         $shouldApplyTargetDifficulty = $difficulty === null && $targetDifficulty && ! $isGuest;
 
         if ($shouldApplyTargetDifficulty) {
@@ -168,6 +173,7 @@ final class QuizService implements QuizServiceInterface
             $answeredArray = $answeredQuestionIds->toArray();
             $questions     = $questions->reject(function ($q) use ($answeredArray, $difficultyOrder, $targetLevel) {
                 $qLevel = $difficultyOrder[$q->difficulty->value] ?? 1;
+
                 return ! in_array($q->id, $answeredArray) && $qLevel < $targetLevel;
             });
             $appliedTargetFilter = true;
@@ -183,15 +189,15 @@ final class QuizService implements QuizServiceInterface
             }
         }
 
-        $levelProgress = $this->getLevelProgress($material, $difficulty, $answeredQuestionIds, $isGuest, $questions);
-        $shuffledQuestions = $questions->groupBy('difficulty')->map(fn($g) => $g->shuffle())->flatten(1);
-        $questions = new Collection($shuffledQuestions->all());
+        $levelProgress     = $this->getLevelProgress($material, $difficulty, $answeredQuestionIds, $isGuest, $questions);
+        $shuffledQuestions = $questions->groupBy('difficulty')->map(fn ($g) => $g->shuffle())->flatten(1);
+        $questions         = new Collection($shuffledQuestions->all());
 
         if ($currentQuestion === null) {
             $currentQuestion = $this->getCurrentQuestion($questions, $answeredQuestionIds);
         }
 
-        $answeredArray = $answeredQuestionIds->toArray();
+        $answeredArray       = $answeredQuestionIds->toArray();
         $actualAnsweredCount = $allQuestions->filter(fn ($q) => in_array($q->id, $answeredArray))->count();
 
         return [
@@ -245,9 +251,9 @@ final class QuizService implements QuizServiceInterface
             $material->completed_questions = $answeredCount;
             $material->student_count       = $studentCounts->firstWhere('material_id', $material->id)?->student_count ?? 0;
 
-            $moduleId      = $material->module_id;
-            $isFirstModule = $moduleId !== null && (string) $moduleId === (string) $firstModuleId;
-            $isUnlocked    = $isGuest || $isFirstModule || empty($moduleId) || in_array((string) $moduleId, array_map('strval', $unlockedModules));
+            $moduleId            = $material->module_id;
+            $isFirstModule       = $moduleId !== null && (string) $moduleId === (string) $firstModuleId;
+            $isUnlocked          = $isGuest || $isFirstModule || empty($moduleId) || in_array((string) $moduleId, array_map('strval', $unlockedModules));
             $material->is_locked = ! $isUnlocked;
 
             return $material;
@@ -268,29 +274,32 @@ final class QuizService implements QuizServiceInterface
 
         if ($isGuest) {
             $answeredQuestionIds = $this->getGuestAnsweredQuestionIds($material->id, $guestProgress);
-            $questions = $questions->whereIn('id', $answeredQuestionIds->toArray());
+            $questions           = $questions->whereIn('id', $answeredQuestionIds->toArray());
             foreach ($questions as $q) {
                 $key = $material->id . '_' . $q->id;
-                if (isset($guestProgress[$key])) $q->user_attempt = $guestProgress[$key];
+                if (isset($guestProgress[$key])) {
+                    $q->user_attempt = $guestProgress[$key];
+                }
             }
         } else {
             $answeredQuestionIds = $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
-            $questions = $questions->whereIn('id', $answeredQuestionIds->toArray());
-            $latestAttempts = $this->progressRepo->getLatestAttemptsForQuestions($userId, $answeredQuestionIds->toArray());
+            $questions           = $questions->whereIn('id', $answeredQuestionIds->toArray());
+            $latestAttempts      = $this->progressRepo->getLatestAttemptsForQuestions($userId, $answeredQuestionIds->toArray());
             foreach ($questions as $q) {
                 $attempt = $latestAttempts->get($q->id);
                 if ($attempt) {
                     $q->user_attempt = [
-                        'score' => $attempt->score,
-                        'is_correct' => $attempt->is_correct,
-                        'answer_id' => $attempt->answer_id,
-                        'user_response' => $attempt->user_response,
+                        'score'          => $attempt->score,
+                        'is_correct'     => $attempt->is_correct,
+                        'answer_id'      => $attempt->answer_id,
+                        'user_response'  => $attempt->user_response,
                         'attempt_number' => $attempt->attempt_number,
-                        'time_spent' => $attempt->time_spent,
+                        'time_spent'     => $attempt->time_spent,
                     ];
                 }
             }
         }
+
         return $questions->values();
     }
 
@@ -298,11 +307,18 @@ final class QuizService implements QuizServiceInterface
     {
         $answeredQuestionIds = collect([]);
         foreach ($guestProgress as $key => $progress) {
-            if (! is_array($progress) || (! isset($progress['is_correct']) && ! isset($progress['attempt_number']))) continue;
+            if (! is_array($progress) || (! isset($progress['is_correct']) && ! isset($progress['attempt_number']))) {
+                continue;
+            }
             $parts = explode('_', $key);
-            if (count($parts) < 2 || $parts[0] != $materialId) continue;
-            if (! $answeredQuestionIds->contains($parts[1])) $answeredQuestionIds->push($parts[1]);
+            if (count($parts) < 2 || $parts[0] != $materialId) {
+                continue;
+            }
+            if (! $answeredQuestionIds->contains($parts[1])) {
+                $answeredQuestionIds->push($parts[1]);
+            }
         }
+
         return $answeredQuestionIds;
     }
 
@@ -314,7 +330,9 @@ final class QuizService implements QuizServiceInterface
         ?Collection $preloadedQuestions = null,
     ): array {
         $questions = $preloadedQuestions !== null ? $preloadedQuestions : $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty ? $difficulty->value : 'all');
-        if ($preloadedQuestions === null && $isGuest) $questions = $questions->take($difficulty === null ? 9 : 3);
+        if ($preloadedQuestions === null && $isGuest) {
+            $questions = $questions->take($difficulty === null ? 9 : 3);
+        }
 
         $answeredArray = $answeredQuestionIds->toArray();
         $completed     = $questions->filter(function ($q) use ($answeredArray) {
@@ -344,6 +362,7 @@ final class QuizService implements QuizServiceInterface
             ];
             $isFirst = false;
         }
+
         return $levels;
     }
 
@@ -354,26 +373,39 @@ final class QuizService implements QuizServiceInterface
     public function determineCorrectness(Question $question, array $data): bool
     {
         if ($question->question_type === QuestionType::RADIO_BUTTON) {
-            if (! isset($data['answer'])) return false;
+            if (! isset($data['answer'])) {
+                return false;
+            }
             $selected = $question->answers()->where('id', $data['answer'])->first();
+
             return $selected && $selected->is_correct;
         }
 
         if ($question->question_type === QuestionType::FILL_IN_THE_BLANK) {
             $answer = trim(strtolower($data['fill_in_the_blank_answer'] ?? ''));
-            if (empty($answer)) return false;
-            return $question->answers()->where('is_correct', true)->get()->contains(fn($ans) => trim(strtolower($ans->answer_text)) === $answer);
+            if (empty($answer)) {
+                return false;
+            }
+
+            return $question->answers()->where('is_correct', true)->get()->contains(fn ($ans) => trim(strtolower($ans->answer_text)) === $answer);
         }
 
         if ($question->question_type === QuestionType::DRAG_AND_DROP) {
             $userAnswersStr = $data['drag_and_drop_answers'] ?? '[]';
-            $userAnswers = is_array($userAnswersStr) ? $userAnswersStr : json_decode($userAnswersStr, true);
-            if (empty($userAnswers)) return false;
-            $correctAnswers = $question->answers()->whereNotNull('drag_target')->get();
-            if ($correctAnswers->isEmpty()) return false;
-            foreach ($correctAnswers as $correctAns) {
-                if (trim($userAnswers[$correctAns->drag_target] ?? '') !== trim($correctAns->answer_text)) return false;
+            $userAnswers    = is_array($userAnswersStr) ? $userAnswersStr : json_decode($userAnswersStr, true);
+            if (empty($userAnswers)) {
+                return false;
             }
+            $correctAnswers = $question->answers()->whereNotNull('drag_target')->get();
+            if ($correctAnswers->isEmpty()) {
+                return false;
+            }
+            foreach ($correctAnswers as $correctAns) {
+                if (trim($userAnswers[$correctAns->drag_target] ?? '') !== trim($correctAns->answer_text)) {
+                    return false;
+                }
+            }
+
             return true;
         }
 
@@ -383,7 +415,7 @@ final class QuizService implements QuizServiceInterface
     public function handleSubmission(string $userId, string $materialId, string $questionId, array $validatedData): array
     {
         return DB::transaction(function () use ($userId, $materialId, $questionId, $validatedData) {
-            $question = Question::with('material')->findOrFail($questionId);
+            $question  = Question::with('material')->findOrFail($questionId);
             $isCorrect = $this->determineCorrectness($question, $validatedData);
 
             $score = $this->performanceService->calculateScore(
@@ -394,29 +426,35 @@ final class QuizService implements QuizServiceInterface
             );
 
             $userResponse = null;
-            $answerId = null;
-            if ($question->question_type === QuestionType::RADIO_BUTTON) $answerId = $validatedData['answer'] ?? null;
-            elseif ($question->question_type === QuestionType::FILL_IN_THE_BLANK) $userResponse = $validatedData['fill_in_the_blank_answer'] ?? null;
-            elseif ($question->question_type === QuestionType::DRAG_AND_DROP) $userResponse = $validatedData['drag_and_drop_answers'] ?? null;
+            $answerId     = null;
+            if ($question->question_type === QuestionType::RADIO_BUTTON) {
+                $answerId = $validatedData['answer'] ?? null;
+            } elseif ($question->question_type === QuestionType::FILL_IN_THE_BLANK) {
+                $userResponse = $validatedData['fill_in_the_blank_answer'] ?? null;
+            } elseif ($question->question_type === QuestionType::DRAG_AND_DROP) {
+                $userResponse = $validatedData['drag_and_drop_answers'] ?? null;
+            }
 
             $this->progressRepo->saveProgress([
-                'user_id' => $userId,
-                'material_id' => (string) $materialId,
-                'question_id' => (string) $questionId,
-                'answer_id' => $answerId,
+                'user_id'       => $userId,
+                'material_id'   => (string) $materialId,
+                'question_id'   => (string) $questionId,
+                'answer_id'     => $answerId,
                 'user_response' => $userResponse,
-                'score' => $score,
-                'time_spent' => (int) ($validatedData['time_spent'] ?? 0),
-                'is_correct' => $isCorrect,
-                'difficulty' => (string) ($validatedData['difficulty'] ?? 'beginner'),
-                'used_hint' => (bool) ($validatedData['used_hint'] ?? false),
+                'score'         => $score,
+                'time_spent'    => (int) ($validatedData['time_spent'] ?? 0),
+                'is_correct'    => $isCorrect,
+                'difficulty'    => (string) ($validatedData['difficulty'] ?? 'beginner'),
+                'used_hint'     => (bool) ($validatedData['used_hint'] ?? false),
             ]);
 
             $this->performanceService->updateStudentPerformance($userId, $isCorrect, (int) ($validatedData['time_spent'] ?? 0), (bool) ($validatedData['used_hint'] ?? false));
             $this->performanceService->updateLearningStyleFromInteraction($userId, $question->type, (int) ($validatedData['time_spent'] ?? 0));
 
             $studentState = StudentState::where('user_id', $userId)->first() ?? new StudentState(['user_id' => $userId]);
-            if ($isCorrect) $studentState->xp += $score;
+            if ($isCorrect) {
+                $studentState->xp += $score;
+            }
 
             $facts = $this->factGatheringService->gatherFacts(
                 studentState: $studentState,
@@ -431,7 +469,7 @@ final class QuizService implements QuizServiceInterface
             );
 
             $engineResult = $this->adaptiveEngineService->evaluate($facts, $studentState->toArray(), ['material_id' => (string) $materialId, 'is_correct' => $isCorrect]);
-            if (!empty($engineResult['new_state'])) {
+            if (! empty($engineResult['new_state'])) {
                 $studentState->fill($engineResult['new_state']);
                 $studentState->save();
             }
@@ -455,22 +493,26 @@ final class QuizService implements QuizServiceInterface
                 $total = 9;
             } else {
                 $questions = $questions->take(3);
-                $total = 3;
+                $total     = 3;
             }
         } else {
             $total = $questions->count();
         }
+
         return ['questions' => $questions, 'totalFilteredQuestions' => $total];
     }
 
     private function getCurrentQuestion(Collection $questions, SupportCollection $answeredQuestionIds): ?Question
     {
         $answeredArray = $answeredQuestionIds->toArray();
-        $current = $questions->reject(fn($q) => in_array($q->id, $answeredArray))->first();
+        $current       = $questions->reject(fn ($q) => in_array($q->id, $answeredArray))->first();
         if ($current instanceof Question && $current->question_type !== QuestionType::FILL_IN_THE_BLANK) {
-            if (!$current->relationLoaded('answers')) $current->load('answers');
+            if (! $current->relationLoaded('answers')) {
+                $current->load('answers');
+            }
             $current->setRelation('answers', $current->answers->shuffle());
         }
+
         return $current;
     }
 }
