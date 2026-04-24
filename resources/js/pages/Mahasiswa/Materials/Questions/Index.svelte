@@ -51,7 +51,7 @@
                     {#snippet cardInner()}
                         <!-- Graphic Section -->
                         <div class="relative shrink-0 md:w-72 lg:w-96">
-                            {#if material.media && material.media.length > 0}
+                            {#if material.media && Array.isArray(material.media) && material.media.length > 0}
                                 <div class="h-60 md:h-full">
                                     <img
                                         src={material.media[0]?.full_url}

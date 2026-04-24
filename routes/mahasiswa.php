@@ -58,13 +58,6 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     // --- Shared/Guest Routes (Role 3 & 4) ---
     Route::middleware(['access:guest'])->group(function () {
 
-        // Materials & Progress
-        Route::controller(MahasiswaMaterialController::class)->group(function () {
-            Route::resource('materials', MahasiswaMaterialController::class)->only(['index', 'show']);
-            Route::get('materials/{material}/submaterials/{submaterial}', 'subMaterial')->name('submaterials.show');
-            Route::post('materials/{material}/reset', 'reset')->name('materials.reset');
-        });
-
         // Questions & Adaptive System
         Route::controller(MaterialQuestionController::class)->prefix('materials')->group(function () {
             Route::get('questions', 'index')->name('materials.questions.index');
@@ -76,6 +69,13 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
             Route::get('{material}/questions/{sub_material?}', 'show')
                 ->middleware(BlockQuestionParameter::class)
                 ->name('materials.questions.show');
+        });
+
+        // Materials & Progress
+        Route::controller(MahasiswaMaterialController::class)->group(function () {
+            Route::resource('materials', MahasiswaMaterialController::class)->only(['index', 'show']);
+            Route::get('materials/{material}/submaterials/{submaterial}', 'subMaterial')->name('submaterials.show');
+            Route::post('materials/{material}/reset', 'reset')->name('materials.reset');
         });
     });
 });

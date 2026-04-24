@@ -47,14 +47,20 @@ final class MaterialQuestionController extends Controller
 
     public function index(): Response
     {
-        $isGuest = $this->isGuest();
         $userId = $this->getUserId();
-        $guestProgress = $this->getGuestProgress();
+        $isGuest = $this->isGuest();
+
+        $unlockedModules = [];
+        if (!$isGuest) {
+            $studentState = $this->performanceService->getStudentState((string)$userId);
+            $unlockedModules = $studentState->unlocked_modules ?? [];
+        }
 
         $data = $this->quizService->getMaterialsListWithStudentCount(
             userId: (string) $userId,
             isGuest: $isGuest,
-            guestProgress: $guestProgress
+            guestProgress: $this->getGuestProgress(),
+            unlockedModules: $unlockedModules
         );
 
         return $this->render('Mahasiswa/Materials/Questions/Index', [
@@ -74,7 +80,18 @@ final class MaterialQuestionController extends Controller
             $unlockedModules = $studentState->unlocked_modules ?? [];
         }
 
-        $data = $this->quizService->getMaterialsListWithStudentCount(
+        $answeredQuestionIds = $isGuest
+            ? $this->quizService->getGuestAnsweredQuestionIds($material->id, $this->getGuestProgress())
+            : $this->progressRepo->getAnsweredQuestionIds((string)$userId, $material->id);
+
+        $levels = $this->quizService->getLevelProgress(
+            material: $material,
+            difficulty: null,
+            answeredQuestionIds: $answeredQuestionIds,
+            isGuest: $isGuest
+        );
+
+        $materials = $this->quizService->getMaterialsListWithStudentCount(
             userId: (string) $userId,
             isGuest: $isGuest,
             guestProgress: $this->getGuestProgress(),
@@ -83,7 +100,8 @@ final class MaterialQuestionController extends Controller
 
         return $this->render('Mahasiswa/Materials/Questions/Levels/Index', [
             'material' => $material,
-            'materials' => $data,
+            'levels' => $levels,
+            'materials' => $materials,
         ]);
     }
 

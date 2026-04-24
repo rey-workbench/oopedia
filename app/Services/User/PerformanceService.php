@@ -176,4 +176,28 @@ final class PerformanceService implements PerformanceServiceInterface
             'current_material_id' => null,
         ]);
     }
+
+    public function getStudentSessionState(string $userId): array
+    {
+        $state = $this->getStudentState($userId);
+
+        return [
+            'gamification' => [
+                'global_xp'      => $state->xp,
+                'current_level'  => $state->learning_style ?? 'Pemula',
+                'current_streak' => $state->streak,
+                'max_streak'     => $state->max_streak,
+            ],
+            'performance' => [
+                'total_questions_answered' => $state->total_answered,
+                'correct_count'            => $state->correct_count,
+                'wrong_count'              => $state->wrong_count,
+                'hints_available'          => $state->hints_available,
+            ],
+            'adaptive' => [
+                'fast_track_active' => $state->fast_track_active ?? false,
+                'learning_style'    => $state->learning_style ?? AC::STYLE_MIXED,
+            ],
+        ];
+    }
 }

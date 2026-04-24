@@ -56,12 +56,12 @@ final class MaterialRepository implements MaterialRepositoryInterface
 
     public function getAllWithQuestions(): Collection
     {
-        return Material::with(['questions'])->get();
+        return Material::with(['questions', 'media'])->get();
     }
 
     public function getAllWithQuestionsAndConfigs(): Collection
     {
-        return Material::with(['questions'])->get();
+        return Material::with(['questions', 'media'])->get();
     }
 
     public function getAllOrdered(): Collection

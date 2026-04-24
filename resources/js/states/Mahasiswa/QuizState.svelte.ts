@@ -43,7 +43,7 @@ export class LevelMapState extends BaseState {
     constructor(material: Material, levels: LevelItem[]) {
         super();
         this.material = material;
-        this.levels = levels;
+        this.levels = levels ?? [];
     }
 }
 

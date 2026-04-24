@@ -204,6 +204,8 @@ final class QuizService implements QuizServiceInterface
             'materialAnsweredCount' => $answeredQuestionIds->count(),
             'levelProgress'         => $levelProgress,
             'difficulty'            => $difficulty ? $difficulty->value : 'all',
+            'isGuest'               => $isGuest,
+            'studentState'          => $isGuest ? null : $this->performanceService->getStudentSessionState($userId),
         ];
     }
 
