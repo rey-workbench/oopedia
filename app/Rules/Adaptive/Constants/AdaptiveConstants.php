@@ -188,7 +188,7 @@ final class AdaptiveConstants
     // ─── Pedagogical Thresholds (Operational Defaults) ───────────────────────
     public const int THRESHOLD_MASTERY_ACCURACY      = 70;
 
-    public const int THRESHOLD_MASTERY_MIN_ATTEMPTS  = 3;
+    public const int THRESHOLD_MASTERY_MIN_ATTEMPTS  = 5;
 
     public const int THRESHOLD_CONSISTENCY_STREAK    = 3;
 

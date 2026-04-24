@@ -162,11 +162,18 @@ final class FactGatheringService implements FactGatheringServiceInterface
         $grouped = $attempts->groupBy(fn ($a) => $a->question->difficulty->value ?? 'beginner');
 
         foreach ($grouped as $diffKey => $diffAttempts) {
-            if ($diffAttempts->count() < AC::THRESHOLD_MASTERY_MIN_ATTEMPTS) {
+            // Hitung unique questions yang telah dijawab, bukan total attempts
+            $uniqueQuestions = $diffAttempts->unique('question_id');
+            if ($uniqueQuestions->count() < AC::THRESHOLD_MASTERY_MIN_ATTEMPTS) {
                 continue;
             }
 
-            $accuracy = ($diffAttempts->where('is_correct', true)->count() / $diffAttempts->count()) * 100;
+            // Hanya ambil attempt TERAKHIR per soal untuk kalkulasi akurasi
+            $latestPerQuestion = $diffAttempts
+                ->sortByDesc('created_at')
+                ->unique('question_id');
+
+            $accuracy = ($latestPerQuestion->where('is_correct', true)->count() / $latestPerQuestion->count()) * 100;
             if ($accuracy < AC::THRESHOLD_MASTERY_ACCURACY) {
                 continue;
             }
@@ -233,7 +240,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
         $next = $material->getNextMaterial();
         if ($next && in_array((string) $next->module_id, $unlockedSet, true)) {
             $facts[] = FactRegistry::getCode(AC::FACT_NEXT_UNLOCKED);
-        } else if ($next) {
+        } elseif ($next) {
             $facts[] = FactRegistry::getCode(AC::FACT_NEXT_LOCKED);
         }
 

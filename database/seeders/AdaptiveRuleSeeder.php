@@ -218,10 +218,10 @@ class AdaptiveRuleSeeder extends Seeder
             // ──────────────────────────────────────────────────────────────────
             ['code' => 'R36', 'name' => 'Streak Reward Promotion', 'priority' => 36, 'domain' => 'Progression', 'required' => ['G05', 'G02'],  'deduced' => null, 'action' => 'H03'],
             ['code' => 'R37', 'name' => 'Hint Dependent Guide',    'priority' => 37, 'domain' => 'Recovery',    'required' => ['G20', 'G02'],  'deduced' => null, 'action' => 'H10'],
-            ['code' => 'R38', 'name' => 'Hard Mastery Graduation', 'priority' => 38, 'domain' => 'Progression', 'required' => ['G08', 'G15'],  'deduced' => null, 'action' => 'H05'],
+            ['code' => 'R38', 'name' => 'Hard Mastery Graduation', 'priority' => 38, 'domain' => 'Progression', 'required' => ['G08', 'G15', 'G05', 'G33'],  'deduced' => null, 'action' => 'H05'],
             ['code' => 'R39', 'name' => 'Struggle Near End',       'priority' => 39, 'domain' => 'Recovery',    'required' => ['G29', 'G01'],  'deduced' => null, 'action' => 'H19'],
             ['code' => 'R40', 'name' => 'Hard Struggle Backtrack', 'priority' => 40, 'domain' => 'Recovery',    'required' => ['G32', 'G28'],  'deduced' => null, 'action' => 'H04'],
-            ['code' => 'R41', 'name' => 'Fast Track Next Module',  'priority' => 30, 'domain' => 'Progression', 'required' => ['G38', 'G21'],  'deduced' => null, 'action' => 'H05'],
+            ['code' => 'R41', 'name' => 'Fast Track Next Module',  'priority' => 30, 'domain' => 'Progression', 'required' => ['G38', 'G21', 'G05', 'G33'],  'deduced' => null, 'action' => 'H05'],
             ['code' => 'R42', 'name' => 'Review Previous Module',  'priority' => 25, 'domain' => 'Recovery',    'required' => ['G36', 'G23'],  'deduced' => null, 'action' => 'H22'],
             ['code' => 'R43', 'name' => 'In-Module Theory Review', 'priority' => 26, 'domain' => 'Recovery',    'required' => ['G33', 'G04'],  'deduced' => null, 'action' => 'H10'],
             ['code' => 'R31', 'name' => 'Graduation Check',        'priority' => 41, 'domain' => 'Progression', 'required' => ['G30', 'G34'],  'deduced' => null, 'action' => 'H05'],
