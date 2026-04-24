@@ -159,7 +159,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
             return [];
         }
 
-        $grouped = $attempts->groupBy(fn ($a) => $a->attributes['difficulty'] ?? 'beginner');
+        $grouped = $attempts->groupBy(fn ($a) => $a->question->difficulty->value ?? 'beginner');
 
         foreach ($grouped as $diffKey => $diffAttempts) {
             if ($diffAttempts->count() < AC::THRESHOLD_MASTERY_MIN_ATTEMPTS) {

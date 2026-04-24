@@ -14,8 +14,8 @@
 
     let nextAction = $derived(
         quizState.feedbackData?.ui?.label ||
-            quizState.feedbackData?.adaptiveResult?.new_state?.next_action_data?.label ||
-            (quizState.feedbackData?.status === 'success' ? 'Soal Berikutnya' : 'Lihat Materi')
+            quizState.feedbackData?.adaptiveResult?.triggered_rule?.variant ||
+            'Lanjut'
     );
     let recommendation = $derived(
         quizState.feedbackData?.adaptiveResult?.new_state?.recommendation || null
@@ -179,7 +179,6 @@
 
     let variant = $derived(getFeedbackVariant());
     let feedbackStatus = $derived(getFeedbackStatus());
-    let isSuccess = $derived(feedbackStatus === 'success');
     let feedbackTone = $derived(getFeedbackTone(variant, feedbackStatus));
     let feedbackTitle = $derived(getFeedbackTitle(feedbackStatus));
 </script>
@@ -255,25 +254,13 @@
                     {/if}
                 </div>
 
-                <div class="flex w-full items-center gap-3 md:w-auto">
-                    {#if !isSuccess}
-                        <Button
-                            variant="secondary"
-                            onclick={() => quizState.handleTryAgain()}
-                            class="flex-1 px-8 md:flex-none"
-                        >
-                            <span class="text-xs font-black tracking-widest uppercase">
-                                COBA LAGI
-                            </span>
-                        </Button>
-                    {/if}
-
+                <div class="flex w-full items-center justify-center md:w-auto">
                     <Button
                         id="feedback-continue-btn"
                         variant="primary"
                         onclick={() => quizState.handleNext()}
                         disabled={quizState.isNavigating}
-                        class="flex-1 md:w-56"
+                        class="w-full md:w-64"
                     >
                         {#if quizState.isNavigating}
                             <div

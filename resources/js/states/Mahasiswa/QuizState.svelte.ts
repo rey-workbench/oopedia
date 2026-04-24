@@ -14,6 +14,7 @@ import type {
     LevelItem,
     AnswerPayload,
 } from '@/types';
+import { playSound } from '@/utils';
 
 /**
  * Question List State (Selection/Catalog)
@@ -225,6 +226,18 @@ export class QuestionShowState extends BaseState {
 
             this.showHint = false;
             this.showFeedback = true;
+
+            // --- Play Sound Effects ---
+            if (data.status === 'success') {
+                const action = adaptiveResult?.triggered_rule?.action;
+                if (action === 'FINISH_MATERIAL' || action === 'NEXT_MATERIAL') {
+                    playSound('completed');
+                } else {
+                    playSound('correct');
+                }
+            } else {
+                playSound('wrong');
+            }
         } catch (err: unknown) {
             const message = isAxiosError(err)
                 ? ((err.response?.data as { message?: string })?.message ??

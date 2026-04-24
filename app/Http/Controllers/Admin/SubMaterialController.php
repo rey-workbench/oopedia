@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Repositories\MaterialRepositoryInterface;
-use App\Contracts\Services\SubMaterialServiceInterface;
+use App\Contracts\Services\MaterialServiceInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubMaterial\StoreSubMaterialRequest;
 use App\Http\Requests\SubMaterial\UpdateSubMaterialRequest;
@@ -16,7 +16,7 @@ use Inertia\Response;
 final class SubMaterialController extends Controller
 {
     public function __construct(
-        protected SubMaterialServiceInterface $subMaterialService,
+        protected MaterialServiceInterface $materialService,
         protected MaterialRepositoryInterface $materialRepo,
     ) {}
 
@@ -28,7 +28,7 @@ final class SubMaterialController extends Controller
                 ->with('error', 'Material tidak ditemukan');
         }
 
-        $subMaterials = $this->subMaterialService->getSubMaterialsByMaterial($materialId);
+        $subMaterials = $this->materialService->getSubMaterialsByMaterial($materialId);
 
         return $this->render(
             'Admin/Materials/Submaterials/Index',
@@ -49,7 +49,7 @@ final class SubMaterialController extends Controller
 
     public function store(StoreSubMaterialRequest $request, string $materialId): RedirectResponse
     {
-        $this->subMaterialService->createSubMaterial($materialId, $request->validated());
+        $this->materialService->createSubMaterial($materialId, $request->validated());
 
         return redirect()->route('admin.materials.submaterials.index', $materialId)
             ->with('success', 'Sub-materi berhasil ditambahkan.');
@@ -58,7 +58,7 @@ final class SubMaterialController extends Controller
     public function edit(string $materialId, string $submaterialId): Response|RedirectResponse
     {
         $material    = $this->materialRepo->find($materialId);
-        $submaterial = $this->subMaterialService->getSubMaterialById($submaterialId);
+        $submaterial = $this->materialService->getSubMaterialById($submaterialId);
 
         if (! $material || ! $submaterial) {
             return redirect()->route('admin.materials.index')
@@ -76,7 +76,7 @@ final class SubMaterialController extends Controller
         string $materialId,
         string $submaterialId,
     ): RedirectResponse {
-        $this->subMaterialService->updateSubMaterial($submaterialId, $request->validated());
+        $this->materialService->updateSubMaterial($submaterialId, $request->validated());
 
         return redirect()->route('admin.materials.submaterials.index', $materialId)
             ->with('success', 'Sub-materi berhasil diperbarui.');
@@ -84,7 +84,7 @@ final class SubMaterialController extends Controller
 
     public function destroy(string $materialId, string $submaterialId): RedirectResponse
     {
-        $this->subMaterialService->deleteSubMaterial($submaterialId);
+        $this->materialService->deleteSubMaterial($submaterialId);
 
         return redirect()->route('admin.materials.submaterials.index', $materialId)
             ->with('success', 'Sub-materi berhasil dihapus.');
@@ -92,7 +92,7 @@ final class SubMaterialController extends Controller
 
     public function getJson(string $materialId): JsonResponse
     {
-        $data = $this->subMaterialService->getSubMaterialsSimple($materialId);
+        $data = $this->materialService->getSubMaterialsSimple($materialId);
 
         return response()->json($data);
     }

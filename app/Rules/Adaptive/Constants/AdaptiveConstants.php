@@ -149,6 +149,7 @@ final class AdaptiveConstants
 
     // ─── Operational Action Labels ───────────────────────────────────────────
     public const ACTION_SILENT             = 'NO_ACTION'; // Deduksi saja, tanpa output UI
+    public const ACTION_DEDUCTION          = 'H00';       // Silent deduction code in DB
 
     public const ACTION_NEXT_QUESTION      = 'NEXT_QUESTION';
 

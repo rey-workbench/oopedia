@@ -18,7 +18,7 @@ final class AdaptiveAnalyticsController extends Controller
 {
     public function create(): Response
     {
-        return $this->render('Admin/AdaptiveAnalytics/Create/Index', [
+        return $this->render('Admin/AdaptiveAnalytics/Create/', [
             'allFacts' => AdaptiveFact::all(),
             'allActions' => AdaptiveAction::all(),
         ]);

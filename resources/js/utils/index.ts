@@ -29,3 +29,4 @@ export {
     isDebugMode,
 } from './examProtection';
 export type { ViolationType } from './examProtection';
+export { playSound } from './audio';

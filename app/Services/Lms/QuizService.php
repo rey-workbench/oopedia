@@ -1,0 +1,474 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Services\Lms;
+
+use App\Contracts\Repositories\AnswerRepositoryInterface;
+use App\Contracts\Repositories\MaterialRepositoryInterface;
+use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Contracts\Repositories\QuestionRepositoryInterface;
+use App\Contracts\Services\AdaptiveEngineServiceInterface;
+use App\Contracts\Services\FactGatheringServiceInterface;
+use App\Contracts\Services\PerformanceServiceInterface;
+use App\Contracts\Services\QuizServiceInterface;
+use App\Enums\Lms\QuestionDifficulty;
+use App\Enums\Lms\QuestionType;
+use App\Exceptions\Domain\QuestionNotFoundException;
+use App\Helpers\ProgressHelper;
+use App\Models\Material;
+use App\Models\Question;
+use App\Models\StudentState;
+use App\Rules\Adaptive\Constants\AdaptiveConstants as AC;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
+final class QuizService implements QuizServiceInterface
+{
+    public function __construct(
+        private readonly QuestionRepositoryInterface $questionRepo,
+        private readonly AnswerRepositoryInterface $answerRepo,
+        private readonly MaterialRepositoryInterface $materialRepo,
+        private readonly ProgressRepositoryInterface $progressRepo,
+        private readonly PerformanceServiceInterface $performanceService,
+        private readonly FactGatheringServiceInterface $factGatheringService,
+        private readonly AdaptiveEngineServiceInterface $adaptiveEngineService,
+    ) {}
+
+    // =========================================================================
+    // QUESTION MANAGEMENT (CRUD)
+    // =========================================================================
+
+    public function getFilteredQuestions(
+        ?string $search = null,
+        ?QuestionDifficulty $difficulty = null,
+        ?string $materialId = null,
+    ): LengthAwarePaginator {
+        $difficultyString = $difficulty ? $difficulty->value : null;
+        $questions        = $this->questionRepo->getFilteredQuestions($search, $difficultyString, $materialId);
+
+        return $questions->through(function ($question) {
+            $question->formatted_type = match ($question->question_type) {
+                QuestionType::FILL_IN_THE_BLANK => 'Fill in the Blank',
+                QuestionType::RADIO_BUTTON      => 'Radio Button',
+                QuestionType::DRAG_AND_DROP     => 'Drag and Drop',
+                default                         => $question->question_type,
+            };
+            return $question;
+        });
+    }
+
+    public function getQuestionById(string $id): ?Question
+    {
+        return $this->questionRepo->find($id);
+    }
+
+    public function getQuestionWithAnswers(string $id): ?Question
+    {
+        return $this->questionRepo->findWithAnswers($id);
+    }
+
+    public function createQuestion(array $data): Question
+    {
+        return DB::transaction(function () use ($data) {
+            $question = $this->questionRepo->create([
+                'question_text'   => $data['question_text'],
+                'question_type'   => $data['question_type'],
+                'difficulty'      => $data['difficulty'],
+                'material_id'     => $data['material_id'],
+                'sub_material_id' => $data['sub_material_id'] ?? null,
+                'created_by'      => Auth::id(),
+            ]);
+
+            $this->createAnswers($question->id, $data['answers']);
+            return $question;
+        });
+    }
+
+    public function updateQuestion(string $questionId, array $data): Question
+    {
+        $question = $this->questionRepo->find($questionId);
+        if (!$question) throw new QuestionNotFoundException($questionId);
+
+        return DB::transaction(function () use ($question, $data) {
+            $this->questionRepo->update($question->id, [
+                'question_text'   => $data['question_text'],
+                'question_type'   => $data['question_type'],
+                'difficulty'      => $data['difficulty'],
+                'material_id'     => $data['material_id'],
+                'sub_material_id' => $data['sub_material_id'] ?? null,
+                'updated_by'      => Auth::id(),
+            ]);
+
+            $this->answerRepo->deleteByQuestionId($question->id);
+            $this->createAnswers($question->id, $data['answers']);
+
+            return $question->fresh();
+        });
+    }
+
+    public function deleteQuestion(string $questionId): void
+    {
+        $question = $this->questionRepo->find($questionId);
+        if (!$question) throw new QuestionNotFoundException($questionId);
+
+        DB::transaction(function () use ($question) {
+            $this->answerRepo->deleteByQuestionId($question->id);
+            $this->questionRepo->delete($question->id);
+        });
+    }
+
+    protected function createAnswers(string $questionId, array $answersData): void
+    {
+        foreach ($answersData as $answer) {
+            $this->answerRepo->create([
+                'question_id'    => $questionId,
+                'answer_text'    => $answer['answer_text']        ?? null,
+                'is_correct'     => $answer['is_correct']         ?? 0,
+                'explanation'    => $answer['explanation']        ?? null,
+                'drag_source'    => $answer['drag_source']        ?? null,
+                'drag_target'    => $answer['drag_target']        ?? null,
+                'blank_position' => $answer['blank_position']     ?? null,
+            ]);
+        }
+    }
+
+    // =========================================================================
+    // QUIZ LISTING & DATA
+    // =========================================================================
+
+    public function getQuizData(
+        Material $material,
+        ?QuestionDifficulty $difficulty,
+        string $userId,
+        bool $isGuest,
+        array $guestProgress = [],
+        ?string $subMaterialId = null,
+        ?QuestionDifficulty $targetDifficulty = null,
+    ): array {
+        $answeredQuestionIds = $isGuest
+            ? $this->getGuestAnsweredQuestionIds($material->id, $guestProgress)
+            : $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
+
+        $filteredData = $this->getFilteredQuestionsForQuiz($material, $difficulty, $isGuest, $subMaterialId);
+        $questions = $filteredData['questions'];
+        $allQuestions = $questions;
+        $totalFilteredQuestions = $filteredData['totalFilteredQuestions'];
+
+        $appliedTargetFilter = false;
+        $shouldApplyTargetDifficulty = $difficulty === null && $targetDifficulty && ! $isGuest;
+
+        if ($shouldApplyTargetDifficulty) {
+            $difficultyOrder = Question::DIFFICULTY_ORDER;
+            $targetLevel     = $difficultyOrder[$targetDifficulty->value] ?? 1;
+
+            $answeredArray = $answeredQuestionIds->toArray();
+            $questions     = $questions->reject(function ($q) use ($answeredArray, $difficultyOrder, $targetLevel) {
+                $qLevel = $difficultyOrder[$q->difficulty->value] ?? 1;
+                return ! in_array($q->id, $answeredArray) && $qLevel < $targetLevel;
+            });
+            $appliedTargetFilter = true;
+        }
+
+        $currentQuestion = $this->getCurrentQuestion($questions, $answeredQuestionIds);
+
+        if ($appliedTargetFilter && $currentQuestion === null) {
+            $fallbackQuestion = $this->getCurrentQuestion($allQuestions, $answeredQuestionIds);
+            if ($fallbackQuestion !== null) {
+                $questions       = $allQuestions;
+                $currentQuestion = $fallbackQuestion;
+            }
+        }
+
+        $levelProgress = $this->getLevelProgress($material, $difficulty, $answeredQuestionIds, $isGuest, $questions);
+        $shuffledQuestions = $questions->groupBy('difficulty')->map(fn($g) => $g->shuffle())->flatten(1);
+        $questions = new Collection($shuffledQuestions->all());
+
+        if ($currentQuestion === null) {
+            $currentQuestion = $this->getCurrentQuestion($questions, $answeredQuestionIds);
+        }
+
+        $answeredArray = $answeredQuestionIds->toArray();
+        $actualAnsweredCount = $allQuestions->filter(fn ($q) => in_array($q->id, $answeredArray))->count();
+
+        return [
+            'material'              => $material,
+            'questions'             => $questions,
+            'currentQuestion'       => $currentQuestion,
+            'currentQuestionNumber' => $actualAnsweredCount + 1,
+            'totalQuestions'        => $totalFilteredQuestions,
+            'answeredCount'         => $actualAnsweredCount,
+            'materialAnsweredCount' => $answeredQuestionIds->count(),
+            'levelProgress'         => $levelProgress,
+            'difficulty'            => $difficulty ? $difficulty->value : 'all',
+        ];
+    }
+
+    public function getMaterialsListWithStudentCount(
+        string $userId,
+        bool $isGuest,
+        array $guestProgress = [],
+        array $unlockedModules = [],
+    ): Collection {
+        $progressStats = $isGuest ? collect([]) : $this->progressRepo->getUserProgressStats($userId);
+        $allMaterials  = $this->materialRepo->getAllWithQuestions();
+
+        if ($isGuest) {
+            $allMaterials = $allMaterials->take((int) ceil($allMaterials->count() / 2));
+        }
+
+        $studentCounts = $this->progressRepo->getStudentCountByMaterial();
+        $firstModuleId = $allMaterials->whereNotNull('module_id')->min('module_id');
+
+        return $allMaterials->map(function ($material) use ($progressStats, $isGuest, $studentCounts, $guestProgress, $unlockedModules, $firstModuleId) {
+            $configuredTotalQuestions = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest)['total'];
+
+            if ($isGuest) {
+                $answeredCount = 0;
+                foreach ($guestProgress as $key => $progress) {
+                    if (strpos($key, $material->id . '_') === 0 && (isset($progress['is_correct']) || isset($progress['attempt_number']))) {
+                        $answeredCount++;
+                    }
+                }
+            } else {
+                $materialProgress = $progressStats->firstWhere('material_id', $material->id);
+                $answeredCount    = $materialProgress ? $materialProgress->answered_questions : 0;
+            }
+
+            $material->progress_percentage = ProgressHelper::calculateProgressPercentage($answeredCount, $configuredTotalQuestions);
+            $material->total_questions     = $configuredTotalQuestions;
+            $material->completed_questions = $answeredCount;
+            $material->student_count       = $studentCounts->firstWhere('material_id', $material->id)?->student_count ?? 0;
+
+            $moduleId      = $material->module_id;
+            $isFirstModule = $moduleId !== null && (string) $moduleId === (string) $firstModuleId;
+            $isUnlocked    = $isGuest || $isFirstModule || empty($moduleId) || in_array((string) $moduleId, array_map('strval', $unlockedModules));
+            $material->is_locked = ! $isUnlocked;
+
+            return $material;
+        });
+    }
+
+    public function getReviewQuestions(
+        Material $material,
+        ?QuestionDifficulty $difficulty,
+        string $userId,
+        bool $isGuest,
+        array $guestProgress = [],
+    ): Collection {
+        $questions = $material->questions;
+        if ($difficulty !== null) {
+            $questions = $questions->where('difficulty', $difficulty->value);
+        }
+
+        if ($isGuest) {
+            $answeredQuestionIds = $this->getGuestAnsweredQuestionIds($material->id, $guestProgress);
+            $questions = $questions->whereIn('id', $answeredQuestionIds->toArray());
+            foreach ($questions as $q) {
+                $key = $material->id . '_' . $q->id;
+                if (isset($guestProgress[$key])) $q->user_attempt = $guestProgress[$key];
+            }
+        } else {
+            $answeredQuestionIds = $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
+            $questions = $questions->whereIn('id', $answeredQuestionIds->toArray());
+            $latestAttempts = $this->progressRepo->getLatestAttemptsForQuestions($userId, $answeredQuestionIds->toArray());
+            foreach ($questions as $q) {
+                $attempt = $latestAttempts->get($q->id);
+                if ($attempt) {
+                    $q->user_attempt = [
+                        'score' => $attempt->score,
+                        'is_correct' => $attempt->is_correct,
+                        'answer_id' => $attempt->answer_id,
+                        'user_response' => $attempt->user_response,
+                        'attempt_number' => $attempt->attempt_number,
+                        'time_spent' => $attempt->time_spent,
+                    ];
+                }
+            }
+        }
+        return $questions->values();
+    }
+
+    public function getGuestAnsweredQuestionIds(string $materialId, array $guestProgress = []): SupportCollection
+    {
+        $answeredQuestionIds = collect([]);
+        foreach ($guestProgress as $key => $progress) {
+            if (! is_array($progress) || (! isset($progress['is_correct']) && ! isset($progress['attempt_number']))) continue;
+            $parts = explode('_', $key);
+            if (count($parts) < 2 || $parts[0] != $materialId) continue;
+            if (! $answeredQuestionIds->contains($parts[1])) $answeredQuestionIds->push($parts[1]);
+        }
+        return $answeredQuestionIds;
+    }
+
+    public function getLevelProgress(
+        Material $material,
+        ?QuestionDifficulty $difficulty,
+        SupportCollection|Collection $answeredQuestionIds,
+        bool $isGuest = false,
+        ?Collection $preloadedQuestions = null,
+    ): array {
+        $questions = $preloadedQuestions !== null ? $preloadedQuestions : $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty ? $difficulty->value : 'all');
+        if ($preloadedQuestions === null && $isGuest) $questions = $questions->take($difficulty === null ? 9 : 3);
+
+        $answeredArray = $answeredQuestionIds->toArray();
+        $completed     = $questions->filter(function ($q) use ($answeredArray) {
+            return in_array($q->id, $answeredArray);
+        });
+        $remaining = $questions->reject(function ($q) use ($answeredArray) {
+            return in_array($q->id, $answeredArray);
+        });
+
+        $levels = [];
+        $index  = 1;
+
+        foreach ($completed as $question) {
+            $levels[] = [
+                'level'       => $index++,
+                'question_id' => $question->id,
+                'status'      => 'completed',
+            ];
+        }
+
+        $isFirst = true;
+        foreach ($remaining as $question) {
+            $levels[] = [
+                'level'       => $index++,
+                'question_id' => $question->id,
+                'status'      => $isFirst ? 'unlocked' : 'locked',
+            ];
+            $isFirst = false;
+        }
+        return $levels;
+    }
+
+    // =========================================================================
+    // ANSWER LOGIC & ORCHESTRATION
+    // =========================================================================
+
+    public function determineCorrectness(Question $question, array $data): bool
+    {
+        if ($question->question_type === QuestionType::RADIO_BUTTON) {
+            if (! isset($data['answer'])) return false;
+            $selected = $question->answers()->where('id', $data['answer'])->first();
+            return $selected && $selected->is_correct;
+        }
+
+        if ($question->question_type === QuestionType::FILL_IN_THE_BLANK) {
+            $answer = trim(strtolower($data['fill_in_the_blank_answer'] ?? ''));
+            if (empty($answer)) return false;
+            return $question->answers()->where('is_correct', true)->get()->contains(fn($ans) => trim(strtolower($ans->answer_text)) === $answer);
+        }
+
+        if ($question->question_type === QuestionType::DRAG_AND_DROP) {
+            $userAnswersStr = $data['drag_and_drop_answers'] ?? '[]';
+            $userAnswers = is_array($userAnswersStr) ? $userAnswersStr : json_decode($userAnswersStr, true);
+            if (empty($userAnswers)) return false;
+            $correctAnswers = $question->answers()->whereNotNull('drag_target')->get();
+            if ($correctAnswers->isEmpty()) return false;
+            foreach ($correctAnswers as $correctAns) {
+                if (trim($userAnswers[$correctAns->drag_target] ?? '') !== trim($correctAns->answer_text)) return false;
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    public function handleSubmission(string $userId, string $materialId, string $questionId, array $validatedData): array
+    {
+        return DB::transaction(function () use ($userId, $materialId, $questionId, $validatedData) {
+            $question = Question::with('material')->findOrFail($questionId);
+            $isCorrect = $this->determineCorrectness($question, $validatedData);
+
+            $score = $this->performanceService->calculateScore(
+                isCorrect: $isCorrect,
+                usedHint: (bool) ($validatedData['used_hint'] ?? false),
+                timeSpent: (int) ($validatedData['time_spent'] ?? 0),
+                difficulty: $question->difficulty,
+            );
+
+            $userResponse = null;
+            $answerId = null;
+            if ($question->question_type === QuestionType::RADIO_BUTTON) $answerId = $validatedData['answer'] ?? null;
+            elseif ($question->question_type === QuestionType::FILL_IN_THE_BLANK) $userResponse = $validatedData['fill_in_the_blank_answer'] ?? null;
+            elseif ($question->question_type === QuestionType::DRAG_AND_DROP) $userResponse = $validatedData['drag_and_drop_answers'] ?? null;
+
+            $this->progressRepo->saveProgress([
+                'user_id' => $userId,
+                'material_id' => (string) $materialId,
+                'question_id' => (string) $questionId,
+                'answer_id' => $answerId,
+                'user_response' => $userResponse,
+                'score' => $score,
+                'time_spent' => (int) ($validatedData['time_spent'] ?? 0),
+                'is_correct' => $isCorrect,
+                'difficulty' => (string) ($validatedData['difficulty'] ?? 'beginner'),
+                'used_hint' => (bool) ($validatedData['used_hint'] ?? false),
+            ]);
+
+            $this->performanceService->updateStudentPerformance($userId, $isCorrect, (int) ($validatedData['time_spent'] ?? 0), (bool) ($validatedData['used_hint'] ?? false));
+            $this->performanceService->updateLearningStyleFromInteraction($userId, $question->type, (int) ($validatedData['time_spent'] ?? 0));
+
+            $studentState = StudentState::where('user_id', $userId)->first() ?? new StudentState(['user_id' => $userId]);
+            if ($isCorrect) $studentState->xp += $score;
+
+            $facts = $this->factGatheringService->gatherFacts(
+                studentState: $studentState,
+                isCorrect: $isCorrect,
+                usedHint: (bool) ($validatedData['used_hint'] ?? false),
+                score: $score,
+                timeSpent: (int) ($validatedData['time_spent'] ?? 0),
+                difficulty: $question->difficulty,
+                questionId: (string) $questionId,
+                materialId: (string) $materialId,
+                moduleId: (string) $question->material->module_id,
+            );
+
+            $engineResult = $this->adaptiveEngineService->evaluate($facts, $studentState->toArray(), ['material_id' => (string) $materialId, 'is_correct' => $isCorrect]);
+            if (!empty($engineResult['new_state'])) {
+                $studentState->fill($engineResult['new_state']);
+                $studentState->save();
+            }
+
+            return ['is_correct' => $isCorrect, 'score' => $score, 'engine_result' => $engineResult];
+        });
+    }
+
+    // =========================================================================
+    // PRIVATE HELPERS
+    // =========================================================================
+
+    private function getFilteredQuestionsForQuiz(Material $material, ?QuestionDifficulty $difficulty, bool $isGuest, ?string $subMaterialId = null): array
+    {
+        $questions = $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty ? $difficulty->value : 'all', $subMaterialId);
+        if ($isGuest) {
+            if ($difficulty === null) {
+                $questions = $questions->where('difficulty', QuestionDifficulty::BEGINNER->value)->take(3)
+                    ->concat($questions->where('difficulty', QuestionDifficulty::MEDIUM->value)->take(3))
+                    ->concat($questions->where('difficulty', QuestionDifficulty::HARD->value)->take(3));
+                $total = 9;
+            } else {
+                $questions = $questions->take(3);
+                $total = 3;
+            }
+        } else {
+            $total = $questions->count();
+        }
+        return ['questions' => $questions, 'totalFilteredQuestions' => $total];
+    }
+
+    private function getCurrentQuestion(Collection $questions, SupportCollection $answeredQuestionIds): ?Question
+    {
+        $answeredArray = $answeredQuestionIds->toArray();
+        $current = $questions->reject(fn($q) => in_array($q->id, $answeredArray))->first();
+        if ($current instanceof Question && $current->question_type !== QuestionType::FILL_IN_THE_BLANK) {
+            if (!$current->relationLoaded('answers')) $current->load('answers');
+            $current->setRelation('answers', $current->answers->shuffle());
+        }
+        return $current;
+    }
+}

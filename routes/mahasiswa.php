@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\Mahasiswa\CertificateController as MahasiswaCertificateController;
 use App\Http\Controllers\Mahasiswa\DashboardController as MahasiswaDashboardController;
 use App\Http\Controllers\Mahasiswa\MaterialController as MahasiswaMaterialController;
@@ -59,7 +61,7 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
         // Materials & Progress
         Route::controller(MahasiswaMaterialController::class)->group(function () {
             Route::resource('materials', MahasiswaMaterialController::class)->only(['index', 'show']);
-            Route::get('materials/{material}/submaterials/{submaterial}', 'showSubMaterial')->name('submaterials.show');
+            Route::get('materials/{material}/submaterials/{submaterial}', 'subMaterial')->name('submaterials.show');
             Route::post('materials/{material}/reset', 'reset')->name('materials.reset');
         });
 

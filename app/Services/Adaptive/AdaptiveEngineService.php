@@ -137,7 +137,8 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             }
 
             // 3. Fire: terapkan aksi (kecuali silent – deduksi saja menambah fakta)
-            $isSilent = $bestRule->getActionCode() === AC::ACTION_SILENT;
+            $actionCode = $bestRule->getActionCode();
+            $isSilent = $actionCode === AC::ACTION_SILENT || $actionCode === AC::ACTION_DEDUCTION;
 
             if (! $isSilent) {
                 $proposed       = $bestRule->apply($finalState, $context);
@@ -181,6 +182,9 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             AC::ACTION_NEXT_MATERIAL,
             AC::ACTION_INCREASE_DIFFICULTY,
             AC::ACTION_REDUCE_DIFFICULTY,
+            'H01', // Standard Promotion
+            'H03', // Accelerated Jump
+            'H05', // Module Graduation
         ], true);
     }
 
