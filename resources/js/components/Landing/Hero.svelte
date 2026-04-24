@@ -4,7 +4,6 @@
     import { spring } from 'svelte/motion';
     import { Motion } from 'svelte-motion';
     import FloatingItem from '@/components/ui/FloatingItem.svelte';
-    import BackgroundMesh from '@/components/ui/BackgroundMesh.svelte';
     import { ArrowRight, Sparkles, MousePointer2 } from 'lucide-svelte';
 
     let windowWidth = $state(1920);

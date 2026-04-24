@@ -8,7 +8,7 @@
             title: "Adaptive Engine",
             desc: "Algoritma forward chaining menyesuaikan materi dengan kecepatan belajar Anda.",
             icon: Brain,
-            size: "col-span-2 row-span-2",
+            size: "md:col-span-2 md:row-span-2",
             bg: "bg-[#AEC0AD]",
             img: "/images/landing/abstract1.png",
             delay: 0
@@ -17,7 +17,7 @@
             title: "Real-time Analytics",
             desc: "Pantau progres belajar Anda dengan visualisasi data yang mendalam.",
             icon: Zap,
-            size: "col-span-1 row-span-1",
+            size: "md:col-span-1 md:row-span-1",
             bg: "bg-[#D26D3F]",
             img: "/images/landing/abstract2.png",
             delay: 200
@@ -26,16 +26,16 @@
             title: "Gamification",
             desc: "Dapatkan XP, badge, dan naiki leaderboard sambil belajar.",
             icon: Trophy,
-            size: "col-span-1 row-span-1",
+            size: "md:col-span-1 md:row-span-1",
             bg: "bg-[#EECA9D]",
             img: "/images/landing/abstract3.png",
             delay: 400
         },
         {
             title: "Komunitas",
-            desc: "Belajar bersama ribuan mahasiswa lainnya di semua angkatan.,",
+            desc: "Belajar bersama ribuan mahasiswa lainnya di semua angkatan.",
             icon: Users,
-            size: "col-span-1 row-span-2",
+            size: "md:col-span-1 md:row-span-2",
             bg: "bg-slate-900",
             dark: true,
             img: "/images/landing/abstract4.png",
@@ -45,7 +45,7 @@
             title: "Sertifikasi",
             desc: "Dapatkan sertifikat resmi setelah menyelesaikan modul pembelajaran.",
             icon: ShieldCheck,
-            size: "col-span-2 row-span-1",
+            size: "md:col-span-2 md:row-span-1",
             bg: "bg-[#FDFDFB]",
             img: "/images/landing/abstract2.png",
             delay: 800
