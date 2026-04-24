@@ -9,7 +9,7 @@
         class="group relative aspect-video w-full overflow-hidden rounded-3xl border-2 border-slate-950/5 bg-[#E1E6DC] shadow-2xl md:rounded-[3rem]"
     >
         <video
-            src="/videos/landing.mp4"
+            src="/videos/oopediav2landing.mp4"
             autoplay
             muted
             loop
