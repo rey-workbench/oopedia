@@ -216,11 +216,11 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
         $lastAction = AdaptiveExecutionLog::where('user_id', Auth::id())->latest()->value('action_code');
 
         $nonRepeatableActions = [
-            AC::ACTION_STUDY_SYNTAX,
-            AC::ACTION_STUDY_THEORY,
-            AC::ACTION_STUDY_VISUAL,
-            AC::ACTION_STUDY_TEXTUAL,
-            AC::ACTION_STUDY_MIXED,
+            AC::ACTION_STUDY_VISUAL_MAT,
+            AC::ACTION_STUDY_TEXTUAL_MAT,
+            AC::ACTION_LOGIC_GUIDE,
+            AC::ACTION_SYNTAX_GUIDE,
+            AC::ACTION_STUDY_MIXED_MAT,
             AC::ACTION_REDUCE_DIFFICULTY,
         ];
 

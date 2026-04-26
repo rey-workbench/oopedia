@@ -30,11 +30,14 @@ class AdaptiveRule extends Model
         'is_active',
     ];
 
-    protected $casts = [
-        'required_facts' => 'array',
-        'deduced_facts'  => 'array',
-        'is_active'      => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'required_facts' => 'array',
+            'deduced_facts'  => 'array',
+            'is_active'      => 'boolean',
+        ];
+    }
 
     public function action(): BelongsTo
     {

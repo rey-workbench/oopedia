@@ -34,12 +34,15 @@ final class SubMaterial extends Model
         'order',
     ];
 
-    protected $casts = [
-        'material_id'    => 'string',
-        'order'          => 'integer',
-        'jenis_konten'   => ContentCategory::class,
-        'learning_style' => LearningStyle::class,
-    ];
+    protected function casts(): array
+    {
+        return [
+            'material_id'    => 'string',
+            'order'          => 'integer',
+            'jenis_konten'   => ContentCategory::class,
+            'learning_style' => LearningStyle::class,
+        ];
+    }
 
     public function material(): BelongsTo
     {

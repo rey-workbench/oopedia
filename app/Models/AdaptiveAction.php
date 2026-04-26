@@ -19,9 +19,12 @@ class AdaptiveAction extends Model
 {
     protected $fillable = ['code', 'name', 'description', 'variant', 'instructions'];
 
-    protected $casts = [
-        'instructions' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'instructions' => 'array',
+        ];
+    }
 
     public function rules(): HasMany
     {

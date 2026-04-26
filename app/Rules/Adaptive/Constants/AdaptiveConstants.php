@@ -98,12 +98,12 @@ final class AdaptiveConstants
         self::FACT_MASTERY_BEGINNER   => 'Ahli Dasar',
         self::FACT_MASTERY_MEDIUM     => 'Ahli Madya',
         self::FACT_MASTERY_HARD       => 'Ahli Utama',
-        self::FACT_STYLE_VISUAL       => 'Gaya Visual',
-        self::FACT_STYLE_TEXTUAL      => 'Gaya Tekstual',
-        self::FACT_STYLE_MIXED        => 'Gaya Campuran',
-        self::FACT_ERROR_SYNTAX       => 'Kendala Sintaks',
-        self::FACT_ERROR_LOGIC        => 'Kendala Logika',
-        self::FACT_ERROR_CONCEPT      => 'Kendala Konsep',
+        self::FACT_STYLE_VISUAL       => 'Gaya: Visual',
+        self::FACT_STYLE_TEXTUAL      => 'Gaya: Tekstual',
+        self::FACT_STYLE_MIXED        => 'Gaya: Campuran',
+        self::FACT_ERROR_SYNTAX       => 'Kendala: Sintaks',
+        self::FACT_ERROR_LOGIC        => 'Kendala: Logika',
+        self::FACT_ERROR_CONCEPT      => 'Kendala: Konsep',
         self::FACT_NO_ERROR           => 'Tanpa Cela',
         self::FACT_TIME_FAST_SUCCESS  => 'Kilat & Akurat',
         self::FACT_TIME_FAST_FAIL     => 'Terburu-buru',
@@ -189,7 +189,6 @@ final class AdaptiveConstants
     public const ACTION_DEDUCTION          = 'H00'; // Silent deduction code in DB
     public const ACTION_STANDARD_PROMOTION  = 'H01';
     public const ACTION_STANDARD_REMEDIAL   = 'H02';
-    public const ACTION_ACCELERATED_JUMP    = 'H03';
     public const ACTION_CRITICAL_BACKTRACK  = 'H04';
     public const ACTION_MODULE_GRADUATION   = 'H05';
     public const ACTION_STUDY_VISUAL_MAT    = 'H06';
@@ -212,7 +211,6 @@ final class AdaptiveConstants
         self::ACTION_DEDUCTION          => 'Silent Deduction',
         self::ACTION_STANDARD_PROMOTION  => 'Standard Promotion',
         self::ACTION_STANDARD_REMEDIAL   => 'Standard Remedial',
-        self::ACTION_ACCELERATED_JUMP    => 'Accelerated Jump',
         self::ACTION_CRITICAL_BACKTRACK  => 'Critical Backtrack',
         self::ACTION_MODULE_GRADUATION   => 'Module Graduation',
         self::ACTION_STUDY_VISUAL_MAT    => 'Study Visual',
@@ -238,11 +236,6 @@ final class AdaptiveConstants
     public const ACTION_FINISH_MATERIAL    = 'FINISH_MATERIAL';
     public const ACTION_REDUCE_DIFFICULTY   = 'REDUCE_DIFFICULTY';
     public const ACTION_INCREASE_DIFFICULTY = 'INCREASE_DIFFICULTY';
-    public const ACTION_STUDY_VISUAL       = 'STUDY_VISUAL';
-    public const ACTION_STUDY_TEXTUAL      = 'STUDY_TEXTUAL';
-    public const ACTION_STUDY_SYNTAX       = 'STUDY_SYNTAX';
-    public const ACTION_STUDY_THEORY       = 'STUDY_THEORY';
-    public const ACTION_STUDY_MIXED        = 'STUDY_MIXED';
     public const ACTION_STUDY_MATERIAL     = 'STUDY_MATERIAL';
     public const ACTION_REVISE_PROJECT     = 'REVISE_PROJECT';
 

@@ -130,7 +130,7 @@ class AdaptiveRuleSeeder extends Seeder
             ['code' => AC::ACTION_STANDARD_REMEDIAL,  'variant' => 'result',       'name' => AC::ACTION_NAMES[AC::ACTION_STANDARD_REMEDIAL],   'description' => 'Ulang soal.',            'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_NEXT_QUESTION,      AC::KEY_LABEL => 'Coba Lagi',       AC::KEY_MESSAGE => 'Jawaban kurang tepat. Ayo coba lagi!', AC::KEY_TITLE => 'Jangan Menyerah!']],
 
             // ── Percepatan & Penurunan Difficulty (H03-H04)
-            ['code' => AC::ACTION_ACCELERATED_JUMP,   'variant' => 'acceleration', 'name' => AC::ACTION_NAMES[AC::ACTION_ACCELERATED_JUMP],    'description' => 'Lompat level.',          'instructions' => [AC::KEY_TARGET_DIFFICULTY => AC::DIFFICULTY_HARD, AC::KEY_NEXT_ACTION => AC::ACTION_INCREASE_DIFFICULTY, AC::KEY_LABEL => 'Tantangan Baru', AC::KEY_MESSAGE => 'Luar Biasa! Tantangan level lebih tinggi menantimu!', AC::KEY_TITLE => 'Percepatan Aktif!']],
+
             ['code' => AC::ACTION_CRITICAL_BACKTRACK, 'variant' => 'backtrack',    'name' => AC::ACTION_NAMES[AC::ACTION_CRITICAL_BACKTRACK],  'description' => 'Turun level.',           'instructions' => [AC::KEY_TARGET_DIFFICULTY => AC::DIFFICULTY_BEGINNER, AC::KEY_NEXT_ACTION => AC::ACTION_REDUCE_DIFFICULTY, AC::KEY_LABEL => 'Bimbingan Level', AC::KEY_MESSAGE => 'Kami menyesuaikan tingkat untuk kenyamanan belajarmu.', AC::KEY_TITLE => 'Penyesuaian Alur']],
 
             // ── Kelulusan Modul (H05)
@@ -144,15 +144,15 @@ class AdaptiveRuleSeeder extends Seeder
             ]],
 
             // ── Intervensi Gaya Belajar (H06-H08, H10-H11, H21)
-            ['code' => AC::ACTION_STUDY_VISUAL_MAT,    'variant' => 'intervention', 'name' => AC::ACTION_NAMES[AC::ACTION_STUDY_VISUAL_MAT],    'description' => 'Arahkan ke materi visual.',   'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_STUDY_VISUAL,   AC::KEY_LABEL => 'Materi Visual',        AC::KEY_TITLE => 'Bantuan Adaptif']],
-            ['code' => AC::ACTION_STUDY_TEXTUAL_MAT,   'variant' => 'intervention', 'name' => AC::ACTION_NAMES[AC::ACTION_STUDY_TEXTUAL_MAT],   'description' => 'Arahkan ke materi teks.',     'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_STUDY_TEXTUAL,  AC::KEY_LABEL => 'Materi Tekstual',      AC::KEY_TITLE => 'Bantuan Adaptif']],
-            ['code' => AC::ACTION_LOGIC_GUIDE,         'variant' => 'intervention', 'name' => AC::ACTION_NAMES[AC::ACTION_LOGIC_GUIDE],         'description' => 'Panduan logika/teori.',        'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_STUDY_THEORY,   AC::KEY_LABEL => 'Pahami Konsep',        AC::KEY_TITLE => 'Bantuan Adaptif']],
-            ['code' => AC::ACTION_SYNTAX_GUIDE,        'variant' => 'intervention', 'name' => AC::ACTION_NAMES[AC::ACTION_SYNTAX_GUIDE],        'description' => 'Panduan sintaks.',             'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_STUDY_SYNTAX,   AC::KEY_LABEL => 'Pelajari Sintaks',     AC::KEY_TITLE => 'Bantuan Adaptif']],
-            ['code' => AC::ACTION_STUDY_MIXED_MAT,     'variant' => 'intervention', 'name' => AC::ACTION_NAMES[AC::ACTION_STUDY_MIXED_MAT],     'description' => 'Materi komprehensif.',         'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_STUDY_MIXED,    AC::KEY_LABEL => 'Materi Komprehensif',  AC::KEY_TITLE => 'Bantuan Adaptif']],
+            ['code' => AC::ACTION_STUDY_VISUAL_MAT,    'variant' => 'intervention', 'name' => AC::ACTION_NAMES[AC::ACTION_STUDY_VISUAL_MAT],    'description' => 'Arahkan ke materi visual.',   'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_STUDY_MATERIAL, AC::KEY_LABEL => 'Materi Visual',        AC::KEY_TITLE => 'Bantuan Adaptif']],
+            ['code' => AC::ACTION_STUDY_TEXTUAL_MAT,   'variant' => 'intervention', 'name' => AC::ACTION_NAMES[AC::ACTION_STUDY_TEXTUAL_MAT],   'description' => 'Arahkan ke materi teks.',     'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_STUDY_MATERIAL, AC::KEY_LABEL => 'Materi Tekstual',      AC::KEY_TITLE => 'Bantuan Adaptif']],
+            ['code' => AC::ACTION_LOGIC_GUIDE,         'variant' => 'intervention', 'name' => AC::ACTION_NAMES[AC::ACTION_LOGIC_GUIDE],         'description' => 'Panduan logika/teori.',        'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_STUDY_MATERIAL, AC::KEY_LABEL => 'Pahami Konsep',        AC::KEY_TITLE => 'Bantuan Adaptif']],
+            ['code' => AC::ACTION_SYNTAX_GUIDE,        'variant' => 'intervention', 'name' => AC::ACTION_NAMES[AC::ACTION_SYNTAX_GUIDE],        'description' => 'Panduan sintaks.',             'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_STUDY_MATERIAL, AC::KEY_LABEL => 'Pelajari Sintaks',     AC::KEY_TITLE => 'Bantuan Adaptif']],
+            ['code' => AC::ACTION_STUDY_MIXED_MAT,     'variant' => 'intervention', 'name' => AC::ACTION_NAMES[AC::ACTION_STUDY_MIXED_MAT],     'description' => 'Materi komprehensif.',         'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_STUDY_MATERIAL, AC::KEY_LABEL => 'Materi Komprehensif',  AC::KEY_TITLE => 'Bantuan Adaptif']],
 
             // ── Psikologis & Motivasi (H17-H20)
             ['code' => AC::ACTION_ANXIETY_RELIEF,      'variant' => 'backtrack',    'name' => AC::ACTION_NAMES[AC::ACTION_ANXIETY_RELIEF],      'description' => 'Turunkan beban cemas.',   'instructions' => [AC::KEY_TARGET_DIFFICULTY => AC::DIFFICULTY_BEGINNER, AC::KEY_NEXT_ACTION => AC::ACTION_REDUCE_DIFFICULTY,  AC::KEY_LABEL => 'Mulai Santai',   AC::KEY_MESSAGE => 'Rileks, mari pelan-pelan. Kamu pasti bisa!', AC::KEY_TITLE => 'Penyesuaian Alur']],
-            ['code' => AC::ACTION_CHALLENGE_MODE,      'variant' => 'acceleration', 'name' => AC::ACTION_NAMES[AC::ACTION_CHALLENGE_MODE],      'description' => 'Beri tantangan tinggi.',  'instructions' => [AC::KEY_TARGET_DIFFICULTY => AC::DIFFICULTY_HARD,    AC::KEY_NEXT_ACTION => AC::ACTION_INCREASE_DIFFICULTY, AC::KEY_LABEL => 'Mode Tantangan', AC::KEY_MESSAGE => 'Terlalu mudah? Ayo naik level!', AC::KEY_TITLE => 'Percepatan Aktif!']],
+            ['code' => AC::ACTION_CHALLENGE_MODE,      'variant' => 'acceleration', 'name' => AC::ACTION_NAMES[AC::ACTION_CHALLENGE_MODE],      'description' => 'Beri tantangan tinggi.',  'instructions' => [AC::KEY_TARGET_DIFFICULTY => AC::DIFFICULTY_HARD,    AC::KEY_NEXT_ACTION => AC::ACTION_INCREASE_DIFFICULTY, AC::KEY_LABEL => 'Mode Tantangan', AC::KEY_MESSAGE => 'Luar Biasa! Tantangan level lebih tinggi menantimu!', AC::KEY_TITLE => 'Percepatan Aktif!']],
             ['code' => AC::ACTION_MOTIVATIONAL_MSG,    'variant' => 'result',       'name' => AC::ACTION_NAMES[AC::ACTION_MOTIVATIONAL_MSG],    'description' => 'Pesan semangat.',         'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_NEXT_QUESTION, AC::KEY_LABEL => 'Soal Berikutnya', AC::KEY_MESSAGE => 'Pantang menyerah! Sedikit lagi benar.', AC::KEY_TITLE => 'Tetap Semangat!']],
             ['code' => AC::ACTION_CAREFUL_ALERT,       'variant' => 'result',       'name' => AC::ACTION_NAMES[AC::ACTION_CAREFUL_ALERT],       'description' => 'Peringatan ceroboh.',     'instructions' => [AC::KEY_NEXT_ACTION => AC::ACTION_NEXT_QUESTION, AC::KEY_LABEL => 'Soal Berikutnya', AC::KEY_MESSAGE => 'Jangan terburu-buru, baca lagi dengan teliti.', AC::KEY_TITLE => 'Hati-hati!']],
 
@@ -195,9 +195,7 @@ class AdaptiveRuleSeeder extends Seeder
             // ──────────────────────────────────────────────────────────────────
             ['code' => 'R11', 'name' => 'Boredom Challenge',       'priority' => 11, 'domain' => 'Progression', 'required' => [AC::V01_HIGH_PERFORMER, AC::FACT_BOREDOM_SIGNS],   'deduced' => null, 'action' => AC::ACTION_CHALLENGE_MODE],
             ['code' => 'R12', 'name' => 'Elite Jump to Medium',    'priority' => 12, 'domain' => 'Progression', 'required' => [AC::V01_HIGH_PERFORMER, AC::FACT_DIFF_BEGINNER], 'deduced' => null, 'action' => AC::ACTION_BOOST_TO_MEDIUM],
-            ['code' => 'R44', 'name' => 'Speed Praise',            'priority' =>  5, 'domain' => 'Progression', 'required' => [AC::V11_SPEED_DEMON],           'deduced' => null, 'action' => AC::ACTION_PREMIUM_PRAISE],
-            ['code' => 'R45', 'name' => 'Diligence Praise',        'priority' =>  6, 'domain' => 'Progression', 'required' => [AC::V12_METICULOUS_SOLVER],     'deduced' => null, 'action' => AC::ACTION_PREMIUM_PRAISE],
-            ['code' => 'R46', 'name' => 'Elite Mastery Praise',    'priority' =>  1, 'domain' => 'Progression', 'required' => [AC::V13_UNSTOPPABLE_FORCE],     'deduced' => null, 'action' => AC::ACTION_PREMIUM_PRAISE],
+            ['code' => 'R44', 'name' => 'Elite Performance Praise',    'priority' =>  5, 'domain' => 'Progression', 'required' => [AC::V11_SPEED_DEMON],           'deduced' => null, 'action' => AC::ACTION_PREMIUM_PRAISE],
             ['code' => 'R47', 'name' => 'Elite Jump to Hard',      'priority' => 12, 'domain' => 'Progression', 'required' => [AC::V01_HIGH_PERFORMER, AC::FACT_DIFF_MEDIUM],   'deduced' => null, 'action' => AC::ACTION_BOOST_TO_HARD],
 
             // ──────────────────────────────────────────────────────────────────
@@ -221,14 +219,12 @@ class AdaptiveRuleSeeder extends Seeder
             // ──────────────────────────────────────────────────────────────────
             ['code' => 'R14', 'name' => 'Promote to Medium',       'priority' => 14, 'domain' => 'Progression', 'required' => [AC::V06_MASTERY_READY_BEGINNER, AC::FACT_DIFF_BEGINNER],    'deduced' => null, 'action' => AC::ACTION_BOOST_TO_MEDIUM],
             ['code' => 'R15', 'name' => 'Promote to Hard',         'priority' => 15, 'domain' => 'Progression', 'required' => [AC::V07_MASTERY_READY_MEDIUM, AC::FACT_DIFF_MEDIUM],    'deduced' => null, 'action' => AC::ACTION_BOOST_TO_HARD],
-            ['code' => 'R32', 'name' => 'Careless Failure',        'priority' => 42, 'domain' => 'Recovery',    'required' => [AC::FACT_SCORE_FAILURE, AC::FACT_TIME_FAST_FAIL],  'deduced' => null, 'action' => AC::ACTION_CAREFUL_ALERT],
-            ['code' => 'R33', 'name' => 'Slow But Steady',         'priority' => 43, 'domain' => 'Progression', 'required' => [AC::FACT_SCORE_PASS, AC::FACT_TIME_SLOW_SUCCESS],  'deduced' => null, 'action' => AC::ACTION_MOTIVATIONAL_MSG],
             ['code' => 'R36', 'name' => 'Streak Reward Promotion', 'priority' => 36, 'domain' => 'Progression', 'required' => [AC::FACT_CONSISTENCY_HIGH, AC::FACT_SCORE_PASS],  'deduced' => null, 'action' => AC::ACTION_BOOST_TO_MEDIUM],
             ['code' => 'R37', 'name' => 'Hint Dependent Guide',    'priority' => 37, 'domain' => 'Recovery',    'required' => [AC::FACT_HINT_USED, AC::FACT_SCORE_PASS],  'deduced' => null, 'action' => AC::ACTION_LOGIC_GUIDE],
             ['code' => 'R39', 'name' => 'Struggle Near End',       'priority' => 39, 'domain' => 'Recovery',    'required' => [AC::FACT_MODULE_NEARLY_DONE, AC::FACT_SCORE_FAILURE],  'deduced' => null, 'action' => AC::ACTION_MOTIVATIONAL_MSG],
             ['code' => 'R40', 'name' => 'Hard Struggle Backtrack', 'priority' => 40, 'domain' => 'Recovery',    'required' => [AC::FACT_DIFF_HARD, AC::FACT_PERSISTENT_FAIL],  'deduced' => null, 'action' => AC::ACTION_CRITICAL_BACKTRACK],
-            ['code' => 'R42', 'name' => 'Review Previous Module',  'priority' => 25, 'domain' => 'Recovery',    'required' => [AC::FACT_PREV_UNLOCKED, AC::FACT_HIGH_STRUGGLE],  'deduced' => null, 'action' => AC::ACTION_CRISIS_INTERVENTION],
-            ['code' => 'R43', 'name' => 'In-Module Theory Review', 'priority' => 26, 'domain' => 'Recovery',    'required' => [AC::FACT_IN_MODULE, AC::FACT_SCORE_ZERO],  'deduced' => null, 'action' => AC::ACTION_LOGIC_GUIDE],
+            ['code' => 'R42', 'name' => 'Review Previous Module',  'priority' => 27, 'domain' => 'Recovery',    'required' => [AC::FACT_PREV_UNLOCKED, AC::FACT_HIGH_STRUGGLE],  'deduced' => null, 'action' => AC::ACTION_CRISIS_INTERVENTION],
+            ['code' => 'R43', 'name' => 'In-Module Theory Review', 'priority' => 28, 'domain' => 'Recovery',    'required' => [AC::FACT_IN_MODULE, AC::FACT_SCORE_ZERO],  'deduced' => null, 'action' => AC::ACTION_LOGIC_GUIDE],
 
             // ──────────────────────────────────────────────────────────────────
             // TIER 5: KELULUSAN (GRADUATION) (R31, R38, R41)
@@ -237,11 +233,7 @@ class AdaptiveRuleSeeder extends Seeder
             ['code' => 'R38', 'name' => 'Hard Mastery Graduation', 'priority' => 38, 'domain' => 'Progression', 'required' => [AC::FACT_MASTERY_HARD, AC::FACT_NO_ERROR, AC::FACT_MODULE_GRADUATION, AC::FACT_IN_MODULE, AC::FACT_SATISFACTORY_PROGRESS],  'deduced' => null, 'action' => AC::ACTION_MODULE_GRADUATION],
             ['code' => 'R41', 'name' => 'Fast Track Next Module',  'priority' => 30, 'domain' => 'Progression', 'required' => [AC::FACT_NEXT_LOCKED, AC::FACT_BOREDOM_SIGNS, AC::FACT_MODULE_GRADUATION, AC::FACT_IN_MODULE, AC::FACT_SATISFACTORY_PROGRESS],  'deduced' => null, 'action' => AC::ACTION_MODULE_GRADUATION],
 
-            // ──────────────────────────────────────────────────────────────────
-            // TIER 6: FALLBACK (R34, R35)
-            // ──────────────────────────────────────────────────────────────────
-            ['code' => 'R34', 'name' => 'Default Pass',            'priority' => 44, 'domain' => 'Progression', 'required' => [AC::FACT_SCORE_PASS],         'deduced' => null, 'action' => AC::ACTION_STANDARD_PROMOTION],
-            ['code' => 'R35', 'name' => 'Default Remedial',        'priority' => 45, 'domain' => 'Progression', 'required' => [AC::FACT_SCORE_FAILURE],         'deduced' => null, 'action' => AC::ACTION_STANDARD_REMEDIAL],
+
         ];
 
         foreach ($rules as $rule) {

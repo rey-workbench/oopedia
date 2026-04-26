@@ -27,23 +27,15 @@ final class ProgressRepository implements ProgressRepositoryInterface
             return collect();
         }
 
-        return QuizAttempt::where('user_id', $userId)
-            ->with('question')
-            ->get()
-            ->groupBy(fn ($attempt) => $attempt->question?->material_id)
-            ->map(function ($attempts, $materialId) {
-                $answeredQuestions = $attempts->unique('question_id')->count();
-                $correctAnswers    = $attempts->where('is_correct', true)->unique('question_id')->count();
-
-                return (object) [
-                    'material_id'        => $materialId,
-                    'answered_questions' => $answeredQuestions,
-                    'correct_answers'    => $correctAnswers,
-                ];
-            })
-            ->filter()
-            ->values()
-            ->pipe(fn ($c) => collect($c));
+        return QuizAttempt::query()
+            ->join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
+            ->where('quiz_attempts.user_id', $userId)
+            ->select('questions.material_id', 
+                DB::raw('COUNT(DISTINCT quiz_attempts.question_id) as answered_questions'),
+                DB::raw('COUNT(DISTINCT CASE WHEN is_correct = 1 THEN quiz_attempts.question_id END) as correct_answers')
+            )
+            ->groupBy('questions.material_id')
+            ->get();
     }
 
     public function getUserMaterialProgress(?string $userId): Collection
@@ -52,23 +44,15 @@ final class ProgressRepository implements ProgressRepositoryInterface
             return collect();
         }
 
-        return QuizAttempt::where('user_id', $userId)
-            ->with('question')
-            ->get()
-            ->groupBy(fn ($attempt) => $attempt->question?->material_id)
-            ->map(function ($attempts, $materialId) {
-                $totalAnswered  = $attempts->unique('question_id')->count();
-                $correctAnswers = $attempts->where('is_correct', true)->count();
-
-                return (object) [
-                    'material_id'     => $materialId,
-                    'total_answered'  => $totalAnswered,
-                    'correct_answers' => $correctAnswers,
-                ];
-            })
-            ->filter()
-            ->values()
-            ->pipe(fn ($c) => collect($c));
+        return QuizAttempt::query()
+            ->join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
+            ->where('quiz_attempts.user_id', $userId)
+            ->select('questions.material_id', 
+                DB::raw('COUNT(DISTINCT quiz_attempts.question_id) as total_answered'),
+                DB::raw('COUNT(CASE WHEN is_correct = 1 THEN 1 END) as correct_answers')
+            )
+            ->groupBy('questions.material_id')
+            ->get();
     }
 
     public function getRecentActivities(?string $userId, int $limit = 5): Collection
@@ -178,47 +162,26 @@ final class ProgressRepository implements ProgressRepositoryInterface
 
     public function getLeaderboardStats(string $roleName = 'mahasiswa'): Collection
     {
-        return QuizAttempt::whereHas('user.role', fn ($q) => $q->where('role_name', $roleName))
-            ->with(['user', 'question'])
-            ->get()
-            ->groupBy('user_id')
-            ->map(function ($attempts, $userId) {
-                $user                  = $attempts->first()->user;
-                $totalCorrectQuestions = $attempts->where('is_correct', true)->unique('question_id')->count();
-                $totalAttempted        = $attempts->unique('question_id')->count();
-                $correctAnswers        = $attempts->where('is_correct', true)->count();
-                $totalAttempts         = $attempts->count();
-                $completionDate        = $attempts->max('updated_at');
-
-                $beginnerCompleted = $attempts->where('is_correct', true)
-                    ->filter(fn ($a) => ($a->question?->difficulty instanceof QuestionDifficulty ? $a->question->difficulty->value : $a->question?->difficulty) === 'beginner')
-                    ->unique('question_id')
-                    ->count();
-                $mediumCompleted = $attempts->where('is_correct', true)
-                    ->filter(fn ($a) => ($a->question?->difficulty instanceof QuestionDifficulty ? $a->question->difficulty->value : $a->question?->difficulty) === 'medium')
-                    ->unique('question_id')
-                    ->count();
-                $hardCompleted = $attempts->where('is_correct', true)
-                    ->filter(fn ($a) => ($a->question?->difficulty instanceof QuestionDifficulty ? $a->question->difficulty->value : $a->question?->difficulty) === 'hard')
-                    ->unique('question_id')
-                    ->count();
-
-                return (object) [
-                    'id'                      => $userId,
-                    'name'                    => $user?->name,
-                    'email'                   => $user?->email,
-                    'total_correct_questions' => $totalCorrectQuestions,
-                    'total_attempted'         => $totalAttempted,
-                    'correct_answers'         => $correctAnswers,
-                    'completion_date'         => $completionDate,
-                    'beginner_completed'      => $beginnerCompleted,
-                    'medium_completed'        => $mediumCompleted,
-                    'hard_completed'          => $hardCompleted,
-                    'total_attempts'          => $totalAttempts,
-                ];
-            })
-            ->values()
-            ->pipe(fn ($c) => collect($c));
+        return DB::table('quiz_attempts')
+            ->join('users', 'quiz_attempts.user_id', '=', 'users.id')
+            ->join('roles', 'users.role_id', '=', 'roles.id')
+            ->join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
+            ->where('roles.role_name', $roleName)
+            ->select(
+                'users.id',
+                'users.name',
+                'users.email',
+                DB::raw('COUNT(DISTINCT CASE WHEN is_correct = 1 THEN quiz_attempts.question_id END) as total_correct_questions'),
+                DB::raw('COUNT(DISTINCT quiz_attempts.question_id) as total_attempted'),
+                DB::raw('COUNT(CASE WHEN is_correct = 1 THEN 1 END) as correct_answers'),
+                DB::raw('COUNT(*) as total_attempts'),
+                DB::raw('MAX(quiz_attempts.updated_at) as completion_date'),
+                DB::raw('COUNT(DISTINCT CASE WHEN is_correct = 1 AND questions.difficulty = "beginner" THEN quiz_attempts.question_id END) as beginner_completed'),
+                DB::raw('COUNT(DISTINCT CASE WHEN is_correct = 1 AND questions.difficulty = "medium" THEN quiz_attempts.question_id END) as medium_completed'),
+                DB::raw('COUNT(DISTINCT CASE WHEN is_correct = 1 AND (questions.difficulty = "hard" OR questions.difficulty = "final") THEN quiz_attempts.question_id END) as hard_completed')
+            )
+            ->groupBy('users.id', 'users.name', 'users.email')
+            ->get();
     }
 
     public function getAttemptCount(string $userId, string $materialId, string $questionId): int
@@ -387,33 +350,26 @@ final class ProgressRepository implements ProgressRepositoryInterface
 
     public function getPopularMaterials(int $limit): Collection
     {
-        return Material::withCount(['questions'])
+        return Material::query()
+            ->withCount('questions')
+            ->leftJoin('questions as q', 'materials.id', '=', 'q.material_id')
+            ->leftJoin('quiz_attempts as qa', 'q.id', '=', 'qa.question_id')
+            ->select(
+                'materials.id',
+                'materials.title',
+                DB::raw('COUNT(DISTINCT CASE WHEN qa.is_correct = 1 THEN qa.user_id END) as students_count'),
+                DB::raw('COUNT(qa.id) as total_attempts')
+            )
+            ->groupBy('materials.id', 'materials.title')
+            ->orderByDesc('students_count')
+            ->take($limit)
             ->get()
             ->map(function ($material) {
-                $correctAttempts = QuizAttempt::whereRelation('question', 'material_id', $material->id)
-                    ->where('is_correct', true)
-                    ->distinct('user_id')
-                    ->count('user_id');
-
-                $totalAttempts = QuizAttempt::whereRelation('question', 'material_id', $material->id)
-                    ->distinct('id')
-                    ->count('id');
-
-                $completionRate = $totalAttempts > 0
-                    ? round(($correctAttempts / $totalAttempts) * 100, 1)
+                $material->completion_rate = $material->total_attempts > 0
+                    ? round(($material->students_count / $material->total_attempts) * 100, 1)
                     : 0;
-
-                return (object) [
-                    'id'              => $material->id,
-                    'title'           => $material->title,
-                    'students_count'  => $correctAttempts,
-                    'completion_rate' => $completionRate,
-                ];
-            })
-            ->sortByDesc('students_count')
-            ->take($limit)
-            ->values()
-            ->pipe(fn ($c) => collect($c));
+                return $material;
+            });
     }
 
     public function getByUserAndMaterial(string $userId, string $materialId): Collection

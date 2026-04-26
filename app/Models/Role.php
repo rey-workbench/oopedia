@@ -21,9 +21,12 @@ final class Role extends Model
 
     protected $fillable = ['id', 'role_name'];
 
-    protected $casts = [
-        'role_name' => RoleName::class,
-    ];
+    protected function casts(): array
+    {
+        return [
+            'role_name' => RoleName::class,
+        ];
+    }
 
     public function users(): HasMany
     {

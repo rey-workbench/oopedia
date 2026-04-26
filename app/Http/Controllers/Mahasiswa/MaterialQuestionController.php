@@ -247,11 +247,6 @@ final class MaterialQuestionController extends Controller
                 'url'   => route('mahasiswa.materials.questions.levels', $material),
                 'label' => $inst['label'] ?? 'Revisi Materi',
             ],
-            AC::ACTION_STUDY_VISUAL,
-            AC::ACTION_STUDY_TEXTUAL,
-            AC::ACTION_STUDY_THEORY,
-            AC::ACTION_STUDY_SYNTAX,
-            AC::ACTION_STUDY_MIXED,
             AC::ACTION_STUDY_MATERIAL => [
                 'type'  => 'redirect',
                 'url'   => route('mahasiswa.materials.show', $material),
