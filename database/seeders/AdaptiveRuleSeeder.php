@@ -54,6 +54,7 @@ class AdaptiveRuleSeeder extends Seeder
             ['code' => FactConstants::V_UNFOCUSED, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_UNFOCUSED]],
             ['code' => FactConstants::V_HINT_DEPENDENT, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_HINT_DEPENDENT]],
             ['code' => FactConstants::V_CRISIS_STATE, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_CRISIS_STATE]],
+            ['code' => FactConstants::V_BOREDOM_DETECTED, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_BOREDOM_DETECTED]],
             ['code' => FactConstants::V_MASTERY_BEGINNER, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_MASTERY_BEGINNER]],
             ['code' => FactConstants::V_MASTERY_MEDIUM, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_MASTERY_MEDIUM]],
             ['code' => FactConstants::V_MASTERY_HARD, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_MASTERY_HARD]],
@@ -147,6 +148,7 @@ class AdaptiveRuleSeeder extends Seeder
             ['rule_code' => 'D08', 'name' => 'Deduce Mastery Beginner', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::DIFF_BEGINNER], 'deduced_facts' => [FactConstants::V_MASTERY_BEGINNER]],
             ['rule_code' => 'D09', 'name' => 'Deduce Mastery Medium', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::DIFF_MEDIUM], 'deduced_facts' => [FactConstants::V_MASTERY_MEDIUM]],
             ['rule_code' => 'D10', 'name' => 'Deduce Mastery Hard', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::DIFF_HARD], 'deduced_facts' => [FactConstants::V_MASTERY_HARD]],
+            ['rule_code' => 'D11', 'name' => 'Deduce Boredom', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::TIME_QUICK], 'deduced_facts' => [FactConstants::V_BOREDOM_DETECTED]],
 
             // ─── PROMOTION & CHALLENGE ──────────────────────────────────────
             [
