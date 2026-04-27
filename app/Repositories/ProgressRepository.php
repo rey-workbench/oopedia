@@ -11,7 +11,7 @@ use App\Models\Material;
 use App\Models\Question;
 use App\Models\QuizAttempt;
 use App\Models\StudentState;
-use App\Rules\Adaptive\Constants\AdaptiveConstants as AC;
+use App\Rules\Adaptive\Constants\StudentStateSchema;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -19,7 +19,8 @@ final class ProgressRepository implements ProgressRepositoryInterface
 {
     public function __construct(
         private readonly StudentStateRepositoryInterface $studentStateRepo,
-    ) {}
+    ) {
+    }
 
     public function getUserProgressStats(?string $userId): Collection
     {
@@ -30,7 +31,8 @@ final class ProgressRepository implements ProgressRepositoryInterface
         return QuizAttempt::query()
             ->join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->where('quiz_attempts.user_id', $userId)
-            ->select('questions.material_id', 
+            ->select(
+                'questions.material_id',
                 DB::raw('COUNT(DISTINCT quiz_attempts.question_id) as answered_questions'),
                 DB::raw('COUNT(DISTINCT CASE WHEN is_correct = 1 THEN quiz_attempts.question_id END) as correct_answers')
             )
@@ -47,7 +49,8 @@ final class ProgressRepository implements ProgressRepositoryInterface
         return QuizAttempt::query()
             ->join('questions', 'quiz_attempts.question_id', '=', 'questions.id')
             ->where('quiz_attempts.user_id', $userId)
-            ->select('questions.material_id', 
+            ->select(
+                'questions.material_id',
                 DB::raw('COUNT(DISTINCT quiz_attempts.question_id) as total_answered'),
                 DB::raw('COUNT(CASE WHEN is_correct = 1 THEN 1 END) as correct_answers')
             )
@@ -72,12 +75,12 @@ final class ProgressRepository implements ProgressRepositoryInterface
             ->where('is_correct', true)
             ->with('question')
             ->get()
-            ->groupBy(fn ($attempt) => $attempt->question?->material_id)
-            ->map(fn ($group) => $group->unique('question_id')->count());
+            ->groupBy(fn($attempt) => $attempt->question?->material_id)
+            ->map(fn($group) => $group->unique('question_id')->count());
 
         return $attempts->map(function ($attempt) use ($correctCountsByMaterial) {
-            $materialId        = $attempt->question->material_id ?? 0;
-            $difficulty        = $attempt->question?->difficulty instanceof QuestionDifficulty ? $attempt->question->difficulty->value : $attempt->question?->difficulty;
+            $materialId = $attempt->question->material_id ?? 0;
+            $difficulty = $attempt->question?->difficulty instanceof QuestionDifficulty ? $attempt->question->difficulty->value : $attempt->question?->difficulty;
             $previousHardCount = 0;
             if ($difficulty === 'hard') {
                 $previousHardCount = QuizAttempt::where('user_id', $attempt->user_id)
@@ -90,15 +93,15 @@ final class ProgressRepository implements ProgressRepositoryInterface
             }
 
             return (object) [
-                'material_title'      => $attempt->question->material->title ?? 'Unknown',
-                'material_id'         => $materialId,
-                'difficulty'          => $difficulty,
-                'created_at'          => $attempt->created_at,
-                'is_correct'          => $attempt->is_correct,
+                'material_title' => $attempt->question->material->title ?? 'Unknown',
+                'material_id' => $materialId,
+                'difficulty' => $difficulty,
+                'created_at' => $attempt->created_at,
+                'is_correct' => $attempt->is_correct,
                 'previous_hard_count' => $previousHardCount,
-                'total_correct'       => $correctCountsByMaterial->get($materialId, 0),
+                'total_correct' => $correctCountsByMaterial->get($materialId, 0),
             ];
-        })->pipe(fn ($c) => collect($c));
+        })->pipe(fn($c) => collect($c));
     }
 
     /** @return Collection<int, mixed> */
@@ -112,52 +115,52 @@ final class ProgressRepository implements ProgressRepositoryInterface
             ->with('question')
             ->get()
             ->groupBy(function ($attempt) {
-                $question   = $attempt->question;
+                $question = $attempt->question;
                 $materialId = $question?->material_id ?? 'unknown';
                 $difficulty = $question?->difficulty;
-                $diffKey    = $difficulty instanceof QuestionDifficulty ? $difficulty->value : ($difficulty ?? 'unknown');
+                $diffKey = $difficulty instanceof QuestionDifficulty ? $difficulty->value : ($difficulty ?? 'unknown');
 
                 return "{$materialId}-{$diffKey}";
             })
             ->map(function ($attempts, $key) {
-                $parts                     = explode('-', (string) $key, 2);
-                $materialId                = $parts[0] ?? 'unknown';
-                $difficulty                = $parts[1] ?? 'unknown';
-                $totalAnswered             = $attempts->unique('question_id')->count();
-                $correctAnswers            = $attempts->where('is_correct', true)->unique('question_id')->count();
+                $parts = explode('-', (string) $key, 2);
+                $materialId = $parts[0] ?? 'unknown';
+                $difficulty = $parts[1] ?? 'unknown';
+                $totalAnswered = $attempts->unique('question_id')->count();
+                $correctAnswers = $attempts->where('is_correct', true)->unique('question_id')->count();
 
                 return (object) [
-                    'material_id'     => $materialId,
-                    'difficulty'      => $difficulty,
-                    'total_answered'  => $totalAnswered,
+                    'material_id' => $materialId,
+                    'difficulty' => $difficulty,
+                    'total_answered' => $totalAnswered,
                     'correct_answers' => $correctAnswers,
                 ];
             })
             ->filter()
             ->values()
-            ->pipe(fn ($c) => collect($c));
+            ->pipe(fn($c) => collect($c));
     }
 
     public function getCorrectAnswersWithAttempts(string $roleName = 'mahasiswa'): Collection
     {
         return QuizAttempt::where('is_correct', 1)
-            ->whereHas('user.role', fn ($q) => $q->where('role_name', $roleName))
+            ->whereHas('user.role', fn($q) => $q->where('role_name', $roleName))
             ->with(['question', 'user'])
             ->get()
-            ->groupBy(fn ($attempt) => "{$attempt->user_id}-{$attempt->question_id}")
+            ->groupBy(fn($attempt) => "{$attempt->user_id}-{$attempt->question_id}")
             ->map(function ($attempts, $key) {
                 [$userId, $questionId] = explode('-', $key, 2);
-                $firstAttempt          = $attempts->sortBy('attempt_number')->first();
+                $firstAttempt = $attempts->sortBy('attempt_number')->first();
 
                 return (object) [
-                    'user_id'         => $userId,
-                    'question_id'     => $questionId,
-                    'difficulty'      => $firstAttempt->question?->difficulty,
+                    'user_id' => $userId,
+                    'question_id' => $questionId,
+                    'difficulty' => $firstAttempt->question?->difficulty,
                     'attempts_needed' => $firstAttempt->attempt_number,
                 ];
             })
             ->values()
-            ->pipe(fn ($c) => collect($c));
+            ->pipe(fn($c) => collect($c));
     }
 
     public function getLeaderboardStats(string $roleName = 'mahasiswa'): Collection
@@ -201,7 +204,7 @@ final class ProgressRepository implements ProgressRepositoryInterface
             return new QuizAttempt($data);
         }
 
-        if (! isset($data['attempt_number'])) {
+        if (!isset($data['attempt_number'])) {
             $data['attempt_number'] = DB::transaction(function () use ($data) {
                 return QuizAttempt::where('user_id', $data['user_id'])
                     ->where('question_id', $data['question_id'])
@@ -211,14 +214,14 @@ final class ProgressRepository implements ProgressRepositoryInterface
         }
 
         $attempt = QuizAttempt::create([
-            'user_id'        => $data['user_id'],
-            'question_id'    => $data['question_id'],
-            'answer_id'      => $data['answer_id']           ?? null,
-            'user_response'  => $data['user_response']       ?? null,
-            'is_correct'     => $data['is_correct']          ?? false,
-            'score'          => $data['attributes']['score'] ?? $data['score'] ?? ($data['is_correct'] ? 100 : 0),
+            'user_id' => $data['user_id'],
+            'question_id' => $data['question_id'],
+            'answer_id' => $data['answer_id'] ?? null,
+            'user_response' => $data['user_response'] ?? null,
+            'is_correct' => $data['is_correct'] ?? false,
+            'score' => $data['attributes']['score'] ?? $data['score'] ?? ($data['is_correct'] ? 100 : 0),
             'attempt_number' => $data['attempt_number'],
-            'time_spent'     => $data['attributes']['time_spent'] ?? $data['time_spent'] ?? 0,
+            'time_spent' => $data['attributes']['time_spent'] ?? $data['time_spent'] ?? 0,
         ]);
 
         if (isset($data['attributes']) && is_array($data['attributes'])) {
@@ -236,18 +239,18 @@ final class ProgressRepository implements ProgressRepositoryInterface
 
         // StudentState sudah di-flatten, update kolom secara langsung
         $this->studentStateRepo->update($userId, [
-            AC::KEY_GLOBAL_XP                => $attributes[AC::KEY_GLOBAL_XP] ?? null,
-            AC::KEY_CURRENT_LEVEL            => $attributes[AC::KEY_CURRENT_LEVEL] ?? null,
-            AC::KEY_CURRENT_STREAK           => $attributes[AC::KEY_CURRENT_STREAK] ?? null,
-            AC::KEY_MAX_STREAK               => $attributes[AC::KEY_MAX_STREAK] ?? null,
-            AC::KEY_TOTAL_QUESTIONS_ANSWERED => $attributes[AC::KEY_TOTAL_QUESTIONS_ANSWERED] ?? null,
-            AC::KEY_CORRECT_COUNT            => $attributes[AC::KEY_CORRECT_COUNT] ?? null,
-            AC::KEY_WRONG_COUNT              => $attributes[AC::KEY_WRONG_COUNT] ?? null,
-            AC::KEY_WRONG_STREAK             => $attributes[AC::KEY_WRONG_STREAK] ?? null,
-            AC::KEY_HINTS_USED_COUNT         => $attributes[AC::KEY_HINTS_USED_COUNT] ?? null,
-            AC::KEY_HINTS_AVAILABLE          => $attributes[AC::KEY_HINTS_AVAILABLE] ?? null,
-            AC::KEY_LEARNING_STYLE           => $attributes[AC::KEY_LEARNING_STYLE] ?? null,
-            'last_active_at'                 => now(),
+            StudentStateSchema::GLOBAL_XP => $attributes[StudentStateSchema::GLOBAL_XP] ?? null,
+            StudentStateSchema::CURRENT_LEVEL => $attributes[StudentStateSchema::CURRENT_LEVEL] ?? null,
+            StudentStateSchema::CURRENT_STREAK => $attributes[StudentStateSchema::CURRENT_STREAK] ?? null,
+            StudentStateSchema::MAX_STREAK => $attributes[StudentStateSchema::MAX_STREAK] ?? null,
+            StudentStateSchema::TOTAL_QUESTIONS_ANSWERED => $attributes[StudentStateSchema::TOTAL_QUESTIONS_ANSWERED] ?? null,
+            StudentStateSchema::CORRECT_COUNT => $attributes[StudentStateSchema::CORRECT_COUNT] ?? null,
+            StudentStateSchema::WRONG_COUNT => $attributes[StudentStateSchema::WRONG_COUNT] ?? null,
+            StudentStateSchema::WRONG_STREAK => $attributes[StudentStateSchema::WRONG_STREAK] ?? null,
+            StudentStateSchema::HINTS_USED_COUNT => $attributes[StudentStateSchema::HINTS_USED_COUNT] ?? null,
+            StudentStateSchema::HINTS_AVAILABLE => $attributes[StudentStateSchema::HINTS_AVAILABLE] ?? null,
+            StudentStateSchema::LEARNING_STYLE => $attributes[StudentStateSchema::LEARNING_STYLE] ?? null,
+            'last_active_at' => now(),
         ]);
     }
 
@@ -262,8 +265,8 @@ final class ProgressRepository implements ProgressRepositoryInterface
             ->orderBy('created_at', 'desc')
             ->get()
             ->groupBy('question_id')
-            ->map(fn ($attempts) => $attempts->first())
-            ->pipe(fn ($c) => collect($c));
+            ->map(fn($attempts) => $attempts->first())
+            ->pipe(fn($c) => collect($c));
     }
 
     public function getAnsweredQuestionIds(string $userId, string $materialId): Collection
@@ -305,16 +308,16 @@ final class ProgressRepository implements ProgressRepositoryInterface
         return QuizAttempt::where('is_correct', true)
             ->with('question')
             ->get()
-            ->groupBy(fn ($attempt) => $attempt->question?->material_id)
+            ->groupBy(fn($attempt) => $attempt->question?->material_id)
             ->map(function ($attempts, $materialId) {
                 return (object) [
-                    'material_id'   => $materialId,
+                    'material_id' => $materialId,
                     'student_count' => $attempts->unique('user_id')->count(),
                 ];
             })
             ->filter()
             ->values()
-            ->pipe(fn ($c) => collect($c));
+            ->pipe(fn($c) => collect($c));
     }
 
     public function getLastAccessTime(?string $userId, string $materialId): ?string
@@ -341,11 +344,11 @@ final class ProgressRepository implements ProgressRepositoryInterface
         return QuizAttempt::where('is_correct', true)
             ->with(['question', 'user'])
             ->get()
-            ->map(fn ($attempt) => (object) [
+            ->map(fn($attempt) => (object) [
                 'material_id' => $attempt->question?->material_id,
-                'user_id'     => $attempt->user_id,
+                'user_id' => $attempt->user_id,
                 'question_id' => $attempt->question_id,
-            ])->pipe(fn ($c) => collect($c));
+            ])->pipe(fn($c) => collect($c));
     }
 
     public function getPopularMaterials(int $limit): Collection
@@ -383,7 +386,7 @@ final class ProgressRepository implements ProgressRepositoryInterface
             ->with(['question', 'answer'])
             ->orderBy('created_at', 'asc')
             ->get()
-            ->pipe(fn ($c) => collect($c));
+            ->pipe(fn($c) => collect($c));
     }
 
     public function getConsecutiveFailures(?string $userId, string $questionId): int
@@ -420,58 +423,58 @@ final class ProgressRepository implements ProgressRepositoryInterface
 
     public function getOrCreateStudentState(?string $userId): StudentState
     {
-        $defaults = AC::defaults();
+        $defaults = StudentStateSchema::defaults();
 
         if (is_null($userId) || $userId === 'guest') {
             return new StudentState([
                 'user_id' => 'guest',
-                // Gamification
-                'xp'         => $defaults['xp'],
-                'level'      => $defaults['level'],
-                'streak'     => $defaults['streak'],
-                'max_streak' => $defaults['max_streak'],
-                'badges'     => $defaults['badges'],
-                // Learning profile
-                'learning_style'    => $defaults['learning_style'],
-                'unlocked_modules'  => $defaults['unlocked_modules'],
-                'certifications'    => $defaults['certifications'],
-                'time_distribution' => $defaults['time_distribution'],
-                // Performance
-                'total_answered'  => $defaults['total_answered'],
-                'correct_count'   => $defaults['correct_count'],
-                'wrong_count'     => $defaults['wrong_count'],
-                'wrong_streak'    => $defaults['wrong_streak'],
-                'hints_used'      => $defaults['hints_used'],
-                'hints_available' => $defaults['hints_available'],
-                // Navigation
-                'current_material_id' => $defaults['current_material_id'],
-                'target_difficulty'   => $defaults['target_difficulty'],
+                    // Gamification
+                StudentStateSchema::GLOBAL_XP => $defaults[StudentStateSchema::GLOBAL_XP],
+                StudentStateSchema::CURRENT_LEVEL => $defaults[StudentStateSchema::CURRENT_LEVEL],
+                StudentStateSchema::CURRENT_STREAK => $defaults[StudentStateSchema::CURRENT_STREAK],
+                StudentStateSchema::MAX_STREAK => $defaults[StudentStateSchema::MAX_STREAK],
+                StudentStateSchema::BADGES => $defaults[StudentStateSchema::BADGES],
+                    // Learning profile
+                StudentStateSchema::LEARNING_STYLE => $defaults[StudentStateSchema::LEARNING_STYLE],
+                StudentStateSchema::UNLOCKED_MODULES => $defaults[StudentStateSchema::UNLOCKED_MODULES],
+                StudentStateSchema::CERTIFICATIONS => $defaults[StudentStateSchema::CERTIFICATIONS],
+                StudentStateSchema::TIME_DISTRIBUTION => $defaults[StudentStateSchema::TIME_DISTRIBUTION],
+                    // Performance
+                StudentStateSchema::TOTAL_QUESTIONS_ANSWERED => $defaults[StudentStateSchema::TOTAL_QUESTIONS_ANSWERED],
+                StudentStateSchema::CORRECT_COUNT => $defaults[StudentStateSchema::CORRECT_COUNT],
+                StudentStateSchema::WRONG_COUNT => $defaults[StudentStateSchema::WRONG_COUNT],
+                StudentStateSchema::WRONG_STREAK => $defaults[StudentStateSchema::WRONG_STREAK],
+                StudentStateSchema::HINTS_USED_COUNT => $defaults[StudentStateSchema::HINTS_USED_COUNT],
+                StudentStateSchema::HINTS_AVAILABLE => $defaults[StudentStateSchema::HINTS_AVAILABLE],
+                    // Navigation
+                StudentStateSchema::CURRENT_MATERIAL_ID => $defaults[StudentStateSchema::CURRENT_MATERIAL_ID],
+                StudentStateSchema::TARGET_DIFFICULTY => $defaults[StudentStateSchema::TARGET_DIFFICULTY],
             ]);
         }
 
         return StudentState::firstOrCreate(['user_id' => $userId], [
-            // Gamification
-            'xp'         => $defaults['xp'],
-            'level'      => $defaults['level'],
-            'streak'     => $defaults['streak'],
-            'max_streak' => $defaults['max_streak'],
-            'badges'     => $defaults['badges'],
-            // Learning profile
-            'learning_style'    => $defaults['learning_style'],
-            'unlocked_modules'  => $defaults['unlocked_modules'],
-            'certifications'    => $defaults['certifications'],
-            'time_distribution' => $defaults['time_distribution'],
-            // Performance
-            'total_answered'  => $defaults['total_answered'],
-            'correct_count'   => $defaults['correct_count'],
-            'wrong_count'     => $defaults['wrong_count'],
-            'wrong_streak'    => $defaults['wrong_streak'],
-            'hints_used'      => $defaults['hints_used'],
-            'hints_available' => $defaults['hints_available'],
-            // Navigation
-            'current_material_id' => $defaults['current_material_id'],
-            'target_difficulty'   => $defaults['target_difficulty'],
-            'last_active_at'      => now(),
+                // Gamification
+            StudentStateSchema::GLOBAL_XP => $defaults[StudentStateSchema::GLOBAL_XP],
+            StudentStateSchema::CURRENT_LEVEL => $defaults[StudentStateSchema::CURRENT_LEVEL],
+            StudentStateSchema::CURRENT_STREAK => $defaults[StudentStateSchema::CURRENT_STREAK],
+            StudentStateSchema::MAX_STREAK => $defaults[StudentStateSchema::MAX_STREAK],
+            StudentStateSchema::BADGES => $defaults[StudentStateSchema::BADGES],
+                // Learning profile
+            StudentStateSchema::LEARNING_STYLE => $defaults[StudentStateSchema::LEARNING_STYLE],
+            StudentStateSchema::UNLOCKED_MODULES => $defaults[StudentStateSchema::UNLOCKED_MODULES],
+            StudentStateSchema::CERTIFICATIONS => $defaults[StudentStateSchema::CERTIFICATIONS],
+            StudentStateSchema::TIME_DISTRIBUTION => $defaults[StudentStateSchema::TIME_DISTRIBUTION],
+                // Performance
+            StudentStateSchema::TOTAL_QUESTIONS_ANSWERED => $defaults[StudentStateSchema::TOTAL_QUESTIONS_ANSWERED],
+            StudentStateSchema::CORRECT_COUNT => $defaults[StudentStateSchema::CORRECT_COUNT],
+            StudentStateSchema::WRONG_COUNT => $defaults[StudentStateSchema::WRONG_COUNT],
+            StudentStateSchema::WRONG_STREAK => $defaults[StudentStateSchema::WRONG_STREAK],
+            StudentStateSchema::HINTS_USED_COUNT => $defaults[StudentStateSchema::HINTS_USED_COUNT],
+            StudentStateSchema::HINTS_AVAILABLE => $defaults[StudentStateSchema::HINTS_AVAILABLE],
+                // Navigation
+            StudentStateSchema::CURRENT_MATERIAL_ID => $defaults[StudentStateSchema::CURRENT_MATERIAL_ID],
+            StudentStateSchema::TARGET_DIFFICULTY => $defaults[StudentStateSchema::TARGET_DIFFICULTY],
+            'last_active_at' => now(),
         ]);
     }
 }

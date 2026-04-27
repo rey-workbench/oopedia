@@ -89,16 +89,16 @@
         const nodesCalc = new Map();
 
         // Init Raw Facts (depth 0)
-        factData.forEach((f) => {
-            if (f.category !== 'deduced') {
+        factData
+            .filter((f) => !f.code.startsWith('V'))
+            .forEach((f) => {
                 nodesCalc.set(`raw_fact_${f.code}`, {
                     type: 'raw_fact',
                     depth: 0,
                     data: f,
                     id: `f_${f.code}`,
                 });
-            }
-        });
+            });
 
         let changed = true;
         let maxIter = 20; // safe circuit breaker
@@ -146,7 +146,7 @@
                     }
 
                     const actionObj = actionData.find((a) => a.id === r.action_id);
-                    // Avoid action explicitly marked silent
+                    // Avoid action explicitly marked silent or null
                     if (actionObj && actionObj.code !== 'H00' && !nodesCalc.has(`action_${r.id}`)) {
                         nodesCalc.set(`action_${r.id}`, {
                             type: 'action',
@@ -706,29 +706,36 @@
                                 >
 
                                 {#if selectedNode.data.deduced_facts && selectedNode.data.deduced_facts.length > 0}
-                                    <span class="mx-1 font-bold text-purple-600">DEDUKSI</span>
-                                    {#each selectedNode.data.deduced_facts as ded, i}
-                                        <span
-                                            class="mx-1 rounded border border-purple-100 bg-purple-50 px-1.5 py-0.5 text-purple-700 shadow-sm"
-                                        >
-                                            {factData.find((f) => f.code === ded)?.name || ded}
-                                        </span>
-                                        {#if i < selectedNode.data.deduced_facts.length - 1}
-                                            <span class="text-[10px] font-bold text-slate-400"
-                                                >DAN</span
+                                    <div class="mt-2">
+                                        <span class="font-bold text-purple-600">DEDUKSI</span>
+                                        {#each selectedNode.data.deduced_facts as ded, i}
+                                            <span
+                                                class="mx-1 rounded border border-purple-100 bg-purple-50 px-1.5 py-0.5 text-purple-700 shadow-sm"
                                             >
-                                        {/if}
-                                    {/each}
-                                {:else}
-                                    <span
-                                        class="mx-1 mt-2 inline-block rounded border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 text-emerald-800 shadow-sm"
-                                    >
-                                        AKSI: {actionData.find(
-                                            (a) =>
-                                                a.id === selectedNode.data.action_id ||
-                                                a.code === selectedNode.data.action
-                                        )?.name || selectedNode.data.action}
-                                    </span>
+                                                {factData.find((f) => f.code === ded)?.name || ded}
+                                            </span>
+                                            {#if i < selectedNode.data.deduced_facts.length - 1}
+                                                <span class="text-[10px] font-bold text-slate-400"
+                                                    >DAN</span
+                                                >
+                                            {/if}
+                                        {/each}
+                                    </div>
+                                {/if}
+
+                                {#if selectedNode.data.action_id}
+                                    <div class="mt-2">
+                                        <span class="font-bold text-emerald-600">AKSI</span>
+                                        <span
+                                            class="mx-1 rounded border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 text-emerald-800 shadow-sm"
+                                        >
+                                            {actionData.find(
+                                                (a) =>
+                                                    a.id === selectedNode.data.action_id ||
+                                                    a.code === selectedNode.data.action
+                                            )?.name || selectedNode.data.action}
+                                        </span>
+                                    </div>
                                 {/if}
                             </div>
                             <div class="grid grid-cols-2 gap-3">

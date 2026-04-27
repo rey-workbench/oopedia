@@ -13,7 +13,8 @@ use App\Enums\Lms\QuestionDifficulty;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Question\CheckAnswerRequest;
 use App\Http\Requests\Question\ReviewQuestionRequest;
-use App\Rules\Adaptive\Constants\AdaptiveConstants as AC;
+use App\Rules\Adaptive\Constants\ActionConstants;
+use App\Rules\Adaptive\Constants\StudentStateSchema;
 use App\Traits\HandlesAdaptiveState;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -174,7 +175,7 @@ final class MaterialQuestionController extends Controller
         $score        = $result['score'];
         $engineResult = $result['engine_result'];
 
-        $action     = $engineResult['triggered_rule']['action'] ?? $engineResult['new_state']['next_action'] ?? AC::ACTION_NEXT_QUESTION;
+        $action     = $engineResult['triggered_rule']['action'] ?? $engineResult['new_state']['next_action'] ?? ActionConstants::LABEL_NEXT_QUESTION;
         $uiResponse = $this->resolveAdaptiveAction($action, (string) $materialId, $engineResult, $isCorrect);
 
         return $this->json([
@@ -232,22 +233,12 @@ final class MaterialQuestionController extends Controller
         $inst = $engineResult['triggered_rule'] ?? [];
 
         $base = match ($action) {
-            AC::ACTION_FINISH_MATERIAL => [
+            ActionConstants::FINISH_MATERIAL => [
                 'type'  => 'redirect',
                 'url'   => route('mahasiswa.materials.questions.index'),
                 'label' => $inst['label'] ?? 'Selesai Material',
             ],
-            AC::ACTION_NEXT_MATERIAL => [
-                'type'  => 'redirect',
-                'url'   => route('mahasiswa.materials.index'),
-                'label' => $inst['label'] ?? 'Materi Berikutnya',
-            ],
-            AC::ACTION_REVISE_PROJECT => [
-                'type'  => 'modal',
-                'url'   => route('mahasiswa.materials.questions.levels', $material),
-                'label' => $inst['label'] ?? 'Revisi Materi',
-            ],
-            AC::ACTION_STUDY_MATERIAL => [
+            ActionConstants::LABEL_STUDY_MATERIAL => [
                 'type'  => 'redirect',
                 'url'   => route('mahasiswa.materials.show', $material),
                 'label' => $inst['label'] ?? 'Lihat Materi',
@@ -256,7 +247,7 @@ final class MaterialQuestionController extends Controller
                 'type' => 'continue',
                 'url'  => route('mahasiswa.materials.questions.show', [
                     'material'     => $material,
-                    'sub_material' => $engineResult['new_state']['target_difficulty'] ?? null,
+                    'sub_material' => $engineResult['new_state'][StudentStateSchema::TARGET_DIFFICULTY] ?? null,
                 ]),
                 'label' => $inst['label'] ?? 'Lanjut',
             ]

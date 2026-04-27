@@ -60,7 +60,7 @@ class MahasiswaSeeder extends Seeder
                     ['user_id' => $user->id],
                     [
                         'xp' => 550,
-                        'level' => \App\Rules\Adaptive\Constants\AdaptiveConstants::LEVEL_AHLI,
+                        'level' => \App\Enums\Lms\StudentLevel::AHLI->value,
                         'streak' => 5,
                         'max_streak' => 12,
                         'badges' => ['fast_learner', 'logic_master', 'module_complete'],

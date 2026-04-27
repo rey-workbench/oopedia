@@ -13,13 +13,6 @@ interface PerformanceServiceInterface
 
     public function updateLearningStyleFromInteraction(string $userId, ContentCategory $questionType, int $timeSpent): LearningStyle;
 
-    public function updateStudentPerformance(
-        string $userId,
-        bool $isCorrect,
-        int $timeSpent = 0,
-        bool $usedHint = false,
-    ): StudentState;
-
     public function calculateAverageTimeSpent(string $userId, string $materialId): float;
 
     public function calculateTotalTimeSpent(string $userId, string $materialId): float;

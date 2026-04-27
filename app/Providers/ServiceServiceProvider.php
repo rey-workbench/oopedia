@@ -8,7 +8,6 @@ use App\Contracts\Services\AdaptiveEngineServiceInterface;
 use App\Contracts\Services\AdminDashboardServiceInterface;
 use App\Contracts\Services\DashboardServiceInterface;
 use App\Contracts\Services\FactGatheringServiceInterface;
-use App\Contracts\Services\GamificationServiceInterface;
 use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\LeaderboardServiceInterface;
 use App\Contracts\Services\MaterialServiceInterface;
@@ -27,7 +26,6 @@ use App\Services\Analytics\LeaderboardService;
 use App\Services\Analytics\MslqService;
 use App\Services\Analytics\SusResultService;
 use App\Services\Analytics\UeqSurveyService;
-use App\Services\Gamification\GamificationService;
 use App\Services\Lms\GuestProgressService;
 use App\Services\Lms\MaterialService;
 use App\Services\Lms\QuizService;
@@ -50,8 +48,7 @@ final class ServiceServiceProvider extends ServiceProvider
         $this->app->bind(StudentServiceInterface::class, StudentService::class);
         $this->app->bind(PerformanceServiceInterface::class, PerformanceService::class);
 
-        // Gamification & Leaderboard
-        $this->app->bind(GamificationServiceInterface::class, GamificationService::class);
+        // Leaderboard
         $this->app->bind(LeaderboardServiceInterface::class, LeaderboardService::class);
 
         // Surveys, Analytics & Dashboards

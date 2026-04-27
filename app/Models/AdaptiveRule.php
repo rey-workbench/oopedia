@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Rules\Adaptive\Constants\ActionConstants;
+use App\Rules\Adaptive\Contracts\AdaptiveRuleInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property bool $is_active
  * @property-read AdaptiveAction $action
  */
-class AdaptiveRule extends Model
+class AdaptiveRule extends Model implements AdaptiveRuleInterface
 {
     protected $fillable = [
         'rule_code',
@@ -47,5 +49,51 @@ class AdaptiveRule extends Model
     public function scopeOrdered(Builder $query): void
     {
         $query->orderBy('priority');
+    }
+
+    // ── AdaptiveRuleInterface Implementation ─────────────────────────────────
+
+    public function getRuleId(): string
+    {
+        return $this->rule_code;
+    }
+
+    public function getRuleName(): string
+    {
+        return $this->name;
+    }
+
+    public function getActionCode(): string
+    {
+        return ($this->relationLoaded('action') && $this->action)
+            ? $this->action->code
+            : ActionConstants::DEDUCTION;
+    }
+
+    public function getPriority(): int
+    {
+        return (int) $this->priority;
+    }
+
+    public function evaluate(array $facts): bool
+    {
+        if (! $this->is_active) {
+            return false;
+        }
+
+        $required = $this->required_facts ?? [];
+
+        foreach ($required as $code) {
+            if (! in_array($code, $facts, true)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function getDeducedFacts(): array
+    {
+        return $this->deduced_facts ?? [];
     }
 }
