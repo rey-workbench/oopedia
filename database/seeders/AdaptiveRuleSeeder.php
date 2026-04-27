@@ -65,7 +65,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'name' => ActionConstants::NAMES[ActionConstants::DEDUCTION],
                 'description' => 'Aksi tanpa efek samping (hanya deduksi fakta).',
                 'instructions' => [
-                    ActionConstants::KEY_NEXT_ACTION => ActionConstants::SILENT,
+                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_NONE,
                 ]
             ],
             [
@@ -74,7 +74,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'name' => ActionConstants::NAMES[ActionConstants::NEXT_QUESTION],
                 'description' => 'Lanjut ke pertanyaan berikutnya tanpa perubahan kesulitan.',
                 'instructions' => [
-                    ActionConstants::KEY_NEXT_ACTION => ActionConstants::LABEL_NEXT_QUESTION,
+                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_NEXT,
                     ActionConstants::KEY_TITLE => 'Bagus!',
                     ActionConstants::KEY_MESSAGE => 'Jawabanmu benar. Silakan lanjut ke soal berikutnya.',
                     StudentStateSchema::GLOBAL_XP => ActionConstants::inc(PedagogicalConstants::XP_REWARD_BASE),
@@ -88,7 +88,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'name' => ActionConstants::NAMES[ActionConstants::INCREASE_DIFF],
                 'description' => 'Tingkatkan tingkat kesulitan soal.',
                 'instructions' => [
-                    ActionConstants::KEY_NEXT_ACTION => ActionConstants::LABEL_INCREASE_DIFFICULTY,
+                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_UP,
                     ActionConstants::KEY_TITLE => 'Luar Biasa!',
                     ActionConstants::KEY_MESSAGE => 'Kamu sangat cepat! Mari coba tantangan yang lebih sulit.',
                     StudentStateSchema::TARGET_DIFFICULTY => 'next',
@@ -103,7 +103,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'name' => ActionConstants::NAMES[ActionConstants::REDUCE_DIFF],
                 'description' => 'Turunkan tingkat kesulitan soal.',
                 'instructions' => [
-                    ActionConstants::KEY_NEXT_ACTION => ActionConstants::LABEL_REDUCE_DIFFICULTY,
+                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_DOWN,
                     ActionConstants::KEY_TITLE => 'Jangan Menyerah',
                     ActionConstants::KEY_MESSAGE => 'Materi ini mungkin agak sulit. Mari kita coba dari dasar lagi.',
                     StudentStateSchema::TARGET_DIFFICULTY => 'prev',
@@ -117,7 +117,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'name' => ActionConstants::NAMES[ActionConstants::STUDY_MATERIAL],
                 'description' => 'Mengarahkan mahasiswa kembali ke materi.',
                 'instructions' => [
-                    ActionConstants::KEY_NEXT_ACTION => ActionConstants::LABEL_STUDY_MATERIAL,
+                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_REVIEW,
                     ActionConstants::KEY_TITLE => 'Saran Belajar',
                     ActionConstants::KEY_MESSAGE => 'Kamu sepertinya butuh mereview materi ini kembali sebelum lanjut.',
                     StudentStateSchema::CURRENT_STREAK => '0',
@@ -129,7 +129,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'name' => ActionConstants::NAMES[ActionConstants::WRONG_ANSWER],
                 'description' => 'Notifikasi jawaban salah.',
                 'instructions' => [
-                    ActionConstants::KEY_NEXT_ACTION => ActionConstants::LABEL_NEXT_QUESTION,
+                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_NEXT,
                     ActionConstants::KEY_TITLE => 'Belum Tepat',
                     ActionConstants::KEY_MESSAGE => 'Jawabanmu belum benar. Mari coba soal lain.',
                     StudentStateSchema::GLOBAL_XP => ActionConstants::inc(0),
@@ -144,7 +144,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'name' => ActionConstants::NAMES[ActionConstants::AWARD_BADGE],
                 'description' => 'Memberikan badge penghargaan.',
                 'instructions' => [
-                    ActionConstants::KEY_NEXT_ACTION => ActionConstants::LABEL_NEXT_QUESTION,
+                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_NONE,
                     ActionConstants::KEY_TITLE => 'Pencapaian Baru!',
                     ActionConstants::KEY_MESSAGE => 'Kamu mendapatkan badge baru atas performamu!',
                     ActionConstants::KEY_BADGES => ['Fast Learner'],
@@ -157,7 +157,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'name' => ActionConstants::NAMES[ActionConstants::CELEBRATION],
                 'description' => 'Perayaan kelulusan modul.',
                 'instructions' => [
-                    ActionConstants::KEY_NEXT_ACTION => ActionConstants::FINISH_MATERIAL,
+                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_FINISH,
                     ActionConstants::KEY_TITLE => 'Selamat! Kamu Lulus!',
                     ActionConstants::KEY_MESSAGE => 'Kamu telah menguasai materi ini dengan sangat baik.',
                     ActionConstants::KEY_CERTIFICATION => 'Gold',
@@ -171,7 +171,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'name' => ActionConstants::NAMES[ActionConstants::STREAK_BONUS],
                 'description' => 'Bonus XP untuk jawaban benar berturut-turut.',
                 'instructions' => [
-                    ActionConstants::KEY_NEXT_ACTION => ActionConstants::LABEL_NEXT_QUESTION,
+                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_NONE,
                     ActionConstants::KEY_TITLE => 'Sedang Membara! 🔥',
                     ActionConstants::KEY_MESSAGE => 'Kamu menjawab dengan cepat dan tepat! Bonus XP diberikan.',
                     StudentStateSchema::GLOBAL_XP => ActionConstants::inc(25)
@@ -183,9 +183,31 @@ class AdaptiveRuleSeeder extends Seeder
                 'name' => ActionConstants::NAMES[ActionConstants::EMPATHY_MSG],
                 'description' => 'Pesan penyemangat saat mahasiswa kesulitan.',
                 'instructions' => [
-                    ActionConstants::KEY_NEXT_ACTION => ActionConstants::LABEL_REDUCE_DIFFICULTY,
+                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_DOWN,
                     ActionConstants::KEY_TITLE => 'Jangan Menyerah! 💪',
                     ActionConstants::KEY_MESSAGE => 'Materi ini mungkin terasa sulit, tapi kamu pasti bisa. Mari kita coba soal yang lebih mendasar.',
+                ]
+            ],
+            [
+                'code' => 'H10',
+                'variant' => 'danger',
+                'name' => 'Intervensi Krisis',
+                'description' => 'Aksi darurat ketika mahasiswa gagal berkali-kali.',
+                'instructions' => [
+                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_REVIEW,
+                    ActionConstants::KEY_TITLE => 'Sistem Mendeteksi Kesulitan Serius ⚠️',
+                    ActionConstants::KEY_MESSAGE => 'Kamu telah mencoba berkali-kali namun belum berhasil. Kami menyarankanmu untuk beristirahat sejenak dan mempelajari video tutorial ini sebelum melanjutkan.',
+                ]
+            ],
+            [
+                'code' => 'H11',
+                'variant' => 'info',
+                'name' => 'Edukasi Bantuan',
+                'description' => 'Mengingatkan mahasiswa agar tidak terlalu bergantung pada hint.',
+                'instructions' => [
+                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_NEXT,
+                    ActionConstants::KEY_TITLE => 'Tips Belajar 💡',
+                    ActionConstants::KEY_MESSAGE => 'Kami melihat kamu sering menggunakan bantuan. Cobalah untuk mengerjakan soal berikutnya tanpa bantuan agar pemahamanmu lebih kuat!',
                 ]
             ],
         ];
@@ -200,6 +222,31 @@ class AdaptiveRuleSeeder extends Seeder
         $actionIds = AdaptiveAction::pluck('id', 'code');
 
         $rules = [
+            // ... (keep existing R01-R12) ...
+            [
+                'rule_code' => 'R13',
+                'name' => 'Emergency Crisis Intervention',
+                'domain' => 'SafetyNet',
+                'priority' => -1, // Prioritas sangat tinggi
+                'required_facts' => [FactConstants::V_CRISIS_STATE],
+                'action_id' => $actionIds['H10'],
+            ],
+            [
+                'rule_code' => 'R14',
+                'name' => 'Hint Dependency Warning',
+                'domain' => 'Behaviour',
+                'priority' => 4,
+                'required_facts' => [FactConstants::V_HINT_DEPENDENT, FactConstants::SCORE_PASS],
+                'action_id' => $actionIds['H11'],
+            ],
+            [
+                'rule_code' => 'R15',
+                'name' => 'Anti-Boredom Fast Track',
+                'domain' => 'Progression',
+                'priority' => 2,
+                'required_facts' => [FactConstants::V_BOREDOM_DETECTED],
+                'action_id' => $actionIds[ActionConstants::INCREASE_DIFF],
+            ],
             // ─── Promotion Rules (Treatment: Accelerate) ────────────────────
             [
                 'rule_code' => 'R01',
@@ -214,51 +261,26 @@ class AdaptiveRuleSeeder extends Seeder
                 'name' => 'Adaptive Difficulty Up',
                 'domain' => 'Progression',
                 'priority' => 3,
-                'required_facts' => [FactConstants::V_EXCELLENT_RESULT, FactConstants::SCORE_PASS],
+                'required_facts' => [FactConstants::V_EXCELLENT_RESULT],
                 'action_id' => $actionIds[ActionConstants::INCREASE_DIFF],
-            ],
-            [
-                'rule_code' => 'R08',
-                'name' => 'Standard Progression',
-                'domain' => 'Progression',
-                'priority' => 10,
-                'required_facts' => [FactConstants::SCORE_PASS, FactConstants::TIME_SLOW],
-                'action_id' => $actionIds[ActionConstants::NEXT_QUESTION],
             ],
 
             // ─── Intervention Rules (Treatment: Recovery) ───────────────────
-            [
-                'rule_code' => 'R05',
-                'name' => 'Struggle Recovery',
-                'domain' => 'Recovery',
-                'priority' => 5,
-                'required_facts' => [FactConstants::V_STRUGGLING, FactConstants::SCORE_FAIL],
-                'action_id' => $actionIds[ActionConstants::REDUCE_DIFF],
-            ],
             [
                 'rule_code' => 'R07',
                 'name' => 'Crisis Intervention',
                 'domain' => 'SafetyNet',
                 'priority' => 1,
-                'required_facts' => [FactConstants::V_UNFOCUSED, FactConstants::SCORE_FAIL],
+                'required_facts' => [FactConstants::V_UNFOCUSED],
                 'action_id' => $actionIds[ActionConstants::STUDY_MATERIAL],
             ],
-            [
-                'rule_code' => 'R09',
-                'name' => 'Remedial Feedback',
-                'domain' => 'SafetyNet',
-                'priority' => 0,
-                'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::TIME_SLOW],
-                'action_id' => $actionIds[ActionConstants::WRONG_ANSWER],
-            ],
-
             // ─── Mastery Rules (Treatment: Rewards) ─────────────────────────
             [
                 'rule_code' => 'R06',
                 'name' => 'Steady Progress Path',
                 'domain' => 'Progression',
                 'priority' => 5,
-                'required_facts' => [FactConstants::V_STEADY_LEARNER, FactConstants::SCORE_PASS],
+                'required_facts' => [FactConstants::V_STEADY_LEARNER],
                 'action_id' => $actionIds[ActionConstants::NEXT_QUESTION],
             ],
             [
@@ -266,7 +288,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'name' => 'Medium Mastery Achievement',
                 'domain' => 'Mastery',
                 'priority' => 2,
-                'required_facts' => [FactConstants::V_STEADY_LEARNER, FactConstants::V_MASTERY_MEDIUM],
+                'required_facts' => [FactConstants::V_MASTERY_MEDIUM],
                 'action_id' => $actionIds[ActionConstants::AWARD_BADGE],
             ],
             [
@@ -274,7 +296,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'name' => 'Beginner Mastery Milestone',
                 'domain' => 'Mastery',
                 'priority' => 5,
-                'required_facts' => [FactConstants::V_MASTERY_BEGINNER, FactConstants::SCORE_PASS],
+                'required_facts' => [FactConstants::V_MASTERY_BEGINNER],
                 'action_id' => $actionIds[ActionConstants::AWARD_BADGE],
             ],
             [
@@ -282,7 +304,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'name' => 'Streak Fire Bonus',
                 'domain' => 'Gamification',
                 'priority' => 0,
-                'required_facts' => [FactConstants::V_EXCELLENT_RESULT, FactConstants::TIME_QUICK],
+                'required_facts' => [FactConstants::V_EXCELLENT_RESULT],
                 'action_id' => $actionIds[ActionConstants::STREAK_BONUS],
             ],
             [
@@ -290,8 +312,42 @@ class AdaptiveRuleSeeder extends Seeder
                 'name' => 'Empathy Intervention',
                 'domain' => 'SafetyNet',
                 'priority' => 0,
-                'required_facts' => [FactConstants::V_STRUGGLING, FactConstants::TIME_SLOW],
+                'required_facts' => [FactConstants::V_STRUGGLING],
                 'action_id' => $actionIds[ActionConstants::EMPATHY_MSG],
+            ],
+
+            // ─── Direct Behavior Rules (No Virtual Fact Needed) ─────────────
+            [
+                'rule_code' => 'R16',
+                'name' => 'Flash Success',
+                'domain' => 'Progression',
+                'priority' => 15, // Low priority fallback
+                'required_facts' => [FactConstants::SCORE_PASS, FactConstants::TIME_QUICK],
+                'action_id' => $actionIds[ActionConstants::NEXT_QUESTION],
+            ],
+            [
+                'rule_code' => 'R17',
+                'name' => 'Persistent Struggle',
+                'domain' => 'Recovery',
+                'priority' => 4, 
+                'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::HINT_USED],
+                'action_id' => $actionIds[ActionConstants::REDUCE_DIFF],
+            ],
+            [
+                'rule_code' => 'R18',
+                'name' => 'Mastery Reward',
+                'domain' => 'Mastery',
+                'priority' => 8,
+                'required_facts' => [FactConstants::V_MASTERY_HARD, FactConstants::SCORE_PASS],
+                'action_id' => $actionIds[ActionConstants::AWARD_BADGE],
+            ],
+            [
+                'rule_code' => 'R19',
+                'name' => 'Lucky Beginner Jump',
+                'domain' => 'Progression',
+                'priority' => 3,
+                'required_facts' => [FactConstants::V_MASTERY_BEGINNER, FactConstants::TIME_QUICK, FactConstants::SCORE_PASS],
+                'action_id' => $actionIds[ActionConstants::INCREASE_DIFF],
             ],
 
             // ── Deduction Rules (Internal Logic) ──────────────────────────

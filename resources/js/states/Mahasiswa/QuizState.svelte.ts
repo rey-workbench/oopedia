@@ -230,18 +230,8 @@ export class QuestionShowState extends BaseState {
 
             this.showHint = false;
             this.showFeedback = true;
+            this.handleResponseSound(data.status, adaptiveResult);
 
-            // --- Play Sound Effects ---
-            if (data.status === 'success') {
-                const action = adaptiveResult?.triggered_rule?.action;
-                if (action === 'FINISH_MATERIAL' || action === 'NEXT_MATERIAL') {
-                    playSound('completed');
-                } else {
-                    playSound('correct');
-                }
-            } else {
-                playSound('wrong');
-            }
         } catch (err: unknown) {
             const message = isAxiosError(err)
                 ? ((err.response?.data as { message?: string })?.message ??
@@ -264,6 +254,22 @@ export class QuestionShowState extends BaseState {
         }
     }
 
+    private handleResponseSound(status: string, adaptiveResult: AdaptiveResult | null) {
+        if (status !== 'success') {
+            playSound('wrong');
+            return;
+        }
+
+        const flow = adaptiveResult?.triggered_rule?.action || 'NEXT';
+        const isTerminal = ['FINISH', 'REVIEW'].includes(flow);
+
+        if (isTerminal || adaptiveResult?.triggered_rule?.variant === 'certificate') {
+            playSound('completed');
+        } else {
+            playSound('correct');
+        }
+    }
+
     isNavigating = $state(false);
     handleNext() {
         if (this.isNavigating) return;
@@ -271,8 +277,11 @@ export class QuestionShowState extends BaseState {
 
         this.showFeedback = false;
         this.showHint = false;
-        if (this.feedbackData.nextUrl) {
-            router.visit(this.feedbackData.nextUrl, {
+
+        const nextUrl = this.feedbackData.ui?.url || this.feedbackData.nextUrl;
+
+        if (nextUrl) {
+            router.visit(nextUrl, {
                 onFinish: () => {
                     this.isNavigating = false;
                 },

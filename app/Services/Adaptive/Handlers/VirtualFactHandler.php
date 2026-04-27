@@ -19,18 +19,21 @@ final class VirtualFactHandler
             new Facts\Virtual\SteadyLearnerProcessor(),
             new Facts\Virtual\UnfocusedProcessor(),
             new Facts\Virtual\MasteryMilestoneProcessor(),
+            new Facts\Virtual\CrisisProcessor(),
+            new Facts\Virtual\HintAddictionProcessor(),
+            new Facts\Virtual\BoredomProcessor(),
         ];
     }
 
     /**
      * Derive virtual facts from primary facts.
      */
-    public function derive(array $facts): array
+    public function derive(array $facts, array $state): array
     {
         $virtual = [];
 
         foreach ($this->processors as $processor) {
-            $result = $processor->process($facts);
+            $result = $processor->process($facts, $state);
             if ($result) {
                 if (is_array($result)) {
                     $virtual = array_merge($virtual, $result);

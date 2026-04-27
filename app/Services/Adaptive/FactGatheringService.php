@@ -34,7 +34,7 @@ final class FactGatheringService implements FactGatheringServiceInterface
         $primaryFacts = $this->primaryHandler->gather($isCorrect, $usedHint, $timeSpent, $diffEnum);
 
         // 2. Derive Virtual Facts (V-codes)
-        $virtualFacts = $this->virtualHandler->derive($primaryFacts);
+        $virtualFacts = $this->virtualHandler->derive($primaryFacts, $studentState->adaptive_state ?? []);
 
         return array_values(array_unique([...$primaryFacts, ...$virtualFacts]));
     }

@@ -6,8 +6,8 @@ namespace App\Rules\Adaptive\Constants;
 
 final class ActionConstants
 {
-    // ── Action Codes (H-codes) ────────────────────────────────────────────────
-    public const string DEDUCTION      = 'H00'; // Silent deduction code in DB
+    // ── Primary Action Codes (H-codes) ────────────────────────────────────────
+    public const string DEDUCTION      = 'H00';
     public const string NEXT_QUESTION  = 'H01';
     public const string INCREASE_DIFF  = 'H02';
     public const string REDUCE_DIFF    = 'H03';
@@ -19,31 +19,30 @@ final class ActionConstants
     public const string EMPATHY_MSG    = 'H09';
 
     public const array NAMES = [
-        self::DEDUCTION      => 'Internal Logic',
-        self::NEXT_QUESTION  => 'Berikan Soal Berikutnya',
-        self::INCREASE_DIFF  => 'Treatment: Tingkatkan Kesulitan',
-        self::REDUCE_DIFF    => 'Treatment: Turunkan Kesulitan',
-        self::STUDY_MATERIAL => 'Treatment: Review Materi',
-        self::WRONG_ANSWER   => 'Tampilkan Feedback Kesalahan',
-        self::AWARD_BADGE    => 'Berikan Badge Penghargaan',
-        self::CELEBRATION    => 'Perayaan Kelulusan Modul',
-        self::STREAK_BONUS   => 'Bonus Beruntun (Streak)',
-        self::EMPATHY_MSG    => 'Pesan Empati & Motivasi',
+        self::DEDUCTION      => 'Logic Deduction',
+        self::NEXT_QUESTION  => 'Next Question',
+        self::INCREASE_DIFF  => 'Increase Difficulty',
+        self::REDUCE_DIFF    => 'Reduce Difficulty',
+        self::STUDY_MATERIAL => 'Remedial Review',
+        self::WRONG_ANSWER   => 'Wrong Feedback',
+        self::AWARD_BADGE    => 'Award Badge',
+        self::CELEBRATION    => 'Module Graduation',
+        self::STREAK_BONUS   => 'Streak Bonus',
+        self::EMPATHY_MSG    => 'Empathy Message',
     ];
 
-    // ── Action Labels (Operational Defaults) ──────────────────────────────────
-    public const string SILENT             = 'NO_ACTION';
-    public const string FINISH_MATERIAL    = 'FINISH_MATERIAL';
-    public const string LABEL_NEXT_QUESTION      = 'NEXT_QUESTION';
-    public const string LABEL_INCREASE_DIFFICULTY = 'INCREASE_DIFFICULTY';
-    public const string LABEL_REDUCE_DIFFICULTY   = 'REDUCE_DIFFICULTY';
-    public const string LABEL_STUDY_MATERIAL     = 'STUDY_MATERIAL';
+    // ── Pedagogical Flows ─────────────────────────────────────────────────────
+    public const string FLOW_NONE    = 'NONE';
+    public const string FLOW_NEXT    = 'NEXT';
+    public const string FLOW_UP      = 'UP';
+    public const string FLOW_DOWN    = 'DOWN';
+    public const string FLOW_REVIEW  = 'REVIEW';
+    public const string FLOW_FINISH  = 'FINISH';
 
-    // ── Action Instruction Keys ─────────────────────────────────────────────
-    public const string KEY_NEXT_ACTION   = 'next_action';
-    public const string KEY_LABEL         = 'label';
-    public const string KEY_MESSAGE       = 'message';
+    // ── Instruction Keys ──────────────────────────────────────────────────────
+    public const string KEY_FLOW          = 'flow';
     public const string KEY_TITLE         = 'title';
+    public const string KEY_MESSAGE       = 'message';
     public const string KEY_CERTIFICATION = 'certification';
     public const string KEY_BADGES        = 'badges';
 

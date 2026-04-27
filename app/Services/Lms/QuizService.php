@@ -464,7 +464,11 @@ final class QuizService implements QuizServiceInterface
             $engineResult = $this->adaptiveEngineService->evaluate(
                 $facts, 
                 $studentState->toArray(), 
-                ['material_id' => (string) $materialId, 'is_correct' => $isCorrect]
+                [
+                    'material_id' => (string) $materialId, 
+                    'sub_material_id' => $question->sub_material_id,
+                    'is_correct' => $isCorrect
+                ]
             );
             
             if (! empty($engineResult['new_state'])) {

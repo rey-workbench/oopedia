@@ -11,9 +11,9 @@ final class ModuleProcessor implements ActionProcessorInterface
 {
     public function process(array $instructions, array $state, array $context): array
     {
-        $nextAction = $instructions[ActionConstants::KEY_NEXT_ACTION] ?? null;
+        $flow = $instructions[ActionConstants::KEY_FLOW] ?? null;
 
-        if ($nextAction !== ActionConstants::FINISH_MATERIAL) {
+        if ($flow !== ActionConstants::FLOW_FINISH) {
             return $state;
         }
 

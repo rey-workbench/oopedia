@@ -24,7 +24,9 @@ interface PerformanceServiceInterface
         QuestionDifficulty $difficulty,
     ): int;
 
-    public function resetMaterialMetrics(string $userId): StudentState;
+    public function resetMaterialMetrics(string $userId, ?string $newMaterialId = null): StudentState;
+
+    public function syncMaterialContext(string $userId, string $materialId): StudentState;
 
     public function getStudentSessionState(string $userId): array;
 }

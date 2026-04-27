@@ -9,7 +9,7 @@ use App\Services\Adaptive\Handlers\Facts\VirtualFactProcessorInterface;
 
 final class MasteryMilestoneProcessor implements VirtualFactProcessorInterface
 {
-    public function process(array $facts): array|string|null
+    public function process(array $facts, array $state): array|string|null
     {
         $isPass = in_array(FactConstants::SCORE_PASS, $facts, true);
         if (!$isPass) {

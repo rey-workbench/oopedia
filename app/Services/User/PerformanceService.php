@@ -138,14 +138,25 @@ final class PerformanceService implements PerformanceServiceInterface
     }
 
     /** Reset navigation, streak, and wrong_streak when student switches material */
-    public function resetMaterialMetrics(string $userId): StudentState
+    public function resetMaterialMetrics(string $userId, ?string $newMaterialId = null): StudentState
     {
         return $this->studentStateRepo->update($userId, [
             StudentStateSchema::CURRENT_STREAK    => 0, // Per-module streak isolation
             StudentStateSchema::WRONG_STREAK      => 0,
             StudentStateSchema::TARGET_DIFFICULTY => null,
-            StudentStateSchema::CURRENT_MATERIAL_ID => null,
+            StudentStateSchema::CURRENT_MATERIAL_ID => $newMaterialId,
         ]);
+    }
+
+    public function syncMaterialContext(string $userId, string $materialId): StudentState
+    {
+        $state = $this->getStudentState($userId);
+
+        if ((string) $state->current_material_id !== (string) $materialId) {
+            return $this->resetMaterialMetrics($userId, $materialId);
+        }
+
+        return $state;
     }
 
     public function getStudentSessionState(string $userId): array

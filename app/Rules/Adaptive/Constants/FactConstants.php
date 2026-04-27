@@ -35,6 +35,9 @@ final class FactConstants
     public const string V_MASTERY_BEGINNER = 'V05';
     public const string V_MASTERY_MEDIUM   = 'V06';
     public const string V_MASTERY_HARD     = 'V07';
+    public const string V_HINT_DEPENDENT   = 'V08';
+    public const string V_CRISIS_STATE     = 'V09';
+    public const string V_BOREDOM_DETECTED = 'V10';
 
     public const array VIRTUAL_NAMES = [
         self::V_EXCELLENT_RESULT => 'Hasil Luar Biasa',
@@ -44,5 +47,8 @@ final class FactConstants
         self::V_MASTERY_BEGINNER => 'Penguasaan Tingkat Pemula',
         self::V_MASTERY_MEDIUM   => 'Penguasaan Tingkat Menengah',
         self::V_MASTERY_HARD     => 'Penguasaan Tingkat Ahli',
+        self::V_HINT_DEPENDENT   => 'Ketergantungan Bantuan',
+        self::V_CRISIS_STATE     => 'Krisis Pembelajaran',
+        self::V_BOREDOM_DETECTED => 'Potensi Kebosanan',
     ];
 }
