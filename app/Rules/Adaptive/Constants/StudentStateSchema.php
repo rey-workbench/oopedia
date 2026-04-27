@@ -11,7 +11,7 @@ final class StudentStateSchema
 {
     public const int DEFAULT_HINTS_AVAILABLE = 3;
 
-    // ─── Database Keys (StudentState Columns) ─────────────────────────
+    // ─── Database Keys (Flat mapping to Columns) ─────────────────────
     public const string GLOBAL_XP = 'xp';
     public const string CURRENT_LEVEL = 'level';
     public const string CURRENT_STREAK = 'streak';

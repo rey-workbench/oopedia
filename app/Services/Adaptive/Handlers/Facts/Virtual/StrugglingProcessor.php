@@ -13,7 +13,8 @@ final class StrugglingProcessor implements VirtualFactProcessorInterface
     {
         $isFail = in_array(FactConstants::SCORE_FAIL, $facts, true);
         $isSlow = in_array(FactConstants::TIME_SLOW, $facts, true);
+        $isHint = in_array(FactConstants::HINT_USED, $facts, true);
 
-        return ($isFail && $isSlow) ? FactConstants::V_STRUGGLING : null;
+        return ($isFail && ($isSlow || $isHint)) ? FactConstants::V_STRUGGLING : null;
     }
 }

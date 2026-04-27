@@ -28,7 +28,8 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
         private readonly Handlers\PrimaryFactHandler $primaryFactHandler,
         private readonly Handlers\VirtualFactHandler $virtualFactHandler,
         private readonly Handlers\ActionHandler $actionHandler,
-    ) {}
+    ) {
+    }
 
     /**
      * The main orchestrator. Reads like a story.
@@ -37,13 +38,13 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
     {
         // 1. Preparation
         $enrichedFacts = $this->getEnrichedFacts($facts, $state);
-        
+
         // 2. Inference (The Core Logic)
         $result = $this->runInference($enrichedFacts, $state, $context);
 
         // 3. Post-processing
         if ($result['is_empty']) {
-            $result['state'] = $this->applyFallbackNavigation($result['state'], (bool)($context['is_correct'] ?? false));
+            $result['state'] = $this->applyFallbackNavigation($result['state'], (bool) ($context['is_correct'] ?? false));
         }
 
         // 4. Persistence
@@ -64,11 +65,13 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 
         for ($i = 0; $i < self::MAX_CYCLES; $i++) {
             $rule = $this->selectBestRule($allRules, $memory);
-            if (!$rule) break;
+            if (!$rule)
+                break;
 
             $this->fireRule($rule, $memory, $context, $triggered);
 
-            if ($this->shouldStop($rule)) break;
+            if ($this->shouldStop($rule))
+                break;
         }
 
         return [
@@ -94,16 +97,22 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
     private function fireRule(AdaptiveRule $rule, array &$memory, array $context, array &$triggered): void
     {
         $actionCode = $rule->getActionCode();
-        $isDeductionOnly = ($actionCode === ActionConstants::DEDUCTION);
 
-        // Apply visual action
+        // A rule is deduction-only if it has no action code or matches the DEDUCTION constant
+        $isDeductionOnly = $actionCode === null || $actionCode === ActionConstants::DEDUCTION;
+
+        // Apply visual action and record as triggered if NOT a deduction-only rule
         if (!$isDeductionOnly) {
             $memory['state'] = $this->actionHandler->apply($rule->action?->instructions ?? [], $memory['state'], $context);
             $triggered[] = $rule;
         }
 
-        // Propagate facts
-        $memory['facts'] = array_values(array_unique(array_merge($memory['facts'], $rule->getDeducedFacts())));
+        // Propagate deduced facts to memory for the next cycle
+        $deduced = $rule->getDeducedFacts();
+        if (!empty($deduced)) {
+            $memory['facts'] = array_values(array_unique(array_merge($memory['facts'], $deduced)));
+        }
+
         $memory['fired'][] = $rule->rule_code;
     }
 
@@ -120,9 +129,20 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 
     private function shouldStop(AdaptiveRuleInterface $rule): bool
     {
+        $actionCode = $rule->getActionCode();
+
+        // If it's a deduction-only rule (no action or DEDUCTION constant), never stop
+        if ($actionCode === null || $actionCode === ActionConstants::DEDUCTION) {
+            return false;
+        }
+
+        // For visual actions (UP, DOWN, NEXT, REVIEW), we stop after the first one 
+        // to prevent multiple conflicting UI changes in a single response.
         return in_array($this->getFlow($rule), [
-            ActionConstants::FLOW_NEXT, ActionConstants::FLOW_UP, 
-            ActionConstants::FLOW_DOWN, ActionConstants::FLOW_REVIEW
+            ActionConstants::FLOW_NEXT,
+            ActionConstants::FLOW_UP,
+            ActionConstants::FLOW_DOWN,
+            ActionConstants::FLOW_REVIEW
         ], true);
     }
 
@@ -135,7 +155,7 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 
     private function getFlow(AdaptiveRuleInterface $rule): string
     {
-        return ($rule instanceof AdaptiveRule) 
+        return ($rule instanceof AdaptiveRule)
             ? ($rule->action?->instructions[ActionConstants::KEY_FLOW] ?? ActionConstants::FLOW_NEXT)
             : ActionConstants::FLOW_NEXT;
     }
@@ -149,7 +169,10 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 
     private function fetchActiveRules(): Collection
     {
-        return Cache::remember('adaptive_rules_v7', now()->addDay(), fn() => 
+        return Cache::remember(
+            'adaptive_rules_v7',
+            now()->addDay(),
+            fn() =>
             AdaptiveRule::with('action')->where('is_active', true)->ordered()->get()
         );
     }
@@ -157,7 +180,8 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
     private function logActivity(?AdaptiveRuleInterface $rule, array $old, array $new, array $facts, array $ctx): void
     {
         $user = Auth::user();
-        if (!$user || !$rule) return;
+        if (!$user || !$rule)
+            return;
 
         $keys = [StudentStateSchema::TARGET_DIFFICULTY, StudentStateSchema::GLOBAL_XP, StudentStateSchema::CURRENT_LEVEL];
         $delta = array_diff_assoc(array_intersect_key($new, array_flip($keys)), array_intersect_key($old, array_flip($keys)));
@@ -167,6 +191,7 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             'rule_code' => $rule->getRuleId(),
             'action_code' => $rule->getActionCode(),
             'trigger_facts' => $facts,
+            'new_state' => $new, // Add the full state snapshot
             'state_deltas' => $delta ?: [],
             'execution_context' => $ctx,
         ]);
@@ -208,6 +233,12 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
     }
 
     // Public API for metadata/admin
-    public function getAllRules(): array { return AdaptiveRule::with('action')->where('is_active', true)->ordered()->get()->toArray(); }
-    public function getRuleById(string $id): ?AdaptiveRuleInterface { return AdaptiveRule::with('action')->where('rule_code', $id)->first(); }
+    public function getAllRules(): array
+    {
+        return AdaptiveRule::with('action')->where('is_active', true)->ordered()->get()->toArray();
+    }
+    public function getRuleById(string $id): ?AdaptiveRuleInterface
+    {
+        return AdaptiveRule::with('action')->where('rule_code', $id)->first();
+    }
 }

@@ -19,7 +19,6 @@ class AdaptiveRuleSeeder extends Seeder
     public function run(): void
     {
         $this->cleanUp();
-
         $this->seedFacts();
         $this->seedActions();
         $this->seedRules();
@@ -37,18 +36,24 @@ class AdaptiveRuleSeeder extends Seeder
     private function seedFacts(): void
     {
         $facts = [
-            ['code' => FactConstants::SCORE_FAIL, 'category' => 'performance', 'name' => FactConstants::NAMES[FactConstants::SCORE_FAIL], 'description' => 'Siswa menjawab salah.'],
-            ['code' => FactConstants::SCORE_PASS, 'category' => 'performance', 'name' => FactConstants::NAMES[FactConstants::SCORE_PASS], 'description' => 'Siswa menjawab benar.'],
-            ['code' => FactConstants::TIME_QUICK, 'category' => 'time', 'name' => FactConstants::NAMES[FactConstants::TIME_QUICK], 'description' => 'Waktu pengerjaan cepat.'],
-            ['code' => FactConstants::TIME_SLOW, 'category' => 'time', 'name' => FactConstants::NAMES[FactConstants::TIME_SLOW], 'description' => 'Waktu pengerjaan lambat.'],
-            ['code' => FactConstants::HINT_USED, 'category' => 'behaviour', 'name' => FactConstants::NAMES[FactConstants::HINT_USED], 'description' => 'Menggunakan bantuan hint.'],
-            ['code' => FactConstants::V_EXCELLENT_RESULT, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_EXCELLENT_RESULT], 'description' => 'Hasil sangat baik dan cepat.'],
-            ['code' => FactConstants::V_STRUGGLING, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_STRUGGLING], 'description' => 'Mahasiswa sedang kesulitan.'],
-            ['code' => FactConstants::V_STEADY_LEARNER, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_STEADY_LEARNER], 'description' => 'Belajar dengan teliti.'],
-            ['code' => FactConstants::V_UNFOCUSED, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_UNFOCUSED], 'description' => 'Kurang fokus.'],
-            ['code' => FactConstants::V_MASTERY_BEGINNER, 'category' => 'mastery', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_MASTERY_BEGINNER], 'description' => 'Penguasaan materi tingkat pemula.'],
-            ['code' => FactConstants::V_MASTERY_MEDIUM, 'category' => 'mastery', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_MASTERY_MEDIUM], 'description' => 'Penguasaan materi tingkat menengah.'],
-            ['code' => FactConstants::V_MASTERY_HARD, 'category' => 'mastery', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_MASTERY_HARD], 'description' => 'Penguasaan materi tingkat ahli.'],
+            ['code' => FactConstants::SCORE_FAIL, 'category' => 'performance', 'name' => FactConstants::NAMES[FactConstants::SCORE_FAIL]],
+            ['code' => FactConstants::SCORE_PASS, 'category' => 'performance', 'name' => FactConstants::NAMES[FactConstants::SCORE_PASS]],
+            ['code' => FactConstants::TIME_QUICK, 'category' => 'time', 'name' => FactConstants::NAMES[FactConstants::TIME_QUICK]],
+            ['code' => FactConstants::TIME_SLOW, 'category' => 'time', 'name' => FactConstants::NAMES[FactConstants::TIME_SLOW]],
+            ['code' => FactConstants::HINT_USED, 'category' => 'behaviour', 'name' => FactConstants::NAMES[FactConstants::HINT_USED]],
+
+            // Difficulty Facts
+            ['code' => FactConstants::DIFF_BEGINNER, 'category' => 'difficulty', 'name' => FactConstants::NAMES[FactConstants::DIFF_BEGINNER]],
+            ['code' => FactConstants::DIFF_MEDIUM, 'category' => 'difficulty', 'name' => FactConstants::NAMES[FactConstants::DIFF_MEDIUM]],
+            ['code' => FactConstants::DIFF_HARD, 'category' => 'difficulty', 'name' => FactConstants::NAMES[FactConstants::DIFF_HARD]],
+
+            // Virtual Facts
+            ['code' => FactConstants::V_EXCELLENT_RESULT, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_EXCELLENT_RESULT]],
+            ['code' => FactConstants::V_STRUGGLING, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_STRUGGLING]],
+            ['code' => FactConstants::V_STEADY_LEARNER, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_STEADY_LEARNER]],
+            ['code' => FactConstants::V_UNFOCUSED, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_UNFOCUSED]],
+            ['code' => FactConstants::V_HINT_DEPENDENT, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_HINT_DEPENDENT]],
+            ['code' => FactConstants::V_CRISIS_STATE, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_CRISIS_STATE]],
         ];
 
         foreach ($facts as $fact) {
@@ -60,155 +65,48 @@ class AdaptiveRuleSeeder extends Seeder
     {
         $actions = [
             [
-                'code' => ActionConstants::DEDUCTION,
-                'variant' => 'silent',
-                'name' => ActionConstants::NAMES[ActionConstants::DEDUCTION],
-                'description' => 'Aksi tanpa efek samping (hanya deduksi fakta).',
-                'instructions' => [
-                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_NONE,
-                ]
-            ],
-            [
-                'code' => ActionConstants::NEXT_QUESTION,
-                'variant' => 'result',
-                'name' => ActionConstants::NAMES[ActionConstants::NEXT_QUESTION],
-                'description' => 'Lanjut ke pertanyaan berikutnya tanpa perubahan kesulitan.',
-                'instructions' => [
-                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_NEXT,
-                    ActionConstants::KEY_TITLE => 'Bagus!',
-                    ActionConstants::KEY_MESSAGE => 'Jawabanmu benar. Silakan lanjut ke soal berikutnya.',
-                    StudentStateSchema::GLOBAL_XP => ActionConstants::inc(PedagogicalConstants::XP_REWARD_BASE),
-                    StudentStateSchema::CURRENT_STREAK => ActionConstants::inc(1),
-                    StudentStateSchema::TOTAL_QUESTIONS_ANSWERED => ActionConstants::inc(1)
-                ]
+                'code' => ActionConstants::FEEDBACK,
+                'variant' => 'info',
+                'name' => ActionConstants::NAMES[ActionConstants::FEEDBACK],
+                'description' => 'Aksi universal untuk semua jenis pesan.',
+                'instructions' => [ActionConstants::KEY_FLOW => ActionConstants::FLOW_NEXT]
             ],
             [
                 'code' => ActionConstants::INCREASE_DIFF,
-                'variant' => 'result',
+                'variant' => 'acceleration',
                 'name' => ActionConstants::NAMES[ActionConstants::INCREASE_DIFF],
-                'description' => 'Tingkatkan tingkat kesulitan soal.',
+                'description' => 'Meningkatkan tantangan belajar.',
                 'instructions' => [
                     ActionConstants::KEY_FLOW => ActionConstants::FLOW_UP,
-                    ActionConstants::KEY_TITLE => 'Luar Biasa!',
-                    ActionConstants::KEY_MESSAGE => 'Kamu sangat cepat! Mari coba tantangan yang lebih sulit.',
-                    StudentStateSchema::TARGET_DIFFICULTY => 'next',
-                    StudentStateSchema::GLOBAL_XP => ActionConstants::inc(PedagogicalConstants::XP_REWARD_MEDIUM),
-                    StudentStateSchema::CURRENT_STREAK => ActionConstants::inc(1),
-                    StudentStateSchema::TOTAL_QUESTIONS_ANSWERED => ActionConstants::inc(1)
+                    StudentStateSchema::TARGET_DIFFICULTY => 'next'
                 ]
             ],
             [
                 'code' => ActionConstants::REDUCE_DIFF,
-                'variant' => 'result',
+                'variant' => 'recovery',
                 'name' => ActionConstants::NAMES[ActionConstants::REDUCE_DIFF],
-                'description' => 'Turunkan tingkat kesulitan soal.',
+                'description' => 'Menurunkan tantangan belajar.',
                 'instructions' => [
                     ActionConstants::KEY_FLOW => ActionConstants::FLOW_DOWN,
-                    ActionConstants::KEY_TITLE => 'Jangan Menyerah',
-                    ActionConstants::KEY_MESSAGE => 'Materi ini mungkin agak sulit. Mari kita coba dari dasar lagi.',
-                    StudentStateSchema::TARGET_DIFFICULTY => 'prev',
-                    StudentStateSchema::CURRENT_STREAK => '0',
-                    StudentStateSchema::TOTAL_QUESTIONS_ANSWERED => ActionConstants::inc(1)
-                ]
-            ],
-            [
-                'code' => ActionConstants::STUDY_MATERIAL,
-                'variant' => 'result',
-                'name' => ActionConstants::NAMES[ActionConstants::STUDY_MATERIAL],
-                'description' => 'Mengarahkan mahasiswa kembali ke materi.',
-                'instructions' => [
-                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_REVIEW,
-                    ActionConstants::KEY_TITLE => 'Saran Belajar',
-                    ActionConstants::KEY_MESSAGE => 'Kamu sepertinya butuh mereview materi ini kembali sebelum lanjut.',
-                    StudentStateSchema::CURRENT_STREAK => '0',
-                ]
-            ],
-            [
-                'code' => ActionConstants::WRONG_ANSWER,
-                'variant' => 'result',
-                'name' => ActionConstants::NAMES[ActionConstants::WRONG_ANSWER],
-                'description' => 'Notifikasi jawaban salah.',
-                'instructions' => [
-                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_NEXT,
-                    ActionConstants::KEY_TITLE => 'Belum Tepat',
-                    ActionConstants::KEY_MESSAGE => 'Jawabanmu belum benar. Mari coba soal lain.',
-                    StudentStateSchema::GLOBAL_XP => ActionConstants::inc(0),
-                    StudentStateSchema::CURRENT_STREAK => '0',
-                    StudentStateSchema::WRONG_COUNT => ActionConstants::inc(1),
-                    StudentStateSchema::TOTAL_QUESTIONS_ANSWERED => ActionConstants::inc(1)
-                ]
-            ],
-            [
-                'code' => ActionConstants::AWARD_BADGE,
-                'variant' => 'gamification',
-                'name' => ActionConstants::NAMES[ActionConstants::AWARD_BADGE],
-                'description' => 'Memberikan badge penghargaan.',
-                'instructions' => [
-                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_NONE,
-                    ActionConstants::KEY_TITLE => 'Pencapaian Baru!',
-                    ActionConstants::KEY_MESSAGE => 'Kamu mendapatkan badge baru atas performamu!',
-                    ActionConstants::KEY_BADGES => ['Fast Learner'],
-                    StudentStateSchema::GLOBAL_XP => ActionConstants::inc(50)
-                ]
-            ],
-            [
-                'code' => ActionConstants::CELEBRATION,
-                'variant' => 'acceleration',
-                'name' => ActionConstants::NAMES[ActionConstants::CELEBRATION],
-                'description' => 'Perayaan kelulusan modul.',
-                'instructions' => [
-                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_FINISH,
-                    ActionConstants::KEY_TITLE => 'Selamat! Kamu Lulus!',
-                    ActionConstants::KEY_MESSAGE => 'Kamu telah menguasai materi ini dengan sangat baik.',
-                    ActionConstants::KEY_CERTIFICATION => 'Gold',
-                    ActionConstants::KEY_BADGES => ['Module Conqueror'],
-                    StudentStateSchema::GLOBAL_XP => ActionConstants::inc(500)
+                    StudentStateSchema::TARGET_DIFFICULTY => 'prev'
                 ]
             ],
             [
                 'code' => ActionConstants::STREAK_BONUS,
-                'variant' => 'info',
+                'variant' => 'gamification',
                 'name' => ActionConstants::NAMES[ActionConstants::STREAK_BONUS],
-                'description' => 'Bonus XP untuk jawaban benar berturut-turut.',
+                'description' => 'Pemberian XP tambahan.',
                 'instructions' => [
                     ActionConstants::KEY_FLOW => ActionConstants::FLOW_NONE,
-                    ActionConstants::KEY_TITLE => 'Sedang Membara! 🔥',
-                    ActionConstants::KEY_MESSAGE => 'Kamu menjawab dengan cepat dan tepat! Bonus XP diberikan.',
                     StudentStateSchema::GLOBAL_XP => ActionConstants::inc(25)
                 ]
             ],
             [
-                'code' => ActionConstants::EMPATHY_MSG,
-                'variant' => 'warning',
-                'name' => ActionConstants::NAMES[ActionConstants::EMPATHY_MSG],
-                'description' => 'Pesan penyemangat saat mahasiswa kesulitan.',
-                'instructions' => [
-                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_DOWN,
-                    ActionConstants::KEY_TITLE => 'Jangan Menyerah! 💪',
-                    ActionConstants::KEY_MESSAGE => 'Materi ini mungkin terasa sulit, tapi kamu pasti bisa. Mari kita coba soal yang lebih mendasar.',
-                ]
-            ],
-            [
-                'code' => 'H10',
+                'code' => ActionConstants::REMEDIAL,
                 'variant' => 'danger',
-                'name' => 'Intervensi Krisis',
-                'description' => 'Aksi darurat ketika mahasiswa gagal berkali-kali.',
-                'instructions' => [
-                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_REVIEW,
-                    ActionConstants::KEY_TITLE => 'Sistem Mendeteksi Kesulitan Serius ⚠️',
-                    ActionConstants::KEY_MESSAGE => 'Kamu telah mencoba berkali-kali namun belum berhasil. Kami menyarankanmu untuk beristirahat sejenak dan mempelajari video tutorial ini sebelum melanjutkan.',
-                ]
-            ],
-            [
-                'code' => 'H11',
-                'variant' => 'info',
-                'name' => 'Edukasi Bantuan',
-                'description' => 'Mengingatkan mahasiswa agar tidak terlalu bergantung pada hint.',
-                'instructions' => [
-                    ActionConstants::KEY_FLOW => ActionConstants::FLOW_NEXT,
-                    ActionConstants::KEY_TITLE => 'Tips Belajar 💡',
-                    ActionConstants::KEY_MESSAGE => 'Kami melihat kamu sering menggunakan bantuan. Cobalah untuk mengerjakan soal berikutnya tanpa bantuan agar pemahamanmu lebih kuat!',
-                ]
+                'name' => ActionConstants::NAMES[ActionConstants::REMEDIAL],
+                'description' => 'Mengarahkan siswa kembali ke materi belajar.',
+                'instructions' => [ActionConstants::KEY_FLOW => ActionConstants::FLOW_REVIEW]
             ],
         ];
 
@@ -222,187 +120,101 @@ class AdaptiveRuleSeeder extends Seeder
         $actionIds = AdaptiveAction::pluck('id', 'code');
 
         $rules = [
-            // ... (keep existing R01-R12) ...
-            [
-                'rule_code' => 'R13',
-                'name' => 'Emergency Crisis Intervention',
-                'domain' => 'SafetyNet',
-                'priority' => -1, // Prioritas sangat tinggi
-                'required_facts' => [FactConstants::V_CRISIS_STATE],
-                'action_id' => $actionIds['H10'],
-            ],
-            [
-                'rule_code' => 'R14',
-                'name' => 'Hint Dependency Warning',
-                'domain' => 'Behaviour',
-                'priority' => 4,
-                'required_facts' => [FactConstants::V_HINT_DEPENDENT, FactConstants::SCORE_PASS],
-                'action_id' => $actionIds['H11'],
-            ],
-            [
-                'rule_code' => 'R15',
-                'name' => 'Anti-Boredom Fast Track',
-                'domain' => 'Progression',
-                'priority' => 2,
-                'required_facts' => [FactConstants::V_BOREDOM_DETECTED],
-                'action_id' => $actionIds[ActionConstants::INCREASE_DIFF],
-            ],
-            // ─── Promotion Rules (Treatment: Accelerate) ────────────────────
+            // ─── DEDUCTIONS (Raw ➔ Virtual) ──────────────────────────────────
+            ['rule_code' => 'D01', 'name' => 'Deduce Excellent', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::TIME_QUICK], 'deduced_facts' => [FactConstants::V_EXCELLENT_RESULT]],
+            ['rule_code' => 'D02', 'name' => 'Deduce Struggle (S)', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::TIME_SLOW], 'deduced_facts' => [FactConstants::V_STRUGGLING]],
+            ['rule_code' => 'D03', 'name' => 'Deduce Struggle (H)', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::HINT_USED], 'deduced_facts' => [FactConstants::V_STRUGGLING]],
+            ['rule_code' => 'D04', 'name' => 'Deduce Steady', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::TIME_SLOW], 'deduced_facts' => [FactConstants::V_STEADY_LEARNER]],
+            ['rule_code' => 'D05', 'name' => 'Deduce Unfocused', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::TIME_QUICK], 'deduced_facts' => [FactConstants::V_UNFOCUSED]],
+            ['rule_code' => 'D06', 'name' => 'Deduce Hint Dependency', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::HINT_USED], 'deduced_facts' => [FactConstants::V_HINT_DEPENDENT]],
+            ['rule_code' => 'D07', 'name' => 'Deduce Crisis', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::HINT_USED, FactConstants::TIME_SLOW], 'deduced_facts' => [FactConstants::V_CRISIS_STATE]],
+
+            // ─── ACTIONS (Virtual + Context ➔ Core Actions) ──────────────────
+
+            // 1. Excellent Paths
             [
                 'rule_code' => 'R01',
-                'name' => 'Fast Track for Experts',
-                'domain' => 'Progression',
-                'priority' => 1,
-                'required_facts' => [FactConstants::V_MASTERY_HARD, FactConstants::V_EXCELLENT_RESULT],
-                'action_id' => $actionIds[ActionConstants::CELEBRATION],
-            ],
-            [
-                'rule_code' => 'R03',
-                'name' => 'Adaptive Difficulty Up',
-                'domain' => 'Progression',
-                'priority' => 3,
-                'required_facts' => [FactConstants::V_EXCELLENT_RESULT],
-                'action_id' => $actionIds[ActionConstants::INCREASE_DIFF],
-            ],
-
-            // ─── Intervention Rules (Treatment: Recovery) ───────────────────
-            [
-                'rule_code' => 'R07',
-                'name' => 'Crisis Intervention',
-                'domain' => 'SafetyNet',
-                'priority' => 1,
-                'required_facts' => [FactConstants::V_UNFOCUSED],
-                'action_id' => $actionIds[ActionConstants::STUDY_MATERIAL],
-            ],
-            // ─── Mastery Rules (Treatment: Rewards) ─────────────────────────
-            [
-                'rule_code' => 'R06',
-                'name' => 'Steady Progress Path',
-                'domain' => 'Progression',
-                'priority' => 5,
-                'required_facts' => [FactConstants::V_STEADY_LEARNER],
-                'action_id' => $actionIds[ActionConstants::NEXT_QUESTION],
-            ],
-            [
-                'rule_code' => 'R10',
-                'name' => 'Medium Mastery Achievement',
+                'name' => 'Expert Success Reward',
                 'domain' => 'Mastery',
-                'priority' => 2,
-                'required_facts' => [FactConstants::V_MASTERY_MEDIUM],
-                'action_id' => $actionIds[ActionConstants::AWARD_BADGE],
-            ],
-            [
-                'rule_code' => 'R04',
-                'name' => 'Beginner Mastery Milestone',
-                'domain' => 'Mastery',
-                'priority' => 5,
-                'required_facts' => [FactConstants::V_MASTERY_BEGINNER],
-                'action_id' => $actionIds[ActionConstants::AWARD_BADGE],
-            ],
-            [
-                'rule_code' => 'R11',
-                'name' => 'Streak Fire Bonus',
-                'domain' => 'Gamification',
-                'priority' => 0,
-                'required_facts' => [FactConstants::V_EXCELLENT_RESULT],
+                'priority' => 1,
+                'required_facts' => [FactConstants::V_EXCELLENT_RESULT, FactConstants::DIFF_HARD],
                 'action_id' => $actionIds[ActionConstants::STREAK_BONUS],
             ],
             [
-                'rule_code' => 'R12',
-                'name' => 'Empathy Intervention',
-                'domain' => 'SafetyNet',
-                'priority' => 0,
-                'required_facts' => [FactConstants::V_STRUGGLING],
-                'action_id' => $actionIds[ActionConstants::EMPATHY_MSG],
-            ],
-
-            // ─── Direct Behavior Rules (No Virtual Fact Needed) ─────────────
-            [
-                'rule_code' => 'R16',
-                'name' => 'Flash Success',
+                'rule_code' => 'R02',
+                'name' => 'Success Promotion',
                 'domain' => 'Progression',
-                'priority' => 15, // Low priority fallback
-                'required_facts' => [FactConstants::SCORE_PASS, FactConstants::TIME_QUICK],
-                'action_id' => $actionIds[ActionConstants::NEXT_QUESTION],
-            ],
-            [
-                'rule_code' => 'R17',
-                'name' => 'Persistent Struggle',
-                'domain' => 'Recovery',
-                'priority' => 4, 
-                'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::HINT_USED],
-                'action_id' => $actionIds[ActionConstants::REDUCE_DIFF],
-            ],
-            [
-                'rule_code' => 'R18',
-                'name' => 'Mastery Reward',
-                'domain' => 'Mastery',
-                'priority' => 8,
-                'required_facts' => [FactConstants::V_MASTERY_HARD, FactConstants::SCORE_PASS],
-                'action_id' => $actionIds[ActionConstants::AWARD_BADGE],
-            ],
-            [
-                'rule_code' => 'R19',
-                'name' => 'Lucky Beginner Jump',
-                'domain' => 'Progression',
-                'priority' => 3,
-                'required_facts' => [FactConstants::V_MASTERY_BEGINNER, FactConstants::TIME_QUICK, FactConstants::SCORE_PASS],
+                'priority' => 2,
+                'required_facts' => [FactConstants::V_EXCELLENT_RESULT],
                 'action_id' => $actionIds[ActionConstants::INCREASE_DIFF],
             ],
 
-            // ── Deduction Rules (Internal Logic) ──────────────────────────
+            // 2. Struggle Paths
             [
-                'rule_code' => 'D01',
-                'name' => 'Deduce Excellent Result',
-                'domain' => 'Deduction',
-                'priority' => 0,
-                'required_facts' => [FactConstants::SCORE_PASS, FactConstants::TIME_QUICK],
-                'deduced_facts' => [FactConstants::V_EXCELLENT_RESULT],
-                'action_id' => null,
+                'rule_code' => 'R03',
+                'name' => 'Struggle Recovery',
+                'domain' => 'Recovery',
+                'priority' => 1,
+                'required_facts' => [FactConstants::V_STRUGGLING],
+                'action_id' => $actionIds[ActionConstants::REDUCE_DIFF],
             ],
             [
-                'rule_code' => 'D02',
-                'name' => 'Deduce Struggle',
-                'domain' => 'Deduction',
+                'rule_code' => 'R04',
+                'name' => 'Beginner Empathy',
+                'domain' => 'SafetyNet',
                 'priority' => 0,
-                'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::TIME_SLOW],
-                'deduced_facts' => [FactConstants::V_STRUGGLING],
-                'action_id' => null,
+                'required_facts' => [FactConstants::V_STRUGGLING, FactConstants::DIFF_BEGINNER],
+                'action_id' => $actionIds[ActionConstants::FEEDBACK],
+            ],
+
+            /**
+             * Helper to create/update a rule and its associated action.
+             */
+            // [Helper logic would be implemented here in a real scenario, but keeping the original structure as requested]
+
+            // 3. Special Behaviors
+            [
+                'rule_code' => 'R05',
+                'name' => 'Crisis Emergency',
+                'domain' => 'SafetyNet',
+                'priority' => -1,
+                'required_facts' => [FactConstants::V_CRISIS_STATE],
+                'action_id' => $actionIds[ActionConstants::REMEDIAL],
             ],
             [
-                'rule_code' => 'D03',
-                'name' => 'Deduce Steady Learner',
-                'domain' => 'Deduction',
-                'priority' => 0,
-                'required_facts' => [FactConstants::SCORE_PASS, FactConstants::TIME_SLOW],
-                'deduced_facts' => [FactConstants::V_STEADY_LEARNER],
-                'action_id' => null,
+                'rule_code' => 'R06',
+                'name' => 'Unfocused Redirection',
+                'domain' => 'SafetyNet',
+                'priority' => 1,
+                'required_facts' => [FactConstants::V_UNFOCUSED],
+                'action_id' => $actionIds[ActionConstants::REMEDIAL],
             ],
             [
-                'rule_code' => 'D04',
-                'name' => 'Deduce Unfocused',
-                'domain' => 'Deduction',
-                'priority' => 0,
-                'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::TIME_QUICK],
-                'deduced_facts' => [FactConstants::V_UNFOCUSED],
-                'action_id' => null,
+                'rule_code' => 'R07',
+                'name' => 'Steady Navigation',
+                'domain' => 'Progression',
+                'priority' => 5,
+                'required_facts' => [FactConstants::V_STEADY_LEARNER],
+                'action_id' => $actionIds[ActionConstants::FEEDBACK],
             ],
             [
-                'rule_code' => 'D05',
-                'name' => 'Deduce Hint Struggle',
-                'domain' => 'Deduction',
-                'priority' => 0,
-                'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::HINT_USED],
-                'deduced_facts' => [FactConstants::V_STRUGGLING],
-                'action_id' => null,
+                'rule_code' => 'R08',
+                'name' => 'Hint Addiction Tips',
+                'domain' => 'Behaviour',
+                'priority' => 10,
+                'required_facts' => [FactConstants::V_HINT_DEPENDENT, FactConstants::SCORE_PASS],
+                'action_id' => $actionIds[ActionConstants::FEEDBACK],
             ],
+
+            // ─── FALLBACKS ───────────────────────────────────────────────────
+            ['rule_code' => 'F01', 'name' => 'Success Fallback', 'domain' => 'Fallback', 'priority' => 99, 'required_facts' => [FactConstants::SCORE_PASS], 'action_id' => $actionIds[ActionConstants::FEEDBACK]],
+            ['rule_code' => 'F02', 'name' => 'Failure Fallback', 'domain' => 'Fallback', 'priority' => 99, 'required_facts' => [FactConstants::SCORE_FAIL], 'action_id' => $actionIds[ActionConstants::FEEDBACK]],
         ];
 
         foreach ($rules as $rule) {
             AdaptiveRule::create($rule + ['is_active' => true]);
         }
 
-        \Illuminate\Support\Facades\Cache::forget('adaptive_rules_all');
-        \Illuminate\Support\Facades\Cache::forget('adaptive_rules_count');
+        \Illuminate\Support\Facades\Cache::forget('adaptive_rules_v7');
     }
 }

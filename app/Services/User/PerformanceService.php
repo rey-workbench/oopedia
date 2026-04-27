@@ -59,7 +59,7 @@ final class PerformanceService implements PerformanceServiceInterface
         } else {
             $diff     = abs($visualTime - $textualTime) / $totalTime;
             $newStyle = $diff < PedagogicalConstants::RATIO_STYLE_MIXED
-                ? PedagogicalConstants::STYLE_MIXED
+                ? LearningStyle::MIXED->value
                 : ($visualTime > $textualTime ? LearningStyle::VISUAL->value : LearningStyle::TEXTUAL->value);
         }
 
@@ -178,7 +178,7 @@ final class PerformanceService implements PerformanceServiceInterface
             ],
             'adaptive' => [
                 'fast_track_active' => $state->fast_track_active ?? false,
-                'learning_style'    => $state->learning_style    ?? PedagogicalConstants::STYLE_MIXED,
+                'learning_style'    => $state->learning_style    ?? LearningStyle::MIXED->value,
             ],
         ];
     }

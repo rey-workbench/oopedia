@@ -11,10 +11,9 @@ final class HintAddictionProcessor implements VirtualFactProcessorInterface
 {
     public function process(array $facts, array $state): array|string|null
     {
-        $usedHint = in_array(FactConstants::HINT_USED, $facts, true);
-        $isStruggling = in_array(FactConstants::V_STRUGGLING, $facts, true);
+        $isPass = in_array(FactConstants::SCORE_PASS, $facts, true);
+        $isHint = in_array(FactConstants::HINT_USED, $facts, true);
 
-        // Mahasiswa dianggap tergantung bantuan jika dia sedang kesulitan DAN masih menekan hint
-        return ($usedHint && $isStruggling) ? FactConstants::V_HINT_DEPENDENT : null;
+        return ($isPass && $isHint) ? FactConstants::V_HINT_DEPENDENT : null;
     }
 }

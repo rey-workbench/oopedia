@@ -10,20 +10,17 @@ final class CertificationProcessor implements ActionProcessorInterface
 {
     public function process(array $instructions, array $state, array $context): array
     {
-        $tier = $instructions[ActionConstants::KEY_CERTIFICATION] ?? null;
+        $cert = $instructions[ActionConstants::KEY_CERTIFICATION] ?? null;
 
-        if (!$tier) {
-            return $state;
-        }
-
-        $materialId = $context['material_id'] ?? null;
-        if (!$materialId) {
+        if (!$cert) {
             return $state;
         }
 
         $certs = $state['certifications'] ?? [];
-        $certs[(string) $materialId] = strtolower($tier);
-        $state['certifications'] = $certs;
+        if (!in_array($cert, $certs, true)) {
+            $certs[] = $cert;
+            $state['certifications'] = array_values(array_unique($certs));
+        }
 
         return $state;
     }

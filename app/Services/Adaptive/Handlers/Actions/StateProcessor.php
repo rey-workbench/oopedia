@@ -11,11 +11,10 @@ use App\Rules\Adaptive\Constants\StudentStateSchema;
 final class StateProcessor implements ActionProcessorInterface
 {
     private const METADATA_KEYS = [
-        ActionConstants::KEY_NEXT_ACTION,
+        ActionConstants::KEY_FLOW,
         ActionConstants::KEY_BADGES,
         ActionConstants::KEY_MESSAGE,
         ActionConstants::KEY_TITLE,
-        ActionConstants::KEY_LABEL,
         ActionConstants::KEY_CERTIFICATION
     ];
 

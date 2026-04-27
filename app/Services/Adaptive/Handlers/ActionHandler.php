@@ -17,6 +17,7 @@ final class ActionHandler
         // Define the pipeline order
         $this->processors = [
             new Actions\ModuleProcessor(),
+            new Actions\DifficultyProcessor(),
             new Actions\BadgeProcessor(),
             new Actions\CertificationProcessor(),
             new Actions\StateProcessor(),
