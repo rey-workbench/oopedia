@@ -32,47 +32,55 @@
     const actionData = $derived(analyticsState.allActions);
     const rules = $derived(analyticsState.rulesByDomain.flatMap((d) => d.rules));
 
+    // ─── CONFIGURATION & CONSTANTS ──────────────────────────────────────────
+    const GRAPH_CONFIG = {
+        colWidth: 350,
+        itemHeight: 50,
+        verticalGap: 24,
+        startX: 180,
+        maxTopologyIterations: 30,
+        barycenterIterations: 12,
+        initialScale: 0.7,
+    };
+
+    let isInitialized = false;
     let zoom: d3.ZoomBehavior<SVGSVGElement, unknown>;
     let mainGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
 
+    /**
+     * Main orchestration function for the visualization.
+     */
     function initSchematic() {
         if (!svgRef || !containerRef || !factData || factData.length === 0) return;
 
-        const width = containerRef.clientWidth;
+        const dimensions = prepareCanvas();
+        const nodeRegistry = resolveGraphTopology();
+        const links = buildGraphLinks(nodeRegistry);
+        const nodes = Array.from(nodeRegistry.values());
+
+        calculateSpatialCoordinates(nodes, links, dimensions.height);
+        renderGraph(nodes, links, dimensions.width, dimensions.height);
+    }
+
+    /**
+     * Prepares the SVG canvas, markers, and zoom behavior.
+     */
+    function prepareCanvas() {
+        const width = containerRef!.clientWidth;
         const height = isFullscreen ? window.innerHeight - 100 : 750;
 
         const svg = d3
-            .select(svgRef)
+            .select(svgRef!)
             .attr('viewBox', `0 0 ${width} ${height}`)
             .attr('width', width)
             .attr('height', height);
 
         svg.selectAll('*').remove();
+        setupMarkers(svg.append('defs'));
 
-        const defs = svg.append('defs');
-
-        const createMarker = (id: string, color: string) => {
-            defs.append('marker')
-                .attr('id', id)
-                .attr('viewBox', '0 -5 10 10')
-                .attr('refX', 10)
-                .attr('refY', 0)
-                .attr('markerWidth', 5)
-                .attr('markerHeight', 5)
-                .attr('orient', 'auto')
-                .append('path')
-                .attr('d', 'M0,-5L10,0L0,5')
-                .attr('fill', color);
-        };
-
-        createMarker('arrow-requirement', '#cbd5e1'); // Slate
-        createMarker('arrow-deduction', '#60a5fa'); // Blue
-        createMarker('arrow-action', '#34d399'); // Emerald
-
-        zoom = d3
-            .zoom<SVGSVGElement, unknown>()
+        zoom = d3.zoom<SVGSVGElement, unknown>()
             .scaleExtent([0.1, 4])
-            .on('zoom', (event: d3.D3ZoomEvent<SVGSVGElement, unknown>) => {
+            .on('zoom', (event) => {
                 mainGroup.attr('transform', event.transform.toString());
                 zoomLevel = event.transform.k;
             });
@@ -84,15 +92,42 @@
         });
 
         mainGroup = svg.append('g');
+        return { width, height, svg };
+    }
 
-        // 1. Calculate Nodes and Depths (DAG Topo Sort)
-        const nodesCalc = new Map();
+    function setupMarkers(defs: d3.Selection<SVGDefsElement, unknown, null, undefined>) {
+        const markers = [
+            { id: 'arrow-requirement', color: '#cbd5e1' },
+            { id: 'arrow-deduction', color: '#60a5fa' },
+            { id: 'arrow-action', color: '#34d399' },
+        ];
 
-        // Init Raw Facts (depth 0)
+        markers.forEach(({ id, color }) => {
+            defs.append('marker')
+                .attr('id', id)
+                .attr('viewBox', '0 -5 10 10')
+                .attr('refX', 10)
+                .attr('refY', 0)
+                .attr('markerWidth', 5)
+                .attr('markerHeight', 5)
+                .attr('orient', 'auto')
+                .append('path')
+                .attr('d', 'M0,-5L10,0L0,5')
+                .attr('fill', color);
+        });
+    }
+
+    /**
+     * Resolves nodes and their hierarchical depths using an iterative DAG topo-sort.
+     */
+    function resolveGraphTopology() {
+        const nodeRegistry = new Map<string, any>();
+
+        // Phase 1: Initialize Raw Facts
         factData
             .filter((f) => !f.code.startsWith('V'))
             .forEach((f) => {
-                nodesCalc.set(`raw_fact_${f.code}`, {
+                nodeRegistry.set(`raw_fact_${f.code}`, {
                     type: 'raw_fact',
                     depth: 0,
                     data: f,
@@ -100,395 +135,355 @@
                 });
             });
 
-        let changed = true;
-        let maxIter = 20; // safe circuit breaker
-        while (changed && maxIter > 0) {
-            changed = false;
-            maxIter--;
+        // Phase 2: Iteratively resolve rules, virtual facts, and actions
+        let hasTopologyChanged = true;
+        let iterations = GRAPH_CONFIG.maxTopologyIterations;
 
-            rules.forEach((r) => {
-                const requiredFacts = r.required_facts || [];
-                let allResolved = true;
-                let maxDepth = -1;
+        while (hasTopologyChanged && iterations-- > 0) {
+            hasTopologyChanged = false;
 
-                for (const req of requiredFacts) {
-                    let source =
-                        nodesCalc.get(`raw_fact_${req}`) || nodesCalc.get(`virtual_fact_${req}`);
-                    if (!source) {
-                        allResolved = false;
-                        break;
-                    }
-                    maxDepth = Math.max(maxDepth, source.depth);
-                }
+            rules.forEach((rule) => {
+                const prerequisites = rule.required_facts || [];
+                const resolvedSources = prerequisites.map(p => 
+                    nodeRegistry.get(`raw_fact_${p}`) || nodeRegistry.get(`virtual_fact_${p}`)
+                );
 
-                if (allResolved && !nodesCalc.has(`rule_${r.id}`)) {
-                    const ruleDepth = maxDepth + 1;
-                    nodesCalc.set(`rule_${r.id}`, {
+                const isResolved = resolvedSources.every(s => !!s);
+                if (!isResolved) return;
+
+                const maxPrereqDepth = Math.max(...resolvedSources.map(s => s.depth));
+                const ruleDepth = maxPrereqDepth + 1;
+
+                // Register Rule Gate
+                const ruleNodeId = `rule_${rule.id}`;
+                if (!nodeRegistry.has(ruleNodeId)) {
+                    nodeRegistry.set(ruleNodeId, {
                         type: 'gate',
                         depth: ruleDepth,
-                        data: r,
-                        id: `r_${r.id}`,
+                        data: rule,
+                        id: `r_${rule.id}`,
                     });
-                    changed = true;
+                    hasTopologyChanged = true;
+                }
 
-                    if (r.deduced_facts) {
-                        r.deduced_facts.forEach((df: string) => {
-                            const vFact = factData.find((f) => f.code === df);
-                            if (vFact && !nodesCalc.has(`virtual_fact_${df}`)) {
-                                nodesCalc.set(`virtual_fact_${df}`, {
-                                    type: 'virtual_fact',
-                                    depth: ruleDepth + 1,
-                                    data: vFact,
-                                    id: `vf_${df}`,
-                                });
-                            }
-                        });
-                    }
+                // Register Deduced Facts
+                if (rule.deduced_facts) {
+                    rule.deduced_facts.forEach((code: string) => {
+                        if (registerVirtualFact(nodeRegistry, code, ruleDepth + 1)) {
+                            hasTopologyChanged = true;
+                        }
+                    });
+                }
 
-                    const actionObj = actionData.find((a) => a.id === r.action_id);
-                    // Avoid action explicitly marked silent or null
-                    if (actionObj && actionObj.code !== 'H00' && !nodesCalc.has(`action_${r.id}`)) {
-                        nodesCalc.set(`action_${r.id}`, {
-                            type: 'action',
-                            depth: ruleDepth + 1,
-                            data: actionObj,
-                            id: `a_${r.id}`,
-                            sourceRule: r.id,
-                        });
-                    }
+                // Register Resulting Actions
+                if (registerAction(nodeRegistry, rule, ruleDepth + 1)) {
+                    hasTopologyChanged = true;
                 }
             });
         }
 
-        const nodes = Array.from(nodesCalc.values());
+        return nodeRegistry;
+    }
 
-        // 2. Build Links
+    function registerVirtualFact(registry: Map<string, any>, code: string, depth: number) {
+        const fact = factData.find((f) => f.code === code);
+        if (!fact) return false;
+
+        const factId = `virtual_fact_${code}`;
+        const existing = registry.get(factId);
+
+        if (!existing) {
+            registry.set(factId, {
+                type: 'virtual_fact',
+                depth: depth,
+                data: fact,
+                id: `vf_${code}`,
+            });
+            return true;
+        }
+
+        if (existing.depth < depth) {
+            existing.depth = depth;
+            return true;
+        }
+
+        return false;
+    }
+
+    function registerAction(registry: Map<string, any>, rule: any, depth: number) {
+        const action = actionData.find((a) => a.id === rule.action_id || a.code === rule.action_code);
+        if (!action || action.code === 'H00') return false;
+
+        const actionId = `action_${rule.id}`;
+        if (!registry.has(actionId)) {
+            registry.set(actionId, {
+                type: 'action',
+                depth: depth,
+                data: action,
+                id: `a_${rule.id}`,
+                sourceRule: rule.id,
+            });
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Builds relational links between resolved nodes.
+     */
+    function buildGraphLinks(nodeRegistry: Map<string, any>) {
         const links: any[] = [];
-        rules.forEach((r) => {
-            const gateNode = nodesCalc.get(`rule_${r.id}`);
+
+        rules.forEach((rule) => {
+            const gateNode = nodeRegistry.get(`rule_${rule.id}`);
             if (!gateNode) return;
 
-            (r.required_facts || []).forEach((req) => {
-                const sourceNode =
-                    nodesCalc.get(`raw_fact_${req}`) || nodesCalc.get(`virtual_fact_${req}`);
-                if (sourceNode) {
-                    links.push({ source: sourceNode, target: gateNode, type: 'requirement' });
-                }
+            // Link Prerequisites -> Gate
+            (rule.required_facts || []).forEach((code) => {
+                const source = nodeRegistry.get(`raw_fact_${code}`) || nodeRegistry.get(`virtual_fact_${code}`);
+                if (source) links.push({ source, target: gateNode, type: 'requirement' });
             });
 
-            if (r.deduced_facts) {
-                r.deduced_facts.forEach((df: string) => {
-                    const targetNode = nodesCalc.get(`virtual_fact_${df}`);
-                    if (targetNode) {
-                        links.push({ source: gateNode, target: targetNode, type: 'deduction' });
-                    }
-                });
-            }
+            // Link Gate -> Deduced Facts
+            (rule.deduced_facts || []).forEach((code) => {
+                const target = nodeRegistry.get(`virtual_fact_${code}`);
+                if (target) links.push({ source: gateNode, target, type: 'deduction' });
+            });
 
-            if (nodesCalc.has(`action_${r.id}`)) {
-                const targetNode = nodesCalc.get(`action_${r.id}`);
-                links.push({ source: gateNode, target: targetNode, type: 'action' });
-            }
+            // Link Gate -> Final Action
+            const actionNode = nodeRegistry.get(`action_${rule.id}`);
+            if (actionNode) links.push({ source: gateNode, target: actionNode, type: 'action' });
         });
 
-        // 3. Assign Spatial Coordinates via Custom DAG Layering
-        const colWidth = 300;
-        const itemHeight = 45;
-        const verticalGap = 16;
-        const startX = 140;
+        return links;
+    }
 
+    /**
+     * Orchestrates the spatial layout using a barycenter-based relaxation.
+     */
+    function calculateSpatialCoordinates(nodes: any[], links: any[], containerHeight: number) {
         const depthGroups: Record<number, any[]> = {};
-        nodes.forEach((n: any) => {
+        nodes.forEach((n) => {
             if (!depthGroups[n.depth]) depthGroups[n.depth] = [];
             depthGroups[n.depth]!.push(n);
         });
 
-        const depths = Object.keys(depthGroups)
-            .map(Number)
-            .sort((a, b) => a - b);
+        const depths = Object.keys(depthGroups).map(Number).sort((a, b) => a - b);
 
-        // Pass 1: Initial sequential Y
+        // Pass 1: Initial Layout
         depths.forEach((d) => {
-            depthGroups[d]!.forEach((n, i) => (n.y = i * (itemHeight + verticalGap)));
+            depthGroups[d]!.forEach((n, i) => (n.y = i * (GRAPH_CONFIG.itemHeight + GRAPH_CONFIG.verticalGap)));
         });
 
-        // Pass 2: Iterative relaxation (Barycenter heuristic)
-        for (let iter = 0; iter < 10; iter++) {
-            // Forward pass (left to right)
-            depths.forEach((d) => {
-                if (d === 0) return;
-                depthGroups[d]!.forEach((n: any) => {
-                    const sources = links.filter((l) => l.target === n).map((l) => l.source);
-                    if (sources.length > 0) {
-                        n.y = sources.reduce((sum, s) => sum + s.y, 0) / sources.length;
-                    }
-                });
-
-                depthGroups[d]!.sort((a, b) => a.y - b.y);
-
-                // Pack to resolve overlaps
-                if (depthGroups[d]!.length > 0) {
-                    let currentY = depthGroups[d]![0].y;
-                    depthGroups[d]!.forEach((n: any, i: number) => {
-                        if (i > 0) {
-                            currentY = Math.max(currentY + itemHeight + verticalGap, n.y);
-                        }
-                        n.y = currentY;
-                    });
-                }
-            });
-
-            // Backward pass (right to left)
-            [...depths].reverse().forEach((d) => {
-                if (d === depths[depths.length - 1]) return;
-                depthGroups[d]!.forEach((n: any) => {
-                    const targets = links.filter((l) => l.source === n).map((l) => l.target);
-                    if (targets.length > 0) {
-                        n.y = targets.reduce((sum, t) => sum + t.y, 0) / targets.length;
-                    }
-                });
-
-                depthGroups[d]!.sort((a, b) => a.y - b.y);
-
-                // Pack to resolve overlaps
-                if (depthGroups[d]!.length > 0) {
-                    let currentY = depthGroups[d]![0].y;
-                    depthGroups[d]!.forEach((n: any, i: number) => {
-                        if (i > 0) {
-                            currentY = Math.max(currentY + itemHeight + verticalGap, n.y);
-                        }
-                        n.y = currentY;
-                    });
-                }
-            });
+        // Pass 2: Iterative Barycenter Optimization
+        for (let i = 0; i < GRAPH_CONFIG.barycenterIterations; i++) {
+            optimizeLayoutLayer(depths, depthGroups, links, true);
+            optimizeLayoutLayer([...depths].reverse(), depthGroups, links, false);
         }
 
-        // 4. Center layers and apply X
-        let minY = Infinity,
-            maxY = -Infinity;
-        let maxX = -Infinity;
+        centerAndProject(depths, depthGroups, containerHeight);
+    }
 
-        const targetCenterY = Math.max(700, height) / 2;
+    function optimizeLayoutLayer(depths: number[], groups: Record<number, any[]>, links: any[], forward: boolean) {
+        depths.forEach((d) => {
+            const group = groups[d]!;
+            if (d === (forward ? depths[0] : depths[depths.length - 1])) return;
+
+            group.forEach((node) => {
+                const relatives = links
+                    .filter((l) => (forward ? l.target === node : l.source === node))
+                    .map((l) => (forward ? l.source : l.target));
+
+                if (relatives.length > 0) {
+                    node.y = relatives.reduce((sum, r) => sum + r.y, 0) / relatives.length;
+                }
+            });
+
+            group.sort((a, b) => a.y - b.y);
+            resolveLayerOverlaps(group);
+        });
+    }
+
+    function resolveLayerOverlaps(group: any[]) {
+        if (group.length === 0) return;
+        let currentY = group[0].y;
+        group.forEach((node, i) => {
+            if (i > 0) {
+                currentY = Math.max(currentY + GRAPH_CONFIG.itemHeight + GRAPH_CONFIG.verticalGap, node.y);
+            }
+            node.y = currentY;
+        });
+    }
+
+    function centerAndProject(depths: number[], groups: Record<number, any[]>, height: number) {
+        const centerRefY = height / 2;
+        let maxX = 0;
+        let minY = Infinity, maxY = -Infinity;
 
         depths.forEach((d) => {
-            const group = depthGroups[d] ?? [];
+            const group = groups[d]!;
             if (group.length === 0) return;
-            const groupCenterY = (group[0].y + group[group.length - 1].y + itemHeight) / 2;
-            const offset = targetCenterY - groupCenterY;
+            const groupCenterY = (group[0].y + group[group.length - 1].y + GRAPH_CONFIG.itemHeight) / 2;
+            const offset = centerRefY - groupCenterY;
 
-            group.forEach((n: any) => {
-                n.x = startX + n.depth * colWidth;
-                n.y += offset;
-
-                if (n.y < minY) minY = n.y;
-                if (n.y > maxY) maxY = n.y;
-                if (n.x > maxX) maxX = n.x;
+            group.forEach((node) => {
+                node.x = GRAPH_CONFIG.startX + node.depth * GRAPH_CONFIG.colWidth;
+                node.y += offset;
+                if (node.x > maxX) maxX = node.x;
+                minY = Math.min(minY, node.y);
+                maxY = Math.max(maxY, node.y);
             });
         });
 
-        // 4. DRAWING
+        return { maxX, minY, maxY };
+    }
 
-        resetD3Flow = () => {
-            mainGroup
-                .selectAll('.link')
-                .classed('flow-active', false)
-                .attr('stroke-opacity', 0.6)
-                .attr('stroke-width', 2.5);
-            mainGroup
-                .selectAll('.rect-node, .gate-node')
-                .attr('opacity', 1)
-                .classed('opacity-100', true);
-        };
+    /**
+     * D3 Rendering Implementation
+     */
+    function renderGraph(nodes: any[], links: any[], width: number, height: number) {
+        // Compute bounding box for zoom-to-fit
+        const maxX = Math.max(...nodes.map(n => n.x), 100);
+        const minY = Math.min(...nodes.map(n => n.y), 0);
+        const maxY = Math.max(...nodes.map(n => n.y), 100);
 
-        function highlightFlow(clickedNode: any) {
-            resetD3Flow();
+        drawLinks(links);
+        drawNodes(nodes);
 
-            const activeLinks = new Set();
-            const activeNodes = new Set([clickedNode]);
-
-            // Traverse downstream (outcomes)
-            function traverseDownstream(node: any) {
-                links
-                    .filter((l) => l.source === node)
-                    .forEach((l) => {
-                        activeLinks.add(l);
-                        activeNodes.add(l.target);
-                        traverseDownstream(l.target);
-                    });
-            }
-
-            // Traverse upstream (prerequisites)
-            function traverseUpstream(node: any) {
-                links
-                    .filter((l) => l.target === node)
-                    .forEach((l) => {
-                        activeLinks.add(l);
-                        activeNodes.add(l.source);
-                        traverseUpstream(l.source);
-                    });
-            }
-
-            traverseDownstream(clickedNode);
-            traverseUpstream(clickedNode);
-
-            mainGroup
-                .selectAll('.rect-node, .gate-node')
-                .attr('opacity', (n: any) => (activeNodes.has(n) ? 1 : 0.2));
-
-            mainGroup
-                .selectAll('.link')
-                .attr('stroke-opacity', (l: any) => (activeLinks.has(l) ? 1 : 0.1))
-                .attr('stroke-width', (l: any) => (activeLinks.has(l) ? 3.5 : 1.5))
-                .classed('flow-active', (l: any) => activeLinks.has(l));
+        const initialScale = Math.min(GRAPH_CONFIG.initialScale, width / (maxX + 280));
+        
+        if (!isInitialized) {
+            d3.select(svgRef!).call(
+                zoom.transform,
+                d3.zoomIdentity
+                    .translate(width/2 - (maxX/2)*initialScale, height/2 - ((maxY+minY)/2)*initialScale)
+                    .scale(initialScale)
+            );
+            isInitialized = true;
         }
+    }
 
-        mainGroup
-            .selectAll('.link')
+    function drawLinks(links: any[]) {
+        mainGroup.selectAll('.link')
             .data(links)
             .enter()
             .append('path')
             .attr('class', 'link')
-            .attr('d', (d: any) => {
-                const sx = d.source.x + (d.source.type === 'gate' ? 22 : 90);
-                const sy = d.source.y;
-                const tx = d.target.x - (d.target.type === 'gate' ? 22 : 90);
-                const ty = d.target.y;
-                return `M${sx},${sy}C${(sx + tx) / 2},${sy} ${(sx + tx) / 2},${ty} ${tx},${ty}`;
-            })
+            .attr('d', generateBezierPath)
             .attr('fill', 'none')
-            .attr('stroke', (d) => {
-                if (d.type === 'deduction') return '#60a5fa'; // Blue
-                if (d.type === 'action') return '#34d399'; // Emerald
-                return '#cbd5e1'; // Slate (requirement)
-            })
-            .attr('stroke-width', 2.5)
-            .attr('stroke-opacity', 0.6)
-            .attr('marker-end', (d) => {
-                if (d.type === 'deduction') return 'url(#arrow-deduction)';
-                if (d.type === 'action') return 'url(#arrow-action)';
-                return 'url(#arrow-requirement)';
-            });
+            .attr('stroke', (d) => getLinkColor(d.type))
+            .attr('stroke-width', 2)
+            .attr('stroke-opacity', 0.4)
+            .attr('marker-end', (d) => `url(#arrow-${d.type})`);
+    }
 
-        // Render Rectangular Nodes (Facts, Virtual Facts, Actions)
+    function generateBezierPath(d: any) {
+        const sx = d.source.x + (d.source.type === 'gate' ? 25 : 100);
+        const sy = d.source.y;
+        const tx = d.target.x - (d.target.type === 'gate' ? 25 : 100);
+        const ty = d.target.y;
+        const dx = tx - sx;
+        return `M${sx},${sy}C${sx + dx/2},${sy} ${sx + dx/2},${ty} ${tx},${ty}`;
+    }
+
+    function getLinkColor(type: string) {
+        const colors = { deduction: '#3b82f6', action: '#10b981', requirement: '#94a3b8' };
+        return colors[type as keyof typeof colors] || '#94a3b8';
+    }
+
+    function drawNodes(nodes: any[]) {
         const rectNodes = nodes.filter((n) => n.type !== 'gate');
-        const rectG = mainGroup
-            .selectAll('.rect-node')
+        const gateNodes = nodes.filter((n) => n.type === 'gate');
+
+        const nodeSelection = mainGroup.selectAll('.rect-node')
             .data(rectNodes)
             .enter()
             .append('g')
             .attr('transform', (d) => `translate(${d.x},${d.y})`)
-            .attr(
-                'class',
-                'rect-node cursor-pointer outline-none select-none transition-opacity duration-300'
-            )
-            .on('click', (event, d) => {
-                selectedNode = d;
-                highlightFlow(d);
-                event.stopPropagation();
-            });
+            .attr('class', 'rect-node cursor-pointer select-none')
+            .on('click', (event, d) => handleNodeClick(d, event));
 
-        rectG
-            .append('rect')
-            .attr('width', 180)
-            .attr('height', 36)
-            .attr('x', -90)
-            .attr('y', -18)
-            .attr('fill', (d) => {
-                if (d.type === 'virtual_fact') return '#eff6ff'; // pale blue
-                if (d.type === 'action') return '#059669'; // deep emerald
-                return '#ffffff';
-            })
-            .attr('stroke', (d) => {
-                if (d.type === 'virtual_fact') return '#3b82f6';
-                if (d.type === 'action') return '#047857';
-                return '#e2e8f0';
-            })
-            .attr('stroke-width', 1.5)
-            .attr('rx', (d) => (d.type === 'action' ? 18 : 6)); // More rounded for action terminals
+        nodeSelection.append('rect')
+            .attr('width', 200).attr('height', 40).attr('x', -100).attr('y', -20).attr('rx', (d) => (d.type === 'action' ? 20 : 12))
+            .attr('fill', (d) => getNodeFill(d.type))
+            .attr('stroke', (d) => getNodeStroke(d.type))
+            .attr('stroke-width', 2).attr('class', 'shadow-sm');
 
-        rectG
-            .append('text')
-            .attr('text-anchor', 'middle')
-            .attr('dominant-baseline', 'middle')
-            .attr(
-                'class',
-                (d) =>
-                    `text-[10px] font-bold ${d.type === 'action' ? 'fill-white' : d.type === 'virtual_fact' ? 'fill-blue-700' : 'fill-slate-700'}`
-            )
+        nodeSelection.append('text').attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
+            .attr('class', (d) => `text-[11px] font-bold ${d.type === 'action' ? 'fill-white' : 'fill-slate-800'}`)
             .text((d) => d.data.name);
 
-        // Render Gate Nodes (AND)
-        const gateNodes = nodes.filter((n) => n.type === 'gate');
-        const gateG = mainGroup
-            .selectAll('.gate-node')
-            .data(gateNodes)
-            .enter()
-            .append('g')
-            .attr('transform', (d) => `translate(${d.x},${d.y})`)
-            .attr('class', 'gate-node cursor-pointer select-none transition-opacity duration-300')
-            .on('click', (event, d) => {
-                selectedNode = d;
-                highlightFlow(d);
-                event.stopPropagation();
-            });
+        const gateSelection = mainGroup.selectAll('.gate-node')
+            .data(gateNodes).enter().append('g').attr('transform', (d) => `translate(${d.x},${d.y})`)
+            .attr('class', 'gate-node cursor-pointer select-none')
+            .on('click', (event, d) => handleNodeClick(d, event));
 
-        gateG
-            .append('circle')
-            .attr('r', 20)
-            .attr('fill', '#f8fafc')
-            .attr('stroke', '#64748b')
-            .attr('stroke-width', 2);
-
-        gateG
-            .append('text')
-            .attr('text-anchor', 'middle')
-            .attr('dominant-baseline', 'middle')
-            .attr('class', 'text-[9px] font-black fill-slate-800 tracking-tighter')
-            .text('AND');
-
-        gateG
-            .append('text')
-            .attr('text-anchor', 'middle')
-            .attr('y', 32)
-            .attr('class', 'text-[8px] font-black fill-slate-400 uppercase tracking-widest')
-            .text((d) => d.data.id);
-
-        // Center on start, fit graph width
-        const totalWidth = maxX + 240;
-        const totalHeight = Math.max(height, maxY - minY + 200);
-        const initialScale = Math.min(0.85, width / totalWidth);
-        const yOffset = (height - totalHeight * initialScale) / 2;
-
-        // Center view on the graph content
-        svg.call(
-            zoom.transform,
-            d3.zoomIdentity
-                .translate(80, Math.max(50, -minY * initialScale + yOffset))
-                .scale(initialScale)
-        );
+        gateSelection.append('circle').attr('r', 24).attr('fill', '#0f172a').attr('stroke', '#334155').attr('stroke-width', 2);
+        gateSelection.append('text').attr('text-anchor', 'middle').attr('dominant-baseline', 'middle').attr('class', 'text-[10px] font-bold fill-white antialiased').text('AND');
+        gateSelection.append('text').attr('text-anchor', 'middle').attr('y', 38).attr('class', 'text-[9px] font-medium fill-slate-400 uppercase tracking-wider').text((d) => d.data.rule_code);
     }
+
+    function getNodeFill(type: string) {
+        if (type === 'virtual_fact') return '#f0f7ff';
+        if (type === 'action') return '#065f46';
+        return '#ffffff';
+    }
+
+    function getNodeStroke(type: string) {
+        if (type === 'virtual_fact') return '#3b82f6';
+        if (type === 'action') return '#047857';
+        return '#cbd5e1';
+    }
+
+    function handleNodeClick(d: any, event: MouseEvent) {
+        selectedNode = d;
+        highlightFlow(d);
+        event.stopPropagation();
+    }
+
+    function highlightFlow(clickedNode: any) {
+        resetD3Flow();
+        const activeLinks = new Set();
+        const activeNodes = new Set([clickedNode]);
+
+        const traverse = (node: any, direction: 'source' | 'target') => {
+            const relKey = direction === 'source' ? 'target' : 'source';
+            mainGroup.selectAll('.link').each(function(l: any) {
+                if (l[direction] === node) {
+                    activeLinks.add(l);
+                    activeNodes.add(l[relKey]);
+                    traverse(l[relKey], direction);
+                }
+            });
+        };
+
+        traverse(clickedNode, 'source');
+        traverse(clickedNode, 'target');
+
+        mainGroup.selectAll('.rect-node, .gate-node').attr('opacity', (n: any) => (activeNodes.has(n) ? 1 : 0.15));
+        mainGroup.selectAll('.link').attr('stroke-opacity', (l: any) => (activeLinks.has(l) ? 1 : 0.05))
+            .attr('stroke-width', (l: any) => (activeLinks.has(l) ? 4 : 1.5))
+            .classed('flow-active', (l: any) => activeLinks.has(l));
+    }
+
+    resetD3Flow = () => {
+        mainGroup.selectAll('.link').classed('flow-active', false).attr('stroke-opacity', 0.4).attr('stroke-width', 2);
+        mainGroup.selectAll('.rect-node, .gate-node').attr('opacity', 1);
+    };
 
     function resetView() {
         if (!svgRef || !zoom) return;
-        d3.select(svgRef)
-            .transition()
-            .duration(750)
-            .call(zoom.transform, d3.zoomIdentity.translate(80, 50).scale(0.8));
+        d3.select(svgRef).transition().duration(750).call(zoom.transform, d3.zoomIdentity.translate(80, 50).scale(0.8));
     }
 
     onMount(() => {
         initSchematic();
         window.addEventListener('resize', initSchematic);
-        
-        const handleFullscreenChange = () => {
-            isFullscreen = !!document.fullscreenElement;
-            setTimeout(initSchematic, 100);
-        };
-        document.addEventListener('fullscreenchange', handleFullscreenChange);
-        
+        const handleFullscreen = () => { isFullscreen = !!document.fullscreenElement; setTimeout(initSchematic, 100); };
+        document.addEventListener('fullscreenchange', handleFullscreen);
         return () => {
             window.removeEventListener('resize', initSchematic);
-            document.removeEventListener('fullscreenchange', handleFullscreenChange);
+            document.removeEventListener('fullscreenchange', handleFullscreen);
         };
     });
 
@@ -500,18 +495,8 @@
 
     async function toggleFullscreen() {
         if (!containerRef) return;
-        
-        if (!document.fullscreenElement) {
-            try {
-                await containerRef.requestFullscreen();
-            } catch (err) {
-                console.error('Error attempting to enable fullscreen:', err);
-            }
-        } else {
-            if (document.exitFullscreen) {
-                await document.exitFullscreen();
-            }
-        }
+        if (!document.fullscreenElement) await containerRef.requestFullscreen();
+        else await document.exitFullscreen();
     }
 </script>
 
@@ -523,7 +508,7 @@
     }
     :global(.flow-active) {
         stroke-dasharray: 8;
-        animation: flow 0.5s linear infinite;
+        animation: flow 1.5s linear infinite;
     }
     @keyframes flow {
         from {
@@ -617,7 +602,7 @@
             </div>
         </div>
 
-        <!-- Node Details -->
+        <!-- Node Details -->       
         {#if selectedNode}
             <div
                 class="animate-in zoom-in-95 fade-in absolute bottom-6 left-6 w-[320px] overflow-hidden rounded-3xl border-2 border-slate-100 bg-white shadow-2xl duration-300"
@@ -744,7 +729,7 @@
                                         Kode Aturan
                                     </p>
                                     <p class="font-mono text-xs font-black text-slate-900">
-                                        {selectedNode.data.id}
+                                        {selectedNode.data.rule_code}
                                     </p>
                                 </div>
                                 <div class="rounded-2xl border border-slate-100 bg-slate-50 p-3">
