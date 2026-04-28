@@ -186,17 +186,6 @@ final class ProgressRepository implements ProgressRepositoryInterface
             ->get();
     }
 
-    public function getAttemptCount(string $userId, string $materialId, string $questionId): int
-    {
-        if ($userId === 'guest') {
-            return 0;
-        }
-
-        return QuizAttempt::where('user_id', $userId)
-            ->where('question_id', $questionId)
-            ->count();
-    }
-
     public function saveProgress(array $data): QuizAttempt
     {
         if ($data['user_id'] === 'guest') {
@@ -236,20 +225,17 @@ final class ProgressRepository implements ProgressRepositoryInterface
             return;
         }
 
-        // StudentState sudah di-flatten, update kolom secara langsung
         $this->studentStateRepo->update($userId, [
-            StudentStateSchema::GLOBAL_XP                => $attributes[StudentStateSchema::GLOBAL_XP]                ?? null,
-            StudentStateSchema::CURRENT_LEVEL            => $attributes[StudentStateSchema::CURRENT_LEVEL]            ?? null,
-            StudentStateSchema::CURRENT_STREAK           => $attributes[StudentStateSchema::CURRENT_STREAK]           ?? null,
-            StudentStateSchema::MAX_STREAK               => $attributes[StudentStateSchema::MAX_STREAK]               ?? null,
-            StudentStateSchema::TOTAL_QUESTIONS_ANSWERED => $attributes[StudentStateSchema::TOTAL_QUESTIONS_ANSWERED] ?? null,
-            StudentStateSchema::CORRECT_COUNT            => $attributes[StudentStateSchema::CORRECT_COUNT]            ?? null,
-            StudentStateSchema::WRONG_COUNT              => $attributes[StudentStateSchema::WRONG_COUNT]              ?? null,
-            StudentStateSchema::WRONG_STREAK             => $attributes[StudentStateSchema::WRONG_STREAK]             ?? null,
-            StudentStateSchema::HINTS_USED_COUNT         => $attributes[StudentStateSchema::HINTS_USED_COUNT]         ?? null,
-            StudentStateSchema::HINTS_AVAILABLE          => $attributes[StudentStateSchema::HINTS_AVAILABLE]          ?? null,
-            StudentStateSchema::LEARNING_STYLE           => $attributes[StudentStateSchema::LEARNING_STYLE]           ?? null,
-            'last_active_at'                             => now(),
+            StudentStateSchema::XP              => $attributes[StudentStateSchema::XP]              ?? null,
+            StudentStateSchema::LEVEL           => $attributes[StudentStateSchema::LEVEL]           ?? null,
+            StudentStateSchema::STREAK          => $attributes[StudentStateSchema::STREAK]          ?? null,
+            StudentStateSchema::MAX_STREAK      => $attributes[StudentStateSchema::MAX_STREAK]      ?? null,
+            StudentStateSchema::TOTAL_ANSWERED  => $attributes[StudentStateSchema::TOTAL_ANSWERED]  ?? null,
+            StudentStateSchema::CORRECT_COUNT   => $attributes[StudentStateSchema::CORRECT_COUNT]   ?? null,
+            StudentStateSchema::WRONG_COUNT     => $attributes[StudentStateSchema::WRONG_COUNT]     ?? null,
+            StudentStateSchema::HINTS_USED      => $attributes[StudentStateSchema::HINTS_USED]      ?? null,
+            StudentStateSchema::HINTS_AVAILABLE => $attributes[StudentStateSchema::HINTS_AVAILABLE] ?? null,
+            'last_active_at'                    => now(),
         ]);
     }
 
@@ -277,18 +263,6 @@ final class ProgressRepository implements ProgressRepositoryInterface
         return QuizAttempt::where('user_id', $userId)
             ->whereRelation('question', 'material_id', $materialId)
             ->where('is_correct', true)
-            ->distinct()
-            ->pluck('question_id');
-    }
-
-    public function getAttemptedQuestionIds(string $userId, string $materialId): Collection
-    {
-        if ($userId === 'guest') {
-            return collect([]);
-        }
-
-        return QuizAttempt::where('user_id', $userId)
-            ->whereRelation('question', 'material_id', $materialId)
             ->distinct()
             ->pluck('question_id');
     }
@@ -375,43 +349,6 @@ final class ProgressRepository implements ProgressRepositoryInterface
             });
     }
 
-    public function getByUserAndMaterial(string $userId, string $materialId): Collection
-    {
-        if ($userId === 'guest') {
-            return collect();
-        }
-
-        return QuizAttempt::where('user_id', $userId)
-            ->whereRelation('question', 'material_id', $materialId)
-            ->with(['question', 'answer'])
-            ->orderBy('created_at', 'asc')
-            ->get()
-            ->pipe(fn ($c) => collect($c));
-    }
-
-    public function getConsecutiveFailures(?string $userId, string $questionId): int
-    {
-        if (is_null($userId)) {
-            return 0;
-        }
-
-        $attempts = QuizAttempt::where('user_id', $userId)
-            ->where('question_id', $questionId)
-            ->orderBy('created_at', 'desc')
-            ->take(10)
-            ->get();
-
-        $consecutiveFails = 0;
-        foreach ($attempts as $attempt) {
-            if ($attempt->is_correct) {
-                break;
-            }
-            $consecutiveFails++;
-        }
-
-        return $consecutiveFails;
-    }
-
     public function getStudentState(?string $userId): ?StudentState
     {
         if (is_null($userId) || $userId === 'guest') {
@@ -426,55 +363,11 @@ final class ProgressRepository implements ProgressRepositoryInterface
         $defaults = StudentStateSchema::defaults();
 
         if (is_null($userId) || $userId === 'guest') {
-            return new StudentState([
-                'user_id' => 'guest',
-                // Gamification
-                StudentStateSchema::GLOBAL_XP      => $defaults[StudentStateSchema::GLOBAL_XP],
-                StudentStateSchema::CURRENT_LEVEL  => $defaults[StudentStateSchema::CURRENT_LEVEL],
-                StudentStateSchema::CURRENT_STREAK => $defaults[StudentStateSchema::CURRENT_STREAK],
-                StudentStateSchema::MAX_STREAK     => $defaults[StudentStateSchema::MAX_STREAK],
-                StudentStateSchema::BADGES         => $defaults[StudentStateSchema::BADGES],
-                // Learning profile
-                StudentStateSchema::LEARNING_STYLE    => $defaults[StudentStateSchema::LEARNING_STYLE],
-                StudentStateSchema::UNLOCKED_MODULES  => $defaults[StudentStateSchema::UNLOCKED_MODULES],
-                StudentStateSchema::CERTIFICATIONS    => $defaults[StudentStateSchema::CERTIFICATIONS],
-                StudentStateSchema::TIME_DISTRIBUTION => $defaults[StudentStateSchema::TIME_DISTRIBUTION],
-                // Performance
-                StudentStateSchema::TOTAL_QUESTIONS_ANSWERED => $defaults[StudentStateSchema::TOTAL_QUESTIONS_ANSWERED],
-                StudentStateSchema::CORRECT_COUNT            => $defaults[StudentStateSchema::CORRECT_COUNT],
-                StudentStateSchema::WRONG_COUNT              => $defaults[StudentStateSchema::WRONG_COUNT],
-                StudentStateSchema::WRONG_STREAK             => $defaults[StudentStateSchema::WRONG_STREAK],
-                StudentStateSchema::HINTS_USED_COUNT         => $defaults[StudentStateSchema::HINTS_USED_COUNT],
-                StudentStateSchema::HINTS_AVAILABLE          => $defaults[StudentStateSchema::HINTS_AVAILABLE],
-                // Navigation
-                StudentStateSchema::CURRENT_MATERIAL_ID => $defaults[StudentStateSchema::CURRENT_MATERIAL_ID],
-                StudentStateSchema::TARGET_DIFFICULTY   => $defaults[StudentStateSchema::TARGET_DIFFICULTY],
-            ]);
+            return new StudentState(array_merge($defaults, ['user_id' => 'guest']));
         }
 
-        return StudentState::firstOrCreate(['user_id' => $userId], [
-            // Gamification
-            StudentStateSchema::GLOBAL_XP      => $defaults[StudentStateSchema::GLOBAL_XP],
-            StudentStateSchema::CURRENT_LEVEL  => $defaults[StudentStateSchema::CURRENT_LEVEL],
-            StudentStateSchema::CURRENT_STREAK => $defaults[StudentStateSchema::CURRENT_STREAK],
-            StudentStateSchema::MAX_STREAK     => $defaults[StudentStateSchema::MAX_STREAK],
-            StudentStateSchema::BADGES         => $defaults[StudentStateSchema::BADGES],
-            // Learning profile
-            StudentStateSchema::LEARNING_STYLE    => $defaults[StudentStateSchema::LEARNING_STYLE],
-            StudentStateSchema::UNLOCKED_MODULES  => $defaults[StudentStateSchema::UNLOCKED_MODULES],
-            StudentStateSchema::CERTIFICATIONS    => $defaults[StudentStateSchema::CERTIFICATIONS],
-            StudentStateSchema::TIME_DISTRIBUTION => $defaults[StudentStateSchema::TIME_DISTRIBUTION],
-            // Performance
-            StudentStateSchema::TOTAL_QUESTIONS_ANSWERED => $defaults[StudentStateSchema::TOTAL_QUESTIONS_ANSWERED],
-            StudentStateSchema::CORRECT_COUNT            => $defaults[StudentStateSchema::CORRECT_COUNT],
-            StudentStateSchema::WRONG_COUNT              => $defaults[StudentStateSchema::WRONG_COUNT],
-            StudentStateSchema::WRONG_STREAK             => $defaults[StudentStateSchema::WRONG_STREAK],
-            StudentStateSchema::HINTS_USED_COUNT         => $defaults[StudentStateSchema::HINTS_USED_COUNT],
-            StudentStateSchema::HINTS_AVAILABLE          => $defaults[StudentStateSchema::HINTS_AVAILABLE],
-            // Navigation
-            StudentStateSchema::CURRENT_MATERIAL_ID => $defaults[StudentStateSchema::CURRENT_MATERIAL_ID],
-            StudentStateSchema::TARGET_DIFFICULTY   => $defaults[StudentStateSchema::TARGET_DIFFICULTY],
-            'last_active_at'                        => now(),
-        ]);
+        return StudentState::firstOrCreate(['user_id' => $userId], array_merge($defaults, [
+            'last_active_at' => now(),
+        ]));
     }
 }

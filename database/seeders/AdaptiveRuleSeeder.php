@@ -9,9 +9,7 @@ use App\Models\AdaptiveFact;
 use App\Models\AdaptiveRule;
 use App\Rules\Adaptive\Constants\ActionConstants;
 use App\Rules\Adaptive\Constants\FactConstants;
-use App\Rules\Adaptive\Constants\StudentStateSchema;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class AdaptiveRuleSeeder extends Seeder
@@ -35,33 +33,11 @@ class AdaptiveRuleSeeder extends Seeder
 
     private function seedFacts(): void
     {
-        $facts = [
-            ['code' => FactConstants::SCORE_FAIL, 'category' => 'performance', 'name' => FactConstants::NAMES[FactConstants::SCORE_FAIL]],
-            ['code' => FactConstants::SCORE_PASS, 'category' => 'performance', 'name' => FactConstants::NAMES[FactConstants::SCORE_PASS]],
-            ['code' => FactConstants::TIME_QUICK, 'category' => 'time', 'name' => FactConstants::NAMES[FactConstants::TIME_QUICK]],
-            ['code' => FactConstants::TIME_SLOW, 'category' => 'time', 'name' => FactConstants::NAMES[FactConstants::TIME_SLOW]],
-            ['code' => FactConstants::HINT_USED, 'category' => 'behaviour', 'name' => FactConstants::NAMES[FactConstants::HINT_USED]],
-
-            // Difficulty Facts
-            ['code' => FactConstants::DIFF_BEGINNER, 'category' => 'difficulty', 'name' => FactConstants::NAMES[FactConstants::DIFF_BEGINNER]],
-            ['code' => FactConstants::DIFF_MEDIUM, 'category' => 'difficulty', 'name' => FactConstants::NAMES[FactConstants::DIFF_MEDIUM]],
-            ['code' => FactConstants::DIFF_HARD, 'category' => 'difficulty', 'name' => FactConstants::NAMES[FactConstants::DIFF_HARD]],
-
-            // Virtual Facts
-            ['code' => FactConstants::V_EXCELLENT_RESULT, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_EXCELLENT_RESULT]],
-            ['code' => FactConstants::V_STRUGGLING, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_STRUGGLING]],
-            ['code' => FactConstants::V_STEADY_LEARNER, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_STEADY_LEARNER]],
-            ['code' => FactConstants::V_UNFOCUSED, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_UNFOCUSED]],
-            ['code' => FactConstants::V_HINT_DEPENDENT, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_HINT_DEPENDENT]],
-            ['code' => FactConstants::V_CRISIS_STATE, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_CRISIS_STATE]],
-            ['code' => FactConstants::V_BOREDOM_DETECTED, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_BOREDOM_DETECTED]],
-            ['code' => FactConstants::V_MASTERY_BEGINNER, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_MASTERY_BEGINNER]],
-            ['code' => FactConstants::V_MASTERY_MEDIUM, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_MASTERY_MEDIUM]],
-            ['code' => FactConstants::V_MASTERY_HARD, 'category' => 'virtual', 'name' => FactConstants::VIRTUAL_NAMES[FactConstants::V_MASTERY_HARD]],
-        ];
-
-        foreach ($facts as $fact) {
-            AdaptiveFact::create($fact);
+        foreach (FactConstants::NAMES as $code => $name) {
+            AdaptiveFact::create(['code' => $code, 'category' => 'primary', 'name' => $name]);
+        }
+        foreach (FactConstants::VIRTUAL_NAMES as $code => $name) {
+            AdaptiveFact::create(['code' => $code, 'category' => 'virtual', 'name' => $name]);
         }
     }
 
@@ -69,227 +45,215 @@ class AdaptiveRuleSeeder extends Seeder
     {
         $actions = [
             [
-                'code'         => ActionConstants::FEEDBACK,
-                'variant'      => 'info',
-                'name'         => ActionConstants::NAMES[ActionConstants::FEEDBACK],
-                'description'  => 'Aksi universal untuk semua jenis pesan.',
-                'instructions' => [ActionConstants::KEY_FLOW => ActionConstants::FLOW_NEXT],
+                'code' => ActionConstants::REMEDIAL,
+                'name' => 'Remedial Review',
+                'description' => 'Ulangi materi dasar + soal mudah',
+                'variant' => 'danger'
             ],
             [
-                'code'         => ActionConstants::INCREASE_DIFF,
-                'variant'      => 'acceleration',
-                'name'         => ActionConstants::NAMES[ActionConstants::INCREASE_DIFF],
-                'description'  => 'Meningkatkan tantangan belajar.',
-                'instructions' => [
-                    ActionConstants::KEY_FLOW             => ActionConstants::FLOW_UP,
-                    StudentStateSchema::TARGET_DIFFICULTY => 'next',
-                ],
+                'code' => ActionConstants::REDUCE_DIFF,
+                'name' => 'Reduce Difficulty',
+                'description' => 'Turunkan 1 level kesulitan',
+                'variant' => 'warning'
             ],
             [
-                'code'         => ActionConstants::REDUCE_DIFF,
-                'variant'      => 'recovery',
-                'name'         => ActionConstants::NAMES[ActionConstants::REDUCE_DIFF],
-                'description'  => 'Menurunkan tantangan belajar.',
-                'instructions' => [
-                    ActionConstants::KEY_FLOW             => ActionConstants::FLOW_DOWN,
-                    StudentStateSchema::TARGET_DIFFICULTY => 'prev',
-                ],
+                'code' => ActionConstants::INCREASE_DIFF,
+                'name' => 'Increase Difficulty',
+                'description' => 'Naikkan 1 level kesulitan',
+                'variant' => 'success'
             ],
             [
-                'code'         => ActionConstants::STREAK_BONUS,
-                'variant'      => 'gamification',
-                'name'         => ActionConstants::NAMES[ActionConstants::STREAK_BONUS],
-                'description'  => 'Pemberian XP tambahan.',
-                'instructions' => [
-                    ActionConstants::KEY_FLOW     => ActionConstants::FLOW_NONE,
-                    StudentStateSchema::GLOBAL_XP => ActionConstants::inc(25),
-                ],
+                'code' => ActionConstants::SCAFFOLD_REDUCTION,
+                'name' => 'Scaffold Reduction',
+                'description' => 'Kurangi hint bertahap',
+                'variant' => 'info'
             ],
             [
-                'code'         => ActionConstants::REMEDIAL,
-                'variant'      => 'danger',
-                'name'         => ActionConstants::NAMES[ActionConstants::REMEDIAL],
-                'description'  => 'Mengarahkan siswa kembali ke materi belajar.',
-                'instructions' => [ActionConstants::KEY_FLOW => ActionConstants::FLOW_REVIEW],
+                'code' => ActionConstants::NEW_CHALLENGE,
+                'name' => 'New Challenge',
+                'description' => 'Variasi soal + studi kasus',
+                'variant' => 'primary'
             ],
             [
-                'code'         => ActionConstants::CERTIFICATION,
-                'variant'      => 'success',
-                'name'         => ActionConstants::NAMES[ActionConstants::CERTIFICATION],
-                'description'  => 'Pemberian sertifikat atas penguasaan materi maksimal.',
-                'instructions' => [
-                    ActionConstants::KEY_TITLE         => 'Selamat! Sertifikat Diraih',
-                    ActionConstants::KEY_MESSAGE       => 'Kamu telah menguasai materi ini dengan sempurna. Sertifikat digital telah diterbitkan.',
-                    ActionConstants::KEY_FLOW          => ActionConstants::FLOW_FINISH,
-                    ActionConstants::KEY_CERTIFICATION => true,
-                    StudentStateSchema::GLOBAL_XP      => ActionConstants::inc(250),
-                ],
+                'code' => ActionConstants::FEEDBACK,
+                'name' => 'General Feedback',
+                'description' => 'Umpan balik motivasi & ringkasan',
+                'variant' => 'secondary'
+            ],
+            [
+                'code' => ActionConstants::STREAK_BONUS,
+                'name' => 'Streak Bonus',
+                'description' => 'Berikan XP tambahan & badge',
+                'variant' => 'success'
+            ],
+            [
+                'code' => ActionConstants::CERTIFICATION,
+                'name' => 'Grant Certification',
+                'description' => 'Sertifikat kelulusan ahli',
+                'variant' => 'success'
             ],
         ];
 
         foreach ($actions as $action) {
-            AdaptiveAction::create($action);
+            AdaptiveAction::create($action + [
+                'instructions' => []
+            ]);
         }
     }
 
     private function seedRules(): void
     {
-        $actionIds = AdaptiveAction::pluck('id', 'code');
-
         $rules = [
-            // ─── DEDUCTIONS (Raw ➔ Virtual) ──────────────────────────────────
-            ['code' => 'D01', 'name' => 'Deduce Excellent', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::TIME_QUICK], 'deduced_facts' => [FactConstants::V_EXCELLENT_RESULT]],
-            ['code' => 'D02', 'name' => 'Deduce Struggle (S)', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::TIME_SLOW], 'deduced_facts' => [FactConstants::V_STRUGGLING]],
-            ['code' => 'D03', 'name' => 'Deduce Struggle (H)', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::HINT_USED], 'deduced_facts' => [FactConstants::V_STRUGGLING]],
-            ['code' => 'D04', 'name' => 'Deduce Steady', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::TIME_SLOW], 'deduced_facts' => [FactConstants::V_STEADY_LEARNER]],
-            ['code' => 'D05', 'name' => 'Deduce Unfocused', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::TIME_QUICK], 'deduced_facts' => [FactConstants::V_UNFOCUSED]],
-            ['code' => 'D06', 'name' => 'Deduce Hint Dependency', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::HINT_USED], 'deduced_facts' => [FactConstants::V_HINT_DEPENDENT]],
-            ['code' => 'D07', 'name' => 'Deduce Crisis', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::HINT_USED, FactConstants::TIME_SLOW], 'deduced_facts' => [FactConstants::V_CRISIS_STATE]],
-            ['code' => 'D08', 'name' => 'Deduce Mastery Beginner', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::DIFF_BEGINNER], 'deduced_facts' => [FactConstants::V_MASTERY_BEGINNER]],
-            ['code' => 'D09', 'name' => 'Deduce Mastery Medium', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::DIFF_MEDIUM], 'deduced_facts' => [FactConstants::V_MASTERY_MEDIUM]],
-            ['code' => 'D10', 'name' => 'Deduce Mastery Hard', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::DIFF_HARD], 'deduced_facts' => [FactConstants::V_MASTERY_HARD]],
-            ['code' => 'D11', 'name' => 'Deduce Boredom', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::TIME_QUICK], 'deduced_facts' => [FactConstants::V_BOREDOM_DETECTED]],
-
-            // ─── PROMOTION & CHALLENGE ──────────────────────────────────────
+            // --- KRISIS PEMBELAJARAN (R01-R03) ---
             [
-                'code'           => 'R01',
-                'name'           => 'Excellent Mastery Promotion',
-                'domain'         => 'Promotion',
-                'priority'       => 1,
-                'required_facts' => [FactConstants::V_EXCELLENT_RESULT, FactConstants::V_MASTERY_BEGINNER],
-                'action_id'      => $actionIds[ActionConstants::INCREASE_DIFF],
+                'code' => 'R01',
+                'priority' => 1,
+                'name' => 'Krisis (Severe)',
+                'domain' => 'Crisis',
+                'required_facts' => [FactConstants::ACCURACY_CRISIS, FactConstants::TREND_DOWN, FactConstants::HELP_HIGH],
+                'deduced_facts' => [FactConstants::V_CRISIS],
+                'action_codes' => [ActionConstants::REMEDIAL, ActionConstants::REDUCE_DIFF]
             ],
             [
-                'code'           => 'R02',
-                'name'           => 'Steady Progress Promotion',
-                'domain'         => 'Promotion',
-                'priority'       => 5,
-                'required_facts' => [FactConstants::V_STEADY_LEARNER, FactConstants::V_MASTERY_BEGINNER],
-                'action_id'      => $actionIds[ActionConstants::INCREASE_DIFF],
+                'code' => 'R02',
+                'priority' => 2,
+                'name' => 'Krisis (Standard)',
+                'domain' => 'Crisis',
+                'required_facts' => [FactConstants::ACCURACY_CRISIS, FactConstants::TREND_DOWN, FactConstants::HELP_MED],
+                'deduced_facts' => [FactConstants::V_CRISIS],
+                'action_codes' => [ActionConstants::REMEDIAL]
             ],
             [
-                'code'           => 'R03',
-                'name'           => 'Mastery Medium Promotion',
-                'domain'         => 'Promotion',
-                'priority'       => 1,
-                'required_facts' => [FactConstants::V_EXCELLENT_RESULT, FactConstants::V_MASTERY_MEDIUM],
-                'action_id'      => $actionIds[ActionConstants::INCREASE_DIFF],
-            ],
-            [
-                'code'           => 'R04',
-                'name'           => 'Steady Mastery Challenge',
-                'domain'         => 'Promotion',
-                'priority'       => 8,
-                'required_facts' => [FactConstants::V_STEADY_LEARNER, FactConstants::V_MASTERY_MEDIUM],
-                'action_id'      => $actionIds[ActionConstants::INCREASE_DIFF],
+                'code' => 'R03',
+                'priority' => 3,
+                'name' => 'Krisis (Improving)',
+                'domain' => 'Crisis',
+                'required_facts' => [FactConstants::ACCURACY_CRISIS, FactConstants::TREND_UP, FactConstants::HELP_HIGH],
+                'deduced_facts' => [FactConstants::V_CRISIS],
+                'action_codes' => [ActionConstants::REDUCE_DIFF, ActionConstants::SCAFFOLD_REDUCTION]
             ],
 
-            // ─── SAFETY NETS & INTERVENTIONS ────────────────────────────────
+            // --- SEDANG KESULITAN (R04-R06) ---
             [
-                'code'           => 'R05',
-                'name'           => 'Crisis Emergency Response',
-                'domain'         => 'SafetyNet',
-                'priority'       => -10,
-                'required_facts' => [FactConstants::V_CRISIS_STATE],
-                'action_id'      => $actionIds[ActionConstants::REMEDIAL],
+                'code' => 'R04',
+                'priority' => 4,
+                'name' => 'Struggling (Slow)',
+                'domain' => 'Struggling',
+                'required_facts' => [FactConstants::ACCURACY_STRUGGLE, FactConstants::TIME_SLOW],
+                'deduced_facts' => [FactConstants::V_STRUGGLING],
+                'action_codes' => [ActionConstants::REDUCE_DIFF]
             ],
             [
-                'code'           => 'R06',
-                'name'           => 'Struggling Safety Net',
-                'domain'         => 'SafetyNet',
-                'priority'       => -5,
-                'required_facts' => [FactConstants::V_STRUGGLING],
-                'action_id'      => $actionIds[ActionConstants::REDUCE_DIFF],
+                'code' => 'R05',
+                'priority' => 5,
+                'name' => 'Struggling (Normal)',
+                'domain' => 'Struggling',
+                'required_facts' => [FactConstants::ACCURACY_STRUGGLE, FactConstants::TIME_NORMAL, FactConstants::HELP_MED],
+                'deduced_facts' => [FactConstants::V_STRUGGLING],
+                'action_codes' => [ActionConstants::REMEDIAL]
             ],
             [
-                'code'           => 'R07',
-                'name'           => 'Double Trouble (Struggle + Addiction)',
-                'domain'         => 'SafetyNet',
-                'priority'       => -8,
-                'required_facts' => [FactConstants::V_STRUGGLING, FactConstants::V_HINT_DEPENDENT],
-                'action_id'      => $actionIds[ActionConstants::REDUCE_DIFF],
-            ],
-            [
-                'code'           => 'R08',
-                'name'           => 'Unfocused Crisis Warning',
-                'domain'         => 'SafetyNet',
-                'priority'       => -9,
-                'required_facts' => [FactConstants::V_UNFOCUSED, FactConstants::V_CRISIS_STATE],
-                'action_id'      => $actionIds[ActionConstants::REMEDIAL],
+                'code' => 'R06',
+                'priority' => 6,
+                'name' => 'Struggling (Stable)',
+                'domain' => 'Struggling',
+                'required_facts' => [FactConstants::ACCURACY_STABLE, FactConstants::TREND_STABLE],
+                'deduced_facts' => [FactConstants::V_STRUGGLING],
+                'action_codes' => [ActionConstants::FEEDBACK]
             ],
 
-            // ─── BEHAVIORAL ADJUSTMENTS ─────────────────────────────────────
+            // --- PERFORMA OPTIMAL (R07-R09) ---
             [
-                'code'           => 'R09',
-                'name'           => 'Boredom Escape Challenge',
-                'domain'         => 'Behavior',
-                'priority'       => 15,
-                'required_facts' => [FactConstants::V_BOREDOM_DETECTED],
-                'action_id'      => $actionIds[ActionConstants::INCREASE_DIFF],
+                'code' => 'R07',
+                'priority' => 7,
+                'name' => 'Optimal (Promotion)',
+                'domain' => 'Optimal',
+                'required_facts' => [FactConstants::ACCURACY_OPTIMAL, FactConstants::TREND_UP],
+                'deduced_facts' => [FactConstants::V_OPTIMAL],
+                'action_codes' => [ActionConstants::INCREASE_DIFF]
             ],
             [
-                'code'           => 'R10',
-                'name'           => 'Steady Student Boredom',
-                'domain'         => 'Behavior',
-                'priority'       => 12,
-                'required_facts' => [FactConstants::V_STEADY_LEARNER, FactConstants::V_BOREDOM_DETECTED],
-                'action_id'      => $actionIds[ActionConstants::INCREASE_DIFF],
+                'code' => 'R08',
+                'priority' => 8,
+                'name' => 'Optimal (Ahli)',
+                'domain' => 'Optimal',
+                'required_facts' => [FactConstants::ACCURACY_OPTIMAL, FactConstants::LEVEL_AHLI],
+                'deduced_facts' => [FactConstants::V_OPTIMAL],
+                'action_codes' => [ActionConstants::NEW_CHALLENGE]
             ],
             [
-                'code'           => 'R11',
-                'name'           => 'Hint Addiction Prevention',
-                'domain'         => 'Behavior',
-                'priority'       => 20,
-                'required_facts' => [FactConstants::V_HINT_DEPENDENT],
-                'action_id'      => $actionIds[ActionConstants::FEEDBACK],
-            ],
-            [
-                'code'           => 'R12',
-                'name'           => 'Unfocused Redirection',
-                'domain'         => 'Behavior',
-                'priority'       => 22,
-                'required_facts' => [FactConstants::V_UNFOCUSED],
-                'action_id'      => $actionIds[ActionConstants::FEEDBACK],
+                'code' => 'R09',
+                'priority' => 9,
+                'name' => 'Optimal (Streak)',
+                'domain' => 'Optimal',
+                'required_facts' => [FactConstants::ACCURACY_OPTIMAL, FactConstants::TIME_FAST, FactConstants::STREAK_3D],
+                'deduced_facts' => [FactConstants::V_OPTIMAL],
+                'action_codes' => [ActionConstants::INCREASE_DIFF, ActionConstants::STREAK_BONUS]
             ],
 
-            // ─── REWARDS & MOTIVATION ───────────────────────────────────────
+            // --- KETERGANTUNGAN BANTUAN (R10-R11) ---
             [
-                'code'           => 'R13',
-                'name'           => 'Perfect Mastery Reward',
-                'domain'         => 'Reward',
-                'priority'       => 25,
-                'required_facts' => [FactConstants::V_EXCELLENT_RESULT, FactConstants::V_STEADY_LEARNER],
-                'action_id'      => $actionIds[ActionConstants::STREAK_BONUS],
+                'code' => 'R10',
+                'priority' => 10,
+                'name' => 'Dependency (Low)',
+                'domain' => 'Dependency',
+                'required_facts' => [FactConstants::HELP_HIGH, FactConstants::TREND_STABLE],
+                'deduced_facts' => [FactConstants::V_DEPENDENCY],
+                'action_codes' => [ActionConstants::SCAFFOLD_REDUCTION, ActionConstants::REMEDIAL]
             ],
             [
-                'code'           => 'R14',
-                'name'           => 'Recovery Achievement',
-                'domain'         => 'Reward',
-                'priority'       => 30,
-                'required_facts' => [FactConstants::V_EXCELLENT_RESULT, FactConstants::V_CRISIS_STATE],
-                'action_id'      => $actionIds[ActionConstants::FEEDBACK],
-            ],
-
-            // ─── CERTIFICATION ──────────────────────────────────────────────
-            [
-                'code'           => 'R15',
-                'name'           => 'Module Graduation (Certificate)',
-                'domain'         => 'Certification',
-                'priority'       => 0, // High priority achievement
-                'required_facts' => [FactConstants::V_EXCELLENT_RESULT, FactConstants::V_MASTERY_HARD],
-                'action_id'      => $actionIds[ActionConstants::CERTIFICATION],
+                'code' => 'R11',
+                'priority' => 11,
+                'name' => 'Dependency (High)',
+                'domain' => 'Dependency',
+                'required_facts' => [FactConstants::HELP_HIGH, FactConstants::TREND_UP],
+                'deduced_facts' => [FactConstants::V_DEPENDENCY],
+                'action_codes' => [ActionConstants::SCAFFOLD_REDUCTION]
             ],
 
-            // ─── FALLBACKS ───────────────────────────────────────────────────
-            ['code' => 'F01', 'name' => 'Standard Pass Feedback', 'domain' => 'Fallback', 'priority' => 99, 'required_facts' => [FactConstants::SCORE_PASS], 'action_id' => $actionIds[ActionConstants::FEEDBACK]],
-            ['code' => 'F02', 'name' => 'Standard Fail Support', 'domain' => 'Fallback', 'priority' => 99, 'required_facts' => [FactConstants::SCORE_FAIL], 'action_id' => $actionIds[ActionConstants::FEEDBACK]],
+            // --- POTENSI KEBOSANAN (R12-R13) ---
+            [
+                'code' => 'R12',
+                'priority' => 12,
+                'name' => 'Boredom (Stagnant)',
+                'domain' => 'Boredom',
+                'required_facts' => [FactConstants::ACCURACY_OPTIMAL, FactConstants::STREAK_5D, FactConstants::TREND_STABLE],
+                'deduced_facts' => [FactConstants::V_BOREDOM],
+                'action_codes' => [ActionConstants::NEW_CHALLENGE, ActionConstants::STREAK_BONUS]
+            ],
+            [
+                'code' => 'R13',
+                'priority' => 13,
+                'name' => 'Boredom (Fast)',
+                'domain' => 'Boredom',
+                'required_facts' => [FactConstants::ACCURACY_OPTIMAL, FactConstants::TIME_FAST, FactConstants::TREND_STABLE],
+                'deduced_facts' => [FactConstants::V_BOREDOM],
+                'action_codes' => [ActionConstants::INCREASE_DIFF]
+            ],
+
+            // --- SPECIAL & FALLBACK (R14-R15) ---
+            [
+                'code' => 'R14',
+                'priority' => 100,
+                'name' => 'Default Fallback',
+                'domain' => 'Fallback',
+                'required_facts' => [],
+                'deduced_facts' => [],
+                'action_codes' => [ActionConstants::FEEDBACK]
+            ],
+            [
+                'code' => 'R15',
+                'priority' => 0, // Highest priority? No, usually certification checked if other rules don't match or specific.
+                'name' => 'Grant Certification',
+                'domain' => 'Special',
+                'required_facts' => [FactConstants::LEVEL_AHLI, FactConstants::ACCURACY_OPTIMAL, FactConstants::STREAK_7D, FactConstants::HELP_NONE],
+                'deduced_facts' => [],
+                'action_codes' => [ActionConstants::CERTIFICATION]
+            ],
         ];
 
-        AdaptiveRule::query()->delete();
         foreach ($rules as $rule) {
             AdaptiveRule::create($rule + ['is_active' => true]);
         }
-
-        Cache::forget('adaptive_rules_v7');
     }
 }

@@ -24,3 +24,9 @@ opencode.json
 skills-lock.json
 .opencode
 graphify-out/
+.github/skills/
+.github/agents/
+.agent/get-shit-done/
+.agent/
+.gemini/
+.github/

@@ -98,6 +98,22 @@
     }
 </script>
 
+<style>
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #e2e8f0;
+        border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #cbd5e1;
+    }
+</style>
+
 {#if show}
     <!-- Overlay -->
     <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -116,14 +132,14 @@
         <!-- Header -->
         <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
             <div class="flex items-center gap-3">
-                <div class="rounded-xl bg-primary-50 p-2 text-primary-600">
+                <div class="bg-primary-50 text-primary-600 rounded-xl p-2">
                     <Zap size={20} />
                 </div>
                 <div>
                     <h3 class="text-sm font-black text-slate-800">
                         {isEdit ? 'Node Editor: Aturan' : 'Node Editor: Aturan Baru'}
                     </h3>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    <p class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
                         Configure logic & flow
                     </p>
                 </div>
@@ -142,7 +158,9 @@
             <form id="rule-form" onsubmit={handleSubmit} class="space-y-8">
                 <!-- 1. Trigger Section (Required Facts) -->
                 <section class="space-y-4">
-                    <div class="flex items-center gap-2 text-[10px] font-black text-blue-500 uppercase tracking-widest">
+                    <div
+                        class="flex items-center gap-2 text-[10px] font-black tracking-widest text-blue-500 uppercase"
+                    >
                         <div class="h-px flex-1 bg-blue-100"></div>
                         <span>1. Triggers (IF)</span>
                         <div class="h-px w-4 bg-blue-100"></div>
@@ -153,13 +171,27 @@
                             <button
                                 type="button"
                                 onclick={() => toggleFact('required', fact.code)}
-                                class="group flex items-center gap-3 rounded-xl border-2 p-3 text-left transition-all {form.required_facts.includes(fact.code)
+                                class="group flex items-center gap-3 rounded-xl border-2 p-3 text-left transition-all {form.required_facts.includes(
+                                    fact.code
+                                )
                                     ? 'border-blue-500 bg-white shadow-md ring-2 ring-blue-50'
-                                    : 'border-white bg-white/50 hover:border-blue-200 shadow-sm'}"
+                                    : 'border-white bg-white/50 shadow-sm hover:border-blue-200'}"
                             >
                                 <div class="flex flex-col">
-                                    <span class="text-[9px] font-black tracking-widest uppercase {form.required_facts.includes(fact.code) ? 'text-blue-600' : 'text-slate-400'}">{fact.code}</span>
-                                    <span class="text-[11px] font-bold {form.required_facts.includes(fact.code) ? 'text-slate-900' : 'text-slate-600'}">{fact.name}</span>
+                                    <span
+                                        class="text-[9px] font-black tracking-widest uppercase {form.required_facts.includes(
+                                            fact.code
+                                        )
+                                            ? 'text-blue-600'
+                                            : 'text-slate-400'}">{fact.code}</span
+                                    >
+                                    <span
+                                        class="text-[11px] font-bold {form.required_facts.includes(
+                                            fact.code
+                                        )
+                                            ? 'text-slate-900'
+                                            : 'text-slate-600'}">{fact.name}</span
+                                    >
                                 </div>
                             </button>
                         {/each}
@@ -172,18 +204,31 @@
 
                 <!-- 2. Logic & Metadata Section -->
                 <section class="space-y-4">
-                    <div class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    <div
+                        class="flex items-center gap-2 text-[10px] font-black tracking-widest text-slate-400 uppercase"
+                    >
                         <div class="h-px flex-1 bg-slate-200"></div>
                         <span>2. Node Configuration</span>
                         <div class="h-px w-4 bg-slate-200"></div>
                     </div>
 
-                    <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-6">
+                    <div
+                        class="space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
+                    >
                         <div class="grid grid-cols-2 gap-4">
-                            <Input label="Kode Node" bind:value={form.code} placeholder="R-01" className="font-mono font-bold" />
+                            <Input
+                                label="Kode Node"
+                                bind:value={form.code}
+                                placeholder="R-01"
+                                className="font-mono font-bold"
+                            />
                             <Input label="Prioritas" type="number" bind:value={form.priority} />
                         </div>
-                        <Input label="Nama Node / Aturan" bind:value={form.name} placeholder="Nama deskriptif..." />
+                        <Input
+                            label="Nama Node / Aturan"
+                            bind:value={form.name}
+                            placeholder="Nama deskriptif..."
+                        />
                         <div class="space-y-2">
                             <span class="text-xs font-bold text-slate-700">Domain Strategi</span>
                             <div class="flex flex-wrap gap-2">
@@ -191,17 +236,27 @@
                                     <button
                                         type="button"
                                         onclick={() => (form.domain = domain.id)}
-                                        class="flex items-center gap-2 rounded-xl border-2 px-3 py-2 transition-all {form.domain === domain.id 
-                                            ? 'border-primary-500 bg-primary-50/50' 
-                                            : 'border-slate-50 bg-slate-50 hover:border-slate-200 text-slate-500'}"
+                                        class="flex items-center gap-2 rounded-xl border-2 px-3 py-2 transition-all {form.domain ===
+                                        domain.id
+                                            ? 'border-primary-500 bg-primary-50/50'
+                                            : 'border-slate-50 bg-slate-50 text-slate-500 hover:border-slate-200'}"
                                     >
-                                        <domain.icon size={14} class={form.domain === domain.id ? 'text-primary-600' : ''} />
+                                        <domain.icon
+                                            size={14}
+                                            class={form.domain === domain.id
+                                                ? 'text-primary-600'
+                                                : ''}
+                                        />
                                         <span class="text-xs font-bold">{domain.id}</span>
                                     </button>
                                 {/each}
                             </div>
                         </div>
-                        <Input label="Deskripsi (Opsional)" bind:value={form.description} placeholder="Tujuan dari aturan ini..." />
+                        <Input
+                            label="Deskripsi (Opsional)"
+                            bind:value={form.description}
+                            placeholder="Tujuan dari aturan ini..."
+                        />
                     </div>
                 </section>
 
@@ -211,7 +266,9 @@
 
                 <!-- 3. Output Section (Action & Deductions) -->
                 <section class="space-y-4 pb-12">
-                    <div class="flex items-center gap-2 text-[10px] font-black text-emerald-500 uppercase tracking-widest">
+                    <div
+                        class="flex items-center gap-2 text-[10px] font-black tracking-widest text-emerald-500 uppercase"
+                    >
                         <div class="h-px flex-1 bg-emerald-100"></div>
                         <span>3. Output (THEN)</span>
                         <div class="h-px w-4 bg-emerald-100"></div>
@@ -220,24 +277,43 @@
                     <div class="space-y-4">
                         <Select
                             label="Aksi Utama"
-                            options={allActions.map((a: AdaptiveAction) => ({ value: a.id, label: `[${a.code}] ${a.name}` }))}
+                            options={allActions.map((a: AdaptiveAction) => ({
+                                value: a.id,
+                                label: `[${a.code}] ${a.name}`,
+                            }))}
                             bind:value={form.action_id}
                         />
 
                         <div class="space-y-3">
-                            <span class="text-xs font-bold text-slate-700">Deduksi Fakta (Logic Pipe)</span>
+                            <span class="text-xs font-bold text-slate-700"
+                                >Deduksi Fakta (Logic Pipe)</span
+                            >
                             <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                                {#each allFacts.filter((f: AdaptiveFact) => f.code.startsWith('V')) as fact}
+                                {#each allFacts.filter( (f: AdaptiveFact) => f.code.startsWith('V') ) as fact}
                                     <button
                                         type="button"
                                         onclick={() => toggleFact('deduced', fact.code)}
-                                        class="group flex items-center gap-3 rounded-xl border-2 p-3 text-left transition-all {form.deduced_facts.includes(fact.code)
+                                        class="group flex items-center gap-3 rounded-xl border-2 p-3 text-left transition-all {form.deduced_facts.includes(
+                                            fact.code
+                                        )
                                             ? 'border-purple-500 bg-purple-50 shadow-sm'
                                             : 'border-slate-100 bg-white hover:border-purple-200'}"
                                     >
                                         <div class="flex flex-col">
-                                            <span class="text-[9px] font-black tracking-widest uppercase {form.deduced_facts.includes(fact.code) ? 'text-purple-600' : 'text-slate-400'}">{fact.code}</span>
-                                            <span class="text-[11px] font-bold {form.deduced_facts.includes(fact.code) ? 'text-slate-900' : 'text-slate-600'}">{fact.name}</span>
+                                            <span
+                                                class="text-[9px] font-black tracking-widest uppercase {form.deduced_facts.includes(
+                                                    fact.code
+                                                )
+                                                    ? 'text-purple-600'
+                                                    : 'text-slate-400'}">{fact.code}</span
+                                            >
+                                            <span
+                                                class="text-[11px] font-bold {form.deduced_facts.includes(
+                                                    fact.code
+                                                )
+                                                    ? 'text-slate-900'
+                                                    : 'text-slate-600'}">{fact.name}</span
+                                            >
                                         </div>
                                     </button>
                                 {/each}
@@ -249,16 +325,24 @@
         </div>
 
         <!-- Footer -->
-        <div class="flex items-center justify-between border-t border-slate-100 bg-white px-6 py-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <div
+            class="flex items-center justify-between border-t border-slate-100 bg-white px-6 py-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]"
+        >
             <div class="flex items-center gap-4">
                 <span class="text-xs font-bold text-slate-400">Status Node</span>
                 <button
                     type="button"
                     onclick={() => (form.is_active = !form.is_active)}
-                    class="relative h-6 w-12 rounded-full transition-colors {form.is_active ? 'bg-emerald-500' : 'bg-slate-200'}"
+                    class="relative h-6 w-12 rounded-full transition-colors {form.is_active
+                        ? 'bg-emerald-500'
+                        : 'bg-slate-200'}"
                     aria-label="Toggle Node Active Status"
                 >
-                    <div class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition-transform {form.is_active ? 'translate-x-6' : 'translate-x-0'}"></div>
+                    <div
+                        class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition-transform {form.is_active
+                            ? 'translate-x-6'
+                            : 'translate-x-0'}"
+                    ></div>
                 </button>
             </div>
             <div class="flex gap-2">
@@ -276,19 +360,3 @@
         </div>
     </div>
 {/if}
-
-<style>
-    .custom-scrollbar::-webkit-scrollbar {
-        width: 4px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-        background: transparent;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #e2e8f0;
-        border-radius: 10px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: #cbd5e1;
-    }
-</style>

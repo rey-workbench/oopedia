@@ -9,13 +9,14 @@ use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Services\AdaptiveEngineServiceInterface;
-use App\Contracts\Services\FactGatheringServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
+
 use App\Contracts\Services\QuizServiceInterface;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Enums\Lms\QuestionType;
 use App\Exceptions\Domain\QuestionNotFoundException;
 use App\Helpers\ProgressHelper;
+use App\Models\AdaptiveExecutionLog;
 use App\Models\Material;
 use App\Models\Question;
 use App\Models\StudentState;
@@ -33,7 +34,6 @@ final class QuizService implements QuizServiceInterface
         private readonly MaterialRepositoryInterface $materialRepo,
         private readonly ProgressRepositoryInterface $progressRepo,
         private readonly PerformanceServiceInterface $performanceService,
-        private readonly FactGatheringServiceInterface $factGatheringService,
         private readonly AdaptiveEngineServiceInterface $adaptiveEngineService,
     ) {}
 
@@ -79,7 +79,6 @@ final class QuizService implements QuizServiceInterface
                 'question_type'   => $data['question_type'],
                 'difficulty'      => $data['difficulty'],
                 'material_id'     => $data['material_id'],
-                'sub_material_id' => $data['sub_material_id'] ?? null,
                 'created_by'      => Auth::id(),
             ]);
 
@@ -102,7 +101,6 @@ final class QuizService implements QuizServiceInterface
                 'question_type'   => $data['question_type'],
                 'difficulty'      => $data['difficulty'],
                 'material_id'     => $data['material_id'],
-                'sub_material_id' => $data['sub_material_id'] ?? null,
                 'updated_by'      => Auth::id(),
             ]);
 
@@ -151,14 +149,13 @@ final class QuizService implements QuizServiceInterface
         string $userId,
         bool $isGuest,
         array $guestProgress = [],
-        ?string $subMaterialId = null,
         ?QuestionDifficulty $targetDifficulty = null,
     ): array {
         $answeredQuestionIds = $isGuest
             ? $this->getGuestAnsweredQuestionIds($material->id, $guestProgress)
             : $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
 
-        $filteredData           = $this->getFilteredQuestionsForQuiz($material, $difficulty, $isGuest, $subMaterialId);
+        $filteredData           = $this->getFilteredQuestionsForQuiz($material, $difficulty, $isGuest);
         $questions              = $filteredData['questions'];
         $allQuestions           = $questions;
         $totalFilteredQuestions = $filteredData['totalFilteredQuestions'];
@@ -442,51 +439,79 @@ final class QuizService implements QuizServiceInterface
                 'used_hint'     => (bool) ($validatedData['used_hint'] ?? false),
             ]);
 
-            // Performance metrics and learning style (Internal tracking)
-            $this->performanceService->updateLearningStyleFromInteraction($userId, $question->type, (int) ($validatedData['time_spent'] ?? 0));
-
-            // Fetch current state for engine
-            $studentState = StudentState::where('user_id', $userId)->first() ?? $this->progressRepo->getOrCreateStudentState($userId);
-
-            $facts = $this->factGatheringService->gatherFacts(
-                studentState: $studentState,
+            // 1. Update Performance Metrics
+            $studentState = $this->performanceService->updateMetricsFromInteraction(
+                userId: $userId,
                 isCorrect: $isCorrect,
                 usedHint: (bool) ($validatedData['used_hint'] ?? false),
-                score: $score,
                 timeSpent: (int) ($validatedData['time_spent'] ?? 0),
                 difficulty: $question->difficulty,
-                questionId: (string) $questionId,
-                materialId: (string) $materialId,
-                moduleId: (string) $question->material->module_id,
             );
 
-            // Engine evaluates facts and instructions, then returns a new merged state
-            $engineResult = $this->adaptiveEngineService->evaluate(
-                $facts,
-                $studentState->toArray(),
-                [
-                    'material_id'     => (string) $materialId,
-                    'sub_material_id' => $question->sub_material_id,
-                    'is_correct'      => $isCorrect,
-                ],
-            );
+            // 2. Evaluate Adaptive Engine (Layer 3 & 4)
+            $engineResult = $this->adaptiveEngineService->evaluate($studentState->toArray());
 
-            if (! empty($engineResult['new_state'])) {
-                // Persistent update from engine instructions
-                $studentState->update($engineResult['new_state']);
-            }
+            // 3. Log and Apply Result
+            $this->logAndApplyAdaptiveResult($userId, $materialId, $engineResult, $studentState);
 
-            return ['is_correct' => $isCorrect, 'score' => $score, 'engine_result' => $engineResult];
+            return [
+                'is_correct'    => $isCorrect,
+                'score'         => $score,
+                'engine_result' => $engineResult,
+            ];
         });
+    }
+
+    private function logAndApplyAdaptiveResult(string $userId, string $materialId, array $result, StudentState $state): void
+    {
+        // Log the execution
+        AdaptiveExecutionLog::create([
+            'user_id'           => $userId,
+            'code'              => $result['rule_id'],
+            'action_code'       => implode(', ', $result['recommendations']),
+            'trigger_facts'     => [$result['diagnosis']],
+            'state_deltas'      => [],
+            'new_state'         => $state->toArray(),
+            'execution_context' => [
+                'material_id' => $materialId,
+                'timestamp'   => $result['timestamp'],
+            ],
+        ]);
+
+        // Apply Layer 4: Aksi Sistem (State Transitions)
+        $currentDifficulty = $state->target_difficulty ?? 'beginner';
+        $difficultyOrder   = ['beginner', 'medium', 'hard'];
+        $currentIndex      = array_search($currentDifficulty, $difficultyOrder);
+
+        foreach ($result['recommendations'] as $recommendation) {
+            switch ($recommendation) {
+                case 'REDUCE_DIFF':
+                    if ($currentIndex > 0) {
+                        $state->target_difficulty = $difficultyOrder[$currentIndex - 1];
+                    }
+                    break;
+                case 'INCREASE_DIFF':
+                    if ($currentIndex < 2) {
+                        $state->target_difficulty = $difficultyOrder[$currentIndex + 1];
+                    }
+                    break;
+                case 'STREAK_BONUS':
+                    $state->xp += 50;
+                    break;
+
+            }
+        }
+
+        $state->save();
     }
 
     // =========================================================================
     // PRIVATE HELPERS
     // =========================================================================
 
-    private function getFilteredQuestionsForQuiz(Material $material, ?QuestionDifficulty $difficulty, bool $isGuest, ?string $subMaterialId = null): array
+    private function getFilteredQuestionsForQuiz(Material $material, ?QuestionDifficulty $difficulty, bool $isGuest): array
     {
-        $questions = $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty ? $difficulty->value : 'all', $subMaterialId);
+        $questions = $this->questionRepo->getByMaterialAndDifficulty($material->id, $difficulty ? $difficulty->value : 'all');
         if ($isGuest) {
             if ($difficulty === null) {
                 $questions = $questions->where('difficulty', QuestionDifficulty::BEGINNER->value)->take(3)

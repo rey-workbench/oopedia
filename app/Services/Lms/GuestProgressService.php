@@ -16,7 +16,7 @@ final class GuestProgressService implements GuestProgressServiceInterface
         private readonly string $cookieXp          = 'guest_xp',
         private readonly string $cookieStreak      = 'guest_streak',
         private readonly string $cookiePerformance = 'guest_performance',
-        private readonly int $cookieLifetime    = 60 * 24 * 30,
+        private readonly int $cookieLifetime       = 60 * 24 * 30,
     ) {}
 
     /** @return array<string, mixed> */
@@ -28,7 +28,7 @@ final class GuestProgressService implements GuestProgressServiceInterface
             return [];
         }
 
-        $decoded = json_decode($cookie, true);
+        $decoded = json_decode((string) $cookie, true);
 
         return is_array($decoded) ? $decoded : [];
     }
@@ -105,7 +105,7 @@ final class GuestProgressService implements GuestProgressServiceInterface
         $gamification = $this->getGamificationState();
 
         $perfData           = request()->cookie($this->cookiePerformance);
-        $performanceMetrics = $perfData ? json_decode($perfData, true) : [];
+        $performanceMetrics = $perfData ? json_decode((string) $perfData, true) : [];
         if (! is_array($performanceMetrics)) {
             $performanceMetrics = [];
         }
@@ -113,32 +113,30 @@ final class GuestProgressService implements GuestProgressServiceInterface
         $defaults = StudentStateSchema::defaults();
 
         return new StudentState(array_merge($defaults, [
-            'user_id'                                     => 'guest',
-            StudentStateSchema::GLOBAL_XP                 => $gamification['xp'],
-            StudentStateSchema::CURRENT_STREAK            => $gamification['streak'],
-            StudentStateSchema::CURRENT_LEVEL             => 'Tamu',
-            StudentStateSchema::TOTAL_QUESTIONS_ANSWERED  => $performanceMetrics[StudentStateSchema::TOTAL_QUESTIONS_ANSWERED]   ?? 0,
-            StudentStateSchema::CORRECT_COUNT             => $performanceMetrics[StudentStateSchema::CORRECT_COUNT]              ?? 0,
-            StudentStateSchema::WRONG_COUNT               => $performanceMetrics[StudentStateSchema::WRONG_COUNT]                ?? 0,
-            StudentStateSchema::WRONG_STREAK              => $performanceMetrics[StudentStateSchema::WRONG_STREAK]               ?? 0,
-            StudentStateSchema::HINTS_USED_COUNT          => $performanceMetrics[StudentStateSchema::HINTS_USED_COUNT]           ?? 0,
-            StudentStateSchema::HINTS_AVAILABLE           => $performanceMetrics[StudentStateSchema::HINTS_AVAILABLE]            ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE,
-            StudentStateSchema::TARGET_DIFFICULTY         => $performanceMetrics[StudentStateSchema::TARGET_DIFFICULTY]          ?? null,
+            'user_id'                             => 'guest',
+            StudentStateSchema::XP                => $gamification['xp'],
+            StudentStateSchema::STREAK            => $gamification['streak'],
+            StudentStateSchema::LEVEL             => 'Tamu',
+            StudentStateSchema::TOTAL_ANSWERED    => $performanceMetrics[StudentStateSchema::TOTAL_ANSWERED]    ?? 0,
+            StudentStateSchema::CORRECT_COUNT     => $performanceMetrics[StudentStateSchema::CORRECT_COUNT]     ?? 0,
+            StudentStateSchema::WRONG_COUNT       => $performanceMetrics[StudentStateSchema::WRONG_COUNT]       ?? 0,
+            StudentStateSchema::HINTS_USED        => $performanceMetrics[StudentStateSchema::HINTS_USED]        ?? 0,
+            StudentStateSchema::HINTS_AVAILABLE   => $performanceMetrics[StudentStateSchema::HINTS_AVAILABLE]   ?? 3,
+            StudentStateSchema::TARGET_DIFFICULTY => $performanceMetrics[StudentStateSchema::TARGET_DIFFICULTY] ?? null,
         ]));
     }
 
     public function saveStudentState(StudentState $state): void
     {
-        $this->saveGamificationState($state->xp, $state->streak);
+        $this->saveGamificationState((int) $state->xp, (int) $state->streak);
 
         $this->setCookie($this->cookiePerformance, json_encode([
-            StudentStateSchema::TOTAL_QUESTIONS_ANSWERED    => $state->total_answered,
-            StudentStateSchema::CORRECT_COUNT               => $state->correct_count,
-            StudentStateSchema::WRONG_COUNT                 => $state->wrong_count,
-            StudentStateSchema::WRONG_STREAK                => $state->wrong_streak,
-            StudentStateSchema::HINTS_USED_COUNT            => $state->hints_used,
-            StudentStateSchema::HINTS_AVAILABLE             => $state->hints_available,
-            StudentStateSchema::TARGET_DIFFICULTY           => $state->target_difficulty,
+            StudentStateSchema::TOTAL_ANSWERED    => $state->total_answered,
+            StudentStateSchema::CORRECT_COUNT     => $state->correct_count,
+            StudentStateSchema::WRONG_COUNT       => $state->wrong_count,
+            StudentStateSchema::HINTS_USED        => $state->hints_used,
+            StudentStateSchema::HINTS_AVAILABLE   => $state->hints_available,
+            StudentStateSchema::TARGET_DIFFICULTY => $state->target_difficulty,
         ]));
     }
 

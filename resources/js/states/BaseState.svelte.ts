@@ -17,10 +17,13 @@ export class BaseState {
         const reserved = ['user', 'isGuest', 'flash', 'errors', 'auth', 'ziggy'];
         const filteredData = Object.keys(data)
             .filter((key) => !reserved.includes(key))
-            .reduce((obj, key) => {
-                obj[key] = data[key];
-                return obj;
-            }, {} as Record<string, unknown>);
+            .reduce(
+                (obj, key) => {
+                    obj[key] = data[key];
+                    return obj;
+                },
+                {} as Record<string, unknown>
+            );
 
         Object.assign(this, filteredData);
     }

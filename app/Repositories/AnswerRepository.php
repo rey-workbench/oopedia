@@ -20,13 +20,6 @@ final class AnswerRepository implements AnswerRepositoryInterface
         return Answer::create($data);
     }
 
-    public function delete(string $id): bool
-    {
-        $answer = Answer::findOrFail($id);
-
-        return (bool) $answer->delete();
-    }
-
     public function deleteByQuestionId(string $questionId): bool
     {
         return (bool) Answer::where('question_id', $questionId)->delete();

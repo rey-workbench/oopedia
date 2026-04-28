@@ -28,12 +28,12 @@
         fullscreenTarget?: HTMLElement | null;
     }
 
-    let { 
-        analyticsState, 
-        onedit, 
-        oneditaction, 
+    let {
+        analyticsState,
+        onedit,
+        oneditaction,
         isFullscreen = $bindable(false),
-        fullscreenTarget = null 
+        fullscreenTarget = null,
     }: Props = $props();
 
     let svgRef = $state<SVGSVGElement | null>(null);
@@ -59,14 +59,21 @@
 
     // ─── CONFIGURATION & CONSTANTS ──────────────────────────────────────────
     const GRAPH_CONFIG = {
-        colWidth: 350,
+        colWidth: 550,
         itemHeight: 50,
-        verticalGap: 24,
-        startX: 180,
+        verticalGap: 48,
+        startX: 100,
         maxTopologyIterations: 30,
         barycenterIterations: 12,
-        initialScale: 0.7,
+        initialScale: 0.65,
     };
+
+    const LAYERS = [
+        { id: 'input', label: 'INPUT', color: 'bg-slate-100/50' },
+        { id: 'condition', label: 'KONDISI', color: 'bg-indigo-50/30' },
+        { id: 'diagnosis', label: 'DIAGNOSIS', color: 'bg-emerald-50/30' },
+        { id: 'recommendation', label: 'REKOMENDASI', color: 'bg-amber-50/30' },
+    ];
 
     let isInitialized = false;
     let zoom: d3.ZoomBehavior<SVGSVGElement, unknown>;
@@ -149,13 +156,31 @@
     function resolveGraphTopology() {
         const nodeRegistry = new Map<string, any>();
 
-        // Phase 1: Initialize Raw Facts
+        // Phase 1: Initialize Virtual Inputs (The 5 Core Dimensions)
+        const inputs = [
+            { code: 'IN_ACC', name: 'Jawaban (B/S)' },
+            { code: 'IN_SPD', name: 'Kecepatan Respons' },
+            { code: 'IN_HLP', name: 'Penggunaan Bantuan' },
+            { code: 'IN_LVL', name: 'Level Saat Ini' },
+            { code: 'IN_STR', name: 'Streak & Sesi' },
+        ];
+
+        inputs.forEach((input) => {
+            nodeRegistry.set(`input_${input.code}`, {
+                type: 'input',
+                depth: 0,
+                data: input,
+                id: input.code,
+            });
+        });
+
+        // Phase 1.5: Initialize Raw Facts (KONDISI)
         factData
             .filter((f) => !f.code.startsWith('V'))
             .forEach((f) => {
                 nodeRegistry.set(`raw_fact_${f.code}`, {
                     type: 'raw_fact',
-                    depth: 0,
+                    depth: 1,
                     data: f,
                     id: `f_${f.code}`,
                 });
@@ -175,11 +200,13 @@
                         nodeRegistry.get(`raw_fact_${p}`) || nodeRegistry.get(`virtual_fact_${p}`)
                 );
 
-                const isResolved = resolvedSources.every((s) => !!s);
-                if (!isResolved) return;
+                if (!prerequisites.every((_, i) => !!resolvedSources[i])) return;
 
-                const maxPrereqDepth = Math.max(...resolvedSources.map((s) => s.depth));
-                const ruleDepth = maxPrereqDepth + 1;
+                const maxPrereqDepth = resolvedSources.length > 0
+                    ? Math.max(...resolvedSources.map((s) => s.depth))
+                    : 1;
+
+                const ruleDepth = maxPrereqDepth + 0.5;
 
                 // Register Rule Gate
                 const ruleNodeId = `rule_${rule.id}`;
@@ -193,19 +220,22 @@
                     hasTopologyChanged = true;
                 }
 
-                // Register Deduced Facts
-                if (rule.deduced_facts) {
+                // Register Deduced Facts (DIAGNOSIS)
+                if (rule.deduced_facts && rule.deduced_facts.length > 0) {
                     rule.deduced_facts.forEach((code: string) => {
-                        if (registerVirtualFact(nodeRegistry, code, ruleDepth + 1)) {
+                        if (registerVirtualFact(nodeRegistry, code, 2)) {
                             hasTopologyChanged = true;
                         }
                     });
                 }
 
-                // Register Resulting Actions
-                if (registerAction(nodeRegistry, rule, ruleDepth + 1)) {
-                    hasTopologyChanged = true;
-                }
+                // Register Resulting Actions (REKOMENDASI)
+                const actionCodes = rule.action_codes || (rule.action ? [rule.action] : []);
+                actionCodes.forEach((code: string) => {
+                    if (registerAction(nodeRegistry, code, 3)) {
+                        hasTopologyChanged = true;
+                    }
+                });
             });
         }
 
@@ -237,23 +267,28 @@
         return false;
     }
 
-    function registerAction(registry: Map<string, any>, rule: any, depth: number) {
-        const action = actionData.find(
-            (a) => a.id === rule.action_id || a.code === rule.action_code
-        );
+    function registerAction(registry: Map<string, any>, code: string, depth: number) {
+        const action = actionData.find((a) => a.code === code);
         if (!action || action.code === 'H00') return false;
 
-        const actionId = `action_${rule.id}`;
-        if (!registry.has(actionId)) {
+        const actionId = `action_${code}`;
+        const existing = registry.get(actionId);
+
+        if (!existing) {
             registry.set(actionId, {
                 type: 'action',
                 depth: depth,
                 data: action,
-                id: `a_${rule.id}`,
-                sourceRule: rule.id,
+                id: `a_${code}`,
             });
             return true;
         }
+
+        if (existing.depth < depth) {
+            existing.depth = depth;
+            return true;
+        }
+
         return false;
     }
 
@@ -282,8 +317,29 @@
             });
 
             // Link Gate -> Final Action
-            const actionNode = nodeRegistry.get(`action_${rule.id}`);
-            if (actionNode) links.push({ source: gateNode, target: actionNode, type: 'action' });
+            const actionCodes = rule.action_codes || (rule.action ? [rule.action] : []);
+            actionCodes.forEach((code: string) => {
+                const actionNode = nodeRegistry.get(`action_${code}`);
+                if (actionNode) links.push({ source: gateNode, target: actionNode, type: 'action' });
+            });
+        });
+
+        // Link Inputs -> Kondisi (Implicit Mapping)
+        const conditions = Array.from(nodeRegistry.values()).filter(n => n.type === 'raw_fact');
+        conditions.forEach(cond => {
+            const code = cond.data.code;
+            let inputNodeId = null;
+            if (code.startsWith('G0')) inputNodeId = 'input_IN_ACC'; // Accuracy
+            else if (code.startsWith('G05') || code.startsWith('G06') || code.startsWith('G07')) inputNodeId = 'input_IN_SPD'; // Trend -> Speed/Respon in diagram? Actually TREND is IN_STR in diagram
+            else if (code.startsWith('G08') || code.startsWith('G09') || code.startsWith('G20')) inputNodeId = 'input_IN_HLP'; // Help
+            else if (code.startsWith('G11') || code.startsWith('G12') || code.startsWith('G13')) inputNodeId = 'input_IN_SPD'; // Speed
+            else if (code.startsWith('G14') || code.startsWith('G15') || code.startsWith('G16')) inputNodeId = 'input_IN_STR'; // Streak
+            else if (code === 'G19') inputNodeId = 'input_IN_LVL'; // Level
+            
+            if (inputNodeId) {
+                const inputNode = nodeRegistry.get(inputNodeId);
+                if (inputNode) links.push({ source: inputNode, target: cond, type: 'requirement' });
+            }
         });
 
         return links;
@@ -345,17 +401,16 @@
     }
 
     function resolveLayerOverlaps(group: any[]) {
-        if (group.length === 0) return;
-        let currentY = group[0].y;
-        group.forEach((node, i) => {
-            if (i > 0) {
-                currentY = Math.max(
-                    currentY + GRAPH_CONFIG.itemHeight + GRAPH_CONFIG.verticalGap,
-                    node.y
-                );
+        if (group.length <= 1) return;
+        
+        const minGap = GRAPH_CONFIG.itemHeight + GRAPH_CONFIG.verticalGap;
+        
+        // Ensure minimum spacing
+        for (let i = 1; i < group.length; i++) {
+            if (group[i].y < group[i-1].y + minGap) {
+                group[i].y = group[i-1].y + minGap;
             }
-            node.y = currentY;
-        });
+        }
     }
 
     function centerAndProject(depths: number[], groups: Record<number, any[]>, height: number) {
@@ -392,6 +447,7 @@
         const minY = Math.min(...nodes.map((n) => n.y), 0);
         const maxY = Math.max(...nodes.map((n) => n.y), 100);
 
+        drawLayerBackgrounds();
         drawLinks(links);
         drawNodes(nodes);
 
@@ -430,10 +486,7 @@
         // Optional: save positions or snap to grid
     }
 
-    const drag = d3.drag()
-        .on('start', dragstarted)
-        .on('drag', dragged)
-        .on('end', dragended);
+    const drag = d3.drag().on('start', dragstarted).on('drag', dragged).on('end', dragended);
 
     function drawLinks(links: any[]) {
         mainGroup
@@ -451,17 +504,42 @@
     }
 
     function generateBezierPath(d: any) {
-        const sx = d.source.x + (d.source.type === 'gate' ? 25 : 100);
+        const sx = d.source.x + (d.source.type === 'gate' ? 30 : 120);
         const sy = d.source.y;
-        const tx = d.target.x - (d.target.type === 'gate' ? 25 : 100);
+        const tx = d.target.x - (d.target.type === 'gate' ? 30 : 120);
         const ty = d.target.y;
         const dx = tx - sx;
         return `M${sx},${sy}C${sx + dx / 2},${sy} ${sx + dx / 2},${ty} ${tx},${ty}`;
     }
 
     function getLinkColor(type: string) {
-        const colors = { deduction: '#3b82f6', action: '#10b981', requirement: '#94a3b8' };
+        const colors = { deduction: '#10b981', action: '#10b981', requirement: '#cbd5e1' };
         return colors[type as keyof typeof colors] || '#94a3b8';
+    }
+
+    function drawLayerBackgrounds() {
+        const height = isFullscreen ? window.innerHeight - 100 : 750;
+
+        const layerGroup = mainGroup.append('g').attr('class', 'layer-backgrounds');
+
+        LAYERS.forEach((layer, i) => {
+            const x = GRAPH_CONFIG.startX + i * GRAPH_CONFIG.colWidth - 250;
+            
+            layerGroup.append('rect')
+                .attr('x', x)
+                .attr('y', -height * 2)
+                .attr('width', GRAPH_CONFIG.colWidth)
+                .attr('height', height * 5)
+                .attr('fill', layer.id === 'input' ? '#f8fafc' : (layer.id === 'condition' ? '#f5f7ff' : (layer.id === 'diagnosis' ? '#f0fdf4' : '#fffbeb')))
+                .attr('opacity', 0.5);
+
+            layerGroup.append('text')
+                .attr('x', x + GRAPH_CONFIG.colWidth / 2)
+                .attr('y', -height / 2 + 100)
+                .attr('text-anchor', 'middle')
+                .attr('class', 'text-[12px] font-black fill-slate-300 tracking-[0.2em]')
+                .text(layer.label);
+        });
     }
 
     function drawNodes(nodes: any[]) {
@@ -481,14 +559,14 @@
 
         nodeSelection
             .append('rect')
-            .attr('width', 200)
-            .attr('height', 40)
-            .attr('x', -100)
-            .attr('y', -20)
-            .attr('rx', (d) => (d.type === 'action' ? 20 : 12))
+            .attr('width', 240)
+            .attr('height', 44)
+            .attr('x', -120)
+            .attr('y', -22)
+            .attr('rx', (d) => (d.type === 'action' ? 8 : (d.type === 'input' ? 12 : 12)))
             .attr('fill', (d) => getNodeFill(d.type))
             .attr('stroke', (d) => getNodeStroke(d.type))
-            .attr('stroke-width', 2)
+            .attr('stroke-width', (d) => d.type === 'input' ? 1 : 2)
             .attr('class', 'shadow-sm transition-all duration-300')
             .style('opacity', 0)
             .transition()
@@ -502,7 +580,7 @@
             .attr(
                 'class',
                 (d) =>
-                    `text-[11px] font-bold ${d.type === 'action' ? 'fill-white' : 'fill-slate-800'}`
+                    `text-[11px] font-bold ${d.type === 'action' ? 'fill-white' : (d.type === 'input' ? 'fill-slate-500' : 'fill-slate-800')}`
             )
             .text((d) => d.data.name);
 
@@ -542,14 +620,18 @@
     }
 
     function getNodeFill(type: string) {
-        if (type === 'virtual_fact') return '#f0f7ff';
-        if (type === 'action') return '#065f46';
+        if (type === 'virtual_fact') return '#f0fdf4'; // Emerald 50
+        if (type === 'action') return '#d97706'; // Amber 600
+        if (type === 'input') return '#f8fafc'; // Slate 50
+        if (type === 'raw_fact') return '#f5f7ff'; // Indigo 50
         return '#ffffff';
     }
 
     function getNodeStroke(type: string) {
-        if (type === 'virtual_fact') return '#3b82f6';
-        if (type === 'action') return '#047857';
+        if (type === 'virtual_fact') return '#10b981'; // Emerald 500
+        if (type === 'action') return '#92400e'; // Amber 800
+        if (type === 'input') return '#e2e8f0'; // Slate 200
+        if (type === 'raw_fact') return '#6366f1'; // Indigo 500
         return '#cbd5e1';
     }
 
@@ -694,7 +776,7 @@
                         size="sm"
                         icon={PlusCircle}
                         onclick={() => onedit(null)}
-                        class="mr-2 shadow-xl shadow-primary-900/10"
+                        class="shadow-primary-900/10 mr-2 shadow-xl"
                     >
                         TAMBAH ATURAN
                     </Button>
@@ -733,20 +815,30 @@
             style="background-image: radial-gradient(#000 1px, transparent 1px); background-size: 24px 24px;"
         ></div>
 
-        <svg 
-            bind:this={svgRef} 
-            class="group block h-full w-full touch-none"
-            oncontextmenu={(e) => e.preventDefault()}
+        <button
+            type="button"
+            class="group absolute inset-0 h-full w-full touch-none outline-none"
             onclick={() => (selectedNode = null)}
-            role="application"
+            onkeydown={(e) => {
+                if (e.key === 'Escape') selectedNode = null;
+            }}
             aria-label="Workflow Canvas"
-        ></svg>
+        >
+            <svg
+                bind:this={svgRef}
+                class="block h-full w-full"
+                role="presentation"
+                oncontextmenu={(e) => e.preventDefault()}
+            ></svg>
+        </button>
 
         <!-- Palette Sidebar (n8n Style) -->
-        <div class="pointer-events-none absolute left-8 top-1/2 -translate-y-1/2 z-10 flex flex-col gap-6">
+        <div
+            class="pointer-events-none absolute top-1/2 left-8 z-10 flex -translate-y-1/2 flex-col gap-6"
+        >
             <div class="pointer-events-auto flex flex-col gap-4">
-                <div 
-                    class="group relative flex flex-col items-center gap-2 p-4 rounded-3xl bg-white/90 border border-slate-200 shadow-xl cursor-grab active:cursor-grabbing hover:border-primary-400 transition-all hover:shadow-primary-900/10 backdrop-blur-xl focus:outline-none focus:ring-2 focus:ring-primary-500"
+                <div
+                    class="group hover:border-primary-400 hover:shadow-primary-900/10 focus:ring-primary-500 relative flex cursor-grab flex-col items-center gap-2 rounded-3xl border border-slate-200 bg-white/90 p-4 shadow-xl backdrop-blur-xl transition-all focus:ring-2 focus:outline-none active:cursor-grabbing"
                     draggable="true"
                     role="button"
                     tabindex="0"
@@ -761,19 +853,25 @@
                         }
                     }}
                 >
-                    <div class="p-3 rounded-2xl bg-primary-50 text-primary-600 group-hover:scale-110 transition-transform shadow-sm">
+                    <div
+                        class="bg-primary-50 text-primary-600 rounded-2xl p-3 shadow-sm transition-transform group-hover:scale-110"
+                    >
                         <Zap size={28} />
                     </div>
-                    <span class="text-[9px] font-black text-slate-500 uppercase tracking-tighter">New Rule</span>
-                    
+                    <span class="text-[9px] font-black tracking-tighter text-slate-500 uppercase"
+                        >New Rule</span
+                    >
+
                     <!-- Tooltip -->
-                    <div class="absolute left-full ml-4 px-3 py-1.5 bg-slate-900 text-white text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                    <div
+                        class="pointer-events-none absolute left-full ml-4 rounded-lg bg-slate-900 px-3 py-1.5 text-[10px] font-bold whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-100"
+                    >
                         Tarik ke kanvas untuk buat Aturan
                     </div>
                 </div>
 
-                <div 
-                    class="group relative flex flex-col items-center gap-2 p-4 rounded-3xl bg-white/90 border border-slate-200 shadow-xl cursor-grab active:cursor-grabbing hover:border-emerald-400 transition-all hover:shadow-emerald-900/10 backdrop-blur-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                <div
+                    class="group relative flex cursor-grab flex-col items-center gap-2 rounded-3xl border border-slate-200 bg-white/90 p-4 shadow-xl backdrop-blur-xl transition-all hover:border-emerald-400 hover:shadow-emerald-900/10 focus:ring-2 focus:ring-emerald-500 focus:outline-none active:cursor-grabbing"
                     draggable="true"
                     role="button"
                     tabindex="0"
@@ -788,20 +886,24 @@
                         }
                     }}
                 >
-                    <div class="p-3 rounded-2xl bg-emerald-50 text-emerald-600 group-hover:scale-110 transition-transform shadow-sm">
+                    <div
+                        class="rounded-2xl bg-emerald-50 p-3 text-emerald-600 shadow-sm transition-transform group-hover:scale-110"
+                    >
                         <Target size={28} />
                     </div>
-                    <span class="text-[9px] font-black text-slate-500 uppercase tracking-tighter">New Action</span>
-                    
+                    <span class="text-[9px] font-black tracking-tighter text-slate-500 uppercase"
+                        >New Action</span
+                    >
+
                     <!-- Tooltip -->
-                    <div class="absolute left-full ml-4 px-3 py-1.5 bg-slate-900 text-white text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                    <div
+                        class="pointer-events-none absolute left-full ml-4 rounded-lg bg-slate-900 px-3 py-1.5 text-[10px] font-bold whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-100"
+                    >
                         Tarik ke kanvas untuk buat Aksi
                     </div>
                 </div>
             </div>
         </div>
-
-
 
         <!-- Legend Bottom Right -->
         <div class="pointer-events-none absolute right-6 bottom-6 flex flex-col gap-2">
@@ -841,22 +943,26 @@
 
         <!-- n8n-style Node Detail Panel -->
         {#if selectedNode}
-            <!-- svelte-ignore a11y_click_events_have_key_events -->
-            <!-- svelte-ignore a11y_no_static_element_interactions -->
-            <div 
+            <button
+                type="button"
                 class="absolute inset-0 z-20 bg-slate-900/10 backdrop-blur-[2px]"
                 onclick={() => (selectedNode = null)}
                 transition:fade={{ duration: 200 }}
-            ></div>
+                aria-label="Close details overlay"
+            ></button>
 
-            <div 
+            <div
                 class="absolute inset-y-0 right-0 z-150 flex w-full max-w-sm flex-col border-l border-slate-200 bg-white shadow-2xl"
                 transition:fly={{ x: 400, duration: 300 }}
             >
                 <!-- Drawer Header -->
                 <div class="flex items-center justify-between border-b border-slate-100 px-6 py-5">
                     <div class="flex items-center gap-3">
-                        <div class="rounded-xl p-2 {selectedNode.type === 'gate' ? 'bg-primary-50 text-primary-600' : 'bg-emerald-50 text-emerald-600'}">
+                        <div
+                            class="rounded-xl p-2 {selectedNode.type === 'gate'
+                                ? 'bg-primary-50 text-primary-600'
+                                : 'bg-emerald-50 text-emerald-600'}"
+                        >
                             {#if selectedNode.type === 'gate'}
                                 <GitBranch size={20} />
                             {:else if selectedNode.type === 'action'}
@@ -867,16 +973,24 @@
                         </div>
                         <div>
                             <h3 class="text-sm font-black text-slate-800">
-                                {selectedNode.type === 'gate' ? 'Detail Aturan' : selectedNode.type === 'action' ? 'Detail Aksi' : 'Detail Fakta'}
+                                {selectedNode.type === 'gate'
+                                    ? 'Detail Aturan'
+                                    : selectedNode.type === 'action'
+                                      ? 'Detail Aksi'
+                                      : 'Detail Fakta'}
                             </h3>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Node Configuration</p>
+                            <p
+                                class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                            >
+                                Node Configuration
+                            </p>
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
                         {#if selectedNode.type === 'gate' && onedit}
                             <button
                                 onclick={() => onedit(selectedNode.data)}
-                                class="rounded-xl p-2 text-primary-600 transition-colors hover:bg-primary-50"
+                                class="text-primary-600 hover:bg-primary-50 rounded-xl p-2 transition-colors"
                                 title="Ubah Aturan"
                             >
                                 <Pencil size={18} />
@@ -895,21 +1009,27 @@
                 </div>
 
                 <!-- Drawer Body -->
-                <div class="custom-scrollbar flex-1 overflow-y-auto p-6 space-y-6">
+                <div class="custom-scrollbar flex-1 space-y-6 overflow-y-auto p-6">
                     {#if selectedNode.type === 'gate'}
                         <section class="space-y-4">
-                            <div class="flex items-center gap-2 text-[10px] font-black text-blue-500 uppercase tracking-widest">
+                            <div
+                                class="flex items-center gap-2 text-[10px] font-black tracking-widest text-blue-500 uppercase"
+                            >
                                 <div class="h-px flex-1 bg-blue-100"></div>
                                 <span>Logic Flow</span>
                                 <div class="h-px w-4 bg-blue-100"></div>
                             </div>
-                            
-                            <div class="rounded-2xl border border-slate-100 bg-slate-50 p-4 font-mono text-[11px] leading-relaxed">
+
+                            <div
+                                class="rounded-2xl border border-slate-100 bg-slate-50 p-4 font-mono text-[11px] leading-relaxed"
+                            >
                                 <div class="mb-3">
                                     <span class="font-bold text-blue-600">IF (Triggers)</span>
                                     <div class="mt-2 flex flex-wrap gap-2">
                                         {#each selectedNode.data.required_facts || [] as req}
-                                            <span class="rounded border border-slate-200 bg-white px-2 py-1 text-slate-700 shadow-sm">
+                                            <span
+                                                class="rounded border border-slate-200 bg-white px-2 py-1 text-slate-700 shadow-sm"
+                                            >
                                                 {factData.find((f) => f.code === req)?.name || req}
                                             </span>
                                         {/each}
@@ -921,8 +1041,11 @@
                                         <span class="font-bold text-purple-600">THEN (Deduce)</span>
                                         <div class="mt-2 flex flex-wrap gap-2">
                                             {#each selectedNode.data.deduced_facts as ded}
-                                                <span class="rounded border border-purple-100 bg-purple-50 px-2 py-1 text-purple-700 shadow-sm">
-                                                    {factData.find((f) => f.code === ded)?.name || ded}
+                                                <span
+                                                    class="rounded border border-purple-100 bg-purple-50 px-2 py-1 text-purple-700 shadow-sm"
+                                                >
+                                                    {factData.find((f) => f.code === ded)?.name ||
+                                                        ded}
                                                 </span>
                                             {/each}
                                         </div>
@@ -930,13 +1053,27 @@
                                 {/if}
 
                                 {#if selectedNode.data.action_id || selectedNode.data.action}
-                                    {#if actionData.find(a => a.id === selectedNode.data.action_id || a.code === selectedNode.data.action)}
-                                        {@const action = actionData.find(a => a.id === selectedNode.data.action_id || a.code === selectedNode.data.action)}
+                                    {#if actionData.find((a) => a.id === selectedNode.data.action_id || a.code === selectedNode.data.action)}
+                                        {@const action = actionData.find(
+                                            (a) =>
+                                                a.id === selectedNode.data.action_id ||
+                                                a.code === selectedNode.data.action
+                                        )}
                                         <div>
-                                            <span class="font-bold text-emerald-600">THEN (Action)</span>
-                                            <div class="mt-2 rounded-xl border border-emerald-100 bg-emerald-50/50 p-3">
-                                                <p class="text-xs font-bold text-emerald-900">{action?.name || selectedNode.data.action}</p>
-                                                <p class="mt-1 text-[10px] text-emerald-700/80 leading-relaxed">{action?.description || ''}</p>
+                                            <span class="font-bold text-emerald-600"
+                                                >THEN (Action)</span
+                                            >
+                                            <div
+                                                class="mt-2 rounded-xl border border-emerald-100 bg-emerald-50/50 p-3"
+                                            >
+                                                <p class="text-xs font-bold text-emerald-900">
+                                                    {action?.name || selectedNode.data.action}
+                                                </p>
+                                                <p
+                                                    class="mt-1 text-[10px] leading-relaxed text-emerald-700/80"
+                                                >
+                                                    {action?.description || ''}
+                                                </p>
                                             </div>
                                         </div>
                                     {/if}
@@ -945,20 +1082,34 @@
                         </section>
 
                         <section class="space-y-4">
-                            <div class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            <div
+                                class="flex items-center gap-2 text-[10px] font-black tracking-widest text-slate-400 uppercase"
+                            >
                                 <div class="h-px flex-1 bg-slate-100"></div>
                                 <span>Metadata</span>
                                 <div class="h-px w-4 bg-slate-100"></div>
                             </div>
 
                             <div class="grid grid-cols-2 gap-3">
-                                <div class="rounded-2xl border border-slate-100 bg-white p-3 shadow-sm">
-                                    <p class="mb-1 text-[9px] font-bold text-slate-400 uppercase">Kode</p>
-                                    <p class="font-mono text-xs font-black text-slate-900">{selectedNode.data.code}</p>
+                                <div
+                                    class="rounded-2xl border border-slate-100 bg-white p-3 shadow-sm"
+                                >
+                                    <p class="mb-1 text-[9px] font-bold text-slate-400 uppercase">
+                                        Kode
+                                    </p>
+                                    <p class="font-mono text-xs font-black text-slate-900">
+                                        {selectedNode.data.code}
+                                    </p>
                                 </div>
-                                <div class="rounded-2xl border border-slate-100 bg-white p-3 shadow-sm">
-                                    <p class="mb-1 text-[9px] font-bold text-slate-400 uppercase">Prioritas</p>
-                                    <p class="text-xs font-black text-slate-900">Level {selectedNode.data.priority}</p>
+                                <div
+                                    class="rounded-2xl border border-slate-100 bg-white p-3 shadow-sm"
+                                >
+                                    <p class="mb-1 text-[9px] font-bold text-slate-400 uppercase">
+                                        Prioritas
+                                    </p>
+                                    <p class="text-xs font-black text-slate-900">
+                                        Level {selectedNode.data.priority}
+                                    </p>
                                 </div>
                             </div>
 
@@ -971,17 +1122,26 @@
                             {/if}
                         </section>
                     {:else}
-                        <div class="rounded-3xl border border-slate-100 bg-slate-50 p-6 text-center">
-                            <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-sm">
+                        <div
+                            class="rounded-3xl border border-slate-100 bg-slate-50 p-6 text-center"
+                        >
+                            <div
+                                class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-sm"
+                            >
                                 <Brain size={32} class="text-slate-400" />
                             </div>
-                            <h4 class="mb-2 text-sm font-black text-slate-800">{selectedNode.data.name}</h4>
+                            <h4 class="mb-2 text-sm font-black text-slate-800">
+                                {selectedNode.data.name}
+                            </h4>
                             <p class="text-xs leading-relaxed text-slate-500 italic">
-                                {selectedNode.data.description || 'Tidak ada deskripsi tambahan untuk node ini.'}
+                                {selectedNode.data.description ||
+                                    'Tidak ada deskripsi tambahan untuk node ini.'}
                             </p>
                             {#if selectedNode.data.variant}
                                 <div class="mt-4 flex justify-center">
-                                    <span class="rounded-full bg-slate-200 px-3 py-1 text-[10px] font-black text-slate-700 uppercase tracking-widest">
+                                    <span
+                                        class="rounded-full bg-slate-200 px-3 py-1 text-[10px] font-black tracking-widest text-slate-700 uppercase"
+                                    >
                                         {selectedNode.data.variant}
                                     </span>
                                 </div>
@@ -990,41 +1150,68 @@
                     {/if}
 
                     {#if selectedNode.type === 'gate' || selectedNode.type === 'action'}
-                         <!-- Preview Section -->
-                         <section class="space-y-4">
-                            <div class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        <!-- Preview Section -->
+                        <section class="space-y-4">
+                            <div
+                                class="flex items-center gap-2 text-[10px] font-black tracking-widest text-slate-400 uppercase"
+                            >
                                 <div class="h-px flex-1 bg-slate-100"></div>
                                 <span>Preview Tampilan</span>
                                 <div class="h-px w-4 bg-slate-100"></div>
                             </div>
-                            <div class="overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 p-4 shadow-inner">
-                                {#if (selectedNode.type === 'gate' && actionData.find(a => a.id === selectedNode.data.action_id || a.code === selectedNode.data.action)?.code) || selectedNode.type === 'action'}
-                                    {@const actionCode = selectedNode.type === 'gate' 
-                                        ? actionData.find(a => a.id === selectedNode.data.action_id || a.code === selectedNode.data.action)?.code 
-                                        : selectedNode.data.code}
-                                    
+                            <div
+                                class="overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 p-4 shadow-inner"
+                            >
+                                {#if (selectedNode.type === 'gate' && actionData.find((a) => a.id === selectedNode.data.action_id || a.code === selectedNode.data.action)?.code) || selectedNode.type === 'action'}
+                                    {@const actionCode =
+                                        selectedNode.type === 'gate'
+                                            ? actionData.find(
+                                                  (a) =>
+                                                      a.id === selectedNode.data.action_id ||
+                                                      a.code === selectedNode.data.action
+                                              )?.code
+                                            : selectedNode.data.code}
+
                                     {#if actionCode === 'INCREASE_DIFF' || actionCode === 'H01'}
-                                        <div class="flex items-center gap-3 rounded-xl bg-blue-600 p-3 text-white shadow-lg">
-                                            <div class="rounded-full bg-white/20 p-1.5"><Target size={14} /></div>
+                                        <div
+                                            class="flex items-center gap-3 rounded-xl bg-blue-600 p-3 text-white shadow-lg"
+                                        >
+                                            <div class="rounded-full bg-white/20 p-1.5">
+                                                <Target size={14} />
+                                            </div>
                                             <div class="leading-tight">
                                                 <p class="text-xs font-bold">Level Up!</p>
-                                                <p class="text-[10px] opacity-80">Tantangan baru tersedia untukmu.</p>
+                                                <p class="text-[10px] opacity-80">
+                                                    Tantangan baru tersedia untukmu.
+                                                </p>
                                             </div>
                                         </div>
                                     {:else if actionCode === 'CERTIFICATION' || actionCode === 'H06'}
-                                        <div class="flex items-center gap-3 rounded-xl bg-amber-500 p-3 text-white shadow-lg">
-                                            <div class="rounded-full bg-white/20 p-1.5"><Trophy size={14} /></div>
+                                        <div
+                                            class="flex items-center gap-3 rounded-xl bg-amber-500 p-3 text-white shadow-lg"
+                                        >
+                                            <div class="rounded-full bg-white/20 p-1.5">
+                                                <Trophy size={14} />
+                                            </div>
                                             <div class="leading-tight">
                                                 <p class="text-xs font-bold">Selamat!</p>
-                                                <p class="text-[10px] opacity-80">Kamu meraih sertifikat baru.</p>
+                                                <p class="text-[10px] opacity-80">
+                                                    Kamu meraih sertifikat baru.
+                                                </p>
                                             </div>
                                         </div>
                                     {:else}
-                                        <div class="flex items-center gap-3 rounded-xl bg-slate-800 p-3 text-white shadow-lg">
-                                            <div class="rounded-full bg-white/20 p-1.5"><Info size={14} /></div>
+                                        <div
+                                            class="flex items-center gap-3 rounded-xl bg-slate-800 p-3 text-white shadow-lg"
+                                        >
+                                            <div class="rounded-full bg-white/20 p-1.5">
+                                                <Info size={14} />
+                                            </div>
                                             <div class="leading-tight">
                                                 <p class="text-xs font-bold">Feedback Sistem</p>
-                                                <p class="text-[10px] opacity-80">Pertahankan ritme belajarmu.</p>
+                                                <p class="text-[10px] opacity-80">
+                                                    Pertahankan ritme belajarmu.
+                                                </p>
                                             </div>
                                         </div>
                                     {/if}

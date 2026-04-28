@@ -52,12 +52,15 @@ export class UeqDetailState extends BaseState {
     dimensions = $derived.by(() => {
         if (!this.survey) return {};
         const results: Record<string, number> = {};
-        
+
         for (const [dimension, fields] of Object.entries(UEQ_DIMENSIONS)) {
-            const sum = fields.reduce((acc, field) => acc + (Number(this.survey[field as keyof UeqSurvey]) || 0), 0);
+            const sum = fields.reduce(
+                (acc, field) => acc + (Number(this.survey[field as keyof UeqSurvey]) || 0),
+                0
+            );
             results[dimension] = sum / fields.length;
         }
-        
+
         return results;
     });
 

@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
             DosenSeeder::class,
             MahasiswaSeeder::class,
             MaterialsSeeder::class,
-            SubMaterialsSeeder::class,
+
             ComprehensiveQuestionsSeeder::class,
             FinalProjectSeeder::class,
             UeqSurveysSeeder::class,

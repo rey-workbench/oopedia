@@ -13,7 +13,6 @@ use App\Enums\Lms\QuestionDifficulty;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Question\CheckAnswerRequest;
 use App\Http\Requests\Question\ReviewQuestionRequest;
-use App\Services\Adaptive\AdaptiveResponseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -32,7 +31,6 @@ final class MaterialQuestionController extends Controller
         private readonly ProgressRepositoryInterface $progressRepo,
         private readonly PerformanceServiceInterface $performanceService,
         private readonly GuestProgressServiceInterface $guestProgressService,
-        private readonly AdaptiveResponseService $adaptiveResponseService,
     ) {}
 
     public function index(): Response
@@ -89,7 +87,6 @@ final class MaterialQuestionController extends Controller
             userId: $userId,
             isGuest: $isGuest,
             guestProgress: $isGuest ? $this->guestProgressService->getProgress() : [],
-            subMaterialId: QuestionDifficulty::tryFrom((string) $difficulty) ? null : $difficulty,
             targetDifficulty: $targetDifficulty,
         );
 
@@ -111,17 +108,15 @@ final class MaterialQuestionController extends Controller
             validatedData: $request->validated(),
         );
 
-        $isCorrect = $result['is_correct'];
-        $ui        = $this->adaptiveResponseService->resolveUiResponse($result['engine_result'], $materialId, $isCorrect);
+        $isCorrect    = $result['is_correct'];
+        $engineResult = $result['engine_result'];
 
         return $this->json([
             'status'         => $isCorrect ? 'success' : 'error',
-            'message'        => $result['engine_result']['triggered_rule']['message'] ?? ($isCorrect ? 'Jawaban Benar!' : 'Belum Tepat'),
-            'nextUrl'        => $ui['url'],
+            'message'        => $isCorrect ? 'Jawaban Benar!' : 'Belum Tepat',
             'xpEarned'       => $result['score'],
             'isCorrect'      => $isCorrect,
-            'adaptiveResult' => $result['engine_result'],
-            'ui'             => $ui,
+            'adaptiveResult' => $engineResult,
             'studentState'   => Auth::guest() ? null : $this->performanceService->getStudentSessionState((string) Auth::id()),
         ]);
     }

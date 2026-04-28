@@ -20,8 +20,6 @@ interface ProgressRepositoryInterface
 
     public function getLeaderboardStats(string $roleName): Collection;
 
-    public function getAttemptCount(string $userId, string $materialId, string $questionId): int;
-
     public function saveProgress(array $data): QuizAttempt;
 
     public function getStudentState(?string $userId): ?StudentState;
@@ -29,10 +27,6 @@ interface ProgressRepositoryInterface
     public function getOrCreateStudentState(?string $userId): StudentState;
 
     public function getAnsweredQuestionIds(string $userId, string $materialId): Collection;
-
-    public function getAttemptedQuestionIds(string $userId, string $materialId): Collection;
-
-    public function getConsecutiveFailures(?string $userId, string $questionId): int;
 
     public function resetProgress(string $userId, string $materialId): void;
 
@@ -43,8 +37,6 @@ interface ProgressRepositoryInterface
     public function getMaterialPerformanceStats(): Collection;
 
     public function getPopularMaterials(int $limit): Collection;
-
-    public function getByUserAndMaterial(string $userId, string $materialId): Collection;
 
     public function getLastAccessTime(?string $userId, string $materialId): ?string;
 

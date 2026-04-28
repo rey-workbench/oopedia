@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('priority')->default(0);
             $table->json('required_facts');
             $table->json('deduced_facts')->nullable();
+            $table->json('action_codes')->nullable();
             $table->foreignId('action_id')->nullable()->constrained('adaptive_actions')->nullOnDelete();
             $table->boolean('is_active')->default(true);
             $table->timestamps();

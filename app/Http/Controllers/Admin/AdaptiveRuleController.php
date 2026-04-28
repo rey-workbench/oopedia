@@ -35,8 +35,8 @@ final class AdaptiveRuleController extends Controller
                 'domain'          => $adaptive_rule->domain,
                 'priority'        => $adaptive_rule->priority,
                 'action_id'       => $adaptive_rule->action_id,
+                'action_codes'    => $adaptive_rule->action_codes,
                 'required_facts'  => $adaptive_rule->required_facts,
-                'forbidden_facts' => $adaptive_rule->forbidden_facts,
                 'deduced_facts'   => $adaptive_rule->deduced_facts,
                 'is_active'       => $adaptive_rule->is_active,
             ],
@@ -68,9 +68,9 @@ final class AdaptiveRuleController extends Controller
             'name'            => 'required|string|max:255',
             'domain'          => 'required|string',
             'priority'        => 'required|integer',
-            'action_id'       => 'required|exists:adaptive_actions,id',
+            'action_id'       => 'nullable|exists:adaptive_actions,id',
+            'action_codes'    => 'nullable|array',
             'required_facts'  => 'nullable|array',
-            'forbidden_facts' => 'nullable|array',
             'is_active'       => 'boolean',
         ]);
 
@@ -86,9 +86,9 @@ final class AdaptiveRuleController extends Controller
             'name'            => 'required|string|max:255',
             'domain'          => 'required|string',
             'priority'        => 'required|integer',
-            'action_id'       => 'required|exists:adaptive_actions,id',
+            'action_id'       => 'nullable|exists:adaptive_actions,id',
+            'action_codes'    => 'nullable|array',
             'required_facts'  => 'nullable|array',
-            'forbidden_facts' => 'nullable|array',
             'is_active'       => 'boolean',
         ]);
 
@@ -125,8 +125,8 @@ final class AdaptiveRuleController extends Controller
                     'priority'        => $rule->priority,
                     'action'          => $rule->action?->code ?? 'H00',
                     'action_id'       => $rule->action_id,
+                    'action_codes'    => $rule->action_codes,
                     'required_facts'  => $rule->required_facts,
-                    'forbidden_facts' => $rule->forbidden_facts,
                     'deduced_facts'   => $rule->deduced_facts,
                     'is_active'       => $rule->is_active,
                 ]),

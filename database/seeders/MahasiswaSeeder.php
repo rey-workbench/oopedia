@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Enums\Lms\StudentLevel;
@@ -7,6 +9,7 @@ use App\Enums\User\RoleName;
 use App\Models\Role;
 use App\Models\StudentState;
 use App\Models\User;
+use App\Rules\Adaptive\Constants\StudentStateSchema;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -56,24 +59,34 @@ class MahasiswaSeeder extends Seeder
                 ],
             );
 
-            // Jika ini Andi, beri data sertifikat contoh
+            // Jika ini Andi, beri data state awal untuk testing adaptive engine
             if ($mahasiswa['email'] === 'andi@mahasiswa.com') {
                 StudentState::updateOrCreate(
                     ['user_id' => $user->id],
                     [
-                        'xp'             => 550,
-                        'level'          => StudentLevel::AHLI->value,
-                        'streak'         => 5,
-                        'max_streak'     => 12,
-                        'badges'         => ['fast_learner', 'logic_master', 'module_complete'],
-                        'learning_style' => 'visual',
-                        'certifications' => [
-                            '01kpwk01et585ktfn1672hzsbq' => 'gold',
-                            '01kpwk01ew9f7t6ybvtang3fap' => 'silver',
-                            '01kpwk02cxd12cekz09a1wm1jj' => 'bronze',
+                        StudentStateSchema::XP              => 550,
+                        StudentStateSchema::LEVEL           => StudentLevel::AHLI->value,
+                        StudentStateSchema::STREAK          => 5,
+                        StudentStateSchema::MAX_STREAK      => 12,
+                        'badges'                            => ['fast_learner', 'logic_master', 'module_complete'],
+                        StudentStateSchema::ACCURACY        => 85.5,
+                        StudentStateSchema::SESSION_HISTORY => [80.0, 90.0, 85.0, 85.5, 90.0],
+                        StudentStateSchema::CURRENT_SESSION => [
+                            'correct'    => 4,
+                            'total'      => 5,
+                            'hints'      => 0,
+                            'time_spent' => 120,
                         ],
-                        'unlocked_modules' => ['1', '2', '3'],
-                        'last_active_at'   => now(),
+                        StudentStateSchema::PERFORMANCE_METRICS => [
+                            'trend'          => 'up',
+                            'speed'          => 'normal',
+                            'stagnant_count' => 0,
+                        ],
+                        StudentStateSchema::ADAPTIVE_STATE => [
+                            'consecutive_correct' => 4,
+                            'help_count_session'  => 0,
+                        ],
+                        'last_active_at' => now(),
                     ],
                 );
             }

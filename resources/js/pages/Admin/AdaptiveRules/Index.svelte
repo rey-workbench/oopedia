@@ -9,7 +9,7 @@
     import { untrack } from 'svelte';
 
     let props: AdminAdaptiveRuleProps = $props();
- 
+
     let isRuleModalOpen = $state(false);
     let isActionModalOpen = $state(false);
     let editingRule = $state<any>(null);
@@ -45,12 +45,12 @@
         {/if}
 
         <div class="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <ForwardChaining 
-                {analyticsState} 
-                onedit={openEditRule} 
+            <ForwardChaining
+                {analyticsState}
+                onedit={openEditRule}
                 oneditaction={openEditAction}
-                bind:isFullscreen={isFullscreen}
-                fullscreenTarget={mainContainer} 
+                bind:isFullscreen
+                fullscreenTarget={mainContainer}
             />
         </div>
         <!-- Modals inside mainContainer for Fullscreen Visibility -->

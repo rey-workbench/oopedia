@@ -119,9 +119,9 @@ export interface AdaptiveRule {
     domain: string;
     priority: number;
     action: string;
-    action_id: number;
+    action_id: number | null;
+    action_codes: string[] | null;
     required_facts: string[];
-    forbidden_facts: string[] | null;
     deduced_facts: string[] | null;
     is_active: boolean;
 }

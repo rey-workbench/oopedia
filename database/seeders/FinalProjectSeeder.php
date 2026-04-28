@@ -3,13 +3,11 @@
 namespace Database\Seeders;
 
 use App\Enums\Lms\ContentCategory;
-use App\Enums\Lms\LearningStyle;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Enums\Lms\QuestionType;
 use App\Models\Answer;
 use App\Models\Material;
 use App\Models\Question;
-use App\Models\SubMaterial;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -28,20 +26,10 @@ class FinalProjectSeeder extends Seeder
             [
                 'title'   => 'Proyek Akhir: Arsitektur Sistem Terintegrasi',
                 'content' => '<h2>Ujian Akhir Penguasaan OOP</h2>
-                    <p>Selamat! Anda telah capai tahap akhir. Proyek ini akan menguji seluruh pemahaman Anda tentang 4 pilar OOP (Enkapsulasi, Pewarisan, Polimorfisme, dan Abstraksi) dalam satu skenario terpadu.</p>',
+                    <p>Selamat! Anda telah capai tahap akhir. Proyek ini akan menguji seluruh pemahaman Anda tentang 4 pilar OOP (Enkapsulasi, Pewarisan, Polimorfisme, dan Abstraksi) dalam satu skenario terpadu.</p>
+                    <p>Selesaikan pertanyaan berikut dengan tingkat akurasi tinggi untuk mendapatkan sertifikasi.</p>',
                 'created_by'       => $dosenId,
                 'is_final_project' => true,
-            ],
-        );
-
-        // 2. Create Sub Material
-        $subMaterial = SubMaterial::updateOrCreate(
-            ['material_id' => $material->id, 'title' => 'Instruksi Proyek Akhir'],
-            [
-                'content'        => 'Selesaikan pertanyaan berikut dengan tingkat akurasi tinggi untuk mendapatkan sertifikasi.',
-                'jenis_konten'   => ContentCategory::TEORI->value,
-                'learning_style' => LearningStyle::MIXED->value,
-                'order'          => 1,
             ],
         );
 
@@ -50,10 +38,9 @@ class FinalProjectSeeder extends Seeder
             ['question_text' => 'Dalam sebuah sistem pembayaran, Anda memiliki interface "PaymentProcessor" dan class "CreditCard", "EWallet", serta "BankTransfer". Konsep apa yang paling tepat menggambarkan kemampuan memanggil method "pay()" pada variabel bertipe "PaymentProcessor" tanpa peduli jenis pembayarannya?'],
             [
                 'material_id'     => $material->id,
-                'sub_material_id' => $subMaterial->id,
                 'question_type'   => QuestionType::RADIO_BUTTON->value,
                 'type'            => ContentCategory::TEORI->value,
-                'difficulty'      => QuestionDifficulty::FINAL->value,
+                'difficulty'      => QuestionDifficulty::HARD->value,
                 'hint'            => 'Satu antarmuka, banyak wujud.',
                 'created_by'      => $dosenId,
             ],
@@ -74,10 +61,9 @@ class FinalProjectSeeder extends Seeder
             ['question_text' => 'Manakah potongan kode Java yang benar untuk mendeklarasikan kelas "Manager" yang mewarisi dari "Employee" dan mengimplementasikan interface "Authenticatable"?'],
             [
                 'material_id'     => $material->id,
-                'sub_material_id' => $subMaterial->id,
                 'question_type'   => QuestionType::RADIO_BUTTON->value,
                 'type'            => ContentCategory::SINTAKS->value,
-                'difficulty'      => QuestionDifficulty::FINAL->value,
+                'difficulty'      => QuestionDifficulty::HARD->value,
                 'hint'            => 'Urutannya adalah extends lalu implements.',
                 'created_by'      => $dosenId,
             ],
@@ -87,5 +73,6 @@ class FinalProjectSeeder extends Seeder
             ['question_id' => $q2->id, 'answer_text' => 'public class Manager extends Employee implements Authenticatable {}'],
             ['is_correct' => true, 'explanation' => 'Di Java, kelas hanya bisa extends satu superclass, tapi bisa implements banyak interface.'],
         );
+
     }
 }

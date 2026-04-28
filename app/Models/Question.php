@@ -35,7 +35,6 @@ final class Question extends Model
 
     protected $fillable = [
         'material_id',
-        'sub_material_id',
         'question_text',
         'question_type',
         'type',
@@ -48,7 +47,6 @@ final class Question extends Model
     {
         return [
             'material_id'     => 'string',
-            'sub_material_id' => 'string',
             'created_by'      => 'string',
             'question_type'   => QuestionType::class,
             'type'            => ContentCategory::class,
@@ -59,11 +57,6 @@ final class Question extends Model
     public function material(): BelongsTo
     {
         return $this->belongsTo(Material::class);
-    }
-
-    public function subMaterial(): BelongsTo
-    {
-        return $this->belongsTo(SubMaterial::class);
     }
 
     public function createdBy(): BelongsTo

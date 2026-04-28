@@ -5,9 +5,12 @@ namespace Database\Seeders;
 use App\Enums\Lms\ContentCategory;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Enums\Lms\QuestionType;
+use App\Enums\User\RoleName;
 use App\Models\Answer;
+use App\Models\Material;
 use App\Models\Question;
-use App\Models\SubMaterial;
+use App\Models\Role;
+
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -21,17 +24,18 @@ class ComprehensiveQuestionsSeeder extends Seeder
         Answer::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        $subMaterials = SubMaterial::with('material')->get();
-        $admin        = User::whereIn('role_id', [1, 2])->first();
+        $materials    = Material::all();
+        $adminRoleIds = Role::whereIn('role_name', [RoleName::SUPERADMIN, RoleName::DOSEN])->pluck('id');
+        $admin        = User::whereIn('role_id', $adminRoleIds)->first();
 
-        if ($subMaterials->isEmpty()) {
-            echo "Warning: No submaterials found. Please run SubMaterialsSeeder first.\n";
+        if ($materials->isEmpty()) {
+            echo "Warning: No materials found. Please run MaterialsSeeder first.\n";
 
             return;
         }
 
         if (! $admin) {
-            echo "Warning: No admin/dosen found. Please run SuperadminSeeder/DosenSeeder first.\n";
+            echo "Warning: No admin/dosen found.\n";
 
             return;
         }
@@ -40,25 +44,18 @@ class ComprehensiveQuestionsSeeder extends Seeder
         DB::beginTransaction();
 
         try {
-            foreach ($subMaterials as $subMaterial) {
-                // Create 15 questions per submaterial
+            foreach ($materials as $material) {
+                // Create 15 questions per material
                 for ($i = 1; $i <= 15; $i++) {
-                    // Cycle through difficulty levels
-                    $isFinal    = $subMaterial->material && $subMaterial->material->is_final_project;
-                    $difficulty = $isFinal ? QuestionDifficulty::FINAL->value : ($i <= 5 ? QuestionDifficulty::BEGINNER->value : ($i <= 10 ? QuestionDifficulty::MEDIUM->value : QuestionDifficulty::HARD->value));
-
-                    // Cycle through question types
+                    $difficulty   = $i <= 5 ? QuestionDifficulty::BEGINNER->value : ($i <= 10 ? QuestionDifficulty::MEDIUM->value : QuestionDifficulty::HARD->value);
                     $typePool     = [QuestionType::RADIO_BUTTON->value, QuestionType::FILL_IN_THE_BLANK->value, QuestionType::DRAG_AND_DROP->value];
                     $questionType = $typePool[($i - 1) % 3];
-
-                    // Handle mixed content type for question category
-                    $qType = $subMaterial->jenis_konten === ContentCategory::MIXED ? ContentCategory::TEORI->value : ContentCategory::SINTAKS->value;
+                    $qType        = ContentCategory::TEORI->value;
 
                     if ($questionType === 'radio_button') {
                         $this->createRadioQuestion(
-                            $subMaterial->material_id,
-                            $subMaterial->id,
-                            "Pertanyaan dummy #{$i} untuk sub-materi: {$subMaterial->title}",
+                            $material->id,
+                            "Pertanyaan dummy #{$i} untuk materi: {$material->title}",
                             $qType,
                             $difficulty,
                             'Pilih jawaban yang bertuliskan "ini benar"',
@@ -72,8 +69,7 @@ class ComprehensiveQuestionsSeeder extends Seeder
                         );
                     } elseif ($questionType === 'fill_in_the_blank') {
                         $this->createFillBlankQuestion(
-                            $subMaterial->material_id,
-                            $subMaterial->id,
+                            $material->id,
                             "Ketik kata 'benar' untuk menjawab pertanyaan dummy #{$i} ini: _____",
                             $qType,
                             $difficulty,
@@ -86,8 +82,7 @@ class ComprehensiveQuestionsSeeder extends Seeder
                         );
                     } else {
                         $this->createDragDropQuestion(
-                            $subMaterial->material_id,
-                            $subMaterial->id,
+                            $material->id,
                             "Urutkan elemen dummy #{$i} berikut sesuai angka 1-2-3: [blank_1] [blank_2] [blank_3]",
                             $qType,
                             $difficulty,
@@ -106,20 +101,16 @@ class ComprehensiveQuestionsSeeder extends Seeder
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-
             throw $e;
         }
 
         echo 'Total questions created: ' . $totalCreated . "\n";
     }
 
-    // ==================== HELPER METHODS ====================
-
-    private function createRadioQuestion($materialId, $subMaterialId, $text, $type, $difficulty, $hint, $answers, $adminId)
+    private function createRadioQuestion($materialId, $text, $type, $difficulty, $hint, $answers, $adminId)
     {
         $question = Question::create([
             'material_id'     => $materialId,
-            'sub_material_id' => $subMaterialId,
             'question_text'   => $text,
             'question_type'   => QuestionType::RADIO_BUTTON->value,
             'type'            => $type,
@@ -143,11 +134,10 @@ class ComprehensiveQuestionsSeeder extends Seeder
         Answer::insert($answerData);
     }
 
-    private function createFillBlankQuestion($materialId, $subMaterialId, $text, $type, $difficulty, $hint, $correctAnswers, $adminId)
+    private function createFillBlankQuestion($materialId, $text, $type, $difficulty, $hint, $correctAnswers, $adminId)
     {
         $question = Question::create([
             'material_id'     => $materialId,
-            'sub_material_id' => $subMaterialId,
             'question_text'   => $text,
             'question_type'   => QuestionType::FILL_IN_THE_BLANK->value,
             'type'            => $type,
@@ -172,11 +162,10 @@ class ComprehensiveQuestionsSeeder extends Seeder
         Answer::insert($answerData);
     }
 
-    private function createDragDropQuestion($materialId, $subMaterialId, $text, $type, $difficulty, $hint, $items, $adminId)
+    private function createDragDropQuestion($materialId, $text, $type, $difficulty, $hint, $items, $adminId)
     {
         $question = Question::create([
             'material_id'     => $materialId,
-            'sub_material_id' => $subMaterialId,
             'question_text'   => $text,
             'question_type'   => QuestionType::DRAG_AND_DROP->value,
             'type'            => $type,

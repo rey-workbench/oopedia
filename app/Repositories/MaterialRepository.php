@@ -73,7 +73,7 @@ final class MaterialRepository implements MaterialRepositoryInterface
 
     public function findWithQuestionsShuffled(string $id): Material
     {
-        $material = Material::with(['questions.answers', 'subMaterials.questions', 'creator', 'media'])
+        $material = Material::with(['questions.answers', 'creator', 'media'])
             ->findOrFail($id);
 
         foreach ($material->questions as $question) {
@@ -109,7 +109,8 @@ final class MaterialRepository implements MaterialRepositoryInterface
             $query->orderBy('created_at', 'asc');
         }
 
-        return $query->with(['creator', 'subMaterials', 'media'])->get();
+        return $query->with(['creator', 'media'])->get();
+
     }
 
     public function getMaterialsForListing(): Collection

@@ -122,8 +122,6 @@ export class QuestionShowState extends BaseState {
         this.startTime = Date.now();
     }
 
-
-
     useHint() {
         if (this.hintsAvailable > 0 && this.currentQuestion?.hint) {
             this.usedHint = true;
@@ -307,8 +305,6 @@ export class ReviewState extends BaseState {
         super();
         this.hydrate({ material, materials, questions, difficulty });
     }
-
-
 
     filterDifficulty(d: string) {
         router.get(

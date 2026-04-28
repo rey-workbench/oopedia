@@ -59,13 +59,8 @@ final class QuestionRepository implements QuestionRepositoryInterface
     public function getByMaterialAndDifficulty(
         string $materialId,
         ?string $difficulty = null,
-        ?string $subMaterialId = null,
     ): Collection {
         $query = Question::where('material_id', '=', $materialId);
-
-        if ($subMaterialId) {
-            $query->where('sub_material_id', '=', $subMaterialId);
-        }
 
         if ($difficulty && $difficulty !== 'all') {
             $query->where('difficulty', '=', $difficulty);
@@ -108,11 +103,6 @@ final class QuestionRepository implements QuestionRepositoryInterface
             })
             ->orderBy('created_at', 'desc')
             ->paginate(15);
-    }
-
-    public function countByMaterial(string $materialId): int
-    {
-        return Question::where('material_id', '=', $materialId)->count('*');
     }
 
     public function countByMaterialAndDifficulty(string $materialId, QuestionDifficulty $difficulty): int

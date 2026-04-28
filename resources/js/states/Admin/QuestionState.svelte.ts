@@ -135,7 +135,13 @@ export class QuestionFormState extends FormState<{
                 showErrorToast: true,
             }
         );
-        this.hydrate({ materials, material, subMaterials, question, availableSubMaterials: subMaterials });
+        this.hydrate({
+            materials,
+            material,
+            subMaterials,
+            question,
+            availableSubMaterials: subMaterials,
+        });
 
         if (this.form.material_id && this.subMaterials.length === 0) {
             this.handleMaterialChange();

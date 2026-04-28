@@ -66,7 +66,7 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
             Route::post('{material}/questions/{question}/check', 'checkAnswer')->name('materials.questions.check');
             Route::get('{material}/adaptive/target-difficulty', 'getTargetDifficulty')->name('adaptive.target-difficulty');
             Route::get('{material}/questions/{question}/attempts', 'getAttempts')->name('materials.questions.attempts');
-            Route::get('{material}/questions/{sub_material?}', 'show')
+            Route::get('{material}/questions', 'show')
                 ->middleware(BlockQuestionParameter::class)
                 ->name('materials.questions.show');
         });
@@ -74,7 +74,6 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
         // Materials & Progress
         Route::controller(MahasiswaMaterialController::class)->group(function () {
             Route::resource('materials', MahasiswaMaterialController::class)->only(['index', 'show']);
-            Route::get('materials/{material}/submaterials/{submaterial}', 'subMaterial')->name('submaterials.show');
             Route::post('materials/{material}/reset', 'reset')->name('materials.reset');
         });
     });

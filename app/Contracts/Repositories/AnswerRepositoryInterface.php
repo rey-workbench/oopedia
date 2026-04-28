@@ -11,7 +11,5 @@ interface AnswerRepositoryInterface
 
     public function create(array $data): Answer;
 
-    public function delete(string $id): bool;
-
     public function deleteByQuestionId(string $questionId): bool;
 }
