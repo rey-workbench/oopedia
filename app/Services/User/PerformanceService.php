@@ -34,10 +34,10 @@ final class PerformanceService implements PerformanceServiceInterface
     ): StudentState {
         $state = $this->getStudentState($userId);
 
-        $currentSession = $state->current_session ?? StudentStateSchema::defaults()[StudentStateSchema::CURRENT_SESSION];
+        $currentSession = $state->current_session        ?? StudentStateSchema::defaults()[StudentStateSchema::CURRENT_SESSION];
         $metrics        = $state->performance_metrics    ?? StudentStateSchema::defaults()[StudentStateSchema::PERFORMANCE_METRICS];
 
-        $questionIds = $currentSession['question_ids'] ?? [];
+        $questionIds = $currentSession['question_ids']          ?? [];
         $xp          = $state->xp                               ?? 0;
 
         // Jika user mengulang pertanyaan yang sama di sesi ini, abaikan perhitungan gandanya
@@ -64,6 +64,7 @@ final class PerformanceService implements PerformanceServiceInterface
         // 2. Update cumulative counts (tidak terpengaruh reset sesi)
         $totalAnswered = ($state->total_answered ?? 0) + 1;
         $correctCount  = ($state->correct_count  ?? 0) + ($isCorrect ? 1 : 0);
+        $hintsUsed     = ($state->hints_used     ?? 0) + ($usedHint ? 1 : 0);
 
         // Akurasi = kumulatif global, bukan sesi mini
         $accuracy = round(($correctCount / $totalAnswered) * 100, 2);
@@ -127,6 +128,7 @@ final class PerformanceService implements PerformanceServiceInterface
             StudentStateSchema::ACCURACY            => $accuracy,
             'total_answered'                        => $totalAnswered,
             'correct_count'                         => $correctCount,
+            StudentStateSchema::HINTS_USED          => $hintsUsed,
             StudentStateSchema::CURRENT_SESSION     => $currentSession,
             StudentStateSchema::SESSION_HISTORY     => $sessionHistory,
             StudentStateSchema::PERFORMANCE_METRICS => $metrics,
@@ -199,7 +201,7 @@ final class PerformanceService implements PerformanceServiceInterface
             'hints_available'     => $state->hints_available,
             'target_difficulty'   => $state->target_difficulty,
             'adaptive_state'      => $state->adaptive_state           ?? [],
-            'performance_metrics' => $state->performance_metrics ?? [],
+            'performance_metrics' => $state->performance_metrics      ?? [],
         ];
     }
 

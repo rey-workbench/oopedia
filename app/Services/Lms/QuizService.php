@@ -176,6 +176,30 @@ final class QuizService implements QuizServiceInterface
             $appliedTargetFilter = true;
         }
 
+        // R02 Spec: "tampilkan 5 soal level mudah" — forced_easy_count override
+        if (! $isGuest) {
+            $state         = $this->performanceService->getStudentState($userId);
+            $adaptiveState = $state->adaptive_state ?? [];
+
+            if (($adaptiveState['forced_easy_count'] ?? 0) > 0) {
+                $answeredArray   = $answeredQuestionIds->toArray();
+                $easyUnanswered  = $allQuestions
+                    ->where('difficulty', QuestionDifficulty::BEGINNER)
+                    ->reject(fn ($q) => in_array($q->id, $answeredArray))
+                    ->take($adaptiveState['forced_easy_count']);
+
+                if ($easyUnanswered->isNotEmpty()) {
+                    $questions           = $easyUnanswered;
+                    $appliedTargetFilter = true;
+                }
+
+                // Decrement counter so it expires after consumption
+                $adaptiveState['forced_easy_count'] = max(0, $adaptiveState['forced_easy_count'] - 1);
+                $state->adaptive_state              = $adaptiveState;
+                $state->save();
+            }
+        }
+
         $currentQuestion = $this->getCurrentQuestion($questions, $answeredQuestionIds);
 
         if ($appliedTargetFilter && $currentQuestion === null) {
@@ -519,39 +543,97 @@ final class QuizService implements QuizServiceInterface
         $currentDifficulty = $state->target_difficulty ?? 'beginner';
         $difficultyOrder   = ['beginner', 'medium', 'hard'];
         $currentIndex      = array_search($currentDifficulty, $difficultyOrder);
+        $ruleId            = $result['id'] ?? '';
 
         foreach ($result['recommendations'] as $recommendation) {
             switch ($recommendation) {
                 case ActionConstants::REDUCE_DIFF:
+                    // Spec: "turunkan 1 level kesulitan"
                     if ($currentIndex > 0) {
                         $state->target_difficulty = $difficultyOrder[$currentIndex - 1];
+                        $currentIndex--;
                     }
                     break;
+
                 case ActionConstants::INCREASE_DIFF:
-                    if ($currentIndex < 2) {
-                        $state->target_difficulty = $difficultyOrder[$currentIndex + 1];
-                    }
+                    // R13 spec: "naikkan kesulitan signifikan (+2 langkah)"
+                    $steps                    = ($ruleId === 'R13') ? 2 : 1;
+                    $newIndex                 = min(2, $currentIndex + $steps);
+                    $state->target_difficulty = $difficultyOrder[$newIndex];
+                    $currentIndex             = $newIndex;
                     break;
+
                 case ActionConstants::STREAK_BONUS:
+                    // Spec: "berikan badge streak + reward streak"
                     $state->xp += 50;
+                    $badges                  = $adaptiveState['badges'] ?? [];
+                    $badges[]                = 'streak_' . ($state->streak ?? 0);
+                    $adaptiveState['badges'] = array_unique($badges);
                     break;
+
                 case ActionConstants::REMEDIAL:
+                    // R01: "ulangi materi dasar + kirim notifikasi ke pengajar"
+                    // R02: "tampilkan 5 soal level mudah + feedback motivasi"
+                    // R05: "3 soal latihan terfokus"
+                    // R10: "ulangi konsep dasar topik terkait"
                     $adaptiveState['needs_remedial']       = true;
                     $adaptiveState['remedial_material_id'] = $materialId;
+
+                    if ($ruleId === 'R01') {
+                        // Notifikasi pengajar (flag untuk diproses sistem notif)
+                        $adaptiveState['notify_teacher']      = true;
+                        $adaptiveState['notify_teacher_type'] = 'crisis';
+                    }
+
+                    if ($ruleId === 'R02') {
+                        // Tampilkan 5 soal level mudah + feedback motivasi
+                        $state->target_difficulty               = 'beginner';
+                        $currentIndex                           = 0;
+                        $adaptiveState['forced_easy_count']     = 5;
+                        $adaptiveState['show_motivation']       = true;
+                    }
                     break;
+
                 case ActionConstants::SCAFFOLD_REDUCTION:
-                    // Reduce available hints for next session or disable them
-                    $state->hints_available         = max(0, $state->hints_available - 1);
+                    // R03: "sesi ini: maks 2 hint"
+                    // R10: "Kurangi hint ke maks 2×/sesi"
+                    // R11: "Kurangi hint bertahap (3→2→1→0)"
+                    if ($ruleId === 'R11') {
+                        // Gradual reduction: kurangi max hint 1 per sesi
+                        $currentMax                             = $adaptiveState['max_hints_per_session'] ?? 3;
+                        $adaptiveState['max_hints_per_session'] = max(0, $currentMax - 1);
+                        $state->hints_available                 = min($state->hints_available, $adaptiveState['max_hints_per_session']);
+                    } else {
+                        // R03/R10: Hard cap ke 2 hint
+                        $state->hints_available                 = min(2, $state->hints_available);
+                        $adaptiveState['max_hints_per_session'] = 2;
+                    }
                     $adaptiveState['scaffold_mode'] = 'minimal';
                     break;
+
                 case ActionConstants::NEW_CHALLENGE:
+                    // R08: "trigger cek syarat sertifikasi"
+                    // R12: "tantangan lintas topik + reward streak"
                     $state->xp += 100;
                     $adaptiveState['challenge_active'] = true;
+
+                    if ($ruleId === 'R08') {
+                        $adaptiveState['check_certification'] = true;
+                    }
+
+                    if ($ruleId === 'R12') {
+                        $adaptiveState['cross_topic_challenge'] = true;
+                    }
                     break;
+
                 case ActionConstants::CERTIFICATION:
-                    $certs                           = $adaptiveState['certifications'] ?? [];
-                    $certs[]                         = 'GOLD'; // R15 is Gold
-                    $adaptiveState['certifications'] = array_unique($certs);
+                    // R15: "tampilkan sertifikat + kirim notifikasi pengajar + unlock konten lanjutan"
+                    $certs                                = $adaptiveState['certifications'] ?? [];
+                    $certs[]                              = 'GOLD';
+                    $adaptiveState['certifications']      = array_unique($certs);
+                    $adaptiveState['notify_teacher']      = true;
+                    $adaptiveState['notify_teacher_type'] = 'certification';
+                    $adaptiveState['unlock_advanced']     = true;
                     break;
             }
         }

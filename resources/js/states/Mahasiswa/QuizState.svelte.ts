@@ -109,7 +109,11 @@ export class QuestionShowState extends BaseState {
     xp = $derived(this.studentState?.xp || 0);
     streak = $derived(this.studentState?.streak || 0);
     level = $derived(this.studentState?.level || 'Beginner');
-    hintsAvailable = $derived(this.studentState?.hints_available ?? 3);
+    hintsAvailable = $derived(() => {
+        const available = this.studentState?.hints_available ?? 3;
+        const maxPerSession = this.studentState?.adaptive_state?.max_hints_per_session;
+        return maxPerSession !== undefined ? Math.min(available, maxPerSession) : available;
+    });
 
     constructor(
         material: Material,
@@ -123,7 +127,13 @@ export class QuestionShowState extends BaseState {
     }
 
     useHint() {
-        if (this.hintsAvailable > 0 && this.currentQuestion?.hint) {
+        const maxPerSession = this.studentState?.adaptive_state?.max_hints_per_session;
+        const effectiveAvailable =
+            maxPerSession !== undefined
+                ? Math.min(this.studentState?.hints_available ?? 0, maxPerSession)
+                : this.studentState?.hints_available ?? 0;
+
+        if (effectiveAvailable > 0 && this.currentQuestion?.hint) {
             this.usedHint = true;
             this.showHint = true;
             if (this.studentState) {

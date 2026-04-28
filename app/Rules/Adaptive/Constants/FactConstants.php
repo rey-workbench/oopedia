@@ -41,27 +41,30 @@ final class FactConstants
 
     public const string ACCURACY_EXCELLENT = 'G17';
 
+    public const string ACCURACY_PROGRESSING = 'G18';
+
     public const string LEVEL_AHLI = 'G19';
 
     public const array NAMES = [
-        self::ACCURACY_CRISIS    => 'Akurasi <40%',
-        self::ACCURACY_STRUGGLE  => 'Akurasi 40-60%',
-        self::ACCURACY_STABLE    => 'Akurasi 60-70%',
-        self::ACCURACY_OPTIMAL   => 'Akurasi >80%',
-        self::ACCURACY_EXCELLENT => 'Akurasi >85%',
-        self::TREND_DOWN         => 'Tren Turun',
-        self::TREND_STABLE       => 'Tren Stabil',
-        self::TREND_UP           => 'Tren Naik',
-        self::HELP_HIGH          => 'Bantuan >3x',
-        self::HELP_MED           => 'Bantuan 2-3x',
-        self::HELP_NONE          => 'Bantuan 0x',
-        self::TIME_FAST          => 'Respon Cepat',
-        self::TIME_SLOW          => 'Respon Lambat',
-        self::TIME_NORMAL        => 'Respon Normal',
-        self::STREAK_3D          => 'Streak >=3 Hari',
-        self::STREAK_5D          => 'Streak >=5 Hari',
-        self::STREAK_7D          => 'Streak >=7 Hari',
-        self::LEVEL_AHLI         => 'Level Ahli',
+        self::ACCURACY_CRISIS      => 'Akurasi <40%',
+        self::ACCURACY_STRUGGLE    => 'Akurasi 40-60%',
+        self::ACCURACY_STABLE      => 'Akurasi 60-70%',
+        self::ACCURACY_PROGRESSING => 'Akurasi 70-80%',
+        self::ACCURACY_OPTIMAL     => 'Akurasi >80%',
+        self::ACCURACY_EXCELLENT   => 'Akurasi >85%',
+        self::TREND_DOWN           => 'Tren Turun',
+        self::TREND_STABLE         => 'Tren Stabil',
+        self::TREND_UP             => 'Tren Naik',
+        self::HELP_HIGH            => 'Bantuan >3x',
+        self::HELP_MED             => 'Bantuan 2-3x',
+        self::HELP_NONE            => 'Bantuan 0x',
+        self::TIME_FAST            => 'Respon Cepat',
+        self::TIME_SLOW            => 'Respon Lambat',
+        self::TIME_NORMAL          => 'Respon Normal',
+        self::STREAK_3D            => 'Streak >=3 Hari',
+        self::STREAK_5D            => 'Streak >=5 Hari',
+        self::STREAK_7D            => 'Streak >=7 Hari',
+        self::LEVEL_AHLI           => 'Level Ahli',
     ];
 
     // --- V-codes (Diagnosis) ---

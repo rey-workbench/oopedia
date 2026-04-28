@@ -17,16 +17,16 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
     {
         // 1. Extract Thresholds (Layer 2)
         $accuracy = (float) ($state[StudentStateSchema::ACCURACY] ?? 0);
-        $metrics = $state[StudentStateSchema::PERFORMANCE_METRICS] ?? [];
-        $session = $state[StudentStateSchema::CURRENT_SESSION] ?? [];
+        $metrics  = $state[StudentStateSchema::PERFORMANCE_METRICS] ?? [];
+        $session  = $state[StudentStateSchema::CURRENT_SESSION]     ?? [];
 
-        $trend = $metrics['trend'] ?? 'stable';
-        $speed = $metrics['speed'] ?? 'normal';
-        $hints = (int) ($session['hints'] ?? 0);
-        $level = $state[StudentStateSchema::LEVEL] ?? StudentLevel::PEMULA->value;
-        $streak = (int) ($state[StudentStateSchema::STREAK] ?? 0);
+        $trend         = $metrics['trend'] ?? 'stable';
+        $speed         = $metrics['speed'] ?? 'normal';
+        $hints         = (int) ($state[StudentStateSchema::HINTS_USED] ?? 0);
+        $level         = $state[StudentStateSchema::LEVEL] ?? StudentLevel::PEMULA->value;
+        $streak        = (int) ($state[StudentStateSchema::STREAK] ?? 0);
         $stagnantCount = (int) ($metrics['stagnant_count'] ?? 0);
-        $history = $state[StudentStateSchema::SESSION_HISTORY] ?? [];
+        $history       = $state[StudentStateSchema::SESSION_HISTORY] ?? [];
 
         // 2. Collect Facts for Debugging/Panel
         $facts = [];
@@ -38,6 +38,8 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             $facts[] = FactConstants::ACCURACY_STRUGGLE;
         } elseif ($accuracy <= 70) {
             $facts[] = FactConstants::ACCURACY_STABLE;
+        } elseif ($accuracy <= PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD) {
+            $facts[] = FactConstants::ACCURACY_PROGRESSING;
         } elseif ($accuracy > PedagogicalConstants::ACCURACY_CERTIFICATION_THRESHOLD) {
             $facts[] = FactConstants::ACCURACY_EXCELLENT;
         } elseif ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD) {
@@ -153,11 +155,13 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
         // R15 condition: Min Accuracy > 85% over last 3 sessions
         $isConsistentHigh = false;
         if (count($history) >= 3) {
-            $last3 = array_slice($history, -3);
+            $last3            = array_slice($history, -3);
             $isConsistentHigh = min($last3) > PedagogicalConstants::ACCURACY_CERTIFICATION_THRESHOLD;
         }
 
-        if ($level === StudentLevel::AHLI->value && $isConsistentHigh && $streak >= PedagogicalConstants::STREAK_CERTIFICATION_THRESHOLD && $hints === 0) {
+        // R15 uses recent session hint usage (not cumulative) — spec: "Bantuan = 0" means not relying on hints currently
+        $sessionHints = (int) ($session['hints'] ?? 0);
+        if ($level === StudentLevel::AHLI->value && $isConsistentHigh && $streak >= PedagogicalConstants::STREAK_CERTIFICATION_THRESHOLD && $sessionHints === 0) {
             return $this->result('R15', FactConstants::V_OPTIMAL, [ActionConstants::CERTIFICATION], $facts);
         }
 
@@ -168,15 +172,15 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
     private function result(string $ruleId, string $diagnosis, array $recommendations, array $facts = []): array
     {
         return [
-            'id' => $ruleId,
-            'diagnosis' => $diagnosis,
+            'id'              => $ruleId,
+            'diagnosis'       => $diagnosis,
             'recommendations' => $recommendations,
-            'facts' => $facts,
-            'timestamp' => now()->toIso8601String(),
+            'facts'           => $facts,
+            'timestamp'       => now()->toIso8601String(),
             'engine_metadata' => [
-                'engine_version' => '2.1.0-forward',
-                'rule_count' => 15,
-                'fact_labels' => array_merge(FactConstants::NAMES, FactConstants::VIRTUAL_NAMES),
+                'engine_version'  => '2.1.0-forward',
+                'rule_count'      => 15,
+                'fact_labels'     => array_merge(FactConstants::NAMES, FactConstants::VIRTUAL_NAMES),
                 'fact_categories' => [
                     'primary' => 'primary',
                     'virtual' => 'virtual',

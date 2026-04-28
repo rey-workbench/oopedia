@@ -96,6 +96,19 @@
         </div>
     {/if}
 
+    <!-- R02 Motivational Banner -->
+    {#if studentState?.adaptive_state?.show_motivation}
+        <div
+            transition:slide={{ duration: 400 }}
+            class="mx-6 mt-4 rounded-2xl border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 p-5 text-center shadow-sm"
+        >
+            <p class="text-lg font-bold text-blue-700">💪 Kamu Pasti Bisa!</p>
+            <p class="mt-1 text-sm text-blue-500">
+                Sistem menyiapkan soal yang lebih mudah untukmu. Jawab dengan tenang dan percaya diri!
+            </p>
+        </div>
+    {/if}
+
     <div class="p-8 sm:p-10">
         {#if state.showHint && state.currentQuestion?.hint}
             <div
