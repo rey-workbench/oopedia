@@ -20,6 +20,8 @@ class CreateAnswersTable extends Migration
             $table->timestamps();
 
             $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');
+            $table->index('question_id');
+            $table->index('is_correct');
         });
     }
 

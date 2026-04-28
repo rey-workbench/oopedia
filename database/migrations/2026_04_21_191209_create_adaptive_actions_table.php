@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('code')->unique(); // H01, H02...
             $table->string('name');
             $table->text('description')->nullable();
+            $table->string('variant')->nullable(); // result, acceleration, certificate, intervention, backtrack
             $table->json('instructions')->nullable();
             $table->timestamps();
         });

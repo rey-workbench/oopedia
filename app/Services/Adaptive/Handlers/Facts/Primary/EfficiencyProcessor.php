@@ -13,8 +13,8 @@ final class EfficiencyProcessor implements PrimaryFactProcessorInterface
 {
     public function process(bool $isCorrect, bool $usedHint, int $timeSpent, QuestionDifficulty $difficulty): ?string
     {
-        return ($timeSpent <= PedagogicalConstants::TIME_QUICK_THRESHOLD) 
-            ? FactConstants::TIME_QUICK 
+        return ($timeSpent <= PedagogicalConstants::TIME_QUICK_THRESHOLD)
+            ? FactConstants::TIME_QUICK
             : FactConstants::TIME_SLOW;
     }
 }

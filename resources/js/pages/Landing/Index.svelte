@@ -9,7 +9,6 @@
         MassiveFooter,
     } from '@/components/Landing';
     import BackgroundMesh from '@/components/ui/BackgroundMesh.svelte';
-
 </script>
 
 <svelte:head>
@@ -24,7 +23,6 @@
 
     <main class="relative w-full">
         <Hero />
-        
 
         <!-- Core Feature Showcase -->
         <BentoGrid />
@@ -36,10 +34,7 @@
 
         <!-- Final Call -->
         <CallToAction />
-        
+
         <MassiveFooter />
     </main>
-
-
 </div>
-

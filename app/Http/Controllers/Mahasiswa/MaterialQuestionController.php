@@ -37,7 +37,7 @@ final class MaterialQuestionController extends Controller
 
     public function index(): Response
     {
-        $userId = (string) Auth::id();
+        $userId  = (string) Auth::id();
         $isGuest = Auth::guest();
 
         $unlockedModules = $isGuest ? [] : ($this->performanceService->getStudentState($userId)->unlocked_modules ?? []);
@@ -55,17 +55,17 @@ final class MaterialQuestionController extends Controller
     public function levels(string $materialId): Response
     {
         $material = $this->getMaterialOrAbort($materialId);
-        $userId = (string) Auth::id();
-        $isGuest = Auth::guest();
+        $userId   = (string) Auth::id();
+        $isGuest  = Auth::guest();
 
         $unlockedModules = $isGuest ? [] : ($this->performanceService->getStudentState($userId)->unlocked_modules ?? []);
-        $answeredIds = $isGuest 
+        $answeredIds     = $isGuest
             ? $this->quizService->getGuestAnsweredQuestionIds($material->id, $this->guestProgressService->getProgress())
             : $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
 
         return $this->render('Mahasiswa/Materials/Questions/Levels/Index', [
-            'material' => $material,
-            'levels' => $this->quizService->getLevelProgress($material, null, $answeredIds, $isGuest),
+            'material'  => $material,
+            'levels'    => $this->quizService->getLevelProgress($material, null, $answeredIds, $isGuest),
             'materials' => $this->quizService->getMaterialsListWithStudentCount($userId, $isGuest, $isGuest ? $this->guestProgressService->getProgress() : [], $unlockedModules),
         ]);
     }
@@ -73,13 +73,13 @@ final class MaterialQuestionController extends Controller
     public function show(string $materialId, ?string $difficulty = null): Response|RedirectResponse
     {
         $material = $this->getMaterialOrAbort($materialId);
-        $userId = (string) Auth::id();
-        $isGuest = Auth::guest();
+        $userId   = (string) Auth::id();
+        $isGuest  = Auth::guest();
 
         // Clean Context Management: Move reset/sync logic to Service
         $targetDifficulty = null;
-        if (!$isGuest) {
-            $state = $this->performanceService->syncMaterialContext($userId, $materialId);
+        if (! $isGuest) {
+            $state            = $this->performanceService->syncMaterialContext($userId, $materialId);
             $targetDifficulty = $state->target_difficulty ? QuestionDifficulty::tryFrom((string) $state->target_difficulty) : null;
         }
 
@@ -112,24 +112,24 @@ final class MaterialQuestionController extends Controller
         );
 
         $isCorrect = $result['is_correct'];
-        $ui = $this->adaptiveResponseService->resolveUiResponse($result['engine_result'], $materialId, $isCorrect);
+        $ui        = $this->adaptiveResponseService->resolveUiResponse($result['engine_result'], $materialId, $isCorrect);
 
         return $this->json([
-            'status' => $isCorrect ? 'success' : 'error',
-            'message' => $result['engine_result']['triggered_rule']['message'] ?? ($isCorrect ? 'Jawaban Benar!' : 'Belum Tepat'),
-            'nextUrl' => $ui['url'],
-            'xpEarned' => $result['score'],
-            'isCorrect' => $isCorrect,
+            'status'         => $isCorrect ? 'success' : 'error',
+            'message'        => $result['engine_result']['triggered_rule']['message'] ?? ($isCorrect ? 'Jawaban Benar!' : 'Belum Tepat'),
+            'nextUrl'        => $ui['url'],
+            'xpEarned'       => $result['score'],
+            'isCorrect'      => $isCorrect,
             'adaptiveResult' => $result['engine_result'],
-            'ui' => $ui,
-            'studentState' => Auth::guest() ? null : $this->performanceService->getStudentSessionState((string) Auth::id()),
+            'ui'             => $ui,
+            'studentState'   => Auth::guest() ? null : $this->performanceService->getStudentSessionState((string) Auth::id()),
         ]);
     }
 
     public function review(ReviewQuestionRequest $request, string $materialId): Response
     {
         $material = $this->getMaterialOrAbort($materialId);
-        
+
         $questions = $this->quizService->getReviewQuestions(
             material: $material,
             difficulty: QuestionDifficulty::tryFrom((string) $request->difficulty),
@@ -139,8 +139,8 @@ final class MaterialQuestionController extends Controller
         );
 
         return $this->render('Mahasiswa/Materials/Questions/Review/Index', [
-            'material' => $material,
-            'questions' => $questions,
+            'material'   => $material,
+            'questions'  => $questions,
             'difficulty' => $request->difficulty ?? 'all',
         ]);
     }
@@ -148,19 +148,24 @@ final class MaterialQuestionController extends Controller
     private function getMaterialOrAbort(string $id)
     {
         $material = $this->materialService->getMaterialById($id);
-        if (!$material) abort(404);
+        if (! $material) {
+            abort(404);
+        }
+
         return $material;
     }
 
     public function getTargetDifficulty(int|string $materialId): JsonResponse
     {
         $userId = (string) Auth::id();
-        $state = $this->performanceService->getStudentState($userId);
+        $state  = $this->performanceService->getStudentState($userId);
 
-        if (!$state) return $this->json(['target_difficulty' => null]);
+        if (! $state) {
+            return $this->json(['target_difficulty' => null]);
+        }
 
         // Auto-sync context also available here
-        $state = $this->performanceService->syncMaterialContext($userId, (string)$materialId);
+        $state = $this->performanceService->syncMaterialContext($userId, (string) $materialId);
 
         return $this->json(['target_difficulty' => $state->target_difficulty]);
     }

@@ -14,27 +14,27 @@ final class AdaptiveResponseService
      */
     public function resolveUiResponse(array $engineResult, string $materialId, bool $isCorrect): array
     {
-        $flow = $engineResult['triggered_rule']['action'] 
-              ?? $engineResult['new_state']['next_action'] 
+        $flow = $engineResult['triggered_rule']['action']
+              ?? $engineResult['new_state']['next_action']
               ?? ActionConstants::FLOW_NEXT;
-              
+
         $rule = $engineResult['triggered_rule'] ?? [];
 
         $baseResponse = match ($flow) {
             ActionConstants::FLOW_FINISH => [
-                'type' => 'redirect',
-                'url' => route('mahasiswa.materials.questions.index'),
+                'type'  => 'redirect',
+                'url'   => route('mahasiswa.materials.questions.index'),
                 'label' => 'Selesai Materi',
             ],
             ActionConstants::FLOW_REVIEW => [
-                'type' => 'redirect',
-                'url' => $this->resolveReviewUrl($materialId, $engineResult),
+                'type'  => 'redirect',
+                'url'   => $this->resolveReviewUrl($materialId, $engineResult),
                 'label' => 'Lihat Materi',
             ],
             default => [
                 'type' => 'continue',
-                'url' => route('mahasiswa.materials.questions.show', [
-                    'material' => $materialId,
+                'url'  => route('mahasiswa.materials.questions.show', [
+                    'material'     => $materialId,
                     'sub_material' => $engineResult['new_state'][StudentStateSchema::TARGET_DIFFICULTY] ?? null,
                 ]),
                 'label' => 'Lanjut',
@@ -42,7 +42,7 @@ final class AdaptiveResponseService
         };
 
         return array_merge($baseResponse, [
-            'title' => $rule['title'] ?? ($isCorrect ? 'Luar Biasa!' : 'Belum Tepat'),
+            'title'   => $rule['title']   ?? ($isCorrect ? 'Luar Biasa!' : 'Belum Tepat'),
             'message' => $rule['message'] ?? null,
         ]);
     }
@@ -51,9 +51,9 @@ final class AdaptiveResponseService
     {
         // Jika ada target sub_materi spesifik dari intervensi krisis/remedial
         $subMaterialId = $engineResult['new_state']['target_sub_material_id'] ?? null;
-        
+
         return route('mahasiswa.materials.show', [
-            'material' => $materialId,
+            'material'        => $materialId,
             'sub_material_id' => $subMaterialId,
         ]);
     }

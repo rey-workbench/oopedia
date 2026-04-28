@@ -14,14 +14,14 @@ final class VirtualFactHandler
     public function __construct()
     {
         $this->processors = [
-            new Facts\Virtual\ExcellentResultProcessor(),
-            new Facts\Virtual\StrugglingProcessor(),
-            new Facts\Virtual\SteadyLearnerProcessor(),
-            new Facts\Virtual\UnfocusedProcessor(),
-            new Facts\Virtual\MasteryMilestoneProcessor(),
-            new Facts\Virtual\CrisisProcessor(),
-            new Facts\Virtual\HintAddictionProcessor(),
-            new Facts\Virtual\BoredomProcessor(),
+            new Facts\Virtual\ExcellentResultProcessor,
+            new Facts\Virtual\StrugglingProcessor,
+            new Facts\Virtual\SteadyLearnerProcessor,
+            new Facts\Virtual\UnfocusedProcessor,
+            new Facts\Virtual\MasteryMilestoneProcessor,
+            new Facts\Virtual\CrisisProcessor,
+            new Facts\Virtual\HintAddictionProcessor,
+            new Facts\Virtual\BoredomProcessor,
         ];
     }
 

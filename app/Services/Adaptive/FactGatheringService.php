@@ -27,10 +27,10 @@ final class FactGatheringService implements FactGatheringServiceInterface
         ?string $moduleId = null,
     ): array {
         // 1. Gather Primary Facts (G-codes)
-        $diffEnum = $difficulty instanceof QuestionDifficulty 
-            ? $difficulty 
-            : (QuestionDifficulty::tryFrom((string)$difficulty) ?? QuestionDifficulty::BEGINNER);
-            
+        $diffEnum = $difficulty instanceof QuestionDifficulty
+            ? $difficulty
+            : (QuestionDifficulty::tryFrom((string) $difficulty) ?? QuestionDifficulty::BEGINNER);
+
         $primaryFacts = $this->primaryHandler->gather($isCorrect, $usedHint, $timeSpent, $diffEnum);
 
         // 2. Derive Virtual Facts (V-codes)

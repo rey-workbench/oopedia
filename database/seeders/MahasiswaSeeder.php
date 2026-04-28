@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Lms\StudentLevel;
 use App\Enums\User\RoleName;
 use App\Models\Role;
+use App\Models\StudentState;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -15,28 +17,28 @@ class MahasiswaSeeder extends Seeder
         // Create mahasiswa users
         $mahasiswaList = [
             [
-                'name' => 'Andi Pratama',
-                'email' => 'andi@mahasiswa.com',
+                'name'     => 'Andi Pratama',
+                'email'    => 'andi@mahasiswa.com',
                 'password' => 'mhs123',
             ],
             [
-                'name' => 'Budi Santoso',
-                'email' => 'budi@mahasiswa.com',
+                'name'     => 'Budi Santoso',
+                'email'    => 'budi@mahasiswa.com',
                 'password' => 'mhs123',
             ],
             [
-                'name' => 'Citra Dewi',
-                'email' => 'citra@mahasiswa.com',
+                'name'     => 'Citra Dewi',
+                'email'    => 'citra@mahasiswa.com',
                 'password' => 'mhs123',
             ],
             [
-                'name' => 'Deni Wijaya',
-                'email' => 'deni@mahasiswa.com',
+                'name'     => 'Deni Wijaya',
+                'email'    => 'deni@mahasiswa.com',
                 'password' => 'mhs123',
             ],
             [
-                'name' => 'Eva Putri',
-                'email' => 'eva@mahasiswa.com',
+                'name'     => 'Eva Putri',
+                'email'    => 'eva@mahasiswa.com',
                 'password' => 'mhs123',
             ],
         ];
@@ -47,23 +49,23 @@ class MahasiswaSeeder extends Seeder
             $user = User::firstOrCreate(
                 ['email' => $mahasiswa['email']],
                 [
-                    'name' => $mahasiswa['name'],
-                    'password' => Hash::make($mahasiswa['password']),
-                    'role_id' => $role->id,
+                    'name'        => $mahasiswa['name'],
+                    'password'    => Hash::make($mahasiswa['password']),
+                    'role_id'     => $role->id,
                     'is_approved' => true,
                 ],
             );
 
             // Jika ini Andi, beri data sertifikat contoh
             if ($mahasiswa['email'] === 'andi@mahasiswa.com') {
-                \App\Models\StudentState::updateOrCreate(
+                StudentState::updateOrCreate(
                     ['user_id' => $user->id],
                     [
-                        'xp' => 550,
-                        'level' => \App\Enums\Lms\StudentLevel::AHLI->value,
-                        'streak' => 5,
-                        'max_streak' => 12,
-                        'badges' => ['fast_learner', 'logic_master', 'module_complete'],
+                        'xp'             => 550,
+                        'level'          => StudentLevel::AHLI->value,
+                        'streak'         => 5,
+                        'max_streak'     => 12,
+                        'badges'         => ['fast_learner', 'logic_master', 'module_complete'],
                         'learning_style' => 'visual',
                         'certifications' => [
                             '01kpwk01et585ktfn1672hzsbq' => 'gold',
@@ -71,8 +73,8 @@ class MahasiswaSeeder extends Seeder
                             '01kpwk02cxd12cekz09a1wm1jj' => 'bronze',
                         ],
                         'unlocked_modules' => ['1', '2', '3'],
-                        'last_active_at' => now(),
-                    ]
+                        'last_active_at'   => now(),
+                    ],
                 );
             }
         }

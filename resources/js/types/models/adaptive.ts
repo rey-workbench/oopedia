@@ -16,14 +16,16 @@ export interface AdaptiveAction {
 }
 
 export interface AdaptiveRule {
-    id: string | number; // rule_code in some contexts
-    real_id: number; // database primary key
-    rule_code: string;
+    id: string | number; // This is rule_code for frontend identification
+    real_id: number; // Database primary key
+    code: string;
     name: string;
     domain: string;
     priority: number;
+    action: string; // Action code (e.g. H10)
+    action_id: number;
     required_facts: string[];
     forbidden_facts: string[] | null;
-    action_id: number;
+    deduced_facts: string[] | null;
     is_active: boolean;
 }

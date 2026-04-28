@@ -177,7 +177,7 @@ final class MaterialService implements MaterialServiceInterface
     public function getMaterialsList(?string $userId, bool $isGuest): Collection
     {
         $progressStats = $userId ? $this->progressRepo->getUserProgressStats($userId) : collect();
-        $allMaterials = $this->materialRepo->getMaterialsForListing();
+        $allMaterials  = $this->materialRepo->getMaterialsForListing();
 
         $unlockedModules = [];
         if ($userId) {
@@ -194,10 +194,10 @@ final class MaterialService implements MaterialServiceInterface
 
         return $allMaterials->map(
             function ($material, $index) use ($progressStats, $isGuest, $unlockedModules, $firstModuleId, $totalMaterials) {
-                $counts = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest);
+                $counts                   = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest);
                 $configuredTotalQuestions = $counts['total'];
-                $materialProgress = $progressStats->firstWhere('material_id', $material->id);
-                $correctAnswers = $materialProgress ? $materialProgress->correct_answers : 0;
+                $materialProgress         = $progressStats->firstWhere('material_id', $material->id);
+                $correctAnswers           = $materialProgress ? $materialProgress->correct_answers : 0;
 
                 $material->progress_percentage = ProgressHelper::calculateProgressPercentage($correctAnswers, $configuredTotalQuestions);
                 $material->total_questions     = $configuredTotalQuestions;
@@ -206,14 +206,14 @@ final class MaterialService implements MaterialServiceInterface
                 if ($isGuest) {
                     $material->is_locked = $index >= ceil($totalMaterials / 2);
                 } else {
-                    $moduleId      = $material->module_id;
-                    $isFirstModule = $moduleId !== null && $moduleId == $firstModuleId;
-                    $isUnlocked    = empty($moduleId) || $isFirstModule || in_array($moduleId, $unlockedModules);
+                    $moduleId            = $material->module_id;
+                    $isFirstModule       = $moduleId !== null && $moduleId == $firstModuleId;
+                    $isUnlocked          = empty($moduleId) || $isFirstModule || in_array($moduleId, $unlockedModules);
                     $material->is_locked = ! $isUnlocked;
                 }
 
                 return $material;
-            }
+            },
         );
     }
 
@@ -240,13 +240,14 @@ final class MaterialService implements MaterialServiceInterface
                 $isUnlocked    = empty($moduleId) || $isFirstModule || in_array($moduleId, $unlockedModules);
                 $m->is_locked  = ! $isUnlocked;
             }
+
             return $m;
         });
 
         if ($isGuest) {
             $materialsToShow = (int) ceil($totalMaterials / 2);
             $materials       = $allMaterials->take($materialsToShow);
-            
+
             $limitedQuestions = $material->questions->take(3);
             $material->setRelation('questions', $limitedQuestions);
         } else {
@@ -257,7 +258,7 @@ final class MaterialService implements MaterialServiceInterface
             ? $this->progressRepo->getAnsweredQuestionIds($userId, $materialId)
             : $guestProgress);
 
-        $currentQuestion = $material->questions->whereNotIn('id', $answeredQuestionIds)->first() 
+        $currentQuestion = $material->questions->whereNotIn('id', $answeredQuestionIds)->first()
             ?? $material->questions->first();
 
         $answeredCount         = $answeredQuestionIds->count();
@@ -274,10 +275,14 @@ final class MaterialService implements MaterialServiceInterface
     public function getSubMaterialDetail(string $materialId, string $subMaterialId, bool $isGuest): array
     {
         $material = $this->materialRepo->find($materialId);
-        if (!$material) throw new MaterialNotFoundException($materialId);
+        if (! $material) {
+            throw new MaterialNotFoundException($materialId);
+        }
 
         $subMaterial = $this->subMaterialRepo->findWithQuestions($subMaterialId);
-        if (!$subMaterial) throw new SubMaterialNotFoundException($subMaterialId);
+        if (! $subMaterial) {
+            throw new SubMaterialNotFoundException($subMaterialId);
+        }
 
         return [
             'material'    => $material,
@@ -303,9 +308,12 @@ final class MaterialService implements MaterialServiceInterface
     public function createSubMaterial(string $materialId, array $data): string
     {
         $material = $this->materialRepo->find($materialId);
-        if (!$material) throw new MaterialNotFoundException($materialId);
+        if (! $material) {
+            throw new MaterialNotFoundException($materialId);
+        }
 
         $data['material_id'] = $materialId;
+
         return $this->subMaterialRepo->create($data)->id;
     }
 
@@ -349,7 +357,9 @@ final class MaterialService implements MaterialServiceInterface
     protected function deleteCoverImage(Material $material): void
     {
         $existingMedia = $this->mediaRepo->findByMaterialAndType($material->id, 'image');
-        if (!$existingMedia) return;
+        if (! $existingMedia) {
+            return;
+        }
 
         $this->removeMediaFile($existingMedia->media_url);
         $this->mediaRepo->delete($existingMedia->id);

@@ -12,6 +12,6 @@ interface PrimaryFactProcessorInterface
         bool $isCorrect,
         bool $usedHint,
         int $timeSpent,
-        QuestionDifficulty $difficulty
+        QuestionDifficulty $difficulty,
     ): ?string;
 }

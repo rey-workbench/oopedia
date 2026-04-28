@@ -7,7 +7,7 @@
     import Alert from '@/components/ui/Alert.svelte';
     import { Save, CheckCircle2, X, Info, Zap, LayoutGrid } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
-    import type { AdaptiveFact, AdaptiveAction } from '@/types/models';
+    import type { AdaptiveFact, AdaptiveAction } from '@/types/models/adaptive';
 
     let {
         show = false,
@@ -26,7 +26,7 @@
     const isEdit = $derived(!!rule);
 
     let form = useForm({
-        rule_code: '',
+        code: '',
         name: '',
         domain: 'Interaction',
         priority: 10,
@@ -39,7 +39,7 @@
     $effect(() => {
         if (show) {
             if (rule) {
-                form.rule_code = rule.rule_code;
+                form.code = rule.code;
                 form.name = rule.name;
                 form.domain = rule.domain;
                 form.priority = rule.priority;
@@ -67,11 +67,11 @@
     function handleSubmit(e: Event) {
         e.preventDefault();
         if (isEdit) {
-            form.put(`${ROUTES.ADMIN.ADAPTIVE_ANALYTICS}/${rule.real_id || rule.id}`, {
+            form.put(`${ROUTES.ADMIN.ADAPTIVE_RULES}/${rule.real_id || rule.id}`, {
                 onSuccess: () => onclose(),
             });
         } else {
-            form.post(ROUTES.ADMIN.ADAPTIVE_ANALYTICS, {
+            form.post(ROUTES.ADMIN.ADAPTIVE_RULES, {
                 onSuccess: () => onclose(),
             });
         }
@@ -149,8 +149,8 @@
                         label="Kode Aturan"
                         placeholder="Misal: R01"
                         required
-                        bind:value={form.rule_code}
-                        error={form.errors.rule_code}
+                        bind:value={form.code}
+                        error={form.errors.code}
                         className="font-bold tracking-widest"
                     />
                     <Input

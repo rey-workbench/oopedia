@@ -15,7 +15,6 @@ class CreateUsersTable extends Migration
             $table->string('password', 255);
             $table->foreignUlid('role_id')->constrained('roles')->onDelete('restrict');
             $table->boolean('is_approved')->default(true);
-            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

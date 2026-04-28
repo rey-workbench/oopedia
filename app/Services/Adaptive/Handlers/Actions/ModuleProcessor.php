@@ -18,17 +18,17 @@ final class ModuleProcessor implements ActionProcessorInterface
         }
 
         $materialId = $context['material_id'] ?? null;
-        if (!$materialId) {
+        if (! $materialId) {
             return $state;
         }
 
-        $material = Material::find($materialId);
+        $material     = Material::find($materialId);
         $nextMaterial = $material?->getNextMaterial();
 
         if ($nextMaterial && $nextMaterial->module_id) {
             $unlocked = $state['unlocked_modules'] ?? [];
-            if (!in_array((string) $nextMaterial->module_id, $unlocked, true)) {
-                $unlocked[] = (string) $nextMaterial->module_id;
+            if (! in_array((string) $nextMaterial->module_id, $unlocked, true)) {
+                $unlocked[]                = (string) $nextMaterial->module_id;
                 $state['unlocked_modules'] = array_values(array_unique($unlocked));
             }
         }

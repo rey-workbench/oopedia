@@ -11,7 +11,7 @@ export class MaterialCatalogState extends BaseState {
 
     constructor(materials: Material[]) {
         super();
-        this.materials = materials;
+        this.hydrate({ materials });
     }
 }
 
@@ -25,9 +25,8 @@ export class MaterialShowState extends BaseState {
 
     constructor(material: Material, fromAdaptive: boolean) {
         super();
-        this.material = material;
+        this.hydrate({ material, fromAdaptive });
         this.subMaterials = material.sub_materials ?? [];
-        this.fromAdaptive = fromAdaptive;
     }
 }
 
@@ -54,8 +53,7 @@ export class SubMaterialState extends BaseState {
 
     constructor(material: Material, subMaterial: SubMaterial) {
         super();
-        this.material = material;
-        this.subMaterial = subMaterial;
+        this.hydrate({ material, subMaterial });
     }
 
     goToNext() {
@@ -94,7 +92,7 @@ export class InProgressState extends BaseState {
 
     constructor(materialsWithStats: MaterialWithStats[]) {
         super();
-        this.materialsWithStats = materialsWithStats;
+        this.hydrate({ materialsWithStats });
     }
 
     calculateProgress(correct: number, total: number) {
@@ -110,6 +108,6 @@ export class CompletedState extends BaseState {
 
     constructor(materialsWithStats: MaterialWithStats[]) {
         super();
-        this.materialsWithStats = materialsWithStats;
+        this.hydrate({ materialsWithStats });
     }
 }

@@ -12,7 +12,7 @@ final class MasteryMilestoneProcessor implements VirtualFactProcessorInterface
     public function process(array $facts, array $state): array|string|null
     {
         $isPass = in_array(FactConstants::SCORE_PASS, $facts, true);
-        if (!$isPass) {
+        if (! $isPass) {
             return null;
         }
 

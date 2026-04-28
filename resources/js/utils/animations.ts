@@ -1,19 +1,15 @@
-export function scrollReveal(node: HTMLElement, options: { 
-    delay?: number; 
-    duration?: number; 
-    y?: number; 
-    x?: number;
-    once?: boolean;
-    scale?: number;
-} = {}) {
-    const { 
-        delay = 0, 
-        duration = 1000, 
-        y = 40, 
-        x = 0,
-        once = true,
-        scale = 1
-    } = options;
+export function scrollReveal(
+    node: HTMLElement,
+    options: {
+        delay?: number;
+        duration?: number;
+        y?: number;
+        x?: number;
+        once?: boolean;
+        scale?: number;
+    } = {}
+) {
+    const { delay = 0, duration = 1000, y = 40, x = 0, once = true, scale = 1 } = options;
 
     node.style.opacity = '0';
     node.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
@@ -41,6 +37,6 @@ export function scrollReveal(node: HTMLElement, options: {
     return {
         destroy() {
             observer.disconnect();
-        }
+        },
     };
 }

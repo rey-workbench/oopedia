@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Services\Adaptive\Handlers\Actions;
 
 use App\Enums\Lms\QuestionDifficulty;
-use App\Rules\Adaptive\Constants\ActionConstants;
 use App\Rules\Adaptive\Constants\StudentStateSchema;
 
 final class DifficultyProcessor implements ActionProcessorInterface
@@ -20,18 +19,18 @@ final class DifficultyProcessor implements ActionProcessorInterface
     {
         $target = $instructions[StudentStateSchema::TARGET_DIFFICULTY] ?? null;
 
-        if (!$target) {
+        if (! $target) {
             return $state;
         }
 
-        $current = $state[StudentStateSchema::TARGET_DIFFICULTY] ?? QuestionDifficulty::BEGINNER->value;
+        $current      = $state[StudentStateSchema::TARGET_DIFFICULTY] ?? QuestionDifficulty::BEGINNER->value;
         $currentIndex = array_search($current, self::ORDER, true);
 
         if ($target === 'next') {
-            $nextIndex = min($currentIndex + 1, count(self::ORDER) - 1);
+            $nextIndex                                    = min($currentIndex + 1, count(self::ORDER) - 1);
             $state[StudentStateSchema::TARGET_DIFFICULTY] = self::ORDER[$nextIndex];
         } elseif ($target === 'prev') {
-            $prevIndex = max($currentIndex - 1, 0);
+            $prevIndex                                    = max($currentIndex - 1, 0);
             $state[StudentStateSchema::TARGET_DIFFICULTY] = self::ORDER[$prevIndex];
         } else {
             // Direct set if it's a valid difficulty value

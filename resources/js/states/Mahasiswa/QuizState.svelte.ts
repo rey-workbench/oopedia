@@ -2,7 +2,6 @@ import { router } from '@inertiajs/svelte';
 import axios, { isAxiosError } from 'axios';
 import { BaseState } from '@/states/BaseState.svelte';
 import { ROUTES } from '@/utils/route';
-import { getDifficultyLabel, getDifficultyColor } from '@/utils/quizUtils';
 import type {
     Material,
     Question,
@@ -24,7 +23,7 @@ export class QuestionListState extends BaseState {
 
     constructor(materials: Material[]) {
         super();
-        this.materials = materials;
+        this.hydrate({ materials });
     }
 }
 
@@ -42,8 +41,7 @@ export class LevelMapState extends BaseState {
 
     constructor(material: Material, levels: LevelItem[]) {
         super();
-        this.material = material;
-        this.levels = levels ?? [];
+        this.hydrate({ material, levels: levels ?? [] });
     }
 }
 
@@ -120,20 +118,11 @@ export class QuestionShowState extends BaseState {
         studentState: QuizSessionState
     ) {
         super();
-        this.material = material;
-        this.currentQuestion = currentQuestion;
-        this.difficulty = difficulty;
-        this.studentState = studentState;
+        this.hydrate({ material, currentQuestion, difficulty, studentState });
         this.startTime = Date.now();
     }
 
-    getDifficultyLabel(diff: string): string {
-        return getDifficultyLabel(diff);
-    }
 
-    getDifficultyColor(diff: string): string {
-        return getDifficultyColor(diff);
-    }
 
     useHint() {
         if (this.hintsAvailable > 0 && this.currentQuestion?.hint) {
@@ -231,7 +220,6 @@ export class QuestionShowState extends BaseState {
             this.showHint = false;
             this.showFeedback = true;
             this.handleResponseSound(data.status, adaptiveResult);
-
         } catch (err: unknown) {
             const message = isAxiosError(err)
                 ? ((err.response?.data as { message?: string })?.message ??
@@ -317,19 +305,10 @@ export class ReviewState extends BaseState {
         difficulty: DifficultyLevel | 'all'
     ) {
         super();
-        this.material = material;
-        this.materials = materials;
-        this.questions = questions;
-        this.difficulty = difficulty;
+        this.hydrate({ material, materials, questions, difficulty });
     }
 
-    getDifficultyLabel(d: DifficultyLevel | string): string {
-        return getDifficultyLabel(d);
-    }
 
-    getDifficultyColor(d: DifficultyLevel | string): string {
-        return getDifficultyColor(d);
-    }
 
     filterDifficulty(d: string) {
         router.get(

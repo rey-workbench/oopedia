@@ -23,21 +23,7 @@ export class DashboardState extends BaseState {
 
     constructor(data: DashboardStateProps) {
         super();
-        this.totalMaterials = data.totalMaterials;
-        this.totalQuestions = data.totalQuestions;
-        this.easyQuestions = data.easyQuestions;
-        this.mediumQuestions = data.mediumQuestions;
-        this.hardQuestions = data.hardQuestions;
-        this.materialProgressPercentage = data.materialProgressPercentage;
-        this.questionProgressPercentage = data.questionProgressPercentage;
-        this.completedMaterials = data.completedMaterials;
-        this.inProgressMaterials = data.inProgressMaterials;
-        this.totalMaterialProgress = data.totalMaterialProgress;
-        this.totalAnsweredQuestions = data.totalAnsweredQuestions;
-        this.totalCorrectQuestions = data.totalCorrectQuestions;
-        this.recentActivities = data.recentActivities;
-        this.allMaterials = data.allMaterials;
-        this.currentUserRank = data.currentUserRank;
-        this.certifications = data.certifications || {};
+        this.hydrate(data as any);
+        if (!this.certifications) this.certifications = {};
     }
 }

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
- * @property string $rule_code
+ * @property string $code
  * @property string $name
  * @property int $priority
  * @property array $required_facts
@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class AdaptiveRule extends Model implements AdaptiveRuleInterface
 {
     protected $fillable = [
-        'rule_code',
+        'code',
         'name',
         'domain',
         'priority',
@@ -55,7 +55,7 @@ class AdaptiveRule extends Model implements AdaptiveRuleInterface
 
     public function getRuleId(): string
     {
-        return $this->rule_code;
+        return $this->code;
     }
 
     public function getRuleName(): string

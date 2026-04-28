@@ -38,15 +38,15 @@
             <iframe
                 src={previewUrl}
                 title="Sertifikat Preview"
-                class="h-[200%] w-[200%] origin-top-left scale-50 border-none pointer-events-none"
+                class="pointer-events-none h-[200%] w-[200%] origin-top-left scale-50 border-none"
             ></iframe>
         {:else}
             <div class="flex h-full items-center justify-center bg-slate-50 text-slate-400">
                 Memuat preview...
             </div>
         {/if}
-        
-        <div class="absolute inset-0 bg-transparent pointer-events-auto"></div>
+
+        <div class="pointer-events-auto absolute inset-0 bg-transparent"></div>
     </div>
 
     <div class="flex gap-3">

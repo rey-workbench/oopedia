@@ -113,17 +113,17 @@ final class GuestProgressService implements GuestProgressServiceInterface
         $defaults = StudentStateSchema::defaults();
 
         return new StudentState(array_merge($defaults, [
-            'user_id'         => 'guest',
-            StudentStateSchema::GLOBAL_XP              => $gamification['xp'],
-            StudentStateSchema::CURRENT_STREAK          => $gamification['streak'],
-            StudentStateSchema::CURRENT_LEVEL           => 'Tamu',
+            'user_id'                                     => 'guest',
+            StudentStateSchema::GLOBAL_XP                 => $gamification['xp'],
+            StudentStateSchema::CURRENT_STREAK            => $gamification['streak'],
+            StudentStateSchema::CURRENT_LEVEL             => 'Tamu',
             StudentStateSchema::TOTAL_QUESTIONS_ANSWERED  => $performanceMetrics[StudentStateSchema::TOTAL_QUESTIONS_ANSWERED]   ?? 0,
-            StudentStateSchema::CORRECT_COUNT   => $performanceMetrics[StudentStateSchema::CORRECT_COUNT]    ?? 0,
-            StudentStateSchema::WRONG_COUNT     => $performanceMetrics[StudentStateSchema::WRONG_COUNT]      ?? 0,
-            StudentStateSchema::WRONG_STREAK    => $performanceMetrics[StudentStateSchema::WRONG_STREAK]     ?? 0,
-            StudentStateSchema::HINTS_USED_COUNT      => $performanceMetrics[StudentStateSchema::HINTS_USED_COUNT]       ?? 0,
-            StudentStateSchema::HINTS_AVAILABLE => $performanceMetrics[StudentStateSchema::HINTS_AVAILABLE]  ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE,
-            StudentStateSchema::TARGET_DIFFICULTY => $performanceMetrics[StudentStateSchema::TARGET_DIFFICULTY] ?? null,
+            StudentStateSchema::CORRECT_COUNT             => $performanceMetrics[StudentStateSchema::CORRECT_COUNT]              ?? 0,
+            StudentStateSchema::WRONG_COUNT               => $performanceMetrics[StudentStateSchema::WRONG_COUNT]                ?? 0,
+            StudentStateSchema::WRONG_STREAK              => $performanceMetrics[StudentStateSchema::WRONG_STREAK]               ?? 0,
+            StudentStateSchema::HINTS_USED_COUNT          => $performanceMetrics[StudentStateSchema::HINTS_USED_COUNT]           ?? 0,
+            StudentStateSchema::HINTS_AVAILABLE           => $performanceMetrics[StudentStateSchema::HINTS_AVAILABLE]            ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE,
+            StudentStateSchema::TARGET_DIFFICULTY         => $performanceMetrics[StudentStateSchema::TARGET_DIFFICULTY]          ?? null,
         ]));
     }
 
@@ -133,12 +133,12 @@ final class GuestProgressService implements GuestProgressServiceInterface
 
         $this->setCookie($this->cookiePerformance, json_encode([
             StudentStateSchema::TOTAL_QUESTIONS_ANSWERED    => $state->total_answered,
-            StudentStateSchema::CORRECT_COUNT     => $state->correct_count,
-            StudentStateSchema::WRONG_COUNT       => $state->wrong_count,
-            StudentStateSchema::WRONG_STREAK      => $state->wrong_streak,
-            StudentStateSchema::HINTS_USED_COUNT        => $state->hints_used,
-            StudentStateSchema::HINTS_AVAILABLE   => $state->hints_available,
-            StudentStateSchema::TARGET_DIFFICULTY => $state->target_difficulty,
+            StudentStateSchema::CORRECT_COUNT               => $state->correct_count,
+            StudentStateSchema::WRONG_COUNT                 => $state->wrong_count,
+            StudentStateSchema::WRONG_STREAK                => $state->wrong_streak,
+            StudentStateSchema::HINTS_USED_COUNT            => $state->hints_used,
+            StudentStateSchema::HINTS_AVAILABLE             => $state->hints_available,
+            StudentStateSchema::TARGET_DIFFICULTY           => $state->target_difficulty,
         ]));
     }
 

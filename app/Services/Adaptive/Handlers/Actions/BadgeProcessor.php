@@ -12,14 +12,14 @@ final class BadgeProcessor implements ActionProcessorInterface
     {
         $badges = $instructions[ActionConstants::KEY_BADGES] ?? null;
 
-        if (!$badges) {
+        if (! $badges) {
             return $state;
         }
 
-        $newBadges = is_array($badges) ? $badges : [$badges];
+        $newBadges     = is_array($badges) ? $badges : [$badges];
         $currentBadges = $state['gamification_data']['badges'] ?? [];
 
-        $updatedBadges = array_values(array_unique(array_merge($currentBadges, $newBadges)));
+        $updatedBadges                        = array_values(array_unique(array_merge($currentBadges, $newBadges)));
         $state['gamification_data']['badges'] = $updatedBadges;
 
         return $state;

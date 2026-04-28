@@ -124,7 +124,7 @@ final class PerformanceService implements PerformanceServiceInterface
         $rewards = PedagogicalConstants::SCORE_REWARDS;
         $score   = $rewards['base'];
 
-        $score += $rewards['difficulty_bonus'][$diffKey] ?? 0;
+        $score += $rewards['difficulty_bonus'][$diffKey]                   ?? 0;
         $allocatedTime = PedagogicalConstants::ALLOCATED_TIME[$diffKey]    ?? 60;
         if ($timeSpent > 0 && $timeSpent < ($allocatedTime / 2)) {
             $score += $rewards['time_bonus'];
@@ -141,9 +141,9 @@ final class PerformanceService implements PerformanceServiceInterface
     public function resetMaterialMetrics(string $userId, ?string $newMaterialId = null): StudentState
     {
         return $this->studentStateRepo->update($userId, [
-            StudentStateSchema::CURRENT_STREAK    => 0, // Per-module streak isolation
-            StudentStateSchema::WRONG_STREAK      => 0,
-            StudentStateSchema::TARGET_DIFFICULTY => null,
+            StudentStateSchema::CURRENT_STREAK      => 0, // Per-module streak isolation
+            StudentStateSchema::WRONG_STREAK        => 0,
+            StudentStateSchema::TARGET_DIFFICULTY   => null,
             StudentStateSchema::CURRENT_MATERIAL_ID => $newMaterialId,
         ]);
     }

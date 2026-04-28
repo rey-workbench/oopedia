@@ -39,8 +39,8 @@ trait HandlesAdaptiveState
         }
 
         // Reset navigation if user switched material
-    if ($studentState->current_material_id             !== null
-            && (string) $studentState->current_material_id !== (string) $materialId
+        if ($studentState->current_material_id                 !== null
+                && (string) $studentState->current_material_id !== (string) $materialId
         ) {
             $this->getPerformanceService()->resetMaterialMetrics($userId);
             $studentState->target_difficulty   = null;

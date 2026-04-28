@@ -138,21 +138,21 @@ class AdaptiveRuleSeeder extends Seeder
 
         $rules = [
             // ─── DEDUCTIONS (Raw ➔ Virtual) ──────────────────────────────────
-            ['rule_code' => 'D01', 'name' => 'Deduce Excellent', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::TIME_QUICK], 'deduced_facts' => [FactConstants::V_EXCELLENT_RESULT]],
-            ['rule_code' => 'D02', 'name' => 'Deduce Struggle (S)', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::TIME_SLOW], 'deduced_facts' => [FactConstants::V_STRUGGLING]],
-            ['rule_code' => 'D03', 'name' => 'Deduce Struggle (H)', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::HINT_USED], 'deduced_facts' => [FactConstants::V_STRUGGLING]],
-            ['rule_code' => 'D04', 'name' => 'Deduce Steady', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::TIME_SLOW], 'deduced_facts' => [FactConstants::V_STEADY_LEARNER]],
-            ['rule_code' => 'D05', 'name' => 'Deduce Unfocused', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::TIME_QUICK], 'deduced_facts' => [FactConstants::V_UNFOCUSED]],
-            ['rule_code' => 'D06', 'name' => 'Deduce Hint Dependency', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::HINT_USED], 'deduced_facts' => [FactConstants::V_HINT_DEPENDENT]],
-            ['rule_code' => 'D07', 'name' => 'Deduce Crisis', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::HINT_USED, FactConstants::TIME_SLOW], 'deduced_facts' => [FactConstants::V_CRISIS_STATE]],
-            ['rule_code' => 'D08', 'name' => 'Deduce Mastery Beginner', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::DIFF_BEGINNER], 'deduced_facts' => [FactConstants::V_MASTERY_BEGINNER]],
-            ['rule_code' => 'D09', 'name' => 'Deduce Mastery Medium', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::DIFF_MEDIUM], 'deduced_facts' => [FactConstants::V_MASTERY_MEDIUM]],
-            ['rule_code' => 'D10', 'name' => 'Deduce Mastery Hard', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::DIFF_HARD], 'deduced_facts' => [FactConstants::V_MASTERY_HARD]],
-            ['rule_code' => 'D11', 'name' => 'Deduce Boredom', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::TIME_QUICK], 'deduced_facts' => [FactConstants::V_BOREDOM_DETECTED]],
+            ['code' => 'D01', 'name' => 'Deduce Excellent', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::TIME_QUICK], 'deduced_facts' => [FactConstants::V_EXCELLENT_RESULT]],
+            ['code' => 'D02', 'name' => 'Deduce Struggle (S)', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::TIME_SLOW], 'deduced_facts' => [FactConstants::V_STRUGGLING]],
+            ['code' => 'D03', 'name' => 'Deduce Struggle (H)', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::HINT_USED], 'deduced_facts' => [FactConstants::V_STRUGGLING]],
+            ['code' => 'D04', 'name' => 'Deduce Steady', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::TIME_SLOW], 'deduced_facts' => [FactConstants::V_STEADY_LEARNER]],
+            ['code' => 'D05', 'name' => 'Deduce Unfocused', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::TIME_QUICK], 'deduced_facts' => [FactConstants::V_UNFOCUSED]],
+            ['code' => 'D06', 'name' => 'Deduce Hint Dependency', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::HINT_USED], 'deduced_facts' => [FactConstants::V_HINT_DEPENDENT]],
+            ['code' => 'D07', 'name' => 'Deduce Crisis', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_FAIL, FactConstants::HINT_USED, FactConstants::TIME_SLOW], 'deduced_facts' => [FactConstants::V_CRISIS_STATE]],
+            ['code' => 'D08', 'name' => 'Deduce Mastery Beginner', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::DIFF_BEGINNER], 'deduced_facts' => [FactConstants::V_MASTERY_BEGINNER]],
+            ['code' => 'D09', 'name' => 'Deduce Mastery Medium', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::DIFF_MEDIUM], 'deduced_facts' => [FactConstants::V_MASTERY_MEDIUM]],
+            ['code' => 'D10', 'name' => 'Deduce Mastery Hard', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::DIFF_HARD], 'deduced_facts' => [FactConstants::V_MASTERY_HARD]],
+            ['code' => 'D11', 'name' => 'Deduce Boredom', 'domain' => 'Deduction', 'priority' => 0, 'required_facts' => [FactConstants::SCORE_PASS, FactConstants::TIME_QUICK], 'deduced_facts' => [FactConstants::V_BOREDOM_DETECTED]],
 
             // ─── PROMOTION & CHALLENGE ──────────────────────────────────────
             [
-                'rule_code'      => 'R01',
+                'code'           => 'R01',
                 'name'           => 'Excellent Mastery Promotion',
                 'domain'         => 'Promotion',
                 'priority'       => 1,
@@ -160,7 +160,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'action_id'      => $actionIds[ActionConstants::INCREASE_DIFF],
             ],
             [
-                'rule_code'      => 'R02',
+                'code'           => 'R02',
                 'name'           => 'Steady Progress Promotion',
                 'domain'         => 'Promotion',
                 'priority'       => 5,
@@ -168,7 +168,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'action_id'      => $actionIds[ActionConstants::INCREASE_DIFF],
             ],
             [
-                'rule_code'      => 'R03',
+                'code'           => 'R03',
                 'name'           => 'Mastery Medium Promotion',
                 'domain'         => 'Promotion',
                 'priority'       => 1,
@@ -176,7 +176,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'action_id'      => $actionIds[ActionConstants::INCREASE_DIFF],
             ],
             [
-                'rule_code'      => 'R04',
+                'code'           => 'R04',
                 'name'           => 'Steady Mastery Challenge',
                 'domain'         => 'Promotion',
                 'priority'       => 8,
@@ -186,7 +186,7 @@ class AdaptiveRuleSeeder extends Seeder
 
             // ─── SAFETY NETS & INTERVENTIONS ────────────────────────────────
             [
-                'rule_code'      => 'R05',
+                'code'           => 'R05',
                 'name'           => 'Crisis Emergency Response',
                 'domain'         => 'SafetyNet',
                 'priority'       => -10,
@@ -194,7 +194,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'action_id'      => $actionIds[ActionConstants::REMEDIAL],
             ],
             [
-                'rule_code'      => 'R06',
+                'code'           => 'R06',
                 'name'           => 'Struggling Safety Net',
                 'domain'         => 'SafetyNet',
                 'priority'       => -5,
@@ -202,7 +202,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'action_id'      => $actionIds[ActionConstants::REDUCE_DIFF],
             ],
             [
-                'rule_code'      => 'R07',
+                'code'           => 'R07',
                 'name'           => 'Double Trouble (Struggle + Addiction)',
                 'domain'         => 'SafetyNet',
                 'priority'       => -8,
@@ -210,7 +210,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'action_id'      => $actionIds[ActionConstants::REDUCE_DIFF],
             ],
             [
-                'rule_code'      => 'R08',
+                'code'           => 'R08',
                 'name'           => 'Unfocused Crisis Warning',
                 'domain'         => 'SafetyNet',
                 'priority'       => -9,
@@ -220,7 +220,7 @@ class AdaptiveRuleSeeder extends Seeder
 
             // ─── BEHAVIORAL ADJUSTMENTS ─────────────────────────────────────
             [
-                'rule_code'      => 'R09',
+                'code'           => 'R09',
                 'name'           => 'Boredom Escape Challenge',
                 'domain'         => 'Behavior',
                 'priority'       => 15,
@@ -228,7 +228,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'action_id'      => $actionIds[ActionConstants::INCREASE_DIFF],
             ],
             [
-                'rule_code'      => 'R10',
+                'code'           => 'R10',
                 'name'           => 'Steady Student Boredom',
                 'domain'         => 'Behavior',
                 'priority'       => 12,
@@ -236,7 +236,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'action_id'      => $actionIds[ActionConstants::INCREASE_DIFF],
             ],
             [
-                'rule_code'      => 'R11',
+                'code'           => 'R11',
                 'name'           => 'Hint Addiction Prevention',
                 'domain'         => 'Behavior',
                 'priority'       => 20,
@@ -244,7 +244,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'action_id'      => $actionIds[ActionConstants::FEEDBACK],
             ],
             [
-                'rule_code'      => 'R12',
+                'code'           => 'R12',
                 'name'           => 'Unfocused Redirection',
                 'domain'         => 'Behavior',
                 'priority'       => 22,
@@ -254,7 +254,7 @@ class AdaptiveRuleSeeder extends Seeder
 
             // ─── REWARDS & MOTIVATION ───────────────────────────────────────
             [
-                'rule_code'      => 'R13',
+                'code'           => 'R13',
                 'name'           => 'Perfect Mastery Reward',
                 'domain'         => 'Reward',
                 'priority'       => 25,
@@ -262,7 +262,7 @@ class AdaptiveRuleSeeder extends Seeder
                 'action_id'      => $actionIds[ActionConstants::STREAK_BONUS],
             ],
             [
-                'rule_code'      => 'R14',
+                'code'           => 'R14',
                 'name'           => 'Recovery Achievement',
                 'domain'         => 'Reward',
                 'priority'       => 30,
@@ -272,7 +272,7 @@ class AdaptiveRuleSeeder extends Seeder
 
             // ─── CERTIFICATION ──────────────────────────────────────────────
             [
-                'rule_code'      => 'R15',
+                'code'           => 'R15',
                 'name'           => 'Module Graduation (Certificate)',
                 'domain'         => 'Certification',
                 'priority'       => 0, // High priority achievement
@@ -281,8 +281,8 @@ class AdaptiveRuleSeeder extends Seeder
             ],
 
             // ─── FALLBACKS ───────────────────────────────────────────────────
-            ['rule_code' => 'F01', 'name' => 'Standard Pass Feedback', 'domain' => 'Fallback', 'priority' => 99, 'required_facts' => [FactConstants::SCORE_PASS], 'action_id' => $actionIds[ActionConstants::FEEDBACK]],
-            ['rule_code' => 'F02', 'name' => 'Standard Fail Support', 'domain' => 'Fallback', 'priority' => 99, 'required_facts' => [FactConstants::SCORE_FAIL], 'action_id' => $actionIds[ActionConstants::FEEDBACK]],
+            ['code' => 'F01', 'name' => 'Standard Pass Feedback', 'domain' => 'Fallback', 'priority' => 99, 'required_facts' => [FactConstants::SCORE_PASS], 'action_id' => $actionIds[ActionConstants::FEEDBACK]],
+            ['code' => 'F02', 'name' => 'Standard Fail Support', 'domain' => 'Fallback', 'priority' => 99, 'required_facts' => [FactConstants::SCORE_FAIL], 'action_id' => $actionIds[ActionConstants::FEEDBACK]],
         ];
 
         AdaptiveRule::query()->delete();

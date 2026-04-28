@@ -6,11 +6,11 @@ export class ProfileState extends FormState<ProfileForm> {
 
     constructor(personalization: StudentProfile | null) {
         super({ name: '', email: '', password: '', password_confirmation: '' });
+        this.hydrate({ personalization });
         if (this.user) {
             this.form.name = this.user.name ?? '';
             this.form.email = this.user.email ?? '';
         }
-        this.personalization = personalization;
     }
 
     submit() {

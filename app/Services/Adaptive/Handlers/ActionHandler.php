@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 namespace App\Services\Adaptive\Handlers;
+
 use App\Services\Adaptive\Handlers\Actions\ActionProcessorInterface;
 
 final class ActionHandler
@@ -16,12 +17,12 @@ final class ActionHandler
     {
         // Define the pipeline order
         $this->processors = [
-            new Actions\ModuleProcessor(),
-            new Actions\DifficultyProcessor(),
-            new Actions\BadgeProcessor(),
-            new Actions\CertificationProcessor(),
-            new Actions\StateProcessor(),
-            new Actions\FeedbackProcessor(),
+            new Actions\ModuleProcessor,
+            new Actions\DifficultyProcessor,
+            new Actions\BadgeProcessor,
+            new Actions\CertificationProcessor,
+            new Actions\StateProcessor,
+            new Actions\FeedbackProcessor,
         ];
     }
 

@@ -14,8 +14,8 @@ final class JsonSchemaConstants
      * [ ['code' => 'B01', 'name' => 'First Win', 'earned_at' => '2024-01-01'] ]
      */
     public const array BADGE_TEMPLATE = [
-        'code' => '',
-        'name' => '',
+        'code'      => '',
+        'name'      => '',
         'earned_at' => '',
     ];
 
@@ -24,9 +24,9 @@ final class JsonSchemaConstants
      * [ ['type' => 'gold', 'material_id' => 'M1', 'issued_at' => '2024-01-01'] ]
      */
     public const array CERTIFICATION_TEMPLATE = [
-        'type' => '',
+        'type'        => '',
         'material_id' => '',
-        'issued_at' => '',
+        'issued_at'   => '',
     ];
 
     /**
@@ -34,7 +34,7 @@ final class JsonSchemaConstants
      * [ 'beginner' => ['avg' => 10.5, 'total' => 5] ]
      */
     public const array TIME_DIST_TEMPLATE = [
-        'avg' => 0.0,
+        'avg'   => 0.0,
         'total' => 0,
     ];
 
@@ -45,8 +45,8 @@ final class JsonSchemaConstants
     {
         return [
             'beginner' => self::TIME_DIST_TEMPLATE,
-            'medium' => self::TIME_DIST_TEMPLATE,
-            'hard' => self::TIME_DIST_TEMPLATE,
+            'medium'   => self::TIME_DIST_TEMPLATE,
+            'hard'     => self::TIME_DIST_TEMPLATE,
         ];
     }
 }

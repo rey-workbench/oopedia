@@ -6,12 +6,14 @@
         colorSet?: string[];
     }
 
-    let { colorSet = [
-        'rgba(210, 109, 63, 0.12)', // Warm Coral
-        'rgba(174, 192, 173, 0.15)', // Sage
-        'rgba(238, 202, 157, 0.2)', // Sandy
-        'rgba(15, 23, 42, 0.04)', // Slate
-    ] }: Props = $props();
+    let {
+        colorSet = [
+            'rgba(210, 109, 63, 0.12)', // Warm Coral
+            'rgba(174, 192, 173, 0.15)', // Sage
+            'rgba(238, 202, 157, 0.2)', // Sandy
+            'rgba(15, 23, 42, 0.04)', // Slate
+        ],
+    }: Props = $props();
 
     let canvas: HTMLCanvasElement;
     let ctx: CanvasRenderingContext2D;
@@ -20,7 +22,14 @@
     let isVisible = $state(false);
 
     // Mesh points
-    let points: { x: number; y: number; vx: number; vy: number; colorIndex: number; size: number }[] = [];
+    let points: {
+        x: number;
+        y: number;
+        vx: number;
+        vy: number;
+        colorIndex: number;
+        size: number;
+    }[] = [];
 
     const init = () => {
         if (!canvas) return;
@@ -79,10 +88,15 @@
     });
 </script>
 
-<div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#FDFDFB]" in:fade={{ duration: 2000 }}>
-    <canvas bind:this={canvas} class="h-full w-full opacity-70 filter blur-3xl"></canvas>
-    
+<div
+    class="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#FDFDFB]"
+    in:fade={{ duration: 2000 }}
+>
+    <canvas bind:this={canvas} class="h-full w-full opacity-70 blur-3xl filter"></canvas>
+
     <!-- Noise overlay -->
-    <div class="absolute inset-0 opacity-[0.03] contrast-150 brightness-150" 
-         style="background-image: url('https://grainy-gradients.vercel.app/noise.svg');"></div>
+    <div
+        class="absolute inset-0 opacity-[0.03] brightness-150 contrast-150"
+        style="background-image: url('https://grainy-gradients.vercel.app/noise.svg');"
+    ></div>
 </div>

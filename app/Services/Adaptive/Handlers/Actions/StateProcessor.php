@@ -15,7 +15,7 @@ final class StateProcessor implements ActionProcessorInterface
         ActionConstants::KEY_BADGES,
         ActionConstants::KEY_MESSAGE,
         ActionConstants::KEY_TITLE,
-        ActionConstants::KEY_CERTIFICATION
+        ActionConstants::KEY_CERTIFICATION,
     ];
 
     public function process(array $instructions, array $state, array $context): array

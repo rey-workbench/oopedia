@@ -31,7 +31,7 @@ final class Answer extends Model
             'blank_position' => 'integer',
         ];
     }
-    
+
     public function question(): BelongsTo
     {
         return $this->belongsTo(Question::class);

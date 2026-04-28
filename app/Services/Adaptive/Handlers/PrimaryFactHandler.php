@@ -15,10 +15,10 @@ final class PrimaryFactHandler
     public function __construct()
     {
         $this->processors = [
-            new Facts\Primary\AccuracyProcessor(),
-            new Facts\Primary\EfficiencyProcessor(),
-            new Facts\Primary\BehaviourProcessor(),
-            new Facts\Primary\DifficultyProcessor(),
+            new Facts\Primary\AccuracyProcessor,
+            new Facts\Primary\EfficiencyProcessor,
+            new Facts\Primary\BehaviourProcessor,
+            new Facts\Primary\DifficultyProcessor,
         ];
     }
 
@@ -29,7 +29,7 @@ final class PrimaryFactHandler
         bool $isCorrect,
         bool $usedHint,
         int $timeSpent,
-        QuestionDifficulty $difficulty
+        QuestionDifficulty $difficulty,
     ): array {
         $facts = [];
 

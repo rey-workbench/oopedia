@@ -7,7 +7,7 @@ import type {
 } from '@/types';
 import type { AdaptiveFact, AdaptiveAction } from '@/types/models';
 
-export class AdaptiveAnalyticsState extends BaseState {
+export class AdaptiveRuleState extends BaseState {
     totalRules = $state(0);
     totalFacts = $state(0);
     totalActions = $state(0);
@@ -19,29 +19,9 @@ export class AdaptiveAnalyticsState extends BaseState {
     allFacts = $state<AdaptiveFact[]>([]);
     allActions = $state<AdaptiveAction[]>([]);
 
-    constructor(data: {
-        totalRules: number;
-        totalFacts: number;
-        totalActions: number;
-        rulesByDomain: AdaptiveRuleDomain[];
-        adaptiveStateDistribution: AdaptiveStateDistribution[];
-        recentTriggers: AdaptiveTriggerItem[];
-        ruleTriggersStats: AdaptiveRuleTriggerStat[];
-        decisionTree: any;
-        allFacts: AdaptiveFact[];
-        allActions: AdaptiveAction[];
-    }) {
+    constructor(data: any) {
         super();
-        this.totalRules = data.totalRules;
-        this.totalFacts = data.totalFacts;
-        this.totalActions = data.totalActions;
-        this.rulesByDomain = data.rulesByDomain;
-        this.adaptiveStateDistribution = data.adaptiveStateDistribution;
-        this.recentTriggers = data.recentTriggers;
-        this.ruleTriggersStats = data.ruleTriggersStats;
-        this.decisionTree = data.decisionTree;
-        this.allFacts = data.allFacts;
-        this.allActions = data.allActions;
+        this.hydrate(data);
     }
 
     domainIcons: Record<string, string> = {

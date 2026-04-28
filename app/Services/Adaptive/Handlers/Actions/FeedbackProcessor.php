@@ -11,7 +11,7 @@ final class FeedbackProcessor implements ActionProcessorInterface
     public function process(array $instructions, array $state, array $context): array
     {
         if (isset($instructions[ActionConstants::KEY_FLOW])) {
-            $flow = $instructions[ActionConstants::KEY_FLOW];
+            $flow                 = $instructions[ActionConstants::KEY_FLOW];
             $state['next_action'] = $flow; // Tetap simpan sebagai next_action untuk frontend agar tidak breaking change di JS
 
             // Jika harus kembali ke materi, arahkan ke sub_materi yang spesifik jika tersedia di context

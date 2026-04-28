@@ -8,7 +8,13 @@ export interface CheckAnswerResponse {
     status: 'success' | 'wrong' | 'error';
     message: string;
     nextUrl: string;
+    isCorrect: boolean;
     adaptiveResult: AdaptiveResult;
+    ui: {
+        url: string;
+        type: string;
+        label: string;
+    };
     xpEarned?: number;
     newLevel?: string | null;
     streakBonus?: boolean;
@@ -20,15 +26,21 @@ export interface AdaptiveResult {
         id?: string;
         name?: string;
         action?: string | null;
+        action_code?: string;
         priority?: number;
         variant?: string;
+        message?: string | null;
+        title?: string | null;
     } | null;
     triggered_rules?: Array<{
         id?: string;
         name?: string;
         action?: string | null;
+        action_code?: string;
         priority?: number;
         variant?: string;
+        message?: string | null;
+        title?: string | null;
     }>;
     facts?: string[];
     engine_metadata?: {

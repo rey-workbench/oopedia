@@ -171,8 +171,8 @@ final class QuizService implements QuizServiceInterface
             $targetLevel     = $difficultyOrder[$targetDifficulty->value] ?? 1;
 
             $answeredArray = $answeredQuestionIds->toArray();
-            $questions     = $questions->reject(fn($q) => 
-                !in_array($q->id, $answeredArray) && ($difficultyOrder[$q->difficulty->value] ?? 1) < $targetLevel
+            $questions     = $questions->reject(
+                fn ($q) => ! in_array($q->id, $answeredArray) && ($difficultyOrder[$q->difficulty->value] ?? 1) < $targetLevel,
             );
             $appliedTargetFilter = true;
         }
@@ -333,8 +333,8 @@ final class QuizService implements QuizServiceInterface
         }
 
         $answeredArray = $answeredQuestionIds->toArray();
-        $completed     = $questions->filter(fn($q) => in_array($q->id, $answeredArray));
-        $remaining     = $questions->reject(fn($q) => in_array($q->id, $answeredArray));
+        $completed     = $questions->filter(fn ($q) => in_array($q->id, $answeredArray));
+        $remaining     = $questions->reject(fn ($q) => in_array($q->id, $answeredArray));
 
         $levels = [];
         $index  = 1;
@@ -462,15 +462,15 @@ final class QuizService implements QuizServiceInterface
 
             // Engine evaluates facts and instructions, then returns a new merged state
             $engineResult = $this->adaptiveEngineService->evaluate(
-                $facts, 
-                $studentState->toArray(), 
+                $facts,
+                $studentState->toArray(),
                 [
-                    'material_id' => (string) $materialId, 
+                    'material_id'     => (string) $materialId,
                     'sub_material_id' => $question->sub_material_id,
-                    'is_correct' => $isCorrect
-                ]
+                    'is_correct'      => $isCorrect,
+                ],
             );
-            
+
             if (! empty($engineResult['new_state'])) {
                 // Persistent update from engine instructions
                 $studentState->update($engineResult['new_state']);

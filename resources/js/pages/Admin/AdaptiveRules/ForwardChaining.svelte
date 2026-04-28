@@ -2,7 +2,7 @@
     /// <reference types="d3" />
     import { onMount, untrack } from 'svelte';
     import * as d3 from 'd3';
-    import type { AdaptiveAnalyticsState } from '@/states/Admin/AdaptiveAnalyticsState.svelte';
+    import type { AdaptiveRuleState } from '@/states/Admin/AdaptiveRuleState.svelte';
     import {
         Brain,
         Maximize2,
@@ -15,7 +15,7 @@
     } from 'lucide-svelte';
 
     interface Props {
-        analyticsState: AdaptiveAnalyticsState;
+        analyticsState: AdaptiveRuleState;
         onedit?: (rule: any) => void;
     }
 
@@ -78,7 +78,8 @@
         svg.selectAll('*').remove();
         setupMarkers(svg.append('defs'));
 
-        zoom = d3.zoom<SVGSVGElement, unknown>()
+        zoom = d3
+            .zoom<SVGSVGElement, unknown>()
             .scaleExtent([0.1, 4])
             .on('zoom', (event) => {
                 mainGroup.attr('transform', event.transform.toString());
@@ -144,14 +145,15 @@
 
             rules.forEach((rule) => {
                 const prerequisites = rule.required_facts || [];
-                const resolvedSources = prerequisites.map(p => 
-                    nodeRegistry.get(`raw_fact_${p}`) || nodeRegistry.get(`virtual_fact_${p}`)
+                const resolvedSources = prerequisites.map(
+                    (p) =>
+                        nodeRegistry.get(`raw_fact_${p}`) || nodeRegistry.get(`virtual_fact_${p}`)
                 );
 
-                const isResolved = resolvedSources.every(s => !!s);
+                const isResolved = resolvedSources.every((s) => !!s);
                 if (!isResolved) return;
 
-                const maxPrereqDepth = Math.max(...resolvedSources.map(s => s.depth));
+                const maxPrereqDepth = Math.max(...resolvedSources.map((s) => s.depth));
                 const ruleDepth = maxPrereqDepth + 1;
 
                 // Register Rule Gate
@@ -211,7 +213,9 @@
     }
 
     function registerAction(registry: Map<string, any>, rule: any, depth: number) {
-        const action = actionData.find((a) => a.id === rule.action_id || a.code === rule.action_code);
+        const action = actionData.find(
+            (a) => a.id === rule.action_id || a.code === rule.action_code
+        );
         if (!action || action.code === 'H00') return false;
 
         const actionId = `action_${rule.id}`;
@@ -240,12 +244,14 @@
 
             // Link Prerequisites -> Gate
             (rule.required_facts || []).forEach((code) => {
-                const source = nodeRegistry.get(`raw_fact_${code}`) || nodeRegistry.get(`virtual_fact_${code}`);
+                const source =
+                    nodeRegistry.get(`raw_fact_${code}`) ||
+                    nodeRegistry.get(`virtual_fact_${code}`);
                 if (source) links.push({ source, target: gateNode, type: 'requirement' });
             });
 
             // Link Gate -> Deduced Facts
-            (rule.deduced_facts || []).forEach((code) => {
+            (rule.deduced_facts || []).forEach((code: string) => {
                 const target = nodeRegistry.get(`virtual_fact_${code}`);
                 if (target) links.push({ source: gateNode, target, type: 'deduction' });
             });
@@ -268,11 +274,15 @@
             depthGroups[n.depth]!.push(n);
         });
 
-        const depths = Object.keys(depthGroups).map(Number).sort((a, b) => a - b);
+        const depths = Object.keys(depthGroups)
+            .map(Number)
+            .sort((a, b) => a - b);
 
         // Pass 1: Initial Layout
         depths.forEach((d) => {
-            depthGroups[d]!.forEach((n, i) => (n.y = i * (GRAPH_CONFIG.itemHeight + GRAPH_CONFIG.verticalGap)));
+            depthGroups[d]!.forEach(
+                (n, i) => (n.y = i * (GRAPH_CONFIG.itemHeight + GRAPH_CONFIG.verticalGap))
+            );
         });
 
         // Pass 2: Iterative Barycenter Optimization
@@ -284,7 +294,12 @@
         centerAndProject(depths, depthGroups, containerHeight);
     }
 
-    function optimizeLayoutLayer(depths: number[], groups: Record<number, any[]>, links: any[], forward: boolean) {
+    function optimizeLayoutLayer(
+        depths: number[],
+        groups: Record<number, any[]>,
+        links: any[],
+        forward: boolean
+    ) {
         depths.forEach((d) => {
             const group = groups[d]!;
             if (d === (forward ? depths[0] : depths[depths.length - 1])) return;
@@ -309,7 +324,10 @@
         let currentY = group[0].y;
         group.forEach((node, i) => {
             if (i > 0) {
-                currentY = Math.max(currentY + GRAPH_CONFIG.itemHeight + GRAPH_CONFIG.verticalGap, node.y);
+                currentY = Math.max(
+                    currentY + GRAPH_CONFIG.itemHeight + GRAPH_CONFIG.verticalGap,
+                    node.y
+                );
             }
             node.y = currentY;
         });
@@ -318,12 +336,14 @@
     function centerAndProject(depths: number[], groups: Record<number, any[]>, height: number) {
         const centerRefY = height / 2;
         let maxX = 0;
-        let minY = Infinity, maxY = -Infinity;
+        let minY = Infinity,
+            maxY = -Infinity;
 
         depths.forEach((d) => {
             const group = groups[d]!;
             if (group.length === 0) return;
-            const groupCenterY = (group[0].y + group[group.length - 1].y + GRAPH_CONFIG.itemHeight) / 2;
+            const groupCenterY =
+                (group[0].y + group[group.length - 1].y + GRAPH_CONFIG.itemHeight) / 2;
             const offset = centerRefY - groupCenterY;
 
             group.forEach((node) => {
@@ -343,20 +363,23 @@
      */
     function renderGraph(nodes: any[], links: any[], width: number, height: number) {
         // Compute bounding box for zoom-to-fit
-        const maxX = Math.max(...nodes.map(n => n.x), 100);
-        const minY = Math.min(...nodes.map(n => n.y), 0);
-        const maxY = Math.max(...nodes.map(n => n.y), 100);
+        const maxX = Math.max(...nodes.map((n) => n.x), 100);
+        const minY = Math.min(...nodes.map((n) => n.y), 0);
+        const maxY = Math.max(...nodes.map((n) => n.y), 100);
 
         drawLinks(links);
         drawNodes(nodes);
 
         const initialScale = Math.min(GRAPH_CONFIG.initialScale, width / (maxX + 280));
-        
+
         if (!isInitialized) {
             d3.select(svgRef!).call(
                 zoom.transform,
                 d3.zoomIdentity
-                    .translate(width/2 - (maxX/2)*initialScale, height/2 - ((maxY+minY)/2)*initialScale)
+                    .translate(
+                        width / 2 - (maxX / 2) * initialScale,
+                        height / 2 - ((maxY + minY) / 2) * initialScale
+                    )
                     .scale(initialScale)
             );
             isInitialized = true;
@@ -364,7 +387,8 @@
     }
 
     function drawLinks(links: any[]) {
-        mainGroup.selectAll('.link')
+        mainGroup
+            .selectAll('.link')
             .data(links)
             .enter()
             .append('path')
@@ -383,7 +407,7 @@
         const tx = d.target.x - (d.target.type === 'gate' ? 25 : 100);
         const ty = d.target.y;
         const dx = tx - sx;
-        return `M${sx},${sy}C${sx + dx/2},${sy} ${sx + dx/2},${ty} ${tx},${ty}`;
+        return `M${sx},${sy}C${sx + dx / 2},${sy} ${sx + dx / 2},${ty} ${tx},${ty}`;
     }
 
     function getLinkColor(type: string) {
@@ -395,7 +419,8 @@
         const rectNodes = nodes.filter((n) => n.type !== 'gate');
         const gateNodes = nodes.filter((n) => n.type === 'gate');
 
-        const nodeSelection = mainGroup.selectAll('.rect-node')
+        const nodeSelection = mainGroup
+            .selectAll('.rect-node')
             .data(rectNodes)
             .enter()
             .append('g')
@@ -403,24 +428,56 @@
             .attr('class', 'rect-node cursor-pointer select-none')
             .on('click', (event, d) => handleNodeClick(d, event));
 
-        nodeSelection.append('rect')
-            .attr('width', 200).attr('height', 40).attr('x', -100).attr('y', -20).attr('rx', (d) => (d.type === 'action' ? 20 : 12))
+        nodeSelection
+            .append('rect')
+            .attr('width', 200)
+            .attr('height', 40)
+            .attr('x', -100)
+            .attr('y', -20)
+            .attr('rx', (d) => (d.type === 'action' ? 20 : 12))
             .attr('fill', (d) => getNodeFill(d.type))
             .attr('stroke', (d) => getNodeStroke(d.type))
-            .attr('stroke-width', 2).attr('class', 'shadow-sm');
+            .attr('stroke-width', 2)
+            .attr('class', 'shadow-sm');
 
-        nodeSelection.append('text').attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
-            .attr('class', (d) => `text-[11px] font-bold ${d.type === 'action' ? 'fill-white' : 'fill-slate-800'}`)
+        nodeSelection
+            .append('text')
+            .attr('text-anchor', 'middle')
+            .attr('dominant-baseline', 'middle')
+            .attr(
+                'class',
+                (d) =>
+                    `text-[11px] font-bold ${d.type === 'action' ? 'fill-white' : 'fill-slate-800'}`
+            )
             .text((d) => d.data.name);
 
-        const gateSelection = mainGroup.selectAll('.gate-node')
-            .data(gateNodes).enter().append('g').attr('transform', (d) => `translate(${d.x},${d.y})`)
+        const gateSelection = mainGroup
+            .selectAll('.gate-node')
+            .data(gateNodes)
+            .enter()
+            .append('g')
+            .attr('transform', (d) => `translate(${d.x},${d.y})`)
             .attr('class', 'gate-node cursor-pointer select-none')
             .on('click', (event, d) => handleNodeClick(d, event));
 
-        gateSelection.append('circle').attr('r', 24).attr('fill', '#0f172a').attr('stroke', '#334155').attr('stroke-width', 2);
-        gateSelection.append('text').attr('text-anchor', 'middle').attr('dominant-baseline', 'middle').attr('class', 'text-[10px] font-bold fill-white antialiased').text('AND');
-        gateSelection.append('text').attr('text-anchor', 'middle').attr('y', 38).attr('class', 'text-[9px] font-medium fill-slate-400 uppercase tracking-wider').text((d) => d.data.rule_code);
+        gateSelection
+            .append('circle')
+            .attr('r', 24)
+            .attr('fill', '#0f172a')
+            .attr('stroke', '#334155')
+            .attr('stroke-width', 2);
+        gateSelection
+            .append('text')
+            .attr('text-anchor', 'middle')
+            .attr('dominant-baseline', 'middle')
+            .attr('class', 'text-[10px] font-bold fill-white antialiased')
+            .text('AND');
+        gateSelection
+            .append('text')
+            .attr('text-anchor', 'middle')
+            .attr('y', 38)
+            .attr('class', 'text-[9px] font-medium fill-slate-400 uppercase tracking-wider')
+            .text((d) => d.data.code);
     }
 
     function getNodeFill(type: string) {
@@ -448,7 +505,7 @@
 
         const traverse = (node: any, direction: 'source' | 'target') => {
             const relKey = direction === 'source' ? 'target' : 'source';
-            mainGroup.selectAll('.link').each(function(l: any) {
+            mainGroup.selectAll('.link').each(function (l: any) {
                 if (l[direction] === node) {
                     activeLinks.add(l);
                     activeNodes.add(l[relKey]);
@@ -460,26 +517,40 @@
         traverse(clickedNode, 'source');
         traverse(clickedNode, 'target');
 
-        mainGroup.selectAll('.rect-node, .gate-node').attr('opacity', (n: any) => (activeNodes.has(n) ? 1 : 0.15));
-        mainGroup.selectAll('.link').attr('stroke-opacity', (l: any) => (activeLinks.has(l) ? 1 : 0.05))
+        mainGroup
+            .selectAll('.rect-node, .gate-node')
+            .attr('opacity', (n: any) => (activeNodes.has(n) ? 1 : 0.15));
+        mainGroup
+            .selectAll('.link')
+            .attr('stroke-opacity', (l: any) => (activeLinks.has(l) ? 1 : 0.05))
             .attr('stroke-width', (l: any) => (activeLinks.has(l) ? 4 : 1.5))
             .classed('flow-active', (l: any) => activeLinks.has(l));
     }
 
     resetD3Flow = () => {
-        mainGroup.selectAll('.link').classed('flow-active', false).attr('stroke-opacity', 0.4).attr('stroke-width', 2);
+        mainGroup
+            .selectAll('.link')
+            .classed('flow-active', false)
+            .attr('stroke-opacity', 0.4)
+            .attr('stroke-width', 2);
         mainGroup.selectAll('.rect-node, .gate-node').attr('opacity', 1);
     };
 
     function resetView() {
         if (!svgRef || !zoom) return;
-        d3.select(svgRef).transition().duration(750).call(zoom.transform, d3.zoomIdentity.translate(80, 50).scale(0.8));
+        d3.select(svgRef)
+            .transition()
+            .duration(750)
+            .call(zoom.transform, d3.zoomIdentity.translate(80, 50).scale(0.8));
     }
 
     onMount(() => {
         initSchematic();
         window.addEventListener('resize', initSchematic);
-        const handleFullscreen = () => { isFullscreen = !!document.fullscreenElement; setTimeout(initSchematic, 100); };
+        const handleFullscreen = () => {
+            isFullscreen = !!document.fullscreenElement;
+            setTimeout(initSchematic, 100);
+        };
         document.addEventListener('fullscreenchange', handleFullscreen);
         return () => {
             window.removeEventListener('resize', initSchematic);
@@ -602,7 +673,7 @@
             </div>
         </div>
 
-        <!-- Node Details -->       
+        <!-- Node Details -->
         {#if selectedNode}
             <div
                 class="animate-in zoom-in-95 fade-in absolute bottom-6 left-6 w-[320px] overflow-hidden rounded-3xl border-2 border-slate-100 bg-white shadow-2xl duration-300"
@@ -729,7 +800,7 @@
                                         Kode Aturan
                                     </p>
                                     <p class="font-mono text-xs font-black text-slate-900">
-                                        {selectedNode.data.rule_code}
+                                        {selectedNode.data.code}
                                     </p>
                                 </div>
                                 <div class="rounded-2xl border border-slate-100 bg-slate-50 p-3">

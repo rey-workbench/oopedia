@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Services\Adaptive;
 
 use App\Contracts\Services\AdaptiveEngineServiceInterface;
+use App\Enums\Lms\QuestionDifficulty;
 use App\Models\AdaptiveExecutionLog;
 use App\Models\AdaptiveFact;
 use App\Models\AdaptiveRule;
-use App\Enums\Lms\QuestionDifficulty;
 use App\Rules\Adaptive\Constants\ActionConstants;
 use App\Rules\Adaptive\Constants\StudentStateSchema;
 use App\Rules\Adaptive\Contracts\AdaptiveRuleInterface;
@@ -28,8 +28,7 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
         private readonly Handlers\PrimaryFactHandler $primaryFactHandler,
         private readonly Handlers\VirtualFactHandler $virtualFactHandler,
         private readonly Handlers\ActionHandler $actionHandler,
-    ) {
-    }
+    ) {}
 
     /**
      * The main orchestrator. Reads like a story.
@@ -59,36 +58,38 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
      */
     private function runInference(array $facts, array $state, array $context): array
     {
-        $allRules = $this->fetchActiveRules();
-        $memory = ['facts' => $facts, 'state' => $state, 'fired' => []];
+        $allRules  = $this->fetchActiveRules();
+        $memory    = ['facts' => $facts, 'state' => $state, 'fired' => []];
         $triggered = [];
 
         for ($i = 0; $i < self::MAX_CYCLES; $i++) {
             $rule = $this->selectBestRule($allRules, $memory);
-            if (!$rule)
+            if (! $rule) {
                 break;
+            }
 
             $this->fireRule($rule, $memory, $context, $triggered);
 
-            if ($this->shouldStop($rule))
+            if ($this->shouldStop($rule)) {
                 break;
+            }
         }
 
         return [
-            'primary_rule' => $triggered[0] ?? null,
+            'primary_rule'  => $triggered[0] ?? null,
             'all_triggered' => $triggered,
-            'state' => $memory['state'],
-            'facts' => $memory['facts'],
-            'is_empty' => empty($triggered),
+            'state'         => $memory['state'],
+            'facts'         => $memory['facts'],
+            'is_empty'      => empty($triggered),
         ];
     }
 
     private function selectBestRule(Collection $rules, array $memory): ?AdaptiveRule
     {
         return $rules->first(function (AdaptiveRule $rule) use ($memory) {
-            $isNotFired = !in_array($rule->rule_code, $memory['fired'], true);
-            $isMatched = $rule->evaluate($memory['facts']);
-            $isAllowed = !$this->isBlocked($rule, $memory['state']);
+            $isNotFired = ! in_array($rule->code, $memory['fired'], true);
+            $isMatched  = $rule->evaluate($memory['facts']);
+            $isAllowed  = ! $this->isBlocked($rule, $memory['state']);
 
             return $isNotFired && $isMatched && $isAllowed;
         });
@@ -102,23 +103,23 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
         $isDeductionOnly = $actionCode === null || $actionCode === ActionConstants::DEDUCTION;
 
         // Apply visual action and record as triggered if NOT a deduction-only rule
-        if (!$isDeductionOnly) {
+        if (! $isDeductionOnly) {
             $memory['state'] = $this->actionHandler->apply($rule->action?->instructions ?? [], $memory['state'], $context);
-            $triggered[] = $rule;
+            $triggered[]     = $rule;
         }
 
         // Propagate deduced facts to memory for the next cycle
         $deduced = $rule->getDeducedFacts();
-        if (!empty($deduced)) {
+        if (! empty($deduced)) {
             $memory['facts'] = array_values(array_unique(array_merge($memory['facts'], $deduced)));
         }
 
-        $memory['fired'][] = $rule->rule_code;
+        $memory['fired'][] = $rule->code;
     }
 
     private function isBlocked(AdaptiveRuleInterface $rule, array $state): bool
     {
-        $flow = $this->getFlow($rule);
+        $flow       = $this->getFlow($rule);
         $difficulty = $state[StudentStateSchema::TARGET_DIFFICULTY] ?? null;
 
         $isAtMax = ($flow === ActionConstants::FLOW_UP && $difficulty === QuestionDifficulty::HARD->value);
@@ -136,13 +137,13 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             return false;
         }
 
-        // For visual actions (UP, DOWN, NEXT, REVIEW), we stop after the first one 
+        // For visual actions (UP, DOWN, NEXT, REVIEW), we stop after the first one
         // to prevent multiple conflicting UI changes in a single response.
         return in_array($this->getFlow($rule), [
             ActionConstants::FLOW_NEXT,
             ActionConstants::FLOW_UP,
             ActionConstants::FLOW_DOWN,
-            ActionConstants::FLOW_REVIEW
+            ActionConstants::FLOW_REVIEW,
         ], true);
     }
 
@@ -162,8 +163,9 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 
     private function applyFallbackNavigation(array $state, bool $isCorrect): array
     {
-        $state['next_action'] = ActionConstants::FLOW_NEXT;
+        $state['next_action']       = ActionConstants::FLOW_NEXT;
         $state['_feedback_message'] = $isCorrect ? 'Jawaban benar! Lanjut.' : 'Jawaban kurang tepat. Coba lagi.';
+
         return $state;
     }
 
@@ -172,27 +174,27 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
         return Cache::remember(
             'adaptive_rules_v7',
             now()->addDay(),
-            fn() =>
-            AdaptiveRule::with('action')->where('is_active', true)->ordered()->get()
+            fn () => AdaptiveRule::with('action')->where('is_active', true)->ordered()->get(),
         );
     }
 
     private function logActivity(?AdaptiveRuleInterface $rule, array $old, array $new, array $facts, array $ctx): void
     {
         $user = Auth::user();
-        if (!$user || !$rule)
+        if (! $user || ! $rule) {
             return;
+        }
 
-        $keys = [StudentStateSchema::TARGET_DIFFICULTY, StudentStateSchema::GLOBAL_XP, StudentStateSchema::CURRENT_LEVEL];
+        $keys  = [StudentStateSchema::TARGET_DIFFICULTY, StudentStateSchema::GLOBAL_XP, StudentStateSchema::CURRENT_LEVEL];
         $delta = array_diff_assoc(array_intersect_key($new, array_flip($keys)), array_intersect_key($old, array_flip($keys)));
 
         AdaptiveExecutionLog::create([
-            'user_id' => $user->id,
-            'rule_code' => $rule->getRuleId(),
-            'action_code' => $rule->getActionCode(),
-            'trigger_facts' => $facts,
-            'new_state' => $new, // Add the full state snapshot
-            'state_deltas' => $delta ?: [],
+            'user_id'           => $user->id,
+            'rule_code'         => $rule->getRuleId(),
+            'action_code'       => $rule->getActionCode(),
+            'trigger_facts'     => $facts,
+            'new_state'         => $new, // Add the full state snapshot
+            'state_deltas'      => $delta ?: [],
             'execution_context' => $ctx,
         ]);
     }
@@ -200,10 +202,10 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
     private function buildResponse(array $result, array $initialFacts): array
     {
         return [
-            'triggered_rule' => $result['primary_rule'] ? $this->mapRule($result['primary_rule']) : null,
-            'triggered_rules' => array_map(fn($r) => $this->mapRule($r), $result['all_triggered']),
-            'new_state' => $result['state'],
-            'facts' => $result['facts'],
+            'triggered_rule'  => $result['primary_rule'] ? $this->mapRule($result['primary_rule']) : null,
+            'triggered_rules' => array_map(fn ($r) => $this->mapRule($r), $result['all_triggered']),
+            'new_state'       => $result['state'],
+            'facts'           => $result['facts'],
             'engine_metadata' => $this->getMetadata(),
         ];
     }
@@ -211,24 +213,26 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
     private function getMetadata(): array
     {
         return [
-            'rule_count' => Cache::remember('rules_count', now()->addDay(), fn() => AdaptiveRule::where('is_active', true)->count()),
-            'engine_version' => '7.1.0-ULTRA-CLEAN',
-            'fact_labels' => Cache::remember('fact_labels', now()->addDay(), fn() => AdaptiveFact::all()->pluck('name', 'code')->toArray()),
+            'rule_count'      => Cache::remember('rules_count', now()->addDay(), fn () => AdaptiveRule::where('is_active', true)->count()),
+            'engine_version'  => '7.1.0-ULTRA-CLEAN',
+            'fact_labels'     => Cache::remember('fact_labels', now()->addDay(), fn () => AdaptiveFact::all()->pluck('name', 'code')->toArray()),
+            'fact_categories' => Cache::remember('fact_categories', now()->addDay(), fn () => AdaptiveFact::all()->pluck('category', 'code')->toArray()),
         ];
     }
 
     private function mapRule(AdaptiveRuleInterface $rule): array
     {
         $instr = ($rule instanceof AdaptiveRule) ? ($rule->action?->instructions ?? []) : [];
+
         return [
-            'id' => $rule->getRuleId(),
-            'name' => $rule->getRuleName(),
-            'action' => $instr[ActionConstants::KEY_FLOW] ?? $rule->getActionCode(),
+            'id'          => $rule->getRuleId(),
+            'name'        => $rule->getRuleName(),
+            'action'      => $instr[ActionConstants::KEY_FLOW] ?? $rule->getActionCode(),
             'action_code' => $rule->getActionCode(),
-            'priority' => $rule->getPriority(),
-            'variant' => ($rule instanceof AdaptiveRule) ? ($rule->action?->variant ?? 'result') : 'result',
-            'message' => $instr[ActionConstants::KEY_MESSAGE] ?? null,
-            'title' => $instr[ActionConstants::KEY_TITLE] ?? null,
+            'priority'    => $rule->getPriority(),
+            'variant'     => ($rule instanceof AdaptiveRule) ? ($rule->action?->variant ?? 'result') : 'result',
+            'message'     => $instr[ActionConstants::KEY_MESSAGE] ?? null,
+            'title'       => $instr[ActionConstants::KEY_TITLE]   ?? null,
         ];
     }
 
@@ -237,8 +241,9 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
     {
         return AdaptiveRule::with('action')->where('is_active', true)->ordered()->get()->toArray();
     }
+
     public function getRuleById(string $id): ?AdaptiveRuleInterface
     {
-        return AdaptiveRule::with('action')->where('rule_code', $id)->first();
+        return AdaptiveRule::with('action')->where('code', $id)->first();
     }
 }

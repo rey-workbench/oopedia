@@ -65,7 +65,7 @@ export type {
     AdaptiveTriggerItem,
     AdaptiveStateDistribution,
     AdaptiveRuleTriggerStat,
-    AdminAdaptiveAnalyticsProps,
+    AdminAdaptiveRuleProps,
     // Mahasiswa pages
     MahasiswaDashboardProps,
     MahasiswaInProgressProps,

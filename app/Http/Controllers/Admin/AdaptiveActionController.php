@@ -11,16 +11,16 @@ use Illuminate\Http\Request;
 
 final class AdaptiveActionController extends Controller
 {
-    public function update(Request $request, AdaptiveAction $action): RedirectResponse
+    public function update(Request $request, AdaptiveAction $adaptive_action): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'variant' => 'nullable|string',
+            'name'         => 'required|string|max:255',
+            'description'  => 'required|string',
+            'variant'      => 'nullable|string',
             'instructions' => 'required|array',
         ]);
 
-        $action->update($validated);
+        $adaptive_action->update($validated);
 
         return back()->with('success', 'Aksi adaptif berhasil diperbarui.');
     }
@@ -28,10 +28,10 @@ final class AdaptiveActionController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'code' => 'required|string|unique:adaptive_actions,code',
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'variant' => 'nullable|string',
+            'code'         => 'required|string|unique:adaptive_actions,code',
+            'name'         => 'required|string|max:255',
+            'description'  => 'required|string',
+            'variant'      => 'nullable|string',
             'instructions' => 'required|array',
         ]);
 
@@ -40,13 +40,13 @@ final class AdaptiveActionController extends Controller
         return back()->with('success', 'Aksi adaptif baru berhasil dibuat.');
     }
 
-    public function destroy(AdaptiveAction $action): RedirectResponse
+    public function destroy(AdaptiveAction $adaptive_action): RedirectResponse
     {
-        if ($action->rules()->count() > 0) {
+        if ($adaptive_action->rules()->count() > 0) {
             return back()->with('error', 'Tidak dapat menghapus aksi yang masih digunakan oleh aturan.');
         }
 
-        $action->delete();
+        $adaptive_action->delete();
 
         return back()->with('success', 'Aksi adaptif berhasil dihapus.');
     }
