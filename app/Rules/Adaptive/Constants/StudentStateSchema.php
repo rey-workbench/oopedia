@@ -56,10 +56,11 @@ final class StudentStateSchema
             self::TARGET_DIFFICULTY => null,
             self::SESSION_HISTORY   => [0.0, 0.0, 0.0],
             self::CURRENT_SESSION   => [
-                'correct'    => 0,
-                'total'      => 0,
-                'hints'      => 0,
-                'time_spent' => 0,
+                'correct'      => 0,
+                'total'        => 0,
+                'hints'        => 0,
+                'time_spent'   => 0,
+                'question_ids' => [],
             ],
             self::PERFORMANCE_METRICS => [
                 'trend'          => 'stable',

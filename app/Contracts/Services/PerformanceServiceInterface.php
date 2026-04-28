@@ -13,10 +13,12 @@ interface PerformanceServiceInterface
 
     public function updateMetricsFromInteraction(
         string $userId,
+        string $questionId,
         bool $isCorrect,
         int $timeSpent,
         QuestionDifficulty $difficulty,
         bool $usedHint,
+        int $score = 0,
     ): StudentState;
 
     public function getStudentSessionState(string $userId): array;

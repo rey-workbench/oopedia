@@ -78,6 +78,7 @@
                 quizState.fillInTheBlankAnswer = '';
                 quizState.dragAndDropAnswers = {};
                 quizState.startTime = Date.now();
+                quizState.usedHint = false;
             }
             quizState.material = newMaterial;
             quizState.currentQuestion = newQuestion;

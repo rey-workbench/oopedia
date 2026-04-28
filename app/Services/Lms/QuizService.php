@@ -444,10 +444,12 @@ final class QuizService implements QuizServiceInterface
             // 1. Update Performance Metrics
             $studentState = $this->performanceService->updateMetricsFromInteraction(
                 userId: $userId,
+                questionId: $questionId,
                 isCorrect: $isCorrect,
                 usedHint: (bool) ($validatedData['used_hint'] ?? false),
                 timeSpent: (int) ($validatedData['time_spent'] ?? 0),
                 difficulty: $question->difficulty,
+                score: $score,
             );
 
             // 2. Evaluate Adaptive Engine (Layer 3 & 4)
