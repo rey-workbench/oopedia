@@ -50,9 +50,7 @@ final class QuestionController extends Controller
         if (! $materialId) {
             $materials    = $this->materialService->getAllMaterials();
             $material     = null;
-            $subMaterials = collect();
-
-            return $this->render('Admin/Questions/Create/Index', compact('materials', 'material', 'subMaterials'));
+            return $this->render('Admin/Questions/Create/Index', compact('materials', 'material'));
         }
 
         $material = $this->materialRepo->find($materialId);
@@ -63,9 +61,8 @@ final class QuestionController extends Controller
         }
 
         $materials    = collect([$material]);
-        $subMaterials = $material->subMaterials()->orderBy('order')->get();
 
-        return $this->render('Admin/Questions/Create/Index', compact('materials', 'material', 'subMaterials'));
+        return $this->render('Admin/Questions/Create/Index', compact('materials', 'material'));
     }
 
     public function store(StoreQuestionRequest $request): RedirectResponse
@@ -100,13 +97,9 @@ final class QuestionController extends Controller
                 ->with('error', 'Soal tidak ditemukan');
         }
 
-        $materials    = $this->materialService->getAllMaterials();
-        $material     = $this->materialRepo->find($question->material_id);
-        $subMaterials = $material ? $material->subMaterials()->orderBy('order')->get() : collect();
-
         return $this->render(
             'Admin/Questions/Edit/Index',
-            compact('question', 'materials', 'material', 'subMaterials'),
+            compact('question', 'materials', 'material'),
         );
     }
 

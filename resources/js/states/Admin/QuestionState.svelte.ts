@@ -1,11 +1,10 @@
 import { router } from '@inertiajs/svelte';
 import { debounce } from 'lodash-es';
-import axios from 'axios';
 import { confirmDelete } from '@/utils/confirmDelete';
 import { BaseState } from '@/states/BaseState.svelte';
 import { FormState } from '@/states/FormState.svelte';
 import { ROUTES } from '@/utils/route';
-import type { Answer, Question, Material, SubMaterial, Pagination } from '@/types';
+import type { Answer, Question, Material, Pagination } from '@/types';
 
 interface AnswerField {
     answer_text?: string | null;
@@ -76,20 +75,16 @@ export class QuestionFormState extends FormState<{
     question_type: string;
     difficulty: string;
     material_id: number | string;
-    sub_material_id: number | string | null;
     answers: AnswerField[];
     correct_answer: number | null;
 }> {
     materials = $state<Material[]>([]);
     material = $state<Material | null>(null);
-    subMaterials = $state<SubMaterial[]>([]);
     question = $state<Question | null>(null);
-    availableSubMaterials = $state<SubMaterial[]>([]);
 
     constructor(
         materials: Material[],
         material: Material | null,
-        subMaterials: SubMaterial[],
         question: Question | null
     ) {
         super(
@@ -98,7 +93,6 @@ export class QuestionFormState extends FormState<{
                 question_type: question ? question.question_type : 'radio_button',
                 difficulty: question ? question.difficulty : 'beginner',
                 material_id: question ? question.material_id : material ? material.id : '',
-                sub_material_id: question ? question.sub_material_id : '',
                 answers:
                     question && question.answers
                         ? question.answers.map((a: Answer) => ({
@@ -135,32 +129,11 @@ export class QuestionFormState extends FormState<{
                 showErrorToast: true,
             }
         );
-        this.hydrate({ materials, material, subMaterials, question, availableSubMaterials: subMaterials });
-
-        if (this.form.material_id && this.subMaterials.length === 0) {
-            this.handleMaterialChange();
-        } else if (this.subMaterials.length > 0) {
-            this.availableSubMaterials = this.subMaterials;
-        }
-    }
-
-    async handleMaterialChange() {
-        if (!this.form.material_id) {
-            this.availableSubMaterials = [];
-            return;
-        }
-        try {
-            const response = await axios.get(
-                ROUTES.ADMIN.MATERIALS.SUBMATERIALS.JSON(this.form.material_id)
-            );
-            this.availableSubMaterials = response.data;
-            if (!this.question) {
-                this.form.sub_material_id = '';
-            }
-        } catch (error) {
-            console.error('Failed to fetch submaterials', error);
-            this.availableSubMaterials = [];
-        }
+        this.hydrate({
+            materials,
+            material,
+            question,
+        });
     }
 
     addAnswer() {
@@ -226,11 +199,10 @@ export class QuestionFormState extends FormState<{
  * Question Edit State
  */
 export class QuestionEditState extends QuestionFormState {
-    constructor(question: Question, subMaterials: SubMaterial[] = []) {
+    constructor(question: Question) {
         super(
             [],
             (question as unknown as { material: Material | null }).material || null,
-            subMaterials,
             question
         );
 

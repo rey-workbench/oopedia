@@ -28,17 +28,14 @@ final class AdaptiveRuleController extends Controller
     {
         return $this->render('Admin/AdaptiveRules/Edit/Index', [
             'rule' => [
-                'real_id'         => $adaptive_rule->id,
-                'id'              => $adaptive_rule->code,
-                'code'            => $adaptive_rule->code,
-                'name'            => $adaptive_rule->name,
-                'domain'          => $adaptive_rule->domain,
-                'priority'        => $adaptive_rule->priority,
-                'action_id'       => $adaptive_rule->action_id,
-                'required_facts'  => $adaptive_rule->required_facts,
-                'forbidden_facts' => $adaptive_rule->forbidden_facts,
-                'deduced_facts'   => $adaptive_rule->deduced_facts,
-                'is_active'       => $adaptive_rule->is_active,
+                'id'                => $adaptive_rule->id,
+                'name'              => $adaptive_rule->name,
+                'domain'            => $adaptive_rule->domain,
+                'priority'          => $adaptive_rule->priority,
+                'action_ids'        => $adaptive_rule->action_ids,
+                'required_fact_ids' => $adaptive_rule->required_fact_ids,
+                'deduced_fact_ids'  => $adaptive_rule->deduced_fact_ids,
+                'is_active'         => $adaptive_rule->is_active,
             ],
             'allFacts'   => AdaptiveFact::all(),
             'allActions' => AdaptiveAction::all(),
@@ -64,14 +61,17 @@ final class AdaptiveRuleController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'code'            => 'required|string|unique:adaptive_rules,code',
-            'name'            => 'required|string|max:255',
-            'domain'          => 'required|string',
-            'priority'        => 'required|integer',
-            'action_id'       => 'required|exists:adaptive_actions,id',
-            'required_facts'  => 'nullable|array',
-            'forbidden_facts' => 'nullable|array',
-            'is_active'       => 'boolean',
+            'id'                  => 'required|string|unique:adaptive_rules,id',
+            'name'                => 'required|string|max:255',
+            'domain'              => 'required|string',
+            'priority'            => 'required|integer',
+            'action_ids'          => 'nullable|array',
+            'action_ids.*'        => 'exists:adaptive_actions,id',
+            'required_fact_ids'   => 'nullable|array',
+            'required_fact_ids.*' => 'exists:adaptive_facts,id',
+            'deduced_fact_ids'    => 'nullable|array',
+            'deduced_fact_ids.*'  => 'exists:adaptive_facts,id',
+            'is_active'           => 'boolean',
         ]);
 
         AdaptiveRule::create($validated);
@@ -82,14 +82,17 @@ final class AdaptiveRuleController extends Controller
     public function update(Request $request, AdaptiveRule $adaptive_rule): RedirectResponse
     {
         $validated = $request->validate([
-            'code'            => 'required|string|unique:adaptive_rules,code,' . $adaptive_rule->id,
-            'name'            => 'required|string|max:255',
-            'domain'          => 'required|string',
-            'priority'        => 'required|integer',
-            'action_id'       => 'required|exists:adaptive_actions,id',
-            'required_facts'  => 'nullable|array',
-            'forbidden_facts' => 'nullable|array',
-            'is_active'       => 'boolean',
+            'id'                  => 'required|string|unique:adaptive_rules,id,' . $adaptive_rule->id,
+            'name'                => 'required|string|max:255',
+            'domain'              => 'required|string',
+            'priority'            => 'required|integer',
+            'action_ids'          => 'nullable|array',
+            'action_ids.*'        => 'exists:adaptive_actions,id',
+            'required_fact_ids'   => 'nullable|array',
+            'required_fact_ids.*' => 'exists:adaptive_facts,id',
+            'deduced_fact_ids'    => 'nullable|array',
+            'deduced_fact_ids.*'  => 'exists:adaptive_facts,id',
+            'is_active'           => 'boolean',
         ]);
 
         $adaptive_rule->update($validated);
@@ -106,7 +109,7 @@ final class AdaptiveRuleController extends Controller
 
     private function getRulesByDomain(): array
     {
-        $rules = AdaptiveRule::with('action')->ordered()->get();
+        $rules = AdaptiveRule::ordered()->get();
 
         // Group by domain from DB
         $grouped = $rules->groupBy('domain');
@@ -117,18 +120,14 @@ final class AdaptiveRuleController extends Controller
                 'domain' => $domainName ?? 'Uncategorized',
                 'count'  => $ruleList->count(),
                 'rules'  => $ruleList->map(fn ($rule) => [
-                    'id'              => $rule->code,
-                    'real_id'         => $rule->id,
-                    'code'            => $rule->code,
-                    'name'            => $rule->name,
-                    'domain'          => $rule->domain,
-                    'priority'        => $rule->priority,
-                    'action'          => $rule->action?->code ?? 'H00',
-                    'action_id'       => $rule->action_id,
-                    'required_facts'  => $rule->required_facts,
-                    'forbidden_facts' => $rule->forbidden_facts,
-                    'deduced_facts'   => $rule->deduced_facts,
-                    'is_active'       => $rule->is_active,
+                    'id'                => $rule->id,
+                    'name'              => $rule->name,
+                    'domain'            => $rule->domain,
+                    'priority'          => $rule->priority,
+                    'action_ids'        => $rule->action_ids,
+                    'required_fact_ids' => $rule->required_fact_ids,
+                    'deduced_fact_ids'  => $rule->deduced_fact_ids,
+                    'is_active'         => $rule->is_active,
                 ]),
             ];
         }
@@ -178,9 +177,9 @@ final class AdaptiveRuleController extends Controller
             ->get()
             ->map(fn ($log) => [
                 'id'             => $log->id,
-                'rule_id'        => $log->code,
-                'rule_name'      => AdaptiveRule::where('code', $log->code)->value('name') ?? $log->code,
-                'action'         => $log->action_code,
+                'rule_id'        => $log->rule_id,
+                'rule_name'      => AdaptiveRule::where('id', $log->rule_id)->value('name') ?? $log->rule_id,
+                'action'         => $log->action_id,
                 'user_name'      => $log->user->name                          ?? 'System',
                 'material_title' => $log->execution_context['material_title'] ?? 'General',
                 'created_at'     => $log->created_at->diffForHumans(),
@@ -198,15 +197,15 @@ final class AdaptiveRuleController extends Controller
             return [];
         }
 
-        return AdaptiveExecutionLog::select('code', \DB::raw('count(*) as count'))
-            ->groupBy('code')
+        return AdaptiveExecutionLog::select('rule_id', \DB::raw('count(*) as count'))
+            ->groupBy('rule_id')
             ->orderByDesc('count')
             ->get()
             ->map(function ($stat) use ($totalLogs) {
-                $rule = AdaptiveRule::where('code', $stat->code)->first();
+                $rule = AdaptiveRule::where('id', $stat->rule_id)->first();
 
                 return [
-                    'rule_id'       => $stat->code,
+                    'rule_id'       => $stat->rule_id,
                     'rule_name'     => $rule?->name ?? 'Legacy Rule',
                     'trigger_count' => $stat->count,
                     'percentage'    => round(($stat->count / $totalLogs) * 100, 1),
@@ -233,7 +232,7 @@ final class AdaptiveRuleController extends Controller
                     'name'        => $rule['name'],
                     'type'        => 'rule',
                     'is_terminal' => true,
-                    'action_code' => $rule['action'],
+                    'action_id'   => $rule['action_ids'][0] ?? 'H00',
                     'priority'    => $rule['priority'],
                     'children'    => [],
                 ];

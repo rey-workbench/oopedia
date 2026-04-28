@@ -7,7 +7,6 @@ namespace App\Providers;
 use App\Contracts\Services\AdaptiveEngineServiceInterface;
 use App\Contracts\Services\AdminDashboardServiceInterface;
 use App\Contracts\Services\DashboardServiceInterface;
-use App\Contracts\Services\FactGatheringServiceInterface;
 use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\LeaderboardServiceInterface;
 use App\Contracts\Services\MaterialServiceInterface;
@@ -19,7 +18,6 @@ use App\Contracts\Services\SusResultServiceInterface;
 use App\Contracts\Services\UeqSurveyServiceInterface;
 use App\Contracts\Services\UserServiceInterface;
 use App\Services\Adaptive\AdaptiveEngineService;
-use App\Services\Adaptive\FactGatheringService;
 use App\Services\Analytics\AdminDashboardService;
 use App\Services\Analytics\DashboardService;
 use App\Services\Analytics\LeaderboardService;
@@ -60,6 +58,5 @@ final class ServiceServiceProvider extends ServiceProvider
 
         // Adaptive Engine Core
         $this->app->bind(AdaptiveEngineServiceInterface::class, AdaptiveEngineService::class);
-        $this->app->bind(FactGatheringServiceInterface::class, FactGatheringService::class);
     }
 }

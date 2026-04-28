@@ -10,9 +10,9 @@
     import { untrack } from 'svelte';
     import { QuestionEditState } from '@/states/Admin/QuestionState.svelte';
 
-    let { materials = [], material = null, subMaterials = [], question } = $props();
+    let { materials = [], material = null, question } = $props();
 
-    const state = untrack(() => new QuestionEditState(question, subMaterials));
+    const state = untrack(() => new QuestionEditState(question));
     const form = state.form;
 
     const typeOptions = [
@@ -219,23 +219,10 @@
                                             value: m.id,
                                             label: m.title,
                                         }))}
-                                        onchange={() => state.handleMaterialChange()}
+                                        error={form.errors && form.errors['material_id']}
                                     />
                                 </div>
 
-                                {#if state.availableSubMaterials.length > 0}
-                                    <div class="space-y-2">
-                                        <Select
-                                            bind:value={form.sub_material_id}
-                                            label="Sub-Materi"
-                                            placeholder="PILIH SUB MATERI"
-                                            options={state.availableSubMaterials.map((s) => ({
-                                                value: s.id,
-                                                label: s.title,
-                                            }))}
-                                        />
-                                    </div>
-                                {/if}
 
                                 <div class="space-y-2">
                                     <span

@@ -32,11 +32,6 @@ final class Material extends Model
         ];
     }
 
-    public function subMaterials(): HasMany
-    {
-        return $this->hasMany(SubMaterial::class)->ordered();
-    }
-
     public function questions(): HasMany
     {
         return $this->hasMany(Question::class);
@@ -50,33 +45,5 @@ final class Material extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public function getNextMaterial(): ?self
-    {
-        return self::where(function ($query) {
-            $query->where('created_at', '>', $this->created_at)
-                ->orWhere(function ($q) {
-                    $q->where('created_at', '=', $this->created_at)
-                        ->where('id', '>', $this->id);
-                });
-        })
-            ->orderBy('created_at', 'asc')
-            ->orderBy('id', 'asc')
-            ->first();
-    }
-
-    public function getPreviousMaterial(): ?self
-    {
-        return self::where(function ($query) {
-            $query->where('created_at', '<', $this->created_at)
-                ->orWhere(function ($q) {
-                    $q->where('created_at', '=', $this->created_at)
-                        ->where('id', '<', $this->id);
-                });
-        })
-            ->orderBy('created_at', 'desc')
-            ->orderBy('id', 'desc')
-            ->first();
     }
 }

@@ -37,7 +37,6 @@ interface QuizServiceInterface
         string $userId,
         bool $isGuest,
         array $guestProgress = [],
-        ?string $subMaterialId = null,
         ?QuestionDifficulty $targetDifficulty = null,
     ): array;
 

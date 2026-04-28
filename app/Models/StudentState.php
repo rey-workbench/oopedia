@@ -21,19 +21,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $max_streak
  * @property array<int, string> $badges
  *
- * Learning Profile
- * @property string $learning_style
- * @property array<int, string> $unlocked_modules
- * @property array<string, string> $certifications
- * @property array<string, int> $time_distribution
- *
- * Performance
+ * Performance (Diagnostic Input)
  * @property int $total_answered
  * @property int $correct_count
- * @property int $wrong_count
- * @property int $wrong_streak
+ * @property float $accuracy
  * @property int $hints_used
  * @property int $hints_available
+ *
+ * Adaptive Engine State
+ * @property array $session_history
+ * @property array $current_session
+ * @property array $performance_metrics
+ * @property array $adaptive_state
  *
  * Navigation
  * @property string|null $current_material_id
@@ -53,11 +52,11 @@ final class StudentState extends Model
         'user_id',
         // Gamification
         'xp', 'level', 'streak', 'max_streak', 'badges',
-        // Learning profile
-        'learning_style', 'unlocked_modules', 'certifications', 'time_distribution',
         // Performance
-        'total_answered', 'correct_count', 'wrong_count', 'wrong_streak',
+        'total_answered', 'correct_count', 'accuracy',
         'hints_used', 'hints_available',
+        // Adaptive Engine
+        'session_history', 'current_session', 'performance_metrics', 'adaptive_state',
         // Navigation
         'current_material_id', 'target_difficulty',
         // Meta
@@ -67,20 +66,20 @@ final class StudentState extends Model
     protected function casts(): array
     {
         return [
-            'xp'                 => 'integer',
-            'streak'             => 'integer',
-            'max_streak'         => 'integer',
-            'hints_used'         => 'integer',
-            'hints_available'    => 'integer',
-            'total_answered'     => 'integer',
-            'correct_count'      => 'integer',
-            'wrong_count'        => 'integer',
-            'wrong_streak'       => 'integer',
-            'badges'             => 'array',
-            'unlocked_modules'   => 'array',
-            'certifications'     => 'array',
-            'time_distribution'  => 'array',
-            'last_active_at'     => 'datetime',
+            'xp'                  => 'integer',
+            'streak'              => 'integer',
+            'max_streak'          => 'integer',
+            'hints_used'          => 'integer',
+            'hints_available'     => 'integer',
+            'total_answered'      => 'integer',
+            'correct_count'       => 'integer',
+            'accuracy'            => 'float',
+            'badges'              => 'array',
+            'session_history'     => 'array',
+            'current_session'     => 'array',
+            'performance_metrics' => 'array',
+            'adaptive_state'      => 'array',
+            'last_active_at'      => 'datetime',
         ];
     }
 

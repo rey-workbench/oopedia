@@ -24,7 +24,6 @@ interface QuestionRepositoryInterface
     public function getByMaterialAndDifficulty(
         string $materialId,
         ?string $difficulty = null,
-        ?string $subMaterialId = null,
     ): Collection;
 
     public function getFilteredQuestions(
@@ -32,8 +31,6 @@ interface QuestionRepositoryInterface
         ?string $difficulty = null,
         ?string $materialId = null,
     ): LengthAwarePaginator;
-
-    public function countByMaterial(string $materialId): int;
 
     public function countByMaterialAndDifficulty(string $materialId, QuestionDifficulty $difficulty): int;
 }

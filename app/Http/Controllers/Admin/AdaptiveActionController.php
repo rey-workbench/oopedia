@@ -28,7 +28,7 @@ final class AdaptiveActionController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'code'         => 'required|string|unique:adaptive_actions,code',
+            'id'           => 'required|string|unique:adaptive_actions,id',
             'name'         => 'required|string|max:255',
             'description'  => 'required|string',
             'variant'      => 'nullable|string',

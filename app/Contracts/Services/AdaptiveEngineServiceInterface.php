@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Contracts\Services;
 
 interface AdaptiveEngineServiceInterface
 {
-    public function evaluate(array $facts, array $currentState, array $context): array;
-
-    public function getAllRules(): array;
-
-    public function getRuleById(string $ruleId): mixed;
+    /**
+     * Evaluate the student state and return the recommended action.
+     *
+     * @param array $state Current student state
+     * @return array [recommendation, actions, diagnostic_data]
+     */
+    public function evaluate(array $state): array;
 }

@@ -11,7 +11,6 @@ export type {
 export type { Role } from './role';
 export type { User } from './user';
 export type { Material } from './material';
-export type { SubMaterial } from './submaterial';
 export type { Media } from './media';
 export type { Question } from './question';
 export type { Answer } from './answer';

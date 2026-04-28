@@ -11,9 +11,9 @@
     import { untrack } from 'svelte';
     import { QuestionFormState } from '@/states/Admin/QuestionState.svelte';
 
-    let { materials = [], material = null, subMaterials = [] } = $props();
+    let { materials = [], material = null } = $props();
 
-    const state = untrack(() => new QuestionFormState(materials, material, subMaterials, null));
+    const state = untrack(() => new QuestionFormState(materials, material, null));
 
     const typeOptions = [
         { value: 'radio_button', label: 'Radio Button' },
@@ -225,20 +225,8 @@
                                         label: m.title,
                                     }))}
                                     error={state.form.errors['material_id']}
-                                    onchange={() => state.handleMaterialChange()}
                                 />
 
-                                <!-- Unit Spesifik -->
-                                <Select
-                                    bind:value={state.form.sub_material_id}
-                                    label="Unit Spesifik (Opsional)"
-                                    placeholder="TAG UNIT TERKAIT"
-                                    options={state.availableSubMaterials.map((sm) => ({
-                                        value: sm.id,
-                                        label: sm.title,
-                                    }))}
-                                    disabled={!state.form.material_id}
-                                />
 
                                 <!-- Tipe Algoritma -->
                                 <div id="algorithm-type-selector" class="space-y-2">

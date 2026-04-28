@@ -63,7 +63,7 @@ export const SIDEBAR_STEPS: DriveStep[] = [
         element: '#materials-submenu',
         popover: {
             title: 'Menu Materi',
-            description: 'Daftar sub-materi dengan progress belajar.',
+            description: 'Daftar materi dengan progress belajar.',
             side: 'right',
             align: 'start',
         },

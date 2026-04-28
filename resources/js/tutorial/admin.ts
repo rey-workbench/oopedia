@@ -117,7 +117,7 @@ export function registerAdminTutorials() {
                 popover: {
                     title: 'Daftar Inventaris Materi 📋',
                     description:
-                        'Semua materi Anda terdaftar rapi di sini. Gunakan ikon di kolom aksi untuk mengelola sub-materi, soal latihan, atau mengedit detail materi.',
+                        'Semua materi Anda terdaftar rapi di sini. Gunakan ikon di kolom aksi untuk mengelola soal latihan atau mengedit detail materi.',
                     side: 'top',
                     align: 'center',
                 },
@@ -137,7 +137,7 @@ export function registerAdminTutorials() {
                 popover: {
                     title: 'Hapus Materi 🗑️',
                     description:
-                        'Hati-hati! Tombol ini akan menghapus materi secara permanen beserta semua sub-materi dan soal di dalamnya.',
+                        'Hati-hati! Tombol ini akan menghapus materi secara permanen beserta semua soal di dalamnya.',
                     side: 'left',
                     align: 'center',
                 },
@@ -182,62 +182,6 @@ export function registerAdminTutorials() {
         ],
     });
 
-    // 2.2 Admin Submaterials Tutorial
-    tutorialState.registerSteps({
-        tourId: 'admin_submaterials',
-        steps: [
-            {
-                element: '#page-header',
-                popover: {
-                    title: 'Dekonstruksi Pembelajaran 🧱',
-                    description:
-                        'Materi besar dibagi menjadi unit-unit kecil yang mudah dicerna. Di sinilah Anda mengatur alur belajarnya.',
-                    side: 'bottom',
-                    align: 'start',
-                },
-            },
-            {
-                element: '#add-submaterial-btn',
-                popover: {
-                    title: 'Tambah Unit Baru 🔨',
-                    description:
-                        'Tambah potongan puzzle pembelajaran lainnya untuk melengkapi modul utama.',
-                    side: 'left',
-                    align: 'center',
-                },
-            },
-            {
-                element: '#submaterial-hierarchy-table',
-                popover: {
-                    title: 'Visualisasi Hierarki 🗺️',
-                    description:
-                        'Lihat urutan unit pembelajaran. Mahasiswa akan mengikuti alur ini secara berurutan sesuai level yang Anda tentukan.',
-                    side: 'top',
-                    align: 'center',
-                },
-            },
-            {
-                element: '#btn-edit-submaterial',
-                popover: {
-                    title: 'Edit Unit ✏️',
-                    description:
-                        'Sesuaikan konten, tipe belajar sasaran, atau prasyarat logika dari sub-materi ini.',
-                    side: 'left',
-                    align: 'center',
-                },
-            },
-            {
-                element: '#btn-delete-submaterial',
-                popover: {
-                    title: 'Hapus Unit 🗑️',
-                    description:
-                        'Singkirkan unit ini jika dirasa tidak relevan lagi. Pastikan alur materi utama tidak terputus!',
-                    side: 'left',
-                    align: 'center',
-                },
-            },
-        ],
-    });
 
     // 3. Admin Questions Tutorial
     tutorialState.registerSteps({
@@ -789,62 +733,6 @@ export function registerAdminTutorials() {
         ],
     });
 
-    // 2.3 Sub-material Editor Tutorial
-    tutorialState.registerSteps({
-        tourId: 'admin_submaterial_editor',
-        steps: [
-            {
-                element: '#submaterial-title-input',
-                popover: {
-                    title: 'Identitas Unit 🏁',
-                    description:
-                        'Berikan nama yang spesifik untuk unit pembelajaran ini. Judul yang bagus memberikan konteks instan bagi mahasiswa.',
-                    side: 'bottom',
-                    align: 'start',
-                },
-            },
-            {
-                element: '#submaterial-order-input',
-                popover: {
-                    title: 'Sekuens Belajar 🔢',
-                    description:
-                        'Tentukan urutan tampil unit ini. Pastikan alur materi mengalir secara logis dari yang termudah hingga yang tersulit.',
-                    side: 'bottom',
-                    align: 'center',
-                },
-            },
-            {
-                element: '#submaterial-type-selector',
-                popover: {
-                    title: 'Klasifikasi Konten 🏷️',
-                    description:
-                        'Apakah ini Teori, Sintaks, atau Mixed? Klasifikasi yang tepat membantu mahasiswa memetakan jenis pengetahuan yang sedang dipelajari.',
-                    side: 'right',
-                    align: 'center',
-                },
-            },
-            {
-                element: '#submaterial-content-editor',
-                popover: {
-                    title: 'Pusat Pengetahuan ✍️',
-                    description:
-                        'Tuangkan seluruh ilmu di sini! Gunakan editor visual untuk menambahkan format teks, script code, atau kutipan penting.',
-                    side: 'top',
-                    align: 'center',
-                },
-            },
-            {
-                element: '#submaterial-save-btn',
-                popover: {
-                    title: 'Publikasi Unit 🚀',
-                    description:
-                        'Simpan dan rilis unit ini! Unit yang baru disimpan akan segera muncul dalam hierarki belajar mahasiswa.',
-                    side: 'top',
-                    align: 'center',
-                },
-            },
-        ],
-    });
 
     // 6.2 Admin MSLQ Analitik Tutorial
     tutorialState.registerSteps({

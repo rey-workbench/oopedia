@@ -9,7 +9,6 @@ use App\Http\Controllers\Admin\MaterialController as AdminMaterialController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\MslqController;
 use App\Http\Controllers\Admin\QuestionController as AdminQuestionController;
-use App\Http\Controllers\Admin\SubMaterialController;
 use App\Http\Controllers\Admin\SusSurveyController as AdminSusSurveyController;
 use App\Http\Controllers\Admin\UeqSurveyController;
 use Illuminate\Support\Facades\Route;
@@ -34,8 +33,6 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
         // Materials & Sub-materials
         Route::resource('materials', AdminMaterialController::class);
-        Route::get('materials/{material}/submaterials/json', [SubMaterialController::class, 'getJson'])->name('materials.submaterials.json');
-        Route::resource('materials.submaterials', SubMaterialController::class);
 
         // Questions
         Route::resource('questions', AdminQuestionController::class);

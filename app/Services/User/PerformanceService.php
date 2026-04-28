@@ -4,14 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services\User;
 
-use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\StudentStateRepositoryInterface;
-use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
-use App\Enums\Lms\ContentCategory;
-use App\Enums\Lms\LearningStyle;
 use App\Enums\Lms\QuestionDifficulty;
-use App\Enums\Lms\StudentLevel;
 use App\Models\StudentState;
 use App\Rules\Adaptive\Constants\PedagogicalConstants;
 use App\Rules\Adaptive\Constants\StudentStateSchema;
@@ -19,144 +14,153 @@ use App\Rules\Adaptive\Constants\StudentStateSchema;
 final class PerformanceService implements PerformanceServiceInterface
 {
     public function __construct(
-        public readonly ProgressRepositoryInterface $progressRepo,
-        public readonly StudentStateRepositoryInterface $studentStateRepo,
-        public readonly GuestProgressServiceInterface $guestProgressService,
+        private readonly StudentStateRepositoryInterface $studentStateRepo,
     ) {}
 
     public function getStudentState(string $userId): StudentState
     {
-        if ($userId === 'guest') {
-            return $this->guestProgressService->getStudentState();
-        }
-
         return $this->studentStateRepo->findOrCreate($userId);
     }
 
-    public function updateLearningStyleFromInteraction(string $userId, ContentCategory $questionType, int $timeSpent): LearningStyle
-    {
+    public function updateMetricsFromInteraction(
+        string $userId,
+        bool $isCorrect,
+        int $timeSpent,
+        QuestionDifficulty $difficulty,
+        bool $usedHint,
+    ): StudentState {
         $state = $this->getStudentState($userId);
 
-        $distribution = $state->time_distribution ?? [];
-        if (empty($distribution)) {
-            $distribution = [
-                LearningStyle::VISUAL->value  => 0,
-                LearningStyle::TEXTUAL->value => 0,
+        $currentSession = $state->current_session     ?? StudentStateSchema::defaults()[StudentStateSchema::CURRENT_SESSION];
+        $metrics        = $state->performance_metrics ?? StudentStateSchema::defaults()[StudentStateSchema::PERFORMANCE_METRICS];
+
+        // 1. Update Session Counts
+        $currentSession['total']++;
+        if ($isCorrect) {
+            $currentSession['correct']++;
+        }
+        if ($usedHint) {
+            $currentSession['hints']++;
+        }
+        $currentSession['time_spent'] += $timeSpent;
+
+        // 2. Calculate Current Accuracy
+        $accuracy = ($currentSession['correct'] / $currentSession['total']) * 100;
+
+        // 3. Speed Analysis (vs Baseline)
+        $baseline = PedagogicalConstants::BASELINE_TIME[$difficulty->value] ?? 30;
+        $speed    = 'normal';
+        if ($timeSpent > ($baseline * 2)) {
+            $speed = 'slow';
+        } elseif ($timeSpent < ($baseline / 2)) {
+            $speed = 'fast';
+        }
+        $metrics['speed'] = $speed;
+
+        // 4. Session Buffer Logic (Every 5 questions, record session and reset)
+        $sessionHistory = $state->session_history ?? [0, 0, 0];
+        if ($currentSession['total'] >= 5) {
+            $sessionAccuracy = ($currentSession['correct'] / $currentSession['total']) * 100;
+
+            // Update History (Slide)
+            $sessionHistory[] = $sessionAccuracy;
+            if (count($sessionHistory) > 5) {
+                array_shift($sessionHistory);
+            }
+
+            // Trend Analysis (Last 3 sessions)
+            $metrics['trend'] = $this->calculateTrend($sessionHistory);
+
+            // Stagnancy Detection (Boredom Diagnosis)
+            $metrics['stagnant_count'] = $this->calculateStagnantCount($sessionHistory);
+
+            // Reset current session
+            $currentSession = [
+                'correct'    => 0,
+                'total'      => 0,
+                'hints'      => 0,
+                'time_spent' => 0,
             ];
         }
 
-        $category = $questionType->value === ContentCategory::SINTAKS->value
-            ? LearningStyle::VISUAL->value
-            : LearningStyle::TEXTUAL->value;
-        $distribution[$category] = ($distribution[$category] ?? 0) + $timeSpent;
+        // 5. Daily Streak Logic
+        $today = now()->startOfDay();
+        $lastActive = $state->last_active_at ? \Illuminate\Support\Carbon::parse($state->last_active_at)->startOfDay() : null;
 
-        $visualTime  = $distribution[LearningStyle::VISUAL->value]  ?? 0;
-        $textualTime = $distribution[LearningStyle::TEXTUAL->value] ?? 0;
-        $totalTime   = $visualTime + $textualTime;
+        $newStreak = $state->streak ?? 0;
+        $maxStreak = $state->max_streak ?? 0;
 
-        if ($totalTime === 0) {
-            $newStyle = LearningStyle::VISUAL->value;
-        } else {
-            $diff     = abs($visualTime - $textualTime) / $totalTime;
-            $newStyle = $diff < PedagogicalConstants::RATIO_STYLE_MIXED
-                ? LearningStyle::MIXED->value
-                : ($visualTime > $textualTime ? LearningStyle::VISUAL->value : LearningStyle::TEXTUAL->value);
+        if (!$lastActive) {
+            $newStreak = 1;
+            $maxStreak = 1;
+        } elseif ($lastActive->equalTo($today->copy()->subDay())) {
+            $newStreak += 1;
+            $maxStreak = max($newStreak, $maxStreak);
+        } elseif ($lastActive->lessThan($today->copy()->subDay())) {
+            $newStreak = 1;
         }
+        // Jika hari yang sama, streak tetap dipertahankan
 
-        $this->studentStateRepo->update($userId, [
-            StudentStateSchema::TIME_DISTRIBUTION => $distribution,
-            StudentStateSchema::LEARNING_STYLE    => $newStyle,
-        ]);
-
-        return match ($newStyle) {
-            LearningStyle::VISUAL->value  => LearningStyle::VISUAL,
-            LearningStyle::TEXTUAL->value => LearningStyle::TEXTUAL,
-            default                       => LearningStyle::MIXED,
-        };
-    }
-
-    public function calculateAverageTimeSpent(string $userId, string $materialId): float
-    {
-        $attempts = $this->progressRepo->getByUserAndMaterial($userId, $materialId);
-
-        if ($attempts->isEmpty()) {
-            return 0;
-        }
-
-        $totalTime = 0;
-        $count     = 0;
-
-        foreach ($attempts as $attempt) {
-            if ($attempt->time_spent > 0) {
-                $totalTime += $attempt->time_spent;
-                $count++;
-            }
-        }
-
-        return $count > 0 ? round($totalTime / $count, 2) : 0;
-    }
-
-    public function calculateTotalTimeSpent(string $userId, string $materialId): float
-    {
-        $attempts = $this->progressRepo->getByUserAndMaterial($userId, $materialId);
-
-        $totalSeconds = 0;
-        foreach ($attempts as $attempt) {
-            if ($attempt->time_spent > 0) {
-                $totalSeconds += $attempt->time_spent;
-            }
-        }
-
-        return round($totalSeconds / 60, 2);
-    }
-
-    public function calculateScore(
-        bool $isCorrect,
-        bool $usedHint,
-        int $timeSpent,
-        QuestionDifficulty $difficulty,
-    ): int {
-        if (! $isCorrect) {
-            return 0;
-        }
-
-        $diffKey = $difficulty->value;
-        $rewards = PedagogicalConstants::SCORE_REWARDS;
-        $score   = $rewards['base'];
-
-        $score += $rewards['difficulty_bonus'][$diffKey]                   ?? 0;
-        $allocatedTime = PedagogicalConstants::ALLOCATED_TIME[$diffKey]    ?? 60;
-        if ($timeSpent > 0 && $timeSpent < ($allocatedTime / 2)) {
-            $score += $rewards['time_bonus'];
-        }
-
-        if ($usedHint) {
-            $score -= $rewards['hint_penalty'];
-        }
-
-        return max(0, min(100, $score));
-    }
-
-    /** Reset navigation, streak, and wrong_streak when student switches material */
-    public function resetMaterialMetrics(string $userId, ?string $newMaterialId = null): StudentState
-    {
+        // 6. Persistence
         return $this->studentStateRepo->update($userId, [
-            StudentStateSchema::CURRENT_STREAK      => 0, // Per-module streak isolation
-            StudentStateSchema::WRONG_STREAK        => 0,
-            StudentStateSchema::TARGET_DIFFICULTY   => null,
-            StudentStateSchema::CURRENT_MATERIAL_ID => $newMaterialId,
+            StudentStateSchema::ACCURACY            => $accuracy,
+            StudentStateSchema::CURRENT_SESSION     => $currentSession,
+            StudentStateSchema::SESSION_HISTORY     => $sessionHistory,
+            StudentStateSchema::PERFORMANCE_METRICS => $metrics,
+            StudentStateSchema::STREAK              => $newStreak,
+            StudentStateSchema::MAX_STREAK          => $maxStreak,
+            'last_active_at'                        => now(),
         ]);
     }
 
-    public function syncMaterialContext(string $userId, string $materialId): StudentState
+    private function calculateTrend(array $history): string
     {
-        $state = $this->getStudentState($userId);
-
-        if ((string) $state->current_material_id !== (string) $materialId) {
-            return $this->resetMaterialMetrics($userId, $materialId);
+        if (count($history) < 3) {
+            return 'stable';
         }
 
-        return $state;
+        $n      = count($history);
+        $sesiN  = $history[$n - 1];
+        $sesiN1 = $history[$n - 2];
+        $sesiN2 = $history[$n - 3];
+
+        $delta1 = $sesiN1 - $sesiN2;
+        $delta2 = $sesiN  - $sesiN1;
+        $margin = PedagogicalConstants::TREND_MARGIN;
+
+        if ($delta1 > $margin && $delta2 > $margin) {
+            return 'up';
+        }
+        if ($delta1 < -$margin && $delta2 < -$margin) {
+            return 'down';
+        }
+
+        return 'stable';
+    }
+
+    private function calculateStagnantCount(array $history): int
+    {
+        if (count($history) < 2) {
+            return 0;
+        }
+
+        $stagnantCount = 0;
+        $margin = PedagogicalConstants::TREND_MARGIN;
+
+        // Loop dari sesi terbaru (belakang) ke sesi terlama (depan)
+        for ($i = count($history) - 1; $i > 0; $i--) {
+            $selisih = $history[$i] - $history[$i - 1];
+            
+            // if -5% <= selisih <= +5%
+            if ($selisih >= -$margin && $selisih <= $margin) {
+                $stagnantCount++;
+            } else {
+                // Pola stagnan terputus
+                break;
+            }
+        }
+
+        return $stagnantCount;
     }
 
     public function getStudentSessionState(string $userId): array
@@ -164,22 +168,52 @@ final class PerformanceService implements PerformanceServiceInterface
         $state = $this->getStudentState($userId);
 
         return [
-            'gamification' => [
-                'global_xp'      => $state->xp,
-                'current_level'  => $state->level ?? StudentLevel::PEMULA->value,
-                'current_streak' => $state->streak,
-                'max_streak'     => $state->max_streak,
-            ],
-            'performance' => [
-                'total_questions_answered' => $state->total_answered,
-                'correct_count'            => $state->correct_count,
-                'wrong_count'              => $state->wrong_count,
-                'hints_available'          => $state->hints_available,
-            ],
-            'adaptive' => [
-                'fast_track_active' => $state->fast_track_active ?? false,
-                'learning_style'    => $state->learning_style    ?? LearningStyle::MIXED->value,
-            ],
+            'accuracy'            => round($state->accuracy, 2),
+            'xp'                  => $state->xp,
+            'streak'              => $state->streak,
+            'hints_available'     => $state->hints_available,
+            'target_difficulty'   => $state->target_difficulty,
+            'adaptive_state'      => $state->adaptive_state      ?? [],
+            'performance_metrics' => $state->performance_metrics ?? [],
         ];
+    }
+
+    public function syncMaterialContext(string $userId, string $materialId): StudentState
+    {
+        $state                      = $this->getStudentState($userId);
+        $state->current_material_id = $materialId;
+        $state->save();
+
+        return $state;
+    }
+
+    public function calculateScore(bool $isCorrect, bool $usedHint, int $timeSpent, QuestionDifficulty|string $difficulty): int
+    {
+        if (! $isCorrect) {
+            return 0;
+        }
+
+        $baseScore = 10;
+
+        $difficultyValue = $difficulty instanceof QuestionDifficulty ? $difficulty->value : $difficulty;
+        $multiplier      = match ($difficultyValue) {
+            'medium' => 1.5,
+            'hard'   => 2.0,
+            default  => 1.0,
+        };
+
+        $score = $baseScore * $multiplier;
+
+        if ($usedHint) {
+            $score -= 2;
+        }
+
+        // Time penalty for taking > 2x baseline
+        $baseline = PedagogicalConstants::BASELINE_TIME[$difficultyValue] ?? 30;
+        if ($timeSpent > ($baseline * 2)) {
+            $score -= 1;
+        }
+
+        return (int) max(5, $score);
     }
 }

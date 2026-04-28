@@ -8,12 +8,14 @@
     import { Star, Flame, Lightbulb, Loader2, CheckCircle2, X } from 'lucide-svelte';
     import { fade, slide } from 'svelte/transition';
     import type { QuestionShowState } from '@/states/Mahasiswa/QuizState.svelte.ts';
+    import { getDifficultyLabel } from '@/utils';
 
     interface Props {
         state: QuestionShowState;
     }
 
     let { state = $bindable() }: Props = $props();
+    let studentState = $derived(state.studentState);
 </script>
 
 <Card variant="none" padding="p-0" class="border-duo-lg overflow-hidden rounded-3xl bg-white">
@@ -40,7 +42,7 @@
                             size="sm"
                             class="border-none font-black"
                         >
-                            {state.getDifficultyLabel(state.difficulty)}
+                            {getDifficultyLabel(state.difficulty)}
                         </Badge>
                     </div>
 
@@ -65,6 +67,7 @@
                     </div>
                 </div>
 
+                {#if (studentState?.adaptive_state?.scaffold_mode !== 'minimal')}
                 <button
                     type="button"
                     id="quiz-hint-btn"
@@ -78,6 +81,7 @@
                     />
                     <span class="text-sm">Hint ({state.hintsAvailable})</span>
                 </button>
+                {/if}
             </div>
         </div>
     {/if}

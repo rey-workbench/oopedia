@@ -3,7 +3,6 @@ import type { QuestionType, DifficultyLevel, Answer, ContentCategory } from './i
 export interface Question {
     id: string;
     material_id: string;
-    sub_material_id: string | null;
     question_text: string;
     question_type: QuestionType;
     type: ContentCategory;

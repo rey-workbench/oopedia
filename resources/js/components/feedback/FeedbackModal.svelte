@@ -17,11 +17,16 @@
             quizState.feedbackData?.adaptiveResult?.triggered_rule?.variant ||
             'Lanjut'
     );
-    let recommendation = $derived(
-        quizState.feedbackData?.adaptiveResult?.new_state?.recommendation || null
+    let diagnosis = $derived(
+        quizState.feedbackData?.adaptiveResult?.diagnosis || null
     );
-    let xpEarned = $derived(quizState.feedbackData?.adaptiveResult?.global_xp_earned || 0);
-    let streakBonus = $derived(quizState.feedbackData?.adaptiveResult?.streak_bonus || null);
+    let recommendations = $derived(
+        quizState.feedbackData?.adaptiveResult?.recommendations || []
+    );
+    let xpEarned = $derived(quizState.feedbackData?.score || 0);
+    let streakBonus = $derived(
+        recommendations.includes('STREAK_BONUS') ? 'Streak Bonus!' : null
+    );
 
     const TICK_MS = 50;
     const AUTO_ADVANCE_MS_SUCCESS = 10000;
@@ -210,24 +215,37 @@
                         </div>
                     </div>
 
-                    <div class="text-center md:text-left">
-                        <h2
-                            id="feedback-status-title"
-                            class={`text-xl font-black tracking-tight ${feedbackTone.title}`}
-                        >
-                            {feedbackTitle}
-                        </h2>
+                        <div class="text-center md:text-left">
+                        <div class="mb-1 flex items-center gap-2">
+                            <h2
+                                id="feedback-status-title"
+                                class={`text-xl font-black tracking-tight ${feedbackTone.title}`}
+                            >
+                                {feedbackTitle}
+                            </h2>
+                            {#if diagnosis}
+                                <span class={`rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-widest bg-white/50 border ${feedbackTone.chipBorder} ${feedbackTone.chipText}`}>
+                                    {diagnosis}
+                                </span>
+                            {/if}
+                        </div>
                         <p class={`mt-0.5 text-sm font-bold ${feedbackTone.body}`}>
                             {quizState.feedbackData.message}
                         </p>
 
-                        {#if recommendation}
-                            <p
-                                class={`mx-auto mt-1.5 flex w-fit items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-black shadow-sm md:mx-0 ${feedbackTone.chipBorder} ${feedbackTone.chipText}`}
-                            >
-                                <TrendingUp size={12} />
-                                {recommendation}
-                            </p>
+                        {#if recommendations.length > 0}
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                {#each recommendations as rec}
+                                    {#if rec !== 'STREAK_BONUS'}
+                                        <p
+                                            class={`flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-black shadow-sm ${feedbackTone.chipBorder} ${feedbackTone.chipText}`}
+                                        >
+                                            <TrendingUp size={12} />
+                                            {rec.replace('_', ' ')}
+                                        </p>
+                                    {/if}
+                                {/each}
+                            </div>
                         {/if}
                     </div>
                 </div>
@@ -244,12 +262,12 @@
                         </div>
                     {/if}
 
-                    {#if streakBonus}
+                    {#if recommendations.includes('STREAK_BONUS')}
                         <div
                             class="flex items-center gap-2 rounded-xl border-2 border-white bg-white/80 px-3 py-1.5 shadow-sm"
                         >
                             <TrendingUp size={16} class="text-orange-500" />
-                            <span class="text-xs font-black text-orange-600">{streakBonus}</span>
+                            <span class="text-xs font-black text-orange-600">Streak Bonus!</span>
                         </div>
                     {/if}
                 </div>

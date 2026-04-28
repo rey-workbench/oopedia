@@ -50,4 +50,3 @@ parameters:
         # Properties injected via constructor are sometimes used only in subclasses
         # or lazy-evaluated contexts that PHPStan cannot see.
         - identifier: shipmonk.deadEnumCase
-        - identifier: shipmonk.deadProperty.neverWritten

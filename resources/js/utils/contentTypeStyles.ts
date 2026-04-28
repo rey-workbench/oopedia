@@ -45,39 +45,3 @@ export function getBadgeLabel(type: ContentType): string {
     return type === 'sintaks' ? 'Sintaks' : 'Teori';
 }
 
-// ── Additional helpers used in SubMaterials/Show ─────────────
-
-/**
- * Light background for sub-material cards.
- */
-export function getSubMaterialBg(type: ContentType): string {
-    return type === 'sintaks' ? 'bg-emerald-50' : 'bg-primary-50';
-}
-
-/**
- * Text color for sub-material cards.
- */
-export function getSubMaterialText(type: ContentType): string {
-    return type === 'sintaks' ? 'text-emerald-600' : 'text-primary-600';
-}
-
-/**
- * Hover border color for sub-material navigation links.
- */
-export function getHoverBorderClass(type: ContentType): string {
-    return type === 'sintaks' ? 'hover:border-emerald-500' : 'hover:border-primary-500';
-}
-
-/**
- * Border color for content sections.
- */
-export function getBorderClass(type: ContentType): string {
-    return type === 'sintaks' ? 'border-emerald-100' : 'border-primary-100';
-}
-
-/**
- * Shadow color for sub-material call-to-action buttons.
- */
-export function getCtaShadowClass(type: ContentType): string {
-    return type === 'sintaks' ? 'shadow-emerald-500/20' : 'shadow-primary-500/20';
-}

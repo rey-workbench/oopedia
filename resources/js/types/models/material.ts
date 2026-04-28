@@ -1,4 +1,4 @@
-import type { SubMaterial, Question, Media, User } from './index';
+import type { Question, Media, User } from './index';
 
 export interface Material {
     id: string;
@@ -15,7 +15,6 @@ export interface Material {
     created_by: string | null;
     created_at: string;
     updated_at: string;
-    sub_materials?: SubMaterial[];
     questions?: Question[];
     media?: Media[];
     creator?: User;

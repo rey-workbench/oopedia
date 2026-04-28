@@ -46,7 +46,6 @@ class AccessControl
             $allowedRoutes = [
                 'mahasiswa.materials.index',
                 'mahasiswa.materials.show',
-                'mahasiswa.submaterials.show',
                 'mahasiswa.materials.questions.index',
                 'mahasiswa.materials.questions.show',
                 'mahasiswa.materials.questions.review',

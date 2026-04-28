@@ -5,6 +5,7 @@ import type {
     SusResult,
     AdaptiveFact,
     AdaptiveAction,
+    AdaptiveRule,
 } from '@/types/models';
 import type { SharedProps } from './shared';
 
@@ -111,20 +112,7 @@ export interface AdminUeqDetailProps extends SharedProps {
 
 export type UeqAverages = Record<string, number>;
 
-export interface AdaptiveRule {
-    id: string | number;
-    real_id: number;
-    code: string;
-    name: string;
-    domain: string;
-    priority: number;
-    action: string;
-    action_id: number;
-    required_facts: string[];
-    forbidden_facts: string[] | null;
-    deduced_facts: string[] | null;
-    is_active: boolean;
-}
+// Interface removed as it is now imported from @/types/models
 
 export interface AdaptiveRuleDomain {
     domain: string;

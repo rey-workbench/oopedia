@@ -7,15 +7,12 @@ namespace App\Services\Lms;
 use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\MediaRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
-use App\Contracts\Repositories\SubMaterialRepositoryInterface;
 use App\Contracts\Services\MaterialServiceInterface;
 use App\Exceptions\Domain\MaterialNotFoundException;
 use App\Exceptions\Domain\MediaOperationException;
-use App\Exceptions\Domain\SubMaterialNotFoundException;
 use App\Helpers\ProgressHelper;
 use App\Models\Material;
 use App\Models\StudentState;
-use App\Models\SubMaterial;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
@@ -26,7 +23,6 @@ final class MaterialService implements MaterialServiceInterface
         private readonly MaterialRepositoryInterface $materialRepo,
         private readonly MediaRepositoryInterface $mediaRepo,
         private readonly ProgressRepositoryInterface $progressRepo,
-        private readonly SubMaterialRepositoryInterface $subMaterialRepo,
     ) {}
 
     // =========================================================================
@@ -272,72 +268,9 @@ final class MaterialService implements MaterialServiceInterface
         ];
     }
 
-    public function getSubMaterialDetail(string $materialId, string $subMaterialId, bool $isGuest): array
-    {
-        $material = $this->materialRepo->find($materialId);
-        if (! $material) {
-            throw new MaterialNotFoundException($materialId);
-        }
-
-        $subMaterial = $this->subMaterialRepo->findWithQuestions($subMaterialId);
-        if (! $subMaterial) {
-            throw new SubMaterialNotFoundException($subMaterialId);
-        }
-
-        return [
-            'material'    => $material,
-            'subMaterial' => $subMaterial,
-            'isGuest'     => $isGuest,
-        ];
-    }
-
     public function resetMaterialProgress(string $userId, string $materialId): void
     {
         $this->progressRepo->resetProgress($userId, $materialId);
-    }
-
-    // =========================================================================
-    // SUB-MATERIAL MANAGEMENT
-    // =========================================================================
-
-    public function getSubMaterialsByMaterial(string $materialId): Collection
-    {
-        return $this->subMaterialRepo->findByMaterial($materialId);
-    }
-
-    public function createSubMaterial(string $materialId, array $data): string
-    {
-        $material = $this->materialRepo->find($materialId);
-        if (! $material) {
-            throw new MaterialNotFoundException($materialId);
-        }
-
-        $data['material_id'] = $materialId;
-
-        return $this->subMaterialRepo->create($data)->id;
-    }
-
-    public function updateSubMaterial(string $subMaterialId, array $data): bool
-    {
-        return $this->subMaterialRepo->update($subMaterialId, $data);
-    }
-
-    public function deleteSubMaterial(string $subMaterialId): bool
-    {
-        return $this->subMaterialRepo->delete($subMaterialId);
-    }
-
-    public function getSubMaterialById(string $subMaterialId): ?SubMaterial
-    {
-        return $this->subMaterialRepo->find($subMaterialId);
-    }
-
-    public function getSubMaterialsSimple(string $materialId): array
-    {
-        return $this->subMaterialRepo->findByMaterial($materialId)->map(fn (SubMaterial $sm) => [
-            'id'    => $sm->id,
-            'title' => $sm->title,
-        ])->toArray();
     }
 
     // =========================================================================

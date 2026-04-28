@@ -35,12 +35,39 @@ export const UEQ_ASPECTS = [
  * UEQ Dimensions Mapping
  */
 export const UEQ_DIMENSIONS = {
-    'Daya Tarik': ['annoying_enjoyable', 'good_bad', 'unlikable_pleasing', 'unpleasant_pleasant', 'attractive_unattractive', 'friendly_unfriendly'],
-    'Kejelasan': ['not_understandable_understandable', 'easy_difficult', 'complicated_easy', 'clear_confusing'],
-    'Efisiensi': ['fast_slow', 'inefficient_efficient', 'impractical_practical', 'organized_cluttered'],
-    'Ketepatan': ['unpredictable_predictable', 'secure_not_secure', 'meets_expectations_does_not'],
-    'Stimulasi': ['valuable_inferior', 'boring_exciting', 'not_interesting_interesting', 'motivating_demotivating'],
-    'Kebaruan': ['creative_dull', 'inventive_conventional', 'usual_leading_edge', 'conservative_innovative'],
+    'Daya Tarik': [
+        'annoying_enjoyable',
+        'good_bad',
+        'unlikable_pleasing',
+        'unpleasant_pleasant',
+        'attractive_unattractive',
+        'friendly_unfriendly',
+    ],
+    Kejelasan: [
+        'not_understandable_understandable',
+        'easy_difficult',
+        'complicated_easy',
+        'clear_confusing',
+    ],
+    Efisiensi: [
+        'fast_slow',
+        'inefficient_efficient',
+        'impractical_practical',
+        'organized_cluttered',
+    ],
+    Ketepatan: ['unpredictable_predictable', 'secure_not_secure', 'meets_expectations_does_not'],
+    Stimulasi: [
+        'valuable_inferior',
+        'boring_exciting',
+        'not_interesting_interesting',
+        'motivating_demotivating',
+    ],
+    Kebaruan: [
+        'creative_dull',
+        'inventive_conventional',
+        'usual_leading_edge',
+        'conservative_innovative',
+    ],
 };
 
 /**
@@ -51,12 +78,17 @@ export const SUS_QUESTIONS = [
     { id: 1, text: 'Saya rasa saya akan sering menggunakan sistem ini.' },
     { id: 2, text: 'Saya merasa sistem ini tidak perlu rumit.' },
     { id: 3, text: 'Saya rasa sistem ini mudah digunakan.' },
-    { id: 4, text: 'Saya rasa saya membutuhkan bantuan orang teknis untuk dapat menggunakan sistem ini.' },
+    {
+        id: 4,
+        text: 'Saya rasa saya membutuhkan bantuan orang teknis untuk dapat menggunakan sistem ini.',
+    },
     { id: 5, text: 'Saya merasa berbagai fungsi dalam sistem ini terintegrasi dengan baik.' },
     { id: 6, text: 'Saya rasa terlalu banyak ketidakkonsistenan dalam sistem ini.' },
-    { id: 7, text: 'Saya rasa kebanyakan orang akan belajar menggunakan sistem ini dengan sangat cepat.' },
+    {
+        id: 7,
+        text: 'Saya rasa kebanyakan orang akan belajar menggunakan sistem ini dengan sangat cepat.',
+    },
     { id: 8, text: 'Saya merasa sistem ini sangat membosankan untuk digunakan.' },
     { id: 9, text: 'Saya merasa sangat percaya diri menggunakan sistem ini.' },
     { id: 10, text: 'Saya perlu belajar banyak hal sebelum saya dapat menggunakan sistem ini.' },
 ];
-

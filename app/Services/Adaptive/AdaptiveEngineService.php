@@ -5,245 +5,183 @@ declare(strict_types=1);
 namespace App\Services\Adaptive;
 
 use App\Contracts\Services\AdaptiveEngineServiceInterface;
-use App\Enums\Lms\QuestionDifficulty;
-use App\Models\AdaptiveExecutionLog;
-use App\Models\AdaptiveFact;
-use App\Models\AdaptiveRule;
+use App\Enums\Lms\StudentLevel;
 use App\Rules\Adaptive\Constants\ActionConstants;
+use App\Rules\Adaptive\Constants\FactConstants;
+use App\Rules\Adaptive\Constants\PedagogicalConstants;
 use App\Rules\Adaptive\Constants\StudentStateSchema;
-use App\Rules\Adaptive\Contracts\AdaptiveRuleInterface;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 
-/**
- * Adaptive Engine Service.
- * A forward-chaining inference engine that evaluates pedagogical rules.
- */
 final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 {
-    private const int MAX_CYCLES = 10;
-
-    public function __construct(
-        private readonly Handlers\PrimaryFactHandler $primaryFactHandler,
-        private readonly Handlers\VirtualFactHandler $virtualFactHandler,
-        private readonly Handlers\ActionHandler $actionHandler,
-    ) {}
-
-    /**
-     * The main orchestrator. Reads like a story.
-     */
-    public function evaluate(array $facts, array $state, array $context): array
+    public function evaluate(array $state): array
     {
-        // 1. Preparation
-        $enrichedFacts = $this->getEnrichedFacts($facts, $state);
+        // 1. Extract Thresholds (Layer 2)
+        $accuracy = (float) ($state[StudentStateSchema::ACCURACY] ?? 0);
+        $metrics  = $state[StudentStateSchema::PERFORMANCE_METRICS] ?? [];
+        $session  = $state[StudentStateSchema::CURRENT_SESSION]     ?? [];
 
-        // 2. Inference (The Core Logic)
-        $result = $this->runInference($enrichedFacts, $state, $context);
+        $trend         = $metrics['trend'] ?? 'stable';
+        $speed         = $metrics['speed'] ?? 'normal';
+        $hints         = (int) ($session['hints'] ?? 0);
+        $level         = $state[StudentStateSchema::LEVEL] ?? StudentLevel::PEMULA->value;
+        $streak        = (int) ($state[StudentStateSchema::STREAK] ?? 0);
+        $stagnantCount = (int) ($metrics['stagnant_count'] ?? 0);
+        $history       = $state[StudentStateSchema::SESSION_HISTORY] ?? [];
 
-        // 3. Post-processing
-        if ($result['is_empty']) {
-            $result['state'] = $this->applyFallbackNavigation($result['state'], (bool) ($context['is_correct'] ?? false));
+        // 2. Collect Facts for Debugging/Panel
+        $facts = [];
+
+        // Accuracy mapping
+        if ($accuracy < PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD) {
+            $facts[] = FactConstants::ACCURACY_CRISIS;
+        } elseif ($accuracy <= 60) {
+            $facts[] = FactConstants::ACCURACY_STRUGGLE;
+        } elseif ($accuracy <= 70) {
+            $facts[] = FactConstants::ACCURACY_STABLE;
+        } elseif ($accuracy > PedagogicalConstants::ACCURACY_CERTIFICATION_THRESHOLD) {
+            $facts[] = FactConstants::ACCURACY_EXCELLENT;
+        } elseif ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD) {
+            $facts[] = FactConstants::ACCURACY_OPTIMAL;
         }
 
-        // 4. Persistence
-        $this->logActivity($result['primary_rule'], $state, $result['state'], $enrichedFacts, $context);
-
-        // 5. Delivery
-        return $this->buildResponse($result, $enrichedFacts);
-    }
-
-    /**
-     * Run the Forward Chaining inference loop.
-     */
-    private function runInference(array $facts, array $state, array $context): array
-    {
-        $allRules  = $this->fetchActiveRules();
-        $memory    = ['facts' => $facts, 'state' => $state, 'fired' => []];
-        $triggered = [];
-
-        for ($i = 0; $i < self::MAX_CYCLES; $i++) {
-            $rule = $this->selectBestRule($allRules, $memory);
-            if (! $rule) {
-                break;
-            }
-
-            $this->fireRule($rule, $memory, $context, $triggered);
-
-            if ($this->shouldStop($rule)) {
-                break;
-            }
+        // Trend mapping
+        if ($trend === 'down') {
+            $facts[] = FactConstants::TREND_DOWN;
+        } elseif ($trend === 'up') {
+            $facts[] = FactConstants::TREND_UP;
+        } else {
+            $facts[] = FactConstants::TREND_STABLE;
         }
 
-        return [
-            'primary_rule'  => $triggered[0] ?? null,
-            'all_triggered' => $triggered,
-            'state'         => $memory['state'],
-            'facts'         => $memory['facts'],
-            'is_empty'      => empty($triggered),
-        ];
-    }
-
-    private function selectBestRule(Collection $rules, array $memory): ?AdaptiveRule
-    {
-        return $rules->first(function (AdaptiveRule $rule) use ($memory) {
-            $isNotFired = ! in_array($rule->code, $memory['fired'], true);
-            $isMatched  = $rule->evaluate($memory['facts']);
-            $isAllowed  = ! $this->isBlocked($rule, $memory['state']);
-
-            return $isNotFired && $isMatched && $isAllowed;
-        });
-    }
-
-    private function fireRule(AdaptiveRule $rule, array &$memory, array $context, array &$triggered): void
-    {
-        $actionCode = $rule->getActionCode();
-
-        // A rule is deduction-only if it has no action code or matches the DEDUCTION constant
-        $isDeductionOnly = $actionCode === null || $actionCode === ActionConstants::DEDUCTION;
-
-        // Apply visual action and record as triggered if NOT a deduction-only rule
-        if (! $isDeductionOnly) {
-            $memory['state'] = $this->actionHandler->apply($rule->action?->instructions ?? [], $memory['state'], $context);
-            $triggered[]     = $rule;
+        // Speed mapping
+        if ($speed === 'fast') {
+            $facts[] = FactConstants::TIME_FAST;
+        } elseif ($speed === 'slow') {
+            $facts[] = FactConstants::TIME_SLOW;
+        } else {
+            $facts[] = FactConstants::TIME_NORMAL;
         }
 
-        // Propagate deduced facts to memory for the next cycle
-        $deduced = $rule->getDeducedFacts();
-        if (! empty($deduced)) {
-            $memory['facts'] = array_values(array_unique(array_merge($memory['facts'], $deduced)));
+        // Streak mapping
+        if ($streak >= PedagogicalConstants::STREAK_CERTIFICATION_THRESHOLD) {
+            $facts[] = FactConstants::STREAK_7D;
+        } elseif ($streak >= PedagogicalConstants::STREAK_BOREDOM_THRESHOLD) {
+            $facts[] = FactConstants::STREAK_5D;
+        } elseif ($streak >= PedagogicalConstants::STREAK_OPTIMAL_THRESHOLD) {
+            $facts[] = FactConstants::STREAK_3D;
         }
 
-        $memory['fired'][] = $rule->code;
-    }
-
-    private function isBlocked(AdaptiveRuleInterface $rule, array $state): bool
-    {
-        $flow       = $this->getFlow($rule);
-        $difficulty = $state[StudentStateSchema::TARGET_DIFFICULTY] ?? null;
-
-        $isAtMax = ($flow === ActionConstants::FLOW_UP && $difficulty === QuestionDifficulty::HARD->value);
-        $isAtMin = ($flow === ActionConstants::FLOW_DOWN && $difficulty === QuestionDifficulty::BEGINNER->value);
-
-        return $isAtMax || $isAtMin;
-    }
-
-    private function shouldStop(AdaptiveRuleInterface $rule): bool
-    {
-        $actionCode = $rule->getActionCode();
-
-        // If it's a deduction-only rule (no action or DEDUCTION constant), never stop
-        if ($actionCode === null || $actionCode === ActionConstants::DEDUCTION) {
-            return false;
+        // Level mapping
+        if ($level === StudentLevel::AHLI->value) {
+            $facts[] = FactConstants::LEVEL_AHLI;
         }
 
-        // For visual actions (UP, DOWN, NEXT, REVIEW), we stop after the first one
-        // to prevent multiple conflicting UI changes in a single response.
-        return in_array($this->getFlow($rule), [
-            ActionConstants::FLOW_NEXT,
-            ActionConstants::FLOW_UP,
-            ActionConstants::FLOW_DOWN,
-            ActionConstants::FLOW_REVIEW,
-        ], true);
-    }
-
-    // ─── Helpers ──────────────────────────────────────────────────────────
-
-    private function getEnrichedFacts(array $facts, array $state): array
-    {
-        return array_values(array_unique(array_merge($facts, $this->virtualFactHandler->derive($facts, $state))));
-    }
-
-    private function getFlow(AdaptiveRuleInterface $rule): string
-    {
-        return ($rule instanceof AdaptiveRule)
-            ? ($rule->action?->instructions[ActionConstants::KEY_FLOW] ?? ActionConstants::FLOW_NEXT)
-            : ActionConstants::FLOW_NEXT;
-    }
-
-    private function applyFallbackNavigation(array $state, bool $isCorrect): array
-    {
-        $state['next_action']       = ActionConstants::FLOW_NEXT;
-        $state['_feedback_message'] = $isCorrect ? 'Jawaban benar! Lanjut.' : 'Jawaban kurang tepat. Coba lagi.';
-
-        return $state;
-    }
-
-    private function fetchActiveRules(): Collection
-    {
-        return Cache::remember(
-            'adaptive_rules_v7',
-            now()->addDay(),
-            fn () => AdaptiveRule::with('action')->where('is_active', true)->ordered()->get(),
-        );
-    }
-
-    private function logActivity(?AdaptiveRuleInterface $rule, array $old, array $new, array $facts, array $ctx): void
-    {
-        $user = Auth::user();
-        if (! $user || ! $rule) {
-            return;
+        // Help mapping
+        if ($hints > PedagogicalConstants::HELP_HIGH_THRESHOLD) {
+            $facts[] = FactConstants::HELP_HIGH;
+        } elseif ($hints >= 2) {
+            $facts[] = FactConstants::HELP_MED;
+        } elseif ($hints === 0) {
+            $facts[] = FactConstants::HELP_NONE;
         }
 
-        $keys  = [StudentStateSchema::TARGET_DIFFICULTY, StudentStateSchema::GLOBAL_XP, StudentStateSchema::CURRENT_LEVEL];
-        $delta = array_diff_assoc(array_intersect_key($new, array_flip($keys)), array_intersect_key($old, array_flip($keys)));
+        // 3. Evaluate Rules R01-R15 in order
 
-        AdaptiveExecutionLog::create([
-            'user_id'           => $user->id,
-            'rule_code'         => $rule->getRuleId(),
-            'action_code'       => $rule->getActionCode(),
-            'trigger_facts'     => $facts,
-            'new_state'         => $new, // Add the full state snapshot
-            'state_deltas'      => $delta ?: [],
-            'execution_context' => $ctx,
-        ]);
+        // --- KRISIS PEMBELAJARAN ---
+        // R01: Akurasi <40%, Tren turun 2 sesi, Bantuan >3x
+        if ($accuracy < PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD && $trend === 'down' && $hints > PedagogicalConstants::HELP_HIGH_THRESHOLD) {
+            return $this->result('R01', FactConstants::V_CRISIS, [ActionConstants::REMEDIAL, ActionConstants::REDUCE_DIFF], $facts);
+        }
+        // R02: Akurasi <40%, Tren turun 2 sesi, Bantuan <=3x
+        if ($accuracy < PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD && $trend === 'down' && $hints <= PedagogicalConstants::HELP_HIGH_THRESHOLD) {
+            return $this->result('R02', FactConstants::V_CRISIS, [ActionConstants::REMEDIAL], $facts);
+        }
+        // R03: Akurasi <40%, Tren stabil/naik, Bantuan >3x
+        if ($accuracy < PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD && $hints > PedagogicalConstants::HELP_HIGH_THRESHOLD) {
+            return $this->result('R03', FactConstants::V_CRISIS, [ActionConstants::REDUCE_DIFF, ActionConstants::SCAFFOLD_REDUCTION], $facts);
+        }
+
+        // --- SEDANG KESULITAN ---
+        // R04: Akurasi 40-60%, Respons lambat, Bantuan <=3x
+        if ($accuracy >= PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD && $accuracy <= 60 && $speed === 'slow' && $hints <= PedagogicalConstants::HELP_HIGH_THRESHOLD) {
+            return $this->result('R04', FactConstants::V_STRUGGLING, [ActionConstants::REDUCE_DIFF], $facts);
+        }
+        // R05: Akurasi 40-60%, Respons normal, Bantuan 2-3x
+        if ($accuracy >= PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD && $accuracy <= 60 && $speed === 'normal' && $hints >= 2 && $hints <= PedagogicalConstants::HELP_HIGH_THRESHOLD) {
+            return $this->result('R05', FactConstants::V_STRUGGLING, [ActionConstants::REMEDIAL], $facts);
+        }
+        // R06: Akurasi 60-70%, Tren stabil, Bantuan <=2x
+        if ($accuracy >= 60 && $accuracy <= 70 && $trend === 'stable' && $hints <= 2) {
+            return $this->result('R06', FactConstants::V_STRUGGLING, [ActionConstants::FEEDBACK], $facts);
+        }
+
+        // --- PERFORMA OPTIMAL ---
+        // R07: Akurasi >80%, Tren naik, Level < Ahli
+        if ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD && $trend === 'up' && $level !== StudentLevel::AHLI->value) {
+            return $this->result('R07', FactConstants::V_OPTIMAL, [ActionConstants::INCREASE_DIFF], $facts);
+        }
+        // R08: Akurasi >80%, Tren naik, Level = Ahli
+        if ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD && $trend === 'up' && $level === StudentLevel::AHLI->value) {
+            return $this->result('R08', FactConstants::V_OPTIMAL, [ActionConstants::NEW_CHALLENGE], $facts);
+        }
+        // R09: Akurasi >80%, Respons cepat, Streak >=3
+        if ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD && $speed === 'fast' && $streak >= PedagogicalConstants::STREAK_OPTIMAL_THRESHOLD) {
+            return $this->result('R09', FactConstants::V_OPTIMAL, [ActionConstants::INCREASE_DIFF, ActionConstants::STREAK_BONUS], $facts);
+        }
+
+        // --- KETERGANTUNGAN BANTUAN ---
+        // R10: Bantuan >3x, Akurasi <50% tanpa bantuan, Tren stabil
+        if ($hints > PedagogicalConstants::HELP_HIGH_THRESHOLD && $accuracy < 50 && $trend === 'stable') {
+            return $this->result('R10', FactConstants::V_DEPENDENCY, [ActionConstants::SCAFFOLD_REDUCTION, ActionConstants::REMEDIAL], $facts);
+        }
+        // R11: Bantuan >3x, Akurasi >60% dengan bantuan, Tren naik
+        if ($hints > PedagogicalConstants::HELP_HIGH_THRESHOLD && $accuracy > 60 && $trend === 'up') {
+            return $this->result('R11', FactConstants::V_DEPENDENCY, [ActionConstants::SCAFFOLD_REDUCTION], $facts);
+        }
+
+        // --- POTENSI KEBOSANAN ---
+        // R12: Akurasi >80%, Skor stagnan >=3 sesi, Streak >=5
+        if ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD && $stagnantCount >= 3 && $streak >= PedagogicalConstants::STREAK_BOREDOM_THRESHOLD) {
+            return $this->result('R12', FactConstants::V_BOREDOM, [ActionConstants::NEW_CHALLENGE, ActionConstants::STREAK_BONUS], $facts);
+        }
+        // R13: Akurasi >80%, Respons cepat, Skor stagnan >=3 sesi
+        if ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD && $speed === 'fast' && $stagnantCount >= 3) {
+            return $this->result('R13', FactConstants::V_BOREDOM, [ActionConstants::INCREASE_DIFF], $facts);
+        }
+
+        // --- SPECIAL: CERTIFICATION ---
+        // R15 condition: Min Accuracy > 85% over last 3 sessions
+        $isConsistentHigh = false;
+        if (count($history) >= 3) {
+            $last3 = array_slice($history, -3);
+            $isConsistentHigh = min($last3) > PedagogicalConstants::ACCURACY_CERTIFICATION_THRESHOLD;
+        }
+
+        if ($level === StudentLevel::AHLI->value && $isConsistentHigh && $streak >= PedagogicalConstants::STREAK_CERTIFICATION_THRESHOLD && $hints === 0) {
+            return $this->result('R15', FactConstants::V_OPTIMAL, [ActionConstants::CERTIFICATION], $facts);
+        }
+
+        // --- R14: DEFAULT FALLBACK ---
+        return $this->result('R14', 'Normal Learning', [ActionConstants::FEEDBACK], $facts);
     }
 
-    private function buildResponse(array $result, array $initialFacts): array
+    private function result(string $ruleId, string $diagnosis, array $recommendations, array $facts = []): array
     {
         return [
-            'triggered_rule'  => $result['primary_rule'] ? $this->mapRule($result['primary_rule']) : null,
-            'triggered_rules' => array_map(fn ($r) => $this->mapRule($r), $result['all_triggered']),
-            'new_state'       => $result['state'],
-            'facts'           => $result['facts'],
-            'engine_metadata' => $this->getMetadata(),
+            'id'              => $ruleId,
+            'diagnosis'       => $diagnosis,
+            'recommendations' => $recommendations,
+            'facts'           => $facts,
+            'timestamp'       => now()->toIso8601String(),
+            'engine_metadata' => [
+                'engine_version'  => '2.1.0-forward',
+                'rule_count'      => 15,
+                'fact_labels'     => array_merge(FactConstants::NAMES, FactConstants::VIRTUAL_NAMES),
+                'fact_categories' => [
+                    'primary' => 'primary',
+                    'virtual' => 'virtual',
+                ],
+            ],
         ];
-    }
-
-    private function getMetadata(): array
-    {
-        return [
-            'rule_count'      => Cache::remember('rules_count', now()->addDay(), fn () => AdaptiveRule::where('is_active', true)->count()),
-            'engine_version'  => '7.1.0-ULTRA-CLEAN',
-            'fact_labels'     => Cache::remember('fact_labels', now()->addDay(), fn () => AdaptiveFact::all()->pluck('name', 'code')->toArray()),
-            'fact_categories' => Cache::remember('fact_categories', now()->addDay(), fn () => AdaptiveFact::all()->pluck('category', 'code')->toArray()),
-        ];
-    }
-
-    private function mapRule(AdaptiveRuleInterface $rule): array
-    {
-        $instr = ($rule instanceof AdaptiveRule) ? ($rule->action?->instructions ?? []) : [];
-
-        return [
-            'id'          => $rule->getRuleId(),
-            'name'        => $rule->getRuleName(),
-            'action'      => $instr[ActionConstants::KEY_FLOW] ?? $rule->getActionCode(),
-            'action_code' => $rule->getActionCode(),
-            'priority'    => $rule->getPriority(),
-            'variant'     => ($rule instanceof AdaptiveRule) ? ($rule->action?->variant ?? 'result') : 'result',
-            'message'     => $instr[ActionConstants::KEY_MESSAGE] ?? null,
-            'title'       => $instr[ActionConstants::KEY_TITLE]   ?? null,
-        ];
-    }
-
-    // Public API for metadata/admin
-    public function getAllRules(): array
-    {
-        return AdaptiveRule::with('action')->where('is_active', true)->ordered()->get()->toArray();
-    }
-
-    public function getRuleById(string $id): ?AdaptiveRuleInterface
-    {
-        return AdaptiveRule::with('action')->where('code', $id)->first();
     }
 }

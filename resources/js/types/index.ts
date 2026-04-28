@@ -12,7 +12,6 @@ export type {
     CertificationType,
     User,
     Material,
-    SubMaterial,
     Media,
     Question,
     Answer,
@@ -38,6 +37,9 @@ export type {
     MslqResult,
     MslqQuestion,
     MslqAnswer,
+    AdaptiveFact,
+    AdaptiveAction,
+    AdaptiveRule,
 } from '@/types/models';
 
 export type {
@@ -60,7 +62,6 @@ export type {
     MaterialWithProgress,
     MissingQuestionsItem,
     UeqAverages,
-    AdaptiveRule,
     AdaptiveRuleDomain,
     AdaptiveTriggerItem,
     AdaptiveStateDistribution,
@@ -90,7 +91,6 @@ export type {
     // API responses
     CheckAnswerResponse,
     AdaptiveResult,
-    AdaptiveFact,
     UseHintResponse,
     Pagination,
     PaginatorLink,

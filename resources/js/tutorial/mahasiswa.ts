@@ -152,7 +152,7 @@ export function registerMahasiswaTutorials() {
                 popover: {
                     title: 'Mulai Belajar',
                     description:
-                        'Klik tombol "MULAI BELAJAR" untuk masuk ke halaman detail materi dan sub-topik.',
+                        'Klik tombol "MULAI BELAJAR" untuk masuk ke halaman detail materi.',
                     side: 'bottom',
                     align: 'center',
                 },
@@ -367,20 +367,10 @@ export function registerMahasiswaTutorials() {
                 },
             },
             {
-                element: '#sub-material-section',
+                element: '#quiz-entry-section',
                 popover: {
-                    title: 'Daftar Sub-Materi',
-                    description: 'Pilih sub-materi untuk mulai belajar teori dan mengerjakan kuis.',
-                    side: 'top',
-                    align: 'center',
-                },
-            },
-            {
-                element: '#sub-material-grid',
-                popover: {
-                    title: 'Kartu Sub-Materi',
-                    description:
-                        'Setiap kartu mewakili satu sub-topik dengan jumlah soal tertentu.',
+                    title: 'Evaluasi & Latihan',
+                    description: 'Sudah merasa cukup paham? Klik tombol ini untuk mulai menguji pemahamanmu di kuis adaptif!',
                     side: 'top',
                     align: 'center',
                 },
@@ -397,41 +387,6 @@ export function registerMahasiswaTutorials() {
         ],
     });
 
-    tutorialState.registerSteps({
-        tourId: 'mahasiswa_submaterials_show',
-        steps: [
-            {
-                element: '#page-header',
-                popover: {
-                    title: 'Eksplorasi Sub-Materi',
-                    description:
-                        'Selamat datang di zona belajar! Di sini kamu akan menemukan detail materi yang mendalam.',
-                    side: 'bottom',
-                    align: 'start',
-                },
-            },
-            {
-                element: '#submaterial-content',
-                popover: {
-                    title: 'Pusat Ilmu',
-                    description:
-                        'Baca dan pahami materi ini dengan seksama. Di sinilah rahasia penguasaan PBO berada!',
-                    side: 'bottom',
-                    align: 'start',
-                },
-            },
-            {
-                element: '#btn-start-quiz',
-                popover: {
-                    title: 'Area Tantangan',
-                    description:
-                        'Sudah merasa cukup paham? Klik tombol ini untuk mulai menguji pemahamanmu di kuis adaptif!',
-                    side: 'top',
-                    align: 'center',
-                },
-            },
-        ],
-    });
 
     tutorialState.registerSteps({
         tourId: 'mahasiswa_quiz_index',
