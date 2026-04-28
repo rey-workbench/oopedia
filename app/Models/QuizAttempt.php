@@ -25,12 +25,15 @@ final class QuizAttempt extends Model
         'time_spent',
     ];
 
-    protected $casts = [
-        'is_correct'     => 'boolean',
-        'score'          => 'integer',
-        'attempt_number' => 'integer',
-        'time_spent'     => 'integer',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_correct'     => 'boolean',
+            'score'          => 'integer',
+            'attempt_number' => 'integer',
+            'time_spent'     => 'integer',
+        ];
+    }
 
     public function user(): BelongsTo
     {

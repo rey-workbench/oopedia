@@ -74,6 +74,6 @@ interface QuizServiceInterface
         string $userId,
         string $materialId,
         string $questionId,
-        array $validatedData
+        array $validatedData,
     ): array;
 }

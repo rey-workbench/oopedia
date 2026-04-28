@@ -21,6 +21,6 @@ export class ErrorState extends BaseState {
 
     constructor(status: number) {
         super();
-        this.status = status;
+        this.hydrate({ status });
     }
 }

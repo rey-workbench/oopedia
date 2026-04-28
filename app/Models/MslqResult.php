@@ -27,11 +27,14 @@ final class MslqResult extends Model
         'total_strategy',
     ];
 
-    protected $casts = [
-        'scores_by_scale'  => 'json',
-        'total_motivation' => 'float',
-        'total_strategy'   => 'float',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'scores_by_scale'  => 'json',
+            'total_motivation' => 'float',
+            'total_strategy'   => 'float',
+        ];
+    }
 
     public function user(): BelongsTo
     {

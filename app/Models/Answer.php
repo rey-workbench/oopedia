@@ -24,10 +24,13 @@ final class Answer extends Model
         'blank_position',
     ];
 
-    protected $casts = [
-        'is_correct'     => 'boolean',
-        'blank_position' => 'integer',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_correct'     => 'boolean',
+            'blank_position' => 'integer',
+        ];
+    }
 
     public function question(): BelongsTo
     {

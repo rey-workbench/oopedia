@@ -8,17 +8,16 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('adaptive_execution_logs', function (Blueprint $blueprint) {
-            $blueprint->id();
-            $blueprint->char('user_id', 26)->index();
-            $blueprint->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
-            $blueprint->string('rule_code')->nullable()->index();
-            $blueprint->string('action_code')->nullable()->index();
-            $blueprint->json('facts');
-            $blueprint->json('previous_state');
-            $blueprint->json('new_state');
-            $blueprint->json('context')->nullable();
-            $blueprint->timestamps();
+        Schema::create('adaptive_execution_logs', function (Blueprint $table) {
+            $table->id();
+            $table->foreignUlid('user_id')->constrained()->cascadeOnDelete();
+            $table->string('code')->index();
+            $table->string('action_code')->nullable()->index();
+            $table->json('trigger_facts')->nullable();
+            $table->json('state_deltas')->nullable();
+            $table->json('new_state')->nullable();
+            $table->json('execution_context')->nullable();
+            $table->timestamps();
         });
     }
 

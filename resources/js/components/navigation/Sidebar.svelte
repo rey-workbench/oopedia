@@ -142,9 +142,9 @@
                     >
                     <SidebarLink
                         id="sidebar-admin-adaptive"
-                        href={ROUTES.ADMIN.ADAPTIVE_ANALYTICS}
+                        href={ROUTES.ADMIN.ADAPTIVE_RULES}
                         icon={Brain}
-                        active={page.url.startsWith(ROUTES.ADMIN.ADAPTIVE_ANALYTICS)}
+                        active={page.url.startsWith(ROUTES.ADMIN.ADAPTIVE_RULES)}
                         >Engine Adaptif</SidebarLink
                     >
                 </div>

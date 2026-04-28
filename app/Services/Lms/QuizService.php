@@ -171,11 +171,9 @@ final class QuizService implements QuizServiceInterface
             $targetLevel     = $difficultyOrder[$targetDifficulty->value] ?? 1;
 
             $answeredArray = $answeredQuestionIds->toArray();
-            $questions     = $questions->reject(function ($q) use ($answeredArray, $difficultyOrder, $targetLevel) {
-                $qLevel = $difficultyOrder[$q->difficulty->value] ?? 1;
-
-                return ! in_array($q->id, $answeredArray) && $qLevel < $targetLevel;
-            });
+            $questions     = $questions->reject(
+                fn ($q) => ! in_array($q->id, $answeredArray) && ($difficultyOrder[$q->difficulty->value] ?? 1) < $targetLevel,
+            );
             $appliedTargetFilter = true;
         }
 
@@ -335,12 +333,8 @@ final class QuizService implements QuizServiceInterface
         }
 
         $answeredArray = $answeredQuestionIds->toArray();
-        $completed     = $questions->filter(function ($q) use ($answeredArray) {
-            return in_array($q->id, $answeredArray);
-        });
-        $remaining = $questions->reject(function ($q) use ($answeredArray) {
-            return in_array($q->id, $answeredArray);
-        });
+        $completed     = $questions->filter(fn ($q) => in_array($q->id, $answeredArray));
+        $remaining     = $questions->reject(fn ($q) => in_array($q->id, $answeredArray));
 
         $levels = [];
         $index  = 1;
@@ -448,13 +442,11 @@ final class QuizService implements QuizServiceInterface
                 'used_hint'     => (bool) ($validatedData['used_hint'] ?? false),
             ]);
 
-            $this->performanceService->updateStudentPerformance($userId, $isCorrect, (int) ($validatedData['time_spent'] ?? 0), (bool) ($validatedData['used_hint'] ?? false));
+            // Performance metrics and learning style (Internal tracking)
             $this->performanceService->updateLearningStyleFromInteraction($userId, $question->type, (int) ($validatedData['time_spent'] ?? 0));
 
-            $studentState = StudentState::where('user_id', $userId)->first() ?? new StudentState(['user_id' => $userId]);
-            if ($isCorrect) {
-                $studentState->xp += $score;
-            }
+            // Fetch current state for engine
+            $studentState = StudentState::where('user_id', $userId)->first() ?? $this->progressRepo->getOrCreateStudentState($userId);
 
             $facts = $this->factGatheringService->gatherFacts(
                 studentState: $studentState,
@@ -468,10 +460,20 @@ final class QuizService implements QuizServiceInterface
                 moduleId: (string) $question->material->module_id,
             );
 
-            $engineResult = $this->adaptiveEngineService->evaluate($facts, $studentState->toArray(), ['material_id' => (string) $materialId, 'is_correct' => $isCorrect]);
+            // Engine evaluates facts and instructions, then returns a new merged state
+            $engineResult = $this->adaptiveEngineService->evaluate(
+                $facts,
+                $studentState->toArray(),
+                [
+                    'material_id'     => (string) $materialId,
+                    'sub_material_id' => $question->sub_material_id,
+                    'is_correct'      => $isCorrect,
+                ],
+            );
+
             if (! empty($engineResult['new_state'])) {
-                $studentState->fill($engineResult['new_state']);
-                $studentState->save();
+                // Persistent update from engine instructions
+                $studentState->update($engineResult['new_state']);
             }
 
             return ['is_correct' => $isCorrect, 'score' => $score, 'engine_result' => $engineResult];

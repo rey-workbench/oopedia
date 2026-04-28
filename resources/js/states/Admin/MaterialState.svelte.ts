@@ -15,8 +15,7 @@ export class MaterialListState extends BaseState {
 
     constructor(materials: Material[], search: string) {
         super();
-        this.materials = materials;
-        this.search = search;
+        this.hydrate({ materials, search });
     }
 
     handleSearch() {
@@ -100,8 +99,7 @@ export class SubmaterialListState extends BaseState {
 
     constructor(material: Material, subMaterials: SubMaterial[]) {
         super();
-        this.material = material;
-        this.subMaterials = subMaterials;
+        this.hydrate({ material, subMaterials });
     }
 
     handleDelete(id: number) {

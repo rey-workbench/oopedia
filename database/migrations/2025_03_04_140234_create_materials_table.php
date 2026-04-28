@@ -13,6 +13,7 @@ class CreateMaterialsTable extends Migration
             $table->string('title');
             $table->longText('content');
             $table->integer('module_id')->nullable();
+            $table->boolean('is_final_project')->default(false);
             $table->ulid('created_by');
             $table->timestamps();
         });

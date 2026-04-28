@@ -14,7 +14,6 @@ class CreateMediaTable extends Migration
             $table->ulid('material_id');
             $table->enum('media_type', array_map(fn ($case) => $case->value, MediaType::cases()));
             $table->string('media_url');
-            $table->text('media_description')->nullable();
             $table->timestamps();
 
             $table->foreign('material_id')->references('id')->on('materials')->onDelete('cascade');

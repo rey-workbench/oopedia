@@ -25,8 +25,7 @@ export class StudentListState extends BaseState {
 
     constructor(students: Pagination<User>, search: string) {
         super();
-        this.students = students;
-        this.search = search;
+        this.hydrate({ students, search });
     }
 
     handleSearch = debounce(() => {
@@ -75,10 +74,7 @@ export class StudentProgressState extends BaseState {
         certifications: Record<string, string> = {}
     ) {
         super();
-        this.student = student;
-        this.materials = materials;
-        this.missingQuestionsByMaterial = missingQuestionsByMaterial;
-        this.certifications = certifications;
+        this.hydrate({ student, materials, missingQuestionsByMaterial, certifications });
     }
 }
 

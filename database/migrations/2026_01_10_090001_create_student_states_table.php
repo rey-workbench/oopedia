@@ -17,22 +17,36 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->foreignUlid('user_id')->constrained()->cascadeOnDelete();
 
-            // gamification_data: { global_xp: int, current_level: string, current_streak: int, max_streak: int, badges: array }
-            $table->json('gamification_data')->nullable();
+            // Gamification
+            $table->unsignedInteger('xp')->default(0);
+            $table->string('level')->default('Pemula');
+            $table->unsignedInteger('streak')->default(0);
+            $table->unsignedInteger('max_streak')->default(0);
+            $table->json('badges')->nullable();
 
-            // learning_profile: { learning_style: string, unlocked_modules: array, certifications: array }
-            $table->json('learning_profile')->nullable();
+            // Learning profile
+            $table->string('learning_style')->default('visual');
+            $table->json('unlocked_modules')->nullable();
+            $table->json('certifications')->nullable();
+            $table->json('time_distribution')->nullable();
 
-            // performance_metrics: { total_questions_answered: int, correct_count: int, wrong_count: int, wrong_streak: int, hints_used_count: int, hints_available: int }
-            $table->json('performance_metrics')->nullable();
+            // Performance metrics
+            $table->unsignedInteger('total_answered')->default(0);
+            $table->unsignedInteger('correct_count')->default(0);
+            $table->unsignedInteger('wrong_count')->default(0);
+            $table->unsignedInteger('wrong_streak')->default(0);
+            $table->unsignedInteger('hints_used')->default(0);
+            $table->unsignedInteger('hints_available')->default(3);
 
-            // adaptive_state: { fast_track_active: bool, current_material_id: string|null, target_difficulty: string|null, module_progress: object, time_metrics: { avg_time_per_question: int, total_time_spent: int } }
-            $table->json('adaptive_state')->nullable();
+            // Navigation
+            $table->string('current_material_id')->nullable();
+            $table->string('target_difficulty')->nullable();
 
             $table->timestamp('last_active_at')->nullable();
             $table->timestamps();
 
-            $table->index('user_id');
+            $table->index('xp');
+            $table->index('level');
         });
     }
 

@@ -16,6 +16,6 @@ export class LeaderboardState extends BaseState {
 
     constructor(leaderboardData: LeaderboardEntry[]) {
         super();
-        this.leaderboardData = leaderboardData;
+        this.hydrate({ leaderboardData });
     }
 }

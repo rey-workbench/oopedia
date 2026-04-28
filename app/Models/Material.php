@@ -23,11 +23,14 @@ final class Material extends Model
         'is_final_project',
     ];
 
-    protected $casts = [
-        'is_final_project' => 'boolean',
-        'module_id'        => 'string',
-        'created_by'       => 'string',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_final_project' => 'boolean',
+            'module_id'        => 'string',
+            'created_by'       => 'string',
+        ];
+    }
 
     public function subMaterials(): HasMany
     {

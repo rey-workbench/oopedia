@@ -44,14 +44,17 @@ final class Question extends Model
         'created_by',
     ];
 
-    protected $casts = [
-        'material_id'     => 'string',
-        'sub_material_id' => 'string',
-        'created_by'      => 'string',
-        'question_type'   => QuestionType::class,
-        'type'            => ContentCategory::class,
-        'difficulty'      => QuestionDifficulty::class,
-    ];
+    protected function casts(): array
+    {
+        return [
+            'material_id'     => 'string',
+            'sub_material_id' => 'string',
+            'created_by'      => 'string',
+            'question_type'   => QuestionType::class,
+            'type'            => ContentCategory::class,
+            'difficulty'      => QuestionDifficulty::class,
+        ];
+    }
 
     public function material(): BelongsTo
     {

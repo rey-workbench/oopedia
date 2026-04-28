@@ -17,12 +17,14 @@ export class MslqState extends BaseState {
         activeClass: string
     ) {
         super();
-        this.results = results;
-        this.averages = metrics.averages;
-        this.avgMotivation = metrics.avg_motivation;
-        this.avgStrategy = metrics.avg_strategy;
-        this.classes = classes;
-        this.activeClass = activeClass;
+        this.hydrate({
+            results,
+            averages: metrics.averages,
+            avgMotivation: metrics.avg_motivation,
+            avgStrategy: metrics.avg_strategy,
+            classes,
+            activeClass,
+        });
     }
 
     handleFilterChange(value: string | number) {

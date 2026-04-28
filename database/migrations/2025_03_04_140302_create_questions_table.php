@@ -1,7 +1,6 @@
 <?php
 
 use App\Enums\Lms\ContentCategory;
-use App\Enums\Lms\QuestionDifficulty;
 use App\Enums\Lms\QuestionType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -17,13 +16,16 @@ class CreateQuestionsTable extends Migration
             $table->text('question_text');
             $table->enum('question_type', array_map(fn ($case) => $case->value, QuestionType::cases()));
             $table->enum('type', array_map(fn ($case) => $case->value, ContentCategory::cases()))->default(ContentCategory::TEORI->value);
-            $table->enum('difficulty', array_map(fn ($case) => $case->value, QuestionDifficulty::cases()))->default(QuestionDifficulty::BEGINNER->value);
+            $table->enum('difficulty', ['beginner', 'medium', 'hard', 'final'])->default('beginner');
             $table->text('hint')->nullable();
             $table->ulid('created_by');
             $table->timestamps();
 
             $table->foreign('material_id')->references('id')->on('materials')->onDelete('cascade');
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+
+            $table->index('difficulty');
+            $table->index('material_id');
         });
     }
 

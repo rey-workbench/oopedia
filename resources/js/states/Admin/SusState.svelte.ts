@@ -2,6 +2,7 @@ import { router } from '@inertiajs/svelte';
 import { BaseState } from '@/states/BaseState.svelte';
 import { ROUTES } from '@/utils/route';
 import type { User, SusResult } from '@/types';
+import { SUS_QUESTIONS } from '@/constants/survey';
 
 /**
  * SUS List State
@@ -26,11 +27,7 @@ export class SusListState extends BaseState {
         activeClass: string
     ) {
         super();
-        this.results = results;
-        this.averages = averages;
-        this.grading = grading;
-        this.classes = classes;
-        this.activeClass = activeClass;
+        this.hydrate({ results, averages, grading, classes, activeClass });
     }
 
     handleFilterChange(e: Event) {
@@ -61,27 +58,7 @@ export class SusDetailState extends BaseState {
         total_score: 0,
     });
 
-    questions = [
-        { id: 1, text: 'Saya rasa saya akan sering menggunakan sistem ini.' },
-        { id: 2, text: 'Saya merasa sistem ini tidak perlu rumit.' },
-        { id: 3, text: 'Saya rasa sistem ini mudah digunakan.' },
-        {
-            id: 4,
-            text: 'Saya rasa saya membutuhkan bantuan orang teknis untuk dapat menggunakan sistem ini.',
-        },
-        { id: 5, text: 'Saya merasa berbagai fungsi dalam sistem ini terintegrasi dengan baik.' },
-        { id: 6, text: 'Saya rasa terlalu banyak ketidakkonsistenan dalam sistem ini.' },
-        {
-            id: 7,
-            text: 'Saya rasa kebanyakan orang akan belajar menggunakan sistem ini dengan sangat cepat.',
-        },
-        { id: 8, text: 'Saya merasa sistem ini sangat membosankan untuk digunakan.' },
-        { id: 9, text: 'Saya merasa sangat percaya diri menggunakan sistem ini.' },
-        {
-            id: 10,
-            text: 'Saya perlu belajar banyak hal sebelum saya dapat menggunakan sistem ini.',
-        },
-    ];
+    questions = SUS_QUESTIONS;
 
     constructor(
         user: User,
@@ -89,8 +66,6 @@ export class SusDetailState extends BaseState {
         calculation: { item_scores: Record<string, number>; total_score: number }
     ) {
         super();
-        this.targetUser = user;
-        this.result = result;
-        this.calculation = calculation;
+        this.hydrate({ targetUser: user, result, calculation });
     }
 }

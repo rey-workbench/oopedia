@@ -37,7 +37,7 @@ class CheckAdaptiveIntegrityCommand extends Command
 
         if ($invalidLeafs->isNotEmpty()) {
             foreach ($invalidLeafs as $leaf) {
-                $this->warn("⚠️ Leaf Node {$leaf->rule_code} has no action_code defined.");
+                $this->warn("⚠️ Leaf Node {$leaf->code} has no action_code defined.");
             }
         } else {
             $this->info('✅ All leaf nodes have action codes.');

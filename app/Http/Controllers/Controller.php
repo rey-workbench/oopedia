@@ -22,7 +22,7 @@ class Controller extends BaseController
 
     protected function isGuest(): bool
     {
-        return !Auth::check() || (Auth::user()->role?->role_name ?? 'guest') === 'guest';
+        return ! Auth::check() || (Auth::user()->role?->role_name ?? 'guest') === 'guest';
     }
 
     protected function render(string $page, array $data = []): Response
@@ -37,7 +37,7 @@ class Controller extends BaseController
 
     protected function getGuestProgress(): array
     {
-        if (!$this->isGuest()) {
+        if (! $this->isGuest()) {
             return [];
         }
 

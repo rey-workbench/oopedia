@@ -17,10 +17,13 @@ final class Media extends Model
 
     protected $fillable = ['material_id', 'media_type', 'media_url'];
 
-    protected $casts = [
-        'material_id' => 'string',
-        'media_type'  => MediaType::class,
-    ];
+    protected function casts(): array
+    {
+        return [
+            'material_id' => 'string',
+            'media_type'  => MediaType::class,
+        ];
+    }
 
     public function material(): BelongsTo
     {

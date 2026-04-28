@@ -112,15 +112,17 @@ export interface AdminUeqDetailProps extends SharedProps {
 export type UeqAverages = Record<string, number>;
 
 export interface AdaptiveRule {
-    deduced_facts: any;
-    id: string;
+    id: string | number;
     real_id: number;
+    code: string;
     name: string;
+    domain: string;
     priority: number;
     action: string;
     action_id: number;
     required_facts: string[];
-    forbidden_facts: string[];
+    forbidden_facts: string[] | null;
+    deduced_facts: string[] | null;
     is_active: boolean;
 }
 
@@ -152,7 +154,7 @@ export interface AdaptiveRuleTriggerStat {
     percentage: number;
 }
 
-export interface AdminAdaptiveAnalyticsProps extends SharedProps {
+export interface AdminAdaptiveRuleProps extends SharedProps {
     totalRules: number;
     totalFacts: number;
     totalActions: number;

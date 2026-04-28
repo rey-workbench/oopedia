@@ -27,8 +27,7 @@ export class MslqSurveyState extends FormState<MslqForm> {
             class: '',
             answers: initialAnswers,
         });
-
-        this.questions = questions;
+        this.hydrate({ questions });
     }
 
     get progress() {

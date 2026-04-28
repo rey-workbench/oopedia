@@ -64,22 +64,25 @@ final class StudentState extends Model
         'last_active_at',
     ];
 
-    protected $casts = [
-        'xp'                 => 'integer',
-        'streak'             => 'integer',
-        'max_streak'         => 'integer',
-        'hints_used'         => 'integer',
-        'hints_available'    => 'integer',
-        'total_answered'     => 'integer',
-        'correct_count'      => 'integer',
-        'wrong_count'        => 'integer',
-        'wrong_streak'       => 'integer',
-        'badges'             => 'array',
-        'unlocked_modules'   => 'array',
-        'certifications'     => 'array',
-        'time_distribution'  => 'array',
-        'last_active_at'     => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'xp'                 => 'integer',
+            'streak'             => 'integer',
+            'max_streak'         => 'integer',
+            'hints_used'         => 'integer',
+            'hints_available'    => 'integer',
+            'total_answered'     => 'integer',
+            'correct_count'      => 'integer',
+            'wrong_count'        => 'integer',
+            'wrong_streak'       => 'integer',
+            'badges'             => 'array',
+            'unlocked_modules'   => 'array',
+            'certifications'     => 'array',
+            'time_distribution'  => 'array',
+            'last_active_at'     => 'datetime',
+        ];
+    }
 
     public function user(): BelongsTo
     {

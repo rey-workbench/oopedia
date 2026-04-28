@@ -13,13 +13,6 @@ interface PerformanceServiceInterface
 
     public function updateLearningStyleFromInteraction(string $userId, ContentCategory $questionType, int $timeSpent): LearningStyle;
 
-    public function updateStudentPerformance(
-        string $userId,
-        bool $isCorrect,
-        int $timeSpent = 0,
-        bool $usedHint = false,
-    ): StudentState;
-
     public function calculateAverageTimeSpent(string $userId, string $materialId): float;
 
     public function calculateTotalTimeSpent(string $userId, string $materialId): float;
@@ -31,7 +24,9 @@ interface PerformanceServiceInterface
         QuestionDifficulty $difficulty,
     ): int;
 
-    public function resetMaterialMetrics(string $userId): StudentState;
+    public function resetMaterialMetrics(string $userId, ?string $newMaterialId = null): StudentState;
+
+    public function syncMaterialContext(string $userId, string $materialId): StudentState;
 
     public function getStudentSessionState(string $userId): array;
 }

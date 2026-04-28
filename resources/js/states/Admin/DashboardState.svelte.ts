@@ -21,20 +21,6 @@ export class AdminDashboardState extends BaseState {
 
     constructor(data?: AdminDashboardData) {
         super();
-        if (data) {
-            this.loadData(data);
-        }
-    }
-
-    loadData(data: AdminDashboardData): void {
-        this.totalStudents = data.totalStudents;
-        this.totalMaterials = data.totalMaterials;
-        this.totalQuestions = data.totalQuestions;
-        this.activeStudents = data.activeStudents;
-        this.recentProgress = data.recentProgress;
-        this.studentProgress = data.studentProgress;
-        this.popularMaterials = data.popularMaterials;
-        this.studentAnalytics = data.studentAnalytics;
-        this.materialStats = data.materialStats;
+        this.hydrate(data as any);
     }
 }

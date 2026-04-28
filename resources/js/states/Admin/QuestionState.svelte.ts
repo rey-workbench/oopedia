@@ -42,10 +42,7 @@ export class QuestionListAdminState extends BaseState {
         difficulty: string
     ) {
         super();
-        this.questions = questions;
-        this.material = material;
-        this.search = search;
-        this.difficulty = difficulty;
+        this.hydrate({ questions, material, search, difficulty });
     }
 
     handleSearch = debounce(() => {
@@ -138,12 +135,7 @@ export class QuestionFormState extends FormState<{
                 showErrorToast: true,
             }
         );
-
-        this.materials = materials;
-        this.material = material;
-        this.subMaterials = subMaterials;
-        this.question = question;
-        this.availableSubMaterials = subMaterials;
+        this.hydrate({ materials, material, subMaterials, question, availableSubMaterials: subMaterials });
 
         if (this.form.material_id && this.subMaterials.length === 0) {
             this.handleMaterialChange();

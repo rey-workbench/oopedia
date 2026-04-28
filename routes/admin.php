@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\Admin\AdaptiveAnalyticsController;
+use App\Http\Controllers\Admin\AdaptiveActionController;
+use App\Http\Controllers\Admin\AdaptiveRuleController;
 use App\Http\Controllers\Admin\AdminStudentController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Admin\SubMaterialController;
 use App\Http\Controllers\Admin\SusSurveyController as AdminSusSurveyController;
 use App\Http\Controllers\Admin\UeqSurveyController;
 use Illuminate\Support\Facades\Route;
+
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     // Jalur cepat untuk pending approval
     Route::get('pending-approval', [AdminUserController::class, 'pendingApproval'])->name('pending-approval');
@@ -20,7 +22,8 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['access:superadmin|dosen,true'])->group(function () {
 
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-        Route::resource('adaptive-analytics', AdaptiveAnalyticsController::class);
+        Route::resource('adaptive-rules', AdaptiveRuleController::class);
+        Route::resource('adaptive-actions', AdaptiveActionController::class)->only(['store', 'update', 'destroy']);
 
         // Media Management
         Route::controller(MediaController::class)->prefix('media')->name('media.')->group(function () {

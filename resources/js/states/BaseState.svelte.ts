@@ -7,6 +7,25 @@ import type { SharedProps } from '@/types';
  */
 export class BaseState {
     /**
+     * Safe assignment that skips getters and reserved Inertia props.
+     * MUST be called in subclass constructor AFTER fields are declared
+     * to avoid "private member" errors with Svelte 5 runes.
+     */
+    protected hydrate(data?: Record<string, unknown>) {
+        if (!data) return;
+
+        const reserved = ['user', 'isGuest', 'flash', 'errors', 'auth', 'ziggy'];
+        const filteredData = Object.keys(data)
+            .filter((key) => !reserved.includes(key))
+            .reduce((obj, key) => {
+                obj[key] = data[key];
+                return obj;
+            }, {} as Record<string, unknown>);
+
+        Object.assign(this, filteredData);
+    }
+
+    /**
      * Get authenticated user
      */
     get user() {
@@ -36,9 +55,8 @@ export class BaseState {
 
     /**
      * Common method to sync props if needed
-     * (Prefer constructor injection, but this can be used for partial updates)
      */
     sync(data: Record<string, unknown>) {
-        Object.assign(this, data);
+        this.hydrate(data);
     }
 }

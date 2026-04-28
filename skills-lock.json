@@ -41,6 +41,11 @@
       "sourceType": "github",
       "computedHash": "368a26f2b079ffe0d584f48006524f65cf997cb9369411aa8c6ead216dee22eb"
     },
+    "clean-code": {
+      "source": "pproenca/dot-skills",
+      "sourceType": "github",
+      "computedHash": "66a6488b1f4ea52c3ee8c8cdc54bb4d80173db6451b41be4452f20699dd3d81b"
+    },
     "compress": {
       "source": "JuliusBrussee/caveman",
       "sourceType": "github",
@@ -67,9 +72,9 @@
       "computedHash": "516bd2154eb843a8240e43d5b285229129853114ad7075a5e141e1c08e408c84"
     },
     "laravel-specialist": {
-      "source": "jeffallan/claude-skills",
-      "sourceType": "github",
-      "computedHash": "local-manual-install"
+      "source": "smithery.ai",
+      "sourceType": "well-known",
+      "computedHash": "d42a21cb81a384d31b90d4a563570fa3e33441a6beb968487fcf95a338985a7e"
     },
     "nodejs-backend-patterns": {
       "source": "wshobson/agents",

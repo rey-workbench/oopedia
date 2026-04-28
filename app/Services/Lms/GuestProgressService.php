@@ -6,7 +6,7 @@ namespace App\Services\Lms;
 
 use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Models\StudentState;
-use App\Rules\Adaptive\Constants\AdaptiveConstants as AC;
+use App\Rules\Adaptive\Constants\StudentStateSchema;
 use Illuminate\Support\Facades\Cookie;
 
 final class GuestProgressService implements GuestProgressServiceInterface
@@ -110,20 +110,20 @@ final class GuestProgressService implements GuestProgressServiceInterface
             $performanceMetrics = [];
         }
 
-        $defaults = AC::defaults();
+        $defaults = StudentStateSchema::defaults();
 
         return new StudentState(array_merge($defaults, [
-            'user_id'         => 'guest',
-            'xp'              => $gamification['xp'],
-            'streak'          => $gamification['streak'],
-            'level'           => 'Tamu',
-            'total_answered'  => $performanceMetrics['total_answered']   ?? 0,
-            'correct_count'   => $performanceMetrics['correct_count']    ?? 0,
-            'wrong_count'     => $performanceMetrics['wrong_count']      ?? 0,
-            'wrong_streak'    => $performanceMetrics['wrong_streak']     ?? 0,
-            'hints_used'      => $performanceMetrics['hints_used']       ?? 0,
-            'hints_available' => $performanceMetrics['hints_available']  ?? AC::DEFAULT_HINTS_AVAILABLE,
-            'target_difficulty' => $performanceMetrics['target_difficulty'] ?? null,
+            'user_id'                                     => 'guest',
+            StudentStateSchema::GLOBAL_XP                 => $gamification['xp'],
+            StudentStateSchema::CURRENT_STREAK            => $gamification['streak'],
+            StudentStateSchema::CURRENT_LEVEL             => 'Tamu',
+            StudentStateSchema::TOTAL_QUESTIONS_ANSWERED  => $performanceMetrics[StudentStateSchema::TOTAL_QUESTIONS_ANSWERED]   ?? 0,
+            StudentStateSchema::CORRECT_COUNT             => $performanceMetrics[StudentStateSchema::CORRECT_COUNT]              ?? 0,
+            StudentStateSchema::WRONG_COUNT               => $performanceMetrics[StudentStateSchema::WRONG_COUNT]                ?? 0,
+            StudentStateSchema::WRONG_STREAK              => $performanceMetrics[StudentStateSchema::WRONG_STREAK]               ?? 0,
+            StudentStateSchema::HINTS_USED_COUNT          => $performanceMetrics[StudentStateSchema::HINTS_USED_COUNT]           ?? 0,
+            StudentStateSchema::HINTS_AVAILABLE           => $performanceMetrics[StudentStateSchema::HINTS_AVAILABLE]            ?? StudentStateSchema::DEFAULT_HINTS_AVAILABLE,
+            StudentStateSchema::TARGET_DIFFICULTY         => $performanceMetrics[StudentStateSchema::TARGET_DIFFICULTY]          ?? null,
         ]));
     }
 
@@ -132,13 +132,13 @@ final class GuestProgressService implements GuestProgressServiceInterface
         $this->saveGamificationState($state->xp, $state->streak);
 
         $this->setCookie($this->cookiePerformance, json_encode([
-            'total_answered'    => $state->total_answered,
-            'correct_count'     => $state->correct_count,
-            'wrong_count'       => $state->wrong_count,
-            'wrong_streak'      => $state->wrong_streak,
-            'hints_used'        => $state->hints_used,
-            'hints_available'   => $state->hints_available,
-            'target_difficulty' => $state->target_difficulty,
+            StudentStateSchema::TOTAL_QUESTIONS_ANSWERED    => $state->total_answered,
+            StudentStateSchema::CORRECT_COUNT               => $state->correct_count,
+            StudentStateSchema::WRONG_COUNT                 => $state->wrong_count,
+            StudentStateSchema::WRONG_STREAK                => $state->wrong_streak,
+            StudentStateSchema::HINTS_USED_COUNT            => $state->hints_used,
+            StudentStateSchema::HINTS_AVAILABLE             => $state->hints_available,
+            StudentStateSchema::TARGET_DIFFICULTY           => $state->target_difficulty,
         ]));
     }
 

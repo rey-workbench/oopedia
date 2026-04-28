@@ -11,8 +11,10 @@ use App\Contracts\Services\PerformanceServiceInterface;
 use App\Enums\Lms\ContentCategory;
 use App\Enums\Lms\LearningStyle;
 use App\Enums\Lms\QuestionDifficulty;
+use App\Enums\Lms\StudentLevel;
 use App\Models\StudentState;
-use App\Rules\Adaptive\Constants\AdaptiveConstants as AC;
+use App\Rules\Adaptive\Constants\PedagogicalConstants;
+use App\Rules\Adaptive\Constants\StudentStateSchema;
 
 final class PerformanceService implements PerformanceServiceInterface
 {
@@ -38,71 +40,39 @@ final class PerformanceService implements PerformanceServiceInterface
         $distribution = $state->time_distribution ?? [];
         if (empty($distribution)) {
             $distribution = [
-                AC::STYLE_VISUAL  => 0,
-                AC::STYLE_TEXTUAL => 0,
+                LearningStyle::VISUAL->value  => 0,
+                LearningStyle::TEXTUAL->value => 0,
             ];
         }
 
         $category = $questionType->value === ContentCategory::SINTAKS->value
-            ? AC::STYLE_VISUAL
-            : AC::STYLE_TEXTUAL;
+            ? LearningStyle::VISUAL->value
+            : LearningStyle::TEXTUAL->value;
         $distribution[$category] = ($distribution[$category] ?? 0) + $timeSpent;
 
-        $visualTime  = $distribution[AC::STYLE_VISUAL]  ?? 0;
-        $textualTime = $distribution[AC::STYLE_TEXTUAL] ?? 0;
+        $visualTime  = $distribution[LearningStyle::VISUAL->value]  ?? 0;
+        $textualTime = $distribution[LearningStyle::TEXTUAL->value] ?? 0;
         $totalTime   = $visualTime + $textualTime;
 
         if ($totalTime === 0) {
-            $newStyle = AC::STYLE_VISUAL;
+            $newStyle = LearningStyle::VISUAL->value;
         } else {
             $diff     = abs($visualTime - $textualTime) / $totalTime;
-            $newStyle = $diff < AC::RATIO_STYLE_MIXED
-                ? AC::STYLE_MIXED
-                : ($visualTime > $textualTime ? AC::STYLE_VISUAL : AC::STYLE_TEXTUAL);
+            $newStyle = $diff < PedagogicalConstants::RATIO_STYLE_MIXED
+                ? LearningStyle::MIXED->value
+                : ($visualTime > $textualTime ? LearningStyle::VISUAL->value : LearningStyle::TEXTUAL->value);
         }
 
         $this->studentStateRepo->update($userId, [
-            'time_distribution' => $distribution,
-            'learning_style'    => $newStyle,
+            StudentStateSchema::TIME_DISTRIBUTION => $distribution,
+            StudentStateSchema::LEARNING_STYLE    => $newStyle,
         ]);
 
         return match ($newStyle) {
-            AC::STYLE_VISUAL  => LearningStyle::VISUAL,
-            AC::STYLE_TEXTUAL => LearningStyle::TEXTUAL,
-            default           => LearningStyle::MIXED,
+            LearningStyle::VISUAL->value  => LearningStyle::VISUAL,
+            LearningStyle::TEXTUAL->value => LearningStyle::TEXTUAL,
+            default                       => LearningStyle::MIXED,
         };
-    }
-
-    public function updateStudentPerformance(
-        string $userId,
-        bool $isCorrect,
-        int $timeSpent = 0,
-        bool $usedHint = false,
-    ): StudentState {
-        $state = $this->getStudentState($userId);
-
-        $updates = [
-            'total_answered' => $state->total_answered + 1,
-            'last_active_at' => now(),
-        ];
-
-        if ($usedHint) {
-            $updates['hints_used']      = $state->hints_used + 1;
-            $updates['hints_available'] = max(0, $state->hints_available - 1);
-        }
-
-        if ($isCorrect) {
-            $updates['correct_count'] = $state->correct_count + 1;
-            $updates['streak']        = $state->streak        + 1;
-            $updates['max_streak']    = max($state->max_streak, $state->streak + 1);
-            $updates['wrong_streak']  = 0;
-        } else {
-            $updates['wrong_count']  = $state->wrong_count  + 1;
-            $updates['wrong_streak'] = $state->wrong_streak + 1;
-            $updates['streak']       = 0;
-        }
-
-        return $this->studentStateRepo->update($userId, $updates);
     }
 
     public function calculateAverageTimeSpent(string $userId, string $materialId): float
@@ -151,11 +121,11 @@ final class PerformanceService implements PerformanceServiceInterface
         }
 
         $diffKey = $difficulty->value;
-        $rewards = AC::SCORE_REWARDS;
+        $rewards = PedagogicalConstants::SCORE_REWARDS;
         $score   = $rewards['base'];
 
-        $score += $rewards['difficulty_bonus'][$diffKey] ?? 0;
-        $allocatedTime = AC::ALLOCATED_TIME[$diffKey]    ?? 60;
+        $score += $rewards['difficulty_bonus'][$diffKey]                   ?? 0;
+        $allocatedTime = PedagogicalConstants::ALLOCATED_TIME[$diffKey]    ?? 60;
         if ($timeSpent > 0 && $timeSpent < ($allocatedTime / 2)) {
             $score += $rewards['time_bonus'];
         }
@@ -168,14 +138,25 @@ final class PerformanceService implements PerformanceServiceInterface
     }
 
     /** Reset navigation, streak, and wrong_streak when student switches material */
-    public function resetMaterialMetrics(string $userId): StudentState
+    public function resetMaterialMetrics(string $userId, ?string $newMaterialId = null): StudentState
     {
         return $this->studentStateRepo->update($userId, [
-            'streak'              => 0, // Per-module streak isolation
-            'wrong_streak'        => 0,
-            'target_difficulty'   => null,
-            'current_material_id' => null,
+            StudentStateSchema::CURRENT_STREAK      => 0, // Per-module streak isolation
+            StudentStateSchema::WRONG_STREAK        => 0,
+            StudentStateSchema::TARGET_DIFFICULTY   => null,
+            StudentStateSchema::CURRENT_MATERIAL_ID => $newMaterialId,
         ]);
+    }
+
+    public function syncMaterialContext(string $userId, string $materialId): StudentState
+    {
+        $state = $this->getStudentState($userId);
+
+        if ((string) $state->current_material_id !== (string) $materialId) {
+            return $this->resetMaterialMetrics($userId, $materialId);
+        }
+
+        return $state;
     }
 
     public function getStudentSessionState(string $userId): array
@@ -185,7 +166,7 @@ final class PerformanceService implements PerformanceServiceInterface
         return [
             'gamification' => [
                 'global_xp'      => $state->xp,
-                'current_level'  => $state->level ?? 'Pemula',
+                'current_level'  => $state->level ?? StudentLevel::PEMULA->value,
                 'current_streak' => $state->streak,
                 'max_streak'     => $state->max_streak,
             ],
@@ -197,7 +178,7 @@ final class PerformanceService implements PerformanceServiceInterface
             ],
             'adaptive' => [
                 'fast_track_active' => $state->fast_track_active ?? false,
-                'learning_style'    => $state->learning_style    ?? AC::STYLE_MIXED,
+                'learning_style'    => $state->learning_style    ?? LearningStyle::MIXED->value,
             ],
         ];
     }

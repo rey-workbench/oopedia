@@ -25,8 +25,7 @@ export class UserListState extends BaseState {
 
     constructor(users: Pagination<User>, search: string) {
         super();
-        this.users = users;
-        this.search = search;
+        this.hydrate({ users, search });
     }
 
     handleSearch = debounce(() => {
@@ -75,8 +74,7 @@ export class UserFormState extends FormState<{
             },
             { isEdit: !!user }
         );
-
-        this.targetUser = user;
+        this.hydrate({ targetUser: user });
     }
 
     async submit() {
@@ -116,7 +114,7 @@ export class PendingAdminState extends BaseState {
 
     constructor(pendingAdmins: User[]) {
         super();
-        this.pendingAdmins = pendingAdmins;
+        this.hydrate({ pendingAdmins });
     }
 
     handleApprove(id: number) {

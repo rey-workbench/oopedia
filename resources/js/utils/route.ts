@@ -68,7 +68,13 @@ export const ROUTES = {
             SHOW: (id: string | number) => `/admin/surveys/sus/${id}`,
             EXPORT: '/admin/surveys/sus/export',
         },
-        ADAPTIVE_ANALYTICS: '/admin/adaptive-analytics',
+        ADAPTIVE_RULES: '/admin/adaptive-rules',
+        ADAPTIVE_ACTIONS: {
+            INDEX: '/admin/adaptive-actions',
+            STORE: '/admin/adaptive-actions',
+            UPDATE: (id: string | number) => `/admin/adaptive-actions/${id}`,
+            DESTROY: (id: string | number) => `/admin/adaptive-actions/${id}`,
+        },
     },
     MAHASISWA: {
         DASHBOARD: '/mahasiswa/dashboard',
@@ -104,8 +110,10 @@ export const ROUTES = {
         CERTIFICATES: {
             INDEX: '/mahasiswa/certificates',
             DOWNLOAD: (id: string | number) => `/mahasiswa/certificates/${id}/download`,
-            PREVIEW: (id: string | number, userId?: string | number) => 
-                userId ? `/mahasiswa/certificates/preview/${id}/${userId}` : `/mahasiswa/certificates/preview/${id}`,
+            PREVIEW: (id: string | number, userId?: string | number) =>
+                userId
+                    ? `/mahasiswa/certificates/preview/${id}/${userId}`
+                    : `/mahasiswa/certificates/preview/${id}`,
         },
         UEQ: {
             CREATE: '/mahasiswa/surveys/ueq/create',

@@ -38,9 +38,13 @@ final class User extends Authenticatable
     /** @var array<int, string> */
     protected $hidden = ['password', 'remember_token'];
 
-    protected $casts = [
-        'is_approved' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_approved' => 'boolean',
+            'password'    => 'hashed',
+        ];
+    }
 
     public function role(): BelongsTo
     {
