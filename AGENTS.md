@@ -1,6 +1,6 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-04-11 (Asia/Bangkok)
+**Generated:** 2026-04-29 (Asia/Jakarta)
 **Commit:** e486c3e
 **Branch:** ongoing2
 
@@ -29,9 +29,9 @@ oopedia/
 | Task                      | Location                                      | Notes                                  |
 | ------------------------- | --------------------------------------------- | -------------------------------------- |
 | Route wiring              | `bootstrap/app.php`, `routes/*.php`           | `web.php` include auth/admin/mahasiswa |
-| Adaptive decision flow    | `app/Rules/Adaptive`, `app/Services/Adaptive` | Rule registry + fact/action constants  |
-| Service bindings          | `app/Providers/ServiceServiceProvider.php`    | Interface→implementation map           |
-| Repository bindings       | `app/Providers/RepositoryServiceProvider.php` | Persistence abstraction map            |
+| Adaptive decision flow    | `app/Services/Adaptive/AdaptiveEngineService.php` | Rule Engine Orchestrator |
+| Adaptive Constants        | `app/Rules/Adaptive/Constants`                | Facts, Actions, Pedagogical Constants  |
+| Analytics & LMS Services  | `app/Services/Analytics`, `app/Services/Lms`  | Dashboards, Quiz, Progress, MSLQ, SUS  |
 | Frontend app entry        | `resources/js/app.ts`, `vite.config.ts`       | Inertia page resolver import.meta.glob |
 | Shared frontend contracts | `resources/js/types`, `resources/js/utils`    | Public barrels, route/role helpers     |
 
@@ -43,7 +43,7 @@ oopedia/
 | `Route::middleware(...)->prefix('admin')`       | `routes/admin.php`                    | Admin feature surface            |
 | `Route::middleware(...)->prefix('mahasiswa')`   | `routes/mahasiswa.php`                | Student + guest learning surface |
 | `createInertiaApp({ resolve })`                 | `resources/js/app.ts`                 | Frontend boot + page resolution  |
-| `RuleRegistry::registerRules()`                 | `app/Rules/Adaptive/RuleRegistry.php` | Ordered adaptive rule set        |
+| `AdaptiveEngineService::evaluate()`             | `app/Services/Adaptive/AdaptiveEngineService.php` | Core forward-chaining rule engine |
 
 ## CONVENTIONS (PROJECT-SPECIFIC)
 
@@ -117,13 +117,15 @@ pnpm run format:check
 | ---------------- | --------------------------------------------------------- |
 | `users`          | User accounts (id, name, email, password, role_id)        |
 | `roles`          | User roles (admin, mahasiswa)                             |
-| `materials`      | Main learning modules (title, content, module_id)         |
-| `sub_materials`  | Sub-topics (title, content, jenis_konten, learning_style) |
+| `materials`      | Main learning modules (title, content)                    |
 | `questions`      | Quiz questions (text, type, difficulty, hint)             |
 | `answers`        | Answer options (text, correct, explanation)               |
 | `quiz_attempts`  | Quiz history (user_id, question_id, score, time)          |
-| `student_states` | Progress (gamification, profile, metrics, adaptive_state) |
-| `ueq_surveys`    | UEQ responses (26 Likert items)                           |
+| `student_states` | Progress (gamification, performance, adaptive metrics)    |
+| `adaptive_rules` | Forward chaining rules (conditions, execution priority)   |
+| `mslq_results`   | MSLQ assessment results for learning strategy profiles    |
+| `sus_results`    | System Usability Scale survey responses                   |
+| `ueq_surveys`    | User Experience Questionnaire responses                   |
 | `media`          | Media attachments                                         |
 
 ### Question Types
@@ -134,41 +136,28 @@ pnpm run format:check
 
 ## Models (Eloquent)
 
-User, Answer, Material, Media, Question, QuizAttempt, Role, StudentState, SubMaterial, UeqSurvey
+User, Role, Material, Question, Answer, Media, QuizAttempt, StudentState
+AdaptiveRule, AdaptiveFact, AdaptiveAction, AdaptiveExecutionLog
+MslqQuestion, MslqAnswer, MslqResult, SusResult, UeqSurvey
 
 ## Key Features
 
 ### 1. Adaptive Quiz Engine
 
-- Adjust question difficulty based on student performance
-- Forward chaining algorithm rule evaluation
-- 26 adaptive rules in app/Rules/Adaptive/
+- Evaluates current student state against DB-driven facts and rules
+- Uses forward-chaining evaluation (`AdaptiveEngineService`)
+- Configurable rules via database instead of hardcoded classes
 
-### 2. Rule Types
+### 2. Additional Features
 
-| Category           | Rules                                                               |
-| ------------------ | ------------------------------------------------------------------- |
-| Promotion          | StandardPromotion, AcceleratedJump, ModuleGraduation, MasteryMedium |
-| SafetyNet          | PersistentTextualSafetyNet, PersistentVisualSafetyNet               |
-| Certificate        | BronzeCertificate, SilverCertificate, GoldCertificate               |
-| CrisisIntervention | TextualCrisisIntervention, VisualCrisisIntervention                 |
-| Recovery           | SyntaxRecovery, LogicRecovery, RemedialIndependent                  |
-| ProjectRevision    | TextualProjectRevision, VisualProjectRevision                       |
+- Gamification (XP, level, streak, badges)
+- Questionnaires: MSLQ (strategies), SUS (usability), UEQ (experience)
+- Leaderboard & Certificates
 
 ### 3. Adaptive Services
 
-app/Services/Adaptive/
-AdaptiveEngineService.php (Orchestrator)
-AdaptiveQuizFlowService.php (Quiz flow)
-FactGatheringService.php (Collect facts)
-NextActionResolverService.php (Determine action)
-
-### 4. Additional Features
-
-- UEQ Survey (26 items)
-- Leaderboard
-- Certificates (Bronze/Silver/Gold)
-- Gamification
+`app/Services/Adaptive/AdaptiveEngineService.php` (Core orchestrator)
+`app/Rules/Adaptive/Constants/` (Holds enums for Facts, Actions, Pedagogy)
 
 ## Directory Structure
 
@@ -199,10 +188,9 @@ Textarea, Toast, Toggle, UserAvatar
 
 ```json
 {
-  "gamification_data": { "xp", "streak", "badges" },
-  "learning_profile": { "preferred_style", "weaknesses" },
-  "performance_metrics": { "accuracy", "avg_time", "streak" },
-  "adaptive_state": { "current_difficulty", "consecutive_correct" }
+  "gamification": { "xp": 0, "level": "Beginner", "streak": 0, "badges": [] },
+  "performance": { "total_answered": 0, "correct_count": 0, "accuracy": 0.0, "hints_used": 0 },
+  "adaptive_engine": { "session_history": [], "current_session": [], "performance_metrics": [], "adaptive_state": {} }
 }
 ```
 

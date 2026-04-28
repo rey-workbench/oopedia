@@ -274,7 +274,7 @@
                                     ? selectedNode.data.action_ids[0]
                                     : selectedNode.data.id}
 
-                            {#if actionId === 'INCREASE_DIFF' || actionId === 'H01'}
+                            {#if actionId === 'INCREASE_DIFF'}
                                 <div
                                     class="flex items-center gap-3 rounded-xl bg-blue-600 p-3 text-white shadow-lg"
                                 >

@@ -30,33 +30,5 @@ final class PedagogicalConstants
         'hard'     => 60,
     ];
 
-    // --- Diagnosis (Layer 3) ---
-    public const string DIAG_CRISIS = 'crisis';
-
-    public const string DIAG_STRUGGLING = 'struggling';
-
-    public const string DIAG_OPTIMAL = 'optimal';
-
-    public const string DIAG_DEPENDENCY = 'dependency';
-
-    public const string DIAG_BOREDOM = 'boredom';
-
-    public const string DIAG_DEFAULT = 'default';
-
-    // --- Recommendations (Layer 4) ---
-    public const string REC_REMEDIAL = 'remedial_review';
-
-    public const string REC_REDUCE_DIFF = 'reduce_difficulty';
-
-    public const string REC_INCREASE_DIFF = 'increase_difficulty';
-
-    public const string REC_SCAFFOLD_REDUCTION = 'scaffold_reduction';
-
-    public const string REC_NEW_CHALLENGE = 'new_challenge';
-
-    public const string REC_STREAK_BONUS = 'streak_bonus';
-
-    public const string REC_CERTIFICATION = 'grant_certification';
-
-    public const string REC_GENERAL_FEEDBACK = 'general_feedback';
+    // Diagnosis and Recommendation layers are managed by FactConstants and ActionConstants respectively.
 }

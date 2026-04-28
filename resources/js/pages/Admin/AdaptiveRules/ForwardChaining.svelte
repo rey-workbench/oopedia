@@ -1,7 +1,6 @@
 <script lang="ts">
     /// <reference types="d3" />
     import { onMount, untrack } from 'svelte';
-    import { fade } from 'svelte/transition';
     import * as d3 from 'd3';
     import type { AdaptiveRuleState } from '@/states/Admin/AdaptiveRuleState.svelte';
     import NodePreviewPanel from './NodePreviewPanel.svelte';
@@ -10,12 +9,7 @@
         buildGraphLinks,
         calculateSpatialCoordinates,
     } from './topology';
-    import Button from '@/components/ui/Button.svelte';
     import {
-        RefreshCw,
-        Maximize2,
-        Minimize2,
-        PlusCircle,
         Zap,
         Target,
     } from 'lucide-svelte';
@@ -127,7 +121,6 @@
 
     function handleNodeClick(d: any, event: MouseEvent) {
         event.stopPropagation();
-        selectedNode = d;
         highlightFlow(d);
     }
 
@@ -135,8 +128,7 @@
         event.preventDefault();
         event.stopPropagation();
         selectedNode = d;
-        if (d.type === 'gate' && onedit) onedit(d.data);
-        else if (d.type === 'action' && oneditaction) oneditaction(d.data);
+        highlightFlow(d);
     }
 
     function renderGraphLocal(nodes: any[], links: any[], width: number, height: number) {
@@ -208,13 +200,13 @@
             .attr('opacity', 0);
     };
 
-    function resetView() {
+    export const resetView = () => {
         if (!svgRef || !zoom) return;
         d3.select(svgRef)
             .transition()
             .duration(750)
             .call(zoom.transform, d3.zoomIdentity.translate(80, 50).scale(0.8));
-    }
+    };
 
     onMount(() => {
         initSchematic();
@@ -236,12 +228,12 @@
         }
     });
 
-    async function toggleFullscreen() {
+    export const toggleFullscreen = async () => {
         const target = fullscreenTarget || containerRef;
         if (!target) return;
         if (!document.fullscreenElement) await target.requestFullscreen();
         else await document.exitFullscreen();
-    }
+    };
 </script>
 
 <style>
@@ -282,50 +274,7 @@
         if (type === 'action' && oneditaction) oneditaction(null);
     }}
 >
-    <!-- Header -->
-    {#if !isFullscreen}
-        <div
-            class="pointer-events-none absolute top-6 right-6 left-6 z-10 flex items-center justify-end"
-            transition:fade
-        >
-            <div class="pointer-events-auto flex items-center gap-2">
-                {#if onedit}
-                    <Button
-                        variant="primary"
-                        size="sm"
-                        icon={PlusCircle}
-                        onclick={() => onedit(null)}
-                        class="shadow-primary-900/10 mr-2 shadow-xl"
-                    >
-                        TAMBAH ATURAN
-                    </Button>
-                {/if}
-                <div
-                    class="flex items-center gap-1 rounded-xl border border-slate-200 bg-white/80 p-1.5 shadow-lg backdrop-blur-xl"
-                >
-                    <button
-                        onclick={resetView}
-                        class="rounded-lg p-2 text-slate-500 transition-all hover:bg-slate-100 hover:text-slate-900 active:scale-95"
-                        title="Atur Ulang Tampilan"
-                    >
-                        <RefreshCw size={18} />
-                    </button>
-                    <div class="mx-1 h-6 w-px bg-slate-200"></div>
-                    <button
-                        onclick={toggleFullscreen}
-                        class="rounded-lg p-2 text-slate-500 transition-all hover:bg-slate-100 hover:text-slate-900 active:scale-95"
-                        title={isFullscreen ? 'Keluar Layar Penuh' : 'Layar Penuh'}
-                    >
-                        {#if isFullscreen}
-                            <Minimize2 size={18} />
-                        {:else}
-                            <Maximize2 size={18} />
-                        {/if}
-                    </button>
-                </div>
-            </div>
-        </div>
-    {/if}
+    <!-- The canvas header has been moved to Index.svelte -->
 
     <!-- Tree Canvas -->
     <div class="relative h-full w-full bg-slate-50/50">

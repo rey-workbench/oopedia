@@ -72,11 +72,7 @@ final class PerformanceService implements PerformanceServiceInterface
             $metrics['trend'] = $this->calculateTrend($sessionHistory);
 
             // Stagnancy Detection (Boredom Diagnosis)
-            if ($this->isStagnant($sessionHistory)) {
-                $metrics['stagnant_count']++;
-            } else {
-                $metrics['stagnant_count'] = 0;
-            }
+            $metrics['stagnant_count'] = $this->calculateStagnantCount($sessionHistory);
 
             // Reset current session
             $currentSession = [
@@ -87,12 +83,33 @@ final class PerformanceService implements PerformanceServiceInterface
             ];
         }
 
-        // 5. Persistence
+        // 5. Daily Streak Logic
+        $today = now()->startOfDay();
+        $lastActive = $state->last_active_at ? \Illuminate\Support\Carbon::parse($state->last_active_at)->startOfDay() : null;
+
+        $newStreak = $state->streak ?? 0;
+        $maxStreak = $state->max_streak ?? 0;
+
+        if (!$lastActive) {
+            $newStreak = 1;
+            $maxStreak = 1;
+        } elseif ($lastActive->equalTo($today->copy()->subDay())) {
+            $newStreak += 1;
+            $maxStreak = max($newStreak, $maxStreak);
+        } elseif ($lastActive->lessThan($today->copy()->subDay())) {
+            $newStreak = 1;
+        }
+        // Jika hari yang sama, streak tetap dipertahankan
+
+        // 6. Persistence
         return $this->studentStateRepo->update($userId, [
             StudentStateSchema::ACCURACY            => $accuracy,
             StudentStateSchema::CURRENT_SESSION     => $currentSession,
             StudentStateSchema::SESSION_HISTORY     => $sessionHistory,
             StudentStateSchema::PERFORMANCE_METRICS => $metrics,
+            StudentStateSchema::STREAK              => $newStreak,
+            StudentStateSchema::MAX_STREAK          => $maxStreak,
+            'last_active_at'                        => now(),
         ]);
     }
 
@@ -121,16 +138,29 @@ final class PerformanceService implements PerformanceServiceInterface
         return 'stable';
     }
 
-    private function isStagnant(array $history): bool
+    private function calculateStagnantCount(array $history): int
     {
-        if (count($history) < 3) {
-            return false;
+        if (count($history) < 2) {
+            return 0;
         }
-        $last3 = array_slice($history, -3);
-        $max   = max($last3);
-        $min   = min($last3);
 
-        return ($max - $min) < PedagogicalConstants::TREND_MARGIN;
+        $stagnantCount = 0;
+        $margin = PedagogicalConstants::TREND_MARGIN;
+
+        // Loop dari sesi terbaru (belakang) ke sesi terlama (depan)
+        for ($i = count($history) - 1; $i > 0; $i--) {
+            $selisih = $history[$i] - $history[$i - 1];
+            
+            // if -5% <= selisih <= +5%
+            if ($selisih >= -$margin && $selisih <= $margin) {
+                $stagnantCount++;
+            } else {
+                // Pola stagnan terputus
+                break;
+            }
+        }
+
+        return $stagnantCount;
     }
 
     public function getStudentSessionState(string $userId): array

@@ -32,15 +32,15 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
         $facts = [];
 
         // Accuracy mapping
-        if ($accuracy < 40) {
+        if ($accuracy < PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD) {
             $facts[] = FactConstants::ACCURACY_CRISIS;
         } elseif ($accuracy <= 60) {
             $facts[] = FactConstants::ACCURACY_STRUGGLE;
         } elseif ($accuracy <= 70) {
             $facts[] = FactConstants::ACCURACY_STABLE;
-        } elseif ($accuracy > 85) {
+        } elseif ($accuracy > PedagogicalConstants::ACCURACY_CERTIFICATION_THRESHOLD) {
             $facts[] = FactConstants::ACCURACY_EXCELLENT;
-        } elseif ($accuracy > 80) {
+        } elseif ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD) {
             $facts[] = FactConstants::ACCURACY_OPTIMAL;
         }
 
@@ -63,11 +63,11 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
         }
 
         // Streak mapping
-        if ($streak >= 7) {
+        if ($streak >= PedagogicalConstants::STREAK_CERTIFICATION_THRESHOLD) {
             $facts[] = FactConstants::STREAK_7D;
-        } elseif ($streak >= 5) {
+        } elseif ($streak >= PedagogicalConstants::STREAK_BOREDOM_THRESHOLD) {
             $facts[] = FactConstants::STREAK_5D;
-        } elseif ($streak >= 3) {
+        } elseif ($streak >= PedagogicalConstants::STREAK_OPTIMAL_THRESHOLD) {
             $facts[] = FactConstants::STREAK_3D;
         }
 
@@ -77,7 +77,7 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
         }
 
         // Help mapping
-        if ($hints > 3) {
+        if ($hints > PedagogicalConstants::HELP_HIGH_THRESHOLD) {
             $facts[] = FactConstants::HELP_HIGH;
         } elseif ($hints >= 2) {
             $facts[] = FactConstants::HELP_MED;
@@ -89,25 +89,25 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 
         // --- KRISIS PEMBELAJARAN ---
         // R01: Akurasi <40%, Tren turun 2 sesi, Bantuan >3x
-        if ($accuracy < 40 && $trend === 'down' && $hints > 3) {
+        if ($accuracy < PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD && $trend === 'down' && $hints > PedagogicalConstants::HELP_HIGH_THRESHOLD) {
             return $this->result('R01', FactConstants::V_CRISIS, [ActionConstants::REMEDIAL, ActionConstants::REDUCE_DIFF], $facts);
         }
         // R02: Akurasi <40%, Tren turun 2 sesi, Bantuan <=3x
-        if ($accuracy < 40 && $trend === 'down' && $hints <= 3) {
+        if ($accuracy < PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD && $trend === 'down' && $hints <= PedagogicalConstants::HELP_HIGH_THRESHOLD) {
             return $this->result('R02', FactConstants::V_CRISIS, [ActionConstants::REMEDIAL], $facts);
         }
         // R03: Akurasi <40%, Tren stabil/naik, Bantuan >3x
-        if ($accuracy < 40 && $hints > 3) {
+        if ($accuracy < PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD && $hints > PedagogicalConstants::HELP_HIGH_THRESHOLD) {
             return $this->result('R03', FactConstants::V_CRISIS, [ActionConstants::REDUCE_DIFF, ActionConstants::SCAFFOLD_REDUCTION], $facts);
         }
 
         // --- SEDANG KESULITAN ---
         // R04: Akurasi 40-60%, Respons lambat, Bantuan <=3x
-        if ($accuracy >= 40 && $accuracy <= 60 && $speed === 'slow' && $hints <= 3) {
+        if ($accuracy >= PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD && $accuracy <= 60 && $speed === 'slow' && $hints <= PedagogicalConstants::HELP_HIGH_THRESHOLD) {
             return $this->result('R04', FactConstants::V_STRUGGLING, [ActionConstants::REDUCE_DIFF], $facts);
         }
         // R05: Akurasi 40-60%, Respons normal, Bantuan 2-3x
-        if ($accuracy >= 40 && $accuracy <= 60 && $hints >= 2) {
+        if ($accuracy >= PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD && $accuracy <= 60 && $speed === 'normal' && $hints >= 2 && $hints <= PedagogicalConstants::HELP_HIGH_THRESHOLD) {
             return $this->result('R05', FactConstants::V_STRUGGLING, [ActionConstants::REMEDIAL], $facts);
         }
         // R06: Akurasi 60-70%, Tren stabil, Bantuan <=2x
@@ -125,23 +125,23 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
             return $this->result('R08', FactConstants::V_OPTIMAL, [ActionConstants::NEW_CHALLENGE], $facts);
         }
         // R09: Akurasi >80%, Respons cepat, Streak >=3
-        if ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD && $speed === 'fast' && $streak >= 3) {
+        if ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD && $speed === 'fast' && $streak >= PedagogicalConstants::STREAK_OPTIMAL_THRESHOLD) {
             return $this->result('R09', FactConstants::V_OPTIMAL, [ActionConstants::INCREASE_DIFF, ActionConstants::STREAK_BONUS], $facts);
         }
 
         // --- KETERGANTUNGAN BANTUAN ---
         // R10: Bantuan >3x, Akurasi <50% tanpa bantuan, Tren stabil
-        if ($hints > 3 && $accuracy < 50 && $trend === 'stable') {
+        if ($hints > PedagogicalConstants::HELP_HIGH_THRESHOLD && $accuracy < 50 && $trend === 'stable') {
             return $this->result('R10', FactConstants::V_DEPENDENCY, [ActionConstants::SCAFFOLD_REDUCTION, ActionConstants::REMEDIAL], $facts);
         }
         // R11: Bantuan >3x, Akurasi >60% dengan bantuan, Tren naik
-        if ($hints > 3 && $accuracy > 60 && $trend === 'up') {
+        if ($hints > PedagogicalConstants::HELP_HIGH_THRESHOLD && $accuracy > 60 && $trend === 'up') {
             return $this->result('R11', FactConstants::V_DEPENDENCY, [ActionConstants::SCAFFOLD_REDUCTION], $facts);
         }
 
         // --- POTENSI KEBOSANAN ---
         // R12: Akurasi >80%, Skor stagnan >=3 sesi, Streak >=5
-        if ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD && $stagnantCount >= 3 && $streak >= 5) {
+        if ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD && $stagnantCount >= 3 && $streak >= PedagogicalConstants::STREAK_BOREDOM_THRESHOLD) {
             return $this->result('R12', FactConstants::V_BOREDOM, [ActionConstants::NEW_CHALLENGE, ActionConstants::STREAK_BONUS], $facts);
         }
         // R13: Akurasi >80%, Respons cepat, Skor stagnan >=3 sesi
@@ -150,14 +150,14 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
         }
 
         // --- SPECIAL: CERTIFICATION ---
-        // R15 condition: Avg Accuracy > 85% over last 3 sessions
-        $last3Accuracy = 0;
+        // R15 condition: Min Accuracy > 85% over last 3 sessions
+        $isConsistentHigh = false;
         if (count($history) >= 3) {
-            $last3         = array_slice($history, -3);
-            $last3Accuracy = array_sum($last3) / 3;
+            $last3 = array_slice($history, -3);
+            $isConsistentHigh = min($last3) > PedagogicalConstants::ACCURACY_CERTIFICATION_THRESHOLD;
         }
 
-        if ($level === StudentLevel::AHLI->value && $last3Accuracy > PedagogicalConstants::ACCURACY_CERTIFICATION_THRESHOLD && $streak >= 7 && $hints === 0) {
+        if ($level === StudentLevel::AHLI->value && $isConsistentHigh && $streak >= PedagogicalConstants::STREAK_CERTIFICATION_THRESHOLD && $hints === 0) {
             return $this->result('R15', FactConstants::V_OPTIMAL, [ActionConstants::CERTIFICATION], $facts);
         }
 
