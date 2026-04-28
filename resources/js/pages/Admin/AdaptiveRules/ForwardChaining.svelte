@@ -1,8 +1,10 @@
 <script lang="ts">
     /// <reference types="d3" />
     import { onMount, untrack } from 'svelte';
+    import { fade, fly } from 'svelte/transition';
     import * as d3 from 'd3';
     import type { AdaptiveRuleState } from '@/states/Admin/AdaptiveRuleState.svelte';
+    import Button from '@/components/ui/Button.svelte';
     import {
         Brain,
         Maximize2,
@@ -12,21 +14,44 @@
         Target,
         X,
         Pencil,
+        PlusCircle,
+        Zap,
+        Trophy,
+        Info,
     } from 'lucide-svelte';
 
     interface Props {
         analyticsState: AdaptiveRuleState;
         onedit?: (rule: any) => void;
+        oneditaction?: (action: any) => void;
+        isFullscreen?: boolean;
+        fullscreenTarget?: HTMLElement | null;
     }
 
-    let { analyticsState, onedit }: Props = $props();
+    let { 
+        analyticsState, 
+        onedit, 
+        oneditaction, 
+        isFullscreen = $bindable(false),
+        fullscreenTarget = null 
+    }: Props = $props();
 
     let svgRef = $state<SVGSVGElement | null>(null);
     let containerRef = $state<HTMLDivElement | null>(null);
-    let isFullscreen = $state(false);
     let selectedNode = $state<any>(null);
     let zoomLevel = $state(0.8);
     let resetD3Flow = () => {};
+
+    onMount(() => {
+        const handleFullscreenChange = () => {
+            isFullscreen = !!document.fullscreenElement;
+        };
+
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        return () => {
+            document.removeEventListener('fullscreenchange', handleFullscreenChange);
+        };
+    });
 
     const factData = $derived(analyticsState.allFacts);
     const actionData = $derived(analyticsState.allActions);
@@ -386,6 +411,30 @@
         }
     }
 
+    function updateLinkPaths() {
+        mainGroup.selectAll('.link').attr('d', generateBezierPath);
+    }
+
+    function dragstarted(this: any) {
+        d3.select(this).raise();
+    }
+
+    function dragged(this: any, event: any, d: any) {
+        d.x = event.x;
+        d.y = event.y;
+        d3.select(this).attr('transform', `translate(${d.x},${d.y})`);
+        updateLinkPaths();
+    }
+
+    function dragended(this: any) {
+        // Optional: save positions or snap to grid
+    }
+
+    const drag = d3.drag()
+        .on('start', dragstarted)
+        .on('drag', dragged)
+        .on('end', dragended);
+
     function drawLinks(links: any[]) {
         mainGroup
             .selectAll('.link')
@@ -425,8 +474,10 @@
             .enter()
             .append('g')
             .attr('transform', (d) => `translate(${d.x},${d.y})`)
-            .attr('class', 'rect-node cursor-pointer select-none')
-            .on('click', (event, d) => handleNodeClick(d, event));
+            .attr('class', 'rect-node cursor-grab active:cursor-grabbing select-none')
+            .call(drag as any)
+            .on('click', (event, d) => handleNodeClick(d, event))
+            .on('contextmenu', (event, d) => handleNodeContextMenu(d, event));
 
         nodeSelection
             .append('rect')
@@ -438,7 +489,11 @@
             .attr('fill', (d) => getNodeFill(d.type))
             .attr('stroke', (d) => getNodeStroke(d.type))
             .attr('stroke-width', 2)
-            .attr('class', 'shadow-sm');
+            .attr('class', 'shadow-sm transition-all duration-300')
+            .style('opacity', 0)
+            .transition()
+            .duration(500)
+            .style('opacity', 1);
 
         nodeSelection
             .append('text')
@@ -457,15 +512,21 @@
             .enter()
             .append('g')
             .attr('transform', (d) => `translate(${d.x},${d.y})`)
-            .attr('class', 'gate-node cursor-pointer select-none')
-            .on('click', (event, d) => handleNodeClick(d, event));
+            .attr('class', 'gate-node cursor-grab active:cursor-grabbing select-none')
+            .call(drag as any)
+            .on('click', (event, d) => handleNodeClick(d, event))
+            .on('contextmenu', (event, d) => handleNodeContextMenu(d, event));
 
         gateSelection
             .append('circle')
             .attr('r', 24)
             .attr('fill', '#0f172a')
             .attr('stroke', '#334155')
-            .attr('stroke-width', 2);
+            .attr('stroke-width', 2)
+            .style('opacity', 0)
+            .transition()
+            .duration(500)
+            .style('opacity', 1);
         gateSelection
             .append('text')
             .attr('text-anchor', 'middle')
@@ -495,6 +556,16 @@
     function handleNodeClick(d: any, event: MouseEvent) {
         selectedNode = d;
         highlightFlow(d);
+        event.stopPropagation();
+    }
+
+    function handleNodeContextMenu(d: any, event: MouseEvent) {
+        event.preventDefault();
+        if (d.type === 'gate' && onedit) {
+            onedit(d.data);
+        } else if (d.type === 'action' && oneditaction) {
+            oneditaction(d.data);
+        }
         event.stopPropagation();
     }
 
@@ -565,8 +636,9 @@
     });
 
     async function toggleFullscreen() {
-        if (!containerRef) return;
-        if (!document.fullscreenElement) await containerRef.requestFullscreen();
+        const target = fullscreenTarget || containerRef;
+        if (!target) return;
+        if (!document.fullscreenElement) await target.requestFullscreen();
         else await document.exitFullscreen();
     }
 </script>
@@ -593,40 +665,66 @@
 
 <div
     class="relative w-full overflow-hidden bg-white {isFullscreen
-        ? 'h-full rounded-none'
+        ? 'fixed inset-0 z-100 h-screen w-screen rounded-none'
         : 'h-[750px] rounded-3xl border-2 border-slate-100 shadow-xl'}"
     bind:this={containerRef}
+    role="region"
+    aria-label="Strategy Visualization Canvas"
+    ondragover={(e) => {
+        e.preventDefault();
+        if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
+    }}
+    ondrop={(e) => {
+        e.preventDefault();
+        const type = e.dataTransfer?.getData('type');
+        if (type === 'rule' && onedit) onedit(null);
+        if (type === 'action' && oneditaction) oneditaction(null);
+    }}
 >
     <!-- Header -->
-    <div
-        class="pointer-events-none absolute top-6 right-6 left-6 z-10 flex items-center justify-end"
-    >
-        <div class="pointer-events-auto flex items-center gap-2">
-            <div
-                class="mr-2 flex items-center gap-1 rounded-xl border border-slate-200 bg-white/80 p-1.5 shadow-lg backdrop-blur-xl"
-            >
-                <button
-                    onclick={resetView}
-                    class="rounded-lg p-2 text-slate-500 transition-all hover:bg-slate-100 hover:text-slate-900 active:scale-95"
-                    title="Atur Ulang Tampilan"
+    {#if !isFullscreen}
+        <div
+            class="pointer-events-none absolute top-6 right-6 left-6 z-10 flex items-center justify-end"
+            transition:fade
+        >
+            <div class="pointer-events-auto flex items-center gap-2">
+                {#if onedit}
+                    <Button
+                        variant="primary"
+                        size="sm"
+                        icon={PlusCircle}
+                        onclick={() => onedit(null)}
+                        class="mr-2 shadow-xl shadow-primary-900/10"
+                    >
+                        TAMBAH ATURAN
+                    </Button>
+                {/if}
+                <div
+                    class="flex items-center gap-1 rounded-xl border border-slate-200 bg-white/80 p-1.5 shadow-lg backdrop-blur-xl"
                 >
-                    <RefreshCw size={18} />
-                </button>
-                <div class="mx-1 h-6 w-px bg-slate-200"></div>
-                <button
-                    onclick={toggleFullscreen}
-                    class="rounded-lg p-2 text-slate-500 transition-all hover:bg-slate-100 hover:text-slate-900 active:scale-95"
-                    title={isFullscreen ? 'Keluar Layar Penuh' : 'Layar Penuh'}
-                >
-                    {#if isFullscreen}
-                        <Minimize2 size={18} />
-                    {:else}
-                        <Maximize2 size={18} />
-                    {/if}
-                </button>
+                    <button
+                        onclick={resetView}
+                        class="rounded-lg p-2 text-slate-500 transition-all hover:bg-slate-100 hover:text-slate-900 active:scale-95"
+                        title="Atur Ulang Tampilan"
+                    >
+                        <RefreshCw size={18} />
+                    </button>
+                    <div class="mx-1 h-6 w-px bg-slate-200"></div>
+                    <button
+                        onclick={toggleFullscreen}
+                        class="rounded-lg p-2 text-slate-500 transition-all hover:bg-slate-100 hover:text-slate-900 active:scale-95"
+                        title={isFullscreen ? 'Keluar Layar Penuh' : 'Layar Penuh'}
+                    >
+                        {#if isFullscreen}
+                            <Minimize2 size={18} />
+                        {:else}
+                            <Maximize2 size={18} />
+                        {/if}
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
+    {/if}
 
     <!-- Tree Canvas -->
     <div class="relative h-full w-full bg-slate-50/50">
@@ -635,7 +733,75 @@
             style="background-image: radial-gradient(#000 1px, transparent 1px); background-size: 24px 24px;"
         ></div>
 
-        <svg bind:this={svgRef} class="group block h-full w-full touch-none"></svg>
+        <svg 
+            bind:this={svgRef} 
+            class="group block h-full w-full touch-none"
+            oncontextmenu={(e) => e.preventDefault()}
+            onclick={() => (selectedNode = null)}
+            role="application"
+            aria-label="Workflow Canvas"
+        ></svg>
+
+        <!-- Palette Sidebar (n8n Style) -->
+        <div class="pointer-events-none absolute left-8 top-1/2 -translate-y-1/2 z-10 flex flex-col gap-6">
+            <div class="pointer-events-auto flex flex-col gap-4">
+                <div 
+                    class="group relative flex flex-col items-center gap-2 p-4 rounded-3xl bg-white/90 border border-slate-200 shadow-xl cursor-grab active:cursor-grabbing hover:border-primary-400 transition-all hover:shadow-primary-900/10 backdrop-blur-xl focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    draggable="true"
+                    role="button"
+                    tabindex="0"
+                    aria-label="Add New Rule"
+                    ondragstart={(e) => {
+                        e.dataTransfer?.setData('type', 'rule');
+                        e.dataTransfer!.effectAllowed = 'copy';
+                    }}
+                    onkeydown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            if (onedit) onedit(null);
+                        }
+                    }}
+                >
+                    <div class="p-3 rounded-2xl bg-primary-50 text-primary-600 group-hover:scale-110 transition-transform shadow-sm">
+                        <Zap size={28} />
+                    </div>
+                    <span class="text-[9px] font-black text-slate-500 uppercase tracking-tighter">New Rule</span>
+                    
+                    <!-- Tooltip -->
+                    <div class="absolute left-full ml-4 px-3 py-1.5 bg-slate-900 text-white text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                        Tarik ke kanvas untuk buat Aturan
+                    </div>
+                </div>
+
+                <div 
+                    class="group relative flex flex-col items-center gap-2 p-4 rounded-3xl bg-white/90 border border-slate-200 shadow-xl cursor-grab active:cursor-grabbing hover:border-emerald-400 transition-all hover:shadow-emerald-900/10 backdrop-blur-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    draggable="true"
+                    role="button"
+                    tabindex="0"
+                    aria-label="Add New Action"
+                    ondragstart={(e) => {
+                        e.dataTransfer?.setData('type', 'action');
+                        e.dataTransfer!.effectAllowed = 'copy';
+                    }}
+                    onkeydown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            if (oneditaction) oneditaction(null);
+                        }
+                    }}
+                >
+                    <div class="p-3 rounded-2xl bg-emerald-50 text-emerald-600 group-hover:scale-110 transition-transform shadow-sm">
+                        <Target size={28} />
+                    </div>
+                    <span class="text-[9px] font-black text-slate-500 uppercase tracking-tighter">New Action</span>
+                    
+                    <!-- Tooltip -->
+                    <div class="absolute left-full ml-4 px-3 py-1.5 bg-slate-900 text-white text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                        Tarik ke kanvas untuk buat Aksi
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 
         <!-- Legend Bottom Right -->
         <div class="pointer-events-none absolute right-6 bottom-6 flex flex-col gap-2">
@@ -673,153 +839,199 @@
             </div>
         </div>
 
-        <!-- Node Details -->
+        <!-- n8n-style Node Detail Panel -->
         {#if selectedNode}
-            <div
-                class="animate-in zoom-in-95 fade-in absolute bottom-6 left-6 w-[320px] overflow-hidden rounded-3xl border-2 border-slate-100 bg-white shadow-2xl duration-300"
+            <!-- svelte-ignore a11y_click_events_have_key_events -->
+            <!-- svelte-ignore a11y_no_static_element_interactions -->
+            <div 
+                class="absolute inset-0 z-20 bg-slate-900/10 backdrop-blur-[2px]"
+                onclick={() => (selectedNode = null)}
+                transition:fade={{ duration: 200 }}
+            ></div>
+
+            <div 
+                class="absolute inset-y-0 right-0 z-150 flex w-full max-w-sm flex-col border-l border-slate-200 bg-white shadow-2xl"
+                transition:fly={{ x: 400, duration: 300 }}
             >
-                <div class="p-5">
-                    <div class="mb-4 flex items-start justify-between">
-                        <div class="flex items-center gap-3">
+                <!-- Drawer Header -->
+                <div class="flex items-center justify-between border-b border-slate-100 px-6 py-5">
+                    <div class="flex items-center gap-3">
+                        <div class="rounded-xl p-2 {selectedNode.type === 'gate' ? 'bg-primary-50 text-primary-600' : 'bg-emerald-50 text-emerald-600'}">
                             {#if selectedNode.type === 'gate'}
-                                <div class="rounded-2xl bg-slate-900 p-3 text-white shadow-lg">
-                                    <Brain size={20} />
-                                </div>
-                            {:else if selectedNode.type === 'raw_fact' || selectedNode.type === 'virtual_fact'}
-                                <div
-                                    class="rounded-2xl border border-blue-100 bg-blue-50 p-3 text-blue-600 shadow-sm"
-                                >
-                                    <GitBranch size={20} />
-                                </div>
+                                <GitBranch size={20} />
+                            {:else if selectedNode.type === 'action'}
+                                <Target size={20} />
                             {:else}
-                                <div
-                                    class="rounded-2xl border border-emerald-100 bg-emerald-50 p-3 text-emerald-600 shadow-sm"
-                                >
-                                    <Target size={20} />
-                                </div>
+                                <Brain size={20} />
                             {/if}
-                            <div class="flex flex-col gap-1">
-                                <span
-                                    class="text-[10px] font-black tracking-widest text-slate-400 uppercase"
-                                    >{selectedNode.type === 'raw_fact'
-                                        ? 'FAKTA MENTAH'
-                                        : selectedNode.type === 'virtual_fact'
-                                          ? 'FAKTA VIRTUAL'
-                                          : selectedNode.type === 'gate'
-                                            ? 'GERBANG'
-                                            : selectedNode.type === 'action'
-                                              ? 'AKSI'
-                                              : selectedNode.type.replace('_', ' ')}</span
-                                >
-                                <h4 class="line-clamp-1 text-sm font-bold text-slate-900">
-                                    {selectedNode.data.name}
-                                </h4>
-                            </div>
                         </div>
-                        <div class="flex items-center gap-1">
-                            {#if selectedNode.type === 'gate' && onedit}
-                                <button
-                                    onclick={() => onedit(selectedNode.data)}
-                                    class="hover:text-primary-600 hover:bg-primary-50 rounded-xl p-1.5 text-slate-400 transition-colors"
-                                    title="Ubah Aturan"
-                                >
-                                    <Pencil size={14} />
-                                </button>
-                            {/if}
-                            <button
-                                onclick={() => {
-                                    selectedNode = null;
-                                    resetD3Flow();
-                                }}
-                                class="rounded-xl p-1.5 text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-600"
-                            >
-                                <X size={16} />
-                            </button>
+                        <div>
+                            <h3 class="text-sm font-black text-slate-800">
+                                {selectedNode.type === 'gate' ? 'Detail Aturan' : selectedNode.type === 'action' ? 'Detail Aksi' : 'Detail Fakta'}
+                            </h3>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Node Configuration</p>
                         </div>
                     </div>
-
-                    <div class="space-y-4">
-                        {#if selectedNode.type === 'gate'}
-                            <div
-                                class="rounded-2xl border border-slate-100 bg-slate-50 p-4 font-mono text-[11px] leading-relaxed"
+                    <div class="flex items-center gap-2">
+                        {#if selectedNode.type === 'gate' && onedit}
+                            <button
+                                onclick={() => onedit(selectedNode.data)}
+                                class="rounded-xl p-2 text-primary-600 transition-colors hover:bg-primary-50"
+                                title="Ubah Aturan"
                             >
-                                <span class="font-bold text-blue-600">JIKA</span>
-                                {#each selectedNode.data.required_facts || [] as req, i}
-                                    <span
-                                        class="mx-1 rounded border border-slate-200 bg-white px-1.5 py-0.5 text-slate-700 shadow-sm"
-                                    >
-                                        {factData.find((f) => f.code === req)?.name || req}
-                                    </span>
-                                    {#if i < (selectedNode.data.required_facts?.length || 0) - 1}
-                                        <span class="text-[10px] font-bold text-slate-400">DAN</span
-                                        >
-                                    {/if}
-                                {/each}
+                                <Pencil size={18} />
+                            </button>
+                        {/if}
+                        <button
+                            onclick={() => {
+                                selectedNode = null;
+                                resetD3Flow();
+                            }}
+                            class="rounded-xl p-2 text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-600"
+                        >
+                            <X size={20} />
+                        </button>
+                    </div>
+                </div>
 
-                                <br />
-                                <span class="mt-2 inline-block font-bold text-emerald-600"
-                                    >MAKA</span
-                                >
-
-                                {#if selectedNode.data.deduced_facts && selectedNode.data.deduced_facts.length > 0}
-                                    <div class="mt-2">
-                                        <span class="font-bold text-purple-600">DEDUKSI</span>
-                                        {#each selectedNode.data.deduced_facts as ded, i}
-                                            <span
-                                                class="mx-1 rounded border border-purple-100 bg-purple-50 px-1.5 py-0.5 text-purple-700 shadow-sm"
-                                            >
-                                                {factData.find((f) => f.code === ded)?.name || ded}
+                <!-- Drawer Body -->
+                <div class="custom-scrollbar flex-1 overflow-y-auto p-6 space-y-6">
+                    {#if selectedNode.type === 'gate'}
+                        <section class="space-y-4">
+                            <div class="flex items-center gap-2 text-[10px] font-black text-blue-500 uppercase tracking-widest">
+                                <div class="h-px flex-1 bg-blue-100"></div>
+                                <span>Logic Flow</span>
+                                <div class="h-px w-4 bg-blue-100"></div>
+                            </div>
+                            
+                            <div class="rounded-2xl border border-slate-100 bg-slate-50 p-4 font-mono text-[11px] leading-relaxed">
+                                <div class="mb-3">
+                                    <span class="font-bold text-blue-600">IF (Triggers)</span>
+                                    <div class="mt-2 flex flex-wrap gap-2">
+                                        {#each selectedNode.data.required_facts || [] as req}
+                                            <span class="rounded border border-slate-200 bg-white px-2 py-1 text-slate-700 shadow-sm">
+                                                {factData.find((f) => f.code === req)?.name || req}
                                             </span>
-                                            {#if i < selectedNode.data.deduced_facts.length - 1}
-                                                <span class="text-[10px] font-bold text-slate-400"
-                                                    >DAN</span
-                                                >
-                                            {/if}
                                         {/each}
                                     </div>
-                                {/if}
+                                </div>
 
-                                {#if selectedNode.data.action_id}
-                                    <div class="mt-2">
-                                        <span class="font-bold text-emerald-600">AKSI</span>
-                                        <span
-                                            class="mx-1 rounded border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 text-emerald-800 shadow-sm"
-                                        >
-                                            {actionData.find(
-                                                (a) =>
-                                                    a.id === selectedNode.data.action_id ||
-                                                    a.code === selectedNode.data.action
-                                            )?.name || selectedNode.data.action}
-                                        </span>
+                                {#if selectedNode.data.deduced_facts?.length > 0}
+                                    <div class="mb-3">
+                                        <span class="font-bold text-purple-600">THEN (Deduce)</span>
+                                        <div class="mt-2 flex flex-wrap gap-2">
+                                            {#each selectedNode.data.deduced_facts as ded}
+                                                <span class="rounded border border-purple-100 bg-purple-50 px-2 py-1 text-purple-700 shadow-sm">
+                                                    {factData.find((f) => f.code === ded)?.name || ded}
+                                                </span>
+                                            {/each}
+                                        </div>
                                     </div>
                                 {/if}
+
+                                {#if selectedNode.data.action_id || selectedNode.data.action}
+                                    {#if actionData.find(a => a.id === selectedNode.data.action_id || a.code === selectedNode.data.action)}
+                                        {@const action = actionData.find(a => a.id === selectedNode.data.action_id || a.code === selectedNode.data.action)}
+                                        <div>
+                                            <span class="font-bold text-emerald-600">THEN (Action)</span>
+                                            <div class="mt-2 rounded-xl border border-emerald-100 bg-emerald-50/50 p-3">
+                                                <p class="text-xs font-bold text-emerald-900">{action?.name || selectedNode.data.action}</p>
+                                                <p class="mt-1 text-[10px] text-emerald-700/80 leading-relaxed">{action?.description || ''}</p>
+                                            </div>
+                                        </div>
+                                    {/if}
+                                {/if}
                             </div>
+                        </section>
+
+                        <section class="space-y-4">
+                            <div class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                <div class="h-px flex-1 bg-slate-100"></div>
+                                <span>Metadata</span>
+                                <div class="h-px w-4 bg-slate-100"></div>
+                            </div>
+
                             <div class="grid grid-cols-2 gap-3">
-                                <div class="rounded-2xl border border-slate-100 bg-slate-50 p-3">
-                                    <p class="mb-1 text-[9px] font-bold text-slate-400 uppercase">
-                                        Kode Aturan
-                                    </p>
-                                    <p class="font-mono text-xs font-black text-slate-900">
-                                        {selectedNode.data.code}
-                                    </p>
+                                <div class="rounded-2xl border border-slate-100 bg-white p-3 shadow-sm">
+                                    <p class="mb-1 text-[9px] font-bold text-slate-400 uppercase">Kode</p>
+                                    <p class="font-mono text-xs font-black text-slate-900">{selectedNode.data.code}</p>
                                 </div>
-                                <div class="rounded-2xl border border-slate-100 bg-slate-50 p-3">
-                                    <p class="mb-1 text-[9px] font-bold text-slate-400 uppercase">
-                                        Prioritas
-                                    </p>
-                                    <p class="text-xs font-black text-slate-900">
-                                        Level {selectedNode.data.priority}
-                                    </p>
+                                <div class="rounded-2xl border border-slate-100 bg-white p-3 shadow-sm">
+                                    <p class="mb-1 text-[9px] font-bold text-slate-400 uppercase">Prioritas</p>
+                                    <p class="text-xs font-black text-slate-900">Level {selectedNode.data.priority}</p>
                                 </div>
                             </div>
-                        {:else}
-                            <div
-                                class="rounded-2xl border border-slate-100 bg-slate-50 p-4 text-xs leading-relaxed text-slate-600 italic"
-                            >
-                                {selectedNode.data.description || 'Tidak ada deskripsi tambahan.'}
+
+                            {#if selectedNode.data.description}
+                                <div class="rounded-2xl border border-blue-50 bg-blue-50/30 p-4">
+                                    <p class="text-[11px] leading-relaxed text-slate-600 italic">
+                                        "{selectedNode.data.description}"
+                                    </p>
+                                </div>
+                            {/if}
+                        </section>
+                    {:else}
+                        <div class="rounded-3xl border border-slate-100 bg-slate-50 p-6 text-center">
+                            <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-sm">
+                                <Brain size={32} class="text-slate-400" />
                             </div>
-                        {/if}
-                    </div>
+                            <h4 class="mb-2 text-sm font-black text-slate-800">{selectedNode.data.name}</h4>
+                            <p class="text-xs leading-relaxed text-slate-500 italic">
+                                {selectedNode.data.description || 'Tidak ada deskripsi tambahan untuk node ini.'}
+                            </p>
+                            {#if selectedNode.data.variant}
+                                <div class="mt-4 flex justify-center">
+                                    <span class="rounded-full bg-slate-200 px-3 py-1 text-[10px] font-black text-slate-700 uppercase tracking-widest">
+                                        {selectedNode.data.variant}
+                                    </span>
+                                </div>
+                            {/if}
+                        </div>
+                    {/if}
+
+                    {#if selectedNode.type === 'gate' || selectedNode.type === 'action'}
+                         <!-- Preview Section -->
+                         <section class="space-y-4">
+                            <div class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                <div class="h-px flex-1 bg-slate-100"></div>
+                                <span>Preview Tampilan</span>
+                                <div class="h-px w-4 bg-slate-100"></div>
+                            </div>
+                            <div class="overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 p-4 shadow-inner">
+                                {#if (selectedNode.type === 'gate' && actionData.find(a => a.id === selectedNode.data.action_id || a.code === selectedNode.data.action)?.code) || selectedNode.type === 'action'}
+                                    {@const actionCode = selectedNode.type === 'gate' 
+                                        ? actionData.find(a => a.id === selectedNode.data.action_id || a.code === selectedNode.data.action)?.code 
+                                        : selectedNode.data.code}
+                                    
+                                    {#if actionCode === 'INCREASE_DIFF' || actionCode === 'H01'}
+                                        <div class="flex items-center gap-3 rounded-xl bg-blue-600 p-3 text-white shadow-lg">
+                                            <div class="rounded-full bg-white/20 p-1.5"><Target size={14} /></div>
+                                            <div class="leading-tight">
+                                                <p class="text-xs font-bold">Level Up!</p>
+                                                <p class="text-[10px] opacity-80">Tantangan baru tersedia untukmu.</p>
+                                            </div>
+                                        </div>
+                                    {:else if actionCode === 'CERTIFICATION' || actionCode === 'H06'}
+                                        <div class="flex items-center gap-3 rounded-xl bg-amber-500 p-3 text-white shadow-lg">
+                                            <div class="rounded-full bg-white/20 p-1.5"><Trophy size={14} /></div>
+                                            <div class="leading-tight">
+                                                <p class="text-xs font-bold">Selamat!</p>
+                                                <p class="text-[10px] opacity-80">Kamu meraih sertifikat baru.</p>
+                                            </div>
+                                        </div>
+                                    {:else}
+                                        <div class="flex items-center gap-3 rounded-xl bg-slate-800 p-3 text-white shadow-lg">
+                                            <div class="rounded-full bg-white/20 p-1.5"><Info size={14} /></div>
+                                            <div class="leading-tight">
+                                                <p class="text-xs font-bold">Feedback Sistem</p>
+                                                <p class="text-[10px] opacity-80">Pertahankan ritme belajarmu.</p>
+                                            </div>
+                                        </div>
+                                    {/if}
+                                {/if}
+                            </div>
+                        </section>
+                    {/if}
                 </div>
             </div>
         {/if}
