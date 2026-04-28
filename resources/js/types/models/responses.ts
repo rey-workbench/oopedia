@@ -38,6 +38,10 @@ export interface RecentActivity {
 
 export interface StudentProfile {
     learning_style: string;
+    learning_profile_label: string;
+    mslq_filled: boolean;
+    total_motivation: number | null;
+    total_strategy: number | null;
     current_level: string;
     global_xp: number;
     current_streak: number;
@@ -48,7 +52,11 @@ export interface StudentProfile {
     hints_used_count: number;
     hints_available: number;
     accuracy: number;
-    fast_track_active: boolean;
+    // Real adaptive engine data
+    last_diagnosis: string | null;
+    active_interventions: string[];
+    needs_remedial: boolean;
+    target_difficulty: string;
 }
 
 export interface LeaderboardEntry {
@@ -81,6 +89,7 @@ export interface QuizSessionState {
     accuracy: number;
     xp: number;
     streak: number;
+    level: string;
     hints_available: number;
     target_difficulty: DifficultyLevel | null;
     adaptive_state: AdaptiveState;

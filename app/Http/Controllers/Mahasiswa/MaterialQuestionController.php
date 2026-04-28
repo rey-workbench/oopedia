@@ -38,13 +38,10 @@ final class MaterialQuestionController extends Controller
         $userId  = (string) Auth::id();
         $isGuest = Auth::guest();
 
-        $unlockedModules = $isGuest ? [] : ($this->performanceService->getStudentState($userId)->unlocked_modules ?? []);
-
         $data = $this->quizService->getMaterialsListWithStudentCount(
             userId: $userId,
             isGuest: $isGuest,
             guestProgress: $isGuest ? $this->guestProgressService->getProgress() : [],
-            unlockedModules: $unlockedModules,
         );
 
         return $this->render('Mahasiswa/Materials/Questions/Index', ['materials' => $data]);
@@ -56,15 +53,14 @@ final class MaterialQuestionController extends Controller
         $userId   = (string) Auth::id();
         $isGuest  = Auth::guest();
 
-        $unlockedModules = $isGuest ? [] : ($this->performanceService->getStudentState($userId)->unlocked_modules ?? []);
-        $answeredIds     = $isGuest
+        $answeredIds = $isGuest
             ? $this->quizService->getGuestAnsweredQuestionIds($material->id, $this->guestProgressService->getProgress())
             : $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
 
         return $this->render('Mahasiswa/Materials/Questions/Levels/Index', [
             'material'  => $material,
             'levels'    => $this->quizService->getLevelProgress($material, null, $answeredIds, $isGuest),
-            'materials' => $this->quizService->getMaterialsListWithStudentCount($userId, $isGuest, $isGuest ? $this->guestProgressService->getProgress() : [], $unlockedModules),
+            'materials' => $this->quizService->getMaterialsListWithStudentCount($userId, $isGuest, $isGuest ? $this->guestProgressService->getProgress() : []),
         ]);
     }
 

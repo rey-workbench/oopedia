@@ -17,16 +17,16 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
     {
         // 1. Extract Thresholds (Layer 2)
         $accuracy = (float) ($state[StudentStateSchema::ACCURACY] ?? 0);
-        $metrics  = $state[StudentStateSchema::PERFORMANCE_METRICS] ?? [];
-        $session  = $state[StudentStateSchema::CURRENT_SESSION]     ?? [];
+        $metrics = $state[StudentStateSchema::PERFORMANCE_METRICS] ?? [];
+        $session = $state[StudentStateSchema::CURRENT_SESSION] ?? [];
 
-        $trend         = $metrics['trend'] ?? 'stable';
-        $speed         = $metrics['speed'] ?? 'normal';
-        $hints         = (int) ($session['hints'] ?? 0);
-        $level         = $state[StudentStateSchema::LEVEL] ?? StudentLevel::PEMULA->value;
-        $streak        = (int) ($state[StudentStateSchema::STREAK] ?? 0);
+        $trend = $metrics['trend'] ?? 'stable';
+        $speed = $metrics['speed'] ?? 'normal';
+        $hints = (int) ($session['hints'] ?? 0);
+        $level = $state[StudentStateSchema::LEVEL] ?? StudentLevel::PEMULA->value;
+        $streak = (int) ($state[StudentStateSchema::STREAK] ?? 0);
         $stagnantCount = (int) ($metrics['stagnant_count'] ?? 0);
-        $history       = $state[StudentStateSchema::SESSION_HISTORY] ?? [];
+        $history = $state[StudentStateSchema::SESSION_HISTORY] ?? [];
 
         // 2. Collect Facts for Debugging/Panel
         $facts = [];
@@ -168,15 +168,15 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
     private function result(string $ruleId, string $diagnosis, array $recommendations, array $facts = []): array
     {
         return [
-            'id'              => $ruleId,
-            'diagnosis'       => $diagnosis,
+            'id' => $ruleId,
+            'diagnosis' => $diagnosis,
             'recommendations' => $recommendations,
-            'facts'           => $facts,
-            'timestamp'       => now()->toIso8601String(),
+            'facts' => $facts,
+            'timestamp' => now()->toIso8601String(),
             'engine_metadata' => [
-                'engine_version'  => '2.1.0-forward',
-                'rule_count'      => 15,
-                'fact_labels'     => array_merge(FactConstants::NAMES, FactConstants::VIRTUAL_NAMES),
+                'engine_version' => '2.1.0-forward',
+                'rule_count' => 15,
+                'fact_labels' => array_merge(FactConstants::NAMES, FactConstants::VIRTUAL_NAMES),
                 'fact_categories' => [
                     'primary' => 'primary',
                     'virtual' => 'virtual',

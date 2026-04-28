@@ -38,7 +38,7 @@
         </div>
 
         {#if !state.isGuest}
-            <div class="grid grid-cols-3 gap-0 border-b border-slate-100 bg-slate-50/50">
+            <div class="grid grid-cols-2 gap-0 border-b border-slate-100 bg-slate-50/50 sm:grid-cols-4">
                 <div
                     class="group border-r border-slate-100 p-8 text-center transition-colors duration-300 hover:bg-white"
                 >
@@ -69,7 +69,7 @@
                         Total XP
                     </div>
                 </div>
-                <div class="group p-8 text-center transition-colors duration-300 hover:bg-white">
+                <div class="group border-r border-slate-100 p-8 text-center transition-colors duration-300 hover:bg-white">
                     <div
                         class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-100 shadow-sm transition-transform group-hover:scale-110"
                     >
@@ -80,6 +80,19 @@
                     </div>
                     <div class="mt-1 text-xs font-bold tracking-widest text-slate-400 uppercase">
                         Streak
+                    </div>
+                </div>
+                <div class="group p-8 text-center transition-colors duration-300 hover:bg-white">
+                    <div
+                        class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-100 shadow-sm transition-transform group-hover:scale-110"
+                    >
+                        <Trophy size={24} class="text-purple-600" />
+                    </div>
+                    <div class="text-xl font-black tracking-tighter text-slate-800">
+                        {state.level}
+                    </div>
+                    <div class="mt-1 text-xs font-bold tracking-widest text-slate-400 uppercase">
+                        Level
                     </div>
                 </div>
             </div>

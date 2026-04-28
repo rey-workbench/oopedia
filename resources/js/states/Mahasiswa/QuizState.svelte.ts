@@ -108,7 +108,7 @@ export class QuestionShowState extends BaseState {
 
     xp = $derived(this.studentState?.xp || 0);
     streak = $derived(this.studentState?.streak || 0);
-    level = $derived(this.studentState?.performance_metrics?.stagnant_count > 0 ? 'Tertahan' : 'Progresif');
+    level = $derived(this.studentState?.level || 'Beginner');
     hintsAvailable = $derived(this.studentState?.hints_available ?? 3);
 
     constructor(

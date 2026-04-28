@@ -12,7 +12,6 @@ use App\Exceptions\Domain\MaterialNotFoundException;
 use App\Exceptions\Domain\MediaOperationException;
 use App\Helpers\ProgressHelper;
 use App\Models\Material;
-use App\Models\StudentState;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
@@ -152,19 +151,8 @@ final class MaterialService implements MaterialServiceInterface
             });
         }
 
-        $unlockedModules = [];
-        if ($userId) {
-            $studentState    = StudentState::where('user_id', $userId)->first();
-            $unlockedModules = $studentState?->unlocked_modules ?? [];
-        }
-
-        $firstModuleId = $materials->whereNotNull('module_id')->min('module_id');
-
-        return $materials->map(function ($material) use ($unlockedModules, $firstModuleId) {
-            $moduleId            = $material->module_id;
-            $isFirstModule       = $moduleId !== null && $moduleId == $firstModuleId;
-            $isUnlocked          = empty($moduleId) || $isFirstModule || in_array($moduleId, $unlockedModules);
-            $material->is_locked = ! $isUnlocked;
+        return $materials->map(function ($material) {
+            $material->is_locked = false;
 
             return $material;
         });
@@ -178,7 +166,7 @@ final class MaterialService implements MaterialServiceInterface
         $unlockedModules = [];
         if ($userId) {
             $studentState    = $this->progressRepo->getStudentState($userId);
-            $unlockedModules = $studentState?->unlocked_modules ?? [];
+            $unlockedModules = $studentState?->adaptive_state['unlocked_modules'] ?? [];
         }
 
         $allMaterials->load(['questions' => function ($query) {
@@ -189,7 +177,7 @@ final class MaterialService implements MaterialServiceInterface
         $totalMaterials = $allMaterials->count();
 
         return $allMaterials->map(
-            function ($material, $index) use ($progressStats, $isGuest, $unlockedModules, $firstModuleId, $totalMaterials) {
+            function ($material, $index) use ($progressStats, $isGuest, $totalMaterials) {
                 $counts                   = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest);
                 $configuredTotalQuestions = $counts['total'];
                 $materialProgress         = $progressStats->firstWhere('material_id', $material->id);
@@ -202,10 +190,7 @@ final class MaterialService implements MaterialServiceInterface
                 if ($isGuest) {
                     $material->is_locked = $index >= ceil($totalMaterials / 2);
                 } else {
-                    $moduleId            = $material->module_id;
-                    $isFirstModule       = $moduleId !== null && $moduleId == $firstModuleId;
-                    $isUnlocked          = empty($moduleId) || $isFirstModule || in_array($moduleId, $unlockedModules);
-                    $material->is_locked = ! $isUnlocked;
+                    $material->is_locked = false;
                 }
 
                 return $material;
@@ -224,17 +209,14 @@ final class MaterialService implements MaterialServiceInterface
 
         if ($userId) {
             $studentState    = $this->progressRepo->getStudentState($userId);
-            $unlockedModules = $studentState?->unlocked_modules ?? [];
+            $unlockedModules = $studentState?->adaptive_state['unlocked_modules'] ?? [];
         }
 
-        $allMaterials->map(function ($m, $index) use ($isGuest, $unlockedModules, $firstModuleId, $totalMaterials) {
+        $allMaterials->map(function ($m, $index) use ($isGuest, $totalMaterials) {
             if ($isGuest) {
                 $m->is_locked = $index >= ceil($totalMaterials / 2);
             } else {
-                $moduleId      = $m->module_id;
-                $isFirstModule = $moduleId !== null && $moduleId == $firstModuleId;
-                $isUnlocked    = empty($moduleId) || $isFirstModule || in_array($moduleId, $unlockedModules);
-                $m->is_locked  = ! $isUnlocked;
+                $m->is_locked = false;
             }
 
             return $m;

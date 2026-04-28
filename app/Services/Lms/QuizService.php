@@ -216,7 +216,6 @@ final class QuizService implements QuizServiceInterface
         string $userId,
         bool $isGuest,
         array $guestProgress = [],
-        array $unlockedModules = [],
     ): Collection {
         $progressStats = $isGuest ? collect([]) : $this->progressRepo->getUserProgressStats($userId);
         $allMaterials  = $this->materialRepo->getAllWithQuestions();
@@ -226,9 +225,8 @@ final class QuizService implements QuizServiceInterface
         }
 
         $studentCounts = $this->progressRepo->getStudentCountByMaterial();
-        $firstModuleId = $allMaterials->whereNotNull('module_id')->min('module_id');
 
-        return $allMaterials->map(function ($material) use ($progressStats, $isGuest, $studentCounts, $guestProgress, $unlockedModules, $firstModuleId) {
+        return $allMaterials->map(function ($material) use ($progressStats, $isGuest, $studentCounts, $guestProgress) {
             $configuredTotalQuestions = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest)['total'];
 
             if ($isGuest) {
@@ -247,11 +245,7 @@ final class QuizService implements QuizServiceInterface
             $material->total_questions     = $configuredTotalQuestions;
             $material->completed_questions = $answeredCount;
             $material->student_count       = $studentCounts->firstWhere('material_id', $material->id)?->student_count ?? 0;
-
-            $moduleId            = $material->module_id;
-            $isFirstModule       = $moduleId !== null && (string) $moduleId === (string) $firstModuleId;
-            $isUnlocked          = $isGuest || $isFirstModule || empty($moduleId) || in_array((string) $moduleId, array_map('strval', $unlockedModules));
-            $material->is_locked = ! $isUnlocked;
+            $material->is_locked           = false; // No module gating
 
             return $material;
         });

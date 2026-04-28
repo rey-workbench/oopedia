@@ -44,7 +44,6 @@ interface QuizServiceInterface
         string $userId,
         bool $isGuest,
         array $guestProgress = [],
-        array $unlockedModules = [],
     ): Collection;
 
     public function getReviewQuestions(
