@@ -9,12 +9,11 @@ export interface GamificationData {
 }
 
 export interface PerformanceMetrics {
-    total_questions_answered: number;
-    correct_count: number;
-    wrong_count: number;
-    wrong_streak: number;
-    hints_used_count: number;
-    hints_available: number;
+    speed?: 'slow' | 'normal' | 'fast';
+    trend?: 'up' | 'down' | 'stable';
+    stagnant_count: number;
+    total_questions_answered?: number;
+    correct_count?: number;
 }
 
 export interface TimeMetrics {
@@ -34,4 +33,7 @@ export interface AdaptiveState {
     target_difficulty: DifficultyLevel | null;
     module_progress: Record<string, unknown>;
     time_metrics: TimeMetrics;
+    scaffold_mode?: 'minimal' | 'normal';
+    last_diagnosis?: string;
+    active_interventions?: string[];
 }

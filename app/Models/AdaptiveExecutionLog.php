@@ -9,8 +9,8 @@ class AdaptiveExecutionLog extends Model
 {
     protected $fillable = [
         'user_id',
-        'code',
-        'action_code',
+        'rule_id',
+        'action_id',
         'trigger_facts',
         'state_deltas',
         'new_state',

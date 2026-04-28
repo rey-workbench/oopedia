@@ -4,7 +4,7 @@ import { BaseState } from '@/states/BaseState.svelte';
 import { FormState } from '@/states/FormState.svelte';
 import { ROUTES } from '@/utils/route';
 import { handleImagePreview } from '@/utils/imagePreview';
-import type { Material, SubMaterial, ContentCategory } from '@/types';
+import type { Material } from '@/types';
 
 /**
  * Material List State
@@ -90,75 +90,3 @@ export class MaterialFormState extends FormState<{
     }
 }
 
-/**
- * Submaterial List State
- */
-export class SubmaterialListState extends BaseState {
-    material = $state<Material | null>(null);
-    subMaterials = $state<SubMaterial[]>([]);
-
-    constructor(material: Material, subMaterials: SubMaterial[]) {
-        super();
-        this.hydrate({ material, subMaterials });
-    }
-
-    handleDelete(id: number) {
-        confirmDelete(
-            ROUTES.ADMIN.MATERIALS.SUBMATERIALS.EDIT(this.material!.id, id).replace('/edit', ''),
-            'Hapus sub-materi ini?'
-        );
-    }
-}
-
-/**
- * Submaterial Form State (Create/Edit)
- */
-export class SubmaterialFormState extends FormState<{
-    title: string;
-    content: string;
-    jenis_konten: ContentCategory | string;
-    order: number;
-    material_id: number | string;
-}> {
-    material = $state<Material | null>(null);
-    submaterial = $state<SubMaterial | null>(null);
-
-    constructor(material: Material, submaterial: SubMaterial | null) {
-        super(
-            {
-                title: submaterial ? submaterial.title : '',
-                content: submaterial ? submaterial.content : '',
-                jenis_konten: submaterial ? submaterial.jenis_konten : 'teori',
-                order: submaterial
-                    ? submaterial.order
-                    : material?.sub_materials
-                      ? material.sub_materials.length + 1
-                      : 1,
-                material_id: material ? material.id : '',
-            },
-            {
-                isEdit: !!submaterial,
-                showSuccessToast: 'Sub materi berhasil disimpan!',
-                showErrorToast: true,
-            }
-        );
-
-        this.material = material;
-        this.submaterial = submaterial;
-    }
-
-    async submit() {
-        const url = this.isEdit
-            ? ROUTES.ADMIN.MATERIALS.SUBMATERIALS.EDIT(
-                  this.material!.id,
-                  this.submaterial!.id
-              ).replace('/edit', '')
-            : ROUTES.ADMIN.MATERIALS.SUBMATERIALS.INDEX(this.material!.id);
-
-        await this.submitForm(this.isEdit ? 'put' : 'post', url);
-    }
-
-    setJenisKonten(jenis_konten: ContentCategory | string) {
-        this.form.jenis_konten = jenis_konten;
-    }
-}

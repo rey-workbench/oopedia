@@ -1,29 +1,28 @@
 <script lang="ts">
     /// <reference types="d3" />
     import { onMount, untrack } from 'svelte';
-    import { fade, fly } from 'svelte/transition';
+    import { fade } from 'svelte/transition';
     import * as d3 from 'd3';
     import type { AdaptiveRuleState } from '@/states/Admin/AdaptiveRuleState.svelte';
+    import NodePreviewPanel from './NodePreviewPanel.svelte';
+    import {
+        resolveGraphTopology,
+        buildGraphLinks,
+        calculateSpatialCoordinates,
+    } from './topology';
     import Button from '@/components/ui/Button.svelte';
     import {
-        Brain,
+        RefreshCw,
         Maximize2,
         Minimize2,
-        RefreshCw,
-        GitBranch,
-        Target,
-        X,
-        Pencil,
         PlusCircle,
         Zap,
-        Trophy,
-        Info,
+        Target,
     } from 'lucide-svelte';
-
     interface Props {
         analyticsState: AdaptiveRuleState;
-        onedit?: (rule: any) => void;
-        oneditaction?: (action: any) => void;
+        onedit?: ((rule: any) => void) | undefined;
+        oneditaction?: ((action: any) => void) | undefined;
         isFullscreen?: boolean;
         fullscreenTarget?: HTMLElement | null;
     }
@@ -40,7 +39,7 @@
     let containerRef = $state<HTMLDivElement | null>(null);
     let selectedNode = $state<any>(null);
     let zoomLevel = $state(0.8);
-    let resetD3Flow = () => {};
+    let resetD3Flow = $state(() => {});
 
     onMount(() => {
         const handleFullscreenChange = () => {
@@ -58,15 +57,6 @@
     const rules = $derived(analyticsState.rulesByDomain.flatMap((d) => d.rules));
 
     // ─── CONFIGURATION & CONSTANTS ──────────────────────────────────────────
-    const GRAPH_CONFIG = {
-        colWidth: 550,
-        itemHeight: 50,
-        verticalGap: 48,
-        startX: 100,
-        maxTopologyIterations: 30,
-        barycenterIterations: 12,
-        initialScale: 0.65,
-    };
 
     const LAYERS = [
         { id: 'input', label: 'INPUT', color: 'bg-slate-100/50' },
@@ -86,12 +76,12 @@
         if (!svgRef || !containerRef || !factData || factData.length === 0) return;
 
         const dimensions = prepareCanvas();
-        const nodeRegistry = resolveGraphTopology();
-        const links = buildGraphLinks(nodeRegistry);
+        const nodeRegistry = resolveGraphTopology(rules, factData, actionData);
+        const links = buildGraphLinks(nodeRegistry, rules);
         const nodes = Array.from(nodeRegistry.values());
 
         calculateSpatialCoordinates(nodes, links, dimensions.height);
-        renderGraph(nodes, links, dimensions.width, dimensions.height);
+        renderGraphLocal(nodes, links, dimensions.width, dimensions.height);
     }
 
     /**
@@ -128,527 +118,42 @@
         return { width, height, svg };
     }
 
-    function setupMarkers(defs: d3.Selection<SVGDefsElement, unknown, null, undefined>) {
-        const markers = [
-            { id: 'arrow-requirement', color: '#cbd5e1' },
-            { id: 'arrow-deduction', color: '#60a5fa' },
-            { id: 'arrow-action', color: '#34d399' },
-        ];
 
-        markers.forEach(({ id, color }) => {
-            defs.append('marker')
-                .attr('id', id)
-                .attr('viewBox', '0 -5 10 10')
-                .attr('refX', 10)
-                .attr('refY', 0)
-                .attr('markerWidth', 5)
-                .attr('markerHeight', 5)
-                .attr('orient', 'auto')
-                .append('path')
-                .attr('d', 'M0,-5L10,0L0,5')
-                .attr('fill', color);
-        });
-    }
-
-    /**
-     * Resolves nodes and their hierarchical depths using an iterative DAG topo-sort.
-     */
-    function resolveGraphTopology() {
-        const nodeRegistry = new Map<string, any>();
-
-        // Phase 1: Initialize Virtual Inputs (The 5 Core Dimensions)
-        const inputs = [
-            { code: 'IN_ACC', name: 'Jawaban (B/S)' },
-            { code: 'IN_SPD', name: 'Kecepatan Respons' },
-            { code: 'IN_HLP', name: 'Penggunaan Bantuan' },
-            { code: 'IN_LVL', name: 'Level Saat Ini' },
-            { code: 'IN_STR', name: 'Streak & Sesi' },
-        ];
-
-        inputs.forEach((input) => {
-            nodeRegistry.set(`input_${input.code}`, {
-                type: 'input',
-                depth: 0,
-                data: input,
-                id: input.code,
-            });
-        });
-
-        // Phase 1.5: Initialize Raw Facts (KONDISI)
-        factData
-            .filter((f) => !f.code.startsWith('V'))
-            .forEach((f) => {
-                nodeRegistry.set(`raw_fact_${f.code}`, {
-                    type: 'raw_fact',
-                    depth: 1,
-                    data: f,
-                    id: `f_${f.code}`,
-                });
-            });
-
-        // Phase 2: Iteratively resolve rules, virtual facts, and actions
-        let hasTopologyChanged = true;
-        let iterations = GRAPH_CONFIG.maxTopologyIterations;
-
-        while (hasTopologyChanged && iterations-- > 0) {
-            hasTopologyChanged = false;
-
-            rules.forEach((rule) => {
-                const prerequisites = rule.required_facts || [];
-                const resolvedSources = prerequisites.map(
-                    (p) =>
-                        nodeRegistry.get(`raw_fact_${p}`) || nodeRegistry.get(`virtual_fact_${p}`)
-                );
-
-                if (!prerequisites.every((_, i) => !!resolvedSources[i])) return;
-
-                const maxPrereqDepth = resolvedSources.length > 0
-                    ? Math.max(...resolvedSources.map((s) => s.depth))
-                    : 1;
-
-                const ruleDepth = maxPrereqDepth + 0.5;
-
-                // Register Rule Gate
-                const ruleNodeId = `rule_${rule.id}`;
-                if (!nodeRegistry.has(ruleNodeId)) {
-                    nodeRegistry.set(ruleNodeId, {
-                        type: 'gate',
-                        depth: ruleDepth,
-                        data: rule,
-                        id: `r_${rule.id}`,
-                    });
-                    hasTopologyChanged = true;
-                }
-
-                // Register Deduced Facts (DIAGNOSIS)
-                if (rule.deduced_facts && rule.deduced_facts.length > 0) {
-                    rule.deduced_facts.forEach((code: string) => {
-                        if (registerVirtualFact(nodeRegistry, code, 2)) {
-                            hasTopologyChanged = true;
-                        }
-                    });
-                }
-
-                // Register Resulting Actions (REKOMENDASI)
-                const actionCodes = rule.action_codes || (rule.action ? [rule.action] : []);
-                actionCodes.forEach((code: string) => {
-                    if (registerAction(nodeRegistry, code, 3)) {
-                        hasTopologyChanged = true;
-                    }
-                });
-            });
-        }
-
-        return nodeRegistry;
-    }
-
-    function registerVirtualFact(registry: Map<string, any>, code: string, depth: number) {
-        const fact = factData.find((f) => f.code === code);
-        if (!fact) return false;
-
-        const factId = `virtual_fact_${code}`;
-        const existing = registry.get(factId);
-
-        if (!existing) {
-            registry.set(factId, {
-                type: 'virtual_fact',
-                depth: depth,
-                data: fact,
-                id: `vf_${code}`,
-            });
-            return true;
-        }
-
-        if (existing.depth < depth) {
-            existing.depth = depth;
-            return true;
-        }
-
-        return false;
-    }
-
-    function registerAction(registry: Map<string, any>, code: string, depth: number) {
-        const action = actionData.find((a) => a.code === code);
-        if (!action || action.code === 'H00') return false;
-
-        const actionId = `action_${code}`;
-        const existing = registry.get(actionId);
-
-        if (!existing) {
-            registry.set(actionId, {
-                type: 'action',
-                depth: depth,
-                data: action,
-                id: `a_${code}`,
-            });
-            return true;
-        }
-
-        if (existing.depth < depth) {
-            existing.depth = depth;
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Builds relational links between resolved nodes.
-     */
-    function buildGraphLinks(nodeRegistry: Map<string, any>) {
-        const links: any[] = [];
-
-        rules.forEach((rule) => {
-            const gateNode = nodeRegistry.get(`rule_${rule.id}`);
-            if (!gateNode) return;
-
-            // Link Prerequisites -> Gate
-            (rule.required_facts || []).forEach((code) => {
-                const source =
-                    nodeRegistry.get(`raw_fact_${code}`) ||
-                    nodeRegistry.get(`virtual_fact_${code}`);
-                if (source) links.push({ source, target: gateNode, type: 'requirement' });
-            });
-
-            // Link Gate -> Deduced Facts
-            (rule.deduced_facts || []).forEach((code: string) => {
-                const target = nodeRegistry.get(`virtual_fact_${code}`);
-                if (target) links.push({ source: gateNode, target, type: 'deduction' });
-            });
-
-            // Link Gate -> Final Action
-            const actionCodes = rule.action_codes || (rule.action ? [rule.action] : []);
-            actionCodes.forEach((code: string) => {
-                const actionNode = nodeRegistry.get(`action_${code}`);
-                if (actionNode) links.push({ source: gateNode, target: actionNode, type: 'action' });
-            });
-        });
-
-        // Link Inputs -> Kondisi (Implicit Mapping)
-        const conditions = Array.from(nodeRegistry.values()).filter(n => n.type === 'raw_fact');
-        conditions.forEach(cond => {
-            const code = cond.data.code;
-            let inputNodeId = null;
-            if (code.startsWith('G0')) inputNodeId = 'input_IN_ACC'; // Accuracy
-            else if (code.startsWith('G05') || code.startsWith('G06') || code.startsWith('G07')) inputNodeId = 'input_IN_SPD'; // Trend -> Speed/Respon in diagram? Actually TREND is IN_STR in diagram
-            else if (code.startsWith('G08') || code.startsWith('G09') || code.startsWith('G20')) inputNodeId = 'input_IN_HLP'; // Help
-            else if (code.startsWith('G11') || code.startsWith('G12') || code.startsWith('G13')) inputNodeId = 'input_IN_SPD'; // Speed
-            else if (code.startsWith('G14') || code.startsWith('G15') || code.startsWith('G16')) inputNodeId = 'input_IN_STR'; // Streak
-            else if (code === 'G19') inputNodeId = 'input_IN_LVL'; // Level
-            
-            if (inputNodeId) {
-                const inputNode = nodeRegistry.get(inputNodeId);
-                if (inputNode) links.push({ source: inputNode, target: cond, type: 'requirement' });
-            }
-        });
-
-        return links;
-    }
-
-    /**
-     * Orchestrates the spatial layout using a barycenter-based relaxation.
-     */
-    function calculateSpatialCoordinates(nodes: any[], links: any[], containerHeight: number) {
-        const depthGroups: Record<number, any[]> = {};
-        nodes.forEach((n) => {
-            if (!depthGroups[n.depth]) depthGroups[n.depth] = [];
-            depthGroups[n.depth]!.push(n);
-        });
-
-        const depths = Object.keys(depthGroups)
-            .map(Number)
-            .sort((a, b) => a - b);
-
-        // Pass 1: Initial Layout
-        depths.forEach((d) => {
-            depthGroups[d]!.forEach(
-                (n, i) => (n.y = i * (GRAPH_CONFIG.itemHeight + GRAPH_CONFIG.verticalGap))
-            );
-        });
-
-        // Pass 2: Iterative Barycenter Optimization
-        for (let i = 0; i < GRAPH_CONFIG.barycenterIterations; i++) {
-            optimizeLayoutLayer(depths, depthGroups, links, true);
-            optimizeLayoutLayer([...depths].reverse(), depthGroups, links, false);
-        }
-
-        centerAndProject(depths, depthGroups, containerHeight);
-    }
-
-    function optimizeLayoutLayer(
-        depths: number[],
-        groups: Record<number, any[]>,
-        links: any[],
-        forward: boolean
-    ) {
-        depths.forEach((d) => {
-            const group = groups[d]!;
-            if (d === (forward ? depths[0] : depths[depths.length - 1])) return;
-
-            group.forEach((node) => {
-                const relatives = links
-                    .filter((l) => (forward ? l.target === node : l.source === node))
-                    .map((l) => (forward ? l.source : l.target));
-
-                if (relatives.length > 0) {
-                    node.y = relatives.reduce((sum, r) => sum + r.y, 0) / relatives.length;
-                }
-            });
-
-            group.sort((a, b) => a.y - b.y);
-            resolveLayerOverlaps(group);
-        });
-    }
-
-    function resolveLayerOverlaps(group: any[]) {
-        if (group.length <= 1) return;
-        
-        const minGap = GRAPH_CONFIG.itemHeight + GRAPH_CONFIG.verticalGap;
-        
-        // Ensure minimum spacing
-        for (let i = 1; i < group.length; i++) {
-            if (group[i].y < group[i-1].y + minGap) {
-                group[i].y = group[i-1].y + minGap;
-            }
-        }
-    }
-
-    function centerAndProject(depths: number[], groups: Record<number, any[]>, height: number) {
-        const centerRefY = height / 2;
-        let maxX = 0;
-        let minY = Infinity,
-            maxY = -Infinity;
-
-        depths.forEach((d) => {
-            const group = groups[d]!;
-            if (group.length === 0) return;
-            const groupCenterY =
-                (group[0].y + group[group.length - 1].y + GRAPH_CONFIG.itemHeight) / 2;
-            const offset = centerRefY - groupCenterY;
-
-            group.forEach((node) => {
-                node.x = GRAPH_CONFIG.startX + node.depth * GRAPH_CONFIG.colWidth;
-                node.y += offset;
-                if (node.x > maxX) maxX = node.x;
-                minY = Math.min(minY, node.y);
-                maxY = Math.max(maxY, node.y);
-            });
-        });
-
-        return { maxX, minY, maxY };
-    }
-
-    /**
-     * D3 Rendering Implementation
-     */
-    function renderGraph(nodes: any[], links: any[], width: number, height: number) {
-        // Compute bounding box for zoom-to-fit
-        const maxX = Math.max(...nodes.map((n) => n.x), 100);
-        const minY = Math.min(...nodes.map((n) => n.y), 0);
-        const maxY = Math.max(...nodes.map((n) => n.y), 100);
-
-        drawLayerBackgrounds();
-        drawLinks(links);
-        drawNodes(nodes);
-
-        const initialScale = Math.min(GRAPH_CONFIG.initialScale, width / (maxX + 280));
-
-        if (!isInitialized) {
-            d3.select(svgRef!).call(
-                zoom.transform,
-                d3.zoomIdentity
-                    .translate(
-                        width / 2 - (maxX / 2) * initialScale,
-                        height / 2 - ((maxY + minY) / 2) * initialScale
-                    )
-                    .scale(initialScale)
-            );
-            isInitialized = true;
-        }
-    }
-
-    function updateLinkPaths() {
-        mainGroup.selectAll('.link').attr('d', generateBezierPath);
-    }
-
-    function dragstarted(this: any) {
-        d3.select(this).raise();
-    }
-
-    function dragged(this: any, event: any, d: any) {
-        d.x = event.x;
-        d.y = event.y;
-        d3.select(this).attr('transform', `translate(${d.x},${d.y})`);
-        updateLinkPaths();
-    }
-
-    function dragended(this: any) {
-        // Optional: save positions or snap to grid
-    }
-
-    const drag = d3.drag().on('start', dragstarted).on('drag', dragged).on('end', dragended);
-
-    function drawLinks(links: any[]) {
-        mainGroup
-            .selectAll('.link')
-            .data(links)
-            .enter()
-            .append('path')
-            .attr('class', 'link')
-            .attr('d', generateBezierPath)
-            .attr('fill', 'none')
-            .attr('stroke', (d) => getLinkColor(d.type))
-            .attr('stroke-width', 2)
-            .attr('stroke-opacity', 0.4)
-            .attr('marker-end', (d) => `url(#arrow-${d.type})`);
-    }
-
-    function generateBezierPath(d: any) {
-        const sx = d.source.x + (d.source.type === 'gate' ? 30 : 120);
-        const sy = d.source.y;
-        const tx = d.target.x - (d.target.type === 'gate' ? 30 : 120);
-        const ty = d.target.y;
-        const dx = tx - sx;
-        return `M${sx},${sy}C${sx + dx / 2},${sy} ${sx + dx / 2},${ty} ${tx},${ty}`;
-    }
-
-    function getLinkColor(type: string) {
-        const colors = { deduction: '#10b981', action: '#10b981', requirement: '#cbd5e1' };
-        return colors[type as keyof typeof colors] || '#94a3b8';
-    }
-
-    function drawLayerBackgrounds() {
-        const height = isFullscreen ? window.innerHeight - 100 : 750;
-
-        const layerGroup = mainGroup.append('g').attr('class', 'layer-backgrounds');
-
-        LAYERS.forEach((layer, i) => {
-            const x = GRAPH_CONFIG.startX + i * GRAPH_CONFIG.colWidth - 250;
-            
-            layerGroup.append('rect')
-                .attr('x', x)
-                .attr('y', -height * 2)
-                .attr('width', GRAPH_CONFIG.colWidth)
-                .attr('height', height * 5)
-                .attr('fill', layer.id === 'input' ? '#f8fafc' : (layer.id === 'condition' ? '#f5f7ff' : (layer.id === 'diagnosis' ? '#f0fdf4' : '#fffbeb')))
-                .attr('opacity', 0.5);
-
-            layerGroup.append('text')
-                .attr('x', x + GRAPH_CONFIG.colWidth / 2)
-                .attr('y', -height / 2 + 100)
-                .attr('text-anchor', 'middle')
-                .attr('class', 'text-[12px] font-black fill-slate-300 tracking-[0.2em]')
-                .text(layer.label);
-        });
-    }
-
-    function drawNodes(nodes: any[]) {
-        const rectNodes = nodes.filter((n) => n.type !== 'gate');
-        const gateNodes = nodes.filter((n) => n.type === 'gate');
-
-        const nodeSelection = mainGroup
-            .selectAll('.rect-node')
-            .data(rectNodes)
-            .enter()
-            .append('g')
-            .attr('transform', (d) => `translate(${d.x},${d.y})`)
-            .attr('class', 'rect-node cursor-grab active:cursor-grabbing select-none')
-            .call(drag as any)
-            .on('click', (event, d) => handleNodeClick(d, event))
-            .on('contextmenu', (event, d) => handleNodeContextMenu(d, event));
-
-        nodeSelection
-            .append('rect')
-            .attr('width', 240)
-            .attr('height', 44)
-            .attr('x', -120)
-            .attr('y', -22)
-            .attr('rx', (d) => (d.type === 'action' ? 8 : (d.type === 'input' ? 12 : 12)))
-            .attr('fill', (d) => getNodeFill(d.type))
-            .attr('stroke', (d) => getNodeStroke(d.type))
-            .attr('stroke-width', (d) => d.type === 'input' ? 1 : 2)
-            .attr('class', 'shadow-sm transition-all duration-300')
-            .style('opacity', 0)
-            .transition()
-            .duration(500)
-            .style('opacity', 1);
-
-        nodeSelection
-            .append('text')
-            .attr('text-anchor', 'middle')
-            .attr('dominant-baseline', 'middle')
-            .attr(
-                'class',
-                (d) =>
-                    `text-[11px] font-bold ${d.type === 'action' ? 'fill-white' : (d.type === 'input' ? 'fill-slate-500' : 'fill-slate-800')}`
-            )
-            .text((d) => d.data.name);
-
-        const gateSelection = mainGroup
-            .selectAll('.gate-node')
-            .data(gateNodes)
-            .enter()
-            .append('g')
-            .attr('transform', (d) => `translate(${d.x},${d.y})`)
-            .attr('class', 'gate-node cursor-grab active:cursor-grabbing select-none')
-            .call(drag as any)
-            .on('click', (event, d) => handleNodeClick(d, event))
-            .on('contextmenu', (event, d) => handleNodeContextMenu(d, event));
-
-        gateSelection
-            .append('circle')
-            .attr('r', 24)
-            .attr('fill', '#0f172a')
-            .attr('stroke', '#334155')
-            .attr('stroke-width', 2)
-            .style('opacity', 0)
-            .transition()
-            .duration(500)
-            .style('opacity', 1);
-        gateSelection
-            .append('text')
-            .attr('text-anchor', 'middle')
-            .attr('dominant-baseline', 'middle')
-            .attr('class', 'text-[10px] font-bold fill-white antialiased')
-            .text('AND');
-        gateSelection
-            .append('text')
-            .attr('text-anchor', 'middle')
-            .attr('y', 38)
-            .attr('class', 'text-[9px] font-medium fill-slate-400 uppercase tracking-wider')
-            .text((d) => d.data.code);
-    }
-
-    function getNodeFill(type: string) {
-        if (type === 'virtual_fact') return '#f0fdf4'; // Emerald 50
-        if (type === 'action') return '#d97706'; // Amber 600
-        if (type === 'input') return '#f8fafc'; // Slate 50
-        if (type === 'raw_fact') return '#f5f7ff'; // Indigo 50
-        return '#ffffff';
-    }
-
-    function getNodeStroke(type: string) {
-        if (type === 'virtual_fact') return '#10b981'; // Emerald 500
-        if (type === 'action') return '#92400e'; // Amber 800
-        if (type === 'input') return '#e2e8f0'; // Slate 200
-        if (type === 'raw_fact') return '#6366f1'; // Indigo 500
-        return '#cbd5e1';
-    }
+    import { 
+        setupMarkers, 
+        renderGraph,
+        type RenderContext
+    } from './render';
 
     function handleNodeClick(d: any, event: MouseEvent) {
+        event.stopPropagation();
         selectedNode = d;
         highlightFlow(d);
-        event.stopPropagation();
     }
 
     function handleNodeContextMenu(d: any, event: MouseEvent) {
         event.preventDefault();
-        if (d.type === 'gate' && onedit) {
-            onedit(d.data);
-        } else if (d.type === 'action' && oneditaction) {
-            oneditaction(d.data);
-        }
         event.stopPropagation();
+        selectedNode = d;
+        if (d.type === 'gate' && onedit) onedit(d.data);
+        else if (d.type === 'action' && oneditaction) oneditaction(d.data);
+    }
+
+    function renderGraphLocal(nodes: any[], links: any[], width: number, height: number) {
+        const ctx: RenderContext = {
+            svgRef,
+            mainGroup,
+            zoom,
+            isInitialized,
+            isFullscreen,
+            zoomLevel,
+            handleNodeClick,
+            handleNodeContextMenu,
+            resetD3Flow
+        };
+
+        const initialized = renderGraph(nodes, links, width, height, ctx, LAYERS);
+        if (initialized) isInitialized = true;
     }
 
     function highlightFlow(clickedNode: any) {
@@ -672,7 +177,15 @@
 
         mainGroup
             .selectAll('.rect-node, .gate-node')
-            .attr('opacity', (n: any) => (activeNodes.has(n) ? 1 : 0.15));
+            .attr('opacity', (n: any) => (activeNodes.has(n) ? 1 : 0.15))
+            .each(function (n: any) {
+                const node = d3.select(this);
+                const isSelected = n === clickedNode;
+                node.selectAll('.focus-ring')
+                    .attr('stroke-width', isSelected ? 3 : 0)
+                    .attr('opacity', isSelected ? 1 : 0);
+            });
+
         mainGroup
             .selectAll('.link')
             .attr('stroke-opacity', (l: any) => (activeLinks.has(l) ? 1 : 0.05))
@@ -681,12 +194,18 @@
     }
 
     resetD3Flow = () => {
+        if (!mainGroup) return;
         mainGroup
             .selectAll('.link')
             .classed('flow-active', false)
             .attr('stroke-opacity', 0.4)
             .attr('stroke-width', 2);
-        mainGroup.selectAll('.rect-node, .gate-node').attr('opacity', 1);
+        
+        mainGroup.selectAll('.rect-node, .gate-node')
+            .attr('opacity', 1)
+            .selectAll('.focus-ring')
+            .attr('stroke-width', 0)
+            .attr('opacity', 0);
     };
 
     function resetView() {
@@ -823,6 +342,16 @@
                 if (e.key === 'Escape') selectedNode = null;
             }}
             aria-label="Workflow Canvas"
+            ondragover={(e) => {
+                e.preventDefault();
+                e.dataTransfer!.dropEffect = 'copy';
+            }}
+            ondrop={(e) => {
+                e.preventDefault();
+                const type = e.dataTransfer?.getData('type');
+                if (type === 'rule' && onedit) onedit(null);
+                if (type === 'action' && oneditaction) oneditaction(null);
+            }}
         >
             <svg
                 bind:this={svgRef}
@@ -851,6 +380,9 @@
                         if (e.key === 'Enter' || e.key === ' ') {
                             if (onedit) onedit(null);
                         }
+                    }}
+                    onclick={() => {
+                        if (onedit) onedit(null);
                     }}
                 >
                     <div
@@ -884,6 +416,9 @@
                         if (e.key === 'Enter' || e.key === ' ') {
                             if (oneditaction) oneditaction(null);
                         }
+                    }}
+                    onclick={() => {
+                        if (oneditaction) oneditaction(null);
                     }}
                 >
                     <div
@@ -942,286 +477,15 @@
         </div>
 
         <!-- n8n-style Node Detail Panel -->
-        {#if selectedNode}
-            <button
-                type="button"
-                class="absolute inset-0 z-20 bg-slate-900/10 backdrop-blur-[2px]"
-                onclick={() => (selectedNode = null)}
-                transition:fade={{ duration: 200 }}
-                aria-label="Close details overlay"
-            ></button>
-
-            <div
-                class="absolute inset-y-0 right-0 z-150 flex w-full max-w-sm flex-col border-l border-slate-200 bg-white shadow-2xl"
-                transition:fly={{ x: 400, duration: 300 }}
-            >
-                <!-- Drawer Header -->
-                <div class="flex items-center justify-between border-b border-slate-100 px-6 py-5">
-                    <div class="flex items-center gap-3">
-                        <div
-                            class="rounded-xl p-2 {selectedNode.type === 'gate'
-                                ? 'bg-primary-50 text-primary-600'
-                                : 'bg-emerald-50 text-emerald-600'}"
-                        >
-                            {#if selectedNode.type === 'gate'}
-                                <GitBranch size={20} />
-                            {:else if selectedNode.type === 'action'}
-                                <Target size={20} />
-                            {:else}
-                                <Brain size={20} />
-                            {/if}
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-black text-slate-800">
-                                {selectedNode.type === 'gate'
-                                    ? 'Detail Aturan'
-                                    : selectedNode.type === 'action'
-                                      ? 'Detail Aksi'
-                                      : 'Detail Fakta'}
-                            </h3>
-                            <p
-                                class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                            >
-                                Node Configuration
-                            </p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        {#if selectedNode.type === 'gate' && onedit}
-                            <button
-                                onclick={() => onedit(selectedNode.data)}
-                                class="text-primary-600 hover:bg-primary-50 rounded-xl p-2 transition-colors"
-                                title="Ubah Aturan"
-                            >
-                                <Pencil size={18} />
-                            </button>
-                        {/if}
-                        <button
-                            onclick={() => {
-                                selectedNode = null;
-                                resetD3Flow();
-                            }}
-                            class="rounded-xl p-2 text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-600"
-                        >
-                            <X size={20} />
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Drawer Body -->
-                <div class="custom-scrollbar flex-1 space-y-6 overflow-y-auto p-6">
-                    {#if selectedNode.type === 'gate'}
-                        <section class="space-y-4">
-                            <div
-                                class="flex items-center gap-2 text-[10px] font-black tracking-widest text-blue-500 uppercase"
-                            >
-                                <div class="h-px flex-1 bg-blue-100"></div>
-                                <span>Logic Flow</span>
-                                <div class="h-px w-4 bg-blue-100"></div>
-                            </div>
-
-                            <div
-                                class="rounded-2xl border border-slate-100 bg-slate-50 p-4 font-mono text-[11px] leading-relaxed"
-                            >
-                                <div class="mb-3">
-                                    <span class="font-bold text-blue-600">IF (Triggers)</span>
-                                    <div class="mt-2 flex flex-wrap gap-2">
-                                        {#each selectedNode.data.required_facts || [] as req}
-                                            <span
-                                                class="rounded border border-slate-200 bg-white px-2 py-1 text-slate-700 shadow-sm"
-                                            >
-                                                {factData.find((f) => f.code === req)?.name || req}
-                                            </span>
-                                        {/each}
-                                    </div>
-                                </div>
-
-                                {#if selectedNode.data.deduced_facts?.length > 0}
-                                    <div class="mb-3">
-                                        <span class="font-bold text-purple-600">THEN (Deduce)</span>
-                                        <div class="mt-2 flex flex-wrap gap-2">
-                                            {#each selectedNode.data.deduced_facts as ded}
-                                                <span
-                                                    class="rounded border border-purple-100 bg-purple-50 px-2 py-1 text-purple-700 shadow-sm"
-                                                >
-                                                    {factData.find((f) => f.code === ded)?.name ||
-                                                        ded}
-                                                </span>
-                                            {/each}
-                                        </div>
-                                    </div>
-                                {/if}
-
-                                {#if selectedNode.data.action_id || selectedNode.data.action}
-                                    {#if actionData.find((a) => a.id === selectedNode.data.action_id || a.code === selectedNode.data.action)}
-                                        {@const action = actionData.find(
-                                            (a) =>
-                                                a.id === selectedNode.data.action_id ||
-                                                a.code === selectedNode.data.action
-                                        )}
-                                        <div>
-                                            <span class="font-bold text-emerald-600"
-                                                >THEN (Action)</span
-                                            >
-                                            <div
-                                                class="mt-2 rounded-xl border border-emerald-100 bg-emerald-50/50 p-3"
-                                            >
-                                                <p class="text-xs font-bold text-emerald-900">
-                                                    {action?.name || selectedNode.data.action}
-                                                </p>
-                                                <p
-                                                    class="mt-1 text-[10px] leading-relaxed text-emerald-700/80"
-                                                >
-                                                    {action?.description || ''}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    {/if}
-                                {/if}
-                            </div>
-                        </section>
-
-                        <section class="space-y-4">
-                            <div
-                                class="flex items-center gap-2 text-[10px] font-black tracking-widest text-slate-400 uppercase"
-                            >
-                                <div class="h-px flex-1 bg-slate-100"></div>
-                                <span>Metadata</span>
-                                <div class="h-px w-4 bg-slate-100"></div>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-3">
-                                <div
-                                    class="rounded-2xl border border-slate-100 bg-white p-3 shadow-sm"
-                                >
-                                    <p class="mb-1 text-[9px] font-bold text-slate-400 uppercase">
-                                        Kode
-                                    </p>
-                                    <p class="font-mono text-xs font-black text-slate-900">
-                                        {selectedNode.data.code}
-                                    </p>
-                                </div>
-                                <div
-                                    class="rounded-2xl border border-slate-100 bg-white p-3 shadow-sm"
-                                >
-                                    <p class="mb-1 text-[9px] font-bold text-slate-400 uppercase">
-                                        Prioritas
-                                    </p>
-                                    <p class="text-xs font-black text-slate-900">
-                                        Level {selectedNode.data.priority}
-                                    </p>
-                                </div>
-                            </div>
-
-                            {#if selectedNode.data.description}
-                                <div class="rounded-2xl border border-blue-50 bg-blue-50/30 p-4">
-                                    <p class="text-[11px] leading-relaxed text-slate-600 italic">
-                                        "{selectedNode.data.description}"
-                                    </p>
-                                </div>
-                            {/if}
-                        </section>
-                    {:else}
-                        <div
-                            class="rounded-3xl border border-slate-100 bg-slate-50 p-6 text-center"
-                        >
-                            <div
-                                class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-sm"
-                            >
-                                <Brain size={32} class="text-slate-400" />
-                            </div>
-                            <h4 class="mb-2 text-sm font-black text-slate-800">
-                                {selectedNode.data.name}
-                            </h4>
-                            <p class="text-xs leading-relaxed text-slate-500 italic">
-                                {selectedNode.data.description ||
-                                    'Tidak ada deskripsi tambahan untuk node ini.'}
-                            </p>
-                            {#if selectedNode.data.variant}
-                                <div class="mt-4 flex justify-center">
-                                    <span
-                                        class="rounded-full bg-slate-200 px-3 py-1 text-[10px] font-black tracking-widest text-slate-700 uppercase"
-                                    >
-                                        {selectedNode.data.variant}
-                                    </span>
-                                </div>
-                            {/if}
-                        </div>
-                    {/if}
-
-                    {#if selectedNode.type === 'gate' || selectedNode.type === 'action'}
-                        <!-- Preview Section -->
-                        <section class="space-y-4">
-                            <div
-                                class="flex items-center gap-2 text-[10px] font-black tracking-widest text-slate-400 uppercase"
-                            >
-                                <div class="h-px flex-1 bg-slate-100"></div>
-                                <span>Preview Tampilan</span>
-                                <div class="h-px w-4 bg-slate-100"></div>
-                            </div>
-                            <div
-                                class="overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 p-4 shadow-inner"
-                            >
-                                {#if (selectedNode.type === 'gate' && actionData.find((a) => a.id === selectedNode.data.action_id || a.code === selectedNode.data.action)?.code) || selectedNode.type === 'action'}
-                                    {@const actionCode =
-                                        selectedNode.type === 'gate'
-                                            ? actionData.find(
-                                                  (a) =>
-                                                      a.id === selectedNode.data.action_id ||
-                                                      a.code === selectedNode.data.action
-                                              )?.code
-                                            : selectedNode.data.code}
-
-                                    {#if actionCode === 'INCREASE_DIFF' || actionCode === 'H01'}
-                                        <div
-                                            class="flex items-center gap-3 rounded-xl bg-blue-600 p-3 text-white shadow-lg"
-                                        >
-                                            <div class="rounded-full bg-white/20 p-1.5">
-                                                <Target size={14} />
-                                            </div>
-                                            <div class="leading-tight">
-                                                <p class="text-xs font-bold">Level Up!</p>
-                                                <p class="text-[10px] opacity-80">
-                                                    Tantangan baru tersedia untukmu.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    {:else if actionCode === 'CERTIFICATION' || actionCode === 'H06'}
-                                        <div
-                                            class="flex items-center gap-3 rounded-xl bg-amber-500 p-3 text-white shadow-lg"
-                                        >
-                                            <div class="rounded-full bg-white/20 p-1.5">
-                                                <Trophy size={14} />
-                                            </div>
-                                            <div class="leading-tight">
-                                                <p class="text-xs font-bold">Selamat!</p>
-                                                <p class="text-[10px] opacity-80">
-                                                    Kamu meraih sertifikat baru.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    {:else}
-                                        <div
-                                            class="flex items-center gap-3 rounded-xl bg-slate-800 p-3 text-white shadow-lg"
-                                        >
-                                            <div class="rounded-full bg-white/20 p-1.5">
-                                                <Info size={14} />
-                                            </div>
-                                            <div class="leading-tight">
-                                                <p class="text-xs font-bold">Feedback Sistem</p>
-                                                <p class="text-[10px] opacity-80">
-                                                    Pertahankan ritme belajarmu.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    {/if}
-                                {/if}
-                            </div>
-                        </section>
-                    {/if}
-                </div>
-            </div>
-        {/if}
+        <NodePreviewPanel 
+            {selectedNode} 
+            {factData}
+            {actionData}
+            onclose={() => (selectedNode = null)} 
+            {onedit} 
+            {oneditaction} 
+            {resetD3Flow}
+        />
 
         <!-- Zoom Indicator -->
         <div

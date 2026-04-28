@@ -22,25 +22,23 @@ export interface CheckAnswerResponse {
 }
 
 export interface AdaptiveResult {
+    diagnosis?: string | null;
+    recommendations?: string[];
     triggered_rule?: {
-        id?: string;
-        name?: string;
-        action?: string | null;
-        action_code?: string;
+        id: string;
+        name: string;
+        action?: string; // Action ID
         priority?: number;
         variant?: string;
         message?: string | null;
         title?: string | null;
     } | null;
     triggered_rules?: Array<{
-        id?: string;
-        name?: string;
-        action?: string | null;
-        action_code?: string;
+        id: string;
+        name: string;
+        action?: string;
         priority?: number;
         variant?: string;
-        message?: string | null;
-        title?: string | null;
     }>;
     facts?: string[];
     engine_metadata?: {

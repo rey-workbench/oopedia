@@ -4,7 +4,7 @@ import { confirmDelete } from '@/utils/confirmDelete';
 import { BaseState } from '@/states/BaseState.svelte';
 import { FormState } from '@/states/FormState.svelte';
 import { ROUTES } from '@/utils/route';
-import type { User, Pagination, MaterialWithProgress, MissingQuestionsItem } from '@/types';
+import type { User, Pagination, MaterialWithProgress, MissingQuestionsItem, RecentActivity } from '@/types';
 
 /**
  * Student List State
@@ -48,7 +48,8 @@ export class StudentProgressState extends BaseState {
     student = $state<User>({} as User);
     materials = $state<MaterialWithProgress[]>([]);
     missingQuestionsByMaterial = $state<MissingQuestionsItem[]>([]);
-    certifications = $state<Record<number, string>>({});
+    certifications = $state<Record<string, string>>({});
+    recentActivities = $state<RecentActivity[]>([]);
 
     avgProgress = $derived(
         this.materials.length > 0
@@ -71,10 +72,17 @@ export class StudentProgressState extends BaseState {
         student: User,
         materials: MaterialWithProgress[],
         missingQuestionsByMaterial: MissingQuestionsItem[],
-        certifications: Record<string, string> = {}
+        certifications: Record<string, string> = {},
+        recent_activities: RecentActivity[] = []
     ) {
         super();
-        this.hydrate({ student, materials, missingQuestionsByMaterial, certifications });
+        this.hydrate({
+            student,
+            materials,
+            missingQuestionsByMaterial,
+            certifications,
+            recentActivities: recent_activities,
+        });
     }
 }
 

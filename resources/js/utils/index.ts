@@ -10,11 +10,6 @@ export {
     getShadowClass,
     getIcon,
     getBadgeLabel,
-    getSubMaterialBg,
-    getSubMaterialText,
-    getHoverBorderClass,
-    getBorderClass,
-    getCtaShadowClass,
 } from './contentTypeStyles';
 export { enhanceCodeBlocks } from './codeBlockEnhancer';
 export { formatDate, relativeTime } from './formatters';

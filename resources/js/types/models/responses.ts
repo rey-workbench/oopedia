@@ -2,10 +2,8 @@ import type { DifficultyLevel } from './primitives';
 import type { Material } from './material';
 import type { Question } from './question';
 import type {
-    GamificationData,
     PerformanceMetrics,
     AdaptiveState,
-    LearningProfile,
 } from './studentState';
 import type { CertificationType } from './primitives';
 
@@ -80,15 +78,13 @@ export type QuestionWithAttempt = Question & {
 };
 
 export interface QuizSessionState {
-    gamification: Pick<
-        GamificationData,
-        'global_xp' | 'current_level' | 'current_streak' | 'max_streak'
-    >;
-    performance: Pick<
-        PerformanceMetrics,
-        'total_questions_answered' | 'correct_count' | 'wrong_count' | 'hints_available'
-    >;
-    adaptive: Pick<AdaptiveState, 'fast_track_active'> & Pick<LearningProfile, 'learning_style'>;
+    accuracy: number;
+    xp: number;
+    streak: number;
+    hints_available: number;
+    target_difficulty: DifficultyLevel | null;
+    adaptive_state: AdaptiveState;
+    performance_metrics: PerformanceMetrics;
 }
 
 export interface Certification {

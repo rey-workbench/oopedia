@@ -54,7 +54,7 @@
     const stateChanges = $derived.by(() => {
         if (!newState) return [];
 
-        const keys = ['xp', 'level', 'streak', 'target_difficulty', 'consecutive_correct'];
+        const keys = ['accuracy', 'xp', 'streak', 'target_difficulty'];
         // Cast newState to Record<string, any> to allow dynamic string indexing
         const stateObj = newState as Record<string, any>;
 
@@ -365,8 +365,7 @@
                                     <pre
                                         class="custom-scrollbar max-h-64 overflow-auto p-4 font-mono text-[10px] leading-normal text-emerald-400">
                                         {JSON.stringify(
-                                            quizState.feedbackData?.adaptiveResult?.triggered_rule
-                                                ?.action || {},
+                                            quizState.feedbackData?.adaptiveResult?.recommendations || [],
                                             null,
                                             2
                                         )}

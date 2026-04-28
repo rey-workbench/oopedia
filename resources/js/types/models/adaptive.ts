@@ -1,14 +1,12 @@
 export interface AdaptiveFact {
-    id: number;
-    code: string;
+    id: string;
     name: string;
     category: string;
     description: string;
 }
 
 export interface AdaptiveAction {
-    id: number;
-    code: string;
+    id: string;
     name: string;
     description: string;
     variant: string | null;
@@ -16,16 +14,13 @@ export interface AdaptiveAction {
 }
 
 export interface AdaptiveRule {
-    id: string | number; // This is rule_code for frontend identification
-    real_id: number; // Database primary key
-    code: string;
+    id: string;
     name: string;
     domain: string;
     priority: number;
-    action: string; // Action code (e.g. H10)
-    action_id: number;
+    action: string; // Primary action ID
+    action_id: string;
     required_facts: string[];
-    forbidden_facts: string[] | null;
-    deduced_facts: string[] | null;
+    deduced_facts: string[];
     is_active: boolean;
 }

@@ -106,10 +106,10 @@ export class QuestionShowState extends BaseState {
 
     isProcessing = $derived(this.isSubmitting);
 
-    xp = $derived(this.studentState?.gamification?.global_xp || 0);
-    streak = $derived(this.studentState?.gamification?.current_streak || 0);
-    level = $derived(this.studentState?.gamification?.current_level || 'Pemula');
-    hintsAvailable = $derived(this.studentState?.performance?.hints_available ?? 3);
+    xp = $derived(this.studentState?.xp || 0);
+    streak = $derived(this.studentState?.streak || 0);
+    level = $derived(this.studentState?.performance_metrics?.stagnant_count > 0 ? 'Tertahan' : 'Progresif');
+    hintsAvailable = $derived(this.studentState?.hints_available ?? 3);
 
     constructor(
         material: Material,
@@ -126,8 +126,8 @@ export class QuestionShowState extends BaseState {
         if (this.hintsAvailable > 0 && this.currentQuestion?.hint) {
             this.usedHint = true;
             this.showHint = true;
-            if (this.studentState.performance) {
-                this.studentState.performance.hints_available--;
+            if (this.studentState) {
+                this.studentState.hints_available--;
             }
         }
     }

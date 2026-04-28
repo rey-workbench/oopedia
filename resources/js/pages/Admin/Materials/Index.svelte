@@ -7,17 +7,7 @@
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
     import { MaterialListState } from '@/states/Admin/MaterialState.svelte';
-    import {
-        Plus,
-        Layers,
-        CalendarCheck,
-        Video,
-        FileText,
-        List,
-        FlaskConical,
-        Edit2,
-        Trash2,
-    } from 'lucide-svelte';
+    import { Plus, Layers, CalendarCheck, Video, FileText, FlaskConical, Edit2, Trash2 } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
 
     let { materials = [] }: { materials: any[] } = $props();
@@ -214,7 +204,7 @@
                                 <span
                                     class="rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-bold tracking-widest text-emerald-600 uppercase"
                                 >
-                                    {material.sub_materials ? material.sub_materials.length : 0} SUB-MATERI
+                                    {material.questions_count ?? 0} SOAL
                                 </span>
                                 <p
                                     class="line-clamp-1 max-w-sm text-[10px] font-medium text-slate-400"
@@ -249,14 +239,6 @@
                             id={index === 0 ? 'material-actions' : undefined}
                             class="flex justify-end gap-3"
                         >
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                href={ROUTES.ADMIN.MATERIALS.SUBMATERIALS.INDEX(material.id)}
-                                icon={List}
-                                class="text-emerald-500 hover:text-emerald-600"
-                                title="Kelola Sub-materi"
-                            />
                             <Button
                                 variant="ghost"
                                 size="sm"

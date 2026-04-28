@@ -118,6 +118,15 @@ final class MaterialQuestionController extends Controller
             'isCorrect'      => $isCorrect,
             'adaptiveResult' => $engineResult,
             'studentState'   => Auth::guest() ? null : $this->performanceService->getStudentSessionState((string) Auth::id()),
+            'nextUrl'        => $nextUrl = route('mahasiswa.materials.questions.show', [
+                'material'   => $materialId,
+                'difficulty' => $request->difficulty ?? 'all',
+            ]),
+            'ui' => [
+                'url'   => $nextUrl,
+                'label' => 'Lanjut',
+                'type'  => $isCorrect ? 'success' : 'info',
+            ],
         ]);
     }
 

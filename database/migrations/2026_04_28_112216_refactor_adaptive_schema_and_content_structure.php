@@ -35,19 +35,42 @@ return new class extends Migration
 
             // Add/Ensure Adaptive Engine required fields
             $table->decimal('accuracy', 5, 2)->default(0)->after('correct_count');
-            
+
             $table->json('session_history')->nullable()->after('accuracy')
                 ->comment('Last 5 session accuracies for trend analysis');
-                
+
             $table->json('current_session')->nullable()->after('session_history')
                 ->comment('Live session data: [correct, total, hints, time_spent]');
-                
+
             $table->json('performance_metrics')->nullable()->after('current_session')
                 ->comment('Aggregated analysis: trend, speed, stagnant_count');
-                
+
             $table->json('adaptive_state')->nullable()->after('performance_metrics')
                 ->comment('Stateful engine data for complex rules');
         });
+
+        // 3. Overhaul AdaptiveRules for Multi-Action (Rule R01-R15)
+        Schema::table('adaptive_rules', function (Blueprint $table) {
+            // Drop legacy singular action if it exists
+            if (Schema::hasColumn('adaptive_rules', 'action_id')) {
+                $table->dropForeign(['action_id']);
+                $table->dropColumn('action_id');
+            }
+
+            // Drop ALL redundant code/string based columns
+            $table->dropColumn([
+                'action_codes',
+                'required_facts',
+                'deduced_facts',
+            ]);
+
+            // Add ID-centric JSON columns
+            $table->json('action_ids')->nullable()->after('priority');
+            $table->json('required_fact_ids')->nullable()->after('action_ids');
+            $table->json('deduced_fact_ids')->nullable()->after('required_fact_ids');
+        });
+
+        Schema::dropIfExists('adaptive_rule_actions');
     }
 
     public function down(): void

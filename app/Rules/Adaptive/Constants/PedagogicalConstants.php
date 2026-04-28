@@ -11,6 +11,8 @@ final class PedagogicalConstants
 
     public const float ACCURACY_OPTIMAL_THRESHOLD = 80.0;
 
+    public const float ACCURACY_CERTIFICATION_THRESHOLD = 85.0;
+
     public const int HELP_HIGH_THRESHOLD = 3;
 
     public const int STREAK_OPTIMAL_THRESHOLD = 3;

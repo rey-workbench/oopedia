@@ -47,7 +47,6 @@
 
     let isMateriOpen = $state(
         isActive(ROUTES.MAHASISWA.MATERIALS.INDEX) ||
-            page.url.startsWith('/mahasiswa/submaterials') ||
             page.url.startsWith('/mahasiswa/materials/')
     );
 
@@ -142,9 +141,9 @@
                     >
                     <SidebarLink
                         id="sidebar-admin-adaptive"
-                        href={ROUTES.ADMIN.ADAPTIVE_RULES}
+                        href={ROUTES.ADMIN.ADAPTIVE_RULES.INDEX}
                         icon={Brain}
-                        active={page.url.startsWith(ROUTES.ADMIN.ADAPTIVE_RULES)}
+                        active={page.url.startsWith(ROUTES.ADMIN.ADAPTIVE_RULES.INDEX)}
                         >Engine Adaptif</SidebarLink
                     >
                 </div>

@@ -132,4 +132,58 @@ final class PerformanceService implements PerformanceServiceInterface
 
         return ($max - $min) < PedagogicalConstants::TREND_MARGIN;
     }
+
+    public function getStudentSessionState(string $userId): array
+    {
+        $state = $this->getStudentState($userId);
+
+        return [
+            'accuracy'            => round($state->accuracy, 2),
+            'xp'                  => $state->xp,
+            'streak'              => $state->streak,
+            'hints_available'     => $state->hints_available,
+            'target_difficulty'   => $state->target_difficulty,
+            'adaptive_state'      => $state->adaptive_state      ?? [],
+            'performance_metrics' => $state->performance_metrics ?? [],
+        ];
+    }
+
+    public function syncMaterialContext(string $userId, string $materialId): StudentState
+    {
+        $state                      = $this->getStudentState($userId);
+        $state->current_material_id = $materialId;
+        $state->save();
+
+        return $state;
+    }
+
+    public function calculateScore(bool $isCorrect, bool $usedHint, int $timeSpent, QuestionDifficulty|string $difficulty): int
+    {
+        if (! $isCorrect) {
+            return 0;
+        }
+
+        $baseScore = 10;
+
+        $difficultyValue = $difficulty instanceof QuestionDifficulty ? $difficulty->value : $difficulty;
+        $multiplier      = match ($difficultyValue) {
+            'medium' => 1.5,
+            'hard'   => 2.0,
+            default  => 1.0,
+        };
+
+        $score = $baseScore * $multiplier;
+
+        if ($usedHint) {
+            $score -= 2;
+        }
+
+        // Time penalty for taking > 2x baseline
+        $baseline = PedagogicalConstants::BASELINE_TIME[$difficultyValue] ?? 30;
+        if ($timeSpent > ($baseline * 2)) {
+            $score -= 1;
+        }
+
+        return (int) max(5, $score);
+    }
 }

@@ -10,7 +10,6 @@ final readonly class QuestionCreateDTO
 {
     public function __construct(
         public string $material_id,
-        public ?string $sub_material_id,
         public string $question_text,
         public string $question_type,
         public string $difficulty,
@@ -22,7 +21,6 @@ final readonly class QuestionCreateDTO
     {
         return new self(
             material_id: $request->input('material_id'),
-            sub_material_id: $request->input('sub_material_id'),
             question_text: $request->input('question_text'),
             question_type: $request->input('question_type'),
             difficulty: $request->input('difficulty'),
@@ -60,7 +58,6 @@ final readonly class QuestionCreateDTO
     {
         return [
             'material_id'     => $this->material_id,
-            'sub_material_id' => $this->sub_material_id,
             'question_text'   => $this->question_text,
             'question_type'   => $this->question_type,
             'difficulty'      => $this->difficulty,

@@ -18,4 +18,10 @@ interface PerformanceServiceInterface
         QuestionDifficulty $difficulty,
         bool $usedHint,
     ): StudentState;
+
+    public function getStudentSessionState(string $userId): array;
+
+    public function syncMaterialContext(string $userId, string $materialId): StudentState;
+
+    public function calculateScore(bool $isCorrect, bool $usedHint, int $timeSpent, QuestionDifficulty|string $difficulty): int;
 }

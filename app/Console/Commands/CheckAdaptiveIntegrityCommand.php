@@ -30,17 +30,16 @@ class CheckAdaptiveIntegrityCommand extends Command
             $this->info('✅ No circular dependencies found.');
         }
 
-        // 2. Leaf Verification (All leafs must have action_code)
-        $invalidLeafs = AdaptiveRule::where('node_type', 'leaf')
-            ->whereNull('action_code')
+        // 2. Leaf Verification (All rules should have at least one action)
+        $invalidLeafs = AdaptiveRule::whereJsonLength('action_ids', 0)
             ->get();
 
         if ($invalidLeafs->isNotEmpty()) {
             foreach ($invalidLeafs as $leaf) {
-                $this->warn("⚠️ Leaf Node {$leaf->code} has no action_code defined.");
+                $this->warn("⚠️ Rule Node {$leaf->id} has no action_ids defined.");
             }
         } else {
-            $this->info('✅ All leaf nodes have action codes.');
+            $this->info('✅ All rules have action codes.');
         }
 
         return $hasCycle ? 1 : 0;

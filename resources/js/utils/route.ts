@@ -18,13 +18,6 @@ export const ROUTES = {
                 INDEX: (id: string | number) => `/admin/materials/${id}/questions`,
                 CREATE: (id: string | number) => `/admin/materials/${id}/questions/create`,
             },
-            SUBMATERIALS: {
-                INDEX: (id: string | number) => `/admin/materials/${id}/submaterials`,
-                CREATE: (id: string | number) => `/admin/materials/${id}/submaterials/create`,
-                EDIT: (matId: string | number, subId: string | number) =>
-                    `/admin/materials/${matId}/submaterials/${subId}/edit`,
-                JSON: (id: string | number) => `/admin/materials/${id}/submaterials/json`,
-            },
         },
         QUESTIONS: {
             INDEX: '/admin/questions',
@@ -68,12 +61,17 @@ export const ROUTES = {
             SHOW: (id: string | number) => `/admin/surveys/sus/${id}`,
             EXPORT: '/admin/surveys/sus/export',
         },
-        ADAPTIVE_RULES: '/admin/adaptive-rules',
+        ADAPTIVE_RULES: {
+            INDEX: '/admin/adaptive-rules',
+            STORE: '/admin/adaptive-rules',
+            UPDATE: (id: string | number) => `/admin/adaptive-rules/${id}`,
+            DELETE: (id: string | number) => `/admin/adaptive-rules/${id}`,
+        },
         ADAPTIVE_ACTIONS: {
             INDEX: '/admin/adaptive-actions',
             STORE: '/admin/adaptive-actions',
             UPDATE: (id: string | number) => `/admin/adaptive-actions/${id}`,
-            DESTROY: (id: string | number) => `/admin/adaptive-actions/${id}`,
+            DELETE: (id: string | number) => `/admin/adaptive-actions/${id}`,
         },
     },
     MAHASISWA: {
@@ -100,10 +98,6 @@ export const ROUTES = {
                 ATTEMPTS: (matId: string | number, quesId: string | number) =>
                     `/mahasiswa/materials/${matId}/questions/${quesId}/attempts`,
             },
-        },
-        SUBMATERIALS: {
-            SHOW: (matId: string | number, subId: string | number) =>
-                `/mahasiswa/materials/${matId}/submaterials/${subId}`,
         },
         LEADERBOARD: '/mahasiswa/leaderboard',
         PROFILE: '/mahasiswa/profile',

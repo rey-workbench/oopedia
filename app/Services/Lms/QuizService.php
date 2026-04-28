@@ -20,6 +20,8 @@ use App\Models\AdaptiveExecutionLog;
 use App\Models\Material;
 use App\Models\Question;
 use App\Models\StudentState;
+use App\Rules\Adaptive\Constants\ActionConstants;
+use App\Rules\Adaptive\Constants\FactConstants;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as SupportCollection;
@@ -75,11 +77,11 @@ final class QuizService implements QuizServiceInterface
     {
         return DB::transaction(function () use ($data) {
             $question = $this->questionRepo->create([
-                'question_text'   => $data['question_text'],
-                'question_type'   => $data['question_type'],
-                'difficulty'      => $data['difficulty'],
-                'material_id'     => $data['material_id'],
-                'created_by'      => Auth::id(),
+                'question_text' => $data['question_text'],
+                'question_type' => $data['question_type'],
+                'difficulty'    => $data['difficulty'],
+                'material_id'   => $data['material_id'],
+                'created_by'    => Auth::id(),
             ]);
 
             $this->createAnswers($question->id, $data['answers']);
@@ -97,11 +99,11 @@ final class QuizService implements QuizServiceInterface
 
         return DB::transaction(function () use ($question, $data) {
             $this->questionRepo->update($question->id, [
-                'question_text'   => $data['question_text'],
-                'question_type'   => $data['question_type'],
-                'difficulty'      => $data['difficulty'],
-                'material_id'     => $data['material_id'],
-                'updated_by'      => Auth::id(),
+                'question_text' => $data['question_text'],
+                'question_type' => $data['question_type'],
+                'difficulty'    => $data['difficulty'],
+                'material_id'   => $data['material_id'],
+                'updated_by'    => Auth::id(),
             ]);
 
             $this->answerRepo->deleteByQuestionId($question->id);
@@ -129,12 +131,12 @@ final class QuizService implements QuizServiceInterface
         foreach ($answersData as $answer) {
             $this->answerRepo->create([
                 'question_id'    => $questionId,
-                'answer_text'    => $answer['answer_text']        ?? null,
-                'is_correct'     => $answer['is_correct']         ?? 0,
-                'explanation'    => $answer['explanation']        ?? null,
-                'drag_source'    => $answer['drag_source']        ?? null,
-                'drag_target'    => $answer['drag_target']        ?? null,
-                'blank_position' => $answer['blank_position']     ?? null,
+                'answer_text'    => $answer['answer_text']    ?? null,
+                'is_correct'     => $answer['is_correct']     ?? 0,
+                'explanation'    => $answer['explanation']    ?? null,
+                'drag_source'    => $answer['drag_source']    ?? null,
+                'drag_target'    => $answer['drag_target']    ?? null,
+                'blank_position' => $answer['blank_position'] ?? null,
             ]);
         }
     }
@@ -345,10 +347,10 @@ final class QuizService implements QuizServiceInterface
         }
 
         $isFirst = true;
-        foreach ($remaining as $question) {
+        foreach ($remaining as $q) {
             $levels[] = [
                 'level'       => $index++,
-                'question_id' => $question->id,
+                'question_id' => $q->id,
                 'status'      => $isFirst ? 'unlocked' : 'locked',
             ];
             $isFirst = false;
@@ -451,24 +453,58 @@ final class QuizService implements QuizServiceInterface
             // 2. Evaluate Adaptive Engine (Layer 3 & 4)
             $engineResult = $this->adaptiveEngineService->evaluate($studentState->toArray());
 
-            // 3. Log and Apply Result
+            // 3. Log and Apply Result (using raw technical data)
             $this->logAndApplyAdaptiveResult($userId, $materialId, $engineResult, $studentState);
+
+            // 4. Transform for UI Feedback
+            $friendlyDiagnosis = match ($engineResult['diagnosis'] ?? '') {
+                FactConstants::V_CRISIS     => 'Krisis Pembelajaran',
+                FactConstants::V_STRUGGLING => 'Sedang Kesulitan',
+                FactConstants::V_OPTIMAL    => 'Performa Optimal',
+                FactConstants::V_DEPENDENCY => 'Ketergantungan Bantuan',
+                FactConstants::V_BOREDOM    => 'Potensi Kebosanan',
+                default                     => 'Progres Normal'
+            };
+
+            $friendlyRecommendations = [];
+            foreach ($engineResult['recommendations'] as $rec) {
+                $label = match ($rec) {
+                    ActionConstants::INCREASE_DIFF => 'LEVEL_UP',
+                    ActionConstants::REDUCE_DIFF   => 'ADAPTIVE_HELP',
+                    ActionConstants::STREAK_BONUS  => 'STREAK_BONUS',
+                    ActionConstants::CERTIFICATION => 'ACHIEVEMENT',
+                    ActionConstants::REMEDIAL      => 'REMEDIAL_MODE',
+                    ActionConstants::NEW_CHALLENGE => 'NEW_CHALLENGE',
+                    default                        => null
+                };
+                if ($label) {
+                    $friendlyRecommendations[] = $label;
+                }
+            }
 
             return [
                 'is_correct'    => $isCorrect,
                 'score'         => $score,
-                'engine_result' => $engineResult,
+                'engine_result' => array_merge($engineResult, [
+                    'diagnosis'       => $friendlyDiagnosis,
+                    'recommendations' => $friendlyRecommendations,
+                    'triggered_rule'  => [
+                        'id'     => $engineResult['id'],
+                        'name'   => $friendlyDiagnosis,
+                        'action' => $engineResult['recommendations'][0] ?? 'NEXT',
+                    ],
+                ]),
             ];
         });
     }
 
     private function logAndApplyAdaptiveResult(string $userId, string $materialId, array $result, StudentState $state): void
     {
-        // Log the execution
+        // 1. Log the execution
         AdaptiveExecutionLog::create([
             'user_id'           => $userId,
-            'code'              => $result['rule_id'],
-            'action_code'       => implode(', ', $result['recommendations']),
+            'rule_id'           => $result['id'],
+            'action_id'         => implode(', ', $result['recommendations']),
             'trigger_facts'     => [$result['diagnosis']],
             'state_deltas'      => [],
             'new_state'         => $state->toArray(),
@@ -478,30 +514,53 @@ final class QuizService implements QuizServiceInterface
             ],
         ]);
 
-        // Apply Layer 4: Aksi Sistem (State Transitions)
+        // 2. Prepare Adaptive State
+        $adaptiveState                         = $state->adaptive_state ?? [];
+        $adaptiveState['last_diagnosis']       = $result['diagnosis'];
+        $adaptiveState['active_interventions'] = $result['recommendations'];
+
+        // 3. Apply Layer 4: Aksi Sistem (State Transitions)
         $currentDifficulty = $state->target_difficulty ?? 'beginner';
         $difficultyOrder   = ['beginner', 'medium', 'hard'];
         $currentIndex      = array_search($currentDifficulty, $difficultyOrder);
 
         foreach ($result['recommendations'] as $recommendation) {
             switch ($recommendation) {
-                case 'REDUCE_DIFF':
+                case ActionConstants::REDUCE_DIFF:
                     if ($currentIndex > 0) {
                         $state->target_difficulty = $difficultyOrder[$currentIndex - 1];
                     }
                     break;
-                case 'INCREASE_DIFF':
+                case ActionConstants::INCREASE_DIFF:
                     if ($currentIndex < 2) {
                         $state->target_difficulty = $difficultyOrder[$currentIndex + 1];
                     }
                     break;
-                case 'STREAK_BONUS':
+                case ActionConstants::STREAK_BONUS:
                     $state->xp += 50;
                     break;
-
+                case ActionConstants::REMEDIAL:
+                    $adaptiveState['needs_remedial']       = true;
+                    $adaptiveState['remedial_material_id'] = $materialId;
+                    break;
+                case ActionConstants::SCAFFOLD_REDUCTION:
+                    // Reduce available hints for next session or disable them
+                    $state->hints_available         = max(0, $state->hints_available - 1);
+                    $adaptiveState['scaffold_mode'] = 'minimal';
+                    break;
+                case ActionConstants::NEW_CHALLENGE:
+                    $state->xp += 100;
+                    $adaptiveState['challenge_active'] = true;
+                    break;
+                case ActionConstants::CERTIFICATION:
+                    $certs                           = $adaptiveState['certifications'] ?? [];
+                    $certs[]                         = 'GOLD'; // R15 is Gold
+                    $adaptiveState['certifications'] = array_unique($certs);
+                    break;
             }
         }
 
+        $state->adaptive_state = $adaptiveState;
         $state->save();
     }
 

@@ -36,13 +36,13 @@
     const isEdit = $derived(!!rule);
 
     let form = useForm({
-        code: '',
+        id: '',
         name: '',
         domain: 'Interaction',
         priority: 10,
-        action_id: '',
-        required_facts: [] as string[],
-        deduced_facts: [] as string[],
+        action_ids: [] as string[],
+        required_fact_ids: [] as string[],
+        deduced_fact_ids: [] as string[],
         is_active: true,
         description: '',
     });
@@ -50,13 +50,13 @@
     $effect(() => {
         if (show) {
             if (rule) {
-                form.code = rule.code;
+                form.id = rule.id;
                 form.name = rule.name;
                 form.domain = rule.domain;
                 form.priority = rule.priority;
-                form.action_id = rule.action_id;
-                form.required_facts = rule.required_facts || [];
-                form.deduced_facts = rule.deduced_facts || [];
+                form.action_ids = rule.action_ids || [];
+                form.required_fact_ids = rule.required_fact_ids || [];
+                form.deduced_fact_ids = rule.deduced_fact_ids || [];
                 form.is_active = rule.is_active;
                 form.description = rule.description || '';
             } else {
@@ -78,8 +78,8 @@
     function handleSubmit(e: Event) {
         e.preventDefault();
         const url = isEdit
-            ? `${ROUTES.ADMIN.ADAPTIVE_RULES}/${rule.real_id || rule.id}`
-            : ROUTES.ADMIN.ADAPTIVE_RULES;
+            ? ROUTES.ADMIN.ADAPTIVE_RULES.UPDATE(rule.id)
+            : ROUTES.ADMIN.ADAPTIVE_RULES.STORE;
 
         form.submit(isEdit ? 'put' : 'post', url, {
             onSuccess: () => onclose(),
@@ -87,13 +87,13 @@
         });
     }
 
-    function toggleFact(type: 'required' | 'deduced', factCode: string) {
-        const key = type === 'required' ? 'required_facts' : 'deduced_facts';
+    function toggleFact(type: 'required' | 'deduced', factId: string) {
+        const key = type === 'required' ? 'required_fact_ids' : 'deduced_fact_ids';
         const current = form[key] as string[];
-        if (current.includes(factCode)) {
-            form[key] = current.filter((c: string) => c !== factCode);
+        if (current.includes(factId)) {
+            form[key] = current.filter((id: string) => id !== factId);
         } else {
-            form[key] = [...current, factCode];
+            form[key] = [...current, factId];
         }
     }
 </script>
@@ -167,27 +167,27 @@
                     </div>
 
                     <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                        {#each allFacts.filter((f: AdaptiveFact) => !f.code.startsWith('V')) as fact}
+                        {#each allFacts.filter((f: AdaptiveFact) => !String(f.id).startsWith('V')) as fact}
                             <button
                                 type="button"
-                                onclick={() => toggleFact('required', fact.code)}
-                                class="group flex items-center gap-3 rounded-xl border-2 p-3 text-left transition-all {form.required_facts.includes(
-                                    fact.code
+                                onclick={() => toggleFact('required', fact.id)}
+                                class="group flex items-center gap-3 rounded-xl border-2 p-3 text-left transition-all {form.required_fact_ids.includes(
+                                    fact.id
                                 )
                                     ? 'border-blue-500 bg-white shadow-md ring-2 ring-blue-50'
                                     : 'border-white bg-white/50 shadow-sm hover:border-blue-200'}"
                             >
                                 <div class="flex flex-col">
                                     <span
-                                        class="text-[9px] font-black tracking-widest uppercase {form.required_facts.includes(
-                                            fact.code
+                                        class="text-[9px] font-black tracking-widest uppercase {form.required_fact_ids.includes(
+                                            fact.id
                                         )
                                             ? 'text-blue-600'
-                                            : 'text-slate-400'}">{fact.code}</span
+                                            : 'text-slate-400'}">{fact.id}</span
                                     >
                                     <span
-                                        class="text-[11px] font-bold {form.required_facts.includes(
-                                            fact.code
+                                        class="text-[11px] font-bold {form.required_fact_ids.includes(
+                                            fact.id
                                         )
                                             ? 'text-slate-900'
                                             : 'text-slate-600'}">{fact.name}</span
@@ -218,7 +218,7 @@
                         <div class="grid grid-cols-2 gap-4">
                             <Input
                                 label="Kode Node"
-                                bind:value={form.code}
+                                bind:value={form.id}
                                 placeholder="R-01"
                                 className="font-mono font-bold"
                             />
@@ -279,9 +279,10 @@
                             label="Aksi Utama"
                             options={allActions.map((a: AdaptiveAction) => ({
                                 value: a.id,
-                                label: `[${a.code}] ${a.name}`,
+                                label: `[${a.id}] ${a.name}`,
                             }))}
-                            bind:value={form.action_id}
+                            value={form.action_ids[0] || ''}
+                            onchange={(val) => form.action_ids = [val as string]}
                         />
 
                         <div class="space-y-3">
@@ -289,27 +290,27 @@
                                 >Deduksi Fakta (Logic Pipe)</span
                             >
                             <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                                {#each allFacts.filter( (f: AdaptiveFact) => f.code.startsWith('V') ) as fact}
+                                {#each allFacts.filter( (f: AdaptiveFact) => String(f.id).startsWith('V') ) as fact}
                                     <button
                                         type="button"
-                                        onclick={() => toggleFact('deduced', fact.code)}
-                                        class="group flex items-center gap-3 rounded-xl border-2 p-3 text-left transition-all {form.deduced_facts.includes(
-                                            fact.code
+                                        onclick={() => toggleFact('deduced', fact.id)}
+                                        class="group flex items-center gap-3 rounded-xl border-2 p-3 text-left transition-all {form.deduced_fact_ids.includes(
+                                            fact.id
                                         )
                                             ? 'border-purple-500 bg-purple-50 shadow-sm'
                                             : 'border-slate-100 bg-white hover:border-purple-200'}"
                                     >
                                         <div class="flex flex-col">
                                             <span
-                                                class="text-[9px] font-black tracking-widest uppercase {form.deduced_facts.includes(
-                                                    fact.code
+                                                class="text-[9px] font-black tracking-widest uppercase {form.deduced_fact_ids.includes(
+                                                    fact.id
                                                 )
                                                     ? 'text-purple-600'
-                                                    : 'text-slate-400'}">{fact.code}</span
+                                                    : 'text-slate-400'}">{fact.id}</span
                                             >
                                             <span
-                                                class="text-[11px] font-bold {form.deduced_facts.includes(
-                                                    fact.code
+                                                class="text-[11px] font-bold {form.deduced_fact_ids.includes(
+                                                    fact.id
                                                 )
                                                     ? 'text-slate-900'
                                                     : 'text-slate-600'}">{fact.name}</span
