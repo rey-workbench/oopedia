@@ -153,7 +153,7 @@
 
                         {#if selectedNode.data.deduced_fact_ids?.length > 0}
                             <div class="mb-3">
-                                <span class="font-bold text-purple-600">THEN (Deduce)</span>
+                                <span class="font-bold text-purple-600">THEN (Diagnosa)</span>
                                 <div class="mt-2 flex flex-wrap gap-2">
                                     {#each selectedNode.data.deduced_fact_ids as ded}
                                         <span

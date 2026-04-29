@@ -36,12 +36,27 @@ export function setupMarkers(defs: d3.Selection<SVGDefsElement, unknown, null, u
 }
 
 export function generateBezierPath(d: any) {
-    const sx = d.source.x + (d.source.type === 'gate' ? 30 : 120);
-    const sy = d.source.y;
-    const tx = d.target.x - (d.target.type === 'gate' ? 30 : 120);
-    const ty = d.target.y;
-    const dx = tx - sx;
-    return `M${sx},${sy}C${sx + dx / 2},${sy} ${sx + dx / 2},${ty} ${tx},${ty}`;
+    const isBackward = d.target.x < d.source.x;
+
+    if (!isBackward) {
+        // Forward link: Exit Right, Enter Left
+        const sx = d.source.x + (d.source.type === 'gate' ? 30 : 120);
+        const sy = d.source.y;
+        const tx = d.target.x - (d.target.type === 'gate' ? 30 : 120);
+        const ty = d.target.y;
+        const dx = tx - sx;
+        return `M${sx},${sy}C${sx + dx / 2},${sy} ${sx + dx / 2},${ty} ${tx},${ty}`;
+    } else {
+        // Backward link: Exit Left, Enter Right
+        const sx = d.source.x - (d.source.type === 'gate' ? 30 : 120);
+        const sy = d.source.y;
+        const tx = d.target.x + (d.target.type === 'gate' ? 30 : 120);
+        const ty = d.target.y;
+        
+        // Control points offset to create a nice loop/bow out effect
+        const offset = Math.max(100, Math.abs(d.source.x - d.target.x) / 3);
+        return `M${sx},${sy}C${sx - offset},${sy} ${tx + offset},${ty} ${tx},${ty}`;
+    }
 }
 
 export function getLinkColor(type: string) {

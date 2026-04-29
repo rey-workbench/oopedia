@@ -98,9 +98,9 @@ final class AdaptiveRuleController extends Controller
         $result = [];
         foreach ($grouped as $diagnosisName => $ruleList) {
             $result[] = [
-                'diagnosis' => $diagnosisName ?? 'Uncategorized',
-                'count'     => $ruleList->count(),
-                'rules'     => $ruleList->map(fn ($rule) => [
+                'diagnosis_name' => $diagnosisName ?? 'Uncategorized',
+                'count'          => $ruleList->count(),
+                'rules'          => $ruleList->map(fn ($rule) => [
                     'id'                => $rule->id,
                     'name'              => $rule->name,
                     'recommendation'    => $rule->recommendation,
@@ -222,7 +222,7 @@ final class AdaptiveRuleController extends Controller
 
             $rootChildren[] = [
                 'id'        => 'diag_' . $idx,
-                'name'      => $diagnosis['diagnosis'],
+                'name'      => $diagnosis['diagnosis_name'],
                 'type'      => 'decision',
                 'is_active' => true,
                 'children'  => $ruleChildren,

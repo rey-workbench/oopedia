@@ -31,8 +31,13 @@ export function resolveGraphTopology(rules: any[], factData: any[], actionData: 
     });
 
     // Phase 1.5: Initialize Raw Facts (KONDISI)
+    const usedFactIds = new Set<string>();
+    rules.forEach(r => {
+        (r.required_fact_ids || []).forEach((id: string) => usedFactIds.add(id));
+    });
+
     factData
-        .filter((f) => !f.id.startsWith('V'))
+        .filter((f) => !f.id.startsWith('V') && usedFactIds.has(f.id))
         .forEach((f) => {
             nodeRegistry.set(`raw_fact_${f.id}`, {
                 type: 'raw_fact',
@@ -187,18 +192,33 @@ export function buildGraphLinks(nodeRegistry: Map<string, any>, rules: any[]) {
     // Link Inputs -> Kondisi
     const conditions = Array.from(nodeRegistry.values()).filter(n => n.type === 'raw_fact');
     conditions.forEach(cond => {
-        const id = cond.data.id;
-        let inputNodeId = null;
-        if (id.startsWith('G0')) inputNodeId = 'input_IN_ACC';
-        else if (id.startsWith('G05') || id.startsWith('G06') || id.startsWith('G07')) inputNodeId = 'input_IN_SPD'; 
-        else if (id.startsWith('G08') || id.startsWith('G09') || id.startsWith('G20')) inputNodeId = 'input_IN_HLP';
-        else if (id.startsWith('G11') || id.startsWith('G12') || id.startsWith('G13')) inputNodeId = 'input_IN_SPD';
-        else if (id.startsWith('G14') || id.startsWith('G15') || id.startsWith('G16')) inputNodeId = 'input_IN_STR';
-        else if (id === 'G19') inputNodeId = 'input_IN_LVL';
+        const fact = cond.data;
+        const category = (fact.category || '').toLowerCase();
         
-        if (inputNodeId) {
-            const inputNode = nodeRegistry.get(inputNodeId);
-            if (inputNode) links.push({ source: inputNode, target: cond, type: 'requirement' });
+        let logicStr = '';
+        if (typeof fact.logic === 'string') {
+            logicStr = fact.logic.toLowerCase();
+        } else if (fact.logic) {
+            logicStr = JSON.stringify(fact.logic).toLowerCase();
+        }
+
+        let inputNodeId = 'input_IN_ACC'; // Default fallback
+        
+        if (category.includes('accuracy') || logicStr.includes('accuracy')) {
+            inputNodeId = 'input_IN_ACC';
+        } else if (category.includes('speed') || logicStr.includes('speed') || category.includes('trend') || logicStr.includes('trend')) {
+            inputNodeId = 'input_IN_SPD'; 
+        } else if (category.includes('hint') || logicStr.includes('hint')) {
+            inputNodeId = 'input_IN_HLP';
+        } else if (category.includes('streak') || logicStr.includes('streak') || logicStr.includes('session') || category.includes('session')) {
+            inputNodeId = 'input_IN_STR';
+        } else if (category.includes('level') || logicStr.includes('level')) {
+            inputNodeId = 'input_IN_LVL';
+        }
+        
+        const inputNode = nodeRegistry.get(inputNodeId);
+        if (inputNode) {
+            links.push({ source: inputNode, target: cond, type: 'requirement' });
         }
     });
 
