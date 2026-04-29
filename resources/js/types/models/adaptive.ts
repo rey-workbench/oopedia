@@ -16,11 +16,10 @@ export interface AdaptiveAction {
 export interface AdaptiveRule {
     id: string;
     name: string;
-    domain: string;
+    recommendation: string;
     priority: number;
-    action: string; // Primary action ID
-    action_id: string;
-    required_facts: string[];
-    deduced_facts: string[];
+    action_ids: string[];
+    required_fact_ids: string[];
+    deduced_fact_ids: string[];
     is_active: boolean;
 }

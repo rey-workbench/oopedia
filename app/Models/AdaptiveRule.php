@@ -26,7 +26,7 @@ final class AdaptiveRule extends Model
     protected $fillable = [
         'id',
         'name',
-        'domain',
+        'recommendation',
         'priority',
         'action_ids',
         'required_fact_ids',

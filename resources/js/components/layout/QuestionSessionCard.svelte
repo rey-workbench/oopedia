@@ -82,7 +82,7 @@
                     type="button"
                     id="quiz-hint-btn"
                     onclick={() => state.useHint()}
-                    disabled={state.hintsAvailable <= 0 || !state.currentQuestion?.hint}
+                    disabled={state.hintsAvailable() <= 0 || !state.currentQuestion?.hint}
                     class="group press-active border-primary-200 text-primary-600 hover:bg-primary-50 flex items-center gap-3 rounded-2xl border-2 border-b-4 bg-white px-5 py-2.5 font-black shadow-sm transition-all disabled:pointer-events-none disabled:opacity-50"
                 >
                     <Lightbulb
@@ -100,7 +100,7 @@
     {#if studentState?.adaptive_state?.show_motivation}
         <div
             transition:slide={{ duration: 400 }}
-            class="mx-6 mt-4 rounded-2xl border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 p-5 text-center shadow-sm"
+            class="mx-6 mt-4 rounded-2xl border-2 border-blue-200 bg-linear-to-r from-blue-50 to-indigo-50 p-5 text-center shadow-sm"
         >
             <p class="text-lg font-bold text-blue-700">💪 Kamu Pasti Bisa!</p>
             <p class="mt-1 text-sm text-blue-500">

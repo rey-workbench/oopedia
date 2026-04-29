@@ -1,6 +1,6 @@
 import { BaseState } from '@/states/BaseState.svelte';
 import type {
-    AdaptiveRuleDomain,
+    AdaptiveRuleDiagnosis,
     AdaptiveStateDistribution,
     AdaptiveTriggerItem,
     AdaptiveRuleTriggerStat,
@@ -11,7 +11,7 @@ export class AdaptiveRuleState extends BaseState {
     totalRules = $state(0);
     totalFacts = $state(0);
     totalActions = $state(0);
-    rulesByDomain = $state<AdaptiveRuleDomain[]>([]);
+    rulesByDiagnosis = $state<AdaptiveRuleDiagnosis[]>([]);
     adaptiveStateDistribution = $state<AdaptiveStateDistribution[]>([]);
     recentTriggers = $state<AdaptiveTriggerItem[]>([]);
     ruleTriggersStats = $state<AdaptiveRuleTriggerStat[]>([]);
@@ -23,24 +23,6 @@ export class AdaptiveRuleState extends BaseState {
         super();
         this.hydrate(data);
     }
-
-    domainIcons: Record<string, string> = {
-        Safety: 'Shield',
-        Project: 'Target',
-        Achievement: 'Trophy',
-        Recovery: 'RefreshCcw',
-        Progression: 'TrendingUp',
-        Interaction: 'Activity',
-    };
-
-    domainColors: Record<string, string> = {
-        Safety: 'rose',
-        Project: 'blue',
-        Achievement: 'amber',
-        Recovery: 'emerald',
-        Progression: 'purple',
-        Interaction: 'cyan',
-    };
 
     maxTriggerCount = $derived(Math.max(1, ...this.ruleTriggersStats.map((r) => r.trigger_count)));
 

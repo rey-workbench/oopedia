@@ -9,6 +9,7 @@
         Trophy,
         Info,
         Trash2,
+        MessageSquareQuote,
     } from 'lucide-svelte';
     import { router } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils/route';
@@ -218,6 +219,20 @@
                             </p>
                         </div>
                     </div>
+
+                    {#if selectedNode.data.recommendation}
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2 text-[10px] font-black tracking-widest text-amber-500 uppercase">
+                                <MessageSquareQuote size={12} />
+                                <span>Rekomendasi Pedagogis</span>
+                            </div>
+                            <div class="rounded-2xl border-2 border-amber-100 bg-amber-50/50 p-4 shadow-sm">
+                                <p class="text-[11px] font-medium leading-relaxed text-amber-900">
+                                    {selectedNode.data.recommendation}
+                                </p>
+                            </div>
+                        </div>
+                    {/if}
 
                     {#if selectedNode.data.description}
                         <div class="rounded-2xl border border-blue-50 bg-blue-50/30 p-4">

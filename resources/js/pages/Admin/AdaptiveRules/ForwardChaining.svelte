@@ -48,7 +48,7 @@
 
     const factData = $derived(analyticsState.allFacts);
     const actionData = $derived(analyticsState.allActions);
-    const rules = $derived(analyticsState.rulesByDomain.flatMap((d) => d.rules));
+    const rules = $derived(analyticsState.rulesByDiagnosis.flatMap((d) => d.rules));
 
     // ─── CONFIGURATION & CONSTANTS ──────────────────────────────────────────
 
@@ -223,7 +223,7 @@
     });
 
     $effect(() => {
-        if (analyticsState.rulesByDomain.length > 0 || analyticsState.allFacts.length > 0) {
+        if (analyticsState.rulesByDiagnosis.length > 0 || analyticsState.allFacts.length > 0) {
             untrack(() => initSchematic());
         }
     });

@@ -97,6 +97,7 @@
             rule={editingRule}
             allFacts={props.allFacts}
             allActions={props.allActions}
+            totalRules={props.totalRules}
             onclose={() => (isRuleModalOpen = false)}
         />
 

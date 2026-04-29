@@ -62,7 +62,7 @@ export type {
     MaterialWithProgress,
     MissingQuestionsItem,
     UeqAverages,
-    AdaptiveRuleDomain,
+    AdaptiveRuleDiagnosis,
     AdaptiveTriggerItem,
     AdaptiveStateDistribution,
     AdaptiveRuleTriggerStat,

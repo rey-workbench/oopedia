@@ -5,187 +5,143 @@ declare(strict_types=1);
 namespace App\Services\Adaptive;
 
 use App\Contracts\Services\AdaptiveEngineServiceInterface;
-use App\Enums\Lms\StudentLevel;
-use App\Rules\Adaptive\Constants\ActionConstants;
+use App\Models\AdaptiveFact;
+use App\Models\AdaptiveRule;
+use App\Rules\Adaptive\Constants\AdaptiveConditionKeys;
 use App\Rules\Adaptive\Constants\FactConstants;
 use App\Rules\Adaptive\Constants\PedagogicalConstants;
 use App\Rules\Adaptive\Constants\StudentStateSchema;
+use Illuminate\Support\Facades\Log;
+
+use App\Traits\Adaptive\EvaluatesAdaptiveConditions;
 
 final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 {
+    use EvaluatesAdaptiveConditions;
+
+    /**
+     * Core Engine: Evaluates student state against DB-driven rules and facts.
+     */
     public function evaluate(array $state): array
     {
-        // 1. Extract Thresholds (Layer 2)
-        $accuracy = (float) ($state[StudentStateSchema::ACCURACY] ?? 0);
-        $metrics  = $state[StudentStateSchema::PERFORMANCE_METRICS] ?? [];
-        $session  = $state[StudentStateSchema::CURRENT_SESSION]     ?? [];
+        try {
+            // 1. Generate Active Facts dynamically from DB
+            $activeFacts = $this->generateActiveFacts($state);
 
-        $trend         = $metrics['trend'] ?? 'stable';
-        $speed         = $metrics['speed'] ?? 'normal';
-        $hints         = (int) ($state[StudentStateSchema::HINTS_USED] ?? 0);
-        $level         = $state[StudentStateSchema::LEVEL] ?? StudentLevel::PEMULA->value;
-        $streak        = (int) ($state[StudentStateSchema::STREAK] ?? 0);
-        $stagnantCount = (int) ($metrics['stagnant_count'] ?? 0);
-        $history       = $state[StudentStateSchema::SESSION_HISTORY] ?? [];
+            // 2. Fetch Active Rules from DB (ordered by priority)
+            $rules = AdaptiveRule::where('is_active', true)
+                ->ordered()
+                ->get();
 
-        // 2. Collect Facts for Debugging/Panel
-        $facts = [];
+            // 3. Pattern Matching Logic
+            foreach ($rules as $rule) {
+                if (!$rule instanceof AdaptiveRule) {
+                    continue;
+                }
 
-        // Accuracy mapping
-        if ($accuracy < PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD) {
-            $facts[] = FactConstants::ACCURACY_CRISIS;
-        } elseif ($accuracy <= 60) {
-            $facts[] = FactConstants::ACCURACY_STRUGGLE;
-        } elseif ($accuracy <= 70) {
-            $facts[] = FactConstants::ACCURACY_STABLE;
-        } elseif ($accuracy <= PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD) {
-            $facts[] = FactConstants::ACCURACY_PROGRESSING;
-        } elseif ($accuracy > PedagogicalConstants::ACCURACY_CERTIFICATION_THRESHOLD) {
-            $facts[] = FactConstants::ACCURACY_EXCELLENT;
-        } elseif ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD) {
-            $facts[] = FactConstants::ACCURACY_OPTIMAL;
-        }
+                $required = $rule->required_fact_ids ?? [];
 
-        // Trend mapping
-        if ($trend === 'down') {
-            $facts[] = FactConstants::TREND_DOWN;
-        } elseif ($trend === 'up') {
-            $facts[] = FactConstants::TREND_UP;
-        } else {
-            $facts[] = FactConstants::TREND_STABLE;
-        }
+                // IF (All required facts from DB are present in active student facts)
+                if ($this->isRuleSatisfied($required, $activeFacts)) {
+                    return $this->formatResponse($rule, $activeFacts);
+                }
+            }
 
-        // Speed mapping
-        if ($speed === 'fast') {
-            $facts[] = FactConstants::TIME_FAST;
-        } elseif ($speed === 'slow') {
-            $facts[] = FactConstants::TIME_SLOW;
-        } else {
-            $facts[] = FactConstants::TIME_NORMAL;
-        }
+            // 4. Ultimate Fallback (R14) if no rule matched
+            $fallback = AdaptiveRule::where('id', 'R14')->first();
+            
+            if ($fallback instanceof AdaptiveRule) {
+                return $this->formatResponse($fallback, $activeFacts);
+            }
 
-        // Streak mapping
-        if ($streak >= PedagogicalConstants::STREAK_CERTIFICATION_THRESHOLD) {
-            $facts[] = FactConstants::STREAK_7D;
-        } elseif ($streak >= PedagogicalConstants::STREAK_BOREDOM_THRESHOLD) {
-            $facts[] = FactConstants::STREAK_5D;
-        } elseif ($streak >= PedagogicalConstants::STREAK_OPTIMAL_THRESHOLD) {
-            $facts[] = FactConstants::STREAK_3D;
-        }
+            return $this->hardcodedFallback($activeFacts);
 
-        // Level mapping
-        if ($level === StudentLevel::AHLI->value) {
-            $facts[] = FactConstants::LEVEL_AHLI;
+        } catch (\Exception $e) {
+            Log::error("Adaptive Engine Error: " . $e->getMessage(), [
+                'state' => $state,
+                'trace' => $e->getTraceAsString()
+            ]);
+            return $this->hardcodedFallback([]);
         }
-
-        // Help mapping
-        if ($hints > PedagogicalConstants::HELP_HIGH_THRESHOLD) {
-            $facts[] = FactConstants::HELP_HIGH;
-        } elseif ($hints >= 2) {
-            $facts[] = FactConstants::HELP_MED;
-        } elseif ($hints === 0) {
-            $facts[] = FactConstants::HELP_NONE;
-        }
-
-        // 3. Evaluate Rules R01-R15 in order
-
-        // --- KRISIS PEMBELAJARAN ---
-        // R01: Akurasi <40%, Tren turun 2 sesi, Bantuan >3x
-        if ($accuracy < PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD && $trend === 'down' && $hints > PedagogicalConstants::HELP_HIGH_THRESHOLD) {
-            return $this->result('R01', FactConstants::V_CRISIS, [ActionConstants::REMEDIAL, ActionConstants::REDUCE_DIFF], $facts);
-        }
-        // R02: Akurasi <40%, Tren turun 2 sesi, Bantuan <=3x
-        if ($accuracy < PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD && $trend === 'down' && $hints <= PedagogicalConstants::HELP_HIGH_THRESHOLD) {
-            return $this->result('R02', FactConstants::V_CRISIS, [ActionConstants::REMEDIAL], $facts);
-        }
-        // R03: Akurasi <40%, Tren stabil/naik, Bantuan >3x
-        if ($accuracy < PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD && $hints > PedagogicalConstants::HELP_HIGH_THRESHOLD) {
-            return $this->result('R03', FactConstants::V_CRISIS, [ActionConstants::REDUCE_DIFF, ActionConstants::SCAFFOLD_REDUCTION], $facts);
-        }
-
-        // --- SEDANG KESULITAN ---
-        // R04: Akurasi 40-60%, Respons lambat, Bantuan <=3x
-        if ($accuracy >= PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD && $accuracy <= 60 && $speed === 'slow' && $hints <= PedagogicalConstants::HELP_HIGH_THRESHOLD) {
-            return $this->result('R04', FactConstants::V_STRUGGLING, [ActionConstants::REDUCE_DIFF], $facts);
-        }
-        // R05: Akurasi 40-60%, Respons normal, Bantuan 2-3x
-        if ($accuracy >= PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD && $accuracy <= 60 && $speed === 'normal' && $hints >= 2 && $hints <= PedagogicalConstants::HELP_HIGH_THRESHOLD) {
-            return $this->result('R05', FactConstants::V_STRUGGLING, [ActionConstants::REMEDIAL], $facts);
-        }
-        // R06: Akurasi 60-70%, Tren stabil, Bantuan <=2x
-        if ($accuracy >= 60 && $accuracy <= 70 && $trend === 'stable' && $hints <= 2) {
-            return $this->result('R06', FactConstants::V_STRUGGLING, [ActionConstants::FEEDBACK], $facts);
-        }
-
-        // --- PERFORMA OPTIMAL ---
-        // R07: Akurasi >80%, Tren naik, Level < Ahli
-        if ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD && $trend === 'up' && $level !== StudentLevel::AHLI->value) {
-            return $this->result('R07', FactConstants::V_OPTIMAL, [ActionConstants::INCREASE_DIFF], $facts);
-        }
-        // R08: Akurasi >80%, Tren naik, Level = Ahli
-        if ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD && $trend === 'up' && $level === StudentLevel::AHLI->value) {
-            return $this->result('R08', FactConstants::V_OPTIMAL, [ActionConstants::NEW_CHALLENGE], $facts);
-        }
-        // R09: Akurasi >80%, Respons cepat, Streak >=3
-        if ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD && $speed === 'fast' && $streak >= PedagogicalConstants::STREAK_OPTIMAL_THRESHOLD) {
-            return $this->result('R09', FactConstants::V_OPTIMAL, [ActionConstants::INCREASE_DIFF, ActionConstants::STREAK_BONUS], $facts);
-        }
-
-        // --- KETERGANTUNGAN BANTUAN ---
-        // R10: Bantuan >3x, Akurasi <50% tanpa bantuan, Tren stabil
-        if ($hints > PedagogicalConstants::HELP_HIGH_THRESHOLD && $accuracy < 50 && $trend === 'stable') {
-            return $this->result('R10', FactConstants::V_DEPENDENCY, [ActionConstants::SCAFFOLD_REDUCTION, ActionConstants::REMEDIAL], $facts);
-        }
-        // R11: Bantuan >3x, Akurasi >60% dengan bantuan, Tren naik
-        if ($hints > PedagogicalConstants::HELP_HIGH_THRESHOLD && $accuracy > 60 && $trend === 'up') {
-            return $this->result('R11', FactConstants::V_DEPENDENCY, [ActionConstants::SCAFFOLD_REDUCTION], $facts);
-        }
-
-        // --- POTENSI KEBOSANAN ---
-        // R12: Akurasi >80%, Skor stagnan >=3 sesi, Streak >=5
-        if ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD && $stagnantCount >= 3 && $streak >= PedagogicalConstants::STREAK_BOREDOM_THRESHOLD) {
-            return $this->result('R12', FactConstants::V_BOREDOM, [ActionConstants::NEW_CHALLENGE, ActionConstants::STREAK_BONUS], $facts);
-        }
-        // R13: Akurasi >80%, Respons cepat, Skor stagnan >=3 sesi
-        if ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD && $speed === 'fast' && $stagnantCount >= 3) {
-            return $this->result('R13', FactConstants::V_BOREDOM, [ActionConstants::INCREASE_DIFF], $facts);
-        }
-
-        // --- SPECIAL: CERTIFICATION ---
-        // R15 condition: Min Accuracy > 85% over last 3 sessions
-        $isConsistentHigh = false;
-        if (count($history) >= 3) {
-            $last3            = array_slice($history, -3);
-            $isConsistentHigh = min($last3) > PedagogicalConstants::ACCURACY_CERTIFICATION_THRESHOLD;
-        }
-
-        // R15 uses recent session hint usage (not cumulative) — spec: "Bantuan = 0" means not relying on hints currently
-        $sessionHints = (int) ($session['hints'] ?? 0);
-        if ($level === StudentLevel::AHLI->value && $isConsistentHigh && $streak >= PedagogicalConstants::STREAK_CERTIFICATION_THRESHOLD && $sessionHints === 0) {
-            return $this->result('R15', FactConstants::V_OPTIMAL, [ActionConstants::CERTIFICATION], $facts);
-        }
-
-        // --- R14: DEFAULT FALLBACK ---
-        return $this->result('R14', 'Normal Learning', [ActionConstants::FEEDBACK], $facts);
     }
 
-    private function result(string $ruleId, string $diagnosis, array $recommendations, array $facts = []): array
+    /**
+     * Evaluator: Maps raw state values to Fact G-Codes based on DB logic.
+     */
+    private function generateActiveFacts(array $state): array
+    {
+        $activeFacts = [];
+        
+        // Fetch primary fact definitions that have logic
+        $factDefinitions = AdaptiveFact::where('category', 'primary')->get();
+
+        foreach ($factDefinitions as $fact) {
+            $formula = json_decode($fact->description ?? '', true);
+
+            // If no formula (like for manual/complex facts), handle separately if needed
+            if (!$formula || !isset($formula[AdaptiveConditionKeys::KEY])) {
+                continue;
+            }
+
+            // Use data_get to support dot notation (e.g., performance_metrics.trend)
+            $currentValue = data_get($state, $formula[AdaptiveConditionKeys::KEY]);
+            $threshold = $formula[AdaptiveConditionKeys::VAL];
+            $operator = $formula[AdaptiveConditionKeys::OP];
+
+            if ($this->evaluateCondition($currentValue, $operator, $threshold)) {
+                $activeFacts[] = $fact->id; // G01, G02, etc.
+            }
+        }
+
+        return array_unique($activeFacts);
+    }
+
+    /**
+     * Checks if all required facts are present in active facts (AND logic).
+     */
+    private function isRuleSatisfied(array $required, array $active): bool
+    {
+        if (empty($required)) {
+            return true; // Fallback rule usually has empty requirements
+        }
+
+        // Check if every required fact exists in the active facts array
+        return count(array_intersect($required, $active)) === count($required);
+    }
+
+    /**
+     * Standardized response format from DB record.
+     */
+    private function formatResponse(AdaptiveRule $rule, array $activeFacts): array
     {
         return [
-            'id'              => $ruleId,
-            'diagnosis'       => $diagnosis,
-            'recommendations' => $recommendations,
-            'facts'           => $facts,
+            'id'              => $rule->id,
+            'diagnosis'       => $rule->name,
+            'recommendation'  => $rule->recommendation, // Renamed from domain
+            'recommendations' => $rule->action_ids,
+            'facts'           => $activeFacts,
+            'deduced_facts'   => $rule->deduced_fact_ids,
             'timestamp'       => now()->toIso8601String(),
             'engine_metadata' => [
-                'engine_version'  => '2.1.0-forward',
-                'rule_count'      => 15,
-                'fact_labels'     => array_merge(FactConstants::NAMES, FactConstants::VIRTUAL_NAMES),
-                'fact_categories' => [
-                    'primary' => 'primary',
-                    'virtual' => 'virtual',
-                ],
-            ],
+                'engine_version' => '3.1.0-full-db',
+                'priority'       => $rule->priority,
+            ]
+        ];
+    }
+
+    /**
+     * Emergency fallback if DB is empty or unreachable.
+     */
+    private function hardcodedFallback(array $activeFacts): array
+    {
+        return [
+            'id'              => 'ERR-FALLBACK',
+            'diagnosis'       => 'Normal Learning',
+            'recommendation'  => 'Tetap konsisten dalam belajar!',
+            'recommendations' => ['FEEDBACK'],
+            'facts'           => $activeFacts,
+            'deduced_facts'   => [],
+            'timestamp'       => now()->toIso8601String(),
         ];
     }
 }

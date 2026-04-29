@@ -114,8 +114,8 @@ export type UeqAverages = Record<string, number>;
 
 // Interface removed as it is now imported from @/types/models
 
-export interface AdaptiveRuleDomain {
-    domain: string;
+export interface AdaptiveRuleDiagnosis {
+    diagnosis: string;
     count: number;
     rules: AdaptiveRule[];
 }
@@ -146,7 +146,7 @@ export interface AdminAdaptiveRuleProps extends SharedProps {
     totalRules: number;
     totalFacts: number;
     totalActions: number;
-    rulesByDomain: AdaptiveRuleDomain[];
+    rulesByDiagnosis: AdaptiveRuleDiagnosis[];
     adaptiveStateDistribution: AdaptiveStateDistribution[];
     recentTriggers: AdaptiveTriggerItem[];
     ruleTriggersStats: AdaptiveRuleTriggerStat[];
