@@ -86,7 +86,7 @@ export function resolveGraphTopology(rules: any[], factData: any[], actionData: 
             }
 
             // Register Resulting Actions (REKOMENDASI)
-            const actionIds = rule.action_ids || [];
+            const actionIds = rule.actions ? rule.actions.map((a: any) => a.id) : [];
             actionIds.forEach((id: string) => {
                 if (registerAction(nodeRegistry, id, 3, actionData)) {
                     hasTopologyChanged = true;
@@ -168,7 +168,7 @@ export function buildGraphLinks(nodeRegistry: Map<string, any>, rules: any[]) {
             if (target) links.push({ source: gateNode, target, type: 'deduction' });
         });
 
-        const actionIds = rule.action_ids || [];
+        const actionIds = rule.actions ? rule.actions.map((a: any) => a.id) : [];
         actionIds.forEach((id: string) => {
             const actionNode = nodeRegistry.get(`action_${id}`);
             if (!actionNode) return;

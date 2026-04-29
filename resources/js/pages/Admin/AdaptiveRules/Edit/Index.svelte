@@ -64,13 +64,15 @@
             {/snippet}
         </PageHeader>
 
-        <div class="flex h-[800px] w-full overflow-hidden border-2 border-slate-200 rounded-[2rem] bg-white shadow-2xl">
-            <LibraryDrawer 
-            {allFacts} 
-            {allActions} 
-            CONDITION_KEYS={state.CONDITION_KEYS} 
-            handleDragStart={(e, id, type) => state.handleDragStart(e, id, type)} 
-        />
+        <div id="adaptive-rule-editor-container" class="flex h-[800px] w-full overflow-hidden border-2 border-slate-200 rounded-[2rem] bg-white shadow-2xl">
+            <div id="adaptive-rule-library">
+                <LibraryDrawer 
+                    {allFacts} 
+                    {allActions} 
+                    CONDITION_KEYS={state.CONDITION_KEYS} 
+                    handleDragStart={(e, id, type) => state.handleDragStart(e, id, type)} 
+                />
+            </div>
 
         <div class="flex-1 flex flex-col overflow-hidden bg-slate-50">
             <!-- MAIN FORM CANVAS -->

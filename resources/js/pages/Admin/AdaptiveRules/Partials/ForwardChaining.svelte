@@ -68,6 +68,7 @@
      */
     function initSchematic() {
         if (!svgRef || !containerRef || !factData || factData.length === 0) return;
+        if (containerRef.clientWidth === 0) return; // Wait until DOM has width
 
         const dimensions = prepareCanvas();
         const nodeRegistry = resolveGraphTopology(rules, factData, actionData);
@@ -209,7 +210,10 @@
     };
 
     onMount(() => {
-        initSchematic();
+        // Wait for DOM to finish layout calculations so width is not 0
+        requestAnimationFrame(() => {
+            setTimeout(initSchematic, 50);
+        });
         window.addEventListener('resize', initSchematic);
         const handleFullscreen = () => {
             isFullscreen = !!document.fullscreenElement;
@@ -224,7 +228,9 @@
 
     $effect(() => {
         if (analyticsState.rulesByDiagnosis.length > 0 || analyticsState.allFacts.length > 0) {
-            untrack(() => initSchematic());
+            untrack(() => {
+                requestAnimationFrame(() => setTimeout(initSchematic, 50));
+            });
         }
     });
 
@@ -258,7 +264,7 @@
 
 <div
     class="relative w-full overflow-hidden bg-white {isFullscreen
-        ? 'fixed inset-0 z-100 h-screen w-screen rounded-none'
+        ? 'h-full rounded-none'
         : 'h-[750px] rounded-3xl border-2 border-slate-100 shadow-xl'}"
     bind:this={containerRef}
     role="region"

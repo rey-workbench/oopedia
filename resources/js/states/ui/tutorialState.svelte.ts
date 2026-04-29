@@ -46,16 +46,18 @@ class TutorialState extends BaseState {
     /**
      * Get all steps for a specific tour, including global steps
      */
-    private getStepsForTour(tourId: string): DriveStep[] {
+    private getStepsForTour(tourId: string, includeGlobal: boolean = true): DriveStep[] {
         const pageSteps = this.registry
             .filter((r) => r.tourId === tourId && r.group !== 'global')
             .sort((a, b) => (a.priority || 0) - (b.priority || 0))
             .flatMap((r) => r.steps);
 
-        const globalSteps = this.registry
-            .filter((r) => r.group === 'global')
-            .sort((a, b) => (a.priority || 0) - (b.priority || 0))
-            .flatMap((r) => r.steps);
+        const globalSteps = includeGlobal 
+            ? this.registry
+                .filter((r) => r.group === 'global')
+                .sort((a, b) => (a.priority || 0) - (b.priority || 0))
+                .flatMap((r) => r.steps)
+            : [];
 
         // Combine global steps (sidebar & navbar) with the specific page steps
         return [...globalSteps, ...pageSteps];
@@ -90,14 +92,14 @@ class TutorialState extends BaseState {
     /**
      * Start a specific tour by ID
      */
-    startTour(tourId: string, force = false) {
+    startTour(tourId: string, force = false, includeGlobal = true) {
         if (typeof window === 'undefined') return;
 
         if (!force && this.hasSeenTutorial[tourId]) {
             return;
         }
 
-        const steps = this.getStepsForTour(tourId);
+        const steps = this.getStepsForTour(tourId, includeGlobal);
 
         if (steps.length === 0) {
             console.warn(`[Tutorial] No steps registered for tour ID "${tourId}".`);
@@ -161,8 +163,8 @@ export const tutorialState = new TutorialState();
 /**
  * Helper to start a tutorial from components
  */
-export function startTutorial(tourId: string, force = false) {
-    tutorialState.startTour(tourId, force);
+export function startTutorial(tourId: string, force = false, includeGlobal = true) {
+    tutorialState.startTour(tourId, force, includeGlobal);
 }
 
 /**

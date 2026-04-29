@@ -127,6 +127,7 @@ function drawLayerBackgrounds(mainGroup: any, layers: any[], height: number) {
     layers.forEach((layer, i) => {
         const x = GRAPH_CONFIG.startX + i * GRAPH_CONFIG.colWidth - 250;
         layerGroup.append('rect')
+            .attr('class', `layer-${layer.id}`)
             .attr('x', x)
             .attr('y', -height * 2)
             .attr('width', GRAPH_CONFIG.colWidth)

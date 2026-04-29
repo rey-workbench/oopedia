@@ -20,7 +20,8 @@
         GitBranch,
         Target,
         Edit2,
-        Trash2
+        Trash2,
+        CircleHelp
     } from 'lucide-svelte';
     import Button from '@/components/ui/Button.svelte';
     import { ROUTES } from '@/utils/route';
@@ -29,6 +30,7 @@
     import App from '@/layouts/App.svelte';
     import type { AdminAdaptiveRuleProps } from '@/types';
     import { AdaptiveRuleState } from '@/states/Admin/AdaptiveRuleState.svelte';
+    import { tutorialState } from '@/states/ui/tutorialState.svelte';
     import { untrack } from 'svelte';
     import ForwardChaining from './Partials/ForwardChaining.svelte';
     import ActionEditorModal from './Partials/ActionEditorModal.svelte';
@@ -93,6 +95,7 @@
             >
                 {#snippet actions()}
                     <Button
+                        id="adaptive-rule-create-btn"
                         href={ROUTES.ADMIN.ADAPTIVE_RULES.CREATE}
                         variant="primary"
                         size="sm"
@@ -105,7 +108,7 @@
             </PageHeader>
 
             <!-- Stats Overview -->
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div id="adaptive-rules-stats" class="grid grid-cols-1 gap-6 md:grid-cols-3">
                 <StatCard
                     title="Total Aturan"
                     value={analyticsState.totalRules}
@@ -130,7 +133,7 @@
             </div>
 
             <!-- Tabs Navigation -->
-            <div class="flex gap-4 border-b-2 border-slate-100 mt-8 mb-4">
+            <div id="adaptive-rules-tabs" class="flex gap-4 border-b-2 border-slate-100 mt-8 mb-4">
                 <button 
                     class="px-4 pb-3 text-xs font-black tracking-widest uppercase transition-all {activeTab === 'table' ? 'border-b-4 border-primary-500 text-primary-600' : 'text-slate-400 hover:text-slate-600'}"
                     onclick={() => activeTab = 'table'}
@@ -228,13 +231,26 @@
                 <div class="fixed inset-0 z-200 bg-slate-50 w-screen h-screen">
                     <div class="absolute right-8 top-8 z-50 flex gap-3">
                         <button
+                            onclick={() => {
+                                isFullscreen = true;
+                                setTimeout(() => {
+                                    chainingRef?.resetView();
+                                    tutorialState.startTour('admin_adaptive_rules_canvas', true, false);
+                                }, 300);
+                            }}
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-b-4 border-slate-200 bg-white text-slate-400 transition-all hover:bg-slate-50 hover:text-amber-500"
+                            title="Panduan Kanvas"
+                        >
+                            <CircleHelp size={20} />
+                        </button>
+                        <button
                             onclick={() => (isFullscreen = false)}
                             class="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-b-4 border-slate-200 bg-white text-slate-400 transition-all hover:bg-slate-50 hover:text-primary-500"
                         >
                             <Minimize2 size={20} />
                         </button>
                         <button
-                            onclick={() => chainingRef?.resetLayout()}
+                            onclick={() => chainingRef?.resetView()}
                             class="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-b-4 border-slate-200 bg-white text-slate-400 transition-all hover:bg-slate-50 hover:text-primary-500"
                         >
                             <RefreshCw size={20} />
@@ -260,13 +276,26 @@
                     <div class="relative overflow-hidden border-2 border-slate-200 bg-white shadow-2xl rounded-[2rem]">
                         <div class="absolute right-8 top-8 z-50 flex gap-3 pointer-events-auto">
                             <button
+                                onclick={() => {
+                                    isFullscreen = true;
+                                    setTimeout(() => {
+                                        chainingRef?.resetView();
+                                        tutorialState.startTour('admin_adaptive_rules_canvas', true, false);
+                                    }, 300);
+                                }}
+                                class="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-b-4 border-slate-200 bg-white text-slate-400 transition-all hover:bg-slate-50 hover:text-amber-500"
+                                title="Panduan Kanvas"
+                            >
+                                <CircleHelp size={20} />
+                            </button>
+                            <button
                                 onclick={() => (isFullscreen = true)}
                                 class="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-b-4 border-slate-200 bg-white text-slate-400 transition-all hover:bg-slate-50 hover:text-primary-500"
                             >
                                 <Maximize2 size={20} />
                             </button>
                             <button
-                                onclick={() => chainingRef?.resetLayout()}
+                                onclick={() => chainingRef?.resetView()}
                                 class="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-b-4 border-slate-200 bg-white text-slate-400 transition-all hover:bg-slate-50 hover:text-primary-500"
                             >
                                 <RefreshCw size={20} />
@@ -289,7 +318,7 @@
 
         {#if !isFullscreen}
             <!-- Recent Triggers & Distribution -->
-            <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+            <div id="adaptive-engine-activities" class="grid grid-cols-1 gap-8 lg:grid-cols-2">
                 <Card title="Aktivitas Engine Terbaru">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
