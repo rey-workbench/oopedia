@@ -38,13 +38,13 @@ class AdaptiveRuleSeeder extends Seeder
 
         // Map Fact ID to its JSON Logic for the 'description' column
         $logics = [
-            // Accuracy
+            // Accuracy (Strict Non-Overlapping Ranges)
             FactConstants::ACCURACY_CRISIS      => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_LT, AdaptiveConditionKeys::VAL => 40],
-            FactConstants::ACCURACY_STRUGGLE    => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_LTE, AdaptiveConditionKeys::VAL => 60],
-            FactConstants::ACCURACY_STABLE      => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_LTE, AdaptiveConditionKeys::VAL => 70],
-            FactConstants::ACCURACY_PROGRESSING => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_LTE, AdaptiveConditionKeys::VAL => 80],
-            FactConstants::ACCURACY_OPTIMAL     => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GT, AdaptiveConditionKeys::VAL => 80],
-            FactConstants::ACCURACY_EXCELLENT   => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GT, AdaptiveConditionKeys::VAL => 85],
+            FactConstants::ACCURACY_STRUGGLE    => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GTE, AdaptiveConditionKeys::VAL => 40], // Logic simplified: Engine handles priority
+            FactConstants::ACCURACY_STABLE      => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GTE, AdaptiveConditionKeys::VAL => 60],
+            FactConstants::ACCURACY_PROGRESSING => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GTE, AdaptiveConditionKeys::VAL => 75],
+            FactConstants::ACCURACY_OPTIMAL     => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GT, AdaptiveConditionKeys::VAL => 85],
+            FactConstants::ACCURACY_EXCELLENT   => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GT, AdaptiveConditionKeys::VAL => 92],
 
             // Help
             FactConstants::HELP_HIGH => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::HINTS, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GT, AdaptiveConditionKeys::VAL => 3],
@@ -159,18 +159,19 @@ class AdaptiveRuleSeeder extends Seeder
                 'priority'          => 1,
                 'name'              => 'Krisis Pembelajaran',
                 'recommendation'    => 'Sangat disarankan melakukan Remedial Review karena performa menurun drastis.',
-                'required_fact_ids' => [FactConstants::ACCURACY_CRISIS, FactConstants::TREND_DOWN, FactConstants::HELP_HIGH],
-                'deduced_fact_ids'  => [FactConstants::V_CRISIS],
-                'action_ids'        => [ActionConstants::REMEDIAL, ActionConstants::REDUCE_DIFF],
-            ],
-            [
-                'id'                => 'R02',
-                'priority'          => 2,
-                'name'              => 'Krisis Pembelajaran',
-                'recommendation'    => 'Lakukan Remedial Review untuk menguatkan pemahaman dasar.',
                 'required_fact_ids' => [FactConstants::ACCURACY_CRISIS, FactConstants::TREND_DOWN],
                 'deduced_fact_ids'  => [FactConstants::V_CRISIS],
                 'action_ids'        => [ActionConstants::REMEDIAL],
+            ],
+            // Rule Berantai: Jika Krisis DAN Butuh Banyak Bantuan
+            [
+                'id'                => 'R02',
+                'priority'          => 2,
+                'name'              => 'Intervensi Krisis Intensif',
+                'recommendation'    => 'Karena krisis dan ketergantungan bantuan, kamu akan dialihkan ke review materi dasar.',
+                'required_fact_ids' => [FactConstants::V_CRISIS, FactConstants::HELP_HIGH], // MENGGUNAKAN V_CRISIS HASIL R01
+                'deduced_fact_ids'  => [FactConstants::V_DEPENDENCY],
+                'action_ids'        => [ActionConstants::REDUCE_DIFF, ActionConstants::REMEDIAL],
             ],
             [
                 'id'                => 'R03',
@@ -278,6 +279,17 @@ class AdaptiveRuleSeeder extends Seeder
                 'required_fact_ids' => [FactConstants::ACCURACY_OPTIMAL, FactConstants::TIME_FAST, FactConstants::TREND_STABLE],
                 'deduced_fact_ids'  => [FactConstants::V_BOREDOM],
                 'action_ids'        => [ActionConstants::INCREASE_DIFF],
+            ],
+
+            // --- PERFORMA STABIL & BERKEMBANG (R16-R17) ---
+            [
+                'id'                => 'R16',
+                'priority'          => 14,
+                'name'              => 'Pertumbuhan Stabil',
+                'recommendation'    => 'Performa kamu sedang berkembang pesat! Kami akan mulai mengurangi bantuan agar kamu lebih mandiri.',
+                'required_fact_ids' => [FactConstants::ACCURACY_PROGRESSING, FactConstants::TREND_UP],
+                'deduced_fact_ids'  => [FactConstants::V_OPTIMAL],
+                'action_ids'        => [ActionConstants::SCAFFOLD_REDUCTION],
             ],
 
             // --- FALLBACK & SPECIAL (R14-R15) ---
