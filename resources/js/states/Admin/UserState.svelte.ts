@@ -53,6 +53,7 @@ export class UserFormState extends FormState<{
     email: string;
     password: string;
     password_confirmation: string;
+    role_id: number | '';
 }> {
     targetUser = $state<User | null>(null);
 
@@ -63,6 +64,7 @@ export class UserFormState extends FormState<{
                 email: user ? user.email : '',
                 password: '',
                 password_confirmation: '',
+                role_id: user ? (user as any).role_id : '',
             },
             { isEdit: !!user }
         );

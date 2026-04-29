@@ -54,15 +54,5 @@ final readonly class QuestionCreateDTO
         return $answers;
     }
 
-    public function toArray(): array
-    {
-        return [
-            'material_id'     => $this->material_id,
-            'question_text'   => $this->question_text,
-            'question_type'   => $this->question_type,
-            'difficulty'      => $this->difficulty,
-            'created_by'      => $this->created_by,
-            'answers'         => $this->answers,
-        ];
-    }
+    // Removed: toArray()
 }

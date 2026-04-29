@@ -115,7 +115,7 @@ export type UeqAverages = Record<string, number>;
 // Interface removed as it is now imported from @/types/models
 
 export interface AdaptiveRuleDiagnosis {
-    diagnosis: string;
+    diagnosis_name: string;
     count: number;
     rules: AdaptiveRule[];
 }

@@ -7,9 +7,8 @@ namespace Database\Seeders;
 use App\Models\AdaptiveAction;
 use App\Models\AdaptiveFact;
 use App\Models\AdaptiveRule;
-use App\Rules\Adaptive\Constants\ActionConstants;
-use App\Rules\Adaptive\Constants\FactConstants;
 use App\Rules\Adaptive\Constants\AdaptiveConditionKeys;
+use App\Rules\Adaptive\Constants\AdaptiveMetadataKeys;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -34,54 +33,48 @@ class AdaptiveRuleSeeder extends Seeder
 
     private function seedFacts(): void
     {
-        $keys = AdaptiveConditionKeys::class;
-
-        // Map Fact ID to its JSON Logic for the 'description' column
-        $logics = [
-            // Accuracy (Strict Non-Overlapping Ranges)
-            FactConstants::ACCURACY_CRISIS      => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_LT, AdaptiveConditionKeys::VAL => 40],
-            FactConstants::ACCURACY_STRUGGLE    => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GTE, AdaptiveConditionKeys::VAL => 40], // Logic simplified: Engine handles priority
-            FactConstants::ACCURACY_STABLE      => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GTE, AdaptiveConditionKeys::VAL => 60],
-            FactConstants::ACCURACY_PROGRESSING => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GTE, AdaptiveConditionKeys::VAL => 75],
-            FactConstants::ACCURACY_OPTIMAL     => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GT, AdaptiveConditionKeys::VAL => 85],
-            FactConstants::ACCURACY_EXCELLENT   => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GT, AdaptiveConditionKeys::VAL => 92],
-
-            // Help
-            FactConstants::HELP_HIGH => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::HINTS, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GT, AdaptiveConditionKeys::VAL => 3],
-            FactConstants::HELP_MED  => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::HINTS, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GTE, AdaptiveConditionKeys::VAL => 2],
-            FactConstants::HELP_NONE => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::HINTS, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_EQ, AdaptiveConditionKeys::VAL => 0],
-
-            // Trend
-            FactConstants::TREND_DOWN   => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::TREND, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_EQ, AdaptiveConditionKeys::VAL => 'down'],
-            FactConstants::TREND_STABLE => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::TREND, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_EQ, AdaptiveConditionKeys::VAL => 'stable'],
-            FactConstants::TREND_UP     => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::TREND, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_EQ, AdaptiveConditionKeys::VAL => 'up'],
-
-            // Speed
-            FactConstants::TIME_FAST   => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::SPEED, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_EQ, AdaptiveConditionKeys::VAL => 'fast'],
-            FactConstants::TIME_SLOW   => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::SPEED, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_EQ, AdaptiveConditionKeys::VAL => 'slow'],
-            FactConstants::TIME_NORMAL => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::SPEED, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_EQ, AdaptiveConditionKeys::VAL => 'normal'],
-
-            // Streak
-            FactConstants::STREAK_3D => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::STREAK, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GTE, AdaptiveConditionKeys::VAL => 3],
-            FactConstants::STREAK_5D => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::STREAK, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GTE, AdaptiveConditionKeys::VAL => 5],
-            FactConstants::STREAK_7D => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::STREAK, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GTE , AdaptiveConditionKeys::VAL => 7],
-
-            // Level
-            FactConstants::LEVEL_AHLI => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::LEVEL, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_EQ, AdaptiveConditionKeys::VAL => 'Ahli'],
+        // 1. Primary Facts (G-codes)
+        $primaryFacts = [
+            'G01' => ['name' => 'Akurasi <40%', 'logic' => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_LT, AdaptiveConditionKeys::VAL => 40]],
+            'G02' => ['name' => 'Akurasi 40-60%', 'logic' => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_LTE, AdaptiveConditionKeys::VAL => 60]],
+            'G03' => ['name' => 'Akurasi 60-70%', 'logic' => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_LTE, AdaptiveConditionKeys::VAL => 70]],
+            'G18' => ['name' => 'Akurasi 70-80%', 'logic' => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_LTE, AdaptiveConditionKeys::VAL => 80]],
+            'G04' => ['name' => 'Akurasi >80%', 'logic' => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GT, AdaptiveConditionKeys::VAL => 80]],
+            'G17' => ['name' => 'Akurasi >85%', 'logic' => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::ACCURACY, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GT, AdaptiveConditionKeys::VAL => 85]],
+            'G08' => ['name' => 'Bantuan >3x', 'logic' => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::HINTS, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GT, AdaptiveConditionKeys::VAL => 3]],
+            'G09' => ['name' => 'Bantuan 2-3x', 'logic' => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::HINTS, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GTE, AdaptiveConditionKeys::VAL => 2]],
+            'G20' => ['name' => 'Bantuan 0x', 'logic' => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::HINTS, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_EQ, AdaptiveConditionKeys::VAL => 0]],
+            'G05' => ['name' => 'Tren Turun', 'logic' => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::TREND, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_EQ, AdaptiveConditionKeys::VAL => AdaptiveConditionKeys::TREND_DOWN]],
+            'G06' => ['name' => 'Tren Stabil', 'logic' => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::TREND, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_EQ, AdaptiveConditionKeys::VAL => AdaptiveConditionKeys::TREND_STABLE]],
+            'G07' => ['name' => 'Tren Naik', 'logic' => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::TREND, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_EQ, AdaptiveConditionKeys::VAL => AdaptiveConditionKeys::TREND_UP]],
+            'G11' => ['name' => 'Respon Cepat', 'logic' => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::SPEED, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_EQ, AdaptiveConditionKeys::VAL => AdaptiveConditionKeys::SPEED_FAST]],
+            'G12' => ['name' => 'Respon Lambat', 'logic' => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::SPEED, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_EQ, AdaptiveConditionKeys::VAL => AdaptiveConditionKeys::SPEED_SLOW]],
+            'G13' => ['name' => 'Respon Normal', 'logic' => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::SPEED, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_EQ, AdaptiveConditionKeys::VAL => AdaptiveConditionKeys::SPEED_NORMAL]],
+            'G14' => ['name' => 'Streak >=3 Hari', 'logic' => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::STREAK, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GTE, AdaptiveConditionKeys::VAL => 3]],
+            'G15' => ['name' => 'Streak >=5 Hari', 'logic' => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::STREAK, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GTE, AdaptiveConditionKeys::VAL => 5]],
+            'G16' => ['name' => 'Streak >=7 Hari', 'logic' => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::STREAK, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_GTE, AdaptiveConditionKeys::VAL => 7]],
+            'G19' => ['name' => 'Level Ahli', 'logic' => [AdaptiveConditionKeys::KEY => AdaptiveConditionKeys::LEVEL, AdaptiveConditionKeys::OP => AdaptiveConditionKeys::OP_EQ, AdaptiveConditionKeys::VAL => AdaptiveConditionKeys::LEVEL_AHLI]],
         ];
 
-        // Primary Facts
-        foreach (FactConstants::NAMES as $id => $name) {
+        foreach ($primaryFacts as $id => $data) {
             AdaptiveFact::create([
-                'id'          => $id,
-                'category'    => 'primary',
-                'name'        => $name,
-                'description' => isset($logics[$id]) ? json_encode($logics[$id]) : null,
+                'id'       => $id,
+                'category' => 'primary',
+                'name'     => $data['name'],
+                'logic'    => json_encode($data['logic']),
             ]);
         }
 
-        // Virtual Facts (Diagnosis Results)
-        foreach (FactConstants::VIRTUAL_NAMES as $id => $name) {
+        // 2. Virtual Facts (V-codes / Diagnosis)
+        $virtualFacts = [
+            'V01' => 'Krisis Pembelajaran',
+            'V02' => 'Sedang Kesulitan',
+            'V03' => 'Performa Optimal',
+            'V04' => 'Ketergantungan Bantuan',
+            'V05' => 'Potensi Kebosanan',
+        ];
+
+        foreach ($virtualFacts as $id => $name) {
             AdaptiveFact::create([
                 'id'       => $id,
                 'category' => 'virtual',
@@ -93,223 +86,189 @@ class AdaptiveRuleSeeder extends Seeder
     private function seedActions(): void
     {
         $actions = [
-            [
-                'id'          => ActionConstants::REMEDIAL,
-                'name'        => 'Remedial Review',
-                'description' => 'ulangi materi dasar',
-                'variant'     => 'danger',
-            ],
-            [
-                'id'          => ActionConstants::REDUCE_DIFF,
-                'name'        => 'Reduce Difficulty',
-                'description' => 'turunkan 1 level',
-                'variant'     => 'warning',
-            ],
-            [
-                'id'          => ActionConstants::INCREASE_DIFF,
-                'name'        => 'Increase Difficulty',
-                'description' => '+1 langkah bertahap',
-                'variant'     => 'success',
-            ],
-            [
-                'id'          => ActionConstants::SCAFFOLD_REDUCTION,
-                'name'        => 'Scaffold Reduction',
-                'description' => 'kurangi hint bertahap',
-                'variant'     => 'info',
-            ],
-            [
-                'id'          => ActionConstants::NEW_CHALLENGE,
-                'name'        => 'New Challenge',
-                'description' => 'variasi + streak bonus',
-                'variant'     => 'primary',
-            ],
-            [
-                'id'          => ActionConstants::FEEDBACK,
-                'name'        => 'Default Fallback',
-                'description' => 'general feedback',
-                'variant'     => 'secondary',
-            ],
-            [
-                'id'          => ActionConstants::STREAK_BONUS,
-                'name'        => 'Streak Bonus',
-                'description' => 'XP tambahan (Internal)',
-                'variant'     => 'success',
-            ],
-            [
-                'id'          => ActionConstants::CERTIFICATION,
-                'name'        => 'Grant Certification ★',
-                'description' => 'level ahli + 3 sesi >85% + streak 7+',
-                'variant'     => 'success',
-            ],
+            ['id' => 'REMEDIAL', 'name' => 'Remedial Review', 'description' => 'ulangi materi dasar', 'variant' => 'danger'],
+            ['id' => 'REDUCE_DIFF', 'name' => 'Reduce Difficulty', 'description' => 'turunkan 1 level', 'variant' => 'warning'],
+            ['id' => 'INCREASE_DIFF', 'name' => 'Increase Difficulty', 'description' => '+1 langkah bertahap', 'variant' => 'success'],
+            ['id' => 'SCAFFOLD_REDUCTION', 'name' => 'Scaffold Reduction', 'description' => 'kurangi hint bertahap', 'variant' => 'info'],
+            ['id' => 'NEW_CHALLENGE', 'name' => 'New Challenge', 'description' => 'variasi + streak bonus', 'variant' => 'primary'],
+            ['id' => 'FEEDBACK', 'name' => 'Default Fallback', 'description' => 'general feedback', 'variant' => 'secondary'],
+            ['id' => 'STREAK_BONUS', 'name' => 'Streak Bonus', 'description' => 'XP tambahan (Internal)', 'variant' => 'success'],
+            ['id' => 'CERTIFICATION', 'name' => 'Grant Certification ★', 'description' => 'level ahli + 3 sesi >85% + streak 7+', 'variant' => 'success'],
         ];
 
         foreach ($actions as $action) {
-            AdaptiveAction::create($action + [
-                'instructions' => [],
-            ]);
+            AdaptiveAction::create($action + ['instructions' => []]);
         }
     }
 
     private function seedRules(): void
     {
+        $m = AdaptiveMetadataKeys::class;
+
         $rules = [
-            // --- KRISIS PEMBELAJARAN (R01-R03) ---
+            // Krisis
             [
                 'id'                => 'R01',
                 'priority'          => 1,
-                'name'              => 'Krisis Pembelajaran',
-                'recommendation'    => 'Sangat disarankan melakukan Remedial Review karena performa menurun drastis.',
-                'required_fact_ids' => [FactConstants::ACCURACY_CRISIS, FactConstants::TREND_DOWN],
-                'deduced_fact_ids'  => [FactConstants::V_CRISIS],
-                'action_ids'        => [ActionConstants::REMEDIAL],
+                'name'              => 'Diagnosis Krisis Pembelajaran',
+                'recommendation'    => 'Mendeteksi kondisi kritis.',
+                'required_fact_ids' => ['G01', 'G05'],
+                'deduced_fact_ids'  => ['V01'],
+                'actions'           => [],
             ],
-            // Rule Berantai: Jika Krisis DAN Butuh Banyak Bantuan
             [
                 'id'                => 'R02',
                 'priority'          => 2,
                 'name'              => 'Intervensi Krisis Intensif',
-                'recommendation'    => 'Karena krisis dan ketergantungan bantuan, kamu akan dialihkan ke review materi dasar.',
-                'required_fact_ids' => [FactConstants::V_CRISIS, FactConstants::HELP_HIGH], // MENGGUNAKAN V_CRISIS HASIL R01
-                'deduced_fact_ids'  => [FactConstants::V_DEPENDENCY],
-                'action_ids'        => [ActionConstants::REDUCE_DIFF, ActionConstants::REMEDIAL],
+                'recommendation'    => 'Sangat disarankan Remedial Review.',
+                'required_fact_ids' => ['V01', 'G08'],
+                'deduced_fact_ids'  => ['V04'],
+                'actions'           => [
+                    ['id' => 'REMEDIAL', 'metadata' => [$m::TARGET_DIFFICULTY => 'beginner', $m::FORCED_EASY_COUNT => 5, $m::SHOW_MOTIVATION => true]],
+                    ['id' => 'REDUCE_DIFF', 'metadata' => []],
+                ],
             ],
             [
                 'id'                => 'R03',
                 'priority'          => 3,
-                'name'              => 'Krisis Pembelajaran',
-                'recommendation'    => 'Tingkat kesulitan dikurangi agar kamu bisa lebih fokus memahami konsep.',
-                'required_fact_ids' => [FactConstants::ACCURACY_CRISIS],
-                'deduced_fact_ids'  => [FactConstants::V_CRISIS],
-                'action_ids'        => [ActionConstants::REDUCE_DIFF, ActionConstants::SCAFFOLD_REDUCTION],
+                'name'              => 'Intervensi Krisis Standar',
+                'recommendation'    => 'Ulangi materi dasar.',
+                'required_fact_ids' => ['V01'],
+                'deduced_fact_ids'  => [],
+                'actions'           => [
+                    ['id' => 'REMEDIAL', 'metadata' => []],
+                ],
             ],
-
-            // --- SEDANG KESULITAN (R04-R06) ---
+            // Kesulitan
             [
                 'id'                => 'R04',
                 'priority'          => 4,
-                'name'              => 'Sedang Kesulitan',
-                'recommendation'    => 'Materi diturunkan satu level agar pengerjaan lebih lancar.',
-                'required_fact_ids' => [FactConstants::ACCURACY_STRUGGLE, FactConstants::TIME_SLOW],
-                'deduced_fact_ids'  => [FactConstants::V_STRUGGLING],
-                'action_ids'        => [ActionConstants::REDUCE_DIFF],
+                'name'              => 'Diagnosis Kesulitan Materi',
+                'recommendation'    => 'Mendeteksi hambatan belajar.',
+                'required_fact_ids' => ['G02'],
+                'deduced_fact_ids'  => ['V02'],
+                'actions'           => [],
             ],
             [
                 'id'                => 'R05',
                 'priority'          => 5,
-                'name'              => 'Sedang Kesulitan',
-                'recommendation'    => 'Disarankan mengulang materi dasar sejenak.',
-                'required_fact_ids' => [FactConstants::ACCURACY_STRUGGLE, FactConstants::HELP_MED],
-                'deduced_fact_ids'  => [FactConstants::V_STRUGGLING],
-                'action_ids'        => [ActionConstants::REMEDIAL],
+                'name'              => 'Penyesuaian Tingkat Kesulitan',
+                'recommendation'    => 'Materi diturunkan satu level.',
+                'required_fact_ids' => ['V02', 'G12'],
+                'deduced_fact_ids'  => [],
+                'actions'           => [
+                    ['id' => 'REDUCE_DIFF', 'metadata' => []],
+                ],
             ],
             [
                 'id'                => 'R06',
                 'priority'          => 6,
-                'name'              => 'Sedang Kesulitan',
-                'recommendation'    => 'Tetap semangat! Perhatikan penjelasan pada setiap soal.',
-                'required_fact_ids' => [FactConstants::ACCURACY_STABLE, FactConstants::TREND_STABLE],
-                'deduced_fact_ids'  => [FactConstants::V_STRUGGLING],
-                'action_ids'        => [ActionConstants::FEEDBACK],
+                'name'              => 'Pendampingan Belajar',
+                'recommendation'    => 'Tetap semangat! Perhatikan penjelasan.',
+                'required_fact_ids' => ['V02', 'G06'],
+                'deduced_fact_ids'  => [],
+                'actions'           => [
+                    ['id' => 'FEEDBACK', 'metadata' => []],
+                ],
             ],
-
-            // --- PERFORMA OPTIMAL (R07-R09) ---
+            // Optimal
             [
                 'id'                => 'R07',
                 'priority'          => 7,
-                'name'              => 'Performa Optimal',
-                'recommendation'    => 'Luar biasa! Tingkat kesulitan dinaikkan untuk tantangan baru.',
-                'required_fact_ids' => [FactConstants::ACCURACY_OPTIMAL, FactConstants::TREND_UP],
-                'deduced_fact_ids'  => [FactConstants::V_OPTIMAL],
-                'action_ids'        => [ActionConstants::INCREASE_DIFF],
+                'name'              => 'Diagnosis Performa Optimal',
+                'recommendation'    => 'Siap untuk tantangan tinggi.',
+                'required_fact_ids' => ['G04', 'G07'],
+                'deduced_fact_ids'  => ['V03'],
+                'actions'           => [
+                    ['id' => 'INCREASE_DIFF', 'metadata' => [$m::DIFFICULTY_STEPS => 1]],
+                ],
             ],
             [
                 'id'                => 'R08',
                 'priority'          => 8,
-                'name'              => 'Performa Optimal',
-                'recommendation'    => 'Kamu sudah ahli! Siap untuk tantangan spesial?',
-                'required_fact_ids' => [FactConstants::ACCURACY_OPTIMAL, FactConstants::LEVEL_AHLI],
-                'deduced_fact_ids'  => [FactConstants::V_OPTIMAL],
-                'action_ids'        => [ActionConstants::NEW_CHALLENGE],
+                'name'              => 'Tantangan Ahli',
+                'recommendation'    => 'Siap tantangan studi kasus?',
+                'required_fact_ids' => ['V03', 'G19'],
+                'deduced_fact_ids'  => [],
+                'actions'           => [
+                    ['id' => 'NEW_CHALLENGE', 'metadata' => [$m::CHECK_CERTIFICATION => true]],
+                ],
             ],
             [
                 'id'                => 'R09',
                 'priority'          => 9,
-                'name'              => 'Performa Optimal',
-                'recommendation'    => 'Streak luar biasa! Terus pertahankan performamu.',
-                'required_fact_ids' => [FactConstants::ACCURACY_OPTIMAL, FactConstants::STREAK_3D],
-                'deduced_fact_ids'  => [FactConstants::V_OPTIMAL],
-                'action_ids'        => [ActionConstants::INCREASE_DIFF, ActionConstants::STREAK_BONUS],
+                'name'              => 'Apresiasi Capaian',
+                'recommendation'    => 'Streak luar biasa! Terus pertahankan.',
+                'required_fact_ids' => ['V03', 'G14'],
+                'deduced_fact_ids'  => [],
+                'actions'           => [
+                    ['id' => 'STREAK_BONUS', 'metadata' => []],
+                ],
             ],
-
-            // --- KETERGANTUNGAN BANTUAN (R10-R11) ---
+            // Ketergantungan
             [
                 'id'                => 'R10',
                 'priority'          => 10,
-                'name'              => 'Ketergantungan Bantuan',
-                'recommendation'    => 'Coba kerjakan tanpa bantuan hint untuk menguji pemahaman aslimu.',
-                'required_fact_ids' => [FactConstants::HELP_HIGH, FactConstants::TREND_STABLE],
-                'deduced_fact_ids'  => [FactConstants::V_DEPENDENCY],
-                'action_ids'        => [ActionConstants::SCAFFOLD_REDUCTION, ActionConstants::REMEDIAL],
+                'name'              => 'Diagnosis Ketergantungan Bantuan',
+                'recommendation'    => 'Penggunaan bantuan berlebihan.',
+                'required_fact_ids' => ['G08'],
+                'deduced_fact_ids'  => ['V04'],
+                'actions'           => [],
             ],
             [
                 'id'                => 'R11',
                 'priority'          => 11,
-                'name'              => 'Ketergantungan Bantuan',
-                'recommendation'    => 'Jumlah hint akan dikurangi secara bertahap agar kamu lebih mandiri.',
-                'required_fact_ids' => [FactConstants::HELP_HIGH, FactConstants::TREND_UP],
-                'deduced_fact_ids'  => [FactConstants::V_DEPENDENCY],
-                'action_ids'        => [ActionConstants::SCAFFOLD_REDUCTION],
+                'name'              => 'Latihan Kemandirian',
+                'recommendation'    => 'Hint dikurangi bertahap.',
+                'required_fact_ids' => ['V04', 'G07'],
+                'deduced_fact_ids'  => [],
+                'actions'           => [
+                    ['id' => 'SCAFFOLD_REDUCTION', 'metadata' => [$m::GRADUAL_SCAFFOLD_REDUCTION => true]],
+                ],
             ],
-
-            // --- POTENSI KEBOSANAN (R12-R13) ---
+            // Kebosanan
             [
                 'id'                => 'R12',
                 'priority'          => 12,
-                'name'              => 'Potensi Kebosanan',
-                'recommendation'    => 'Waktunya tantangan baru agar belajar tidak terasa membosankan!',
-                'required_fact_ids' => [FactConstants::ACCURACY_OPTIMAL, FactConstants::STREAK_5D, FactConstants::TREND_STABLE],
-                'deduced_fact_ids'  => [FactConstants::V_BOREDOM],
-                'action_ids'        => [ActionConstants::NEW_CHALLENGE, ActionConstants::STREAK_BONUS],
+                'name'              => 'Diagnosis Potensi Kebosanan',
+                'recommendation'    => 'Mendeteksi kebosanan.',
+                'required_fact_ids' => ['G04', 'G15', 'G06'],
+                'deduced_fact_ids'  => ['V05'],
+                'actions'           => [],
             ],
             [
                 'id'                => 'R13',
                 'priority'          => 13,
-                'name'              => 'Potensi Kebosanan',
-                'recommendation'    => 'Kecepatanmu luar biasa! Ayo naik ke level berikutnya.',
-                'required_fact_ids' => [FactConstants::ACCURACY_OPTIMAL, FactConstants::TIME_FAST, FactConstants::TREND_STABLE],
-                'deduced_fact_ids'  => [FactConstants::V_BOREDOM],
-                'action_ids'        => [ActionConstants::INCREASE_DIFF],
+                'name'              => 'Pemberian Variasi Materi',
+                'recommendation'    => 'Waktunya tantangan lintas topik!',
+                'required_fact_ids' => ['V05'],
+                'deduced_fact_ids'  => [],
+                'actions'           => [
+                    ['id' => 'NEW_CHALLENGE', 'metadata' => [$m::CROSS_TOPIC_CHALLENGE => true]],
+                ],
             ],
-
-            // --- PERFORMA STABIL & BERKEMBANG (R16-R17) ---
-            [
-                'id'                => 'R16',
-                'priority'          => 14,
-                'name'              => 'Pertumbuhan Stabil',
-                'recommendation'    => 'Performa kamu sedang berkembang pesat! Kami akan mulai mengurangi bantuan agar kamu lebih mandiri.',
-                'required_fact_ids' => [FactConstants::ACCURACY_PROGRESSING, FactConstants::TREND_UP],
-                'deduced_fact_ids'  => [FactConstants::V_OPTIMAL],
-                'action_ids'        => [ActionConstants::SCAFFOLD_REDUCTION],
-            ],
-
-            // --- FALLBACK & SPECIAL (R14-R15) ---
+            // Special
             [
                 'id'                => 'R15',
-                'priority'          => 0, // Prioritas tertinggi untuk sertifikasi
-                'name'              => 'Grant Certification',
-                'recommendation'    => 'Selamat! Kamu berhak mendapatkan sertifikat atas dedikasi dan performamu.',
-                'required_fact_ids' => [FactConstants::LEVEL_AHLI, FactConstants::ACCURACY_EXCELLENT, FactConstants::STREAK_7D, FactConstants::HELP_NONE],
-                'deduced_fact_ids'  => [FactConstants::V_OPTIMAL],
-                'action_ids'        => [ActionConstants::CERTIFICATION],
+                'priority'          => 0,
+                'name'              => '★ Grant Certification',
+                'recommendation'    => 'Selamat mendapatkan sertifikat!',
+                'required_fact_ids' => ['V03', 'G17', 'G16', 'G20'],
+                'deduced_fact_ids'  => [],
+                'actions'           => [
+                    ['id' => 'CERTIFICATION', 'metadata' => [$m::NOTIFY_TEACHER => true, $m::NOTIFY_TYPE => $m::TYPE_CERTIFICATION]],
+                ],
             ],
             [
                 'id'                => 'R14',
-                'priority'          => 100, // Fallback
+                'priority'          => 100,
                 'name'              => 'Normal Learning',
-                'recommendation'    => 'Lanjutkan belajarmu, konsistensi adalah kunci kesuksesan!',
+                'recommendation'    => 'Lanjutkan belajarmu!',
                 'required_fact_ids' => [],
                 'deduced_fact_ids'  => [],
-                'action_ids'        => [ActionConstants::FEEDBACK],
+                'actions'           => [
+                    ['id' => 'FEEDBACK', 'metadata' => []],
+                ],
             ],
         ];
 

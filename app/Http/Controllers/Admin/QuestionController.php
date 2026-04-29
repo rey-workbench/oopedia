@@ -48,6 +48,7 @@ final class QuestionController extends Controller
         if (! $materialId) {
             $materials    = $this->materialService->getAllMaterials();
             $material     = null;
+
             return $this->render('Admin/Questions/Create/Index', compact('materials', 'material'));
         }
 
@@ -78,7 +79,7 @@ final class QuestionController extends Controller
                 );
         }
 
-        $this->quizService->createQuestion($dto->toArray());
+        $this->quizService->createQuestion($dto);
 
         $redirectParams = $dto->material_id ? ['material' => $dto->material_id] : [];
 
@@ -121,7 +122,7 @@ final class QuestionController extends Controller
             }
         }
 
-        $this->quizService->updateQuestion($questionId, $dto->toArray());
+        $this->quizService->updateQuestion($questionId, $dto);
 
         $redirectParams = $dto->material_id ? ['material' => $dto->material_id] : [];
 

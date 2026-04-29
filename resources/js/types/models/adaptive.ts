@@ -2,7 +2,7 @@ export interface AdaptiveFact {
     id: string;
     name: string;
     category: string;
-    description: string;
+    logic: string | null;
 }
 
 export interface AdaptiveAction {
@@ -18,7 +18,10 @@ export interface AdaptiveRule {
     name: string;
     recommendation: string;
     priority: number;
-    action_ids: string[];
+    actions: {
+        id: string;
+        metadata: Record<string, any>;
+    }[];
     required_fact_ids: string[];
     deduced_fact_ids: string[];
     is_active: boolean;

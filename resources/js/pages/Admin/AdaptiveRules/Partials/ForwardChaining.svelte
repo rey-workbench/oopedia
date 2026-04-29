@@ -3,12 +3,12 @@
     import { onMount, untrack } from 'svelte';
     import * as d3 from 'd3';
     import type { AdaptiveRuleState } from '@/states/Admin/AdaptiveRuleState.svelte';
-    import NodePreviewPanel from './NodePreviewPanel.svelte';
+    import NodePreviewPanel from '@/pages/Admin/AdaptiveRules/Partials/NodePreviewPanel.svelte';
     import {
         resolveGraphTopology,
         buildGraphLinks,
         calculateSpatialCoordinates,
-    } from './topology';
+    } from '@/pages/Admin/AdaptiveRules/Partials/topology';
     import {
         Zap,
         Target,
@@ -117,7 +117,7 @@
         setupMarkers, 
         renderGraph,
         type RenderContext
-    } from './render';
+    } from '@/pages/Admin/AdaptiveRules/Partials/render';
 
     function handleNodeClick(d: any, event: MouseEvent) {
         event.stopPropagation();

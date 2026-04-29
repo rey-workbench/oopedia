@@ -6,6 +6,7 @@ namespace App\Services\User;
 
 use App\Contracts\Repositories\StudentStateRepositoryInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
+use App\DTOs\Quiz\InteractionDTO;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Models\StudentState;
 use App\Rules\Adaptive\Constants\PedagogicalConstants;
@@ -23,22 +24,23 @@ final class PerformanceService implements PerformanceServiceInterface
         return $this->studentStateRepo->findOrCreate($userId);
     }
 
-    public function updateMetricsFromInteraction(
-        string $userId,
-        string $questionId,
-        bool $isCorrect,
-        int $timeSpent,
-        QuestionDifficulty $difficulty,
-        bool $usedHint,
-        int $score = 0,
-    ): StudentState {
+    public function updateMetricsFromInteraction(InteractionDTO $interaction): StudentState
+    {
+        $userId     = $interaction->userId;
+        $questionId = $interaction->questionId;
+        $isCorrect  = $interaction->isCorrect;
+        $timeSpent  = $interaction->timeSpent;
+        $difficulty = $interaction->difficulty;
+        $usedHint   = $interaction->usedHint;
+        $score      = $interaction->score;
+
         $state = $this->getStudentState($userId);
 
-        $currentSession = $state->current_session        ?? StudentStateSchema::defaults()[StudentStateSchema::CURRENT_SESSION];
-        $metrics        = $state->performance_metrics    ?? StudentStateSchema::defaults()[StudentStateSchema::PERFORMANCE_METRICS];
+        $currentSession = $state->current_session     ?? StudentStateSchema::defaults()[StudentStateSchema::CURRENT_SESSION];
+        $metrics        = $state->performance_metrics ?? StudentStateSchema::defaults()[StudentStateSchema::PERFORMANCE_METRICS];
 
-        $questionIds = $currentSession['question_ids']          ?? [];
-        $xp          = $state->xp                               ?? 0;
+        $questionIds = $currentSession['question_ids'] ?? [];
+        $xp          = $state->xp                      ?? 0;
 
         // Jika user mengulang pertanyaan yang sama di sesi ini, abaikan perhitungan gandanya
         if (in_array($questionId, $questionIds)) {
@@ -63,8 +65,8 @@ final class PerformanceService implements PerformanceServiceInterface
 
         // 2. Update cumulative counts (tidak terpengaruh reset sesi)
         $totalAnswered = ($state->total_answered ?? 0) + 1;
-        $correctCount  = ($state->correct_count  ?? 0) + ($isCorrect ? 1 : 0);
-        $hintsUsed     = ($state->hints_used     ?? 0) + ($usedHint ? 1 : 0);
+        $correctCount  = ($state->correct_count ?? 0)  + ($isCorrect ? 1 : 0);
+        $hintsUsed     = ($state->hints_used ?? 0)     + ($usedHint ? 1 : 0);
 
         // Akurasi = kumulatif global, bukan sesi mini
         $accuracy = round(($correctCount / $totalAnswered) * 100, 2);
@@ -200,8 +202,8 @@ final class PerformanceService implements PerformanceServiceInterface
             'level'               => $state->level ?? 'Beginner',
             'hints_available'     => $state->hints_available,
             'target_difficulty'   => $state->target_difficulty,
-            'adaptive_state'      => $state->adaptive_state           ?? [],
-            'performance_metrics' => $state->performance_metrics      ?? [],
+            'adaptive_state'      => $state->adaptive_state      ?? [],
+            'performance_metrics' => $state->performance_metrics ?? [],
         ];
     }
 

@@ -9,6 +9,8 @@ use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\MaterialServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
 use App\Contracts\Services\QuizServiceInterface;
+use App\DTOs\Quiz\QuizContextDTO;
+use App\DTOs\Quiz\QuizSubmissionDTO;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Question\CheckAnswerRequest;
@@ -77,7 +79,7 @@ final class MaterialQuestionController extends Controller
             $targetDifficulty = $state->target_difficulty ? QuestionDifficulty::tryFrom((string) $state->target_difficulty) : null;
         }
 
-        $quizData = $this->quizService->getQuizData(
+        $context = new QuizContextDTO(
             material: $material,
             difficulty: QuestionDifficulty::tryFrom((string) $difficulty),
             userId: $userId,
@@ -85,6 +87,8 @@ final class MaterialQuestionController extends Controller
             guestProgress: $isGuest ? $this->guestProgressService->getProgress() : [],
             targetDifficulty: $targetDifficulty,
         );
+
+        $quizData = $this->quizService->getQuizData($context);
 
         if ($quizData['currentQuestion'] === null && $quizData['answeredCount'] > 0) {
             return redirect()->route('mahasiswa.materials.questions.review', ['material' => $materialId, 'difficulty' => $difficulty]);
@@ -97,15 +101,27 @@ final class MaterialQuestionController extends Controller
     {
         $this->getMaterialOrAbort($materialId);
 
-        $result = $this->quizService->handleSubmission(
+        $submission = QuizSubmissionDTO::fromRequest(
             userId: (string) Auth::id(),
             materialId: $materialId,
             questionId: $questionId,
-            validatedData: $request->validated(),
+            data: $request->validated(),
         );
+
+        $result = $this->quizService->handleSubmission($submission);
 
         $isCorrect    = $result['is_correct'];
         $engineResult = $result['engine_result'];
+
+        // Determine next destination: if remedial is needed, go back to material
+        $shouldRemedial = in_array('REMEDIAL', $engineResult['recommendations'] ?? []);
+
+        $nextUrl = $shouldRemedial
+            ? route('mahasiswa.materials.show', $materialId)
+            : route('mahasiswa.materials.questions.show', [
+                'material'   => $materialId,
+                'difficulty' => $request->difficulty ?? 'all',
+            ]);
 
         return $this->json([
             'status'         => $isCorrect ? 'success' : 'error',
@@ -114,14 +130,12 @@ final class MaterialQuestionController extends Controller
             'isCorrect'      => $isCorrect,
             'adaptiveResult' => $engineResult,
             'studentState'   => Auth::guest() ? null : $this->performanceService->getStudentSessionState((string) Auth::id()),
-            'nextUrl'        => $nextUrl = route('mahasiswa.materials.questions.show', [
-                'material'   => $materialId,
-                'difficulty' => $request->difficulty ?? 'all',
-            ]),
-            'ui' => [
-                'url'   => $nextUrl,
-                'label' => 'Lanjut',
-                'type'  => $isCorrect ? 'success' : 'info',
+            'nextUrl'        => $nextUrl,
+            'ui'             => [
+                'url'     => $nextUrl,
+                'label'   => $shouldRemedial ? 'Pelajari Materi' : 'Lanjut',
+                'type'    => $shouldRemedial ? 'warning' : ($isCorrect ? 'success' : 'info'),
+                'message' => $shouldRemedial ? 'Kamu perlu mengulas materi ini kembali.' : null,
             ],
         ]);
     }
@@ -130,13 +144,15 @@ final class MaterialQuestionController extends Controller
     {
         $material = $this->getMaterialOrAbort($materialId);
 
-        $questions = $this->quizService->getReviewQuestions(
+        $context = new QuizContextDTO(
             material: $material,
             difficulty: QuestionDifficulty::tryFrom((string) $request->difficulty),
             userId: (string) Auth::id(),
             isGuest: Auth::guest(),
             guestProgress: Auth::guest() ? $this->guestProgressService->getProgress() : [],
         );
+
+        $questions = $this->quizService->getReviewQuestions($context);
 
         return $this->render('Mahasiswa/Materials/Questions/Review/Index', [
             'material'   => $material,

@@ -8,6 +8,8 @@ use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\MediaRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\MaterialServiceInterface;
+use App\DTOs\Material\MaterialCreateDTO;
+use App\DTOs\Material\MaterialUpdateDTO;
 use App\Exceptions\Domain\MaterialNotFoundException;
 use App\Exceptions\Domain\MediaOperationException;
 use App\Helpers\ProgressHelper;
@@ -51,18 +53,18 @@ final class MaterialService implements MaterialServiceInterface
         return $this->materialRepo->findWithQuestionsAndAnswers($id);
     }
 
-    public function createMaterial(array $data, mixed $coverImage = null): Material
+    public function createMaterial(MaterialCreateDTO $dto): Material
     {
         $material = $this->materialRepo->create([
-            'title'            => $data['title'],
-            'content'          => $data['content'],
-            'module_id'        => $data['module_id'],
-            'created_by'       => $data['created_by'],
-            'is_final_project' => $data['is_final_project'] ?? false,
+            'title'            => $dto->title,
+            'content'          => $dto->content,
+            'module_id'        => $dto->module_id,
+            'created_by'       => $dto->created_by,
+            'is_final_project' => $dto->is_final_project,
         ]);
 
-        if ($coverImage) {
-            $this->uploadCoverImage($material, $coverImage);
+        if ($dto->cover_image) {
+            $this->uploadCoverImage($material, $dto->cover_image);
         }
 
         Cache::forget('sidebar_materials_v4');
@@ -70,7 +72,7 @@ final class MaterialService implements MaterialServiceInterface
         return $material;
     }
 
-    public function updateMaterial(string $materialId, array $data, mixed $coverImage = null): Material
+    public function updateMaterial(string $materialId, MaterialUpdateDTO $dto): Material
     {
         $material = $this->materialRepo->find($materialId);
 
@@ -79,15 +81,15 @@ final class MaterialService implements MaterialServiceInterface
         }
 
         $this->materialRepo->update($material->id, [
-            'title'            => $data['title'],
-            'content'          => $data['content']          ?? $data['description'] ?? null,
-            'module_id'        => $data['module_id']        ?? $material->module_id,
-            'is_final_project' => $data['is_final_project'] ?? $material->is_final_project,
+            'title'            => $dto->title            ?? $material->title,
+            'content'          => $dto->content          ?? $material->content,
+            'module_id'        => $dto->module_id        ?? $material->module_id,
+            'is_final_project' => $dto->is_final_project ?? $material->is_final_project,
         ]);
 
-        if ($coverImage) {
+        if ($dto->cover_image) {
             $this->deleteCoverImage($material);
-            $this->uploadCoverImage($material, $coverImage);
+            $this->uploadCoverImage($material, $dto->cover_image);
         }
 
         Cache::forget('sidebar_materials_v4');
@@ -169,9 +171,11 @@ final class MaterialService implements MaterialServiceInterface
             $unlockedModules = $studentState?->adaptive_state['unlocked_modules'] ?? [];
         }
 
-        $allMaterials->load(['questions' => function ($query) {
-            $query->select('id', 'material_id', 'difficulty');
-        }]);
+        $allMaterials->load([
+            'questions' => function ($query) {
+                $query->select('id', 'material_id', 'difficulty');
+            },
+        ]);
 
         $firstModuleId  = $allMaterials->whereNotNull('module_id')->min('module_id');
         $totalMaterials = $allMaterials->count();

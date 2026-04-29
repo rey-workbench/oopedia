@@ -23,8 +23,8 @@
         limit = 6;
     });
 
-    const standardConditions = $derived(allFacts.filter((f) => f.category !== 'virtual'));
-    const virtualFacts = $derived(allFacts.filter((f) => f.category === 'virtual'));
+    const standardConditions = $derived(allFacts.filter((f: AdaptiveFact) => f.category !== 'virtual'));
+    const virtualFacts = $derived(allFacts.filter((f: AdaptiveFact) => f.category === 'virtual'));
 </script>
 
 <div class="flex h-full w-72 flex-col border-r-2 border-slate-200 bg-cosmos-bg shadow-sm">

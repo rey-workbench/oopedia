@@ -16,7 +16,7 @@
 
     let {
         results,
-        metrics = { averages: {}, total_responses: 0 },
+        metrics = { averages: {}, total_responses: 0, avg_motivation: 0, avg_strategy: 0 },
         classes = [],
         activeClass = '',
     }: {

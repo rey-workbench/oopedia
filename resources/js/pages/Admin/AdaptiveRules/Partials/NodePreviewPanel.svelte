@@ -167,15 +167,15 @@
                             </div>
                         {/if}
 
-                        {#if selectedNode.data.action_ids?.length > 0}
+                        {#if selectedNode.data.actions?.length > 0}
                             <div>
                                 <span class="font-bold text-emerald-600">THEN (Action)</span>
                                 <div class="mt-2 space-y-2">
-                                    {#each selectedNode.data.action_ids as actionId}
-                                        {@const action = actionData.find((a) => a.id === actionId)}
+                                    {#each selectedNode.data.actions as ruleAction}
+                                        {@const action = actionData.find((a) => a.id === ruleAction.id)}
                                         <div class="rounded-xl border border-emerald-100 bg-emerald-50/50 p-3">
                                             <p class="text-xs font-bold text-emerald-900">
-                                                {action?.name || actionId}
+                                                {action?.name || ruleAction.id}
                                             </p>
                                             <p class="mt-1 text-[10px] leading-relaxed text-emerald-700/80">
                                                 {action?.description || ''}
@@ -255,8 +255,8 @@
                         {selectedNode.data.name}
                     </h4>
                     <p class="text-xs leading-relaxed text-slate-500 italic">
-                        {selectedNode.data.description ||
-                            'Tidak ada deskripsi tambahan untuk node ini.'}
+                        {selectedNode.data.logic ||
+                            'Tidak ada logika komputasi untuk node ini.'}
                     </p>
                     {#if selectedNode.data.variant}
                         <div class="mt-4 flex justify-center">
@@ -268,6 +268,38 @@
                         </div>
                     {/if}
                 </div>
+            {/if}
+
+            {#if selectedNode.type === 'gate' && selectedNode.data.actions && selectedNode.data.actions.length > 0}
+                <section class="space-y-4 pt-6 border-t border-slate-100">
+                    <div class="mt-6 space-y-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <Target size={14} class="text-amber-500" />
+                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">System Actions & Parameters</span>
+                        </div>
+                        <div class="grid gap-3">
+                            {#each selectedNode.data.actions as action}
+                                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-xs font-bold text-slate-700">{action.id}</span>
+                                    </div>
+                                    {#if Object.keys(action.metadata || {}).length > 0}
+                                        <div class="space-y-1.5 pt-2 border-t border-slate-200/60">
+                                            {#each Object.entries(action.metadata) as [key, val]}
+                                                <div class="flex items-center justify-between text-[10px]">
+                                                    <span class="text-slate-400 font-medium">{key}</span>
+                                                    <span class="text-slate-600 font-bold">{val}</span>
+                                                </div>
+                                            {/each}
+                                        </div>
+                                    {:else}
+                                        <span class="text-[9px] italic text-slate-300">No specific parameters</span>
+                                    {/if}
+                                </div>
+                            {/each}
+                        </div>
+                    </div>
+                </section>
             {/if}
 
             {#if selectedNode.type === 'gate' || selectedNode.type === 'action'}
@@ -283,10 +315,10 @@
                     <div
                         class="overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 p-4 shadow-inner"
                     >
-                        {#if (selectedNode.type === 'gate' && selectedNode.data.action_ids?.length > 0) || selectedNode.type === 'action'}
+                        {#if (selectedNode.type === 'gate' && selectedNode.data.actions?.length > 0) || selectedNode.type === 'action'}
                             {@const actionId =
                                 selectedNode.type === 'gate'
-                                    ? selectedNode.data.action_ids[0]
+                                    ? selectedNode.data.actions[0].id
                                     : selectedNode.data.id}
 
                             {#if actionId === 'INCREASE_DIFF'}

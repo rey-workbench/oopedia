@@ -10,5 +10,5 @@ class AdaptiveFact extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'name', 'category', 'description'];
+    protected $fillable = ['id', 'name', 'category', 'logic'];
 }

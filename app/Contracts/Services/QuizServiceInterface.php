@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Contracts\Services;
 
+use App\DTOs\Question\QuestionCreateDTO;
+use App\DTOs\Question\QuestionUpdateDTO;
+use App\DTOs\Quiz\QuizContextDTO;
+use App\DTOs\Quiz\QuizSubmissionDTO;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Models\Material;
 use App\Models\Question;
@@ -24,21 +28,14 @@ interface QuizServiceInterface
 
     public function getQuestionWithAnswers(string $id): ?Question;
 
-    public function createQuestion(array $data): Question;
+    public function createQuestion(QuestionCreateDTO $dto): Question;
 
-    public function updateQuestion(string $questionId, array $data): Question;
+    public function updateQuestion(string $questionId, QuestionUpdateDTO $dto): Question;
 
     public function deleteQuestion(string $questionId): void;
 
     // --- Quiz Listing & Data (from QuestionListingServiceInterface) ---
-    public function getQuizData(
-        Material $material,
-        ?QuestionDifficulty $difficulty,
-        string $userId,
-        bool $isGuest,
-        array $guestProgress = [],
-        ?QuestionDifficulty $targetDifficulty = null,
-    ): array;
+    public function getQuizData(QuizContextDTO $context): array;
 
     public function getMaterialsListWithStudentCount(
         string $userId,
@@ -46,13 +43,7 @@ interface QuizServiceInterface
         array $guestProgress = [],
     ): Collection;
 
-    public function getReviewQuestions(
-        Material $material,
-        ?QuestionDifficulty $difficulty,
-        string $userId,
-        bool $isGuest,
-        array $guestProgress = [],
-    ): Collection;
+    public function getReviewQuestions(QuizContextDTO $context): Collection;
 
     public function getGuestAnsweredQuestionIds(string $materialId, array $guestProgress = []): SupportCollection;
 
@@ -69,9 +60,6 @@ interface QuizServiceInterface
 
     // --- Quiz Orchestration (from QuizOrchestratorServiceInterface) ---
     public function handleSubmission(
-        string $userId,
-        string $materialId,
-        string $questionId,
-        array $validatedData,
+        QuizSubmissionDTO $submission,
     ): array;
 }

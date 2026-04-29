@@ -13,6 +13,7 @@ final readonly class MaterialUpdateDTO
         public ?string $content = null,
         public ?string $module_id = null,
         public ?bool $is_final_project = null,
+        public mixed $cover_image = null,
     ) {}
 
     public static function fromRequest(Request $request): self
@@ -22,16 +23,9 @@ final readonly class MaterialUpdateDTO
             content: $request->input('content'),
             module_id: $request->input('module_id'),
             is_final_project: $request->has('is_final_project') ? $request->boolean('is_final_project') : null,
+            cover_image: $request->file('cover_image'),
         );
     }
 
-    public function toArray(): array
-    {
-        return array_filter([
-            'title'            => $this->title,
-            'content'          => $this->content,
-            'module_id'        => $this->module_id,
-            'is_final_project' => $this->is_final_project,
-        ], fn ($value) => $value !== null);
-    }
+    // Removed: toArray()
 }

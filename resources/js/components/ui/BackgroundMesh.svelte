@@ -19,7 +19,6 @@
     let ctx: CanvasRenderingContext2D;
     let width = $state(0);
     let height = $state(0);
-    let isVisible = $state(false);
 
     // Mesh points
     let points: {
@@ -68,7 +67,7 @@
             if (p.y < -p.size) p.y = height + p.size;
             if (p.y > height + p.size) p.y = -p.size;
 
-            const color = colorSet[p.colorIndex] || colorSet[0];
+            const color = colorSet[p.colorIndex] || colorSet[0] || 'rgba(0,0,0,0)';
             const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
             gradient.addColorStop(0, color);
             gradient.addColorStop(1, 'transparent');
@@ -82,7 +81,6 @@
 
     onMount(() => {
         init();
-        isVisible = true;
         window.addEventListener('resize', resize);
         return () => window.removeEventListener('resize', resize);
     });

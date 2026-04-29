@@ -24,9 +24,6 @@
         quizState.feedbackData?.adaptiveResult?.recommendations || []
     );
     let xpEarned = $derived(quizState.feedbackData?.score || 0);
-    let streakBonus = $derived(
-        recommendations.includes('STREAK_BONUS') ? 'Streak Bonus!' : null
-    );
 
     const TICK_MS = 50;
     const AUTO_ADVANCE_MS_SUCCESS = 10000;

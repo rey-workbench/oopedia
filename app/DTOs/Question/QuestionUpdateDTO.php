@@ -27,14 +27,5 @@ final readonly class QuestionUpdateDTO
         );
     }
 
-    public function toArray(): array
-    {
-        return array_filter([
-            'material_id'     => $this->material_id,
-            'question_text'   => $this->question_text,
-            'question_type'   => $this->question_type,
-            'difficulty'      => $this->difficulty,
-            'answers'         => $this->answers,
-        ], fn ($value) => $value !== null);
-    }
+    // Removed: toArray()
 }
