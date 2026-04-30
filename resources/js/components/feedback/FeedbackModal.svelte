@@ -149,7 +149,7 @@
     }
 
     $effect(() => {
-        if (!quizState.showFeedback || !quizState.feedbackData || variant !== 'result') {
+        if (!quizState.show_feedback || !quizState.feedbackData || variant !== 'result') {
             progress = 100;
 
             return;
@@ -185,7 +185,7 @@
     let feedbackTitle = $derived(getFeedbackTitle(feedbackStatus));
 </script>
 
-{#if quizState.showFeedback && quizState.feedbackData}
+{#if quizState.show_feedback && quizState.feedbackData}
     <div
         id="feedback-result-container"
         data-variant={variant}

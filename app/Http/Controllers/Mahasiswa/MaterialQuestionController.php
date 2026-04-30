@@ -188,9 +188,9 @@ final class MaterialQuestionController extends Controller
             'xp_earned'       => $result['score'],
             'is_correct'      => $isCorrect,
             'adaptive_result' => array_merge($engineResult, [
-                'triggered_rule'  => $triggeredRule,
-                'triggered_rules' => $triggeredRules,
-                'recommendations' => $rawActionIds,
+                'triggered_rule'     => $triggeredRule,
+                'triggered_rules'    => $triggeredRules,
+                'recommendation_ids' => $rawActionIds,
             ]),
             'student_state'   => Auth::guest() ? null : $this->performanceService->getStudentSessionState((string) Auth::id()),
             'next_url'        => $nextUrl,

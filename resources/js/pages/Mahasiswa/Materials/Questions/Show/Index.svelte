@@ -70,7 +70,7 @@
                 quizState.startTime = Date.now();
                 quizState.usedHint = false;
                 quizState.isNavigating = false;
-                quizState.showFeedback = false;
+                quizState.show_feedback = false;
             }
             quizState.material = newMaterial;
             quizState.currentQuestion = newQuestion;
@@ -91,7 +91,7 @@
     <div class="py-12">
         <div
             class="mx-auto max-w-5xl px-4 transition-all duration-500 sm:px-6 lg:px-8"
-            class:pb-40={quizState.showFeedback}
+            class:pb-40={quizState.show_feedback}
         >
             <div id="quiz-session-header" class="mb-12">
                 <div class="flex items-center gap-6">

@@ -12,12 +12,13 @@ use App\Models\StudentState;
 use App\Rules\Adaptive\Constants\PedagogicalConstants;
 use App\Rules\Adaptive\Constants\StudentStateSchema;
 use Illuminate\Support\Carbon;
-
+use App\Enums\Lms\StudentLevel;
 final class PerformanceService implements PerformanceServiceInterface
 {
     public function __construct(
         private readonly StudentStateRepositoryInterface $studentStateRepo,
-    ) {}
+    ) {
+    }
 
     public function getStudentState(string $userId): StudentState
     {
@@ -26,21 +27,21 @@ final class PerformanceService implements PerformanceServiceInterface
 
     public function updateMetricsFromInteraction(InteractionDTO $interaction): StudentState
     {
-        $userId     = $interaction->userId;
+        $userId = $interaction->userId;
         $questionId = $interaction->questionId;
-        $isCorrect  = $interaction->isCorrect;
-        $timeSpent  = $interaction->timeSpent;
+        $isCorrect = $interaction->isCorrect;
+        $timeSpent = $interaction->timeSpent;
         $difficulty = $interaction->difficulty;
-        $usedHint   = $interaction->usedHint;
-        $score      = $interaction->score;
+        $usedHint = $interaction->usedHint;
+        $score = $interaction->score;
 
         $state = $this->getStudentState($userId);
 
-        $currentSession = $state->current_session     ?? StudentStateSchema::defaults()[StudentStateSchema::CURRENT_SESSION];
-        $metrics        = $state->performance_metrics ?? StudentStateSchema::defaults()[StudentStateSchema::PERFORMANCE_METRICS];
+        $currentSession = $state->current_session ?? StudentStateSchema::defaults()[StudentStateSchema::CURRENT_SESSION];
+        $metrics = $state->performance_metrics ?? StudentStateSchema::defaults()[StudentStateSchema::PERFORMANCE_METRICS];
 
         $questionIds = $currentSession['question_ids'] ?? [];
-        $xp          = $state->xp                      ?? 0;
+        $xp = $state->xp ?? 0;
 
         // Jika user mengulang pertanyaan yang sama di sesi ini, abaikan perhitungan gandanya
         if (in_array($questionId, $questionIds)) {
@@ -48,9 +49,9 @@ final class PerformanceService implements PerformanceServiceInterface
             return $state;
         }
 
-        $questionIds[]                  = $questionId;
+        $questionIds[] = $questionId;
         $currentSession['question_ids'] = $questionIds;
-        $hintsAvailable                 = $state->hints_available ?? StudentStateSchema::defaults()[StudentStateSchema::HINTS_AVAILABLE];
+        $hintsAvailable = $state->hints_available ?? StudentStateSchema::defaults()[StudentStateSchema::HINTS_AVAILABLE];
 
         // 1. Update Session Counts
         $currentSession['total']++;
@@ -65,15 +66,15 @@ final class PerformanceService implements PerformanceServiceInterface
 
         // 2. Update cumulative counts (tidak terpengaruh reset sesi)
         $totalAnswered = ($state->total_answered ?? 0) + 1;
-        $correctCount  = ($state->correct_count ?? 0)  + ($isCorrect ? 1 : 0);
-        $hintsUsed     = ($state->hints_used ?? 0)     + ($usedHint ? 1 : 0);
+        $correctCount = ($state->correct_count ?? 0) + ($isCorrect ? 1 : 0);
+        $hintsUsed = ($state->hints_used ?? 0) + ($usedHint ? 1 : 0);
 
         // Akurasi = kumulatif global, bukan sesi mini
         $accuracy = round(($correctCount / $totalAnswered) * 100, 2);
 
         // 3. Speed Analysis (vs Baseline)
         $baseline = PedagogicalConstants::BASELINE_TIME[$difficulty->value] ?? 30;
-        $speed    = 'normal';
+        $speed = 'normal';
         if ($timeSpent > ($baseline * 2)) {
             $speed = 'slow';
         } elseif ($timeSpent < ($baseline / 2)) {
@@ -100,20 +101,20 @@ final class PerformanceService implements PerformanceServiceInterface
 
             // Reset current session
             $currentSession = [
-                'correct'      => 0,
-                'total'        => 0,
-                'hints'        => 0,
-                'time_spent'   => 0,
+                'correct' => 0,
+                'total' => 0,
+                'hints' => 0,
+                'time_spent' => 0,
                 'question_ids' => [],
             ];
         }
 
         // 5. Daily Streak Logic
         $lastActive = $state->last_active_at ? Carbon::parse($state->last_active_at) : null;
-        $newStreak  = $state->streak     ?? 0;
-        $maxStreak  = $state->max_streak ?? 0;
+        $newStreak = $state->streak ?? 0;
+        $maxStreak = $state->max_streak ?? 0;
 
-        if (! $lastActive || ! $lastActive->isToday()) {
+        if (!$lastActive || !$lastActive->isToday()) {
             if ($lastActive && $lastActive->isYesterday()) {
                 $newStreak += 1;
             } else {
@@ -126,18 +127,18 @@ final class PerformanceService implements PerformanceServiceInterface
 
         // 6. Persistence
         return $this->studentStateRepo->update($userId, [
-            StudentStateSchema::XP                  => $xp,
-            StudentStateSchema::ACCURACY            => $accuracy,
-            'total_answered'                        => $totalAnswered,
-            'correct_count'                         => $correctCount,
-            StudentStateSchema::HINTS_USED          => $hintsUsed,
-            StudentStateSchema::CURRENT_SESSION     => $currentSession,
-            StudentStateSchema::SESSION_HISTORY     => $sessionHistory,
+            StudentStateSchema::XP => $xp,
+            StudentStateSchema::ACCURACY => $accuracy,
+            'total_answered' => $totalAnswered,
+            'correct_count' => $correctCount,
+            StudentStateSchema::HINTS_USED => $hintsUsed,
+            StudentStateSchema::CURRENT_SESSION => $currentSession,
+            StudentStateSchema::SESSION_HISTORY => $sessionHistory,
             StudentStateSchema::PERFORMANCE_METRICS => $metrics,
-            StudentStateSchema::STREAK              => $newStreak,
-            StudentStateSchema::MAX_STREAK          => $maxStreak,
-            StudentStateSchema::HINTS_AVAILABLE     => $hintsAvailable,
-            'last_active_at'                        => now(),
+            StudentStateSchema::STREAK => $newStreak,
+            StudentStateSchema::MAX_STREAK => $maxStreak,
+            StudentStateSchema::HINTS_AVAILABLE => $hintsAvailable,
+            'last_active_at' => now(),
         ]);
     }
 
@@ -147,13 +148,13 @@ final class PerformanceService implements PerformanceServiceInterface
             return 'stable';
         }
 
-        $n      = count($history);
-        $sesiN  = $history[$n - 1];
+        $n = count($history);
+        $sesiN = $history[$n - 1];
         $sesiN1 = $history[$n - 2];
         $sesiN2 = $history[$n - 3];
 
         $delta1 = $sesiN1 - $sesiN2;
-        $delta2 = $sesiN  - $sesiN1;
+        $delta2 = $sesiN - $sesiN1;
         $margin = PedagogicalConstants::TREND_MARGIN;
 
         if ($delta1 > $margin && $delta2 > $margin) {
@@ -173,7 +174,7 @@ final class PerformanceService implements PerformanceServiceInterface
         }
 
         $stagnantCount = 0;
-        $margin        = PedagogicalConstants::TREND_MARGIN;
+        $margin = PedagogicalConstants::TREND_MARGIN;
 
         // Loop dari sesi terbaru (belakang) ke sesi terlama (depan)
         for ($i = count($history) - 1; $i > 0; $i--) {
@@ -196,20 +197,20 @@ final class PerformanceService implements PerformanceServiceInterface
         $state = $this->getStudentState($userId);
 
         return [
-            'accuracy'            => round($state->accuracy, 2),
-            'xp'                  => $state->xp,
-            'streak'              => $state->streak,
-            'level'               => $state->level ?? 'Beginner',
-            'hints_available'     => $state->hints_available,
-            'target_difficulty'   => $state->target_difficulty,
-            'adaptive_state'      => $state->adaptive_state      ?? [],
+            'accuracy' => round($state->accuracy, 2),
+            'xp' => $state->xp,
+            'streak' => $state->streak,
+            'level' => $state->level ?? StudentLevel::PEMULA->value,
+            'hints_available' => $state->hints_available,
+            'target_difficulty' => $state->target_difficulty,
+            'adaptive_state' => $state->adaptive_state ?? [],
             'performance_metrics' => $state->performance_metrics ?? [],
         ];
     }
 
     public function syncMaterialContext(string $userId, string $materialId): StudentState
     {
-        $state                      = $this->getStudentState($userId);
+        $state = $this->getStudentState($userId);
         $state->current_material_id = $materialId;
         $state->save();
 
@@ -218,17 +219,17 @@ final class PerformanceService implements PerformanceServiceInterface
 
     public function calculateScore(bool $isCorrect, bool $usedHint, int $timeSpent, QuestionDifficulty|string $difficulty): int
     {
-        if (! $isCorrect) {
+        if (!$isCorrect) {
             return 0;
         }
 
         $baseScore = 10;
 
         $difficultyValue = $difficulty instanceof QuestionDifficulty ? $difficulty->value : $difficulty;
-        $multiplier      = match ($difficultyValue) {
+        $multiplier = match ($difficultyValue) {
             'medium' => 1.5,
-            'hard'   => 2.0,
-            default  => 1.0,
+            'hard' => 2.0,
+            default => 1.0,
         };
 
         $score = $baseScore * $multiplier;

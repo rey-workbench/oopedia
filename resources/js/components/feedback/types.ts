@@ -34,7 +34,7 @@ export interface FeedbackState {
             } | null;
         };
     };
-    showFeedback: boolean;
+    show_feedback: boolean;
 }
 
 export interface CertificateDetails {

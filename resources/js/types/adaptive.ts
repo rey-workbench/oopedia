@@ -47,6 +47,7 @@ export interface AdaptiveResult {
     facts: string[];
     deduced_facts: string[];
     timestamp: string;
+    recommendation_ids?: string[];
     triggered_rule?: {
         id: string;
         name: string;

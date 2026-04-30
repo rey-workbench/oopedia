@@ -175,7 +175,7 @@
                 variant="primary"
                 size="lg"
                 class="w-full py-5 text-base font-black tracking-widest uppercase"
-                disabled={state.isSubmitting || state.showFeedback}
+                disabled={state.isSubmitting || state.show_feedback}
                 onclick={() => state.submitAnswer()}
             >
                 {#if state.isSubmitting}

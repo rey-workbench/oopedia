@@ -59,7 +59,7 @@ export class QuestionShowState extends BaseState {
     dragAndDropAnswers = $state<Record<string, string>>({});
 
     isSubmitting = $state(false);
-    showFeedback = $state(false);
+    show_feedback = $state(false);
     showHint = $state(false);
     feedbackData = $state<CheckAnswerResponse>({
         status: 'success',
@@ -97,7 +97,7 @@ export class QuestionShowState extends BaseState {
 
     xp = $derived(this.studentState?.xp || 0);
     streak = $derived(this.studentState?.streak || 0);
-    level = $derived(this.studentState?.level || 'Beginner');
+    level = $derived(this.studentState?.level || 'Pemula');
     get hintsAvailable() {
         const available = this.studentState?.hints_available ?? 3;
         const maxPerSession = this.studentState?.adaptive_state?.['max_hints_per_session'];
@@ -136,7 +136,7 @@ export class QuestionShowState extends BaseState {
     }
 
     async submitAnswer() {
-        if (this.isSubmitting || this.showFeedback || !this.currentQuestion) return;
+        if (this.isSubmitting || this.show_feedback || !this.currentQuestion) return;
         this.isSubmitting = true;
 
         const timeSpent = Math.max(0, Math.floor((Date.now() - this.startTime) / 1000));
@@ -176,7 +176,7 @@ export class QuestionShowState extends BaseState {
                 adaptive_result: null,
                 ui: null,
             };
-            this.showFeedback = true;
+            this.show_feedback = true;
             this.isSubmitting = false;
 
             return;
@@ -219,7 +219,7 @@ export class QuestionShowState extends BaseState {
             }
 
             this.showHint = false;
-            this.showFeedback = true;
+            this.show_feedback = true;
             this.handleResponseSound(data.status, adaptiveResult);
         } catch (err: unknown) {
             const message = isAxiosError(err)
@@ -239,7 +239,7 @@ export class QuestionShowState extends BaseState {
                 adaptive_result: null,
                 ui: null,
             };
-            this.showFeedback = true;
+            this.show_feedback = true;
         } finally {
             this.isSubmitting = false;
         }
@@ -270,7 +270,7 @@ export class QuestionShowState extends BaseState {
         const nextUrl = this.feedbackData.next_url;
         console.debug('[QuizState] handleNext → nextUrl:', nextUrl);
 
-        this.showFeedback = false;
+        this.show_feedback = false;
         this.showHint = false;
 
         if (nextUrl) {
@@ -290,7 +290,7 @@ export class QuestionShowState extends BaseState {
     }
 
     handleTryAgain() {
-        this.showFeedback = false;
+        this.show_feedback = false;
         this.showHint = false;
         this.fillInTheBlankAnswer = '';
         this.selectedMultipleChoiceAnswer = null;

@@ -49,9 +49,8 @@ export class AdaptiveRuleEditorState extends BaseState {
             { value: 'slow', label: 'Lambat' },
         ],
         'level': [
-            { value: 'Beginner', label: 'Beginner' },
-            { value: 'Intermediate', label: 'Intermediate' },
-            { value: 'Expert', label: 'Expert' },
+            { value: 'Pemula', label: 'Pemula' },
+            { value: 'Menengah', label: 'Menengah' },
             { value: 'Ahli', label: 'Ahli' },
         ]
     };
