@@ -33,11 +33,11 @@
         isDebugPanelCollapsed = !isDebugPanelCollapsed;
     }
 
-    const metadata = $derived(quizState.feedbackData?.adaptiveResult?.engine_metadata);
+    const metadata = $derived(quizState.feedbackData?.adaptive_result?.engine_metadata);
     const factCodes = $derived(quizState.adaptiveFacts || []);
     const triggeredRule = $derived(quizState.adaptiveTriggeredRule);
     const evaluatedRules = $derived(quizState.adaptiveTriggeredRules || []);
-    const newState = $derived(quizState.feedbackData?.adaptiveResult?.new_state);
+    const newState = $derived(quizState.feedbackData?.adaptive_result?.new_state);
 
     const factCategories = $derived.by(() => {
         if (!metadata) return { primary: [], virtual: [] };
@@ -372,7 +372,7 @@
                                         <span class="font-mono text-[9px] text-slate-500">adaptive_response.json</span>
                                     </div>
                                     <div class="debug-scrollbar flex-1 overflow-auto p-3">
-                                        <pre class="code-block text-[11px] leading-relaxed text-emerald-400/90 whitespace-pre-wrap break-all">{JSON.stringify(quizState.feedbackData?.adaptiveResult || {}, null, 2)}</pre>
+                                        <pre class="code-block text-[11px] leading-relaxed text-emerald-400/90 whitespace-pre-wrap break-all">{JSON.stringify(quizState.feedbackData?.adaptive_result || {}, null, 2)}</pre>
                                     </div>
                                 </div>
                             </div>

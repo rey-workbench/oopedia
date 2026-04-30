@@ -44,10 +44,10 @@ export class InProgressState extends BaseState {
  * Completed Materials State
  */
 export class CompletedState extends BaseState {
-    materialsWithStats = $state<MaterialWithStats[]>([]);
+    materials_with_stats = $state<MaterialWithStats[]>([]);
 
-    constructor(materialsWithStats: MaterialWithStats[]) {
+    constructor(materials_with_stats: MaterialWithStats[]) {
         super();
-        this.hydrate({ materialsWithStats });
+        this.hydrate({ materials_with_stats });
     }
 }

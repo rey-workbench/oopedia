@@ -12,9 +12,9 @@
 
     import type { LeaderboardEntry } from '@/types';
 
-    let { leaderboardData = [] }: { leaderboardData: LeaderboardEntry[] } = $props();
+    let { leaderboard_data = [] }: { leaderboard_data: LeaderboardEntry[] } = $props();
 
-    const state = untrack(() => new LeaderboardState(leaderboardData));
+    const state = untrack(() => new LeaderboardState(leaderboard_data));
 
     const columns = [
         { key: 'rank', label: 'Peringkat', align: 'left' },
@@ -42,7 +42,7 @@
                 <div id="leaderboard-full-list">
                     <DataTable
                         title="Peringkat Menyeluruh"
-                        items={state.leaderboardData}
+                        items={state.leaderboard_data}
                         {columns}
                         hideSearch={true}
                         rowClass={(item: LeaderboardEntry) =>

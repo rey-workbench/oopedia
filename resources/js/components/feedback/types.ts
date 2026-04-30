@@ -9,7 +9,7 @@ export interface FeedbackState {
     feedbackData?: {
         status: 'success' | 'wrong' | 'error';
         message: string;
-        adaptiveResult?: {
+        adaptive_result?: {
             triggered_rule?: {
                 id?: string;
                 name?: string;
