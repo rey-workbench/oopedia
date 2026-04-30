@@ -1,103 +1,41 @@
 // =============================================================================
-// Type Definitions — Public API
-// Import from this barrel to avoid deep relative paths:
-//   import type { User, Material, QuestionType } from '@/types';
+// OOPedia Unified Type System
 // =============================================================================
 
-export type {
-    // Primitives
-    QuestionType,
-    DifficultyLevel,
-    LearningStyle,
-    CertificationType,
-    User,
-    Material,
-    Media,
-    Question,
-    Answer,
-    QuizAttempt,
-    GamificationData,
-    PerformanceMetrics,
-    TimeMetrics,
-    LearningProfile,
-    AdaptiveState,
-    UeqSurvey,
-    SusResult,
-    // Computed / service shapes
-    DifficultyStats,
-    MaterialWithStats,
-    ContentCategory,
-    RecentActivity,
-    StudentProfile,
-    LeaderboardEntry,
-    UserAttempt,
-    QuestionWithAttempt,
-    QuizSessionState,
-    Certification,
-    MslqResult,
-    MslqQuestion,
-    MslqAnswer,
-    AdaptiveFact,
-    AdaptiveAction,
-    AdaptiveRule,
-} from '@/types/models';
+export * from './core';
+export * from './auth';
+export * from './learning';
+export * from './adaptive';
+export * from './analytics';
+export * from './survey';
+export * from './props';
+export * from './api';
 
-export type {
-    // Shared / Inertia
-    FlashMessages,
-    AuthData,
-    SharedProps,
-    // Admin pages
-    AdminDashboardProps,
-    AdminStudentProgressProps,
-    AdminUeqIndexProps,
-    AdminUeqDetailProps,
-    AdminSusIndexProps,
-    AdminSusDetailProps,
-    RecentProgressItem,
-    StudentProgressItem,
-    PopularMaterialItem,
-    StudentAnalytics,
-    MaterialStatsItem,
-    MaterialWithProgress,
-    MissingQuestionsItem,
-    UeqAverages,
-    AdaptiveRuleDiagnosis,
-    AdaptiveTriggerItem,
-    AdaptiveStateDistribution,
-    AdaptiveRuleTriggerStat,
-    AdminAdaptiveRuleProps,
-    // Mahasiswa pages
-    MahasiswaDashboardProps,
-    MahasiswaInProgressProps,
-    MahasiswaCompletedProps,
-    MaterialsListProps,
-    QuestionListProps,
-    MaterialShowProps,
-    QuestionLevelsProps,
-    QuestionShowProps,
-    QuestionReviewProps,
-    ProfileProps,
-    CertificatesPageProps,
-    LeaderboardProps,
-    UeqCreateProps,
-    SusCreateProps,
-    ProfileForm,
-    UeqSurveyForm,
-    SusSurveyForm,
-    AnswerPayload,
-    // View models
-    LevelStatus,
-    // API responses
-    CheckAnswerResponse,
-    AdaptiveResult,
-    UseHintResponse,
-    Pagination,
-    PaginatorLink,
-    // State interfaces
-    FormStateOptions,
-    FormSubmitOptions,
-    AdminDashboardData,
-    LevelItem,
-    Toast,
-} from '@/types/states';
+// =============================================================================
+// Helper Types & UI States
+// =============================================================================
+
+export interface FormStateOptions {
+    isEdit?: boolean;
+    showSuccessToast?: string | boolean;
+    showErrorToast?: boolean;
+}
+
+export interface FormSubmitOptions {
+    forceFormData?: boolean;
+    _method?: string;
+    onSuccess?: () => void;
+    onError?: (errors: Record<string, string>) => void;
+    onFinish?: () => void;
+    showSuccessToast?: string | boolean;
+    showErrorToast?: boolean;
+    [key: string]: unknown;
+}
+
+export interface LevelItem {
+    level: number;
+    status: 'completed' | 'in_progress' | 'locked';
+    question_id?: number;
+    difficulty?: import('./core').DifficultyLevel;
+    [key: string]: unknown;
+}

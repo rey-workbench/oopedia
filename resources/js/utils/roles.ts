@@ -5,25 +5,32 @@
 
 export const ROLE = {
     SUPERADMIN: 'superadmin',
-    ADMIN: 'dosen',
+    DOSEN: 'dosen',
     MAHASISWA: 'mahasiswa',
-    PENDING: 'pending',
+    GUEST: 'guest',
 } as const;
 
 export type RoleName = (typeof ROLE)[keyof typeof ROLE];
 
 /**
- * Returns true if the given role_name belongs to an admin (superadmin or admin).
+ * Returns true if the given role_name belongs to an admin (superadmin or dosen).
  */
 export function isAdmin(roleName: string | null | undefined): boolean {
-    return roleName === ROLE.SUPERADMIN || roleName === ROLE.ADMIN;
+    return roleName === ROLE.SUPERADMIN || roleName === ROLE.DOSEN;
 }
 
 /**
- * Returns true if the given role_name belongs to a student (active or pending).
+ * Returns true if the given role_name belongs to a student.
  */
 export function isStudent(roleName: string | null | undefined): boolean {
-    return roleName === ROLE.MAHASISWA || roleName === ROLE.PENDING;
+    return roleName === ROLE.MAHASISWA;
+}
+
+/**
+ * Returns true if the given role_name belongs to a guest.
+ */
+export function isGuest(roleName: string | null | undefined): boolean {
+    return roleName === ROLE.GUEST;
 }
 
 /**

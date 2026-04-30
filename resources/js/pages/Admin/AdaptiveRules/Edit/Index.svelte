@@ -4,7 +4,7 @@
     import Button from '@/components/ui/Button.svelte';
     import { Save, ArrowLeft } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
-    import type { AdaptiveFact, AdaptiveAction } from '@/types/models';
+    import type { AdminAdaptiveRuleProps } from '@/types';
     import Toggle from '@/components/ui/Toggle.svelte';
     import LibraryDrawer from '@/components/rulebase/LibraryDrawer.svelte';
     import { AdaptiveRuleEditorState } from '@/states/Admin/AdaptiveRuleEditorState.svelte';
@@ -19,25 +19,21 @@
         rule,
         allFacts = [],
         allActions = []
-    } = $props<{
-        rule: any;
-        allFacts: AdaptiveFact[];
-        allActions: AdaptiveAction[];
-    }>();
+    }: AdminAdaptiveRuleProps = $props();
 
     const state = untrack(() => new AdaptiveRuleEditorState({ allFacts, allActions, isEdit: true }));
 
     let form = useForm(untrack(() => ({
-        id: rule.id,
-        name: rule.name,
-        recommendation: rule.recommendation,
-        priority: rule.priority,
-        actions: rule.actions || [],
-        required_fact_ids: rule.required_fact_ids || [],
-        deduced_fact_ids: rule.deduced_fact_ids || [],
-        facts: state.parseInitialFacts(rule.required_fact_ids || []),
-        deduced_facts: state.parseInitialDeductions(rule.deduced_fact_ids || []),
-        is_active: rule.is_active,
+        id: rule!.id,
+        name: rule!.name,
+        recommendation: rule!.recommendation,
+        priority: rule!.priority,
+        actions: rule!.actions || [],
+        required_fact_ids: rule!.required_fact_ids || [],
+        deduced_fact_ids: rule!.deduced_fact_ids || [],
+        facts: state.parseInitialFacts(rule!.required_fact_ids || []),
+        deduced_facts: state.parseInitialDeductions(rule!.deduced_fact_ids || []),
+        is_active: rule!.is_active,
     })));
 
     function handleSubmit(e: Event) {
@@ -45,7 +41,7 @@
         form.required_fact_ids = form.facts.map(f => f.id);
         form.deduced_fact_ids = form.deduced_facts.map(f => f.id);
 
-        form.put(ROUTES.ADMIN.ADAPTIVE_RULES.UPDATE(rule.id), {
+        form.put(ROUTES.ADMIN.ADAPTIVE_RULES.UPDATE(rule!.id), {
             onSuccess: () => router.visit(ROUTES.ADMIN.ADAPTIVE_RULES.INDEX),
         });
     }

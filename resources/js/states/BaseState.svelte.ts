@@ -53,7 +53,7 @@ export class BaseState {
      * Get current error props
      */
     get errors() {
-        return (page.props as unknown as SharedProps).errors || {};
+        return (page.props as unknown as SharedProps)['errors'] || {};
     }
 
     /**

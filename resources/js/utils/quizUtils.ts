@@ -3,7 +3,7 @@
  * View-layer helpers extracted from state classes to respect
  * the Single Responsibility Principle.
  */
-import type { DifficultyLevel } from '@/types/models';
+import type { DifficultyLevel } from '@/types';
 
 const DIFFICULTY_LABELS: Record<DifficultyLevel, string> = {
     beginner: 'Pemula',

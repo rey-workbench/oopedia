@@ -13,7 +13,6 @@ interface QuestionRepositoryInterface
 
     public function create(array $data): Question;
 
-    public function update(string $id, array $data): bool;
 
     public function delete(string $id): bool;
 

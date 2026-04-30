@@ -160,12 +160,12 @@
                         <p
                             class="text-primary-400 mb-2 text-[10px] font-bold tracking-widest uppercase"
                         >
-                            MEMBER SINCE {new Date(state.user.created_at).getFullYear()}
+                            MEMBER SINCE {state.user ? new Date(state.user.created_at).getFullYear() : 'N/A'}
                         </p>
                         <h2
                             class="mb-4 text-4xl font-bold tracking-tight text-white uppercase md:text-5xl"
                         >
-                            {state.user.name}
+                            {state.user?.name ?? 'GUEST'}
                         </h2>
                         <div
                             class="flex flex-wrap items-center justify-center gap-4 md:justify-start"
@@ -174,7 +174,7 @@
                                 class="flex items-center gap-2 rounded-xl border-2 border-b-4 border-white/10 bg-white/10 px-4 py-2 text-xs font-bold tracking-wider uppercase shadow-sm backdrop-blur-md"
                             >
                                 <Mail size={14} class="text-primary-400" />
-                                {state.user.email}
+                                {state.user?.email ?? 'guest@oopedia'}
                             </div>
                             <div
                                 class="flex items-center gap-2 rounded-xl border-2 border-b-4 border-white/10 bg-white/10 px-4 py-2 text-xs font-bold tracking-wider uppercase shadow-sm backdrop-blur-md"
@@ -367,7 +367,7 @@
                         {#each certifications.slice(0, 2) as cert (cert.material_id)}
                             <CertificateCard
                                 materialTitle={cert.material_title}
-                                type={cert.type}
+                                type={cert.type as 'gold' | 'silver' | 'bronze'}
                                 issuedAt={cert.issued_at ?? undefined}
                                 id={cert.material_id}
                             />

@@ -4,8 +4,9 @@ import type {
     AdaptiveStateDistribution,
     AdaptiveTriggerItem,
     AdaptiveRuleTriggerStat,
+    AdaptiveFact,
+    AdaptiveAction,
 } from '@/types';
-import type { AdaptiveFact, AdaptiveAction } from '@/types/models';
 
 export class AdaptiveRuleState extends BaseState {
     totalRules = $state(0);

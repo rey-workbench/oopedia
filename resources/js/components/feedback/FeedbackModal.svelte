@@ -233,12 +233,13 @@
                         {#if recommendations.length > 0}
                             <div class="mt-2 flex flex-wrap gap-2">
                                 {#each recommendations as rec}
-                                    {#if rec !== 'STREAK_BONUS'}
+                                    {@const actionId = typeof rec === 'string' ? rec : rec?.id}
+                                    {#if actionId && actionId !== 'STREAK_BONUS'}
                                         <p
                                             class={`flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-black shadow-sm ${feedbackTone.chipBorder} ${feedbackTone.chipText}`}
                                         >
                                             <TrendingUp size={12} />
-                                            {rec.replace('_', ' ')}
+                                            {actionId.replace('_', ' ')}
                                         </p>
                                     {/if}
                                 {/each}
@@ -259,7 +260,7 @@
                         </div>
                     {/if}
 
-                    {#if recommendations.includes('STREAK_BONUS')}
+                    {#if recommendations.some(r => r.id === 'STREAK_BONUS')}
                         <div
                             class="flex items-center gap-2 rounded-xl border-2 border-white bg-white/80 px-3 py-1.5 shadow-sm"
                         >

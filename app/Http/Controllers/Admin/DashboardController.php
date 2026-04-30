@@ -26,11 +26,12 @@ final class DashboardController extends Controller
         $totalQuestions = $stats['totalQuestions'];
         $activeStudents = $stats['activeStudents'];
 
-        $recentProgress   = $this->adminDashboardService->getRecentProgress(10);
-        $studentProgress  = $this->adminDashboardService->getStudentProgressOverview(5);
-        $materialStats    = $this->adminDashboardService->getMaterialStatistics();
-        $popularMaterials = $this->adminDashboardService->getPopularMaterials(5);
-        $studentAnalytics = $this->adminDashboardService->getStudentAnalytics();
+        $recentProgress           = $this->adminDashboardService->getRecentProgress(10);
+        $studentProgress          = $this->adminDashboardService->getStudentProgressOverview(5);
+        $materialStats            = $this->adminDashboardService->getMaterialStatistics();
+        $popularMaterials         = $this->adminDashboardService->getPopularMaterials(5);
+        $studentAnalytics         = $this->adminDashboardService->getStudentAnalytics();
+        $studentsNeedingAttention = $this->adminDashboardService->getStudentsNeedingAttention();
 
         return $this->render('Admin/Dashboard/Index', compact(
             'userName',
@@ -44,6 +45,7 @@ final class DashboardController extends Controller
             'materialStats',
             'popularMaterials',
             'studentAnalytics',
+            'studentsNeedingAttention',
         ));
     }
 }

@@ -10,7 +10,7 @@
     import Modal from '@/components/ui/Modal.svelte';
     import { activateExamProtection, deactivateExamProtection, type ViolationType } from '@/utils';
     import { untrack, onMount } from 'svelte';
-    import type { Material, Question, DifficultyLevel, QuizSessionState } from '@/types';
+    import type { Material, Question, DifficultyLevel, StudentSessionState } from '@/types';
 
     const {
         material,
@@ -31,7 +31,7 @@
         materialAnsweredCount: number;
         difficulty: DifficultyLevel;
         isGuest: boolean;
-        studentState: QuizSessionState;
+        studentState: StudentSessionState | null;
     } = $props();
 
     let quizState = untrack(
@@ -79,6 +79,8 @@
                 quizState.dragAndDropAnswers = {};
                 quizState.startTime = Date.now();
                 quizState.usedHint = false;
+                quizState.isNavigating = false;
+                quizState.showFeedback = false;
             }
             quizState.material = newMaterial;
             quizState.currentQuestion = newQuestion;

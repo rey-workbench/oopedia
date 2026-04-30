@@ -21,7 +21,7 @@
             .replace(/<br>/g, '\n');
 
         let maxZone = 0;
-        const text = rawText.replace(/\[blank_(\d+)\]/g, (_, zoneIdStr) => {
+        const text = rawText.replace(/\[blank_(\d+)\]/g, (_: string, zoneIdStr: string) => {
             const currentAnswer = dragAndDropAnswers[zoneIdStr] || '···';
             const isActive = activeZone === zoneIdStr;
             const isFilled = !!dragAndDropAnswers[zoneIdStr];

@@ -5,6 +5,7 @@
     import DataTable from '@/components/ui/DataTable.svelte';
     import ProgressBar from '@/components/ui/ProgressBar.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
+    import EmptyState from '@/components/ui/EmptyState.svelte';
     import { untrack } from 'svelte';
     import { AdminDashboardState } from '@/states/Admin/DashboardState.svelte';
     import type {
@@ -23,6 +24,7 @@
         Radar,
         Trophy,
         Activity,
+        AlertTriangle,
     } from 'lucide-svelte';
     import { formatDate } from '@/utils/formatters';
 
@@ -35,6 +37,7 @@
         studentProgress,
         popularMaterials,
         studentAnalytics,
+        studentsNeedingAttention = [],
         materialStats = [],
     }: {
         totalStudents: number;
@@ -45,6 +48,7 @@
         studentProgress: StudentProgressItem[];
         popularMaterials: PopularMaterialItem[];
         studentAnalytics: StudentAnalytics;
+        studentsNeedingAttention: any[];
         materialStats: MaterialStatsItem[];
     } = $props();
 
@@ -60,6 +64,7 @@
                 popularMaterials,
                 studentAnalytics,
                 materialStats,
+                studentsNeedingAttention,
             })
     );
 
@@ -98,11 +103,11 @@
             footer: 'Sesi aktif hari ini',
         },
         {
-            title: 'Modul Instruksional',
+            title: 'Pohon Modul',
             value: state.totalMaterials,
             icon: FolderTree,
-            variant: 'primary',
-            footer: 'Konten aktif',
+            variant: 'warning',
+            footer: 'Unit materi belajar',
         },
         {
             title: 'Korpus Evaluasi',
@@ -121,6 +126,66 @@
             title="Dashboard"
             subtitle="Pusat kendali operasional dan visualisasi data sistem OOPedia."
         />
+
+        {#if studentsNeedingAttention.length > 0}
+            <div class="relative overflow-hidden rounded-[2rem] bg-linear-to-br from-rose-500 to-rose-700 p-px shadow-lg shadow-rose-500/20">
+                <div class="relative h-full w-full rounded-[calc(2rem-1px)] bg-white p-6 sm:p-8">
+                    <!-- Background Elements -->
+                    <div class="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-rose-50/50 blur-3xl"></div>
+                    <div class="pointer-events-none absolute top-0 right-0 p-8 text-rose-500 opacity-[0.03]">
+                        <Activity size={120} strokeWidth={1} />
+                    </div>
+
+                    <!-- Header -->
+                    <div class="relative flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+                        <div class="flex items-start gap-5">
+                            <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-rose-100 to-rose-50 text-rose-600 ring-4 ring-white shadow-sm">
+                                <Activity size={28} strokeWidth={2.5} class="animate-pulse" />
+                            </div>
+                            <div class="pt-1">
+                                <h3 class="text-xl font-black tracking-tight text-slate-900">Perhatian Dosen Dibutuhkan</h3>
+                                <p class="mt-1 text-sm font-medium leading-relaxed text-slate-500 max-w-xl">
+                                    Sistem adaptif mendeteksi ada <span class="font-bold text-rose-600">{studentsNeedingAttention.length} mahasiswa</span> yang memerlukan atensi Anda karena berada dalam krisis belajar atau membutuhkan verifikasi sertifikasi.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Grid -->
+                    <div class="relative mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {#each studentsNeedingAttention as student}
+                            <div class="group flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/60 bg-slate-50/40 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-rose-200 hover:bg-white hover:shadow-xl hover:shadow-rose-100/50">
+                                <div class="flex items-center gap-3">
+                                    <div class="ring-2 ring-white rounded-full">
+                                        <UserAvatar name={student.name} size="md" />
+                                    </div>
+                                    <div class="flex min-w-0 flex-1 flex-col">
+                                        <span class="truncate font-bold text-slate-900 text-sm">{student.name}</span>
+                                        <span class="truncate text-[10px] font-bold tracking-widest text-slate-400 uppercase">{student.email}</span>
+                                    </div>
+                                </div>
+                                <div class="mt-5 flex flex-col gap-3 border-t border-slate-200/60 pt-4">
+                                    <div class="flex items-center gap-2">
+                                        {#if student.student_state?.adaptive_state?.notify_teacher_type === 'certification'}
+                                            <span class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-100 px-2.5 py-1 text-[9px] font-black tracking-widest text-emerald-700 uppercase">
+                                                <Trophy size={10} strokeWidth={3} /> Sertifikasi
+                                            </span>
+                                        {:else}
+                                            <span class="inline-flex items-center gap-1.5 rounded-lg bg-rose-100 px-2.5 py-1 text-[9px] font-black tracking-widest text-rose-700 uppercase animate-pulse">
+                                                <AlertTriangle size={10} strokeWidth={3} /> Krisis Belajar
+                                            </span>
+                                        {/if}
+                                    </div>
+                                    <p class="text-[11px] font-medium leading-relaxed text-slate-500 line-clamp-2" title={student.student_state?.adaptive_state?.last_diagnosis || '-'}>
+                                        <span class="font-bold text-slate-700">Diagnosis:</span> {student.student_state?.adaptive_state?.last_diagnosis || 'Menunggu evaluasi diagnostik...'}
+                                    </p>
+                                </div>
+                            </div>
+                        {/each}
+                    </div>
+                </div>
+            </div>
+        {/if}
 
         <!-- Main Stats -->
         <div id="admin-stats-overview" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -220,9 +285,10 @@
                             {/each}
                         </div>
                     {:else}
-                        <p class="text-xs font-medium text-slate-400">
-                            Data distribusi tidak tersedia.
-                        </p>
+                        <EmptyState
+                            title="Tidak Ada Data"
+                            description="Data distribusi tidak tersedia."
+                        />
                     {/if}
                 </div>
             </Card>
@@ -268,9 +334,10 @@
                             {/each}
                         </div>
                     {:else}
-                        <p class="text-xs font-medium text-slate-400">
-                            Data kompetensi tidak tersedia.
-                        </p>
+                        <EmptyState
+                            title="Tidak Ada Data"
+                            description="Data kompetensi tidak tersedia."
+                        />
                     {/if}
                 </div>
             </Card>
@@ -332,9 +399,10 @@
                                 {/each}
                             </div>
                         {:else}
-                            <p class="text-xs font-medium text-slate-400">
-                                Tidak ada data mahasiswa.
-                            </p>
+                            <EmptyState
+                                title="Data Kosong"
+                                description="Tidak ada data mahasiswa."
+                            />
                         {/if}
                     </div>
                 </Card>
@@ -384,7 +452,10 @@
                                 {/each}
                             </div>
                         {:else}
-                            <p class="text-xs font-medium text-slate-400">Belum ada data materi.</p>
+                            <EmptyState
+                                title="Data Kosong"
+                                description="Belum ada data materi."
+                            />
                         {/if}
                     </div>
                 </Card>
@@ -394,57 +465,55 @@
         <!-- Material Statistics -->
         <div id="admin-material-stats">
             {#if state.materialStats && state.materialStats.length > 0}
-                <Card hover={false}>
-                    <DataTable
-                        id="material-stats-table"
-                        title="Statistik Materi"
-                        items={state.materialStats}
-                        hideSearch={true}
-                        columns={materialColumns}
-                        rowClass={() => ''}
-                    >
-                        {#snippet row(m)}
-                            <td class="py-4">
-                                <span
-                                    class="text-xs font-bold tracking-widest text-slate-900 uppercase"
-                                >
-                                    {m.title}
-                                </span>
-                            </td>
-                            <td class="py-4 text-center">
-                                <span class="text-xs font-bold text-slate-700">
-                                    {m.questions_count}
-                                </span>
-                            </td>
-                            <td class="py-4 text-center">
-                                <span class="text-xs font-bold text-slate-700">
-                                    {m.active_students}
-                                </span>
-                            </td>
-                            <td class="py-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="flex-1">
-                                        <ProgressBar
-                                            value={m.completion_rate ?? 0}
-                                            max={100}
-                                            color={m.completion_rate >= 70
-                                                ? 'emerald'
-                                                : m.completion_rate >= 40
-                                                  ? 'amber'
-                                                  : 'rose'}
-                                            height="h-2"
-                                        />
-                                    </div>
-                                    <span
-                                        class="w-12 shrink-0 text-right text-xs font-bold text-slate-700"
-                                    >
-                                        {m.completion_rate ?? 0}%
-                                    </span>
+                <DataTable
+                    id="material-stats-table"
+                    title="Statistik Materi"
+                    items={state.materialStats}
+                    hideSearch={true}
+                    columns={materialColumns}
+                    rowClass={() => ''}
+                >
+                    {#snippet row(m)}
+                        <td class="px-6 py-4">
+                            <span
+                                class="text-xs font-bold tracking-widest text-slate-900 uppercase"
+                            >
+                                {m.title}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <span class="text-xs font-bold text-slate-700">
+                                {m.questions_count}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <span class="text-xs font-bold text-slate-700">
+                                {m.active_students}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="flex-1">
+                                    <ProgressBar
+                                        value={m.completion_rate ?? 0}
+                                        max={100}
+                                        color={m.completion_rate >= 70
+                                            ? 'emerald'
+                                            : m.completion_rate >= 40
+                                                ? 'amber'
+                                                : 'rose'}
+                                        height="h-2"
+                                    />
                                 </div>
-                            </td>
-                        {/snippet}
-                    </DataTable>
-                </Card>
+                                <span
+                                    class="w-12 shrink-0 text-right text-xs font-bold text-slate-700"
+                                >
+                                    {m.completion_rate ?? 0}%
+                                </span>
+                            </div>
+                        </td>
+                    {/snippet}
+                </DataTable>
             {/if}
         </div>
 
@@ -504,9 +573,10 @@
                             {/each}
                         </div>
                     {:else}
-                        <p class="text-xs font-medium text-slate-400">
-                            Belum ada aktivitas terbaru.
-                        </p>
+                        <EmptyState
+                            title="Belum Ada Aktivitas"
+                            description="Belum ada aktivitas terbaru."
+                        />
                     {/if}
                 </div>
             </Card>

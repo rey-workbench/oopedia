@@ -10,7 +10,9 @@ use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Contracts\Services\AdminDashboardServiceInterface;
 use App\Helpers\ProgressHelper;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
@@ -36,7 +38,7 @@ final class AdminDashboardService implements AdminDashboardServiceInterface
         });
     }
 
-    public function getRecentProgress(int $limit = 10): \Illuminate\Database\Eloquent\Collection
+    public function getRecentProgress(int $limit = 10): EloquentCollection
     {
         return $this->progressRepo->getRecentSystemProgress($limit);
     }
@@ -152,5 +154,17 @@ final class AdminDashboardService implements AdminDashboardServiceInterface
                 ],
             ];
         });
+    }
+
+    public function getStudentsNeedingAttention(): EloquentCollection
+    {
+        return User::whereHas('role', function ($q) {
+            $q->where('role_name', 'mahasiswa');
+        })
+            ->whereHas('studentState', function ($q) {
+                $q->whereJsonContains('adaptive_state->notify_teacher', true);
+            })
+            ->with(['studentState'])
+            ->get();
     }
 }

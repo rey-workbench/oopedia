@@ -1,5 +1,5 @@
 import { BaseState } from '@/states/BaseState.svelte';
-import type { AdaptiveFact, AdaptiveAction } from '@/types/models';
+import type { AdaptiveFact, AdaptiveAction } from '@/types';
 
 export class AdaptiveRuleEditorState extends BaseState {
     allFacts = $state<AdaptiveFact[]>([]);

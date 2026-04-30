@@ -161,7 +161,7 @@
                 </h3>
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {#each Object.entries(state.certifications) as [materialId, type]}
-                        {@const material = state.materials.find((m) => m.id === materialId)}
+                        {@const material = state.materials.find((m) => m.material.id === materialId)}
                         <Card
                             class="relative overflow-hidden border-2 {type === 'gold'
                                 ? 'border-amber-400 bg-amber-50/10'
@@ -192,7 +192,7 @@
                                         CERTIFIED ARCHITECT {type.toUpperCase()}
                                     </span>
                                     <h4 class="truncate text-sm font-bold text-slate-900 uppercase">
-                                        {material?.title || 'Project'}
+                                        {material?.material.title || 'Project'}
                                     </h4>
                                 </div>
                             </div>
@@ -232,7 +232,7 @@
                                 <div class="bg-primary-600 h-10 w-1 rounded-full"></div>
                                 <span
                                     class="text-sm font-bold tracking-widest text-slate-900 uppercase"
-                                    >{material.title}</span
+                                    >{material.material.title}</span
                                 >
                             </div>
                         </td>

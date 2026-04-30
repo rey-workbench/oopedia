@@ -6,6 +6,7 @@ import type {
     StudentProgressItem,
     PopularMaterialItem,
     MaterialStatsItem,
+    StudentNeedingAttention,
 } from '@/types';
 
 export class AdminDashboardState extends BaseState {
@@ -18,6 +19,7 @@ export class AdminDashboardState extends BaseState {
     popularMaterials = $state<PopularMaterialItem[]>([]);
     studentAnalytics = $state<StudentAnalytics>({ distribution: {}, radar: {} });
     materialStats = $state<MaterialStatsItem[]>([]);
+    studentsNeedingAttention = $state<StudentNeedingAttention[]>([]);
 
     constructor(data?: AdminDashboardData) {
         super();

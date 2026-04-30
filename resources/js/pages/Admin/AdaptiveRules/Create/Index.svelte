@@ -4,7 +4,7 @@
     import Button from '@/components/ui/Button.svelte';
     import { Save, ArrowLeft } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
-    import type { AdaptiveFact, AdaptiveAction } from '@/types/models';
+    import type { AdminAdaptiveRuleProps } from '@/types';
     import Toggle from '@/components/ui/Toggle.svelte';
     import LibraryDrawer from '@/components/rulebase/LibraryDrawer.svelte';
     import { AdaptiveRuleEditorState } from '@/states/Admin/AdaptiveRuleEditorState.svelte';
@@ -19,10 +19,7 @@
     let {
         allFacts = [],
         allActions = []
-    } = $props<{
-        allFacts: AdaptiveFact[];
-        allActions: AdaptiveAction[];
-    }>();
+    }: AdminAdaptiveRuleProps = $props();
 
     const state = untrack(() => new AdaptiveRuleEditorState({ allFacts, allActions, isEdit: false }));
 

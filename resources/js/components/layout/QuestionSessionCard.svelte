@@ -77,12 +77,12 @@
                     </div>
                 </div>
 
-                {#if (studentState?.adaptive_state?.scaffold_mode !== 'minimal')}
+                {#if (studentState?.adaptive_state?.['scaffold_mode'] !== 'minimal')}
                 <button
                     type="button"
                     id="quiz-hint-btn"
                     onclick={() => state.useHint()}
-                    disabled={state.hintsAvailable() <= 0 || !state.currentQuestion?.hint}
+                    disabled={state.hintsAvailable <= 0 || !state.currentQuestion?.hint}
                     class="group press-active border-primary-200 text-primary-600 hover:bg-primary-50 flex items-center gap-3 rounded-2xl border-2 border-b-4 bg-white px-5 py-2.5 font-black shadow-sm transition-all disabled:pointer-events-none disabled:opacity-50"
                 >
                     <Lightbulb
@@ -97,7 +97,7 @@
     {/if}
 
     <!-- R02 Motivational Banner -->
-    {#if studentState?.adaptive_state?.show_motivation}
+    {#if studentState?.adaptive_state?.['show_motivation']}
         <div
             transition:slide={{ duration: 400 }}
             class="mx-6 mt-4 rounded-2xl border-2 border-blue-200 bg-linear-to-r from-blue-50 to-indigo-50 p-5 text-center shadow-sm"

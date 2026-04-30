@@ -65,9 +65,9 @@ export class MaterialFormState extends FormState<{
 
         this.material = material;
 
-        const coverMedia = this.material?.media?.find((m) => m.media_type === 'image');
+        const coverMedia = this.material?.media?.find((m) => (m as any).media_type === 'image');
         if (coverMedia) {
-            this.coverPreview = coverMedia.media_url;
+            this.coverPreview = (coverMedia as any).media_url;
         }
     }
 

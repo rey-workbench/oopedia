@@ -14,7 +14,7 @@
     const state = untrack(() => new UeqDetailState(user, survey));
 </script>
 
-<App title={`Detail UEQ - ${state.user.name}`}>
+<App title={`Detail UEQ - ${state.targetUser?.name ?? 'Unknown'}`}>
     <div class="space-y-12 pb-20">
         <div class="mb-8">
             <h1
@@ -28,7 +28,7 @@
                 <div class="h-1.5 w-2 rounded-full bg-slate-100"></div>
             </div>
             <p class="mt-4 max-w-3xl leading-relaxed font-medium text-slate-500">
-                {`Analisis mendalam pengalaman pengguna untuk ${state.user.name}.`}
+                {`Analisis mendalam pengalaman pengguna untuk ${state.targetUser?.name ?? 'Unknown'}.`}
             </p>
             <div class="mt-6 flex flex-wrap gap-4">
                 <div>

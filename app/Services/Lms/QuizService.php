@@ -9,6 +9,7 @@ use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Services\AdaptiveEngineServiceInterface;
+use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
 use App\Contracts\Services\QuizServiceInterface;
 use App\DTOs\Adaptive\StudentStateDTO;
@@ -42,6 +43,7 @@ final class QuizService implements QuizServiceInterface
         private readonly ProgressRepositoryInterface $progressRepo,
         private readonly PerformanceServiceInterface $performanceService,
         private readonly AdaptiveEngineServiceInterface $adaptiveEngineService,
+        private readonly GuestProgressServiceInterface $guestProgressService,
     ) {}
 
     // =========================================================================
@@ -355,12 +357,13 @@ final class QuizService implements QuizServiceInterface
         }
 
         $answeredArray = $answeredQuestionIds->toArray();
-        $completed     = $questions->filter(fn ($item) => in_array($item->id, $answeredArray));
-        $remaining     = $questions->reject(fn ($item) => in_array($item->id, $answeredArray));
+        $completed = $questions->filter(fn ($item) => in_array($item->id, $answeredArray))->values();
+        $remaining = $questions->reject(fn ($item) => in_array($item->id, $answeredArray))->values();
 
         $levels = [];
         $index  = 1;
 
+        /** @var Question $question */
         foreach ($completed as $question) {
             $levels[] = [
                 'level'       => $index++,
@@ -370,6 +373,7 @@ final class QuizService implements QuizServiceInterface
         }
 
         $isFirst = true;
+        /** @var Question $questionItem */
         foreach ($remaining as $questionItem) {
             $levels[] = [
                 'level'       => $index++,
@@ -452,7 +456,7 @@ final class QuizService implements QuizServiceInterface
             }
 
             $this->progressRepo->saveProgress([
-                'user_id'       => $submission->userId,
+                'user_id'       => $submission->userId ?: 'guest',
                 'material_id'   => $submission->materialId,
                 'question_id'   => $submission->questionId,
                 'is_correct'    => $isCorrect,
@@ -462,6 +466,15 @@ final class QuizService implements QuizServiceInterface
                 'answer_id'     => $answerId,
                 'user_response' => $userResponse,
             ]);
+
+            // Save Guest Progress in Session for immediate context availability
+            if ($submission->userId === '' || $submission->userId === 'guest') {
+                $this->guestProgressService->saveProgress(
+                    ['material_id' => $submission->materialId],
+                    $isCorrect,
+                    $submission->questionId
+                );
+            }
 
             // Update Performance Metrics
             $interaction = new InteractionDTO(
@@ -489,17 +502,19 @@ final class QuizService implements QuizServiceInterface
             $friendlyDiagnosis = $diagnosisFact ? $diagnosisFact->name : 'Progres Normal';
 
             $friendlyRecommendations = [];
-            foreach ($engineResult->recommendations as $recId) {
-                $action = AdaptiveAction::find($recId);
+            foreach ($engineResult->recommendations as $rec) {
+                $actionId = is_array($rec) ? $rec['id'] : $rec;
+                $action   = AdaptiveAction::find($actionId);
                 if ($action) {
                     $friendlyRecommendations[] = $action->name;
                 }
             }
 
             return [
-                'is_correct'    => $isCorrect,
-                'score'         => $score,
-                'engine_result' => array_merge($engineResult->toArray(), [
+                'is_correct'          => $isCorrect,
+                'score'               => $score,
+                'raw_recommendations' => $engineResult->recommendations,
+                'engine_result'       => array_merge($engineResult->toArray(), [
                     'diagnosis'       => $friendlyDiagnosis,
                     'recommendations' => $friendlyRecommendations,
                 ]),
@@ -513,8 +528,8 @@ final class QuizService implements QuizServiceInterface
         AdaptiveExecutionLog::create([
             'user_id'           => $userId,
             'rule_id'           => $result['id'],
-            'action_id'         => implode(', ', $result['recommendations']),
-            'trigger_facts'     => [$result['diagnosis']],
+            'action_id'         => implode(', ', array_map(fn ($r) => is_array($r) ? $r['id'] : $r, $result['recommendations'])),
+            'trigger_facts'     => $result['facts'] ?? [],
             'state_deltas'      => [],
             'new_state'         => $state->toArray(),
             'execution_context' => [
@@ -526,7 +541,7 @@ final class QuizService implements QuizServiceInterface
         // 2. Prepare Adaptive State
         $adaptiveState                         = $state->adaptive_state ?? [];
         $adaptiveState['last_diagnosis']       = $result['diagnosis'];
-        $adaptiveState['active_interventions'] = $result['recommendations'];
+        $adaptiveState['active_interventions'] = array_map(fn ($r) => is_array($r) ? $r['id'] : $r, $result['recommendations']);
 
         // 3. Apply Layer 4: Aksi Sistem (State Transitions)
         $metaKeys = AdaptiveMetadataKeys::class;

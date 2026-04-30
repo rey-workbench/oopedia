@@ -19,6 +19,10 @@ export class UserListState extends BaseState {
         path: '',
         per_page: 10,
         to: null,
+        first_page_url: '',
+        last_page_url: '',
+        next_page_url: null,
+        prev_page_url: null,
         total: 0,
     });
     search = $state('');

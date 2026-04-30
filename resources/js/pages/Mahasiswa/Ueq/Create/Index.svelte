@@ -52,7 +52,7 @@
                             </label>
                             <Input
                                 id="nim"
-                                bind:value={state.form.nim}
+                                bind:value={state.form['nim']}
                                 placeholder="Contoh: 2141720000"
                                 required
                                 error={state.form.errors['nim']}
@@ -79,7 +79,7 @@
                             </label>
                             <Input
                                 id="class"
-                                bind:value={state.form.class}
+                                bind:value={state.form['class']}
                                 placeholder="Contoh: TI-3A"
                                 required
                                 error={state.form.errors['class']}

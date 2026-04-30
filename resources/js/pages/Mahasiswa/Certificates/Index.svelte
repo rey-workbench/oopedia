@@ -4,10 +4,9 @@
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import CertificateCard from '@/components/layout/CertificateCard.svelte';
     import { Award } from 'lucide-svelte';
-    import type { CertificatesPageProps } from '@/types';
+    import type { Certification } from '@/types';
 
-    const { certifications = [] }: Omit<CertificatesPageProps, 'auth' | 'flash' | 'errors'> =
-        $props();
+    const { certifications = [] }: { certifications: Certification[] } = $props();
 </script>
 
 <App title="Sertifikat Saya">
@@ -29,7 +28,7 @@
                 {#each certifications as cert (cert.material_id)}
                     <CertificateCard
                         materialTitle={cert.material_title}
-                        type={cert.type}
+                        type={cert.type as 'gold' | 'silver' | 'bronze'}
                         issuedAt={cert.issued_at ?? undefined}
                         id={cert.material_id}
                     />

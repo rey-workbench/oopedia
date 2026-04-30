@@ -14,7 +14,7 @@ export class UeqSurveyState extends FormState<UeqSurveyForm> {
             suggestions: '',
         };
         for (const a of aspects) {
-            if (a.name) initialFields[a.name as string] = null;
+            if (a.name) initialFields[a.name as string] = 0;
         }
         super(initialFields);
         this.aspects = aspects;
