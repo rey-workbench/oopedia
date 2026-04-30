@@ -70,21 +70,26 @@ final class DashboardService implements DashboardServiceInterface
                 $studentState   = StudentState::where('user_id', $userId)->first();
                 $certifications = $studentState?->certifications ?? [];
 
+                $completedMaterialsCount = $materials->filter(fn($m) => $m->progress_percentage >= 100)->count();
+                $inProgressMaterialsCount = $materials->filter(fn($m) => $m->progress_percentage > 0 && $m->progress_percentage < 100)->count();
+                $totalMaterialProgress = $totalMaterials > 0 ? round(($completedMaterialsCount / $totalMaterials) * 100) : 0;
+                $totalAnsweredQuestions = $progressStats->sum('answered_questions');
+
                 return [
                     'total_materials'              => $totalMaterials,
                     'total_questions'              => $configuredCounts['total'],
                     'easy_questions'               => $configuredCounts['easy'],
                     'medium_questions'             => $configuredCounts['medium'],
                     'hard_questions'               => $configuredCounts['hard'],
-                    'material_progress_percentage' => 0,
+                    'material_progress_percentage' => $totalMaterialProgress,
                     'question_progress_percentage' => ProgressHelper::calculateProgressPercentage(
                         $progressStats->sum('correct_answers'),
                         $configuredCounts['total'],
                     ),
-                    'completed_materials'      => 0,
-                    'in_progress_materials'    => 0,
-                    'total_material_progress'  => 0,
-                    'total_answered_questions' => 0,
+                    'completed_materials'      => $completedMaterialsCount,
+                    'in_progress_materials'    => $inProgressMaterialsCount,
+                    'total_material_progress'  => $totalMaterialProgress,
+                    'total_answered_questions' => $totalAnsweredQuestions,
                     'total_correct_questions'  => $progressStats->sum('correct_answers'),
                     'recent_activities'        => $recentActivities,
                     'all_materials'            => $materials,
