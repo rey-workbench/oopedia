@@ -44,9 +44,13 @@ final class PerformanceService implements PerformanceServiceInterface
         $xp = $state->xp ?? 0;
 
         // Jika user mengulang pertanyaan yang sama di sesi ini, abaikan perhitungan gandanya
-        if (in_array($questionId, $questionIds)) {
-            // Kita kembalikan state tanpa perubahan metrics
-            return $state;
+        // Prevent double counting within the same mini-session to avoid spamming
+        // However, we allow it if the current state seems stagnant or if it's a legitimate retry
+        if (in_array($questionId, $questionIds) && $isCorrect && $state->correct_count > 0) {
+            $lastInteraction = $state->current_session['last_question_id'] ?? null;
+            if ($lastInteraction === $questionId) {
+                return $state;
+            }
         }
 
         $questionIds[] = $questionId;

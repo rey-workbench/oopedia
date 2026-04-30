@@ -1,5 +1,4 @@
 import { router } from '@inertiajs/svelte';
-import axios, { isAxiosError } from 'axios';
 import { BaseState } from '@/states/BaseState.svelte';
 import { ROUTES } from '@/utils/route';
 import type {
@@ -7,11 +6,10 @@ import type {
     Question,
     DifficultyLevel,
     QuestionWithAttempt,
-    CheckAnswerResponse,
     AdaptiveResult,
     LevelItem,
-    AnswerPayload,
     StudentSessionState,
+    CheckAnswerResponse,
 } from '@/types';
 import { playSound } from '@/utils';
 
@@ -120,29 +118,23 @@ export class QuestionShowState extends BaseState {
             return;
         }
 
-        if (this.hintsAvailable > 0 && this.currentQuestion.hint) {
-            try {
-                const response = await axios.post<{
-                    success: boolean;
-                    hint: string;
-                    student_state: StudentSessionState | null;
-                }>(
-                    ROUTES.MAHASISWA.MATERIALS.QUESTIONS.HINT(
-                        this.material.id,
-                        this.currentQuestion.id
-                    )
-                );
-
-                if (response.data.success) {
-                    this.usedHint = true;
-                    this.showHint = true;
-                    if (response.data.student_state) {
-                        this.studentState = response.data.student_state;
-                    }
+        if (this.hintsAvailable > 0 && this.currentQuestion?.hint) {
+            router.post(
+                ROUTES.MAHASISWA.MATERIALS.QUESTIONS.HINT(
+                    this.material.id,
+                    this.currentQuestion.id
+                ),
+                {},
+                {
+                    preserveScroll: true,
+                    preserveState: true,
+                    onSuccess: () => {
+                        this.usedHint = true;
+                        this.showHint = true;
+                        console.log('[QuizState] Hint used via Inertia. Props synced.');
+                    },
                 }
-            } catch (err) {
-                console.error('[QuizState] Error using hint:', err);
-            }
+            );
         }
     }
 
@@ -156,22 +148,18 @@ export class QuestionShowState extends BaseState {
 
         const timeSpent = Math.max(0, Math.floor((Date.now() - this.startTime) / 1000));
 
-        const payload: AnswerPayload = {
-            question_id: this.currentQuestion.id,
-            material_id: this.material.id,
-            used_hint: this.usedHint,
+        const payload: Record<string, any> = {
             time_spent: timeSpent,
-            // Prefer the current question difficulty to avoid sending non-answer filters like "all".
-            difficulty: (this.currentQuestion.difficulty ?? this.difficulty) as DifficultyLevel,
+            used_hint: this.usedHint,
+            difficulty: this.difficulty,
         };
 
         if (this.currentQuestion.question_type === 'fill_in_the_blank') {
-            payload.fill_in_the_blank_answer = this.fillInTheBlankAnswer;
-            payload.answer = this.fillInTheBlankAnswer;
+            payload['fill_in_the_blank_answer'] = this.fillInTheBlankAnswer;
         } else if (this.currentQuestion.question_type === 'drag_and_drop') {
-            payload.drag_and_drop_answers = JSON.stringify(this.dragAndDropAnswers);
+            payload['drag_and_drop_answers'] = this.dragAndDropAnswers;
         } else if (this.selectedMultipleChoiceAnswer) {
-            payload.answer = this.selectedMultipleChoiceAnswer;
+            payload['answer'] = this.selectedMultipleChoiceAnswer;
         }
 
         const hasAnswer =
@@ -193,74 +181,26 @@ export class QuestionShowState extends BaseState {
             };
             this.show_feedback = true;
             this.isSubmitting = false;
-
             return;
         }
 
-        console.debug('[QuizState] Submitting answer payload:', payload);
-
-        try {
-            const response = await axios.post<CheckAnswerResponse>(
-                ROUTES.MAHASISWA.MATERIALS.QUESTIONS.CHECK(
-                    this.material.id,
-                    this.currentQuestion.id
-                ),
-                payload
-            );
-
-            console.debug('[QuizState] Received answer response:', response.data);
-            const data = response.data;
-            this.feedbackData = {
-                status: data.status,
-                message: data.message,
-                next_url: data.next_url,
-                is_correct: data.is_correct,
-                xp_earned: data.xp_earned,
-                adaptive_result: data.adaptive_result,
-                ui: data.ui ?? null,
-            };
-
-            const adaptiveResult = data.adaptive_result;
-
-            if (adaptiveResult) {
-                this.adaptiveFacts = adaptiveResult.facts ?? [];
-                this.adaptiveTriggeredRule = adaptiveResult.triggered_rule ?? null;
-                this.adaptiveTriggeredRules = adaptiveResult.triggered_rules ?? [];
-                this.showAdaptiveIndicator = true;
+        router.post(
+            ROUTES.MAHASISWA.MATERIALS.QUESTIONS.CHECK(this.material.id, this.currentQuestion.id),
+            payload,
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => {
+                    console.log('[QuizState] Answer checked via Inertia. Props synced.');
+                },
+                onFinish: () => {
+                    this.isSubmitting = false;
+                },
             }
-
-            if (data.student_state) {
-                this.studentState = data.student_state;
-            }
-
-            this.showHint = false;
-            this.show_feedback = true;
-            this.handleResponseSound(data.status, adaptiveResult);
-        } catch (err: unknown) {
-            const message = isAxiosError(err)
-                ? ((err.response?.data as { message?: string })?.message ??
-                  'Terjadi kesalahan saat memeriksa jawaban.')
-                : 'Terjadi kesalahan tidak terduga.';
-            console.error('[QuizState] Error submitting answer:', err);
-            if (isAxiosError(err)) {
-                console.error('[QuizState] Axios error details:', err.response?.data);
-            }
-            this.feedbackData = {
-                status: 'error',
-                message,
-                next_url: '',
-                is_correct: false,
-                xp_earned: 0,
-                adaptive_result: null,
-                ui: null,
-            };
-            this.show_feedback = true;
-        } finally {
-            this.isSubmitting = false;
-        }
+        );
     }
 
-    private handleResponseSound(status: string, adaptiveResult: AdaptiveResult | null) {
+    public handleResponseSound(status: string, adaptiveResult: AdaptiveResult | null) {
         if (status !== 'success') {
             playSound('wrong');
             return;

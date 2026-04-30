@@ -22,7 +22,8 @@
         difficulty = 'beginner' as const,
         is_guest: _isGuest = false,
         student_state,
-    }: QuestionShowProps & { material_answered_count: number } = $props();
+        feedback = null,
+    }: QuestionShowProps & { material_answered_count: number; feedback: any } = $props();
 
     let quizState = untrack(
         () => new QuestionShowState(material, current_question as Question, difficulty, student_state)
@@ -56,13 +57,16 @@
         return () => deactivateExamProtection();
     });
 
+    // Full Backend-Driven Sync: Just mirror props to quizState
     $effect(() => {
         const newMaterial = material;
         const newQuestion = current_question;
         const newDifficulty = difficulty;
         const newStudentState = student_state;
+        const newFeedback = feedback;
 
         untrack(() => {
+            // Reset local UI state only if question changed
             if (quizState.currentQuestion?.id !== newQuestion?.id) {
                 quizState.selectedMultipleChoiceAnswer = null;
                 quizState.fillInTheBlankAnswer = '';
@@ -72,10 +76,30 @@
                 quizState.isNavigating = false;
                 quizState.show_feedback = false;
             }
+
+            // Sync all state from backend props
             quizState.material = newMaterial;
             quizState.currentQuestion = newQuestion;
             quizState.difficulty = newDifficulty;
             quizState.studentState = newStudentState;
+            
+            if (newFeedback) {
+                quizState.feedbackData = newFeedback;
+                quizState.show_feedback = true;
+
+                // Handle Adaptive Metadata
+                const adaptiveResult = newFeedback.adaptive_result;
+                if (adaptiveResult) {
+                    quizState.adaptiveFacts = adaptiveResult.facts ?? [];
+                    quizState.adaptiveTriggeredRule = adaptiveResult.triggered_rule ?? null;
+                    quizState.showAdaptiveIndicator = true;
+                }
+
+                // Handle Audio Feedback
+                if (typeof (quizState as any).handleResponseSound === 'function') {
+                    (quizState as any).handleResponseSound(newFeedback.status, adaptiveResult);
+                }
+            }
         });
     });
 

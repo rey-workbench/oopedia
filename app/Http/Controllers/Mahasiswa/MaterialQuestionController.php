@@ -77,6 +77,7 @@ final class MaterialQuestionController extends Controller
 
         // Clean Context Management: Move reset/sync logic to Service
         $targetDifficulty = null;
+        
         if (!$isGuest) {
             $state = $this->performanceService->syncMaterialContext($userId, $materialId);
             $targetDifficulty = $state->target_difficulty ? QuestionDifficulty::tryFrom((string) $state->target_difficulty) : null;
@@ -100,7 +101,7 @@ final class MaterialQuestionController extends Controller
         return $this->render('Mahasiswa/Materials/Questions/Show/Index', $quizData);
     }
 
-    public function checkAnswer(CheckAnswerRequest $request, string $materialId, string $questionId): JsonResponse
+    public function checkAnswer(CheckAnswerRequest $request, string $materialId, string $questionId): RedirectResponse
     {
         $this->getMaterialOrAbort($materialId);
 
@@ -148,17 +149,14 @@ final class MaterialQuestionController extends Controller
             $uiType = $isCorrect ? 'success' : 'info';
         }
 
-        // 3. Build triggered_rule / triggered_rules for frontend FeedbackModal
+        // 3. Build triggered_rule
         $ruleChain = $engineResult['engine_metadata']['rule_chain'] ?? [];
         $finalRuleId = end($ruleChain) ?: ($engineResult['id'] ?? null);
         $triggeredRule = null;
-        $triggeredRules = [];
 
         if ($finalRuleId) {
             $ruleModel = AdaptiveRule::find($finalRuleId);
             if ($ruleModel) {
-                $actionModel = AdaptiveAction::find($primaryActionId);
-
                 // Map Seeder Variant to Frontend FeedbackModal Variant
                 $uiVariant = match ($primaryActionId) {
                     'CERTIFICATION' => 'certificate',
@@ -181,25 +179,24 @@ final class MaterialQuestionController extends Controller
             }
         }
 
-
-        return $this->json([
+        $feedback = [
             'status'          => $isCorrect ? 'success' : 'error',
             'message'         => $isCorrect ? 'Jawaban Benar!' : 'Belum Tepat',
             'xp_earned'       => $result['score'],
             'is_correct'      => $isCorrect,
             'adaptive_result' => array_merge($engineResult, [
                 'triggered_rule'     => $triggeredRule,
-                'triggered_rules'    => $triggeredRules,
                 'recommendation_ids' => $rawActionIds,
             ]),
-            'student_state'   => Auth::guest() ? null : $this->performanceService->getStudentSessionState((string) Auth::id()),
             'next_url'        => $nextUrl,
             'ui'              => [
                 'label'   => $uiLabel,
                 'type'    => $uiType,
                 'message' => $shouldRemedial ? 'Kamu perlu mengulas materi ini kembali.' : null,
             ],
-        ]);
+        ];
+
+        return back()->with('feedback', $feedback)->with('student_state', $studentStateData);
     }
 
     public function review(ReviewQuestionRequest $request, string $materialId): Response
@@ -248,28 +245,17 @@ final class MaterialQuestionController extends Controller
         return $this->json(['target_difficulty' => $state->target_difficulty]);
     }
 
-    public function useHint(string $materialId, string $questionId): JsonResponse
+    public function useHint(string $materialId, string $questionId): RedirectResponse
     {
         $userId = (string) Auth::id();
         $isGuest = Auth::guest();
 
         if ($isGuest) {
-            // Guests don't have persistent state, so we just return the hint
-            $question = \App\Models\Question::findOrFail($questionId);
-            return $this->json([
-                'success' => true,
-                'hint' => $question->hint,
-                'student_state' => null
-            ]);
+            return back()->with('student_state', null);
         }
 
-        $question = \App\Models\Question::findOrFail($questionId);
         $newState = $this->performanceService->decrementHint($userId);
 
-        return $this->json([
-            'success' => true,
-            'hint' => $question->hint,
-            'student_state' => $newState
-        ]);
+        return back()->with('student_state', $this->performanceService->getStudentSessionState($userId));
     }
 }
