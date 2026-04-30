@@ -12,6 +12,9 @@
             "@pint",
             "@phpcs"
         ],
+        "production":[
+            "php artisan db:seed --class=RealQuestionSeeder"
+        ],
         "deadcode": "vendor/bin/phpstan"
     },
     "keywords": [
