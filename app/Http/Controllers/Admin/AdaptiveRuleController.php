@@ -26,8 +26,8 @@ final class AdaptiveRuleController extends Controller
     public function create(): Response
     {
         return $this->render('Admin/AdaptiveRules/Create/Index', [
-            'allFacts'   => AdaptiveFact::all(),
-            'allActions' => AdaptiveAction::all(),
+            'all_facts'   => AdaptiveFact::all(),
+            'all_actions' => AdaptiveAction::all(),
         ]);
     }
 
@@ -44,24 +44,24 @@ final class AdaptiveRuleController extends Controller
                 'deduced_fact_ids'  => $adaptive_rule->deduced_fact_ids,
                 'is_active'         => $adaptive_rule->is_active,
             ],
-            'allFacts'   => AdaptiveFact::all(),
-            'allActions' => AdaptiveAction::all(),
+            'all_facts'   => AdaptiveFact::all(),
+            'all_actions' => AdaptiveAction::all(),
         ]);
     }
 
     public function index(): Response
     {
         return $this->render('Admin/AdaptiveRules/Index', [
-            'totalRules'                => AdaptiveRule::count(),
-            'totalFacts'                => AdaptiveFact::count(),
-            'totalActions'              => AdaptiveAction::count(),
-            'rulesByDiagnosis'          => $this->getRulesByDiagnosis(),
-            'adaptiveStateDistribution' => $this->getAdaptiveStateDistribution(),
-            'recentTriggers'            => $this->getRecentTriggers(),
-            'ruleTriggersStats'         => $this->getRuleTriggersStats(),
-            'decisionTree'              => $this->getDecisionTree(),
-            'allFacts'                  => AdaptiveFact::all(),
-            'allActions'                => AdaptiveAction::all(),
+            'total_rules'                => AdaptiveRule::count(),
+            'total_facts'                => AdaptiveFact::count(),
+            'total_actions'              => AdaptiveAction::count(),
+            'rules_by_diagnosis'          => $this->getRulesByDiagnosis(),
+            'adaptive_state_distribution' => $this->getAdaptiveStateDistribution(),
+            'recent_triggers'            => $this->getRecentTriggers(),
+            'rule_triggers_stats'         => $this->getRuleTriggersStats(),
+            'decision_tree'              => $this->getDecisionTree(),
+            'all_facts'                  => AdaptiveFact::all(),
+            'all_actions'                => AdaptiveAction::all(),
         ]);
     }
 

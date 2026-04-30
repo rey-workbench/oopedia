@@ -12,7 +12,7 @@ import type {
     StudentNeedingAttention
 } from './analytics';
 import type { User } from './auth';
-import type { AdaptiveRule, AdaptiveFact, AdaptiveAction } from './adaptive';
+import type { AdaptiveRule, AdaptiveFact, AdaptiveAction, AdaptiveRuleDiagnosis, AdaptiveStateDistribution, AdaptiveTriggerItem, AdaptiveRuleTriggerStat } from './adaptive';
 import type { MslqQuestion, SusResult } from './survey';
 
 // =============================================================================
@@ -80,6 +80,14 @@ export interface AdminAdaptiveRuleProps extends SharedProps {
     all_facts: AdaptiveFact[];
     all_actions: AdaptiveAction[];
     rule?: AdaptiveRule;
+    total_rules?: number;
+    total_facts?: number;
+    total_actions?: number;
+    rules_by_diagnosis?: AdaptiveRuleDiagnosis[];
+    adaptive_state_distribution?: AdaptiveStateDistribution[];
+    recent_triggers?: AdaptiveTriggerItem[];
+    rule_triggers_stats?: AdaptiveRuleTriggerStat[];
+    decision_tree?: any;
 }
 
 export interface MslqSurveyProps extends SharedProps {
