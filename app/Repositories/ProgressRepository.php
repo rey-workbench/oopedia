@@ -271,9 +271,28 @@ final class ProgressRepository implements ProgressRepositoryInterface
     {
         $questionIds = Question::where('material_id', $materialId)->pluck('id');
 
-        QuizAttempt::where('user_id', $userId)
-            ->whereIn('question_id', $questionIds)
-            ->delete();
+        DB::transaction(function () use ($userId, $questionIds) {
+            // 1. Delete attempts
+            QuizAttempt::where('user_id', $userId)
+                ->whereIn('question_id', $questionIds)
+                ->delete();
+
+            // 2. Reset StudentState context for this material
+            $state = StudentState::where('user_id', $userId)->first();
+            if ($state) {
+                $adaptiveState = $state->adaptive_state ?? [];
+                
+                // Clear material-specific flags
+                unset($adaptiveState['needs_remedial']);
+                unset($adaptiveState['remedial_material_id']);
+                unset($adaptiveState['forced_easy_count']);
+                unset($adaptiveState['last_diagnosis']);
+                
+                $state->adaptive_state = $adaptiveState;
+                $state->current_session = null; // Reset session buffer
+                $state->save();
+            }
+        });
     }
 
     public function getStudentCountByMaterial(): Collection

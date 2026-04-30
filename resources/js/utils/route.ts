@@ -99,6 +99,8 @@ export const ROUTES = {
                     `/mahasiswa/materials/${matId}/questions/${quesId}/check`,
                 ATTEMPTS: (matId: string | number, quesId: string | number) =>
                     `/mahasiswa/materials/${matId}/questions/${quesId}/attempts`,
+                HINT: (matId: string | number, quesId: string | number) =>
+                    `/mahasiswa/materials/${matId}/questions/${quesId}/hint`,
             },
         },
         LEADERBOARD: '/mahasiswa/leaderboard',

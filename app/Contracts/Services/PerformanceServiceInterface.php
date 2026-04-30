@@ -21,4 +21,6 @@ interface PerformanceServiceInterface
     public function syncMaterialContext(string $userId, string $materialId): StudentState;
 
     public function calculateScore(bool $isCorrect, bool $usedHint, int $timeSpent, QuestionDifficulty|string $difficulty): int;
+
+    public function decrementHint(string $userId): array;
 }

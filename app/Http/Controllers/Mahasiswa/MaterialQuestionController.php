@@ -247,4 +247,29 @@ final class MaterialQuestionController extends Controller
 
         return $this->json(['target_difficulty' => $state->target_difficulty]);
     }
+
+    public function useHint(string $materialId, string $questionId): JsonResponse
+    {
+        $userId = (string) Auth::id();
+        $isGuest = Auth::guest();
+
+        if ($isGuest) {
+            // Guests don't have persistent state, so we just return the hint
+            $question = \App\Models\Question::findOrFail($questionId);
+            return $this->json([
+                'success' => true,
+                'hint' => $question->hint,
+                'student_state' => null
+            ]);
+        }
+
+        $question = \App\Models\Question::findOrFail($questionId);
+        $newState = $this->performanceService->decrementHint($userId);
+
+        return $this->json([
+            'success' => true,
+            'hint' => $question->hint,
+            'student_state' => $newState
+        ]);
+    }
 }

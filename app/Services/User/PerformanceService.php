@@ -246,4 +246,18 @@ final class PerformanceService implements PerformanceServiceInterface
 
         return (int) max(5, $score);
     }
+
+    public function decrementHint(string $userId): array
+    {
+        $state = $this->getStudentState($userId);
+
+        if ($state->hints_available > 0) {
+            $state->hints_available--;
+            $state->hints_used++;
+            $state->save();
+        }
+
+        return $this->getStudentSessionState($userId);
+    }
+
 }

@@ -95,14 +95,10 @@ export class QuestionShowState extends BaseState {
 
     isProcessing = $derived(this.isSubmitting);
 
-    xp = $derived(this.studentState?.xp || 0);
-    streak = $derived(this.studentState?.streak || 0);
-    level = $derived(this.studentState?.level || 'Pemula');
-    get hintsAvailable() {
-        const available = this.studentState?.hints_available ?? 3;
-        const maxPerSession = this.studentState?.adaptive_state?.['max_hints_per_session'];
-        return maxPerSession !== undefined ? Math.min(available, Number(maxPerSession)) : available;
-    }
+    xp = $derived(this.studentState?.xp ?? 0);
+    streak = $derived(this.studentState?.streak ?? 0);
+    level = $derived(this.studentState?.level ?? 'Pemula');
+    hintsAvailable = $derived(this.studentState?.hints_available ?? 0);
 
     constructor(
         material: Material,
@@ -115,18 +111,37 @@ export class QuestionShowState extends BaseState {
         this.startTime = Date.now();
     }
 
-    useHint() {
-        const maxPerSession = this.studentState?.adaptive_state?.['max_hints_per_session'];
-        const effectiveAvailable =
-            maxPerSession !== undefined
-                ? Math.min(this.studentState?.hints_available ?? 0, Number(maxPerSession))
-                : this.studentState?.hints_available ?? 0;
+    async useHint() {
+        if (!this.currentQuestion) return;
 
-        if (effectiveAvailable > 0 && this.currentQuestion?.hint) {
-            this.usedHint = true;
+        // If hint already used for this question, just show it
+        if (this.usedHint) {
             this.showHint = true;
-            if (this.studentState) {
-                this.studentState.hints_available--;
+            return;
+        }
+
+        if (this.hintsAvailable > 0 && this.currentQuestion.hint) {
+            try {
+                const response = await axios.post<{
+                    success: boolean;
+                    hint: string;
+                    student_state: StudentSessionState | null;
+                }>(
+                    ROUTES.MAHASISWA.MATERIALS.QUESTIONS.HINT(
+                        this.material.id,
+                        this.currentQuestion.id
+                    )
+                );
+
+                if (response.data.success) {
+                    this.usedHint = true;
+                    this.showHint = true;
+                    if (response.data.student_state) {
+                        this.studentState = response.data.student_state;
+                    }
+                }
+            } catch (err) {
+                console.error('[QuizState] Error using hint:', err);
             }
         }
     }
