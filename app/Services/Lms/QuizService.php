@@ -228,17 +228,17 @@ final class QuizService implements QuizServiceInterface
         $actualAnsweredCount = $allQuestions->filter(fn ($q) => in_array($q->id, $answeredArray))->count();
 
         return [
-            'material'              => $material,
-            'questions'             => $questions,
-            'currentQuestion'       => $currentQuestion,
-            'currentQuestionNumber' => $actualAnsweredCount + 1,
-            'totalQuestions'        => $totalFilteredQuestions,
-            'answeredCount'         => $actualAnsweredCount,
-            'materialAnsweredCount' => $answeredQuestionIds->count(),
-            'levelProgress'         => $levelProgress,
-            'difficulty'            => $difficulty ? $difficulty->value : 'all',
-            'isGuest'               => $isGuest,
-            'studentState'          => $isGuest ? null : $this->performanceService->getStudentSessionState($userId),
+            'material'                => $material,
+            'questions'               => $questions,
+            'current_question'        => $currentQuestion,
+            'current_question_number' => $actualAnsweredCount + 1,
+            'total_questions'         => $totalFilteredQuestions,
+            'answered_count'          => $actualAnsweredCount,
+            'material_answered_count' => $answeredQuestionIds->count(),
+            'level_progress'          => $levelProgress,
+            'difficulty'              => $difficulty ? $difficulty->value : 'all',
+            'is_guest'                => $isGuest,
+            'student_state'           => $isGuest ? null : $this->performanceService->getStudentSessionState($userId),
         ];
     }
 

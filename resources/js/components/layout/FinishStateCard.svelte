@@ -32,7 +32,11 @@
                 </div>
                 <h2 class="mb-4 text-5xl font-black tracking-widest drop-shadow-lg">HEBAT!</h2>
                 <p class="mx-auto max-w-md text-xl leading-relaxed font-medium text-emerald-50">
-                    Kamu sudah menjawab semua soal di materi ini dengan baik.
+                    {#if answered_count > 0}
+                        Kamu sudah menjawab semua soal di materi ini dengan baik.
+                    {:else}
+                        Materi ini belum memiliki instrumen evaluasi yang tersedia.
+                    {/if}
                 </p>
             </div>
         </div>
