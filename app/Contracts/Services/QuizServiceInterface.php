@@ -45,7 +45,7 @@ interface QuizServiceInterface
 
     public function getReviewQuestions(QuizContextDTO $context): Collection;
 
-    public function getGuestAnsweredQuestionIds(string $materialId, array $guestProgress = []): SupportCollection;
+    public function getGuestAnsweredQuestionIds(string $materialId, array $guestProgress = [], bool $onlyCorrect = false): SupportCollection;
 
     public function getLevelProgress(
         Material $material,

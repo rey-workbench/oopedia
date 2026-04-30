@@ -59,7 +59,7 @@ final class MaterialQuestionController extends Controller
         $isGuest = Auth::guest();
 
         $answeredIds = $isGuest
-            ? $this->quizService->getGuestAnsweredQuestionIds($material->id, $this->guestProgressService->getProgress())
+            ? $this->quizService->getGuestAnsweredQuestionIds($material->id, $this->guestProgressService->getProgress(), true)
             : $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
 
         return $this->render('Mahasiswa/Materials/Questions/Levels/Index', [

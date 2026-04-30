@@ -160,7 +160,7 @@ final class QuizService implements QuizServiceInterface
         $targetDifficulty = $context->targetDifficulty;
 
         $answeredQuestionIds = $isGuest
-            ? $this->getGuestAnsweredQuestionIds($material->id, $guestProgress)
+            ? $this->getGuestAnsweredQuestionIds($material->id, $guestProgress, true)
             : $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
 
         $filteredData           = $this->getFilteredQuestionsForQuiz($material, $difficulty, $isGuest);
@@ -176,9 +176,21 @@ final class QuizService implements QuizServiceInterface
             $targetLevel     = $difficultyOrder[$targetDifficulty->value] ?? 1;
 
             $answeredArray = $answeredQuestionIds->toArray();
-            $questions     = $questions->reject(
-                fn ($q) => ! in_array($q->id, $answeredArray) && ($difficultyOrder[$q->difficulty->value] ?? 1) < $targetLevel,
-            );
+            
+            $attemptedIds = $isGuest 
+                ? $this->getGuestAnsweredQuestionIds($material->id, $guestProgress, false)->toArray()
+                : $this->progressRepo->getAttemptedQuestionIds($userId, $material->id)->toArray();
+
+            $questions = $questions->reject(function ($q) use ($answeredArray, $attemptedIds, $targetLevel, $difficultyOrder) {
+                $qLevel = $difficultyOrder[$q->difficulty->value] ?? 1;
+                $isCorrect = in_array($q->id, $answeredArray);
+                $isAttempted = in_array($q->id, $attemptedIds);
+
+                if ($isCorrect) return true;
+                if (!$isAttempted && $qLevel < $targetLevel) return true;
+
+                return false;
+            });
             $appliedTargetFilter = true;
         }
 
@@ -325,13 +337,24 @@ final class QuizService implements QuizServiceInterface
         return $questions->values();
     }
 
-    public function getGuestAnsweredQuestionIds(string $materialId, array $guestProgress = []): SupportCollection
+    public function getGuestAnsweredQuestionIds(string $materialId, array $guestProgress = [], bool $onlyCorrect = false): SupportCollection
     {
         $answeredQuestionIds = collect([]);
         foreach ($guestProgress as $key => $progress) {
-            if (! is_array($progress) || (! isset($progress['is_correct']) && ! isset($progress['attempt_number']))) {
+            if (! is_array($progress)) {
                 continue;
             }
+
+            // If $onlyCorrect is true, skip failed attempts
+            if ($onlyCorrect && ! ($progress['is_correct'] ?? false)) {
+                continue;
+            }
+
+            // Ensure it has at least attempt_number or is_correct
+            if (! isset($progress['is_correct']) && ! isset($progress['attempt_number'])) {
+                continue;
+            }
+
             $parts = explode('_', $key);
             if (count($parts) < 2 || $parts[0] != $materialId) {
                 continue;

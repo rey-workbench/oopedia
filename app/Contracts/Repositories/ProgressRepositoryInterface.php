@@ -27,6 +27,7 @@ interface ProgressRepositoryInterface
     public function getOrCreateStudentState(?string $userId): StudentState;
 
     public function getAnsweredQuestionIds(string $userId, string $materialId): Collection;
+    public function getAttemptedQuestionIds(string $userId, string $materialId): Collection;
 
     public function resetProgress(string $userId, string $materialId): void;
 
