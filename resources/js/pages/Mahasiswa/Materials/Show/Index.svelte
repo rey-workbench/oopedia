@@ -29,8 +29,8 @@
     });
 
     // Initialize State
-    const fromAdaptive = (page.props as any)?.flash?.from_adaptive || false;
-    const state = untrack(() => new MaterialShowState(material, fromAdaptive));
+    const from_adaptive = (page.props as any)?.flash?.from_adaptive || false;
+    const state = untrack(() => new MaterialShowState(material, from_adaptive));
 </script>
 
 <App title={state.material?.title || 'Material'}>
@@ -38,7 +38,7 @@
         <PageHeader id="page-header" title={state.material?.title || material.title} />
 
         <!-- Adaptive System Alert -->
-        {#if state.fromAdaptive}
+        {#if state.from_adaptive}
             <div id="adaptive-recommendation">
                 <Card class="border-primary-500 bg-primary-50 border-l-4">
                     <div class="flex items-start gap-4">

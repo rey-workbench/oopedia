@@ -21,19 +21,21 @@ export interface AnswerPayload {
 export interface CheckAnswerResponse {
     status: string;
     message: string;
-    nextUrl?: string;
     next_url: string;
     is_correct: boolean;
     correct_answer?: Answer;
     explanation?: string;
-    score: number;
-    score_earned: number;
+    score?: number; // legacy
     xp_earned: number;
-    xpEarned?: number;
-    adaptive_result: AdaptiveResult;
-    adaptiveResult?: AdaptiveResult;
-    next_question_id: string | null;
-    studentState?: any;
+    adaptive_result: AdaptiveResult | null;
+    next_question_id?: string | null;
+    student_state?: any;
+    ui?: {
+        label?: string;
+        title?: string;
+        type?: string;
+        message?: string;
+    } | null;
 }
 
 export interface UseHintResponse {

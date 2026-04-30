@@ -9,23 +9,23 @@ import type {
 } from '@/types';
 
 export class AdaptiveRuleState extends BaseState {
-    totalRules = $state(0);
-    totalFacts = $state(0);
-    totalActions = $state(0);
-    rulesByDiagnosis = $state<AdaptiveRuleDiagnosis[]>([]);
-    adaptiveStateDistribution = $state<AdaptiveStateDistribution[]>([]);
-    recentTriggers = $state<AdaptiveTriggerItem[]>([]);
-    ruleTriggersStats = $state<AdaptiveRuleTriggerStat[]>([]);
-    decisionTree = $state<any>(null);
-    allFacts = $state<AdaptiveFact[]>([]);
-    allActions = $state<AdaptiveAction[]>([]);
+    total_rules = $state(0);
+    total_facts = $state(0);
+    total_actions = $state(0);
+    rules_by_diagnosis = $state<AdaptiveRuleDiagnosis[]>([]);
+    adaptive_state_distribution = $state<AdaptiveStateDistribution[]>([]);
+    recent_triggers = $state<AdaptiveTriggerItem[]>([]);
+    rule_triggers_stats = $state<AdaptiveRuleTriggerStat[]>([]);
+    decision_tree = $state<any>(null);
+    all_facts = $state<AdaptiveFact[]>([]);
+    all_actions = $state<AdaptiveAction[]>([]);
 
     constructor(data: any) {
         super();
         this.hydrate(data);
     }
 
-    maxTriggerCount = $derived(Math.max(1, ...this.ruleTriggersStats.map((r) => r.trigger_count)));
+    maxTriggerCount = $derived(Math.max(1, ...this.rule_triggers_stats.map((r) => r.trigger_count)));
 
-    maxStateCount = $derived(Math.max(1, ...this.adaptiveStateDistribution.map((s) => s.count)));
+    maxStateCount = $derived(Math.max(1, ...this.adaptive_state_distribution.map((s) => s.count)));
 }

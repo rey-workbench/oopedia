@@ -183,20 +183,20 @@ final class MaterialQuestionController extends Controller
 
 
         return $this->json([
-            'status' => $isCorrect ? 'success' : 'error',
-            'message' => $isCorrect ? 'Jawaban Benar!' : 'Belum Tepat',
-            'xpEarned' => $result['score'],
-            'isCorrect' => $isCorrect,
-            'adaptiveResult' => array_merge($engineResult, [
-                'triggered_rule' => $triggeredRule,
+            'status'          => $isCorrect ? 'success' : 'error',
+            'message'         => $isCorrect ? 'Jawaban Benar!' : 'Belum Tepat',
+            'xp_earned'       => $result['score'],
+            'is_correct'      => $isCorrect,
+            'adaptive_result' => array_merge($engineResult, [
+                'triggered_rule'  => $triggeredRule,
                 'triggered_rules' => $triggeredRules,
                 'recommendations' => $rawActionIds,
             ]),
-            'studentState' => Auth::guest() ? null : $this->performanceService->getStudentSessionState((string) Auth::id()),
-            'next_url' => $nextUrl,
-            'ui' => [
-                'label' => $uiLabel,
-                'type' => $uiType,
+            'student_state'   => Auth::guest() ? null : $this->performanceService->getStudentSessionState((string) Auth::id()),
+            'next_url'        => $nextUrl,
+            'ui'              => [
+                'label'   => $uiLabel,
+                'type'    => $uiType,
                 'message' => $shouldRemedial ? 'Kamu perlu mengulas materi ini kembali.' : null,
             ],
         ]);

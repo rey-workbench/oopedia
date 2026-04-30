@@ -247,10 +247,10 @@ final class MaterialService implements MaterialServiceInterface
         $currentQuestionNumber = ($answeredCount >= $material->questions->count()) ? 'Review' : ($answeredCount + 1);
 
         return [
-            'material'              => $material,
-            'materials'             => $materials,
-            'currentQuestionNumber' => $currentQuestionNumber,
-            'currentQuestion'       => $currentQuestion,
+            'material'                => $material,
+            'materials'               => $materials,
+            'current_question_number' => $currentQuestionNumber,
+            'current_question'        => $currentQuestion,
         ];
     }
 

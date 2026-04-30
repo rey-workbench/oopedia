@@ -17,11 +17,11 @@
     import PageHeader from '@/components/ui/PageHeader.svelte';
     let {
         rule,
-        allFacts = [],
-        allActions = []
+        all_facts = [],
+        all_actions = []
     }: AdminAdaptiveRuleProps = $props();
 
-    const state = untrack(() => new AdaptiveRuleEditorState({ allFacts, allActions, isEdit: true }));
+    const state = untrack(() => new AdaptiveRuleEditorState({ all_facts, all_actions, isEdit: true }));
 
     let form = useForm(untrack(() => ({
         id: rule!.id,
@@ -63,8 +63,8 @@
         <div id="adaptive-rule-editor-container" class="flex h-[800px] w-full overflow-hidden border-2 border-slate-200 rounded-[2rem] bg-white shadow-2xl">
             <div id="adaptive-rule-library">
                 <LibraryDrawer 
-                    {allFacts} 
-                    {allActions} 
+                    allFacts={all_facts} 
+                    allActions={all_actions} 
                     CONDITION_KEYS={state.CONDITION_KEYS} 
                     handleDragStart={(e, id, type) => state.handleDragStart(e, id, type)} 
                 />
@@ -81,7 +81,7 @@
 
                     <RuleDeductionSection {form} {state} />
 
-                    <RuleActionSection {form} {state} {allActions} />
+                    <RuleActionSection {form} {state} allActions={all_actions} />
 
                     <RuleFeedbackSection {form} />
                 </form>

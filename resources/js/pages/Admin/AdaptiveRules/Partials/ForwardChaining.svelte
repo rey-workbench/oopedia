@@ -46,9 +46,9 @@
         };
     });
 
-    const factData = $derived(analyticsState.allFacts);
-    const actionData = $derived(analyticsState.allActions);
-    const rules = $derived(analyticsState.rulesByDiagnosis.flatMap((d) => d.rules));
+    const factData = $derived(analyticsState.all_facts);
+    const actionData = $derived(analyticsState.all_actions);
+    const rules = $derived(analyticsState.rules_by_diagnosis.flatMap((d) => d.rules));
 
     // ─── CONFIGURATION & CONSTANTS ──────────────────────────────────────────
 
@@ -227,7 +227,7 @@
     });
 
     $effect(() => {
-        if (analyticsState.rulesByDiagnosis.length > 0 || analyticsState.allFacts.length > 0) {
+        if (analyticsState.rules_by_diagnosis.length > 0 || analyticsState.all_facts.length > 0) {
             untrack(() => {
                 requestAnimationFrame(() => setTimeout(initSchematic, 50));
             });

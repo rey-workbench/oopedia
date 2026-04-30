@@ -13,9 +13,9 @@
 
     import type { MaterialWithStats } from '@/types';
 
-    const { materialsWithStats = [] }: { materialsWithStats: MaterialWithStats[] } = $props();
+    const { materials_with_stats = [] }: { materials_with_stats: MaterialWithStats[] } = $props();
 
-    const state = untrack(() => new InProgressState(materialsWithStats));
+    const state = untrack(() => new InProgressState(materials_with_stats));
 </script>
 
 <App title="Materi Sedang Dipelajari">
@@ -42,7 +42,7 @@
         </PageHeader>
 
         <div id="inprogress-materials-grid">
-            {#if state.materialsWithStats.length === 0}
+            {#if state.materials_with_stats.length === 0}
                 <div
                     class="rounded-3xl border-2 border-dashed border-slate-200 bg-white/50 py-24 text-center shadow-sm backdrop-blur-sm"
                 >
@@ -69,7 +69,7 @@
                 </div>
             {:else}
                 <div id="inprogress-materials-grid" class="grid grid-cols-1 gap-10">
-                    {#each state.materialsWithStats as materialData (materialData.material.id)}
+                    {#each state.materials_with_stats as materialData (materialData.material.id)}
                         {@const { material, stats } = materialData}
                         <Card
                             id="inprogress-card-{material.id}"

@@ -110,6 +110,7 @@ export interface StudentSessionState {
 export interface StudentNeedingAttention {
     id: string;
     name: string;
+    email: string;
     student_state: StudentState;
 }
 

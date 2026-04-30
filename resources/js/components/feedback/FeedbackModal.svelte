@@ -14,16 +14,16 @@
 
     let nextAction = $derived(
         quizState.feedbackData?.ui?.label ||
-            quizState.feedbackData?.adaptiveResult?.triggered_rule?.variant ||
+            quizState.feedbackData?.adaptive_result?.triggered_rule?.variant ||
             'Lanjut'
     );
     let diagnosis = $derived(
-        quizState.feedbackData?.adaptiveResult?.diagnosis || null
+        quizState.feedbackData?.adaptive_result?.diagnosis || null
     );
     let recommendations = $derived(
-        quizState.feedbackData?.adaptiveResult?.recommendations || []
+        quizState.feedbackData?.adaptive_result?.recommendations || []
     );
-    let xpEarned = $derived(quizState.feedbackData?.score || 0);
+    let xpEarned = $derived(quizState.feedbackData?.xp_earned || 0);
 
     const TICK_MS = 50;
     const AUTO_ADVANCE_MS_SUCCESS = 10000;
@@ -109,7 +109,7 @@
     }
 
     function getFeedbackVariant(): FeedbackVariant {
-        const ruleVariant = quizState.feedbackData?.adaptiveResult?.triggered_rule?.variant;
+        const ruleVariant = quizState.feedbackData?.adaptive_result?.triggered_rule?.variant;
 
         if (
             ruleVariant &&
@@ -139,7 +139,7 @@
             return quizState.feedbackData.ui.title;
         }
 
-        const backendTitle = quizState.feedbackData?.adaptiveResult?.new_state?.title;
+        const backendTitle = quizState.feedbackData?.adaptive_result?.new_state?.title;
         if (backendTitle) {
             return backendTitle as string;
         }
@@ -260,7 +260,7 @@
                         </div>
                     {/if}
 
-                    {#if recommendations.some(r => r.id === 'STREAK_BONUS')}
+                    {#if recommendations.some(r => (typeof r === 'string' ? r : r?.id) === 'STREAK_BONUS')}
                         <div
                             class="flex items-center gap-2 rounded-xl border-2 border-white bg-white/80 px-3 py-1.5 shadow-sm"
                         >

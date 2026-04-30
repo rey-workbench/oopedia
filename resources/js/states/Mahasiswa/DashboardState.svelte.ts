@@ -4,21 +4,21 @@ import type { Material, RecentActivity, LeaderboardEntry, MahasiswaDashboardProp
 export type DashboardStateProps = Omit<MahasiswaDashboardProps, 'auth' | 'flash' | 'errors'>;
 
 export class DashboardState extends BaseState {
-    totalMaterials = $state(0);
-    totalQuestions = $state(0);
-    easyQuestions = $state(0);
-    mediumQuestions = $state(0);
-    hardQuestions = $state(0);
-    materialProgressPercentage = $state(0);
-    questionProgressPercentage = $state(0);
-    completedMaterials = $state(0);
-    inProgressMaterials = $state(0);
-    totalMaterialProgress = $state(0);
-    totalAnsweredQuestions = $state(0);
-    totalCorrectQuestions = $state(0);
-    recentActivities = $state<RecentActivity[]>([]);
-    allMaterials = $state<Material[]>([]);
-    currentUserRank = $state<LeaderboardEntry | null>(null);
+    total_materials = $state(0);
+    total_questions = $state(0);
+    easy_questions = $state(0);
+    medium_questions = $state(0);
+    hard_questions = $state(0);
+    material_progress_percentage = $state(0);
+    question_progress_percentage = $state(0);
+    completed_materials = $state(0);
+    in_progress_materials = $state(0);
+    total_material_progress = $state(0);
+    total_answered_questions = $state(0);
+    total_correct_questions = $state(0);
+    recent_activities = $state<RecentActivity[]>([]);
+    all_materials = $state<Material[]>([]);
+    current_user_rank = $state<LeaderboardEntry | null>(null);
     certifications = $state<Record<string, string>>({});
 
     constructor(data: DashboardStateProps) {

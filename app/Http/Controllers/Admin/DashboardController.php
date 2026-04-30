@@ -21,31 +21,31 @@ final class DashboardController extends Controller
 
         $stats = $this->adminDashboardService->getDashboardStats();
 
-        $totalStudents  = $stats['totalStudents'];
-        $totalMaterials = $stats['totalMaterials'];
-        $totalQuestions = $stats['totalQuestions'];
-        $activeStudents = $stats['activeStudents'];
+        $total_students  = $stats['total_students'];
+        $total_materials = $stats['total_materials'];
+        $total_questions = $stats['total_questions'];
+        $active_students = $stats['active_students'];
 
-        $recentProgress           = $this->adminDashboardService->getRecentProgress(10);
-        $studentProgress          = $this->adminDashboardService->getStudentProgressOverview(5);
-        $materialStats            = $this->adminDashboardService->getMaterialStatistics();
-        $popularMaterials         = $this->adminDashboardService->getPopularMaterials(5);
-        $studentAnalytics         = $this->adminDashboardService->getStudentAnalytics();
-        $studentsNeedingAttention = $this->adminDashboardService->getStudentsNeedingAttention();
+        $recent_progress            = $this->adminDashboardService->getRecentProgress(10);
+        $student_progress           = $this->adminDashboardService->getStudentProgressOverview(5);
+        $material_stats             = $this->adminDashboardService->getMaterialStatistics();
+        $popular_materials          = $this->adminDashboardService->getPopularMaterials(5);
+        $student_analytics          = $this->adminDashboardService->getStudentAnalytics();
+        $students_needing_attention = $this->adminDashboardService->getStudentsNeedingAttention();
 
-        return $this->render('Admin/Dashboard/Index', compact(
-            'userName',
-            'userRole',
-            'totalStudents',
-            'totalMaterials',
-            'totalQuestions',
-            'activeStudents',
-            'recentProgress',
-            'studentProgress',
-            'materialStats',
-            'popularMaterials',
-            'studentAnalytics',
-            'studentsNeedingAttention',
-        ));
+        return $this->render('Admin/Dashboard/Index', [
+            'user_name'                  => $userName,
+            'user_role'                  => $userRole,
+            'total_students'             => $total_students,
+            'total_materials'            => $total_materials,
+            'total_questions'            => $total_questions,
+            'active_students'            => $active_students,
+            'recent_progress'            => $recent_progress,
+            'student_progress'           => $student_progress,
+            'material_stats'             => $material_stats,
+            'popular_materials'          => $popular_materials,
+            'student_analytics'          => $student_analytics,
+            'students_needing_attention' => $students_needing_attention,
+        ]);
     }
 }

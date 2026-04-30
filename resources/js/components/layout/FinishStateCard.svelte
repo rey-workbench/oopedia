@@ -7,10 +7,10 @@
     interface Props {
         state: any;
         material?: any;
-        answeredCount?: number;
+        answered_count?: number;
     }
 
-    let { state, material = {}, answeredCount = 0 }: Props = $props();
+    let { state, material = {}, answered_count = 0 }: Props = $props();
 </script>
 
 <div class="mx-auto max-w-3xl">
@@ -48,7 +48,7 @@
                         <Target size={24} class="text-blue-600" />
                     </div>
                     <div class="text-3xl font-black tracking-tighter text-slate-800">
-                        {answeredCount}
+                        {answered_count}
                     </div>
                     <div class="mt-1 text-xs font-bold tracking-widest text-slate-400 uppercase">
                         Soal Dijawab

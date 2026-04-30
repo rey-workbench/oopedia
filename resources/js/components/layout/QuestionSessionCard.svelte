@@ -18,7 +18,7 @@
     let studentState = $derived(state.studentState);
 
     // Accuracy color intensity: >80% = emerald, 60-80% = orange, 40-60% = red-400, <40% = red-600
-    const accuracyClass = $derived(() => {
+    const accuracyClass = $derived.by(() => {
         const acc = studentState?.accuracy ?? 100;
         if (acc >= 80) return { border: 'border-emerald-100', icon: 'text-emerald-500', text: 'text-slate-700', shake: false };
         if (acc >= 60) return { border: 'border-orange-200', icon: 'text-orange-500', text: 'text-orange-600', shake: false };
@@ -67,11 +67,11 @@
 
                     <!-- Accuracy Badge -->
                     <div
-                        class="flex items-center gap-3 rounded-2xl border-2 border-b-4 bg-white px-4 py-2 shadow-sm transition-colors duration-500 {accuracyClass().border}"
-                        class:accuracy-shake={accuracyClass().shake}
+                        class="flex items-center gap-3 rounded-2xl border-2 border-b-4 bg-white px-4 py-2 shadow-sm transition-colors duration-500 {accuracyClass.border}"
+                        class:accuracy-shake={accuracyClass.shake}
                     >
-                        <Target size={18} class="transition-colors duration-500 {accuracyClass().icon}" />
-                        <span class="text-lg font-black tracking-tight transition-colors duration-500 {accuracyClass().text}"
+                        <Target size={18} class="transition-colors duration-500 {accuracyClass.icon}" />
+                        <span class="text-lg font-black tracking-tight transition-colors duration-500 {accuracyClass.text}"
                             >{studentState?.accuracy ?? 0}%</span
                         >
                     </div>

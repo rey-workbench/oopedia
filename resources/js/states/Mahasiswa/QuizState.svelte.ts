@@ -61,24 +61,14 @@ export class QuestionShowState extends BaseState {
     isSubmitting = $state(false);
     showFeedback = $state(false);
     showHint = $state(false);
-    feedbackData = $state<{
-        status: string;
-        message: string;
-        next_url: string;
-        adaptiveResult: AdaptiveResult | null;
-        score: number;
-        ui?: {
-            label?: string;
-            title?: string;
-            type?: string;
-            message?: string;
-        } | null;
-    }>({
+    feedbackData = $state<CheckAnswerResponse>({
         status: 'success',
         message: '',
         next_url: '',
-        adaptiveResult: null,
-        score: 0,
+        is_correct: true,
+        xp_earned: 0,
+        adaptive_result: null,
+        student_state: null,
         ui: null,
     });
     usedHint = $state(false);
@@ -180,9 +170,11 @@ export class QuestionShowState extends BaseState {
             this.feedbackData = {
                 status: 'error',
                 message: 'Jawaban wajib diisi.',
-                nextUrl: '',
-                adaptiveResult: null,
-                score: 0,
+                next_url: '',
+                is_correct: false,
+                xp_earned: 0,
+                adaptive_result: null,
+                ui: null,
             };
             this.showFeedback = true;
             this.isSubmitting = false;
@@ -203,15 +195,17 @@ export class QuestionShowState extends BaseState {
 
             console.debug('[QuizState] Received answer response:', response.data);
             const data = response.data;
-            const adaptiveResult = (data.adaptiveResult as unknown as AdaptiveResult) ?? null;
             this.feedbackData = {
                 status: data.status,
                 message: data.message,
                 next_url: data.next_url,
-                adaptiveResult,
-                score: data.xpEarned || 0,
-                ui: (data as any).ui ?? null,
+                is_correct: data.is_correct,
+                xp_earned: data.xp_earned,
+                adaptive_result: data.adaptive_result,
+                ui: data.ui ?? null,
             };
+
+            const adaptiveResult = data.adaptive_result;
 
             if (adaptiveResult) {
                 this.adaptiveFacts = adaptiveResult.facts ?? [];
@@ -220,8 +214,8 @@ export class QuestionShowState extends BaseState {
                 this.showAdaptiveIndicator = true;
             }
 
-            if (data.studentState) {
-                this.studentState = data.studentState;
+            if (data.student_state) {
+                this.studentState = data.student_state;
             }
 
             this.showHint = false;
@@ -240,8 +234,10 @@ export class QuestionShowState extends BaseState {
                 status: 'error',
                 message,
                 next_url: '',
-                adaptiveResult: null,
-                score: 0,
+                is_correct: false,
+                xp_earned: 0,
+                adaptive_result: null,
+                ui: null,
             };
             this.showFeedback = true;
         } finally {

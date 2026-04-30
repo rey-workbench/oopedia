@@ -43,7 +43,7 @@
 
     const state = untrack(() => new ProfileState(personalization));
 
-    const learningStyleIcon = $derived(() => {
+    const learningStyleIcon = $derived.by(() => {
         const style = state.personalization?.learning_style;
         if (style === 'deep') return Brain;
         if (style === 'motivated') return Zap;
@@ -56,7 +56,7 @@
         {
             title: 'Profil Belajar',
             value: state.personalization?.learning_profile_label || 'Belum Diisi',
-            icon: learningStyleIcon(),
+            icon: learningStyleIcon,
             variant: state.personalization?.mslq_filled ? 'primary' : 'warning',
             footer: state.personalization?.mslq_filled ? 'Berdasarkan MSLQ' : 'Isi Kuesioner MSLQ',
         },

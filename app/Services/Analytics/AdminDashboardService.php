@@ -30,10 +30,10 @@ final class AdminDashboardService implements AdminDashboardServiceInterface
     {
         return Cache::remember('admin_dashboard_stats', 600, function () {
             return [
-                'totalStudents'  => $this->userRepo->countByRole('mahasiswa'),
-                'totalMaterials' => $this->materialRepo->countAll(),
-                'totalQuestions' => $this->questionRepo->countAll(),
-                'activeStudents' => $this->userRepo->getActiveStudentsCount(7),
+                'total_students'  => $this->userRepo->countByRole('mahasiswa'),
+                'total_materials' => $this->materialRepo->countAll(),
+                'total_questions' => $this->questionRepo->countAll(),
+                'active_students' => $this->userRepo->getActiveStudentsCount(7),
             ];
         });
     }
@@ -147,8 +147,8 @@ final class AdminDashboardService implements AdminDashboardServiceInterface
             $moduleStats = $this->getMaterialStatistics();
 
             return [
-                'distribution'      => $distribution,
-                'modulePerformance' => [
+                'distribution'       => $distribution,
+                'module_performance' => [
                     'labels' => $moduleStats->pluck('title'),
                     'data'   => $moduleStats->pluck('completion_rate'),
                 ],

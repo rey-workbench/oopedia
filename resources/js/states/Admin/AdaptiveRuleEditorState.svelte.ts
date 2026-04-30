@@ -2,8 +2,8 @@ import { BaseState } from '@/states/BaseState.svelte';
 import type { AdaptiveFact, AdaptiveAction } from '@/types';
 
 export class AdaptiveRuleEditorState extends BaseState {
-    allFacts = $state<AdaptiveFact[]>([]);
-    allActions = $state<AdaptiveAction[]>([]);
+    all_facts = $state<AdaptiveFact[]>([]);
+    all_actions = $state<AdaptiveAction[]>([]);
     isEdit = $state(false);
     
     // UI states
@@ -12,10 +12,10 @@ export class AdaptiveRuleEditorState extends BaseState {
     invalidDropZone = $state<string | null>(null);
     selectedMetadataKey = $state<string>('');
 
-    constructor(data: { allFacts: AdaptiveFact[], allActions: AdaptiveAction[], isEdit: boolean }) {
+    constructor(data: { all_facts: AdaptiveFact[], all_actions: AdaptiveAction[], isEdit: boolean }) {
         super();
-        this.allFacts = data.allFacts;
-        this.allActions = data.allActions;
+        this.all_facts = data.all_facts;
+        this.all_actions = data.all_actions;
         this.isEdit = data.isEdit;
         
         // Default selected metadata key
@@ -84,8 +84,8 @@ export class AdaptiveRuleEditorState extends BaseState {
     }
 
     addCondition(form: any, factId = '') {
-        const finalId = factId || this.getNextAutoId('F', form.facts, this.allFacts);
-        const existingFact = this.allFacts?.find(f => f.id === finalId);
+        const finalId = factId || this.getNextAutoId('F', form.facts, this.all_facts);
+        const existingFact = this.all_facts?.find(f => f.id === finalId);
         
         let parsedOp = '==';
         let parsedVal: any = 1;
@@ -112,8 +112,8 @@ export class AdaptiveRuleEditorState extends BaseState {
     }
 
     addDiagnosis(form: any, id = '') {
-        const finalId = id || this.getNextAutoId('V', form.deduced_facts, this.allFacts);
-        const existing = this.allFacts?.find(f => f.id === finalId);
+        const finalId = id || this.getNextAutoId('V', form.deduced_facts, this.all_facts);
+        const existing = this.all_facts?.find(f => f.id === finalId);
 
         if (!form.deduced_facts.find((f: any) => f.id === finalId)) {
             form.deduced_facts = [...form.deduced_facts, { 
@@ -184,7 +184,7 @@ export class AdaptiveRuleEditorState extends BaseState {
 
     parseInitialFacts(factIds: string[]) {
         return factIds.map(factId => {
-            const existing = this.allFacts.find(f => f.id === factId);
+            const existing = this.all_facts.find(f => f.id === factId);
             let parsedOp = '==';
             let parsedVal: any = 1;
             let parsedKey = factId;
@@ -212,7 +212,7 @@ export class AdaptiveRuleEditorState extends BaseState {
 
     parseInitialDeductions(factIds: string[]) {
         return factIds.map(factId => {
-            const existing = this.allFacts.find(f => f.id === factId);
+            const existing = this.all_facts.find(f => f.id === factId);
             return { id: factId, name: existing?.name || '', isManual: false };
         });
     }

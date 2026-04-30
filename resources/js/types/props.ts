@@ -22,6 +22,7 @@ import type { MslqQuestion, SusResult } from './survey';
 export interface SharedProps {
     auth: AuthData;
     flash: FlashMessages;
+    errors: Record<string, string>;
     [key: string]: unknown;
 }
 
@@ -30,16 +31,16 @@ export interface SharedProps {
 // =============================================================================
 
 export interface AdminDashboardData {
-    totalStudents: number;
-    totalMaterials: number;
-    totalQuestions: number;
-    activeStudents: number;
-    recentProgress: RecentProgressItem[];
-    studentProgress: StudentProgressItem[];
-    popularMaterials: PopularMaterialItem[];
-    studentAnalytics: StudentAnalytics;
-    materialStats: MaterialStatsItem[];
-    studentsNeedingAttention: StudentNeedingAttention[];
+    total_students: number;
+    total_materials: number;
+    total_questions: number;
+    active_students: number;
+    recent_progress: RecentProgressItem[];
+    student_progress: StudentProgressItem[];
+    popular_materials: PopularMaterialItem[];
+    student_analytics: StudentAnalytics;
+    material_stats: MaterialStatsItem[];
+    students_needing_attention: StudentNeedingAttention[];
 }
 
 export interface AdminDashboardProps extends AdminDashboardData, SharedProps {}
@@ -76,8 +77,8 @@ export interface MaterialStatsItem {
     completion_rate: number;
 }
 export interface AdminAdaptiveRuleProps extends SharedProps {
-    allFacts: AdaptiveFact[];
-    allActions: AdaptiveAction[];
+    all_facts: AdaptiveFact[];
+    all_actions: AdaptiveAction[];
     rule?: AdaptiveRule;
 }
 
@@ -91,14 +92,22 @@ export interface MslqSurveyProps extends SharedProps {
 // =============================================================================
 
 export interface MahasiswaDashboardProps extends SharedProps {
-    stats: {
-        total_xp: number;
-        rank: number;
-        completed_materials: number;
-        accuracy: number;
-    };
-    recent_activity: RecentActivity[];
-    recommendations: Material[];
+    total_materials: number;
+    total_questions: number;
+    easy_questions: number;
+    medium_questions: number;
+    hard_questions: number;
+    material_progress_percentage: number;
+    question_progress_percentage: number;
+    completed_materials: number;
+    in_progress_materials: number;
+    total_material_progress: number;
+    total_answered_questions: number;
+    total_correct_questions: number;
+    recent_activities: RecentActivity[];
+    all_materials: Material[];
+    current_user_rank: any | null;
+    certifications: Record<string, string>;
 }
 
 export interface MaterialShowProps extends SharedProps {
@@ -109,13 +118,13 @@ export interface MaterialShowProps extends SharedProps {
 
 export interface QuestionShowProps extends SharedProps {
     material: Material;
-    currentQuestion: Question | null;
-    currentQuestionNumber: number;
-    totalQuestions: number;
-    answeredCount: number;
+    current_question: Question | null;
+    current_question_number: number | string;
+    total_questions: number;
+    answered_count: number;
     difficulty: DifficultyLevel;
-    isGuest: boolean;
-    studentState: StudentSessionState | null;
+    is_guest: boolean;
+    student_state: StudentSessionState | null;
 }
 
 export interface ProfileProps extends SharedProps {

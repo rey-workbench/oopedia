@@ -65,7 +65,7 @@
 
     // Flatten rules for DataTable
     const flattenedRules = $derived(
-        analyticsState.rulesByDiagnosis.flatMap((d: any) => d.rules.map((r: any) => ({
+        analyticsState.rules_by_diagnosis.flatMap((d: any) => d.rules.map((r: any) => ({
             ...r,
             diagnosis_group: d.diagnosis_name
         })))
@@ -111,21 +111,21 @@
             <div id="adaptive-rules-stats" class="grid grid-cols-1 gap-6 md:grid-cols-3">
                 <StatCard
                     title="Total Aturan"
-                    value={analyticsState.totalRules}
+                    value={analyticsState.total_rules}
                     icon={BrainCircuit as any}
                     variant="primary"
                     footer="Logika aktif"
                 />
                 <StatCard
                     title="Fakta & Gejala"
-                    value={analyticsState.totalFacts}
+                    value={analyticsState.total_facts}
                     icon={Cpu as any}
                     variant="success"
                     footer="Variabel kondisi"
                 />
                 <StatCard
                     title="Intervensi"
-                    value={analyticsState.totalActions}
+                    value={analyticsState.total_actions}
                     icon={Settings2 as any}
                     variant="warning"
                     footer="Aksi pedagogis"
@@ -331,7 +331,7 @@
                     </div>
 
                     <div class="space-y-6">
-                        {#each analyticsState.recentTriggers as trigger}
+                        {#each analyticsState.recent_triggers as trigger}
                             <div class="flex items-start gap-4">
                                 <UserAvatar name={trigger.user_name} size="sm" />
                                 <div class="flex-1 min-w-0">
@@ -375,7 +375,7 @@
                     </div>
 
                     <div class="space-y-5">
-                        {#each analyticsState.adaptiveStateDistribution as item}
+                        {#each analyticsState.adaptive_state_distribution as item}
                             <div class="space-y-2">
                                 <div class="flex items-center justify-between">
                                     <span class="text-xs font-bold text-slate-700 uppercase tracking-tight">{item.difficulty}</span>
