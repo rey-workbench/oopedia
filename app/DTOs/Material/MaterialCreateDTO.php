@@ -14,6 +14,7 @@ final readonly class MaterialCreateDTO
         public string $module_id,
         public string $created_by,
         public bool $is_final_project = false,
+        public mixed $cover_image = null,
     ) {}
 
     public static function fromRequest(Request $request, string $userId): self
@@ -24,17 +25,7 @@ final readonly class MaterialCreateDTO
             module_id: $request->input('module_id'),
             created_by: $userId,
             is_final_project: $request->boolean('is_final_project'),
+            cover_image: $request->file('cover_image'),
         );
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'title'            => $this->title,
-            'content'          => $this->content,
-            'module_id'        => $this->module_id,
-            'created_by'       => $this->created_by,
-            'is_final_project' => $this->is_final_project,
-        ];
     }
 }

@@ -26,9 +26,9 @@ final class AdaptiveRule extends Model
     protected $fillable = [
         'id',
         'name',
-        'domain',
+        'recommendation',
         'priority',
-        'action_ids',
+        'actions',
         'required_fact_ids',
         'deduced_fact_ids',
         'is_active',
@@ -37,7 +37,7 @@ final class AdaptiveRule extends Model
     protected function casts(): array
     {
         return [
-            'action_ids'        => 'array',
+            'actions'           => 'array',
             'required_fact_ids' => 'array',
             'deduced_fact_ids'  => 'array',
             'is_active'         => 'boolean',
@@ -45,15 +45,22 @@ final class AdaptiveRule extends Model
     }
 
     /**
-     * Accessors to resolve objects from IDs
+     * Accessor for related Action models.
+     * Use $rule->actions for the raw JSON with metadata.
      */
-    public function getActionsAttribute()
+    public function getActionModelsAttribute()
     {
-        if (empty($this->action_ids)) {
+        $actions = $this->getAttribute('actions') ?? [];
+
+        if (empty($actions)) {
             return collect();
         }
 
-        return AdaptiveAction::whereIn('id', $this->action_ids)->get();
+        $ids = array_map(function ($action) {
+            return is_array($action) ? $action['id'] : $action;
+        }, (array) $actions);
+
+        return AdaptiveAction::whereIn('id', $ids)->get();
     }
 
     public function getRequiredFactsAttribute()

@@ -19,9 +19,9 @@ final class DashboardController extends Controller
 
     public function index(): Response
     {
-        $data                    = $this->dashboardService->getDashboardIndexData(Auth::id(), $this->isGuest());
-        $leaderboard             = $this->leaderboardService->getLeaderboardData(Auth::id());
-        $data['currentUserRank'] = $leaderboard['currentUserRank'];
+        $data                      = $this->dashboardService->getDashboardIndexData(Auth::id(), $this->isGuest());
+        $leaderboard               = $this->leaderboardService->getLeaderboardData(Auth::id());
+        $data['current_user_rank'] = $leaderboard['current_user_rank'];
 
         return $this->render('Mahasiswa/Dashboard/Index', $data);
     }
@@ -31,7 +31,7 @@ final class DashboardController extends Controller
         $materialsWithStats = $this->dashboardService->getInProgressData(Auth::id(), $this->isGuest());
 
         return $this->render('Mahasiswa/Dashboard/InProgress/Index', [
-            'materialsWithStats' => $materialsWithStats,
+            'materials_with_stats' => $materialsWithStats,
         ]);
     }
 
@@ -40,7 +40,7 @@ final class DashboardController extends Controller
         $materialsWithStats = $this->dashboardService->getCompletedData(Auth::id(), $this->isGuest());
 
         return $this->render('Mahasiswa/Dashboard/Completed/Index', [
-            'materialsWithStats' => $materialsWithStats,
+            'materials_with_stats' => $materialsWithStats,
         ]);
     }
 

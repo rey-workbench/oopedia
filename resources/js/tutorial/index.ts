@@ -76,6 +76,11 @@ export function getTourIdFromUrl(url: string, isAdminRole: boolean): string {
             return 'admin_mslq';
         }
 
+        if (path.includes('/admin/adaptive-rules')) {
+            if (path.includes('/create') || path.includes('/edit')) return 'admin_adaptive_rule_editor';
+            return 'admin_adaptive_rules';
+        }
+
         if (path.includes('/admin/dashboard')) return 'admin_dashboard';
     } else {
         if (path.includes('/mahasiswa/dashboard/in-progress'))

@@ -41,10 +41,7 @@ final class MaterialController extends Controller
     {
         $dto = MaterialCreateDTO::fromRequest($request, Auth::id());
 
-        $this->materialService->createMaterial(
-            $dto->toArray(),
-            $request->file('cover_image'),
-        );
+        $this->materialService->createMaterial($dto);
 
         return redirect()->route('admin.materials.index')
             ->with('success', 'Materi berhasil ditambahkan.');
@@ -66,11 +63,7 @@ final class MaterialController extends Controller
     {
         $dto = MaterialUpdateDTO::fromRequest($request);
 
-        $this->materialService->updateMaterial(
-            $materialId,
-            $dto->toArray(),
-            $request->file('cover_image'),
-        );
+        $this->materialService->updateMaterial($materialId, $dto);
 
         return redirect()->route('admin.materials.index')
             ->with('success', 'Materi berhasil diperbarui.');

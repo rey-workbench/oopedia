@@ -20,6 +20,10 @@ export class StudentListState extends BaseState {
         per_page: 10,
         to: null,
         total: 0,
+        first_page_url: '',
+        last_page_url: '',
+        next_page_url: null,
+        prev_page_url: null,
     });
     search = $state('');
 

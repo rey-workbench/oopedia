@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
-use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Services\MaterialServiceInterface;
 use App\Contracts\Services\QuizServiceInterface;
 use App\DTOs\Question\QuestionCreateDTO;
@@ -24,7 +23,6 @@ final class QuestionController extends Controller
     public function __construct(
         protected QuizServiceInterface $quizService,
         protected MaterialServiceInterface $materialService,
-        protected MaterialRepositoryInterface $materialRepo,
     ) {}
 
     public function index(Request $request): Response
@@ -33,7 +31,7 @@ final class QuestionController extends Controller
         $difficulty = QuestionDifficulty::tryFrom((string) $request->input('difficulty'));
         $materialId = $request->input('material');
 
-        $material  = $materialId ? $this->materialRepo->find((string) $materialId) : null;
+        $material  = $materialId ? $this->materialService->getMaterialById((string) $materialId) : null;
         $questions = $this->quizService->getFilteredQuestions($search, $difficulty, (string) $materialId);
 
         return $this->render('Admin/Questions/Index', [
@@ -50,10 +48,11 @@ final class QuestionController extends Controller
         if (! $materialId) {
             $materials    = $this->materialService->getAllMaterials();
             $material     = null;
+
             return $this->render('Admin/Questions/Create/Index', compact('materials', 'material'));
         }
 
-        $material = $this->materialRepo->find($materialId);
+        $material = $this->materialService->getMaterialById((string) $materialId);
 
         if (! $material) {
             return redirect()->route('admin.questions.index')
@@ -80,7 +79,7 @@ final class QuestionController extends Controller
                 );
         }
 
-        $this->quizService->createQuestion($dto->toArray());
+        $this->quizService->createQuestion($dto);
 
         $redirectParams = $dto->material_id ? ['material' => $dto->material_id] : [];
 
@@ -96,6 +95,9 @@ final class QuestionController extends Controller
             return redirect()->route('admin.questions.index')
                 ->with('error', 'Soal tidak ditemukan');
         }
+
+        $materials = $this->materialService->getAllMaterials();
+        $material  = $this->materialService->getMaterialById((string) $question->material_id);
 
         return $this->render(
             'Admin/Questions/Edit/Index',
@@ -120,7 +122,7 @@ final class QuestionController extends Controller
             }
         }
 
-        $this->quizService->updateQuestion($questionId, $dto->toArray());
+        $this->quizService->updateQuestion($questionId, $dto);
 
         $redirectParams = $dto->material_id ? ['material' => $dto->material_id] : [];
 

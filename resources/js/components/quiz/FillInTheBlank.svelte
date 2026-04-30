@@ -1,11 +1,12 @@
 <script lang="ts">
     import { Terminal } from 'lucide-svelte';
+    import type { Question } from '@/types';
 
     let {
         question,
         answerText = $bindable(''),
     }: {
-        question?: { question_text?: string };
+        question?: Question;
         answerText: string;
     } = $props();
 </script>

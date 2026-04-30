@@ -10,7 +10,9 @@ use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Contracts\Services\AdminDashboardServiceInterface;
 use App\Helpers\ProgressHelper;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
@@ -28,15 +30,15 @@ final class AdminDashboardService implements AdminDashboardServiceInterface
     {
         return Cache::remember('admin_dashboard_stats', 600, function () {
             return [
-                'totalStudents'  => $this->userRepo->countByRole('mahasiswa'),
-                'totalMaterials' => $this->materialRepo->countAll(),
-                'totalQuestions' => $this->questionRepo->countAll(),
-                'activeStudents' => $this->userRepo->getActiveStudentsCount(7),
+                'total_students'  => $this->userRepo->countByRole('mahasiswa'),
+                'total_materials' => $this->materialRepo->countAll(),
+                'total_questions' => $this->questionRepo->countAll(),
+                'active_students' => $this->userRepo->getActiveStudentsCount(7),
             ];
         });
     }
 
-    public function getRecentProgress(int $limit = 10): \Illuminate\Database\Eloquent\Collection
+    public function getRecentProgress(int $limit = 10): EloquentCollection
     {
         return $this->progressRepo->getRecentSystemProgress($limit);
     }
@@ -145,12 +147,24 @@ final class AdminDashboardService implements AdminDashboardServiceInterface
             $moduleStats = $this->getMaterialStatistics();
 
             return [
-                'distribution'      => $distribution,
-                'modulePerformance' => [
+                'distribution'       => $distribution,
+                'module_performance' => [
                     'labels' => $moduleStats->pluck('title'),
                     'data'   => $moduleStats->pluck('completion_rate'),
                 ],
             ];
         });
+    }
+
+    public function getStudentsNeedingAttention(): EloquentCollection
+    {
+        return User::whereHas('role', function ($q) {
+            $q->where('role_name', 'mahasiswa');
+        })
+            ->whereHas('studentState', function ($q) {
+                $q->whereJsonContains('adaptive_state->notify_teacher', true);
+            })
+            ->with(['studentState'])
+            ->get();
     }
 }

@@ -8,11 +8,12 @@ use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\MediaRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\MaterialServiceInterface;
+use App\DTOs\Material\MaterialCreateDTO;
+use App\DTOs\Material\MaterialUpdateDTO;
 use App\Exceptions\Domain\MaterialNotFoundException;
 use App\Exceptions\Domain\MediaOperationException;
 use App\Helpers\ProgressHelper;
 use App\Models\Material;
-use App\Models\StudentState;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
@@ -52,18 +53,18 @@ final class MaterialService implements MaterialServiceInterface
         return $this->materialRepo->findWithQuestionsAndAnswers($id);
     }
 
-    public function createMaterial(array $data, mixed $coverImage = null): Material
+    public function createMaterial(MaterialCreateDTO $dto): Material
     {
         $material = $this->materialRepo->create([
-            'title'            => $data['title'],
-            'content'          => $data['content'],
-            'module_id'        => $data['module_id'],
-            'created_by'       => $data['created_by'],
-            'is_final_project' => $data['is_final_project'] ?? false,
+            'title'            => $dto->title,
+            'content'          => $dto->content,
+            'module_id'        => $dto->module_id,
+            'created_by'       => $dto->created_by,
+            'is_final_project' => $dto->is_final_project,
         ]);
 
-        if ($coverImage) {
-            $this->uploadCoverImage($material, $coverImage);
+        if ($dto->cover_image) {
+            $this->uploadCoverImage($material, $dto->cover_image);
         }
 
         Cache::forget('sidebar_materials_v4');
@@ -71,7 +72,7 @@ final class MaterialService implements MaterialServiceInterface
         return $material;
     }
 
-    public function updateMaterial(string $materialId, array $data, mixed $coverImage = null): Material
+    public function updateMaterial(string $materialId, MaterialUpdateDTO $dto): Material
     {
         $material = $this->materialRepo->find($materialId);
 
@@ -80,15 +81,15 @@ final class MaterialService implements MaterialServiceInterface
         }
 
         $this->materialRepo->update($material->id, [
-            'title'            => $data['title'],
-            'content'          => $data['content']          ?? $data['description'] ?? null,
-            'module_id'        => $data['module_id']        ?? $material->module_id,
-            'is_final_project' => $data['is_final_project'] ?? $material->is_final_project,
+            'title'            => $dto->title            ?? $material->title,
+            'content'          => $dto->content          ?? $material->content,
+            'module_id'        => $dto->module_id        ?? $material->module_id,
+            'is_final_project' => $dto->is_final_project ?? $material->is_final_project,
         ]);
 
-        if ($coverImage) {
+        if ($dto->cover_image) {
             $this->deleteCoverImage($material);
-            $this->uploadCoverImage($material, $coverImage);
+            $this->uploadCoverImage($material, $dto->cover_image);
         }
 
         Cache::forget('sidebar_materials_v4');
@@ -152,19 +153,8 @@ final class MaterialService implements MaterialServiceInterface
             });
         }
 
-        $unlockedModules = [];
-        if ($userId) {
-            $studentState    = StudentState::where('user_id', $userId)->first();
-            $unlockedModules = $studentState?->unlocked_modules ?? [];
-        }
-
-        $firstModuleId = $materials->whereNotNull('module_id')->min('module_id');
-
-        return $materials->map(function ($material) use ($unlockedModules, $firstModuleId) {
-            $moduleId            = $material->module_id;
-            $isFirstModule       = $moduleId !== null && $moduleId == $firstModuleId;
-            $isUnlocked          = empty($moduleId) || $isFirstModule || in_array($moduleId, $unlockedModules);
-            $material->is_locked = ! $isUnlocked;
+        return $materials->map(function ($material) {
+            $material->is_locked = false;
 
             return $material;
         });
@@ -178,18 +168,20 @@ final class MaterialService implements MaterialServiceInterface
         $unlockedModules = [];
         if ($userId) {
             $studentState    = $this->progressRepo->getStudentState($userId);
-            $unlockedModules = $studentState?->unlocked_modules ?? [];
+            $unlockedModules = $studentState?->adaptive_state['unlocked_modules'] ?? [];
         }
 
-        $allMaterials->load(['questions' => function ($query) {
-            $query->select('id', 'material_id', 'difficulty');
-        }]);
+        $allMaterials->load([
+            'questions' => function ($query) {
+                $query->select('id', 'material_id', 'difficulty');
+            },
+        ]);
 
         $firstModuleId  = $allMaterials->whereNotNull('module_id')->min('module_id');
         $totalMaterials = $allMaterials->count();
 
         return $allMaterials->map(
-            function ($material, $index) use ($progressStats, $isGuest, $unlockedModules, $firstModuleId, $totalMaterials) {
+            function ($material, $index) use ($progressStats, $isGuest, $totalMaterials) {
                 $counts                   = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest);
                 $configuredTotalQuestions = $counts['total'];
                 $materialProgress         = $progressStats->firstWhere('material_id', $material->id);
@@ -202,10 +194,7 @@ final class MaterialService implements MaterialServiceInterface
                 if ($isGuest) {
                     $material->is_locked = $index >= ceil($totalMaterials / 2);
                 } else {
-                    $moduleId            = $material->module_id;
-                    $isFirstModule       = $moduleId !== null && $moduleId == $firstModuleId;
-                    $isUnlocked          = empty($moduleId) || $isFirstModule || in_array($moduleId, $unlockedModules);
-                    $material->is_locked = ! $isUnlocked;
+                    $material->is_locked = false;
                 }
 
                 return $material;
@@ -224,17 +213,14 @@ final class MaterialService implements MaterialServiceInterface
 
         if ($userId) {
             $studentState    = $this->progressRepo->getStudentState($userId);
-            $unlockedModules = $studentState?->unlocked_modules ?? [];
+            $unlockedModules = $studentState?->adaptive_state['unlocked_modules'] ?? [];
         }
 
-        $allMaterials->map(function ($m, $index) use ($isGuest, $unlockedModules, $firstModuleId, $totalMaterials) {
+        $allMaterials->map(function ($m, $index) use ($isGuest, $totalMaterials) {
             if ($isGuest) {
                 $m->is_locked = $index >= ceil($totalMaterials / 2);
             } else {
-                $moduleId      = $m->module_id;
-                $isFirstModule = $moduleId !== null && $moduleId == $firstModuleId;
-                $isUnlocked    = empty($moduleId) || $isFirstModule || in_array($moduleId, $unlockedModules);
-                $m->is_locked  = ! $isUnlocked;
+                $m->is_locked = false;
             }
 
             return $m;
@@ -261,10 +247,10 @@ final class MaterialService implements MaterialServiceInterface
         $currentQuestionNumber = ($answeredCount >= $material->questions->count()) ? 'Review' : ($answeredCount + 1);
 
         return [
-            'material'              => $material,
-            'materials'             => $materials,
-            'currentQuestionNumber' => $currentQuestionNumber,
-            'currentQuestion'       => $currentQuestion,
+            'material'                => $material,
+            'materials'               => $materials,
+            'current_question_number' => $currentQuestionNumber,
+            'current_question'        => $currentQuestion,
         ];
     }
 

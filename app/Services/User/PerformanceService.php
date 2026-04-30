@@ -6,10 +6,12 @@ namespace App\Services\User;
 
 use App\Contracts\Repositories\StudentStateRepositoryInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
+use App\DTOs\Quiz\InteractionDTO;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Models\StudentState;
 use App\Rules\Adaptive\Constants\PedagogicalConstants;
 use App\Rules\Adaptive\Constants\StudentStateSchema;
+use Illuminate\Support\Carbon;
 
 final class PerformanceService implements PerformanceServiceInterface
 {
@@ -22,17 +24,33 @@ final class PerformanceService implements PerformanceServiceInterface
         return $this->studentStateRepo->findOrCreate($userId);
     }
 
-    public function updateMetricsFromInteraction(
-        string $userId,
-        bool $isCorrect,
-        int $timeSpent,
-        QuestionDifficulty $difficulty,
-        bool $usedHint,
-    ): StudentState {
+    public function updateMetricsFromInteraction(InteractionDTO $interaction): StudentState
+    {
+        $userId     = $interaction->userId;
+        $questionId = $interaction->questionId;
+        $isCorrect  = $interaction->isCorrect;
+        $timeSpent  = $interaction->timeSpent;
+        $difficulty = $interaction->difficulty;
+        $usedHint   = $interaction->usedHint;
+        $score      = $interaction->score;
+
         $state = $this->getStudentState($userId);
 
         $currentSession = $state->current_session     ?? StudentStateSchema::defaults()[StudentStateSchema::CURRENT_SESSION];
         $metrics        = $state->performance_metrics ?? StudentStateSchema::defaults()[StudentStateSchema::PERFORMANCE_METRICS];
+
+        $questionIds = $currentSession['question_ids'] ?? [];
+        $xp          = $state->xp                      ?? 0;
+
+        // Jika user mengulang pertanyaan yang sama di sesi ini, abaikan perhitungan gandanya
+        if (in_array($questionId, $questionIds)) {
+            // Kita kembalikan state tanpa perubahan metrics
+            return $state;
+        }
+
+        $questionIds[]                  = $questionId;
+        $currentSession['question_ids'] = $questionIds;
+        $hintsAvailable                 = $state->hints_available ?? StudentStateSchema::defaults()[StudentStateSchema::HINTS_AVAILABLE];
 
         // 1. Update Session Counts
         $currentSession['total']++;
@@ -41,11 +59,17 @@ final class PerformanceService implements PerformanceServiceInterface
         }
         if ($usedHint) {
             $currentSession['hints']++;
+            $hintsAvailable = max(0, $hintsAvailable - 1);
         }
         $currentSession['time_spent'] += $timeSpent;
 
-        // 2. Calculate Current Accuracy
-        $accuracy = ($currentSession['correct'] / $currentSession['total']) * 100;
+        // 2. Update cumulative counts (tidak terpengaruh reset sesi)
+        $totalAnswered = ($state->total_answered ?? 0) + 1;
+        $correctCount  = ($state->correct_count ?? 0)  + ($isCorrect ? 1 : 0);
+        $hintsUsed     = ($state->hints_used ?? 0)     + ($usedHint ? 1 : 0);
+
+        // Akurasi = kumulatif global, bukan sesi mini
+        $accuracy = round(($correctCount / $totalAnswered) * 100, 2);
 
         // 3. Speed Analysis (vs Baseline)
         $baseline = PedagogicalConstants::BASELINE_TIME[$difficulty->value] ?? 30;
@@ -76,39 +100,43 @@ final class PerformanceService implements PerformanceServiceInterface
 
             // Reset current session
             $currentSession = [
-                'correct'    => 0,
-                'total'      => 0,
-                'hints'      => 0,
-                'time_spent' => 0,
+                'correct'      => 0,
+                'total'        => 0,
+                'hints'        => 0,
+                'time_spent'   => 0,
+                'question_ids' => [],
             ];
         }
 
         // 5. Daily Streak Logic
-        $today = now()->startOfDay();
-        $lastActive = $state->last_active_at ? \Illuminate\Support\Carbon::parse($state->last_active_at)->startOfDay() : null;
+        $lastActive = $state->last_active_at ? Carbon::parse($state->last_active_at) : null;
+        $newStreak  = $state->streak     ?? 0;
+        $maxStreak  = $state->max_streak ?? 0;
 
-        $newStreak = $state->streak ?? 0;
-        $maxStreak = $state->max_streak ?? 0;
-
-        if (!$lastActive) {
-            $newStreak = 1;
-            $maxStreak = 1;
-        } elseif ($lastActive->equalTo($today->copy()->subDay())) {
-            $newStreak += 1;
+        if (! $lastActive || ! $lastActive->isToday()) {
+            if ($lastActive && $lastActive->isYesterday()) {
+                $newStreak += 1;
+            } else {
+                $newStreak = 1;
+            }
             $maxStreak = max($newStreak, $maxStreak);
-        } elseif ($lastActive->lessThan($today->copy()->subDay())) {
-            $newStreak = 1;
         }
-        // Jika hari yang sama, streak tetap dipertahankan
+
+        $xp += $score;
 
         // 6. Persistence
         return $this->studentStateRepo->update($userId, [
+            StudentStateSchema::XP                  => $xp,
             StudentStateSchema::ACCURACY            => $accuracy,
+            'total_answered'                        => $totalAnswered,
+            'correct_count'                         => $correctCount,
+            StudentStateSchema::HINTS_USED          => $hintsUsed,
             StudentStateSchema::CURRENT_SESSION     => $currentSession,
             StudentStateSchema::SESSION_HISTORY     => $sessionHistory,
             StudentStateSchema::PERFORMANCE_METRICS => $metrics,
             StudentStateSchema::STREAK              => $newStreak,
             StudentStateSchema::MAX_STREAK          => $maxStreak,
+            StudentStateSchema::HINTS_AVAILABLE     => $hintsAvailable,
             'last_active_at'                        => now(),
         ]);
     }
@@ -145,12 +173,12 @@ final class PerformanceService implements PerformanceServiceInterface
         }
 
         $stagnantCount = 0;
-        $margin = PedagogicalConstants::TREND_MARGIN;
+        $margin        = PedagogicalConstants::TREND_MARGIN;
 
         // Loop dari sesi terbaru (belakang) ke sesi terlama (depan)
         for ($i = count($history) - 1; $i > 0; $i--) {
             $selisih = $history[$i] - $history[$i - 1];
-            
+
             // if -5% <= selisih <= +5%
             if ($selisih >= -$margin && $selisih <= $margin) {
                 $stagnantCount++;
@@ -171,6 +199,7 @@ final class PerformanceService implements PerformanceServiceInterface
             'accuracy'            => round($state->accuracy, 2),
             'xp'                  => $state->xp,
             'streak'              => $state->streak,
+            'level'               => $state->level ?? 'Beginner',
             'hints_available'     => $state->hints_available,
             'target_difficulty'   => $state->target_difficulty,
             'adaptive_state'      => $state->adaptive_state      ?? [],

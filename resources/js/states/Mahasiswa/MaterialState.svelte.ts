@@ -15,11 +15,11 @@ export class MaterialCatalogState extends BaseState {
 
 export class MaterialShowState extends BaseState {
     material = $state<Material>({} as Material);
-    fromAdaptive = $state(false);
+    from_adaptive = $state(false);
 
-    constructor(material: Material, fromAdaptive: boolean) {
+    constructor(material: Material, from_adaptive: boolean) {
         super();
-        this.hydrate({ material, fromAdaptive });
+        this.hydrate({ material, from_adaptive });
     }
 }
 
@@ -28,11 +28,11 @@ export class MaterialShowState extends BaseState {
  * In Progress Materials State
  */
 export class InProgressState extends BaseState {
-    materialsWithStats = $state<MaterialWithStats[]>([]);
+    materials_with_stats = $state<MaterialWithStats[]>([]);
 
-    constructor(materialsWithStats: MaterialWithStats[]) {
+    constructor(materials_with_stats: MaterialWithStats[]) {
         super();
-        this.hydrate({ materialsWithStats });
+        this.hydrate({ materials_with_stats });
     }
 
     calculateProgress(correct: number, total: number) {

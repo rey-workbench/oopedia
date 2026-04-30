@@ -4,21 +4,28 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Contracts\Services\AdaptiveManagementServiceInterface;
+use App\DTOs\Adaptive\AdaptiveRuleDTO;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\AdaptiveRule\StoreAdaptiveRuleRequest;
+use App\Http\Requests\Admin\AdaptiveRule\UpdateAdaptiveRuleRequest;
 use App\Models\AdaptiveAction;
 use App\Models\AdaptiveExecutionLog;
 use App\Models\AdaptiveFact;
 use App\Models\AdaptiveRule;
 use App\Models\StudentState;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Response;
 
 final class AdaptiveRuleController extends Controller
 {
+    public function __construct(
+        private readonly AdaptiveManagementServiceInterface $adaptiveManagementService,
+    ) {}
+
     public function create(): Response
     {
-        return $this->render('Admin/AdaptiveRules/Create/', [
+        return $this->render('Admin/AdaptiveRules/Create/Index', [
             'allFacts'   => AdaptiveFact::all(),
             'allActions' => AdaptiveAction::all(),
         ]);
@@ -30,9 +37,9 @@ final class AdaptiveRuleController extends Controller
             'rule' => [
                 'id'                => $adaptive_rule->id,
                 'name'              => $adaptive_rule->name,
-                'domain'            => $adaptive_rule->domain,
+                'recommendation'    => $adaptive_rule->recommendation,
                 'priority'          => $adaptive_rule->priority,
-                'action_ids'        => $adaptive_rule->action_ids,
+                'actions'           => $adaptive_rule->getAttribute('actions'),
                 'required_fact_ids' => $adaptive_rule->required_fact_ids,
                 'deduced_fact_ids'  => $adaptive_rule->deduced_fact_ids,
                 'is_active'         => $adaptive_rule->is_active,
@@ -48,7 +55,7 @@ final class AdaptiveRuleController extends Controller
             'totalRules'                => AdaptiveRule::count(),
             'totalFacts'                => AdaptiveFact::count(),
             'totalActions'              => AdaptiveAction::count(),
-            'rulesByDomain'             => $this->getRulesByDomain(),
+            'rulesByDiagnosis'          => $this->getRulesByDiagnosis(),
             'adaptiveStateDistribution' => $this->getAdaptiveStateDistribution(),
             'recentTriggers'            => $this->getRecentTriggers(),
             'ruleTriggersStats'         => $this->getRuleTriggersStats(),
@@ -58,73 +65,47 @@ final class AdaptiveRuleController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreAdaptiveRuleRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'id'                  => 'required|string|unique:adaptive_rules,id',
-            'name'                => 'required|string|max:255',
-            'domain'              => 'required|string',
-            'priority'            => 'required|integer',
-            'action_ids'          => 'nullable|array',
-            'action_ids.*'        => 'exists:adaptive_actions,id',
-            'required_fact_ids'   => 'nullable|array',
-            'required_fact_ids.*' => 'exists:adaptive_facts,id',
-            'deduced_fact_ids'    => 'nullable|array',
-            'deduced_fact_ids.*'  => 'exists:adaptive_facts,id',
-            'is_active'           => 'boolean',
-        ]);
-
-        AdaptiveRule::create($validated);
+        $dto = AdaptiveRuleDTO::fromRequest($request);
+        $this->adaptiveManagementService->createRule($dto);
 
         return back()->with('success', 'Aturan berhasil dibuat.');
     }
 
-    public function update(Request $request, AdaptiveRule $adaptive_rule): RedirectResponse
+    public function update(UpdateAdaptiveRuleRequest $request, AdaptiveRule $adaptive_rule): RedirectResponse
     {
-        $validated = $request->validate([
-            'id'                  => 'required|string|unique:adaptive_rules,id,' . $adaptive_rule->id,
-            'name'                => 'required|string|max:255',
-            'domain'              => 'required|string',
-            'priority'            => 'required|integer',
-            'action_ids'          => 'nullable|array',
-            'action_ids.*'        => 'exists:adaptive_actions,id',
-            'required_fact_ids'   => 'nullable|array',
-            'required_fact_ids.*' => 'exists:adaptive_facts,id',
-            'deduced_fact_ids'    => 'nullable|array',
-            'deduced_fact_ids.*'  => 'exists:adaptive_facts,id',
-            'is_active'           => 'boolean',
-        ]);
-
-        $adaptive_rule->update($validated);
+        $dto = AdaptiveRuleDTO::fromRequest($request);
+        $this->adaptiveManagementService->updateRule($adaptive_rule->id, $dto);
 
         return back()->with('success', 'Aturan berhasil diperbarui.');
     }
 
     public function destroy(AdaptiveRule $adaptive_rule): RedirectResponse
     {
-        $adaptive_rule->delete();
+        $this->adaptiveManagementService->deleteRule($adaptive_rule->id);
 
         return back()->with('success', 'Aturan berhasil dihapus.');
     }
 
-    private function getRulesByDomain(): array
+    private function getRulesByDiagnosis(): array
     {
         $rules = AdaptiveRule::ordered()->get();
 
-        // Group by domain from DB
-        $grouped = $rules->groupBy('domain');
+        // Group by Name (Diagnosis) from DB
+        $grouped = $rules->groupBy('name');
 
         $result = [];
-        foreach ($grouped as $domainName => $ruleList) {
+        foreach ($grouped as $diagnosisName => $ruleList) {
             $result[] = [
-                'domain' => $domainName ?? 'Uncategorized',
-                'count'  => $ruleList->count(),
-                'rules'  => $ruleList->map(fn ($rule) => [
+                'diagnosis_name' => $diagnosisName ?? 'Uncategorized',
+                'count'          => $ruleList->count(),
+                'rules'          => $ruleList->map(fn ($rule) => [
                     'id'                => $rule->id,
                     'name'              => $rule->name,
-                    'domain'            => $rule->domain,
+                    'recommendation'    => $rule->recommendation,
                     'priority'          => $rule->priority,
-                    'action_ids'        => $rule->action_ids,
+                    'actions'           => $rule->getAttribute('actions'),
                     'required_fact_ids' => $rule->required_fact_ids,
                     'deduced_fact_ids'  => $rule->deduced_fact_ids,
                     'is_active'         => $rule->is_active,
@@ -218,29 +199,30 @@ final class AdaptiveRuleController extends Controller
     {
         // Construct a virtual tree for visualization
         // Root: Fact Gathering
-        //  - Domain Groups (Branches)
+        //  - Diagnosis Groups (Branches)
         //    - Rules (Leafs)
 
-        $domains = $this->getRulesByDomain();
+        $diagnoses = $this->getRulesByDiagnosis();
 
         $rootChildren = [];
-        foreach ($domains as $idx => $domain) {
+        foreach ($diagnoses as $idx => $diagnosis) {
             $ruleChildren = [];
-            foreach ($domain['rules'] as $rule) {
+            foreach ($diagnosis['rules'] as $rule) {
                 $ruleChildren[] = [
-                    'id'          => $rule['id'],
-                    'name'        => $rule['name'],
-                    'type'        => 'rule',
-                    'is_terminal' => true,
-                    'action_id'   => $rule['action_ids'][0] ?? 'H00',
-                    'priority'    => $rule['priority'],
-                    'children'    => [],
+                    'id'             => $rule['id'],
+                    'name'           => $rule['name'],
+                    'type'           => 'rule',
+                    'is_terminal'    => true,
+                    'action_id'      => $rule['actions'][0]['id'] ?? 'H00',
+                    'priority'       => $rule['priority'],
+                    'recommendation' => $rule['recommendation'],
+                    'children'       => [],
                 ];
             }
 
             $rootChildren[] = [
-                'id'        => 'domain_' . $idx,
-                'name'      => $domain['domain'],
+                'id'        => 'diag_' . $idx,
+                'name'      => $diagnosis['diagnosis_name'],
                 'type'      => 'decision',
                 'is_active' => true,
                 'children'  => $ruleChildren,

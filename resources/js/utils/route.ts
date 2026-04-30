@@ -63,7 +63,9 @@ export const ROUTES = {
         },
         ADAPTIVE_RULES: {
             INDEX: '/admin/adaptive-rules',
+            CREATE: '/admin/adaptive-rules/create',
             STORE: '/admin/adaptive-rules',
+            EDIT: (id: string | number) => `/admin/adaptive-rules/${id}/edit`,
             UPDATE: (id: string | number) => `/admin/adaptive-rules/${id}`,
             DELETE: (id: string | number) => `/admin/adaptive-rules/${id}`,
         },

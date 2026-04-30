@@ -5,7 +5,7 @@
     import MultipleChoice from '@/components/quiz/MultipleChoice.svelte';
     import FillInTheBlank from '@/components/quiz/FillInTheBlank.svelte';
     import DragAndDrop from '@/components/quiz/DragAndDrop.svelte';
-    import { Star, Flame, Lightbulb, Loader2, CheckCircle2, X } from 'lucide-svelte';
+    import { Star, Target, Lightbulb, Loader2, CheckCircle2, X } from 'lucide-svelte';
     import { fade, slide } from 'svelte/transition';
     import type { QuestionShowState } from '@/states/Mahasiswa/QuizState.svelte.ts';
     import { getDifficultyLabel } from '@/utils';
@@ -16,6 +16,15 @@
 
     let { state = $bindable() }: Props = $props();
     let studentState = $derived(state.studentState);
+
+    // Accuracy color intensity: >80% = emerald, 60-80% = orange, 40-60% = red-400, <40% = red-600
+    const accuracyClass = $derived.by(() => {
+        const acc = studentState?.accuracy ?? 100;
+        if (acc >= 80) return { border: 'border-emerald-100', icon: 'text-emerald-500', text: 'text-slate-700', shake: false };
+        if (acc >= 60) return { border: 'border-orange-200', icon: 'text-orange-500', text: 'text-orange-600', shake: false };
+        if (acc >= 40) return { border: 'border-red-300', icon: 'text-red-500', text: 'text-red-600', shake: true };
+        return { border: 'border-red-500', icon: 'text-red-600', text: 'text-red-700', shake: true };
+    });
 </script>
 
 <Card variant="none" padding="p-0" class="border-duo-lg overflow-hidden rounded-3xl bg-white">
@@ -56,18 +65,19 @@
                         >
                     </div>
 
-                    <!-- Streak Badge -->
+                    <!-- Accuracy Badge -->
                     <div
-                        class="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-orange-100 bg-white px-4 py-2 shadow-sm"
+                        class="flex items-center gap-3 rounded-2xl border-2 border-b-4 bg-white px-4 py-2 shadow-sm transition-colors duration-500 {accuracyClass.border}"
+                        class:accuracy-shake={accuracyClass.shake}
                     >
-                        <Flame size={18} class="fill-orange-500 text-orange-500" />
-                        <span class="text-lg font-black tracking-tight text-slate-700"
-                            >{state.streak}</span
+                        <Target size={18} class="transition-colors duration-500 {accuracyClass.icon}" />
+                        <span class="text-lg font-black tracking-tight transition-colors duration-500 {accuracyClass.text}"
+                            >{studentState?.accuracy ?? 0}%</span
                         >
                     </div>
                 </div>
 
-                {#if (studentState?.adaptive_state?.scaffold_mode !== 'minimal')}
+                {#if (studentState?.adaptive_state?.['scaffold_mode'] !== 'minimal')}
                 <button
                     type="button"
                     id="quiz-hint-btn"
@@ -83,6 +93,19 @@
                 </button>
                 {/if}
             </div>
+        </div>
+    {/if}
+
+    <!-- R02 Motivational Banner -->
+    {#if studentState?.adaptive_state?.['show_motivation']}
+        <div
+            transition:slide={{ duration: 400 }}
+            class="mx-6 mt-4 rounded-2xl border-2 border-blue-200 bg-linear-to-r from-blue-50 to-indigo-50 p-5 text-center shadow-sm"
+        >
+            <p class="text-lg font-bold text-blue-700">💪 Kamu Pasti Bisa!</p>
+            <p class="mt-1 text-sm text-blue-500">
+                Sistem menyiapkan soal yang lebih mudah untukmu. Jawab dengan tenang dan percaya diri!
+            </p>
         </div>
     {/if}
 
@@ -167,3 +190,32 @@
         </div>
     </div>
 </Card>
+
+<style>
+    @keyframes accuracy-vibrate {
+        0%,
+        100% {
+            transform: translateX(0);
+        }
+        15% {
+            transform: translateX(-3px) rotate(-1deg);
+        }
+        30% {
+            transform: translateX(3px) rotate(1deg);
+        }
+        45% {
+            transform: translateX(-2px);
+        }
+        60% {
+            transform: translateX(2px);
+        }
+        75% {
+            transform: translateX(-1px);
+        }
+    }
+
+    .accuracy-shake {
+        animation: accuracy-vibrate 1.4s ease-in-out infinite;
+        background-color: rgb(254 226 226 / 0.6);
+    }
+</style>

@@ -10,32 +10,22 @@
     import Modal from '@/components/ui/Modal.svelte';
     import { activateExamProtection, deactivateExamProtection, type ViolationType } from '@/utils';
     import { untrack, onMount } from 'svelte';
-    import type { Material, Question, DifficultyLevel, QuizSessionState } from '@/types';
+    import type { Question, QuestionShowProps } from '@/types';
 
     const {
         material,
-        currentQuestion = null,
-        currentQuestionNumber = 1,
-        totalQuestions = 0,
-        answeredCount = 0,
-        materialAnsweredCount = 0,
+        current_question = null,
+        current_question_number = 1,
+        total_questions = 0,
+        answered_count = 0,
+        material_answered_count = 0,
         difficulty = 'beginner' as const,
-        isGuest: _isGuest = false,
-        studentState,
-    }: {
-        material: Material;
-        currentQuestion: Question | null;
-        currentQuestionNumber: number;
-        totalQuestions: number;
-        answeredCount: number;
-        materialAnsweredCount: number;
-        difficulty: DifficultyLevel;
-        isGuest: boolean;
-        studentState: QuizSessionState;
-    } = $props();
+        is_guest: _isGuest = false,
+        student_state,
+    }: QuestionShowProps & { material_answered_count: number } = $props();
 
     let quizState = untrack(
-        () => new QuestionShowState(material, currentQuestion as Question, difficulty, studentState)
+        () => new QuestionShowState(material, current_question as Question, difficulty, student_state)
     );
 
     let showWarning = $state(false);
@@ -68,9 +58,9 @@
 
     $effect(() => {
         const newMaterial = material;
-        const newQuestion = currentQuestion;
+        const newQuestion = current_question;
         const newDifficulty = difficulty;
-        const newStudentState = studentState;
+        const newStudentState = student_state;
 
         untrack(() => {
             if (quizState.currentQuestion?.id !== newQuestion?.id) {
@@ -78,6 +68,9 @@
                 quizState.fillInTheBlankAnswer = '';
                 quizState.dragAndDropAnswers = {};
                 quizState.startTime = Date.now();
+                quizState.usedHint = false;
+                quizState.isNavigating = false;
+                quizState.showFeedback = false;
             }
             quizState.material = newMaterial;
             quizState.currentQuestion = newQuestion;
@@ -87,7 +80,7 @@
     });
 
     const progressPercentage = $derived(
-        totalQuestions > 0 ? (answeredCount / totalQuestions) * 100 : 0
+        total_questions > 0 ? (answered_count / total_questions) * 100 : 0
     );
 
     const DEBUG_MODE = import.meta.env['VITE_ADAPTIVE_DEBUG'] === 'true';
@@ -119,9 +112,9 @@
                             <div class="flex items-center gap-2">
                                 <span class="text-sm font-black text-slate-400">
                                     {quizState.currentQuestion
-                                        ? currentQuestionNumber
-                                        : totalQuestions} /
-                                    {totalQuestions}
+                                        ? current_question_number
+                                        : total_questions} /
+                                    {total_questions}
                                 </span>
                             </div>
                         </div>
@@ -159,7 +152,7 @@
                 <FinishStateCard
                     state={quizState}
                     {material}
-                    answeredCount={materialAnsweredCount}
+                    answered_count={material_answered_count}
                 />
             {/if}
         </div>

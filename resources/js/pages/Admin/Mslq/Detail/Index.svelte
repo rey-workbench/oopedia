@@ -66,7 +66,7 @@
             <!-- Sidebar: Profile & Summaries -->
             <div class="space-y-8">
                 <div
-                    class="bg-primary-500 relative overflow-hidden rounded-[2.5rem] border-b-8 border-black p-8 text-white shadow-2xl"
+                    class="bg-primary-500 relative overflow-hidden rounded-3xl border-b-8 border-black p-8 text-white shadow-2xl"
                 >
                     <div
                         class="bg-accent-500/20 absolute -top-10 -right-10 h-40 w-40 rounded-full blur-3xl"
@@ -215,7 +215,7 @@
 
                 <!-- Footer Info -->
                 <div
-                    class="border-accent-100 bg-accent-50 flex gap-6 rounded-[2.5rem] border-2 p-8 shadow-inner"
+                    class="border-accent-100 bg-accent-50 flex gap-6 rounded-3xl border-2 p-8 shadow-inner"
                 >
                     <div class="h-fit rounded-2xl bg-white p-3 shadow-sm">
                         <Info class="text-accent-500 shrink-0" size={24} />
@@ -253,21 +253,21 @@
                             <div
                                 class="group-hover:bg-accent-100 group-hover:text-accent-600 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-[10px] font-black text-slate-400 transition-all group-hover:scale-110"
                             >
-                                {answer.question.order}
+                                {(answer as any).question.order}
                             </div>
                             <div class="space-y-2">
                                 <p
                                     class="group-hover:text-primary-500 text-sm font-bold text-slate-700 transition-colors"
                                 >
-                                    {answer.question.text}
+                                    {(answer as any).question.text}
                                 </p>
                                 <div class="flex gap-2">
                                     <span
                                         class="rounded-full border border-slate-100 bg-slate-50 px-3 py-1 text-[9px] font-black tracking-widest text-slate-400 uppercase"
                                     >
-                                        {answer.question.scale.split('_').join(' ')}
+                                        {(answer as any).question.scale.split('_').join(' ')}
                                     </span>
-                                    {#if answer.question.is_reverse}
+                                    {#if (answer as any).question.is_reverse}
                                         <span
                                             class="text-accent-400 bg-accent-50 border-accent-100 rounded-full border px-3 py-1 text-[9px] font-black tracking-widest uppercase"
                                             >Reverse</span

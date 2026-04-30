@@ -42,10 +42,12 @@ final class LeaderboardService implements LeaderboardServiceInterface
         });
 
         $currentUserRank = $leaderboardData->firstWhere('id', $currentUserId);
+        $totalUsers      = $leaderboardData->count();
 
         return [
-            'leaderboardData' => $leaderboardData,
-            'currentUserRank' => $currentUserRank,
+            'leaderboard_data'  => $leaderboardData,
+            'current_user_rank' => $currentUserRank,
+            'total_users'       => $totalUsers,
         ];
     }
 

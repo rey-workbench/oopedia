@@ -21,7 +21,7 @@ final class StudentStateRepository implements StudentStateRepositoryInterface
 
         return StudentState::firstOrCreate(
             ['user_id' => $userId],
-            array_merge(StudentStateSchema::defaults(), ['last_active_at' => now()]),
+            array_merge(StudentStateSchema::defaults(), ['last_active_at' => null]),
         );
     }
 

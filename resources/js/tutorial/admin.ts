@@ -837,4 +837,195 @@ export function registerAdminTutorials() {
             },
         ],
     });
+
+    // 7. Admin Adaptive Rules Tutorial
+    tutorialState.registerSteps({
+        tourId: 'admin_adaptive_rules',
+        steps: [
+            {
+                element: '#page-header',
+                popover: {
+                    title: 'Pusat Kendali Adaptif 🧠',
+                    description:
+                        'Selamat datang di otak OOPedia! Di sini Anda mengontrol bagaimana sistem merespon kemampuan belajar tiap mahasiswa secara otomatis menggunakan Forward Chaining.',
+                    side: 'bottom',
+                    align: 'start',
+                },
+            },
+            {
+                element: '#adaptive-rules-stats',
+                popover: {
+                    title: 'Statistik Engine ⚡',
+                    description:
+                        'Pantau jumlah aturan (Rules), gejala (Facts), dan tindakan (Actions) yang membentuk kecerdasan buatan sistem Anda.',
+                    side: 'bottom',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#adaptive-rules-tabs',
+                popover: {
+                    title: 'Dua Sudut Pandang 👁️',
+                    description:
+                        'Gunakan tabel untuk pengelolaan cepat, atau beralih ke Visual Builder untuk melihat bagaimana aturan-aturan ini saling terhubung membentuk sebuah rantai pemikiran (Chaining).',
+                    side: 'bottom',
+                    align: 'start',
+                },
+            },
+            {
+                element: '#adaptive-rule-create-btn',
+                popover: {
+                    title: 'Rancang Logika Baru ➕',
+                    description:
+                        'Klik di sini untuk menciptakan aturan adaptif baru dan merespon skenario belajar yang unik.',
+                    side: 'left',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#adaptive-engine-activities',
+                popover: {
+                    title: 'Monitor Aktivitas Real-time 📈',
+                    description:
+                        'Lihat aturan mana yang baru saja dipicu oleh mahasiswa, dan pantau distribusi kesulitan belajar mereka saat ini secara langsung!',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+        ],
+    });
+
+    // 7.1 Admin Adaptive Rule Editor Tutorial
+    tutorialState.registerSteps({
+        tourId: 'admin_adaptive_rule_editor',
+        steps: [
+            {
+                element: '#adaptive-rule-editor-container',
+                popover: {
+                    title: 'Laboratorium Algoritma 🔬',
+                    description:
+                        'Di sinilah keajaiban terjadi. Rancang logika If-Then dengan antarmuka visual yang intuitif.',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#adaptive-rule-library',
+                popover: {
+                    title: 'Perpustakaan Variabel 📚',
+                    description:
+                        'Temukan semua fakta (gejala) dan aksi (intervensi) yang tersedia di sini. Cukup seret (drag) item ke kanvas di sebelah kanan.',
+                    side: 'right',
+                    align: 'start',
+                },
+            },
+            {
+                element: '#rule-form',
+                popover: {
+                    title: 'Kanvas Logika ⚙️',
+                    description:
+                        'Susun aturan Anda: tetapkan kondisi "JIKA" mahasiswa mengalami ini, "MAKA" simpulkan fakta baru atau lakukan aksi ini. Jangan lupa atur prioritasnya!',
+                    side: 'left',
+                    align: 'center',
+                },
+            },
+        ],
+    });
+
+    // 7.2 Admin D3 Visual Builder Canvas Tutorial
+    tutorialState.registerSteps({
+        tourId: 'admin_adaptive_rules_canvas',
+        steps: [
+            {
+                element: 'svg', // Targeting the SVG canvas generically, or the nearest container
+                popover: {
+                    title: 'Peta Topologi Interaktif 🗺️',
+                    description:
+                        'Selamat datang di Visual Builder! Ini adalah peta yang menunjukkan secara langsung bagaimana setiap Kondisi saling terhubung menjadi Diagnosis, dan kemudian menghasilkan sebuah Rekomendasi (Aksi).',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+            {
+                element: '.layer-input',
+                popover: {
+                    title: 'Kolom Input (Sumber Data) 📥',
+                    description:
+                        'Bagian paling kiri. Kolom ini memuat data mentah dari mesin analitik mahasiswa seperti Jawaban, Kecepatan, dan Streak. Ini adalah hulu proses berpikir sistem.',
+                    side: 'right',
+                    align: 'center',
+                },
+            },
+            {
+                element: '.layer-condition',
+                popover: {
+                    title: 'Kolom Kondisi (Fakta Terukur) 🤔',
+                    description:
+                        'Input mentah diuji di kolom ini. Misalnya "Apakah jawaban salah?" atau "Apakah mahasiswa terlalu lama berpikir?".',
+                    side: 'right',
+                    align: 'center',
+                },
+            },
+            {
+                element: '.layer-diagnosis',
+                popover: {
+                    title: 'Kolom Diagnosis (Kesimpulan) 💡',
+                    description:
+                        'Kumpulan Kondisi yang terpenuhi akan bermuara menjadi kesimpulan medis-akademis, seperti "Sedang Kesulitan" atau "Butuh Tantangan".',
+                    side: 'right',
+                    align: 'center',
+                },
+            },
+            {
+                element: '.layer-recommendation',
+                popover: {
+                    title: 'Kolom Rekomendasi (Tindakan) 🎯',
+                    description:
+                        'Di muara paling kanan, sistem akan menjatuhkan putusan tindakan nyata berdasarkan diagnosis yang ada (seperti: Kurangi tingkat kesulitan soal berikutnya).',
+                    side: 'left',
+                    align: 'center',
+                },
+            },
+            {
+                element: 'div[aria-label="Add New Rule"]',
+                popover: {
+                    title: 'Buat Aturan Baru (Drag & Drop) ⚡',
+                    description:
+                        'Butuh intervensi logika baru? Klik kotak "New Rule" ini untuk membuka editor, atau seret (drag) langsung ke tengah kanvas untuk pengalaman membuat aturan yang mulus.',
+                    side: 'right',
+                    align: 'center',
+                },
+            },
+            {
+                element: 'div[aria-label="Add New Action"]',
+                popover: {
+                    title: 'Buat Aksi Baru (Drag & Drop) 🎯',
+                    description:
+                        'Aksi adalah respon sistem terhadap kondisi mahasiswa (seperti penyesuaian level soal atau gamifikasi). Seret "New Action" ini ke kanvas untuk mendaftarkan aksi baru.',
+                    side: 'right',
+                    align: 'center',
+                },
+            },
+            {
+                element: 'button[title="Panduan Kanvas"] + button',
+                popover: {
+                    title: 'Mode Layar Penuh 🖥️',
+                    description:
+                        'Kanvas terasa sempit? Gunakan tombol layar penuh untuk fokus merancang aturan tanpa gangguan.',
+                    side: 'bottom',
+                    align: 'center',
+                },
+            },
+            {
+                element: 'button[title="Panduan Kanvas"] + button + button',
+                popover: {
+                    title: 'Susun Ulang Grafik 🔄',
+                    description:
+                        'Jika posisi node saling tumpang tindih atau berantakan setelah Anda banyak melakukan modifikasi, klik tombol *Refresh* ini untuk merapikan koordinatnya secara otomatis.',
+                    side: 'left',
+                    align: 'center',
+                },
+            },
+        ],
+    });
 }

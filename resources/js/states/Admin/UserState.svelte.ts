@@ -19,6 +19,10 @@ export class UserListState extends BaseState {
         path: '',
         per_page: 10,
         to: null,
+        first_page_url: '',
+        last_page_url: '',
+        next_page_url: null,
+        prev_page_url: null,
         total: 0,
     });
     search = $state('');
@@ -53,6 +57,7 @@ export class UserFormState extends FormState<{
     email: string;
     password: string;
     password_confirmation: string;
+    role_id: number | '';
 }> {
     targetUser = $state<User | null>(null);
 
@@ -63,6 +68,7 @@ export class UserFormState extends FormState<{
                 email: user ? user.email : '',
                 password: '',
                 password_confirmation: '',
+                role_id: user ? (user as any).role_id : '',
             },
             { isEdit: !!user }
         );

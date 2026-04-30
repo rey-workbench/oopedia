@@ -9,23 +9,29 @@ use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Services\AdaptiveEngineServiceInterface;
+use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
-
 use App\Contracts\Services\QuizServiceInterface;
+use App\DTOs\Adaptive\StudentStateDTO;
+use App\DTOs\Question\QuestionCreateDTO;
+use App\DTOs\Question\QuestionUpdateDTO;
+use App\DTOs\Quiz\InteractionDTO;
+use App\DTOs\Quiz\QuizContextDTO;
+use App\DTOs\Quiz\QuizSubmissionDTO;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Enums\Lms\QuestionType;
 use App\Exceptions\Domain\QuestionNotFoundException;
 use App\Helpers\ProgressHelper;
+use App\Models\AdaptiveAction;
 use App\Models\AdaptiveExecutionLog;
+use App\Models\AdaptiveFact;
 use App\Models\Material;
 use App\Models\Question;
 use App\Models\StudentState;
-use App\Rules\Adaptive\Constants\ActionConstants;
-use App\Rules\Adaptive\Constants\FactConstants;
+use App\Rules\Adaptive\Constants\AdaptiveMetadataKeys;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as SupportCollection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 final class QuizService implements QuizServiceInterface
@@ -37,6 +43,7 @@ final class QuizService implements QuizServiceInterface
         private readonly ProgressRepositoryInterface $progressRepo,
         private readonly PerformanceServiceInterface $performanceService,
         private readonly AdaptiveEngineServiceInterface $adaptiveEngineService,
+        private readonly GuestProgressServiceInterface $guestProgressService,
     ) {}
 
     // =========================================================================
@@ -73,57 +80,55 @@ final class QuizService implements QuizServiceInterface
         return $this->questionRepo->findWithAnswers($id);
     }
 
-    public function createQuestion(array $data): Question
+    public function createQuestion(QuestionCreateDTO $dto): Question
     {
-        return DB::transaction(function () use ($data) {
+        return DB::transaction(function () use ($dto) {
             $question = $this->questionRepo->create([
-                'question_text' => $data['question_text'],
-                'question_type' => $data['question_type'],
-                'difficulty'    => $data['difficulty'],
-                'material_id'   => $data['material_id'],
-                'created_by'    => Auth::id(),
+                'question_text' => $dto->question_text,
+                'question_type' => $dto->question_type,
+                'difficulty'    => $dto->difficulty,
+                'material_id'   => $dto->material_id,
+                'created_by'    => $dto->created_by,
             ]);
 
-            $this->createAnswers($question->id, $data['answers']);
+            $this->createAnswers($question->id, $dto->answers);
 
             return $question;
         });
     }
 
-    public function updateQuestion(string $questionId, array $data): Question
+    public function updateQuestion(string $questionId, QuestionUpdateDTO $dto): Question
     {
         $question = $this->questionRepo->find($questionId);
         if (! $question) {
             throw new QuestionNotFoundException($questionId);
         }
 
-        return DB::transaction(function () use ($question, $data) {
-            $this->questionRepo->update($question->id, [
-                'question_text' => $data['question_text'],
-                'question_type' => $data['question_type'],
-                'difficulty'    => $data['difficulty'],
-                'material_id'   => $data['material_id'],
-                'updated_by'    => Auth::id(),
+        return DB::transaction(function () use ($question, $dto) {
+            $question->update([
+                'question_text' => $dto->question_text,
+                'question_type' => $dto->question_type,
+                'difficulty'    => $dto->difficulty,
+                'material_id'   => $dto->material_id,
             ]);
 
+            // Sync answers
             $this->answerRepo->deleteByQuestionId($question->id);
-            $this->createAnswers($question->id, $data['answers']);
+            $this->createAnswers($question->id, $dto->answers);
 
-            return $question->fresh();
+            return $question->fresh(['answers']);
         });
     }
 
     public function deleteQuestion(string $questionId): void
     {
         $question = $this->questionRepo->find($questionId);
-        if (! $question) {
-            throw new QuestionNotFoundException($questionId);
+        if ($question) {
+            DB::transaction(function () use ($question) {
+                $this->answerRepo->deleteByQuestionId($question->id);
+                $this->questionRepo->delete($question->id);
+            });
         }
-
-        DB::transaction(function () use ($question) {
-            $this->answerRepo->deleteByQuestionId($question->id);
-            $this->questionRepo->delete($question->id);
-        });
     }
 
     protected function createAnswers(string $questionId, array $answersData): void
@@ -145,14 +150,15 @@ final class QuizService implements QuizServiceInterface
     // QUIZ LISTING & DATA
     // =========================================================================
 
-    public function getQuizData(
-        Material $material,
-        ?QuestionDifficulty $difficulty,
-        string $userId,
-        bool $isGuest,
-        array $guestProgress = [],
-        ?QuestionDifficulty $targetDifficulty = null,
-    ): array {
+    public function getQuizData(QuizContextDTO $context): array
+    {
+        $material         = $context->material;
+        $difficulty       = $context->difficulty;
+        $userId           = $context->userId;
+        $isGuest          = $context->isGuest;
+        $guestProgress    = $context->guestProgress;
+        $targetDifficulty = $context->targetDifficulty;
+
         $answeredQuestionIds = $isGuest
             ? $this->getGuestAnsweredQuestionIds($material->id, $guestProgress)
             : $this->progressRepo->getAnsweredQuestionIds($userId, $material->id);
@@ -174,6 +180,30 @@ final class QuizService implements QuizServiceInterface
                 fn ($q) => ! in_array($q->id, $answeredArray) && ($difficultyOrder[$q->difficulty->value] ?? 1) < $targetLevel,
             );
             $appliedTargetFilter = true;
+        }
+
+        // R02 Spec: "tampilkan 5 soal level mudah" — forced_easy_count override
+        if (! $isGuest) {
+            $state         = $this->performanceService->getStudentState($userId);
+            $adaptiveState = $state->adaptive_state ?? [];
+
+            if (($adaptiveState['forced_easy_count'] ?? 0) > 0) {
+                $answeredArray  = $answeredQuestionIds->toArray();
+                $easyUnanswered = $allQuestions
+                    ->where('difficulty', QuestionDifficulty::BEGINNER)
+                    ->reject(fn ($q) => in_array($q->id, $answeredArray))
+                    ->take($adaptiveState['forced_easy_count']);
+
+                if ($easyUnanswered->isNotEmpty()) {
+                    $questions           = $easyUnanswered;
+                    $appliedTargetFilter = true;
+                }
+
+                // Decrement counter so it expires after consumption
+                $adaptiveState['forced_easy_count'] = max(0, $adaptiveState['forced_easy_count'] - 1);
+                $state->adaptive_state              = $adaptiveState;
+                $state->save();
+            }
         }
 
         $currentQuestion = $this->getCurrentQuestion($questions, $answeredQuestionIds);
@@ -216,7 +246,6 @@ final class QuizService implements QuizServiceInterface
         string $userId,
         bool $isGuest,
         array $guestProgress = [],
-        array $unlockedModules = [],
     ): Collection {
         $progressStats = $isGuest ? collect([]) : $this->progressRepo->getUserProgressStats($userId);
         $allMaterials  = $this->materialRepo->getAllWithQuestions();
@@ -226,9 +255,8 @@ final class QuizService implements QuizServiceInterface
         }
 
         $studentCounts = $this->progressRepo->getStudentCountByMaterial();
-        $firstModuleId = $allMaterials->whereNotNull('module_id')->min('module_id');
 
-        return $allMaterials->map(function ($material) use ($progressStats, $isGuest, $studentCounts, $guestProgress, $unlockedModules, $firstModuleId) {
+        return $allMaterials->map(function ($material) use ($progressStats, $isGuest, $studentCounts, $guestProgress) {
             $configuredTotalQuestions = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest)['total'];
 
             if ($isGuest) {
@@ -247,23 +275,20 @@ final class QuizService implements QuizServiceInterface
             $material->total_questions     = $configuredTotalQuestions;
             $material->completed_questions = $answeredCount;
             $material->student_count       = $studentCounts->firstWhere('material_id', $material->id)?->student_count ?? 0;
-
-            $moduleId            = $material->module_id;
-            $isFirstModule       = $moduleId !== null && (string) $moduleId === (string) $firstModuleId;
-            $isUnlocked          = $isGuest || $isFirstModule || empty($moduleId) || in_array((string) $moduleId, array_map('strval', $unlockedModules));
-            $material->is_locked = ! $isUnlocked;
+            $material->is_locked           = false; // No module gating
 
             return $material;
         });
     }
 
-    public function getReviewQuestions(
-        Material $material,
-        ?QuestionDifficulty $difficulty,
-        string $userId,
-        bool $isGuest,
-        array $guestProgress = [],
-    ): Collection {
+    public function getReviewQuestions(QuizContextDTO $context): Collection
+    {
+        $material      = $context->material;
+        $difficulty    = $context->difficulty;
+        $userId        = $context->userId;
+        $isGuest       = $context->isGuest;
+        $guestProgress = $context->guestProgress;
+
         $questions = $material->questions;
         if ($difficulty !== null) {
             $questions = $questions->where('difficulty', $difficulty->value);
@@ -332,12 +357,13 @@ final class QuizService implements QuizServiceInterface
         }
 
         $answeredArray = $answeredQuestionIds->toArray();
-        $completed     = $questions->filter(fn ($q) => in_array($q->id, $answeredArray));
-        $remaining     = $questions->reject(fn ($q) => in_array($q->id, $answeredArray));
+        $completed = $questions->filter(fn ($item) => in_array($item->id, $answeredArray))->values();
+        $remaining = $questions->reject(fn ($item) => in_array($item->id, $answeredArray))->values();
 
         $levels = [];
         $index  = 1;
 
+        /** @var Question $question */
         foreach ($completed as $question) {
             $levels[] = [
                 'level'       => $index++,
@@ -347,10 +373,11 @@ final class QuizService implements QuizServiceInterface
         }
 
         $isFirst = true;
-        foreach ($remaining as $q) {
+        /** @var Question $questionItem */
+        foreach ($remaining as $questionItem) {
             $levels[] = [
                 'level'       => $index++,
-                'question_id' => $q->id,
+                'question_id' => $questionItem->id,
                 'status'      => $isFirst ? 'unlocked' : 'locked',
             ];
             $isFirst = false;
@@ -405,94 +432,91 @@ final class QuizService implements QuizServiceInterface
         return false;
     }
 
-    public function handleSubmission(string $userId, string $materialId, string $questionId, array $validatedData): array
+    public function handleSubmission(QuizSubmissionDTO $submission): array
     {
-        return DB::transaction(function () use ($userId, $materialId, $questionId, $validatedData) {
-            $question  = Question::with('material')->findOrFail($questionId);
-            $isCorrect = $this->determineCorrectness($question, $validatedData);
+        return DB::transaction(function () use ($submission) {
+            $question  = Question::with('material')->findOrFail($submission->questionId);
+            $isCorrect = $this->determineCorrectness($question, $submission->toArray());
 
             $score = $this->performanceService->calculateScore(
                 isCorrect: $isCorrect,
-                usedHint: (bool) ($validatedData['used_hint'] ?? false),
-                timeSpent: (int) ($validatedData['time_spent'] ?? 0),
+                usedHint: $submission->usedHint,
+                timeSpent: $submission->timeSpent,
                 difficulty: $question->difficulty,
             );
 
             $userResponse = null;
             $answerId     = null;
             if ($question->question_type === QuestionType::RADIO_BUTTON) {
-                $answerId = $validatedData['answer'] ?? null;
+                $answerId = $submission->answer;
             } elseif ($question->question_type === QuestionType::FILL_IN_THE_BLANK) {
-                $userResponse = $validatedData['fill_in_the_blank_answer'] ?? null;
+                $userResponse = $submission->fillInTheBlankAnswer;
             } elseif ($question->question_type === QuestionType::DRAG_AND_DROP) {
-                $userResponse = $validatedData['drag_and_drop_answers'] ?? null;
+                $userResponse = is_array($submission->dragAndDropAnswers) ? json_encode($submission->dragAndDropAnswers) : $submission->dragAndDropAnswers;
             }
 
             $this->progressRepo->saveProgress([
-                'user_id'       => $userId,
-                'material_id'   => (string) $materialId,
-                'question_id'   => (string) $questionId,
+                'user_id'       => $submission->userId ?: 'guest',
+                'material_id'   => $submission->materialId,
+                'question_id'   => $submission->questionId,
+                'is_correct'    => $isCorrect,
+                'score'         => $score,
+                'time_spent'    => $submission->timeSpent,
+                'used_hint'     => $submission->usedHint,
                 'answer_id'     => $answerId,
                 'user_response' => $userResponse,
-                'score'         => $score,
-                'time_spent'    => (int) ($validatedData['time_spent'] ?? 0),
-                'is_correct'    => $isCorrect,
-                'difficulty'    => (string) ($validatedData['difficulty'] ?? 'beginner'),
-                'used_hint'     => (bool) ($validatedData['used_hint'] ?? false),
             ]);
 
-            // 1. Update Performance Metrics
-            $studentState = $this->performanceService->updateMetricsFromInteraction(
-                userId: $userId,
+            // Save Guest Progress in Session for immediate context availability
+            if ($submission->userId === '' || $submission->userId === 'guest') {
+                $this->guestProgressService->saveProgress(
+                    ['material_id' => $submission->materialId],
+                    $isCorrect,
+                    $submission->questionId
+                );
+            }
+
+            // Update Performance Metrics
+            $interaction = new InteractionDTO(
+                userId: $submission->userId,
+                questionId: $submission->questionId,
                 isCorrect: $isCorrect,
-                usedHint: (bool) ($validatedData['used_hint'] ?? false),
-                timeSpent: (int) ($validatedData['time_spent'] ?? 0),
+                timeSpent: $submission->timeSpent,
                 difficulty: $question->difficulty,
+                usedHint: $submission->usedHint,
+                score: $score,
             );
 
-            // 2. Evaluate Adaptive Engine (Layer 3 & 4)
-            $engineResult = $this->adaptiveEngineService->evaluate($studentState->toArray());
+            $studentState = $this->performanceService->updateMetricsFromInteraction($interaction);
 
-            // 3. Log and Apply Result (using raw technical data)
-            $this->logAndApplyAdaptiveResult($userId, $materialId, $engineResult, $studentState);
+            // Evaluate Adaptive Engine
+            $engineResult = $this->adaptiveEngineService->evaluate(
+                StudentStateDTO::fromArray($studentState->toArray()),
+            );
+
+            // 3. Log and Apply Result
+            $this->logAndApplyAdaptiveResult($submission->userId, $submission->materialId, $engineResult->toArray(), $studentState);
 
             // 4. Transform for UI Feedback
-            $friendlyDiagnosis = match ($engineResult['diagnosis'] ?? '') {
-                FactConstants::V_CRISIS     => 'Krisis Pembelajaran',
-                FactConstants::V_STRUGGLING => 'Sedang Kesulitan',
-                FactConstants::V_OPTIMAL    => 'Performa Optimal',
-                FactConstants::V_DEPENDENCY => 'Ketergantungan Bantuan',
-                FactConstants::V_BOREDOM    => 'Potensi Kebosanan',
-                default                     => 'Progres Normal'
-            };
+            $diagnosisFact     = AdaptiveFact::find($engineResult->diagnosis);
+            $friendlyDiagnosis = $diagnosisFact ? $diagnosisFact->name : 'Progres Normal';
 
             $friendlyRecommendations = [];
-            foreach ($engineResult['recommendations'] as $rec) {
-                $label = match ($rec) {
-                    ActionConstants::INCREASE_DIFF => 'LEVEL_UP',
-                    ActionConstants::REDUCE_DIFF   => 'ADAPTIVE_HELP',
-                    ActionConstants::STREAK_BONUS  => 'STREAK_BONUS',
-                    ActionConstants::CERTIFICATION => 'ACHIEVEMENT',
-                    ActionConstants::REMEDIAL      => 'REMEDIAL_MODE',
-                    ActionConstants::NEW_CHALLENGE => 'NEW_CHALLENGE',
-                    default                        => null
-                };
-                if ($label) {
-                    $friendlyRecommendations[] = $label;
+            foreach ($engineResult->recommendations as $rec) {
+                $actionId = is_array($rec) ? $rec['id'] : $rec;
+                $action   = AdaptiveAction::find($actionId);
+                if ($action) {
+                    $friendlyRecommendations[] = $action->name;
                 }
             }
 
             return [
-                'is_correct'    => $isCorrect,
-                'score'         => $score,
-                'engine_result' => array_merge($engineResult, [
+                'is_correct'          => $isCorrect,
+                'score'               => $score,
+                'raw_recommendations' => $engineResult->recommendations,
+                'engine_result'       => array_merge($engineResult->toArray(), [
                     'diagnosis'       => $friendlyDiagnosis,
                     'recommendations' => $friendlyRecommendations,
-                    'triggered_rule'  => [
-                        'id'     => $engineResult['id'],
-                        'name'   => $friendlyDiagnosis,
-                        'action' => $engineResult['recommendations'][0] ?? 'NEXT',
-                    ],
                 ]),
             ];
         });
@@ -504,8 +528,8 @@ final class QuizService implements QuizServiceInterface
         AdaptiveExecutionLog::create([
             'user_id'           => $userId,
             'rule_id'           => $result['id'],
-            'action_id'         => implode(', ', $result['recommendations']),
-            'trigger_facts'     => [$result['diagnosis']],
+            'action_id'         => implode(', ', array_map(fn ($r) => is_array($r) ? $r['id'] : $r, $result['recommendations'])),
+            'trigger_facts'     => $result['facts'] ?? [],
             'state_deltas'      => [],
             'new_state'         => $state->toArray(),
             'execution_context' => [
@@ -517,45 +541,94 @@ final class QuizService implements QuizServiceInterface
         // 2. Prepare Adaptive State
         $adaptiveState                         = $state->adaptive_state ?? [];
         $adaptiveState['last_diagnosis']       = $result['diagnosis'];
-        $adaptiveState['active_interventions'] = $result['recommendations'];
+        $adaptiveState['active_interventions'] = array_map(fn ($r) => is_array($r) ? $r['id'] : $r, $result['recommendations']);
 
         // 3. Apply Layer 4: Aksi Sistem (State Transitions)
-        $currentDifficulty = $state->target_difficulty ?? 'beginner';
-        $difficultyOrder   = ['beginner', 'medium', 'hard'];
-        $currentIndex      = array_search($currentDifficulty, $difficultyOrder);
+        $metaKeys = AdaptiveMetadataKeys::class;
 
-        foreach ($result['recommendations'] as $recommendation) {
+        $difficultyOrder = ['beginner', 'medium', 'hard', 'final'];
+        $currentDiff     = $state->target_difficulty ?? 'beginner';
+        $currentIndex    = array_search($currentDiff, $difficultyOrder);
+        if ($currentIndex === false) {
+            $currentIndex = 0;
+        }
+
+        foreach ($result['recommendations'] as $recConfig) {
+            $recommendation = is_array($recConfig) ? $recConfig['id'] : $recConfig;
+            $metadata       = is_array($recConfig) ? ($recConfig['metadata'] ?? []) : [];
+
             switch ($recommendation) {
-                case ActionConstants::REDUCE_DIFF:
+                case 'REDUCE_DIFF':
+                    // Spec: "turunkan 1 level kesulitan"
                     if ($currentIndex > 0) {
                         $state->target_difficulty = $difficultyOrder[$currentIndex - 1];
+                        $currentIndex--;
                     }
                     break;
-                case ActionConstants::INCREASE_DIFF:
-                    if ($currentIndex < 2) {
-                        $state->target_difficulty = $difficultyOrder[$currentIndex + 1];
-                    }
+
+                case 'INCREASE_DIFF':
+                    $steps                    = $metadata[$metaKeys::DIFFICULTY_STEPS] ?? 1;
+                    $newIndex                 = min(2, $currentIndex + $steps);
+                    $state->target_difficulty = $difficultyOrder[$newIndex];
+                    $currentIndex             = $newIndex;
                     break;
-                case ActionConstants::STREAK_BONUS:
+
+                case 'STREAK_BONUS':
                     $state->xp += 50;
+                    $badges                  = $adaptiveState['badges'] ?? [];
+                    $badges[]                = 'streak_' . ($state->streak ?? 0);
+                    $adaptiveState['badges'] = array_unique($badges);
                     break;
-                case ActionConstants::REMEDIAL:
+
+                case 'REMEDIAL':
                     $adaptiveState['needs_remedial']       = true;
                     $adaptiveState['remedial_material_id'] = $materialId;
+
+                    if ($metadata[$metaKeys::NOTIFY_TEACHER] ?? false) {
+                        $adaptiveState['notify_teacher']      = true;
+                        $adaptiveState['notify_teacher_type'] = $metadata[$metaKeys::NOTIFY_TYPE] ?? $metaKeys::TYPE_CRISIS;
+                    }
+
+                    if (isset($metadata[$metaKeys::FORCED_EASY_COUNT])) {
+                        $state->target_difficulty           = $metadata[$metaKeys::TARGET_DIFFICULTY] ?? 'beginner';
+                        $currentIndex                       = array_search($state->target_difficulty, $difficultyOrder);
+                        $adaptiveState['forced_easy_count'] = $metadata[$metaKeys::FORCED_EASY_COUNT];
+                        $adaptiveState['show_motivation']   = $metadata[$metaKeys::SHOW_MOTIVATION] ?? false;
+                    }
                     break;
-                case ActionConstants::SCAFFOLD_REDUCTION:
-                    // Reduce available hints for next session or disable them
-                    $state->hints_available         = max(0, $state->hints_available - 1);
+
+                case 'SCAFFOLD_REDUCTION':
+                    if ($metadata[$metaKeys::GRADUAL_SCAFFOLD_REDUCTION] ?? false) {
+                        $currentMax                             = $adaptiveState['max_hints_per_session'] ?? 3;
+                        $adaptiveState['max_hints_per_session'] = max(0, $currentMax - 1);
+                        $state->hints_available                 = min($state->hints_available, $adaptiveState['max_hints_per_session']);
+                    } else {
+                        $state->hints_available                 = min(2, $state->hints_available);
+                        $adaptiveState['max_hints_per_session'] = 2;
+                    }
                     $adaptiveState['scaffold_mode'] = 'minimal';
                     break;
-                case ActionConstants::NEW_CHALLENGE:
+
+                case 'NEW_CHALLENGE':
                     $state->xp += 100;
                     $adaptiveState['challenge_active'] = true;
+
+                    if ($metadata[$metaKeys::CHECK_CERTIFICATION] ?? false) {
+                        $adaptiveState['check_certification'] = true;
+                    }
+
+                    if ($metadata[$metaKeys::CROSS_TOPIC_CHALLENGE] ?? false) {
+                        $adaptiveState['cross_topic_challenge'] = true;
+                    }
                     break;
-                case ActionConstants::CERTIFICATION:
-                    $certs                           = $adaptiveState['certifications'] ?? [];
-                    $certs[]                         = 'GOLD'; // R15 is Gold
-                    $adaptiveState['certifications'] = array_unique($certs);
+
+                case 'CERTIFICATION':
+                    $certs                                = $adaptiveState['certifications'] ?? [];
+                    $certs[]                              = 'GOLD';
+                    $adaptiveState['certifications']      = array_unique($certs);
+                    $adaptiveState['notify_teacher']      = true;
+                    $adaptiveState['notify_teacher_type'] = $metadata[$metaKeys::NOTIFY_TYPE] ?? $metaKeys::TYPE_CERTIFICATION;
+                    $adaptiveState['unlock_advanced']     = true;
                     break;
             }
         }

@@ -5,183 +5,172 @@ declare(strict_types=1);
 namespace App\Services\Adaptive;
 
 use App\Contracts\Services\AdaptiveEngineServiceInterface;
-use App\Enums\Lms\StudentLevel;
-use App\Rules\Adaptive\Constants\ActionConstants;
-use App\Rules\Adaptive\Constants\FactConstants;
-use App\Rules\Adaptive\Constants\PedagogicalConstants;
-use App\Rules\Adaptive\Constants\StudentStateSchema;
+use App\DTOs\Adaptive\EngineResultDTO;
+use App\DTOs\Adaptive\StudentStateDTO;
+use App\Models\AdaptiveFact;
+use App\Models\AdaptiveRule;
+use App\Rules\Adaptive\Constants\AdaptiveConditionKeys;
+use App\Traits\Adaptive\EvaluatesAdaptiveConditions;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
 
 final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 {
-    public function evaluate(array $state): array
+    use EvaluatesAdaptiveConditions;
+
+    private const MAX_CHAINING_ITERATIONS = 10;
+
+    private const FALLBACK_RULE_ID        = 'R14';
+
+    private const CATEGORY_PRIMARY       = 'primary';
+
+    private const CATEGORY_VIRTUAL       = 'virtual';
+
+    /**
+     * Core Engine: True Forward Chaining with Iterative Evaluation.
+     */
+    public function evaluate(StudentStateDTO $state): EngineResultDTO
     {
-        // 1. Extract Thresholds (Layer 2)
-        $accuracy = (float) ($state[StudentStateSchema::ACCURACY] ?? 0);
-        $metrics  = $state[StudentStateSchema::PERFORMANCE_METRICS] ?? [];
-        $session  = $state[StudentStateSchema::CURRENT_SESSION]     ?? [];
+        try {
+            $activeFacts  = $this->generateActiveFacts($state);
+            $appliedRules = $this->runForwardChaining($activeFacts);
 
-        $trend         = $metrics['trend'] ?? 'stable';
-        $speed         = $metrics['speed'] ?? 'normal';
-        $hints         = (int) ($session['hints'] ?? 0);
-        $level         = $state[StudentStateSchema::LEVEL] ?? StudentLevel::PEMULA->value;
-        $streak        = (int) ($state[StudentStateSchema::STREAK] ?? 0);
-        $stagnantCount = (int) ($metrics['stagnant_count'] ?? 0);
-        $history       = $state[StudentStateSchema::SESSION_HISTORY] ?? [];
+            if (empty($appliedRules)) {
+                return $this->handleFallback($activeFacts);
+            }
 
-        // 2. Collect Facts for Debugging/Panel
-        $facts = [];
-
-        // Accuracy mapping
-        if ($accuracy < PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD) {
-            $facts[] = FactConstants::ACCURACY_CRISIS;
-        } elseif ($accuracy <= 60) {
-            $facts[] = FactConstants::ACCURACY_STRUGGLE;
-        } elseif ($accuracy <= 70) {
-            $facts[] = FactConstants::ACCURACY_STABLE;
-        } elseif ($accuracy > PedagogicalConstants::ACCURACY_CERTIFICATION_THRESHOLD) {
-            $facts[] = FactConstants::ACCURACY_EXCELLENT;
-        } elseif ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD) {
-            $facts[] = FactConstants::ACCURACY_OPTIMAL;
+            return EngineResultDTO::fromAppliedRules($appliedRules, $activeFacts, count($appliedRules));
+        } catch (\Exception $e) {
+            return $this->handleEngineError($e, $activeFacts ?? []);
         }
-
-        // Trend mapping
-        if ($trend === 'down') {
-            $facts[] = FactConstants::TREND_DOWN;
-        } elseif ($trend === 'up') {
-            $facts[] = FactConstants::TREND_UP;
-        } else {
-            $facts[] = FactConstants::TREND_STABLE;
-        }
-
-        // Speed mapping
-        if ($speed === 'fast') {
-            $facts[] = FactConstants::TIME_FAST;
-        } elseif ($speed === 'slow') {
-            $facts[] = FactConstants::TIME_SLOW;
-        } else {
-            $facts[] = FactConstants::TIME_NORMAL;
-        }
-
-        // Streak mapping
-        if ($streak >= PedagogicalConstants::STREAK_CERTIFICATION_THRESHOLD) {
-            $facts[] = FactConstants::STREAK_7D;
-        } elseif ($streak >= PedagogicalConstants::STREAK_BOREDOM_THRESHOLD) {
-            $facts[] = FactConstants::STREAK_5D;
-        } elseif ($streak >= PedagogicalConstants::STREAK_OPTIMAL_THRESHOLD) {
-            $facts[] = FactConstants::STREAK_3D;
-        }
-
-        // Level mapping
-        if ($level === StudentLevel::AHLI->value) {
-            $facts[] = FactConstants::LEVEL_AHLI;
-        }
-
-        // Help mapping
-        if ($hints > PedagogicalConstants::HELP_HIGH_THRESHOLD) {
-            $facts[] = FactConstants::HELP_HIGH;
-        } elseif ($hints >= 2) {
-            $facts[] = FactConstants::HELP_MED;
-        } elseif ($hints === 0) {
-            $facts[] = FactConstants::HELP_NONE;
-        }
-
-        // 3. Evaluate Rules R01-R15 in order
-
-        // --- KRISIS PEMBELAJARAN ---
-        // R01: Akurasi <40%, Tren turun 2 sesi, Bantuan >3x
-        if ($accuracy < PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD && $trend === 'down' && $hints > PedagogicalConstants::HELP_HIGH_THRESHOLD) {
-            return $this->result('R01', FactConstants::V_CRISIS, [ActionConstants::REMEDIAL, ActionConstants::REDUCE_DIFF], $facts);
-        }
-        // R02: Akurasi <40%, Tren turun 2 sesi, Bantuan <=3x
-        if ($accuracy < PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD && $trend === 'down' && $hints <= PedagogicalConstants::HELP_HIGH_THRESHOLD) {
-            return $this->result('R02', FactConstants::V_CRISIS, [ActionConstants::REMEDIAL], $facts);
-        }
-        // R03: Akurasi <40%, Tren stabil/naik, Bantuan >3x
-        if ($accuracy < PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD && $hints > PedagogicalConstants::HELP_HIGH_THRESHOLD) {
-            return $this->result('R03', FactConstants::V_CRISIS, [ActionConstants::REDUCE_DIFF, ActionConstants::SCAFFOLD_REDUCTION], $facts);
-        }
-
-        // --- SEDANG KESULITAN ---
-        // R04: Akurasi 40-60%, Respons lambat, Bantuan <=3x
-        if ($accuracy >= PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD && $accuracy <= 60 && $speed === 'slow' && $hints <= PedagogicalConstants::HELP_HIGH_THRESHOLD) {
-            return $this->result('R04', FactConstants::V_STRUGGLING, [ActionConstants::REDUCE_DIFF], $facts);
-        }
-        // R05: Akurasi 40-60%, Respons normal, Bantuan 2-3x
-        if ($accuracy >= PedagogicalConstants::ACCURACY_CRISIS_THRESHOLD && $accuracy <= 60 && $speed === 'normal' && $hints >= 2 && $hints <= PedagogicalConstants::HELP_HIGH_THRESHOLD) {
-            return $this->result('R05', FactConstants::V_STRUGGLING, [ActionConstants::REMEDIAL], $facts);
-        }
-        // R06: Akurasi 60-70%, Tren stabil, Bantuan <=2x
-        if ($accuracy >= 60 && $accuracy <= 70 && $trend === 'stable' && $hints <= 2) {
-            return $this->result('R06', FactConstants::V_STRUGGLING, [ActionConstants::FEEDBACK], $facts);
-        }
-
-        // --- PERFORMA OPTIMAL ---
-        // R07: Akurasi >80%, Tren naik, Level < Ahli
-        if ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD && $trend === 'up' && $level !== StudentLevel::AHLI->value) {
-            return $this->result('R07', FactConstants::V_OPTIMAL, [ActionConstants::INCREASE_DIFF], $facts);
-        }
-        // R08: Akurasi >80%, Tren naik, Level = Ahli
-        if ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD && $trend === 'up' && $level === StudentLevel::AHLI->value) {
-            return $this->result('R08', FactConstants::V_OPTIMAL, [ActionConstants::NEW_CHALLENGE], $facts);
-        }
-        // R09: Akurasi >80%, Respons cepat, Streak >=3
-        if ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD && $speed === 'fast' && $streak >= PedagogicalConstants::STREAK_OPTIMAL_THRESHOLD) {
-            return $this->result('R09', FactConstants::V_OPTIMAL, [ActionConstants::INCREASE_DIFF, ActionConstants::STREAK_BONUS], $facts);
-        }
-
-        // --- KETERGANTUNGAN BANTUAN ---
-        // R10: Bantuan >3x, Akurasi <50% tanpa bantuan, Tren stabil
-        if ($hints > PedagogicalConstants::HELP_HIGH_THRESHOLD && $accuracy < 50 && $trend === 'stable') {
-            return $this->result('R10', FactConstants::V_DEPENDENCY, [ActionConstants::SCAFFOLD_REDUCTION, ActionConstants::REMEDIAL], $facts);
-        }
-        // R11: Bantuan >3x, Akurasi >60% dengan bantuan, Tren naik
-        if ($hints > PedagogicalConstants::HELP_HIGH_THRESHOLD && $accuracy > 60 && $trend === 'up') {
-            return $this->result('R11', FactConstants::V_DEPENDENCY, [ActionConstants::SCAFFOLD_REDUCTION], $facts);
-        }
-
-        // --- POTENSI KEBOSANAN ---
-        // R12: Akurasi >80%, Skor stagnan >=3 sesi, Streak >=5
-        if ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD && $stagnantCount >= 3 && $streak >= PedagogicalConstants::STREAK_BOREDOM_THRESHOLD) {
-            return $this->result('R12', FactConstants::V_BOREDOM, [ActionConstants::NEW_CHALLENGE, ActionConstants::STREAK_BONUS], $facts);
-        }
-        // R13: Akurasi >80%, Respons cepat, Skor stagnan >=3 sesi
-        if ($accuracy > PedagogicalConstants::ACCURACY_OPTIMAL_THRESHOLD && $speed === 'fast' && $stagnantCount >= 3) {
-            return $this->result('R13', FactConstants::V_BOREDOM, [ActionConstants::INCREASE_DIFF], $facts);
-        }
-
-        // --- SPECIAL: CERTIFICATION ---
-        // R15 condition: Min Accuracy > 85% over last 3 sessions
-        $isConsistentHigh = false;
-        if (count($history) >= 3) {
-            $last3 = array_slice($history, -3);
-            $isConsistentHigh = min($last3) > PedagogicalConstants::ACCURACY_CERTIFICATION_THRESHOLD;
-        }
-
-        if ($level === StudentLevel::AHLI->value && $isConsistentHigh && $streak >= PedagogicalConstants::STREAK_CERTIFICATION_THRESHOLD && $hints === 0) {
-            return $this->result('R15', FactConstants::V_OPTIMAL, [ActionConstants::CERTIFICATION], $facts);
-        }
-
-        // --- R14: DEFAULT FALLBACK ---
-        return $this->result('R14', 'Normal Learning', [ActionConstants::FEEDBACK], $facts);
     }
 
-    private function result(string $ruleId, string $diagnosis, array $recommendations, array $facts = []): array
+    /**
+     * Maps raw state values to Fact G-Codes based on DB logic.
+     */
+    private function generateActiveFacts(StudentStateDTO $state): array
     {
-        return [
-            'id'              => $ruleId,
-            'diagnosis'       => $diagnosis,
-            'recommendations' => $recommendations,
-            'facts'           => $facts,
-            'timestamp'       => now()->toIso8601String(),
-            'engine_metadata' => [
-                'engine_version'  => '2.1.0-forward',
-                'rule_count'      => 15,
-                'fact_labels'     => array_merge(FactConstants::NAMES, FactConstants::VIRTUAL_NAMES),
-                'fact_categories' => [
-                    'primary' => 'primary',
-                    'virtual' => 'virtual',
-                ],
-            ],
-        ];
+        $activeFacts = [];
+
+        $factDefinitions = AdaptiveFact::where('category', self::CATEGORY_PRIMARY)->get();
+
+        foreach ($factDefinitions as $fact) {
+            $formula = json_decode($fact->logic ?? '', true);
+
+            if (! $formula || ! isset($formula[AdaptiveConditionKeys::KEY])) {
+                continue;
+            }
+
+            $currentValue = $state->getMetric($formula[AdaptiveConditionKeys::KEY]);
+
+            if ($this->evaluateCondition($currentValue, $formula[AdaptiveConditionKeys::OP], $formula[AdaptiveConditionKeys::VAL])) {
+                $activeFacts[] = $fact->id;
+            }
+        }
+
+        return array_unique($activeFacts);
+    }
+
+    /**
+     * Performs the forward chaining loop until stabilization or max iterations.
+     *
+     * @return array<int, AdaptiveRule>
+     */
+    private function runForwardChaining(array &$activeFacts): array
+    {
+        $appliedRules   = [];
+        $appliedRuleIds = [];
+        $iteration      = 0;
+
+        /** @var Collection<int, AdaptiveRule> $rules */
+        $rules = AdaptiveRule::where('is_active', true)->ordered()->get();
+
+        while ($iteration < self::MAX_CHAINING_ITERATIONS) {
+            $iteration++;
+            $newFactAdded = false;
+
+            foreach ($rules as $rule) {
+                if ($this->shouldSkipRule($rule, $appliedRuleIds)) {
+                    continue;
+                }
+
+                if ($this->isRuleSatisfied($rule->required_fact_ids ?? [], $activeFacts)) {
+                    $appliedRules[]   = $rule;
+                    $appliedRuleIds[] = $rule->id;
+
+                    if ($this->injectDeducedFacts($rule, $activeFacts)) {
+                        $newFactAdded = true;
+                    }
+                }
+            }
+
+            if (! $newFactAdded) {
+                break;
+            }
+        }
+
+        return $appliedRules;
+    }
+
+    private function shouldSkipRule(mixed $rule, array $appliedRuleIds): bool
+    {
+        /** @var AdaptiveRule $rule */
+        if (in_array($rule->id, $appliedRuleIds)) {
+            return true;
+        }
+
+        return empty($rule->required_fact_ids);
+    }
+
+    private function injectDeducedFacts(mixed $rule, array &$activeFacts): bool
+    {
+        /** @var AdaptiveRule $rule */
+        $newFactAdded = false;
+        if (empty($rule->deduced_fact_ids)) {
+            return false;
+        }
+
+        foreach ($rule->deduced_fact_ids as $factId) {
+            if (! in_array($factId, $activeFacts)) {
+                $activeFacts[] = $factId;
+                $newFactAdded  = true;
+            }
+        }
+
+        return $newFactAdded;
+    }
+
+    private function isRuleSatisfied(array $required, array $active): bool
+    {
+        if (empty($required)) {
+            return false;
+        }
+
+        return count(array_intersect($required, $active)) === count($required);
+    }
+
+    private function handleFallback(array $activeFacts): EngineResultDTO
+    {
+        $fallback = AdaptiveRule::where('id', self::FALLBACK_RULE_ID)->first();
+
+        if ($fallback instanceof AdaptiveRule) {
+            return EngineResultDTO::fromAppliedRules([$fallback], $activeFacts, 1);
+        }
+
+        return EngineResultDTO::fromFallback($activeFacts);
+    }
+
+    private function handleEngineError(\Exception $e, array $activeFacts): EngineResultDTO
+    {
+        Log::error('Adaptive Engine Error: ' . $e->getMessage(), [
+            'trace' => $e->getTraceAsString(),
+        ]);
+
+        if ($e instanceof QueryException) {
+            throw $e;
+        }
+
+        return EngineResultDTO::fromFallback($activeFacts);
     }
 }

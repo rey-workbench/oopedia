@@ -7,7 +7,7 @@
     import Pagination from '@/components/ui/Pagination.svelte';
     import Select from '@/components/ui/Select.svelte';
     import { ROUTES } from '@/utils/route';
-    import { FlaskConical, Plus, Trash2, Search, Edit2, ArrowLeft } from 'lucide-svelte';
+    import { FlaskConical, Plus, Trash2, Edit2, ArrowLeft } from 'lucide-svelte';
     import { QuestionListAdminState } from '@/states/Admin/QuestionState.svelte';
     import { untrack } from 'svelte';
     import Badge from '@/components/ui/Badge.svelte';
@@ -43,6 +43,14 @@
             : 'Manajemen komprehensif seluruh bank soal evaluasi sistem.'}
     >
         {#snippet actions()}
+            <div class="w-48">
+                <Select
+                    bind:value={state.difficulty}
+                    placeholder="SEMUA LEVEL"
+                    options={difficultyOptions}
+                    onchange={() => state.setDifficulty(state.difficulty)}
+                />
+            </div>
             <Button
                 id="add-question-btn"
                 href={state.material
@@ -59,47 +67,14 @@
         {/snippet}
     </PageHeader>
 
-    <div class="flex flex-col items-end gap-6 md:flex-row">
-        <div id="question-filter-search" class="flex-1 space-y-2">
-            <label
-                for="q-search"
-                class="font-poppins ml-2 text-[10px] font-bold text-slate-400 uppercase"
-            >
-                Pencarian Soal
-            </label>
-            <div class="group relative">
-                <input
-                    type="text"
-                    id="q-search"
-                    bind:value={state.search}
-                    oninput={state.handleSearch}
-                    placeholder="Cari teks soal atau identitas..."
-                    class="group-hover:border-primary-400 focus:border-primary-600 focus:ring-primary-100 w-full rounded-2xl border border-slate-100 bg-white px-8 py-4 text-xs font-bold tracking-widest text-slate-900 uppercase shadow-xl shadow-slate-100 transition-all duration-300 focus:ring-4 focus:outline-none"
-                />
-                <Search
-                    size={20}
-                    strokeWidth={2.5}
-                    class="group-hover:text-primary-600 absolute top-1/2 right-8 -translate-y-1/2 text-slate-300 transition-colors"
-                />
-            </div>
-        </div>
-
-        <div id="question-filter-difficulty" class="w-full space-y-2 md:w-64">
-            <Select
-                bind:value={state.difficulty}
-                placeholder="SEMUA LEVEL"
-                options={difficultyOptions}
-                onchange={() => state.setDifficulty(state.difficulty)}
-            />
-        </div>
-    </div>
-
-    <div id="question-table">
+    <div id="question-table" class="mt-8">
         <DataTable
             title="Daftar Instrumen Evaluasi"
             items={state.questions.data}
             {columns}
-            hideSearch={true}
+            bind:search={state.search}
+            searchPlaceholder="Cari teks soal atau identitas..."
+            onsearch={state.handleSearch}
         >
             {#snippet empty()}
                 <EmptyState

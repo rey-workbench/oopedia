@@ -9,13 +9,13 @@ import { UEQ_ASPECTS, UEQ_DIMENSIONS } from '@/constants/survey';
  */
 export class UeqListState extends BaseState {
     surveys = $state<UeqSurvey[]>([]);
-    averages = $state<UeqAverages>({});
+    averages = $state<Partial<UeqAverages>>({});
     classes = $state<string[]>([]);
     activeClass = $state('');
 
     constructor(
         surveys: UeqSurvey[],
-        averages: UeqAverages,
+        averages: Partial<UeqAverages>,
         classes: string[],
         activeClass: string
     ) {

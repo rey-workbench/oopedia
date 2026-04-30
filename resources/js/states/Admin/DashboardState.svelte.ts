@@ -6,18 +6,20 @@ import type {
     StudentProgressItem,
     PopularMaterialItem,
     MaterialStatsItem,
+    StudentNeedingAttention,
 } from '@/types';
 
 export class AdminDashboardState extends BaseState {
-    totalStudents = $state(0);
-    totalMaterials = $state(0);
-    totalQuestions = $state(0);
-    activeStudents = $state(0);
-    recentProgress = $state<RecentProgressItem[]>([]);
-    studentProgress = $state<StudentProgressItem[]>([]);
-    popularMaterials = $state<PopularMaterialItem[]>([]);
-    studentAnalytics = $state<StudentAnalytics>({ distribution: {}, radar: {} });
-    materialStats = $state<MaterialStatsItem[]>([]);
+    total_students = $state(0);
+    total_materials = $state(0);
+    total_questions = $state(0);
+    active_students = $state(0);
+    recent_progress = $state<RecentProgressItem[]>([]);
+    student_progress = $state<StudentProgressItem[]>([]);
+    popular_materials = $state<PopularMaterialItem[]>([]);
+    student_analytics = $state<StudentAnalytics>({ distribution: {}, radar: {} });
+    material_stats = $state<MaterialStatsItem[]>([]);
+    students_needing_attention = $state<StudentNeedingAttention[]>([]);
 
     constructor(data?: AdminDashboardData) {
         super();

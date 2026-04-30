@@ -23,6 +23,9 @@
         Lightbulb,
         Loader2,
         Save,
+        BookOpen,
+        Activity,
+        Gauge,
     } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { ProfileState } from '@/states/Mahasiswa/ProfileState.svelte';
@@ -40,17 +43,22 @@
 
     const state = untrack(() => new ProfileState(personalization));
 
+    const learningStyleIcon = $derived.by(() => {
+        const style = state.personalization?.learning_style;
+        if (style === 'deep') return Brain;
+        if (style === 'motivated') return Zap;
+        if (style === 'strategic') return BookOpen;
+        if (style === 'balanced') return Target;
+        return Eye; // unknown
+    });
+
     const personalizationStats = $derived([
         {
-            title: 'Gaya Belajar',
-            value: state.personalization?.learning_style || 'Visual',
-            icon:
-                state.personalization?.learning_style === 'visual'
-                    ? Eye
-                    : state.personalization?.learning_style === 'auditory'
-                      ? Brain
-                      : Zap,
-            variant: 'primary',
+            title: 'Profil Belajar',
+            value: state.personalization?.learning_profile_label || 'Belum Diisi',
+            icon: learningStyleIcon,
+            variant: state.personalization?.mslq_filled ? 'primary' : 'warning',
+            footer: state.personalization?.mslq_filled ? 'Berdasarkan MSLQ' : 'Isi Kuesioner MSLQ',
         },
         {
             title: 'Level Saat Ini',
@@ -71,7 +79,7 @@
             value: state.personalization?.current_streak || 0,
             icon: Flame,
             variant: 'warning',
-            footer: `Max: ${state.personalization?.max_streak || 0}`,
+            footer: `Max: ${state.personalization?.max_streak || 0} Hari`,
         },
     ]);
 
@@ -99,13 +107,26 @@
             value: state.personalization?.hints_used_count || 0,
             icon: Lightbulb,
             variant: 'warning',
-            footer: `${state.personalization?.hints_available || 3} Tersisa`,
+            footer: `${state.personalization?.hints_available ?? 3} Tersisa`,
         },
         {
-            title: 'Status Fast Track',
-            value: state.personalization?.fast_track_active ? 'Aktif' : 'Tidak Aktif',
-            icon: Zap,
-            variant: 'warning',
+            title: 'Target Kesulitan',
+            value: (() => {
+                const d = state.personalization?.target_difficulty;
+                if (d === 'hard') return 'Tinggi';
+                if (d === 'medium') return 'Menengah';
+                return 'Dasar';
+            })(),
+            icon: Gauge,
+            variant: 'primary',
+            footer: 'Ditetapkan Mesin Adaptif',
+        },
+        {
+            title: 'Status Diagnosis',
+            value: state.personalization?.last_diagnosis ?? 'Belum Ada',
+            icon: Activity,
+            variant: state.personalization?.needs_remedial ? 'danger' : 'success',
+            footer: state.personalization?.needs_remedial ? 'Perlu Remedial' : 'Normal',
         },
     ]);
 </script>
@@ -139,12 +160,12 @@
                         <p
                             class="text-primary-400 mb-2 text-[10px] font-bold tracking-widest uppercase"
                         >
-                            MEMBER SINCE {new Date(state.user.created_at).getFullYear()}
+                            MEMBER SINCE {state.user ? new Date(state.user.created_at).getFullYear() : 'N/A'}
                         </p>
                         <h2
                             class="mb-4 text-4xl font-bold tracking-tight text-white uppercase md:text-5xl"
                         >
-                            {state.user.name}
+                            {state.user?.name ?? 'GUEST'}
                         </h2>
                         <div
                             class="flex flex-wrap items-center justify-center gap-4 md:justify-start"
@@ -153,7 +174,7 @@
                                 class="flex items-center gap-2 rounded-xl border-2 border-b-4 border-white/10 bg-white/10 px-4 py-2 text-xs font-bold tracking-wider uppercase shadow-sm backdrop-blur-md"
                             >
                                 <Mail size={14} class="text-primary-400" />
-                                {state.user.email}
+                                {state.user?.email ?? 'guest@oopedia'}
                             </div>
                             <div
                                 class="flex items-center gap-2 rounded-xl border-2 border-b-4 border-white/10 bg-white/10 px-4 py-2 text-xs font-bold tracking-wider uppercase shadow-sm backdrop-blur-md"
@@ -346,7 +367,7 @@
                         {#each certifications.slice(0, 2) as cert (cert.material_id)}
                             <CertificateCard
                                 materialTitle={cert.material_title}
-                                type={cert.type}
+                                type={cert.type as 'gold' | 'silver' | 'bronze'}
                                 issuedAt={cert.issued_at ?? undefined}
                                 id={cert.material_id}
                             />

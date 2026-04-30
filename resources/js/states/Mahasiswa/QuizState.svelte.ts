@@ -7,11 +7,11 @@ import type {
     Question,
     DifficultyLevel,
     QuestionWithAttempt,
-    QuizSessionState,
     CheckAnswerResponse,
     AdaptiveResult,
     LevelItem,
     AnswerPayload,
+    StudentSessionState,
 } from '@/types';
 import { playSound } from '@/utils';
 
@@ -52,7 +52,7 @@ export class QuestionShowState extends BaseState {
     material = $state<Material>({} as Material);
     currentQuestion = $state<Question | null>(null);
     difficulty = $state<string>('beginner');
-    studentState = $state<QuizSessionState>({} as QuizSessionState);
+    studentState = $state<StudentSessionState | null>(null);
 
     fillInTheBlankAnswer = $state('');
     selectedMultipleChoiceAnswer = $state<string | null>(null);
@@ -61,25 +61,14 @@ export class QuestionShowState extends BaseState {
     isSubmitting = $state(false);
     showFeedback = $state(false);
     showHint = $state(false);
-    feedbackData = $state<{
-        status: string;
-        message: string;
-        nextUrl: string;
-        adaptiveResult: AdaptiveResult | null;
-        score: number;
-        ui?: {
-            label?: string;
-            title?: string;
-            type?: string;
-            url?: string;
-            message?: string;
-        } | null;
-    }>({
+    feedbackData = $state<CheckAnswerResponse>({
         status: 'success',
         message: '',
-        nextUrl: '',
-        adaptiveResult: null,
-        score: 0,
+        next_url: '',
+        is_correct: true,
+        xp_earned: 0,
+        adaptive_result: null,
+        student_state: null,
         ui: null,
     });
     usedHint = $state(false);
@@ -108,14 +97,18 @@ export class QuestionShowState extends BaseState {
 
     xp = $derived(this.studentState?.xp || 0);
     streak = $derived(this.studentState?.streak || 0);
-    level = $derived(this.studentState?.performance_metrics?.stagnant_count > 0 ? 'Tertahan' : 'Progresif');
-    hintsAvailable = $derived(this.studentState?.hints_available ?? 3);
+    level = $derived(this.studentState?.level || 'Beginner');
+    get hintsAvailable() {
+        const available = this.studentState?.hints_available ?? 3;
+        const maxPerSession = this.studentState?.adaptive_state?.['max_hints_per_session'];
+        return maxPerSession !== undefined ? Math.min(available, Number(maxPerSession)) : available;
+    }
 
     constructor(
         material: Material,
         currentQuestion: Question,
         difficulty: string,
-        studentState: QuizSessionState
+        studentState: StudentSessionState | null
     ) {
         super();
         this.hydrate({ material, currentQuestion, difficulty, studentState });
@@ -123,7 +116,13 @@ export class QuestionShowState extends BaseState {
     }
 
     useHint() {
-        if (this.hintsAvailable > 0 && this.currentQuestion?.hint) {
+        const maxPerSession = this.studentState?.adaptive_state?.['max_hints_per_session'];
+        const effectiveAvailable =
+            maxPerSession !== undefined
+                ? Math.min(this.studentState?.hints_available ?? 0, Number(maxPerSession))
+                : this.studentState?.hints_available ?? 0;
+
+        if (effectiveAvailable > 0 && this.currentQuestion?.hint) {
             this.usedHint = true;
             this.showHint = true;
             if (this.studentState) {
@@ -148,7 +147,7 @@ export class QuestionShowState extends BaseState {
             used_hint: this.usedHint,
             time_spent: timeSpent,
             // Prefer the current question difficulty to avoid sending non-answer filters like "all".
-            difficulty: this.currentQuestion.difficulty ?? this.difficulty,
+            difficulty: (this.currentQuestion.difficulty ?? this.difficulty) as DifficultyLevel,
         };
 
         if (this.currentQuestion.question_type === 'fill_in_the_blank') {
@@ -156,7 +155,7 @@ export class QuestionShowState extends BaseState {
             payload.answer = this.fillInTheBlankAnswer;
         } else if (this.currentQuestion.question_type === 'drag_and_drop') {
             payload.drag_and_drop_answers = JSON.stringify(this.dragAndDropAnswers);
-        } else {
+        } else if (this.selectedMultipleChoiceAnswer) {
             payload.answer = this.selectedMultipleChoiceAnswer;
         }
 
@@ -171,9 +170,11 @@ export class QuestionShowState extends BaseState {
             this.feedbackData = {
                 status: 'error',
                 message: 'Jawaban wajib diisi.',
-                nextUrl: '',
-                adaptiveResult: null,
-                score: 0,
+                next_url: '',
+                is_correct: false,
+                xp_earned: 0,
+                adaptive_result: null,
+                ui: null,
             };
             this.showFeedback = true;
             this.isSubmitting = false;
@@ -194,15 +195,17 @@ export class QuestionShowState extends BaseState {
 
             console.debug('[QuizState] Received answer response:', response.data);
             const data = response.data;
-            const adaptiveResult = (data.adaptiveResult as unknown as AdaptiveResult) ?? null;
             this.feedbackData = {
                 status: data.status,
                 message: data.message,
-                nextUrl: data.nextUrl,
-                adaptiveResult,
-                score: data.xpEarned || 0,
-                ui: (data as any).ui ?? null,
+                next_url: data.next_url,
+                is_correct: data.is_correct,
+                xp_earned: data.xp_earned,
+                adaptive_result: data.adaptive_result,
+                ui: data.ui ?? null,
             };
+
+            const adaptiveResult = data.adaptive_result;
 
             if (adaptiveResult) {
                 this.adaptiveFacts = adaptiveResult.facts ?? [];
@@ -211,8 +214,8 @@ export class QuestionShowState extends BaseState {
                 this.showAdaptiveIndicator = true;
             }
 
-            if (data.studentState) {
-                this.studentState = data.studentState;
+            if (data.student_state) {
+                this.studentState = data.student_state;
             }
 
             this.showHint = false;
@@ -230,9 +233,11 @@ export class QuestionShowState extends BaseState {
             this.feedbackData = {
                 status: 'error',
                 message,
-                nextUrl: '',
-                adaptiveResult: null,
-                score: 0,
+                next_url: '',
+                is_correct: false,
+                xp_earned: 0,
+                adaptive_result: null,
+                ui: null,
             };
             this.showFeedback = true;
         } finally {
@@ -261,18 +266,25 @@ export class QuestionShowState extends BaseState {
         if (this.isNavigating) return;
         this.isNavigating = true;
 
+        // Read URL BEFORE hiding feedback to avoid any reactive side-effects
+        const nextUrl = this.feedbackData.next_url;
+        console.debug('[QuizState] handleNext → nextUrl:', nextUrl);
+
         this.showFeedback = false;
         this.showHint = false;
 
-        const nextUrl = this.feedbackData.ui?.url || this.feedbackData.nextUrl;
-
         if (nextUrl) {
             router.visit(nextUrl, {
+                preserveState: false,
                 onFinish: () => {
+                    this.isNavigating = false;
+                },
+                onError: () => {
                     this.isNavigating = false;
                 },
             });
         } else {
+            console.warn('[QuizState] handleNext → no nextUrl, skipping navigation');
             this.isNavigating = false;
         }
     }

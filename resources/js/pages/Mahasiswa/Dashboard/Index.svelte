@@ -21,46 +21,46 @@
     import { untrack } from 'svelte';
     import {
         DashboardState,
-        type DashboardStateProps,
     } from '@/states/Mahasiswa/DashboardState.svelte';
+    import type { MahasiswaDashboardProps } from '@/types';
 
     const {
-        totalMaterials = 0,
-        totalQuestions = 0,
-        easyQuestions = 0,
-        mediumQuestions = 0,
-        hardQuestions = 0,
-        materialProgressPercentage = 0,
-        questionProgressPercentage = 0,
-        completedMaterials = 0,
-        inProgressMaterials = 0,
-        totalMaterialProgress = 0,
-        totalAnsweredQuestions = 0,
-        totalCorrectQuestions = 0,
-        recentActivities = [],
-        allMaterials = [],
-        currentUserRank = null,
+        total_materials = 0,
+        total_questions = 0,
+        easy_questions = 0,
+        medium_questions = 0,
+        hard_questions = 0,
+        material_progress_percentage = 0,
+        question_progress_percentage = 0,
+        completed_materials = 0,
+        in_progress_materials = 0,
+        total_material_progress = 0,
+        total_answered_questions = 0,
+        total_correct_questions = 0,
+        recent_activities = [],
+        all_materials = [],
+        current_user_rank = null,
         certifications = {},
-    }: DashboardStateProps = $props();
+    }: MahasiswaDashboardProps = $props();
 
     const state = untrack(
         () =>
             new DashboardState({
-                totalMaterials,
-                totalQuestions,
-                easyQuestions,
-                mediumQuestions,
-                hardQuestions,
-                materialProgressPercentage,
-                questionProgressPercentage,
-                completedMaterials,
-                inProgressMaterials,
-                totalMaterialProgress,
-                totalAnsweredQuestions,
-                totalCorrectQuestions,
-                recentActivities,
-                allMaterials,
-                currentUserRank,
+                total_materials,
+                total_questions,
+                easy_questions,
+                medium_questions,
+                hard_questions,
+                material_progress_percentage,
+                question_progress_percentage,
+                completed_materials,
+                in_progress_materials,
+                total_material_progress,
+                total_answered_questions,
+                total_correct_questions,
+                recent_activities,
+                all_materials,
+                current_user_rank,
                 certifications,
             })
     );
@@ -69,7 +69,7 @@
         {
             id: 'stat-total-materials',
             title: 'Materi Tersedia',
-            value: state.totalMaterials,
+            value: state.total_materials,
             icon: BookOpen,
             variant: 'primary',
             footer: 'Konsep PBO dari Dasar',
@@ -78,7 +78,7 @@
         {
             id: 'stat-inprogress-materials',
             title: 'Sedang Dipelajari',
-            value: state.inProgressMaterials,
+            value: state.in_progress_materials,
             icon: Rocket,
             variant: 'info',
             footer: 'Lanjutkan Progresmu',
@@ -87,7 +87,7 @@
         {
             id: 'stat-completed-materials',
             title: 'Materi Selesai',
-            value: state.completedMaterials,
+            value: state.completed_materials,
             icon: CheckCircle2,
             variant: 'success',
             footer: 'Hall of Fame Materi',
@@ -96,7 +96,7 @@
         {
             id: 'stat-global-rank',
             title: 'Peringkat',
-            value: state.currentUserRank ? `#${state.currentUserRank.rank}` : '-',
+            value: state.current_user_rank ? `#${state.current_user_rank.rank}` : '-',
             icon: Trophy,
             variant: 'warning',
             footer: 'Peringkat global Anda',
@@ -153,7 +153,7 @@
                 </div>
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                     {#each Object.entries(state.certifications) as [materialId, type]}
-                        {@const material = state.allMaterials.find((m) => m.id === materialId)}
+                        {@const material = state.all_materials.find((m) => m.id === materialId)}
                         <a
                             href={ROUTES.MAHASISWA.CERTIFICATES.INDEX}
                             class="group press-active border-duo-lg relative block overflow-hidden rounded-2xl border-2 transition-all {type ===
@@ -303,7 +303,7 @@
 
                     <!-- Activity Feed Inline -->
                     <div class="space-y-6">
-                        {#each state.recentActivities as activity}
+                        {#each state.recent_activities as activity}
                             {@const ActivityIcon =
                                 activity.type === 'achievement'
                                     ? Trophy

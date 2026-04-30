@@ -71,24 +71,24 @@ final class DashboardService implements DashboardServiceInterface
                 $certifications = $studentState?->certifications ?? [];
 
                 return [
-                    'totalMaterials'             => $totalMaterials,
-                    'totalQuestions'             => $configuredCounts['total'],
-                    'easyQuestions'              => $configuredCounts['easy'],
-                    'mediumQuestions'            => $configuredCounts['medium'],
-                    'hardQuestions'              => $configuredCounts['hard'],
-                    'materialProgressPercentage' => 0,
-                    'questionProgressPercentage' => ProgressHelper::calculateProgressPercentage(
+                    'total_materials'              => $totalMaterials,
+                    'total_questions'              => $configuredCounts['total'],
+                    'easy_questions'               => $configuredCounts['easy'],
+                    'medium_questions'             => $configuredCounts['medium'],
+                    'hard_questions'               => $configuredCounts['hard'],
+                    'material_progress_percentage' => 0,
+                    'question_progress_percentage' => ProgressHelper::calculateProgressPercentage(
                         $progressStats->sum('correct_answers'),
                         $configuredCounts['total'],
                     ),
-                    'completedMaterials'     => 0,
-                    'inProgressMaterials'    => 0,
-                    'totalMaterialProgress'  => 0,
-                    'totalAnsweredQuestions' => 0,
-                    'totalCorrectQuestions'  => $progressStats->sum('correct_answers'),
-                    'recentActivities'       => $recentActivities,
-                    'allMaterials'           => $materials,
-                    'certifications'         => $certifications,
+                    'completed_materials'      => 0,
+                    'in_progress_materials'    => 0,
+                    'total_material_progress'  => 0,
+                    'total_answered_questions' => 0,
+                    'total_correct_questions'  => $progressStats->sum('correct_answers'),
+                    'recent_activities'        => $recentActivities,
+                    'all_materials'            => $materials,
+                    'certifications'           => $certifications,
                 ];
             },
         );

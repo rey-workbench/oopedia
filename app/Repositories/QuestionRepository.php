@@ -22,18 +22,6 @@ final class QuestionRepository implements QuestionRepositoryInterface
         return Question::create($data);
     }
 
-    public function update(string $id, array $data): ?Question
-    {
-        $question = Question::find($id);
-
-        if (! $question) {
-            return null;
-        }
-
-        $question->update($data);
-
-        return $question;
-    }
 
     public function delete(string $id): bool
     {

@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Contracts\Services;
 
+use App\DTOs\Material\MaterialCreateDTO;
+use App\DTOs\Material\MaterialUpdateDTO;
 use App\Models\Material;
-
 use Illuminate\Database\Eloquent\Collection;
 
 interface MaterialServiceInterface
@@ -23,9 +24,9 @@ interface MaterialServiceInterface
 
     public function getMaterialWithQuestionsAndAnswers(string $id): ?Material;
 
-    public function createMaterial(array $data, mixed $coverImage = null): Material;
+    public function createMaterial(MaterialCreateDTO $dto): Material;
 
-    public function updateMaterial(string $materialId, array $data, mixed $coverImage = null): Material;
+    public function updateMaterial(string $materialId, MaterialUpdateDTO $dto): Material;
 
     public function deleteMaterial(string $materialId): void;
 
