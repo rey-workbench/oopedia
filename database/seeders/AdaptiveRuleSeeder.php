@@ -114,7 +114,9 @@ class AdaptiveRuleSeeder extends Seeder
                 'recommendation'    => 'Mendeteksi kondisi kritis.',
                 'required_fact_ids' => ['G01', 'G05'],
                 'deduced_fact_ids'  => ['V01'],
-                'actions'           => [],
+                'actions'           => [
+                    ['id' => 'REMEDIAL', 'metadata' => []],
+                ],
             ],
             [
                 'id'                => 'R02',
@@ -147,7 +149,9 @@ class AdaptiveRuleSeeder extends Seeder
                 'recommendation'    => 'Mendeteksi hambatan belajar.',
                 'required_fact_ids' => ['G02'],
                 'deduced_fact_ids'  => ['V02'],
-                'actions'           => [],
+                'actions'           => [
+                    ['id' => 'REDUCE_DIFF', 'metadata' => []],
+                ],
             ],
             [
                 'id'                => 'R05',
@@ -213,7 +217,9 @@ class AdaptiveRuleSeeder extends Seeder
                 'recommendation'    => 'Penggunaan bantuan berlebihan.',
                 'required_fact_ids' => ['G08'],
                 'deduced_fact_ids'  => ['V04'],
-                'actions'           => [],
+                'actions'           => [
+                    ['id' => 'SCAFFOLD_REDUCTION', 'metadata' => []],
+                ],
             ],
             [
                 'id'                => 'R11',
