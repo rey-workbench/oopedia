@@ -11,32 +11,32 @@ namespace App\Rules\Adaptive\Constants;
 final class AdaptiveMetadataKeys
 {
     // Notification & Feedback
-    public const NOTIFY_TEACHER = 'notify_teacher';
+    public const string NOTIFY_TEACHER = 'notify_teacher';
 
-    public const NOTIFY_TYPE = 'notify_type';
+    public const string NOTIFY_TYPE = 'notify_type';
 
-    public const SHOW_MOTIVATION = 'show_motivation';
+    public const string SHOW_MOTIVATION = 'show_motivation';
 
     // Difficulty & Question Control
-    public const TARGET_DIFFICULTY = 'target_difficulty';
+    public const string TARGET_DIFFICULTY = 'target_difficulty';
 
-    public const FORCED_EASY_COUNT = 'forced_easy_count';
+    public const string FORCED_EASY_COUNT = 'forced_easy_count';
 
-    public const DIFFICULTY_STEPS = 'difficulty_steps';
+    public const string DIFFICULTY_STEPS = 'difficulty_steps';
 
     // Scaffold & Learning Mode
-    public const GRADUAL_SCAFFOLD_REDUCTION = 'gradual_scaffold_reduction';
+    public const string GRADUAL_SCAFFOLD_REDUCTION = 'gradual_scaffold_reduction';
 
-    public const CROSS_TOPIC_CHALLENGE = 'cross_topic_challenge';
+    public const string CROSS_TOPIC_CHALLENGE = 'cross_topic_challenge';
 
-    public const CHECK_CERTIFICATION = 'check_certification';
+    public const string CHECK_CERTIFICATION = 'check_certification';
 
-    public const UNLOCK_ADVANCED = 'unlock_advanced';
+    public const string UNLOCK_ADVANCED = 'unlock_advanced';
 
     // Notification Types (Standard values)
-    public const TYPE_CRISIS = 'crisis';
+    public const string TYPE_CRISIS = 'crisis';
 
-    public const TYPE_CERTIFICATION = 'certification';
+    public const string TYPE_CERTIFICATION = 'certification';
 
-    public const TYPE_GENERAL = 'general';
+    public const string TYPE_GENERAL = 'general';
 }

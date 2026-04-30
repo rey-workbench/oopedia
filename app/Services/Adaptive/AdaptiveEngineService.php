@@ -19,53 +19,54 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 {
     use EvaluatesAdaptiveConditions;
 
-    private const MAX_CHAINING_ITERATIONS = 10;
+    private const int MAX_CHAINING_ITERATIONS = 10;
 
-    private const FALLBACK_RULE_ID        = 'R14';
+    private const string FALLBACK_RULE_ID        = 'R14';
 
-    private const CATEGORY_PRIMARY       = 'primary';
-
-    private const CATEGORY_VIRTUAL       = 'virtual';
+    private const string CATEGORY_PRIMARY       = 'primary';
 
     /**
      * Core Engine: True Forward Chaining with Iterative Evaluation.
      */
-    public function evaluate(StudentStateDTO $state): EngineResultDTO
+    public function evaluate(StudentStateDTO $studentStateDTO): EngineResultDTO
     {
         try {
-            $activeFacts  = $this->generateActiveFacts($state);
+            $activeFacts  = $this->generateActiveFacts($studentStateDTO);
             $appliedRules = $this->runForwardChaining($activeFacts);
 
-            if (empty($appliedRules)) {
+            if ($appliedRules === []) {
                 return $this->handleFallback($activeFacts);
             }
 
             return EngineResultDTO::fromAppliedRules($appliedRules, $activeFacts, count($appliedRules));
-        } catch (\Exception $e) {
-            return $this->handleEngineError($e, $activeFacts ?? []);
+        } catch (\Exception $exception) {
+            return $this->handleEngineError($exception, $activeFacts ?? []);
         }
     }
 
     /**
      * Maps raw state values to Fact G-Codes based on DB logic.
      */
-    private function generateActiveFacts(StudentStateDTO $state): array
+    private function generateActiveFacts(StudentStateDTO $studentStateDTO): array
     {
         $activeFacts = [];
 
         $factDefinitions = AdaptiveFact::where('category', self::CATEGORY_PRIMARY)->get();
 
-        foreach ($factDefinitions as $fact) {
-            $formula = json_decode($fact->logic ?? '', true);
-
-            if (! $formula || ! isset($formula[AdaptiveConditionKeys::KEY])) {
+        foreach ($factDefinitions as $factDefinition) {
+            $formula = json_decode($factDefinition->logic ?? '', true);
+            if (! $formula) {
                 continue;
             }
 
-            $currentValue = $state->getMetric($formula[AdaptiveConditionKeys::KEY]);
+            if (! isset($formula[AdaptiveConditionKeys::KEY])) {
+                continue;
+            }
+
+            $currentValue = $studentStateDTO->getMetric($formula[AdaptiveConditionKeys::KEY]);
 
             if ($this->evaluateCondition($currentValue, $formula[AdaptiveConditionKeys::OP], $formula[AdaptiveConditionKeys::VAL])) {
-                $activeFacts[] = $fact->id;
+                $activeFacts[] = $factDefinition->id;
             }
         }
 
@@ -143,7 +144,7 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 
     private function isRuleSatisfied(array $required, array $active): bool
     {
-        if (empty($required)) {
+        if ($required === []) {
             return false;
         }
 
@@ -161,14 +162,14 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
         return EngineResultDTO::fromFallback($activeFacts);
     }
 
-    private function handleEngineError(\Exception $e, array $activeFacts): EngineResultDTO
+    private function handleEngineError(\Exception $exception, array $activeFacts): EngineResultDTO
     {
-        Log::error('Adaptive Engine Error: ' . $e->getMessage(), [
-            'trace' => $e->getTraceAsString(),
+        Log::error('Adaptive Engine Error: ' . $exception->getMessage(), [
+            'trace' => $exception->getTraceAsString(),
         ]);
 
-        if ($e instanceof QueryException) {
-            throw $e;
+        if ($exception instanceof QueryException) {
+            throw $exception;
         }
 
         return EngineResultDTO::fromFallback($activeFacts);

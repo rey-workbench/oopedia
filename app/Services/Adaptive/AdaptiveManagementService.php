@@ -15,22 +15,22 @@ use Illuminate\Support\Facades\DB;
 
 final class AdaptiveManagementService implements AdaptiveManagementServiceInterface
 {
-    public function createRule(AdaptiveRuleDTO $dto): AdaptiveRule
+    public function createRule(AdaptiveRuleDTO $adaptiveRuleDTO): AdaptiveRule
     {
-        return DB::transaction(function () use ($dto) {
-            $this->syncFacts($dto->facts, $dto->deduced_facts);
+        return DB::transaction(function () use ($adaptiveRuleDTO) {
+            $this->syncFacts($adaptiveRuleDTO->facts, $adaptiveRuleDTO->deduced_facts);
 
-            return AdaptiveRule::create($dto->toArray());
+            return AdaptiveRule::create($adaptiveRuleDTO->toArray());
         });
     }
 
-    public function updateRule(string $id, AdaptiveRuleDTO $dto): AdaptiveRule
+    public function updateRule(string $id, AdaptiveRuleDTO $adaptiveRuleDTO): AdaptiveRule
     {
         $rule = AdaptiveRule::findOrFail($id);
 
-        return DB::transaction(function () use ($rule, $dto) {
-            $this->syncFacts($dto->facts, $dto->deduced_facts);
-            $rule->update($dto->toArray());
+        return DB::transaction(function () use ($rule, $adaptiveRuleDTO) {
+            $this->syncFacts($adaptiveRuleDTO->facts, $adaptiveRuleDTO->deduced_facts);
+            $rule->update($adaptiveRuleDTO->toArray());
 
             return $rule->fresh();
         });
@@ -41,15 +41,15 @@ final class AdaptiveManagementService implements AdaptiveManagementServiceInterf
         AdaptiveRule::findOrFail($id)->delete();
     }
 
-    public function createAction(AdaptiveActionDTO $dto): AdaptiveAction
+    public function createAction(AdaptiveActionDTO $adaptiveActionDTO): AdaptiveAction
     {
-        return AdaptiveAction::create($dto->toArray());
+        return AdaptiveAction::create($adaptiveActionDTO->toArray());
     }
 
-    public function updateAction(string $id, AdaptiveActionDTO $dto): AdaptiveAction
+    public function updateAction(string $id, AdaptiveActionDTO $adaptiveActionDTO): AdaptiveAction
     {
         $action = AdaptiveAction::findOrFail($id);
-        $action->update($dto->toArray());
+        $action->update($adaptiveActionDTO->toArray());
 
         return $action->fresh();
     }
@@ -94,13 +94,13 @@ final class AdaptiveManagementService implements AdaptiveManagementServiceInterf
         }
 
         // 2. Sync from DEDUCE blocks (Virtual Facts / Diagnoses)
-        foreach ($deducedFacts as $fact) {
-            $id = $fact['id'] ?? $fact['key'] ?? null;
+        foreach ($deducedFacts as $deducedFact) {
+            $id = $deducedFact['id'] ?? $deducedFact['key'] ?? null;
             if (! empty($id)) {
                 AdaptiveFact::updateOrCreate(
                     ['id' => $id],
                     [
-                        'name'     => $fact['name'] ?? 'Diagnosa: ' . $id,
+                        'name'     => $deducedFact['name'] ?? 'Diagnosa: ' . $id,
                         'category' => 'virtual',
                         'logic'    => null,
                     ],

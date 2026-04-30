@@ -15,6 +15,7 @@ final class Material extends Model
     use HasFactory;
     use HasUlids;
 
+    #[\Override]
     protected $fillable = [
         'title',
         'content',
@@ -23,6 +24,7 @@ final class Material extends Model
         'is_final_project',
     ];
 
+    #[\Override]
     protected function casts(): array
     {
         return [

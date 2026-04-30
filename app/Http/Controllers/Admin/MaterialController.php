@@ -10,6 +10,7 @@ use App\DTOs\Material\MaterialUpdateDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Material\StoreMaterialRequest;
 use App\Http\Requests\Material\UpdateMaterialRequest;
+use App\Models\Material;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +19,7 @@ use Inertia\Response;
 final class MaterialController extends Controller
 {
     public function __construct(
-        protected MaterialServiceInterface $materialService,
+        private readonly MaterialServiceInterface $materialService,
     ) {}
 
     public function index(Request $request): Response
@@ -29,7 +30,7 @@ final class MaterialController extends Controller
 
         $materials = $this->materialService->getAllMaterials($search, $sort, $direction);
 
-        return $this->render('Admin/Materials/Index', compact('materials'));
+        return $this->render('Admin/Materials/Index', ['materials' => $materials]);
     }
 
     public function create(): Response
@@ -37,11 +38,11 @@ final class MaterialController extends Controller
         return $this->render('Admin/Materials/Create/Index');
     }
 
-    public function store(StoreMaterialRequest $request): RedirectResponse
+    public function store(StoreMaterialRequest $storeMaterialRequest): RedirectResponse
     {
-        $dto = MaterialCreateDTO::fromRequest($request, Auth::id());
+        $materialCreateDTO = MaterialCreateDTO::fromRequest($storeMaterialRequest, Auth::id());
 
-        $this->materialService->createMaterial($dto);
+        $this->materialService->createMaterial($materialCreateDTO);
 
         return redirect()->route('admin.materials.index')
             ->with('success', 'Materi berhasil ditambahkan.');
@@ -51,19 +52,19 @@ final class MaterialController extends Controller
     {
         $material = $this->materialService->getMaterialById($materialId);
 
-        if (! $material) {
+        if (! $material instanceof Material) {
             return redirect()->route('admin.materials.index')
                 ->with('error', 'Material tidak ditemukan');
         }
 
-        return $this->render('Admin/Materials/Edit/Index', compact('material'));
+        return $this->render('Admin/Materials/Edit/Index', ['material' => $material]);
     }
 
-    public function update(UpdateMaterialRequest $request, string $materialId): RedirectResponse
+    public function update(UpdateMaterialRequest $updateMaterialRequest, string $materialId): RedirectResponse
     {
-        $dto = MaterialUpdateDTO::fromRequest($request);
+        $materialUpdateDTO = MaterialUpdateDTO::fromRequest($updateMaterialRequest);
 
-        $this->materialService->updateMaterial($materialId, $dto);
+        $this->materialService->updateMaterial($materialId, $materialUpdateDTO);
 
         return redirect()->route('admin.materials.index')
             ->with('success', 'Materi berhasil diperbarui.');

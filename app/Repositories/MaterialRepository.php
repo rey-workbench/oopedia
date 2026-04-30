@@ -98,12 +98,12 @@ final class MaterialRepository implements MaterialRepositoryInterface
         $query = Material::query();
 
         if ($search) {
-            $query->where('title', 'like', "%{$search}%");
+            $query->where('title', 'like', sprintf('%%%s%%', $search));
         }
 
         $allowedSortFields = ['title', 'created_at'];
 
-        if (in_array($sort, $allowedSortFields)) {
+        if (in_array($sort, $allowedSortFields, true)) {
             $query->orderBy($sort, $direction);
         } else {
             $query->orderBy('created_at', 'asc');

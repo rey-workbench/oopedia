@@ -31,18 +31,18 @@ final class AdaptiveRuleController extends Controller
         ]);
     }
 
-    public function edit(AdaptiveRule $adaptive_rule): Response
+    public function edit(AdaptiveRule $adaptiveRule): Response
     {
         return $this->render('Admin/AdaptiveRules/Edit/Index', [
             'rule' => [
-                'id'                => $adaptive_rule->id,
-                'name'              => $adaptive_rule->name,
-                'recommendation'    => $adaptive_rule->recommendation,
-                'priority'          => $adaptive_rule->priority,
-                'actions'           => $adaptive_rule->getAttribute('actions'),
-                'required_fact_ids' => $adaptive_rule->required_fact_ids,
-                'deduced_fact_ids'  => $adaptive_rule->deduced_fact_ids,
-                'is_active'         => $adaptive_rule->is_active,
+                'id'                => $adaptiveRule->id,
+                'name'              => $adaptiveRule->name,
+                'recommendation'    => $adaptiveRule->recommendation,
+                'priority'          => $adaptiveRule->priority,
+                'actions'           => $adaptiveRule->getAttribute('actions'),
+                'required_fact_ids' => $adaptiveRule->required_fact_ids,
+                'deduced_fact_ids'  => $adaptiveRule->deduced_fact_ids,
+                'is_active'         => $adaptiveRule->is_active,
             ],
             'all_facts'   => AdaptiveFact::all(),
             'all_actions' => AdaptiveAction::all(),
@@ -52,38 +52,38 @@ final class AdaptiveRuleController extends Controller
     public function index(): Response
     {
         return $this->render('Admin/AdaptiveRules/Index', [
-            'total_rules'                => AdaptiveRule::count(),
-            'total_facts'                => AdaptiveFact::count(),
-            'total_actions'              => AdaptiveAction::count(),
+            'total_rules'                 => AdaptiveRule::count(),
+            'total_facts'                 => AdaptiveFact::count(),
+            'total_actions'               => AdaptiveAction::count(),
             'rules_by_diagnosis'          => $this->getRulesByDiagnosis(),
             'adaptive_state_distribution' => $this->getAdaptiveStateDistribution(),
-            'recent_triggers'            => $this->getRecentTriggers(),
+            'recent_triggers'             => $this->getRecentTriggers(),
             'rule_triggers_stats'         => $this->getRuleTriggersStats(),
-            'decision_tree'              => $this->getDecisionTree(),
-            'all_facts'                  => AdaptiveFact::all(),
-            'all_actions'                => AdaptiveAction::all(),
+            'decision_tree'               => $this->getDecisionTree(),
+            'all_facts'                   => AdaptiveFact::all(),
+            'all_actions'                 => AdaptiveAction::all(),
         ]);
     }
 
-    public function store(StoreAdaptiveRuleRequest $request): RedirectResponse
+    public function store(StoreAdaptiveRuleRequest $storeAdaptiveRuleRequest): RedirectResponse
     {
-        $dto = AdaptiveRuleDTO::fromRequest($request);
-        $this->adaptiveManagementService->createRule($dto);
+        $adaptiveRuleDTO = AdaptiveRuleDTO::fromRequest($storeAdaptiveRuleRequest);
+        $this->adaptiveManagementService->createRule($adaptiveRuleDTO);
 
         return back()->with('success', 'Aturan berhasil dibuat.');
     }
 
-    public function update(UpdateAdaptiveRuleRequest $request, AdaptiveRule $adaptive_rule): RedirectResponse
+    public function update(UpdateAdaptiveRuleRequest $updateAdaptiveRuleRequest, AdaptiveRule $adaptiveRule): RedirectResponse
     {
-        $dto = AdaptiveRuleDTO::fromRequest($request);
-        $this->adaptiveManagementService->updateRule($adaptive_rule->id, $dto);
+        $adaptiveRuleDTO = AdaptiveRuleDTO::fromRequest($updateAdaptiveRuleRequest);
+        $this->adaptiveManagementService->updateRule($adaptiveRule->id, $adaptiveRuleDTO);
 
         return back()->with('success', 'Aturan berhasil diperbarui.');
     }
 
-    public function destroy(AdaptiveRule $adaptive_rule): RedirectResponse
+    public function destroy(AdaptiveRule $adaptiveRule): RedirectResponse
     {
-        $this->adaptiveManagementService->deleteRule($adaptive_rule->id);
+        $this->adaptiveManagementService->deleteRule($adaptiveRule->id);
 
         return back()->with('success', 'Aturan berhasil dihapus.');
     }
@@ -100,7 +100,7 @@ final class AdaptiveRuleController extends Controller
             $result[] = [
                 'diagnosis_name' => $diagnosisName ?? 'Uncategorized',
                 'count'          => $ruleList->count(),
-                'rules'          => $ruleList->map(fn ($rule) => [
+                'rules'          => $ruleList->map(fn ($rule): array => [
                     'id'                => $rule->id,
                     'name'              => $rule->name,
                     'recommendation'    => $rule->recommendation,
@@ -129,8 +129,8 @@ final class AdaptiveRuleController extends Controller
             'hard'     => 0,
         ];
 
-        foreach ($studentStates as $state) {
-            $difficulty = $state->target_difficulty;
+        foreach ($studentStates as $studentState) {
+            $difficulty = $studentState->target_difficulty;
             if ($difficulty && isset($distribution[$difficulty])) {
                 $distribution[$difficulty]++;
             }
@@ -156,7 +156,7 @@ final class AdaptiveRuleController extends Controller
             ->latest()
             ->limit(10)
             ->get()
-            ->map(fn ($log) => [
+            ->map(fn ($log): array => [
                 'id'             => $log->id,
                 'rule_id'        => $log->rule_id,
                 'rule_name'      => AdaptiveRule::where('id', $log->rule_id)->value('name') ?? $log->rule_id,
@@ -182,7 +182,7 @@ final class AdaptiveRuleController extends Controller
             ->groupBy('rule_id')
             ->orderByDesc('count')
             ->get()
-            ->map(function ($stat) use ($totalLogs) {
+            ->map(function ($stat) use ($totalLogs): array {
                 $rule = AdaptiveRule::where('id', $stat->rule_id)->first();
 
                 return [

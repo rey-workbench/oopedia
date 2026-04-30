@@ -17,7 +17,7 @@ use Inertia\Response;
 final class RegisterController extends Controller
 {
     public function __construct(
-        protected UserServiceInterface $userService,
+        private readonly UserServiceInterface $userService,
     ) {}
 
     public function create(): Response
@@ -25,21 +25,21 @@ final class RegisterController extends Controller
         return $this->render('Auth/Register/Index');
     }
 
-    public function store(RegisterRequest $request): RedirectResponse
+    public function store(RegisterRequest $registerRequest): RedirectResponse
     {
-        $dto = UserRegistrationDTO::fromRequest($request);
+        $userRegistrationDTO = UserRegistrationDTO::fromRequest($registerRequest);
 
-        $user = $this->userService->registerUser($dto->toArray());
+        $user = $this->userService->registerUser($userRegistrationDTO->toArray());
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        if ($dto->isDosen && ! $dto->is_approved) {
+        if ($userRegistrationDTO->isDosen && ! $userRegistrationDTO->is_approved) {
             return Redirect::route('admin.pending-approval');
         }
 
-        if ($dto->isDosen) {
+        if ($userRegistrationDTO->isDosen) {
             return Redirect::route('admin.dashboard');
         }
 

@@ -16,7 +16,7 @@ use Inertia\Response;
 final class MslqController extends Controller
 {
     public function __construct(
-        protected MslqServiceInterface $mslqService,
+        private readonly MslqServiceInterface $mslqService,
     ) {}
 
     public function create(): Response|RedirectResponse
@@ -33,7 +33,7 @@ final class MslqController extends Controller
         ]);
     }
 
-    public function store(StoreMslqRequest $request): RedirectResponse
+    public function store(StoreMslqRequest $storeMslqRequest): RedirectResponse
     {
         $existing = MslqResult::where('user_id', Auth::id())->first();
         if ($existing) {
@@ -41,7 +41,7 @@ final class MslqController extends Controller
         }
 
         try {
-            $validated = $request->validated();
+            $validated = $storeMslqRequest->validated();
             $answers   = [];
             foreach ($validated['answers'] as $ans) {
                 $answers[$ans['question_id']] = $ans['value'];
@@ -55,8 +55,8 @@ final class MslqController extends Controller
             );
 
             return redirect()->route('mahasiswa.mslq.thankyou');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Gagal menyimpan data survey: ' . $e->getMessage());
+        } catch (\Exception $exception) {
+            return back()->with('error', 'Gagal menyimpan data survey: ' . $exception->getMessage());
         }
     }
 

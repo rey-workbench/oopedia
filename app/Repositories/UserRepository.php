@@ -49,14 +49,14 @@ final class UserRepository implements UserRepositoryInterface
 
     public function getStudentsList(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
-        $query = User::whereHas('role', function ($q) {
+        $query = User::whereHas('role', function ($q): void {
             $q->where('role_name', 'mahasiswa');
         });
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search): void {
+                $q->where('name', 'like', sprintf('%%%s%%', $search))
+                    ->orWhere('email', 'like', sprintf('%%%s%%', $search));
             });
         }
 
@@ -68,14 +68,14 @@ final class UserRepository implements UserRepositoryInterface
         ?string $search = null,
         int $perPage = 10,
     ): LengthAwarePaginator {
-        $query = User::whereHas('role', function ($q) use ($roleName) {
+        $query = User::whereHas('role', function ($q) use ($roleName): void {
             $q->where('role_name', $roleName);
         });
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search): void {
+                $q->where('name', 'like', sprintf('%%%s%%', $search))
+                    ->orWhere('email', 'like', sprintf('%%%s%%', $search));
             });
         }
 
@@ -102,16 +102,16 @@ final class UserRepository implements UserRepositoryInterface
         string $sortBy = 'created_at',
         string $sortOrder = 'desc',
     ): LengthAwarePaginator|Collection {
-        $query = User::whereHas('role', function ($q) use ($roleName) {
+        $query = User::whereHas('role', function ($q) use ($roleName): void {
             $q->where('role_name', $roleName);
         })
             ->where('is_approved', $isApproved)
             ->orderBy($sortBy, $sortOrder);
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search): void {
+                $q->where('name', 'like', sprintf('%%%s%%', $search))
+                    ->orWhere('email', 'like', sprintf('%%%s%%', $search));
             });
         }
 
@@ -124,10 +124,10 @@ final class UserRepository implements UserRepositoryInterface
 
     public function getActiveStudentsCount(int $days): int
     {
-        return User::whereHas('role', function ($q) {
+        return User::whereHas('role', function ($q): void {
             $q->where('role_name', 'mahasiswa');
         })
-            ->whereHas('quizAttempts', function ($query) use ($days) {
+            ->whereHas('quizAttempts', function ($query) use ($days): void {
                 $query->where('created_at', '>=', now()->subDays($days));
             })
             ->count();
@@ -135,13 +135,13 @@ final class UserRepository implements UserRepositoryInterface
 
     public function getStudentProgressOverview(int $limit): Collection
     {
-        return User::whereHas('role', function ($q) {
+        return User::whereHas('role', function ($q): void {
             $q->where('role_name', 'mahasiswa');
         })
-            ->withCount(['quizAttempts as completed_questions' => function ($query) {
+            ->withCount(['quizAttempts as completed_questions' => function ($query): void {
                 $query->where('is_correct', true);
             }])
-            ->with(['quizAttempts' => function ($query) {
+            ->with(['quizAttempts' => function ($query): void {
                 $query->where('is_correct', true)
                     ->with('question.material:id,title');
             }])
@@ -153,7 +153,7 @@ final class UserRepository implements UserRepositoryInterface
 
     public function countByRole(string $roleName): int
     {
-        return User::whereHas('role', function ($q) use ($roleName) {
+        return User::whereHas('role', function ($q) use ($roleName): void {
             $q->where('role_name', $roleName);
         })
             ->count();

@@ -44,10 +44,13 @@ final class StudentState extends Model
     use HasFactory;
     use HasUlids;
 
+    #[\Override]
     public $incrementing = false;
 
+    #[\Override]
     protected $keyType = 'string';
 
+    #[\Override]
     protected $fillable = [
         'user_id',
         // Gamification
@@ -63,6 +66,7 @@ final class StudentState extends Model
         'last_active_at',
     ];
 
+    #[\Override]
     protected function casts(): array
     {
         return [

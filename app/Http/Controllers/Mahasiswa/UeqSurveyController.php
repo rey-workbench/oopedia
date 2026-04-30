@@ -15,29 +15,29 @@ use Inertia\Response;
 final class UeqSurveyController extends Controller
 {
     public function __construct(
-        protected UeqSurveyServiceInterface $ueqService,
+        private readonly UeqSurveyServiceInterface $ueqSurveyService,
     ) {}
 
     public function create(): Response|RedirectResponse
     {
-        if ($this->ueqService->hasUserSubmitted(Auth::id())) {
+        if ($this->ueqSurveyService->hasUserSubmitted(Auth::id())) {
             return redirect()->route('mahasiswa.ueq-survey.thankyou');
         }
 
         $aspects = $this->getAspects();
 
-        return $this->render('Mahasiswa/Ueq/Create/Index', compact('aspects'));
+        return $this->render('Mahasiswa/Ueq/Create/Index', ['aspects' => $aspects]);
     }
 
-    public function store(StoreUeqSurveyRequest $request): RedirectResponse
+    public function store(StoreUeqSurveyRequest $storeUeqSurveyRequest): RedirectResponse
     {
-        if ($this->ueqService->hasUserSubmitted(Auth::id())) {
+        if ($this->ueqSurveyService->hasUserSubmitted(Auth::id())) {
             return redirect()->route('mahasiswa.ueq-survey.thankyou');
         }
 
-        $dto = UeqSurveyCreateDTO::fromRequest($request, (string) Auth::id());
+        $ueqSurveyCreateDTO = UeqSurveyCreateDTO::fromRequest($storeUeqSurveyRequest, (string) Auth::id());
 
-        $this->ueqService->createSurvey($dto->toArray());
+        $this->ueqSurveyService->createSurvey($ueqSurveyCreateDTO->toArray());
 
         return redirect()->route('mahasiswa.ueq-survey.thankyou');
     }

@@ -9,39 +9,39 @@ use App\Contracts\Services\SusResultServiceInterface;
 use App\Models\SusResult;
 use Illuminate\Database\Eloquent\Collection;
 
-final class SusResultService implements SusResultServiceInterface
+final readonly class SusResultService implements SusResultServiceInterface
 {
     public function __construct(
-        private readonly SusResultRepositoryInterface $susRepo,
+        private SusResultRepositoryInterface $susResultRepository,
     ) {}
 
     /** @return Collection<int, SusResult> */
     public function getAllResults(?string $class = null): Collection
     {
-        return $this->susRepo->getAllWithUser($class);
+        return $this->susResultRepository->getAllWithUser($class);
     }
 
     /** @return array<string> */
     public function getDistinctClasses(): array
     {
-        return $this->susRepo->getDistinctClasses();
+        return $this->susResultRepository->getDistinctClasses();
     }
 
     public function getStudentDetail(string $userId): ?SusResult
     {
-        return $this->susRepo->findByUserId($userId);
+        return $this->susResultRepository->findByUserId($userId);
     }
 
     public function hasUserSubmitted(string $userId): bool
     {
-        return $this->susRepo->findByUserId($userId) !== null;
+        return $this->susResultRepository->findByUserId($userId) instanceof SusResult;
     }
 
     public function submitResult(array $data): SusResult
     {
         $data['total_score'] = $this->calculateScore($data);
 
-        return $this->susRepo->create($data);
+        return $this->susResultRepository->create($data);
     }
 
     public function calculateItemScores(SusResult|array $result): array
@@ -51,12 +51,12 @@ final class SusResultService implements SusResultServiceInterface
 
         // Odd items: 1, 3, 5, 7, 9 -> (X - 1)
         foreach ([1, 3, 5, 7, 9] as $i) {
-            $scores["q$i"] = (int) $data["q$i"] - 1;
+            $scores['q' . $i] = (int) $data['q' . $i] - 1;
         }
 
         // Even items: 2, 4, 6, 8, 10 -> (5 - X)
         foreach ([2, 4, 6, 8, 10] as $i) {
-            $scores["q$i"] = 5 - (int) $data["q$i"];
+            $scores['q' . $i] = 5 - (int) $data['q' . $i];
         }
 
         return $scores;
@@ -99,7 +99,7 @@ final class SusResultService implements SusResultServiceInterface
     {
         $averages = [];
         for ($i = 1; $i <= 10; $i++) {
-            $averages["q$i"] = round($results->avg("q$i"), 2);
+            $averages['q' . $i] = round($results->avg('q' . $i), 2);
         }
 
         return $averages;
@@ -110,12 +110,15 @@ final class SusResultService implements SusResultServiceInterface
         if ($score >= 80.3) {
             return 'A';
         }
+
         if ($score >= 74) {
             return 'B';
         }
+
         if ($score >= 68) {
             return 'C';
         }
+
         if ($score >= 51) {
             return 'D';
         }
@@ -128,12 +131,15 @@ final class SusResultService implements SusResultServiceInterface
         if ($score >= 85) {
             return 'Excellent';
         }
+
         if ($score >= 71.4) {
             return 'Good';
         }
+
         if ($score >= 50.9) {
             return 'OK';
         }
+
         if ($score >= 35.7) {
             return 'Poor';
         }
@@ -146,6 +152,7 @@ final class SusResultService implements SusResultServiceInterface
         if ($score >= 71) {
             return 'Acceptable';
         }
+
         if ($score >= 51) {
             return 'Marginal';
         }

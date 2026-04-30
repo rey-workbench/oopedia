@@ -14,16 +14,18 @@ use App\Exceptions\Domain\MaterialNotFoundException;
 use App\Exceptions\Domain\MediaOperationException;
 use App\Helpers\ProgressHelper;
 use App\Models\Material;
+use App\Models\Media;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
-final class MaterialService implements MaterialServiceInterface
+final readonly class MaterialService implements MaterialServiceInterface
 {
     public function __construct(
-        private readonly MaterialRepositoryInterface $materialRepo,
-        private readonly MediaRepositoryInterface $mediaRepo,
-        private readonly ProgressRepositoryInterface $progressRepo,
+        private MaterialRepositoryInterface $materialRepository,
+        private MediaRepositoryInterface $mediaRepository,
+        private ProgressRepositoryInterface $progressRepository,
     ) {}
 
     // =========================================================================
@@ -35,36 +37,36 @@ final class MaterialService implements MaterialServiceInterface
         string $sort = 'created_at',
         string $direction = 'asc',
     ): Collection {
-        return $this->materialRepo->getMaterialsForAdmin($search, $sort, $direction);
+        return $this->materialRepository->getMaterialsForAdmin($search, $sort, $direction);
     }
 
     public function getAllOrdered(): Collection
     {
-        return $this->materialRepo->getAllOrdered();
+        return $this->materialRepository->getAllOrdered();
     }
 
     public function getMaterialById(string $id): ?Material
     {
-        return $this->materialRepo->find($id);
+        return $this->materialRepository->find($id);
     }
 
-    public function getMaterialWithQuestionsAndAnswers(string $id): ?Material
+    public function getMaterialWithQuestionsAndAnswers(string $id): Material
     {
-        return $this->materialRepo->findWithQuestionsAndAnswers($id);
+        return $this->materialRepository->findWithQuestionsAndAnswers($id);
     }
 
-    public function createMaterial(MaterialCreateDTO $dto): Material
+    public function createMaterial(MaterialCreateDTO $materialCreateDTO): Material
     {
-        $material = $this->materialRepo->create([
-            'title'            => $dto->title,
-            'content'          => $dto->content,
-            'module_id'        => $dto->module_id,
-            'created_by'       => $dto->created_by,
-            'is_final_project' => $dto->is_final_project,
+        $material = $this->materialRepository->create([
+            'title'            => $materialCreateDTO->title,
+            'content'          => $materialCreateDTO->content,
+            'module_id'        => $materialCreateDTO->module_id,
+            'created_by'       => $materialCreateDTO->created_by,
+            'is_final_project' => $materialCreateDTO->is_final_project,
         ]);
 
-        if ($dto->cover_image) {
-            $this->uploadCoverImage($material, $dto->cover_image);
+        if ($materialCreateDTO->cover_image) {
+            $this->uploadCoverImage($material, $materialCreateDTO->cover_image);
         }
 
         Cache::forget('sidebar_materials_v4');
@@ -72,24 +74,24 @@ final class MaterialService implements MaterialServiceInterface
         return $material;
     }
 
-    public function updateMaterial(string $materialId, MaterialUpdateDTO $dto): Material
+    public function updateMaterial(string $materialId, MaterialUpdateDTO $materialUpdateDTO): Material
     {
-        $material = $this->materialRepo->find($materialId);
+        $material = $this->materialRepository->find($materialId);
 
-        if (! $material) {
+        if (! $material instanceof Material) {
             throw new MaterialNotFoundException($materialId);
         }
 
-        $this->materialRepo->update($material->id, [
-            'title'            => $dto->title            ?? $material->title,
-            'content'          => $dto->content          ?? $material->content,
-            'module_id'        => $dto->module_id        ?? $material->module_id,
-            'is_final_project' => $dto->is_final_project ?? $material->is_final_project,
+        $this->materialRepository->update($material->id, [
+            'title'            => $materialUpdateDTO->title            ?? $material->title,
+            'content'          => $materialUpdateDTO->content          ?? $material->content,
+            'module_id'        => $materialUpdateDTO->module_id        ?? $material->module_id,
+            'is_final_project' => $materialUpdateDTO->is_final_project ?? $material->is_final_project,
         ]);
 
-        if ($dto->cover_image) {
+        if ($materialUpdateDTO->cover_image) {
             $this->deleteCoverImage($material);
-            $this->uploadCoverImage($material, $dto->cover_image);
+            $this->uploadCoverImage($material, $materialUpdateDTO->cover_image);
         }
 
         Cache::forget('sidebar_materials_v4');
@@ -99,36 +101,36 @@ final class MaterialService implements MaterialServiceInterface
 
     public function deleteMaterial(string $materialId): void
     {
-        $material = $this->materialRepo->find($materialId);
+        $material = $this->materialRepository->find($materialId);
 
-        if (! $material) {
+        if (! $material instanceof Material) {
             throw new MaterialNotFoundException($materialId);
         }
 
-        $mediaFiles = $this->mediaRepo->getByMaterial($material->id);
+        $mediaFiles = $this->mediaRepository->getByMaterial($material->id);
 
-        foreach ($mediaFiles as $media) {
-            $this->removeMediaFile($media->media_url);
-            $this->mediaRepo->delete($media->id);
+        foreach ($mediaFiles as $mediumFile) {
+            $this->removeMediaFile($mediumFile->media_url);
+            $this->mediaRepository->delete($mediumFile->id);
         }
 
-        $this->materialRepo->delete($material->id);
+        $this->materialRepository->delete($material->id);
 
         Cache::forget('sidebar_materials_v4');
     }
 
     public function deleteMedia(string $mediaId): string
     {
-        $media = $this->mediaRepo->find($mediaId);
+        $media = $this->mediaRepository->find($mediaId);
 
-        if (! $media) {
-            throw new MediaOperationException("Media dengan ID '{$mediaId}' tidak ditemukan.");
+        if (! $media instanceof Media) {
+            throw new MediaOperationException(sprintf("Media dengan ID '%s' tidak ditemukan.", $mediaId));
         }
 
         $materialId = $media->material_id;
 
         $this->removeMediaFile($media->media_url);
-        $this->mediaRepo->delete($mediaId);
+        $this->mediaRepository->delete($mediaId);
 
         return (string) $materialId;
     }
@@ -162,26 +164,19 @@ final class MaterialService implements MaterialServiceInterface
 
     public function getMaterialsList(?string $userId, bool $isGuest): Collection
     {
-        $progressStats = $userId ? $this->progressRepo->getUserProgressStats($userId) : collect();
-        $allMaterials  = $this->materialRepo->getMaterialsForListing();
-
-        $unlockedModules = [];
-        if ($userId) {
-            $studentState    = $this->progressRepo->getStudentState($userId);
-            $unlockedModules = $studentState?->adaptive_state['unlocked_modules'] ?? [];
-        }
+        $progressStats = $userId ? $this->progressRepository->getUserProgressStats($userId) : collect();
+        $allMaterials  = $this->materialRepository->getMaterialsForListing();
 
         $allMaterials->load([
-            'questions' => function ($query) {
+            'questions' => function ($query): void {
                 $query->select('id', 'material_id', 'difficulty');
             },
         ]);
 
-        $firstModuleId  = $allMaterials->whereNotNull('module_id')->min('module_id');
         $totalMaterials = $allMaterials->count();
 
         return $allMaterials->map(
-            function ($material, $index) use ($progressStats, $isGuest, $totalMaterials) {
+            function ($material, $index) use ($progressStats, $isGuest, $totalMaterials): Model {
                 $counts                   = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest);
                 $configuredTotalQuestions = $counts['total'];
                 $materialProgress         = $progressStats->firstWhere('material_id', $material->id);
@@ -191,11 +186,7 @@ final class MaterialService implements MaterialServiceInterface
                 $material->total_questions     = $configuredTotalQuestions;
                 $material->completed_questions = $correctAnswers;
 
-                if ($isGuest) {
-                    $material->is_locked = $index >= ceil($totalMaterials / 2);
-                } else {
-                    $material->is_locked = false;
-                }
+                $material->is_locked = $isGuest && $index >= ceil($totalMaterials / 2);
 
                 return $material;
             },
@@ -204,24 +195,12 @@ final class MaterialService implements MaterialServiceInterface
 
     public function getMaterialDetail(string $materialId, ?string $userId, bool $isGuest, array $guestProgress = []): array
     {
-        $material     = $this->materialRepo->findWithQuestionsShuffled($materialId);
-        $allMaterials = $this->materialRepo->getAllOrdered();
+        $material       = $this->materialRepository->findWithQuestionsShuffled($materialId);
+        $allMaterials   = $this->materialRepository->getAllOrdered();
+        $totalMaterials = $allMaterials->count();
 
-        $firstModuleId   = $allMaterials->whereNotNull('module_id')->min('module_id');
-        $totalMaterials  = $allMaterials->count();
-        $unlockedModules = [];
-
-        if ($userId) {
-            $studentState    = $this->progressRepo->getStudentState($userId);
-            $unlockedModules = $studentState?->adaptive_state['unlocked_modules'] ?? [];
-        }
-
-        $allMaterials->map(function ($m, $index) use ($isGuest, $totalMaterials) {
-            if ($isGuest) {
-                $m->is_locked = $index >= ceil($totalMaterials / 2);
-            } else {
-                $m->is_locked = false;
-            }
+        $allMaterials->map(function ($m, $index) use ($isGuest, $totalMaterials): Model {
+            $m->is_locked = $isGuest && $index >= ceil($totalMaterials / 2);
 
             return $m;
         });
@@ -237,7 +216,7 @@ final class MaterialService implements MaterialServiceInterface
         }
 
         $answeredQuestionIds = collect($userId
-            ? $this->progressRepo->getAnsweredQuestionIds($userId, $materialId)
+            ? $this->progressRepository->getAnsweredQuestionIds($userId, $materialId)
             : $guestProgress);
 
         $currentQuestion = $material->questions->whereNotIn('id', $answeredQuestionIds)->first()
@@ -256,35 +235,35 @@ final class MaterialService implements MaterialServiceInterface
 
     public function resetMaterialProgress(string $userId, string $materialId): void
     {
-        $this->progressRepo->resetProgress($userId, $materialId);
+        $this->progressRepository->resetProgress($userId, $materialId);
     }
 
     // =========================================================================
     // HELPERS (MEDIA)
     // =========================================================================
 
-    protected function uploadCoverImage(Material $material, mixed $file): void
+    private function uploadCoverImage(Material $material, mixed $file): void
     {
         $path = $file->store('materials', 'images');
-        $this->mediaRepo->create([
+        $this->mediaRepository->create([
             'material_id' => $material->id,
             'media_type'  => 'image',
             'media_url'   => '/images/' . $path,
         ]);
     }
 
-    protected function deleteCoverImage(Material $material): void
+    private function deleteCoverImage(Material $material): void
     {
-        $existingMedia = $this->mediaRepo->findByMaterialAndType($material->id, 'image');
-        if (! $existingMedia) {
+        $existingMedia = $this->mediaRepository->findByMaterialAndType($material->id, 'image');
+        if (! $existingMedia instanceof Media) {
             return;
         }
 
         $this->removeMediaFile($existingMedia->media_url);
-        $this->mediaRepo->delete($existingMedia->id);
+        $this->mediaRepository->delete($existingMedia->id);
     }
 
-    protected function removeMediaFile(string $path): void
+    private function removeMediaFile(string $path): void
     {
         $disk = 'public';
         if (str_starts_with($path, '/images/')) {

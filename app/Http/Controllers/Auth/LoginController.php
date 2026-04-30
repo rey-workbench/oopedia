@@ -18,8 +18,8 @@ use Inertia\Response;
 final class LoginController extends Controller
 {
     public function __construct(
-        protected UserServiceInterface $userService,
-        protected GuestProgressServiceInterface $guestProgressService,
+        private readonly UserServiceInterface $userService,
+        private readonly GuestProgressServiceInterface $guestProgressService,
     ) {}
 
     public function create(): Response
@@ -27,13 +27,13 @@ final class LoginController extends Controller
         return $this->render('Auth/Login/Index');
     }
 
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $loginRequest): RedirectResponse
     {
-        if ($request->has('is_guest')) {
+        if ($loginRequest->has('is_guest')) {
             if (Auth::check()) {
                 Auth::logout();
-                $request->session()->invalidate();
-                $request->session()->regenerateToken();
+                $loginRequest->session()->invalidate();
+                $loginRequest->session()->regenerateToken();
             }
 
             $this->guestProgressService->clearAllProgress();
@@ -41,7 +41,7 @@ final class LoginController extends Controller
             return Redirect::route('mahasiswa.materials.index');
         }
 
-        $credentials = $request->only('email', 'password');
+        $credentials = $loginRequest->only('email', 'password');
 
         if (! Auth::attempt($credentials)) {
             return back()->withErrors([
@@ -49,7 +49,7 @@ final class LoginController extends Controller
             ])->onlyInput('email');
         }
 
-        $request->session()->regenerate();
+        $loginRequest->session()->regenerate();
         $this->guestProgressService->clearAllProgress();
         $user = $this->userService->getUserById(Auth::id());
 

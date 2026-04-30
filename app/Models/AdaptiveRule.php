@@ -19,10 +19,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 final class AdaptiveRule extends Model
 {
+    #[\Override]
     protected $keyType = 'string';
 
+    #[\Override]
     public $incrementing = false;
 
+    #[\Override]
     protected $fillable = [
         'id',
         'name',
@@ -34,6 +37,7 @@ final class AdaptiveRule extends Model
         'is_active',
     ];
 
+    #[\Override]
     protected function casts(): array
     {
         return [
@@ -56,9 +60,7 @@ final class AdaptiveRule extends Model
             return collect();
         }
 
-        $ids = array_map(function ($action) {
-            return is_array($action) ? $action['id'] : $action;
-        }, (array) $actions);
+        $ids = array_map(fn ($action): mixed => is_array($action) ? $action['id'] : $action, (array) $actions);
 
         return AdaptiveAction::whereIn('id', $ids)->get();
     }
@@ -81,8 +83,8 @@ final class AdaptiveRule extends Model
         return AdaptiveFact::whereIn('id', $this->deduced_fact_ids)->get();
     }
 
-    public function scopeOrdered(Builder $query): void
+    public function scopeOrdered(Builder $builder): void
     {
-        $query->orderBy('priority');
+        $builder->orderBy('priority');
     }
 }

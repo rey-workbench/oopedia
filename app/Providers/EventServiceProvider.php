@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use Illuminate\Auth\Events\Registered;
@@ -8,12 +10,14 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 
 class EventServiceProvider extends ServiceProvider
 {
+    #[\Override]
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
     ];
 
+    #[\Override]
     public function shouldDiscoverEvents(): bool
     {
         return false;

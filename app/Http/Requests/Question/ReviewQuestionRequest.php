@@ -8,6 +8,7 @@ use App\Http\Requests\BaseFormRequest;
 
 final class ReviewQuestionRequest extends BaseFormRequest
 {
+    #[\Override]
     protected function prepareForValidation(): void
     {
         $difficulty = $this->route('difficulty');

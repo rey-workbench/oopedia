@@ -11,7 +11,7 @@ use Inertia\Response;
 
 final class DashboardController extends Controller
 {
-    public function __construct(protected AdminDashboardServiceInterface $adminDashboardService) {}
+    public function __construct(private readonly AdminDashboardServiceInterface $adminDashboardService) {}
 
     public function index(): Response
     {
@@ -26,12 +26,12 @@ final class DashboardController extends Controller
         $total_questions = $stats['total_questions'];
         $active_students = $stats['active_students'];
 
-        $recent_progress            = $this->adminDashboardService->getRecentProgress(10);
-        $student_progress           = $this->adminDashboardService->getStudentProgressOverview(5);
-        $material_stats             = $this->adminDashboardService->getMaterialStatistics();
-        $popular_materials          = $this->adminDashboardService->getPopularMaterials(5);
-        $student_analytics          = $this->adminDashboardService->getStudentAnalytics();
-        $students_needing_attention = $this->adminDashboardService->getStudentsNeedingAttention();
+        $recent_progress                = $this->adminDashboardService->getRecentProgress(10);
+        $student_progress               = $this->adminDashboardService->getStudentProgressOverview(5);
+        $materialStatistics             = $this->adminDashboardService->getMaterialStatistics();
+        $popular_materials              = $this->adminDashboardService->getPopularMaterials(5);
+        $student_analytics              = $this->adminDashboardService->getStudentAnalytics();
+        $studentsNeedingAttention       = $this->adminDashboardService->getStudentsNeedingAttention();
 
         return $this->render('Admin/Dashboard/Index', [
             'user_name'                  => $userName,
@@ -42,10 +42,10 @@ final class DashboardController extends Controller
             'active_students'            => $active_students,
             'recent_progress'            => $recent_progress,
             'student_progress'           => $student_progress,
-            'material_stats'             => $material_stats,
+            'material_stats'             => $materialStatistics,
             'popular_materials'          => $popular_materials,
             'student_analytics'          => $student_analytics,
-            'students_needing_attention' => $students_needing_attention,
+            'students_needing_attention' => $studentsNeedingAttention,
         ]);
     }
 }

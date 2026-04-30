@@ -15,12 +15,16 @@ final class Role extends Model
     use HasFactory;
     use HasUlids;
 
+    #[\Override]
     public $incrementing = false;
 
+    #[\Override]
     protected $keyType = 'string';
 
+    #[\Override]
     protected $fillable = ['id', 'role_name'];
 
+    #[\Override]
     protected function casts(): array
     {
         return [

@@ -10,6 +10,6 @@ final class MaterialNotFoundException extends DomainException
 {
     public function __construct(string $id)
     {
-        parent::__construct("Material dengan ID '{$id}' tidak ditemukan.", Response::HTTP_NOT_FOUND);
+        parent::__construct(sprintf("Material dengan ID '%s' tidak ditemukan.", $id), Response::HTTP_NOT_FOUND);
     }
 }

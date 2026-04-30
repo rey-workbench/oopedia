@@ -18,30 +18,30 @@ final class AdaptiveActionController extends Controller
         private readonly AdaptiveManagementServiceInterface $adaptiveManagementService,
     ) {}
 
-    public function update(UpdateAdaptiveActionRequest $request, AdaptiveAction $adaptive_action): RedirectResponse
+    public function update(UpdateAdaptiveActionRequest $updateAdaptiveActionRequest, AdaptiveAction $adaptiveAction): RedirectResponse
     {
-        $dto = AdaptiveActionDTO::fromRequest($request, $adaptive_action->id);
-        $this->adaptiveManagementService->updateAction($adaptive_action->id, $dto);
+        $adaptiveActionDTO = AdaptiveActionDTO::fromRequest($updateAdaptiveActionRequest, $adaptiveAction->id);
+        $this->adaptiveManagementService->updateAction($adaptiveAction->id, $adaptiveActionDTO);
 
         return back()->with('success', 'Aksi adaptif berhasil diperbarui.');
     }
 
-    public function store(StoreAdaptiveActionRequest $request): RedirectResponse
+    public function store(StoreAdaptiveActionRequest $storeAdaptiveActionRequest): RedirectResponse
     {
-        $dto = AdaptiveActionDTO::fromRequest($request);
-        $this->adaptiveManagementService->createAction($dto);
+        $adaptiveActionDTO = AdaptiveActionDTO::fromRequest($storeAdaptiveActionRequest);
+        $this->adaptiveManagementService->createAction($adaptiveActionDTO);
 
         return back()->with('success', 'Aksi adaptif baru berhasil dibuat.');
     }
 
-    public function destroy(AdaptiveAction $adaptive_action): RedirectResponse
+    public function destroy(AdaptiveAction $adaptiveAction): RedirectResponse
     {
         try {
-            $this->adaptiveManagementService->deleteAction($adaptive_action->id);
+            $this->adaptiveManagementService->deleteAction($adaptiveAction->id);
 
             return back()->with('success', 'Aksi adaptif berhasil dihapus.');
-        } catch (\Exception $e) {
-            return back()->with('error', $e->getMessage());
+        } catch (\Exception $exception) {
+            return back()->with('error', $exception->getMessage());
         }
     }
 }

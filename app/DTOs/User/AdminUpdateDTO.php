@@ -29,6 +29,6 @@ final readonly class AdminUpdateDTO
             'name'     => $this->name,
             'email'    => $this->email,
             'password' => $this->password,
-        ], fn ($value) => $value !== null);
+        ], fn (?string $value): bool => $value !== null);
     }
 }

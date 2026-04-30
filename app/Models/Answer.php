@@ -14,6 +14,7 @@ final class Answer extends Model
     use HasFactory;
     use HasUlids;
 
+    #[\Override]
     protected $fillable = [
         'question_id',
         'is_correct',
@@ -24,6 +25,7 @@ final class Answer extends Model
         'blank_position',
     ];
 
+    #[\Override]
     protected function casts(): array
     {
         return [

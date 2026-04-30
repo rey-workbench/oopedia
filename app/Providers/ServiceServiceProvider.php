@@ -36,6 +36,7 @@ use Illuminate\Support\ServiceProvider;
 
 final class ServiceServiceProvider extends ServiceProvider
 {
+    #[\Override]
     public function register(): void
     {
         // LMS Domain

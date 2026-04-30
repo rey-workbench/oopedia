@@ -12,14 +12,14 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 final class SusSurveyController extends Controller
 {
-    public function __construct(protected SusResultServiceInterface $susService) {}
+    public function __construct(private readonly SusResultServiceInterface $susResultService) {}
 
     public function index(Request $request): Response
     {
         $class      = $request->input('class');
-        $results    = $this->susService->getAllResults($class);
-        $classes    = $this->susService->getDistinctClasses();
-        $metrics    = $this->susService->calculateGlobalMetrics($results);
+        $results    = $this->susResultService->getAllResults($class);
+        $classes    = $this->susResultService->getDistinctClasses();
+        $metrics    = $this->susResultService->calculateGlobalMetrics($results);
 
         return $this->render('Admin/Sus/Index', [
             'results'  => $results,
@@ -41,7 +41,7 @@ final class SusSurveyController extends Controller
     public function export(Request $request): StreamedResponse
     {
         $class   = $request->input('class');
-        $results = $this->susService->getAllResults($class);
+        $results = $this->susResultService->getAllResults($class);
 
         $headers = [
             'Content-Type'        => 'text/csv',
@@ -54,33 +54,41 @@ final class SusSurveyController extends Controller
         $callback = function () use ($results): void {
             $file = fopen('php://output', 'w');
 
-            fputcsv($file, [
-                'ID',
-                'NIM',
-                'Nama Pengguna',
-                'Email',
-                'Kelas',
-                'Tanggal Pengisian',
-                'Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9', 'Q10',
-                'Total Score',
-                'Komentar',
-                'Saran',
-            ]);
+            fputcsv(
+                $file,
+                [
+                    'ID',
+                    'NIM',
+                    'Nama Pengguna',
+                    'Email',
+                    'Kelas',
+                    'Tanggal Pengisian',
+                    'Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9', 'Q10',
+                    'Total Score',
+                    'Komentar',
+                    'Saran',
+                ],
+                escape: '\\',
+            );
 
             foreach ($results as $result) {
-                fputcsv($file, [
-                    $result->id,
-                    $result->nim          ?? '',
-                    $result->user?->name  ?? 'Tidak ada',
-                    $result->user?->email ?? 'Tidak ada',
-                    $result->class        ?? '',
-                    $result->created_at->format('d/m/Y H:i'),
-                    $result->q1, $result->q2, $result->q3, $result->q4, $result->q5,
-                    $result->q6, $result->q7, $result->q8, $result->q9, $result->q10,
-                    $result->total_score,
-                    $result->comments    ?? '',
-                    $result->suggestions ?? '',
-                ]);
+                fputcsv(
+                    $file,
+                    [
+                        $result->id,
+                        $result->nim          ?? '',
+                        $result->user?->name  ?? 'Tidak ada',
+                        $result->user?->email ?? 'Tidak ada',
+                        $result->class        ?? '',
+                        $result->created_at->format('d/m/Y H:i'),
+                        $result->q1, $result->q2, $result->q3, $result->q4, $result->q5,
+                        $result->q6, $result->q7, $result->q8, $result->q9, $result->q10,
+                        $result->total_score,
+                        $result->comments    ?? '',
+                        $result->suggestions ?? '',
+                    ],
+                    escape: '\\',
+                );
             }
 
             fclose($file);
@@ -91,14 +99,14 @@ final class SusSurveyController extends Controller
 
     public function show(string $resultId): Response
     {
-        $result = $this->susService->getStudentDetail($resultId);
+        $result = $this->susResultService->getStudentDetail($resultId);
         $user   = $result->user;
 
         $calculation = [
-            'item_scores' => $this->susService->calculateItemScores($result),
+            'item_scores' => $this->susResultService->calculateItemScores($result),
             'total_score' => $result->total_score,
         ];
 
-        return $this->render('Admin/Sus/Detail/Index', compact('result', 'user', 'calculation'));
+        return $this->render('Admin/Sus/Detail/Index', ['result' => $result, 'user' => $user, 'calculation' => $calculation]);
     }
 }

@@ -46,6 +46,7 @@ final class StoreUeqSurveyRequest extends BaseFormRequest
         ];
     }
 
+    #[\Override]
     public function messages(): array
     {
         $between = 'Skala penilaian harus bernilai antara 1 sampai 7';

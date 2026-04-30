@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ImportAdminRequest;
 use App\Http\Requests\User\StoreAdminRequest;
 use App\Http\Requests\User\UpdateAdminRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,8 +22,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 final class AdminUserController extends Controller
 {
     public function __construct(
-        protected UserServiceInterface $userService,
-        protected RoleRepositoryInterface $roleRepo,
+        private readonly UserServiceInterface $userService,
+        private readonly RoleRepositoryInterface $roleRepository,
     ) {}
 
     public function index(Request $request): Response
@@ -31,21 +32,21 @@ final class AdminUserController extends Controller
         $users              = $this->userService->getAdmins($search);
         $pendingAdminsCount = $this->userService->getPendingAdminsCount();
 
-        return $this->render('Admin/Users/Index', compact('users', 'pendingAdminsCount'));
+        return $this->render('Admin/Users/Index', ['users' => $users, 'pendingAdminsCount' => $pendingAdminsCount]);
     }
 
     public function create(): Response
     {
-        $roles = $this->roleRepo->all();
+        $roles = $this->roleRepository->all();
 
-        return $this->render('Admin/Users/Create/Index', compact('roles'));
+        return $this->render('Admin/Users/Create/Index', ['roles' => $roles]);
     }
 
-    public function store(StoreAdminRequest $request): RedirectResponse
+    public function store(StoreAdminRequest $storeAdminRequest): RedirectResponse
     {
-        $dto = AdminCreateDTO::fromRequest($request);
+        $adminCreateDTO = AdminCreateDTO::fromRequest($storeAdminRequest);
 
-        $this->userService->createAdmin($dto->toArray());
+        $this->userService->createAdmin($adminCreateDTO->toArray());
 
         return redirect()->route('admin.users.index')
             ->with('success', 'Admin berhasil ditambahkan');
@@ -55,7 +56,7 @@ final class AdminUserController extends Controller
     {
         $user = $this->userService->getUserById($userId);
 
-        if (! $user) {
+        if (! $user instanceof User) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'User tidak ditemukan');
         }
@@ -65,21 +66,21 @@ final class AdminUserController extends Controller
                 ->with('error', 'User bukan admin');
         }
 
-        return $this->render('Admin/Users/Edit/Index', compact('user'));
+        return $this->render('Admin/Users/Edit/Index', ['user' => $user]);
     }
 
-    public function update(UpdateAdminRequest $request, string $userId): RedirectResponse
+    public function update(UpdateAdminRequest $updateAdminRequest, string $userId): RedirectResponse
     {
         $user = $this->userService->getUserById($userId);
 
-        if (! $user) {
+        if (! $user instanceof User) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'User tidak ditemukan');
         }
 
-        $dto = AdminUpdateDTO::fromRequest($request);
+        $adminUpdateDTO = AdminUpdateDTO::fromRequest($updateAdminRequest);
 
-        $this->userService->updateAdmin($userId, $dto->toArray());
+        $this->userService->updateAdmin($userId, $adminUpdateDTO->toArray());
 
         return redirect()->route('admin.users.index')
             ->with('success', 'Data admin berhasil diperbarui');
@@ -111,7 +112,7 @@ final class AdminUserController extends Controller
 
         $freshUser = $this->userService->getUserById($user->id);
 
-        if ($freshUser && $freshUser->is_approved) {
+        if ($freshUser instanceof User && $freshUser->is_approved) {
             return redirect()->route('admin.dashboard');
         }
 
@@ -122,7 +123,7 @@ final class AdminUserController extends Controller
     {
         $pendingAdmins = $this->userService->getPendingAdmins();
 
-        return $this->render('Admin/Users/Pending/Index', compact('pendingAdmins'));
+        return $this->render('Admin/Users/Pending/Index', ['pendingAdmins' => $pendingAdmins]);
     }
 
     public function approveAdmin(string $userId): RedirectResponse
@@ -146,12 +147,12 @@ final class AdminUserController extends Controller
         return $this->render('Admin/Users/Import/Index');
     }
 
-    public function processImport(ImportAdminRequest $request): RedirectResponse
+    public function processImport(ImportAdminRequest $importAdminRequest): RedirectResponse
     {
-        $result    = $this->userService->importAdminsFromFile($request->file('excel_file'));
+        $result    = $this->userService->importAdminsFromFile($importAdminRequest->file('excel_file'));
         $errorRows = $result['error_rows'] ?? [];
 
-        $message = "Berhasil menambahkan {$result['success_count']} admin.";
+        $message = sprintf('Berhasil menambahkan %s admin.', $result['success_count']);
         if (! empty($errorRows)) {
             $message .= ' Terdapat ' . count($errorRows) . ' baris dengan error.';
         }

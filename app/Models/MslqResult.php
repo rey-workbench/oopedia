@@ -18,6 +18,7 @@ final class MslqResult extends Model
 
     use HasUlids;
 
+    #[\Override]
     protected $fillable = [
         'user_id',
         'nim',
@@ -27,6 +28,7 @@ final class MslqResult extends Model
         'total_strategy',
     ];
 
+    #[\Override]
     protected function casts(): array
     {
         return [

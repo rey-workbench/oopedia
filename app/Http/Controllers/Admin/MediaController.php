@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Repositories\MediaRepositoryInterface;
 use App\Http\Controllers\Controller;
+use App\Models\Media;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -15,7 +16,7 @@ use Illuminate\Support\Str;
 final class MediaController extends Controller
 {
     public function __construct(
-        private readonly MediaRepositoryInterface $mediaRepo,
+        private readonly MediaRepositoryInterface $mediaRepository,
     ) {}
 
     public function upload(Request $request): JsonResponse
@@ -46,7 +47,7 @@ final class MediaController extends Controller
 
             $mediaUrl = '/images/' . $path;
 
-            $media = $this->mediaRepo->create([
+            $media = $this->mediaRepository->create([
                 'material_id' => $request->input('material_id'),
                 'media_type'  => $mediaType,
                 'media_url'   => $mediaUrl,
@@ -63,14 +64,14 @@ final class MediaController extends Controller
                 'url'      => asset('images/' . $path),
                 'media_id' => $media->id,
             ]);
-        } catch (\Throwable $e) {
+        } catch (\Throwable $throwable) {
             Log::error('Media upload failed', [
-                'error' => $e->getMessage(),
+                'error' => $throwable->getMessage(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Upload failed: ' . $e->getMessage(),
+                'message' => 'Upload failed: ' . $throwable->getMessage(),
             ], 500);
         }
     }
@@ -82,9 +83,9 @@ final class MediaController extends Controller
         ]);
 
         try {
-            $media = $this->mediaRepo->find($request->media_id);
+            $media = $this->mediaRepository->find($request->media_id);
 
-            if (! $media) {
+            if (! $media instanceof Media) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Media not found',
@@ -92,20 +93,20 @@ final class MediaController extends Controller
             }
 
             $this->removeMediaFile($media->media_url);
-            $this->mediaRepo->delete($media->id);
+            $this->mediaRepository->delete($media->id);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Media deleted',
             ]);
-        } catch (\Throwable $e) {
+        } catch (\Throwable $throwable) {
             Log::error('Media delete failed', [
-                'error' => $e->getMessage(),
+                'error' => $throwable->getMessage(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Delete failed: ' . $e->getMessage(),
+                'message' => 'Delete failed: ' . $throwable->getMessage(),
             ], 500);
         }
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Contracts\Services;
 
 use App\Models\User;
@@ -22,9 +24,9 @@ interface StudentServiceInterface
 
     public function getStudentsWithProgress(?string $search = null, int $perPage = 10): LengthAwarePaginator;
 
-    public function getStudentProgressDetail(User $student): array;
+    public function getStudentProgressDetail(User $user): array;
 
-    public function importStudentsFromFile(UploadedFile $file): array;
+    public function importStudentsFromFile(UploadedFile $uploadedFile): array;
 
     public function generateImportTemplate(): array;
 }

@@ -10,6 +10,6 @@ final class QuestionNotFoundException extends DomainException
 {
     public function __construct(string $id)
     {
-        parent::__construct("Soal dengan ID '{$id}' tidak ditemukan.", Response::HTTP_NOT_FOUND);
+        parent::__construct(sprintf("Soal dengan ID '%s' tidak ditemukan.", $id), Response::HTTP_NOT_FOUND);
     }
 }

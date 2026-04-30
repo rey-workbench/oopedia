@@ -15,29 +15,29 @@ use Inertia\Response;
 final class SusSurveyController extends Controller
 {
     public function __construct(
-        protected SusResultServiceInterface $susService,
+        private readonly SusResultServiceInterface $susResultService,
     ) {}
 
     public function create(): Response|RedirectResponse
     {
-        if ($this->susService->hasUserSubmitted((string) Auth::id())) {
+        if ($this->susResultService->hasUserSubmitted((string) Auth::id())) {
             return redirect()->route('mahasiswa.sus-survey.thankyou');
         }
 
         $questions = $this->getQuestions();
 
-        return $this->render('Mahasiswa/Sus/Create/Index', compact('questions'));
+        return $this->render('Mahasiswa/Sus/Create/Index', ['questions' => $questions]);
     }
 
-    public function store(StoreSusResultRequest $request): RedirectResponse
+    public function store(StoreSusResultRequest $storeSusResultRequest): RedirectResponse
     {
-        if ($this->susService->hasUserSubmitted((string) Auth::id())) {
+        if ($this->susResultService->hasUserSubmitted((string) Auth::id())) {
             return redirect()->route('mahasiswa.sus-survey.thankyou');
         }
 
-        $dto = SusResultCreateDTO::fromRequest($request, (string) Auth::id());
+        $susResultCreateDTO = SusResultCreateDTO::fromRequest($storeSusResultRequest, (string) Auth::id());
 
-        $this->susService->submitResult($dto->toArray());
+        $this->susResultService->submitResult($susResultCreateDTO->toArray());
 
         return redirect()->route('mahasiswa.sus-survey.thankyou');
     }

@@ -113,6 +113,6 @@ final readonly class UeqSurveyCreateDTO
             'conservative_innovative'           => $this->conservative_innovative,
             'comments'                          => $this->comments,
             'suggestions'                       => $this->suggestions,
-        ], fn ($value) => $value !== null);
+        ], fn (string|int|null $value): bool => $value !== null);
     }
 }

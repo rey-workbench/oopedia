@@ -14,32 +14,32 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 final class MslqController extends Controller
 {
     public function __construct(
-        protected MslqServiceInterface $mslqService,
+        private readonly MslqServiceInterface $mslqService,
     ) {}
 
     public function index(Request $request): Response
     {
-        $class       = $request->query('class');
-        $results     = $this->mslqService->getAdminResults($class);
-        $classes     = $this->mslqService->getDistinctClasses();
-        $metricsData = $this->mslqService->calculateGlobalMetrics($class);
+        $class                    = $request->query('class');
+        $lengthAwarePaginator     = $this->mslqService->getAdminResults($class);
+        $distinctClasses          = $this->mslqService->getDistinctClasses();
+        $metricsData              = $this->mslqService->calculateGlobalMetrics($class);
 
         return $this->render('Admin/Mslq/Index', [
-            'results'     => $results,
-            'classes'     => $classes,
+            'results'     => $lengthAwarePaginator,
+            'classes'     => $distinctClasses,
             'activeClass' => $class ?? '',
             'metrics'     => array_merge($metricsData, [
-                'total_responses' => $results->total(),
+                'total_responses' => $lengthAwarePaginator->total(),
             ]),
         ]);
     }
 
     public function show(string $id): Response
     {
-        $result = $this->mslqService->getResultDetail($id);
+        $mslqResult = $this->mslqService->getResultDetail($id);
 
         return $this->render('Admin/Mslq/Detail/Index', [
-            'result' => $result,
+            'result' => $mslqResult,
         ]);
     }
 
@@ -59,59 +59,67 @@ final class MslqController extends Controller
         $callback = function () use ($results): void {
             $file = fopen('php://output', 'w');
 
-            fputcsv($file, [
-                'ID',
-                'NIM',
-                'Nama Mahasiswa',
-                'Email',
-                'Kelas',
-                'Tanggal Pengisian',
-                'Total Motivasi',
-                'Total Strategi',
-                'Intrinsic Value',
-                'Extrinsic Value',
-                'Task Value',
-                'Control Beliefs',
-                'Self-Efficacy',
-                'Test Anxiety',
-                'Rehearsal',
-                'Elaboration',
-                'Organization',
-                'Critical Thinking',
-                'Metacognitive Self-Regulation',
-                'Time and Study Environment',
-                'Effort Regulation',
-                'Peer Learning',
-                'Help Seeking',
-            ]);
+            fputcsv(
+                $file,
+                [
+                    'ID',
+                    'NIM',
+                    'Nama Mahasiswa',
+                    'Email',
+                    'Kelas',
+                    'Tanggal Pengisian',
+                    'Total Motivasi',
+                    'Total Strategi',
+                    'Intrinsic Value',
+                    'Extrinsic Value',
+                    'Task Value',
+                    'Control Beliefs',
+                    'Self-Efficacy',
+                    'Test Anxiety',
+                    'Rehearsal',
+                    'Elaboration',
+                    'Organization',
+                    'Critical Thinking',
+                    'Metacognitive Self-Regulation',
+                    'Time and Study Environment',
+                    'Effort Regulation',
+                    'Peer Learning',
+                    'Help Seeking',
+                ],
+                escape: '\\',
+            );
 
             foreach ($results as $result) {
                 $scores = $result->scores_by_scale;
-                fputcsv($file, [
-                    $result->id,
-                    $result->nim,
-                    $result->user?->name  ?? 'Tidak ada',
-                    $result->user?->email ?? 'Tidak ada',
-                    $result->class,
-                    $result->created_at->format('d/m/Y H:i'),
-                    $result->total_motivation,
-                    $result->total_strategy,
-                    $scores[MslqScale::INTRINSIC_GOAL_ORIENTATION->value]             ?? 0,
-                    $scores[MslqScale::EXTRINSIC_GOAL_ORIENTATION->value]             ?? 0,
-                    $scores[MslqScale::TASK_VALUE->value]                             ?? 0,
-                    $scores[MslqScale::CONTROL_OF_LEARNING_BELIEFS->value]            ?? 0,
-                    $scores[MslqScale::SELF_EFFICACY_FOR_LEARNING_PERFORMANCE->value] ?? 0,
-                    $scores[MslqScale::TEST_ANXIETY->value]                           ?? 0,
-                    $scores[MslqScale::REHEARSAL->value]                              ?? 0,
-                    $scores[MslqScale::ELABORATION->value]                            ?? 0,
-                    $scores[MslqScale::ORGANIZATION->value]                           ?? 0,
-                    $scores[MslqScale::CRITICAL_THINKING->value]                      ?? 0,
-                    $scores[MslqScale::METACOGNITIVE_SELF_REGULATION->value]          ?? 0,
-                    $scores[MslqScale::TIME_STUDY_ENVIRONMENT_MANAGEMENT->value]      ?? 0,
-                    $scores[MslqScale::EFFORT_REGULATION->value]                      ?? 0,
-                    $scores[MslqScale::PEER_LEARNING->value]                          ?? 0,
-                    $scores[MslqScale::HELP_SEEKING->value]                           ?? 0,
-                ]);
+                fputcsv(
+                    $file,
+                    [
+                        $result->id,
+                        $result->nim,
+                        $result->user?->name  ?? 'Tidak ada',
+                        $result->user?->email ?? 'Tidak ada',
+                        $result->class,
+                        $result->created_at->format('d/m/Y H:i'),
+                        $result->total_motivation,
+                        $result->total_strategy,
+                        $scores[MslqScale::INTRINSIC_GOAL_ORIENTATION->value]             ?? 0,
+                        $scores[MslqScale::EXTRINSIC_GOAL_ORIENTATION->value]             ?? 0,
+                        $scores[MslqScale::TASK_VALUE->value]                             ?? 0,
+                        $scores[MslqScale::CONTROL_OF_LEARNING_BELIEFS->value]            ?? 0,
+                        $scores[MslqScale::SELF_EFFICACY_FOR_LEARNING_PERFORMANCE->value] ?? 0,
+                        $scores[MslqScale::TEST_ANXIETY->value]                           ?? 0,
+                        $scores[MslqScale::REHEARSAL->value]                              ?? 0,
+                        $scores[MslqScale::ELABORATION->value]                            ?? 0,
+                        $scores[MslqScale::ORGANIZATION->value]                           ?? 0,
+                        $scores[MslqScale::CRITICAL_THINKING->value]                      ?? 0,
+                        $scores[MslqScale::METACOGNITIVE_SELF_REGULATION->value]          ?? 0,
+                        $scores[MslqScale::TIME_STUDY_ENVIRONMENT_MANAGEMENT->value]      ?? 0,
+                        $scores[MslqScale::EFFORT_REGULATION->value]                      ?? 0,
+                        $scores[MslqScale::PEER_LEARNING->value]                          ?? 0,
+                        $scores[MslqScale::HELP_SEEKING->value]                           ?? 0,
+                    ],
+                    escape: '\\',
+                );
             }
 
             fclose($file);

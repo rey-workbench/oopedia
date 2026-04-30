@@ -48,6 +48,7 @@ final class UeqSurvey extends Model
     use HasFactory;
     use HasUlids;
 
+    #[\Override]
     protected $fillable = [
         'user_id',
         'nim',

@@ -64,7 +64,6 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
             Route::get('{material}/questions/levels', 'levels')->name('materials.questions.levels');
             Route::get('{material}/questions/review/{difficulty?}', 'review')->name('materials.questions.review');
             Route::post('{material}/questions/{question}/check', 'checkAnswer')->name('materials.questions.check');
-            Route::get('{material}/adaptive/target-difficulty', 'getTargetDifficulty')->name('adaptive.target-difficulty');
             Route::get('{material}/questions/{question}/attempts', 'getAttempts')->name('materials.questions.attempts');
             Route::post('{material}/questions/{question}/hint', 'useHint')->name('materials.questions.hint');
             Route::get('{material}/questions', 'show')

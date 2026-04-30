@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Contracts\Services;
 
 use App\Models\User;
@@ -30,7 +32,7 @@ interface UserServiceInterface
 
     public function registerUser(array $data): User;
 
-    public function importAdminsFromFile(UploadedFile $file): array;
+    public function importAdminsFromFile(UploadedFile $uploadedFile): array;
 
     public function generateImportTemplate(): array;
 }

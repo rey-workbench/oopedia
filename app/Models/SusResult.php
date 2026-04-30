@@ -33,6 +33,7 @@ final class SusResult extends Model
     use HasFactory;
     use HasUlids;
 
+    #[\Override]
     protected $fillable = [
         'user_id',
         'nim',
@@ -55,6 +56,7 @@ final class SusResult extends Model
     /**
      * @return array<string, string>
      */
+    #[\Override]
     protected function casts(): array
     {
         return [

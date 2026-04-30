@@ -12,8 +12,8 @@ interface AdaptiveEngineServiceInterface
     /**
      * Evaluate the student state and return the recommended action.
      *
-     * @param StudentStateDTO $state Current student state
+     * @param StudentStateDTO $studentStateDTO Current student state
      * @return EngineResultDTO The evaluation results
      */
-    public function evaluate(StudentStateDTO $state): EngineResultDTO;
+    public function evaluate(StudentStateDTO $studentStateDTO): EngineResultDTO;
 }

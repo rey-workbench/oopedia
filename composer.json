@@ -27,7 +27,7 @@
         "OOPedia"
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^8.5",
         "laravel/framework": "^12.0",
         "laravel/legacy-factories": "^1.0",
         "laravel/sanctum": "^4.0",
@@ -68,7 +68,8 @@
         "squizlabs/php_codesniffer": "*",
         "shipmonk/dead-code-detector": "^1.0",
         "larastan/larastan": "^3.9",
-        "phpmd/phpmd": "^2.15"
+        "phpmd/phpmd": "^2.15",
+        "rector/rector": "^2.4"
     },
     "config": {
         "process-timeout": 1800

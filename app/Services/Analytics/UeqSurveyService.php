@@ -9,10 +9,10 @@ use App\Contracts\Services\UeqSurveyServiceInterface;
 use App\Models\UeqSurvey;
 use Illuminate\Database\Eloquent\Collection;
 
-final class UeqSurveyService implements UeqSurveyServiceInterface
+final readonly class UeqSurveyService implements UeqSurveyServiceInterface
 {
     public function __construct(
-        public readonly UeqSurveyRepositoryInterface $ueqRepo,
+        public UeqSurveyRepositoryInterface $ueqRepo,
     ) {}
 
     /** @return Collection<int, UeqSurvey> */
@@ -34,7 +34,7 @@ final class UeqSurveyService implements UeqSurveyServiceInterface
 
     public function hasUserSubmitted(string $userId): bool
     {
-        return $this->ueqRepo->findSurveyByUser($userId) !== null;
+        return $this->ueqRepo->findSurveyByUser($userId) instanceof UeqSurvey;
     }
 
     public function createSurvey(array $data): UeqSurvey

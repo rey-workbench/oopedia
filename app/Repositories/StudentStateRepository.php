@@ -27,14 +27,14 @@ final class StudentStateRepository implements StudentStateRepositoryInterface
 
     public function update(string $userId, array $data): StudentState
     {
-        $state = $this->findOrCreate($userId);
+        $studentState = $this->findOrCreate($userId);
 
         if ($userId !== 'guest') {
-            $state->update($data);
+            $studentState->update($data);
         } else {
-            $state->fill($data);
+            $studentState->fill($data);
         }
 
-        return $state;
+        return $studentState;
     }
 }

@@ -13,7 +13,7 @@ interface PerformanceServiceInterface
     public function getStudentState(string $userId): StudentState;
 
     public function updateMetricsFromInteraction(
-        InteractionDTO $interaction,
+        InteractionDTO $interactionDTO,
     ): StudentState;
 
     public function getStudentSessionState(string $userId): array;

@@ -9,15 +9,15 @@ use App\Enums\Lms\QuestionDifficulty;
 /**
  * Data Transfer Object representing the outcome of a student-question interaction.
  */
-final class InteractionDTO
+final readonly class InteractionDTO
 {
     public function __construct(
-        public readonly string $userId,
-        public readonly string $questionId,
-        public readonly bool $isCorrect,
-        public readonly int $timeSpent,
-        public readonly QuestionDifficulty $difficulty,
-        public readonly bool $usedHint,
-        public readonly int $score = 0,
+        public string $userId,
+        public string $questionId,
+        public bool $isCorrect,
+        public int $timeSpent,
+        public QuestionDifficulty $difficulty,
+        public bool $usedHint,
+        public int $score = 0,
     ) {}
 }

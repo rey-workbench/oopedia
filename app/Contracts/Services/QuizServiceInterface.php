@@ -20,7 +20,7 @@ interface QuizServiceInterface
     // --- Question Management (from QuestionServiceInterface) ---
     public function getFilteredQuestions(
         ?string $search = null,
-        ?QuestionDifficulty $difficulty = null,
+        ?QuestionDifficulty $questionDifficulty = null,
         ?string $materialId = null,
     ): LengthAwarePaginator;
 
@@ -28,14 +28,14 @@ interface QuizServiceInterface
 
     public function getQuestionWithAnswers(string $id): ?Question;
 
-    public function createQuestion(QuestionCreateDTO $dto): Question;
+    public function createQuestion(QuestionCreateDTO $questionCreateDTO): Question;
 
-    public function updateQuestion(string $questionId, QuestionUpdateDTO $dto): Question;
+    public function updateQuestion(string $questionId, QuestionUpdateDTO $questionUpdateDTO): Question;
 
     public function deleteQuestion(string $questionId): void;
 
     // --- Quiz Listing & Data (from QuestionListingServiceInterface) ---
-    public function getQuizData(QuizContextDTO $context): array;
+    public function getQuizData(QuizContextDTO $quizContextDTO): array;
 
     public function getMaterialsListWithStudentCount(
         string $userId,
@@ -43,13 +43,13 @@ interface QuizServiceInterface
         array $guestProgress = [],
     ): Collection;
 
-    public function getReviewQuestions(QuizContextDTO $context): Collection;
+    public function getReviewQuestions(QuizContextDTO $quizContextDTO): Collection;
 
     public function getGuestAnsweredQuestionIds(string $materialId, array $guestProgress = [], bool $onlyCorrect = false): SupportCollection;
 
     public function getLevelProgress(
         Material $material,
-        ?QuestionDifficulty $difficulty,
+        ?QuestionDifficulty $questionDifficulty,
         SupportCollection|Collection $answeredQuestionIds,
         bool $isGuest = false,
         ?Collection $preloadedQuestions = null,
@@ -60,6 +60,6 @@ interface QuizServiceInterface
 
     // --- Quiz Orchestration (from QuizOrchestratorServiceInterface) ---
     public function handleSubmission(
-        QuizSubmissionDTO $submission,
+        QuizSubmissionDTO $quizSubmissionDTO,
     ): array;
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail;
 
 use App\Models\User;
@@ -14,6 +16,9 @@ class AdminApproved extends Mailable
     use Queueable;
     use SerializesModels;
 
+    /**
+     * @var User
+     */
     public $user;
 
     public function __construct(User $user)

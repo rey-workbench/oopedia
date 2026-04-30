@@ -18,13 +18,13 @@ final class UeqSurveyRepository implements UeqSurveyRepositoryInterface
     /** @return Collection<int, UeqSurvey> */
     public function getAllWithUser(?string $class = null): Collection
     {
-        $query = UeqSurvey::with('user');
+        $builder = UeqSurvey::with('user');
 
         if ($class) {
-            $query->where('class', '=', $class);
+            $builder->where('class', '=', $class);
         }
 
-        return $query->get();
+        return $builder->get();
     }
 
     /** @return array<string> */

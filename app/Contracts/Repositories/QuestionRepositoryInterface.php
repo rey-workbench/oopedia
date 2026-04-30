@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Contracts\Repositories;
 
 use App\Enums\Lms\QuestionDifficulty;
@@ -12,7 +14,6 @@ interface QuestionRepositoryInterface
     public function find(string $id): ?Question;
 
     public function create(array $data): Question;
-
 
     public function delete(string $id): bool;
 
@@ -31,5 +32,5 @@ interface QuestionRepositoryInterface
         ?string $materialId = null,
     ): LengthAwarePaginator;
 
-    public function countByMaterialAndDifficulty(string $materialId, QuestionDifficulty $difficulty): int;
+    public function countByMaterialAndDifficulty(string $materialId, QuestionDifficulty $questionDifficulty): int;
 }

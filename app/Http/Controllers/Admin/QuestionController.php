@@ -13,6 +13,8 @@ use App\Enums\Lms\QuestionType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Question\StoreQuestionRequest;
 use App\Http\Requests\Question\UpdateQuestionRequest;
+use App\Models\Material;
+use App\Models\Question;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,8 +23,8 @@ use Inertia\Response;
 final class QuestionController extends Controller
 {
     public function __construct(
-        protected QuizServiceInterface $quizService,
-        protected MaterialServiceInterface $materialService,
+        private readonly QuizServiceInterface $quizService,
+        private readonly MaterialServiceInterface $materialService,
     ) {}
 
     public function index(Request $request): Response
@@ -31,11 +33,11 @@ final class QuestionController extends Controller
         $difficulty = QuestionDifficulty::tryFrom((string) $request->input('difficulty'));
         $materialId = $request->input('material');
 
-        $material  = $materialId ? $this->materialService->getMaterialById((string) $materialId) : null;
-        $questions = $this->quizService->getFilteredQuestions($search, $difficulty, (string) $materialId);
+        $material             = $materialId ? $this->materialService->getMaterialById((string) $materialId) : null;
+        $lengthAwarePaginator = $this->quizService->getFilteredQuestions($search, $difficulty, (string) $materialId);
 
         return $this->render('Admin/Questions/Index', [
-            'questions'  => $questions,
+            'questions'  => $lengthAwarePaginator,
             'material'   => $material,
             'search'     => $search,
             'difficulty' => $difficulty?->value,
@@ -49,39 +51,39 @@ final class QuestionController extends Controller
             $materials    = $this->materialService->getAllMaterials();
             $material     = null;
 
-            return $this->render('Admin/Questions/Create/Index', compact('materials', 'material'));
+            return $this->render('Admin/Questions/Create/Index', ['materials' => $materials, 'material' => $material]);
         }
 
         $material = $this->materialService->getMaterialById((string) $materialId);
 
-        if (! $material) {
+        if (! $material instanceof Material) {
             return redirect()->route('admin.questions.index')
                 ->with('error', 'Material tidak ditemukan');
         }
 
         $materials    = collect([$material]);
 
-        return $this->render('Admin/Questions/Create/Index', compact('materials', 'material'));
+        return $this->render('Admin/Questions/Create/Index', ['materials' => $materials, 'material' => $material]);
     }
 
-    public function store(StoreQuestionRequest $request): RedirectResponse
+    public function store(StoreQuestionRequest $storeQuestionRequest): RedirectResponse
     {
-        $dto = QuestionCreateDTO::fromRequest($request, Auth::id());
+        $questionCreateDTO = QuestionCreateDTO::fromRequest($storeQuestionRequest, Auth::id());
 
-        $correctCount = collect($dto->answers)->where('is_correct', '1')->count();
+        $correctCount = collect($questionCreateDTO->answers)->where('is_correct', '1')->count();
 
-        if (in_array($dto->question_type, [QuestionType::RADIO_BUTTON->value, QuestionType::FILL_IN_THE_BLANK->value]) && $correctCount !== 1) {
+        if (in_array($questionCreateDTO->question_type, [QuestionType::RADIO_BUTTON->value, QuestionType::FILL_IN_THE_BLANK->value]) && $correctCount !== 1) {
             return redirect()->back()->withInput()
                 ->with(
                     'error',
-                    ucfirst(str_replace('_', ' ', $dto->question_type))
+                    ucfirst(str_replace('_', ' ', $questionCreateDTO->question_type))
                     . ' questions must have exactly one correct answer.',
                 );
         }
 
-        $this->quizService->createQuestion($dto);
+        $this->quizService->createQuestion($questionCreateDTO);
 
-        $redirectParams = $dto->material_id ? ['material' => $dto->material_id] : [];
+        $redirectParams = $questionCreateDTO->material_id !== '' && $questionCreateDTO->material_id !== '0' ? ['material' => $questionCreateDTO->material_id] : [];
 
         return redirect()->route('admin.questions.index', $redirectParams)
             ->with('success', 'Soal berhasil ditambahkan.');
@@ -91,7 +93,7 @@ final class QuestionController extends Controller
     {
         $question = $this->quizService->getQuestionWithAnswers($questionId);
 
-        if (! $question) {
+        if (! $question instanceof Question) {
             return redirect()->route('admin.questions.index')
                 ->with('error', 'Soal tidak ditemukan');
         }
@@ -101,30 +103,30 @@ final class QuestionController extends Controller
 
         return $this->render(
             'Admin/Questions/Edit/Index',
-            compact('question', 'materials', 'material'),
+            ['question' => $question, 'materials' => $materials, 'material' => $material],
         );
     }
 
-    public function update(UpdateQuestionRequest $request, string $questionId): RedirectResponse
+    public function update(UpdateQuestionRequest $updateQuestionRequest, string $questionId): RedirectResponse
     {
-        $dto = QuestionUpdateDTO::fromRequest($request);
+        $questionUpdateDTO = QuestionUpdateDTO::fromRequest($updateQuestionRequest);
 
-        if (in_array($dto->question_type, [QuestionType::RADIO_BUTTON->value, QuestionType::FILL_IN_THE_BLANK->value])) {
-            $correctCount = collect($dto->answers)->where('is_correct', '1')->count();
+        if (in_array($questionUpdateDTO->question_type, [QuestionType::RADIO_BUTTON->value, QuestionType::FILL_IN_THE_BLANK->value])) {
+            $correctCount = collect($questionUpdateDTO->answers)->where('is_correct', '1')->count();
 
             if ($correctCount !== 1) {
                 return back()->withInput()
                     ->with(
                         'error',
-                        ucfirst(str_replace('_', ' ', $dto->question_type))
+                        ucfirst(str_replace('_', ' ', $questionUpdateDTO->question_type))
                         . ' Pertanyaan hanya boleh memiliki 1 jawaban benar.',
                     );
             }
         }
 
-        $this->quizService->updateQuestion($questionId, $dto);
+        $this->quizService->updateQuestion($questionId, $questionUpdateDTO);
 
-        $redirectParams = $dto->material_id ? ['material' => $dto->material_id] : [];
+        $redirectParams = $questionUpdateDTO->material_id ? ['material' => $questionUpdateDTO->material_id] : [];
 
         return redirect()->route('admin.questions.index', $redirectParams)
             ->with('success', 'Soal berhasil diperbarui.');

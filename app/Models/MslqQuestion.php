@@ -18,6 +18,7 @@ final class MslqQuestion extends Model
 
     use HasUlids;
 
+    #[\Override]
     protected $fillable = [
         'text',
         'category',
@@ -31,6 +32,7 @@ final class MslqQuestion extends Model
      *
      * @return array<string, string>
      */
+    #[\Override]
     protected function casts(): array
     {
         return [

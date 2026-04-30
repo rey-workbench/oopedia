@@ -33,6 +33,7 @@ final class Question extends Model
         QuestionDifficulty::FINAL->value    => self::DIFFICULTY_RANK_FINAL,
     ];
 
+    #[\Override]
     protected $fillable = [
         'material_id',
         'question_text',
@@ -43,6 +44,7 @@ final class Question extends Model
         'created_by',
     ];
 
+    #[\Override]
     protected function casts(): array
     {
         return [

@@ -8,6 +8,7 @@ use App\Http\Requests\BaseFormRequest;
 
 final class StoreMslqRequest extends BaseFormRequest
 {
+    #[\Override]
     public function authorize(): bool
     {
         return true;

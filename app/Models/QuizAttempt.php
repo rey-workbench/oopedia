@@ -14,6 +14,7 @@ final class QuizAttempt extends Model
     use HasFactory;
     use HasUlids;
 
+    #[\Override]
     protected $fillable = [
         'user_id',
         'question_id',
@@ -25,6 +26,7 @@ final class QuizAttempt extends Model
         'time_spent',
     ];
 
+    #[\Override]
     protected function casts(): array
     {
         return [

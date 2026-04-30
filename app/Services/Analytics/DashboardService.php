@@ -15,12 +15,12 @@ use App\Models\StudentState;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
 
-final class DashboardService implements DashboardServiceInterface
+final readonly class DashboardService implements DashboardServiceInterface
 {
     public function __construct(
-        public readonly MaterialRepositoryInterface $materialRepo,
-        public readonly ProgressRepositoryInterface $progressRepo,
-        public readonly QuestionRepositoryInterface $questionRepo,
+        public MaterialRepositoryInterface $materialRepo,
+        public ProgressRepositoryInterface $progressRepo,
+        public QuestionRepositoryInterface $questionRepo,
     ) {}
 
     /** @return Collection<int, Material> */
@@ -32,19 +32,19 @@ final class DashboardService implements DashboardServiceInterface
     /** @return array<string, mixed> */
     public function getDashboardIndexData(string $userId, bool $isGuest): array
     {
-        $cacheKey = "dashboard_index_{$userId}_" . ($isGuest ? '1' : '0');
+        $cacheKey = sprintf('dashboard_index_%s_', $userId) . ($isGuest ? '1' : '0');
 
         return Cache::remember(
             $cacheKey,
             300,
-            function () use ($userId, $isGuest) {
-                $allMaterials   = $this->materialRepo->getAllWithQuestions();
-                $totalMaterials = $allMaterials->count();
-                $progressStats  = $this->progressRepo->getUserProgressStats($userId);
+            function () use ($userId, $isGuest): array {
+                $allWithQuestions   = $this->materialRepo->getAllWithQuestions();
+                $totalMaterials     = $allWithQuestions->count();
+                $progressStats      = $this->progressRepo->getUserProgressStats($userId);
 
-                $configuredCounts = $this->calculateConfiguredCounts($allMaterials, $isGuest);
+                $configuredCounts = $this->calculateConfiguredCounts($allWithQuestions, $isGuest);
 
-                $materials = $allMaterials->map(function ($material) use ($progressStats, $isGuest) {
+                $materials = $allWithQuestions->map(function ($material) use ($progressStats, $isGuest) {
                     $totalQuestions     = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest)['total'];
                     $materialProgress   = $progressStats->firstWhere('material_id', $material->id);
                     $correctAnswers     = $materialProgress ? $materialProgress->correct_answers : 0;
@@ -64,16 +64,16 @@ final class DashboardService implements DashboardServiceInterface
                 });
 
                 $recentActivities = $this->progressRepo->getRecentActivities($userId, 10)
-                    ->map(fn ($activity) => $this->addActivityType($activity))
-                    ->pipe(fn ($activities) => $this->deduplicateActivities($activities, 5));
+                    ->map(fn ($activity): object => $this->addActivityType($activity))
+                    ->pipe(fn ($activities): \Illuminate\Support\Collection => $this->deduplicateActivities($activities, 5));
 
                 $studentState   = StudentState::where('user_id', $userId)->first();
                 $certifications = $studentState?->certifications ?? [];
 
-                $completedMaterialsCount = $materials->filter(fn($m) => $m->progress_percentage >= 100)->count();
-                $inProgressMaterialsCount = $materials->filter(fn($m) => $m->progress_percentage > 0 && $m->progress_percentage < 100)->count();
-                $totalMaterialProgress = $totalMaterials > 0 ? round(($completedMaterialsCount / $totalMaterials) * 100) : 0;
-                $totalAnsweredQuestions = $progressStats->sum('answered_questions');
+                $completedMaterialsCount  = $materials->filter(fn ($m): bool => $m->progress_percentage >= 100)->count();
+                $inProgressMaterialsCount = $materials->filter(fn ($m): bool => $m->progress_percentage > 0 && $m->progress_percentage < 100)->count();
+                $totalMaterialProgress    = $totalMaterials > 0 ? round(($completedMaterialsCount / $totalMaterials) * 100) : 0;
+                $totalAnsweredQuestions   = $progressStats->sum('answered_questions');
 
                 return [
                     'total_materials'              => $totalMaterials,
@@ -100,7 +100,7 @@ final class DashboardService implements DashboardServiceInterface
     }
 
     /** @return array<string, int> */
-    protected function calculateConfiguredCounts(Collection $materials, bool $isGuest): array
+    private function calculateConfiguredCounts(Collection $materials, bool $isGuest): array
     {
         $counts = [
             'easy'   => 0,
@@ -120,7 +120,7 @@ final class DashboardService implements DashboardServiceInterface
         return $counts;
     }
 
-    protected function addActivityType($activity): object
+    private function addActivityType($activity): object
     {
         if ($activity->total_correct >= 5) {
             $activity->type = 'achievement';
@@ -133,15 +133,16 @@ final class DashboardService implements DashboardServiceInterface
         return $activity;
     }
 
-    protected function deduplicateActivities($activities, int $limit): \Illuminate\Support\Collection
+    private function deduplicateActivities(\Illuminate\Support\Collection $activities, int $limit): \Illuminate\Support\Collection
     {
         $seen = [];
 
-        return $activities->filter(function ($activity) use (&$seen) {
+        return $activities->filter(function ($activity) use (&$seen): bool {
             $key = $activity->material_id . '_' . $activity->type;
-            if (in_array($key, $seen)) {
+            if (in_array($key, $seen, true)) {
                 return false;
             }
+
             $seen[] = $key;
 
             return true;
@@ -151,7 +152,7 @@ final class DashboardService implements DashboardServiceInterface
     /** @return array<int, array<string, mixed>> */
     public function getInProgressData(string $userId, bool $isGuest): array
     {
-        $cacheKey = "dashboard_inprogress_{$userId}_" . ($isGuest ? '1' : '0');
+        $cacheKey = sprintf('dashboard_inprogress_%s_', $userId) . ($isGuest ? '1' : '0');
 
         return Cache::remember(
             $cacheKey,
@@ -161,7 +162,7 @@ final class DashboardService implements DashboardServiceInterface
                 $materialProgress = $this->progressRepo->getUserMaterialProgress($userId);
 
                 $materials = $this->materialRepo->getAllWithQuestions()->filter(
-                    function ($material) use ($materialProgress) {
+                    function ($material) use ($materialProgress): bool {
                         $progress       = $materialProgress->firstWhere('material_id', $material->id);
                         $totalQuestions = $material->questions->count();
 
@@ -183,7 +184,7 @@ final class DashboardService implements DashboardServiceInterface
     /** @return array<int, array<string, mixed>> */
     public function getCompletedData(string $userId, bool $isGuest): array
     {
-        $cacheKey = "dashboard_completed_{$userId}_" . ($isGuest ? '1' : '0');
+        $cacheKey = sprintf('dashboard_completed_%s_', $userId) . ($isGuest ? '1' : '0');
 
         return Cache::remember(
             $cacheKey,
@@ -192,7 +193,7 @@ final class DashboardService implements DashboardServiceInterface
                 $materialProgress = $this->progressRepo->getUserMaterialProgress($userId);
 
                 $materials = $this->materialRepo->getAllWithQuestions()->filter(
-                    function ($material) use ($materialProgress, $isGuest) {
+                    function ($material) use ($materialProgress, $isGuest): bool {
                         $progress = $materialProgress->firstWhere('material_id', $material->id);
 
                         if (! $progress) {
@@ -211,7 +212,7 @@ final class DashboardService implements DashboardServiceInterface
                 );
 
                 return $materials->map(
-                    function ($material) use ($isGuest) {
+                    function ($material) use ($isGuest): array {
                         $counts        = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest);
                         $beginnerTotal = $this->questionRepo->countByMaterialAndDifficulty($material->id, QuestionDifficulty::BEGINNER);
                         $mediumTotal   = $this->questionRepo->countByMaterialAndDifficulty($material->id, QuestionDifficulty::MEDIUM);
@@ -251,9 +252,9 @@ final class DashboardService implements DashboardServiceInterface
         );
     }
 
-    protected function processMaterialsWithStats($materials, $progressStats, $isGuest)
+    private function processMaterialsWithStats($materials, \Illuminate\Support\Collection $progressStats, bool $isGuest)
     {
-        return $materials->map(function ($material) use ($progressStats, $isGuest) {
+        return $materials->map(function ($material) use ($progressStats, $isGuest): array {
             $counts = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest);
 
             $beginnerTotal = $this->questionRepo->countByMaterialAndDifficulty($material->id, QuestionDifficulty::BEGINNER);

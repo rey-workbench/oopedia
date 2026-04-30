@@ -9,6 +9,7 @@ use App\DTOs\User\StudentCreateDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Student\ImportStudentRequest;
 use App\Http\Requests\Student\StoreStudentRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
@@ -17,7 +18,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 final class AdminStudentController extends Controller
 {
     public function __construct(
-        protected StudentServiceInterface $studentService,
+        private readonly StudentServiceInterface $studentService,
     ) {}
 
     public function index(Request $request): Response
@@ -25,14 +26,14 @@ final class AdminStudentController extends Controller
         $search   = $request->search;
         $students = $this->studentService->getStudentsWithProgress($search, 10);
 
-        return $this->render('Admin/Students/Index', compact('students'));
+        return $this->render('Admin/Students/Index', ['students' => $students]);
     }
 
     public function show(string $studentId): Response|RedirectResponse
     {
         $student = $this->studentService->getStudentById($studentId);
 
-        if (! $student || ! $student->isMahasiswa()) {
+        if (! $student instanceof User || ! $student->isMahasiswa()) {
             return redirect()->route('admin.students.index')
                 ->with('error', 'Mahasiswa tidak ditemukan');
         }
@@ -48,11 +49,11 @@ final class AdminStudentController extends Controller
         ]);
     }
 
-    public function store(StoreStudentRequest $request): RedirectResponse
+    public function store(StoreStudentRequest $storeStudentRequest): RedirectResponse
     {
-        $dto = StudentCreateDTO::fromRequest($request);
+        $studentCreateDTO = StudentCreateDTO::fromRequest($storeStudentRequest);
 
-        $this->studentService->createStudent($dto->toArray());
+        $this->studentService->createStudent($studentCreateDTO->toArray());
 
         return redirect()->route('admin.students.index')
             ->with('success', 'Mahasiswa berhasil didaftarkan secara manual.');
@@ -71,11 +72,11 @@ final class AdminStudentController extends Controller
         return $this->render('Admin/Students/Import/Index');
     }
 
-    public function processImport(ImportStudentRequest $request): RedirectResponse
+    public function processImport(ImportStudentRequest $importStudentRequest): RedirectResponse
     {
-        $result = $this->studentService->importStudentsFromFile($request->file('excel_file'));
+        $result = $this->studentService->importStudentsFromFile($importStudentRequest->file('excel_file'));
 
-        $message = "Berhasil menambahkan {$result['success_count']} mahasiswa.";
+        $message = sprintf('Berhasil menambahkan %s mahasiswa.', $result['success_count']);
         if (! empty($result['error_rows'])) {
             $message .= ' Terdapat ' . count($result['error_rows']) . ' baris dengan error.';
         }

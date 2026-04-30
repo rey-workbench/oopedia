@@ -8,6 +8,7 @@ use App\Http\Requests\BaseFormRequest;
 
 final class ResetMaterialProgressRequest extends BaseFormRequest
 {
+    #[\Override]
     protected function prepareForValidation(): void
     {
         $this->merge([

@@ -10,6 +10,6 @@ final class SubMaterialNotFoundException extends DomainException
 {
     public function __construct(string $id)
     {
-        parent::__construct("Sub-materi dengan ID '{$id}' tidak ditemukan.", Response::HTTP_NOT_FOUND);
+        parent::__construct(sprintf("Sub-materi dengan ID '%s' tidak ditemukan.", $id), Response::HTTP_NOT_FOUND);
     }
 }

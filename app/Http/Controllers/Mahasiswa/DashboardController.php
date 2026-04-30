@@ -13,8 +13,8 @@ use Inertia\Response;
 final class DashboardController extends Controller
 {
     public function __construct(
-        protected DashboardServiceInterface $dashboardService,
-        protected LeaderboardServiceInterface $leaderboardService,
+        private readonly DashboardServiceInterface $dashboardService,
+        private readonly LeaderboardServiceInterface $leaderboardService,
     ) {}
 
     public function index(): Response

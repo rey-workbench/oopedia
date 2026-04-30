@@ -21,23 +21,23 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-final class StudentService implements StudentServiceInterface
+final readonly class StudentService implements StudentServiceInterface
 {
     use ImportsCsvUsers;
 
     public function __construct(
-        public readonly UserRepositoryInterface $userRepo,
-        public readonly MaterialRepositoryInterface $materialRepo,
-        public readonly ProgressRepositoryInterface $progressRepo,
+        public UserRepositoryInterface $userRepo,
+        public MaterialRepositoryInterface $materialRepo,
+        public ProgressRepositoryInterface $progressRepo,
     ) {}
 
     public function getStudentsWithProgress(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
-        $students       = $this->userRepo->getStudentsList($search, $perPage);
-        $materials      = $this->materialRepo->getAllOrdered();
-        $totalQuestions = ProgressHelper::calculateTotalQuestions($materials);
+        $lengthAwarePaginator       = $this->userRepo->getStudentsList($search, $perPage);
+        $allOrdered                 = $this->materialRepo->getAllOrdered();
+        $totalQuestions             = ProgressHelper::calculateTotalQuestions($allOrdered);
 
-        foreach ($students as $student) {
+        foreach ($lengthAwarePaginator as $student) {
             $progressStats  = $this->progressRepo->getUserProgressStats($student->id);
             $correctAnswers = $progressStats->sum('correct_answers');
 
@@ -46,7 +46,7 @@ final class StudentService implements StudentServiceInterface
             $student->total_answered_questions = $progressStats->sum('answered_questions');
         }
 
-        return $students;
+        return $lengthAwarePaginator;
     }
 
     public function getStudentsList(?string $search = null, int $perPage = 10): LengthAwarePaginator
@@ -83,11 +83,11 @@ final class StudentService implements StudentServiceInterface
     {
         $student = $this->userRepo->find($studentId);
 
-        if (! $student) {
+        if (! $student instanceof User) {
             throw new UserNotFoundException($studentId);
         }
 
-        DB::transaction(function () use ($studentId) {
+        DB::transaction(function () use ($studentId): void {
             $this->userRepo->deleteStudentData($studentId);
         });
     }
@@ -97,19 +97,19 @@ final class StudentService implements StudentServiceInterface
         $this->userRepo->approveStudent($studentId);
     }
 
-    public function getStudentProgressDetail(User $student): array
+    public function getStudentProgressDetail(User $user): array
     {
-        $materials             = $this->materialRepo->getAllOrdered();
-        $progressStats         = $this->progressRepo->getUserMaterialProgress($student->id);
-        $materialsWithProgress = collect();
+        $allOrdered             = $this->materialRepo->getAllOrdered();
+        $progressStats          = $this->progressRepo->getUserMaterialProgress($user->id);
+        $materialsWithProgress  = collect();
 
-        foreach ($materials as $material) {
+        foreach ($allOrdered as $material) {
             $totalQuestions = $material->questions->count();
 
             $materialProgress   = $progressStats->firstWhere('material_id', $material->id);
             $correctAnswers     = $materialProgress ? $materialProgress->correct_answers : 0;
             $progressPercentage = ProgressHelper::calculateProgressPercentage($correctAnswers, $totalQuestions);
-            $lastAccessed       = $this->progressRepo->getLastAccessTime($student->id, $material->id);
+            $lastAccessed       = $this->progressRepo->getLastAccessTime($user->id, $material->id);
 
             $materialsWithProgress->push((object) [
                 'id'                 => $material->id,
@@ -123,20 +123,20 @@ final class StudentService implements StudentServiceInterface
 
         $missingQuestionsByMaterial = [];
 
-        foreach ($materialsWithProgress as $item) {
-            $missingCount = max(0, $item->total_questions - $item->answered_questions);
+        foreach ($materialsWithProgress as $materialWithProgress) {
+            $missingCount = max(0, $materialWithProgress->total_questions - $materialWithProgress->answered_questions);
 
             if ($missingCount > 0) {
                 $missingQuestionsByMaterial[] = [
-                    'material_title' => $item->title,
+                    'material_title' => $materialWithProgress->title,
                     'missing_count'  => $missingCount,
                 ];
             }
         }
 
-        $recentActivities = $this->progressRepo->getRecentActivities($student->id, 10);
+        $recentActivities = $this->progressRepo->getRecentActivities($user->id, 10);
 
-        $studentState   = StudentState::where('user_id', $student->id)->first();
+        $studentState   = StudentState::where('user_id', $user->id)->first();
         $certifications = $studentState ? ($studentState->certifications ?? []) : [];
 
         return [
@@ -147,9 +147,9 @@ final class StudentService implements StudentServiceInterface
         ];
     }
 
-    public function importStudentsFromFile(UploadedFile $file): array
+    public function importStudentsFromFile(UploadedFile $uploadedFile): array
     {
-        return $this->importUsersFromCsv($file, fn (array $rowData) => $this->createStudent($rowData));
+        return $this->importUsersFromCsv($uploadedFile, fn (array $rowData): User => $this->createStudent($rowData));
     }
 
     public function generateImportTemplate(): array

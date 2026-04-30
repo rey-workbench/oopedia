@@ -24,9 +24,9 @@ interface MaterialServiceInterface
 
     public function getMaterialWithQuestionsAndAnswers(string $id): ?Material;
 
-    public function createMaterial(MaterialCreateDTO $dto): Material;
+    public function createMaterial(MaterialCreateDTO $materialCreateDTO): Material;
 
-    public function updateMaterial(string $materialId, MaterialUpdateDTO $dto): Material;
+    public function updateMaterial(string $materialId, MaterialUpdateDTO $materialUpdateDTO): Material;
 
     public function deleteMaterial(string $materialId): void;
 

@@ -18,16 +18,16 @@ use Inertia\Response;
 final class ProfileController extends Controller
 {
     public function __construct(
-        protected MaterialRepositoryInterface $materialRepo,
-        protected UserServiceInterface $userService,
-        protected ProgressRepositoryInterface $progressRepo,
+        private readonly MaterialRepositoryInterface $materialRepository,
+        private readonly UserServiceInterface $userService,
+        private readonly ProgressRepositoryInterface $progressRepository,
     ) {}
 
     public function show(): Response
     {
         $user         = Auth::user();
-        $materials    = $this->materialRepo->getAllOrdered();
-        $studentState = $this->progressRepo->getOrCreateStudentState($user->id);
+        $materials    = $this->materialRepository->getAllOrdered();
+        $studentState = $this->progressRepository->getOrCreateStudentState($user->id);
 
         $total   = $studentState->total_answered ?? 0;
         $correct = $studentState->correct_count  ?? 0;
@@ -37,40 +37,40 @@ final class ProfileController extends Controller
         $learningProfile = $this->deriveLearningProfile($mslqResult);
 
         // Derive last adaptive diagnosis from adaptive_state
-        $adaptiveState    = $studentState->adaptive_state          ?? [];
-        $lastDiagnosis    = $adaptiveState['last_diagnosis']       ?? null;
-        $interventions    = $adaptiveState['active_interventions'] ?? [];
-        $needsRemedial    = (bool) ($adaptiveState['needs_remedial'] ?? false);
+        $adaptiveState = $studentState->adaptive_state          ?? [];
+        $lastDiagnosis = $adaptiveState['last_diagnosis']       ?? null;
+        $interventions = $adaptiveState['active_interventions'] ?? [];
+        $needsRemedial = (bool) ($adaptiveState['needs_remedial'] ?? false);
 
         $personalization = [
             'learning_style'           => $learningProfile['style'],
             'learning_profile_label'   => $learningProfile['label'],
             'mslq_filled'              => $mslqResult !== null,
-            'total_motivation'         => $mslqResult?->total_motivation    ?? null,
-            'total_strategy'           => $mslqResult?->total_strategy      ?? null,
-            'current_level'            => $studentState->level              ?? 'Pemula',
-            'global_xp'                => $studentState->xp                 ?? 0,
-            'current_streak'           => $studentState->streak             ?? 0,
-            'max_streak'               => $studentState->max_streak         ?? 0,
+            'total_motivation'         => $mslqResult?->total_motivation ?? null,
+            'total_strategy'           => $mslqResult?->total_strategy   ?? null,
+            'current_level'            => $studentState->level           ?? 'Pemula',
+            'global_xp'                => $studentState->xp              ?? 0,
+            'current_streak'           => $studentState->streak          ?? 0,
+            'max_streak'               => $studentState->max_streak      ?? 0,
             'total_questions_answered' => $total,
             'correct_count'            => $correct,
-            'wrong_count'              => $studentState->wrong_count         ?? 0,
-            'hints_used_count'         => $studentState->hints_used          ?? 0,
-            'hints_available'          => $studentState->hints_available     ?? 3,
+            'wrong_count'              => $studentState->wrong_count     ?? 0,
+            'hints_used_count'         => $studentState->hints_used      ?? 0,
+            'hints_available'          => $studentState->hints_available ?? 3,
             'accuracy'                 => $total > 0
                 ? round(($correct / $total) * 100, 1)
                 : 0,
             // Real adaptive engine data
-            'last_diagnosis'        => $lastDiagnosis,
-            'active_interventions'  => $interventions,
-            'needs_remedial'        => $needsRemedial,
-            'target_difficulty'     => $studentState->target_difficulty ?? 'beginner',
+            'last_diagnosis'       => $lastDiagnosis,
+            'active_interventions' => $interventions,
+            'needs_remedial'       => $needsRemedial,
+            'target_difficulty'    => $studentState->target_difficulty ?? 'beginner',
         ];
 
         $rawCertifications = $studentState?->certifications ?? [];
         $certifications    = collect($rawCertifications)
             ->map(function (string $type, string $materialId): array {
-                $material = $this->materialRepo->find($materialId);
+                $material = $this->materialRepository->find($materialId);
 
                 return [
                     'material_id'    => $materialId,
@@ -84,18 +84,18 @@ final class ProfileController extends Controller
 
         return $this->render(
             'Mahasiswa/Profile/Index',
-            compact('materials', 'user', 'personalization', 'certifications'),
+            ['materials' => $materials, 'user' => $user, 'personalization' => $personalization, 'certifications' => $certifications],
         );
     }
 
-    private function deriveLearningProfile(?MslqResult $result): array
+    private function deriveLearningProfile(?MslqResult $mslqResult): array
     {
-        if ($result === null) {
+        if (! $mslqResult instanceof MslqResult) {
             return ['style' => 'unknown', 'label' => 'Belum Diisi'];
         }
 
-        $motivation = $result->total_motivation ?? 0;
-        $strategy   = $result->total_strategy   ?? 0;
+        $motivation = $mslqResult->total_motivation ?? 0;
+        $strategy   = $mslqResult->total_strategy   ?? 0;
 
         if ($motivation >= 5.0 && $strategy >= 5.0) {
             return ['style' => 'deep', 'label' => 'Pelajar Mendalam'];
@@ -112,11 +112,11 @@ final class ProfileController extends Controller
         return ['style' => 'balanced', 'label' => 'Seimbang'];
     }
 
-    public function update(UpdateProfileRequest $request): RedirectResponse
+    public function update(UpdateProfileRequest $updateProfileRequest): RedirectResponse
     {
-        $dto = ProfileUpdateDTO::fromRequest($request);
+        $profileUpdateDTO = ProfileUpdateDTO::fromRequest($updateProfileRequest);
 
-        $this->userService->updateProfile(Auth::id(), $dto->toArray());
+        $this->userService->updateProfile(Auth::id(), $profileUpdateDTO->toArray());
 
         return back()->with('success', 'Profile berhasil diperbarui');
     }

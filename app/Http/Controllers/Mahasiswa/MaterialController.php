@@ -12,7 +12,7 @@ use Inertia\Response;
 final class MaterialController extends Controller
 {
     public function __construct(
-        protected MaterialServiceInterface $materialService,
+        private readonly MaterialServiceInterface $materialService,
     ) {}
 
     public function index(): Response

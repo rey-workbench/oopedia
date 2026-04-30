@@ -19,12 +19,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
-final class UserService implements UserServiceInterface
+final readonly class UserService implements UserServiceInterface
 {
     use ImportsCsvUsers;
 
     public function __construct(
-        public readonly UserRepositoryInterface $userRepo,
+        public UserRepositoryInterface $userRepo,
     ) {}
 
     public function getUserById(string $id): ?User
@@ -56,7 +56,7 @@ final class UserService implements UserServiceInterface
         return $this->updateUser($userId, $data);
     }
 
-    protected function updateUser(string $userId, array $data): User
+    private function updateUser(string $userId, array $data): User
     {
         if (empty($data['password'] ?? null)) {
             unset($data['password']);
@@ -73,7 +73,7 @@ final class UserService implements UserServiceInterface
     {
         $user = $this->userRepo->find($userId);
 
-        if (! $user) {
+        if (! $user instanceof User) {
             throw new UserNotFoundException($userId);
         }
 
@@ -98,11 +98,11 @@ final class UserService implements UserServiceInterface
     {
         $user = $this->userRepo->find($userId);
 
-        if (! $user) {
+        if (! $user instanceof User) {
             throw new UserNotFoundException($userId);
         }
 
-        DB::transaction(function () use ($user) {
+        DB::transaction(function () use ($user): void {
             $this->userRepo->approveStudent($user->id);
             Mail::to($user->email)->send(new AdminApproved($user));
         });
@@ -120,7 +120,7 @@ final class UserService implements UserServiceInterface
         $roleDosenId     = Role::where('role_name', RoleName::DOSEN->value)->value('id');
         $roleMahasiswaId = Role::where('role_name', RoleName::MAHASISWA->value)->value('id');
 
-        $data['role_id'] ??= str_ends_with($data['email'], User::ADMIN_EMAIL_DOMAIN)
+        $data['role_id'] ??= str_ends_with((string) $data['email'], User::ADMIN_EMAIL_DOMAIN)
             ? $roleDosenId
             : $roleMahasiswaId;
 
@@ -129,9 +129,9 @@ final class UserService implements UserServiceInterface
         return $this->userRepo->create($data);
     }
 
-    public function importAdminsFromFile(UploadedFile $file): array
+    public function importAdminsFromFile(UploadedFile $uploadedFile): array
     {
-        return $this->importUsersFromCsv($file, fn (array $rowData) => $this->createAdmin($rowData));
+        return $this->importUsersFromCsv($uploadedFile, fn (array $rowData): User => $this->createAdmin($rowData));
     }
 
     public function generateImportTemplate(): array

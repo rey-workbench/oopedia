@@ -12,16 +12,16 @@ use App\Models\AdaptiveRule;
 interface AdaptiveManagementServiceInterface
 {
     // --- Rule Management ---
-    public function createRule(AdaptiveRuleDTO $dto): AdaptiveRule;
+    public function createRule(AdaptiveRuleDTO $adaptiveRuleDTO): AdaptiveRule;
 
-    public function updateRule(string $id, AdaptiveRuleDTO $dto): AdaptiveRule;
+    public function updateRule(string $id, AdaptiveRuleDTO $adaptiveRuleDTO): AdaptiveRule;
 
     public function deleteRule(string $id): void;
 
     // --- Action Management ---
-    public function createAction(AdaptiveActionDTO $dto): AdaptiveAction;
+    public function createAction(AdaptiveActionDTO $adaptiveActionDTO): AdaptiveAction;
 
-    public function updateAction(string $id, AdaptiveActionDTO $dto): AdaptiveAction;
+    public function updateAction(string $id, AdaptiveActionDTO $adaptiveActionDTO): AdaptiveAction;
 
     public function deleteAction(string $id): void;
 

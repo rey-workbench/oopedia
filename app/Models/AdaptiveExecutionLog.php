@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AdaptiveExecutionLog extends Model
 {
+    #[\Override]
     protected $fillable = [
         'user_id',
         'rule_id',
@@ -17,6 +18,7 @@ class AdaptiveExecutionLog extends Model
         'execution_context',
     ];
 
+    #[\Override]
     protected function casts(): array
     {
         return [

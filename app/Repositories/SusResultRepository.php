@@ -18,13 +18,13 @@ final class SusResultRepository implements SusResultRepositoryInterface
     /** @return Collection<int, SusResult> */
     public function getAllWithUser(?string $class = null): Collection
     {
-        $query = SusResult::with('user');
+        $builder = SusResult::with('user');
 
         if ($class) {
-            $query->where('class', '=', $class);
+            $builder->where('class', '=', $class);
         }
 
-        return $query->get();
+        return $builder->get();
     }
 
     /** @return array<string> */

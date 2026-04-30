@@ -17,12 +17,14 @@ final class MslqAnswer extends Model
 
     use HasUlids;
 
+    #[\Override]
     protected $fillable = [
         'mslq_result_id',
         'mslq_question_id',
         'value',
     ];
 
+    #[\Override]
     protected $casts = [
         'value' => 'integer',
     ];

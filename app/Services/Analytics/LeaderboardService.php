@@ -9,21 +9,22 @@ use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\LeaderboardServiceInterface;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Helpers\ProgressHelper;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
-final class LeaderboardService implements LeaderboardServiceInterface
+final readonly class LeaderboardService implements LeaderboardServiceInterface
 {
     public function __construct(
-        public readonly MaterialRepositoryInterface $materialRepo,
-        public readonly ProgressRepositoryInterface $progressRepo,
+        public MaterialRepositoryInterface $materialRepo,
+        public ProgressRepositoryInterface $progressRepo,
     ) {}
 
     /** @return array<string, mixed> */
     public function getLeaderboardData(string $currentUserId): array
     {
         $leaderboardData = Cache::remember('global_leaderboard_data', 600, function () {
-            $materials       = $this->materialRepo->getAllWithQuestionsAndConfigs();
-            $difficultyCount = ProgressHelper::calculateDifficultyTotals($materials);
+            $allWithQuestionsAndConfigs       = $this->materialRepo->getAllWithQuestionsAndConfigs();
+            $difficultyCount                  = ProgressHelper::calculateDifficultyTotals($allWithQuestionsAndConfigs);
 
             $correctAnswers = $this->progressRepo->getCorrectAnswersWithAttempts('mahasiswa');
 
@@ -31,7 +32,7 @@ final class LeaderboardService implements LeaderboardServiceInterface
 
             $leaderboardDataRaw = $this->progressRepo->getLeaderboardStats('mahasiswa');
 
-            $totalConfiguredQuestions = ProgressHelper::calculateTotalQuestions($materials);
+            $totalConfiguredQuestions = ProgressHelper::calculateTotalQuestions($allWithQuestionsAndConfigs);
 
             return $this->processLeaderboardData(
                 $leaderboardDataRaw,
@@ -51,19 +52,22 @@ final class LeaderboardService implements LeaderboardServiceInterface
         ];
     }
 
-    protected function calculateUserScores($correctAnswers)
+    /**
+     * @return int[]|float[]
+     */
+    private function calculateUserScores(Collection $correctAnswers): array
     {
         $userScores = [];
 
-        foreach ($correctAnswers as $answer) {
-            $userId   = $answer->user_id;
-            $attempts = (int) $answer->attempts_needed;
+        foreach ($correctAnswers as $correctAnswer) {
+            $userId   = $correctAnswer->user_id;
+            $attempts = (int) $correctAnswer->attempts_needed;
 
             if (! isset($userScores[$userId])) {
                 $userScores[$userId] = 0;
             }
 
-            $difficulty = $answer->difficulty instanceof QuestionDifficulty ? $answer->difficulty->value : $answer->difficulty;
+            $difficulty = $correctAnswer->difficulty instanceof QuestionDifficulty ? $correctAnswer->difficulty->value : $correctAnswer->difficulty;
             $basePoin   = match ($difficulty) {
                 'beginner' => 5,
                 'medium'   => 10,
@@ -86,11 +90,11 @@ final class LeaderboardService implements LeaderboardServiceInterface
         return $userScores;
     }
 
-    protected function processLeaderboardData(
-        $leaderboardData,
-        $userScores,
-        $totalConfiguredQuestions,
-        $difficultyCount,
+    private function processLeaderboardData(
+        Collection $leaderboardData,
+        array $userScores,
+        int $totalConfiguredQuestions,
+        array $difficultyCount,
     ) {
         foreach ($leaderboardData as $data) {
             $data->weighted_score = $userScores[$data->id] ?? 0;
@@ -117,13 +121,17 @@ final class LeaderboardService implements LeaderboardServiceInterface
         return $leaderboardData;
     }
 
-    protected function determineBadge($data, $difficultyCount)
+    private function determineBadge($data, array $difficultyCount): array
     {
         if ($data->hard_completed >= $difficultyCount['hard'] && $difficultyCount['hard'] > 0) {
             return ['name' => 'Hard', 'color' => 'danger'];
-        } elseif ($data->medium_completed >= $difficultyCount['medium'] && $difficultyCount['medium'] > 0) {
+        }
+
+        if ($data->medium_completed >= $difficultyCount['medium'] && $difficultyCount['medium'] > 0) {
             return ['name' => 'Medium', 'color' => 'warning'];
-        } elseif ($data->beginner_completed >= $difficultyCount['beginner'] && $difficultyCount['beginner'] > 0) {
+        }
+
+        if ($data->beginner_completed >= $difficultyCount['beginner'] && $difficultyCount['beginner'] > 0) {
             return ['name' => 'Beginner', 'color' => 'success'];
         }
 

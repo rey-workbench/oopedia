@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Mahasiswa;
 use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Http\Controllers\Controller;
+use App\Models\Material;
 use App\Models\User;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Encoding\Encoding;
@@ -20,20 +21,20 @@ use Spatie\LaravelPdf\Facades\Pdf;
 final class CertificateController extends Controller
 {
     public function __construct(
-        protected MaterialRepositoryInterface $materialRepo,
-        protected ProgressRepositoryInterface $progressRepo,
+        private readonly MaterialRepositoryInterface $materialRepository,
+        private readonly ProgressRepositoryInterface $progressRepository,
     ) {}
 
     public function index(): Response
     {
         $userId = Auth::id();
-        $state  = $this->progressRepo->getOrCreateStudentState($userId);
+        $state  = $this->progressRepository->getOrCreateStudentState($userId);
 
         $rawCertifications = $state->certifications ?? [];
 
         $certifications = collect($rawCertifications)
             ->map(function (string $type, string $materialId): array {
-                $material = $this->materialRepo->find($materialId);
+                $material = $this->materialRepository->find($materialId);
 
                 return [
                     'material_id'    => $materialId,
@@ -52,17 +53,17 @@ final class CertificateController extends Controller
 
     public function preview(string $materialId, ?string $userId = null): View
     {
-        $userId = $userId ?? Auth::id();
+        $userId ??= Auth::id();
 
         if (! $userId) {
             abort(403, 'User not identified');
         }
 
         $user     = User::find($userId);
-        $state    = $this->progressRepo->getOrCreateStudentState($userId);
-        $material = $this->materialRepo->find($materialId);
+        $state    = $this->progressRepository->getOrCreateStudentState($userId);
+        $material = $this->materialRepository->find($materialId);
 
-        if (! $material) {
+        if (! $material instanceof Material) {
             abort(404, 'Material not found');
         }
 
@@ -117,10 +118,10 @@ final class CertificateController extends Controller
     {
         $userId   = Auth::id();
         $user     = Auth::user();
-        $state    = $this->progressRepo->getOrCreateStudentState($userId);
-        $material = $this->materialRepo->find($materialId);
+        $state    = $this->progressRepository->getOrCreateStudentState($userId);
+        $material = $this->materialRepository->find($materialId);
 
-        if (! $material) {
+        if (! $material instanceof Material) {
             abort(404, 'Material not found');
         }
 
@@ -145,7 +146,7 @@ final class CertificateController extends Controller
             'student_name'    => $user?->name ?? 'Student',
             'material_title'  => $material->title,
             'material_id'     => $material->id,
-            'tier_name'       => ucfirst($tier),
+            'tier_name'       => ucfirst((string) $tier),
             'tier_color'      => $palette['primary'],
             'tier_color_dark' => $palette['dark'],
             'logo_image'      => $logo,
@@ -153,7 +154,7 @@ final class CertificateController extends Controller
             'date'            => now()->translatedFormat('d F Y'),
         ])
             ->landscape()
-            ->name("Sertifikat_{$tier}_{$material->title}.pdf")
+            ->name(sprintf('Sertifikat_%s_%s.pdf', $tier, $material->title))
             ->download();
     }
 }

@@ -7,17 +7,17 @@ namespace App\DTOs\Quiz;
 /**
  * Data Transfer Object for a student's answer submission.
  */
-final class QuizSubmissionDTO
+final readonly class QuizSubmissionDTO
 {
     public function __construct(
-        public readonly string $userId,
-        public readonly string $materialId,
-        public readonly string $questionId,
-        public readonly ?string $answer = null,
-        public readonly ?string $fillInTheBlankAnswer = null,
-        public readonly mixed $dragAndDropAnswers = null,
-        public readonly bool $usedHint = false,
-        public readonly int $timeSpent = 0,
+        public string $userId,
+        public string $materialId,
+        public string $questionId,
+        public ?string $answer = null,
+        public ?string $fillInTheBlankAnswer = null,
+        public mixed $dragAndDropAnswers = null,
+        public bool $usedHint = false,
+        public int $timeSpent = 0,
     ) {}
 
     public static function fromRequest(string $userId, string $materialId, string $questionId, array $data): self

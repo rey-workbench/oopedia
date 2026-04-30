@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Contracts\Repositories;
 
 use App\Models\QuizAttempt;
@@ -27,6 +29,7 @@ interface ProgressRepositoryInterface
     public function getOrCreateStudentState(?string $userId): StudentState;
 
     public function getAnsweredQuestionIds(string $userId, string $materialId): Collection;
+
     public function getAttemptedQuestionIds(string $userId, string $materialId): Collection;
 
     public function resetProgress(string $userId, string $materialId): void;

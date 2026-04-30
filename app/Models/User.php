@@ -29,15 +29,20 @@ final class User extends Authenticatable
 
     public const string ADMIN_EMAIL_DOMAIN = '@admin.oopedia.com';
 
+    #[\Override]
     public $incrementing = false;
 
+    #[\Override]
     protected $keyType = 'string';
 
+    #[\Override]
     protected $fillable = ['name', 'email', 'password', 'role_id', 'is_approved'];
 
     /** @var array<int, string> */
+    #[\Override]
     protected $hidden = ['password', 'remember_token'];
 
+    #[\Override]
     protected function casts(): array
     {
         return [

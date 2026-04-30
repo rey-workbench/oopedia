@@ -10,14 +10,14 @@ use App\Models\Material;
 /**
  * Data Transfer Object for Quiz Context.
  */
-final class QuizContextDTO
+final readonly class QuizContextDTO
 {
     public function __construct(
-        public readonly Material $material,
-        public readonly ?QuestionDifficulty $difficulty,
-        public readonly string $userId,
-        public readonly bool $isGuest,
-        public readonly array $guestProgress = [],
-        public readonly ?QuestionDifficulty $targetDifficulty = null,
+        public Material $material,
+        public ?QuestionDifficulty $difficulty,
+        public string $userId,
+        public bool $isGuest,
+        public array $guestProgress = [],
+        public ?QuestionDifficulty $targetDifficulty = null,
     ) {}
 }

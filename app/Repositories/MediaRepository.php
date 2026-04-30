@@ -30,7 +30,7 @@ final class MediaRepository implements MediaRepositoryInterface
     {
         $media = $this->find($id);
 
-        if ($media) {
+        if ($media instanceof Media) {
             return (bool) $media->delete();
         }
 

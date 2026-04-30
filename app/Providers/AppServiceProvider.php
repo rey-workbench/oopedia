@@ -18,7 +18,7 @@ class AppServiceProvider extends ServiceProvider
 
     protected function configureHttps(): void
     {
-        if (app()->environment('production') || str_starts_with(config('app.url'), 'https://')) {
+        if (app()->environment('production') || str_starts_with((string) config('app.url'), 'https://')) {
             URL::forceScheme('https');
         }
     }
@@ -30,11 +30,9 @@ class AppServiceProvider extends ServiceProvider
 
             return Limit::perMinute($config['limit'])
                 ->by(optional($request->user())->id ?: $request->ip())
-                ->response(function () {
-                    return response()->json([
-                        'message' => 'Too many requests. Please slow down.',
-                    ], 429);
-                });
+                ->response(fn () => response()->json([
+                    'message' => 'Too many requests. Please slow down.',
+                ], 429));
         });
 
         RateLimiter::for('guest', function (Request $request) {
@@ -42,11 +40,9 @@ class AppServiceProvider extends ServiceProvider
 
             return Limit::perMinute($config['limit'])
                 ->by($request->ip())
-                ->response(function () {
-                    return response()->json([
-                        'message' => 'Too many requests. Please slow down.',
-                    ], 429);
-                });
+                ->response(fn () => response()->json([
+                    'message' => 'Too many requests. Please slow down.',
+                ], 429));
         });
     }
 }

@@ -13,10 +13,10 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-final class MslqService implements MslqServiceInterface
+final readonly class MslqService implements MslqServiceInterface
 {
     public function __construct(
-        private readonly MslqRepositoryInterface $mslqRepository,
+        private MslqRepositoryInterface $mslqRepository,
     ) {}
 
     public function getAdminResults(?string $class = null): LengthAwarePaginator
@@ -45,12 +45,13 @@ final class MslqService implements MslqServiceInterface
         $motivationTotals = [];
         $strategyTotals   = [];
 
-        foreach ($results as $res) {
-            foreach ($res->scores_by_scale as $scale => $score) {
+        foreach ($results as $result) {
+            foreach ($result->scores_by_scale as $scale => $score) {
                 $allScales[$scale][] = $score;
             }
-            $motivationTotals[] = $res->total_motivation;
-            $strategyTotals[]   = $res->total_strategy;
+
+            $motivationTotals[] = $result->total_motivation;
+            $strategyTotals[]   = $result->total_strategy;
         }
 
         $averages = [];
@@ -72,8 +73,8 @@ final class MslqService implements MslqServiceInterface
 
     public function storeSubmission(array $data, int|string $userId, string $nim, string $class): MslqResult
     {
-        return DB::transaction(function () use ($data, $userId, $nim, $class) {
-            $result = $this->mslqRepository->create([
+        return DB::transaction(function () use ($data, $userId, $nim, $class): MslqResult {
+            $mslqResult = $this->mslqRepository->create([
                 'user_id'          => $userId,
                 'nim'              => $nim,
                 'class'            => $class,
@@ -84,16 +85,16 @@ final class MslqService implements MslqServiceInterface
 
             foreach ($data as $questionId => $value) {
                 MslqAnswer::create([
-                    'mslq_result_id'   => $result->getKey(),
+                    'mslq_result_id'   => $mslqResult->getKey(),
                     'mslq_question_id' => $questionId,
                     'value'            => $value,
                 ]);
             }
 
-            $finalScores = $this->calculateScores($result);
-            $result->update($finalScores);
+            $finalScores = $this->calculateScores($mslqResult);
+            $mslqResult->update($finalScores);
 
-            return $result;
+            return $mslqResult;
         });
     }
 
@@ -102,10 +103,10 @@ final class MslqService implements MslqServiceInterface
         return $this->mslqRepository->getAllForCalculation($class);
     }
 
-    private function calculateScores(MslqResult $result): array
+    private function calculateScores(MslqResult $mslqResult): array
     {
-        $answers = $result->answers()->with('question')->get();
-        $grouped = $answers->groupBy(fn (MslqAnswer $answer) => $answer->question->scale);
+        $answers = $mslqResult->answers()->with('question')->get();
+        $grouped = $answers->groupBy(fn (MslqAnswer $mslqAnswer) => $mslqAnswer->question->scale);
 
         $scoresByScale    = [];
         $motivationScores = collect();
@@ -136,9 +137,9 @@ final class MslqService implements MslqServiceInterface
             return 0.0;
         }
 
-        $total = $answers->sum(function (MslqAnswer $answer) {
-            $value = $answer->value;
-            if ($answer->question->is_reverse) {
+        $total = $answers->sum(function (MslqAnswer $mslqAnswer) {
+            $value = $mslqAnswer->value;
+            if ($mslqAnswer->question->is_reverse) {
                 return 8 - $value;
             }
 

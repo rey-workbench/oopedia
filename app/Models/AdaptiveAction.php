@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -13,12 +15,16 @@ use Illuminate\Database\Eloquent\Model;
  */
 class AdaptiveAction extends Model
 {
+    #[\Override]
     protected $keyType = 'string';
 
+    #[\Override]
     public $incrementing = false;
 
+    #[\Override]
     protected $fillable = ['id', 'name', 'description', 'variant', 'instructions'];
 
+    #[\Override]
     protected function casts(): array
     {
         return [

@@ -44,9 +44,9 @@ class ProgressHelper
     {
         $guestLimit = 3;
 
-        $beginner = $material->questions->filter(fn ($q) => ($q->difficulty instanceof QuestionDifficulty ? $q->difficulty->value : $q->difficulty) === 'beginner')->count();
-        $medium   = $material->questions->filter(fn ($q) => ($q->difficulty instanceof QuestionDifficulty ? $q->difficulty->value : $q->difficulty) === 'medium')->count();
-        $hard     = $material->questions->filter(fn ($q) => ($q->difficulty instanceof QuestionDifficulty ? $q->difficulty->value : $q->difficulty) === 'hard')->count();
+        $beginner = $material->questions->filter(fn ($q): bool => ($q->difficulty instanceof QuestionDifficulty ? $q->difficulty->value : $q->difficulty) === 'beginner')->count();
+        $medium   = $material->questions->filter(fn ($q): bool => ($q->difficulty instanceof QuestionDifficulty ? $q->difficulty->value : $q->difficulty) === 'medium')->count();
+        $hard     = $material->questions->filter(fn ($q): bool => ($q->difficulty instanceof QuestionDifficulty ? $q->difficulty->value : $q->difficulty) === 'hard')->count();
 
         $configuredBeginner = $isGuest ? min($beginner, $guestLimit) : $beginner;
         $configuredMedium   = $isGuest ? min($medium, $guestLimit) : $medium;

@@ -8,8 +8,10 @@ use Illuminate\Support\Collection;
 
 class AdaptiveStateCleanupCommand extends Command
 {
+    #[\Override]
     protected $signature = 'adaptive:cleanup {--force : Proceed without confirmation}';
 
+    #[\Override]
     protected $description = 'Reset student state columns to defaults (for maintenance/debug)';
 
     public function handle(): void
@@ -20,7 +22,7 @@ class AdaptiveStateCleanupCommand extends Command
 
         $this->info('Resetting wrong_streak for all students...');
 
-        StudentState::chunk(200, function (Collection $states) {
+        StudentState::chunk(200, function (Collection $states): void {
             /** @var StudentState $state */
             foreach ($states as $state) {
                 // Only reset aggregated wrong_streak (never truncate real stats)

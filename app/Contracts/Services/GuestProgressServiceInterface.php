@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Contracts\Services;
 
 use App\Models\StudentState;
@@ -20,5 +22,5 @@ interface GuestProgressServiceInterface
 
     public function getStudentState(): StudentState;
 
-    public function saveStudentState(StudentState $state): void;
+    public function saveStudentState(StudentState $studentState): void;
 }

@@ -7,8 +7,10 @@ use Illuminate\Console\Command;
 
 class CheckAdaptiveIntegrityCommand extends Command
 {
+    #[\Override]
     protected $signature = 'adaptive:check-integrity';
 
+    #[\Override]
     protected $description = 'Checks for circular dependencies and logical gaps in the adaptive rule tree';
 
     public function handle(): int
@@ -21,7 +23,7 @@ class CheckAdaptiveIntegrityCommand extends Command
 
         foreach ($rules as $rule) {
             if ($this->detectCycle($rule)) {
-                $this->error("Cycle detected starting from Node ID: {$rule->id} ({$rule->name})");
+                $this->error(sprintf('Cycle detected starting from Node ID: %s (%s)', $rule->id, $rule->name));
                 $hasCycle = true;
             }
         }
@@ -35,8 +37,8 @@ class CheckAdaptiveIntegrityCommand extends Command
             ->get();
 
         if ($invalidLeafs->isNotEmpty()) {
-            foreach ($invalidLeafs as $leaf) {
-                $this->warn("⚠️ Rule Node {$leaf->id} has no action_ids defined.");
+            foreach ($invalidLeafs as $invalidLeaf) {
+                $this->warn(sprintf('⚠️ Rule Node %s has no action_ids defined.', $invalidLeaf->id));
             }
         } else {
             $this->info('✅ All rules have action codes.');
@@ -45,15 +47,15 @@ class CheckAdaptiveIntegrityCommand extends Command
         return $hasCycle ? 1 : 0;
     }
 
-    private function detectCycle(AdaptiveRule $node, array $visited = []): bool
+    private function detectCycle(AdaptiveRule $adaptiveRule, array $visited = []): bool
     {
-        if (in_array($node->id, $visited)) {
+        if (in_array($adaptiveRule->id, $visited)) {
             return true;
         }
 
-        $visited[] = $node->id;
+        $visited[] = $adaptiveRule->id;
 
-        foreach ($node->children as $child) {
+        foreach ($adaptiveRule->children as $child) {
             if ($this->detectCycle($child, $visited)) {
                 return true;
             }

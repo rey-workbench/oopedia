@@ -44,12 +44,12 @@ class EngineResultDTO
         $finalRule = end($appliedRules);
 
         $recommendations = [];
-        foreach ($appliedRules as $rule) {
-            if (empty($rule->actions)) {
+        foreach ($appliedRules as $appliedRule) {
+            if (empty($appliedRule->actions)) {
                 continue;
             }
 
-            foreach ($rule->actions as $action) {
+            foreach ($appliedRule->actions as $action) {
                 if (is_string($action)) {
                     $recommendations[] = [
                         'id'       => $action,

@@ -14,9 +14,9 @@ trait ImportsCsvUsers
      * @param callable(array): void $createCallback Receives validated row data ['name','email','password']
      * @return array{success_count: int, error_rows: array}
      */
-    protected function importUsersFromCsv(UploadedFile $file, callable $createCallback): array
+    protected function importUsersFromCsv(UploadedFile $uploadedFile, callable $createCallback): array
     {
-        $path         = $file->getRealPath();
+        $path         = $uploadedFile->getRealPath();
         $successCount = 0;
         $errorRows    = [];
 
@@ -24,23 +24,23 @@ trait ImportsCsvUsers
             return ['success_count' => 0, 'error_rows' => []];
         }
 
-        $header          = fgetcsv($handle, 1000, ',');
+        $header          = fgetcsv($handle, 1000, ',', escape: '\\');
         $requiredColumns = ['name', 'email', 'password'];
         $missingColumns  = array_diff($requiredColumns, $header);
 
-        if (! empty($missingColumns)) {
+        if ($missingColumns !== []) {
             fclose($handle);
             throw new \RuntimeException(
                 'File tidak memiliki kolom yang diperlukan: ' . implode(', ', $missingColumns),
             );
         }
 
-        $nameIndex     = array_search('name', $header);
-        $emailIndex    = array_search('email', $header);
-        $passwordIndex = array_search('password', $header);
+        $nameIndex     = array_search('name', $header, true);
+        $emailIndex    = array_search('email', $header, true);
+        $passwordIndex = array_search('password', $header, true);
         $rowNumber     = 1;
 
-        while (($row = fgetcsv($handle, 1000, ',')) !== false) {
+        while (($row = fgetcsv($handle, 1000, ',', escape: '\\')) !== false) {
             $rowNumber++;
 
             if (empty($row[$nameIndex]) && empty($row[$emailIndex])) {
@@ -81,16 +81,16 @@ trait ImportsCsvUsers
     {
         $headers = [
             'Content-Type'        => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+            'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
             'Pragma'              => 'no-cache',
             'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
             'Expires'             => '0',
         ];
 
-        $callback = function () use ($exampleRow) {
+        $callback = function () use ($exampleRow): void {
             $file = fopen('php://output', 'w');
-            fputcsv($file, ['name', 'email', 'password']);
-            fputcsv($file, $exampleRow);
+            fputcsv($file, ['name', 'email', 'password'], escape: '\\');
+            fputcsv($file, $exampleRow, escape: '\\');
             fclose($file);
         };
 

@@ -15,8 +15,10 @@ final class Media extends Model
     use HasFactory;
     use HasUlids;
 
+    #[\Override]
     protected $fillable = ['material_id', 'media_type', 'media_url'];
 
+    #[\Override]
     protected function casts(): array
     {
         return [

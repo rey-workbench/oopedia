@@ -3,12 +3,13 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class FindUnusedClasses extends Command
 {
-    protected $defaultPaths = [];
+    protected Collection $defaultPaths;
 
     protected $classNames = [];
 
@@ -23,6 +24,7 @@ class FindUnusedClasses extends Command
      *
      * @var string
      */
+    #[\Override]
     protected $signature = 'findunused:classes';
 
     /**
@@ -30,6 +32,7 @@ class FindUnusedClasses extends Command
      *
      * @var string
      */
+    #[\Override]
     protected $description = 'Find unused classes';
 
     /**
@@ -46,29 +49,31 @@ class FindUnusedClasses extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $this->populateControllerNamesFromRoutes();
-        $this->defaultPaths->each(function ($path) {
-            $phpFiles = collect(File::allFiles($path))->filter(fn ($filename) => Str::endsWith($filename, '.php'))->each(function ($phpFile) {
-                $fileContents = file_get_contents($phpFile);
+        $this->defaultPaths->each(function ($path): void {
+            collect(File::allFiles($path))->filter(fn ($filename) => Str::endsWith($filename, '.php'))->each(function ($phpFile): void {
+                $fileContents = file_get_contents($phpFile->getPathname());
                 if (preg_match('/class\s+(\w+)/', $fileContents, $className) === 1) {
                     $this->classNames[$className[1]] = $phpFile->getPathName();
                     $fileContents                    = str_replace($className[1], Str::random(16), $fileContents);
                 }
+
                 $this->massiveString .= $fileContents;
             });
         });
-        foreach ($this->classNames as $className => $files) {
+        foreach (array_keys($this->classNames) as $className) {
             $matches = [];
-            if (preg_match("/$className/", $this->massiveString, $matches) === 1 or $this->isARegisteredController($className)) {
+            if (preg_match(sprintf('/%s/', $className), (string) $this->massiveString, $matches) === 1 || $this->isARegisteredController($className)) {
                 unset($this->classNames[$className]);
             }
         }
+
         dump($this->classNames);
     }
 
-    public function populateControllerNamesFromRoutes()
+    public function populateControllerNamesFromRoutes(): void
     {
         $routes = \Route::getRoutes();
         foreach ($routes as $route) {
@@ -94,7 +99,7 @@ class FindUnusedClasses extends Command
 
             // Support both "Controller@method" and invokable controllers (no '@')
             if (str_contains($controllerString, '@')) {
-                [$controller, $method] = explode('@', $controllerString, 2);
+                [$controller] = explode('@', $controllerString, 2);
             } else {
                 $controller = $controllerString;
             }
@@ -103,21 +108,22 @@ class FindUnusedClasses extends Command
         }
     }
 
-    public function isARegisteredController($className)
+    public function isARegisteredController($className): bool
     {
         return in_array($className, $this->controllerNames);
     }
 
     public function ignoreCommonStuff($funcName, $fileName)
     {
-        if ($funcName == 'handle' and preg_match('/(Middleware|Listeners|Commands)/', $fileName) === 1) {
-            return true;
-        }
-        if ($funcName == 'broadcastOn' and preg_match('/Events/', $fileName) === 1) {
+        if ($funcName == 'handle' && preg_match('/(Middleware|Listeners|Commands)/', (string) $fileName) === 1) {
             return true;
         }
 
-        return in_array($funcName, $this->crudNames) and Str::contains($fileName, 'Controller');
+        if ($funcName == 'broadcastOn' && preg_match('/Events/', (string) $fileName) === 1) {
+            return true;
+        }
+
+        return in_array($funcName, $this->crudNames) && Str::contains($fileName, 'Controller');
     }
 
     public function shouldConsider($filename)
@@ -125,23 +131,22 @@ class FindUnusedClasses extends Command
         if (Str::contains($filename, 'ServiceProvider')) {
             return false;
         }
+
         if (Str::contains($filename, 'Policies')) {
             return false;
         }
-        if (Str::contains($filename, 'Observers')) {
-            return false;
-        }
 
-        return true;
+        return ! Str::contains($filename, 'Observers');
     }
 
     protected function mangleLaravelNames($fName)
     {
         $match = '';
-        if (preg_match('/^scope(.+$)/', $fName, $match) === 1) {
+        if (preg_match('/^scope(.+$)/', (string) $fName, $match) === 1) {
             return Str::camel($match[1]);
         }
-        if (preg_match('/^(get|set)(.+)Attribute$/', $fName, $match) === 1) {
+
+        if (preg_match('/^(get|set)(.+)Attribute$/', (string) $fName, $match) === 1) {
             return Str::snake($match[2]);
         }
 
