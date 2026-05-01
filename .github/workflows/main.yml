@@ -97,6 +97,11 @@ jobs:
                   script: |
                       cd /root/skripsi/rey/oopedia
 
+                      # Force sync git to match the deployed files and prevent pull conflicts
+                      git fetch origin main || true
+                      git reset --hard origin/main || true
+                      git clean -fd || true
+
                       # Maintenance mode on
                       php artisan down || true
 
@@ -115,7 +120,8 @@ jobs:
                       chown -R root:www-data storage bootstrap/cache
 
                       # RESTART OCTANE (Supervisor)
-                      # Menggunakan nama program oopedia-octane sesuai config Supervisor
+                      # Pastikan tidak ada proses rr yang tersangkut sebelum restart
+                      sudo pkill -f rr || true
                       sudo supervisorctl restart oopedia-octane
 
                       # Maintenance mode off
