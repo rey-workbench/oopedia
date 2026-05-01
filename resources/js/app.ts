@@ -10,6 +10,7 @@ import { initTutorials } from '@/tutorial';
 initTutorials();
 
 createInertiaApp({
+    progress: false,
     resolve: (name) =>
         resolvePageComponent(
             `./pages/${name}.svelte`,

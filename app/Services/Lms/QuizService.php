@@ -20,6 +20,7 @@ use App\DTOs\Quiz\QuizContextDTO;
 use App\DTOs\Quiz\QuizSubmissionDTO;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Enums\Lms\QuestionType;
+use App\Enums\User\RoleName;
 use App\Exceptions\Domain\QuestionNotFoundException;
 use App\Helpers\ProgressHelper;
 use App\Models\AdaptiveAction;
@@ -197,7 +198,7 @@ final readonly class QuizService implements QuizServiceInterface
 
         // R02 Spec: "tampilkan 5 soal level mudah" — forced_easy_count override
         if (! $isGuest) {
-            $state         = $this->performanceService->getStudentState($userId);
+            $state         = $this->performanceService->findOrCreateStudentState($userId);
             $adaptiveState = $state->adaptive_state ?? [];
 
             if (($adaptiveState['forced_easy_count'] ?? 0) > 0) {
@@ -251,7 +252,7 @@ final readonly class QuizService implements QuizServiceInterface
             'level_progress'          => $levelProgress,
             'difficulty'              => $difficulty instanceof QuestionDifficulty ? $difficulty->value : 'all',
             'is_guest'                => $isGuest,
-            'student_state'           => $isGuest ? null : $this->performanceService->getStudentSessionState($userId),
+            'student_state'           => $isGuest ? $this->guestProgressService->getStudentSessionState() : $this->performanceService->getStudentSessionState($userId),
         ];
     }
 
@@ -488,7 +489,7 @@ final readonly class QuizService implements QuizServiceInterface
             }
 
             $this->progressRepository->saveProgress([
-                'user_id'       => $quizSubmissionDTO->userId ?: 'guest',
+                'user_id'       => $quizSubmissionDTO->userId ?: RoleName::GUEST->value,
                 'material_id'   => $quizSubmissionDTO->materialId,
                 'question_id'   => $quizSubmissionDTO->questionId,
                 'is_correct'    => $isCorrect,
@@ -500,7 +501,7 @@ final readonly class QuizService implements QuizServiceInterface
             ]);
 
             // Save Guest Progress in Session for immediate context availability
-            if ($quizSubmissionDTO->userId === '' || $quizSubmissionDTO->userId === 'guest') {
+            if ($quizSubmissionDTO->userId === '' || $quizSubmissionDTO->userId === RoleName::GUEST->value) {
                 $this->guestProgressService->saveProgress(
                     ['material_id' => $quizSubmissionDTO->materialId],
                     $isCorrect,
@@ -557,7 +558,7 @@ final readonly class QuizService implements QuizServiceInterface
     private function logAndApplyAdaptiveResult(string $userId, string $materialId, array $result, StudentState $studentState): void
     {
         // 1. Log the execution (only for registered users)
-        if ($userId !== 'guest') {
+        if ($userId !== RoleName::GUEST->value) {
             AdaptiveExecutionLog::create([
                 'user_id'           => $userId,
                 'rule_id'           => $result['id'],
@@ -672,7 +673,7 @@ final readonly class QuizService implements QuizServiceInterface
         }
 
         $studentState->adaptive_state = $adaptiveState;
-        if ($userId !== 'guest') {
+        if ($userId !== RoleName::GUEST->value) {
             $studentState->save();
         }
     }

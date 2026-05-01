@@ -6,6 +6,7 @@ namespace App\Services\Lms;
 
 use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Models\StudentState;
+use App\Enums\User\RoleName;
 use App\Rules\Adaptive\Constants\StudentStateSchema;
 use Illuminate\Support\Facades\Cookie;
 
@@ -113,7 +114,7 @@ final readonly class GuestProgressService implements GuestProgressServiceInterfa
         $defaults = StudentStateSchema::defaults();
 
         return new StudentState(array_merge($defaults, [
-            'user_id'                             => 'guest',
+            'user_id'                             => RoleName::GUEST->value,
             StudentStateSchema::XP                => $gamification['xp'],
             StudentStateSchema::STREAK            => $gamification['streak'],
             StudentStateSchema::LEVEL             => 'Tamu',
@@ -123,7 +124,24 @@ final readonly class GuestProgressService implements GuestProgressServiceInterfa
             StudentStateSchema::HINTS_USED        => $performanceMetrics[StudentStateSchema::HINTS_USED]        ?? 0,
             StudentStateSchema::HINTS_AVAILABLE   => $performanceMetrics[StudentStateSchema::HINTS_AVAILABLE]   ?? 3,
             StudentStateSchema::TARGET_DIFFICULTY => $performanceMetrics[StudentStateSchema::TARGET_DIFFICULTY] ?? null,
+            'accuracy'                            => $performanceMetrics['accuracy'] ?? 0,
         ]));
+    }
+
+    public function getStudentSessionState(): array
+    {
+        $studentState = $this->getStudentState();
+
+        return [
+            'accuracy'            => round((float) ($studentState->accuracy ?? 0), 2),
+            'xp'                  => $studentState->xp,
+            'streak'              => $studentState->streak,
+            'level'               => 'Tamu',
+            'hints_available'     => $studentState->hints_available,
+            'target_difficulty'   => $studentState->target_difficulty,
+            'adaptive_state'      => $studentState->adaptive_state      ?? [],
+            'performance_metrics' => $studentState->performance_metrics ?? [],
+        ];
     }
 
     public function saveStudentState(StudentState $studentState): void

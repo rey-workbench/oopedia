@@ -7,6 +7,7 @@ namespace App\Repositories;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\StudentStateRepositoryInterface;
 use App\Enums\Lms\QuestionDifficulty;
+use App\Enums\User\RoleName;
 use App\Models\Material;
 use App\Models\Question;
 use App\Models\QuizAttempt;
@@ -23,7 +24,7 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
 
     public function getUserProgressStats(?string $userId): Collection
     {
-        if (is_null($userId) || $userId === 'guest') {
+        if (is_null($userId) || $userId === RoleName::GUEST->value) {
             return collect();
         }
 
@@ -41,7 +42,7 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
 
     public function getUserMaterialProgress(?string $userId): Collection
     {
-        if (is_null($userId) || $userId === 'guest') {
+        if (is_null($userId) || $userId === RoleName::GUEST->value) {
             return collect();
         }
 
@@ -59,7 +60,7 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
 
     public function getRecentActivities(?string $userId, int $limit = 5): Collection
     {
-        if (is_null($userId) || $userId === 'guest') {
+        if (is_null($userId) || $userId === RoleName::GUEST->value) {
             return collect();
         }
 
@@ -105,7 +106,7 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
     /** @return Collection<int, mixed> */
     public function getDetailedUserProgress(?string $userId): Collection
     {
-        if (is_null($userId) || $userId === 'guest') {
+        if (is_null($userId) || $userId === RoleName::GUEST->value) {
             return collect();
         }
 
@@ -187,7 +188,7 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
 
     public function saveProgress(array $data): QuizAttempt
     {
-        if ($data['user_id'] === 'guest') {
+        if ($data['user_id'] === RoleName::GUEST->value) {
             return new QuizAttempt($data);
         }
 
@@ -218,7 +219,7 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
 
     private function updateStudentState(?string $userId, array $attributes): void
     {
-        if (is_null($userId) || $userId === 'guest') {
+        if (is_null($userId) || $userId === RoleName::GUEST->value) {
             return;
         }
 
@@ -253,7 +254,7 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
 
     public function getAnsweredQuestionIds(string $userId, string $materialId): Collection
     {
-        if ($userId === 'guest') {
+        if ($userId === RoleName::GUEST->value) {
             return collect([]);
         }
 
@@ -266,7 +267,7 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
 
     public function getAttemptedQuestionIds(string $userId, string $materialId): Collection
     {
-        if ($userId === 'guest') {
+        if ($userId === RoleName::GUEST->value) {
             return collect([]);
         }
 
@@ -321,7 +322,7 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
 
     public function getLastAccessTime(?string $userId, string $materialId): ?string
     {
-        if (is_null($userId) || $userId === 'guest') {
+        if (is_null($userId) || $userId === RoleName::GUEST->value) {
             return null;
         }
 
@@ -374,21 +375,12 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
             });
     }
 
-    public function getStudentState(?string $userId): ?StudentState
-    {
-        if (is_null($userId) || $userId === 'guest') {
-            return null;
-        }
-
-        return StudentState::where('user_id', $userId)->first();
-    }
-
     public function getOrCreateStudentState(?string $userId): StudentState
     {
         $defaults = StudentStateSchema::defaults();
 
-        if (is_null($userId) || $userId === 'guest') {
-            return new StudentState(array_merge($defaults, ['user_id' => 'guest']));
+        if (is_null($userId) || $userId === RoleName::GUEST->value) {
+            return new StudentState(array_merge($defaults, ['user_id' => RoleName::GUEST->value]));
         }
 
         return StudentState::firstOrCreate(['user_id' => $userId], array_merge($defaults, [

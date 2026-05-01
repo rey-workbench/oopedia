@@ -6,16 +6,17 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\StudentStateRepositoryInterface;
 use App\Models\StudentState;
+use App\Enums\User\RoleName;
 use App\Rules\Adaptive\Constants\StudentStateSchema;
 
 final class StudentStateRepository implements StudentStateRepositoryInterface
 {
     public function findOrCreate(string $userId): StudentState
     {
-        if ($userId === 'guest') {
+        if ($userId === RoleName::GUEST->value) {
             return new StudentState(array_merge(
                 StudentStateSchema::defaults(),
-                ['user_id' => 'guest'],
+                ['user_id' => RoleName::GUEST->value],
             ));
         }
 
@@ -29,7 +30,7 @@ final class StudentStateRepository implements StudentStateRepositoryInterface
     {
         $studentState = $this->findOrCreate($userId);
 
-        if ($userId !== 'guest') {
+        if ($userId !== RoleName::GUEST->value) {
             $studentState->update($data);
         } else {
             $studentState->fill($data);

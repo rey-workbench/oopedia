@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\DTOs\Quiz;
 
+use App\Enums\User\RoleName;
+
 /**
  * Data Transfer Object for a student's answer submission.
  */
@@ -23,7 +25,7 @@ final readonly class QuizSubmissionDTO
     public static function fromRequest(string $userId, string $materialId, string $questionId, array $data): self
     {
         return new self(
-            userId: $userId ?: 'guest',
+            userId: $userId ?: RoleName::GUEST->value,
             materialId: $materialId,
             questionId: $questionId,
             answer: $data['answer']                                 ?? null,

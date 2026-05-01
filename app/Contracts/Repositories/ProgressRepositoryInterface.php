@@ -24,8 +24,6 @@ interface ProgressRepositoryInterface
 
     public function saveProgress(array $data): QuizAttempt;
 
-    public function getStudentState(?string $userId): ?StudentState;
-
     public function getOrCreateStudentState(?string $userId): StudentState;
 
     public function getAnsweredQuestionIds(string $userId, string $materialId): Collection;

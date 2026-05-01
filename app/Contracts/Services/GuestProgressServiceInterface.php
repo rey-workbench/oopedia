@@ -22,5 +22,7 @@ interface GuestProgressServiceInterface
 
     public function getStudentState(): StudentState;
 
+    public function getStudentSessionState(): array;
+
     public function saveStudentState(StudentState $studentState): void;
 }

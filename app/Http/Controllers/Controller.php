@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Contracts\Services\GuestProgressServiceInterface;
+use App\Enums\User\RoleName;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -22,11 +23,7 @@ class Controller extends BaseController
 
     protected function isGuest(): bool
     {
-        if (! Auth::check()) {
-            return true;
-        }
-
-        return (Auth::user()->role?->role_name ?? 'guest') === 'guest';
+        return Auth::guest() || (Auth::user()->role?->role_name ?? RoleName::GUEST->value) === RoleName::GUEST->value;
     }
 
     protected function render(string $page, array $data = []): Response
@@ -36,7 +33,7 @@ class Controller extends BaseController
 
     protected function getUserId(): int|string
     {
-        return $this->isGuest() ? 'guest' : Auth::id();
+        return $this->isGuest() ? RoleName::GUEST->value : Auth::id();
     }
 
     protected function getGuestProgress(): array

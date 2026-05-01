@@ -10,7 +10,7 @@ use App\Models\StudentState;
 
 interface PerformanceServiceInterface
 {
-    public function getStudentState(string $userId): StudentState;
+    public function findOrCreateStudentState(string $userId): StudentState;
 
     public function updateMetricsFromInteraction(
         InteractionDTO $interactionDTO,

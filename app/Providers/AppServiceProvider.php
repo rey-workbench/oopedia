@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Enums\User\RoleName;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -35,8 +36,8 @@ class AppServiceProvider extends ServiceProvider
                 ], 429));
         });
 
-        RateLimiter::for('guest', function (Request $request) {
-            $config = config('rate_limiting.guest');
+        RateLimiter::for(RoleName::GUEST->value, function (Request $request) {
+            $config = config('rate_limiting.' . RoleName::GUEST->value);
 
             return Limit::perMinute($config['limit'])
                 ->by($request->ip())

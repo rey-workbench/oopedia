@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Enums\User\RoleName;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,14 +22,14 @@ class AccessControl
         $userRoleValue   = $userRole instanceof \BackedEnum ? $userRole->value : $userRole;
 
         if (! $isAuthenticated) {
-            if ($role !== null && $role !== 'guest') {
+            if ($role !== null && $role !== RoleName::GUEST->value) {
                 return redirect('login');
             }
 
             return $next($request);
         }
 
-        if ($role !== null && $role !== 'guest') {
+        if ($role !== null && $role !== RoleName::GUEST->value) {
             $requiredRoles = explode('|', $role);
             if (! in_array($userRoleValue, $requiredRoles)) {
                 return Inertia::render('Error/Index', [
@@ -42,7 +43,7 @@ class AccessControl
             return to_route('admin.pending-approval');
         }
 
-        if ($userRoleValue === 'guest') {
+        if ($userRoleValue === RoleName::GUEST->value) {
             $allowedRoutes = [
                 'mahasiswa.materials.index',
                 'mahasiswa.materials.show',

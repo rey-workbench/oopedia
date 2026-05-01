@@ -9,6 +9,7 @@ use App\Contracts\Services\PerformanceServiceInterface;
 use App\DTOs\Quiz\InteractionDTO;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Enums\Lms\StudentLevel;
+use App\Enums\User\RoleName;
 use App\Models\StudentState;
 use App\Rules\Adaptive\Constants\PedagogicalConstants;
 use App\Rules\Adaptive\Constants\StudentStateSchema;
@@ -21,7 +22,7 @@ final readonly class PerformanceService implements PerformanceServiceInterface
         private StudentStateRepositoryInterface $studentStateRepository,
     ) {}
 
-    public function getStudentState(string $userId): StudentState
+    public function findOrCreateStudentState(string $userId): StudentState
     {
         return $this->studentStateRepository->findOrCreate($userId);
     }
@@ -36,7 +37,7 @@ final readonly class PerformanceService implements PerformanceServiceInterface
         $usedHint   = $interactionDTO->usedHint;
         $score      = $interactionDTO->score;
 
-        $studentState = $this->getStudentState($userId);
+        $studentState = $this->findOrCreateStudentState($userId);
 
         $currentSession = $studentState->current_session     ?? StudentStateSchema::defaults()[StudentStateSchema::CURRENT_SESSION];
         $metrics        = $studentState->performance_metrics ?? StudentStateSchema::defaults()[StudentStateSchema::PERFORMANCE_METRICS];
@@ -204,7 +205,7 @@ final readonly class PerformanceService implements PerformanceServiceInterface
 
     public function getStudentSessionState(string $userId): array
     {
-        $studentState = $this->getStudentState($userId);
+        $studentState = $this->findOrCreateStudentState($userId);
 
         return [
             'accuracy'            => round($studentState->accuracy, 2),
@@ -220,9 +221,9 @@ final readonly class PerformanceService implements PerformanceServiceInterface
 
     public function syncMaterialContext(string $userId, string $materialId): StudentState
     {
-        $studentState                      = $this->getStudentState($userId);
+        $studentState                      = $this->findOrCreateStudentState($userId);
         $studentState->current_material_id = $materialId;
-        if ($userId !== 'guest') {
+        if ($userId !== RoleName::GUEST->value) {
             $studentState->save();
         }
 
@@ -261,12 +262,12 @@ final readonly class PerformanceService implements PerformanceServiceInterface
 
     public function decrementHint(string $userId): array
     {
-        $studentState = $this->getStudentState($userId);
+        $studentState = $this->findOrCreateStudentState($userId);
 
         if ($studentState->hints_available > 0) {
             $studentState->hints_available--;
             $studentState->hints_used++;
-            if ($userId !== 'guest') {
+            if ($userId !== RoleName::GUEST->value) {
                 $studentState->save();
             }
         }
