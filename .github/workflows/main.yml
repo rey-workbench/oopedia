@@ -120,10 +120,10 @@ jobs:
                       chown -R root:www-data storage bootstrap/cache
 
                       # RESTART OCTANE (Supervisor)
-                      # Pastikan semua proses octane dan rr mati total sebelum restart
+                      # Kita tambahkan || true agar jika koneksi SSH terputus saat restart, pipeline tidak dianggap gagal
                       sudo pkill -f octane || true
                       sudo pkill -f rr || true
-                      sudo supervisorctl restart oopedia-octane
+                      sudo supervisorctl restart oopedia-octane || true
 
                       # Maintenance mode off
                       php artisan up
