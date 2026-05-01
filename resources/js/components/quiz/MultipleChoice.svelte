@@ -5,12 +5,21 @@
     interface Props {
         question: Question;
         selectedAnswerId?: string | null;
+        disabled?: boolean;
+        showResult?: boolean;
         onselect?: (answerId: string) => void;
     }
 
-    let { question, selectedAnswerId = $bindable(null), onselect = () => {} }: Props = $props();
+    let {
+        question,
+        selectedAnswerId = $bindable(null),
+        disabled = false,
+        showResult = false,
+        onselect = () => {},
+    }: Props = $props();
 
     function handleSelect(answerId: string) {
+        if (disabled) return;
         selectedAnswerId = answerId;
         onselect(answerId);
     }
@@ -61,41 +70,67 @@
             {#each question.answers as answer, i (answer.id)}
                 {@const isSelected = selectedAnswerId === answer.id}
                 {@const label = String.fromCharCode(65 + i)}
-                <label class="group relative block cursor-pointer select-none">
+                {@const isCorrect = answer.is_correct}
+                <label
+                    class="group relative block select-none {disabled
+                        ? 'cursor-default'
+                        : 'cursor-pointer'}"
+                >
                     <input
                         type="radio"
                         name="answer"
                         value={answer.id}
                         class="peer sr-only"
                         checked={isSelected}
+                        disabled={disabled}
                         onchange={() => handleSelect(answer.id)}
                     />
                     <div
-                        class="press-active-lg flex items-center gap-5 rounded-3xl border-2 border-b-6 px-6 py-5
-                        {isSelected
-                            ? 'border-primary-600 border-b-primary-700 bg-primary-100/50 shadow-primary-200 shadow-sm'
-                            : 'border-slate-100 border-b-slate-300 bg-white shadow-sm hover:border-slate-300 hover:bg-slate-50'}"
+                        class="press-active-lg flex items-center gap-5 rounded-3xl border-2 border-b-6 px-6 py-5 transition-all
+                        {showResult
+                            ? isSelected
+                                ? isCorrect
+                                    ? 'border-emerald-600 border-b-emerald-700 bg-emerald-50 shadow-emerald-200'
+                                    : 'border-rose-600 border-b-rose-700 bg-rose-50 shadow-rose-200'
+                                : 'border-slate-100 border-b-slate-200 bg-white opacity-50'
+                            : isSelected
+                              ? 'border-primary-600 border-b-primary-700 bg-primary-100/50 shadow-primary-200 shadow-sm'
+                              : 'border-slate-100 border-b-slate-300 bg-white shadow-sm hover:border-slate-300 hover:bg-slate-50'}"
                     >
                         <!-- Letter Coin -->
                         <div
-                            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border-2 border-b-4
-                            {isSelected
-                                ? 'border-primary-600 text-primary-600 bg-white shadow-sm'
-                                : 'border-slate-200 bg-white text-slate-400 group-hover:border-slate-300'}"
+                            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border-2 border-b-4 transition-colors
+                            {showResult
+                                ? isSelected
+                                    ? isCorrect
+                                        ? 'border-emerald-600 text-emerald-600 bg-white'
+                                        : 'border-rose-600 text-rose-600 bg-white'
+                                    : 'border-slate-200 bg-white text-slate-300'
+                                : isSelected
+                                  ? 'border-primary-600 text-primary-600 bg-white shadow-sm'
+                                  : 'border-slate-200 bg-white text-slate-400 group-hover:border-slate-300'}"
                         >
                             <span class="text-lg font-black">{label}</span>
                         </div>
 
                         <span
-                            class="flex-1 text-lg font-bold tracking-tight
-                            {isSelected
-                                ? 'text-primary-950'
-                                : 'text-slate-700 group-hover:text-slate-900'}"
+                            class="flex-1 text-lg font-bold tracking-tight transition-colors
+                            {showResult
+                                ? isSelected
+                                    ? isCorrect
+                                        ? 'text-emerald-900'
+                                        : 'text-rose-900'
+                                    : 'text-slate-400'
+                                : isSelected
+                                  ? 'text-primary-950'
+                                  : 'text-slate-700 group-hover:text-slate-900'}"
                         >
                             {answer.answer_text}
                         </span>
 
-                        {#if isSelected}
+                        {#if showResult && isSelected}
+                            <!-- No icon, just color-coding as requested -->
+                        {:else if !showResult && isSelected}
                             <div
                                 class="bg-primary-600 flex h-6 w-6 items-center justify-center rounded-full shadow-lg"
                             >

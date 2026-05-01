@@ -206,6 +206,8 @@
                     <FillInTheBlank
                         question={state.currentQuestion}
                         bind:answerText={state.fillInTheBlankAnswer}
+                        disabled={state.show_feedback}
+                        showResult={state.show_feedback}
                     />
                 </div>
             {:else if state.currentQuestion?.question_type === 'drag_and_drop'}
@@ -213,6 +215,8 @@
                     <DragAndDrop
                         question={state.currentQuestion}
                         bind:dragAndDropAnswers={state.dragAndDropAnswers}
+                        disabled={state.show_feedback}
+                        showResult={state.show_feedback}
                     />
                 </div>
             {:else if state.currentQuestion}
@@ -220,6 +224,8 @@
                     <MultipleChoice
                         question={state.currentQuestion}
                         selectedAnswerId={state.selectedMultipleChoiceAnswer}
+                        disabled={state.show_feedback}
+                        showResult={state.show_feedback}
                         onselect={(answerId) => (state.selectedMultipleChoiceAnswer = answerId)}
                     />
                 </div>

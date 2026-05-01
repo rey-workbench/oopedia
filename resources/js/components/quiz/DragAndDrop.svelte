@@ -8,6 +8,8 @@
     }: {
         question: Question;
         dragAndDropAnswers: Record<string, string>;
+        disabled?: boolean;
+        showResult?: boolean;
     } = $props();
 
     let activeZone = $state<string | null>(null);
@@ -26,15 +28,35 @@
             const isActive = activeZone === zoneIdStr;
             const isFilled = !!dragAndDropAnswers[zoneIdStr];
 
-            const baseClass =
-                'drop-zone inline-flex min-w-[110px] h-9 border-2 border-b-4 mx-1.5 items-center justify-center font-black rounded-xl px-4 shadow-sm transition-all duration-200 cursor-pointer text-sm';
-            const stateClass = isActive
-                ? 'bg-primary-100 border-primary-600 border-b-primary-700 ring-4 ring-primary-200/50 shadow-lg text-primary-900 translate-y-[1px]'
-                : isFilled
-                  ? 'bg-primary-50 border-primary-300 border-b-primary-400 text-primary-800 hover:border-primary-400'
-                  : 'bg-white/10 border-white/20 border-b-white/10 text-white/50 hover:bg-white/20 hover:border-white/40';
-
             const zoneNum = parseInt(zoneIdStr, 10);
+            const correctAnswer = question.answers.find(
+                (a) => (a as any).zone_index == zoneNum
+            )?.answer_text;
+            const isCorrect = currentAnswer === correctAnswer;
+
+            const baseClass =
+                'drop-zone inline-flex min-w-[110px] h-9 border-2 border-b-4 mx-1.5 items-center justify-center font-black rounded-xl px-4 shadow-sm transition-all duration-200 text-sm';
+
+            let stateClass = '';
+            if (showResult) {
+                if (isFilled) {
+                    stateClass = isCorrect
+                        ? 'bg-emerald-50 border-emerald-600 border-b-emerald-700 text-emerald-900'
+                        : 'bg-rose-50 border-rose-600 border-b-rose-700 text-rose-900';
+                } else {
+                    stateClass =
+                        'bg-white/10 border-white/20 border-b-white/10 text-white/50 opacity-30';
+                }
+            } else {
+                stateClass = isActive
+                    ? 'bg-primary-100 border-primary-600 border-b-primary-700 ring-4 ring-primary-200/50 shadow-lg text-primary-900 translate-y-[1px]'
+                    : isFilled
+                      ? 'bg-primary-50 border-primary-300 border-b-primary-400 text-primary-800 hover:border-primary-400'
+                      : 'bg-white/10 border-white/20 border-b-white/10 text-white/50 hover:bg-white/20 hover:border-white/40';
+            }
+
+            if (!disabled) stateClass += ' cursor-pointer';
+
             if (zoneNum > maxZone) maxZone = zoneNum;
 
             return `<span class="${baseClass} ${stateClass}" data-zone="${zoneIdStr}">${currentAnswer}</span>`;
@@ -44,7 +66,7 @@
     });
 
     function handleDragStart(event: DragEvent, answerText: string) {
-        if (!event.dataTransfer) return;
+        if (disabled || !event.dataTransfer) return;
         event.dataTransfer.setData('text/plain', answerText);
         event.dataTransfer.effectAllowed = 'move';
         if (event.target instanceof HTMLElement) {
@@ -61,6 +83,7 @@
     }
 
     function handleDragOver(event: DragEvent) {
+        if (disabled) return;
         event.preventDefault();
         if (event.dataTransfer) event.dataTransfer.dropEffect = 'move';
         const zone = (event.target as HTMLElement).closest('.drop-zone') as HTMLElement;
@@ -73,6 +96,7 @@
     }
 
     function handleDrop(event: DragEvent) {
+        if (disabled) return;
         event.preventDefault();
         const zone = (event.target as HTMLElement).closest('.drop-zone') as HTMLElement;
         if (zone && event.dataTransfer) {
@@ -88,6 +112,7 @@
     }
 
     function handleZoneClick(event: MouseEvent) {
+        if (disabled) return;
         const zone = (event.target as HTMLElement).closest('.drop-zone') as HTMLElement;
         if (zone) {
             const zoneId = zone.dataset['zone'];

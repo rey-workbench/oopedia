@@ -61,26 +61,16 @@
         const newFeedback = feedback;
 
         untrack(() => {
-            // Reset local UI state only if question changed
-            if (quizState.currentQuestion?.id !== newQuestion?.id) {
-                quizState.selectedMultipleChoiceAnswer = null;
-                quizState.fillInTheBlankAnswer = '';
-                quizState.dragAndDropAnswers = {};
-                quizState.startTime = Date.now();
-                quizState.usedHint = false;
-                quizState.isNavigating = false;
-                quizState.show_feedback = false;
-            }
-
-            // Sync all state from backend props
-            quizState.material = newMaterial;
-            quizState.currentQuestion = newQuestion;
-            quizState.difficulty = newDifficulty;
-            quizState.studentState = newStudentState;
-
+            // 1. If we have feedback, we are in the "Result" phase of the current question.
+            // We show the feedback modal but KEEP the current question displayed in the background.
             if (newFeedback) {
                 quizState.feedbackData = newFeedback;
                 quizState.show_feedback = true;
+                
+                // Update student state (XP, accuracy, etc.) even during feedback
+                quizState.studentState = newStudentState;
+                quizState.material = newMaterial;
+                quizState.difficulty = newDifficulty;
 
                 // Handle Adaptive Metadata
                 const adaptiveResult = newFeedback.adaptive_result;
@@ -94,6 +84,25 @@
                 if (typeof (quizState as any).handleResponseSound === 'function') {
                     (quizState as any).handleResponseSound(newFeedback.status, adaptiveResult);
                 }
+            } else {
+                // 2. No feedback means we are either starting or have navigated to a new question.
+                // Reset local UI state only if the question has actually changed
+                if (quizState.currentQuestion?.id !== newQuestion?.id) {
+                    quizState.selectedMultipleChoiceAnswer = null;
+                    quizState.fillInTheBlankAnswer = '';
+                    quizState.dragAndDropAnswers = {};
+                    quizState.startTime = Date.now();
+                    quizState.usedHint = false;
+                    quizState.isNavigating = false;
+                    quizState.show_feedback = false;
+                }
+
+                // Sync the actual question displayed
+                quizState.material = newMaterial;
+                quizState.currentQuestion = newQuestion;
+                quizState.difficulty = newDifficulty;
+                quizState.studentState = newStudentState;
+                quizState.showAdaptiveIndicator = false;
             }
         });
     });
@@ -116,6 +125,7 @@
         <div
             class="mx-auto max-w-5xl px-4 transition-all duration-500 sm:px-6 lg:px-8"
             class:pb-40={quizState.show_feedback}
+            class:pointer-events-none={quizState.show_feedback}
         >
             <div id="quiz-session-header" class="mb-12">
                 <div class="flex items-center gap-6">
