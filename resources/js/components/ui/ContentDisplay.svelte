@@ -1,6 +1,8 @@
 <script lang="ts">
     import hljs from 'highlight.js';
     import DOMPurify from 'dompurify';
+    import { fade, scale } from 'svelte/transition';
+    import { MousePointer2 } from 'lucide-svelte';
 
     interface Props {
         content: string;
@@ -10,14 +12,15 @@
     let { content = '', className = '' }: Props = $props();
 
     let container: HTMLElement;
+    let showHooray = $state(false);
+    let showGhostPointer = $state(false);
+    let ghostPos = $state({ x: 0, y: 0 });
 
-    // Sanitize content while allowing table and code tags
     const safeContent = $derived(DOMPurify.sanitize(content, {
-        ADD_TAGS: ['iframe', 'blockquote', 'table', 'thead', 'tbody', 'tr', 'th', 'td'],
-        ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling']
+        ADD_TAGS: ['iframe', 'blockquote', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'section', 'aside', 'ul', 'li', 'ol', 'span'],
+        ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling', 'class']
     }));
 
-    // Unified Enhancement Logic
     $effect(() => {
         if (safeContent && container) {
             processContent();
@@ -30,23 +33,9 @@
         codeBlocks.forEach((block) => {
             const el = block as HTMLElement;
             if (!el.dataset['enhanced']) {
-                const quillLines = el.querySelectorAll('.ql-code-block');
-                const nestedCode = el.querySelector('code');
-
-                let text = '';
-                if (quillLines.length > 0) {
-                    text = Array.from(quillLines).map(l => (l as HTMLElement).innerText).join('\n');
-                } else if (nestedCode) {
-                    text = (nestedCode as HTMLElement).innerText;
-                } else {
-                    text = el.innerText;
-                }
-                
-                // CRITICAL: Trim text to prevent leading space glitches
-                const cleanText = text.trim();
-
+                const text = el.innerText.trim();
                 try {
-                    const highlighted = hljs.highlight(cleanText, { language: 'java' }).value;
+                    const highlighted = hljs.highlight(text, { language: 'java' }).value;
                     el.innerHTML = `
                         <div class="terminal-header">
                             <div class="terminal-dots">
@@ -61,7 +50,7 @@
                         <div class="hljs-code-content">${highlighted}</div>
                     `;
                     el.dataset['enhanced'] = 'true';
-                    setupCopyLogic(el, cleanText);
+                    setupCopyLogic(el, text);
                 } catch (e) { console.error(e); }
             }
         });
@@ -77,7 +66,7 @@
             }
         });
 
-        // 3. Handle Blockquotes (Inject Large Watermark Lamp)
+        // 3. Handle Blockquotes (Watermark Lamp)
         const quotes = container.querySelectorAll('blockquote');
         quotes.forEach(quote => {
             if (!quote.dataset['enhanced']) {
@@ -88,6 +77,73 @@
                 quote.dataset['enhanced'] = 'true';
             }
         });
+
+        // 4. SMART DETECTION: Detect Checklist automatically
+        const allLists = container.querySelectorAll('ul');
+        allLists.forEach(ul => {
+            const prevHeading = ul.previousElementSibling;
+            const isChecklistHeader = prevHeading && (prevHeading.tagName === 'H2' || prevHeading.tagName === 'H3') && 
+                                     (prevHeading.textContent?.toLowerCase().includes('checklist') || 
+                                      prevHeading.textContent?.toLowerCase().includes('penguasaan'));
+            
+            const isLastList = ul === Array.from(allLists).pop();
+
+            if (isChecklistHeader || isLastList) {
+                ul.classList.add('detected-checklist');
+                const items = ul.querySelectorAll('li');
+                items.forEach(li => {
+                    if (!li.dataset['interactive']) {
+                        li.addEventListener('click', (e) => {
+                            li.classList.toggle('is-completed');
+                            checkCompletion(ul as HTMLElement, e);
+                        });
+                        li.dataset['interactive'] = 'true';
+                    }
+                });
+            }
+        });
+    }
+
+    function checkCompletion(list: HTMLElement, event: MouseEvent) {
+        const total = list.querySelectorAll('li').length;
+        const completed = list.querySelectorAll('li.is-completed').length;
+        
+        if (total > 0 && total === completed) {
+            ghostPos = { x: event.clientX, y: event.clientY };
+            triggerHooray();
+        }
+    }
+
+    function triggerHooray() {
+        showHooray = true;
+        
+        setTimeout(() => {
+            showHooray = false;
+            showGhostPointer = true;
+            
+            const quizSection = document.getElementById('quiz-entry-section');
+            if (quizSection) {
+                const quizBtn = quizSection.querySelector('a, button');
+                quizSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                setTimeout(() => {
+                    if (quizBtn) {
+                        const rect = quizBtn.getBoundingClientRect();
+                        ghostPos = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+                        quizBtn.classList.add('highlight-pulse');
+                        
+                        setTimeout(() => {
+                            const ghostEl = document.querySelector('.ghost-pointer') as HTMLElement;
+                            if (ghostEl) ghostEl.style.transform = 'scale(0.8)';
+                            setTimeout(() => {
+                                showGhostPointer = false;
+                                quizBtn.classList.remove('highlight-pulse');
+                            }, 500);
+                        }, 1000);
+                    }
+                }, 800);
+            }
+        }, 1500);
     }
 
     function setupCopyLogic(el: HTMLElement, text: string) {
@@ -104,105 +160,96 @@
 
 <div
     bind:this={container}
-    id="oopedia-content-v2"
+    id="oopedia-content-v3"
     class="pedagogical-content-root px-6 md:px-10 py-6 {className}"
 >
     {@html safeContent}
 </div>
 
+{#if showHooray}
+    <div 
+        class="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none"
+        transition:fade={{ duration: 200 }}
+    >
+        <h1 
+            class="text-6xl md:text-8xl font-black text-primary-500 drop-shadow-[0_10px_20px_rgba(255,82,66,0.3)] select-none italic tracking-tighter text-center"
+            transition:scale={{ start: 0.5, duration: 400 }}
+        >
+            Hooray! Kamu Paham
+        </h1>
+    </div>
+{/if}
+
+{#if showGhostPointer}
+    <div 
+        class="ghost-pointer fixed z-[10000] pointer-events-none transition-all duration-[1000ms] ease-in-out"
+        style="left: {ghostPos.x}px; top: {ghostPos.y}px;"
+        transition:fade
+    >
+        <div class="relative flex items-center justify-center">
+            <MousePointer2 size={48} class="text-white fill-black/20 drop-shadow-[0_4px_12px_rgba(0,0,0,0.3)] rotate-[15deg]" />
+            <div class="absolute inset-0 bg-white/20 rounded-full blur-xl animate-pulse"></div>
+        </div>
+    </div>
+{/if}
+
 <style>
     @reference "../../../css/app.css";
 
-    /* 1. Typography & Layout */
+    /* 1. Core Typography */
     :global(.pedagogical-content-root) {
         @apply leading-relaxed text-slate-600 font-medium;
         font-family: var(--font-body) !important;
     }
 
-    :global(.pedagogical-content-root h2) {
-        @apply text-2xl md:text-3xl font-black text-slate-900 mt-12 mb-6 tracking-widest uppercase border-b-6 border-slate-100 pb-4 block;
+    :global(.pedagogical-content-root h2) { @apply text-2xl md:text-3xl font-black text-slate-900 mt-12 mb-6 tracking-widest uppercase border-b-6 border-slate-100 pb-4 block; }
+    :global(.pedagogical-content-root h3) { @apply text-xl font-extrabold text-slate-800 mt-8 mb-4 tracking-wider block; }
+    :global(.pedagogical-content-root p) { @apply mb-6 text-lg; }
+
+    /* 2. Detected Checklist Styles */
+    :global(.pedagogical-content-root ul.detected-checklist) { @apply space-y-3 my-8 p-0 list-none; }
+    :global(.pedagogical-content-root ul.detected-checklist li) { 
+        @apply flex items-center gap-4 p-5 bg-white text-slate-700 rounded-2xl font-bold border-2 border-slate-100 cursor-pointer transition-all hover:bg-slate-50 hover:border-primary-200 select-none; 
+    }
+    :global(.pedagogical-content-root ul.detected-checklist li::before) { 
+        content: ""; 
+        @apply w-6 h-6 rounded-full border-2 border-slate-300 flex-shrink-0 flex items-center justify-center transition-all bg-white;
+    }
+    :global(.pedagogical-content-root ul.detected-checklist li.is-completed) { 
+        @apply bg-primary-50/50 text-primary-900 border-primary-200 shadow-sm scale-[0.98]; 
+    }
+    :global(.pedagogical-content-root ul.detected-checklist li.is-completed::before) { 
+        content: "✓"; 
+        @apply bg-primary-500 border-primary-500 text-white text-[12px] font-black; 
     }
 
-    :global(.pedagogical-content-root h3) {
-        @apply text-xl font-extrabold text-slate-800 mt-8 mb-4 tracking-wider block;
-    }
+    /* Standard Lists */
+    :global(.pedagogical-content-root ul:not(.detected-checklist)) { @apply list-disc pl-8 mb-6 space-y-2; }
 
-    /* 2. Tables */
-    :global(.table-responsive-wrapper) {
-        @apply my-10 overflow-x-auto rounded-3xl border-2 border-b-8 border-slate-200 shadow-xl;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    :global(.pedagogical-content-root table) {
-        @apply min-w-full bg-white text-left border-collapse;
-    }
-
-    :global(.pedagogical-content-root thead) {
-        @apply bg-slate-100/80 border-b-2 border-slate-200;
-    }
-
-    :global(.pedagogical-content-root th) {
-        @apply px-8 py-5 font-black text-slate-600 uppercase tracking-widest text-[11px] border-r border-slate-200 last:border-r-0;
-    }
-
-    :global(.pedagogical-content-root td) {
-        @apply px-8 py-5 border-b border-slate-100 border-r border-slate-200 last:border-r-0 text-slate-700 text-sm font-semibold;
-    }
-
-    /* 3. Code Blocks (Fixed Alignment & Whitespace) */
-    :global(.pedagogical-content-root .ql-code-block-container, 
-    .pedagogical-content-root .ql-syntax, 
-    .pedagogical-content-root pre) {
+    /* 3. Code Blocks */
+    :global(.pedagogical-content-root pre) {
         @apply relative my-8 p-0 rounded-3xl bg-[#0c0c14] border-2 border-b-8 border-slate-900 shadow-2xl overflow-hidden flex flex-col;
-        font-family: var(--font-mono) !important;
     }
+    :global(.hljs-code-content) { @apply px-8 pt-4 pb-4 overflow-x-auto text-[#e2e8f0] text-sm leading-relaxed; }
+    :global(.terminal-header) { @apply h-11 bg-slate-900/60 border-b border-white/5 flex items-center justify-between pl-6 pr-3; }
+    :global(.terminal-dots) { @apply flex items-center gap-1.5; }
+    :global(.terminal-dots span) { @apply w-3 h-3 rounded-full; }
+    :global(.dot-red) { @apply bg-[#ff5f56]; }
+    :global(.dot-yellow) { @apply bg-[#ffbd2e]; }
+    :global(.dot-green) { @apply bg-[#27c93f]; }
 
-    :global(.pedagogical-content-root .hljs-code-content) {
-        @apply px-8 pt-4 pb-4 overflow-x-auto;
-        line-height: 1.8 !important;
-        font-size: 0.95rem !important;
-        color: #e2e8f0 !important;
-    }
+    /* 4. Tables & Quotes */
+    :global(.pedagogical-content-root table) { @apply min-w-full bg-white text-left border-collapse rounded-3xl overflow-hidden my-10 border-2 border-slate-200; }
+    :global(.pedagogical-content-root th) { @apply px-8 py-5 bg-slate-50 font-black text-slate-600 uppercase tracking-widest text-[11px] border-b-2 border-slate-200; }
+    :global(.pedagogical-content-root td) { @apply px-8 py-5 border-b border-slate-100 text-slate-700 text-sm font-semibold; }
+    :global(.pedagogical-content-root blockquote) { @apply my-8 bg-slate-50 border-y border-r border-slate-100 border-l-8 border-primary-500 p-8 italic text-slate-700 rounded-3xl relative overflow-hidden; }
+    :global(.quote-watermark-lamp) { @apply absolute -right-6 -bottom-8 w-40 h-40 text-primary-500/15 -rotate-12 pointer-events-none; }
 
-    /* Terminal Header (Fixed Padding) */
-    :global(.pedagogical-content-root .terminal-header) {
-        @apply h-11 bg-slate-900/60 border-b border-white/5 flex items-center justify-between pl-6 pr-3;
-    }
-
-    :global(.pedagogical-content-root .terminal-dots) {
-        @apply flex items-center gap-1.5;
-    }
-
-    :global(.pedagogical-content-root .terminal-dots span) { @apply w-3 h-3 rounded-full; }
-    :global(.pedagogical-content-root .dot-red) { @apply bg-[#ff5f56]; }
-    :global(.pedagogical-content-root .dot-yellow) { @apply bg-[#ffbd2e]; }
-    :global(.pedagogical-content-root .dot-green) { @apply bg-[#27c93f]; }
-
-    /* Copy Button */
-    :global(.pedagogical-content-root .terminal-copy-btn) {
-        @apply p-2 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-all flex items-center justify-center;
-    }
-
-    /* Syntax Highlighting */
-    :global(.pedagogical-content-root .hljs-keyword) { color: #ff5242 !important; font-weight: 800 !important; }
-    :global(.pedagogical-content-root .hljs-string) { color: #34d399 !important; }
-    :global(.pedagogical-content-root .hljs-title.function_) { color: #60a5fa !important; }
-
-    /* 4. Blockquote with Large Right Watermark Icon */
-    :global(.pedagogical-content-root blockquote) {
-        @apply my-8 bg-slate-50 border-y border-r border-slate-100 border-l-8 border-primary-500 p-8 italic text-slate-700 rounded-3xl shadow-sm relative overflow-hidden;
-    }
-
-    :global(.pedagogical-content-root blockquote strong) {
-        @apply not-italic inline-block mb-3 px-3 py-1 rounded-full bg-primary-100 text-primary-700 font-black uppercase tracking-widest text-[9px] border border-primary-200;
-    }
-
-    /* Watermark Icon Styling */
-    :global(.pedagogical-content-root .quote-watermark-lamp) {
-        @apply absolute -right-6 -bottom-8 w-40 h-40 text-primary-500/20 -rotate-12 pointer-events-none;
-    }
-
-    :global(.pedagogical-content-root blockquote p) {
-        @apply mb-0 relative z-10;
+    /* Interactive Effects */
+    :global(.highlight-pulse) { animation: highlightPulse 2s infinite !important; }
+    @keyframes highlightPulse {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 82, 66, 0.5); }
+        70% { transform: scale(1.08); box-shadow: 0 0 0 20px rgba(255, 82, 66, 0); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 82, 66, 0); }
     }
 </style>
