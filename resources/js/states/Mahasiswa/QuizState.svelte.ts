@@ -131,7 +131,6 @@ export class QuestionShowState extends BaseState {
                     onSuccess: () => {
                         this.usedHint = true;
                         this.showHint = true;
-                        console.log('[QuizState] Hint used via Inertia. Props synced.');
                     },
                 }
             );
@@ -191,7 +190,6 @@ export class QuestionShowState extends BaseState {
                 preserveScroll: true,
                 preserveState: true,
                 onSuccess: () => {
-                    console.log('[QuizState] Answer checked via Inertia. Props synced.');
                 },
                 onFinish: () => {
                     this.isSubmitting = false;
