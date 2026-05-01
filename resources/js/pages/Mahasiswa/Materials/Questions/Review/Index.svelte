@@ -3,9 +3,7 @@
     import DifficultyFilterBar from '@/components/layout/DifficultyFilterBar.svelte';
     import Card from '@/components/ui/Card.svelte';
     import Badge from '@/components/ui/Badge.svelte';
-    import { Link } from '@inertiajs/svelte';
-    import { ROUTES } from '@/utils/route';
-    import { HelpCircle, List, Check, X, Lightbulb, Book, FileText } from 'lucide-svelte';
+    import { HelpCircle, List, Check, X, Lightbulb } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { ReviewState } from '@/states/Mahasiswa/QuizState.svelte';
     import type { Material, QuestionWithAttempt, DifficultyLevel } from '@/types';
@@ -34,45 +32,8 @@
 
 <App title={`Review Soal - ${state.material.title}`}>
     <div class="container-fluid mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 gap-6 lg:grid-cols-4">
-            <div class="lg:col-span-1">
-                <Card class="sticky top-24" padding="p-2">
-                    {#snippet header()}
-                        <h5
-                            class="flex items-center gap-3 text-xs font-black tracking-widest text-slate-900 uppercase"
-                        >
-                            <div
-                                class="bg-primary-600 shadow-primary-900/20 flex h-8 w-8 items-center justify-center rounded-xl text-white shadow-lg"
-                            >
-                                <Book size={16} />
-                            </div>
-                            Daftar Materi
-                        </h5>
-                    {/snippet}
-
-                    <ul class="space-y-1 p-2">
-                        {#each state.materials as m (m.id)}
-                            <li>
-                                <Link
-                                    href={ROUTES.MAHASISWA.MATERIALS.SHOW(m.id)}
-                                    class={`group flex items-center gap-3 rounded-xl p-3 text-xs font-bold tracking-tight uppercase transition-all
-                                        ${m.id === state.material.id ? 'bg-primary-600 shadow-primary-900/20 text-white shadow-xl' : 'hover:text-primary-600 text-slate-500 hover:bg-slate-50'}`}
-                                >
-                                    <div
-                                        class={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors
-                                        ${m.id === state.material.id ? 'bg-white/20' : 'group-hover:bg-primary-100 bg-slate-100'}`}
-                                    >
-                                        <FileText size={16} />
-                                    </div>
-                                    <span class="flex-1 truncate">{m.title}</span>
-                                </Link>
-                            </li>
-                        {/each}
-                    </ul>
-                </Card>
-            </div>
-
-            <div id="review-results" class="space-y-8 lg:col-span-3">
+        <div class="mx-auto max-w-4xl">
+            <div id="review-results" class="space-y-8">
                 <DifficultyFilterBar
                     difficulty={state.difficulty}
                     onfilter={(d) => state.filterDifficulty(d)}

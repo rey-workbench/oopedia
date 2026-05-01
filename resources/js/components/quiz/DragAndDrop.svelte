@@ -7,11 +7,13 @@
         dragAndDropAnswers = $bindable({}),
         disabled = false,
         showResult = false,
+        isOverallCorrect = false,
     }: {
         question: Question;
         dragAndDropAnswers: Record<string, string>;
         disabled?: boolean;
         showResult?: boolean;
+        isOverallCorrect?: boolean;
     } = $props();
 
     let activeZone = $state<string | null>(null);
@@ -42,7 +44,9 @@
             let stateClass = '';
             if (showResult) {
                 if (isFilled) {
-                    stateClass = isCorrect
+                    // Sync with overall backend status if provided, otherwise fallback to local check
+                    const finalIsCorrect = isOverallCorrect || isCorrect;
+                    stateClass = finalIsCorrect
                         ? 'bg-emerald-50 border-emerald-600 border-b-emerald-700 text-emerald-900'
                         : 'bg-rose-50 border-rose-600 border-b-rose-700 text-rose-900';
                 } else {

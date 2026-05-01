@@ -218,6 +218,7 @@
                         bind:dragAndDropAnswers={state.dragAndDropAnswers}
                         disabled={state.show_feedback}
                         showResult={state.show_feedback}
+                        isOverallCorrect={state.feedbackData?.status === 'success'}
                     />
                 </div>
             {:else if state.currentQuestion}
