@@ -170,6 +170,7 @@ return [
         // Laravel\Sail\SailServiceProvider::class,
         Inertia\ServiceProvider::class,
         OctaneServiceProvider::class,
+        Laravel\Socialite\SocialiteServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -195,6 +196,6 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        // 'Example' => App\Facades\Example::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
     ])->toArray(),
 ];

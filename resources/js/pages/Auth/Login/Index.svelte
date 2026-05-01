@@ -107,11 +107,9 @@
             </div>
 
             <div class="w-full space-y-3">
-                <Button
+                <a
                     href="/auth/google"
-                    variant="secondary"
-                    size="md"
-                    class="w-full text-[15px]"
+                    class="group inline-flex items-center justify-center font-black tracking-widest transition-all duration-150 rounded-2xl border-2 border-b-6 uppercase select-none active:translate-y-[4px] active:border-b-2 shadow-none bg-white text-slate-600 border-slate-200 border-b-slate-400 hover:bg-slate-50 hover:text-slate-700 shadow-sm px-6 py-3 text-sm w-full text-[15px]"
                 >
                     <svg class="mr-2 h-5 w-5" viewBox="0 0 24 24">
                         <path
@@ -133,7 +131,7 @@
                         <path d="M1 1h22v22H1z" fill="none" />
                     </svg>
                     <span>Google</span>
-                </Button>
+                </a>
 
                 <Button
                     type="button"
