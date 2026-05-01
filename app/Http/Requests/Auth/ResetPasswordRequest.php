@@ -13,7 +13,7 @@ final class ResetPasswordRequest extends BaseFormRequest
     {
         return [
             'token'    => ['required'],
-            'email'    => ['required', 'email:rfc,dns,spoof'],
+            'email'    => ['required', 'email:rfc,dns,spoof', 'indisposable'],
             'password' => ['required', 'confirmed', Password::defaults()],
         ];
     }

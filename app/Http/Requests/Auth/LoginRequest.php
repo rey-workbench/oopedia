@@ -11,7 +11,7 @@ final class LoginRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'email'    => ['required_without:is_guest', 'nullable', 'string', 'email:rfc,dns,spoof'],
+            'email'    => ['required_without:is_guest', 'nullable', 'string', 'email:rfc,dns,spoof', 'indisposable'],
             'password' => ['required_without:is_guest', 'nullable', 'string'],
             'is_guest' => ['sometimes', 'boolean'],
         ];
