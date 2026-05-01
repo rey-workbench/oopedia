@@ -168,13 +168,14 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
 
     public function getLeaderboardStats(string $roleName = 'mahasiswa'): Collection
     {
-        return User::whereHas('role', fn (Builder $q) => $q->where('role_name', $roleName))
+        return User::select('id', 'name', 'email')
+            ->whereHas('role', fn (Builder $q) => $q->where('role_name', $roleName))
             ->withCount([
                 'quizAttempts as total_correct_questions' => function ($q): void {
-                    $q->where('quiz_attempts.is_correct', true)->distinct();
+                    $q->where('is_correct', true)->distinct('question_id');
                 },
                 'quizAttempts as total_attempted' => function ($q): void {
-                    $q->distinct();
+                    $q->distinct('question_id');
                 },
                 'quizAttempts as correct_answers' => function ($q): void {
                     $q->where('is_correct', true);
@@ -190,7 +191,6 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
                     $q->where('is_correct', true)->whereRelation('question', 'difficulty', [QuestionDifficulty::HARD, QuestionDifficulty::FINAL]);
                 },
             ])
-            ->select('id', 'name', 'email')
             ->get()
             ->map(function ($user) {
                 $user->completion_date = QuizAttempt::where('user_id', $user->id)->max('updated_at');
