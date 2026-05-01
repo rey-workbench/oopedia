@@ -7,11 +7,13 @@
         answerText = $bindable(''),
         disabled = false,
         showResult = false,
+        isOverallCorrect = false,
     }: {
         question?: Question;
         answerText: string;
         disabled?: boolean;
         showResult?: boolean;
+        isOverallCorrect?: boolean;
     } = $props();
 </script>
 
@@ -65,7 +67,7 @@
                 placeholder={showResult ? "Hasil Jawaban" : "Ketik jawaban Anda di sini..."}
                 class="w-full rounded-2xl border-2 border-b-6 px-6 py-5 text-lg font-bold shadow-sm transition-all duration-150 outline-none placeholder:text-slate-300
                 {showResult 
-                    ? question?.answers?.[0]?.answer_text?.toLowerCase() === answerText?.toLowerCase()
+                    ? isOverallCorrect
                         ? 'border-emerald-600 border-b-emerald-700 bg-emerald-50 text-emerald-900'
                         : 'border-rose-600 border-b-rose-700 bg-rose-50 text-rose-900'
                     : 'border-slate-200 bg-white text-slate-900 focus:border-primary-500 focus:bg-primary-50/10 focus:translate-y-[2px] focus:border-b-4'}"

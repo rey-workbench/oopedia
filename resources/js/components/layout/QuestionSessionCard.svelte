@@ -208,6 +208,7 @@
                         bind:answerText={state.fillInTheBlankAnswer}
                         disabled={state.show_feedback}
                         showResult={state.show_feedback}
+                        isOverallCorrect={state.feedbackData?.status === 'success'}
                     />
                 </div>
             {:else if state.currentQuestion?.question_type === 'drag_and_drop'}
