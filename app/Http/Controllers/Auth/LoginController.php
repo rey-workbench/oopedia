@@ -45,7 +45,7 @@ final class LoginController extends Controller
 
         if (! Auth::attempt($credentials)) {
             return back()->withErrors([
-                'email' => 'Email atau password salah',
+                'email' => __('auth.failed'),
             ])->onlyInput('email');
         }
 

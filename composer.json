@@ -42,7 +42,6 @@
         "spatie/laravel-pdf": "^2.7",
         "endroid/qr-code": "^6.1",
         "laravel/socialite": "^5.27",
-        "egulias/email-validator": "^4.0",
         "propaganistas/laravel-disposable-email": "^2.4"
     },
     "autoload": {

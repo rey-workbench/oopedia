@@ -16,15 +16,12 @@
         CheckCircle2,
         X,
         Shapes,
-        ChevronDown,
-        Lock,
         Trophy,
         LogOut,
         LogIn,
         UserPlus,
         Brain,
     } from 'lucide-svelte';
-    import { slide } from 'svelte/transition';
     import { getTourIdFromUrl, registerGlobalTutorials } from '@/tutorial';
     import { onMount } from 'svelte';
     import { tutorialState } from '@/states/ui/tutorialState.svelte';
@@ -43,12 +40,6 @@
     function logout() {
         router.post('/logout');
     }
-
-    let isMateriOpen = $state(
-        isActive(ROUTES.MAHASISWA.MATERIALS.INDEX) || page.url.startsWith('/mahasiswa/materials/')
-    );
-
-    const materials = $derived(page.props['sidebar_materials'] ?? []);
 </script>
 
 <aside
@@ -244,85 +235,14 @@
                         >
                     {/if}
 
-                    <div class="space-y-1">
-                        <button
-                            id="sidebar-materials"
-                            onclick={() => (isMateriOpen = !isMateriOpen)}
-                            aria-expanded={isMateriOpen}
-                            aria-controls="materials-submenu"
-                            class="group flex w-full items-center gap-4 rounded-2xl border-2 border-b-4 border-transparent px-4 py-3 font-bold tracking-tight transition-all duration-100 select-none active:translate-y-[2px] active:border-b-0
-                            {isMateriOpen
-                                ? 'bg-primary-500 border-primary-600 text-white'
-                                : 'text-cosmos-muted hover:bg-primary-50 hover:text-primary-500 hover:border-primary-200'}"
-                        >
-                            <div
-                                class="flex h-8 w-8 items-center justify-center rounded-xl transition-colors duration-200
-                                {isMateriOpen
-                                    ? 'bg-white/10'
-                                    : 'bg-primary-50 group-hover:bg-primary-100/50'}"
-                            >
-                                <Shapes
-                                    size={18}
-                                    strokeWidth={2.5}
-                                    class={isMateriOpen
-                                        ? 'text-white'
-                                        : 'text-cosmos-muted group-hover:text-primary-500'}
-                                />
-                            </div>
-                            <span class="flex-1 text-left">Materi PBO</span>
-                            <ChevronDown
-                                size={16}
-                                class="transition-transform duration-200 {isMateriOpen
-                                    ? 'rotate-180 text-white'
-                                    : 'text-cosmos-muted'}"
-                            />
-                        </button>
-
-                        {#if isMateriOpen}
-                            <div
-                                id="materials-submenu"
-                                transition:slide={{ duration: 300 }}
-                                class="mt-1 space-y-1 pl-4"
-                                role="region"
-                                aria-label="Daftar Materi PBO"
-                            >
-                                {#each materials as material}
-                                    {#if material.is_locked}
-                                        <div
-                                            class="group flex w-full cursor-not-allowed items-center gap-4 rounded-2xl px-4 py-3.5 font-bold tracking-tight text-slate-300 opacity-60"
-                                            aria-disabled="true"
-                                            title="Materi terkunci - selesaikan materi sebelumnya"
-                                        >
-                                            <div
-                                                class="bg-primary-50 flex h-8 w-8 items-center justify-center rounded-xl"
-                                                aria-hidden="true"
-                                            >
-                                                <Lock size={16} strokeWidth={2.5} />
-                                            </div>
-                                            <span
-                                                class="line-clamp-1 flex-1 text-left text-sm font-medium"
-                                            >
-                                                {material.title}
-                                                <span class="sr-only">(Terkunci)</span>
-                                            </span>
-                                        </div>
-                                    {:else}
-                                        <SidebarLink
-                                            href="/mahasiswa/materials/{material.id}"
-                                            icon={BookOpen}
-                                            active={page.url.startsWith(
-                                                `/mahasiswa/materials/${material.id}`
-                                            )}
-                                        >
-                                            <span class="line-clamp-1 text-sm font-medium"
-                                                >{material.title}</span
-                                            >
-                                        </SidebarLink>
-                                    {/if}
-                                {/each}
-                            </div>
-                        {/if}
-                    </div>
+                    <SidebarLink
+                        id="sidebar-materials"
+                        href={ROUTES.MAHASISWA.MATERIALS.INDEX}
+                        icon={Shapes}
+                        active={page.url.startsWith(ROUTES.MAHASISWA.MATERIALS.INDEX) && !page.url.includes('/questions')}
+                    >
+                        Materi PBO
+                    </SidebarLink>
 
                     <SidebarLink
                         id="sidebar-quiz"

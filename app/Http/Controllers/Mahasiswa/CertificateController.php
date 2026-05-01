@@ -64,7 +64,7 @@ final class CertificateController extends Controller
         $material = $this->materialRepository->find($materialId);
 
         if (! $material instanceof Material) {
-            abort(404, 'Material not found');
+            abort(404, 'Materi tidak ditemukan');
         }
 
         $rawCertifications = $state->certifications          ?? [];
@@ -122,7 +122,7 @@ final class CertificateController extends Controller
         $material = $this->materialRepository->find($materialId);
 
         if (! $material instanceof Material) {
-            abort(404, 'Material not found');
+            abort(404, 'Materi tidak ditemukan');
         }
 
         $rawCertifications = $state->certifications          ?? [];

@@ -17,7 +17,7 @@ final class ForgotPasswordController extends Controller
      */
     public function create(): Response
     {
-        return $this->render('Auth/ForgotPassword');
+        return $this->render('Auth/ForgotPassword/Index');
     }
 
     /**

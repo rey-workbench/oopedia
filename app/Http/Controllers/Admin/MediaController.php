@@ -31,7 +31,7 @@ final class MediaController extends Controller
             if (! $file->isValid()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'File upload failed',
+                    'message' => 'Gagal mengunggah file',
                 ], 400);
             }
 
@@ -71,7 +71,7 @@ final class MediaController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Upload failed: ' . $throwable->getMessage(),
+                'message' => 'Gagal mengunggah: ' . $throwable->getMessage(),
             ], 500);
         }
     }
@@ -88,7 +88,7 @@ final class MediaController extends Controller
             if (! $media instanceof Media) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Media not found',
+                    'message' => 'Media tidak ditemukan',
                 ], 404);
             }
 
@@ -106,7 +106,7 @@ final class MediaController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Delete failed: ' . $throwable->getMessage(),
+                'message' => 'Gagal menghapus: ' . $throwable->getMessage(),
             ], 500);
         }
     }

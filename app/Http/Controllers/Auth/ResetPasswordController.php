@@ -21,21 +21,15 @@ final class ResetPasswordController extends Controller
      */
     public function create(Request $request): Response
     {
-        return $this->render('Auth/ResetPassword', [
+        return $this->render('Auth/ResetPassword/Index', [
             'email' => $request->email,
             'token' => $request->route('token'),
         ]);
     }
 
-    /**
-     * Handle an incoming new password request.
-     */
     public function store(ResetPasswordRequest $request): RedirectResponse
     {
 
-        // Here we will attempt to reset the user's password. If it is successful we
-        // will update the password on an actual user model and persist it to the
-        // database. Otherwise we will parse the error and return the response.
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password): void {
@@ -48,9 +42,6 @@ final class ResetPasswordController extends Controller
             },
         );
 
-        // If the password was successfully reset, we will redirect the user back to
-        // the login view with a success message. Otherwise we will redirect back
-        // to the current state with an error message at the email field.
         return $status === Password::PASSWORD_RESET
             ? to_route('login')->with('status', __($status))
             : back()->withErrors(['email' => __($status)]);
