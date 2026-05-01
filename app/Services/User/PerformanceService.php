@@ -221,7 +221,9 @@ final readonly class PerformanceService implements PerformanceServiceInterface
     {
         $studentState                      = $this->getStudentState($userId);
         $studentState->current_material_id = $materialId;
-        $studentState->save();
+        if ($userId !== 'guest') {
+            $studentState->save();
+        }
 
         return $studentState;
     }
@@ -263,7 +265,9 @@ final readonly class PerformanceService implements PerformanceServiceInterface
         if ($studentState->hints_available > 0) {
             $studentState->hints_available--;
             $studentState->hints_used++;
-            $studentState->save();
+            if ($userId !== 'guest') {
+                $studentState->save();
+            }
         }
 
         return $this->getStudentSessionState($userId);

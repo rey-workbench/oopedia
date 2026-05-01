@@ -367,7 +367,7 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
             ->orderByDesc('students_count')
             ->take($limit)
             ->get()
-            ->map(function ($material): \stdClass {
+            ->map(function ($material): object {
                 $material->completion_rate = $material->total_attempts > 0
                     ? round(($material->students_count / $material->total_attempts) * 100, 1)
                     : 0;

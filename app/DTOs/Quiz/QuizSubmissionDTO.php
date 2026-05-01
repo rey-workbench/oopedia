@@ -23,7 +23,7 @@ final readonly class QuizSubmissionDTO
     public static function fromRequest(string $userId, string $materialId, string $questionId, array $data): self
     {
         return new self(
-            userId: $userId,
+            userId: $userId ?: 'guest',
             materialId: $materialId,
             questionId: $questionId,
             answer: $data['answer']                                 ?? null,

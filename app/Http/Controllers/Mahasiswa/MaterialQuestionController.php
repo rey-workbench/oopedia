@@ -38,7 +38,7 @@ final class MaterialQuestionController extends Controller
 
     public function index(): Response
     {
-        $userId  = (string) Auth::id();
+        $userId  = Auth::id() ? (string) Auth::id() : 'guest';
         $isGuest = Auth::guest();
 
         $data = $this->quizService->getMaterialsListWithStudentCount(
@@ -53,7 +53,7 @@ final class MaterialQuestionController extends Controller
     public function levels(string $materialId): Response
     {
         $material = $this->getMaterialOrAbort($materialId);
-        $userId   = (string) Auth::id();
+        $userId   = Auth::id() ? (string) Auth::id() : 'guest';
         $isGuest  = Auth::guest();
 
         $answeredIds = $isGuest
@@ -70,7 +70,7 @@ final class MaterialQuestionController extends Controller
     public function show(string $materialId, ?string $difficulty = null): Response|RedirectResponse
     {
         $material = $this->getMaterialOrAbort($materialId);
-        $userId   = (string) Auth::id();
+        $userId   = Auth::id() ? (string) Auth::id() : 'guest';
         $isGuest  = Auth::guest();
 
         // Clean Context Management: Move reset/sync logic to Service
@@ -104,7 +104,7 @@ final class MaterialQuestionController extends Controller
         $this->getMaterialOrAbort($materialId);
 
         $quizSubmissionDTO = QuizSubmissionDTO::fromRequest(
-            userId: (string) Auth::id(),
+            userId: Auth::id() ? (string) Auth::id() : 'guest',
             materialId: $materialId,
             questionId: $questionId,
             data: $checkAnswerRequest->validated(),
@@ -127,7 +127,7 @@ final class MaterialQuestionController extends Controller
 
         $studentStateData = Auth::guest()
             ? $this->guestProgressService->getStudentState()->toArray()
-            : $this->performanceService->getStudentSessionState((string) Auth::id());
+            : $this->performanceService->getStudentSessionState(Auth::id() ? (string) Auth::id() : 'guest');
 
         // 2. Resolve Next Navigation Target
         if ($hasCertification) {
@@ -204,7 +204,7 @@ final class MaterialQuestionController extends Controller
         $quizContextDTO = new QuizContextDTO(
             material: $material,
             difficulty: QuestionDifficulty::tryFrom((string) $reviewQuestionRequest->difficulty),
-            userId: (string) Auth::id(),
+            userId: Auth::id() ? (string) Auth::id() : 'guest',
             isGuest: Auth::guest(),
             guestProgress: Auth::guest() ? $this->guestProgressService->getProgress() : [],
         );
@@ -230,7 +230,7 @@ final class MaterialQuestionController extends Controller
 
     public function useHint(): RedirectResponse
     {
-        $userId  = (string) Auth::id();
+        $userId  = Auth::id() ? (string) Auth::id() : 'guest';
         $isGuest = Auth::guest();
 
         if ($isGuest) {

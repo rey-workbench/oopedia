@@ -556,19 +556,21 @@ final readonly class QuizService implements QuizServiceInterface
 
     private function logAndApplyAdaptiveResult(string $userId, string $materialId, array $result, StudentState $studentState): void
     {
-        // 1. Log the execution
-        AdaptiveExecutionLog::create([
-            'user_id'           => $userId,
-            'rule_id'           => $result['id'],
-            'action_id'         => implode(', ', array_map(fn ($r) => is_array($r) ? $r['id'] : $r, $result['recommendations'])),
-            'trigger_facts'     => $result['facts'] ?? [],
-            'state_deltas'      => [],
-            'new_state'         => $studentState->toArray(),
-            'execution_context' => [
-                'material_id' => $materialId,
-                'timestamp'   => $result['timestamp'],
-            ],
-        ]);
+        // 1. Log the execution (only for registered users)
+        if ($userId !== 'guest') {
+            AdaptiveExecutionLog::create([
+                'user_id'           => $userId,
+                'rule_id'           => $result['id'],
+                'action_id'         => implode(', ', array_map(fn ($r) => is_array($r) ? $r['id'] : $r, $result['recommendations'])),
+                'trigger_facts'     => $result['facts'] ?? [],
+                'state_deltas'      => [],
+                'new_state'         => $studentState->toArray(),
+                'execution_context' => [
+                    'material_id' => $materialId,
+                    'timestamp'   => $result['timestamp'],
+                ],
+            ]);
+        }
 
         // 2. Prepare Adaptive State
         $adaptiveState                         = $studentState->adaptive_state ?? [];
@@ -670,7 +672,9 @@ final readonly class QuizService implements QuizServiceInterface
         }
 
         $studentState->adaptive_state = $adaptiveState;
-        $studentState->save();
+        if ($userId !== 'guest') {
+            $studentState->save();
+        }
     }
 
     // =========================================================================
