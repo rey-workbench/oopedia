@@ -25,7 +25,7 @@ final class ReviewQuestionRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'difficulty' => 'nullable|in:all,beginner,medium,hard,final',
+            'difficulty' => ['nullable', 'in:all,beginner,medium,hard,final'],
         ];
     }
 }

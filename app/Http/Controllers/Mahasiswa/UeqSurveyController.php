@@ -21,7 +21,7 @@ final class UeqSurveyController extends Controller
     public function create(): Response|RedirectResponse
     {
         if ($this->ueqSurveyService->hasUserSubmitted(Auth::id())) {
-            return redirect()->route('mahasiswa.ueq-survey.thankyou');
+            return to_route('mahasiswa.ueq-survey.thankyou');
         }
 
         $aspects = $this->getAspects();
@@ -32,14 +32,14 @@ final class UeqSurveyController extends Controller
     public function store(StoreUeqSurveyRequest $storeUeqSurveyRequest): RedirectResponse
     {
         if ($this->ueqSurveyService->hasUserSubmitted(Auth::id())) {
-            return redirect()->route('mahasiswa.ueq-survey.thankyou');
+            return to_route('mahasiswa.ueq-survey.thankyou');
         }
 
         $ueqSurveyCreateDTO = UeqSurveyCreateDTO::fromRequest($storeUeqSurveyRequest, (string) Auth::id());
 
         $this->ueqSurveyService->createSurvey($ueqSurveyCreateDTO->toArray());
 
-        return redirect()->route('mahasiswa.ueq-survey.thankyou');
+        return to_route('mahasiswa.ueq-survey.thankyou');
     }
 
     public function show(): Response

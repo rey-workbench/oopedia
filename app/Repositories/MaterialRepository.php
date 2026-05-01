@@ -66,8 +66,7 @@ final class MaterialRepository implements MaterialRepositoryInterface
 
     public function getAllOrdered(): Collection
     {
-        return Material::with(['questions', 'media', 'creator'])
-            ->orderBy('created_at', 'asc')
+        return Material::with(['questions', 'media', 'creator'])->oldest()
             ->get();
     }
 
@@ -106,7 +105,7 @@ final class MaterialRepository implements MaterialRepositoryInterface
         if (in_array($sort, $allowedSortFields, true)) {
             $query->orderBy($sort, $direction);
         } else {
-            $query->orderBy('created_at', 'asc');
+            $query->oldest();
         }
 
         return $query->with(['creator', 'media'])->get();
@@ -116,8 +115,7 @@ final class MaterialRepository implements MaterialRepositoryInterface
     public function getMaterialsForListing(): Collection
     {
         return Material::with(['media', 'creator'])
-            ->withCount('questions')
-            ->orderBy('created_at', 'asc')
+            ->withCount('questions')->oldest()
             ->get();
     }
 }

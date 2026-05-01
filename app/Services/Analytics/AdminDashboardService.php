@@ -11,11 +11,12 @@ use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Contracts\Services\AdminDashboardServiceInterface;
 use App\Helpers\ProgressHelper;
 use App\Models\User;
-use Carbon\Carbon;
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Date;
 
 final readonly class AdminDashboardService implements AdminDashboardServiceInterface
 {
@@ -63,7 +64,7 @@ final readonly class AdminDashboardService implements AdminDashboardServiceInter
                 );
 
                 $lastActivity         = $student->quizAttempts->max('created_at');
-                $student->last_active = $lastActivity ? Carbon::parse($lastActivity) : null;
+                $student->last_active = $lastActivity ? Date::parse($lastActivity) : null;
 
                 return $student;
             })->all();
@@ -157,7 +158,7 @@ final readonly class AdminDashboardService implements AdminDashboardServiceInter
 
     public function getStudentsNeedingAttention(): EloquentCollection
     {
-        return User::whereHas('role', function ($q): void {
+        return User::whereHas('role', function (Builder $q): void {
             $q->where('role_name', 'mahasiswa');
         })
             ->whereHas('studentState', function ($q): void {

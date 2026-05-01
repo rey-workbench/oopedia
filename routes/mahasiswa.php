@@ -13,16 +13,16 @@ use App\Http\Controllers\Mahasiswa\UeqSurveyController as MahasiswaUeqSurveyCont
 use App\Http\Middleware\BlockQuestionParameter;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
+Route::prefix('mahasiswa')->name('mahasiswa.')->group(function (): void {
 
     // --- Public Certificate Preview ---
     Route::get('certificates/preview/{material}/{user?}', [MahasiswaCertificateController::class, 'preview'])
         ->name('certificates.preview');
 
     // --- Private Mahasiswa Routes (Role 3 Only) ---
-    Route::middleware(['auth', 'access:mahasiswa'])->group(function () {
+    Route::middleware(['auth', 'access:mahasiswa'])->group(function (): void {
         // Dashboard
-        Route::controller(MahasiswaDashboardController::class)->group(function () {
+        Route::controller(MahasiswaDashboardController::class)->group(function (): void {
             Route::get('dashboard', 'index')->name('dashboard');
             Route::get('dashboard/in-progress', 'inProgress')->name('dashboard.in-progress');
             Route::get('dashboard/completed', 'complete')->name('dashboard.completed');
@@ -31,24 +31,24 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
 
         // Profile & Certificates
         Route::singleton('profile', MahasiswaProfileController::class)->only(['show', 'update']);
-        Route::prefix('certificates')->name('certificates.')->controller(MahasiswaCertificateController::class)->group(function () {
+        Route::prefix('certificates')->name('certificates.')->controller(MahasiswaCertificateController::class)->group(function (): void {
             Route::get('/', 'index')->name('index');
             Route::get('{material}/download', 'download')->name('download');
         });
 
         // Surveys (UEQ, MSLQ, SUS)
-        Route::prefix('surveys')->name('surveys.')->group(function () {
-            Route::prefix('ueq')->name('ueq.')->controller(MahasiswaUeqSurveyController::class)->group(function () {
+        Route::prefix('surveys')->name('surveys.')->group(function (): void {
+            Route::prefix('ueq')->name('ueq.')->controller(MahasiswaUeqSurveyController::class)->group(function (): void {
                 Route::get('thankyou', 'show')->name('thankyou');
             });
             Route::resource('ueq', MahasiswaUeqSurveyController::class)->only(['create', 'store']);
 
-            Route::prefix('mslq')->name('mslq.')->controller(MslqController::class)->group(function () {
+            Route::prefix('mslq')->name('mslq.')->controller(MslqController::class)->group(function (): void {
                 Route::get('thankyou', 'show')->name('thankyou');
             });
             Route::resource('mslq', MslqController::class)->only(['create', 'store']);
 
-            Route::prefix('sus')->name('sus.')->controller(SusSurveyController::class)->group(function () {
+            Route::prefix('sus')->name('sus.')->controller(SusSurveyController::class)->group(function (): void {
                 Route::get('thankyou', 'show')->name('thankyou');
             });
             Route::resource('sus', SusSurveyController::class)->only(['create', 'store']);
@@ -56,10 +56,10 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     });
 
     // --- Shared/Guest Routes (Role 3 & 4) ---
-    Route::middleware(['access:guest'])->group(function () {
+    Route::middleware(['access:guest'])->group(function (): void {
 
         // Questions & Adaptive System
-        Route::controller(MaterialQuestionController::class)->prefix('materials')->group(function () {
+        Route::controller(MaterialQuestionController::class)->prefix('materials')->group(function (): void {
             Route::get('questions', 'index')->name('materials.questions.index');
             Route::get('{material}/questions/levels', 'levels')->name('materials.questions.levels');
             Route::get('{material}/questions/review/{difficulty?}', 'review')->name('materials.questions.review');
@@ -72,7 +72,7 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
         });
 
         // Materials & Progress
-        Route::controller(MahasiswaMaterialController::class)->group(function () {
+        Route::controller(MahasiswaMaterialController::class)->group(function (): void {
             Route::resource('materials', MahasiswaMaterialController::class)->only(['index', 'show']);
             Route::post('materials/{material}/reset', 'reset')->name('materials.reset');
         });

@@ -12,13 +12,13 @@ final class CheckAnswerRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'used_hint'                => 'required|boolean',
-            'time_spent'               => 'required|integer|min:0',
-            'score'                    => 'nullable|integer|min:0',
-            'difficulty'               => 'nullable|in:all,beginner,medium,hard,final',
-            'answer'                   => 'nullable|string',
-            'fill_in_the_blank_answer' => 'nullable|string',
-            'drag_and_drop_answers'    => 'nullable|json',
+            'used_hint'                => ['required', 'boolean'],
+            'time_spent'               => ['required', 'integer', 'min:0'],
+            'score'                    => ['nullable', 'integer', 'min:0'],
+            'difficulty'               => ['nullable', 'in:all,beginner,medium,hard,final'],
+            'answer'                   => ['nullable', 'string'],
+            'fill_in_the_blank_answer' => ['nullable', 'string'],
+            'drag_and_drop_answers'    => ['nullable', 'json'],
         ];
     }
 

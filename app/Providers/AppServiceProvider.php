@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
             $config = config('rate_limiting.api');
 
             return Limit::perMinute($config['limit'])
-                ->by(optional($request->user())->id ?: $request->ip())
+                ->by($request->user()?->id ?: $request->ip())
                 ->response(fn () => response()->json([
                     'message' => 'Too many requests. Please slow down.',
                 ], 429));

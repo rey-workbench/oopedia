@@ -38,7 +38,7 @@ final class LoginController extends Controller
 
             $this->guestProgressService->clearAllProgress();
 
-            return Redirect::route('mahasiswa.materials.index');
+            return to_route('mahasiswa.materials.index');
         }
 
         $credentials = $loginRequest->only('email', 'password');
@@ -54,11 +54,11 @@ final class LoginController extends Controller
         $user = $this->userService->getUserById(Auth::id());
 
         $redirect = match (true) {
-            $user->isSuperAdmin()                  => redirect()->route('admin.dashboard'),
-            $user->isDosen() && $user->is_approved => redirect()->route('admin.dashboard'),
-            $user->isDosen()                       => redirect()->route('admin.pending-approval'),
-            $user->isMahasiswa()                   => redirect()->route('mahasiswa.dashboard'),
-            default                                => redirect()->route('mahasiswa.materials.index'),
+            $user->isSuperAdmin()                  => to_route('admin.dashboard'),
+            $user->isDosen() && $user->is_approved => to_route('admin.dashboard'),
+            $user->isDosen()                       => to_route('admin.pending-approval'),
+            $user->isMahasiswa()                   => to_route('mahasiswa.dashboard'),
+            default                                => to_route('mahasiswa.materials.index'),
         };
 
         return $redirect
@@ -78,20 +78,20 @@ final class LoginController extends Controller
     public function home(): RedirectResponse
     {
         if (! Auth::check()) {
-            return Redirect::route('mahasiswa.materials.index');
+            return to_route('mahasiswa.materials.index');
         }
 
         $user = Auth::user();
 
         if ($user->isSuperAdmin() || $user->isDosen()) {
-            return Redirect::route('admin.dashboard');
+            return to_route('admin.dashboard');
         }
 
         if ($user->isMahasiswa()) {
-            return Redirect::route('mahasiswa.dashboard');
+            return to_route('mahasiswa.dashboard');
         }
 
-        return Redirect::route('mahasiswa.materials.index');
+        return to_route('mahasiswa.materials.index');
     }
 
     public function landing(): Response

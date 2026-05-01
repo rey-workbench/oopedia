@@ -39,7 +39,7 @@ class AccessControl
         }
 
         if ($requireApproval && $user->isDosen() && ! $user->is_approved) {
-            return redirect()->route('admin.pending-approval');
+            return to_route('admin.pending-approval');
         }
 
         if ($userRoleValue === 'guest') {
@@ -60,7 +60,7 @@ class AccessControl
             $routeName = $request->route()?->getName();
 
             if ($routeName && ! in_array($routeName, $allowedRoutes)) {
-                return redirect()->route('mahasiswa.materials.index')
+                return to_route('mahasiswa.materials.index')
                     ->with('info', 'Fitur ini hanya tersedia untuk mahasiswa terdaftar.');
             }
         }

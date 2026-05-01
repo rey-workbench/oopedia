@@ -37,16 +37,25 @@ final class QuizAttempt extends Model
         ];
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return BelongsTo<Question, $this>
+     */
     public function question(): BelongsTo
     {
         return $this->belongsTo(Question::class);
     }
 
+    /**
+     * @return BelongsTo<Answer, $this>
+     */
     public function answer(): BelongsTo
     {
         return $this->belongsTo(Answer::class);

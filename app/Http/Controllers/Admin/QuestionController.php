@@ -57,7 +57,7 @@ final class QuestionController extends Controller
         $material = $this->materialService->getMaterialById((string) $materialId);
 
         if (! $material instanceof Material) {
-            return redirect()->route('admin.questions.index')
+            return to_route('admin.questions.index')
                 ->with('error', 'Material tidak ditemukan');
         }
 
@@ -73,7 +73,7 @@ final class QuestionController extends Controller
         $correctCount = collect($questionCreateDTO->answers)->where('is_correct', '1')->count();
 
         if (in_array($questionCreateDTO->question_type, [QuestionType::RADIO_BUTTON->value, QuestionType::FILL_IN_THE_BLANK->value]) && $correctCount !== 1) {
-            return redirect()->back()->withInput()
+            return back()->withInput()
                 ->with(
                     'error',
                     ucfirst(str_replace('_', ' ', $questionCreateDTO->question_type))
@@ -85,7 +85,7 @@ final class QuestionController extends Controller
 
         $redirectParams = $questionCreateDTO->material_id !== '' && $questionCreateDTO->material_id !== '0' ? ['material' => $questionCreateDTO->material_id] : [];
 
-        return redirect()->route('admin.questions.index', $redirectParams)
+        return to_route('admin.questions.index', $redirectParams)
             ->with('success', 'Soal berhasil ditambahkan.');
     }
 
@@ -94,7 +94,7 @@ final class QuestionController extends Controller
         $question = $this->quizService->getQuestionWithAnswers($questionId);
 
         if (! $question instanceof Question) {
-            return redirect()->route('admin.questions.index')
+            return to_route('admin.questions.index')
                 ->with('error', 'Soal tidak ditemukan');
         }
 
@@ -128,7 +128,7 @@ final class QuestionController extends Controller
 
         $redirectParams = $questionUpdateDTO->material_id ? ['material' => $questionUpdateDTO->material_id] : [];
 
-        return redirect()->route('admin.questions.index', $redirectParams)
+        return to_route('admin.questions.index', $redirectParams)
             ->with('success', 'Soal berhasil diperbarui.');
     }
 
@@ -141,7 +141,7 @@ final class QuestionController extends Controller
 
         $redirectParams = $materialId ? ['material' => $materialId] : [];
 
-        return redirect()->route('admin.questions.index', $redirectParams)
+        return to_route('admin.questions.index', $redirectParams)
             ->with('success', 'Soal berhasil dihapus.');
     }
 }

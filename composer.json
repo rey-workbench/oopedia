@@ -15,7 +15,9 @@
         "production":[
             "php artisan db:seed --class=RealQuestionSeeder"
         ],
-        "deadcode": "vendor/bin/phpstan"
+        "deadcode": "vendor/bin/phpstan",
+        "rector:dry": "vendor/bin/rector process --dry-run",
+        "rector": "vendor/bin/rector process"
     },
     "keywords": [
         "Laravel",
@@ -69,7 +71,8 @@
         "shipmonk/dead-code-detector": "^1.0",
         "larastan/larastan": "^3.9",
         "phpmd/phpmd": "^2.15",
-        "rector/rector": "^2.4"
+        "rector/rector": "^2.4",
+        "driftingly/rector-laravel": "^2.3"
     },
     "config": {
         "process-timeout": 1800

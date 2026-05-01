@@ -21,7 +21,7 @@ final class SusSurveyController extends Controller
     public function create(): Response|RedirectResponse
     {
         if ($this->susResultService->hasUserSubmitted((string) Auth::id())) {
-            return redirect()->route('mahasiswa.sus-survey.thankyou');
+            return to_route('mahasiswa.sus-survey.thankyou');
         }
 
         $questions = $this->getQuestions();
@@ -32,14 +32,14 @@ final class SusSurveyController extends Controller
     public function store(StoreSusResultRequest $storeSusResultRequest): RedirectResponse
     {
         if ($this->susResultService->hasUserSubmitted((string) Auth::id())) {
-            return redirect()->route('mahasiswa.sus-survey.thankyou');
+            return to_route('mahasiswa.sus-survey.thankyou');
         }
 
         $susResultCreateDTO = SusResultCreateDTO::fromRequest($storeSusResultRequest, (string) Auth::id());
 
         $this->susResultService->submitResult($susResultCreateDTO->toArray());
 
-        return redirect()->route('mahasiswa.sus-survey.thankyou');
+        return to_route('mahasiswa.sus-survey.thankyou');
     }
 
     public function show(): Response

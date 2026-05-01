@@ -23,7 +23,7 @@ final class MslqController extends Controller
     {
         $existing = MslqResult::where('user_id', Auth::id())->first();
         if ($existing) {
-            return redirect()->route('mahasiswa.mslq.thankyou');
+            return to_route('mahasiswa.mslq.thankyou');
         }
 
         $questions = MslqQuestion::orderBy('order')->get();
@@ -37,7 +37,7 @@ final class MslqController extends Controller
     {
         $existing = MslqResult::where('user_id', Auth::id())->first();
         if ($existing) {
-            return redirect()->route('mahasiswa.mslq.thankyou');
+            return to_route('mahasiswa.mslq.thankyou');
         }
 
         try {
@@ -54,7 +54,7 @@ final class MslqController extends Controller
                 (string) $validated['class'],
             );
 
-            return redirect()->route('mahasiswa.mslq.thankyou');
+            return to_route('mahasiswa.mslq.thankyou');
         } catch (\Exception $exception) {
             return back()->with('error', 'Gagal menyimpan data survey: ' . $exception->getMessage());
         }

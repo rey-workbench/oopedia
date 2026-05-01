@@ -68,7 +68,7 @@ final readonly class GuestProgressService implements GuestProgressServiceInterfa
         $allProgress = $this->getProgress();
 
         $filtered = collect($allProgress)
-            ->filter(fn ($v, $k): bool => ! str_starts_with($k, $materialId . '_'))
+            ->reject(fn ($v, $k): bool => str_starts_with((string) $k, $materialId . '_'))
             ->except($materialId)
             ->all();
 

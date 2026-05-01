@@ -51,16 +51,25 @@ final class User extends Authenticatable
         ];
     }
 
+    /**
+     * @return BelongsTo<Role, $this>
+     */
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
     }
 
+    /**
+     * @return HasMany<QuizAttempt, $this>
+     */
     public function quizAttempts(): HasMany
     {
         return $this->hasMany(QuizAttempt::class);
     }
 
+    /**
+     * @return HasOne<StudentState, $this>
+     */
     public function studentState(): HasOne
     {
         return $this->hasOne(StudentState::class);

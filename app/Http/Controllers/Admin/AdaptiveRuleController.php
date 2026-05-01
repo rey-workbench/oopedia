@@ -165,7 +165,7 @@ final class AdaptiveRuleController extends Controller
                 'material_title' => $log->execution_context['material_title'] ?? 'General',
                 'created_at'     => $log->created_at->diffForHumans(),
             ])
-            ->toArray();
+            ->all();
     }
 
     /**

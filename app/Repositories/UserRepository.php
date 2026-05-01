@@ -8,6 +8,7 @@ use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Models\QuizAttempt;
 use App\Models\StudentState;
 use App\Models\User;
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -49,7 +50,7 @@ final class UserRepository implements UserRepositoryInterface
 
     public function getStudentsList(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
-        $query = User::whereHas('role', function ($q): void {
+        $query = User::whereHas('role', function (Builder $q): void {
             $q->where('role_name', 'mahasiswa');
         });
 
@@ -68,7 +69,7 @@ final class UserRepository implements UserRepositoryInterface
         ?string $search = null,
         int $perPage = 10,
     ): LengthAwarePaginator {
-        $query = User::whereHas('role', function ($q) use ($roleName): void {
+        $query = User::whereHas('role', function (Builder $q) use ($roleName): void {
             $q->where('role_name', $roleName);
         });
 
@@ -102,7 +103,7 @@ final class UserRepository implements UserRepositoryInterface
         string $sortBy = 'created_at',
         string $sortOrder = 'desc',
     ): LengthAwarePaginator|Collection {
-        $query = User::whereHas('role', function ($q) use ($roleName): void {
+        $query = User::whereHas('role', function (Builder $q) use ($roleName): void {
             $q->where('role_name', $roleName);
         })
             ->where('is_approved', $isApproved)
@@ -124,7 +125,7 @@ final class UserRepository implements UserRepositoryInterface
 
     public function getActiveStudentsCount(int $days): int
     {
-        return User::whereHas('role', function ($q): void {
+        return User::whereHas('role', function (Builder $q): void {
             $q->where('role_name', 'mahasiswa');
         })
             ->whereHas('quizAttempts', function ($query) use ($days): void {
@@ -135,7 +136,7 @@ final class UserRepository implements UserRepositoryInterface
 
     public function getStudentProgressOverview(int $limit): Collection
     {
-        return User::whereHas('role', function ($q): void {
+        return User::whereHas('role', function (Builder $q): void {
             $q->where('role_name', 'mahasiswa');
         })
             ->withCount(['quizAttempts as completed_questions' => function ($query): void {
@@ -153,7 +154,7 @@ final class UserRepository implements UserRepositoryInterface
 
     public function countByRole(string $roleName): int
     {
-        return User::whereHas('role', function ($q) use ($roleName): void {
+        return User::whereHas('role', function (Builder $q) use ($roleName): void {
             $q->where('role_name', $roleName);
         })
             ->count();

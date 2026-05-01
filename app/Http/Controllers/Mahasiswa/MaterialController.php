@@ -45,6 +45,6 @@ final class MaterialController extends Controller
             $this->materialService->resetMaterialProgress((string) $userId, $materialId);
         }
 
-        return redirect()->route('mahasiswa.materials.show', $materialId);
+        return to_route('mahasiswa.materials.show', $materialId);
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -52,7 +53,7 @@ final class AdaptiveRule extends Model
      * Accessor for related Action models.
      * Use $rule->actions for the raw JSON with metadata.
      */
-    public function getActionModelsAttribute()
+    protected function getActionModelsAttribute()
     {
         $actions = $this->getAttribute('actions') ?? [];
 
@@ -65,7 +66,7 @@ final class AdaptiveRule extends Model
         return AdaptiveAction::whereIn('id', $ids)->get();
     }
 
-    public function getRequiredFactsAttribute()
+    protected function getRequiredFactsAttribute()
     {
         if (empty($this->required_fact_ids)) {
             return collect();
@@ -74,7 +75,7 @@ final class AdaptiveRule extends Model
         return AdaptiveFact::whereIn('id', $this->required_fact_ids)->get();
     }
 
-    public function getDeducedFactsAttribute()
+    protected function getDeducedFactsAttribute()
     {
         if (empty($this->deduced_fact_ids)) {
             return collect();
@@ -83,7 +84,8 @@ final class AdaptiveRule extends Model
         return AdaptiveFact::whereIn('id', $this->deduced_fact_ids)->get();
     }
 
-    public function scopeOrdered(Builder $builder): void
+    #[Scope]
+    protected function ordered(Builder $builder): void
     {
         $builder->orderBy('priority');
     }

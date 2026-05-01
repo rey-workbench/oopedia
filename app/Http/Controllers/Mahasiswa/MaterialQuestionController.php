@@ -93,7 +93,7 @@ final class MaterialQuestionController extends Controller
         $quizData = $this->quizService->getQuizData($quizContextDTO);
 
         if ($quizData['current_question'] === null && $quizData['answered_count'] > 0) {
-            return redirect()->route('mahasiswa.materials.questions.review', ['material' => $materialId, 'difficulty' => $difficulty]);
+            return to_route('mahasiswa.materials.questions.review', ['material' => $materialId, 'difficulty' => $difficulty]);
         }
 
         return $this->render('Mahasiswa/Materials/Questions/Show/Index', $quizData);

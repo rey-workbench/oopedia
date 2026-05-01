@@ -7,6 +7,7 @@ namespace App\Repositories;
 use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Models\Question;
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -63,26 +64,25 @@ final class QuestionRepository implements QuestionRepositoryInterface
     ): LengthAwarePaginator {
         return Question::with(['createdBy', 'answers', 'material'])
             ->when($search, fn ($query) => $query->where(
-                function ($q) use ($search): void {
+                function (Builder $q) use ($search): void {
                     $q->where('question_text', 'like', sprintf('%%%s%%', $search))
                         ->orWhere('question_type', 'like', sprintf('%%%s%%', $search))
                         ->orWhereHas(
                             'createdBy',
-                            function ($userQuery) use ($search): void {
+                            function (Builder $userQuery) use ($search): void {
                                 $userQuery->where('name', 'like', sprintf('%%%s%%', $search));
                             },
                         )
                         ->orWhereHas(
                             'material',
-                            function ($materialQuery) use ($search): void {
+                            function (Builder $materialQuery) use ($search): void {
                                 $materialQuery->where('title', 'like', sprintf('%%%s%%', $search));
                             },
                         );
                 },
             ))
             ->when($difficulty, fn ($query) => $query->where('difficulty', '=', $difficulty))
-            ->when($materialId, fn ($query) => $query->where('material_id', '=', $materialId))
-            ->orderBy('created_at', 'desc')
+            ->when($materialId, fn ($query) => $query->where('material_id', '=', $materialId))->latest()
             ->paginate(15);
     }
 

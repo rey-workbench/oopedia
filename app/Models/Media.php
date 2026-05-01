@@ -27,12 +27,15 @@ final class Media extends Model
         ];
     }
 
+    /**
+     * @return BelongsTo<Material, $this>
+     */
     public function material(): BelongsTo
     {
         return $this->belongsTo(Material::class);
     }
 
-    public function getFullUrlAttribute(): string
+    protected function getFullUrlAttribute(): string
     {
         if (
             str_starts_with($this->media_url, 'http://') ||

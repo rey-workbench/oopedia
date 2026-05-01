@@ -54,9 +54,9 @@ trait ImportsCsvUsers
             ];
 
             $validator = Validator::make($rowData, [
-                'name'     => 'required|string|max:255',
+                'name'     => ['required', 'string', 'max:255'],
                 'email'    => ['required', 'string', 'email', 'max:255', Rule::unique('users')],
-                'password' => 'required|string|min:8',
+                'password' => ['required', 'string', 'min:8'],
             ]);
 
             if ($validator->fails()) {

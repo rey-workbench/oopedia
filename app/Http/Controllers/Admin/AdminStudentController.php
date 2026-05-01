@@ -34,7 +34,7 @@ final class AdminStudentController extends Controller
         $student = $this->studentService->getStudentById($studentId);
 
         if (! $student instanceof User || ! $student->isMahasiswa()) {
-            return redirect()->route('admin.students.index')
+            return to_route('admin.students.index')
                 ->with('error', 'Mahasiswa tidak ditemukan');
         }
 
@@ -55,7 +55,7 @@ final class AdminStudentController extends Controller
 
         $this->studentService->createStudent($studentCreateDTO->toArray());
 
-        return redirect()->route('admin.students.index')
+        return to_route('admin.students.index')
             ->with('success', 'Mahasiswa berhasil didaftarkan secara manual.');
     }
 
@@ -63,7 +63,7 @@ final class AdminStudentController extends Controller
     {
         $this->studentService->deleteStudent($studentId);
 
-        return redirect()->route('admin.students.index')
+        return to_route('admin.students.index')
             ->with('success', 'Data mahasiswa telah berhasil dihapus dari sistem');
     }
 
@@ -81,7 +81,7 @@ final class AdminStudentController extends Controller
             $message .= ' Terdapat ' . count($result['error_rows']) . ' baris dengan error.';
         }
 
-        return redirect()->route('admin.students.index')
+        return to_route('admin.students.index')
             ->with('success', $message)
             ->with('importErrors', $result['error_rows']);
     }

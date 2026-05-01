@@ -65,7 +65,7 @@ final readonly class DashboardService implements DashboardServiceInterface
 
                 $recentActivities = $this->progressRepo->getRecentActivities($userId, 10)
                     ->map(fn ($activity): object => $this->addActivityType($activity))
-                    ->pipe(fn ($activities): \Illuminate\Support\Collection => $this->deduplicateActivities($activities, 5));
+                    ->pipe(fn (\Illuminate\Support\Collection $activities): \Illuminate\Support\Collection => $this->deduplicateActivities($activities, 5));
 
                 $studentState   = StudentState::where('user_id', $userId)->first();
                 $certifications = $studentState?->certifications ?? [];

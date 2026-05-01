@@ -56,21 +56,33 @@ final class Question extends Model
         ];
     }
 
+    /**
+     * @return BelongsTo<Material, $this>
+     */
     public function material(): BelongsTo
     {
         return $this->belongsTo(Material::class);
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    /**
+     * @return HasMany<Answer, $this>
+     */
     public function answers(): HasMany
     {
         return $this->hasMany(Answer::class);
     }
 
+    /**
+     * @return HasMany<QuizAttempt, $this>
+     */
     public function quizAttempts(): HasMany
     {
         return $this->hasMany(QuizAttempt::class);

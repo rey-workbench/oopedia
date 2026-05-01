@@ -365,7 +365,7 @@ final readonly class QuizService implements QuizServiceInterface
                 continue;
             }
 
-            if (! $answeredQuestionIds->contains($parts[1])) {
+            if ($answeredQuestionIds->doesntContain($parts[1])) {
                 $answeredQuestionIds->push($parts[1]);
             }
         }

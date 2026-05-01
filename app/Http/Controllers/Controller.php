@@ -45,7 +45,7 @@ class Controller extends BaseController
             return [];
         }
 
-        return app(GuestProgressServiceInterface::class)->getProgress();
+        return resolve(GuestProgressServiceInterface::class)->getProgress();
     }
 
     protected function json(mixed $data = null, int $status = 200): JsonResponse

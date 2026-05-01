@@ -19,7 +19,7 @@ final class ResetMaterialProgressRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'material' => 'required|exists:materials,id',
+            'material' => ['required', 'exists:materials,id'],
         ];
     }
 }

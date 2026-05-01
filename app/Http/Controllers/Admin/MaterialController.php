@@ -44,7 +44,7 @@ final class MaterialController extends Controller
 
         $this->materialService->createMaterial($materialCreateDTO);
 
-        return redirect()->route('admin.materials.index')
+        return to_route('admin.materials.index')
             ->with('success', 'Materi berhasil ditambahkan.');
     }
 
@@ -53,7 +53,7 @@ final class MaterialController extends Controller
         $material = $this->materialService->getMaterialById($materialId);
 
         if (! $material instanceof Material) {
-            return redirect()->route('admin.materials.index')
+            return to_route('admin.materials.index')
                 ->with('error', 'Material tidak ditemukan');
         }
 
@@ -66,7 +66,7 @@ final class MaterialController extends Controller
 
         $this->materialService->updateMaterial($materialId, $materialUpdateDTO);
 
-        return redirect()->route('admin.materials.index')
+        return to_route('admin.materials.index')
             ->with('success', 'Materi berhasil diperbarui.');
     }
 
@@ -74,7 +74,7 @@ final class MaterialController extends Controller
     {
         $this->materialService->deleteMaterial($materialId);
 
-        return redirect()->route('admin.materials.index')
+        return to_route('admin.materials.index')
             ->with('success', 'Materi berhasil dihapus.');
     }
 
@@ -82,7 +82,7 @@ final class MaterialController extends Controller
     {
         $materialId = $this->materialService->deleteMedia($id);
 
-        return redirect()->route('admin.materials.edit', $materialId)
+        return to_route('admin.materials.edit', $materialId)
             ->with('success', 'Media berhasil dihapus.');
     }
 }

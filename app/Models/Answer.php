@@ -34,6 +34,9 @@ final class Answer extends Model
         ];
     }
 
+    /**
+     * @return BelongsTo<Question, $this>
+     */
     public function question(): BelongsTo
     {
         return $this->belongsTo(Question::class);

@@ -11,22 +11,22 @@ final class StoreSusResultRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'nim'   => 'required|string|max:20',
-            'class' => 'required|string|max:20',
+            'nim'   => ['required', 'string', 'max:20'],
+            'class' => ['required', 'string', 'max:20'],
 
-            'q1'  => 'required|integer|between:1,5',
-            'q2'  => 'required|integer|between:1,5',
-            'q3'  => 'required|integer|between:1,5',
-            'q4'  => 'required|integer|between:1,5',
-            'q5'  => 'required|integer|between:1,5',
-            'q6'  => 'required|integer|between:1,5',
-            'q7'  => 'required|integer|between:1,5',
-            'q8'  => 'required|integer|between:1,5',
-            'q9'  => 'required|integer|between:1,5',
-            'q10' => 'required|integer|between:1,5',
+            'q1'  => ['required', 'integer', 'between:1,5'],
+            'q2'  => ['required', 'integer', 'between:1,5'],
+            'q3'  => ['required', 'integer', 'between:1,5'],
+            'q4'  => ['required', 'integer', 'between:1,5'],
+            'q5'  => ['required', 'integer', 'between:1,5'],
+            'q6'  => ['required', 'integer', 'between:1,5'],
+            'q7'  => ['required', 'integer', 'between:1,5'],
+            'q8'  => ['required', 'integer', 'between:1,5'],
+            'q9'  => ['required', 'integer', 'between:1,5'],
+            'q10' => ['required', 'integer', 'between:1,5'],
 
-            'comments'    => 'required|max:1000',
-            'suggestions' => 'required|max:1000',
+            'comments'    => ['required', 'max:1000'],
+            'suggestions' => ['required', 'max:1000'],
         ];
     }
 

@@ -15,9 +15,9 @@ use App\Models\Role;
 use App\Models\StudentState;
 use App\Models\User;
 use App\Services\User\Concerns\ImportsCsvUsers;
-use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -117,7 +117,7 @@ final readonly class StudentService implements StudentServiceInterface
                 'total_questions'    => $totalQuestions,
                 'answered_questions' => $correctAnswers,
                 'progress'           => $progressPercentage,
-                'last_accessed'      => $lastAccessed ? Carbon::parse($lastAccessed) : null,
+                'last_accessed'      => $lastAccessed ? Date::parse($lastAccessed) : null,
             ]);
         }
 

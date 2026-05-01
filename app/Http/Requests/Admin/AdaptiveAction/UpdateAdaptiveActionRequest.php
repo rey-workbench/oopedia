@@ -11,10 +11,10 @@ final class UpdateAdaptiveActionRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'name'         => 'required|string|max:255',
-            'description'  => 'required|string',
-            'variant'      => 'nullable|string',
-            'instructions' => 'required|array',
+            'name'         => ['required', 'string', 'max:255'],
+            'description'  => ['required', 'string'],
+            'variant'      => ['nullable', 'string'],
+            'instructions' => ['required', 'array'],
         ];
     }
 }

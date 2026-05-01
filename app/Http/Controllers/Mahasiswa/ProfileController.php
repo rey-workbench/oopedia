@@ -80,7 +80,7 @@ final class ProfileController extends Controller
                 ];
             })
             ->values()
-            ->toArray();
+            ->all();
 
         return $this->render(
             'Mahasiswa/Profile/Index',

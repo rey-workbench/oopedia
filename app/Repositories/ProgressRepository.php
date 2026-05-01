@@ -65,8 +65,7 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
 
         $attempts = QuizAttempt::with(['question.material'])
             ->where('user_id', $userId)
-            ->where('is_correct', true)
-            ->orderBy('created_at', 'desc')
+            ->where('is_correct', true)->latest()
             ->take($limit)
             ->get();
 
@@ -333,8 +332,7 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
 
     public function getRecentSystemProgress(int $limit): Collection
     {
-        return QuizAttempt::with(['user', 'question.material'])
-            ->orderBy('created_at', 'desc')
+        return QuizAttempt::with(['user', 'question.material'])->latest()
             ->limit($limit)
             ->get();
     }

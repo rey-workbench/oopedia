@@ -48,7 +48,7 @@ final class AdminUserController extends Controller
 
         $this->userService->createAdmin($adminCreateDTO->toArray());
 
-        return redirect()->route('admin.users.index')
+        return to_route('admin.users.index')
             ->with('success', 'Admin berhasil ditambahkan');
     }
 
@@ -57,12 +57,12 @@ final class AdminUserController extends Controller
         $user = $this->userService->getUserById($userId);
 
         if (! $user instanceof User) {
-            return redirect()->route('admin.users.index')
+            return to_route('admin.users.index')
                 ->with('error', 'User tidak ditemukan');
         }
 
         if (! $user->isDosen()) {
-            return redirect()->route('admin.users.index')
+            return to_route('admin.users.index')
                 ->with('error', 'User bukan admin');
         }
 
@@ -74,7 +74,7 @@ final class AdminUserController extends Controller
         $user = $this->userService->getUserById($userId);
 
         if (! $user instanceof User) {
-            return redirect()->route('admin.users.index')
+            return to_route('admin.users.index')
                 ->with('error', 'User tidak ditemukan');
         }
 
@@ -82,7 +82,7 @@ final class AdminUserController extends Controller
 
         $this->userService->updateAdmin($userId, $adminUpdateDTO->toArray());
 
-        return redirect()->route('admin.users.index')
+        return to_route('admin.users.index')
             ->with('success', 'Data admin berhasil diperbarui');
     }
 
@@ -90,7 +90,7 @@ final class AdminUserController extends Controller
     {
         $this->userService->deleteAdmin($userId);
 
-        return redirect()->route('admin.users.index')
+        return to_route('admin.users.index')
             ->with('success', 'Admin berhasil dihapus');
     }
 
@@ -99,21 +99,21 @@ final class AdminUserController extends Controller
         $user = Auth::user();
 
         if ($user->isSuperAdmin()) {
-            return redirect()->route('admin.pending-admins');
+            return to_route('admin.pending-admins');
         }
 
         if (! $user->isDosen()) {
-            return redirect()->route('mahasiswa.materials.index');
+            return to_route('mahasiswa.materials.index');
         }
 
         if ($user->is_approved) {
-            return redirect()->route('admin.dashboard');
+            return to_route('admin.dashboard');
         }
 
         $freshUser = $this->userService->getUserById($user->id);
 
         if ($freshUser instanceof User && $freshUser->is_approved) {
-            return redirect()->route('admin.dashboard');
+            return to_route('admin.dashboard');
         }
 
         return $this->render('Admin/Users/PendingApproval/Index');
@@ -130,7 +130,7 @@ final class AdminUserController extends Controller
     {
         $this->userService->approveAdmin($userId);
 
-        return redirect()->route('admin.pending-admins')
+        return to_route('admin.pending-admins')
             ->with('success', 'Admin berhasil disetujui');
     }
 
@@ -138,7 +138,7 @@ final class AdminUserController extends Controller
     {
         $this->userService->rejectAdmin($userId);
 
-        return redirect()->route('admin.pending-admins')
+        return to_route('admin.pending-admins')
             ->with('success', 'Permintaan admin ditolak');
     }
 
@@ -157,7 +157,7 @@ final class AdminUserController extends Controller
             $message .= ' Terdapat ' . count($errorRows) . ' baris dengan error.';
         }
 
-        return redirect()->route('admin.users.index')
+        return to_route('admin.users.index')
             ->with('success', $message)
             ->with('importErrors', $errorRows);
     }

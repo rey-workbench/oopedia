@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\Admin\AdaptiveActionController;
 use App\Http\Controllers\Admin\AdaptiveRuleController;
 use App\Http\Controllers\Admin\AdminStudentController;
@@ -13,19 +15,19 @@ use App\Http\Controllers\Admin\SusSurveyController as AdminSusSurveyController;
 use App\Http\Controllers\Admin\UeqSurveyController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+Route::middleware('auth')->prefix('admin')->name('admin.')->group(function (): void {
     // Jalur cepat untuk pending approval
     Route::get('pending-approval', [AdminUserController::class, 'pendingApproval'])->name('pending-approval');
 
     // Group Utama Admin (Superadmin & Dosen)
-    Route::middleware(['access:superadmin|dosen,true'])->group(function () {
+    Route::middleware(['access:superadmin|dosen,true'])->group(function (): void {
 
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::resource('adaptive-rules', AdaptiveRuleController::class);
         Route::resource('adaptive-actions', AdaptiveActionController::class)->only(['store', 'update', 'destroy']);
 
         // Media Management
-        Route::controller(MediaController::class)->prefix('media')->name('media.')->group(function () {
+        Route::controller(MediaController::class)->prefix('media')->name('media.')->group(function (): void {
             Route::post('upload', 'upload')->name('upload');
             Route::delete('/', 'delete')->name('delete');
         });
@@ -38,7 +40,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         Route::resource('questions', AdminQuestionController::class);
 
         // Students Management
-        Route::controller(AdminStudentController::class)->prefix('students')->name('students.')->group(function () {
+        Route::controller(AdminStudentController::class)->prefix('students')->name('students.')->group(function (): void {
             Route::get('import', 'showImportForm')->name('import');
             Route::post('import', 'processImport')->name('process-import');
             Route::get('download-template', 'downloadTemplate')->name('download-template');
@@ -46,10 +48,10 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         Route::resource('students', AdminStudentController::class)->only(['index', 'store', 'show', 'destroy']);
 
         // --- KHUSUS SUPERADMIN ---
-        Route::middleware(['access:superadmin'])->group(function () {
+        Route::middleware(['access:superadmin'])->group(function (): void {
 
             // User & Admin Approval Management
-            Route::controller(AdminUserController::class)->prefix('users')->name('users.')->group(function () {
+            Route::controller(AdminUserController::class)->prefix('users')->name('users.')->group(function (): void {
                 Route::post('{user}/approve', 'approveAdmin')->name('approve');
                 Route::post('{user}/reject', 'rejectAdmin')->name('reject');
                 Route::get('import', 'showImportForm')->name('import');
@@ -60,18 +62,18 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
             Route::resource('users', AdminUserController::class)->except(['show']);
 
             // Survey Management (UEQ, MSLQ, SUS)
-            Route::prefix('surveys')->name('surveys.')->group(function () {
-                Route::prefix('ueq')->name('ueq.')->controller(UeqSurveyController::class)->group(function () {
+            Route::prefix('surveys')->name('surveys.')->group(function (): void {
+                Route::prefix('ueq')->name('ueq.')->controller(UeqSurveyController::class)->group(function (): void {
                     Route::get('export', 'export')->name('export');
                 });
                 Route::resource('ueq', UeqSurveyController::class)->only(['index', 'show']);
 
-                Route::prefix('mslq')->name('mslq.')->controller(MslqController::class)->group(function () {
+                Route::prefix('mslq')->name('mslq.')->controller(MslqController::class)->group(function (): void {
                     Route::get('export', 'export')->name('export');
                 });
                 Route::resource('mslq', MslqController::class)->only(['index', 'show']);
 
-                Route::prefix('sus')->name('sus.')->controller(AdminSusSurveyController::class)->group(function () {
+                Route::prefix('sus')->name('sus.')->controller(AdminSusSurveyController::class)->group(function (): void {
                     Route::get('export', 'export')->name('export');
                 });
                 Route::resource('sus', AdminSusSurveyController::class)->only(['index', 'show']);

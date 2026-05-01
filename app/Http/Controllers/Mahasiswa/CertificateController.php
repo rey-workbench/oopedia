@@ -44,7 +44,7 @@ final class CertificateController extends Controller
                 ];
             })
             ->values()
-            ->toArray();
+            ->all();
 
         return $this->render('Mahasiswa/Certificates/Index', [
             'certifications' => $certifications,

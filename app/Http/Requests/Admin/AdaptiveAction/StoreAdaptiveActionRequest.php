@@ -11,11 +11,11 @@ final class StoreAdaptiveActionRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'id'           => 'required|string|unique:adaptive_actions,id',
-            'name'         => 'required|string|max:255',
-            'description'  => 'required|string',
-            'variant'      => 'nullable|string',
-            'instructions' => 'required|array',
+            'id'           => ['required', 'string', 'unique:adaptive_actions,id'],
+            'name'         => ['required', 'string', 'max:255'],
+            'description'  => ['required', 'string'],
+            'variant'      => ['nullable', 'string'],
+            'instructions' => ['required', 'array'],
         ];
     }
 }

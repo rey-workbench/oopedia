@@ -38,11 +38,17 @@ final class MslqResult extends Model
         ];
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return HasMany<MslqAnswer, $this>
+     */
     public function answers(): HasMany
     {
         return $this->hasMany(MslqAnswer::class);

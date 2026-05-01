@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\Naming\Rector\Assign\RenameVariableToMatchMethodCallReturnTypeRector;
 use Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector;
+use RectorLaravel\Set\LaravelSetList;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -24,6 +25,18 @@ return RectorConfig::configure()
     ])
     // Enable PHP 8.5 sets to fix deprecations and use modern features
     ->withPhpSets(php85: true)
+    // Optimize performance and code cleanliness
+    ->withParallel()
+    ->withImportNames(importShortClasses: false)
+    // Enable Laravel specific rules
+    ->withSets([
+        LaravelSetList::LARAVEL_120,
+        LaravelSetList::LARAVEL_CODE_QUALITY,
+        LaravelSetList::LARAVEL_COLLECTION,
+        LaravelSetList::LARAVEL_TYPE_DECLARATIONS,
+        LaravelSetList::LARAVEL_TESTING,
+        LaravelSetList::ARRAY_STR_FUNCTIONS_TO_STATIC_CALL,
+    ])
     // Enable high levels of automation
     ->withPreparedSets(
         deadCode: true,

@@ -13,6 +13,7 @@ use App\Models\StudentState;
 use App\Rules\Adaptive\Constants\PedagogicalConstants;
 use App\Rules\Adaptive\Constants\StudentStateSchema;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 
 final readonly class PerformanceService implements PerformanceServiceInterface
 {
@@ -117,7 +118,7 @@ final readonly class PerformanceService implements PerformanceServiceInterface
         }
 
         // 5. Daily Streak Logic
-        $lastActive = $studentState->last_active_at ? Carbon::parse($studentState->last_active_at) : null;
+        $lastActive = $studentState->last_active_at ? Date::parse($studentState->last_active_at) : null;
         $newStreak  = $studentState->streak     ?? 0;
         $maxStreak  = $studentState->max_streak ?? 0;
 
