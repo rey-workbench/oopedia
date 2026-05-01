@@ -11,6 +11,4 @@ interface AdaptiveExecutionLogRepositoryInterface
     public function count(): int;
 
     public function getRecent(int $limit = 10): Collection;
-
-    public function getTriggersByRule(): Collection;
 }

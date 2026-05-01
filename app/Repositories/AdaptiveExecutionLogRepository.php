@@ -22,12 +22,4 @@ final class AdaptiveExecutionLogRepository implements AdaptiveExecutionLogReposi
             ->limit($limit)
             ->get();
     }
-
-    public function getTriggersByRule(): Collection
-    {
-        return AdaptiveExecutionLog::selectRaw('rule_id, count(*) as trigger_count')
-            ->groupBy('rule_id')
-            ->orderByDesc('trigger_count')
-            ->get();
-    }
 }

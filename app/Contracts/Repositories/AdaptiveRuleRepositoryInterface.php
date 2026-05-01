@@ -11,8 +11,6 @@ interface AdaptiveRuleRepositoryInterface
 {
     public function all(): Collection;
 
-    public function find(string $id): ?AdaptiveRule;
-
     public function count(): int;
 
     public function getOrdered(): Collection;

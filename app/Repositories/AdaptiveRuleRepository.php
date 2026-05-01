@@ -15,11 +15,6 @@ final class AdaptiveRuleRepository implements AdaptiveRuleRepositoryInterface
         return AdaptiveRule::select(['id', 'name', 'priority', 'is_active'])->get();
     }
 
-    public function find(string $id): ?AdaptiveRule
-    {
-        return AdaptiveRule::find($id);
-    }
-
     public function count(): int
     {
         return AdaptiveRule::count();

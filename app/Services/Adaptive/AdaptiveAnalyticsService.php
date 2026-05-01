@@ -6,7 +6,6 @@ namespace App\Services\Adaptive;
 
 use App\Contracts\Repositories\AdaptiveExecutionLogRepositoryInterface;
 use App\Contracts\Repositories\AdaptiveRuleRepositoryInterface;
-use App\Contracts\Repositories\StudentStateRepositoryInterface;
 use App\Contracts\Services\AdaptiveAnalyticsServiceInterface;
 use App\Models\AdaptiveAction;
 use App\Models\AdaptiveFact;

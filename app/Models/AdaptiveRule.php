@@ -86,7 +86,7 @@ final class AdaptiveRule extends Model
     }
 
     #[Scope]
-    protected function ordered(Builder $builder): void
+    public function ordered(Builder $builder): void // @phpstan-ignore-line
     {
         $builder->orderBy('priority');
     }
