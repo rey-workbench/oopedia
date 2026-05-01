@@ -36,7 +36,7 @@ jobs:
 
             - name: Install dependencies
               run: |
-                  composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+                  composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --ignore-platform-req=php+
                   pnpm install --frozen-lockfile
 
             - name: Copy .env
@@ -74,7 +74,7 @@ jobs:
                   php-version: '8.5'
 
             - name: Install production dependencies
-              run: composer install --no-dev --no-interaction --no-progress --prefer-dist --optimize-autoloader
+              run: composer install --no-dev --no-interaction --no-progress --prefer-dist --optimize-autoloader --ignore-platform-req=php+
 
             - name: Deploy via SSH (Rsync)
               uses: easingthemes/ssh-deploy@main
