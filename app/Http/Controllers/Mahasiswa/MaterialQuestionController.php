@@ -35,12 +35,11 @@ final class MaterialQuestionController extends Controller
         private readonly ProgressRepositoryInterface $progressRepository,
         private readonly PerformanceServiceInterface $performanceService,
         private readonly GuestProgressServiceInterface $guestProgressService,
-    ) {
-    }
+    ) {}
 
     public function index(): Response
     {
-        $userId = (string) $this->getUserId();
+        $userId  = (string) $this->getUserId();
         $isGuest = $this->isGuest();
 
         $data = $this->quizService->getMaterialsListWithStudentCount(
@@ -55,16 +54,16 @@ final class MaterialQuestionController extends Controller
     public function levels(string $materialId): Response
     {
         $material = $this->getMaterialOrAbort($materialId);
-        $userId = (string) $this->getUserId();
-        $isGuest = $this->isGuest();
+        $userId   = (string) $this->getUserId();
+        $isGuest  = $this->isGuest();
 
         $answeredIds = $isGuest
             ? $this->quizService->getGuestAnsweredQuestionIds($material->id, $this->getGuestProgress(), true)
             : $this->progressRepository->getAnsweredQuestionIds($userId, $material->id);
 
         return $this->render('Mahasiswa/Materials/Questions/Levels/Index', [
-            'material' => $material,
-            'levels' => $this->quizService->getLevelProgress($material, null, $answeredIds, $isGuest),
+            'material'  => $material,
+            'levels'    => $this->quizService->getLevelProgress($material, null, $answeredIds, $isGuest),
             'materials' => $this->quizService->getMaterialsListWithStudentCount($userId, $isGuest, $isGuest ? $this->guestProgressService->getProgress() : []),
         ]);
     }
@@ -72,14 +71,14 @@ final class MaterialQuestionController extends Controller
     public function show(string $materialId, ?string $difficulty = null): Response|RedirectResponse
     {
         $material = $this->getMaterialOrAbort($materialId);
-        $userId = (string) $this->getUserId();
-        $isGuest = $this->isGuest();
+        $userId   = (string) $this->getUserId();
+        $isGuest  = $this->isGuest();
 
         // Clean Context Management: Move reset/sync logic to Service
         $targetDifficulty = null;
 
-        if (!$isGuest) {
-            $state = $this->performanceService->syncMaterialContext($userId, $materialId);
+        if (! $isGuest) {
+            $state            = $this->performanceService->syncMaterialContext($userId, $materialId);
             $targetDifficulty = $state->target_difficulty ? QuestionDifficulty::tryFrom((string) $state->target_difficulty) : null;
         }
 
@@ -114,18 +113,18 @@ final class MaterialQuestionController extends Controller
 
         $result = $this->quizService->handleSubmission($quizSubmissionDTO);
 
-        $isCorrect = $result['is_correct'];
+        $isCorrect    = $result['is_correct'];
         $engineResult = $result['engine_result'];
 
         // 1. Determine primary adaptive action and next navigation
         $rawActionIds = array_map(
-            fn($r) => is_array($r) ? $r['id'] : $r,
+            fn ($r) => is_array($r) ? $r['id'] : $r,
             $result['raw_recommendations'] ?? [],
         );
 
-        $primaryActionId = $rawActionIds === [] ? 'FEEDBACK' : $rawActionIds[0];
+        $primaryActionId  = $rawActionIds === [] ? 'FEEDBACK' : $rawActionIds[0];
         $hasCertification = in_array('CERTIFICATION', $rawActionIds);
-        $shouldRemedial = in_array('REMEDIAL', $rawActionIds);
+        $shouldRemedial   = in_array('REMEDIAL', $rawActionIds);
 
         $studentStateData = Auth::guest()
             ? $this->guestProgressService->getStudentSessionState()
@@ -135,23 +134,23 @@ final class MaterialQuestionController extends Controller
         if ($hasCertification) {
             $nextUrl = route('mahasiswa.certificates.index');
             $uiLabel = 'Lihat Sertifikat';
-            $uiType = 'success';
+            $uiType  = 'success';
         } elseif ($shouldRemedial) {
             $nextUrl = route('mahasiswa.materials.show', $materialId);
             $uiLabel = 'Pelajari Materi';
-            $uiType = 'warning';
+            $uiType  = 'warning';
         } else {
             $nextUrl = route('mahasiswa.materials.questions.show', [
-                'material' => $materialId,
+                'material'   => $materialId,
                 'difficulty' => $studentStateData['target_difficulty'] ?? ($checkAnswerRequest->difficulty ?? 'all'),
             ]);
             $uiLabel = 'Lanjut';
-            $uiType = $isCorrect ? 'success' : 'info';
+            $uiType  = $isCorrect ? 'success' : 'info';
         }
 
         // 3. Build triggered_rule
-        $ruleChain = $engineResult['engine_metadata']['rule_chain'] ?? [];
-        $finalRuleId = array_last($ruleChain) ?: ($engineResult['id'] ?? null);
+        $ruleChain     = $engineResult['engine_metadata']['rule_chain'] ?? [];
+        $finalRuleId   = array_last($ruleChain) ?: ($engineResult['id'] ?? null);
         $triggeredRule = null;
 
         if ($finalRuleId) {
@@ -160,38 +159,38 @@ final class MaterialQuestionController extends Controller
                 // Map Seeder Variant to Frontend FeedbackModal Variant
                 $uiVariant = match ($primaryActionId) {
                     'CERTIFICATION' => 'certificate',
-                    'REMEDIAL' => 'backtrack',
+                    'REMEDIAL'      => 'backtrack',
                     'INCREASE_DIFF' => 'acceleration',
-                    'REDUCE_DIFF' => 'intervention',
+                    'REDUCE_DIFF'   => 'intervention',
                     'NEW_CHALLENGE' => 'acceleration',
-                    default => 'result'
+                    default         => 'result'
                 };
 
                 $triggeredRule = [
-                    'id' => $ruleModel->id,
-                    'name' => $ruleModel->name,
-                    'action' => $primaryActionId,
+                    'id'       => $ruleModel->id,
+                    'name'     => $ruleModel->name,
+                    'action'   => $primaryActionId,
                     'priority' => $ruleModel->priority,
-                    'variant' => $uiVariant,
-                    'message' => $ruleModel->recommendation,
-                    'title' => $isCorrect ? 'Berhasil!' : 'Belum Tepat',
+                    'variant'  => $uiVariant,
+                    'message'  => $ruleModel->recommendation,
+                    'title'    => $isCorrect ? 'Berhasil!' : 'Belum Tepat',
                 ];
             }
         }
 
         $feedback = [
-            'status' => $isCorrect ? 'success' : 'error',
-            'message' => $isCorrect ? 'Jawaban Benar!' : 'Belum Tepat',
-            'xp_earned' => $result['score'],
-            'is_correct' => $isCorrect,
+            'status'          => $isCorrect ? 'success' : 'error',
+            'message'         => $isCorrect ? 'Jawaban Benar!' : 'Belum Tepat',
+            'xp_earned'       => $result['score'],
+            'is_correct'      => $isCorrect,
             'adaptive_result' => array_merge($engineResult, [
-                'triggered_rule' => $triggeredRule,
+                'triggered_rule'     => $triggeredRule,
                 'recommendation_ids' => $rawActionIds,
             ]),
             'next_url' => $nextUrl,
-            'ui' => [
-                'label' => $uiLabel,
-                'type' => $uiType,
+            'ui'       => [
+                'label'   => $uiLabel,
+                'type'    => $uiType,
                 'message' => $shouldRemedial ? 'Kamu perlu mengulas materi ini kembali.' : null,
             ],
         ];
@@ -214,8 +213,8 @@ final class MaterialQuestionController extends Controller
         $questions = $this->quizService->getReviewQuestions($quizContextDTO);
 
         return $this->render('Mahasiswa/Materials/Questions/Review/Index', [
-            'material' => $material,
-            'questions' => $questions,
+            'material'   => $material,
+            'questions'  => $questions,
             'difficulty' => $reviewQuestionRequest->difficulty ?? 'all',
         ]);
     }
@@ -223,7 +222,7 @@ final class MaterialQuestionController extends Controller
     private function getMaterialOrAbort(string $id)
     {
         $material = $this->materialService->getMaterialById($id);
-        if (!$material instanceof Material) {
+        if (! $material instanceof Material) {
             abort(404);
         }
 
@@ -232,7 +231,7 @@ final class MaterialQuestionController extends Controller
 
     public function useHint(): RedirectResponse
     {
-        $userId = (string) $this->getUserId();
+        $userId  = (string) $this->getUserId();
         $isGuest = $this->isGuest();
 
         if ($isGuest) {

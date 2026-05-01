@@ -24,7 +24,7 @@ class ComprehensiveQuestionsSeeder extends Seeder
         Answer::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        $materials    = Material::all();
+        $materials    = Material::select(['id', 'title'])->get();
         $adminRoleIds = Role::whereIn('role_name', [RoleName::SUPERADMIN, RoleName::DOSEN])->pluck('id');
         $admin        = User::whereIn('role_id', $adminRoleIds)->first();
 

@@ -13,7 +13,7 @@ final class MediaRepository implements MediaRepositoryInterface
     /** @return Collection<int, Media> */
     public function all(): Collection
     {
-        return Media::all();
+        return Media::select(['id', 'material_id', 'file_name', 'file_path', 'media_type'])->get();
     }
 
     public function find(string $id): ?Media

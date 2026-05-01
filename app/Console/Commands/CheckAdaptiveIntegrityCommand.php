@@ -18,7 +18,7 @@ class CheckAdaptiveIntegrityCommand extends Command
         $this->info('Starting Adaptive Rule Integrity Check...');
 
         // 1. Cycle Detection
-        $rules    = AdaptiveRule::all();
+        $rules    = AdaptiveRule::select(['id', 'name', 'required_fact_ids', 'deduced_fact_ids'])->get();
         $hasCycle = false;
 
         foreach ($rules as $rule) {

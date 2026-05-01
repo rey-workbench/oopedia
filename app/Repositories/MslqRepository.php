@@ -21,8 +21,7 @@ final class MslqRepository implements MslqRepositoryInterface
 
     public function getAllForCalculation(?string $class = null): Collection
     {
-        return MslqResult::query()
-            ->when($class, fn ($query) => $query->where('class', $class))
+        return MslqResult::when($class, fn ($query) => $query->where('class', $class))
             ->get();
     }
 

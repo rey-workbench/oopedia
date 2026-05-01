@@ -23,7 +23,11 @@ class Controller extends BaseController
 
     protected function isGuest(): bool
     {
-        return Auth::guest() || (Auth::user()->role?->role_name ?? RoleName::GUEST->value) === RoleName::GUEST->value;
+        if (Auth::guest()) {
+            return true;
+        }
+
+        return (Auth::user()->role?->role_name ?? RoleName::GUEST->value) === RoleName::GUEST->value;
     }
 
     protected function render(string $page, array $data = []): Response

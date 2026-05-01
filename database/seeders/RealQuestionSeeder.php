@@ -32,7 +32,7 @@ class RealQuestionSeeder extends Seeder
             return;
         }
 
-        $materials      = Material::all();
+        $materials      = Material::select(['id', 'title'])->get();
         $totalQuestions = 0;
 
         DB::beginTransaction();

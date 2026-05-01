@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Contracts\Repositories\StudentStateRepositoryInterface;
-use App\Models\StudentState;
 use App\Enums\User\RoleName;
+use App\Models\StudentState;
 use App\Rules\Adaptive\Constants\StudentStateSchema;
 
 final class StudentStateRepository implements StudentStateRepositoryInterface

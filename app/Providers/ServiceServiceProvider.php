@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Contracts\Services\AdaptiveAnalyticsServiceInterface;
 use App\Contracts\Services\AdaptiveEngineServiceInterface;
 use App\Contracts\Services\AdaptiveManagementServiceInterface;
 use App\Contracts\Services\AdminDashboardServiceInterface;
@@ -18,6 +19,7 @@ use App\Contracts\Services\StudentServiceInterface;
 use App\Contracts\Services\SusResultServiceInterface;
 use App\Contracts\Services\UeqSurveyServiceInterface;
 use App\Contracts\Services\UserServiceInterface;
+use App\Services\Adaptive\AdaptiveAnalyticsService;
 use App\Services\Adaptive\AdaptiveEngineService;
 use App\Services\Adaptive\AdaptiveManagementService;
 use App\Services\Analytics\AdminDashboardService;
@@ -62,5 +64,6 @@ final class ServiceServiceProvider extends ServiceProvider
         // Adaptive Engine Core
         $this->app->bind(AdaptiveEngineServiceInterface::class, AdaptiveEngineService::class);
         $this->app->bind(AdaptiveManagementServiceInterface::class, AdaptiveManagementService::class);
+        $this->app->bind(AdaptiveAnalyticsServiceInterface::class, AdaptiveAnalyticsService::class);
     }
 }

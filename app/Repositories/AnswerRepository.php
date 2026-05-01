@@ -12,7 +12,7 @@ final class AnswerRepository implements AnswerRepositoryInterface
 {
     public function all(): Collection
     {
-        return Answer::all();
+        return Answer::select(['id', 'question_id', 'is_correct', 'answer_text'])->get();
     }
 
     public function create(array $data): Answer

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Contracts\Repositories\AdaptiveExecutionLogRepositoryInterface;
+use App\Contracts\Repositories\AdaptiveRuleRepositoryInterface;
 use App\Contracts\Repositories\AnswerRepositoryInterface;
 use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\MediaRepositoryInterface;
@@ -15,6 +17,8 @@ use App\Contracts\Repositories\StudentStateRepositoryInterface;
 use App\Contracts\Repositories\SusResultRepositoryInterface;
 use App\Contracts\Repositories\UeqSurveyRepositoryInterface;
 use App\Contracts\Repositories\UserRepositoryInterface;
+use App\Repositories\AdaptiveExecutionLogRepository;
+use App\Repositories\AdaptiveRuleRepository;
 use App\Repositories\AnswerRepository;
 use App\Repositories\MaterialRepository;
 use App\Repositories\MediaRepository;
@@ -44,5 +48,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(StudentStateRepositoryInterface::class, StudentStateRepository::class);
         $this->app->bind(MslqRepositoryInterface::class, MslqRepository::class);
         $this->app->bind(SusResultRepositoryInterface::class, SusResultRepository::class);
+        $this->app->bind(AdaptiveRuleRepositoryInterface::class, AdaptiveRuleRepository::class);
+        $this->app->bind(AdaptiveExecutionLogRepositoryInterface::class, AdaptiveExecutionLogRepository::class);
     }
 }

@@ -12,7 +12,7 @@ final class MaterialRepository implements MaterialRepositoryInterface
 {
     public function all(): Collection
     {
-        return Material::all();
+        return Material::select(['id', 'title', 'slug', 'created_at'])->get();
     }
 
     public function find(string $id): ?Material
@@ -94,22 +94,14 @@ final class MaterialRepository implements MaterialRepositoryInterface
         string $sort = 'created_at',
         string $direction = 'asc',
     ): Collection {
-        $query = Material::query();
-
-        if ($search) {
-            $query->where('title', 'like', sprintf('%%%s%%', $search));
-        }
-
         $allowedSortFields = ['title', 'created_at'];
+        $sortField         = in_array($sort, $allowedSortFields, true) ? $sort : 'created_at';
+        $direction         = in_array($direction, ['asc', 'desc'], true) ? $direction : 'asc';
 
-        if (in_array($sort, $allowedSortFields, true)) {
-            $query->orderBy($sort, $direction);
-        } else {
-            $query->oldest();
-        }
-
-        return $query->with(['creator', 'media'])->get();
-
+        return Material::when($search, fn ($q) => $q->where('title', 'like', sprintf('%%%s%%', $search)))
+            ->orderBy($sortField, $direction)
+            ->with(['creator', 'media'])
+            ->get();
     }
 
     public function getMaterialsForListing(): Collection

@@ -7,6 +7,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string $id
@@ -88,5 +89,13 @@ final class AdaptiveRule extends Model
     protected function ordered(Builder $builder): void
     {
         $builder->orderBy('priority');
+    }
+
+    /**
+     * @return HasMany<AdaptiveExecutionLog, $this>
+     */
+    public function executionLogs(): HasMany
+    {
+        return $this->hasMany(AdaptiveExecutionLog::class, 'rule_id');
     }
 }

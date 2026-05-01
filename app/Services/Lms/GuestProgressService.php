@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Services\Lms;
 
 use App\Contracts\Services\GuestProgressServiceInterface;
-use App\Models\StudentState;
 use App\Enums\User\RoleName;
+use App\Models\StudentState;
 use App\Rules\Adaptive\Constants\StudentStateSchema;
 use Illuminate\Support\Facades\Cookie;
 
@@ -124,7 +124,7 @@ final readonly class GuestProgressService implements GuestProgressServiceInterfa
             StudentStateSchema::HINTS_USED        => $performanceMetrics[StudentStateSchema::HINTS_USED]        ?? 0,
             StudentStateSchema::HINTS_AVAILABLE   => $performanceMetrics[StudentStateSchema::HINTS_AVAILABLE]   ?? 3,
             StudentStateSchema::TARGET_DIFFICULTY => $performanceMetrics[StudentStateSchema::TARGET_DIFFICULTY] ?? null,
-            'accuracy'                            => $performanceMetrics['accuracy'] ?? 0,
+            'accuracy'                            => $performanceMetrics['accuracy']                            ?? 0,
         ]));
     }
 
