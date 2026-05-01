@@ -17,15 +17,14 @@ use Illuminate\Support\Collection;
 final readonly class AdaptiveAnalyticsService implements AdaptiveAnalyticsServiceInterface
 {
     public function __construct(
-        private AdaptiveRuleRepositoryInterface $ruleRepo,
-        private AdaptiveExecutionLogRepositoryInterface $logRepo,
-        private StudentStateRepositoryInterface $studentStateRepo,
+        private AdaptiveRuleRepositoryInterface $adaptiveRuleRepository,
+        private AdaptiveExecutionLogRepositoryInterface $adaptiveExecutionLogRepository,
     ) {}
 
     public function getDashboardStats(): array
     {
         return [
-            'total_rules'   => $this->ruleRepo->count(),
+            'total_rules'   => $this->adaptiveRuleRepository->count(),
             'total_facts'   => AdaptiveFact::count(),
             'total_actions' => AdaptiveAction::count(),
         ];
@@ -33,7 +32,7 @@ final readonly class AdaptiveAnalyticsService implements AdaptiveAnalyticsServic
 
     public function getRecentTriggers(int $limit = 10): array
     {
-        return $this->logRepo->getRecent($limit)
+        return $this->adaptiveExecutionLogRepository->getRecent($limit)
             ->map(fn ($log): array => [
                 'id'             => $log->id,
                 'rule_id'        => $log->rule_id,
@@ -48,12 +47,12 @@ final readonly class AdaptiveAnalyticsService implements AdaptiveAnalyticsServic
 
     public function getRuleTriggerStats(): array
     {
-        $totalLogs = $this->logRepo->count();
+        $totalLogs = $this->adaptiveExecutionLogRepository->count();
         if ($totalLogs === 0) {
             return [];
         }
 
-        return $this->ruleRepo->getWithExecutionStats()
+        return $this->adaptiveRuleRepository->getWithExecutionStats()
             ->filter(fn ($rule): bool => $rule->execution_logs_count > 0)
             ->map(fn ($rule): array => [
                 'rule_id'       => (string) $rule->id,
@@ -79,13 +78,13 @@ final readonly class AdaptiveAnalyticsService implements AdaptiveAnalyticsServic
 
     public function getDecisionTree(): array
     {
-        $rules = $this->ruleRepo->getOrdered();
+        $rules = $this->adaptiveRuleRepository->getOrdered();
 
         $nodes = [];
         $edges = [];
 
         foreach ($rules as $rule) {
-            $ruleNodeId = "rule_{$rule->id}";
+            $ruleNodeId = 'rule_' . $rule->id;
             $nodes[]    = [
                 'id'    => $ruleNodeId,
                 'type'  => 'rule',
@@ -94,9 +93,9 @@ final readonly class AdaptiveAnalyticsService implements AdaptiveAnalyticsServic
             ];
 
             foreach ($rule->required_fact_ids ?? [] as $factId) {
-                $factNodeId = "fact_{$factId}";
+                $factNodeId = 'fact_' . $factId;
                 $edges[]    = [
-                    'id'     => "edge_{$factId}_{$rule->id}",
+                    'id'     => sprintf('edge_%s_%s', $factId, $rule->id),
                     'source' => $factNodeId,
                     'target' => $ruleNodeId,
                 ];
@@ -111,7 +110,7 @@ final readonly class AdaptiveAnalyticsService implements AdaptiveAnalyticsServic
 
     public function getRulesByDiagnosis(): array
     {
-        $rules = $this->ruleRepo->getOrdered();
+        $rules = $this->adaptiveRuleRepository->getOrdered();
 
         // Group by Name (Diagnosis) from DB
         $grouped = $rules->groupBy('name');

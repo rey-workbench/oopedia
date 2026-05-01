@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use Illuminate\Contracts\Database\Query\Builder;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\StudentStateRepositoryInterface;
 use App\Enums\Lms\QuestionDifficulty;
@@ -168,7 +169,7 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
 
     public function getLeaderboardStats(string $roleName = 'mahasiswa'): Collection
     {
-        return User::whereHas('role', fn($q) => $q->where('role_name', $roleName))
+        return User::whereHas('role', fn(Builder $q) => $q->where('role_name', $roleName))
             ->withCount([
                 'attemptedQuestions as total_correct_questions' => function ($q): void {
                     $q->where('quiz_attempts.is_correct', true)->distinct();
