@@ -227,7 +227,6 @@
                                     error={state.form.errors['material_id']}
                                 />
 
-
                                 <!-- Tipe Algoritma -->
                                 <div id="algorithm-type-selector" class="space-y-2">
                                     <span

@@ -160,7 +160,9 @@
                         <p
                             class="text-primary-400 mb-2 text-[10px] font-bold tracking-widest uppercase"
                         >
-                            MEMBER SINCE {state.user ? new Date(state.user.created_at).getFullYear() : 'N/A'}
+                            MEMBER SINCE {state.user
+                                ? new Date(state.user.created_at).getFullYear()
+                                : 'N/A'}
                         </p>
                         <h2
                             class="mb-4 text-4xl font-bold tracking-tight text-white uppercase md:text-5xl"

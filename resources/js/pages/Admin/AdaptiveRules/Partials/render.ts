@@ -52,7 +52,7 @@ export function generateBezierPath(d: any) {
         const sy = d.source.y;
         const tx = d.target.x + (d.target.type === 'gate' ? 30 : 120);
         const ty = d.target.y;
-        
+
         // Control points offset to create a nice loop/bow out effect
         const offset = Math.max(100, Math.abs(d.source.x - d.target.x) / 3);
         return `M${sx},${sy}C${sx - offset},${sy} ${tx + offset},${ty} ${tx},${ty}`;
@@ -60,7 +60,11 @@ export function generateBezierPath(d: any) {
 }
 
 export function getLinkColor(type: string) {
-    const colors: Record<string, string> = { deduction: '#10b981', action: '#10b981', requirement: '#cbd5e1' };
+    const colors: Record<string, string> = {
+        deduction: '#10b981',
+        action: '#10b981',
+        requirement: '#cbd5e1',
+    };
     return colors[type] || '#94a3b8';
 }
 
@@ -81,10 +85,10 @@ export function getNodeStroke(type: string) {
 }
 
 export function renderGraph(
-    nodes: any[], 
-    links: any[], 
-    width: number, 
-    height: number, 
+    nodes: any[],
+    links: any[],
+    width: number,
+    height: number,
     ctx: RenderContext,
     layers: any[]
 ) {
@@ -92,9 +96,12 @@ export function renderGraph(
     const minY = Math.min(...nodes.map((n) => n.y), 0);
     const maxY = Math.max(...nodes.map((n) => n.y), 100);
 
-    const drag = d3.drag<SVGGElement, any>()
-        .on('start', function() { d3.select(this).raise(); })
-        .on('drag', function(event, d) {
+    const drag = d3
+        .drag<SVGGElement, any>()
+        .on('start', function () {
+            d3.select(this).raise();
+        })
+        .on('drag', function (event, d) {
             d.x = event.x;
             d.y = event.y;
             d3.select(this).attr('transform', `translate(${d.x},${d.y})`);
@@ -141,16 +148,27 @@ function drawLayerBackgrounds(mainGroup: any, layers: any[], height: number) {
     const layerGroup = mainGroup.append('g').attr('class', 'layer-backgrounds');
     layers.forEach((layer, i) => {
         const x = GRAPH_CONFIG.startX + i * GRAPH_CONFIG.colWidth - 250;
-        layerGroup.append('rect')
+        layerGroup
+            .append('rect')
             .attr('class', `layer-${layer.id}`)
             .attr('x', x)
             .attr('y', -height * 2)
             .attr('width', GRAPH_CONFIG.colWidth)
             .attr('height', height * 5)
-            .attr('fill', layer.id === 'input' ? '#f8fafc' : (layer.id === 'condition' ? '#f5f7ff' : (layer.id === 'diagnosis' ? '#f0fdf4' : '#fffbeb')))
+            .attr(
+                'fill',
+                layer.id === 'input'
+                    ? '#f8fafc'
+                    : layer.id === 'condition'
+                      ? '#f5f7ff'
+                      : layer.id === 'diagnosis'
+                        ? '#f0fdf4'
+                        : '#fffbeb'
+            )
             .attr('opacity', 0.5);
 
-        layerGroup.append('text')
+        layerGroup
+            .append('text')
             .attr('x', x + GRAPH_CONFIG.colWidth / 2)
             .attr('y', -height / 2 + 100)
             .attr('text-anchor', 'middle')
@@ -170,14 +188,18 @@ function drawNodes(mainGroup: any, nodes: any[], drag: any, ctx: RenderContext) 
         .enter()
         .append('g')
         .attr('transform', (d: any) => `translate(${d.x},${d.y})`)
-        .attr('class', 'rect-node cursor-grab active:cursor-grabbing select-none outline-none focus:outline-none')
+        .attr(
+            'class',
+            'rect-node cursor-grab active:cursor-grabbing select-none outline-none focus:outline-none'
+        )
         .attr('tabindex', 0)
         .call(drag)
         .on('click', (event: MouseEvent, d: any) => ctx.handleNodeClick(d, event))
         .on('contextmenu', (event: MouseEvent, d: any) => ctx.handleNodeContextMenu(d, event));
 
     // Focus ring for rect nodes
-    nodeSelection.append('rect')
+    nodeSelection
+        .append('rect')
         .attr('class', 'focus-ring transition-all duration-300')
         .attr('width', 252)
         .attr('height', 56)
@@ -189,7 +211,8 @@ function drawNodes(mainGroup: any, nodes: any[], drag: any, ctx: RenderContext) 
         .attr('stroke-width', 0)
         .attr('opacity', 0);
 
-    nodeSelection.append('rect')
+    nodeSelection
+        .append('rect')
         .attr('width', 240)
         .attr('height', 44)
         .attr('x', -120)
@@ -197,17 +220,22 @@ function drawNodes(mainGroup: any, nodes: any[], drag: any, ctx: RenderContext) 
         .attr('rx', (d: any) => (d.type === 'action' ? 8 : 12))
         .attr('fill', (d: any) => getNodeFill(d.type))
         .attr('stroke', (d: any) => getNodeStroke(d.type))
-        .attr('stroke-width', (d: any) => d.type === 'input' ? 1 : 2)
+        .attr('stroke-width', (d: any) => (d.type === 'input' ? 1 : 2))
         .attr('class', 'node-body shadow-sm transition-all duration-300')
         .style('opacity', 0)
         .transition()
         .duration(500)
         .style('opacity', 1);
 
-    nodeSelection.append('text')
+    nodeSelection
+        .append('text')
         .attr('text-anchor', 'middle')
         .attr('dominant-baseline', 'middle')
-        .attr('class', (d: any) => `text-[11px] font-bold pointer-events-none ${d.type === 'action' ? 'fill-white' : (d.type === 'input' ? 'fill-slate-500' : 'fill-slate-800')}`)
+        .attr(
+            'class',
+            (d: any) =>
+                `text-[11px] font-bold pointer-events-none ${d.type === 'action' ? 'fill-white' : d.type === 'input' ? 'fill-slate-500' : 'fill-slate-800'}`
+        )
         .text((d: any) => d.data.name);
 
     // GATE NODES (Rules)
@@ -217,14 +245,18 @@ function drawNodes(mainGroup: any, nodes: any[], drag: any, ctx: RenderContext) 
         .enter()
         .append('g')
         .attr('transform', (d: any) => `translate(${d.x},${d.y})`)
-        .attr('class', 'gate-node cursor-grab active:cursor-grabbing select-none outline-none focus:outline-none')
+        .attr(
+            'class',
+            'gate-node cursor-grab active:cursor-grabbing select-none outline-none focus:outline-none'
+        )
         .attr('tabindex', 0)
         .call(drag)
         .on('click', (event: MouseEvent, d: any) => ctx.handleNodeClick(d, event))
         .on('contextmenu', (event: MouseEvent, d: any) => ctx.handleNodeContextMenu(d, event));
 
     // Focus ring for gate nodes
-    gateSelection.append('circle')
+    gateSelection
+        .append('circle')
         .attr('class', 'focus-ring transition-all duration-300')
         .attr('r', 32)
         .attr('fill', 'none')
@@ -232,7 +264,8 @@ function drawNodes(mainGroup: any, nodes: any[], drag: any, ctx: RenderContext) 
         .attr('stroke-width', 0)
         .attr('opacity', 0);
 
-    gateSelection.append('circle')
+    gateSelection
+        .append('circle')
         .attr('r', 24)
         .attr('fill', '#0f172a')
         .attr('stroke', '#334155')
@@ -243,15 +276,20 @@ function drawNodes(mainGroup: any, nodes: any[], drag: any, ctx: RenderContext) 
         .duration(500)
         .style('opacity', 1);
 
-    gateSelection.append('text')
+    gateSelection
+        .append('text')
         .attr('text-anchor', 'middle')
         .attr('dominant-baseline', 'middle')
         .attr('class', 'text-[10px] font-bold fill-white antialiased pointer-events-none')
         .text('AND');
 
-    gateSelection.append('text')
+    gateSelection
+        .append('text')
         .attr('text-anchor', 'middle')
         .attr('y', 38)
-        .attr('class', 'text-[9px] font-medium fill-slate-400 uppercase tracking-wider pointer-events-none')
+        .attr(
+            'class',
+            'text-[9px] font-medium fill-slate-400 uppercase tracking-wider pointer-events-none'
+        )
         .text((d: any) => d.data.id);
 }

@@ -370,7 +370,8 @@ export function registerMahasiswaTutorials() {
                 element: '#quiz-entry-section',
                 popover: {
                     title: 'Evaluasi & Latihan',
-                    description: 'Sudah merasa cukup paham? Klik tombol ini untuk mulai menguji pemahamanmu di kuis adaptif!',
+                    description:
+                        'Sudah merasa cukup paham? Klik tombol ini untuk mulai menguji pemahamanmu di kuis adaptif!',
                     side: 'top',
                     align: 'center',
                 },
@@ -386,7 +387,6 @@ export function registerMahasiswaTutorials() {
             },
         ],
     });
-
 
     tutorialState.registerSteps({
         tourId: 'mahasiswa_quiz_index',

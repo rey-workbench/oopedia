@@ -182,7 +182,6 @@ export function registerAdminTutorials() {
         ],
     });
 
-
     // 3. Admin Questions Tutorial
     tutorialState.registerSteps({
         tourId: 'admin_questions',
@@ -732,7 +731,6 @@ export function registerAdminTutorials() {
             },
         ],
     });
-
 
     // 6.2 Admin MSLQ Analitik Tutorial
     tutorialState.registerSteps({

@@ -1,7 +1,9 @@
 ## OVERVIEW
+
 Manage database migrations to evolve the schema across 20+ files safely and reproducibly.
 
 ## WHERE TO LOOK
+
 - Path: database/migrations
 - Naming: Laravel timestamp migrations, e.g. 2026_04_29_000001_create_users_table.php
 - Tools: php artisan migrate, php artisan migrate:status, php artisan migrate --path=database/migrations/<file>.php
@@ -11,6 +13,7 @@ Manage database migrations to evolve the schema across 20+ files safely and repr
 - Verification: run migrations on a local/dev database; run unit/feature tests; verify schema state matches expectations
 
 ## ANTI-PATTERNS
+
 - Do not modify an existing migration after it's been pushed; create a new migration for changes
 - Do not rename columns by dropping and adding; use renameColumn (requires doctrine/dbal) or create a new column and copy data
 - Do not perform irreversible data migrations in migrations that run in production; plan downtime or write separate scripts

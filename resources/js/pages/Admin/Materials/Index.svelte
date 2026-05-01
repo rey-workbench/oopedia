@@ -7,7 +7,16 @@
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
     import { MaterialListState } from '@/states/Admin/MaterialState.svelte';
-    import { Plus, Layers, CalendarCheck, Video, FileText, FlaskConical, Edit2, Trash2 } from 'lucide-svelte';
+    import {
+        Plus,
+        Layers,
+        CalendarCheck,
+        Video,
+        FileText,
+        FlaskConical,
+        Edit2,
+        Trash2,
+    } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
 
     let { materials = [] }: { materials: any[] } = $props();

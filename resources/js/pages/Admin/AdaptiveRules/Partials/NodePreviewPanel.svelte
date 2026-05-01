@@ -24,7 +24,8 @@
         resetD3Flow: () => void;
     }
 
-    let { selectedNode, factData, actionData, onclose, onedit, oneditaction, resetD3Flow }: Props = $props();
+    let { selectedNode, factData, actionData, onclose, onedit, oneditaction, resetD3Flow }: Props =
+        $props();
 
     function handleClose() {
         onclose();
@@ -34,9 +35,10 @@
     function handleDelete() {
         if (!confirm('Apakah Anda yakin ingin menghapus item ini?')) return;
 
-        const url = selectedNode.type === 'gate' 
-            ? ROUTES.ADMIN.ADAPTIVE_RULES.DELETE(selectedNode.data.id)
-            : ROUTES.ADMIN.ADAPTIVE_ACTIONS.DELETE(selectedNode.data.id);
+        const url =
+            selectedNode.type === 'gate'
+                ? ROUTES.ADMIN.ADAPTIVE_RULES.DELETE(selectedNode.data.id)
+                : ROUTES.ADMIN.ADAPTIVE_ACTIONS.DELETE(selectedNode.data.id);
 
         router.delete(url, {
             onSuccess: () => handleClose(),
@@ -81,9 +83,7 @@
                               ? 'Detail Aksi'
                               : 'Detail Fakta'}
                     </h3>
-                    <p
-                        class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                    >
+                    <p class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
                         Node Configuration
                     </p>
                 </div>
@@ -159,8 +159,7 @@
                                         <span
                                             class="rounded border border-purple-100 bg-purple-50 px-2 py-1 text-purple-700 shadow-sm"
                                         >
-                                            {factData.find((f) => f.id === ded)?.name ||
-                                                ded}
+                                            {factData.find((f) => f.id === ded)?.name || ded}
                                         </span>
                                     {/each}
                                 </div>
@@ -172,12 +171,18 @@
                                 <span class="font-bold text-emerald-600">THEN (Action)</span>
                                 <div class="mt-2 space-y-2">
                                     {#each selectedNode.data.actions as ruleAction}
-                                        {@const action = actionData.find((a) => a.id === ruleAction.id)}
-                                        <div class="rounded-xl border border-emerald-100 bg-emerald-50/50 p-3">
+                                        {@const action = actionData.find(
+                                            (a) => a.id === ruleAction.id
+                                        )}
+                                        <div
+                                            class="rounded-xl border border-emerald-100 bg-emerald-50/50 p-3"
+                                        >
                                             <p class="text-xs font-bold text-emerald-900">
                                                 {action?.name || ruleAction.id}
                                             </p>
-                                            <p class="mt-1 text-[10px] leading-relaxed text-emerald-700/80">
+                                            <p
+                                                class="mt-1 text-[10px] leading-relaxed text-emerald-700/80"
+                                            >
                                                 {action?.description || ''}
                                             </p>
                                         </div>
@@ -198,19 +203,13 @@
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
-                        <div
-                            class="rounded-2xl border border-slate-100 bg-white p-3 shadow-sm"
-                        >
-                            <p class="mb-1 text-[9px] font-bold text-slate-400 uppercase">
-                                Kode
-                            </p>
+                        <div class="rounded-2xl border border-slate-100 bg-white p-3 shadow-sm">
+                            <p class="mb-1 text-[9px] font-bold text-slate-400 uppercase">Kode</p>
                             <p class="font-mono text-xs font-black text-slate-900">
                                 {selectedNode.data.id}
                             </p>
                         </div>
-                        <div
-                            class="rounded-2xl border border-slate-100 bg-white p-3 shadow-sm"
-                        >
+                        <div class="rounded-2xl border border-slate-100 bg-white p-3 shadow-sm">
                             <p class="mb-1 text-[9px] font-bold text-slate-400 uppercase">
                                 Prioritas
                             </p>
@@ -222,12 +221,16 @@
 
                     {#if selectedNode.data.recommendation}
                         <div class="space-y-3">
-                            <div class="flex items-center gap-2 text-[10px] font-black tracking-widest text-amber-500 uppercase">
+                            <div
+                                class="flex items-center gap-2 text-[10px] font-black tracking-widest text-amber-500 uppercase"
+                            >
                                 <MessageSquareQuote size={12} />
                                 <span>Rekomendasi Pedagogis</span>
                             </div>
-                            <div class="rounded-2xl border-2 border-amber-100 bg-amber-50/50 p-4 shadow-sm">
-                                <p class="text-[11px] font-medium leading-relaxed text-amber-900">
+                            <div
+                                class="rounded-2xl border-2 border-amber-100 bg-amber-50/50 p-4 shadow-sm"
+                            >
+                                <p class="text-[11px] leading-relaxed font-medium text-amber-900">
                                     {selectedNode.data.recommendation}
                                 </p>
                             </div>
@@ -243,9 +246,7 @@
                     {/if}
                 </section>
             {:else}
-                <div
-                    class="rounded-3xl border border-slate-100 bg-slate-50 p-6 text-center"
-                >
+                <div class="rounded-3xl border border-slate-100 bg-slate-50 p-6 text-center">
                     <div
                         class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-sm"
                     >
@@ -255,8 +256,7 @@
                         {selectedNode.data.name}
                     </h4>
                     <p class="text-xs leading-relaxed text-slate-500 italic">
-                        {selectedNode.data.logic ||
-                            'Tidak ada logika komputasi untuk node ini.'}
+                        {selectedNode.data.logic || 'Tidak ada logika komputasi untuk node ini.'}
                     </p>
                     {#if selectedNode.data.variant}
                         <div class="mt-4 flex justify-center">
@@ -271,29 +271,42 @@
             {/if}
 
             {#if selectedNode.type === 'gate' && selectedNode.data.actions && selectedNode.data.actions.length > 0}
-                <section class="space-y-4 pt-6 border-t border-slate-100">
+                <section class="space-y-4 border-t border-slate-100 pt-6">
                     <div class="mt-6 space-y-4">
-                        <div class="flex items-center gap-2 mb-2">
+                        <div class="mb-2 flex items-center gap-2">
                             <Target size={14} class="text-amber-500" />
-                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">System Actions & Parameters</span>
+                            <span
+                                class="text-[10px] font-black tracking-widest text-slate-400 uppercase"
+                                >System Actions & Parameters</span
+                            >
                         </div>
                         <div class="grid gap-3">
                             {#each selectedNode.data.actions as action}
-                                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <span class="text-xs font-bold text-slate-700">{action.id}</span>
+                                <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                                    <div class="mb-2 flex items-center justify-between">
+                                        <span class="text-xs font-bold text-slate-700"
+                                            >{action.id}</span
+                                        >
                                     </div>
                                     {#if Object.keys(action.metadata || {}).length > 0}
-                                        <div class="space-y-1.5 pt-2 border-t border-slate-200/60">
+                                        <div class="space-y-1.5 border-t border-slate-200/60 pt-2">
                                             {#each Object.entries(action.metadata) as [key, val]}
-                                                <div class="flex items-center justify-between text-[10px]">
-                                                    <span class="text-slate-400 font-medium">{key}</span>
-                                                    <span class="text-slate-600 font-bold">{val}</span>
+                                                <div
+                                                    class="flex items-center justify-between text-[10px]"
+                                                >
+                                                    <span class="font-medium text-slate-400"
+                                                        >{key}</span
+                                                    >
+                                                    <span class="font-bold text-slate-600"
+                                                        >{val}</span
+                                                    >
                                                 </div>
                                             {/each}
                                         </div>
                                     {:else}
-                                        <span class="text-[9px] italic text-slate-300">No specific parameters</span>
+                                        <span class="text-[9px] text-slate-300 italic"
+                                            >No specific parameters</span
+                                        >
                                     {/if}
                                 </div>
                             {/each}

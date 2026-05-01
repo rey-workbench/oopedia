@@ -1,9 +1,4 @@
-import type { 
-    QuestionType, 
-    DifficultyLevel, 
-    LearningStyle, 
-    Media 
-} from './core';
+import type { QuestionType, DifficultyLevel, LearningStyle, Media } from './core';
 
 export type { QuestionType, DifficultyLevel, LearningStyle, Media };
 

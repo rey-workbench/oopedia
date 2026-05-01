@@ -44,4 +44,3 @@ export function getIcon(type: ContentCategory | string): ComponentType {
 export function getBadgeLabel(type: ContentCategory | string): string {
     return type === 'sintaks' ? 'Sintaks' : 'Teori';
 }
-

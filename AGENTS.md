@@ -26,23 +26,23 @@ oopedia/
 
 ## WHERE TO LOOK
 
-| Task                      | Location                                      | Notes                                  |
-| ------------------------- | --------------------------------------------- | -------------------------------------- |
-| Route wiring              | `bootstrap/app.php`, `routes/*.php`           | `web.php` include auth/admin/mahasiswa |
-| Adaptive decision flow    | `app/Services/Adaptive/AdaptiveEngineService.php` | Rule Engine Orchestrator |
-| Adaptive Constants        | `app/Rules/Adaptive/Constants`                | Facts, Actions, Pedagogical Constants  |
-| Analytics & LMS Services  | `app/Services/Analytics`, `app/Services/Lms`  | Dashboards, Quiz, Progress, MSLQ, SUS  |
-| Frontend app entry        | `resources/js/app.ts`, `vite.config.ts`       | Inertia page resolver import.meta.glob |
-| Shared frontend contracts | `resources/js/types`, `resources/js/utils`    | Public barrels, route/role helpers     |
+| Task                      | Location                                          | Notes                                  |
+| ------------------------- | ------------------------------------------------- | -------------------------------------- |
+| Route wiring              | `bootstrap/app.php`, `routes/*.php`               | `web.php` include auth/admin/mahasiswa |
+| Adaptive decision flow    | `app/Services/Adaptive/AdaptiveEngineService.php` | Rule Engine Orchestrator               |
+| Adaptive Constants        | `app/Rules/Adaptive/Constants`                    | Facts, Actions, Pedagogical Constants  |
+| Analytics & LMS Services  | `app/Services/Analytics`, `app/Services/Lms`      | Dashboards, Quiz, Progress, MSLQ, SUS  |
+| Frontend app entry        | `resources/js/app.ts`, `vite.config.ts`           | Inertia page resolver import.meta.glob |
+| Shared frontend contracts | `resources/js/types`, `resources/js/utils`        | Public barrels, route/role helpers     |
 
 ## CODE MAP
 
-| Symbol / Entry                                  | Location                              | Role                             |
-| ----------------------------------------------- | ------------------------------------- | -------------------------------- |
-| `Application::configure(...)->withRouting(...)` | `bootstrap/app.php`                   | Backend composition root         |
-| `Route::middleware(...)->prefix('admin')`       | `routes/admin.php`                    | Admin feature surface            |
-| `Route::middleware(...)->prefix('mahasiswa')`   | `routes/mahasiswa.php`                | Student + guest learning surface |
-| `createInertiaApp({ resolve })`                 | `resources/js/app.ts`                 | Frontend boot + page resolution  |
+| Symbol / Entry                                  | Location                                          | Role                              |
+| ----------------------------------------------- | ------------------------------------------------- | --------------------------------- |
+| `Application::configure(...)->withRouting(...)` | `bootstrap/app.php`                               | Backend composition root          |
+| `Route::middleware(...)->prefix('admin')`       | `routes/admin.php`                                | Admin feature surface             |
+| `Route::middleware(...)->prefix('mahasiswa')`   | `routes/mahasiswa.php`                            | Student + guest learning surface  |
+| `createInertiaApp({ resolve })`                 | `resources/js/app.ts`                             | Frontend boot + page resolution   |
 | `AdaptiveEngineService::evaluate()`             | `app/Services/Adaptive/AdaptiveEngineService.php` | Core forward-chaining rule engine |
 
 ## CONVENTIONS (PROJECT-SPECIFIC)
@@ -113,20 +113,20 @@ pnpm run format:check
 
 ### Core Tables
 
-| Table            | Purpose                                                   |
-| ---------------- | --------------------------------------------------------- |
-| `users`          | User accounts (id, name, email, password, role_id)        |
-| `roles`          | User roles (admin, mahasiswa)                             |
-| `materials`      | Main learning modules (title, content)                    |
-| `questions`      | Quiz questions (text, type, difficulty, hint)             |
-| `answers`        | Answer options (text, correct, explanation)               |
-| `quiz_attempts`  | Quiz history (user_id, question_id, score, time)          |
-| `student_states` | Progress (gamification, performance, adaptive metrics)    |
-| `adaptive_rules` | Forward chaining rules (conditions, execution priority)   |
-| `mslq_results`   | MSLQ assessment results for learning strategy profiles    |
-| `sus_results`    | System Usability Scale survey responses                   |
-| `ueq_surveys`    | User Experience Questionnaire responses                   |
-| `media`          | Media attachments                                         |
+| Table            | Purpose                                                 |
+| ---------------- | ------------------------------------------------------- |
+| `users`          | User accounts (id, name, email, password, role_id)      |
+| `roles`          | User roles (admin, mahasiswa)                           |
+| `materials`      | Main learning modules (title, content)                  |
+| `questions`      | Quiz questions (text, type, difficulty, hint)           |
+| `answers`        | Answer options (text, correct, explanation)             |
+| `quiz_attempts`  | Quiz history (user_id, question_id, score, time)        |
+| `student_states` | Progress (gamification, performance, adaptive metrics)  |
+| `adaptive_rules` | Forward chaining rules (conditions, execution priority) |
+| `mslq_results`   | MSLQ assessment results for learning strategy profiles  |
+| `sus_results`    | System Usability Scale survey responses                 |
+| `ueq_surveys`    | User Experience Questionnaire responses                 |
+| `media`          | Media attachments                                       |
 
 ### Question Types
 
@@ -188,9 +188,14 @@ Textarea, Toast, Toggle, UserAvatar
 
 ```json
 {
-  "gamification": { "xp": 0, "level": "Beginner", "streak": 0, "badges": [] },
-  "performance": { "total_answered": 0, "correct_count": 0, "accuracy": 0.0, "hints_used": 0 },
-  "adaptive_engine": { "session_history": [], "current_session": [], "performance_metrics": [], "adaptive_state": {} }
+    "gamification": { "xp": 0, "level": "Beginner", "streak": 0, "badges": [] },
+    "performance": { "total_answered": 0, "correct_count": 0, "accuracy": 0.0, "hints_used": 0 },
+    "adaptive_engine": {
+        "session_history": [],
+        "current_session": [],
+        "performance_metrics": [],
+        "adaptive_state": {}
+    }
 }
 ```
 

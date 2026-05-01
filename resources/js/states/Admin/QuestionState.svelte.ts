@@ -86,11 +86,7 @@ export class QuestionFormState extends FormState<{
     material = $state<Material | null>(null);
     question = $state<Question | null>(null);
 
-    constructor(
-        materials: Material[],
-        material: Material | null,
-        question: Question | null
-    ) {
+    constructor(materials: Material[], material: Material | null, question: Question | null) {
         super(
             {
                 question_text: question ? question.question_text : '',

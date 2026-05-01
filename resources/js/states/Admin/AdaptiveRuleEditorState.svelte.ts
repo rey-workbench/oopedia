@@ -5,19 +5,23 @@ export class AdaptiveRuleEditorState extends BaseState {
     all_facts = $state<AdaptiveFact[]>([]);
     all_actions = $state<AdaptiveAction[]>([]);
     isEdit = $state(false);
-    
+
     // UI states
     draggingSourceType = $state<string | null>(null);
     isDraggingOver = $state<string | null>(null);
     invalidDropZone = $state<string | null>(null);
     selectedMetadataKey = $state<string>('');
 
-    constructor(data: { all_facts: AdaptiveFact[], all_actions: AdaptiveAction[], isEdit: boolean }) {
+    constructor(data: {
+        all_facts: AdaptiveFact[];
+        all_actions: AdaptiveAction[];
+        isEdit: boolean;
+    }) {
         super();
         this.all_facts = data.all_facts;
         this.all_actions = data.all_actions;
         this.isEdit = data.isEdit;
-        
+
         // Default selected metadata key
         const firstKey = this.METADATA_KEYS[0];
         if (firstKey) {
@@ -48,11 +52,11 @@ export class AdaptiveRuleEditorState extends BaseState {
             { value: 'normal', label: 'Normal' },
             { value: 'slow', label: 'Lambat' },
         ],
-        'level': [
+        level: [
             { value: 'Pemula', label: 'Pemula' },
             { value: 'Menengah', label: 'Menengah' },
             { value: 'Ahli', label: 'Ahli' },
-        ]
+        ],
     };
 
     readonly METADATA_KEYS = [
@@ -69,13 +73,14 @@ export class AdaptiveRuleEditorState extends BaseState {
 
     getNextAutoId(prefix: 'F' | 'V' | 'R', currentList: any[], dbList: any[] = []) {
         const pattern = new RegExp(`^${prefix}(\\d+)$`);
-        const extractNums = (list: any[]) => list
-            .map(item => {
-                const id = typeof item === 'string' ? item : (item.id || item.key);
-                const match = id?.match(pattern);
-                return match ? parseInt(match[1]) : 0;
-            })
-            .filter(n => !isNaN(n));
+        const extractNums = (list: any[]) =>
+            list
+                .map((item) => {
+                    const id = typeof item === 'string' ? item : item.id || item.key;
+                    const match = id?.match(pattern);
+                    return match ? parseInt(match[1]) : 0;
+                })
+                .filter((n) => !isNaN(n));
 
         const nums = [...extractNums(currentList), ...extractNums(dbList)];
         const maxNum = nums.length > 0 ? Math.max(...nums) : 0;
@@ -84,8 +89,8 @@ export class AdaptiveRuleEditorState extends BaseState {
 
     addCondition(form: any, factId = '') {
         const finalId = factId || this.getNextAutoId('F', form.facts, this.all_facts);
-        const existingFact = this.all_facts?.find(f => f.id === finalId);
-        
+        const existingFact = this.all_facts?.find((f) => f.id === finalId);
+
         let parsedOp = '==';
         let parsedVal: any = 1;
         let parsedKey = finalId;
@@ -93,33 +98,42 @@ export class AdaptiveRuleEditorState extends BaseState {
 
         if (existingFact && existingFact.logic) {
             try {
-                const logicData = typeof existingFact.logic === 'string' ? JSON.parse(existingFact.logic) : existingFact.logic;
+                const logicData =
+                    typeof existingFact.logic === 'string'
+                        ? JSON.parse(existingFact.logic)
+                        : existingFact.logic;
                 if (logicData.op) parsedOp = logicData.op;
                 if (logicData.val !== undefined) parsedVal = logicData.val;
                 if (logicData.key) parsedKey = logicData.key;
             } catch (_e) {}
         }
-        
-        form.facts = [...form.facts, { 
-            id: finalId, 
-            key: parsedKey, 
-            name: parsedName,
-            operator: parsedOp, 
-            value: parsedVal,
-            isManual: !factId
-        }];
+
+        form.facts = [
+            ...form.facts,
+            {
+                id: finalId,
+                key: parsedKey,
+                name: parsedName,
+                operator: parsedOp,
+                value: parsedVal,
+                isManual: !factId,
+            },
+        ];
     }
 
     addDiagnosis(form: any, id = '') {
         const finalId = id || this.getNextAutoId('V', form.deduced_facts, this.all_facts);
-        const existing = this.all_facts?.find(f => f.id === finalId);
+        const existing = this.all_facts?.find((f) => f.id === finalId);
 
         if (!form.deduced_facts.find((f: any) => f.id === finalId)) {
-            form.deduced_facts = [...form.deduced_facts, { 
-                id: finalId, 
-                name: existing?.name || 'New Virtual Fact',
-                isManual: !id
-            }];
+            form.deduced_facts = [
+                ...form.deduced_facts,
+                {
+                    id: finalId,
+                    name: existing?.name || 'New Virtual Fact',
+                    isManual: !id,
+                },
+            ];
         }
     }
 
@@ -128,7 +142,7 @@ export class AdaptiveRuleEditorState extends BaseState {
             form.actions = [...form.actions, { id, metadata: {} }];
         } else {
             this.invalidDropZone = 'action';
-            setTimeout(() => this.invalidDropZone = null, 400);
+            setTimeout(() => (this.invalidDropZone = null), 400);
         }
     }
 
@@ -159,7 +173,7 @@ export class AdaptiveRuleEditorState extends BaseState {
         e.preventDefault();
         this.draggingSourceType = null;
         this.isDraggingOver = null;
-        
+
         if (!e.dataTransfer) return;
 
         try {
@@ -176,14 +190,14 @@ export class AdaptiveRuleEditorState extends BaseState {
                 this.addDiagnosis(form, id);
             } else {
                 this.invalidDropZone = zone;
-                setTimeout(() => this.invalidDropZone = null, 400);
+                setTimeout(() => (this.invalidDropZone = null), 400);
             }
         } catch (_err) {}
     }
 
     parseInitialFacts(factIds: string[]) {
-        return factIds.map(factId => {
-            const existing = this.all_facts.find(f => f.id === factId);
+        return factIds.map((factId) => {
+            const existing = this.all_facts.find((f) => f.id === factId);
             let parsedOp = '==';
             let parsedVal: any = 1;
             let parsedKey = factId;
@@ -191,27 +205,30 @@ export class AdaptiveRuleEditorState extends BaseState {
 
             if (existing && existing.logic) {
                 try {
-                    const logicData = typeof existing.logic === 'string' ? JSON.parse(existing.logic) : existing.logic;
+                    const logicData =
+                        typeof existing.logic === 'string'
+                            ? JSON.parse(existing.logic)
+                            : existing.logic;
                     if (logicData.op) parsedOp = logicData.op;
                     if (logicData.val !== undefined) parsedVal = logicData.val;
                     if (logicData.key) parsedKey = logicData.key;
                 } catch (_e) {}
             }
 
-            return { 
-                id: factId, 
-                key: parsedKey, 
+            return {
+                id: factId,
+                key: parsedKey,
                 name: parsedName,
-                operator: parsedOp, 
+                operator: parsedOp,
                 value: parsedVal,
-                isManual: false
+                isManual: false,
             };
         });
     }
 
     parseInitialDeductions(factIds: string[]) {
-        return factIds.map(factId => {
-            const existing = this.all_facts.find(f => f.id === factId);
+        return factIds.map((factId) => {
+            const existing = this.all_facts.find((f) => f.id === factId);
             return { id: factId, name: existing?.name || '', isManual: false };
         });
     }

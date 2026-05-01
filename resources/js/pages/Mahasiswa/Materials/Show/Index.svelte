@@ -16,7 +16,6 @@
 
     let contentContainer: HTMLElement | undefined;
 
-
     onMount(async () => {
         await tick();
         if (contentContainer) enhanceCodeBlocks(contentContainer);
@@ -79,8 +78,8 @@
 
         <!-- Quiz Section -->
         <div id="quiz-entry-section">
-            <Card class="border-t-4 border-t-primary-500">
-                <div class="flex flex-col md:flex-row items-center justify-between gap-8 p-6">
+            <Card class="border-t-primary-500 border-t-4">
+                <div class="flex flex-col items-center justify-between gap-8 p-6 md:flex-row">
                     <div class="space-y-2">
                         <h2 class="text-2xl font-bold tracking-widest text-slate-900">
                             Evaluasi & Latihan

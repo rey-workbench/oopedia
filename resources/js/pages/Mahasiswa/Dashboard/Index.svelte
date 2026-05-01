@@ -19,9 +19,7 @@
     } from 'lucide-svelte';
     import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';
-    import {
-        DashboardState,
-    } from '@/states/Mahasiswa/DashboardState.svelte';
+    import { DashboardState } from '@/states/Mahasiswa/DashboardState.svelte';
     import type { MahasiswaDashboardProps } from '@/types';
 
     const {

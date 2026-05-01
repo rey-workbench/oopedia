@@ -1,4 +1,3 @@
-
 export const GRAPH_CONFIG = {
     colWidth: 550,
     itemHeight: 50,
@@ -32,7 +31,7 @@ export function resolveGraphTopology(rules: any[], factData: any[], actionData: 
 
     // Phase 1.5: Initialize Raw Facts (KONDISI)
     const usedFactIds = new Set<string>();
-    rules.forEach(r => {
+    rules.forEach((r) => {
         (r.required_fact_ids || []).forEach((id: string) => usedFactIds.add(id));
     });
 
@@ -63,9 +62,10 @@ export function resolveGraphTopology(rules: any[], factData: any[], actionData: 
 
             if (!prerequisites.every((_: any, i: number) => !!resolvedSources[i])) return;
 
-            const maxPrereqDepth = resolvedSources.length > 0
-                ? Math.max(...resolvedSources.map((s: any) => s.depth))
-                : 1;
+            const maxPrereqDepth =
+                resolvedSources.length > 0
+                    ? Math.max(...resolvedSources.map((s: any) => s.depth))
+                    : 1;
 
             const ruleDepth = maxPrereqDepth + 0.5;
 
@@ -103,7 +103,12 @@ export function resolveGraphTopology(rules: any[], factData: any[], actionData: 
     return nodeRegistry;
 }
 
-function registerVirtualFact(registry: Map<string, any>, id: string, depth: number, factData: any[]) {
+function registerVirtualFact(
+    registry: Map<string, any>,
+    id: string,
+    depth: number,
+    factData: any[]
+) {
     const fact = factData.find((f) => f.id === id);
     if (!fact) return false;
 
@@ -162,8 +167,7 @@ export function buildGraphLinks(nodeRegistry: Map<string, any>, rules: any[]) {
 
         (rule.required_fact_ids || []).forEach((id: string) => {
             const source =
-                nodeRegistry.get(`raw_fact_${id}`) ||
-                nodeRegistry.get(`virtual_fact_${id}`);
+                nodeRegistry.get(`raw_fact_${id}`) || nodeRegistry.get(`virtual_fact_${id}`);
             if (source) links.push({ source, target: gateNode, type: 'requirement' });
         });
 
@@ -181,7 +185,8 @@ export function buildGraphLinks(nodeRegistry: Map<string, any>, rules: any[]) {
             if (deducedFactIds.length > 0) {
                 deducedFactIds.forEach((factId: string) => {
                     const factNode = nodeRegistry.get(`virtual_fact_${factId}`);
-                    if (factNode) links.push({ source: factNode, target: actionNode, type: 'action' });
+                    if (factNode)
+                        links.push({ source: factNode, target: actionNode, type: 'action' });
                 });
             } else {
                 links.push({ source: gateNode, target: actionNode, type: 'action' });
@@ -190,11 +195,11 @@ export function buildGraphLinks(nodeRegistry: Map<string, any>, rules: any[]) {
     });
 
     // Link Inputs -> Kondisi
-    const conditions = Array.from(nodeRegistry.values()).filter(n => n.type === 'raw_fact');
-    conditions.forEach(cond => {
+    const conditions = Array.from(nodeRegistry.values()).filter((n) => n.type === 'raw_fact');
+    conditions.forEach((cond) => {
         const fact = cond.data;
         const category = (fact.category || '').toLowerCase();
-        
+
         let logicStr = '';
         if (typeof fact.logic === 'string') {
             logicStr = fact.logic.toLowerCase();
@@ -203,19 +208,29 @@ export function buildGraphLinks(nodeRegistry: Map<string, any>, rules: any[]) {
         }
 
         let inputNodeId = 'input_IN_ACC'; // Default fallback
-        
+
         if (category.includes('accuracy') || logicStr.includes('accuracy')) {
             inputNodeId = 'input_IN_ACC';
-        } else if (category.includes('speed') || logicStr.includes('speed') || category.includes('trend') || logicStr.includes('trend')) {
-            inputNodeId = 'input_IN_SPD'; 
+        } else if (
+            category.includes('speed') ||
+            logicStr.includes('speed') ||
+            category.includes('trend') ||
+            logicStr.includes('trend')
+        ) {
+            inputNodeId = 'input_IN_SPD';
         } else if (category.includes('hint') || logicStr.includes('hint')) {
             inputNodeId = 'input_IN_HLP';
-        } else if (category.includes('streak') || logicStr.includes('streak') || logicStr.includes('session') || category.includes('session')) {
+        } else if (
+            category.includes('streak') ||
+            logicStr.includes('streak') ||
+            logicStr.includes('session') ||
+            category.includes('session')
+        ) {
             inputNodeId = 'input_IN_STR';
         } else if (category.includes('level') || logicStr.includes('level')) {
             inputNodeId = 'input_IN_LVL';
         }
-        
+
         const inputNode = nodeRegistry.get(inputNodeId);
         if (inputNode) {
             links.push({ source: inputNode, target: cond, type: 'requirement' });
@@ -250,7 +265,12 @@ export function calculateSpatialCoordinates(nodes: any[], links: any[], containe
     return centerAndProject(depths, depthGroups, containerHeight);
 }
 
-function optimizeLayoutLayer(depths: number[], groups: Record<number, any[]>, links: any[], forward: boolean) {
+function optimizeLayoutLayer(
+    depths: number[],
+    groups: Record<number, any[]>,
+    links: any[],
+    forward: boolean
+) {
     depths.forEach((d) => {
         const group = groups[d]!;
         if (d === (forward ? depths[0] : depths[depths.length - 1])) return;
@@ -274,8 +294,8 @@ function resolveLayerOverlaps(group: any[]) {
     if (group.length <= 1) return;
     const minGap = GRAPH_CONFIG.itemHeight + GRAPH_CONFIG.verticalGap;
     for (let i = 1; i < group.length; i++) {
-        if (group[i].y < group[i-1].y + minGap) {
-            group[i].y = group[i-1].y + minGap;
+        if (group[i].y < group[i - 1].y + minGap) {
+            group[i].y = group[i - 1].y + minGap;
         }
     }
 }
@@ -283,7 +303,8 @@ function resolveLayerOverlaps(group: any[]) {
 function centerAndProject(depths: number[], groups: Record<number, any[]>, height: number) {
     const centerRefY = height / 2;
     let maxX = 0;
-    let minY = Infinity, maxY = -Infinity;
+    let minY = Infinity,
+        maxY = -Infinity;
 
     depths.forEach((d) => {
         const group = groups[d]!;

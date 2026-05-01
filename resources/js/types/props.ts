@@ -1,18 +1,21 @@
 import type { AuthData, FlashMessages } from './auth';
-import type { 
-    Material, 
-    Question, 
-    DifficultyLevel, 
-    Certification
-} from './learning';
-import type { 
-    StudentProfile, 
+import type { Material, Question, DifficultyLevel, Certification } from './learning';
+import type {
+    StudentProfile,
     RecentActivity,
     StudentSessionState,
-    StudentNeedingAttention
+    StudentNeedingAttention,
 } from './analytics';
 import type { User } from './auth';
-import type { AdaptiveRule, AdaptiveFact, AdaptiveAction, AdaptiveRuleDiagnosis, AdaptiveStateDistribution, AdaptiveTriggerItem, AdaptiveRuleTriggerStat } from './adaptive';
+import type {
+    AdaptiveRule,
+    AdaptiveFact,
+    AdaptiveAction,
+    AdaptiveRuleDiagnosis,
+    AdaptiveStateDistribution,
+    AdaptiveTriggerItem,
+    AdaptiveRuleTriggerStat,
+} from './adaptive';
 import type { MslqQuestion, SusResult } from './survey';
 
 // =============================================================================
@@ -68,7 +71,6 @@ export interface StudentAnalytics {
     distribution: Record<string, number>;
     radar: Record<string, number>;
 }
-
 
 export interface MaterialStatsItem {
     title: string;

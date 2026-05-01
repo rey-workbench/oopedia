@@ -23,7 +23,6 @@ export class MaterialShowState extends BaseState {
     }
 }
 
-
 /**
  * In Progress Materials State
  */

@@ -26,7 +26,8 @@
     }: QuestionShowProps & { material_answered_count: number; feedback: any } = $props();
 
     let quizState = untrack(
-        () => new QuestionShowState(material, current_question as Question, difficulty, student_state)
+        () =>
+            new QuestionShowState(material, current_question as Question, difficulty, student_state)
     );
 
     let showWarning = $state(false);
@@ -82,7 +83,7 @@
             quizState.currentQuestion = newQuestion;
             quizState.difficulty = newDifficulty;
             quizState.studentState = newStudentState;
-            
+
             if (newFeedback) {
                 quizState.feedbackData = newFeedback;
                 quizState.show_feedback = true;

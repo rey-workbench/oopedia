@@ -16,12 +16,11 @@
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import { untrack } from 'svelte';
 
-    let {
-        all_facts = [],
-        all_actions = []
-    }: AdminAdaptiveRuleProps = $props();
+    let { all_facts = [], all_actions = [] }: AdminAdaptiveRuleProps = $props();
 
-    const state = untrack(() => new AdaptiveRuleEditorState({ all_facts, all_actions, isEdit: false }));
+    const state = untrack(
+        () => new AdaptiveRuleEditorState({ all_facts, all_actions, isEdit: false })
+    );
 
     let form = useForm({
         id: state.getNextAutoId('R', [], []),
@@ -45,14 +44,27 @@
 
     function handleSubmit(e: Event) {
         e.preventDefault();
-        form.required_fact_ids = form.facts.map(f => f.id);
-        form.deduced_fact_ids = form.deduced_facts.map(f => f.id);
+        form.required_fact_ids = form.facts.map((f) => f.id);
+        form.deduced_fact_ids = form.deduced_facts.map((f) => f.id);
 
         form.post(ROUTES.ADMIN.ADAPTIVE_RULES.STORE, {
             onSuccess: () => router.visit(ROUTES.ADMIN.ADAPTIVE_RULES.INDEX),
         });
     }
 </script>
+
+<style>
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+</style>
 
 <App title="New Logic Rule - Analytics Engine">
     <div class="space-y-8">
@@ -67,66 +79,78 @@
             {/snippet}
         </PageHeader>
 
-        <div id="adaptive-rule-editor-container" class="flex h-[800px] w-full overflow-hidden border-2 border-slate-200 rounded-[2rem] bg-white shadow-2xl">
+        <div
+            id="adaptive-rule-editor-container"
+            class="flex h-[800px] w-full overflow-hidden rounded-[2rem] border-2 border-slate-200 bg-white shadow-2xl"
+        >
             <div id="adaptive-rule-library">
-                <LibraryDrawer 
-                    allFacts={all_facts} 
-                    allActions={all_actions} 
-                    CONDITION_KEYS={state.CONDITION_KEYS} 
-                    handleDragStart={(e, id, type) => state.handleDragStart(e, id, type)} 
+                <LibraryDrawer
+                    allFacts={all_facts}
+                    allActions={all_actions}
+                    CONDITION_KEYS={state.CONDITION_KEYS}
+                    handleDragStart={(e, id, type) => state.handleDragStart(e, id, type)}
                 />
             </div>
 
-        <div class="flex-1 flex flex-col overflow-hidden bg-slate-50">
-            <!-- MAIN FORM CANVAS -->
-            <div class="flex-1 overflow-y-auto p-8 custom-scrollbar bg-slate-50/50">
-                <form id="rule-form" onsubmit={handleSubmit} class="mx-auto max-w-5xl space-y-6 pb-20">
-                    
-                    <RuleMetadataCard {form} />
+            <div class="flex flex-1 flex-col overflow-hidden bg-slate-50">
+                <!-- MAIN FORM CANVAS -->
+                <div class="custom-scrollbar flex-1 overflow-y-auto bg-slate-50/50 p-8">
+                    <form
+                        id="rule-form"
+                        onsubmit={handleSubmit}
+                        class="mx-auto max-w-5xl space-y-6 pb-20"
+                    >
+                        <RuleMetadataCard {form} />
 
-                    <RuleConditionSection {form} {state} />
+                        <RuleConditionSection {form} {state} />
 
-                    <RuleDeductionSection {form} {state} />
+                        <RuleDeductionSection {form} {state} />
 
-                    <RuleActionSection {form} {state} allActions={all_actions} />
+                        <RuleActionSection {form} {state} allActions={all_actions} />
 
-                    <RuleFeedbackSection {form} />
-                </form>
-            </div>
+                        <RuleFeedbackSection {form} />
+                    </form>
+                </div>
 
-            <!-- FOOTER ACTIONS -->
-            <div class="flex items-center justify-between border-t-2 border-slate-200 bg-white px-8 py-5 z-10 shadow-2xl">
-                <div class="flex items-center gap-6">
-                    <Toggle bind:checked={form.is_active} label="Active Status" />
-                    <div class="h-8 w-px bg-slate-100"></div>
-                    <div class="flex flex-col">
-                        <span class="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mb-0.5">Rule ID</span>
-                        <span class="text-xs font-black text-primary-500 font-mono tracking-tight">{form.id}</span>
+                <!-- FOOTER ACTIONS -->
+                <div
+                    class="z-10 flex items-center justify-between border-t-2 border-slate-200 bg-white px-8 py-5 shadow-2xl"
+                >
+                    <div class="flex items-center gap-6">
+                        <Toggle bind:checked={form.is_active} label="Active Status" />
+                        <div class="h-8 w-px bg-slate-100"></div>
+                        <div class="flex flex-col">
+                            <span
+                                class="mb-0.5 text-[8px] font-black tracking-[0.2em] text-slate-400 uppercase"
+                                >Rule ID</span
+                            >
+                            <span
+                                class="text-primary-500 font-mono text-xs font-black tracking-tight"
+                                >{form.id}</span
+                            >
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <Button
+                            variant="secondary"
+                            size="sm"
+                            href={ROUTES.ADMIN.ADAPTIVE_RULES.INDEX}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            form="rule-form"
+                            variant="primary"
+                            size="sm"
+                            icon={Save}
+                            disabled={form.processing}
+                        >
+                            {form.processing ? 'Syncing...' : 'Publish Rule'}
+                        </Button>
                     </div>
                 </div>
-                <div class="flex gap-3">
-                    <Button variant="secondary" size="sm" href={ROUTES.ADMIN.ADAPTIVE_RULES.INDEX}>
-                        Cancel
-                    </Button>
-                    <Button 
-                        type="submit" 
-                        form="rule-form" 
-                        variant="primary" 
-                        size="sm"
-                        icon={Save} 
-                        disabled={form.processing}
-                    >
-                        {form.processing ? 'Syncing...' : 'Publish Rule'}
-                    </Button>
-                </div>
-            </div>
             </div>
         </div>
     </div>
 </App>
-
-<style>
-    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-</style>

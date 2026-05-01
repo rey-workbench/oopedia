@@ -1,6 +1,7 @@
 # Project Structure
 
 ## High-Level Root Directory
+
 - `app/`: Backend logic (Controllers, Models, Services, Repositories).
 - `bootstrap/`: Application bootstrapping, route middleware, and exceptions.
 - `config/`: Application configuration.
@@ -11,6 +12,7 @@
 - `tests/`: Feature and Unit tests.
 
 ## App Sub-Domains (`app/`)
+
 - `Contracts/`: Interfaces for Services and Repositories.
 - `Enums/`: Domain constants and enumerations.
 - `Http/`: Controllers, Middleware, FormRequests.
@@ -21,6 +23,7 @@
 - `Services/`: Business logic implementations organized by domain (`Adaptive`, `Analytics`, `Lms`, `User`).
 
 ## Resources (`resources/js/`)
+
 - `components/`: Reusable UI components and primitive layout elements.
 - `pages/`: Svelte page components mapped directly to Inertia routes (grouped by `Admin`, `Auth`, `Mahasiswa`).
 - `states/`: Svelte 5 reactive state stores.

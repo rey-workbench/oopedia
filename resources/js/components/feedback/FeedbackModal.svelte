@@ -17,12 +17,8 @@
             quizState.feedbackData?.adaptive_result?.triggered_rule?.variant ||
             'Lanjut'
     );
-    let diagnosis = $derived(
-        quizState.feedbackData?.adaptive_result?.diagnosis || null
-    );
-    let recommendations = $derived(
-        quizState.feedbackData?.adaptive_result?.recommendations || []
-    );
+    let diagnosis = $derived(quizState.feedbackData?.adaptive_result?.diagnosis || null);
+    let recommendations = $derived(quizState.feedbackData?.adaptive_result?.recommendations || []);
     let xpEarned = $derived(quizState.feedbackData?.xp_earned || 0);
 
     const TICK_MS = 50;
@@ -212,7 +208,7 @@
                         </div>
                     </div>
 
-                        <div class="text-center md:text-left">
+                    <div class="text-center md:text-left">
                         <div class="mb-1 flex items-center gap-2">
                             <h2
                                 id="feedback-status-title"
@@ -221,7 +217,9 @@
                                 {feedbackTitle}
                             </h2>
                             {#if diagnosis}
-                                <span class={`rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-widest bg-white/50 border ${feedbackTone.chipBorder} ${feedbackTone.chipText}`}>
+                                <span
+                                    class={`rounded-full border bg-white/50 px-2 py-0.5 text-[10px] font-black tracking-widest uppercase ${feedbackTone.chipBorder} ${feedbackTone.chipText}`}
+                                >
                                     {diagnosis}
                                 </span>
                             {/if}
@@ -260,7 +258,7 @@
                         </div>
                     {/if}
 
-                    {#if recommendations.some(r => (typeof r === 'string' ? r : r?.id) === 'STREAK_BONUS')}
+                    {#if recommendations.some((r) => (typeof r === 'string' ? r : r?.id) === 'STREAK_BONUS')}
                         <div
                             class="flex items-center gap-2 rounded-xl border-2 border-white bg-white/80 px-3 py-1.5 shadow-sm"
                         >

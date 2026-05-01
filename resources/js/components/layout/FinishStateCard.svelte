@@ -42,7 +42,9 @@
         </div>
 
         {#if !state.isGuest}
-            <div class="grid grid-cols-2 gap-0 border-b border-slate-100 bg-slate-50/50 sm:grid-cols-4">
+            <div
+                class="grid grid-cols-2 gap-0 border-b border-slate-100 bg-slate-50/50 sm:grid-cols-4"
+            >
                 <div
                     class="group border-r border-slate-100 p-8 text-center transition-colors duration-300 hover:bg-white"
                 >
@@ -73,7 +75,9 @@
                         Total XP
                     </div>
                 </div>
-                <div class="group border-r border-slate-100 p-8 text-center transition-colors duration-300 hover:bg-white">
+                <div
+                    class="group border-r border-slate-100 p-8 text-center transition-colors duration-300 hover:bg-white"
+                >
                     <div
                         class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-100 shadow-sm transition-transform group-hover:scale-110"
                     >
@@ -104,7 +108,9 @@
 
         <!-- R15: Certification Badge -->
         {#if state.adaptive_state?.certifications?.length}
-            <div class="border-b border-amber-100 bg-linear-to-r from-amber-50 to-yellow-50 p-8 text-center">
+            <div
+                class="border-b border-amber-100 bg-linear-to-r from-amber-50 to-yellow-50 p-8 text-center"
+            >
                 <div
                     class="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full border-4 border-amber-300 bg-linear-to-br from-amber-400 to-yellow-500 shadow-lg"
                 >
@@ -114,7 +120,12 @@
                     🏅 Sertifikat Diraih!
                 </h3>
                 <p class="mt-2 text-sm font-medium text-amber-600">
-                    Selamat! Kamu telah menunjukkan penguasaan materi yang konsisten dan mendapatkan sertifikat <span class="font-black">{state.adaptive_state.certifications[state.adaptive_state.certifications.length - 1]}</span>.
+                    Selamat! Kamu telah menunjukkan penguasaan materi yang konsisten dan mendapatkan
+                    sertifikat <span class="font-black"
+                        >{state.adaptive_state.certifications[
+                            state.adaptive_state.certifications.length - 1
+                        ]}</span
+                    >.
                 </p>
             </div>
         {/if}

@@ -223,7 +223,6 @@
                                     />
                                 </div>
 
-
                                 <div class="space-y-2">
                                     <span
                                         class="block text-[10px] font-bold text-slate-400 uppercase"

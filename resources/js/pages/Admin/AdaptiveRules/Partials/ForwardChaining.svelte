@@ -9,10 +9,7 @@
         buildGraphLinks,
         calculateSpatialCoordinates,
     } from '@/pages/Admin/AdaptiveRules/Partials/topology';
-    import {
-        Zap,
-        Target,
-    } from 'lucide-svelte';
+    import { Zap, Target } from 'lucide-svelte';
     interface Props {
         analyticsState: AdaptiveRuleState;
         onedit?: ((rule: any) => void) | undefined;
@@ -113,11 +110,10 @@
         return { width, height, svg };
     }
 
-
-    import { 
-        setupMarkers, 
+    import {
+        setupMarkers,
         renderGraph,
-        type RenderContext
+        type RenderContext,
     } from '@/pages/Admin/AdaptiveRules/Partials/render';
 
     function handleNodeClick(d: any, event: MouseEvent) {
@@ -142,7 +138,7 @@
             zoomLevel,
             handleNodeClick,
             handleNodeContextMenu,
-            resetD3Flow
+            resetD3Flow,
         };
 
         const initialized = renderGraph(nodes, links, width, height, ctx, LAYERS);
@@ -193,8 +189,9 @@
             .classed('flow-active', false)
             .attr('stroke-opacity', 0.4)
             .attr('stroke-width', 2);
-        
-        mainGroup.selectAll('.rect-node, .gate-node')
+
+        mainGroup
+            .selectAll('.rect-node, .gate-node')
             .attr('opacity', 1)
             .selectAll('.focus-ring')
             .attr('stroke-width', 0)
@@ -432,13 +429,13 @@
         </div>
 
         <!-- n8n-style Node Detail Panel -->
-        <NodePreviewPanel 
-            {selectedNode} 
+        <NodePreviewPanel
+            {selectedNode}
             {factData}
             {actionData}
-            onclose={() => (selectedNode = null)} 
-            {onedit} 
-            {oneditaction} 
+            onclose={() => (selectedNode = null)}
+            {onedit}
+            {oneditaction}
             {resetD3Flow}
         />
 

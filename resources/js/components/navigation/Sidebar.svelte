@@ -46,8 +46,7 @@
     }
 
     let isMateriOpen = $state(
-        isActive(ROUTES.MAHASISWA.MATERIALS.INDEX) ||
-            page.url.startsWith('/mahasiswa/materials/')
+        isActive(ROUTES.MAHASISWA.MATERIALS.INDEX) || page.url.startsWith('/mahasiswa/materials/')
     );
 
     const materials = $derived(page.props['sidebar_materials'] ?? []);

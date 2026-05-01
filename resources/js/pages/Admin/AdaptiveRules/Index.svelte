@@ -1,4 +1,3 @@
-
 <script lang="ts">
     import StatCard from '@/components/ui/StatCard.svelte';
     import Card from '@/components/ui/Card.svelte';
@@ -7,21 +6,21 @@
     import Section from '@/components/ui/Section.svelte';
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
-    import { 
-        RefreshCw, 
-        Maximize2, 
-        Minimize2, 
-        PlusCircle, 
-        Zap, 
-        Cpu, 
-        Settings2, 
+    import {
+        RefreshCw,
+        Maximize2,
+        Minimize2,
+        PlusCircle,
+        Zap,
+        Cpu,
+        Settings2,
         BrainCircuit,
         Activity,
         GitBranch,
         Target,
         Edit2,
         Trash2,
-        CircleHelp
+        CircleHelp,
     } from 'lucide-svelte';
     import Button from '@/components/ui/Button.svelte';
     import { ROUTES } from '@/utils/route';
@@ -65,10 +64,12 @@
 
     // Flatten rules for DataTable
     const flattenedRules = $derived(
-        analyticsState.rules_by_diagnosis.flatMap((d: any) => d.rules.map((r: any) => ({
-            ...r,
-            diagnosis_group: d.diagnosis_name
-        })))
+        analyticsState.rules_by_diagnosis.flatMap((d: any) =>
+            d.rules.map((r: any) => ({
+                ...r,
+                diagnosis_group: d.diagnosis_name,
+            }))
+        )
     );
 
     const columns = [
@@ -86,8 +87,14 @@
     }
 </script>
 
+<style>
+    :global(body.fullscreen) {
+        overflow: hidden;
+    }
+</style>
+
 <App title="Strategi Adaptif - Admin">
-    <div class="{!isFullscreen ? 'space-y-12' : ''}">
+    <div class={!isFullscreen ? 'space-y-12' : ''}>
         {#if !isFullscreen}
             <PageHeader
                 title="Engine Strategi Adaptif"
@@ -100,7 +107,7 @@
                         variant="primary"
                         size="sm"
                         icon={PlusCircle}
-                        class="shadow-xl shadow-primary-500/20"
+                        class="shadow-primary-500/20 shadow-xl"
                     >
                         BUAT ATURAN BARU
                     </Button>
@@ -133,16 +140,22 @@
             </div>
 
             <!-- Tabs Navigation -->
-            <div id="adaptive-rules-tabs" class="flex gap-4 border-b-2 border-slate-100 mt-8 mb-4">
-                <button 
-                    class="px-4 pb-3 text-xs font-black tracking-widest uppercase transition-all {activeTab === 'table' ? 'border-b-4 border-primary-500 text-primary-600' : 'text-slate-400 hover:text-slate-600'}"
-                    onclick={() => activeTab = 'table'}
+            <div id="adaptive-rules-tabs" class="mt-8 mb-4 flex gap-4 border-b-2 border-slate-100">
+                <button
+                    class="px-4 pb-3 text-xs font-black tracking-widest uppercase transition-all {activeTab ===
+                    'table'
+                        ? 'border-primary-500 text-primary-600 border-b-4'
+                        : 'text-slate-400 hover:text-slate-600'}"
+                    onclick={() => (activeTab = 'table')}
                 >
                     Daftar Aturan
                 </button>
-                <button 
-                    class="px-4 pb-3 text-xs font-black tracking-widest uppercase transition-all {activeTab === 'canvas' ? 'border-b-4 border-primary-500 text-primary-600' : 'text-slate-400 hover:text-slate-600'}"
-                    onclick={() => activeTab = 'canvas'}
+                <button
+                    class="px-4 pb-3 text-xs font-black tracking-widest uppercase transition-all {activeTab ===
+                    'canvas'
+                        ? 'border-primary-500 text-primary-600 border-b-4'
+                        : 'text-slate-400 hover:text-slate-600'}"
+                    onclick={() => (activeTab = 'canvas')}
                 >
                     Visual Builder
                 </button>
@@ -151,17 +164,13 @@
 
         {#if activeTab === 'table' && !isFullscreen}
             <!-- Rules Table -->
-            <Section 
-                title="Manajemen Aturan" 
+            <Section
+                title="Manajemen Aturan"
                 subtitle="Daftar seluruh logika inferensi yang terdaftar dalam sistem."
             >
-                <DataTable
-                    items={flattenedRules}
-                    {columns}
-                    hideSearch={false}
-                >
+                <DataTable items={flattenedRules} {columns} hideSearch={false}>
                     {#snippet empty()}
-                        <EmptyState 
+                        <EmptyState
                             icon={Zap}
                             title="Belum Ada Aturan"
                             description="Sistem adaptif memerlukan aturan untuk menentukan strategi belajar."
@@ -171,16 +180,27 @@
                     {#snippet row(rule)}
                         <td class="px-6 py-5">
                             <div class="flex flex-col gap-1">
-                                <span class="text-xs font-black text-slate-900 uppercase tracking-tight">{rule.name}</span>
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{rule.id}</span>
+                                <span
+                                    class="text-xs font-black tracking-tight text-slate-900 uppercase"
+                                    >{rule.name}</span
+                                >
+                                <span
+                                    class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                                    >{rule.id}</span
+                                >
                             </div>
                         </td>
                         <td class="px-6 py-5">
                             <div class="flex flex-col gap-1.5">
-                                <Badge variant="secondary" size="xs" class="w-fit">{rule.diagnosis_group}</Badge>
+                                <Badge variant="secondary" size="xs" class="w-fit"
+                                    >{rule.diagnosis_group}</Badge
+                                >
                                 <div class="flex flex-wrap gap-1">
                                     {#each rule.required_fact_ids as factId}
-                                        <span class="text-[9px] font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">{factId}</span>
+                                        <span
+                                            class="rounded border border-slate-200 bg-slate-100 px-1.5 py-0.5 text-[9px] font-bold text-slate-500"
+                                            >{factId}</span
+                                        >
                                     {/each}
                                 </div>
                             </div>
@@ -188,9 +208,14 @@
                         <td class="px-6 py-5">
                             <div class="flex flex-wrap gap-2">
                                 {#each rule.actions as action}
-                                    <div class="flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 border border-emerald-100">
+                                    <div
+                                        class="flex items-center gap-1.5 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1"
+                                    >
                                         <div class="h-1 w-1 rounded-full bg-emerald-500"></div>
-                                        <span class="text-[10px] font-black text-emerald-700 uppercase">{action.id}</span>
+                                        <span
+                                            class="text-[10px] font-black text-emerald-700 uppercase"
+                                            >{action.id}</span
+                                        >
                                     </div>
                                 {/each}
                             </div>
@@ -210,7 +235,7 @@
                                     size="sm"
                                     icon={Edit2}
                                     onclick={() => openEditRule(rule)}
-                                    class="text-slate-400 hover:text-primary-500"
+                                    class="hover:text-primary-500 text-slate-400"
                                 />
                                 <Button
                                     variant="ghost"
@@ -228,14 +253,18 @@
 
         {#if activeTab === 'canvas'}
             {#if isFullscreen}
-                <div class="fixed inset-0 z-200 bg-slate-50 w-screen h-screen">
-                    <div class="absolute right-8 top-8 z-50 flex gap-3">
+                <div class="fixed inset-0 z-200 h-screen w-screen bg-slate-50">
+                    <div class="absolute top-8 right-8 z-50 flex gap-3">
                         <button
                             onclick={() => {
                                 isFullscreen = true;
                                 setTimeout(() => {
                                     chainingRef?.resetView();
-                                    tutorialState.startTour('admin_adaptive_rules_canvas', true, false);
+                                    tutorialState.startTour(
+                                        'admin_adaptive_rules_canvas',
+                                        true,
+                                        false
+                                    );
                                 }, 300);
                             }}
                             class="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-b-4 border-slate-200 bg-white text-slate-400 transition-all hover:bg-slate-50 hover:text-amber-500"
@@ -245,13 +274,13 @@
                         </button>
                         <button
                             onclick={() => (isFullscreen = false)}
-                            class="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-b-4 border-slate-200 bg-white text-slate-400 transition-all hover:bg-slate-50 hover:text-primary-500"
+                            class="hover:text-primary-500 flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-b-4 border-slate-200 bg-white text-slate-400 transition-all hover:bg-slate-50"
                         >
                             <Minimize2 size={20} />
                         </button>
                         <button
                             onclick={() => chainingRef?.resetView()}
-                            class="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-b-4 border-slate-200 bg-white text-slate-400 transition-all hover:bg-slate-50 hover:text-primary-500"
+                            class="hover:text-primary-500 flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-b-4 border-slate-200 bg-white text-slate-400 transition-all hover:bg-slate-50"
                         >
                             <RefreshCw size={20} />
                         </button>
@@ -269,18 +298,24 @@
                 </div>
             {:else}
                 <!-- Visual Builder Section -->
-                <Section 
-                    title="Visual Strategy Builder" 
+                <Section
+                    title="Visual Strategy Builder"
                     subtitle="Representasi grafis dari hubungan antara fakta, diagnosis, dan intervensi."
                 >
-                    <div class="relative overflow-hidden border-2 border-slate-200 bg-white shadow-2xl rounded-[2rem]">
-                        <div class="absolute right-8 top-8 z-50 flex gap-3 pointer-events-auto">
+                    <div
+                        class="relative overflow-hidden rounded-[2rem] border-2 border-slate-200 bg-white shadow-2xl"
+                    >
+                        <div class="pointer-events-auto absolute top-8 right-8 z-50 flex gap-3">
                             <button
                                 onclick={() => {
                                     isFullscreen = true;
                                     setTimeout(() => {
                                         chainingRef?.resetView();
-                                        tutorialState.startTour('admin_adaptive_rules_canvas', true, false);
+                                        tutorialState.startTour(
+                                            'admin_adaptive_rules_canvas',
+                                            true,
+                                            false
+                                        );
                                     }, 300);
                                 }}
                                 class="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-b-4 border-slate-200 bg-white text-slate-400 transition-all hover:bg-slate-50 hover:text-amber-500"
@@ -290,13 +325,13 @@
                             </button>
                             <button
                                 onclick={() => (isFullscreen = true)}
-                                class="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-b-4 border-slate-200 bg-white text-slate-400 transition-all hover:bg-slate-50 hover:text-primary-500"
+                                class="hover:text-primary-500 flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-b-4 border-slate-200 bg-white text-slate-400 transition-all hover:bg-slate-50"
                             >
                                 <Maximize2 size={20} />
                             </button>
                             <button
                                 onclick={() => chainingRef?.resetView()}
-                                class="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-b-4 border-slate-200 bg-white text-slate-400 transition-all hover:bg-slate-50 hover:text-primary-500"
+                                class="hover:text-primary-500 flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-b-4 border-slate-200 bg-white text-slate-400 transition-all hover:bg-slate-50"
                             >
                                 <RefreshCw size={20} />
                             </button>
@@ -320,13 +355,19 @@
             <!-- Recent Triggers & Distribution -->
             <div id="adaptive-engine-activities" class="grid grid-cols-1 gap-8 lg:grid-cols-2">
                 <Card title="Aktivitas Engine Terbaru">
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
+                    <div class="mb-6 flex items-center gap-3">
+                        <div class="rounded-xl bg-indigo-50 p-2 text-indigo-600">
                             <Activity size={20} />
                         </div>
                         <div>
-                            <h3 class="text-sm font-black text-slate-800 uppercase tracking-tight">Recent Triggers</h3>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Eksekusi aturan terakhir</p>
+                            <h3 class="text-sm font-black tracking-tight text-slate-800 uppercase">
+                                Recent Triggers
+                            </h3>
+                            <p
+                                class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                            >
+                                Eksekusi aturan terakhir
+                            </p>
                         </div>
                     </div>
 
@@ -334,20 +375,28 @@
                         {#each analyticsState.recent_triggers as trigger}
                             <div class="flex items-start gap-4">
                                 <UserAvatar name={trigger.user_name} size="sm" />
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex items-center justify-between mb-1">
-                                        <span class="text-xs font-black text-slate-900 uppercase">{trigger.user_name}</span>
-                                        <span class="text-[10px] font-bold text-slate-400">{trigger.created_at}</span>
+                                <div class="min-w-0 flex-1">
+                                    <div class="mb-1 flex items-center justify-between">
+                                        <span class="text-xs font-black text-slate-900 uppercase"
+                                            >{trigger.user_name}</span
+                                        >
+                                        <span class="text-[10px] font-bold text-slate-400"
+                                            >{trigger.created_at}</span
+                                        >
                                     </div>
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <div class="flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
+                                    <div class="mb-2 flex items-center gap-2">
+                                        <div
+                                            class="flex items-center gap-1 rounded bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-600"
+                                        >
                                             <GitBranch size={10} />
                                             <span>{trigger.rule_name}</span>
                                         </div>
                                     </div>
                                     <div class="flex flex-wrap gap-2">
                                         {#each (trigger.action || '').split(', ') as actionId}
-                                            <div class="flex items-center gap-1 text-[9px] font-black text-amber-600 border border-amber-200 px-2 py-0.5 rounded-full">
+                                            <div
+                                                class="flex items-center gap-1 rounded-full border border-amber-200 px-2 py-0.5 text-[9px] font-black text-amber-600"
+                                            >
                                                 <Target size={10} />
                                                 <span>{actionId}</span>
                                             </div>
@@ -357,20 +406,30 @@
                             </div>
                         {:else}
                             <div class="py-12 text-center">
-                                <p class="text-xs font-bold text-slate-300 uppercase tracking-widest">Belum ada aktivitas terekam</p>
+                                <p
+                                    class="text-xs font-bold text-slate-300 uppercase tracking-widest"
+                                >
+                                    Belum ada aktivitas terekam
+                                </p>
                             </div>
                         {/each}
                     </div>
                 </Card>
 
                 <Card title="Distribusi Status Adaptif">
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="p-2 bg-emerald-50 text-emerald-600 rounded-xl">
+                    <div class="mb-6 flex items-center gap-3">
+                        <div class="rounded-xl bg-emerald-50 p-2 text-emerald-600">
                             <BrainCircuit size={20} />
                         </div>
                         <div>
-                            <h3 class="text-sm font-black text-slate-800 uppercase tracking-tight">State Distribution</h3>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Kondisi mahasiswa saat ini</p>
+                            <h3 class="text-sm font-black tracking-tight text-slate-800 uppercase">
+                                State Distribution
+                            </h3>
+                            <p
+                                class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                            >
+                                Kondisi mahasiswa saat ini
+                            </p>
                         </div>
                     </div>
 
@@ -378,19 +437,29 @@
                         {#each analyticsState.adaptive_state_distribution as item}
                             <div class="space-y-2">
                                 <div class="flex items-center justify-between">
-                                    <span class="text-xs font-bold text-slate-700 uppercase tracking-tight">{item.difficulty}</span>
-                                    <span class="text-xs font-black text-slate-900">{item.count} MHS</span>
+                                    <span
+                                        class="text-xs font-bold tracking-tight text-slate-700 uppercase"
+                                        >{item.difficulty}</span
+                                    >
+                                    <span class="text-xs font-black text-slate-900"
+                                        >{item.count} MHS</span
+                                    >
                                 </div>
-                                <div class="h-3 w-full bg-slate-100 rounded-full overflow-hidden">
-                                    <div 
-                                        class="h-full bg-emerald-500 rounded-full transition-all duration-1000" 
-                                        style="width: {(item.count / analyticsState.maxStateCount) * 100}%"
+                                <div class="h-3 w-full overflow-hidden rounded-full bg-slate-100">
+                                    <div
+                                        class="h-full rounded-full bg-emerald-500 transition-all duration-1000"
+                                        style="width: {(item.count / analyticsState.maxStateCount) *
+                                            100}%"
                                     ></div>
                                 </div>
                             </div>
                         {:else}
-                             <div class="py-12 text-center">
-                                <p class="text-xs font-bold text-slate-300 uppercase tracking-widest">Data distribusi belum tersedia</p>
+                            <div class="py-12 text-center">
+                                <p
+                                    class="text-xs font-bold text-slate-300 uppercase tracking-widest"
+                                >
+                                    Data distribusi belum tersedia
+                                </p>
                             </div>
                         {/each}
                     </div>
@@ -405,9 +474,3 @@
         onclose={() => (isActionModalOpen = false)}
     />
 </App>
-
-<style>
-    :global(body.fullscreen) {
-        overflow: hidden;
-    }
-</style>

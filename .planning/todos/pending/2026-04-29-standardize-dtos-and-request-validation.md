@@ -3,9 +3,9 @@ created: 2026-04-29T23:45:00+07:00
 title: Standardize DTOs and Request Validation
 area: planning
 files:
-  - app/Http/Controllers/Mahasiswa/MaterialQuestionController.php
-  - app/Services/Lms/QuizService.php
-  - app/Services/User/PerformanceService.php
+    - app/Http/Controllers/Mahasiswa/MaterialQuestionController.php
+    - app/Services/Lms/QuizService.php
+    - app/Services/User/PerformanceService.php
 ---
 
 ## Problem

@@ -8,9 +8,7 @@
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import { untrack } from 'svelte';
     import { AdminDashboardState } from '@/states/Admin/DashboardState.svelte';
-    import type {
-        AdminDashboardData,
-    } from '@/types';
+    import type { AdminDashboardData } from '@/types';
     import {
         Users,
         Signal,
@@ -113,56 +111,97 @@
         />
 
         {#if students_needing_attention.length > 0}
-            <div class="relative overflow-hidden rounded-[2rem] bg-linear-to-br from-rose-500 to-rose-700 p-px shadow-lg shadow-rose-500/20">
+            <div
+                class="relative overflow-hidden rounded-[2rem] bg-linear-to-br from-rose-500 to-rose-700 p-px shadow-lg shadow-rose-500/20"
+            >
                 <div class="relative h-full w-full rounded-[calc(2rem-1px)] bg-white p-6 sm:p-8">
                     <!-- Background Elements -->
-                    <div class="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-rose-50/50 blur-3xl"></div>
-                    <div class="pointer-events-none absolute top-0 right-0 p-8 text-rose-500 opacity-[0.03]">
+                    <div
+                        class="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-rose-50/50 blur-3xl"
+                    ></div>
+                    <div
+                        class="pointer-events-none absolute top-0 right-0 p-8 text-rose-500 opacity-[0.03]"
+                    >
                         <Activity size={120} strokeWidth={1} />
                     </div>
 
                     <!-- Header -->
-                    <div class="relative flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+                    <div
+                        class="relative flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between"
+                    >
                         <div class="flex items-start gap-5">
-                            <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-rose-100 to-rose-50 text-rose-600 ring-4 ring-white shadow-sm">
+                            <div
+                                class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-rose-100 to-rose-50 text-rose-600 shadow-sm ring-4 ring-white"
+                            >
                                 <Activity size={28} strokeWidth={2.5} class="animate-pulse" />
                             </div>
                             <div class="pt-1">
-                                <h3 class="text-xl font-black tracking-tight text-slate-900">Perhatian Dosen Dibutuhkan</h3>
-                                <p class="mt-1 text-sm font-medium leading-relaxed text-slate-500 max-w-xl">
-                                    Sistem adaptif mendeteksi ada <span class="font-bold text-rose-600">{students_needing_attention.length} mahasiswa</span> yang memerlukan atensi Anda karena berada dalam krisis belajar atau membutuhkan verifikasi sertifikasi.
+                                <h3 class="text-xl font-black tracking-tight text-slate-900">
+                                    Perhatian Dosen Dibutuhkan
+                                </h3>
+                                <p
+                                    class="mt-1 max-w-xl text-sm leading-relaxed font-medium text-slate-500"
+                                >
+                                    Sistem adaptif mendeteksi ada <span
+                                        class="font-bold text-rose-600"
+                                        >{students_needing_attention.length} mahasiswa</span
+                                    > yang memerlukan atensi Anda karena berada dalam krisis belajar atau
+                                    membutuhkan verifikasi sertifikasi.
                                 </p>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Grid -->
-                    <div class="relative mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    <div
+                        class="relative mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                    >
                         {#each students_needing_attention as student}
-                            <div class="group flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/60 bg-slate-50/40 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-rose-200 hover:bg-white hover:shadow-xl hover:shadow-rose-100/50">
+                            <div
+                                class="group flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/60 bg-slate-50/40 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-rose-200 hover:bg-white hover:shadow-xl hover:shadow-rose-100/50"
+                            >
                                 <div class="flex items-center gap-3">
-                                    <div class="ring-2 ring-white rounded-full">
+                                    <div class="rounded-full ring-2 ring-white">
                                         <UserAvatar name={student.name} size="md" />
                                     </div>
                                     <div class="flex min-w-0 flex-1 flex-col">
-                                        <span class="truncate font-bold text-slate-900 text-sm">{student.name}</span>
-                                        <span class="truncate text-[10px] font-bold tracking-widest text-slate-400 uppercase">{student.email}</span>
+                                        <span class="truncate text-sm font-bold text-slate-900"
+                                            >{student.name}</span
+                                        >
+                                        <span
+                                            class="truncate text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                                            >{student.email}</span
+                                        >
                                     </div>
                                 </div>
-                                <div class="mt-5 flex flex-col gap-3 border-t border-slate-200/60 pt-4">
+                                <div
+                                    class="mt-5 flex flex-col gap-3 border-t border-slate-200/60 pt-4"
+                                >
                                     <div class="flex items-center gap-2">
                                         {#if student.student_state?.adaptive_state?.['notify_teacher_type'] === 'certification'}
-                                            <span class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-100 px-2.5 py-1 text-[9px] font-black tracking-widest text-emerald-700 uppercase">
+                                            <span
+                                                class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-100 px-2.5 py-1 text-[9px] font-black tracking-widest text-emerald-700 uppercase"
+                                            >
                                                 <Trophy size={10} strokeWidth={3} /> Sertifikasi
                                             </span>
                                         {:else}
-                                            <span class="inline-flex items-center gap-1.5 rounded-lg bg-rose-100 px-2.5 py-1 text-[9px] font-black tracking-widest text-rose-700 uppercase animate-pulse">
+                                            <span
+                                                class="inline-flex animate-pulse items-center gap-1.5 rounded-lg bg-rose-100 px-2.5 py-1 text-[9px] font-black tracking-widest text-rose-700 uppercase"
+                                            >
                                                 <AlertTriangle size={10} strokeWidth={3} /> Krisis Belajar
                                             </span>
                                         {/if}
                                     </div>
-                                    <p class="text-[11px] font-medium leading-relaxed text-slate-500 line-clamp-2" title={student.student_state?.adaptive_state?.['last_diagnosis'] || '-'}>
-                                        <span class="font-bold text-slate-700">Diagnosis:</span> {student.student_state?.adaptive_state?.['last_diagnosis'] || 'Menunggu evaluasi diagnostik...'}
+                                    <p
+                                        class="line-clamp-2 text-[11px] leading-relaxed font-medium text-slate-500"
+                                        title={student.student_state?.adaptive_state?.[
+                                            'last_diagnosis'
+                                        ] || '-'}
+                                    >
+                                        <span class="font-bold text-slate-700">Diagnosis:</span>
+                                        {student.student_state?.adaptive_state?.[
+                                            'last_diagnosis'
+                                        ] || 'Menunggu evaluasi diagnostik...'}
                                     </p>
                                 </div>
                             </div>
@@ -437,10 +476,7 @@
                                 {/each}
                             </div>
                         {:else}
-                            <EmptyState
-                                title="Data Kosong"
-                                description="Belum ada data materi."
-                            />
+                            <EmptyState title="Data Kosong" description="Belum ada data materi." />
                         {/if}
                     </div>
                 </Card>
@@ -485,8 +521,8 @@
                                         color={m.completion_rate >= 70
                                             ? 'emerald'
                                             : m.completion_rate >= 40
-                                                ? 'amber'
-                                                : 'rose'}
+                                              ? 'amber'
+                                              : 'rose'}
                                         height="h-2"
                                     />
                                 </div>

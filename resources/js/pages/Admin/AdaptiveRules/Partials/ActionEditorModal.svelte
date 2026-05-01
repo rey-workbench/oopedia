@@ -126,7 +126,7 @@
         <!-- Header -->
         <div class="flex items-center justify-between border-b border-slate-100 px-6 py-5">
             <div class="flex items-center gap-3">
-                <div class="bg-emerald-50 text-emerald-600 rounded-xl p-2">
+                <div class="rounded-xl bg-emerald-50 p-2 text-emerald-600">
                     <Target size={20} />
                 </div>
                 <div>
@@ -160,7 +160,9 @@
                         <div class="h-px w-4 bg-slate-200"></div>
                     </div>
 
-                    <div class="space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                    <div
+                        class="space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
+                    >
                         <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                             <Input
                                 label="Kode Aksi (H-Code)"
@@ -224,7 +226,7 @@
                                 <textarea
                                     bind:value={jsonString}
                                     oninput={() => (jsonError = null)}
-                                    class="focus:border-emerald-500 min-h-[300px] w-full rounded-2xl border-2 border-slate-100 bg-slate-900 p-5 font-mono text-xs leading-relaxed text-emerald-400 shadow-xl focus:ring-0"
+                                    class="min-h-[300px] w-full rounded-2xl border-2 border-slate-100 bg-slate-900 p-5 font-mono text-xs leading-relaxed text-emerald-400 shadow-xl focus:border-emerald-500 focus:ring-0"
                                     spellcheck="false"
                                 ></textarea>
                                 {#if jsonError}
@@ -241,10 +243,23 @@
                                 <div class="space-y-1 text-[11px] font-bold text-slate-600">
                                     <p>Gunakan format JSON yang benar. Kunci yang didukung:</p>
                                     <ul class="list-disc space-y-1 pl-4 opacity-80">
-                                        <li><code class="text-emerald-600">flow</code>: NEXT, UP, DOWN, REVIEW, FINISH</li>
-                                        <li><code class="text-emerald-600">title</code>: Judul modal feedback</li>
-                                        <li><code class="text-emerald-600">message</code>: Pesan untuk mahasiswa</li>
-                                        <li><code class="text-emerald-600">xp</code>, <code class="text-emerald-600">streak</code>, <code class="text-emerald-600">target_difficulty</code></li>
+                                        <li>
+                                            <code class="text-emerald-600">flow</code>: NEXT, UP,
+                                            DOWN, REVIEW, FINISH
+                                        </li>
+                                        <li>
+                                            <code class="text-emerald-600">title</code>: Judul modal
+                                            feedback
+                                        </li>
+                                        <li>
+                                            <code class="text-emerald-600">message</code>: Pesan
+                                            untuk mahasiswa
+                                        </li>
+                                        <li>
+                                            <code class="text-emerald-600">xp</code>,
+                                            <code class="text-emerald-600">streak</code>,
+                                            <code class="text-emerald-600">target_difficulty</code>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -261,7 +276,8 @@
             <button
                 type="button"
                 onclick={onclose}
-                class="text-xs font-black tracking-widest text-slate-400 uppercase hover:text-slate-600">Batal</button
+                class="text-xs font-black tracking-widest text-slate-400 uppercase hover:text-slate-600"
+                >Batal</button
             >
             <Button
                 type="submit"
@@ -269,7 +285,7 @@
                 variant="primary"
                 icon={Save}
                 disabled={form.processing}
-                class="px-8 shadow-emerald-900/10 shadow-lg"
+                class="px-8 shadow-lg shadow-emerald-900/10"
             >
                 {form.processing ? 'Menyimpan...' : 'Simpan Aksi'}
             </Button>

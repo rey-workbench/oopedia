@@ -25,7 +25,9 @@ export class AdaptiveRuleState extends BaseState {
         this.hydrate(data);
     }
 
-    maxTriggerCount = $derived(Math.max(1, ...this.rule_triggers_stats.map((r) => r.trigger_count)));
+    maxTriggerCount = $derived(
+        Math.max(1, ...this.rule_triggers_stats.map((r) => r.trigger_count))
+    );
 
     maxStateCount = $derived(Math.max(1, ...this.adaptive_state_distribution.map((s) => s.count)));
 }
