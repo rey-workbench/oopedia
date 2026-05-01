@@ -120,7 +120,8 @@ jobs:
                       chown -R root:www-data storage bootstrap/cache
 
                       # RESTART OCTANE (Supervisor)
-                      # Pastikan tidak ada proses rr yang tersangkut sebelum restart
+                      # Pastikan semua proses octane dan rr mati total sebelum restart
+                      sudo pkill -f octane || true
                       sudo pkill -f rr || true
                       sudo supervisorctl restart oopedia-octane
 
