@@ -59,7 +59,7 @@ final readonly class AdaptiveAnalyticsService implements AdaptiveAnalyticsServic
                 'trigger_count' => (int) $rule->execution_logs_count,
                 'percentage'    => round(($rule->execution_logs_count / $totalLogs) * 100, 1),
             ])
-            ->toArray();
+            ->all();
     }
 
     public function getAdaptiveStateDistribution(): array
