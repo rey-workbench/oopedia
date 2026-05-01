@@ -32,10 +32,10 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
 
         return Material::select('id as material_id')
             ->withCount([
-                'attemptedQuestions as answered_questions' => function ($q) use ($userId): void {
+                'quizAttempts as answered_questions' => function ($q) use ($userId): void {
                     $q->where('quiz_attempts.user_id', $userId)->distinct();
                 },
-                'attemptedQuestions as correct_answers' => function ($q) use ($userId): void {
+                'quizAttempts as correct_answers' => function ($q) use ($userId): void {
                     $q->where('quiz_attempts.user_id', $userId)
                         ->where('quiz_attempts.is_correct', true)
                         ->distinct();
@@ -52,7 +52,7 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
 
         return Material::select('id as material_id')
             ->withCount([
-                'attemptedQuestions as total_answered' => function ($q) use ($userId): void {
+                'quizAttempts as total_answered' => function ($q) use ($userId): void {
                     $q->where('quiz_attempts.user_id', $userId)->distinct();
                 },
                 'quizAttempts as correct_answers' => function ($q) use ($userId): void {
@@ -170,24 +170,24 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
     {
         return User::whereHas('role', fn (Builder $q) => $q->where('role_name', $roleName))
             ->withCount([
-                'attemptedQuestions as total_correct_questions' => function ($q): void {
+                'quizAttempts as total_correct_questions' => function ($q): void {
                     $q->where('quiz_attempts.is_correct', true)->distinct();
                 },
-                'attemptedQuestions as total_attempted' => function ($q): void {
+                'quizAttempts as total_attempted' => function ($q): void {
                     $q->distinct();
                 },
                 'quizAttempts as correct_answers' => function ($q): void {
                     $q->where('is_correct', true);
                 },
                 'quizAttempts as total_attempts',
-                'attemptedQuestions as beginner_completed' => function ($q): void {
-                    $q->where('quiz_attempts.is_correct', true)->where('questions.difficulty', QuestionDifficulty::BEGINNER);
+                'quizAttempts as beginner_completed' => function ($q): void {
+                    $q->where('is_correct', true)->whereRelation('question', 'difficulty', QuestionDifficulty::BEGINNER);
                 },
-                'attemptedQuestions as medium_completed' => function ($q): void {
-                    $q->where('quiz_attempts.is_correct', true)->where('questions.difficulty', QuestionDifficulty::MEDIUM);
+                'quizAttempts as medium_completed' => function ($q): void {
+                    $q->where('is_correct', true)->whereRelation('question', 'difficulty', QuestionDifficulty::MEDIUM);
                 },
-                'attemptedQuestions as hard_completed' => function ($q): void {
-                    $q->where('quiz_attempts.is_correct', true)->whereIn('questions.difficulty', [QuestionDifficulty::HARD, QuestionDifficulty::FINAL]);
+                'quizAttempts as hard_completed' => function ($q): void {
+                    $q->where('is_correct', true)->whereRelation('question', 'difficulty', [QuestionDifficulty::HARD, QuestionDifficulty::FINAL]);
                 },
             ])
             ->select('id', 'name', 'email')

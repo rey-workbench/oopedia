@@ -9,11 +9,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 final class Material extends Model
 {
     use HasFactory;
     use HasUlids;
+
+    /**
+     * @return HasManyThrough<QuizAttempt, Question, $this>
+     */
 
     #[\Override]
     protected $fillable = [
@@ -29,8 +34,8 @@ final class Material extends Model
     {
         return [
             'is_final_project' => 'boolean',
-            'module_id'        => 'string',
-            'created_by'       => 'string',
+            'module_id' => 'string',
+            'created_by' => 'string',
         ];
     }
 
@@ -48,6 +53,14 @@ final class Material extends Model
     public function media(): HasMany
     {
         return $this->hasMany(Media::class);
+    }
+
+    /**
+     * @return HasManyThrough<QuizAttempt, Question, $this>
+     */
+    public function quizAttempts(): HasManyThrough
+    {
+        return $this->hasManyThrough(QuizAttempt::class, Question::class);
     }
 
     /**
