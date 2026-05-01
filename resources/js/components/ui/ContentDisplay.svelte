@@ -177,7 +177,7 @@
 
 {#if showHooray}
     <div 
-        class="fixed inset-0 z-[9999] flex flex-col items-center justify-center pointer-events-none bg-white/40 backdrop-blur-sm"
+        class="fixed inset-0 z-9999 flex flex-col items-center justify-center pointer-events-none bg-white/40 backdrop-blur-sm"
         transition:fade={{ duration: 300 }}
     >
         <div in:scale={{ start: 0.8, duration: 600, delay: 100 }}>
@@ -191,18 +191,18 @@
 
 {#if showGhostPointer}
     <div 
-        class="ghost-pointer fixed z-[10000] pointer-events-none transition-all duration-[1200ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+        class="ghost-pointer fixed z-10000 pointer-events-none transition-all duration-1200 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
         style="left: {ghostPos.x}px; top: {ghostPos.y}px;"
         transition:fade
     >
         <div class="relative flex items-center justify-center">
-            <MousePointer2 size={42} class="text-white fill-emerald-500 drop-shadow-[0_8px_16px_rgba(0,0,0,0.2)] rotate-[15deg]" />
+            <MousePointer2 size={42} class="text-white fill-emerald-500 drop-shadow-[0_8px_16px_rgba(0,0,0,0.2)] rotate-15" />
             <div class="absolute inset-0 bg-emerald-400/20 rounded-full blur-2xl animate-pulse"></div>
         </div>
     </div>
 {/if}
 
-<style>
+<style lang="postcss">
     @reference "../../../css/app.css";
 
     /* 1. Duolingo Typography */
@@ -222,7 +222,7 @@
     }
     :global(.pedagogical-content-root ul.duo-checklist li::before) { 
         content: ""; 
-        @apply w-8 h-8 rounded-xl border-4 border-slate-200 flex-shrink-0 flex items-center justify-center transition-all bg-white;
+        @apply w-8 h-8 rounded-xl border-4 border-slate-200 shrink-0 flex items-center justify-center transition-all bg-white;
     }
     :global(.pedagogical-content-root ul.duo-checklist li.is-completed) { 
         @apply bg-emerald-50 text-emerald-900 border-emerald-400 border-b-6 shadow-none; 
@@ -237,7 +237,7 @@
         @apply relative my-12 p-0 rounded-[2rem] bg-[#1a1a2e] border-2 border-b-8 border-slate-900 shadow-2xl overflow-hidden flex flex-col;
     }
     :global(.terminal-header) { 
-        @apply h-14 bg-white/[0.05] border-b-2 border-white/5 flex items-center justify-between px-6; 
+        @apply h-14 bg-white/5 border-b-2 border-white/5 flex items-center justify-between px-6; 
     }
     :global(.terminal-dots) { @apply flex items-center gap-2; }
     :global(.terminal-dots span) { @apply w-3.5 h-3.5 rounded-full; }
@@ -265,7 +265,7 @@
     
     /* 5. Insight Bubbles */
     :global(.pedagogical-content-root blockquote) { 
-        @apply my-12 bg-sky-50 border-2 border-b-8 border-sky-200 p-10 italic text-sky-900 rounded-[2.5rem] relative overflow-hidden; 
+        @apply my-12 bg-sky-50 border-2 border-b-8 border-sky-200 p-10 italic text-sky-900 rounded-3xl relative overflow-hidden; 
     }
     :global(.quote-watermark-lamp) { @apply absolute -right-4 -bottom-10 w-52 h-52 text-sky-500/10 -rotate-12 pointer-events-none; }
 

@@ -12,7 +12,7 @@
 
     const { email, token }: Props = $props();
 
-    const state = new ResetPasswordState(email, token, {
+    const state = new ResetPasswordState(() => email, () => token, {
         showSuccessToast: 'Password Anda telah berhasil diubah!',
         showErrorToast: true,
     });

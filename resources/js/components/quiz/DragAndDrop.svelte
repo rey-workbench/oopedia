@@ -5,6 +5,8 @@
     let {
         question,
         dragAndDropAnswers = $bindable({}),
+        disabled = false,
+        showResult = false,
     }: {
         question: Question;
         dragAndDropAnswers: Record<string, string>;
@@ -29,7 +31,7 @@
             const isFilled = !!dragAndDropAnswers[zoneIdStr];
 
             const zoneNum = parseInt(zoneIdStr, 10);
-            const correctAnswer = question.answers.find(
+            const correctAnswer = question?.answers?.find(
                 (a) => (a as any).zone_index == zoneNum
             )?.answer_text;
             const isCorrect = currentAnswer === correctAnswer;

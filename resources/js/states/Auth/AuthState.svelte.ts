@@ -81,11 +81,15 @@ export class ResetPasswordState extends FormState<{
     password: string;
     password_confirmation: string;
 }> {
-    constructor(email: string, token: string, options?: FormStateOptions) {
+    constructor(
+        email: string | (() => string),
+        token: string | (() => string),
+        options?: FormStateOptions
+    ) {
         super(
             {
-                token: token,
-                email: email,
+                token: typeof token === 'function' ? token() : token,
+                email: typeof email === 'function' ? email() : email,
                 password: '',
                 password_confirmation: '',
             },
