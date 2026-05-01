@@ -53,3 +53,47 @@ export class RegisterState extends FormState<{
         await this.submitForm('post', ROUTES.AUTH.REGISTER);
     }
 }
+
+/**
+ * Forgot Password State
+ */
+export class ForgotPasswordState extends FormState<{ email: string }> {
+    constructor(options?: FormStateOptions) {
+        super(
+            {
+                email: '',
+            },
+            options
+        );
+    }
+
+    async submit() {
+        await this.submitForm('post', ROUTES.AUTH.FORGOT_PASSWORD);
+    }
+}
+
+/**
+ * Reset Password State
+ */
+export class ResetPasswordState extends FormState<{
+    token: string;
+    email: string;
+    password: string;
+    password_confirmation: string;
+}> {
+    constructor(email: string, token: string, options?: FormStateOptions) {
+        super(
+            {
+                token: token,
+                email: email,
+                password: '',
+                password_confirmation: '',
+            },
+            options
+        );
+    }
+
+    async submit() {
+        await this.submitForm('post', ROUTES.AUTH.RESET_PASSWORD);
+    }
+}

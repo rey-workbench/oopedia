@@ -40,7 +40,8 @@
         "spiral/roadrunner-cli": "^2.7",
         "spiral/roadrunner-http": "^4.1",
         "spatie/laravel-pdf": "^2.7",
-        "endroid/qr-code": "^6.1"
+        "endroid/qr-code": "^6.1",
+        "laravel/socialite": "^5.27"
     },
     "autoload": {
         "psr-4": {

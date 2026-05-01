@@ -24,7 +24,7 @@
         UserPlus,
         Brain,
     } from 'lucide-svelte';
-    import { fly, slide } from 'svelte/transition';
+    import { slide } from 'svelte/transition';
     import { getTourIdFromUrl, registerGlobalTutorials } from '@/tutorial';
     import { onMount } from 'svelte';
     import { tutorialState } from '@/states/ui/tutorialState.svelte';

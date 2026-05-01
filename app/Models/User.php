@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 /**
  * @property string $id
@@ -20,9 +21,12 @@ use Illuminate\Notifications\Notifiable;
  * @property string $password
  * @property string $role_id
  * @property bool $is_approved
+ * @property string|null $google_id
+ * @property string|null $avatar
  */
 final class User extends Authenticatable
 {
+    use HasApiTokens;
     use HasFactory;
     use HasUlids;
     use Notifiable;
@@ -36,7 +40,7 @@ final class User extends Authenticatable
     protected $keyType = 'string';
 
     #[\Override]
-    protected $fillable = ['name', 'email', 'password', 'role_id', 'is_approved'];
+    protected $fillable = ['name', 'email', 'password', 'role_id', 'is_approved', 'google_id', 'avatar'];
 
     /** @var array<int, string> */
     #[\Override]
