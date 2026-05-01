@@ -14,11 +14,11 @@ final class UpdateQuestionRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'question_text'         => ['required', 'string'],
-            'question_type'         => ['required', Rule::in(QuestionType::cases())],
-            'difficulty'            => ['required', Rule::in(QuestionDifficulty::cases())],
-            'material_id'           => ['required', 'exists:materials,id'],
-            'answers'               => $this->input('question_type') === QuestionType::FILL_IN_THE_BLANK->value
+            'question_text' => ['required', 'string'],
+            'question_type' => ['required', Rule::in(QuestionType::cases())],
+            'difficulty'    => ['required', Rule::in(QuestionDifficulty::cases())],
+            'material_id'   => ['required', 'exists:materials,id'],
+            'answers'       => $this->input('question_type') === QuestionType::FILL_IN_THE_BLANK->value
                 ? 'required|array|min:1'
                 : 'required|array|min:2',
             'answers.*.is_correct'  => ['required', 'boolean'],
