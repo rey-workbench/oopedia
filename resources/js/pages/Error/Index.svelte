@@ -8,10 +8,10 @@
     const title = $derived(
         (
             {
-                503: '503: Service Unavailable',
-                500: '500: Server Error',
-                404: '404: Page Not Found',
-                403: '403: Forbidden',
+                503: '503: Layanan Tidak Tersedia',
+                500: '500: Kesalahan Server',
+                404: '404: Halaman Tidak Ditemukan',
+                403: '403: Akses Terlarang',
             } as Record<number, string>
         )[status] ?? 'Error'
     );
@@ -19,10 +19,10 @@
     const description = $derived(
         (
             {
-                503: 'Sorry, we are doing some maintenance on the site. Please check back soon.',
-                500: 'Whoops, something went wrong on our servers.',
-                404: 'Sorry, the page you are looking for could not be found.',
-                403: 'Sorry, you are forbidden from accessing this page.',
+                503: 'Maaf, kami sedang melakukan pemeliharaan di situs ini. Silakan cek kembali segera.',
+                500: 'Ups, terjadi kesalahan pada server kami.',
+                404: 'Maaf, halaman yang Anda cari tidak dapat ditemukan.',
+                403: 'Maaf, Anda dilarang mengakses halaman ini.',
             } as Record<number, string>
         )[status] ?? 'An unexpected error occurred.'
     );
@@ -53,7 +53,7 @@
 
     <div class="animate-in fade-in zoom-in relative w-full max-w-lg text-center duration-700">
         <div
-            class="relative z-10 mx-auto mb-8 flex h-32 w-32 items-center justify-center rounded-[2.5rem] bg-white shadow-2xl shadow-slate-200"
+            class="relative z-10 mx-auto mb-8 flex h-32 w-32 items-center justify-center rounded-3xl bg-white shadow-2xl shadow-slate-200"
         >
             {#if illustration}
                 {@const IllComp = illustration}
