@@ -19,7 +19,6 @@ final class Material extends Model
     /**
      * @return HasManyThrough<QuizAttempt, Question, $this>
      */
-
     #[\Override]
     protected $fillable = [
         'title',
@@ -34,8 +33,8 @@ final class Material extends Model
     {
         return [
             'is_final_project' => 'boolean',
-            'module_id' => 'string',
-            'created_by' => 'string',
+            'module_id'        => 'string',
+            'created_by'       => 'string',
         ];
     }
 

@@ -11,8 +11,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+use Inertia\Response;
 use Laravel\Socialite\Facades\Socialite;
 
 final class SocialController extends Controller
@@ -32,7 +31,7 @@ final class SocialController extends Controller
     {
         try {
             $googleUser = Socialite::driver('google')->user();
-            
+
             $user = User::where('google_id', $googleUser->id)
                 ->orWhere('email', $googleUser->email)
                 ->first();
@@ -43,27 +42,83 @@ final class SocialController extends Controller
                     'google_id' => $googleUser->id,
                     'avatar'    => $googleUser->avatar,
                 ]);
-            } else {
-                // Create a new user
-                $mahasiswaRole = Role::where('role_name', RoleName::MAHASISWA->value)->first();
-                
-                $user = User::create([
-                    'name'        => $googleUser->name,
-                    'email'       => $googleUser->email,
-                    'google_id'   => $googleUser->id,
-                    'avatar'      => $googleUser->avatar,
-                    'role_id'     => $mahasiswaRole?->id,
-                    'password'    => null, // Password is null for social login
-                    'is_approved' => true, // Auto approve social login? Or set based on your needs
-                ]);
+
+                Auth::login($user);
+
+                // Check if user is approved
+                if (! $user->is_approved) {
+                    return to_route('admin.pending-approval');
+                }
+
+                return redirect()->intended($user->isMahasiswa() ? '/mahasiswa/dashboard' : '/admin/dashboard');
             }
 
-            Auth::login($user);
+            // New user: Store data in session temporarily
+            session(['google_user' => [
+                'google_id' => $googleUser->id,
+                'name'      => $googleUser->name,
+                'email'     => $googleUser->email,
+                'avatar'    => $googleUser->avatar,
+            ]]);
 
-            return redirect()->intended($user->isMahasiswa() ? '/mahasiswa/dashboard' : '/admin/dashboard');
-            
-        } catch (Exception $e) {
-            return redirect()->route('login')->with('error', 'Gagal login dengan Google: ' . $e->getMessage());
+            return to_route('auth.google.choose-role');
+        } catch (Exception $exception) {
+            return to_route('login')->with('error', 'Gagal login dengan Google: ' . $exception->getMessage());
         }
+    }
+
+    /**
+     * Show the role selection page for new Google users.
+     */
+    public function chooseRole(): Response|RedirectResponse
+    {
+        if (! session()->has('google_user')) {
+            return to_route('login');
+        }
+
+        return $this->render('Auth/Social/ChooseRole', [
+            'googleUser' => session('google_user'),
+        ]);
+    }
+
+    /**
+     * Register the new Google user with the chosen role.
+     */
+    public function register(string $role): RedirectResponse
+    {
+        if (! session()->has('google_user')) {
+            return to_route('login');
+        }
+
+        $googleData = session('google_user');
+
+        $roleEnum = $role === 'dosen' ? RoleName::DOSEN : RoleName::MAHASISWA;
+        $dbRole   = Role::where('role_name', $roleEnum->value)->first();
+
+        if (! $dbRole) {
+            return to_route('login')->with('error', 'Peran tidak ditemukan.');
+        }
+
+        $isApproved = ($roleEnum === RoleName::MAHASISWA);
+
+        $user = User::create([
+            'name'        => $googleData['name'],
+            'email'       => $googleData['email'],
+            'google_id'   => $googleData['google_id'],
+            'avatar'      => $googleData['avatar'],
+            'role_id'     => $dbRole->id,
+            'password'    => null,
+            'is_approved' => $isApproved,
+        ]);
+
+        session()->forget('google_user');
+
+        Auth::login($user);
+
+        if (! $isApproved) {
+            return to_route('admin.pending-approval');
+        }
+
+        return to_route('mahasiswa.dashboard');
     }
 }

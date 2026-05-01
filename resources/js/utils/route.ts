@@ -135,6 +135,10 @@ export const ROUTES = {
         LOGOUT: '/logout',
         FORGOT_PASSWORD: '/forgot-password',
         RESET_PASSWORD: '/reset-password',
+        GOOGLE: '/auth/google',
+        GOOGLE_CALLBACK: '/auth/google/callback',
+        GOOGLE_CHOOSE_ROLE: '/auth/google/choose-role',
+        GOOGLE_REGISTER: (role: string) => `/auth/google/register/${role}`,
     },
 } as const;
 

@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
-use Inertia\Inertia;
 use Inertia\Response;
 
 final class ResetPasswordController extends Controller
@@ -34,8 +33,8 @@ final class ResetPasswordController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'token'    => 'required',
-            'email'    => 'required|email',
+            'token'    => ['required'],
+            'email'    => ['required', 'email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -51,14 +50,14 @@ final class ResetPasswordController extends Controller
                 ])->save();
 
                 event(new PasswordReset($user));
-            }
+            },
         );
 
         // If the password was successfully reset, we will redirect the user back to
         // the login view with a success message. Otherwise we will redirect back
         // to the current state with an error message at the email field.
         return $status === Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('status', __($status))
+            ? to_route('login')->with('status', __($status))
             : back()->withErrors(['email' => __($status)]);
     }
 }
