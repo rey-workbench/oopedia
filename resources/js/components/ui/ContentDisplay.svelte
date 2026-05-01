@@ -25,12 +25,11 @@
     });
 
     function processContent() {
-        // 1. Handle Code Blocks (Java Optimized)
+        // 1. Handle Code Blocks
         const codeBlocks = container.querySelectorAll('.ql-code-block-container, .ql-syntax, pre');
         codeBlocks.forEach((block) => {
             const el = block as HTMLElement;
             if (!el.dataset['enhanced']) {
-                // Handle Quill divs, standard pre tags, and pre > code structures
                 const quillLines = el.querySelectorAll('.ql-code-block');
                 const nestedCode = el.querySelector('code');
 
@@ -43,10 +42,11 @@
                     text = el.innerText;
                 }
                 
+                // CRITICAL: Trim text to prevent leading space glitches
+                const cleanText = text.trim();
+
                 try {
-                    const highlighted = hljs.highlight(text, { language: 'java' }).value;
-                    
-                    // Create a robust structure with inline copy button
+                    const highlighted = hljs.highlight(cleanText, { language: 'java' }).value;
                     el.innerHTML = `
                         <div class="terminal-header">
                             <div class="terminal-dots">
@@ -60,12 +60,9 @@
                         </div>
                         <div class="hljs-code-content">${highlighted}</div>
                     `;
-                    
                     el.dataset['enhanced'] = 'true';
-                    setupCopyLogic(el, text);
-                } catch (e) {
-                    console.error('Highlight error:', e);
-                }
+                    setupCopyLogic(el, cleanText);
+                } catch (e) { console.error(e); }
             }
         });
 
@@ -79,12 +76,23 @@
                 wrapper.appendChild(table);
             }
         });
+
+        // 3. Handle Blockquotes (Inject Large Watermark Lamp)
+        const quotes = container.querySelectorAll('blockquote');
+        quotes.forEach(quote => {
+            if (!quote.dataset['enhanced']) {
+                const watermark = document.createElement('div');
+                watermark.className = 'quote-watermark-lamp';
+                watermark.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A5 5 0 0 0 8 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>`;
+                quote.appendChild(watermark);
+                quote.dataset['enhanced'] = 'true';
+            }
+        });
     }
 
     function setupCopyLogic(el: HTMLElement, text: string) {
         const btn = el.querySelector('.terminal-copy-btn') as HTMLButtonElement;
         if (!btn) return;
-
         btn.onclick = async () => {
             await navigator.clipboard.writeText(text);
             const original = btn.innerHTML;
@@ -121,14 +129,31 @@
 
     /* 2. Tables */
     :global(.table-responsive-wrapper) {
-        @apply my-10 overflow-hidden rounded-3xl border-2 border-b-8 border-slate-200 shadow-xl;
+        @apply my-10 overflow-x-auto rounded-3xl border-2 border-b-8 border-slate-200 shadow-xl;
+        -webkit-overflow-scrolling: touch;
     }
 
-    /* 3. High-Contrast Oopedia Pro Code Blocks */
+    :global(.pedagogical-content-root table) {
+        @apply min-w-full bg-white text-left border-collapse;
+    }
+
+    :global(.pedagogical-content-root thead) {
+        @apply bg-slate-100/80 border-b-2 border-slate-200;
+    }
+
+    :global(.pedagogical-content-root th) {
+        @apply px-8 py-5 font-black text-slate-600 uppercase tracking-widest text-[11px] border-r border-slate-200 last:border-r-0;
+    }
+
+    :global(.pedagogical-content-root td) {
+        @apply px-8 py-5 border-b border-slate-100 border-r border-slate-200 last:border-r-0 text-slate-700 text-sm font-semibold;
+    }
+
+    /* 3. Code Blocks (Fixed Alignment & Whitespace) */
     :global(.pedagogical-content-root .ql-code-block-container, 
     .pedagogical-content-root .ql-syntax, 
     .pedagogical-content-root pre) {
-        @apply relative my-8 p-0 rounded-3xl bg-[#0c0c14] border-2 border-b-8 border-slate-900 shadow-2xl overflow-hidden block;
+        @apply relative my-8 p-0 rounded-3xl bg-[#0c0c14] border-2 border-b-8 border-slate-900 shadow-2xl overflow-hidden flex flex-col;
         font-family: var(--font-mono) !important;
     }
 
@@ -136,44 +161,48 @@
         @apply px-8 pt-4 pb-4 overflow-x-auto;
         line-height: 1.8 !important;
         font-size: 0.95rem !important;
-        color: #e2e8f0 !important; /* Brighter main text */
+        color: #e2e8f0 !important;
     }
 
-    /* Terminal Header */
+    /* Terminal Header (Fixed Padding) */
     :global(.pedagogical-content-root .terminal-header) {
-        @apply h-11 bg-slate-900/60 border-b border-white/5 flex items-center justify-between px-6;
+        @apply h-11 bg-slate-900/60 border-b border-white/5 flex items-center justify-between pl-6 pr-3;
     }
 
     :global(.pedagogical-content-root .terminal-dots) {
-        @apply flex gap-2;
+        @apply flex items-center gap-1.5;
     }
 
-    :global(.pedagogical-content-root .terminal-dots span) {
-        @apply w-3 h-3 rounded-full;
-    }
-
+    :global(.pedagogical-content-root .terminal-dots span) { @apply w-3 h-3 rounded-full; }
     :global(.pedagogical-content-root .dot-red) { @apply bg-[#ff5f56]; }
     :global(.pedagogical-content-root .dot-yellow) { @apply bg-[#ffbd2e]; }
     :global(.pedagogical-content-root .dot-green) { @apply bg-[#27c93f]; }
 
-    /* Inline Copy Button */
+    /* Copy Button */
     :global(.pedagogical-content-root .terminal-copy-btn) {
         @apply p-2 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-all flex items-center justify-center;
     }
 
-    /* Vibrant Oopedia Syntax Colors (High Contrast) */
-    :global(.pedagogical-content-root .hljs-keyword) { color: #ff5242 !important; font-weight: 800 !important; } /* Oopedia Coral Neon */
-    :global(.pedagogical-content-root .hljs-string) { color: #34d399 !important; } /* Success Green Neon */
-    :global(.pedagogical-content-root .hljs-title.function_) { color: #60a5fa !important; } /* Info Blue Neon */
-    :global(.pedagogical-content-root .hljs-title.class_) { color: #fbbf24 !important; } /* Warning Yellow Neon */
-    :global(.pedagogical-content-root .hljs-comment) { color: #64748b !important; font-style: italic !important; } /* Muted Slate */
-    :global(.pedagogical-content-root .hljs-number) { color: #f97316 !important; } /* Orange */
-    :global(.pedagogical-content-root .hljs-attr) { color: #818cf8 !important; }
-    :global(.pedagogical-content-root .hljs-type) { color: #fbbf24 !important; }
-    :global(.pedagogical-content-root .hljs-meta) { color: #ff5242 !important; }
+    /* Syntax Highlighting */
+    :global(.pedagogical-content-root .hljs-keyword) { color: #ff5242 !important; font-weight: 800 !important; }
+    :global(.pedagogical-content-root .hljs-string) { color: #34d399 !important; }
+    :global(.pedagogical-content-root .hljs-title.function_) { color: #60a5fa !important; }
 
-    /* 4. Blockquote */
+    /* 4. Blockquote with Large Right Watermark Icon */
     :global(.pedagogical-content-root blockquote) {
-        @apply my-10 border-l-8 border-slate-900 bg-slate-50 p-10 italic text-slate-800 rounded-r-3xl shadow-inner;
+        @apply my-8 bg-slate-50 border-y border-r border-slate-100 border-l-8 border-primary-500 p-8 italic text-slate-700 rounded-3xl shadow-sm relative overflow-hidden;
+    }
+
+    :global(.pedagogical-content-root blockquote strong) {
+        @apply not-italic inline-block mb-3 px-3 py-1 rounded-full bg-primary-100 text-primary-700 font-black uppercase tracking-widest text-[9px] border border-primary-200;
+    }
+
+    /* Watermark Icon Styling */
+    :global(.pedagogical-content-root .quote-watermark-lamp) {
+        @apply absolute -right-6 -bottom-8 w-40 h-40 text-primary-500/20 -rotate-12 pointer-events-none;
+    }
+
+    :global(.pedagogical-content-root blockquote p) {
+        @apply mb-0 relative z-10;
     }
 </style>
