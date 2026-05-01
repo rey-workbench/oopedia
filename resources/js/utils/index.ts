@@ -3,15 +3,6 @@ export type { RouteKeys } from './route';
 export { route, navigateTo, redirectTo } from './router';
 export { confirmDelete } from './confirmDelete';
 export { generateId, generateStableId } from './ids';
-export {
-    getGradientClass,
-    getTextClass,
-    getBgClass,
-    getShadowClass,
-    getIcon,
-    getBadgeLabel,
-} from './contentTypeStyles';
-export { enhanceCodeBlocks } from './codeBlockEnhancer';
 export { formatDate, relativeTime } from './formatters';
 export { handleImagePreview } from './imagePreview';
 export { getDifficultyLabel, getDifficultyColor } from './quizUtils';

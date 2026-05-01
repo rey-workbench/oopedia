@@ -5,27 +5,13 @@
     import ContentDisplay from '@/components/ui/ContentDisplay.svelte';
     import { page } from '@inertiajs/svelte';
     import { Info, Puzzle } from 'lucide-svelte';
-    import { onMount, tick, untrack } from 'svelte';
-    import { enhanceCodeBlocks } from '@/utils/codeBlockEnhancer';
+    import { untrack } from 'svelte';
     import { MaterialShowState } from '@/states/Mahasiswa/MaterialState.svelte';
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import { ROUTES } from '@/utils/route';
     import type { Material } from '@/types';
 
     const { material }: { material: Material } = $props();
-
-    let contentContainer: HTMLElement | undefined;
-
-    onMount(async () => {
-        await tick();
-        if (contentContainer) enhanceCodeBlocks(contentContainer);
-    });
-
-    $effect(() => {
-        if (material && contentContainer) {
-            tick().then(() => enhanceCodeBlocks(contentContainer!));
-        }
-    });
 
     // Initialize State
     const from_adaptive = (page.props as any)?.flash?.from_adaptive || false;
@@ -65,9 +51,6 @@
             <div id="material-content">
                 <Card>
                     <div class="prose max-w-none">
-                        <h3 class="mb-4 text-2xl font-bold tracking-widest text-slate-900">
-                            Tentang Materi Ini
-                        </h3>
                         <div class="leading-relaxed font-medium text-slate-600">
                             <ContentDisplay content={state.material.content} />
                         </div>

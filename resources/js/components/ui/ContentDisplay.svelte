@@ -1,151 +1,179 @@
 <script lang="ts">
-    import { tick } from 'svelte';
-    import { enhanceCodeBlocks } from '@/utils/codeBlockEnhancer';
+    import hljs from 'highlight.js';
     import DOMPurify from 'dompurify';
-    import 'highlight.js/styles/atom-one-dark.css';
 
     interface Props {
-        content?: string;
+        content: string;
+        className?: string;
     }
 
-    let { content = '' }: Props = $props();
+    let { content = '', className = '' }: Props = $props();
 
-    let contentContainer: HTMLDivElement | undefined = $state();
+    let container: HTMLElement;
 
-    const safeContent = $derived(
-        content
-            ? DOMPurify.sanitize(content, {
-                  ADD_TAGS: ['iframe'],
-                  ADD_ATTR: [
-                      'allow',
-                      'allowfullscreen',
-                      'frameborder',
-                      'scrolling',
-                      'src',
-                      'width',
-                      'height',
-                      'title',
-                  ],
-              })
-            : ''
-    );
+    // Sanitize content while allowing table and code tags
+    const safeContent = $derived(DOMPurify.sanitize(content, {
+        ADD_TAGS: ['iframe', 'blockquote', 'table', 'thead', 'tbody', 'tr', 'th', 'td'],
+        ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling']
+    }));
 
+    // Unified Enhancement Logic
     $effect(() => {
-        if (safeContent && contentContainer) {
-            tick().then(() => enhanceCodeBlocks(contentContainer!));
+        if (safeContent && container) {
+            processContent();
         }
     });
+
+    function processContent() {
+        // 1. Handle Code Blocks (Java Optimized)
+        const codeBlocks = container.querySelectorAll('.ql-code-block-container, .ql-syntax, pre');
+        codeBlocks.forEach((block) => {
+            const el = block as HTMLElement;
+            if (!el.dataset['enhanced']) {
+                // Handle Quill divs, standard pre tags, and pre > code structures
+                const quillLines = el.querySelectorAll('.ql-code-block');
+                const nestedCode = el.querySelector('code');
+
+                let text = '';
+                if (quillLines.length > 0) {
+                    text = Array.from(quillLines).map(l => (l as HTMLElement).innerText).join('\n');
+                } else if (nestedCode) {
+                    text = (nestedCode as HTMLElement).innerText;
+                } else {
+                    text = el.innerText;
+                }
+                
+                try {
+                    const highlighted = hljs.highlight(text, { language: 'java' }).value;
+                    
+                    // Create a robust structure with inline copy button
+                    el.innerHTML = `
+                        <div class="terminal-header">
+                            <div class="terminal-dots">
+                                <span class="dot-red"></span>
+                                <span class="dot-yellow"></span>
+                                <span class="dot-green"></span>
+                            </div>
+                            <button class="terminal-copy-btn" title="Salin Kode">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                            </button>
+                        </div>
+                        <div class="hljs-code-content">${highlighted}</div>
+                    `;
+                    
+                    el.dataset['enhanced'] = 'true';
+                    setupCopyLogic(el, text);
+                } catch (e) {
+                    console.error('Highlight error:', e);
+                }
+            }
+        });
+
+        // 2. Handle Tables
+        const tables = container.querySelectorAll('table');
+        tables.forEach(table => {
+            if (!table.parentElement?.classList.contains('table-responsive-wrapper')) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'table-responsive-wrapper';
+                table.parentNode?.insertBefore(wrapper, table);
+                wrapper.appendChild(table);
+            }
+        });
+    }
+
+    function setupCopyLogic(el: HTMLElement, text: string) {
+        const btn = el.querySelector('.terminal-copy-btn') as HTMLButtonElement;
+        if (!btn) return;
+
+        btn.onclick = async () => {
+            await navigator.clipboard.writeText(text);
+            const original = btn.innerHTML;
+            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`;
+            setTimeout(() => btn.innerHTML = original, 2000);
+        };
+    }
 </script>
 
-<style>
-    /* Force fonts from global theme */
-    :global(.prose) {
-        font-family: var(--font-sans, 'Inter', sans-serif);
-    }
-
-    :global(.prose h1, .prose h2, .prose h3, .prose h4) {
-        font-family: var(--font-display, 'Poppins', sans-serif);
-    }
-
-    :global(code) {
-        font-family: 'JetBrains Mono', 'Consolas', 'Monaco', monospace !important;
-    }
-
-    /* Inline code style - matching theme */
-    :global(p code),
-    :global(li code),
-    :global(span code) {
-        background-color: var(--color-primary-50, #f0f7ff) !important;
-        color: var(--color-primary-600, #0c0c14) !important;
-        padding: 0.2rem 0.5rem !important;
-        border-radius: 0.75rem !important;
-        font-size: 0.875em !important;
-        font-weight: 700 !important;
-        border: 2px solid var(--color-primary-100, #e2e8f0) !important;
-    }
-
-    /* Quill Code Block Styling - Integration with global theme */
-    :global(.ql-code-block-container) {
-        background-color: #282c34 !important; /* Atom One Dark background */
-        color: #abb2bf !important;
-        padding: 2.5rem 1.5rem 1.5rem 1.5rem !important;
-        border-radius: 1.5rem !important;
-        border: 2px solid rgba(0, 0, 0, 0.2) !important;
-        border-left: 8px solid var(--color-primary-500, #0c0c14) !important;
-        font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !important;
-        position: relative !important;
-        margin-top: 2rem !important;
-        margin-bottom: 2rem !important;
-        overflow-x: auto !important;
-        white-space: pre !important;
-        display: block !important;
-        line-height: 1.6 !important;
-        font-size: 0.9rem !important;
-        tab-size: 4 !important;
-    }
-
-    /* Decorative dots (macOS style) */
-    :global(.ql-code-block-container::before) {
-        content: '';
-        position: absolute;
-        top: 0.85rem;
-        left: 1.1rem;
-        width: 3.2rem;
-        height: 0.75rem;
-        background-image:
-            radial-gradient(circle, #ff5f56 0.25rem, transparent 0.25rem),
-            radial-gradient(circle, #ffbd2e 0.25rem, transparent 0.25rem),
-            radial-gradient(circle, #27c93f 0.25rem, transparent 0.25rem);
-        background-size: 1rem 1rem;
-        background-position:
-            0 0,
-            1rem 0,
-            2rem 0;
-        background-repeat: no-repeat;
-        opacity: 0.8;
-    }
-
-    :global(.ql-code-block) {
-        background-color: transparent !important;
-        color: inherit !important;
-        padding: 0 !important;
-        font-family: inherit !important;
-    }
-
-    /* Blockquote styling */
-    :global(.prose blockquote) {
-        border-left: 6px solid var(--color-primary-500) !important;
-        background-color: var(--color-primary-50) !important;
-        color: var(--color-primary-800) !important;
-        padding: 1.25rem 1.75rem !important;
-        border-radius: 0 1.5rem 1.5rem 0 !important;
-        font-style: italic !important;
-        font-weight: 500 !important;
-    }
-
-    /* Images within content */
-    :global(.prose img) {
-        border-radius: 1.5rem !important;
-        border: 2px solid var(--color-cosmos-border) !important;
-        margin: 2rem auto !important;
-    }
-
-    /* Lists item spacing */
-    :global(.prose li) {
-        margin-top: 0.5rem !important;
-        margin-bottom: 0.5rem !important;
-    }
-</style>
-
 <div
-    class="prose prose-slate prose-headings:font-display
-    prose-headings:font-extrabold prose-headings:tracking-tight prose-headings:text-slate-900 prose-p:text-slate-600
-    prose-p:leading-relaxed prose-p:font-sans prose-a:text-primary-600
-    prose-a:font-bold prose-a:no-underline hover:prose-a:underline prose-strong:text-slate-900
-    prose-strong:font-bold prose-ul:list-disc
-    prose-ul:pl-5 max-w-none
-    "
-    bind:this={contentContainer}
+    bind:this={container}
+    id="oopedia-content-v2"
+    class="pedagogical-content-root px-6 md:px-10 py-6 {className}"
 >
     {@html safeContent}
 </div>
+
+<style>
+    @reference "../../../css/app.css";
+
+    /* 1. Typography & Layout */
+    :global(.pedagogical-content-root) {
+        @apply leading-relaxed text-slate-600 font-medium;
+        font-family: var(--font-body) !important;
+    }
+
+    :global(.pedagogical-content-root h2) {
+        @apply text-2xl md:text-3xl font-black text-slate-900 mt-12 mb-6 tracking-widest uppercase border-b-6 border-slate-100 pb-4 block;
+    }
+
+    :global(.pedagogical-content-root h3) {
+        @apply text-xl font-extrabold text-slate-800 mt-8 mb-4 tracking-wider block;
+    }
+
+    /* 2. Tables */
+    :global(.table-responsive-wrapper) {
+        @apply my-10 overflow-hidden rounded-3xl border-2 border-b-8 border-slate-200 shadow-xl;
+    }
+
+    /* 3. High-Contrast Oopedia Pro Code Blocks */
+    :global(.pedagogical-content-root .ql-code-block-container, 
+    .pedagogical-content-root .ql-syntax, 
+    .pedagogical-content-root pre) {
+        @apply relative my-8 p-0 rounded-3xl bg-[#0c0c14] border-2 border-b-8 border-slate-900 shadow-2xl overflow-hidden block;
+        font-family: var(--font-mono) !important;
+    }
+
+    :global(.pedagogical-content-root .hljs-code-content) {
+        @apply px-8 pt-4 pb-4 overflow-x-auto;
+        line-height: 1.8 !important;
+        font-size: 0.95rem !important;
+        color: #e2e8f0 !important; /* Brighter main text */
+    }
+
+    /* Terminal Header */
+    :global(.pedagogical-content-root .terminal-header) {
+        @apply h-11 bg-slate-900/60 border-b border-white/5 flex items-center justify-between px-6;
+    }
+
+    :global(.pedagogical-content-root .terminal-dots) {
+        @apply flex gap-2;
+    }
+
+    :global(.pedagogical-content-root .terminal-dots span) {
+        @apply w-3 h-3 rounded-full;
+    }
+
+    :global(.pedagogical-content-root .dot-red) { @apply bg-[#ff5f56]; }
+    :global(.pedagogical-content-root .dot-yellow) { @apply bg-[#ffbd2e]; }
+    :global(.pedagogical-content-root .dot-green) { @apply bg-[#27c93f]; }
+
+    /* Inline Copy Button */
+    :global(.pedagogical-content-root .terminal-copy-btn) {
+        @apply p-2 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-all flex items-center justify-center;
+    }
+
+    /* Vibrant Oopedia Syntax Colors (High Contrast) */
+    :global(.pedagogical-content-root .hljs-keyword) { color: #ff5242 !important; font-weight: 800 !important; } /* Oopedia Coral Neon */
+    :global(.pedagogical-content-root .hljs-string) { color: #34d399 !important; } /* Success Green Neon */
+    :global(.pedagogical-content-root .hljs-title.function_) { color: #60a5fa !important; } /* Info Blue Neon */
+    :global(.pedagogical-content-root .hljs-title.class_) { color: #fbbf24 !important; } /* Warning Yellow Neon */
+    :global(.pedagogical-content-root .hljs-comment) { color: #64748b !important; font-style: italic !important; } /* Muted Slate */
+    :global(.pedagogical-content-root .hljs-number) { color: #f97316 !important; } /* Orange */
+    :global(.pedagogical-content-root .hljs-attr) { color: #818cf8 !important; }
+    :global(.pedagogical-content-root .hljs-type) { color: #fbbf24 !important; }
+    :global(.pedagogical-content-root .hljs-meta) { color: #ff5242 !important; }
+
+    /* 4. Blockquote */
+    :global(.pedagogical-content-root blockquote) {
+        @apply my-10 border-l-8 border-slate-900 bg-slate-50 p-10 italic text-slate-800 rounded-r-3xl shadow-inner;
+    }
+</style>

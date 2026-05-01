@@ -102,7 +102,7 @@
 
 <div class="space-y-6">
     <!-- Question canvas: same dark terminal style as MultipleChoice -->
-    <div class="relative overflow-hidden rounded-3xl bg-slate-900 shadow-xl">
+    <div class="relative select-none overflow-hidden rounded-3xl bg-slate-900 shadow-xl" draggable="false">
         <div
             class="via-primary-500/60 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent"
         ></div>
@@ -136,7 +136,7 @@
         <!-- svelte-ignore a11y_no_static_element_interactions -->
         <div
             id="drag-drop-view"
-            class="selection:bg-primary-500/30 relative z-10 p-8 text-xl leading-12 font-semibold text-slate-100"
+            class="relative z-10 p-8 text-xl leading-12 font-semibold text-slate-100"
             ondragover={handleDragOver}
             ondragleave={handleDragLeave}
             ondrop={handleDrop}

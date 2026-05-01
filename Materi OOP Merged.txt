@@ -1,0 +1,2479 @@
+﻿
+
+
+
+
+PEMROGRAMAN BERORIENTASI OBJECT
+Konsep Dasar OOP
+
+Rules
+
+
+
+
+
+
+
+Don't be late
+
+Don't call (WA Only)
+Monday-Friday(07.00 - 18.00 WIB)
+
+
+Don't cheat
+Discount 50%
+
+
+
+
+
+3
+
+Outline
+
+
+* PBO vs Struktural
+* Konsep dasar PBO
+
+Matakuliah PBO
+
+
+* Pemrograman Berbasis Objek (2 SKS/4x50 menit)
+* Praktikum Pemrograman Berbasis Objek (2 SKS/4x50 menit)
+* Capaian Pembelajaran
+🞑 Mampu membuat program dengan menggunakan prinsip-prinsip OOP menggunakan bahasa pemrograman Java
+
+Silabus
+
+
+
+
+Pertemuan Ke-Pembahasan1Pengantar Konsep Dasar OOP2Class dan Object3Enkapsulasi4Relasi Class5Kuis 16Inheritance7Overriding dan Overloading8Ujian Tengah Semester (UTS)9Abstract Class10Interface11Polimorfisme12Kuis 213-16OOP pada Bahasa pemrograman lain17Ujian Akhir Semester (UAS)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  Pemrograman Berorientasi Objek	Vs
+
+Pemrograman Struktural
+
+
+
+
+
+
+- PEMROGRAMAN STRUKTURAL
+Paradigma pemrograman dengan konsep
+bahwa program merupakan urutan langkah-langkah yang dilakukan untuk menyelesaikan suatu masalah
+
+Pemrograman Struktural
+
+
+* Contoh:
+* Kita akan membuat program game simulasi sepeda, didalamnya ada objek sepeda yang memiliki kecepatan, gear dan merk.
+* Bagaimana membangun game tersebut dengan metode struktural?
+🞑 Langkah pertama kita buat variabelnya, misal kecepatan, gear, merk
+🞑 Langkah berikutnya kita buat fungsi-fungsinya, tambah kecepatan, kurangi kecepatan.
+🞑 Langkah berikutnya kita coba mengoperasikan sepeda tersebut secara sederhana, yaitu memanipulasi kecepatan, gear, merk nya, didalam fungsi main, kemudian kita cetak ke layar.
+* Kode program -->...
+
+
+
+Pemrograman Struktural
+
+
+* Bagaimana jika ada dua sepeda di game?
+🞑 Tambahkan variabel merek2, kecepatan2, gear2
+🞑 Coba manipulasi nilai-nilai variabelnya kemudian tampilkan ke layar
+* Kode program --> ...
+
+
+
+
+
+
+12
+baris
+
+Objek Oriented vs Struktural
+
+
+* Bagaimana jika ada sepuluh sepeda?
+🞑 Tambahkan variabel merek3, kecepatan3, gear3
+..................... merek10, kecepatan10, gear10
+
+
+
+
+
+
+
+
+
+
+
+Algorithms + Data Structures = Programs
+(Niklaus Wirth, 1975, Prentice Hall)
+
+
+
+
+
+
+- PEMROGRAMAN BERORIENTASI OBJEK
+Paradigma pemrograman yang berfokus pada objek
+Data + Algorithm
+
+Konsep OOP
+
+
+* Beberapa aspek dalam OOP:
+🞑 Object
+🞑  Class
+🞑  Enkapsulasi
+🞑  Inheritance
+🞑  Polimorfisme
+
+
+
+
+
+
+
+
+CLASS & OBJECT
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- OBJEK
+Siapa dan apa saja yang terlibat dalam business process?
+
+
+
+SISTEM INFORMASI AKADEMIK
+
+
+
+
+
+
+Aljabar Linear
+
+
+
+
+ TEKNIK SIPIL TEKNIK KIMIA
+
+
+
+
+
+Kalkulus 2
+
+
+
+AKUNTANSI
+
+
+
+ Analisis Numerik Matematika Diskrit
+
+
+
+AKUNTANSI
+
+
+
+
+
+
+
+
+
+SISTEM INFORMASI AKADEMIK
+
+
+
+
+Analisis Numerik Matematika Diskrit Aljabar Linear Kalkulus 2
+
+
+
+    AKUNTANSI TEKNIK INFORMATIKA
+ TEKNIK SIPIL TEKNIK KIMIA
+
+
+
+
+
+
+
+
+
+
+
+
+Apa yang dimiliki?
+KARAKTERISTIK
+Apa yang bisa dilakukan?
+
+
+
+
+
+
+
+Apa yang dimiliki sebuah objek mahasiswa?
+
+
+
+• Nama
+• NIM
+• Tanggal Lahir
+• Jenis Kelamin
+• Alamat
+
+
+-ATRIBUT:
+Variabel/properti/ciri/status
+/sifat yang dimiliki oleh suatu objek
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Apa yang bisa dilakukan oleh/terhadap objek mahasiswa?
+
+
+
+
+• Memilih mata kuliah
+• Melihat nilai
+• Mengajukan cuti
+akademik
+
+-METHOD:
+Prosedur/fungsi/perilaku/pr oses yang bisa dilakukan oleh/terhadap suatu objek
+
+
+SISTEM INFORMASI AKADEMIK
+
+
+Analisis Numerik Matematika Diskrit Aljabar Linear Kalkulus 2
+
+
+
+    AKUNTANSI TEKNIK INFORMATIKA
+ TEKNIK SIPIL MATEMATIKA
+
+
+
+
+
+
+
+
+
+
+- CLASS
+Blueprint/template/cetakan yang mendefinisikan karakteristik (atribut dan method) objek pada class
+
+
+
+
+- OBJECT
+
+Objek adalah representasi dari setiap entitas yang terlibat dalam sistem (baik yang nyata maupun tidak nyata)
+Setiap objek akan memiliki sekumpulan variabel/ciri/status dengan nilai yang melekat padanya
+
+
+
+
+
+Class Donat	6 Objek pada Class Donat
+
+
+
+
+
+
+Class Rumah	3 Objek pada Class Rumah
+
+
+
+
+
+
+
+
+
+
+
+
+6
+baris
+
+Kesimpulan
+
+
+* Struktural
+🞑 Program dipecah ke dalam fungsi/prosedur
+🞑 Perubahan fitur --> kemungkinan mengganggu keseluruhan program
+* Object Oriented
+🞑 Program dipecah ke dalam object
+* Didalamnya terdapat state dan behavior
+🞑 Perubahan fitur --> tidak mengganggu keseluruhan program
+
+Latihan
+
+
+* Carilah objek apa saja di dunia nyata sebanyak 5.
+* Tuliskan state/atribut dan behavior/method objek tersebut. Makin
+banyak state dan behavior makin baik. Contoh:
+* Televisi
+🞑	State:
+* Merek
+* Ukuran layar
+* Channel
+* Volume
+🞑	Behavior:
+* Nyalakan
+* Matikan
+* Pindah channel
+* Tambah volume
+* Kurangi volume
+
+Referensi
+
+
+* Horstmann, C. S., & Cornell, G. (2007). Core Java Volume I- Fundamentals, Eighth Edition. Network Circle, Santa Clara: Prentice Hall.
+* Horstmann, C. S., & Cornell, G. (2008). Core Java Volume II- Advanced Features, Eighth Edition. Network Circle, Santa Clara: Prentice Hall.
+* https://www.javatpoint.com/java-oops-concepts
+* Dapat di download di http://libgen.io/
+
+
+
+Class dan Object
+PEMROGRAMAN BERORIENTASI OBJEK JURUSAN TEKNOLOGI INFORMASI POLITEKNIK NEGERI MALANG
+
+
+
+
+- OBJECT
+
+
+
+Objek adalah representasi dari setiap entitas yang terlibat dalam sistem
+
+
+
+
+
+
+- CLASS
+Blueprint/template/cetakan yang mendefinisikan karakteristik (atribut dan method) objek pada class
+
+
+
+
+
+
+
+
+Apa yang dimiliki?
+KARAKTERISTIK
+Apa yang bisa dilakukan?
+
+
+
+
+
+
+
+Apa yang dimiliki sebuah objek mahasiswa?
+
+
+
+• Nama
+• NIM
+• Tanggal Lahir
+• Jenis Kelamin
+• Alamat
+
+
+-ATRIBUT:
+Variabel/ciri/status/sifat yang dimiliki oleh suatu objek
+
+
+
+
+
+
+Apa yang bisa dilakukan oleh/terhadap objek mahasiswa?
+
+
+
+
+• Memilih mata kuliah
+• Melihat nilai
+• Mengajukan cuti
+akademik
+
+-METHOD:
+Prosedur/fungsi/perilaku/ proses yang bisa dilakukan oleh/terhadap suatu objek
+
+
+
+
+
+
+
+
+Tidak diawali angka Underscore?
+
+
+
+
+
+
+
+
+▪ Berupa kata benda
+▪ Diawali dengan HURUF KAPITAL,
+▪ Jika terdiri dari lebih dari 1 kata, maka setiap kata disambungkan, dan huruf awal dari tiap kata menggunakan HURUF KAPITAL
+▪ Contoh:  Mahasiswa,  TenagaKependidikan
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+▪ Untuk	mendeklarasikan	suatu	class,	digunakan	keyword class lalu diikuti dengan nama class yang akan dibuat, e.g:
+public class Mahasiswa{
+
+
+}
+
+
+
+
+
+
+
+▪ Berupa kata benda atau kata sifat,
+▪ Diawali dengan HURUF KECIL
+▪ Jika terdiri dari lebih dari 1 kata, maka setiap kata disambungkan, dan huruf awal dari tiap kata menggunakan HURUF BESAR.
+
+
+
+
+
+
+▪ Untuk melakukan deklarasi atribut:
+
+
+
+
+
+
+
+▪ Exp :
+
+
+public String nim; public String nama; public String alamat;
+
+
+
+
+
+
+
+
+
+
+
+▪ Berupa kata kerja,
+▪ Diawali dengan HURUF KECIL,
+▪ Jika terdiri dari lebih dari 1 kata, maka setiap kata disambungkan, dan huruf awal dari tiap kata menggunakan HURUF BESAR.
+
+
+
+
+
+
+▪ Untuk melakukan pendeklarasian method dapat dilakukan dengan
+sintaks sebagai berikut :
+<modifier> <return_type> <nama method>(param1, param2, ...)
+{
+//statements
+}
+
+
+
+
+
+
+
+
+▪ Method dengan return type void, berarti tidak memiliki return value, sehingga tidak memerlukan kata kunci return di dalamnya.
+▪ Method dengan return type selain void, berarti memerlukan return value, sehingga harus ada nilai yang dikembalikan dengan kata kunci return di dalamnya
+
+
+
+
+
+
+
+• Constructor --> method istimewa yang digunakan untuk melakukan instansiasi objek (membuat objek baru)
+• Istimewa:
+1. Nama method sama dengan nama class
+2. Tidak memiliki return type
+3. Hanya bisa dijalankan/dipanggil pada proses instansiasi
+
+• Jika sebuah class tidak memiliki constructor secara eksplisit, maka secara default Java compiler akan menyediakan constructor tanpa paremeter
+
+
+
+
+
+▪ Object adalah instansiasi dari sebuah class
+▪ Instansiasi dilakukan dengan memanggil constructor menggunakan keyword new
+
+
+
+
+
+▪ Contoh:
+Mahasiswa mahasiswa1 = new Mahasiswa(); Mahasiswa ani = new Mahasiswa();
+
+
+
+public class Mahasiswa{ public String nim; public String nama; public String alamat;
+public void cetakBiodataMahasiswa(){ System.out.println("Biodata Mahasiswa"); System.out.println("Nim	:" + nim); System.out.println("Nama	 :" + nama); System.out.println("Alamat	:" + alamat);
+}
+}
+
+
+
+
+
+public class DemoMahasiswa{
+public static void main(String[] args){ Mahasiswa mhs = new Mahasiswa(); mhs.nim = "14324";
+mhs.nama = "Very Sugiarto"; mhs.alamat = "Malang"; mhs.cetakBiodataMahasiswa();
+}
+}
+
+
+
+
+public class Donat{
+public String topping;
+}
+
+
+
+public class Donat{
+public String topping;
+
+
+public Donat(){
+}
+}
+
+
+
+
+
+
+
+public class DemoDonat{
+public static void main(String[] args){
+Donat donat1 = new Donat();	
+donat1.topping = "Strawberry sprinkles";
+}
+}
+
+
+
+
+
+• Constructor berparameter digunakan untuk menginstansiasi objek baru dengan kondisi/nilai tertentu.
+• Java compiler tidak akan menyediakan default constructor (tanpa parameter) jika constructor lain sudah dibuat oleh programmer
+
+public class Donat{
+public String topping;
+
+
+Donat(String selectedTopping){ topping = selectedTopping;
+}
+}
+
+
+
+
+
+
+
+
+public class DemoDonat{
+public static void main(String[] args){
+Donat donat1 = new Donat("Strawberry sprinkles");
+}
+}
+
+
+public class Donat{
+public String topping;
+
+Jika sebuah class tidak memiliki constructor secara eksplisit, maka secara default Java compiler akan menyediakan constructor tanpa paremeter
+
+}
+
+
+
+
+
+
+
+public class Donat{
+public String topping;
+
+public class DemoDonat{
+public static void main(String[] args){ Donat donat1 = new Donat();
+donat1.topping = "Strawberry sprinkles";
+}
+
+public Donat(){	}
+}
+}
+
+public class Donat{
+public String topping;
+
+Donat(String selectedTopping){ topping = selectedTopping;
+}
+}
+Java compiler tidak akan menyediakan default constructor (tanpa parameter) jika constructor lain sudah dibuat oleh
+
+programmer
+
+public class Donat{
+public String topping;
+
+Donat(String selectedTopping){
+topping = selectedTopping;
+
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+	
+
+Latihan
+
+
+* Carilah objek apa saja di dunia nyata sebanyak 5.
+* Tuliskan state/atribut dan behavior/method objek tersebut. Makin
+banyak state dan behavior makin baik. Contoh:
+* Televisi
+🞑	State:
+* Merek
+* Ukuran layar
+* Channel
+* Volume
+🞑	Behavior:
+* Nyalakan
+* Matikan
+* Pindah channel
+* Tambah volume
+* Kurangi volume
+
+
+
+
+
+
+
+
+
+▪ Buatlah class diagram untuk setiap class yang
+dibuat pada Tugas 01
+▪ Perhatikan best practice penamaan class, method, dan atribut (kata benda/sifat/kerja dan huruf kapital)
+
+
+
+
+
+
+
+ENKAPSULASI
+Minggu ke-3 PBO
+
+Overview
+
+
+* Enkapsulasi
+🞑  Definisi
+🞑  Tujuan
+🞑  Mekanisme
+🞑 Access Level Modifier
+🞑 Setter & Getter
+* Notasi pada UML Class Diagram
+* Constructor
+
+Enkapsulasi
+
+
+
+
+
+
+
+
+
+
+
+
+
+Enkapsulasi
+
+
+* Definisi:
+🞑 Penyatuan/penggabungan atribut dan method dari suatu objek menjadi suatu kesatuan
+🞑 Pembatasan akses langsung terhadap komponen dari suatu objek
+
+Tujuan Enkapsulasi
+
+
+* Penyembunyian struktur internal dari suatu objek --> information hiding/data hiding
+* Melindungi atribut dari perubahan di luar class secara random. Atribut dapat dibuat menjadi read-only atau write-only
+* Mempermudah implementasi perubahan requirements
+* Mempermudah pengujian unit sistem
+
+Mekanisme Enkapsulasi
+
+
+* Enkapsulasi bisa dilakukan dengan mengeset access level modifier menjadi private sehingga tidak dapat diakses secara langsung di luar class
+* Menyediakan getter dan setter sebagai cara untuk mengakses atau memodifikasi private attribute
+
+Access  Level  Modifier
+
+
+* Terdapat 4 access level modifier yaitu:
+🞑 public - dapat diakases dari mana saja
+🞑 protected - dapat diakases di luar package asal merupakan subclass (inherit terhadap class nya)
+🞑 no modifier (package-private) - hanya dapat diakses di dalam package yang sama
+🞑 private - hanya dapat diakses di dalam kelas yang sama
+* Class hanya memiliki 2 jenis access level modifier yaitu public dan no modifier
+
+Akses Modifier
+
+
+
+
+
+
+
+
+
+ModifierClassPackageSubclassOutside Packagepublicvvvvprotectedvvvno modifiervvprivatev
+Setter dan Getter
+
+
+* Getter
+🞑	Public method yang berfungsi mengembalikan nilai dari atribut private
+🞑	Ada return value
+* Setter
+🞑 Public method yang berfungsi untuk memanipulasi nilai dari atribut private
+🞑 Tidak ada return value
+
+Tanpa Enkapsulasi
+
+
+
+
+
+
+
+Dengan Enkapsulasi
+
+
+
+
+Read-Only & Write-Only Attribute
+
+
+* Read-only attribute --> hanya memiliki getter, tetapi tidak memiliki setter
+* Write-only attribute --> hanya memiliki setter, tetapi tidak memiliki getter
+
+Notasi Pada UML Class Diagram
+
+
+
+
+
+
+
+
+
+Anggota- nama: String
+- alamat: String+ getNama(): String
++ setNama(newNama: String): void
++ getAlamat(): String
++ setAlamat(newAlamat: String): void
+Notasi Pada UML Class Diagram
+
+
+* Notasi access level modifier pada UML class diagram adalah sebagai berikut:
+🞑 Tanda plus (+) untuk public
+🞑 Tanda pagar (#) untuk protected
+🞑 Tanda minus (-) untuk private
+🞑 Untuk no-modifier tidak diberi notasi
+
+Constructor
+
+
+* Method yang digunakan untuk menginstansiasi objek dari suatu class
+* Beberapa aturan deklarasi constructor:
+🞑 Nama constructor harus sama dengan nama class
+🞑 Constructor tidak memiliki return type
+
+Constructor
+
+
+Contoh
+public class Anggota { private String nama; private String alamat; private float simpanan;
+
+//constructor
+Anggota(String nama, String alamat){ this.nama = nama;
+this.alamat = alamat;
+this.simpanan = 0;
+}
+}
+
+Instansiasi Objek
+
+
+
+
+
+
+
+
+
+
+
+
+
+ENKAPSULASI
+Minggu ke-3 PBO
+
+Overview
+
+
+* Enkapsulasi
+🞑  Definisi
+🞑  Tujuan
+🞑  Mekanisme
+🞑 Access Level Modifier
+🞑 Setter & Getter
+* Notasi pada UML Class Diagram
+
+Enkapsulasi
+
+
+
+
+
+
+
+
+
+
+
+
+
+Enkapsulasi
+
+
+* Definisi:
+🞑 Penyatuan/penggabungan atribut dan method dari suatu objek menjadi suatu kesatuan
+🞑 Pembatasan akses langsung terhadap komponen dari suatu objek
+
+Tujuan Enkapsulasi
+
+
+* Penyembunyian struktur internal dari suatu objek --> information hiding/data hiding
+* Melindungi atribut dari perubahan di luar class secara random. Atribut dapat dibuat menjadi read-only atau write-only
+* Mempermudah implementasi perubahan requirements
+* Mempermudah pengujian unit sistem
+
+Mekanisme Enkapsulasi
+
+
+* Set access level modifier menjadi private sehingga tidak dapat diakses secara langsung di luar class
+* Sediakan getter dan setter sebagai cara untuk mengakses atau memodifikasi private attribute
+
+Access  Level  Modifier
+
+
+* 4 access level modifier untuk atribut dan method:
+--> public, protected, no modifier, private
+* 2 access level modifier untuk class:
+--> public dan no modifier
+
+Access  Level  Modifier
+
+
+* Terdapat 4 access level modifier yaitu:
+🞑 public - dapat diakases dari mana saja
+🞑 protected - dapat diakases di luar package asal merupakan subclass (inherit terhadap class nya)
+🞑 no modifier (package-private) - hanya dapat diakses di dalam package yang sama
+🞑 private - hanya dapat diakses di dalam kelas yang sama
+
+Akses Modifier
+
+
+
+
+
+
+
+
+
+ModifierClassPackageSubclassOutside Packagepublicvvvvprotectedvvvno modifiervvprivatev
+Setter dan Getter
+
+
+* Getter
+🞑	Public method yang berfungsi mengembalikan nilai dari atribut private
+🞑	Ada return value
+* Setter
+🞑 Public method yang berfungsi untuk memanipulasi nilai dari atribut private
+🞑 Tidak ada return value
+
+Tanpa Enkapsulasi
+
+
+
+
+
+
+
+Dengan Enkapsulasi
+
+this keyword
+
+
+* Keyword this merujuk pada current object
+* Keyword ini biasanya digunakan untuk mengeliminasi kebingungan antara atribut dan parameter dengan nama yang sama
+
+Read-Only & Write-Only Attribute
+
+
+* Read-only attribute --> hanya memiliki getter, tetapi tidak memiliki setter
+* Write-only attribute --> hanya memiliki setter, tetapi tidak memiliki getter
+
+Notasi Pada UML Class Diagram
+
+
+* Notasi access level modifier pada UML class diagram adalah sebagai berikut:
+🞑 Tanda plus (+) untuk public
+🞑 Tanda pagar (#) untuk protected
+🞑 Tanda minus (-) untuk private
+🞑 Untuk no-modifier tidak diberi notasi
+
+Notasi Pada UML Class Diagram
+
+
+
+
+
+
+
+
+
+Anggota- nama: String
+- alamat: String+ getNama(): String
++ setNama(newNama: String): void
++ getAlamat(): String
++ setAlamat(newAlamat: String): void
+  
+
+
+CLASS RELATION (RELASI KELAS)
+PEMROGRAMAN BERBASIS OBJEK - PERTEMUAN 4
+
+
+
+JENIS RELASI
+◾ Ada 4 jenis relasi dasar antar class:
+1. Inheritance
+2. Association
+3. Aggregation
+4. Composition
+
+
+INHERITANCE
+◾ Menggambarkan relasi antara class yang lebih umum (parent/superclass) dan class yang lebih khusus (child/subclass)
+◾ "is-a" relationship
+◾ Contoh:
+> Dosen adalah seorang Karyawan
+> Kucing adalah seekor Binatang
+> Gedung adalah sebuah Bangunan
+> Mobil merupakan sebuah Kendaraan
+
+
+ASSOCIATION
+◾ Asosiasi merupakan relasi antar objek yang saling berkaitan dalam suatu sistem
+◾ "has-a" relationship
+◾ Contoh:
+> Dosen dan MataKuliah
+> Mahasiswa dan MataKuliah
+
+
+
+
+  
+
+
+
+
+
+AGGREGATION◾ Aggregation merupakan bentuk khusus dari Association dimana terdapat ownership antara satu class terhadap class lain, namun masing-masing objek memiliki life-cycle nya sendiri
+◾ Unidirectional association/one-way relationship
+◾ "has-a" + "whole-part" relationship
+◾ Ownership artinya ada kepemilikan antara kedua class tersebut. Contoh:
+> Jurusan terdiri dari beberapa Program Studi
+> Program Studi merupakan bagian dari Jurusan
+◾ Jurusan dan Program Studi memiliki life-cyle nya masing-masing, artinya jika Jurusan dihapus, Program Studi tidak secara otomatis terhapus juga.
+
+
+
+COMPOSITION
+◾ Composition merupakan bentuk khusus dari Aggregation dimana terdapat ownership antarkelas tetapi child object tidak memiliki life-cycle sendiri tanpa parent object
+◾ Tidak memiliki life cycle sendiri artinya, child object tidak dapat dibuat tanpa ada
+parent object; child object juga akan terhapus jika parent object dihapus.
+◾ Contoh:
+> Gedung terdiri dari Ruangan
+> Karyawan memiliki Tanggungan
+> E-mail memiliki Attachment
+
+
+JURUSAN & PROGRAM STUDI
+◾ Jika jurusan dihapus, maka otomatis program studi dihapus --> composition
+
+◾ Jika jurusan dihapus, program studi bisa berpindah ke jurusan lain --> aggregation
+
+
+
+MULTIPLICITY NOTATION
+
+
+
+
+ContohKeterangan1Tepat satu0..1Nol atau satu0..*Nol atau lebih1..*Satu atau lebih3..53 hingga 5
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+LATIHAN
+◾ Buat sebuah studi kasus dengan minimal 3 class yang saling berasosiasi.
+◾ Buat minimal 1 atribut bertipe ArrayList of objects
+◾ Tentukan atribut dan method pada masing-masing class
+◾ Gambarkan class diagramnya.
+
+
+
+
+
+
+PEMROGRAMAN BERBASIS OBJECT
+
+Minggu 6: Inheritance
+
+Outline
+◦ Pengertian inheritance
+◦ Deklarasi inheritance
+◦ Access Control
+◦ Super keyword
+◦ Jenis inheritance
+
+
+2
+
+Pengertian Dasar
+
+* Inheritance (Pewarisan) merupakan salah satu konsep dasar OOP.
+* Konsep inheritance ini mengadopsi dunia nyata, dimana suatu entitas/obyek dapat mempunyai entitas/obyek turunan.
+* Dengan konsep inheritance, sebuah class dapat mempunyai class turunan.
+
+
+
+3
+
+Pengertian
+◦ Suatu class yang mempunyai class turunan dinamakan superclass/parent class/base class.
+◦ Sedangkan class turunan itu sendiri seringkali disebut subclass/child class/derived class.
+◦ Suatu subclass dapat mewarisi apa-apa yang dipunyai oleh parent class.
+4
+
+
+
+Deklarasi inheritance
+* Dengan menambahkan kata kunci extends setelah deklarasi nama class, kemudian diikuti dengan nama parent class-nya.
+
+
+Kapan kita menerapkan inheritance?
+◦ Kita baru perlu menerapkan inheritance pada saat dijumpai ada suatu class yang dapat diperluas dari class lain
+
+
+
+
+class Pegawai
+
+class Dosen
+
+
+
+
+	
+
+◦ Dari 2 class di atas, kita lihat class Dosen memiliki atribut yang identik sama dengan class Pegawai, hanya saja ada tambahan atribut NIDN (Nomor Induk Dosen Nasional).
+◦ Sebenarnya yang terjadi disana adalah class Dosen merupakan
+extension/perluasan dari class Pegawai berupa tambahan atribut NIDN.
+◦ Dengan konsep inheritance, deklarasi class Dosen dapat dituliskan sebagai berikut:
+
+
+
+
+
+Access Control
+◦ Dalam dunia riil, suatu entitas induk bisa saja tidak mewariskan sebagian dari apa-apa yang ia punyai kepada entitas turunan karena sesuatu hal.
+◦ Demikian juga dengan konsep inheritance dalam OOP.
+◦ Suatu parent class bisa saja tidak mewariskan sebagian atribut atau method kepada subclass-nya.
+◦ Hal ini dilakukan dengan memberikan access level modifier private
+
+Kata Kunci "super"
+◦ Kata kunci super dipakai untuk merujuk pada parent class/object
+◦ Sebagaimana kata kunci this yang dipakai untuk merujuk pada current class/object
+◦ Format penulisannya adalah sebagai berikut :
+◦ super()
+--> merujuk pada constructor parent
+◦ super.<namaAttribute>
+--> merujuk pada atribut dari parent
+◦ super.<namaMethod>()
+--> merujuk pada method dari parent
+
+Kesimpulan
+◦ x
+--> merujuk pada x terdekat, yaitu parameter method info()
+◦ this.x
+--> merujuk pada atribut x pada class Child
+◦ super.x
+--> merujuk pada atribut x pada class Parent
+
+Single Inheritance
+• Konsep inheritance dengan sublass yang mempunyai satu parent class.
+
+class Animal{
+void eat(){System.out.println("eating...");}
+}
+class Dog extends Animal{
+void bark(){System.out.println("barking...");}
+}
+class TestInheritance{
+public static void main(String args[]){
+Dog d=new Dog(); d.bark();
+d.eat();
+}
+}
+
+Multilevel Inheritance
+• Ketika kelas diturunkan dari kelas yang juga diturunkan dari kelas lain, yaitu kelas
+yang memiliki lebih dari satu kelas induk tetapi pada tingkat yang berbeda
+class Animal{
+void eat(){System.out.println("eating...");}
+}
+class Dog extends Animal{
+void bark(){System.out.println("barking...");}
+}
+class BabyDog extends Dog{
+void weep(){System.out.println("weeping...");}
+}
+class TestInheritance2{
+public static void main(String args[]){ BabyDog d=new BabyDog(); d.weep();
+d.bark();
+d.eat();
+}
+}
+
+Hierarchical Inheritance
+• Ketika sebuah kelas memiliki lebih dari satu kelas turunan (subclass) atau dengan
+kata lain, lebih dari satu kelas turunan memiliki kelas induk yang sama.
+class Animal{
+void eat(){System.out.println("eating...");}
+}
+class Dog extends Animal{
+void bark(){System.out.println("barking...");}
+}
+class Cat extends Animal{
+void meow(){System.out.println("meowing...");}
+}
+class TestInheritance3{
+public static void main(String args[]){ Cat c=new Cat();
+c.meow();
+c.eat();
+//c.bark();//C.T.Error
+}
+}
+
+Hybrid Inheritance
+• Kombinasi dua atau lebih jenis inheritance.
+
+
+
+Hybrid Inheritance
+class A
+{
+public void display()
+{
+System.out.println("A");
+}
+}
+
+
+
+
+class C extends A
+{
+public void display()
+{
+System.out.println("C");
+}
+}
+
+
+
+class B extends A
+{
+public void display()
+{
+System.out.println("B");
+}
+}
+
+class D extends B
+{
+public void display()
+{
+System.out.println("D");
+}
+public static void main(String args[]){ D obj = new D(); obj.display();
+
+}
+}
+
+Multiple Inheritance
+
+◦ Multiple inheritance: satu kelas turunan mencoba untuk memperluas (extend) lebih dari satu kelas induk.
+◦ Misal terdapat method show() pada kelas B dan C dengan fungsi yang berbeda. Kemudian kelas D meng-extend kelas B dan
+C. Ketika objek dari kelas D mencoba memanggil method show(), kompilator akan bingung method di kelas mana yang akan dieksekusi (dari kelas B atau C)
+◦ Mengarah pada ambiguitas.
+
+Mengapa Multiple Inheritance tidak bisa diimplementasikan di Java?
+
+
+
+class A{
+void message(){System.out.println("Hello");}
+}
+class B extends A{
+void show(){System.out.println("Welcome");}
+}
+class C extends A{
+void show(){System.out.println("Good Morning");}
+}
+
+class D extends B,C{
+void print(){System.out.println("This is multiple inheritance");}
+}
+class TestInheritance4{
+public static void main(String args[]){ D obj=new D();
+obj.print();
+obj.show();//method show() mana yang akan dipanggil
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+TERIMA KASIH!
+
+
+
+
+
+
+
+PEMROGRAMAN BERBASIS OBJECT
+
+Minggu 6: Inheritance
+
+Outline
+◦ Pengertian inheritance
+◦ Deklarasi inheritance
+◦ Access Control
+◦ Super keyword
+◦ Jenis inheritance
+
+
+2
+
+Inheritance
+
+* Inheritance (Pewarisan) merupakan salah satu konsep dasar OOP.
+* Konsep inheritance ini mengadopsi dunia nyata, dimana suatu entitas/obyek dapat mempunyai entitas/obyek turunan.
+* Dengan konsep inheritance, sebuah class dapat mempunyai class turunan.
+* Konsep inheritance digunakan untuk memanfaatkan fitur 'code reuse' untuk
+menghindari duplikasi kode program
+
+
+
+
+
+3
+
+	
+
+
+
+Deklarasi inheritance
+* Dengan menambahkan kata kunci extends setelah deklarasi nama class, kemudian diikuti dengan nama parent class-nya.
+
+
+
+
+
+Kapan kita menerapkan inheritance?
+◦ Kita baru perlu menerapkan inheritance pada saat dijumpai ada suatu class yang dapat di-extend/diperluas/dikembangkan dari class lain
+
+
+
+
+
+class Pegawai
+
+class Dosen
+
+
+
+
+	
+
+◦ Dari 2 class di atas, kita lihat class Dosen memiliki atribut yang identik sama dengan class Pegawai, hanya saja ada tambahan atribut NIDN (Nomor Induk Dosen Nasional).
+◦ Sebenarnya yang terjadi disana adalah class Dosen merupakan
+extension/perluasan dari class Pegawai berupa tambahan atribut NIDN.
+◦ Dengan konsep inheritance, deklarasi class Dosen dapat dituliskan sebagai berikut:
+
+
+
+
+
+
+
+
+
+class Pegawai
+
+class Dosen
+
+
+
+
+	
+
+Kata Kunci "super"
+◦ Kata kunci super dipakai untuk merujuk pada parent class/object
+◦ Kata kunci this dipakai untuk merujuk pada current class/object
+◦ Format penulisannya adalah sebagai berikut:
+◦ super()
+--> merujuk pada constructor parent
+◦ super.<namaAttribute>
+--> merujuk pada atribut dari parent
+◦ super.<namaMethod>()
+--> merujuk pada method dari parent
+
+Variable Scope
+
+
+
+
+
+Variable Scope (2)
+
+
+
+
+
+Variable Scope (3)
+
+
+
+
+
+
+
+
+
+
+Kesimpulan
+◦ x
+--> merujuk pada x terdekat, cari dulu variable/parameter. Jika tidak ada berarti merujuk pada atribut class tersebut. Jika tidak ada berarti merujuk pada atribut parent class
+◦ this.x
+--> merujuk pada atribut x pada current class/object. Jika tidak ada berarti merujuk pada atribut parent class
+◦ super.x
+--> merujuk pada atribut x pada parent class/object
+
+Access Control
+◦ Dalam dunia nyata, suatu entitas induk bisa saja tidak mewariskan sebagian dari apa-apa yang ia miliki kepada entitas turunan karena sesuatu hal.
+◦ Demikian juga dengan konsep inheritance dalam OOP.
+◦ Suatu parent class bisa saja tidak mewariskan sebagian atribut atau method kepada subclass-nya. Hal ini dilakukan dengan memberikan access level modifier private
+
+Access Control
+
+
+
+Single Inheritance
+• Konsep inheritance dengan sublass yang mempunyai satu parent class.
+class Animal {
+void eat() {
+System.out.println("eating...");
+}
+}
+class Dog extends Animal {
+void bark() {
+System.out.println("barking...");
+}
+}
+class TestInheritance{
+public static void main(String args[]) { Dog d=new Dog();
+d.bark();
+d.eat();
+}
+}
+
+Multilevel Inheritance
+• Ketika kelas diturunkan dari kelas yang juga diturunkan dari kelas lain, yaitu kelas
+yang memiliki lebih dari satu kelas induk tetapi pada tingkat yang berbeda
+class Animal{
+void eat(){System.out.println("eating...");}
+}
+class Dog extends Animal{
+void bark(){System.out.println("barking...");}
+}
+class Puppy extends Dog{
+void weep(){System.out.println("weeping...");}
+}
+class TestInheritance2{
+public static void main(String args[]){ Puppy puppy1=new BabyDog(); puppy1.weep();
+puppy1.bark(); puppy1.eat();
+}
+}
+
+Hierarchical Inheritance
+• Ketika sebuah kelas memiliki lebih dari satu kelas turunan (subclass) atau dengan
+kata lain, lebih dari satu kelas turunan memiliki kelas induk yang sama.
+class Animal{
+void eat(){System.out.println("eating...");}
+}
+class Dog extends Animal{
+void bark(){System.out.println("barking...");}
+}
+class Cat extends Animal{
+void meow(){System.out.println("meowing...");}
+}
+class TestInheritance3{
+public static void main(String args[]){ Cat cat1=new Cat(); cat1.meow();
+cat1.eat();
+//cat1.bark(); //C.T.Error
+}
+}
+
+Hybrid Inheritance
+• Kombinasi dua atau lebih jenis inheritance.
+
+
+
+Multiple Inheritance
+
+◦ Multiple inheritance: satu kelas turunan mencoba untuk memperluas (extend) lebih dari satu kelas induk.
+◦ Misal terdapat method show() pada kelas B dan C dengan fungsi yang berbeda. Kemudian kelas A meng-extend kelas B dan C. Ketika objek dari kelas A mencoba memanggil method show(), Java compiler akan bingung method di kelas mana yang akan dieksekusi (dari kelas B atau C)
+◦ Mengarah pada ambiguitas.
+
+Mengapa Multiple Inheritance tidak bisa diimplementasikan di Java?
+
+
+
+class B extends D{
+void show(){ System.out.println("Welcome");
+
+class A extends B,C{
+void print(){System.out.println("This is multiple inheritance");}
+}
+
+}
+}	class TestInheritance4{
+public static void main(String args[]){
+
+class C extends D{
+void show(){
+System.out.println("Good Morning");
+}
+}
+
+A obj=new A(); obj.print();
+obj.show(); //method show() mana yang akan dipanggil
+}
+}
+
+Tugas
+◦ Buatlah sebuah contoh hierarchical inheritance dengan 1 parent class dan 2 child class. Pada parent class terdapat minimal 3 atribut dan pada setiap child class terdapat minimal 1 atribut tambahan. Buatlah class diagramnya
+
+Best Practice
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TERIMA KASIH
+
+
+
+
+
+
+
+
+
+OVERLOADING & OVERRIDING
+
+POLYMORPHISM
+
+* Polymorphism: poly (banyak), morph (bentuk)
+* Konsep polimorfisme pada OOP membolehkan sebuah aksi diimplementasikan secara berbeda
+
+POLYMORPHISM
+
+1. Overloading
+🢝	JVM menentukan method mana yang akan dipanggil pada compile-
+time --> compile-time polymorphism
+🢝	Disebut juga static binding atau early binding
+2. Overriding
+🢝	JVM menentukan method mana yang akan dipanggil pada saat run- time --> run-time polymorphism
+🢝	Disebut juga dynamic binding atau late binding
+
+OVERLOADING
+* Method overloading berarti kondisi dimana ada method dengan nama yang sama, tetapi memiliki method signature yang berbeda.
+* Method signature: jumlah, tipe data dan susunan parameter
+* Method overloading dapat terjadi pada kelas yang sama atau kelas lain yang terkait dalam hierarki pewarisan.
+* Karakteristik overloading:
+1. Nama method sama.
+2. Method signature berbeda.
+3. Return type boleh sama atau berbeda.
+
+OVERLOADING EXAMPLE
+
+Di kelas Mahasiswa, terdapat 3 method dengan nama setBiodata() tetapi dengan signature yang berbeda.
+
+
+
+
+METHOD SIGNATURE
+* Salah satu karakteristik overloading adalah method signature yang berbeda
+* Method signature: jumlah, tipe data dan susunan parameter
+* Method signature disebut berbeda jika:
+* Jumlahnya berbeda, atau
+* Jumlahnya sama tapi tipe data berbeda , atau
+* Jumlah dan tipe data sama tapi susunannya berbeda
+* Perhatikan bahwa nama parameter tidak diperhitungkan
+
+METHOD SIGNATURE (2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+Compile error:
+Duplicate method setBiodata(String, int)
+
+METHOD SIGNATURE (3)
+
+
+
+METHOD SIGNATURE (4)
+
+
+
+OVERLOADING OF A CONSTRUCTOR
+
+
+
+OVERLOADING OF A CONSTRUCTOR
+
+
+
+WHEN DO WE USE OVERLOADING?
+
+* Terkadang kita perlu membuat beberapa method yang memiliki fungsi/tujuan yang mirip, tetapi dengan parameter yang berbeda atau implementasi yang berbeda
+* Menyederhanakan kode program dan memunculkan konsistensi dalam penamaan method
+
+OVERRIDING
+
+Overriding terjadi ketika subclass memiliki method dengan nama dan signature yang sama dengan superclass nya.
+Karakteristik:
+1. Dilakukan oleh method pada subclass terhadap method pada superclass
+2. Nama method sama
+3. Method signature sama
+
+Pada class Dosen terdapat method ajukanIzinAbsen() dengan signature yang sama dengan class Pegawai --> Overriding
+
+
+
+
+
+
+
+
+
+
+
+ACCESS LEVEL MODIFIER
+
+
+
+
+
+
+
+
+Method yang di-override (method di superclass) tidak boleh memiliki access level modifier yang lebih luas daripada method yang meng- override (method di subclass).
+
+
+Jika aturan tersebut dilanggar, akan muncul compile error: Cannot reduce the visibility of the inherited method from Pegawai
+
+WHEN TO USE OVERRIDING
+
+Overriding digunakan jika terdapat suatu kelas yang merupakan turunan dari kelas lain, tetapi implementasi suatu method berbeda
+
+FINAL KEYWORD
+
+Kata kunci final merupakan modifier yang digunakan untuk membuat sebuah class, atribut, atau method tidak dapat diubah
+* Final class --> tidak dapat diturunkan/di-extend
+* Final atribut --> nilainya tidak dapat dimodifikasi
+* Final method --> tidak dapat di-override
+
+FINAL CLASS
+
+
+
+
+Final class --> tidak dapat diturunkan/di-extend
+
+The type Dosen cannot subclass the final class Pegawai
+
+FINAL ATRIBUT
+
+
+
+Final atribut --> nilainya tidak dapat
+dimodifikasi
+
+The final field Pegawai.nip cannot be assigned
+
+FINAL ATRIBUT (2)
+
+
+
+
+
+Final atribut --> nilainya tidak dapat
+dimodifikasi
+
+FINAL METHOD
+
+Final method --> tidak
+dapat di-override
+
+Cannot override the final method from Pegawai
+
+
+
+
+
+
+
+
+TUJUAN
+
+* Mahasiswa mampu memahami konsep abstract class
+* Mahasiswa mampu membuat class diagram untuk studi kasus dengan abstract class
+
+OUTLINE
+
+* Studi Kasus
+* Concrete Superclass
+* Abstract Superclass
+* Definisi Abstract Class
+* Abstract Method
+* Syntax
+* Notasi dalam Class Diagram
+* Penggunaan
+
+
+
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+Method yang belum dapat diimplementasikan sebaiknya dideklarasikan sebagai abstract method.
+Akibatnya class-nya menjadi abstract class
+
+
+
+
+
+
+
+Class/Concrete Class	Abstract Class
+
+
+
+Concrete Superclass
+
+
+
+new Hewan()
+
+
+
+
+
+
+
+
+
+new Lebah()	new Ular()
+
+Abstract Superclass
+
+
+
+new Hewan()
+
+
+
+
+
+
+
+
+
+new Lebah()	new Ular()
+
+Concrete Superclass
+
+
+
+
+
+
+Concrete class tidak dapat memaksa subclass nya untuk mengimpelementasikan method tertentu
+
+
+
+
+
+
+Abstract Superclass
+
+
+
+
+
+
+
+Abstract class "memaksa" subclass nya untuk mengimpelementasikan seluruh abstract method
+
+
+
+
+
+
+DEFINISI
+
+* Abstract class merupakan class yang tidak dapat diinstansiasi namun dapat di-
+extend.
+* Kegunaan:
+* Sebagai generalisasi sublass atau guideline untuk subclass
+* Karakteristik:
+* Selalu dideklarasikan dengan menggunakan keyword 'abstract class'
+* Dapat memiliki properties dan methods seperti concrete class
+* Class yang memiliki abstract method harus dideklarasikan sebagai abstract class. Tetapi suatu class bisa dideklarasikan sebagai abstract tanpa memiliki abstract method
+
+ABSTRACT METHOD
+
+* Method yang hanya dideklarasikan tetapi tidak memiliki implementasi (body)
+* Abstract method dibuat dengan keyword abstract
+* Abstract method hanya menjelaskan apa saja yang bisa dilakukan oleh sebuah
+class namun tidak ada detail bagaimana cara melakukannya
+
+SYNTAX
+
+* Untuk mendeklarasikan abstract class:
+* <modifier>  abstract  class  <NamaClass>
+* Untuk mendeklarasikan abstract method:
+* <modifier>  abstract  <return_type> <namaMethod>();
+* Contoh:
+
+NOTASI CLASS DIAGRAM
+
+
+* Secara umum sama dengan notasi concrete
+class
+* Nama kelas dicetak miring atau ditambah anotasi <<abstract>> di atas nama kelas
+* Abstract method juga dicetak miring
+
+Penggunaan Abstract Class
+
+* Abstract class tidak dapat diinstansiasi (tidak dapat dibuat objectnya)
+* Baris kode berikut akan memunculkan compilation error "Hewan is abstract; cannot be instantiated"
+Hewan  hewan1  =  new  Hewan();
+* Untuk menggunakan abstract class, dibuat concrete class yang meng-extend abstract class tersebut
+* concrete class menggunakan extends keyword
+* concrete class harus mengimplementasi semua abstract method
+* Class yang menge-extend abstract class tetapi tidak mengimplementasi seluruh abstract method nya maka harus dideklarasikan sebagai abstract class juga
+
+Kesimpulan
+
+* Abstract class dapat digunakan untuk mencegah suatu class diinstansiasi atau
+dibuat objeknya
+* Abstract class umumnya digunakan sebagai generalisasi/superclass pada class hierarki.
+* Abstract class berlaku sebagai guideline untuk subclass dengan cara memaksa subclass untuk mengimplementasikan abstract method
+
+
+
+
+
+Latihan
+
+* Cari sebuah studi kasus dari abstract class kemudian gambarkan UML class
+diagramnya.
+* Superclass merupakan abstract class dengan minimal 1 concrete method dan 1 abstract method.
+* Terdapat minimal 2 subclass
+
+Final & Static
+
+* Final --> tidak dapat berubah
+* Static --> variable yang tidak terikat pada objek tertentu
+
+Multiple Inheritance
+
+◦ Multiple inheritance: satu kelas turunan mencoba untuk memperluas (extend) lebih dari satu kelas induk.
+◦ Misal terdapat method show() pada kelas B dan C dengan fungsi yang berbeda. Kemudian kelas A meng-extend kelas B dan C. Ketika objek dari kelas A mencoba memanggil method show(), Java compiler akan bingung method di kelas mana yang akan dieksekusi (dari kelas B atau C)
+◦ Mengarah pada ambiguitas.
+
+
+
+
+
+
+
+
+	
+
+
+
+Definisi Interface
+
+* Interface adalah sekumpulan method tanpa body yang saling berkaitan
+* Karakteristik:
+* Umumnya hanya terdiri dari abstract methods
+* Selalu dideklarasikan dengan menggunakan keyword 'interface'
+* Diimplementasikan dengan menggunakan keyword 'implements'
+* Tidak memiliki constructor dan tidak dapat diinstansiasi. Yang dapat diinstasiasi adalah class yang meng-implement interface tersebut
+* Dapat memiliki atribut tetapi hanya bersifat public static final
+
+Kegunaan Interface
+
+* Bertindak sebagai kontrak/syarat yang berisi sekumpulan behavior/method yang
+saling terkait untuk memenuhi suatu kapabilitas
+* Dengan kata lain, interface memberikan panduan mengenai method apa saja yang perlu diimplementasikan untuk memenuhi kapabilitas tertentu
+
+Notasi Class Diagram
+
+* Nama interface tidak dicetak miring
+* Keterangan <<interface>> di atas nama interface
+* Nama method dicetak miring atau tidak
+* Implements dilambangkan dengan garis panah putus-putus
+
+Aturan Penulisan Interface
+
+* Secara struktur hampir sama dengan class.
+* Beberapa aturan:
+* Tidak memiliki concrete method (method biasa yang bukan abstract)
+* Tidak memiliki constructor
+* Dapat memiliki atribut, tapi hanya dapat bersifat public, static, dan final
+
+Sintaks Interface
+
+* Untuk mendeklarasikan suatu interface:
+* public interface <NamaInterface>
+* Untuk mengimplementasikan interface:
+* public class <NamaClass> implements <NamaInterface>
+* Nama interface sebaiknya dalam bentuk adjective/kata sifat jika merepresentasikan
+kapabilitas. Dapat juga menggunakan kata benda
+* Contoh:
+
+Implementasi Interface
+
+* Bila sebuah class mengimplementasikan suatu interface:
+* Seluruh variable dari interface akan dapat diakses oleh class tersebut
+* Seluruh method pada interface harus diimplementasikan
+* Bila class yang meng-implement interface tidak mengimplementasikan semua
+method, maka class tersebut harus dideklarasikan sebagai abstract class
+
+Multiple Interface
+
+* Suatu class dapat meng-implement multiple interface
+* Bila suatu class merupakan subclass dan meng-implement interface, maka keyword extends mendahului implements
+* Contoh:
+public class PlainCandy extends GameItem implements Crushable, Movable
+
+Abstract Class vs Interface
+
+
+
+
+
+
+
+Abstract ClassInterfaceDapat memiliki concrete method atau
+abstract methodHanya dapat memiliki abstract methodLevel modifier atribut dan method:
+public, protected, no-modifier, privateLevel modifier variable dan method
+hanya public (boleh tidak dituliskan)Dapat memiliki static/non-static, final/non final variableHanya dapat memiliki static dan final
+variableMethod boleh bersifat static/non-static
+dan final/non finalMethod tidak boleh bersifat static dan
+finalAbstract class harus terdapat dalam hirarki yang sama dengan class yang meng-extendInterface tidak terkait pada suatu hirarki
+Interface tidak terikat pada hirarki
+
+Penggunaan Abstract Class vs Interface
+
+* Common properties (and methods) --> abstract class
+* Common methods --> interface
+
+Kesimpulan
+
+* Interface tidak dapat dibuat objek/instance-nya
+* Interface merepresentasikan kontrak/syarat yang berisi sekumpulan behavior
+yang saling terkait untuk memenuhi suatu kapabilitas
+
+Latihan
+
+* Cari sebuah studi kasus dari interface kemudian gambarkan UML class
+diagramnya.
+
+
+
+
+
+
+
+
+
+
+POLYMORPHISM
+
+POLYMORPHISM
+1. Heterogenous Collection
+2. Object Casting
+3. Polymorphic Arguments
+4. InstanceOf
+
+POLYMORPHISM
+* Polymorphism: poly (banyak), morph (bentuk)
+* Polimorfisme --> konsep dalam OOP yang memperbolehkan sebuah aksi diimplementasikan secara berbeda
+* Polimorfisme -->konsep dalam OOP yang memperbolehkan sebuah objek untuk memiliki banyak bentuk
+
+
+	
+
+
+
+
+
+
+
+dosen1 merupakan instance dari class Dosen tapi dikenali sebagai Pegawai
+
+Hewan
+
+
+
+
+
+
+
+
+
+Anggora
+CLASS OBJECT
+Class Object merupakan root dari semua hirarki class. Artinya, semua object memiliki superclass dengan nama Object. Oleh karena itu, semua instance dapat dikenali sebagai Object
+
+
+
+
+
+HETEROGENOUS  COLLECTION
+* Dalam Java, setiap elemen dalam array harus memiliki tipe yang sama
+* Konsep polimorfisme memungkinkan elemen dalam array bersifat heterogen
+
+
+
+
+
+
+
+
+OBJECT CASTING
+* Typecasting merupakan konversi variable dari suatu tipe data menjadi tipe data lainnya
+* Typecasting juga dapat dilakukan terhadap object
+* Terdapat 2 jenis object casting: upcasting & downcasting
+
+UPCASTING
+* Dilakukan untuk mengubah child object menjadi parent object
+* Dapat dilakukan secara implisit
+
+
+
+
+* dosen1 merupakan instance dari class Dosen, tetapi setelah proses upcasting akan dikenali sebagai object bertipe Pegawai
+* tendik1 merupakan instance dari class TenagaKependidikan, tetapi setelah upcasting akan dikenali sebagai object bertipe Pegawai
+
+DOWNCASTING
+* Dilakukan untuk mengubah parent object menjadi child object
+* Tidak dapat dilakukan secara implisit
+
+
+
+POLYMORPHIC ARGUMENTS
+* Konsep polimorfisme juga memungkinkan parameter dari suatu method menerima argument dengan berbagai bentuk object
+* Misalkan, pada class UnitKerja terdapat method train() dengan parameter pegawai bertipe Pegawai. Method ini akan dapat menerima argument bertipe Pegawai atau class lain yang merupakan subclass dari Pegawai
+* Proses ini juga termasuk upcasting
+
+
+
+Method train() dapat dipanggil dengan argument dosen1 bertipe Dosen maupun tendik1 bertipe TenagaKependidikan karena dilakukan upcasting ke class Pegawai
+
+
+
+
+
+
+
+* dosen1 merupakan instance dari class Dosen, tetapi setelah proses upcasting akan dikenali sebagai object bertipe Pegawai
+* Oleh karna itu, dosen1 tidak akan dapat mengakses atribut yang dideklarasikan di class Dosen (misalnya nidn) maupun memanggil method yang hanya ada di class Dosen (misalnya mengajar())
+* Method displayInfo() dapat dikenali karena ada di class Pegawai, tapi karena terdapat overriding maka yang akan dieksekusi adalah method displayInfo() pada class Dosen
+
+
+
+
+
+* Untuk dapat mengakses atribut nidn dan method mengajar(), lakukan downcasting
+
+
+
+
+
+Java.Lang.ClassCastException
+
+
+
+
+
+INSTANCEOF
+* Keyword instanceOf digunakan untuk mengidentifikasi apakah sebuah object merupakan instance dari suatu class/interface
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+POLYMORPHISM
+
+POLYMORPHISM
+1. Heterogenous Collection
+2. Object Casting
+3. Polymorphic Arguments
+4. InstanceOf
+
+POLYMORPHISM
+* Polymorphism: poly (banyak), morph (bentuk)
+* Polimorfisme --> konsep dalam OOP yang memperbolehkan sebuah aksi diimplementasikan secara berbeda
+* Polimorfisme -->konsep dalam OOP yang memperbolehkan sebuah objek untuk memiliki banyak bentuk
+
+
+	
+
+
+
+
+
+
+
+dosen1 merupakan instance dari class Dosen tapi dikenali sebagai object bertipe Pegawai
+
+Hewan
+
+
+
+
+
+
+
+
+
+Anggora
+CLASS OBJECT
+Class Object merupakan root dari semua hirarki class. Artinya, semua object memiliki superclass dengan nama Object. Oleh karena itu, semua instance dapat dikenali sebagai Object
+
+
+
+
+
+HETEROGENOUS  COLLECTION
+* Dalam Java, setiap elemen dalam array harus memiliki tipe yang sama
+* Konsep polimorfisme memungkinkan elemen dalam array bersifat heterogen
+
+
+
+
+
+
+
+
+OBJECT CASTING
+* Typecasting merupakan konversi variable dari suatu tipe data menjadi tipe data lainnya
+* Typecasting juga dapat dilakukan terhadap object
+* Terdapat 2 jenis object casting: upcasting & downcasting
+
+UPCASTING
+* Dilakukan untuk mengubah child object menjadi parent object
+* Dapat dilakukan secara implisit
+
+
+
+
+* dosen1 merupakan instance dari class Dosen, tetapi setelah proses upcasting akan dikenali sebagai object bertipe Pegawai
+* tendik1 merupakan instance dari class TenagaKependidikan, tetapi setelah upcasting akan dikenali sebagai object bertipe Pegawai
+
+DOWNCASTING
+* Dilakukan untuk mengubah parent object menjadi child object
+* Tidak dapat dilakukan secara implisit
+
+
+
+* Jika hewan2 didowncast menjadi object bertipe Ular maka akan muncul
+Java.Lang.ClassCastException
+
+Pegawainip: String
+nama: Stringdisplayinfo(): void
+
+
+
+
+
+
+
+
+
+
+
+
+* dosen1 merupakan instance dari class Dosen, tetapi setelah proses upcasting akan dikenali sebagai object bertipe Pegawai
+* Oleh karna itu, dosen1 tidak akan dapat mengakses atribut yang dideklarasikan di class Dosen (misalnya nidn) maupun memanggil method yang hanya ada di class Dosen (misalnya mengajar())
+
+
+
+
+
+
+* Method displayInfo() dapat dikenali karena ada di class Pegawai, tapi karena terdapat overriding maka yang akan dieksekusi adalah method displayInfo() pada class Dosen
+
+POLYMORPHIC ARGUMENTS
+* Konsep polimorfisme juga memungkinkan parameter dari suatu method menerima argument dengan berbagai bentuk object
+* Misalkan, terdapat method train() dengan parameter pegawai bertipe Pegawai. Method ini akan dapat menerima argument bertipe Pegawai atau class lain yang merupakan subclass dari Pegawai
+* Proses ini juga termasuk upcasting
+
+
+
+
+
+
+
+
+Method train() dapat dipanggil dengan argument dosen1 bertipe Dosen maupun tendik1 bertipe TenagaKependidikan karena dilakukan upcasting ke class Pegawai
+
+INSTANCEOF
+* Keyword instanceOf digunakan untuk mengidentifikasi apakah sebuah object merupakan instance dari suatu class/interface
+
+
+
+
+
+
+
+
+
+
+
+Versi file yang ditulis oleh developer
+
+
+
+
+
+Jika sebuah class tidak memiliki constructor secara eksplisit, maka secara default Java compiler akan menyediakan constructor tanpa parameter
+
+
+
+Versi Java compiler
+
+
+
+
+
+
+
+
+public class DemoDonat{
+public static void main(String[] args){
+Donat donat1 = new Donat();	
+donat1.topping = "Strawberry sprinkles";
+}
+}
+
+
+
+
+
+• Constructor berparameter digunakan untuk menginstansiasi objek baru dengan kondisi/nilai tertentu.
+• Java compiler tidak akan menyediakan default constructor (tanpa parameter) jika constructor lain sudah dibuat oleh developer
+
+public class Donat{
+public String topping;
+
+
+Donat(String selectedTopping){ topping = selectedTopping;
+}
+}
+
+
+
+
+
+
+
+
+public class DemoDonat{
+public static void main(String[] args){
+Donat donat1 = new Donat("Strawberry sprinkles");
+}
+}
+
+Jika sebuah class tidak memiliki constructor secara eksplisit, maka secara default Java compiler akan menyediakan constructor tanpa paremeter
+
+
+
+
+
+
+
+
+
+
+
+
+public class Donat{
+public String topping;
+
+
+public Donat(){
+}
+}
+
+
+
+
+Versi file yang ditulis oleh developer
+
+Java compiler tidak akan menyediakan default constructor (tanpa parameter) jika constructor lain sudah dibuat oleh developer
+
+
+
+
+
+	
+Versi Java compiler

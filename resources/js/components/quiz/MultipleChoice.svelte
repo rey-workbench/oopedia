@@ -18,7 +18,7 @@
 
 <div class="space-y-6">
     <!-- Question block: consistent dark terminal style -->
-    <div class="relative overflow-hidden rounded-3xl bg-slate-900 p-8 shadow-xl">
+    <div class="relative select-none overflow-hidden rounded-3xl bg-slate-900 p-8 shadow-xl" draggable="false">
         <!-- Subtle top accent line -->
         <div
             class="via-primary-500/60 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent"
@@ -41,7 +41,7 @@
         </div>
 
         <div
-            class="selection:bg-primary-500/30 relative z-10 text-lg leading-relaxed font-semibold text-slate-100"
+            class="relative z-10 text-lg leading-relaxed font-semibold text-slate-100"
         >
             {@html question.question_text}
         </div>

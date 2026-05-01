@@ -13,7 +13,7 @@
                 404: '404: Halaman Tidak Ditemukan',
                 403: '403: Akses Terlarang',
             } as Record<number, string>
-        )[status] ?? 'Error'
+        )[status] ?? 'Terjadi kesalahan tak terduga.'
     );
 
     const description = $derived(
@@ -24,7 +24,7 @@
                 404: 'Maaf, halaman yang Anda cari tidak dapat ditemukan.',
                 403: 'Maaf, Anda dilarang mengakses halaman ini.',
             } as Record<number, string>
-        )[status] ?? 'An unexpected error occurred.'
+        )[status] ?? 'Terjadi kesalahan tak terduga.'
     );
 
     const illustration = $derived(

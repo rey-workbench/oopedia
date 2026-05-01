@@ -58,14 +58,61 @@
                 },
             });
 
+            quillInstance.root.classList.add('oopedia-wysiwyg');
+
             if (value) {
                 quillInstance.root.innerHTML = value;
             }
 
             quillInstance.on('text-change', () => {
-                const html = quillInstance!.root.innerHTML;
-                value = html;
-                oninput(html);
+                let html = quillInstance!.root.innerHTML;
+                
+                // Cleanup: Create a virtual DOM to process tags consistently
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+                
+                // 1. Convert Quill Code Blocks to Semantic <pre><code class="language-java">
+                const codeContainers = tempDiv.querySelectorAll('.ql-code-block-container');
+                codeContainers.forEach(container => {
+                    const lines = container.querySelectorAll('.ql-code-block');
+                    const codeText = Array.from(lines).map(l => (l as HTMLElement).innerText).join('\n');
+                    
+                    const pre = document.createElement('pre');
+                    const code = document.createElement('code');
+                    code.className = 'language-java';
+                    code.innerText = codeText;
+                    pre.appendChild(code);
+                    
+                    container.parentNode?.replaceChild(pre, container);
+                });
+
+                // 2. Standardize Tables (Remove all proprietary classes)
+                const tables = tempDiv.querySelectorAll('table');
+                tables.forEach(table => {
+                    table.removeAttribute('class');
+                    table.querySelectorAll('td, th, tr, thead, tbody').forEach(el => {
+                        (el as HTMLElement).removeAttribute('class');
+                        (el as HTMLElement).removeAttribute('style');
+                    });
+                });
+
+                // 3. Clean up Blockquotes
+                const blockquotes = tempDiv.querySelectorAll('blockquote');
+                blockquotes.forEach(bq => {
+                    bq.removeAttribute('class');
+                    bq.removeAttribute('style');
+                });
+
+                // 4. Remove any other Quill-specific classes or empty tags
+                tempDiv.querySelectorAll('[class^="ql-"]').forEach(el => {
+                    const element = el as HTMLElement;
+                    // Only remove class, keep the element if it's not a container we already handled
+                    element.removeAttribute('class');
+                });
+
+                const cleanHtml = tempDiv.innerHTML;
+                value = cleanHtml;
+                oninput(cleanHtml);
             });
         } catch (e) {
             console.error('Failed to load Quill:', e);
@@ -114,53 +161,6 @@
         input.click();
     }
 </script>
-
-<style>
-    :global(.ql-toolbar) {
-        border-top: none !important;
-        border-left: none !important;
-        border-right: none !important;
-        border-bottom: 2px solid var(--color-slate-200) !important;
-        background-color: var(--color-slate-50) !important;
-        padding: 0.75rem 1rem !important;
-    }
-    :global(.ql-container) {
-        border: none !important;
-        font-size: 1rem;
-        font-family: var(--font-sans, inherit) !important;
-    }
-    :global(.ql-editor) {
-        padding: 1.5rem;
-        font-family: inherit;
-        min-height: 200px;
-    }
-    :global(.ql-editor.ql-blank::before) {
-        color: var(--color-slate-400) !important;
-        font-style: normal !important;
-    }
-    :global(.ql-snow.ql-toolbar button:hover, .ql-snow .ql-toolbar button:focus) {
-        color: var(--color-primary-600) !important;
-    }
-    :global(.ql-snow.ql-toolbar button.ql-active, .ql-snow .ql-toolbar button.ql-active) {
-        color: var(--color-primary-600) !important;
-    }
-    :global(
-        .ql-snow.ql-toolbar button:hover .ql-stroke,
-        .ql-snow .ql-toolbar button:focus .ql-stroke,
-        .ql-snow.ql-toolbar button.ql-active .ql-stroke,
-        .ql-snow .ql-toolbar button.ql-active .ql-stroke
-    ) {
-        stroke: var(--color-primary-600) !important;
-    }
-    :global(
-        .ql-snow.ql-toolbar button:hover .ql-fill,
-        .ql-snow .ql-toolbar button:focus .ql-fill,
-        .ql-snow.ql-toolbar button.ql-active .ql-fill,
-        .ql-snow .ql-toolbar button.ql-active .ql-fill
-    ) {
-        fill: var(--color-primary-600) !important;
-    }
-</style>
 
 <div
     class="quill-wrapper focus-within:border-primary-500 focus-within:ring-primary-100 overflow-hidden rounded-3xl border-2 border-b-6 border-slate-200 bg-white transition-all focus-within:ring-4 hover:border-slate-300"

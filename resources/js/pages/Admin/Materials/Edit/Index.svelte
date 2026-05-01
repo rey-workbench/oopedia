@@ -6,11 +6,13 @@
     import Alert from '@/components/ui/Alert.svelte';
     import ImageUpload from '@/components/ui/ImageUpload.svelte';
     import QuillEditor from '@/components/ui/QuillEditor.svelte';
+    import ContentDisplay from '@/components/ui/ContentDisplay.svelte';
+    import Card from '@/components/ui/Card.svelte';
     import Toggle from '@/components/ui/Toggle.svelte';
     import { untrack } from 'svelte';
     import { MaterialFormState } from '@/states/Admin/MaterialState.svelte';
     import { ROUTES } from '@/utils/route';
-    import { ArrowLeft, RefreshCw, CloudUpload } from 'lucide-svelte';
+    import { ArrowLeft, RefreshCw, CloudUpload, Eye } from 'lucide-svelte';
 
     let { material } = $props();
 
@@ -142,5 +144,33 @@
                 </div>
             </div>
         </form>
+
+        <!-- Preview Section -->
+        <div class="space-y-6">
+            <div class="flex items-center gap-4">
+                <div class="bg-primary-100 p-2 rounded-xl text-primary-600">
+                    <Eye size={20} />
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-slate-800 tracking-widest uppercase">Pratinjau Hasil (Frontend View)</h3>
+                    <p class="text-xs font-medium text-slate-400">Visualisasi materi yang akan dilihat oleh mahasiswa.</p>
+                </div>
+            </div>
+
+            <Card class="bg-white overflow-hidden p-0 border-slate-200">
+                <div class="bg-slate-50 border-b border-slate-100 px-6 py-3 flex items-center justify-between">
+                    <div class="flex gap-1.5">
+                        <div class="w-2.5 h-2.5 rounded-full bg-slate-300"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-slate-300"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-slate-300"></div>
+                    </div>
+                    <span class="text-[9px] font-black tracking-[0.2em] text-slate-400 uppercase">Live Rendering Engine</span>
+                </div>
+                <div class="bg-white">
+                    <ContentDisplay content={state.form.content} />
+                </div>
+            </Card>
+        </div>
     </div>
 </App>
+
