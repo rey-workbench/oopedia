@@ -18,7 +18,7 @@ final class CheckAnswerRequest extends BaseFormRequest
             'difficulty'               => ['nullable', 'in:all,beginner,medium,hard,final'],
             'answer'                   => ['nullable', 'string'],
             'fill_in_the_blank_answer' => ['nullable', 'string'],
-            'drag_and_drop_answers'    => ['nullable', 'json'],
+            'drag_and_drop_answers'    => ['nullable', 'array'],
         ];
     }
 

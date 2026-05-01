@@ -7,6 +7,7 @@
         class?: string;
         hover?: boolean;
         interactive?: boolean;
+        overflowHidden?: boolean;
         children?: Snippet;
         header?: Snippet;
         footer?: Snippet;
@@ -19,6 +20,7 @@
         class: className = '',
         hover = false,
         interactive = false,
+        overflowHidden = true,
         children,
         header,
         footer,
@@ -26,7 +28,7 @@
     }: Props = $props();
 
     const baseClasses =
-        'rounded-3xl transition-all duration-300 overflow-hidden border-2 border-b-6 border-slate-200';
+        'rounded-[2rem] transition-all duration-300 border-2 border-b-8 border-slate-200';
 
     const variantClasses = $derived(
         variant === 'none'
@@ -42,8 +44,9 @@
             variantClasses,
             hover ? 'hover:shadow-xl' : '',
             interactive
-                ? 'active:translate-y-[2px] active:border-b-2 select-none cursor-pointer'
+                ? 'active:translate-y-[4px] active:border-b-2 select-none cursor-pointer'
                 : '',
+            overflowHidden ? 'overflow-hidden' : '',
             className,
         ].join(' ')
     );

@@ -26,6 +26,7 @@
         href?: string | null;
         class?: string;
         ariaLabel?: string;
+        onclick?: (e: MouseEvent) => void;
         children?: Snippet;
         [key: string]: unknown;
     }
@@ -41,12 +42,13 @@
         href = null,
         class: className = '',
         ariaLabel = undefined,
+        onclick = undefined,
         children,
         ...rest
     }: Props = $props();
 
     const baseClasses =
-        'group inline-flex items-center justify-center font-black tracking-widest transition-all duration-150 disabled:opacity-50 disabled:pointer-events-none rounded-2xl border-2 border-b-6 uppercase select-none';
+        'group inline-flex items-center justify-center font-black tracking-widest transition-all duration-150 disabled:opacity-50 disabled:pointer-events-none rounded-2xl border-2 border-b-8 uppercase select-none';
 
     const variants: Record<ButtonVariant, string> = {
         primary:
@@ -69,16 +71,16 @@
 
     const sizes: Record<ButtonSize, string> = {
         sm: 'px-4 py-2 text-xs border-b-4',
-        md: 'px-6 py-3 text-sm border-b-6',
-        lg: 'px-8 py-4 text-base border-b-6',
-        xl: 'px-10 py-5 text-lg border-b-8',
+        md: 'px-6 py-3 text-sm border-b-8',
+        lg: 'px-8 py-4 text-base border-b-8',
+        xl: 'px-12 py-6 text-xl border-b-[10px]',
     };
 
     const activeStates: Record<ButtonSize, string> = {
         sm: 'active:translate-y-[2px] active:border-b-2 shadow-none',
-        md: 'active:translate-y-[4px] active:border-b-2 shadow-none',
-        lg: 'active:translate-y-[4px] active:border-b-2 shadow-none',
-        xl: 'active:translate-y-[6px] active:border-b-2 shadow-none',
+        md: 'active:translate-y-[6px] active:border-b-2 shadow-none',
+        lg: 'active:translate-y-[6px] active:border-b-2 shadow-none',
+        xl: 'active:translate-y-[8px] active:border-b-2 shadow-none',
     };
 
     const classes = $derived(
@@ -128,7 +130,7 @@
         {/if}
     </Link>
 {:else}
-    <button {id} {type} class={classes} {disabled} aria-label={ariaLabel} {...rest}>
+    <button {id} {type} class={classes} {disabled} aria-label={ariaLabel} {onclick} {...rest}>
         {#if icon && iconPosition === 'left'}
             {#if typeof icon === 'string'}
                 <i class="{icon} {hasChildren ? 'mr-3' : ''}"></i>

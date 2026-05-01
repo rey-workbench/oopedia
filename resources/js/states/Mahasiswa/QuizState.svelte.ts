@@ -156,19 +156,26 @@ export class QuestionShowState extends BaseState {
         if (this.currentQuestion.question_type === 'fill_in_the_blank') {
             payload['fill_in_the_blank_answer'] = this.fillInTheBlankAnswer;
         } else if (this.currentQuestion.question_type === 'drag_and_drop') {
-            payload['drag_and_drop_answers'] = this.dragAndDropAnswers;
+            // Svelte 5 Snapshot: Convert Proxy to plain object for proper serialization
+            payload['drag_and_drop_answers'] = $state.snapshot(this.dragAndDropAnswers);
         } else if (this.selectedMultipleChoiceAnswer) {
             payload['answer'] = this.selectedMultipleChoiceAnswer;
         }
 
+        console.debug('[QuizState] Submitting:', {
+            type: this.currentQuestion.question_type,
+            payload
+        });
+
         const hasAnswer =
             this.currentQuestion.question_type === 'fill_in_the_blank'
-                ? this.fillInTheBlankAnswer.trim().length > 0
+                ? (this.fillInTheBlankAnswer?.trim() ?? '').length > 0
                 : this.currentQuestion.question_type === 'drag_and_drop'
                   ? Object.keys(this.dragAndDropAnswers).length > 0
                   : Boolean(this.selectedMultipleChoiceAnswer);
 
         if (!hasAnswer) {
+            console.warn('[QuizState] Submission blocked: No answer provided.');
             this.feedbackData = {
                 status: 'error',
                 message: 'Jawaban wajib diisi.',

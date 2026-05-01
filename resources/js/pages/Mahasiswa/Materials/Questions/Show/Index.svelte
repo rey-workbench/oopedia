@@ -11,6 +11,7 @@
     import { activateExamProtection, deactivateExamProtection, type ViolationType } from '@/utils';
     import { untrack, onMount } from 'svelte';
     import type { Question, QuestionShowProps } from '@/types';
+    import ProgressBar from '@/components/ui/ProgressBar.svelte';
 
     const {
         material,
@@ -142,15 +143,11 @@
                             </div>
                         </div>
                         <div id="quiz-progress" class="relative">
-                            <div class="h-4 w-full rounded-full bg-slate-100 shadow-inner"></div>
-                            <div
-                                class="bg-primary-500 border-primary-700 absolute inset-y-0 left-0 rounded-full border-b-4 transition-all duration-500 ease-out"
-                                style="width: {progressPercentage}%"
-                            >
-                                <div
-                                    class="absolute inset-x-2 top-1 h-1 rounded-full bg-white/20"
-                                ></div>
-                            </div>
+                            <ProgressBar 
+                                value={progressPercentage} 
+                                height="h-4" 
+                                color="blue" 
+                            />
                         </div>
                     </div>
                 </div>
