@@ -19,7 +19,6 @@
         ChevronDown,
         Lock,
         Trophy,
-        UserRound,
         LogOut,
         LogIn,
         UserPlus,
@@ -198,7 +197,6 @@
                     {/if}
                 </div>
             </div>
-
             <div class="border-cosmos-border space-y-6 border-t pt-10">
                 <div
                     class="text-cosmos-muted flex items-center gap-3 px-4 text-xs font-bold tracking-tight uppercase"
@@ -386,13 +384,6 @@
                         <div class="bg-cosmos-border h-0.5 flex-1"></div>
                     </div>
                     <div class="space-y-2">
-                        <SidebarLink
-                            id="sidebar-profile"
-                            href={ROUTES.MAHASISWA.PROFILE}
-                            icon={UserRound}
-                            active={page.url.startsWith(ROUTES.MAHASISWA.PROFILE)}
-                            >Profil Saya</SidebarLink
-                        >
                         <SidebarLink
                             id="sidebar-mahasiswa-mslq"
                             href={ROUTES.MAHASISWA.MSLQ.CREATE}

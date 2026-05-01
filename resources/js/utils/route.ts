@@ -6,6 +6,7 @@ export const ROUTES = {
     HOME: '/',
     ADMIN: {
         DASHBOARD: '/admin/dashboard',
+        PROFILE: '/admin/profile',
         MATERIALS: {
             INDEX: '/admin/materials',
             CREATE: '/admin/materials/create',

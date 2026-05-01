@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\MaterialController as AdminMaterialController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\MslqController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\QuestionController as AdminQuestionController;
 use App\Http\Controllers\Admin\SusSurveyController as AdminSusSurveyController;
 use App\Http\Controllers\Admin\UeqSurveyController;
@@ -23,6 +24,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function (): v
     Route::middleware(['access:superadmin|dosen,true'])->group(function (): void {
 
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::singleton('profile', AdminProfileController::class)->only(['show', 'update']);
         Route::resource('adaptive-rules', AdaptiveRuleController::class);
         Route::resource('adaptive-actions', AdaptiveActionController::class)->only(['store', 'update', 'destroy']);
 

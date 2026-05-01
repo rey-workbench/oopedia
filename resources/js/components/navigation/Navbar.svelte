@@ -122,7 +122,7 @@
                         </div>
 
                         <Link
-                            href={ROUTES.MAHASISWA.PROFILE}
+                            href={isAdminRole ? ROUTES.ADMIN.PROFILE : ROUTES.MAHASISWA.PROFILE}
                             class="flex items-center gap-3 rounded-2xl px-4 py-2.5 text-xs font-bold text-slate-900/60 transition-all hover:bg-slate-900/5 hover:text-slate-900"
                         >
                             <User size={16} strokeWidth={1.5} class="w-5" />
