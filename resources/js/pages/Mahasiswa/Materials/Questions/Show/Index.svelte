@@ -12,6 +12,7 @@
     import { untrack, onMount } from 'svelte';
     import type { Question, QuestionShowProps } from '@/types';
     import ProgressBar from '@/components/ui/ProgressBar.svelte';
+    import { Button } from '@/components';
 
     const {
         material,
@@ -199,10 +200,20 @@
                 </div>
                 <h2 class="text-lg font-black text-rose-800">Peringatan!</h2>
             </div>
-            <p class="mb-2 text-center text-base font-medium text-slate-700">
+            <p class="mb-6 text-center text-base font-medium text-slate-700">
                 {warningMessage}
             </p>
-            <p class="text-center text-sm text-slate-500">Pelanggaran akan dicatat.</p>
+            <div class="flex flex-col gap-3">
+                <Button 
+                    variant="primary" 
+                    size="md" 
+                    class="w-full font-black uppercase tracking-widest"
+                    onclick={() => (showWarning = false)}
+                >
+                    Saya Mengerti
+                </Button>
+                <p class="text-center text-xs font-bold text-slate-400 uppercase tracking-tighter">Pelanggaran akan dicatat oleh sistem</p>
+            </div>
         </div>
     </Modal>
 </App>

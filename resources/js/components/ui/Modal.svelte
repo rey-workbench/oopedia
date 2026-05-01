@@ -38,13 +38,19 @@
     $effect(() => {
         if (show && dialogEl) {
             setTimeout(() => {
-                trap = createFocusTrap(dialogEl!, {
-                    escapeDeactivates: true,
-                    onDeactivate: close,
-                    initialFocus: false,
-                    allowOutsideClick: true,
-                });
-                trap.activate();
+                if (!dialogEl) return;
+                try {
+                    trap = createFocusTrap(dialogEl, {
+                        escapeDeactivates: true,
+                        onDeactivate: close,
+                        initialFocus: false,
+                        fallbackFocus: dialogEl, // Safeguard: focus the dialog itself if no tabbable children exist
+                        allowOutsideClick: true,
+                    });
+                    trap.activate();
+                } catch (e) {
+                    console.warn('[Modal] Focus trap activation failed:', e);
+                }
             }, 50);
         } else {
             trap?.deactivate();
