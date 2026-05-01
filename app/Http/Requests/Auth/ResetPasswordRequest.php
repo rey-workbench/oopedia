@@ -7,13 +7,13 @@ namespace App\Http\Requests\Auth;
 use App\Http\Requests\BaseFormRequest;
 use Illuminate\Validation\Rules\Password;
 
-final class RegisterRequest extends BaseFormRequest
+final class ResetPasswordRequest extends BaseFormRequest
 {
     public function rules(): array
     {
         return [
-            'name'     => ['required', 'string', 'max:255', 'regex:/^[\p{L}\'\s]+$/u'],
-            'email'    => ['required', 'string', 'email:rfc,dns,spoof', 'max:255', 'unique:users'],
+            'token'    => ['required'],
+            'email'    => ['required', 'email:rfc,dns,spoof'],
             'password' => ['required', 'confirmed', Password::defaults()],
         ];
     }
