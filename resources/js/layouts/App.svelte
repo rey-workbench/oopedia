@@ -84,7 +84,7 @@
                     role="button"
                     tabindex="0"
                     aria-label="Tutup sidebar"
-                    class="fixed inset-0 z-45 bg-gray-900/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden"
+                    class="fixed inset-0 z-45 bg-gray-900/50 backdrop-blur-sm lg:hidden"
                     onclick={() => sidebarState.close()}
                     onkeydown={(e) => e.key === 'Escape' && sidebarState.close()}
                 ></div>
@@ -92,7 +92,7 @@
         {/if}
 
         <div
-            class="flex min-w-0 flex-1 flex-col transition-all duration-300 {showSidebarRender
+            class="flex min-w-0 flex-1 flex-col {showSidebarRender
                 ? 'lg:ml-64'
                 : ''}"
         >

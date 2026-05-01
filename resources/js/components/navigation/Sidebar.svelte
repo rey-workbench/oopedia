@@ -54,8 +54,6 @@
 <aside
     id="sidebar"
     class="no-scrollbar border-cosmos-border bg-cosmos-bg fixed inset-y-0 left-0 z-50 w-72 overflow-y-auto border-r-2 lg:w-64"
-    in:fly={{ x: -288, duration: 300 }}
-    out:fly={{ x: -288, duration: 300 }}
 >
     <div
         class="bg-cosmos-bg/80 sticky top-0 z-10 flex items-center justify-between px-6 py-8 backdrop-blur-md"

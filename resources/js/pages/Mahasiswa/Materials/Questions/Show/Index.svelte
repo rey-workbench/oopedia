@@ -32,7 +32,6 @@
 
     let showWarning = $state(false);
     let warningMessage = $state('');
-    let isExamMode = $state(false);
 
     function handleViolation(type: ViolationType, message: string) {
         console.warn('[ExamProtection] Violation detected:', type, message);
@@ -46,12 +45,6 @@
     }
 
     onMount(() => {
-        // Berikan sedikit delay agar sidebar sempat ter-render
-        // sehingga animasi out:fly berjalan saat isExamMode aktif.
-        setTimeout(() => {
-            isExamMode = true;
-        }, 50);
-
         activateExamProtection({
             onViolation: handleViolation,
         } as any);
@@ -112,7 +105,12 @@
     const showDebug = $derived(quizState.showAdaptiveIndicator && DEBUG_MODE);
 </script>
 
-<App title={`Latihan Soal - ${material.title}`} showSidebar={!isExamMode}>
+<App
+    title={`Latihan Soal - ${material.title}`}
+    showSidebar={false}
+    showNavbar={false}
+    fullWidth={true}
+>
     <div class="py-12">
         <div
             class="mx-auto max-w-5xl px-4 transition-all duration-500 sm:px-6 lg:px-8"
