@@ -189,8 +189,7 @@ export class QuestionShowState extends BaseState {
             {
                 preserveScroll: true,
                 preserveState: true,
-                onSuccess: () => {
-                },
+                onSuccess: () => {},
                 onFinish: () => {
                     this.isSubmitting = false;
                 },

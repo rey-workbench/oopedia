@@ -99,7 +99,8 @@
                                 Akses Administrator
                             </h4>
                             <p class="mt-1 text-xs leading-relaxed text-slate-500">
-                                Anda memiliki hak akses untuk mengelola konten pembelajaran, mahasiswa, dan aturan sistem adaptif.
+                                Anda memiliki hak akses untuk mengelola konten pembelajaran,
+                                mahasiswa, dan aturan sistem adaptif.
                             </p>
                         </div>
                     </div>
@@ -115,7 +116,8 @@
                                 Keamanan
                             </h4>
                             <p class="mt-1 text-xs leading-relaxed text-slate-500">
-                                Update password secara berkala untuk menjaga integritas data sistem e-learning.
+                                Update password secara berkala untuk menjaga integritas data sistem
+                                e-learning.
                             </p>
                         </div>
                     </div>
