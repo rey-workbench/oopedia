@@ -1,117 +1,119 @@
 name: CI/CD Pipeline Rey-Oopedia
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
 
 jobs:
-  tests:
-    name: Tests & Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    tests:
+        name: Tests & Build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.5'
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, redis
-          coverage: none
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.5'
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, redis
+                  coverage: none
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 9
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: |
-          composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-          pnpm install --frozen-lockfile
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '22'
+                  cache: 'pnpm'
 
-      - name: Copy .env
-        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+            - name: Install dependencies
+              run: |
+                  composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+                  pnpm install --frozen-lockfile
 
-      - name: Generate key
-        run: php artisan key:generate
+            - name: Copy .env
+              run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
-      - name: Build Assets
-        run: pnpm run build
+            - name: Generate key
+              run: php artisan key:generate
 
-      - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: public-build
-          path: public/build
+            - name: Build Assets
+              run: pnpm run build
 
-  deploy:
-    name: Deploy to VPS
-    needs: tests
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+            - name: Upload Build Artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: public-build
+                  path: public/build
 
-      - name: Download Build Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: public-build
-          path: public/build
+    deploy:
+        name: Deploy to VPS
+        needs: tests
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.5'
+            - name: Download Build Artifacts
+              uses: actions/download-artifact@v4
+              with:
+                  name: public-build
+                  path: public/build
 
-      - name: Install production dependencies
-        run: composer install --no-dev --no-interaction --no-progress --prefer-dist --optimize-autoloader
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.5'
 
-      - name: Deploy via SSH (Rsync)
-        uses: easingthemes/ssh-deploy@main
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-          ARGS: '-rlgoDzvc --delete'
-          SOURCE: '/'
-          REMOTE_HOST: ${{ secrets.SERVER_HOST }}
-          REMOTE_USER: ${{ secrets.SERVER_USER }}
-          TARGET: '/root/skripsi/rey/oopedia'
-          EXCLUDE: '/node_modules/, /tests/, /storage/logs/, /.git/, /.github/, /storage/*.key, .env, rr, rr.exe'
+            - name: Install production dependencies
+              run: composer install --no-dev --no-interaction --no-progress --prefer-dist --optimize-autoloader
 
-      - name: Post-deployment commands
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          script: |
-            cd /root/skripsi/rey/oopedia
+            - name: Deploy via SSH (Rsync)
+              uses: easingthemes/ssh-deploy@main
+              with:
+                  SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+                  ARGS: '-rlgoDzvc --delete'
+                  SOURCE: '/'
+                  REMOTE_HOST: ${{ secrets.SERVER_HOST }}
+                  REMOTE_USER: ${{ secrets.SERVER_USER }}
+                  TARGET: '/root/skripsi/rey/oopedia'
+                  # rr dan rr.exe di-exclude agar tidak menimpa binary Linux di server
+                  EXCLUDE: '/node_modules/, /tests/, /storage/logs/, /.git/, /.github/, /storage/*.key, .env, rr, rr.exe'
 
-            # Maintenance mode on
-            php artisan down || true
+            - name: Post-deployment commands
+              uses: appleboy/ssh-action@v1.0.3
+              with:
+                  host: ${{ secrets.SERVER_HOST }}
+                  username: ${{ secrets.SERVER_USER }}
+                  key: ${{ secrets.SERVER_SSH_KEY }}
+                  script: |
+                      cd /root/skripsi/rey/oopedia
 
-            # Pastikan binary RoadRunner ada (Octane)
-            php artisan octane:install --server=roadrunner --no-interaction
+                      # Maintenance mode on
+                      php artisan down || true
 
-            # Update Database & Cache
-            php artisan migrate --force
-            php artisan optimize:clear
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
+                      # Pastikan binary RoadRunner versi Linux Server tersedia
+                      # Perintah ini akan mendownload binary 'rr' jika belum ada
+                      php artisan octane:install --server=roadrunner --no-interaction
+                      chmod +x rr
 
-            # Perbaiki Permission Folder
-            chmod -R 775 storage bootstrap/cache
-            chown -R root:www-data storage bootstrap/cache
+                      # Update Database & Cache
+                      # Kita gunakan optimize agar config, route, dan view tercache sekaligus
+                      php artisan migrate --force
+                      php artisan optimize
 
-            # RESTART OCTANE
-            # Restart via Supervisor jika sudah dikonfigurasi
-            sudo supervisorctl restart oopedia-octane || true
+                      # Perbaiki Permission Folder (Sesuai dengan setup root:www-data tadi)
+                      chmod -R 775 storage bootstrap/cache
+                      chown -R root:www-data storage bootstrap/cache
 
-            # Maintenance mode off
-            php artisan up
+                      # RESTART OCTANE (Supervisor)
+                      # Menggunakan nama program oopedia-octane sesuai config Supervisor
+                      sudo supervisorctl restart oopedia-octane
+
+                      # Maintenance mode off
+                      php artisan up
