@@ -46,7 +46,7 @@
             {#each menuItems as item}
                 <Link
                     href={item.href}
-                    class="rounded-full px-5 py-2.5 text-[11px] font-black tracking-widest text-slate-900/60 uppercase transition-all hover:bg-slate-900/5 hover:text-slate-900"
+                    class="rounded-full px-5 py-2.5 text-xs font-black tracking-widest text-slate-900/60 uppercase transition-all hover:bg-slate-900/5 hover:text-slate-900"
                 >
                     {item.label}
                 </Link>
@@ -88,13 +88,13 @@
             <div class="flex items-center gap-2">
                 <Link
                     href={ROUTES.AUTH.LOGIN}
-                    class="hidden rounded-full px-5 py-2.5 text-[11px] font-black tracking-widest text-slate-900/50 uppercase transition-colors hover:text-slate-900 lg:block"
+                    class="hidden items-center rounded-full px-5 py-2.5 text-xs font-black tracking-widest text-slate-900/60 uppercase transition-colors hover:text-slate-900 md:inline-flex"
                 >
                     Masuk
                 </Link>
                 <Link
                     href={ROUTES.AUTH.REGISTER}
-                    class="rounded-full border-2 border-b-4 border-slate-950 bg-slate-900 px-6 py-2.5 text-[11px] font-black tracking-widest text-white uppercase transition-all hover:bg-slate-800 active:translate-y-1 active:border-b-2"
+                    class="rounded-full border-2 border-b-4 border-slate-950 bg-slate-900 px-6 py-2.5 text-xs font-black tracking-widest text-white uppercase transition-all hover:bg-slate-800 active:translate-y-1 active:border-b-2"
                 >
                     Daftar
                 </Link>
@@ -133,6 +133,23 @@
                             {item.label}
                         </Link>
                     {/each}
+
+                    <div class="mt-4 flex flex-col gap-3 border-t border-slate-100 pt-6">
+                        <Link
+                            href={ROUTES.AUTH.LOGIN}
+                            onclick={() => (menuOpen = false)}
+                            class="flex items-center justify-center rounded-2xl border-2 border-slate-200 py-4 text-sm font-black tracking-widest text-slate-900 uppercase transition-colors hover:bg-slate-50"
+                        >
+                            Masuk
+                        </Link>
+                        <Link
+                            href={ROUTES.AUTH.REGISTER}
+                            onclick={() => (menuOpen = false)}
+                            class="flex items-center justify-center rounded-2xl border-2 border-b-4 border-slate-950 bg-slate-900 py-4 text-sm font-black tracking-widest text-white uppercase transition-all active:translate-y-1 active:border-b-2"
+                        >
+                            Daftar Sekarang
+                        </Link>
+                    </div>
                 </nav>
             </div>
         </Motion>
