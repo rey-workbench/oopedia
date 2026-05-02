@@ -6,19 +6,26 @@ namespace App\Services\Adaptive;
 
 use App\Contracts\Services\AdaptiveActionProcessorInterface;
 use App\Enums\Adaptive\AdaptiveActionId;
+use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Models\StudentState;
 
 final class AdaptiveActionProcessor implements AdaptiveActionProcessorInterface
 {
     private const array DIFFICULTY_ORDER = ['beginner', 'medium', 'hard', 'final'];
 
-    public function process(StudentState $studentState, array $actions, string $materialId): StudentState
+    public function __construct(
+        private readonly QuestionRepositoryInterface $questionRepository
+    ) {}
+
+    public function process(StudentState $studentState, array $actions, string $materialId, bool $isCorrect): StudentState
     {
         $adaptiveState = $studentState->adaptive_state ?? [];
 
         // Reset transient flags before applying new actions
         $adaptiveState['show_guidance']  = false;
-        $adaptiveState['needs_remedial'] = false;
+        $adaptiveState['needs_remedial']     = false;
+        $adaptiveState['next_url']           = null;
+        $adaptiveState['challenge_question'] = null;
 
         foreach ($actions as $action) {
             // Recommendation is now just an ID string or an object with an ID
@@ -35,8 +42,8 @@ final class AdaptiveActionProcessor implements AdaptiveActionProcessorInterface
                 AdaptiveActionId::REDUCE_DIFF        => $this->handleReduceDifficulty($studentState),
                 AdaptiveActionId::INCREASE_DIFF      => $this->handleIncreaseDifficulty($studentState, 1),
                 AdaptiveActionId::REDUCE_HINT        => $this->handleReduceHint($studentState, $adaptiveState),
-                AdaptiveActionId::NEW_CHALLENGE      => $this->handleNewChallenge($studentState),
-                AdaptiveActionId::STREAK_BONUS       => $this->handleStreakBonus($studentState, $adaptiveState),
+                AdaptiveActionId::NEW_CHALLENGE      => $this->handleNewChallenge($studentState, $adaptiveState, $materialId, $isCorrect),
+                AdaptiveActionId::STREAK_BONUS       => $this->handleStreakBonus($studentState, $adaptiveState, $isCorrect),
                 AdaptiveActionId::CERTIFICATION      => $this->handleCertification($adaptiveState),
                 AdaptiveActionId::SHOW_GUIDANCE      => $this->handleShowGuidance($adaptiveState),
                 AdaptiveActionId::NOTIFY_TEACHER     => $this->handleNotifyTeacher($adaptiveState),
@@ -55,6 +62,7 @@ final class AdaptiveActionProcessor implements AdaptiveActionProcessorInterface
         $adaptiveState['needs_remedial']       = true;
         $adaptiveState['remedial_material_id'] = $materialId;
         $studentState->target_difficulty       = 'beginner';
+        $adaptiveState['next_url']             = route('mahasiswa.materials.show', ['material' => $materialId]);
     }
 
     private function handleRemedialIntensive(StudentState $studentState, array &$adaptiveState, string $materialId): void
@@ -90,14 +98,35 @@ final class AdaptiveActionProcessor implements AdaptiveActionProcessorInterface
         $adaptiveState['scaffold_mode']         = 'minimal';
     }
 
-    private function handleNewChallenge(StudentState $studentState): void
+    private function handleNewChallenge(StudentState $studentState, array &$adaptiveState, string $materialId, bool $isCorrect): void
     {
-        $studentState->xp += 100;
-        $studentState->hints_available = ($studentState->hints_available ?? 0) + 1;
+        if ($isCorrect) {
+            $studentState->xp += 100;
+            $studentState->hints_available = ($studentState->hints_available ?? 0) + 1;
+        }
+
+        $question = $this->questionRepository->getRandomMultipleChoiceFromOtherMaterials($materialId);
+
+        if ($question) {
+            $adaptiveState['challenge_question'] = [
+                'id'      => $question->id,
+                'content' => $question->question_text,
+                'type'    => $question->question_type->value,
+                'options' => $question->answers->map(fn ($a): array => [
+                    'id'         => $a->id,
+                    'text'       => $a->answer_text,
+                    'is_correct' => $a->is_correct,
+                ])->toArray(),
+            ];
+        }
     }
 
-    private function handleStreakBonus(StudentState $studentState, array &$adaptiveState): void
+    private function handleStreakBonus(StudentState $studentState, array &$adaptiveState, bool $isCorrect): void
     {
+        if (! $isCorrect) {
+            return;
+        }
+
         $studentState->xp += 50;
         $badges                  = $adaptiveState['badges'] ?? [];
         $badges[]                = 'streak_' . ($studentState->streak ?? 0);

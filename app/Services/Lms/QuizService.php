@@ -525,7 +525,7 @@ final readonly class QuizService implements QuizServiceInterface
             );
 
             // 3. Log and Apply Result
-            $this->logAndApplyAdaptiveResult($quizSubmissionDTO->userId, $quizSubmissionDTO->materialId, $engineResult->toArray(), $studentState);
+            $this->logAndApplyAdaptiveResult($quizSubmissionDTO->userId, $quizSubmissionDTO->materialId, $engineResult->toArray(), $studentState, $isCorrect);
 
             // 4. Transform for UI Feedback
             $diagnosisFact     = AdaptiveFact::find($engineResult->diagnosis);
@@ -537,24 +537,12 @@ final readonly class QuizService implements QuizServiceInterface
                 'id'          => $id,
                 'name'        => $actionModels->get($id)?->name    ?? str_replace('_', ' ', $id),
                 'variant'     => $actionModels->get($id)?->variant ?? 'feedback',
-                'description' => $actionModels->get($id)?->description,
             ], $engineResult->actions);
-
-            $challengeQuestion = null;
-            if (in_array('NEW_CHALLENGE', $engineResult->actions)) {
-                $challengeQuestion = $this->getChallengeQuestion($quizSubmissionDTO->materialId);
-            }
-
-            $remedialUrl = null;
-            if (in_array('REMEDIAL', $engineResult->actions) || in_array('REMEDIAL_INTENSIVE', $engineResult->actions)) {
-                $remedialUrl = route('mahasiswa.materials.show', $quizSubmissionDTO->materialId);
-            }
 
             return [
                 'is_correct'          => $isCorrect,
                 'score'               => $score,
-                'challenge_question'  => $challengeQuestion,
-                'remedial_url'        => $remedialUrl,
+                'challenge_question'  => null, // Handled via adaptive_state
                 'engine_result'       => array_merge($engineResult->toArray(), [
                     'diagnosis'       => $friendlyDiagnosis,
                     'actions'         => $hydratedActions,
@@ -564,7 +552,7 @@ final readonly class QuizService implements QuizServiceInterface
         });
     }
 
-    private function logAndApplyAdaptiveResult(string $userId, string $materialId, array $result, StudentState $studentState): void
+    private function logAndApplyAdaptiveResult(string $userId, string $materialId, array $result, StudentState $studentState, bool $isCorrect): void
     {
         // 1. Log the execution (only for registered users)
         if ($userId !== RoleName::GUEST->value) {
@@ -583,7 +571,7 @@ final readonly class QuizService implements QuizServiceInterface
         }
 
         // 2. Process and Apply Actions via the new Dedicated Service
-        $this->adaptiveActionProcessor->process($studentState, $result['actions'], $materialId);
+        $this->adaptiveActionProcessor->process($studentState, $result['actions'], $materialId, $isCorrect);
 
         // Update the last diagnosis in the student state
         $adaptiveState                   = $studentState->adaptive_state ?? [];
@@ -632,25 +620,5 @@ final readonly class QuizService implements QuizServiceInterface
         }
 
         return $current;
-    }
-
-    private function getChallengeQuestion(string $excludeMaterialId): ?array
-    {
-        $question = $this->questionRepository->getRandomMultipleChoiceFromOtherMaterials($excludeMaterialId);
-
-        if (! $question instanceof Question) {
-            return null;
-        }
-
-        return [
-            'id'      => $question->id,
-            'content' => $question->question_text,
-            'type'    => $question->question_type,
-            'options' => $question->answers->map(fn ($a): array => [
-                'id'         => $a->id,
-                'text'       => $a->answer_text,
-                'is_correct' => $a->is_correct,
-            ])->toArray(),
-        ];
     }
 }

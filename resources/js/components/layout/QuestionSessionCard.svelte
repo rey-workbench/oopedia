@@ -19,15 +19,7 @@
 
     <!-- Question Content -->
     <div class="p-6 md:p-8">
-        {#if state.isNavigating}
-            <div
-                class="flex flex-col items-center justify-center py-12 text-slate-400"
-                transition:fade
-            >
-                <Loader2 size={40} class="mb-4 animate-spin text-indigo-500" />
-                <p class="text-base font-bold">Menyiapkan soal berikutnya...</p>
-            </div>
-        {:else if currentQuestion}
+        {#if currentQuestion}
             <div class="space-y-6" in:fade={{ duration: 400 }}>
                 <!-- Hint Panel -->
                 {#if state.showHint && currentQuestion.hint}

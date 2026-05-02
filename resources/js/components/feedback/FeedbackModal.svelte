@@ -320,24 +320,15 @@
                         disabled={quizState.isNavigating}
                         class="w-full md:w-64"
                     >
-                        {#if quizState.isNavigating}
-                            <div
-                                class="flex items-center justify-center gap-2 text-xs font-black tracking-widest uppercase"
-                            >
-                                <Loader2 size={16} class="animate-spin" />
-                                MEMUAT...
-                            </div>
-                        {:else}
-                            <span
-                                class="flex items-center justify-center gap-2 text-xs font-black tracking-widest uppercase"
-                            >
-                                {nextAction}
-                                <ArrowRight
-                                    size={18}
-                                    class="transition-transform group-hover:translate-x-1"
-                                />
-                            </span>
-                        {/if}
+                        <span
+                            class="flex items-center justify-center gap-2 text-xs font-black tracking-widest uppercase"
+                        >
+                            {nextAction}
+                            <ArrowRight
+                                size={18}
+                                class="transition-transform group-hover:translate-x-1"
+                            />
+                        </span>
                     </Button>
                 </div>
             </div>

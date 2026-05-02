@@ -114,7 +114,7 @@ class RealQuestionSeeder extends Seeder
     private function getQuestionsForModule($title)
     {
         $allQuestions = [
-            'Pengantar Konsep Dasar OOP' => [
+            'Paradigma OOP vs Struktural' => [
                 // BEGINNER (7)
                 [
                     'text'       => 'Apa perbedaan utama antara pemrograman prosedural dan OOP?',
@@ -333,7 +333,7 @@ class RealQuestionSeeder extends Seeder
                     ],
                 ],
             ],
-            'Class dan Object' => [
+            'Anatomi Class & Object' => [
                 // BEGINNER (7)
                 [
                     'text'       => 'Class diibaratkan sebagai sebuah ____, sedangkan Object adalah ____.',
@@ -552,7 +552,7 @@ class RealQuestionSeeder extends Seeder
                     ],
                 ],
             ],
-            'Enkapsulasi (Encapsulation)' => [
+            'Enkapsulasi & Information Hiding' => [
                 // BEGINNER (7)
                 [
                     'text'       => 'Enkapsulasi sering disebut sebagai "____" data.',
@@ -770,7 +770,7 @@ class RealQuestionSeeder extends Seeder
                     ],
                 ],
             ],
-            'Relasi Class (Class Relations)' => [
+            'Relasi Antar Class (UML Dasar)' => [
                 // BEGINNER (7)
                 [
                     'text'       => 'Relasi "is-a" biasanya diimplementasikan dengan?',
@@ -1864,7 +1864,7 @@ class RealQuestionSeeder extends Seeder
                     ],
                 ],
             ],
-            'Polimorfisme (Polymorphism)' => [
+            'Mastering Polimorfisme: Fleksibilitas Dewa' => [
                 // BEGINNER (7)
                 [
                     'text'       => 'Polimorfisme berasal dari bahasa Yunani yang berarti "____".',
@@ -2300,6 +2300,21 @@ class RealQuestionSeeder extends Seeder
                 ],
             ],
         ];
+
+        if ($title === 'Inheritance & Abstraksi: Hierarki dan Kontrak') {
+            return array_merge(
+                $allQuestions['Inheritance & Abstraksi: Hierarki dan Kontrak'] ?? [],
+                $allQuestions['Abstract Class'] ?? [],
+                $allQuestions['Interface'] ?? []
+            );
+        }
+
+        if ($title === 'Mastering Polimorfisme: Fleksibilitas Dewa') {
+            return array_merge(
+                $allQuestions['Mastering Polimorfisme: Fleksibilitas Dewa'] ?? [],
+                $allQuestions['Overriding dan Overloading'] ?? []
+            );
+        }
 
         return $allQuestions[$title] ?? [];
     }

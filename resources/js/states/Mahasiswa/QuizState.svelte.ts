@@ -232,11 +232,15 @@ export class QuizState extends BaseState {
         if (nextUrl) {
             router.visit(nextUrl, {
                 preserveState: false,
+                preserveScroll: true,
+                showProgress: false,
                 onFinish: () => (this.isNavigating = false),
                 onError: () => (this.isNavigating = false),
             });
         } else {
             router.reload({
+                preserveScroll: true,
+                showProgress: false,
                 onFinish: () => (this.isNavigating = false),
                 onError: () => (this.isNavigating = false),
             });

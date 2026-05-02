@@ -11,8 +11,7 @@ interface AdaptiveActionProcessorInterface
     /**
      * Process a list of adaptive recommendations and apply changes to the student state.
      *
-     * @param array $actions List of action objects {id, metadata}
-     * @param string $materialId Contextual material ID
+     * @param bool $isCorrect Whether the current answer was correct
      */
-    public function process(StudentState $studentState, array $actions, string $materialId): StudentState;
+    public function process(StudentState $studentState, array $actions, string $materialId, bool $isCorrect): StudentState;
 }

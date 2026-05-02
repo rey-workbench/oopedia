@@ -42,20 +42,13 @@ final class QuizInteractionController extends Controller
         $isCorrect    = $result['is_correct'];
         $engineResult = $result['engine_result'];
 
-        $actionIds = $engineResult['actions'] ? array_column($engineResult['actions'], 'id') : [];
-
-        // 1. Determine UI Behavior
-        $shouldRemedial = in_array(AdaptiveActionId::REMEDIAL->value, $actionIds) ||
-            in_array(AdaptiveActionId::REMEDIAL_INTENSIVE->value, $actionIds);
-
-        $nextUrl = $shouldRemedial
-            ? route('mahasiswa.materials.questions.levels', ['material' => $materialId])
-            : null;
-
-        // 2. Prepare Student State for Frontend
+        // 1. Prepare Student State for Frontend
         $studentStateData = $isGuest
             ? $this->guestProgressService->getStudentSessionState()
             : $this->performanceService->getStudentSessionState($userId);
+
+        // 2. Determine UI Behavior from State (populated by AdaptiveActionProcessor)
+        $nextUrl = $studentStateData['adaptive_engine']['adaptive_state']['next_url'] ?? null;
 
         // 3. Build triggered_rule for the modal
         $ruleChain     = $engineResult['engine_metadata']['rule_chain'] ?? [];
@@ -94,7 +87,7 @@ final class QuizInteractionController extends Controller
                 'triggered_rule'  => $triggeredRule,
                 'triggered_rules' => $triggeredRules,
             ]),
-            'challenge_question' => $result['challenge_question'] ?? null,
+            'challenge_question' => $studentStateData['adaptive_engine']['adaptive_state']['challenge_question'] ?? null,
             'next_url'           => $nextUrl,
         ];
 
