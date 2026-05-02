@@ -47,13 +47,14 @@ class ComprehensiveQuestionsSeeder extends Seeder
                 // Create 15 questions per material
                 for ($i = 1; $i <= 15; $i++) {
                     $difficulty   = $i <= 5 ? QuestionDifficulty::BEGINNER->value : ($i <= 10 ? QuestionDifficulty::MEDIUM->value : QuestionDifficulty::HARD->value);
+                    $prefix       = $i <= 5 ? '[MUDAH] ' : ($i <= 10 ? '[SEDANG] ' : '[SULIT] ');
                     $typePool     = [QuestionType::RADIO_BUTTON->value, QuestionType::FILL_IN_THE_BLANK->value, QuestionType::DRAG_AND_DROP->value];
                     $questionType = $typePool[($i - 1) % 3];
 
                     if ($questionType === 'radio_button') {
                         $this->createRadioQuestion(
                             $material->id,
-                            "Pertanyaan dummy #{$i}",
+                            "{$prefix}Pertanyaan dummy #{$i} untuk {$material->title}",
                             $difficulty,
                             'Pilih jawaban yang bertuliskan "ini benar"',
                             [
@@ -67,7 +68,7 @@ class ComprehensiveQuestionsSeeder extends Seeder
                     } elseif ($questionType === 'fill_in_the_blank') {
                         $this->createFillBlankQuestion(
                             $material->id,
-                            "Ketik kata 'benar' untuk menjawab pertanyaan dummy #{$i} ini: _____",
+                            "{$prefix}Ketik kata 'benar' untuk menjawab pertanyaan dummy #{$i} ini: _____",
                             $difficulty,
                             'Isi dengan: benar',
                             [
@@ -79,7 +80,7 @@ class ComprehensiveQuestionsSeeder extends Seeder
                     } else {
                         $this->createDragDropQuestion(
                             $material->id,
-                            "Urutkan elemen dummy #{$i} berikut sesuai angka 1-2-3: [blank_1] [blank_2] [blank_3]",
+                            "{$prefix}Urutkan elemen dummy #{$i} berikut sesuai angka 1-2-3: [blank_1] [blank_2] [blank_3]",
                             $difficulty,
                             'Urutkan 1, 2, kemudian 3',
                             [
