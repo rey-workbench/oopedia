@@ -85,7 +85,18 @@
                             {#snippet cardInner()}
                                 <!-- Graphic Section -->
                                 <div class="relative shrink-0 md:w-64 lg:w-80">
-                                    {#if material.media && material.media.length > 0}
+                                    {#if material.cover_url}
+                                        <div class="h-60 md:h-full">
+                                            <img
+                                                src={material.cover_url}
+                                                alt={material.title}
+                                                class="h-full w-full object-cover"
+                                            />
+                                            <div
+                                                class="absolute inset-0 bg-slate-900/10 transition-colors group-hover:bg-transparent"
+                                            ></div>
+                                        </div>
+                                    {:else if material.media && material.media.length > 0}
                                         <div class="h-60 md:h-full">
                                             <img
                                                 src={material.media[0]?.full_url}

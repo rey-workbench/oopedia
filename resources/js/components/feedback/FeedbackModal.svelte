@@ -1,7 +1,7 @@
 <script lang="ts">
     import Button from '@/components/ui/Button.svelte';
     import { DotLottieSvelte } from '@lottiefiles/dotlottie-svelte';
-    import { ArrowRight, Loader2, Star, TrendingUp, Timer, Hourglass } from 'lucide-svelte';
+    import { ArrowRight, Star, TrendingUp, Timer, Hourglass } from 'lucide-svelte';
     import { fly, fade, scale } from 'svelte/transition';
     import { router } from '@inertiajs/svelte';
     import type { QuizState } from '@/states/Mahasiswa/QuizState.svelte';

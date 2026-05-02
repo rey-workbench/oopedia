@@ -24,6 +24,7 @@ final class MaterialResource extends JsonResource
         return [
             'id'                  => $this->id,
             'title'               => $this->title,
+            'cover_url'           => $this->cover_url,
             'content'             => $this->content,
             'description'         => $this->description ?? '',
             'module_id'           => $this->module_id,

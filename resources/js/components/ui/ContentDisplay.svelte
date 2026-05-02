@@ -2,7 +2,7 @@
     import hljs from 'highlight.js';
     import DOMPurify from 'dompurify';
     import { fade, scale } from 'svelte/transition';
-    import { MousePointer2 } from 'lucide-svelte';
+    import { MousePointer2, X, ExternalLink } from 'lucide-svelte';
 
     interface Props {
         content: string;
@@ -14,6 +14,11 @@
     let container: HTMLElement;
     let showHooray = $state(false);
     let showGhostPointer = $state(false);
+    let previewImage = $state<string | null>(null);
+    let hoveredLink = $state<{ url: string; x: number; y: number } | null>(null);
+    let linkData = $state<any>(null);
+    let isLoadingLink = $state(false);
+    let linkCache = new Map<string, any>();
     let ghostPos = $state({ x: 0, y: 0 });
 
     const safeContent = $derived(
@@ -53,7 +58,10 @@
         const codeBlocks = container.querySelectorAll('pre, code');
         codeBlocks.forEach((block) => {
             const el = block as HTMLElement;
+            // Skip: <code> inside <pre>
             if (el.tagName === 'CODE' && el.parentElement?.tagName === 'PRE') return;
+            // Skip: inline <code> inside table cells, list items, paragraphs
+            if (el.tagName === 'CODE' && el.closest('td, th, li, p')) return;
 
             if (!el.dataset['enhanced']) {
                 const text = el.innerText.trim();
@@ -128,6 +136,64 @@
                         li.dataset['interactive'] = 'true';
                     }
                 });
+            }
+        });
+
+        // 5. Image Preview Interaction
+        const images = container.querySelectorAll('img');
+        images.forEach((img) => {
+            if (!img.dataset['previewable']) {
+                img.classList.add('cursor-zoom-in');
+                img.addEventListener('click', () => {
+                    previewImage = img.src;
+                });
+                img.dataset['previewable'] = 'true';
+            }
+        });
+
+        // 6. Link Preview Interaction
+        const links = container.querySelectorAll('a');
+        links.forEach((link) => {
+            if (!link.dataset['previewable']) {
+                link.classList.add('pedagogical-link');
+                
+                link.addEventListener('mouseenter', async () => {
+                    const rect = link.getBoundingClientRect();
+                    const url = link.href;
+                    
+                    hoveredLink = {
+                        url: url,
+                        x: rect.left + rect.width / 2,
+                        y: rect.top
+                    };
+
+                    if (linkCache.has(url)) {
+                        linkData = linkCache.get(url);
+                    } else {
+                        isLoadingLink = true;
+                        linkData = null;
+                        try {
+                            const res = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`);
+                            const { data } = await res.json();
+                            linkData = {
+                                title: data.title,
+                                description: data.description,
+                                image: data.image?.url || data.screenshot?.url,
+                                logo: data.logo?.url
+                            };
+                            linkCache.set(url, linkData);
+                        } catch (e) {
+                            linkData = { title: new URL(url).hostname };
+                        } finally {
+                            isLoadingLink = false;
+                        }
+                    }
+                });
+
+                link.addEventListener('mouseleave', () => {
+                    hoveredLink = null;
+                });
+                link.dataset['previewable'] = 'true';
             }
         });
     }
@@ -214,6 +280,16 @@
         @apply mb-8 text-xl leading-[1.8] text-slate-600/90;
     }
 
+    /* Multimedia Elements */
+    :global(.pedagogical-content-root iframe) {
+        @apply my-12 aspect-video w-full overflow-hidden rounded-[2rem] border-2 border-b-8 border-slate-700 bg-slate-100 shadow-2xl;
+    }
+
+    :global(.pedagogical-content-root img) {
+        @apply my-12 block h-auto max-w-full rounded-[2rem] border-2 border-b-8 border-slate-100 shadow-xl;
+        @apply mx-auto;
+    }
+
     /* 2. Duolingo-Style Checklist (Chunky Buttons) */
     :global(.pedagogical-content-root ul.duo-checklist) {
         @apply my-12 list-none space-y-5 p-0;
@@ -280,7 +356,20 @@
         @apply text-[#6272a4] italic;
     }
 
-    /* 4. Duolingo-Style Tables */
+    /* 4. Interactive Links */
+    :global(.pedagogical-content-root a.pedagogical-link) {
+        @apply inline-block rounded-lg border-b-4 border-sky-200 px-1 font-black text-sky-600 transition-all no-underline hover:border-sky-400 hover:bg-sky-50 active:translate-y-0.5 active:border-b-0;
+    }
+
+    /* Inline code (inside td, li, p — NOT terminal blocks) */
+    :global(.pedagogical-content-root td code),
+    :global(.pedagogical-content-root th code),
+    :global(.pedagogical-content-root li code),
+    :global(.pedagogical-content-root p code) {
+        @apply rounded-md bg-slate-100 px-2 py-0.5 font-mono text-[14px] font-bold text-slate-700;
+    }
+
+    /* 5. Duolingo-Style Tables */
     :global(.table-responsive-wrapper) {
         @apply my-12 overflow-x-auto rounded-[2rem] border-2 border-b-8 border-slate-200 shadow-xl;
     }
@@ -328,6 +417,83 @@
 >
     {@html safeContent}
 </div>
+
+{#if previewImage}
+    <div
+        class="fixed inset-0 z-10000 flex items-center justify-center bg-slate-950/90 p-4 backdrop-blur-md md:p-20"
+        transition:fade={{ duration: 200 }}
+        onclick={() => (previewImage = null)}
+        role="button"
+        tabindex="0"
+        onkeydown={(e) => e.key === 'Escape' && (previewImage = null)}
+    >
+        <button
+            class="absolute top-8 right-8 z-20 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-white transition-all hover:bg-white/20 hover:scale-110 active:scale-95"
+            onclick={() => (previewImage = null)}
+        >
+            <X size={32} strokeWidth={3} />
+        </button>
+
+        <div class="relative max-h-full max-w-full overflow-hidden rounded-3xl shadow-2xl" transition:scale={{ start: 0.95, duration: 300 }}>
+            <img
+                src={previewImage}
+                alt="Preview"
+                class="max-h-[85vh] w-auto object-contain shadow-2xl ring-8 ring-white/5"
+            />
+        </div>
+    </div>
+{/if}
+
+{#if hoveredLink}
+    <div
+        class="pointer-events-none fixed z-10001 -translate-x-1/2 -translate-y-full origin-bottom"
+        style="left: {hoveredLink.x}px; top: {hoveredLink.y}px;"
+        transition:scale={{ start: 0.85, duration: 150, opacity: 0 }}
+    >
+        <div class="flex flex-col items-center">
+            <div class="w-56 overflow-hidden rounded-2xl border-2 border-b-4 border-slate-200 bg-white shadow-lg">
+                <!-- Image strip -->
+                <div class="relative h-24 w-full overflow-hidden bg-slate-100">
+                    {#if isLoadingLink}
+                        <div class="h-full w-full animate-pulse bg-slate-100"></div>
+                    {:else if linkData?.image}
+                        <img src={linkData.image} alt="Preview" class="h-full w-full object-cover" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
+                    {:else}
+                        <div class="flex h-full w-full items-center justify-center">
+                            <ExternalLink size={20} class="text-slate-300" />
+                        </div>
+                    {/if}
+                </div>
+                <!-- Info row -->
+                {#if isLoadingLink}
+                    <div class="flex items-center gap-2 px-3 py-2">
+                        <div class="h-3 w-3 animate-spin rounded-full border-2 border-slate-200 border-t-sky-500 shrink-0"></div>
+                        <div class="h-2.5 w-3/4 animate-pulse rounded bg-slate-100"></div>
+                    </div>
+                {:else}
+                    <div class="flex items-center gap-2 px-3 py-2">
+                        {#if linkData?.logo}
+                            <img src={linkData.logo} alt="Logo" class="h-3.5 w-3.5 shrink-0 rounded-sm object-contain" />
+                        {:else}
+                            <ExternalLink size={12} class="shrink-0 text-sky-400" />
+                        {/if}
+                        <div class="flex min-w-0 flex-col">
+                            <span class="truncate text-[10px] font-black text-slate-800 leading-snug">
+                                {linkData?.title || new URL(hoveredLink.url).hostname}
+                            </span>
+                            <span class="truncate text-[9px] font-medium text-slate-400 leading-tight">
+                                {new URL(hoveredLink.url).hostname}
+                            </span>
+                        </div>
+                    </div>
+                {/if}
+            </div>
+            <!-- Triangle pointing down toward link -->
+            <div class="h-2.5 w-2.5 -mt-[6px] rotate-45 border-r-2 border-b-2 border-slate-200 bg-white"></div>
+        </div>
+    </div>
+{/if}
 
 {#if showHooray}
     <div

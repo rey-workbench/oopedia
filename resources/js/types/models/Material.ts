@@ -10,8 +10,8 @@ import type { User } from './User';
 export interface Material {
     id: string;
     title: string;
+    cover_url?: string | null;
     content: string;
-    cover_image?: string | null;
     is_active: boolean;
     created_at: string;
     updated_at: string;

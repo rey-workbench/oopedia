@@ -2304,15 +2304,15 @@ class RealQuestionSeeder extends Seeder
         if ($title === 'Inheritance & Abstraksi: Hierarki dan Kontrak') {
             return array_merge(
                 $allQuestions['Inheritance & Abstraksi: Hierarki dan Kontrak'] ?? [],
-                $allQuestions['Abstract Class'] ?? [],
-                $allQuestions['Interface'] ?? []
+                $allQuestions['Abstract Class']                                ?? [],
+                $allQuestions['Interface']                                     ?? [],
             );
         }
 
         if ($title === 'Mastering Polimorfisme: Fleksibilitas Dewa') {
             return array_merge(
                 $allQuestions['Mastering Polimorfisme: Fleksibilitas Dewa'] ?? [],
-                $allQuestions['Overriding dan Overloading'] ?? []
+                $allQuestions['Overriding dan Overloading']                 ?? [],
             );
         }
 

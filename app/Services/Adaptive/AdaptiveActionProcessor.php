@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace App\Services\Adaptive;
 
+use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Services\AdaptiveActionProcessorInterface;
 use App\Enums\Adaptive\AdaptiveActionId;
-use App\Contracts\Repositories\QuestionRepositoryInterface;
+use App\Models\Question;
 use App\Models\StudentState;
 
-final class AdaptiveActionProcessor implements AdaptiveActionProcessorInterface
+final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorInterface
 {
     private const array DIFFICULTY_ORDER = ['beginner', 'medium', 'hard', 'final'];
 
     public function __construct(
-        private readonly QuestionRepositoryInterface $questionRepository
+        private QuestionRepositoryInterface $questionRepository,
     ) {}
 
     public function process(StudentState $studentState, array $actions, string $materialId, bool $isCorrect): StudentState
@@ -22,7 +23,7 @@ final class AdaptiveActionProcessor implements AdaptiveActionProcessorInterface
         $adaptiveState = $studentState->adaptive_state ?? [];
 
         // Reset transient flags before applying new actions
-        $adaptiveState['show_guidance']  = false;
+        $adaptiveState['show_guidance']      = false;
         $adaptiveState['needs_remedial']     = false;
         $adaptiveState['next_url']           = null;
         $adaptiveState['challenge_question'] = null;
@@ -107,7 +108,7 @@ final class AdaptiveActionProcessor implements AdaptiveActionProcessorInterface
 
         $question = $this->questionRepository->getRandomMultipleChoiceFromOtherMaterials($materialId);
 
-        if ($question) {
+        if ($question instanceof Question) {
             $adaptiveState['challenge_question'] = [
                 'id'      => $question->id,
                 'content' => $question->question_text,

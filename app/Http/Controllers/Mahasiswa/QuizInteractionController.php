@@ -8,7 +8,6 @@ use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
 use App\Contracts\Services\QuizServiceInterface;
 use App\DTOs\Quiz\QuizSubmissionDTO;
-use App\Enums\Adaptive\AdaptiveActionId;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Question\CheckAnswerRequest;
 use App\Http\Resources\AdaptiveRuleResource;

@@ -22,6 +22,7 @@ final class Material extends Model
     #[\Override]
     protected $fillable = [
         'title',
+        'cover_url',
         'content',
         'module_id',
         'created_by',
