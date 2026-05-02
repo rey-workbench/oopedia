@@ -33,7 +33,7 @@
         completed_materials = 0,
         in_progress_materials = 0,
         total_material_progress = 0,
-        total_answered_questions = 0,
+        total_answered = 0,
         total_correct_questions = 0,
         recent_activities = [],
         all_materials = [],
@@ -54,7 +54,7 @@
                 completed_materials,
                 in_progress_materials,
                 total_material_progress,
-                total_answered_questions,
+                total_answered,
                 total_correct_questions,
                 recent_activities,
                 all_materials,
@@ -104,32 +104,32 @@
 </script>
 
 <App title="Dashboard">
-    <div class="space-y-12">
+    <div class="space-y-8">
         <PageHeader
             id="page-header"
             title="Dashboard"
             subtitle="Selamat datang di pusat kendali belajar Anda."
         />
 
-        <Panel id="dashboard-hero" rounded="3xl" class="border-b-6 border-slate-700" padding="p-12">
+        <Panel id="dashboard-hero" rounded="3xl" class="border-b-6 border-slate-700" padding="p-8 md:p-10">
             <div class="flex flex-col items-center gap-10 md:flex-row">
                 <div class="group relative">
                     <div
-                        class="group-hover:border-primary-400 flex h-32 w-32 items-center justify-center overflow-hidden rounded-3xl border-2 border-b-6 border-slate-200 bg-white shadow-xl shadow-slate-200/20 transition-all duration-300 group-hover:bg-slate-50"
+                        class="group-hover:border-primary-400 flex h-24 w-24 items-center justify-center overflow-hidden rounded-3xl border-2 border-b-6 border-slate-200 bg-white shadow-xl shadow-slate-200/20 transition-all duration-300 group-hover:bg-slate-50"
                     >
-                        <Star size={80} class="text-primary-500" />
+                        <Star size={60} class="text-primary-500" />
                     </div>
                 </div>
 
                 <div class="text-center md:text-left">
                     <h2
-                        class="mb-4 text-4xl font-bold tracking-tight text-white uppercase md:text-5xl"
+                        class="mb-3 text-3xl font-bold tracking-tight text-white uppercase md:text-4xl"
                     >
                         Siap Belajar, <span class="text-primary-400"
                             >{page.props['auth'].user.name}</span
                         >?
                     </h2>
-                    <p class="max-w-xl text-lg font-medium text-slate-400">
+                    <p class="max-w-xl text-base font-medium text-slate-400">
                         Lanjutkan perjalanan belajar Anda hari ini dan kuasai konsep
                         <span class="text-white">Object-Oriented Programming</span> dengan cara yang menyenangkan!
                     </p>
@@ -208,7 +208,7 @@
 
         <div
             id="student-progress-overview"
-            class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
+            class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4"
         >
             {#each dashboardStats as stat (stat.title)}
                 <div id={stat.id}>
@@ -254,7 +254,7 @@
                                     {stat.title}
                                 </h3>
                                 <div
-                                    class="font-display mb-2 text-4xl font-black tracking-tight text-slate-900"
+                                    class="font-display mb-1 text-3xl font-black tracking-tight text-slate-900"
                                 >
                                     {stat.value}
                                 </div>
@@ -287,8 +287,8 @@
             {/each}
         </div>
 
-        <div class="grid grid-cols-1 gap-12 lg:grid-cols-3">
-            <div id="activity-feed" class="space-y-8 lg:col-span-2">
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+            <div id="activity-feed" class="space-y-6 lg:col-span-2">
                 <div class="space-y-8">
                     <div id="activity-feed-header" class="flex items-center justify-between">
                         <h3 class="text-xl font-bold tracking-widest text-slate-900 uppercase">
@@ -312,9 +312,9 @@
                                 padding="p-0"
                                 class="hover:border-primary-400 group overflow-hidden border-b-6 transition-all"
                             >
-                                <div class="flex items-center gap-8 p-8">
+                                <div class="flex items-center gap-6 p-6">
                                     <div
-                                        class={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-2 border-b-4 transition-colors
+                                        class={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-2 border-b-4 transition-colors
                                     ${activity.type === 'achievement' ? 'border-emerald-100 bg-emerald-50 text-emerald-500' : activity.type === 'milestone' ? 'border-amber-100 bg-amber-50 text-amber-500' : 'bg-primary-50 text-primary-500 border-primary-100'}`}
                                     >
                                         <ActivityIcon size={24} strokeWidth={2.5} />
@@ -395,7 +395,7 @@
 
                     <div class="space-y-6">
                         <Card
-                            padding="p-8"
+                            padding="p-6 md:p-8"
                             class="group relative overflow-hidden border-b-6 bg-white"
                         >
                             <div

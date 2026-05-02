@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Enums\Lms\ContentCategory;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Enums\Lms\QuestionType;
 use App\Enums\User\RoleName;
@@ -50,13 +49,11 @@ class ComprehensiveQuestionsSeeder extends Seeder
                     $difficulty   = $i <= 5 ? QuestionDifficulty::BEGINNER->value : ($i <= 10 ? QuestionDifficulty::MEDIUM->value : QuestionDifficulty::HARD->value);
                     $typePool     = [QuestionType::RADIO_BUTTON->value, QuestionType::FILL_IN_THE_BLANK->value, QuestionType::DRAG_AND_DROP->value];
                     $questionType = $typePool[($i - 1) % 3];
-                    $qType        = ContentCategory::TEORI->value;
 
                     if ($questionType === 'radio_button') {
                         $this->createRadioQuestion(
                             $material->id,
-                            "Pertanyaan dummy #{$i} untuk materi: {$material->title}",
-                            $qType,
+                            "Pertanyaan dummy #{$i}",
                             $difficulty,
                             'Pilih jawaban yang bertuliskan "ini benar"',
                             [
@@ -71,7 +68,6 @@ class ComprehensiveQuestionsSeeder extends Seeder
                         $this->createFillBlankQuestion(
                             $material->id,
                             "Ketik kata 'benar' untuk menjawab pertanyaan dummy #{$i} ini: _____",
-                            $qType,
                             $difficulty,
                             'Isi dengan: benar',
                             [
@@ -84,7 +80,6 @@ class ComprehensiveQuestionsSeeder extends Seeder
                         $this->createDragDropQuestion(
                             $material->id,
                             "Urutkan elemen dummy #{$i} berikut sesuai angka 1-2-3: [blank_1] [blank_2] [blank_3]",
-                            $qType,
                             $difficulty,
                             'Urutkan 1, 2, kemudian 3',
                             [
@@ -107,13 +102,12 @@ class ComprehensiveQuestionsSeeder extends Seeder
         echo 'Total questions created: ' . $totalCreated . "\n";
     }
 
-    private function createRadioQuestion($materialId, $text, $type, $difficulty, $hint, $answers, $adminId)
+    private function createRadioQuestion($materialId, $text, $difficulty, $hint, $answers, $adminId)
     {
         $question = Question::create([
             'material_id'     => $materialId,
             'question_text'   => $text,
             'question_type'   => QuestionType::RADIO_BUTTON->value,
-            'type'            => $type,
             'difficulty'      => $difficulty,
             'hint'            => $hint,
             'created_by'      => $adminId,
@@ -134,13 +128,12 @@ class ComprehensiveQuestionsSeeder extends Seeder
         Answer::insert($answerData);
     }
 
-    private function createFillBlankQuestion($materialId, $text, $type, $difficulty, $hint, $correctAnswers, $adminId)
+    private function createFillBlankQuestion($materialId, $text, $difficulty, $hint, $correctAnswers, $adminId)
     {
         $question = Question::create([
             'material_id'     => $materialId,
             'question_text'   => $text,
             'question_type'   => QuestionType::FILL_IN_THE_BLANK->value,
-            'type'            => $type,
             'difficulty'      => $difficulty,
             'hint'            => $hint,
             'created_by'      => $adminId,
@@ -162,13 +155,12 @@ class ComprehensiveQuestionsSeeder extends Seeder
         Answer::insert($answerData);
     }
 
-    private function createDragDropQuestion($materialId, $text, $type, $difficulty, $hint, $items, $adminId)
+    private function createDragDropQuestion($materialId, $text, $difficulty, $hint, $items, $adminId)
     {
         $question = Question::create([
             'material_id'     => $materialId,
             'question_text'   => $text,
             'question_type'   => QuestionType::DRAG_AND_DROP->value,
-            'type'            => $type,
             'difficulty'      => $difficulty,
             'hint'            => $hint,
             'created_by'      => $adminId,

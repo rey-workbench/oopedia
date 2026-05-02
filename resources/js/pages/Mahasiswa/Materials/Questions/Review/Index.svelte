@@ -6,7 +6,7 @@
     import { HelpCircle, List, Check, X, Lightbulb } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { ReviewState } from '@/states/Mahasiswa/QuizState.svelte';
-    import type { Material, QuestionWithAttempt, DifficultyLevel } from '@/types';
+    import type { Material, QuestionWithAttempt, QuestionDifficulty } from '@/types';
 
     const {
         material,
@@ -17,7 +17,7 @@
         material: Material;
         materials: Material[];
         questions: QuestionWithAttempt[];
-        difficulty: DifficultyLevel | 'all';
+        difficulty: QuestionDifficulty | 'all';
     } = $props();
 
     const state = untrack(() => new ReviewState(material, materials, questions, difficulty));

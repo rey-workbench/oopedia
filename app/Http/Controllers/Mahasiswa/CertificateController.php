@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Mahasiswa;
 use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CertificateResource;
 use App\Models\Material;
 use App\Models\User;
 use Endroid\QrCode\Builder\Builder;
@@ -42,12 +43,10 @@ final class CertificateController extends Controller
                     'type'           => $type,
                     'issued_at'      => null,
                 ];
-            })
-            ->values()
-            ->all();
+            });
 
         return $this->render('Mahasiswa/Certificates/Index', [
-            'certifications' => $certifications,
+            'certifications' => CertificateResource::collection($certifications)->resolve(),
         ]);
     }
 

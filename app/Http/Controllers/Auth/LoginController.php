@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Auth;
 
 use App\Contracts\Services\GuestProgressServiceInterface;
-use App\Contracts\Services\UserServiceInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
@@ -18,7 +17,6 @@ use Inertia\Response;
 final class LoginController extends Controller
 {
     public function __construct(
-        private readonly UserServiceInterface $userService,
         private readonly GuestProgressServiceInterface $guestProgressService,
     ) {}
 
@@ -29,7 +27,7 @@ final class LoginController extends Controller
 
     public function store(LoginRequest $loginRequest): RedirectResponse
     {
-        if ($loginRequest->has('is_guest')) {
+        if ($loginRequest->boolean('is_guest')) {
             if (Auth::check()) {
                 Auth::logout();
                 $loginRequest->session()->invalidate();
@@ -51,7 +49,7 @@ final class LoginController extends Controller
 
         $loginRequest->session()->regenerate();
         $this->guestProgressService->clearAllProgress();
-        $user = $this->userService->getUserById(Auth::id());
+        $user = Auth::user();
 
         $redirect = match (true) {
             $user->isSuperAdmin()                  => to_route('admin.dashboard'),

@@ -95,7 +95,7 @@
                         </td>
                     </tr>
                 {:else}
-                    {#each items as item, i (item.id || item)}
+                    {#each items as item, i (item?.id ?? i)}
                         <tr
                             class={`group border-cosmos-border hover:bg-primary-50/30 border-b-2 transition-colors last:border-0 ${rowClass(item)}`}
                         >

@@ -16,7 +16,7 @@ class DosenSeeder extends Seeder
         $dosenList = [
             [
                 'name'     => 'Dr. Ahmad',
-                'email'    => 'ahmad@dosen.com',
+                'email'    => 'ahmad@gmail.com',
                 'password' => 'dosen123',
             ],
             [

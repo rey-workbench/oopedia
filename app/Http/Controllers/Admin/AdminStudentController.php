@@ -9,7 +9,6 @@ use App\DTOs\User\StudentCreateDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Student\ImportStudentRequest;
 use App\Http\Requests\Student\StoreStudentRequest;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
@@ -31,17 +30,15 @@ final class AdminStudentController extends Controller
 
     public function show(string $studentId): Response|RedirectResponse
     {
-        $student = $this->studentService->getStudentById($studentId);
+        $data = $this->studentService->getStudentProgressDetail($studentId);
 
-        if (! $student instanceof User || ! $student->isMahasiswa()) {
+        if (! $data) {
             return to_route('admin.students.index')
                 ->with('error', 'Mahasiswa tidak ditemukan');
         }
 
-        $data = $this->studentService->getStudentProgressDetail($student);
-
         return $this->render('Admin/Students/Progress/Index', [
-            'student'                    => $student,
+            'student'                    => $data['student'],
             'materials'                  => $data['materials'],
             'recent_activities'          => $data['recent_activities'],
             'missingQuestionsByMaterial' => $data['missingQuestionsByMaterial'],

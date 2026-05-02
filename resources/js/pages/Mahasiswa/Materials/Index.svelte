@@ -19,15 +19,15 @@
 </script>
 
 <App title="Materi Pembelajaran">
-    <div class="space-y-12">
+    <div class="space-y-8">
         <PageHeader
             id="page-header"
             title="Kurikulum PBO"
             subtitle="Kuasai konsep fondasi hingga tingkat lanjut Pemrograman Berorientasi Objek."
         />
 
-        <div id="material-exploration-grid" class="grid grid-cols-1 gap-10">
-            {#each state.materials as material, i (material.id)}
+        <div id="material-exploration-grid" class="grid grid-cols-1 gap-6">
+            {#each state.materials as material, i (material?.id ?? i)}
                 <div id={i === 0 ? 'material-item-0' : undefined}>
                     <Card
                         padding="p-0"
@@ -39,7 +39,7 @@
                     >
                         {#snippet cardInner()}
                             <!-- Graphic Section -->
-                            <div class="relative shrink-0 md:w-72 lg:w-96">
+                            <div class="relative shrink-0 md:w-64 lg:w-80">
                                 {#if material.media && material.media.length > 0}
                                     <div class="h-60 md:h-full">
                                         <img
@@ -53,7 +53,7 @@
                                     </div>
                                 {:else}
                                     <div
-                                        class="bg-primary-600 flex h-60 items-center justify-center md:h-full"
+                                        class="bg-primary-600 flex h-48 items-center justify-center md:h-full"
                                     >
                                         <Code size={96} class="text-white/10" />
                                     </div>
@@ -79,12 +79,12 @@
                             </div>
 
                             <!-- Content Section -->
-                            <div class="flex flex-1 flex-col justify-between p-10">
+                            <div class="flex flex-1 flex-col justify-between p-6 md:p-8 lg:p-10">
                                 <div>
                                     <div class="flex items-start justify-between gap-6">
                                         <div>
                                             <h2
-                                                class="group-hover:text-primary-600 mb-3 text-3xl leading-tight font-bold tracking-widest text-slate-900 transition-colors"
+                                                class="group-hover:text-primary-600 mb-2 text-2xl leading-tight font-bold tracking-widest text-slate-900 transition-colors"
                                             >
                                                 {material.title}
                                             </h2>

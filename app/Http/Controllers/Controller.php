@@ -27,7 +27,10 @@ class Controller extends BaseController
             return true;
         }
 
-        return (Auth::user()->role?->role_name ?? RoleName::GUEST->value) === RoleName::GUEST->value;
+        $roleName  = Auth::user()->role?->role_name;
+        $roleValue = $roleName instanceof RoleName ? $roleName->value : $roleName;
+
+        return ($roleValue ?? RoleName::GUEST->value) === RoleName::GUEST->value;
     }
 
     protected function render(string $page, array $data = []): Response

@@ -23,7 +23,7 @@ export class UeqListState extends BaseState {
         this.hydrate({ surveys, averages, classes, activeClass });
     }
 
-    handleFilterChange(e: Event) {
+    public handleFilterChange(e: Event) {
         const select = e.target as HTMLSelectElement;
         router.get(
             ROUTES.ADMIN.UEQ.INDEX,
@@ -32,7 +32,7 @@ export class UeqListState extends BaseState {
         );
     }
 
-    exportResults() {
+    public exportResults() {
         const url = this.activeClass
             ? `${ROUTES.ADMIN.UEQ.EXPORT}?class=${this.activeClass}`
             : ROUTES.ADMIN.UEQ.EXPORT;
@@ -46,27 +46,33 @@ export class UeqListState extends BaseState {
 export class UeqDetailState extends BaseState {
     targetUser = $state<User>({} as User);
     survey = $state<UeqSurvey>({} as UeqSurvey);
-
     aspects = UEQ_ASPECTS;
 
-    dimensions = $derived.by(() => {
-        if (!this.survey) return {};
-        const results: Record<string, number> = {};
-
-        for (const [dimension, fields] of Object.entries(UEQ_DIMENSIONS)) {
-            const sum = fields.reduce(
-                (acc, field) => acc + (Number(this.survey[field as keyof UeqSurvey]) || 0),
-                0
-            );
-            results[dimension] = sum / fields.length;
-        }
-
-        return results;
-    });
+    dimensions = $derived(this.calculateDimensions());
 
     constructor(user: User, survey: UeqSurvey) {
         super();
         this.targetUser = user;
         this.survey = survey;
+    }
+
+    private calculateDimensions(): Record<string, number> {
+        if (!this.survey) return {};
+
+        const results: Record<string, number> = {};
+
+        for (const [dimension, fields] of Object.entries(UEQ_DIMENSIONS)) {
+            results[dimension] = this.calculateAverageForDimension(fields as string[]);
+        }
+
+        return results;
+    }
+
+    private calculateAverageForDimension(fields: string[]): number {
+        const sum = fields.reduce(
+            (acc, field) => acc + (Number(this.survey[field as keyof UeqSurvey]) || 0),
+            0
+        );
+        return sum / fields.length;
     }
 }

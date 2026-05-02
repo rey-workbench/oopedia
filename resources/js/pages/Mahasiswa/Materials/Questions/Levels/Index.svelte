@@ -28,7 +28,7 @@
 </script>
 
 <App title={`Peta Tantangan - ${state.material.title}`}>
-    <div class="space-y-12">
+    <div class="space-y-8">
         <PageHeader
             id="page-header"
             title="Peta Tantangan"
@@ -56,7 +56,7 @@
                 >
                     <MapIcon size={40} />
                 </div>
-                <h3 class="mb-4 text-2xl font-bold tracking-widest text-slate-900 uppercase">
+                <h3 class="mb-4 text-xl font-bold tracking-widest text-slate-900 uppercase">
                     Belum Ada Level
                 </h3>
                 <p class="mx-auto mb-10 max-w-md font-medium text-slate-500">
@@ -71,7 +71,7 @@
                 </Button>
             </Card>
         {:else}
-            <div class="space-y-10">
+            <div class="space-y-8">
                 <div id="levels-legend">
                     <LevelMapLegend />
                 </div>

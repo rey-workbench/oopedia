@@ -4,12 +4,13 @@ import { ROUTES } from '@/utils/route';
 import type {
     Material,
     Question,
-    DifficultyLevel,
+    QuestionDifficulty,
     QuestionWithAttempt,
     AdaptiveResult,
     LevelItem,
     StudentSessionState,
     CheckAnswerResponse,
+    HydratedAction,
 } from '@/types';
 import { playSound } from '@/utils';
 
@@ -46,19 +47,26 @@ export class LevelMapState extends BaseState {
 /**
  * Question Show State (Quiz Controller)
  */
-export class QuestionShowState extends BaseState {
+export class QuizState extends BaseState {
+    // --- State Properties ---
     material = $state<Material>({} as Material);
     currentQuestion = $state<Question | null>(null);
     difficulty = $state<string>('beginner');
     studentState = $state<StudentSessionState | null>(null);
 
+    // --- User Answers ---
     fillInTheBlankAnswer = $state('');
     selectedMultipleChoiceAnswer = $state<string | null>(null);
     dragAndDropAnswers = $state<Record<string, string>>({});
 
+    // --- UI State ---
     isSubmitting = $state(false);
     show_feedback = $state(false);
     showHint = $state(false);
+    usedHint = $state(false);
+    isNavigating = $state(false);
+    startTime = $state(Date.now());
+
     feedbackData = $state<CheckAnswerResponse>({
         status: 'success',
         message: '',
@@ -66,37 +74,23 @@ export class QuestionShowState extends BaseState {
         is_correct: true,
         xp_earned: 0,
         adaptive_result: null,
-        student_state: null,
-        ui: null,
     });
-    usedHint = $state(false);
-    startTime = $state(Date.now());
 
+    // --- Adaptive UI States ---
     showAdaptiveIndicator = $state(false);
     adaptiveFacts = $state<string[]>([]);
-    adaptiveTriggeredRule = $state<{
-        id?: string;
-        name?: string;
-        action?: string | null;
-        priority?: number;
-        variant?: string;
-    } | null>(null);
-    adaptiveTriggeredRules = $state<
-        Array<{
-            id?: string;
-            name?: string;
-            action?: string | null;
-            priority?: number;
-            variant?: string;
-        }>
-    >([]);
+    adaptiveTriggeredRule = $state<AdaptiveResult['triggered_rule']>(null);
+    adaptiveTriggeredRules = $state<string[]>([]);
 
+    // --- Derived Properties ---
     isProcessing = $derived(this.isSubmitting);
-
-    xp = $derived(this.studentState?.xp ?? 0);
-    streak = $derived(this.studentState?.streak ?? 0);
-    level = $derived(this.studentState?.level ?? 'Pemula');
-    hintsAvailable = $derived(this.studentState?.hints_available ?? 0);
+    showGuidance = $derived(
+        this.studentState?.adaptive_engine?.adaptive_state?.['show_guidance'] === true
+    );
+    xp = $derived(this.studentState?.gamification?.xp ?? 0);
+    streak = $derived(this.studentState?.gamification?.streak ?? 0);
+    level = $derived(this.studentState?.gamification?.level ?? 'Pemula');
+    hintsAvailable = $derived((this.studentState as any)?.hints_available ?? 0);
 
     constructor(
         material: Material,
@@ -109,32 +103,32 @@ export class QuestionShowState extends BaseState {
         this.startTime = Date.now();
     }
 
-    async useHint() {
-        if (!this.currentQuestion) return;
+    // --- Methods ---
 
-        // If hint already used for this question, just show it
+    async useHint() {
+        if (!this.canUseHint()) return;
+
         if (this.usedHint) {
             this.showHint = true;
             return;
         }
 
-        if (this.hintsAvailable > 0 && this.currentQuestion?.hint) {
-            router.post(
-                ROUTES.MAHASISWA.MATERIALS.QUESTIONS.HINT(
-                    this.material.id,
-                    this.currentQuestion.id
-                ),
-                {},
-                {
-                    preserveScroll: true,
-                    preserveState: true,
-                    onSuccess: () => {
-                        this.usedHint = true;
-                        this.showHint = true;
-                    },
-                }
-            );
-        }
+        router.post(
+            ROUTES.MAHASISWA.MATERIALS.QUESTIONS.HINT(this.material.id, this.currentQuestion!.id),
+            {},
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => {
+                    this.usedHint = true;
+                    this.showHint = true;
+                },
+            }
+        );
+    }
+
+    private canUseHint(): boolean {
+        return !!(this.currentQuestion && this.hintsAvailable > 0 && this.currentQuestion.hint);
     }
 
     closeHint() {
@@ -143,65 +137,71 @@ export class QuestionShowState extends BaseState {
 
     async submitAnswer() {
         if (this.isSubmitting || this.show_feedback || !this.currentQuestion) return;
-        this.isSubmitting = true;
 
-        const timeSpent = Math.max(0, Math.floor((Date.now() - this.startTime) / 1000));
-
-        const payload: Record<string, any> = {
-            time_spent: timeSpent,
-            used_hint: this.usedHint,
-            difficulty: this.difficulty,
-        };
-
-        if (this.currentQuestion.question_type === 'fill_in_the_blank') {
-            payload['fill_in_the_blank_answer'] = this.fillInTheBlankAnswer;
-        } else if (this.currentQuestion.question_type === 'drag_and_drop') {
-            // Svelte 5 Snapshot: Convert Proxy to plain object for proper serialization
-            payload['drag_and_drop_answers'] = $state.snapshot(this.dragAndDropAnswers);
-        } else if (this.selectedMultipleChoiceAnswer) {
-            payload['answer'] = this.selectedMultipleChoiceAnswer;
-        }
-
-        console.debug('[QuizState] Submitting:', {
-            type: this.currentQuestion.question_type,
-            payload
-        });
-
-        const hasAnswer =
-            this.currentQuestion.question_type === 'fill_in_the_blank'
-                ? (this.fillInTheBlankAnswer?.trim() ?? '').length > 0
-                : this.currentQuestion.question_type === 'drag_and_drop'
-                  ? Object.keys(this.dragAndDropAnswers).length > 0
-                  : Boolean(this.selectedMultipleChoiceAnswer);
-
-        if (!hasAnswer) {
-            console.warn('[QuizState] Submission blocked: No answer provided.');
-            this.feedbackData = {
-                status: 'error',
-                message: 'Jawaban wajib diisi.',
-                next_url: '',
-                is_correct: false,
-                xp_earned: 0,
-                adaptive_result: null,
-                ui: null,
-            };
-            this.show_feedback = true;
-            this.isSubmitting = false;
+        const payload = this.preparePayload();
+        if (!this.validateAnswer()) {
+            this.handleValidationError();
             return;
         }
 
+        this.isSubmitting = true;
         router.post(
             ROUTES.MAHASISWA.MATERIALS.QUESTIONS.CHECK(this.material.id, this.currentQuestion.id),
             payload,
             {
                 preserveScroll: true,
                 preserveState: true,
-                onSuccess: () => {},
-                onFinish: () => {
-                    this.isSubmitting = false;
-                },
+                onFinish: () => (this.isSubmitting = false),
             }
         );
+    }
+
+    private preparePayload(): Record<string, any> {
+        const timeSpent = Math.max(0, Math.floor((Date.now() - this.startTime) / 1000));
+        const payload: Record<string, any> = {
+            time_spent: timeSpent,
+            used_hint: this.usedHint,
+            difficulty: this.difficulty,
+        };
+
+        if (!this.currentQuestion) return payload;
+
+        const type = this.currentQuestion.question_type;
+        if (type === 'fill_in_the_blank') {
+            payload['fill_in_the_blank_answer'] = this.fillInTheBlankAnswer;
+        } else if (type === 'drag_and_drop') {
+            payload['drag_and_drop_answers'] = $state.snapshot(this.dragAndDropAnswers);
+        } else if (this.selectedMultipleChoiceAnswer) {
+            payload['answer'] = this.selectedMultipleChoiceAnswer;
+        }
+
+        return payload;
+    }
+
+    public validateAnswer(): boolean {
+        if (!this.currentQuestion) return false;
+
+        const type = this.currentQuestion.question_type;
+        if (type === 'fill_in_the_blank') {
+            return (this.fillInTheBlankAnswer?.trim() ?? '').length > 0;
+        } else if (type === 'drag_and_drop') {
+            return Object.keys(this.dragAndDropAnswers).length > 0;
+        } else {
+            return Boolean(this.selectedMultipleChoiceAnswer);
+        }
+    }
+
+    private handleValidationError() {
+        console.warn('[QuizState] Submission blocked: No answer provided.');
+        this.feedbackData = {
+            status: 'error',
+            message: 'Jawaban wajib diisi.',
+            next_url: '',
+            is_correct: false,
+            xp_earned: 0,
+            adaptive_result: null,
+        };
+        this.show_feedback = true;
     }
 
     public handleResponseSound(status: string, adaptiveResult: AdaptiveResult | null) {
@@ -210,41 +210,36 @@ export class QuestionShowState extends BaseState {
             return;
         }
 
-        const flow = adaptiveResult?.triggered_rule?.action || 'NEXT';
-        const isTerminal = ['FINISH', 'REVIEW'].includes(flow);
-
-        if (isTerminal || adaptiveResult?.triggered_rule?.variant === 'certificate') {
-            playSound('completed');
-        } else {
-            playSound('correct');
-        }
+        const isCertificate = this.checkForCertificateAction(adaptiveResult);
+        playSound(isCertificate ? 'completed' : 'correct');
     }
 
-    isNavigating = $state(false);
+    private checkForCertificateAction(adaptiveResult: AdaptiveResult | null): boolean {
+        const actions = adaptiveResult?.triggered_rule?.actions || [];
+        return actions.some(
+            (a: HydratedAction) => a.id === 'CERTIFICATION' || a.variant === 'certificate'
+        );
+    }
+
     handleNext() {
         if (this.isNavigating) return;
         this.isNavigating = true;
 
-        // Read URL BEFORE hiding feedback to avoid any reactive side-effects
         const nextUrl = this.feedbackData.next_url;
-        console.debug('[QuizState] handleNext → nextUrl:', nextUrl);
-
         this.show_feedback = false;
         this.showHint = false;
 
         if (nextUrl) {
             router.visit(nextUrl, {
                 preserveState: false,
-                onFinish: () => {
-                    this.isNavigating = false;
-                },
-                onError: () => {
-                    this.isNavigating = false;
-                },
+                onFinish: () => (this.isNavigating = false),
+                onError: () => (this.isNavigating = false),
             });
         } else {
-            console.warn('[QuizState] handleNext → no nextUrl, skipping navigation');
-            this.isNavigating = false;
+            router.reload({
+                onFinish: () => (this.isNavigating = false),
+                onError: () => (this.isNavigating = false),
+            });
         }
     }
 
@@ -265,13 +260,13 @@ export class ReviewState extends BaseState {
     material = $state<Material>({} as Material);
     materials = $state<Material[]>([]);
     questions = $state<QuestionWithAttempt[]>([]);
-    difficulty = $state<DifficultyLevel | 'all'>('all');
+    difficulty = $state<QuestionDifficulty | 'all'>('all');
 
     constructor(
         material: Material,
         materials: Material[],
         questions: QuestionWithAttempt[],
-        difficulty: DifficultyLevel | 'all'
+        difficulty: QuestionDifficulty | 'all'
     ) {
         super();
         this.hydrate({ material, materials, questions, difficulty });

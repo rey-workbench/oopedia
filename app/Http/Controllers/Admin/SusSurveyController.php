@@ -75,17 +75,17 @@ final class SusSurveyController extends Controller
                 fputcsv(
                     $file,
                     [
-                        $result->id,
-                        $result->nim          ?? '',
-                        $result->user?->name  ?? 'Tidak ada',
-                        $result->user?->email ?? 'Tidak ada',
-                        $result->class        ?? '',
-                        $result->created_at->format('d/m/Y H:i'),
-                        $result->q1, $result->q2, $result->q3, $result->q4, $result->q5,
-                        $result->q6, $result->q7, $result->q8, $result->q9, $result->q10,
-                        $result->total_score,
-                        $result->comments    ?? '',
-                        $result->suggestions ?? '',
+                        $result['id'],
+                        $result['nim']           ?? '',
+                        $result['user']['name']  ?? 'Tidak ada',
+                        $result['user']['email'] ?? 'Tidak ada',
+                        $result['class']         ?? '',
+                        $result['created_at'],
+                        $result['q1'], $result['q2'], $result['q3'], $result['q4'], $result['q5'],
+                        $result['q6'], $result['q7'], $result['q8'], $result['q9'], $result['q10'],
+                        $result['total_score'],
+                        $result['comments']    ?? '',
+                        $result['suggestions'] ?? '',
                     ],
                     escape: '\\',
                 );
@@ -100,11 +100,16 @@ final class SusSurveyController extends Controller
     public function show(string $resultId): Response
     {
         $result = $this->susResultService->getStudentDetail($resultId);
-        $user   = $result->user;
+
+        if (! $result) {
+            abort(404);
+        }
+
+        $user = $result['user'];
 
         $calculation = [
             'item_scores' => $this->susResultService->calculateItemScores($result),
-            'total_score' => $result->total_score,
+            'total_score' => $result['total_score'],
         ];
 
         return $this->render('Admin/Sus/Detail/Index', ['result' => $result, 'user' => $user, 'calculation' => $calculation]);

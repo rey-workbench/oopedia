@@ -8,11 +8,11 @@ use App\Contracts\Repositories\RoleRepositoryInterface;
 use App\Contracts\Services\UserServiceInterface;
 use App\DTOs\User\AdminCreateDTO;
 use App\DTOs\User\AdminUpdateDTO;
+use App\Enums\User\RoleName;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ImportAdminRequest;
 use App\Http\Requests\User\StoreAdminRequest;
 use App\Http\Requests\User\UpdateAdminRequest;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -56,12 +56,12 @@ final class AdminUserController extends Controller
     {
         $user = $this->userService->getUserById($userId);
 
-        if (! $user instanceof User) {
+        if (! $user) {
             return to_route('admin.users.index')
                 ->with('error', 'User tidak ditemukan');
         }
 
-        if (! $user->isDosen()) {
+        if ($user['role']['role_name'] !== RoleName::DOSEN->value) {
             return to_route('admin.users.index')
                 ->with('error', 'User bukan admin');
         }
@@ -73,7 +73,7 @@ final class AdminUserController extends Controller
     {
         $user = $this->userService->getUserById($userId);
 
-        if (! $user instanceof User) {
+        if (! $user) {
             return to_route('admin.users.index')
                 ->with('error', 'User tidak ditemukan');
         }
@@ -110,9 +110,9 @@ final class AdminUserController extends Controller
             return to_route('admin.dashboard');
         }
 
-        $freshUser = $this->userService->getUserById($user->id);
+        $freshUser = $this->userService->getUserById((string) $user->id);
 
-        if ($freshUser instanceof User && $freshUser->is_approved) {
+        if ($freshUser && $freshUser['is_approved']) {
             return to_route('admin.dashboard');
         }
 

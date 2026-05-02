@@ -7,6 +7,8 @@ namespace App\Services\Adaptive;
 use App\Contracts\Services\AdaptiveManagementServiceInterface;
 use App\DTOs\Adaptive\AdaptiveActionDTO;
 use App\DTOs\Adaptive\AdaptiveRuleDTO;
+use App\Http\Resources\AdaptiveActionResource;
+use App\Http\Resources\AdaptiveRuleResource;
 use App\Models\AdaptiveAction;
 use App\Models\AdaptiveFact;
 use App\Models\AdaptiveRule;
@@ -15,16 +17,17 @@ use Illuminate\Support\Facades\DB;
 
 final class AdaptiveManagementService implements AdaptiveManagementServiceInterface
 {
-    public function createRule(AdaptiveRuleDTO $adaptiveRuleDTO): AdaptiveRule
+    public function createRule(AdaptiveRuleDTO $adaptiveRuleDTO): array
     {
         return DB::transaction(function () use ($adaptiveRuleDTO) {
             $this->syncFacts($adaptiveRuleDTO->facts, $adaptiveRuleDTO->deduced_facts);
+            $rule = AdaptiveRule::create($adaptiveRuleDTO->toArray());
 
-            return AdaptiveRule::create($adaptiveRuleDTO->toArray());
+            return new AdaptiveRuleResource($rule)->resolve();
         });
     }
 
-    public function updateRule(string $id, AdaptiveRuleDTO $adaptiveRuleDTO): AdaptiveRule
+    public function updateRule(string $id, AdaptiveRuleDTO $adaptiveRuleDTO): array
     {
         $rule = AdaptiveRule::findOrFail($id);
 
@@ -32,7 +35,7 @@ final class AdaptiveManagementService implements AdaptiveManagementServiceInterf
             $this->syncFacts($adaptiveRuleDTO->facts, $adaptiveRuleDTO->deduced_facts);
             $rule->update($adaptiveRuleDTO->toArray());
 
-            return $rule->fresh();
+            return new AdaptiveRuleResource($rule->fresh())->resolve();
         });
     }
 
@@ -41,17 +44,19 @@ final class AdaptiveManagementService implements AdaptiveManagementServiceInterf
         AdaptiveRule::findOrFail($id)->delete();
     }
 
-    public function createAction(AdaptiveActionDTO $adaptiveActionDTO): AdaptiveAction
+    public function createAction(AdaptiveActionDTO $adaptiveActionDTO): array
     {
-        return AdaptiveAction::create($adaptiveActionDTO->toArray());
+        $action = AdaptiveAction::create($adaptiveActionDTO->toArray());
+
+        return new AdaptiveActionResource($action)->resolve();
     }
 
-    public function updateAction(string $id, AdaptiveActionDTO $adaptiveActionDTO): AdaptiveAction
+    public function updateAction(string $id, AdaptiveActionDTO $adaptiveActionDTO): array
     {
         $action = AdaptiveAction::findOrFail($id);
         $action->update($adaptiveActionDTO->toArray());
 
-        return $action->fresh();
+        return new AdaptiveActionResource($action->fresh())->resolve();
     }
 
     public function deleteAction(string $id): void

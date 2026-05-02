@@ -15,14 +15,15 @@ trait EvaluatesAdaptiveConditions
     protected function evaluateCondition(mixed $value, string $operator, mixed $threshold): bool
     {
         return match ($operator) {
-            '<'     => $value < $threshold,
-            '>'     => $value > $threshold,
-            '<='    => $value <= $threshold,
-            '>='    => $value >= $threshold,
-            '=='    => $value == $threshold,
-            '!='    => $value != $threshold,
-            'in'    => in_array($value, (array) $threshold),
-            default => false,
+            '<'       => $value < $threshold,
+            '>'       => $value > $threshold,
+            '<='      => $value <= $threshold,
+            '>='      => $value >= $threshold,
+            '=='      => $value == $threshold,
+            '!='      => $value != $threshold,
+            'in'      => in_array($value, (array) $threshold),
+            'between' => is_array($threshold) && count($threshold) >= 2 && ($value >= $threshold[0] && $value <= $threshold[1]),
+            default   => false,
         };
     }
 }

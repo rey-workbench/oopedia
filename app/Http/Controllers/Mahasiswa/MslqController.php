@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Mahasiswa;
 use App\Contracts\Services\MslqServiceInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Survey\StoreMslqRequest;
+use App\Http\Resources\MslqQuestionResource;
 use App\Models\MslqQuestion;
 use App\Models\MslqResult;
 use Illuminate\Http\RedirectResponse;
@@ -29,7 +30,7 @@ final class MslqController extends Controller
         $questions = MslqQuestion::orderBy('order')->get();
 
         return $this->render('Mahasiswa/Mslq/Create/Index', [
-            'questions' => $questions,
+            'questions' => MslqQuestionResource::collection($questions)->resolve(),
         ]);
     }
 

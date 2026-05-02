@@ -31,9 +31,9 @@
     });
 
     const auth = $derived(page.props['auth'] ?? {});
-    const user = $derived(auth.user ?? null);
+    const user = $derived(auth.user as import('@/types').User ?? null);
     const isAdminRole = $derived(!!user && isAdmin(user.role?.role_name));
-    const userRole = $derived(user?.role?.role_name ?? null);
+    const userRole = $derived(user?.role?.role_name ?? 'guest');
 
     const isActive = (url: string) => page.url === url || page.url.startsWith(url + '/');
 
@@ -239,7 +239,8 @@
                         id="sidebar-materials"
                         href={ROUTES.MAHASISWA.MATERIALS.INDEX}
                         icon={Shapes}
-                        active={page.url.startsWith(ROUTES.MAHASISWA.MATERIALS.INDEX) && !page.url.includes('/questions')}
+                        active={page.url.startsWith(ROUTES.MAHASISWA.MATERIALS.INDEX) &&
+                            !page.url.includes('/questions')}
                     >
                         Materi PBO
                     </SidebarLink>

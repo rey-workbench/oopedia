@@ -8,6 +8,7 @@ use App\Contracts\Services\UeqSurveyServiceInterface;
 use App\DTOs\Survey\UeqSurveyCreateDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Survey\StoreUeqSurveyRequest;
+use App\Http\Resources\UeqAspectResource;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
@@ -26,7 +27,9 @@ final class UeqSurveyController extends Controller
 
         $aspects = $this->getAspects();
 
-        return $this->render('Mahasiswa/Ueq/Create/Index', ['aspects' => $aspects]);
+        return $this->render('Mahasiswa/Ueq/Create/Index', [
+            'aspects' => UeqAspectResource::collection(collect($aspects)->map(fn ($a): \stdClass => (object) $a))->resolve(),
+        ]);
     }
 
     public function store(StoreUeqSurveyRequest $storeUeqSurveyRequest): RedirectResponse

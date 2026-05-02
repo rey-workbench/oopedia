@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Services\AdminDashboardServiceInterface;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
@@ -15,10 +16,7 @@ final class DashboardController extends Controller
 
     public function index(): Response
     {
-        $user     = Auth::user();
-        $userName = $user->name;
-        $userRole = $user->role->role_name;
-
+        $user  = Auth::user();
         $stats = $this->adminDashboardService->getDashboardStats();
 
         $total_students  = $stats['total_students'];
@@ -34,8 +32,7 @@ final class DashboardController extends Controller
         $studentsNeedingAttention       = $this->adminDashboardService->getStudentsNeedingAttention();
 
         return $this->render('Admin/Dashboard/Index', [
-            'user_name'                  => $userName,
-            'user_role'                  => $userRole,
+            'user'                       => new UserResource($user)->resolve(),
             'total_students'             => $total_students,
             'total_materials'            => $total_materials,
             'total_questions'            => $total_questions,

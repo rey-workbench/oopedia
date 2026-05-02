@@ -10,13 +10,15 @@ use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Contracts\Services\AdminDashboardServiceInterface;
 use App\Helpers\ProgressHelper;
+use App\Http\Resources\MaterialResource;
+use App\Http\Resources\RecentProgressResource;
+use App\Http\Resources\StudentProgressResource;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Contracts\Database\Query\Builder;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Date;
 
 final readonly class AdminDashboardService implements AdminDashboardServiceInterface
 {
@@ -38,78 +40,67 @@ final readonly class AdminDashboardService implements AdminDashboardServiceInter
         ]);
     }
 
-    public function getRecentProgress(int $limit = 10): EloquentCollection
+    /** @return SupportCollection<int, array{user_name: string, material_name: string, action_name: string, created_at: string, created_at_diff: string}> */
+    public function getRecentProgress(int $limit = 10): SupportCollection
     {
-        return $this->progressRepo->getRecentSystemProgress($limit);
+        return collect(RecentProgressResource::collection(
+            $this->progressRepo->getRecentSystemProgress($limit),
+        )->resolve());
     }
 
-    /** @return array<int, array<string, mixed>> */
-    public function getStudentProgressOverview(int $limit = 5): array
+    public function getStudentProgressOverview(int $limit = 5): SupportCollection
     {
-        return Cache::remember('admin_student_progress_overview_' . $limit, 600, function () use ($limit) {
-            $students                                  = $this->userRepo->getStudentProgressOverview($limit);
-            $allWithQuestionsAndConfigs                = $this->materialRepo->getAllWithQuestionsAndConfigs();
-            $totalConfiguredQuestions                  = ProgressHelper::calculateTotalQuestions($allWithQuestionsAndConfigs);
+        return Cache::remember('admin_student_progress_overview_' . $limit, 600, function () use ($limit): SupportCollection {
+            $students                   = $this->userRepo->getStudentProgressOverview($limit);
+            $allWithQuestionsAndConfigs = $this->materialRepo->getAllWithQuestionsAndConfigs();
+            $totalConfiguredQuestions   = ProgressHelper::calculateTotalQuestions($allWithQuestionsAndConfigs);
 
-            return $students->map(function ($student) use ($totalConfiguredQuestions): Model {
-                $uniqueCorrectQuestions = $student->quizAttempts
-                    ->where('is_correct', true)
-                    ->pluck('question_id')
-                    ->unique()
-                    ->count();
-
-                $student->materials_progress = ProgressHelper::calculateProgressPercentage(
-                    $uniqueCorrectQuestions,
-                    $totalConfiguredQuestions,
-                );
-
-                $lastActivity         = $student->quizAttempts->max('created_at');
-                $student->last_active = $lastActivity ? Date::parse($lastActivity) : null;
-
-                return $student;
-            })->all();
+            return collect(StudentProgressResource::collection($students)->additional([
+                'totalConfiguredQuestions' => $totalConfiguredQuestions,
+            ])->resolve());
         });
     }
 
-    public function getMaterialStatistics(): Collection
+    public function getMaterialStatistics(): SupportCollection
     {
-        return Cache::remember('admin_material_statistics', 600, function () {
-            $allWithQuestionsAndConfigs    = $this->materialRepo->getAllWithQuestionsAndConfigs();
-            $materialPerformanceStats      = $this->progressRepo->getMaterialPerformanceStats();
+        return Cache::remember('admin_material_statistics', 600, function (): SupportCollection {
+            $allWithQuestionsAndConfigs = $this->materialRepo->getAllWithQuestionsAndConfigs();
+            $materialPerformanceStats   = $this->progressRepo->getMaterialPerformanceStats();
 
-            return $allWithQuestionsAndConfigs->map(function ($material) use ($materialPerformanceStats) {
+            $materials = $allWithQuestionsAndConfigs->map(function ($material) use ($materialPerformanceStats): Model {
                 $totalConfiguredQuestions   = $material->questions->count();
                 $materialProgress           = $materialPerformanceStats->where('material_id', $material->id);
                 $activeStudents             = $materialProgress->pluck('user_id')->unique()->count();
                 $correctlyAnsweredQuestions = $materialProgress->pluck('question_id')->unique()->count();
 
-                $completionRate = $totalConfiguredQuestions > 0
+                $material->completion_rate = $totalConfiguredQuestions > 0
                     ? round(($correctlyAnsweredQuestions / $totalConfiguredQuestions) * 100, 1)
                     : 0;
 
-                return (object) [
-                    'id'              => $material->id,
-                    'title'           => $material->title,
-                    'questions_count' => $totalConfiguredQuestions,
-                    'active_students' => $activeStudents,
-                    'completion_rate' => $completionRate,
-                ];
+                $material->active_students = $activeStudents;
+                $material->questions_count = $totalConfiguredQuestions;
+
+                return $material;
             });
+
+            return collect(MaterialResource::collection($materials)->resolve());
         });
     }
 
-    public function getPopularMaterials(int $limit = 5): Collection
+    public function getPopularMaterials(int $limit = 5): SupportCollection
     {
-        return $this->progressRepo->getPopularMaterials($limit);
+        $materials = $this->progressRepo->getPopularMaterials($limit);
+
+        return collect(MaterialResource::collection($materials)->resolve());
     }
 
     /** @return array<string, mixed> */
     public function getStudentAnalytics(): array
     {
         return Cache::remember('admin_student_analytics', 600, function (): array {
-            $allStudents                               = $this->userRepo->getUsersByRoleAndApproval('mahasiswa', true, null, null);
-            $allWithQuestionsAndConfigs                = $this->materialRepo->getAllWithQuestionsAndConfigs();
-            $totalConfiguredQuestions                  = ProgressHelper::calculateTotalQuestions($allWithQuestionsAndConfigs);
+            $allStudents                = $this->userRepo->getUsersByRoleAndApproval('mahasiswa', true, null, null);
+            $allWithQuestionsAndConfigs = $this->materialRepo->getAllWithQuestionsAndConfigs();
+            $totalConfiguredQuestions   = ProgressHelper::calculateTotalQuestions($allWithQuestionsAndConfigs);
 
             $distribution = [
                 '0%'      => 0,
@@ -156,15 +147,25 @@ final readonly class AdminDashboardService implements AdminDashboardServiceInter
         });
     }
 
-    public function getStudentsNeedingAttention(): EloquentCollection
+    public function getStudentsNeedingAttention(): SupportCollection
     {
-        return User::whereHas('role', function (Builder $q): void {
+        $students = User::whereHas('role', function (Builder $q): void {
             $q->where('role_name', 'mahasiswa');
         })
             ->whereHas('studentState', function ($q): void {
                 $q->whereJsonContains('adaptive_state->notify_teacher', true);
             })
-            ->with(['studentState'])
+            ->with(['role', 'studentState'])
             ->get();
+
+        return $students->map(fn ($student): array => [
+            'id'              => $student->id,
+            'user'            => new UserResource($student)->resolve(),
+            'low_score_count' => 0,
+            'last_activity'   => $student->studentState?->last_active_at?->toIso8601String() ?? '-',
+            'student_state'   => [
+                'adaptive_state' => $student->studentState?->adaptive_state ?? [],
+            ],
+        ]);
     }
 }

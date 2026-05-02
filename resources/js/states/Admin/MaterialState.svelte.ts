@@ -18,7 +18,7 @@ export class MaterialListState extends BaseState {
         this.hydrate({ materials, search });
     }
 
-    handleSearch() {
+    public handleSearch() {
         router.get(
             ROUTES.ADMIN.MATERIALS.INDEX,
             { search: this.search },
@@ -26,7 +26,7 @@ export class MaterialListState extends BaseState {
         );
     }
 
-    handleDelete(id: number) {
+    public handleDelete(id: number) {
         confirmDelete(
             ROUTES.ADMIN.MATERIALS.DELETE(id),
             'Hapus materi ini secara permanen dari basis data?'
@@ -48,36 +48,40 @@ export class MaterialFormState extends FormState<{
     coverPreview = $state<string | null>(null);
 
     constructor(material: Material | null) {
-        super(
-            {
-                title: material ? material.title : '',
-                content: material ? material.content || '' : '',
-                module_id: material ? material.module_id : null,
-                is_final_project: material ? !!material.is_final_project : false,
-                cover_image: null,
-            },
-            {
-                isEdit: !!material,
-                showSuccessToast: 'Materi berhasil disimpan!',
-                showErrorToast: true,
-            }
-        );
+        super(MaterialFormState.prepareInitialValues(material), {
+            isEdit: !!material,
+            showSuccessToast: 'Materi berhasil disimpan!',
+            showErrorToast: true,
+        });
 
         this.material = material;
+        this.initializeCoverPreview();
+    }
 
+    private static prepareInitialValues(material: Material | null) {
+        return {
+            title: material?.title ?? '',
+            content: material?.content ?? '',
+            module_id: material?.module_id ?? null,
+            is_final_project: !!material?.is_final_project,
+            cover_image: null,
+        };
+    }
+
+    private initializeCoverPreview() {
         const coverMedia = this.material?.media?.find((m) => (m as any).media_type === 'image');
         if (coverMedia) {
             this.coverPreview = (coverMedia as any).media_url;
         }
     }
 
-    onImageChange(e: Event) {
+    public onImageChange(e: Event) {
         handleImagePreview(e, this.form, 'cover_image', (url: string) => {
             this.coverPreview = url;
         });
     }
 
-    async submit() {
+    public async submit() {
         const url =
             this.isEdit && this.material
                 ? ROUTES.ADMIN.MATERIALS.UPDATE(this.material.id)

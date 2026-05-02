@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Contracts\Services;
 
 use App\Models\UeqSurvey;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
 interface UeqSurveyServiceInterface
 {
@@ -13,7 +13,7 @@ interface UeqSurveyServiceInterface
 
     public function getDistinctClasses(): array;
 
-    public function getStudentDetail(string $userId): ?UeqSurvey;
+    public function getStudentDetail(string $userId): ?array;
 
     public function hasUserSubmitted(string $userId): bool;
 

@@ -11,6 +11,7 @@ export class LoginState extends FormState<{ email: string; password: string; is_
             {
                 email: '',
                 password: '',
+                is_guest: false,
             },
             options
         );

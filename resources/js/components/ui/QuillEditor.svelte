@@ -66,31 +66,33 @@
 
             quillInstance.on('text-change', () => {
                 let html = quillInstance!.root.innerHTML;
-                
+
                 // Cleanup: Create a virtual DOM to process tags consistently
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = html;
-                
+
                 // 1. Convert Quill Code Blocks to Semantic <pre><code class="language-java">
                 const codeContainers = tempDiv.querySelectorAll('.ql-code-block-container');
-                codeContainers.forEach(container => {
+                codeContainers.forEach((container) => {
                     const lines = container.querySelectorAll('.ql-code-block');
-                    const codeText = Array.from(lines).map(l => (l as HTMLElement).innerText).join('\n');
-                    
+                    const codeText = Array.from(lines)
+                        .map((l) => (l as HTMLElement).innerText)
+                        .join('\n');
+
                     const pre = document.createElement('pre');
                     const code = document.createElement('code');
                     code.className = 'language-java';
                     code.innerText = codeText;
                     pre.appendChild(code);
-                    
+
                     container.parentNode?.replaceChild(pre, container);
                 });
 
                 // 2. Standardize Tables (Remove all proprietary classes)
                 const tables = tempDiv.querySelectorAll('table');
-                tables.forEach(table => {
+                tables.forEach((table) => {
                     table.removeAttribute('class');
-                    table.querySelectorAll('td, th, tr, thead, tbody').forEach(el => {
+                    table.querySelectorAll('td, th, tr, thead, tbody').forEach((el) => {
                         (el as HTMLElement).removeAttribute('class');
                         (el as HTMLElement).removeAttribute('style');
                     });
@@ -98,13 +100,13 @@
 
                 // 3. Clean up Blockquotes
                 const blockquotes = tempDiv.querySelectorAll('blockquote');
-                blockquotes.forEach(bq => {
+                blockquotes.forEach((bq) => {
                     bq.removeAttribute('class');
                     bq.removeAttribute('style');
                 });
 
                 // 4. Remove any other Quill-specific classes or empty tags
-                tempDiv.querySelectorAll('[class^="ql-"]').forEach(el => {
+                tempDiv.querySelectorAll('[class^="ql-"]').forEach((el) => {
                     const element = el as HTMLElement;
                     // Only remove class, keep the element if it's not a container we already handled
                     element.removeAttribute('class');

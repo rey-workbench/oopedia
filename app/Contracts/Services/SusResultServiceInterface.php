@@ -12,14 +12,14 @@ interface SusResultServiceInterface
     /**
      * @return Collection<int, SusResult>
      */
-    public function getAllResults(?string $class = null): Collection;
+    public function getAllResults(?string $class = null): \Illuminate\Support\Collection;
 
     /**
      * @return array<string>
      */
     public function getDistinctClasses(): array;
 
-    public function getStudentDetail(string $userId): ?SusResult;
+    public function getStudentDetail(string $userId): ?array;
 
     public function hasUserSubmitted(string $userId): bool;
 
@@ -29,10 +29,9 @@ interface SusResultServiceInterface
     public function submitResult(array $data): SusResult;
 
     /**
-     * @param Collection<int, SusResult> $results
      * @return array<string, mixed>
      */
-    public function calculateGlobalMetrics(Collection $results): array;
+    public function calculateGlobalMetrics(\Illuminate\Support\Collection $results): array;
 
     /**
      * @return array<string, int>

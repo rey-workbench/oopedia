@@ -24,9 +24,9 @@ interface QuizServiceInterface
         ?string $materialId = null,
     ): LengthAwarePaginator;
 
-    public function getQuestionById(string $id): ?Question;
+    public function getQuestionById(string $id): ?array;
 
-    public function getQuestionWithAnswers(string $id): ?Question;
+    public function getQuestionWithAnswers(string $id): ?array;
 
     public function createQuestion(QuestionCreateDTO $questionCreateDTO): Question;
 
@@ -41,9 +41,9 @@ interface QuizServiceInterface
         string $userId,
         bool $isGuest,
         array $guestProgress = [],
-    ): Collection;
+    ): SupportCollection;
 
-    public function getReviewQuestions(QuizContextDTO $quizContextDTO): Collection;
+    public function getReviewQuestions(QuizContextDTO $quizContextDTO): SupportCollection;
 
     public function getGuestAnsweredQuestionIds(string $materialId, array $guestProgress = [], bool $onlyCorrect = false): SupportCollection;
 

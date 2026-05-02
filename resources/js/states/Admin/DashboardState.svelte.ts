@@ -4,9 +4,8 @@ import type {
     RecentProgressItem,
     StudentAnalytics,
     StudentProgressItem,
-    PopularMaterialItem,
-    MaterialStatsItem,
     StudentNeedingAttention,
+    Material,
 } from '@/types';
 
 export class AdminDashboardState extends BaseState {
@@ -16,13 +15,16 @@ export class AdminDashboardState extends BaseState {
     active_students = $state(0);
     recent_progress = $state<RecentProgressItem[]>([]);
     student_progress = $state<StudentProgressItem[]>([]);
-    popular_materials = $state<PopularMaterialItem[]>([]);
-    student_analytics = $state<StudentAnalytics>({ distribution: {}, radar: {} });
-    material_stats = $state<MaterialStatsItem[]>([]);
+    popular_materials = $state<Material[]>([]);
+    student_analytics = $state<StudentAnalytics>({
+        distribution: {},
+        module_performance: { labels: [], data: [] },
+    });
+    material_stats = $state<Material[]>([]);
     students_needing_attention = $state<StudentNeedingAttention[]>([]);
 
     constructor(data?: AdminDashboardData) {
         super();
-        this.hydrate(data as any);
+        this.hydrate(data as unknown as Record<string, unknown>);
     }
 }

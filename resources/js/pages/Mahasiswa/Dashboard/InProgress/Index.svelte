@@ -19,7 +19,7 @@
 </script>
 
 <App title="Materi Sedang Dipelajari">
-    <div class="space-y-12 pb-20">
+    <div class="space-y-8 pb-20">
         <PageHeader
             id="page-header"
             title="Materi Progres"
@@ -51,7 +51,7 @@
                     >
                         <BookOpen size={48} strokeWidth={2} />
                     </div>
-                    <h3 class="mb-4 text-3xl font-black tracking-widest text-slate-900 uppercase">
+                    <h3 class="mb-4 text-2xl font-black tracking-widest text-slate-900 uppercase">
                         Belum Ada Progres
                     </h3>
                     <p class="mx-auto mb-10 max-w-md font-bold text-slate-400">
@@ -68,9 +68,13 @@
                     </Button>
                 </div>
             {:else}
-                <div id="inprogress-materials-grid" class="grid grid-cols-1 gap-10">
-                    {#each state.materials_with_stats as materialData (materialData.material.id)}
-                        {@const { material, stats } = materialData}
+                <div id="completed-materials-grid" class="grid grid-cols-1 gap-6">
+                    {#each state.materials_with_stats as material (material.id)}
+                        {@const stats = material.stats?.overall ?? {
+                            percentage: material.progress_percentage ?? 0,
+                            total: material.total_questions ?? 0,
+                            correct: material.completed_questions ?? 0
+                        }}
                         <Card
                             id="inprogress-card-{material.id}"
                             padding="p-0"
@@ -80,7 +84,7 @@
                         >
                             {#snippet cardInner()}
                                 <!-- Graphic Section -->
-                                <div class="relative shrink-0 md:w-72 lg:w-96">
+                                <div class="relative shrink-0 md:w-64 lg:w-80">
                                     {#if material.media && material.media.length > 0}
                                         <div class="h-60 md:h-full">
                                             <img
@@ -110,12 +114,12 @@
                                 </div>
 
                                 <!-- Content Section -->
-                                <div class="flex flex-1 flex-col justify-between p-10">
+                                <div class="flex flex-1 flex-col justify-between p-6 md:p-8 lg:p-10">
                                     <div>
                                         <div class="flex items-start justify-between gap-6">
                                             <div>
                                                 <h2
-                                                    class="group-hover:text-primary-600 mb-3 text-3xl leading-tight font-bold tracking-widest text-slate-900 transition-colors"
+                                                    class="mb-2 text-2xl leading-tight font-bold tracking-widest text-slate-900 uppercase transition-colors group-hover:text-emerald-600"
                                                 >
                                                     {material.title}
                                                 </h2>
@@ -139,7 +143,7 @@
                                                         </div>
                                                         <span
                                                             class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                                                            >{stats.overall.total} Unit Belajar</span
+                                                            >{stats.total} Unit Belajar</span
                                                         >
                                                     </div>
                                                 </div>
@@ -159,16 +163,17 @@
                                                         >PROGRESS MASTERY</span
                                                     >
                                                     <Badge variant="success" size="xs"
-                                                        >{stats.overall.percentage}%</Badge
+                                                        >{stats.percentage}%</Badge
                                                     >
                                                 </div>
                                                 <span
                                                     class="text-[10px] font-bold text-slate-300 uppercase"
-                                                    >{stats.overall.correct}/{stats.overall.total} UNIT</span
+                                                    >{stats.correct}/{stats.total}
+                                                    UNIT</span
                                                 >
                                             </div>
                                             <ProgressBar
-                                                value={stats.overall.percentage}
+                                                value={stats.percentage}
                                                 height="h-2"
                                                 color="emerald"
                                             />

@@ -33,4 +33,6 @@ interface QuestionRepositoryInterface
     ): LengthAwarePaginator;
 
     public function countByMaterialAndDifficulty(string $materialId, QuestionDifficulty $questionDifficulty): int;
+
+    public function getRandomMultipleChoiceFromOtherMaterials(string $excludeMaterialId): ?Question;
 }

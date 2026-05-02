@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Repositories\MediaRepositoryInterface;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MediaResource;
 use App\Models\Media;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -60,9 +61,8 @@ final class MediaController extends Controller
             ]);
 
             return response()->json([
-                'success'  => true,
-                'url'      => asset('images/' . $path),
-                'media_id' => $media->id,
+                'success' => true,
+                'media'   => new MediaResource($media)->resolve(),
             ]);
         } catch (\Throwable $throwable) {
             Log::error('Media upload failed', [

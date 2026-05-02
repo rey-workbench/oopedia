@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Enums\Lms\ContentCategory;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Enums\Lms\QuestionType;
 use App\Enums\User\RoleName;
@@ -61,7 +60,6 @@ class RealQuestionSeeder extends Seeder
             'material_id'   => $materialId,
             'question_text' => $data['text'],
             'question_type' => $data['type'],
-            'type'          => $data['category'] ?? ContentCategory::TEORI->value,
             'difficulty'    => $data['difficulty'],
             'hint'          => $data['hint'] ?? 'Pikirkan konsep dasar yang telah dipelajari.',
             'created_by'    => $adminId,

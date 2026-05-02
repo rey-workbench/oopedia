@@ -7,7 +7,7 @@ namespace App\Http\Controllers\Mahasiswa;
 use App\Contracts\Services\SusResultServiceInterface;
 use App\DTOs\Survey\SusResultCreateDTO;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Survey\StoreSusResultRequest;
+use App\Http\Resources\SusQuestionResource;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
@@ -26,7 +26,9 @@ final class SusSurveyController extends Controller
 
         $questions = $this->getQuestions();
 
-        return $this->render('Mahasiswa/Sus/Create/Index', ['questions' => $questions]);
+        return $this->render('Mahasiswa/Sus/Create/Index', [
+            'questions' => SusQuestionResource::collection(collect($questions)->map(fn ($q): \stdClass => (object) $q))->resolve(),
+        ]);
     }
 
     public function store(StoreSusResultRequest $storeSusResultRequest): RedirectResponse

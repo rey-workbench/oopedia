@@ -13,10 +13,11 @@ use App\DTOs\Material\MaterialUpdateDTO;
 use App\Exceptions\Domain\MaterialNotFoundException;
 use App\Exceptions\Domain\MediaOperationException;
 use App\Helpers\ProgressHelper;
+use App\Http\Resources\MaterialResource;
+use App\Http\Resources\QuestionResource;
 use App\Models\Material;
 use App\Models\Media;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
@@ -37,22 +38,30 @@ final readonly class MaterialService implements MaterialServiceInterface
         string $sort = 'created_at',
         string $direction = 'asc',
     ): Collection {
-        return $this->materialRepository->getMaterialsForAdmin($search, $sort, $direction);
+        $materials = $this->materialRepository->getMaterialsForAdmin($search, $sort, $direction);
+
+        return collect(MaterialResource::collection($materials)->resolve());
     }
 
     public function getAllOrdered(): Collection
     {
-        return $this->materialRepository->getAllOrdered();
+        $materials = $this->materialRepository->getAllOrdered();
+
+        return collect(MaterialResource::collection($materials)->resolve());
     }
 
-    public function getMaterialById(string $id): ?Material
+    public function getMaterialById(string $id): ?array
     {
-        return $this->materialRepository->find($id);
+        $material = $this->materialRepository->find($id);
+
+        return $material instanceof Material ? new MaterialResource($material)->resolve() : null;
     }
 
-    public function getMaterialWithQuestionsAndAnswers(string $id): Material
+    public function getMaterialWithQuestionsAndAnswers(string $id): ?array
     {
-        return $this->materialRepository->findWithQuestionsAndAnswers($id);
+        $material = $this->materialRepository->findWithQuestionsAndAnswers($id);
+
+        return $material ? new MaterialResource($material)->resolve() : null;
     }
 
     public function createMaterial(MaterialCreateDTO $materialCreateDTO): Material
@@ -145,21 +154,15 @@ final readonly class MaterialService implements MaterialServiceInterface
             ->select('id', 'title', 'module_id')
             ->get();
 
-        if ($isGuest) {
-            $totalMaterials = $materials->count();
+        $totalMaterials = $materials->count();
 
-            return $materials->map(function ($material, $index) use ($totalMaterials) {
-                $material->is_locked = $index >= ceil($totalMaterials / 2);
-
-                return $material;
-            });
-        }
-
-        return $materials->map(function ($material) {
-            $material->is_locked = false;
+        $materials->map(function ($material, $index) use ($isGuest, $totalMaterials) {
+            $material->is_locked = $isGuest && $index >= ceil($totalMaterials / 2);
 
             return $material;
         });
+
+        return collect(MaterialResource::collection($materials)->resolve());
     }
 
     public function getMaterialsList(?string $userId, bool $isGuest): Collection
@@ -175,8 +178,8 @@ final readonly class MaterialService implements MaterialServiceInterface
 
         $totalMaterials = $allMaterials->count();
 
-        return $allMaterials->map(
-            function ($material, $index) use ($progressStats, $isGuest, $totalMaterials): Model {
+        $allMaterials->map(
+            function ($material, $index) use ($progressStats, $isGuest, $totalMaterials): Material {
                 $counts                   = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest);
                 $configuredTotalQuestions = $counts['total'];
                 $materialProgress         = $progressStats->firstWhere('material_id', $material->id);
@@ -191,6 +194,8 @@ final readonly class MaterialService implements MaterialServiceInterface
                 return $material;
             },
         );
+
+        return collect(MaterialResource::collection($allMaterials)->resolve());
     }
 
     public function getMaterialDetail(string $materialId, ?string $userId, bool $isGuest, array $guestProgress = []): array
@@ -199,7 +204,7 @@ final readonly class MaterialService implements MaterialServiceInterface
         $allMaterials   = $this->materialRepository->getAllOrdered();
         $totalMaterials = $allMaterials->count();
 
-        $allMaterials->map(function ($m, $index) use ($isGuest, $totalMaterials): Model {
+        $allMaterials->map(function ($m, $index) use ($isGuest, $totalMaterials): Material {
             $m->is_locked = $isGuest && $index >= ceil($totalMaterials / 2);
 
             return $m;
@@ -226,10 +231,10 @@ final readonly class MaterialService implements MaterialServiceInterface
         $currentQuestionNumber = ($answeredCount >= $material->questions->count()) ? 'Review' : ($answeredCount + 1);
 
         return [
-            'material'                => $material,
-            'materials'               => $materials,
+            'material'                => new MaterialResource($material)->resolve(),
+            'materials'               => MaterialResource::collection($materials)->resolve(),
             'current_question_number' => $currentQuestionNumber,
-            'current_question'        => $currentQuestion,
+            'current_question'        => $currentQuestion ? new QuestionResource($currentQuestion)->resolve() : null,
         ];
     }
 

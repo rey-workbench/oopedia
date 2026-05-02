@@ -9,6 +9,7 @@ use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\LeaderboardServiceInterface;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Helpers\ProgressHelper;
+use App\Http\Resources\LeaderboardResource;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
@@ -46,8 +47,8 @@ final readonly class LeaderboardService implements LeaderboardServiceInterface
         $totalUsers      = $leaderboardData->count();
 
         return [
-            'leaderboard_data'  => $leaderboardData,
-            'current_user_rank' => $currentUserRank,
+            'leaderboard_data'  => LeaderboardResource::collection($leaderboardData)->resolve(),
+            'current_user_rank' => $currentUserRank ? new LeaderboardResource($currentUserRank)->resolve() : null,
             'total_users'       => $totalUsers,
         ];
     }

@@ -1,32 +1,35 @@
-// =============================================================================
-// Primitives & Enums (Synced with App\Enums)
-// =============================================================================
+/**
+ * resources/js/types/core.ts
+ *
+ * Primitive enums and utility types shared across all domains.
+ * These do NOT mirror specific backend response shapes —
+ * they are building blocks used by models and props.
+ */
 
+// ==============================================================
+// Enums — mirror PHP Enums in app/Enums/
+// ==============================================================
+
+/** Mirrors App\Enums\Lms\QuestionDifficulty */
+export type QuestionDifficulty = 'beginner' | 'medium' | 'hard' | 'final';
+
+/** Mirrors App\Enums\Lms\QuestionType */
 export type QuestionType = 'radio_button' | 'drag_and_drop' | 'fill_in_the_blank';
-export type DifficultyLevel = 'beginner' | 'medium' | 'hard' | 'final';
-export type ContentCategory = 'teori' | 'sintaks' | 'mixed';
-export type LearningStyle = 'visual' | 'textual' | 'mixed';
+
+/** Mirrors App\Enums\Lms\MediaType */
 export type MediaType = 'image' | 'video' | 'file';
-export type StudentLevel = 'Pemula' | 'Menengah' | 'Ahli';
 
-// =============================================================================
-// Common Models
-// =============================================================================
+/** Mirrors App\Enums\User\RoleName */
+export type AppRole = 'superadmin' | 'dosen' | 'mahasiswa' | 'guest';
 
-export interface Media {
-    id: string;
-    name: string;
-    file_path: string;
-    file_type: MediaType;
-    collection_name: string;
-    size: number;
-    mime_type: string;
-    // Aliases for compatibility
-    media_type?: MediaType;
-    media_url?: string;
-    full_url?: string;
-    created_at?: string;
-    updated_at?: string;
+// ==============================================================
+// Pagination — mirrors Laravel LengthAwarePaginator
+// ==============================================================
+
+export interface PaginatorLink {
+    url: string | null;
+    label: string;
+    active: boolean;
 }
 
 export interface Pagination<T> {
@@ -45,15 +48,41 @@ export interface Pagination<T> {
     links: PaginatorLink[];
 }
 
-export interface PaginatorLink {
-    url: string | null;
-    label: string;
-    active: boolean;
+// ==============================================================
+// Media — mirrors Media Eloquent model
+// ==============================================================
+
+export interface Media {
+    id: string;
+    name: string;
+    file_path: string;
+    file_type: MediaType;
+    collection_name: string;
+    size: number;
+    mime_type: string;
+    media_url?: string;
+    full_url?: string;
+    created_at: string;
+    updated_at: string;
 }
 
-export interface Toast {
-    id: string;
-    message: string;
-    type: 'success' | 'error' | 'info' | 'warning';
-    duration?: number;
+// ==============================================================
+// Form state helpers (used by FormState.svelte.ts only)
+// ==============================================================
+
+export interface FormStateOptions {
+    isEdit?: boolean;
+    showSuccessToast?: string | boolean;
+    showErrorToast?: boolean;
+}
+
+export interface FormSubmitOptions {
+    forceFormData?: boolean;
+    _method?: string;
+    onSuccess?: () => void;
+    onError?: (errors: Record<string, string>) => void;
+    onFinish?: () => void;
+    showSuccessToast?: string | boolean;
+    showErrorToast?: boolean;
+    [key: string]: unknown;
 }

@@ -23,6 +23,8 @@
     import { formatDate } from '@/utils/formatters';
 
     let {
+        user_name,
+        user_role,
         total_students,
         total_materials,
         total_questions,
@@ -38,6 +40,8 @@
     const state = untrack(
         () =>
             new AdminDashboardState({
+                user_name,
+                user_role,
                 total_students,
                 total_materials,
                 total_questions,
@@ -52,14 +56,14 @@
     );
 
     const distribution = $derived(state.student_analytics?.distribution ?? {});
-    const radar = $derived(state.student_analytics?.radar ?? {});
+    const performance = $derived(state.student_analytics?.module_performance ?? { labels: [], data: [] });
     const distributionMax = $derived(Math.max(1, ...Object.values(distribution).map(Number)));
-    const radarMax = $derived(Math.max(1, ...Object.values(radar).map(Number)));
+    const performanceMax = $derived(Math.max(1, ...(performance.data || []).map(Number)));
     const radarColors = ['blue', 'emerald', 'amber', 'rose', 'gray'];
     const materialColumns = [
         { key: 'title', label: 'Materi', align: 'left' },
-        { key: 'questions_count', label: 'Total Soal', align: 'center' },
-        { key: 'active_students', label: 'Mahasiswa Aktif', align: 'center' },
+        { key: 'total_questions', label: 'Total Soal', align: 'center' },
+        { key: 'student_count', label: 'Mahasiswa Aktif', align: 'center' },
         {
             key: 'completion_rate',
             label: 'Tingkat Penyelesaian',
@@ -67,7 +71,7 @@
         },
     ];
     const maxAttempts = $derived(
-        Math.max(1, ...(state.popular_materials || []).map((m) => m.total_attempts ?? 0))
+        Math.max(1, ...(state.popular_materials || []).map((m) => m.student_count ?? 0))
     );
 
     const dashboardStats = $derived([
@@ -162,15 +166,15 @@
                             >
                                 <div class="flex items-center gap-3">
                                     <div class="rounded-full ring-2 ring-white">
-                                        <UserAvatar name={student.name} size="md" />
+                                        <UserAvatar name={student.user.name} size="md" />
                                     </div>
                                     <div class="flex min-w-0 flex-1 flex-col">
                                         <span class="truncate text-sm font-bold text-slate-900"
-                                            >{student.name}</span
+                                            >{student.user.name}</span
                                         >
                                         <span
                                             class="truncate text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                                            >{student.email}</span
+                                            >{student.user.email}</span
                                         >
                                     </div>
                                 </div>
@@ -330,9 +334,10 @@
                             Kompetensi Materi
                         </h3>
                     </div>
-                    {#if Object.keys(radar).length > 0}
+                    {#if (performance.labels || []).length > 0}
                         <div class="space-y-3">
-                            {#each Object.entries(radar) as [label, value], i}
+                            {#each performance.labels as label, i}
+                                {@const value = performance.data[i]}
                                 <div class="space-y-1">
                                     <div class="flex items-center justify-between px-0.5">
                                         <span
@@ -345,7 +350,7 @@
                                     </div>
                                     <ProgressBar
                                         value={Number(value)}
-                                        max={radarMax}
+                                        max={performanceMax}
                                         color={(radarColors[i % radarColors.length] ?? 'blue') as
                                             | 'emerald'
                                             | 'amber'
@@ -458,11 +463,11 @@
                                             >
                                             <span
                                                 class="ml-2 shrink-0 text-[10px] font-bold text-emerald-600"
-                                                >{m.total_attempts ?? 0} percobaan</span
+                                                >{m.student_count ?? 0} mahasiswa</span
                                             >
                                         </div>
                                         <ProgressBar
-                                            value={m.total_attempts ?? 0}
+                                            value={m.student_count ?? 0}
                                             max={maxAttempts}
                                             color="emerald"
                                             height="h-1.5"
@@ -470,7 +475,7 @@
                                         <div
                                             class="text-[9px] font-bold tracking-widest text-slate-400 uppercase"
                                         >
-                                            {m.unique_students ?? 0} mahasiswa unik
+                                            {m.progress_percentage ?? 0}% penyelesaian rata-rata
                                         </div>
                                     </div>
                                 {/each}
@@ -504,12 +509,12 @@
                         </td>
                         <td class="px-6 py-4 text-center">
                             <span class="text-xs font-bold text-slate-700">
-                                {m.questions_count}
+                                {m.total_questions}
                             </span>
                         </td>
                         <td class="px-6 py-4 text-center">
                             <span class="text-xs font-bold text-slate-700">
-                                {m.active_students}
+                                {m.student_count}
                             </span>
                         </td>
                         <td class="px-6 py-4">

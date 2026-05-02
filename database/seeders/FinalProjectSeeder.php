@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Enums\Lms\ContentCategory;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Enums\Lms\QuestionType;
 use App\Models\Answer;
@@ -39,7 +38,6 @@ class FinalProjectSeeder extends Seeder
             [
                 'material_id'     => $material->id,
                 'question_type'   => QuestionType::RADIO_BUTTON->value,
-                'type'            => ContentCategory::TEORI->value,
                 'difficulty'      => QuestionDifficulty::HARD->value,
                 'hint'            => 'Satu antarmuka, banyak wujud.',
                 'created_by'      => $dosenId,
@@ -62,7 +60,6 @@ class FinalProjectSeeder extends Seeder
             [
                 'material_id'     => $material->id,
                 'question_type'   => QuestionType::RADIO_BUTTON->value,
-                'type'            => ContentCategory::SINTAKS->value,
                 'difficulty'      => QuestionDifficulty::HARD->value,
                 'hint'            => 'Urutannya adalah extends lalu implements.',
                 'created_by'      => $dosenId,

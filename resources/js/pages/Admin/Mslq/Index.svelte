@@ -10,8 +10,7 @@
     import { MslqState } from '@/states/Admin/MslqState.svelte';
     import { Link } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils/route';
-    import type { Pagination, MslqResult } from '@/types';
-
+    import type { AdminMslqIndexProps, MslqResult } from '@/types';
     import { untrack } from 'svelte';
 
     let {
@@ -19,17 +18,7 @@
         metrics = { averages: {}, total_responses: 0, avg_motivation: 0, avg_strategy: 0 },
         classes = [],
         activeClass = '',
-    }: {
-        results: Pagination<MslqResult>;
-        metrics: {
-            averages: Record<string, number>;
-            avg_motivation: number;
-            avg_strategy: number;
-            total_responses: number;
-        };
-        classes: string[];
-        activeClass: string;
-    } = $props();
+    }: AdminMslqIndexProps = $props();
 
     const state = untrack(() => new MslqState(results.data, metrics, classes, activeClass));
 

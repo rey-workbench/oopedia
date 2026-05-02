@@ -16,7 +16,9 @@
 </script>
 
 <App variant="auth" title="Lupa Password - OOPedia">
-    <div class="relative flex min-h-screen flex-col bg-slate-50 px-4 py-4 font-sans text-slate-900 antialiased">
+    <div
+        class="relative flex min-h-screen flex-col bg-slate-50 px-4 py-4 font-sans text-slate-900 antialiased"
+    >
         <!-- Header -->
         <div class="mx-auto flex w-full max-w-4xl items-center justify-between p-2">
             <Link
@@ -24,23 +26,30 @@
                 class="flex items-center gap-2 p-2 text-slate-400 transition hover:text-slate-600"
             >
                 <ArrowLeft size={24} strokeWidth={2.5} />
-                <span class="text-sm font-bold uppercase tracking-widest">Login</span>
+                <span class="text-sm font-bold tracking-widest uppercase">Login</span>
             </Link>
         </div>
 
         <!-- Main Content -->
-        <div class="mx-auto -mt-12 flex w-full max-w-sm flex-1 flex-col items-center justify-center sm:-mt-20">
-            <div class="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl border-2 border-b-4 border-primary-200 bg-primary-50 text-primary-500">
+        <div
+            class="mx-auto -mt-12 flex w-full max-w-sm flex-1 flex-col items-center justify-center sm:-mt-20"
+        >
+            <div
+                class="border-primary-200 bg-primary-50 text-primary-500 mb-6 flex h-20 w-20 items-center justify-center rounded-3xl border-2 border-b-4"
+            >
                 <Mail size={40} strokeWidth={2.5} />
             </div>
 
             <h1 class="mb-2 text-center text-3xl font-black tracking-tight">Lupa Password?</h1>
             <p class="mb-8 text-center text-sm font-medium text-slate-500">
-                Masukkan email Anda dan kami akan mengirimkan link untuk mengatur ulang password Anda.
+                Masukkan email Anda dan kami akan mengirimkan link untuk mengatur ulang password
+                Anda.
             </p>
 
             {#if status}
-                <div class="mb-6 w-full rounded-2xl border-2 border-b-4 border-emerald-200 bg-emerald-50 p-4 text-center text-sm font-bold text-emerald-600">
+                <div
+                    class="mb-6 w-full rounded-2xl border-2 border-b-4 border-emerald-200 bg-emerald-50 p-4 text-center text-sm font-bold text-emerald-600"
+                >
                     {status}
                 </div>
             {/if}
@@ -72,7 +81,7 @@
                     disabled={state.form.processing}
                 >
                     {#if state.form.processing}
-                        <Loader2 size={22} class="animate-spin mr-2" />
+                        <Loader2 size={22} class="mr-2 animate-spin" />
                         Mengirim...
                     {:else}
                         Kirim Link Reset
@@ -81,8 +90,11 @@
             </form>
 
             <div class="mt-8 text-center text-[12px] font-bold text-slate-400">
-                Tiba-tiba ingat password? 
-                <Link href={ROUTES.AUTH.LOGIN} class="font-black text-primary-600 hover:text-primary-800 transition">
+                Tiba-tiba ingat password?
+                <Link
+                    href={ROUTES.AUTH.LOGIN}
+                    class="text-primary-600 hover:text-primary-800 font-black transition"
+                >
                     Kembali ke Login
                 </Link>
             </div>

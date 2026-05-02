@@ -1,5 +1,6 @@
 import { BaseState } from '@/states/BaseState.svelte';
-import type { Material, MaterialWithStats } from '@/types';
+import type { Material } from '@/types';
+import type { MaterialWithStats } from '@/types';
 
 /**
  * Material Catalog State
@@ -13,6 +14,9 @@ export class MaterialCatalogState extends BaseState {
     }
 }
 
+/**
+ * Single Material View State
+ */
 export class MaterialShowState extends BaseState {
     material = $state<Material>({} as Material);
     from_adaptive = $state(false);
@@ -34,8 +38,9 @@ export class InProgressState extends BaseState {
         this.hydrate({ materials_with_stats });
     }
 
-    calculateProgress(correct: number, total: number) {
-        return total > 0 ? Math.round((correct / total) * 100) : 0;
+    public calculateProgressPercentage(correctCount: number, totalQuestions: number): number {
+        if (totalQuestions === 0) return 0;
+        return Math.round((correctCount / totalQuestions) * 100);
     }
 }
 

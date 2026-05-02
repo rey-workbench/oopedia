@@ -105,7 +105,10 @@ export const ROUTES = {
             },
         },
         LEADERBOARD: '/mahasiswa/leaderboard',
-        PROFILE: '/mahasiswa/profile',
+        PROFILE: {
+            INDEX: '/mahasiswa/profile',
+            UPDATE: '/mahasiswa/profile',
+        },
         CERTIFICATES: {
             INDEX: '/mahasiswa/certificates',
             DOWNLOAD: (id: string | number) => `/mahasiswa/certificates/${id}/download`,
@@ -116,6 +119,7 @@ export const ROUTES = {
         },
         UEQ: {
             CREATE: '/mahasiswa/surveys/ueq/create',
+            STORE: '/mahasiswa/surveys/ueq',
             THANK_YOU: '/mahasiswa/surveys/ueq/thank-you',
         },
         MSLQ: {
@@ -126,6 +130,7 @@ export const ROUTES = {
         },
         SUS: {
             CREATE: '/mahasiswa/surveys/sus/create',
+            STORE: '/mahasiswa/surveys/sus',
             THANK_YOU: '/mahasiswa/surveys/sus/thank-you',
         },
     },

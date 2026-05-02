@@ -10,6 +10,7 @@ use App\DTOs\Adaptive\AdaptiveRuleDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\AdaptiveRule\StoreAdaptiveRuleRequest;
 use App\Http\Requests\Admin\AdaptiveRule\UpdateAdaptiveRuleRequest;
+use App\Http\Resources\AdaptiveRuleResource;
 use App\Models\AdaptiveRule;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Response;
@@ -32,16 +33,7 @@ final class AdaptiveRuleController extends Controller
     public function edit(AdaptiveRule $adaptiveRule): Response
     {
         return $this->render('Admin/AdaptiveRules/Edit/Index', [
-            'rule' => [
-                'id'                => $adaptiveRule->id,
-                'name'              => $adaptiveRule->name,
-                'recommendation'    => $adaptiveRule->recommendation,
-                'priority'          => $adaptiveRule->priority,
-                'actions'           => $adaptiveRule->getAttribute('actions'),
-                'required_fact_ids' => $adaptiveRule->required_fact_ids,
-                'deduced_fact_ids'  => $adaptiveRule->deduced_fact_ids,
-                'is_active'         => $adaptiveRule->is_active,
-            ],
+            'rule'        => new AdaptiveRuleResource($adaptiveRule)->resolve(),
             'all_facts'   => $this->adaptiveAnalyticsService->getAllFacts(),
             'all_actions' => $this->adaptiveAnalyticsService->getAllActions(),
         ]);

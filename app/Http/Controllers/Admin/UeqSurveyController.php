@@ -90,40 +90,40 @@ final class UeqSurveyController extends Controller
                 fputcsv(
                     $file,
                     [
-                        $survey->id,
-                        $survey->nim          ?? '',
-                        $survey->user?->name  ?? 'Tidak ada',
-                        $survey->user?->email ?? 'Tidak ada',
-                        $survey->class        ?? '',
-                        $survey->created_at->format('d/m/Y H:i'),
-                        $survey->annoying_enjoyable,
-                        $survey->not_understandable_understandable,
-                        $survey->creative_dull,
-                        $survey->easy_difficult,
-                        $survey->valuable_inferior,
-                        $survey->boring_exciting,
-                        $survey->not_interesting_interesting,
-                        $survey->unpredictable_predictable,
-                        $survey->fast_slow,
-                        $survey->inventive_conventional,
-                        $survey->obstructive_supportive,
-                        $survey->good_bad,
-                        $survey->complicated_easy,
-                        $survey->unlikable_pleasing,
-                        $survey->usual_leading_edge,
-                        $survey->unpleasant_pleasant,
-                        $survey->secure_not_secure,
-                        $survey->motivating_demotivating,
-                        $survey->meets_expectations_does_not_meet,
-                        $survey->inefficient_efficient,
-                        $survey->clear_confusing,
-                        $survey->impractical_practical,
-                        $survey->organized_cluttered,
-                        $survey->attractive_unattractive,
-                        $survey->friendly_unfriendly,
-                        $survey->conservative_innovative,
-                        $survey->comments    ?? '',
-                        $survey->suggestions ?? '',
+                        $survey['id'],
+                        $survey['nim']           ?? '',
+                        $survey['user']['name']  ?? 'Tidak ada',
+                        $survey['user']['email'] ?? 'Tidak ada',
+                        $survey['class']         ?? '',
+                        $survey['created_at'],
+                        $survey['annoying_enjoyable'],
+                        $survey['not_understandable_understandable'],
+                        $survey['creative_dull'],
+                        $survey['easy_difficult'],
+                        $survey['valuable_inferior'],
+                        $survey['boring_exciting'],
+                        $survey['not_interesting_interesting'],
+                        $survey['unpredictable_predictable'],
+                        $survey['fast_slow'],
+                        $survey['inventive_conventional'],
+                        $survey['obstructive_supportive'],
+                        $survey['good_bad'],
+                        $survey['complicated_easy'],
+                        $survey['unlikable_pleasing'],
+                        $survey['usual_leading_edge'],
+                        $survey['unpleasant_pleasant'],
+                        $survey['secure_not_secure'],
+                        $survey['motivating_demotivating'],
+                        $survey['meets_expectations_does_not_meet'],
+                        $survey['inefficient_efficient'],
+                        $survey['clear_confusing'],
+                        $survey['impractical_practical'],
+                        $survey['organized_cluttered'],
+                        $survey['attractive_unattractive'],
+                        $survey['friendly_unfriendly'],
+                        $survey['conservative_innovative'],
+                        $survey['comments']    ?? '',
+                        $survey['suggestions'] ?? '',
                     ],
                     escape: '\\',
                 );
@@ -138,7 +138,12 @@ final class UeqSurveyController extends Controller
     public function show(string $userId): Response
     {
         $survey = $this->ueqSurveyService->getStudentDetail($userId);
-        $user   = $survey->user;
+
+        if (! $survey) {
+            abort(404);
+        }
+
+        $user = $survey['user'];
 
         return $this->render('Admin/Ueq/Detail/Index', ['survey' => $survey, 'user' => $user]);
     }

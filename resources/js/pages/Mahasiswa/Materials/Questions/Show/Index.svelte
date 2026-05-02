@@ -1,8 +1,8 @@
 <script lang="ts">
     import App from '@/layouts/App.svelte';
     import GuestBanner from '@/components/layout/GuestBanner.svelte';
-    import { Terminal, UserCheck, AlertTriangle } from 'lucide-svelte';
-    import { QuestionShowState } from '@/states/Mahasiswa/QuizState.svelte';
+    import { Terminal, UserCheck, AlertTriangle, Lightbulb, CheckCircle2, Loader2 as LoaderIcon, Star, Flame } from 'lucide-svelte';
+    import { QuizState } from '@/states/Mahasiswa/QuizState.svelte';
     import QuestionSessionCard from '@/components/layout/QuestionSessionCard.svelte';
     import FinishStateCard from '@/components/layout/FinishStateCard.svelte';
     import { FeedbackModal } from '@/components/feedback';
@@ -10,9 +10,11 @@
     import Modal from '@/components/ui/Modal.svelte';
     import { activateExamProtection, deactivateExamProtection, type ViolationType } from '@/utils';
     import { untrack, onMount } from 'svelte';
+    import { fly } from 'svelte/transition';
     import type { Question, QuestionShowProps } from '@/types';
     import ProgressBar from '@/components/ui/ProgressBar.svelte';
-    import { Button } from '@/components';
+    import XPGainEffect from '@/components/ui/XPGainEffect.svelte';
+    import { Button, DragAndDrop, FillInTheBlank, MultipleChoice } from '@/components';
 
     const {
         material,
@@ -21,15 +23,14 @@
         total_questions = 0,
         answered_count = 0,
         material_answered_count = 0,
-        difficulty = 'beginner' as const,
+        difficulty = 'beginner',
         is_guest: _isGuest = false,
         student_state,
         feedback = null,
-    }: QuestionShowProps & { material_answered_count: number; feedback: any } = $props();
+    }: QuestionShowProps = $props();
 
     let quizState = untrack(
-        () =>
-            new QuestionShowState(material, current_question as Question, difficulty, student_state)
+        () => new QuizState(material, current_question as Question, difficulty, student_state)
     );
 
     let showWarning = $state(false);
@@ -67,7 +68,7 @@
             if (newFeedback) {
                 quizState.feedbackData = newFeedback;
                 quizState.show_feedback = true;
-                
+
                 // Update student state (XP, accuracy, etc.) even during feedback
                 quizState.studentState = newStudentState;
                 quizState.material = newMaterial;
@@ -122,10 +123,10 @@
     showNavbar={false}
     fullWidth={true}
 >
-    <div class="py-12">
+    <div class="py-8">
         <div
-            class="mx-auto max-w-5xl px-4 transition-all duration-500 sm:px-6 lg:px-8"
-            class:pb-40={quizState.show_feedback}
+            class="mx-auto max-w-4xl px-4 transition-all duration-500 sm:px-6 lg:px-8"
+            class:pb-40={true}
             class:pointer-events-none={quizState.show_feedback}
         >
             <div id="quiz-session-header" class="mb-12">
@@ -154,11 +155,19 @@
                             </div>
                         </div>
                         <div id="quiz-progress" class="relative">
-                            <ProgressBar 
-                                value={progressPercentage} 
-                                height="h-4" 
-                                color="blue" 
-                            />
+                            <ProgressBar value={progressPercentage} height="h-4" color="blue" />
+                        </div>
+                    </div>
+
+                    <!-- XP & Streak Display (Duolingo Style) -->
+                    <div class="flex items-center gap-3">
+                        <div id="xp-badge" class="flex items-center gap-2 rounded-2xl border-2 border-slate-100 bg-white px-4 py-2 shadow-sm transition-all duration-300">
+                            <Star size={18} class="fill-amber-400 text-amber-400" />
+                            <span class="text-sm font-black text-slate-700">{quizState.xp}</span>
+                        </div>
+                        <div class="flex items-center gap-2 rounded-2xl border-2 border-slate-100 bg-white px-4 py-2 shadow-sm">
+                            <Flame size={18} class="fill-orange-500 text-orange-500" />
+                            <span class="text-sm font-black text-slate-700">{quizState.streak}</span>
                         </div>
                     </div>
                 </div>
@@ -178,7 +187,30 @@
             {/if}
 
             {#if quizState.currentQuestion}
-                <QuestionSessionCard state={quizState} />
+                <QuestionSessionCard state={quizState}>
+                    {#if quizState.currentQuestion.question_type === 'radio_button'}
+                        <MultipleChoice
+                            question={quizState.currentQuestion}
+                            bind:selectedAnswerId={quizState.selectedMultipleChoiceAnswer}
+                            disabled={quizState.isSubmitting}
+                            showGuidance={quizState.showGuidance}
+                        />
+                    {:else if quizState.currentQuestion.question_type === 'fill_in_the_blank'}
+                        <FillInTheBlank
+                            question={quizState.currentQuestion}
+                            bind:answerText={quizState.fillInTheBlankAnswer}
+                            disabled={quizState.isSubmitting}
+                            showGuidance={quizState.showGuidance}
+                        />
+                    {:else if quizState.currentQuestion.question_type === 'drag_and_drop'}
+                        <DragAndDrop
+                            question={quizState.currentQuestion}
+                            bind:dragAndDropAnswers={quizState.dragAndDropAnswers}
+                            disabled={quizState.isSubmitting}
+                            showGuidance={quizState.showGuidance}
+                        />
+                    {/if}
+                </QuestionSessionCard>
             {:else}
                 <FinishStateCard
                     state={quizState}
@@ -189,8 +221,61 @@
         </div>
     </div>
 
+    <!-- Duolingo-style Bottom Action Bar -->
+    {#if quizState.currentQuestion && !quizState.show_feedback}
+        <div
+            class="fixed inset-x-0 bottom-0 z-50 border-t border-slate-100 bg-white px-6 py-4 transition-all duration-500 md:px-12 md:py-6"
+            transition:fly={{ y: 100, duration: 500 }}
+        >
+            <div class="mx-auto flex max-w-4xl items-center justify-between gap-6">
+                <!-- Hint Button -->
+                <button
+                    onclick={() => quizState.useHint()}
+                    disabled={quizState.isSubmitting || quizState.hintsAvailable <= 0}
+                    class="group flex flex-col items-center justify-center rounded-2xl border-2 border-b-4 border-slate-200 px-6 py-3 font-black text-slate-400 transition-all hover:bg-slate-50 active:border-b-2 active:translate-y-0.5 disabled:opacity-50 disabled:grayscale"
+                >
+                    <div class="flex items-center gap-3">
+                        <Lightbulb
+                            size={20}
+                            class={quizState.hintsAvailable > 0
+                                ? 'text-amber-500'
+                                : 'text-slate-300'}
+                        />
+                        <span class="text-xs tracking-widest uppercase">
+                            Hint ({quizState.hintsAvailable})
+                        </span>
+                    </div>
+                </button>
+
+                <!-- Check Button -->
+                <div class="flex-1 md:flex-initial md:min-w-[240px]">
+                    <Button
+                        variant={quizState.validateAnswer() ? 'primary' : 'secondary'}
+                        size="lg"
+                        disabled={quizState.isSubmitting || !quizState.validateAnswer()}
+                        class="w-full rounded-2xl border-b-4 py-4 text-sm font-black tracking-widest uppercase transition-all active:border-b-0 active:translate-y-1"
+                        onclick={() => quizState.submitAnswer()}
+                    >
+                        <div class="flex items-center justify-center gap-3">
+                            {#if quizState.isSubmitting}
+                                <LoaderIcon size={20} class="animate-spin" />
+                                <span>Memproses...</span>
+                            {:else}
+                                <span>Periksa Jawaban</span>
+                                <CheckCircle2 size={20} />
+                            {/if}
+                        </div>
+                    </Button>
+                </div>
+            </div>
+        </div>
+    {/if}
+
     <FeedbackModal state={quizState} />
-    <AdaptiveDebugPanel {quizState} {showDebug} />
+    <XPGainEffect />
+    {#if showDebug}
+        <AdaptiveDebugPanel {quizState} />
+    {/if}
 
     <Modal show={showWarning} maxWidth="sm" onclose={() => (showWarning = false)}>
         <div class="p-6">
@@ -204,15 +289,17 @@
                 {warningMessage}
             </p>
             <div class="flex flex-col gap-3">
-                <Button 
-                    variant="primary" 
-                    size="md" 
-                    class="w-full font-black uppercase tracking-widest"
+                <Button
+                    variant="primary"
+                    size="md"
+                    class="w-full font-black tracking-widest uppercase"
                     onclick={() => (showWarning = false)}
                 >
                     Saya Mengerti
                 </Button>
-                <p class="text-center text-xs font-bold text-slate-400 uppercase tracking-tighter">Pelanggaran akan dicatat oleh sistem</p>
+                <p class="text-center text-xs font-bold tracking-tighter text-slate-400 uppercase">
+                    Pelanggaran akan dicatat oleh sistem
+                </p>
             </div>
         </div>
     </Modal>

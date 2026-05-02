@@ -7,14 +7,34 @@
         dragAndDropAnswers = $bindable({}),
         disabled = false,
         showResult = false,
+        showGuidance = false,
         isOverallCorrect = false,
     }: {
         question: Question;
         dragAndDropAnswers: Record<string, string>;
         disabled?: boolean;
         showResult?: boolean;
+        showGuidance?: boolean;
         isOverallCorrect?: boolean;
     } = $props();
+
+    let displayAnswers = $derived.by(() => {
+        if (!showGuidance) return question.answers || [];
+
+        const correctOnes = (question.answers || []).filter((a) => a.drag_target !== null);
+        const distractors = (question.answers || []).filter((a) => a.drag_target === null);
+
+        // Keep all correct ones + maybe 1 distractor if available
+        const list = [...correctOnes];
+        const distractor = distractors[0];
+        if (distractor) {
+            list.push(distractor);
+        }
+
+        return list
+            .filter((a): a is import('@/types').Answer => !!a)
+            .sort((a, b) => (a?.id ?? '').localeCompare(b?.id ?? ''));
+    });
 
     let activeZone = $state<string | null>(null);
 
@@ -133,7 +153,10 @@
 
 <div class="space-y-6">
     <!-- Question canvas: same dark terminal style as MultipleChoice -->
-    <div class="relative select-none overflow-hidden rounded-3xl bg-slate-900 shadow-xl" draggable="false">
+    <div
+        class="relative overflow-hidden rounded-3xl bg-slate-900 shadow-xl select-none"
+        draggable="false"
+    >
         <div
             class="via-primary-500/60 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent"
         ></div>
@@ -188,7 +211,7 @@
         </div>
 
         <div class="flex flex-wrap gap-3">
-            {#each question.answers as answer (answer.id)}
+            {#each displayAnswers as answer (answer.id)}
                 {@const isUsed = Object.values(dragAndDropAnswers).includes(
                     answer.answer_text ?? ''
                 )}

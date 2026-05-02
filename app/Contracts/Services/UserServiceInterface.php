@@ -10,7 +10,7 @@ use Illuminate\Http\UploadedFile;
 
 interface UserServiceInterface
 {
-    public function getUserById(string $id): ?User;
+    public function getUserById(string $id): ?array;
 
     public function getAdmins(?string $search = null, int $perPage = 10): LengthAwarePaginator;
 

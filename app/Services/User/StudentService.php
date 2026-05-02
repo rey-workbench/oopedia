@@ -11,6 +11,8 @@ use App\Contracts\Services\StudentServiceInterface;
 use App\Enums\User\RoleName;
 use App\Exceptions\Domain\UserNotFoundException;
 use App\Helpers\ProgressHelper;
+use App\Http\Resources\MaterialResource;
+use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\StudentState;
 use App\Models\User;
@@ -33,20 +35,19 @@ final readonly class StudentService implements StudentServiceInterface
 
     public function getStudentsWithProgress(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
-        $lengthAwarePaginator       = $this->userRepo->getStudentsList($search, $perPage);
-        $allOrdered                 = $this->materialRepo->getAllOrdered();
-        $totalQuestions             = ProgressHelper::calculateTotalQuestions($allOrdered);
+        $lengthAwarePaginator = $this->userRepo->getStudentsList($search, $perPage);
+        $allOrdered           = $this->materialRepo->getAllOrdered();
+        $totalQuestions       = ProgressHelper::calculateTotalQuestions($allOrdered);
 
-        foreach ($lengthAwarePaginator as $student) {
+        return $lengthAwarePaginator->through(function ($student) use ($totalQuestions) {
             $progressStats  = $this->progressRepo->getUserProgressStats($student->id);
             $correctAnswers = $progressStats->sum('correct_answers');
 
-            $student->overall_progress = ProgressHelper::calculateProgressPercentage($correctAnswers, $totalQuestions);
-
+            $student->overall_progress         = ProgressHelper::calculateProgressPercentage($correctAnswers, $totalQuestions);
             $student->total_answered_questions = $progressStats->sum('answered_questions');
-        }
 
-        return $lengthAwarePaginator;
+            return new UserResource($student)->resolve();
+        });
     }
 
     public function getStudentsList(?string $search = null, int $perPage = 10): LengthAwarePaginator
@@ -54,9 +55,11 @@ final readonly class StudentService implements StudentServiceInterface
         return $this->userRepo->getStudentsList($search, $perPage);
     }
 
-    public function getStudentById(string $id): ?User
+    public function getStudentById(string $id): ?array
     {
-        return $this->userRepo->find($id);
+        $user = $this->userRepo->find($id);
+
+        return $user instanceof User ? new UserResource($user)->resolve() : null;
     }
 
     public function createStudent(array $data): User
@@ -97,8 +100,13 @@ final readonly class StudentService implements StudentServiceInterface
         $this->userRepo->approveStudent($studentId);
     }
 
-    public function getStudentProgressDetail(User $user): array
+    public function getStudentProgressDetail(string $userId): ?array
     {
+        $user = $this->userRepo->find($userId);
+        if (! $user instanceof User) {
+            return null;
+        }
+
         $allOrdered             = $this->materialRepo->getAllOrdered();
         $progressStats          = $this->progressRepo->getUserMaterialProgress($user->id);
         $materialsWithProgress  = collect();
@@ -111,24 +119,23 @@ final readonly class StudentService implements StudentServiceInterface
             $progressPercentage = ProgressHelper::calculateProgressPercentage($correctAnswers, $totalQuestions);
             $lastAccessed       = $this->progressRepo->getLastAccessTime($user->id, $material->id);
 
-            $materialsWithProgress->push((object) [
-                'id'                 => $material->id,
-                'title'              => $material->title,
-                'total_questions'    => $totalQuestions,
-                'answered_questions' => $correctAnswers,
-                'progress'           => $progressPercentage,
-                'last_accessed'      => $lastAccessed ? Date::parse($lastAccessed) : null,
-            ]);
+            $material->progress_percentage = $progressPercentage;
+            $material->total_questions     = $totalQuestions;
+            $material->completed_questions = $correctAnswers;
+            $material->status              = $progressPercentage === 100 ? 'completed' : ($progressPercentage > 0 ? 'in_progress' : 'not_started');
+            $material->last_accessed       = $lastAccessed ? Date::parse($lastAccessed)->toIso8601String() : null;
+
+            $materialsWithProgress->push(new MaterialResource($material)->resolve());
         }
 
         $missingQuestionsByMaterial = [];
 
         foreach ($materialsWithProgress as $materialWithProgress) {
-            $missingCount = max(0, $materialWithProgress->total_questions - $materialWithProgress->answered_questions);
+            $missingCount = max(0, $materialWithProgress['total_questions'] - $materialWithProgress['completed_questions']);
 
             if ($missingCount > 0) {
                 $missingQuestionsByMaterial[] = [
-                    'material_title' => $materialWithProgress->title,
+                    'material_title' => $materialWithProgress['title'],
                     'missing_count'  => $missingCount,
                 ];
             }
@@ -140,8 +147,9 @@ final readonly class StudentService implements StudentServiceInterface
         $certifications = $studentState ? ($studentState->certifications ?? []) : [];
 
         return [
+            'student'                    => new UserResource($user)->resolve(),
             'materials'                  => $materialsWithProgress,
-            'recent_activities'          => $recentActivities,
+            'recent_activities'          => $recentActivities, // Might need RecentProgressResource
             'missingQuestionsByMaterial' => $missingQuestionsByMaterial,
             'certifications'             => $certifications,
         ];

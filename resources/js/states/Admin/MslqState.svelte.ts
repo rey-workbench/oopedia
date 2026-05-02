@@ -1,9 +1,10 @@
 import { router } from '@inertiajs/svelte';
 import { BaseState } from '@/states/BaseState.svelte';
 import { ROUTES } from '@/utils/route';
+import type { MslqResult } from '@/types';
 
 export class MslqState extends BaseState {
-    results = $state<any[]>([]);
+    results = $state<MslqResult[]>([]);
     averages = $state<Record<string, number>>({});
     avgMotivation = $state(0);
     avgStrategy = $state(0);
@@ -11,7 +12,7 @@ export class MslqState extends BaseState {
     activeClass = $state('');
 
     constructor(
-        results: any[],
+        results: MslqResult[],
         metrics: { averages: Record<string, number>; avg_motivation: number; avg_strategy: number },
         classes: string[],
         activeClass: string

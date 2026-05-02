@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Enums\Lms\StudentLevel;
 use App\Enums\User\RoleName;
 use App\Models\Role;
 use App\Models\StudentState;
@@ -65,8 +64,9 @@ class MahasiswaSeeder extends Seeder
                     ['user_id' => $user->id],
                     [
                         StudentStateSchema::XP              => 550,
-                        StudentStateSchema::LEVEL           => StudentLevel::AHLI->value,
+                        StudentStateSchema::LEVEL           => 'Expert',
                         StudentStateSchema::STREAK          => 5,
+                        StudentStateSchema::HINTS_USED      => 0,
                         StudentStateSchema::MAX_STREAK      => 12,
                         'badges'                            => ['fast_learner', 'logic_master', 'module_complete'],
                         StudentStateSchema::ACCURACY        => 85.5,
@@ -81,6 +81,7 @@ class MahasiswaSeeder extends Seeder
                             'trend'          => 'up',
                             'speed'          => 'normal',
                             'stagnant_count' => 0,
+                            'last_used_hint' => false,
                         ],
                         StudentStateSchema::ADAPTIVE_STATE => [
                             'consecutive_correct' => 4,

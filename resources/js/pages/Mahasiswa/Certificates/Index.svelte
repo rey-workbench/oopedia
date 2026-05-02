@@ -10,7 +10,7 @@
 </script>
 
 <App title="Sertifikat Saya">
-    <div class="space-y-12">
+    <div class="space-y-8">
         <PageHeader
             id="page-header"
             title="Sertifikat Saya"
@@ -24,7 +24,7 @@
                 icon={Award}
             />
         {:else}
-            <div id="certificate-inventory" class="grid grid-cols-1 gap-12 lg:grid-cols-2">
+            <div id="certificate-inventory" class="grid grid-cols-1 gap-8 lg:grid-cols-2">
                 {#each certifications as cert (cert.material_id)}
                     <CertificateCard
                         materialTitle={cert.material_title}

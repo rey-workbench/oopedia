@@ -32,7 +32,7 @@ export class UserListState extends BaseState {
         this.hydrate({ users, search });
     }
 
-    handleSearch = debounce(() => {
+    public handleSearch = debounce(() => {
         router.get(
             ROUTES.ADMIN.USERS.INDEX,
             { search: this.search },
@@ -44,7 +44,7 @@ export class UserListState extends BaseState {
         );
     }, 300);
 
-    handleDelete(id: number) {
+    public handleDelete(id: number) {
         confirmDelete(ROUTES.ADMIN.USERS.DELETE(id), 'Hapus pengguna ini?');
     }
 }
@@ -62,25 +62,31 @@ export class UserFormState extends FormState<{
     targetUser = $state<User | null>(null);
 
     constructor(user: User | null) {
-        super(
-            {
-                name: user ? user.name : '',
-                email: user ? user.email : '',
-                password: '',
-                password_confirmation: '',
-                role_id: user ? (user as any).role_id : '',
-            },
-            { isEdit: !!user }
-        );
+        super(UserFormState.prepareInitialValues(user), { isEdit: !!user });
         this.hydrate({ targetUser: user });
     }
 
-    async submit() {
-        const url = this.isEdit
-            ? ROUTES.ADMIN.USERS.EDIT(this.targetUser!.id).replace('/edit', '')
-            : ROUTES.ADMIN.USERS.INDEX;
+    private static prepareInitialValues(user: User | null) {
+        return {
+            name: user?.name ?? '',
+            email: user?.email ?? '',
+            password: '',
+            password_confirmation: '',
+            role_id: user ? (user as any).role_id : '',
+        };
+    }
 
+    public async submit() {
+        const url = this.getSubmitUrl();
         await this.submitForm(this.isEdit ? 'put' : 'post', url);
+    }
+
+    private getSubmitUrl(): string {
+        if (this.isEdit && this.targetUser) {
+            // Remove /edit suffix if present in the route definition for update
+            return ROUTES.ADMIN.USERS.EDIT(this.targetUser.id).replace('/edit', '');
+        }
+        return ROUTES.ADMIN.USERS.INDEX;
     }
 }
 
@@ -94,11 +100,11 @@ export class UserImportState extends FormState<{ excel_file: File | null }> {
         });
     }
 
-    async submit() {
+    public async submit() {
         await this.submitForm('post', ROUTES.ADMIN.USERS.IMPORT);
     }
 
-    handleFileChange(e: Event) {
+    public handleFileChange(e: Event) {
         const input = e.target as HTMLInputElement;
         this.form.excel_file = input.files?.[0] ?? null;
     }
@@ -115,11 +121,11 @@ export class PendingAdminState extends BaseState {
         this.hydrate({ pendingAdmins });
     }
 
-    handleApprove(id: number) {
+    public handleApprove(id: number) {
         router.post(ROUTES.ADMIN.USERS.APPROVE(id));
     }
 
-    handleReject(id: number) {
+    public handleReject(id: number) {
         router.post(ROUTES.ADMIN.USERS.REJECT(id));
     }
 }
@@ -132,7 +138,7 @@ export class PendingUsersState extends BaseState {
         super();
     }
 
-    logout() {
+    public logout() {
         router.post(ROUTES.AUTH.LOGOUT);
     }
 }

@@ -12,17 +12,25 @@
 
     const { email, token }: Props = $props();
 
-    const state = new ResetPasswordState(() => email, () => token, {
-        showSuccessToast: 'Password Anda telah berhasil diubah!',
-        showErrorToast: true,
-    });
+    const state = new ResetPasswordState(
+        () => email,
+        () => token,
+        {
+            showSuccessToast: 'Password Anda telah berhasil diubah!',
+            showErrorToast: true,
+        }
+    );
 </script>
 
 <App variant="auth" title="Reset Password - OOPedia">
-    <div class="relative flex min-h-screen flex-col bg-slate-50 px-4 py-4 font-sans text-slate-900 antialiased">
+    <div
+        class="relative flex min-h-screen flex-col bg-slate-50 px-4 py-4 font-sans text-slate-900 antialiased"
+    >
         <!-- Main Content -->
         <div class="mx-auto flex w-full max-w-sm flex-1 flex-col items-center justify-center">
-            <div class="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl border-2 border-b-4 border-primary-200 bg-primary-50 text-primary-500">
+            <div
+                class="border-primary-200 bg-primary-50 text-primary-500 mb-6 flex h-20 w-20 items-center justify-center rounded-3xl border-2 border-b-4"
+            >
                 <KeyRound size={40} strokeWidth={2.5} />
             </div>
 
@@ -86,7 +94,7 @@
                         disabled={state.form.processing}
                     >
                         {#if state.form.processing}
-                            <Loader2 size={22} class="animate-spin mr-2" />
+                            <Loader2 size={22} class="mr-2 animate-spin" />
                             Memproses...
                         {:else}
                             Ubah Password

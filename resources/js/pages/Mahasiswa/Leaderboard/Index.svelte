@@ -26,14 +26,14 @@
 </script>
 
 <App title="Leaderboard">
-    <div class="space-y-12">
+    <div class="space-y-8">
         <PageHeader
             id="page-header"
             title="Leaderboard"
             subtitle="Peringkat Terbaik Mahasiswa Berdasarkan Progres Pembelajaran"
         />
 
-        <div class="space-y-12">
+        <div class="space-y-8">
             <Card padding="p-0" hover={false} class="overflow-hidden border-b-6">
                 <div id="leaderboard-podium">
                     <LeaderboardPodium top3={state.topThree} />
@@ -49,26 +49,26 @@
                             item.id === state.user?.id ? 'bg-primary-50/50' : ''}
                     >
                         {#snippet row(data: LeaderboardEntry)}
-                            <td class="border-b border-slate-50 px-6 py-6">
+                            <td class="border-b border-slate-50 px-6 py-4">
                                 {#if data.rank <= 3}
                                     <div
-                                        class={`flex h-10 w-10 items-center justify-center rounded-xl border-2 border-b-4 border-slate-900 font-bold text-white
+                                        class={`flex h-8 w-8 items-center justify-center rounded-lg border-2 border-b-4 border-slate-900 font-bold text-white text-xs
                                     ${data.rank === 1 ? 'bg-amber-400' : data.rank === 2 ? 'bg-slate-300' : 'bg-rose-400'}`}
                                     >
                                         {data.rank}
                                     </div>
                                 {:else}
-                                    <span class="block w-10 text-center font-bold text-slate-300"
+                                    <span class="block w-8 text-center font-bold text-slate-300 text-xs"
                                         >#{data.rank}</span
                                     >
                                 {/if}
                             </td>
-                            <td class="border-b border-slate-50 px-6 py-6">
-                                <div class="flex items-center gap-4">
-                                    <UserAvatar name={data.name} />
+                            <td class="border-b border-slate-50 px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <UserAvatar name={data.name} size="sm" />
                                     <div>
                                         <div
-                                            class="font-bold tracking-widest text-slate-900 uppercase"
+                                            class="font-bold tracking-widest text-slate-900 uppercase text-sm"
                                         >
                                             {data.name}
                                         </div>
@@ -96,14 +96,14 @@
                                         >
                                     </div>
                                     <ProgressBar
-                                        value={data.percentage}
+                                        value={data.percentage ?? 0}
                                         height="h-2"
                                         color={data.badge_color as any}
                                     />
                                 </div>
                             </td>
                             <td class="border-b border-slate-50 px-6 py-6 text-right">
-                                <div class="text-primary-600 text-xl font-bold tracking-widest">
+                                <div class="text-primary-600 text-lg font-bold tracking-widest">
                                     {data.formatted_score}
                                     <span
                                         class="ml-1 text-[10px] font-bold tracking-widest text-slate-300 uppercase"

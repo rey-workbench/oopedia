@@ -13,8 +13,6 @@ use App\Enums\Lms\QuestionType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Question\StoreQuestionRequest;
 use App\Http\Requests\Question\UpdateQuestionRequest;
-use App\Models\Material;
-use App\Models\Question;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,20 +46,20 @@ final class QuestionController extends Controller
     {
         $materialId = $request->input('material');
         if (! $materialId) {
-            $materials    = $this->materialService->getAllMaterials();
-            $material     = null;
+            $materials = $this->materialService->getAllMaterials();
+            $material  = null;
 
             return $this->render('Admin/Questions/Create/Index', ['materials' => $materials, 'material' => $material]);
         }
 
         $material = $this->materialService->getMaterialById((string) $materialId);
 
-        if (! $material instanceof Material) {
+        if (! $material) {
             return to_route('admin.questions.index')
                 ->with('error', 'Material tidak ditemukan');
         }
 
-        $materials    = collect([$material]);
+        $materials = collect([$material]);
 
         return $this->render('Admin/Questions/Create/Index', ['materials' => $materials, 'material' => $material]);
     }
@@ -93,13 +91,13 @@ final class QuestionController extends Controller
     {
         $question = $this->quizService->getQuestionWithAnswers($questionId);
 
-        if (! $question instanceof Question) {
+        if (! $question) {
             return to_route('admin.questions.index')
                 ->with('error', 'Soal tidak ditemukan');
         }
 
         $materials = $this->materialService->getAllMaterials();
-        $material  = $this->materialService->getMaterialById((string) $question->material_id);
+        $material  = $this->materialService->getMaterialById((string) $question['material_id']);
 
         return $this->render(
             'Admin/Questions/Edit/Index',
@@ -135,7 +133,7 @@ final class QuestionController extends Controller
     public function destroy(string $questionId): RedirectResponse
     {
         $question   = $this->quizService->getQuestionById($questionId);
-        $materialId = $question?->material_id;
+        $materialId = $question ? $question['material_id'] : null;
 
         $this->quizService->deleteQuestion($questionId);
 

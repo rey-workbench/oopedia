@@ -8,6 +8,7 @@ use App\Http\Controllers\Mahasiswa\MaterialController as MahasiswaMaterialContro
 use App\Http\Controllers\Mahasiswa\MaterialQuestionController;
 use App\Http\Controllers\Mahasiswa\MslqController;
 use App\Http\Controllers\Mahasiswa\ProfileController as MahasiswaProfileController;
+use App\Http\Controllers\Mahasiswa\QuizInteractionController;
 use App\Http\Controllers\Mahasiswa\SusSurveyController;
 use App\Http\Controllers\Mahasiswa\UeqSurveyController as MahasiswaUeqSurveyController;
 use App\Http\Middleware\BlockQuestionParameter;
@@ -58,17 +59,20 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->group(function (): void {
     // --- Shared/Guest Routes (Role 3 & 4) ---
     Route::middleware(['access:guest'])->group(function (): void {
 
-        // Questions & Adaptive System
+        // Questions & Adaptive System (Page Rendering)
         Route::controller(MaterialQuestionController::class)->prefix('materials')->group(function (): void {
             Route::get('questions', 'index')->name('materials.questions.index');
             Route::get('{material}/questions/levels', 'levels')->name('materials.questions.levels');
             Route::get('{material}/questions/review/{difficulty?}', 'review')->name('materials.questions.review');
-            Route::post('{material}/questions/{question}/check', 'checkAnswer')->name('materials.questions.check');
-            Route::get('{material}/questions/{question}/attempts', 'getAttempts')->name('materials.questions.attempts');
-            Route::post('{material}/questions/{question}/hint', 'useHint')->name('materials.questions.hint');
             Route::get('{material}/questions', 'show')
                 ->middleware(BlockQuestionParameter::class)
                 ->name('materials.questions.show');
+        });
+
+        // Quiz Interactions (API/Action Logic)
+        Route::controller(QuizInteractionController::class)->prefix('materials')->group(function (): void {
+            Route::post('{material}/questions/{question}/check', 'submit')->name('materials.questions.check');
+            Route::post('{material}/questions/{question}/hint', 'useHint')->name('materials.questions.hint');
         });
 
         // Materials & Progress

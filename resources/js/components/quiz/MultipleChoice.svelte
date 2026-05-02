@@ -7,6 +7,7 @@
         selectedAnswerId?: string | null;
         disabled?: boolean;
         showResult?: boolean;
+        showGuidance?: boolean;
         onselect?: (answerId: string) => void;
     }
 
@@ -15,8 +16,29 @@
         selectedAnswerId = $bindable(null),
         disabled = false,
         showResult = false,
+        showGuidance = false,
         onselect = () => {},
     }: Props = $props();
+
+    let displayAnswers = $derived.by(() => {
+        if (!showGuidance || (question.answers?.length ?? 0) <= 2) return question.answers || [];
+
+        const correct = question.answers?.find((a) => a.is_correct);
+        const wrongs = question.answers?.filter((a) => !a.is_correct) || [];
+
+        if (!correct || wrongs.length === 0) return question.answers || [];
+
+        // Deterministic but "random" selection using question.id and wrongs length
+        const seed = (question.id ?? '')
+            .split('')
+            .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        const randomIndex = seed % wrongs.length;
+        const randomWrong = wrongs[randomIndex];
+
+        return [correct, randomWrong]
+            .filter((a): a is import('@/types').Answer => !!a)
+            .sort((a, b) => (a?.id ?? '').localeCompare(b?.id ?? ''));
+    });
 
     function handleSelect(answerId: string) {
         if (disabled) return;
@@ -27,7 +49,10 @@
 
 <div class="space-y-6">
     <!-- Question block: consistent dark terminal style -->
-    <div class="relative select-none overflow-hidden rounded-3xl bg-slate-900 p-8 shadow-xl" draggable="false">
+    <div
+        class="relative overflow-hidden rounded-3xl bg-slate-900 p-8 shadow-xl select-none"
+        draggable="false"
+    >
         <!-- Subtle top accent line -->
         <div
             class="via-primary-500/60 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent"
@@ -49,9 +74,7 @@
             </span>
         </div>
 
-        <div
-            class="relative z-10 text-lg leading-relaxed font-semibold text-slate-100"
-        >
+        <div class="relative z-10 text-lg leading-relaxed font-semibold text-slate-100">
             {@html question.question_text}
         </div>
     </div>
@@ -67,7 +90,7 @@
         </div>
 
         <div class="grid grid-cols-1 gap-4">
-            {#each question.answers as answer, i (answer.id)}
+            {#each displayAnswers as answer, i (answer.id)}
                 {@const isSelected = selectedAnswerId === answer.id}
                 {@const label = String.fromCharCode(65 + i)}
                 {@const isCorrect = answer.is_correct}
@@ -82,7 +105,7 @@
                         value={answer.id}
                         class="peer sr-only"
                         checked={isSelected}
-                        disabled={disabled}
+                        {disabled}
                         onchange={() => handleSelect(answer.id)}
                     />
                     <div
@@ -103,8 +126,8 @@
                             {showResult
                                 ? isSelected
                                     ? isCorrect
-                                        ? 'border-emerald-600 text-emerald-600 bg-white'
-                                        : 'border-rose-600 text-rose-600 bg-white'
+                                        ? 'border-emerald-600 bg-white text-emerald-600'
+                                        : 'border-rose-600 bg-white text-rose-600'
                                     : 'border-slate-200 bg-white text-slate-300'
                                 : isSelected
                                   ? 'border-primary-600 text-primary-600 bg-white shadow-sm'

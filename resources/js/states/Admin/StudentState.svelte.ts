@@ -7,7 +7,7 @@ import { ROUTES } from '@/utils/route';
 import type {
     User,
     Pagination,
-    MaterialWithProgress,
+    Material,
     MissingQuestionsItem,
     RecentActivity,
 } from '@/types';
@@ -56,31 +56,19 @@ export class StudentListState extends BaseState {
  */
 export class StudentProgressState extends BaseState {
     student = $state<User>({} as User);
-    materials = $state<MaterialWithProgress[]>([]);
+    materials = $state<Material[]>([]);
     missingQuestionsByMaterial = $state<MissingQuestionsItem[]>([]);
     certifications = $state<Record<string, string>>({});
     recentActivities = $state<RecentActivity[]>([]);
 
-    avgProgress = $derived(
-        this.materials.length > 0
-            ? (
-                  this.materials.reduce((acc, m) => acc + (Number(m.progress) || 0), 0) /
-                  this.materials.length
-              ).toFixed(1)
-            : '0.0'
-    );
-
-    completedModules = $derived(this.materials.filter((m) => Number(m.progress) === 100).length);
-
+    avgProgress = $derived(this.calculateAverageProgress());
+    completedModules = $derived(this.getCompletedModulesCount());
     totalModules = $derived(this.materials.length);
-
-    missingQuestions = $derived(
-        this.missingQuestionsByMaterial.reduce((acc, item) => acc + item.missing_count, 0)
-    );
+    missingQuestions = $derived(this.getTotalMissingQuestions());
 
     constructor(
         student: User,
-        materials: MaterialWithProgress[],
+        materials: Material[],
         missingQuestionsByMaterial: MissingQuestionsItem[],
         certifications: Record<string, string> = {},
         recent_activities: RecentActivity[] = []
@@ -93,6 +81,23 @@ export class StudentProgressState extends BaseState {
             certifications,
             recentActivities: recent_activities,
         });
+    }
+
+    private calculateAverageProgress(): string {
+        if (this.materials.length === 0) return '0.0';
+        const total = this.materials.reduce(
+            (acc, m) => acc + (Number(m.progress_percentage) || 0),
+            0
+        );
+        return (total / this.materials.length).toFixed(1);
+    }
+
+    private getCompletedModulesCount(): number {
+        return this.materials.filter((m) => Number(m.progress_percentage) === 100).length;
+    }
+
+    private getTotalMissingQuestions(): number {
+        return this.missingQuestionsByMaterial.reduce((acc, item) => acc + item.missing_count, 0);
     }
 }
 

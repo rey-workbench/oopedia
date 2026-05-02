@@ -48,25 +48,28 @@ export class QuestionListAdminState extends BaseState {
         this.hydrate({ questions, material, search, difficulty });
     }
 
-    handleSearch = debounce(() => {
-        router.get(
-            this.material
-                ? ROUTES.ADMIN.MATERIALS.QUESTIONS.INDEX(this.material.id)
-                : ROUTES.ADMIN.QUESTIONS.INDEX,
-            {
-                search: this.search,
-                difficulty: this.difficulty,
-            },
-            { preserveState: true, preserveScroll: true }
-        );
+    public handleSearch = debounce(() => {
+        const params = {
+            search: this.search,
+            difficulty: this.difficulty,
+        };
+
+        const url = this.material
+            ? ROUTES.ADMIN.MATERIALS.QUESTIONS.INDEX(this.material.id)
+            : ROUTES.ADMIN.QUESTIONS.INDEX;
+
+        router.get(url, params, {
+            preserveState: true,
+            preserveScroll: true,
+        });
     }, 300);
 
-    handleDelete(id: number) {
+    public handleDelete(id: number) {
         confirmDelete(ROUTES.ADMIN.QUESTIONS.DELETE(id), 'Hapus soal ini?');
     }
 
-    setDifficulty(diff: string) {
-        this.difficulty = diff;
+    public setDifficulty(difficulty: string) {
+        this.difficulty = difficulty;
         this.handleSearch();
     }
 }
@@ -87,111 +90,118 @@ export class QuestionFormState extends FormState<{
     question = $state<Question | null>(null);
 
     constructor(materials: Material[], material: Material | null, question: Question | null) {
-        super(
-            {
-                question_text: question ? question.question_text : '',
-                question_type: question ? question.question_type : 'radio_button',
-                difficulty: question ? question.difficulty : 'beginner',
-                material_id: question ? question.material_id : material ? material.id : '',
-                answers:
-                    question && question.answers
-                        ? question.answers.map((a: Answer) => ({
-                              answer_text: a.answer_text || '',
-                              is_correct: a.is_correct ? 1 : 0,
-                              explanation: a.explanation || '',
-                              drag_source: a.drag_source || '',
-                              drag_target: a.drag_target || '',
-                          }))
-                        : [
-                              {
-                                  answer_text: '',
-                                  is_correct: 0,
-                                  explanation: '',
-                                  drag_source: '',
-                                  drag_target: '',
-                              },
-                              {
-                                  answer_text: '',
-                                  is_correct: 0,
-                                  explanation: '',
-                                  drag_source: '',
-                                  drag_target: '',
-                              },
-                          ],
-                correct_answer:
-                    question && question.answers
-                        ? question.answers.findIndex((a: Answer) => a.is_correct)
-                        : null,
-            },
-            {
-                isEdit: !!question,
-                showSuccessToast: 'Soal berhasil disimpan!',
-                showErrorToast: true,
-            }
-        );
-        this.hydrate({
-            materials,
-            material,
-            question,
+        super(QuestionFormState.prepareInitialFormValues(material, question), {
+            isEdit: !!question,
+            showSuccessToast: 'Soal berhasil disimpan!',
+            showErrorToast: true,
         });
+        this.hydrate({ materials, material, question });
     }
 
-    addAnswer() {
-        this.form.answers = [
-            ...(this.form.answers || []),
-            { answer_text: '', is_correct: 0, explanation: '', drag_source: '', drag_target: '' },
-        ];
+    private static prepareInitialFormValues(material: Material | null, question: Question | null) {
+        return {
+            question_text: question?.question_text ?? '',
+            question_type: question?.question_type ?? 'radio_button',
+            difficulty: question?.difficulty ?? 'beginner',
+            material_id: question?.material_id ?? material?.id ?? '',
+            answers: question?.answers?.map(this.mapAnswerToField) ?? this.defaultAnswers(),
+            correct_answer: question?.answers?.findIndex((a) => a.is_correct) ?? null,
+        };
     }
 
-    removeAnswer(index: number) {
-        this.form.answers = (this.form.answers || []).filter(
-            (_: unknown, i: number) => i !== index
-        );
+    private static mapAnswerToField(a: Answer): AnswerField {
+        return {
+            answer_text: a.answer_text || '',
+            is_correct: a.is_correct ? 1 : 0,
+            explanation: a.explanation || '',
+            drag_source: a.drag_source || '',
+            drag_target: a.drag_target || '',
+        };
     }
 
-    setType(type: string) {
+    private static defaultAnswers(): AnswerField[] {
+        return Array(2)
+            .fill(null)
+            .map(() => ({
+                answer_text: '',
+                is_correct: 0,
+                explanation: '',
+                drag_source: '',
+                drag_target: '',
+            }));
+    }
+
+    public addAnswer() {
+        const newAnswer: AnswerField = {
+            answer_text: '',
+            is_correct: 0,
+            explanation: '',
+            drag_source: '',
+            drag_target: '',
+        };
+        this.form.answers = [...(this.form.answers || []), newAnswer];
+    }
+
+    public removeAnswer(index: number) {
+        this.form.answers = (this.form.answers || []).filter((_, i) => i !== index);
+    }
+
+    public setType(type: string) {
         this.form.question_type = type;
     }
 
-    setDifficulty(diff: string) {
-        this.form.difficulty = diff;
+    public setDifficulty(difficulty: string) {
+        this.form.difficulty = difficulty;
     }
 
-    async submit() {
-        if (['radio_button', 'multiple_choice'].includes(this.form.question_type)) {
-            const answers = [...(this.form.answers || [])];
-            answers.forEach((ans: AnswerField, i: number) => {
-                ans.is_correct = i == this.form.correct_answer ? 1 : 0;
-            });
+    public async submit() {
+        this.prepareSubmissionData();
 
-            this.form.answers = answers;
+        const url =
+            this.isEdit && this.question
+                ? ROUTES.ADMIN.QUESTIONS.UPDATE(this.question.id)
+                : ROUTES.ADMIN.QUESTIONS.INDEX;
+
+        await this.submitForm(this.isEdit ? 'put' : 'post', url);
+    }
+
+    private prepareSubmissionData() {
+        if (this.isMultipleChoiceType()) {
+            this.syncCorrectAnswerFlag();
         }
 
         if (this.form.question_type === 'drag_and_drop') {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = this.form.question_text;
-            const dropzones = tempDiv.querySelectorAll('.dnd-dropzone');
-
-            // Map blanks to index
-            dropzones.forEach((dz, idx) => {
-                const answerText = dz.getAttribute('data-answer');
-                dz.outerHTML = `[blank_${idx + 1}]`;
-
-                // Find answer
-                const ans = this.form.answers?.find((a) => a.answer_text === answerText);
-                if (ans) {
-                    ans.drag_target = String(idx + 1);
-                    ans.drag_source = String(idx + 1);
-                }
-            });
-            this.form.question_text = tempDiv.innerHTML;
+            this.processDragAndDropQuestion();
         }
+    }
 
-        const url = this.question
-            ? ROUTES.ADMIN.QUESTIONS.UPDATE(this.question.id)
-            : ROUTES.ADMIN.QUESTIONS.INDEX;
+    private isMultipleChoiceType(): boolean {
+        return ['radio_button', 'multiple_choice'].includes(this.form.question_type);
+    }
 
-        await this.submitForm(this.question ? 'put' : 'post', url);
+    private syncCorrectAnswerFlag() {
+        this.form.answers?.forEach((ans, i) => {
+            ans.is_correct = i === this.form.correct_answer ? 1 : 0;
+        });
+    }
+
+    private processDragAndDropQuestion() {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = this.form.question_text;
+        const dropzones = tempDiv.querySelectorAll('.dnd-dropzone');
+
+        dropzones.forEach((dz, idx) => {
+            const answerText = dz.getAttribute('data-answer');
+            dz.outerHTML = `[blank_${idx + 1}]`;
+
+            const ans = this.form.answers?.find((a) => a.answer_text === answerText);
+            if (ans) {
+                ans.drag_target = String(idx + 1);
+                ans.drag_source = String(idx + 1);
+            }
+        });
+
+        this.form.question_text = tempDiv.innerHTML;
     }
 }
 
@@ -200,21 +210,26 @@ export class QuestionFormState extends FormState<{
  */
 export class QuestionEditState extends QuestionFormState {
     constructor(question: Question) {
-        super(
-            [],
-            (question as unknown as { material: Material | null }).material || null,
-            question
-        );
+        const material = (question as any).material || null;
+        super([], material, question);
 
-        if (question && question.question_type === 'drag_and_drop') {
-            let qt = question.question_text || '';
-            (this.form.answers || []).forEach((ans) => {
-                if (ans.drag_target) {
-                    const html = `<span class="dnd-dropzone inline-block rounded border border-primary-200 bg-primary-50 px-2 py-1 mx-1 text-xs font-bold text-primary-700 shadow-sm" contenteditable="false" data-answer="${ans.answer_text}">[${ans.answer_text}]</span>`;
-                    qt = qt.replace(`[blank_${ans.drag_target}]`, html);
-                }
-            });
-            this.form.question_text = qt;
+        if (question.question_type === 'drag_and_drop') {
+            this.restoreDragAndDropVisuals();
         }
+    }
+
+    private restoreDragAndDropVisuals() {
+        let text = this.form.question_text;
+        this.form.answers?.forEach((ans) => {
+            if (ans.drag_target) {
+                const html = this.createDropzoneHtml(ans.answer_text || '');
+                text = text.replace(`[blank_${ans.drag_target}]`, html);
+            }
+        });
+        this.form.question_text = text;
+    }
+
+    private createDropzoneHtml(answer: string): string {
+        return `<span class="dnd-dropzone inline-block rounded border border-primary-200 bg-primary-50 px-2 py-1 mx-1 text-xs font-bold text-primary-700 shadow-sm" contenteditable="false" data-answer="${answer}">[${answer}]</span>`;
     }
 }

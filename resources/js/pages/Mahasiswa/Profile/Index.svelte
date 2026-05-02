@@ -34,14 +34,19 @@
     import { ROUTES } from '@/utils/route';
     import EmptyState from '@/components/ui/EmptyState.svelte';
 
-    import type { StudentProfile, Certification } from '@/types';
+    import type { User, LearningPersonalization, Certification } from '@/types';
 
     const {
+        user,
         personalization,
         certifications = [],
-    }: { personalization: StudentProfile | null; certifications: Certification[] } = $props();
+    }: {
+        user: User | null;
+        personalization: LearningPersonalization | null;
+        certifications: Certification[];
+    } = $props();
 
-    const state = untrack(() => new ProfileState(personalization));
+    const state = untrack(() => new ProfileState(user, personalization));
 
     const learningStyleIcon = $derived.by(() => {
         const style = state.personalization?.learning_style;
@@ -132,7 +137,7 @@
 </script>
 
 <App title="Profil Mahasiswa">
-    <div class="space-y-12">
+    <div class="space-y-8">
         <PageHeader
             id="page-header"
             title="Profil Saya"
@@ -141,13 +146,13 @@
 
         <!-- Profile Hero Card -->
         <div id="profile-hero">
-            <Panel rounded="full" class="mb-8 shadow-xl" padding="p-8 md:p-12">
+            <Panel rounded="full" class="mb-8 shadow-xl" padding="p-6 md:p-8 lg:p-10">
                 <div class="flex flex-col items-center gap-10 md:flex-row">
                     <div class="group relative">
                         <div
-                            class="flex h-32 w-32 items-center justify-center overflow-hidden rounded-3xl bg-white shadow-xl"
+                            class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-3xl bg-white shadow-xl"
                         >
-                            <UserCircle size={80} class="text-slate-200" />
+                            <UserCircle size={60} class="text-slate-200" />
                         </div>
                         <div
                             class="absolute -right-2 -bottom-2 flex h-10 w-10 items-center justify-center rounded-2xl border-4 border-slate-900 bg-emerald-500 text-white shadow-xl"
@@ -160,14 +165,17 @@
                         <p
                             class="text-primary-400 mb-2 text-[10px] font-bold tracking-widest uppercase"
                         >
-                            MEMBER SINCE {state.user
-                                ? new Date(state.user.created_at).getFullYear()
-                                : 'N/A'}
+                            MEMBER SINCE
+                            {#if state.profileUser?.created_at}
+                                {new Date(state.profileUser.created_at).getFullYear()}
+                            {:else}
+                                N/A
+                            {/if}
                         </p>
                         <h2
-                            class="mb-4 text-4xl font-bold tracking-tight text-white uppercase md:text-5xl"
+                            class="mb-3 text-3xl font-bold tracking-tight text-white uppercase md:text-4xl"
                         >
-                            {state.user?.name ?? 'GUEST'}
+                            {state.profileUser?.name ?? 'GUEST'}
                         </h2>
                         <div
                             class="flex flex-wrap items-center justify-center gap-4 md:justify-start"
@@ -176,7 +184,7 @@
                                 class="flex items-center gap-2 rounded-xl border-2 border-b-4 border-white/10 bg-white/10 px-4 py-2 text-xs font-bold tracking-wider uppercase shadow-sm backdrop-blur-md"
                             >
                                 <Mail size={14} class="text-primary-400" />
-                                {state.user?.email ?? 'guest@oopedia'}
+                                {state.profileUser?.email ?? 'guest@oopedia'}
                             </div>
                             <div
                                 class="flex items-center gap-2 rounded-xl border-2 border-b-4 border-white/10 bg-white/10 px-4 py-2 text-xs font-bold tracking-wider uppercase shadow-sm backdrop-blur-md"
@@ -235,7 +243,7 @@
                                     {stat.title}
                                 </h3>
                                 <div
-                                    class="font-display mb-2 flex items-center gap-3 text-4xl font-black tracking-tight text-slate-900"
+                                    class="font-display mb-1 flex items-center gap-3 text-3xl font-black tracking-tight text-slate-900"
                                 >
                                     {stat.value}
                                     {#if stat.title === 'Streak'}
@@ -316,7 +324,7 @@
                                         {stat.title}
                                     </h3>
                                     <div
-                                        class="font-display mb-2 text-4xl font-black tracking-tight text-slate-900"
+                                        class="font-display mb-1 text-3xl font-black tracking-tight text-slate-900"
                                     >
                                         {stat.value}
                                     </div>
@@ -448,7 +456,7 @@
                 </h3>
 
                 <div id="profile-settings">
-                    <Card padding="p-8 md:p-12" id="profile-personal-info">
+                    <Card padding="p-6 md:p-10" id="profile-personal-info">
                         {#if state.flash?.success}
                             <Alert variant="success" class="mb-10"
                                 >{(state.flash as any).success}</Alert

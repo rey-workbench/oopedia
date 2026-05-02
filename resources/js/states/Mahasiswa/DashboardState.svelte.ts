@@ -14,7 +14,7 @@ export class DashboardState extends BaseState {
     completed_materials = $state(0);
     in_progress_materials = $state(0);
     total_material_progress = $state(0);
-    total_answered_questions = $state(0);
+    total_answered = $state(0);
     total_correct_questions = $state(0);
     recent_activities = $state<RecentActivity[]>([]);
     all_materials = $state<Material[]>([]);

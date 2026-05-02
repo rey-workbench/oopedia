@@ -1,20 +1,28 @@
 import { FormState } from '@/states/FormState.svelte';
-import type { StudentProfile, ProfileForm } from '@/types';
+import type { User, LearningPersonalization, ProfileForm } from '@/types';
+import { ROUTES } from '@/utils/route';
 
 export class ProfileState extends FormState<ProfileForm> {
-    personalization = $state<StudentProfile | null>(null);
+    profileUser = $state<User | null>(null);
+    personalization = $state<LearningPersonalization | null>(null);
 
-    constructor(personalization: StudentProfile | null) {
-        super({ name: '', email: '', password: '', password_confirmation: '' });
-        this.hydrate({ personalization });
-        if (this.user) {
-            this.form.name = this.user.name ?? '';
-            this.form.email = this.user.email ?? '';
+    constructor(user: User | null, personalization: LearningPersonalization | null) {
+        super({
+            name: '',
+            email: '',
+            password: '',
+            password_confirmation: '',
+        });
+        this.hydrate({ profileUser: user, personalization });
+
+        if (this.profileUser) {
+            this.form.name = this.profileUser.name ?? '';
+            this.form.email = this.profileUser.email ?? '';
         }
     }
 
     submit() {
-        this.submitForm('post', '/mahasiswa/profile', {
+        this.submitForm('post', ROUTES.MAHASISWA.PROFILE.UPDATE, {
             _method: 'PUT',
             onSuccess: () => {
                 this.form.password = '';

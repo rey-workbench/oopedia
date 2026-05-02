@@ -1,41 +1,36 @@
-// =============================================================================
-// OOPedia Unified Type System
-// =============================================================================
+/**
+ * resources/js/types/index.ts
+ * OOPedia Unified Type System — Barrel Export (Modular Version)
+ */
 
+// Core & Primitives
 export * from './core';
-export * from './auth';
-export * from './learning';
-export * from './adaptive';
-export * from './analytics';
-export * from './survey';
-export * from './props';
-export * from './api';
 
-// =============================================================================
-// Helper Types & UI States
-// =============================================================================
+// Models - Adaptive
+export * from './models/adaptive/Core';
+export * from './models/adaptive/Engine';
+export * from './models/adaptive/Analytics';
+export * from './models/adaptive/Editor';
 
-export interface FormStateOptions {
-    isEdit?: boolean;
-    showSuccessToast?: string | boolean;
-    showErrorToast?: boolean;
-}
+// Models - Survey
+export * from './models/survey/Mslq';
+export * from './models/survey/Sus';
+export * from './models/survey/Ueq';
 
-export interface FormSubmitOptions {
-    forceFormData?: boolean;
-    _method?: string;
-    onSuccess?: () => void;
-    onError?: (errors: Record<string, string>) => void;
-    onFinish?: () => void;
-    showSuccessToast?: string | boolean;
-    showErrorToast?: boolean;
-    [key: string]: unknown;
-}
+// Models - Base
+export * from './models/User';
+export * from './models/Material';
+export * from './models/Question';
 
-export interface LevelItem {
-    level: number;
-    status: 'completed' | 'in_progress' | 'locked';
-    question_id?: number;
-    difficulty?: import('./core').DifficultyLevel;
-    [key: string]: unknown;
-}
+// Forms
+export * from './forms/AuthForms';
+
+// API & Domain
+export * from './api/ApiDomain';
+export * from './api/AdminDashboard';
+export * from './api/MahasiswaDashboard';
+
+// Props
+export * from './props/Shared';
+export * from './props/Mahasiswa';
+export * from './props/Admin';

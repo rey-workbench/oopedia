@@ -28,7 +28,7 @@ interface MslqServiceInterface
     /**
      * Get single result detail.
      */
-    public function getResultDetail(string $id): MslqResult;
+    public function getResultDetail(string $id): array;
 
     /**
      * Process and store survey submission.

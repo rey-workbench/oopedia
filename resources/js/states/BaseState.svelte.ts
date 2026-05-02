@@ -25,6 +25,14 @@ export class BaseState {
                 {} as Record<string, unknown>
             );
 
+        // Standard Laravel Resource Unwrapping logic for Svelte states
+        Object.keys(filteredData).forEach((key) => {
+            const value = filteredData[key];
+            if (value && typeof value === 'object' && value !== null && 'data' in value && !Array.isArray(value)) {
+                filteredData[key] = (value as { data: any }).data;
+            }
+        });
+
         Object.assign(this, filteredData);
     }
 

@@ -10,6 +10,9 @@ use App\Contracts\Services\UserServiceInterface;
 use App\DTOs\User\ProfileUpdateDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\UpdateProfileRequest;
+use App\Http\Resources\CertificateResource;
+use App\Http\Resources\MaterialResource;
+use App\Http\Resources\UserResource;
 use App\Models\MslqResult;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -78,13 +81,16 @@ final class ProfileController extends Controller
                     'type'           => $type,
                     'issued_at'      => null,
                 ];
-            })
-            ->values()
-            ->all();
+            });
 
         return $this->render(
             'Mahasiswa/Profile/Index',
-            ['materials' => $materials, 'user' => $user, 'personalization' => $personalization, 'certifications' => $certifications],
+            [
+                'materials'       => MaterialResource::collection($materials)->resolve(),
+                'user'            => new UserResource($user)->resolve(),
+                'personalization' => $personalization,
+                'certifications'  => CertificateResource::collection($certifications)->resolve(),
+            ],
         );
     }
 

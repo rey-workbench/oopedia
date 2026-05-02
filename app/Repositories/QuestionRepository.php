@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Enums\Lms\QuestionDifficulty;
+use App\Enums\Lms\QuestionType;
 use App\Models\Question;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -91,5 +92,14 @@ final class QuestionRepository implements QuestionRepositoryInterface
         return Question::where('material_id', '=', $materialId)
             ->where('difficulty', '=', $questionDifficulty->value)
             ->count('*');
+    }
+
+    public function getRandomMultipleChoiceFromOtherMaterials(string $excludeMaterialId): ?Question
+    {
+        return Question::with('answers')
+            ->where('material_id', '!=', $excludeMaterialId)
+            ->where('question_type', '=', QuestionType::RADIO_BUTTON->value)
+            ->inRandomOrder()
+            ->first();
     }
 }

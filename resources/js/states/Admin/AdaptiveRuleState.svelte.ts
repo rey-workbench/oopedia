@@ -6,6 +6,7 @@ import type {
     AdaptiveRuleTriggerStat,
     AdaptiveFact,
     AdaptiveAction,
+    AdaptiveDecisionTree,
 } from '@/types';
 
 export class AdaptiveRuleState extends BaseState {
@@ -16,7 +17,7 @@ export class AdaptiveRuleState extends BaseState {
     adaptive_state_distribution = $state<AdaptiveStateDistribution[]>([]);
     recent_triggers = $state<AdaptiveTriggerItem[]>([]);
     rule_triggers_stats = $state<AdaptiveRuleTriggerStat[]>([]);
-    decision_tree = $state<any>(null);
+    decision_tree = $state<AdaptiveDecisionTree | null>(null);
     all_facts = $state<AdaptiveFact[]>([]);
     all_actions = $state<AdaptiveAction[]>([]);
 

@@ -1,39 +1,35 @@
 import { FormState } from '@/states/FormState.svelte';
 import { router } from '@inertiajs/svelte';
 import { ROUTES } from '@/utils/route';
-
-export interface MslqAnswerInput {
-    question_id: string;
-    value: number | null;
-}
-
-export interface MslqForm {
-    nim: string;
-    class: string;
-    answers: MslqAnswerInput[];
-}
+import type { MslqForm, MslqQuestion } from '@/types';
 
 export class MslqSurveyState extends FormState<MslqForm> {
-    questions = $state<any[]>([]);
+    questions = $state<MslqQuestion[]>([]);
 
-    constructor(questions: any[]) {
-        const initialAnswers = questions.map((q) => ({
-            question_id: q.id,
-            value: null,
-        }));
+    constructor(questions: MslqQuestion[]) {
+        super(MslqSurveyState.createInitialFields(questions));
+        this.hydrate({ questions });
+    }
 
-        super({
+    private static createInitialFields(questions: MslqQuestion[]): MslqForm {
+        return {
             nim: '',
             class: '',
-            answers: initialAnswers,
-        });
-        this.hydrate({ questions });
+            answers: questions.map((q) => ({
+                question_id: q.id,
+                value: null,
+            })),
+        };
     }
 
     get progress() {
         const total = this.form.answers.length;
-        const filled = this.form.answers.filter((a) => a.value !== null).length;
-        return (filled / total) * 100;
+        if (total === 0) return 0;
+
+        const filledCount = this.form.answers.filter(
+            (a: { value: number | null }) => a.value !== null
+        ).length;
+        return (filledCount / total) * 100;
     }
 
     submit() {

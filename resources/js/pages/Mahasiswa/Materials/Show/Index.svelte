@@ -19,7 +19,7 @@
 </script>
 
 <App title={state.material?.title || 'Material'}>
-    <div class="space-y-12">
+    <div class="space-y-8">
         <PageHeader id="page-header" title={state.material?.title || material.title} />
 
         <!-- Adaptive System Alert -->
@@ -28,7 +28,7 @@
                 <Card class="border-primary-500 bg-primary-50 border-l-4">
                     <div class="flex items-start gap-4">
                         <div
-                            class="bg-primary-100 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl"
+                            class="bg-primary-100 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
                         >
                             <Info size={24} class="text-primary-600" />
                         </div>
@@ -63,10 +63,10 @@
         <div id="quiz-entry-section">
             <Card class="border-t-primary-500 border-t-4">
                 <div class="flex flex-col items-center justify-between gap-8 p-6 md:flex-row">
-                    <div class="space-y-2">
-                        <h2 class="text-2xl font-bold tracking-widest text-slate-900">
+                    <div class="space-y-8">
+                        <h3 class="mb-4 text-xl font-bold tracking-widest text-slate-900 uppercase">
                             Evaluasi & Latihan
-                        </h2>
+                        </h3>
                         <p class="font-medium text-slate-500">
                             Uji pemahaman Anda melalui instrumen evaluasi adaptif.
                         </p>

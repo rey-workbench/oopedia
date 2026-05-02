@@ -7,11 +7,16 @@ namespace App\Services\Adaptive;
 use App\Contracts\Repositories\AdaptiveExecutionLogRepositoryInterface;
 use App\Contracts\Repositories\AdaptiveRuleRepositoryInterface;
 use App\Contracts\Services\AdaptiveAnalyticsServiceInterface;
+use App\Http\Resources\AdaptiveActionResource;
+use App\Http\Resources\AdaptiveExecutionLogResource;
+use App\Http\Resources\AdaptiveFactResource;
+use App\Http\Resources\AdaptiveRuleResource;
 use App\Models\AdaptiveAction;
 use App\Models\AdaptiveFact;
 use App\Models\AdaptiveRule;
 use App\Models\StudentState;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection as SupportCollection;
 
 final readonly class AdaptiveAnalyticsService implements AdaptiveAnalyticsServiceInterface
 {
@@ -31,17 +36,15 @@ final readonly class AdaptiveAnalyticsService implements AdaptiveAnalyticsServic
 
     public function getRecentTriggers(int $limit = 10): array
     {
-        return $this->adaptiveExecutionLogRepository->getRecent($limit)
-            ->map(fn ($log): array => [
-                'id'             => $log->id,
-                'rule_id'        => $log->rule_id,
-                'rule_name'      => AdaptiveRule::where('id', $log->rule_id)->value('name') ?? $log->rule_id,
-                'action'         => $log->action_id,
-                'user_name'      => $log->user->name                          ?? 'System',
-                'material_title' => $log->execution_context['material_title'] ?? 'General',
-                'created_at'     => $log->created_at->diffForHumans(),
-            ])
-            ->all();
+        $actions = AdaptiveAction::all()->keyBy('id');
+        $logs    = $this->adaptiveExecutionLogRepository->getRecent($limit);
+
+        return AdaptiveExecutionLogResource::collection($logs->map(function ($log) use ($actions): Model {
+            $log->rule_name   = AdaptiveRule::where('id', $log->rule_id)->value('name') ?? $log->rule_id;
+            $log->action_name = $actions->get($log->action_id)?->name                   ?? $log->action_id;
+
+            return $log;
+        }))->resolve();
     }
 
     public function getRuleTriggerStats(): array
@@ -114,34 +117,27 @@ final readonly class AdaptiveAnalyticsService implements AdaptiveAnalyticsServic
         // Group by Name (Diagnosis) from DB
         $grouped = $rules->groupBy('name');
 
+        AdaptiveAction::all()->keyBy('id');
+
         $result = [];
         foreach ($grouped as $diagnosisName => $ruleList) {
             $result[] = [
                 'diagnosis_name' => $diagnosisName ?? 'Uncategorized',
                 'count'          => $ruleList->count(),
-                'rules'          => $ruleList->map(fn ($rule): array => [
-                    'id'                => $rule->id,
-                    'name'              => $rule->name,
-                    'recommendation'    => $rule->recommendation,
-                    'priority'          => $rule->priority,
-                    'actions'           => $rule->getAttribute('actions'),
-                    'required_fact_ids' => $rule->required_fact_ids,
-                    'deduced_fact_ids'  => $rule->deduced_fact_ids,
-                    'is_active'         => $rule->is_active,
-                ]),
+                'rules'          => AdaptiveRuleResource::collection($ruleList)->resolve(),
             ];
         }
 
         return $result;
     }
 
-    public function getAllFacts(): Collection
+    public function getAllFacts(): SupportCollection
     {
-        return AdaptiveFact::select(['id', 'name', 'category'])->get();
+        return collect(AdaptiveFactResource::collection(AdaptiveFact::select(['id', 'name', 'category'])->get())->resolve());
     }
 
-    public function getAllActions(): Collection
+    public function getAllActions(): SupportCollection
     {
-        return AdaptiveAction::select(['id', 'name', 'description', 'variant'])->get();
+        return collect(AdaptiveActionResource::collection(AdaptiveAction::select(['id', 'name', 'description', 'variant'])->get())->resolve());
     }
 }

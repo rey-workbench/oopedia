@@ -214,7 +214,7 @@
                                         <div class="h-1 w-1 rounded-full bg-emerald-500"></div>
                                         <span
                                             class="text-[10px] font-black text-emerald-700 uppercase"
-                                            >{action.id}</span
+                                            >{action.name}</span
                                         >
                                     </div>
                                 {/each}
@@ -392,15 +392,11 @@
                                             <span>{trigger.rule_name}</span>
                                         </div>
                                     </div>
-                                    <div class="flex flex-wrap gap-2">
-                                        {#each (trigger.action || '').split(', ') as actionId}
-                                            <div
-                                                class="flex items-center gap-1 rounded-full border border-amber-200 px-2 py-0.5 text-[9px] font-black text-amber-600"
-                                            >
-                                                <Target size={10} />
-                                                <span>{actionId}</span>
-                                            </div>
-                                        {/each}
+                                    <div
+                                        class="flex items-center gap-1 rounded-full border border-amber-200 px-2 py-0.5 text-[9px] font-black text-amber-600"
+                                    >
+                                        <Target size={10} />
+                                        <span>{trigger.action_name}</span>
                                     </div>
                                 </div>
                             </div>

@@ -8,6 +8,7 @@ use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Contracts\Services\UserServiceInterface;
 use App\Enums\User\RoleName;
 use App\Exceptions\Domain\UserNotFoundException;
+use App\Http\Resources\UserResource;
 use App\Mail\AdminApproved;
 use App\Models\Role;
 use App\Models\User;
@@ -27,14 +28,18 @@ final readonly class UserService implements UserServiceInterface
         public UserRepositoryInterface $userRepo,
     ) {}
 
-    public function getUserById(string $id): ?User
+    public function getUserById(string $id): ?array
     {
-        return $this->userRepo->find($id);
+        $user = $this->userRepo->find($id);
+
+        return $user instanceof User ? new UserResource($user)->resolve() : null;
     }
 
     public function getAdmins(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
-        return $this->userRepo->getStudentsWithRole(RoleName::DOSEN->value, $search, $perPage);
+        $paginator = $this->userRepo->getStudentsWithRole(RoleName::DOSEN->value, $search, $perPage);
+
+        return $paginator->through(fn ($user) => new UserResource($user)->resolve());
     }
 
     public function createAdmin(array $data): User

@@ -30,17 +30,17 @@
     aria-valuenow={Math.round(percentage)}
 >
     <div
-        class={`relative h-full rounded-full border-b-6 border-black/15 shadow-sm transition-all duration-1000 cubic-bezier(0.34, 1.56, 0.64, 1) ${bgClass}`}
+        class={`cubic-bezier(0.34, 1.56, 0.64, 1) relative h-full rounded-full border-b-6 border-black/15 shadow-sm transition-all duration-1000 ${bgClass}`}
         style="width: {percentage}%"
     >
         <!-- Duo Gloss Effect -->
         <div
             class="absolute top-[10%] left-[1.5%] h-[25%] w-[97%] rounded-full bg-white/40 blur-[0.3px]"
         ></div>
-        
+
         <!-- Animated Pulse at the tip -->
         {#if percentage > 0 && percentage < 100}
-            <div class="absolute right-0 top-0 h-full w-2 bg-white/30 blur-sm animate-pulse"></div>
+            <div class="absolute top-0 right-0 h-full w-2 animate-pulse bg-white/30 blur-sm"></div>
         {/if}
     </div>
 </div>

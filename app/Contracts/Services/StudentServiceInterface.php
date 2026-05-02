@@ -12,7 +12,7 @@ interface StudentServiceInterface
 {
     public function getStudentsList(?string $search = null, int $perPage = 10): LengthAwarePaginator;
 
-    public function getStudentById(string $id): ?User;
+    public function getStudentById(string $id): ?array;
 
     public function createStudent(array $data): User;
 
@@ -24,7 +24,7 @@ interface StudentServiceInterface
 
     public function getStudentsWithProgress(?string $search = null, int $perPage = 10): LengthAwarePaginator;
 
-    public function getStudentProgressDetail(User $user): array;
+    public function getStudentProgressDetail(string $userId): ?array;
 
     public function importStudentsFromFile(UploadedFile $uploadedFile): array;
 

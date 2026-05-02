@@ -6,8 +6,9 @@ namespace App\Services\Analytics;
 
 use App\Contracts\Repositories\SusResultRepositoryInterface;
 use App\Contracts\Services\SusResultServiceInterface;
+use App\Http\Resources\SusResultResource;
 use App\Models\SusResult;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 
 final readonly class SusResultService implements SusResultServiceInterface
 {
@@ -15,10 +16,11 @@ final readonly class SusResultService implements SusResultServiceInterface
         private SusResultRepositoryInterface $susResultRepository,
     ) {}
 
-    /** @return Collection<int, SusResult> */
-    public function getAllResults(?string $class = null): Collection
+    public function getAllResults(?string $class = null): SupportCollection
     {
-        return $this->susResultRepository->getAllWithUser($class);
+        return collect(SusResultResource::collection(
+            $this->susResultRepository->getAllWithUser($class),
+        )->resolve());
     }
 
     /** @return array<string> */
@@ -27,9 +29,15 @@ final readonly class SusResultService implements SusResultServiceInterface
         return $this->susResultRepository->getDistinctClasses();
     }
 
-    public function getStudentDetail(string $userId): ?SusResult
+    public function getStudentDetail(string $userId): ?array
     {
-        return $this->susResultRepository->findByUserId($userId);
+        $result = $this->susResultRepository->findByUserId($userId);
+
+        if (! $result instanceof SusResult) {
+            return null;
+        }
+
+        return new SusResultResource($result)->resolve();
     }
 
     public function hasUserSubmitted(string $userId): bool
@@ -71,7 +79,7 @@ final readonly class SusResultService implements SusResultServiceInterface
     }
 
     /** @return array<string, mixed> */
-    public function calculateGlobalMetrics(Collection $results): array
+    public function calculateGlobalMetrics(SupportCollection $results): array
     {
         if ($results->isEmpty()) {
             return [
@@ -79,6 +87,8 @@ final readonly class SusResultService implements SusResultServiceInterface
                 'total_responses' => 0,
                 'grade'           => 'N/A',
                 'adjective'       => 'N/A',
+                'acceptability'   => 'N/A',
+                'items'           => [],
             ];
         }
 
@@ -95,7 +105,7 @@ final readonly class SusResultService implements SusResultServiceInterface
         ];
     }
 
-    private function calculateAveragePerItem(Collection $results): array
+    private function calculateAveragePerItem(SupportCollection $results): array
     {
         $averages = [];
         for ($i = 1; $i <= 10; $i++) {

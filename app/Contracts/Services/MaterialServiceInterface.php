@@ -7,7 +7,7 @@ namespace App\Contracts\Services;
 use App\DTOs\Material\MaterialCreateDTO;
 use App\DTOs\Material\MaterialUpdateDTO;
 use App\Models\Material;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
 interface MaterialServiceInterface
 {
@@ -20,9 +20,9 @@ interface MaterialServiceInterface
 
     public function getAllOrdered(): Collection;
 
-    public function getMaterialById(string $id): ?Material;
+    public function getMaterialById(string $id): ?array;
 
-    public function getMaterialWithQuestionsAndAnswers(string $id): ?Material;
+    public function getMaterialWithQuestionsAndAnswers(string $id): ?array;
 
     public function createMaterial(MaterialCreateDTO $materialCreateDTO): Material;
 

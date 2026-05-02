@@ -90,18 +90,18 @@ final class MslqController extends Controller
             );
 
             foreach ($results as $result) {
-                $scores = $result->scores_by_scale;
+                $scores = $result['scores_by_scale'];
                 fputcsv(
                     $file,
                     [
-                        $result->id,
-                        $result->nim,
-                        $result->user?->name  ?? 'Tidak ada',
-                        $result->user?->email ?? 'Tidak ada',
-                        $result->class,
-                        $result->created_at->format('d/m/Y H:i'),
-                        $result->total_motivation,
-                        $result->total_strategy,
+                        $result['id'],
+                        $result['nim'],
+                        $result['user']['name']  ?? 'Tidak ada',
+                        $result['user']['email'] ?? 'Tidak ada',
+                        $result['class'],
+                        $result['created_at'],
+                        $result['total_motivation'],
+                        $result['total_strategy'],
                         $scores[MslqScale::INTRINSIC_GOAL_ORIENTATION->value]             ?? 0,
                         $scores[MslqScale::EXTRINSIC_GOAL_ORIENTATION->value]             ?? 0,
                         $scores[MslqScale::TASK_VALUE->value]                             ?? 0,

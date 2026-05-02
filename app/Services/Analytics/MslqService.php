@@ -7,6 +7,7 @@ namespace App\Services\Analytics;
 use App\Contracts\Repositories\MslqRepositoryInterface;
 use App\Contracts\Services\MslqServiceInterface;
 use App\Enums\Lms\MslqCategory;
+use App\Http\Resources\MslqResultResource;
 use App\Models\MslqAnswer;
 use App\Models\MslqResult;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -21,7 +22,8 @@ final readonly class MslqService implements MslqServiceInterface
 
     public function getAdminResults(?string $class = null): LengthAwarePaginator
     {
-        return $this->mslqRepository->getAll($class);
+        return $this->mslqRepository->getAll($class)
+            ->through(fn ($result) => new MslqResultResource($result)->resolve());
     }
 
     public function getDistinctClasses(): Collection
@@ -66,9 +68,12 @@ final readonly class MslqService implements MslqServiceInterface
         ];
     }
 
-    public function getResultDetail(string $id): MslqResult
+    /** @return array<string, mixed> */
+    public function getResultDetail(string $id): array
     {
-        return $this->mslqRepository->findWithRelations($id);
+        $result = $this->mslqRepository->findWithRelations($id);
+
+        return new MslqResultResource($result)->resolve();
     }
 
     public function storeSubmission(array $data, int|string $userId, string $nim, string $class): MslqResult
@@ -100,7 +105,9 @@ final readonly class MslqService implements MslqServiceInterface
 
     public function getResultsForExport(?string $class = null): Collection
     {
-        return $this->mslqRepository->getAllForCalculation($class);
+        return collect(MslqResultResource::collection(
+            $this->mslqRepository->getAllForCalculation($class),
+        )->resolve());
     }
 
     private function calculateScores(MslqResult $mslqResult): array

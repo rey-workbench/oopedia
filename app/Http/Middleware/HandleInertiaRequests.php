@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Contracts\Services\MaterialServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -29,14 +30,7 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $user ? [
-                    'id'    => $user->id,
-                    'name'  => $user->name,
-                    'email' => $user->email,
-                    'role'  => [
-                        'role_name' => $user->role?->role_name,
-                    ],
-                ] : null,
+                'user' => $user ? new UserResource($user)->resolve() : null,
             ],
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),

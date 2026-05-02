@@ -7,20 +7,42 @@
         answerText = $bindable(''),
         disabled = false,
         showResult = false,
+        showGuidance = false,
         isOverallCorrect = false,
     }: {
         question?: Question;
         answerText: string;
         disabled?: boolean;
         showResult?: boolean;
+        showGuidance?: boolean;
         isOverallCorrect?: boolean;
     } = $props();
+
+    let wordBank = $derived.by(() => {
+        if (!showGuidance || !question?.answers) return [];
+
+        const corrects = (question.answers || [])
+            .filter((a) => a.is_correct)
+            .map((a) => a.answer_text)
+            .filter(Boolean);
+        const wrongs = (question.answers || [])
+            .filter((a) => !a.is_correct)
+            .map((a) => a.answer_text)
+            .filter(Boolean);
+
+        // Return unique list of correct answers + 1 wrong if exists
+        const list = [...new Set([...corrects, ...(wrongs.length > 0 ? [wrongs[0]] : [])])];
+        return list.sort((a, b) => (a ?? '').localeCompare(b ?? ''));
+    });
 </script>
 
 <div class="space-y-6">
     <!-- Question block: dark terminal style, same as MultipleChoice -->
     {#if question?.question_text}
-        <div class="relative select-none overflow-hidden rounded-3xl bg-slate-900 p-8 shadow-xl" draggable="false">
+        <div
+            class="relative overflow-hidden rounded-3xl bg-slate-900 p-8 shadow-xl select-none"
+            draggable="false"
+        >
             <div
                 class="via-primary-500/60 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent"
             ></div>
@@ -41,9 +63,7 @@
                 </span>
             </div>
 
-            <div
-                class="relative z-10 text-lg leading-relaxed font-semibold text-slate-100"
-            >
+            <div class="relative z-10 text-lg leading-relaxed font-semibold text-slate-100">
                 {@html question.question_text}
             </div>
         </div>
@@ -63,14 +83,14 @@
                 id="fill_in_the_blank_answer"
                 type="text"
                 bind:value={answerText}
-                disabled={disabled}
-                placeholder={showResult ? "Hasil Jawaban" : "Ketik jawaban Anda di sini..."}
+                {disabled}
+                placeholder={showResult ? 'Hasil Jawaban' : 'Ketik jawaban Anda di sini...'}
                 class="w-full rounded-2xl border-2 border-b-6 px-6 py-5 text-lg font-bold shadow-sm transition-all duration-150 outline-none placeholder:text-slate-300
-                {showResult 
+                {showResult
                     ? isOverallCorrect
                         ? 'border-emerald-600 border-b-emerald-700 bg-emerald-50 text-emerald-900'
                         : 'border-rose-600 border-b-rose-700 bg-rose-50 text-rose-900'
-                    : 'border-slate-200 bg-white text-slate-900 focus:border-primary-500 focus:bg-primary-50/10 focus:translate-y-[2px] focus:border-b-4'}"
+                    : 'focus:border-primary-500 focus:bg-primary-50/10 border-slate-200 bg-white text-slate-900 focus:translate-y-[2px] focus:border-b-4'}"
             />
             <!-- No icon when result, as requested -->
             {#if !showResult && answerText?.length > 0}
@@ -79,6 +99,27 @@
                 ></div>
             {/if}
         </div>
+
+        {#if showGuidance && wordBank.length > 0}
+            <div
+                class="animate-in fade-in slide-in-from-top-2 mt-4 flex flex-wrap gap-2 duration-300"
+            >
+                <span
+                    class="mr-1 self-center text-[10px] font-black tracking-widest text-slate-400 uppercase"
+                    >Bank Kata:</span
+                >
+                {#each wordBank as word}
+                    <button
+                        type="button"
+                        onclick={() => !disabled && (answerText = word ?? '')}
+                        {disabled}
+                        class="press-active hover:border-primary-300 hover:bg-primary-50 rounded-xl border-2 border-slate-200 bg-white px-3 py-1.5 text-xs font-black text-slate-700 shadow-sm transition-all disabled:opacity-50"
+                    >
+                        {word}
+                    </button>
+                {/each}
+            </div>
+        {/if}
 
         <p class="px-2 text-xs font-bold tracking-widest text-slate-300 uppercase">
             Masukkan teks jawaban dengan tepat

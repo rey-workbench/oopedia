@@ -1,34 +1,29 @@
 import { BaseState } from '@/states/BaseState.svelte';
-import type { AdaptiveFact, AdaptiveAction } from '@/types';
+import type {
+    AdaptiveFact,
+    AdaptiveAction,
+    AdaptiveRuleForm,
+    AdaptiveRuleFactItem,
+    AdaptiveRuleDeductionItem,
+} from '@/types';
 
+/**
+ * Adaptive Rule Editor State
+ * Manages the complex drag-and-drop rule building interface for admins.
+ */
 export class AdaptiveRuleEditorState extends BaseState {
+    // --- Data Repositories ---
     all_facts = $state<AdaptiveFact[]>([]);
     all_actions = $state<AdaptiveAction[]>([]);
     isEdit = $state(false);
 
-    // UI states
+    // --- UI Interactive State ---
     draggingSourceType = $state<string | null>(null);
     isDraggingOver = $state<string | null>(null);
     invalidDropZone = $state<string | null>(null);
     selectedMetadataKey = $state<string>('');
 
-    constructor(data: {
-        all_facts: AdaptiveFact[];
-        all_actions: AdaptiveAction[];
-        isEdit: boolean;
-    }) {
-        super();
-        this.all_facts = data.all_facts;
-        this.all_actions = data.all_actions;
-        this.isEdit = data.isEdit;
-
-        // Default selected metadata key
-        const firstKey = this.METADATA_KEYS[0];
-        if (firstKey) {
-            this.selectedMetadataKey = firstKey.value;
-        }
-    }
-
+    // --- Constants & Config ---
     readonly CONDITION_KEYS = [
         { value: 'accuracy', label: 'Akurasi' },
         { value: 'hints_used', label: 'Bantuan' },
@@ -71,9 +66,36 @@ export class AdaptiveRuleEditorState extends BaseState {
         { value: 'unlock_advanced', label: 'Unlock Advanced (Boolean)' },
     ];
 
-    getNextAutoId(prefix: 'F' | 'V' | 'R', currentList: any[], dbList: any[] = []) {
+    constructor(data: {
+        all_facts: AdaptiveFact[];
+        all_actions: AdaptiveAction[];
+        isEdit: boolean;
+    }) {
+        super();
+        this.all_facts = data.all_facts;
+        this.all_actions = data.all_actions;
+        this.isEdit = data.isEdit;
+
+        this.initializeDefaultMetadataKey();
+    }
+
+    private initializeDefaultMetadataKey() {
+        const firstKey = this.METADATA_KEYS[0];
+        if (firstKey) {
+            this.selectedMetadataKey = firstKey.value;
+        }
+    }
+
+    // --- ID Generation Logic ---
+
+    public getNextAutoId(
+        prefix: 'F' | 'V' | 'R',
+        currentList: (AdaptiveRuleFactItem | AdaptiveRuleDeductionItem | string)[],
+        dbList: (AdaptiveFact | AdaptiveAction)[] = []
+    ): string {
         const pattern = new RegExp(`^${prefix}(\\d+)$`);
-        const extractNums = (list: any[]) =>
+
+        const extractSequenceNumbers = (list: any[]) =>
             list
                 .map((item) => {
                     const id = typeof item === 'string' ? item : item.id || item.key;
@@ -82,154 +104,176 @@ export class AdaptiveRuleEditorState extends BaseState {
                 })
                 .filter((n) => !isNaN(n));
 
-        const nums = [...extractNums(currentList), ...extractNums(dbList)];
-        const maxNum = nums.length > 0 ? Math.max(...nums) : 0;
+        const existingNumbers = [
+            ...extractSequenceNumbers(currentList),
+            ...extractSequenceNumbers(dbList),
+        ];
+        const maxNum = existingNumbers.length > 0 ? Math.max(...existingNumbers) : 0;
+
         return `${prefix}${String(maxNum + 1).padStart(2, '0')}`;
     }
 
-    addCondition(form: any, factId = '') {
+    // --- Rule Building Methods ---
+
+    public addCondition(form: AdaptiveRuleForm, factId = '') {
         const finalId = factId || this.getNextAutoId('F', form.facts, this.all_facts);
         const existingFact = this.all_facts?.find((f) => f.id === finalId);
 
-        let parsedOp = '==';
-        let parsedVal: any = 1;
-        let parsedKey = finalId;
-        let parsedName = existingFact?.name || '';
-
-        if (existingFact && existingFact.logic) {
-            try {
-                const logicData =
-                    typeof existingFact.logic === 'string'
-                        ? JSON.parse(existingFact.logic)
-                        : existingFact.logic;
-                if (logicData.op) parsedOp = logicData.op;
-                if (logicData.val !== undefined) parsedVal = logicData.val;
-                if (logicData.key) parsedKey = logicData.key;
-            } catch (_e) {}
-        }
+        const logic = this.parseFactLogic(existingFact);
 
         form.facts = [
             ...form.facts,
             {
                 id: finalId,
-                key: parsedKey,
-                name: parsedName,
-                operator: parsedOp,
-                value: parsedVal,
+                key: logic.key || finalId,
+                name: existingFact?.name || '',
+                operator: logic.op || '==',
+                value: logic.val !== undefined ? logic.val : 1,
                 isManual: !factId,
             },
         ];
     }
 
-    addDiagnosis(form: any, id = '') {
+    private parseFactLogic(fact?: AdaptiveFact): { op?: string; val?: any; key?: string } {
+        if (!fact?.logic) return {};
+
+        try {
+            return typeof fact.logic === 'string' ? JSON.parse(fact.logic) : fact.logic;
+        } catch {
+            return {};
+        }
+    }
+
+    public addDiagnosis(form: AdaptiveRuleForm, id = '') {
         const finalId = id || this.getNextAutoId('V', form.deduced_facts, this.all_facts);
         const existing = this.all_facts?.find((f) => f.id === finalId);
 
-        if (!form.deduced_facts.find((f: any) => f.id === finalId)) {
-            form.deduced_facts = [
-                ...form.deduced_facts,
-                {
-                    id: finalId,
-                    name: existing?.name || 'New Virtual Fact',
-                    isManual: !id,
-                },
-            ];
-        }
+        const alreadyExists = form.deduced_facts.some((f) => f.id === finalId);
+        if (alreadyExists) return;
+
+        form.deduced_facts = [
+            ...form.deduced_facts,
+            {
+                id: finalId,
+                name: existing?.name || 'New Virtual Fact',
+                isManual: !id,
+            },
+        ];
     }
 
-    addAction(form: any, id: string) {
-        if (!form.actions.find((a: any) => a.id === id)) {
-            form.actions = [...form.actions, { id, metadata: {} }];
-        } else {
-            this.invalidDropZone = 'action';
-            setTimeout(() => (this.invalidDropZone = null), 400);
+    public addAction(form: AdaptiveRuleForm, id: string) {
+        const alreadyExists = form.actions.some((a) => a.id === id);
+        if (alreadyExists) {
+            this.triggerInvalidDropFeedback('action');
+            return;
         }
+
+        form.actions = [...form.actions, { id, metadata: {} }];
     }
 
-    addActionMetadata(form: any, index: number) {
+    private triggerInvalidDropFeedback(zone: string) {
+        this.invalidDropZone = zone;
+        setTimeout(() => (this.invalidDropZone = null), 400);
+    }
+
+    public addActionMetadata(form: AdaptiveRuleForm, index: number) {
+        const action = form.actions[index];
+        if (!action) return;
+
         const key = this.selectedMetadataKey;
         if (!key) return;
-        if (form.actions[index].metadata[key] !== undefined) {
+
+        if (action.metadata[key] !== undefined) {
             alert('Parameter ini sudah ada untuk aksi ini.');
             return;
         }
-        form.actions[index].metadata[key] = '';
+
+        action.metadata[key] = '';
     }
 
-    removeActionMetadata(form: any, index: number, key: string) {
-        const { [key]: _removed, ...rest } = form.actions[index].metadata;
-        form.actions[index].metadata = rest;
+    public removeActionMetadata(form: AdaptiveRuleForm, index: number, key: string) {
+        const action = form.actions[index];
+        if (!action) return;
+
+        const { [key]: _removed, ...remainingMetadata } = action.metadata;
+        action.metadata = remainingMetadata;
     }
 
-    handleDragStart(e: DragEvent, id: string, type: string) {
+    // --- Drag and Drop Handling ---
+
+    public handleDragStart(e: DragEvent, id: string, type: string) {
         if (!e.dataTransfer) return;
+
         const dragData = JSON.stringify({ id, type });
         e.dataTransfer.setData('application/json', dragData);
         e.dataTransfer.effectAllowed = 'copy';
         this.draggingSourceType = type;
     }
 
-    handleDrop(e: DragEvent, zone: 'condition' | 'deduction' | 'action', form: any) {
+    public handleDrop(
+        e: DragEvent,
+        zone: 'condition' | 'deduction' | 'action',
+        form: AdaptiveRuleForm
+    ) {
         e.preventDefault();
-        this.draggingSourceType = null;
-        this.isDraggingOver = null;
+        this.resetDragState();
 
         if (!e.dataTransfer) return;
 
         try {
             const rawData = e.dataTransfer.getData('application/json');
             if (!rawData) return;
-            const dragData = JSON.parse(rawData);
-            const { id, type } = dragData;
 
-            if (zone === 'action' && type === 'action') {
-                this.addAction(form, id);
-            } else if (zone === 'condition' && type === 'fact') {
-                this.addCondition(form, id);
-            } else if (zone === 'deduction' && type === 'virtual-fact') {
-                this.addDiagnosis(form, id);
-            } else {
-                this.invalidDropZone = zone;
-                setTimeout(() => (this.invalidDropZone = null), 400);
-            }
-        } catch (_err) {}
+            const { id, type } = JSON.parse(rawData);
+            this.processDropAction(zone, type, id, form);
+        } catch {
+            // Silently fail on invalid drag data
+        }
     }
 
-    parseInitialFacts(factIds: string[]) {
-        return factIds.map((factId) => {
-            const existing = this.all_facts.find((f) => f.id === factId);
-            let parsedOp = '==';
-            let parsedVal: any = 1;
-            let parsedKey = factId;
-            let parsedName = existing?.name || '';
+    private resetDragState() {
+        this.draggingSourceType = null;
+        this.isDraggingOver = null;
+    }
 
-            if (existing && existing.logic) {
-                try {
-                    const logicData =
-                        typeof existing.logic === 'string'
-                            ? JSON.parse(existing.logic)
-                            : existing.logic;
-                    if (logicData.op) parsedOp = logicData.op;
-                    if (logicData.val !== undefined) parsedVal = logicData.val;
-                    if (logicData.key) parsedKey = logicData.key;
-                } catch (_e) {}
-            }
+    private processDropAction(zone: string, type: string, id: string, form: AdaptiveRuleForm) {
+        if (zone === 'action' && type === 'action') {
+            this.addAction(form, id);
+        } else if (zone === 'condition' && type === 'fact') {
+            this.addCondition(form, id);
+        } else if (zone === 'deduction' && type === 'virtual-fact') {
+            this.addDiagnosis(form, id);
+        } else {
+            this.triggerInvalidDropFeedback(zone);
+        }
+    }
+
+    // --- Data Parsing Helpers ---
+
+    public parseInitialFacts(factIds: string[]): AdaptiveRuleFactItem[] {
+        return factIds.map((factId) => {
+            const fact = this.all_facts.find((f) => f.id === factId);
+            const logic = this.parseFactLogic(fact);
 
             return {
                 id: factId,
-                key: parsedKey,
-                name: parsedName,
-                operator: parsedOp,
-                value: parsedVal,
+                key: logic.key || factId,
+                name: fact?.name || '',
+                operator: logic.op || '==',
+                value: logic.val !== undefined ? logic.val : 1,
                 isManual: false,
             };
         });
     }
 
-    parseInitialDeductions(factIds: string[]) {
+    public parseInitialDeductions(factIds: string[]): AdaptiveRuleDeductionItem[] {
         return factIds.map((factId) => {
-            const existing = this.all_facts.find((f) => f.id === factId);
-            return { id: factId, name: existing?.name || '', isManual: false };
+            const fact = this.all_facts.find((f) => f.id === factId);
+            return {
+                id: factId,
+                name: fact?.name || '',
+                isManual: false,
+            };
         });
     }
 }

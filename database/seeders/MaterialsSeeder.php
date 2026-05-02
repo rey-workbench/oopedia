@@ -13,7 +13,7 @@ class MaterialsSeeder extends Seeder
 
         $materials = [
             [
-                'title' => 'Paradigma OOP vs Struktural',
+                'title'   => 'Paradigma OOP vs Struktural',
                 'content' => '<h2>1. Evolusi Paradigma Pemrograman</h2>
                 <p>Dalam dunia rekayasa perangkat lunak, paradigma pemrograman menentukan bagaimana kita berpikir tentang masalah. Mari kita bandingkan dua raksasa: <strong>Struktural</strong> dan <strong>Berorientasi Objek</strong>.</p>
                 
@@ -41,7 +41,7 @@ class MaterialsSeeder extends Seeder
                 'module_id' => '1',
             ],
             [
-                'title' => 'Anatomi Class & Object',
+                'title'   => 'Anatomi Class & Object',
                 'content' => '<h2>2. Blueprint vs Instance</h2>
                 <p>Java adalah bahasa yang murni berorientasi objek. Hampir semua kode Anda harus berada di dalam sebuah <strong>Class</strong>.</p>
                 
@@ -94,7 +94,7 @@ class MaterialsSeeder extends Seeder
                 'module_id' => '2',
             ],
             [
-                'title' => 'Enkapsulasi & Information Hiding',
+                'title'   => 'Enkapsulasi & Information Hiding',
                 'content' => '<h2>3. Prinsip "Bungkus" dan Keamanan Data</h2>
                 <p>Pernahkah Anda bertanya kenapa tombol di remote TV tertutup plastik? Itu adalah enkapsulasi. Anda hanya bisa menekan tombol (Interface), tapi tidak bisa menyentuh sirkuit di dalamnya (Implementasi).</p>
                 
@@ -124,7 +124,7 @@ class MaterialsSeeder extends Seeder
                 'module_id' => '3',
             ],
             [
-                'title' => 'Relasi Antar Class (UML Dasar)',
+                'title'   => 'Relasi Antar Class (UML Dasar)',
                 'content' => '<h2>4. Bagaimana Objek Berinteraksi?</h2>
                 <p>Dalam sistem besar, class tidak berdiri sendiri. Mereka menjalin hubungan atau relasi untuk membentuk satu kesatuan sistem.</p>
                 
@@ -170,7 +170,7 @@ class MaterialsSeeder extends Seeder
                 'module_id' => '4',
             ],
             [
-                'title' => 'Inheritance & Abstraksi: Hierarki dan Kontrak',
+                'title'   => 'Inheritance & Abstraksi: Hierarki dan Kontrak',
                 'content' => '<h2>5. Pewarisan dan Standarisasi Kode</h2>
                 <p>Jangan mengulang kode yang sama! Inheritance memungkinkan kita mewarisi sifat induk, sementara Abstraksi memberikan aturan main yang jelas.</p>
                 
@@ -197,7 +197,7 @@ class MaterialsSeeder extends Seeder
                 'module_id' => '6',
             ],
             [
-                'title' => 'Mastering Polimorfisme: Fleksibilitas Dewa',
+                'title'   => 'Mastering Polimorfisme: Fleksibilitas Dewa',
                 'content' => '<h2>6. Satu Nama, Seribu Bentuk</h2>
                 <p>Polimorfisme adalah inti dari fleksibilitas OOP. Kita bisa memproses berbagai objek berbeda melalui satu referensi induk.</p>
                 
@@ -246,7 +246,7 @@ class MaterialsSeeder extends Seeder
                     'content'    => $material['content'],
                     'module_id'  => $material['module_id'],
                     'created_by' => '01kqd08mx4rj8z6ergz63k7gfe',
-                ]
+                ],
             );
         }
     }

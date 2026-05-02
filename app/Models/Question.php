@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\Lms\ContentCategory;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Enums\Lms\QuestionType;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -20,11 +19,11 @@ final class Question extends Model
 
     public const int DIFFICULTY_RANK_BEGINNER = 1;
 
-    public const int DIFFICULTY_RANK_MEDIUM   = 2;
+    public const int DIFFICULTY_RANK_MEDIUM = 2;
 
-    public const int DIFFICULTY_RANK_HARD     = 3;
+    public const int DIFFICULTY_RANK_HARD = 3;
 
-    public const int DIFFICULTY_RANK_FINAL    = 4;
+    public const int DIFFICULTY_RANK_FINAL = 4;
 
     public const array DIFFICULTY_ORDER = [
         QuestionDifficulty::BEGINNER->value => self::DIFFICULTY_RANK_BEGINNER,
@@ -38,7 +37,6 @@ final class Question extends Model
         'material_id',
         'question_text',
         'question_type',
-        'type',
         'difficulty',
         'hint',
         'created_by',
@@ -48,11 +46,10 @@ final class Question extends Model
     protected function casts(): array
     {
         return [
-            'material_id'     => 'string',
-            'created_by'      => 'string',
-            'question_type'   => QuestionType::class,
-            'type'            => ContentCategory::class,
-            'difficulty'      => QuestionDifficulty::class,
+            'material_id'   => 'string',
+            'created_by'    => 'string',
+            'question_type' => QuestionType::class,
+            'difficulty'    => QuestionDifficulty::class,
         ];
     }
 

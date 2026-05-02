@@ -1,6 +1,12 @@
 import { writable } from 'svelte/store';
 
-export interface Toast {
+/**
+ * stores/toast.ts
+ * Global toast notification store using Svelte writable store.
+ * The Toast interface is defined in @/types/core.ts.
+ */
+
+export interface ToastItem {
     id: string;
     type: 'success' | 'error' | 'info' | 'warning';
     title?: string;
@@ -10,11 +16,11 @@ export interface Toast {
 }
 
 function createToastStore() {
-    const { subscribe, update } = writable<Toast[]>([]);
+    const { subscribe, update } = writable<ToastItem[]>([]);
 
-    function add(toast: Omit<Toast, 'id'>): string {
+    function add(toast: Omit<ToastItem, 'id'>): string {
         const id = crypto.randomUUID();
-        const newToast: Toast = { ...toast, id };
+        const newToast: ToastItem = { ...toast, id };
 
         update((toasts) => [...toasts, newToast]);
 
@@ -30,19 +36,25 @@ function createToastStore() {
         update((toasts) => toasts.filter((t) => t.id !== id));
     }
 
-    function success(message: string, options?: Partial<Omit<Toast, 'id' | 'type' | 'message'>>) {
+    function success(
+        message: string,
+        options?: Partial<Omit<ToastItem, 'id' | 'type' | 'message'>>
+    ) {
         return add({ type: 'success', message, ...options });
     }
 
-    function error(message: string, options?: Partial<Omit<Toast, 'id' | 'type' | 'message'>>) {
+    function error(message: string, options?: Partial<Omit<ToastItem, 'id' | 'type' | 'message'>>) {
         return add({ type: 'error', message, duration: 8000, ...options });
     }
 
-    function info(message: string, options?: Partial<Omit<Toast, 'id' | 'type' | 'message'>>) {
+    function info(message: string, options?: Partial<Omit<ToastItem, 'id' | 'type' | 'message'>>) {
         return add({ type: 'info', message, ...options });
     }
 
-    function warning(message: string, options?: Partial<Omit<Toast, 'id' | 'type' | 'message'>>) {
+    function warning(
+        message: string,
+        options?: Partial<Omit<ToastItem, 'id' | 'type' | 'message'>>
+    ) {
         return add({ type: 'warning', message, ...options });
     }
 
@@ -50,16 +62,7 @@ function createToastStore() {
         update(() => []);
     }
 
-    return {
-        subscribe,
-        add,
-        remove,
-        success,
-        error,
-        info,
-        warning,
-        clear,
-    };
+    return { subscribe, add, remove, success, error, info, warning, clear };
 }
 
 export const toasts = createToastStore();

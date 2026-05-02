@@ -10,6 +10,8 @@ use App\Contracts\Repositories\QuestionRepositoryInterface;
 use App\Contracts\Services\DashboardServiceInterface;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Helpers\ProgressHelper;
+use App\Http\Resources\ActivityResource;
+use App\Http\Resources\MaterialResource;
 use App\Models\Material;
 use App\Models\StudentState;
 use Illuminate\Database\Eloquent\Collection;
@@ -53,14 +55,11 @@ final readonly class DashboardService implements DashboardServiceInterface
                         $totalQuestions,
                     );
 
-                    return (object) [
-                        'id'                  => $material->id,
-                        'title'               => $material->title,
-                        'description'         => $material->description ?? '',
-                        'progress_percentage' => $progressPercentage,
-                        'total_questions'     => $totalQuestions,
-                        'completed_questions' => $correctAnswers,
-                    ];
+                    $material->progress_percentage = $progressPercentage;
+                    $material->total_questions     = $totalQuestions;
+                    $material->completed_questions = $correctAnswers;
+
+                    return new MaterialResource($material)->resolve();
                 });
 
                 $recentActivities = $this->progressRepo->getRecentActivities($userId, 10)
@@ -70,10 +69,10 @@ final readonly class DashboardService implements DashboardServiceInterface
                 $studentState   = StudentState::where('user_id', $userId)->first();
                 $certifications = $studentState?->certifications ?? [];
 
-                $completedMaterialsCount  = $materials->filter(fn ($m): bool => $m->progress_percentage >= 100)->count();
-                $inProgressMaterialsCount = $materials->filter(fn ($m): bool => $m->progress_percentage > 0 && $m->progress_percentage < 100)->count();
+                $completedMaterialsCount  = $materials->filter(fn ($m): bool => $m['progress_percentage'] >= 100)->count();
+                $inProgressMaterialsCount = $materials->filter(fn ($m): bool => $m['progress_percentage'] > 0 && $m['progress_percentage'] < 100)->count();
                 $totalMaterialProgress    = $totalMaterials > 0 ? round(($completedMaterialsCount / $totalMaterials) * 100) : 0;
-                $totalAnsweredQuestions   = $progressStats->sum('answered_questions');
+                $totalAnswered            = $progressStats->sum('answered_questions');
 
                 return [
                     'total_materials'              => $totalMaterials,
@@ -89,9 +88,9 @@ final readonly class DashboardService implements DashboardServiceInterface
                     'completed_materials'      => $completedMaterialsCount,
                     'in_progress_materials'    => $inProgressMaterialsCount,
                     'total_material_progress'  => $totalMaterialProgress,
-                    'total_answered_questions' => $totalAnsweredQuestions,
+                    'total_answered'           => $totalAnswered,
                     'total_correct_questions'  => $progressStats->sum('correct_answers'),
-                    'recent_activities'        => $recentActivities,
+                    'recent_activities'        => ActivityResource::collection($recentActivities)->resolve(),
                     'all_materials'            => $materials,
                     'certifications'           => $certifications,
                 ];
@@ -218,34 +217,33 @@ final readonly class DashboardService implements DashboardServiceInterface
                         $mediumTotal   = $this->questionRepo->countByMaterialAndDifficulty($material->id, QuestionDifficulty::MEDIUM);
                         $hardTotal     = $this->questionRepo->countByMaterialAndDifficulty($material->id, QuestionDifficulty::HARD);
 
-                        return [
-                            'material' => $material,
-                            'stats'    => [
-                                'overall' => [
-                                    'correct'    => $counts['total'],
-                                    'total'      => $counts['total'],
-                                    'percentage' => 100,
-                                ],
-                                'beginner' => [
-                                    'correct'          => $counts['easy'],
-                                    'total'            => $beginnerTotal,
-                                    'configured_total' => $counts['easy'],
-                                    'percentage'       => 100,
-                                ],
-                                'medium' => [
-                                    'correct'          => $counts['medium'],
-                                    'total'            => $mediumTotal,
-                                    'configured_total' => $counts['medium'],
-                                    'percentage'       => 100,
-                                ],
-                                'hard' => [
-                                    'correct'          => $counts['hard'],
-                                    'total'            => $hardTotal,
-                                    'configured_total' => $counts['hard'],
-                                    'percentage'       => 100,
-                                ],
+                        $material->stats = [
+                            'overall' => [
+                                'correct'    => $counts['total'],
+                                'total'      => $counts['total'],
+                                'percentage' => 100,
+                            ],
+                            'beginner' => [
+                                'correct'          => $counts['easy'],
+                                'total'            => $beginnerTotal,
+                                'configured_total' => $counts['easy'],
+                                'percentage'       => 100,
+                            ],
+                            'medium' => [
+                                'correct'          => $counts['medium'],
+                                'total'            => $mediumTotal,
+                                'configured_total' => $counts['medium'],
+                                'percentage'       => 100,
+                            ],
+                            'hard' => [
+                                'correct'          => $counts['hard'],
+                                'total'            => $hardTotal,
+                                'configured_total' => $counts['hard'],
+                                'percentage'       => 100,
                             ],
                         ];
+
+                        return new MaterialResource($material)->resolve();
                     },
                 )->values()->all();
             },
@@ -282,34 +280,33 @@ final readonly class DashboardService implements DashboardServiceInterface
             $totalCorrect      = $beginnerCorrect + $mediumCorrect + $hardCorrect;
             $overallPercentage = ProgressHelper::calculateProgressPercentage($totalCorrect, $counts['total']);
 
-            return [
-                'material' => $material,
-                'stats'    => [
-                    'overall' => [
-                        'correct'    => $totalCorrect,
-                        'total'      => $counts['total'],
-                        'percentage' => $overallPercentage,
-                    ],
-                    'beginner' => [
-                        'correct'          => $beginnerCorrect,
-                        'total'            => $beginnerTotal,
-                        'configured_total' => $counts['easy'],
-                        'percentage'       => $beginnerPercentage,
-                    ],
-                    'medium' => [
-                        'correct'          => $mediumCorrect,
-                        'total'            => $mediumTotal,
-                        'configured_total' => $counts['medium'],
-                        'percentage'       => $mediumPercentage,
-                    ],
-                    'hard' => [
-                        'correct'          => $hardCorrect,
-                        'total'            => $hardTotal,
-                        'configured_total' => $counts['hard'],
-                        'percentage'       => $hardPercentage,
-                    ],
+            $material->stats = [
+                'overall' => [
+                    'correct'    => $totalCorrect,
+                    'total'      => $counts['total'],
+                    'percentage' => $overallPercentage,
+                ],
+                'beginner' => [
+                    'correct'          => $beginnerCorrect,
+                    'total'            => $beginnerTotal,
+                    'configured_total' => $counts['easy'],
+                    'percentage'       => $beginnerPercentage,
+                ],
+                'medium' => [
+                    'correct'          => $mediumCorrect,
+                    'total'            => $mediumTotal,
+                    'configured_total' => $counts['medium'],
+                    'percentage'       => $mediumPercentage,
+                ],
+                'hard' => [
+                    'correct'          => $hardCorrect,
+                    'total'            => $hardTotal,
+                    'configured_total' => $counts['hard'],
+                    'percentage'       => $hardPercentage,
                 ],
             ];
+
+            return new MaterialResource($material)->resolve();
         })->values()->all();
     }
 }

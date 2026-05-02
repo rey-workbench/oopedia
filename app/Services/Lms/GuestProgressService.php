@@ -6,6 +6,7 @@ namespace App\Services\Lms;
 
 use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Enums\User\RoleName;
+use App\Http\Resources\StudentStateResource;
 use App\Models\StudentState;
 use App\Rules\Adaptive\Constants\StudentStateSchema;
 use Illuminate\Support\Facades\Cookie;
@@ -132,16 +133,7 @@ final readonly class GuestProgressService implements GuestProgressServiceInterfa
     {
         $studentState = $this->getStudentState();
 
-        return [
-            'accuracy'            => round((float) ($studentState->accuracy ?? 0), 2),
-            'xp'                  => $studentState->xp,
-            'streak'              => $studentState->streak,
-            'level'               => 'Tamu',
-            'hints_available'     => $studentState->hints_available,
-            'target_difficulty'   => $studentState->target_difficulty,
-            'adaptive_state'      => $studentState->adaptive_state      ?? [],
-            'performance_metrics' => $studentState->performance_metrics ?? [],
-        ];
+        return new StudentStateResource($studentState)->resolve();
     }
 
     public function saveStudentState(StudentState $studentState): void

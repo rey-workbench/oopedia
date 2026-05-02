@@ -120,7 +120,7 @@
                         >
                             <Terminal size={10} class="text-primary-600" />
                             <span class="text-[10px] font-bold text-slate-700"
-                                >{student.total_answered_questions ?? 0}</span
+                                >{student.total_answered ?? 0}</span
                             >
                         </div>
                     </td>

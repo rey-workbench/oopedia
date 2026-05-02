@@ -148,23 +148,31 @@
         <!-- Preview Section -->
         <div class="space-y-6">
             <div class="flex items-center gap-4">
-                <div class="bg-primary-100 p-2 rounded-xl text-primary-600">
+                <div class="bg-primary-100 text-primary-600 rounded-xl p-2">
                     <Eye size={20} />
                 </div>
                 <div>
-                    <h3 class="text-lg font-bold text-slate-800 tracking-widest uppercase">Pratinjau Hasil (Frontend View)</h3>
-                    <p class="text-xs font-medium text-slate-400">Visualisasi materi yang akan dilihat oleh mahasiswa.</p>
+                    <h3 class="text-lg font-bold tracking-widest text-slate-800 uppercase">
+                        Pratinjau Hasil (Frontend View)
+                    </h3>
+                    <p class="text-xs font-medium text-slate-400">
+                        Visualisasi materi yang akan dilihat oleh mahasiswa.
+                    </p>
                 </div>
             </div>
 
-            <Card class="bg-white overflow-hidden p-0 border-slate-200">
-                <div class="bg-slate-50 border-b border-slate-100 px-6 py-3 flex items-center justify-between">
+            <Card class="overflow-hidden border-slate-200 bg-white p-0">
+                <div
+                    class="flex items-center justify-between border-b border-slate-100 bg-slate-50 px-6 py-3"
+                >
                     <div class="flex gap-1.5">
-                        <div class="w-2.5 h-2.5 rounded-full bg-slate-300"></div>
-                        <div class="w-2.5 h-2.5 rounded-full bg-slate-300"></div>
-                        <div class="w-2.5 h-2.5 rounded-full bg-slate-300"></div>
+                        <div class="h-2.5 w-2.5 rounded-full bg-slate-300"></div>
+                        <div class="h-2.5 w-2.5 rounded-full bg-slate-300"></div>
+                        <div class="h-2.5 w-2.5 rounded-full bg-slate-300"></div>
                     </div>
-                    <span class="text-[9px] font-black tracking-[0.2em] text-slate-400 uppercase">Live Rendering Engine</span>
+                    <span class="text-[9px] font-black tracking-[0.2em] text-slate-400 uppercase"
+                        >Live Rendering Engine</span
+                    >
                 </div>
                 <div class="bg-white">
                     <ContentDisplay content={state.form.content} />
@@ -173,4 +181,3 @@
         </div>
     </div>
 </App>
-

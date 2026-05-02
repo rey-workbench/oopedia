@@ -21,7 +21,7 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 
     private const int MAX_CHAINING_ITERATIONS = 10;
 
-    private const string FALLBACK_RULE_ID        = 'R14';
+    private const string FALLBACK_RULE_ID        = 'R00';
 
     private const string CATEGORY_PRIMARY       = 'primary';
 

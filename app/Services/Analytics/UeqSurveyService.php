@@ -6,8 +6,9 @@ namespace App\Services\Analytics;
 
 use App\Contracts\Repositories\UeqSurveyRepositoryInterface;
 use App\Contracts\Services\UeqSurveyServiceInterface;
+use App\Http\Resources\UeqSurveyResource;
 use App\Models\UeqSurvey;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 
 final readonly class UeqSurveyService implements UeqSurveyServiceInterface
 {
@@ -15,10 +16,11 @@ final readonly class UeqSurveyService implements UeqSurveyServiceInterface
         public UeqSurveyRepositoryInterface $ueqRepo,
     ) {}
 
-    /** @return Collection<int, UeqSurvey> */
-    public function getAllSurveys(?string $class = null): Collection
+    public function getAllSurveys(?string $class = null): SupportCollection
     {
-        return $this->ueqRepo->getAllWithUser($class);
+        return collect(UeqSurveyResource::collection(
+            $this->ueqRepo->getAllWithUser($class),
+        )->resolve());
     }
 
     /** @return array<string> */
@@ -27,9 +29,16 @@ final readonly class UeqSurveyService implements UeqSurveyServiceInterface
         return $this->ueqRepo->getDistinctClasses();
     }
 
-    public function getStudentDetail(string $userId): ?UeqSurvey
+    /** @return array<string, mixed>|null */
+    public function getStudentDetail(string $userId): ?array
     {
-        return $this->ueqRepo->findByUserId($userId);
+        $survey = $this->ueqRepo->findByUserId($userId);
+
+        if (! $survey instanceof UeqSurvey) {
+            return null;
+        }
+
+        return new UeqSurveyResource($survey)->resolve();
     }
 
     public function hasUserSubmitted(string $userId): bool
@@ -43,7 +52,7 @@ final readonly class UeqSurveyService implements UeqSurveyServiceInterface
     }
 
     /** @return array<string, float> */
-    public function calculateAverages(Collection $surveys): array
+    public function calculateAverages(SupportCollection $surveys): array
     {
         if ($surveys->isEmpty()) {
             return [];
@@ -60,47 +69,47 @@ final readonly class UeqSurveyService implements UeqSurveyServiceInterface
 
         foreach ($surveys as $survey) {
             $totals['attractiveness'] += (
-                $survey->annoying_enjoyable      +
-                $survey->good_bad                +
-                $survey->unlikable_pleasing      +
-                $survey->unpleasant_pleasant     +
-                $survey->attractive_unattractive +
-                $survey->friendly_unfriendly
+                $survey['annoying_enjoyable']      +
+                $survey['good_bad']                +
+                $survey['unlikable_pleasing']      +
+                $survey['unpleasant_pleasant']     +
+                $survey['attractive_unattractive'] +
+                $survey['friendly_unfriendly']
             ) / 6;
 
             $totals['perspicuity'] += (
-                $survey->not_understandable_understandable +
-                $survey->easy_difficult                    +
-                $survey->complicated_easy                  +
-                $survey->clear_confusing
+                $survey['not_understandable_understandable'] +
+                $survey['easy_difficult']                    +
+                $survey['complicated_easy']                  +
+                $survey['clear_confusing']
             ) / 4;
 
             $totals['efficiency'] += (
-                $survey->fast_slow             +
-                $survey->inefficient_efficient +
-                $survey->impractical_practical +
-                $survey->organized_cluttered
+                $survey['fast_slow']             +
+                $survey['inefficient_efficient'] +
+                $survey['impractical_practical'] +
+                $survey['organized_cluttered']
             ) / 4;
 
             $totals['dependability'] += (
-                $survey->unpredictable_predictable +
-                $survey->obstructive_supportive    +
-                $survey->secure_not_secure         +
-                $survey->meets_expectations_does_not_meet
+                $survey['unpredictable_predictable'] +
+                $survey['obstructive_supportive']    +
+                $survey['secure_not_secure']         +
+                $survey['meets_expectations_does_not_meet']
             ) / 4;
 
             $totals['stimulation'] += (
-                $survey->valuable_inferior           +
-                $survey->boring_exciting             +
-                $survey->not_interesting_interesting +
-                $survey->motivating_demotivating
+                $survey['valuable_inferior']           +
+                $survey['boring_exciting']             +
+                $survey['not_interesting_interesting'] +
+                $survey['motivating_demotivating']
             ) / 4;
 
             $totals['novelty'] += (
-                $survey->creative_dull          +
-                $survey->inventive_conventional +
-                $survey->usual_leading_edge     +
-                $survey->conservative_innovative
+                $survey['creative_dull']          +
+                $survey['inventive_conventional'] +
+                $survey['usual_leading_edge']     +
+                $survey['conservative_innovative']
             ) / 4;
         }
 

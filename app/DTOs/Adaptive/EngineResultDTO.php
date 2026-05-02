@@ -12,55 +12,47 @@ class EngineResultDTO
     public function __construct(
         public readonly string $ruleId,
         public readonly string $diagnosis,
-        public readonly string $recommendation,
-        public readonly array $recommendations,
+        public readonly string $recommendation, // The message/text
+        public readonly array $actions,         // Array of action IDs
         public readonly array $activeFacts,
         public readonly array $deducedFacts,
         public readonly int $iterations,
         public readonly array $ruleChain,
         public readonly int $priority,
         public readonly string $timestamp,
-        public readonly string $version = '4.0.0-forward-chaining',
+        public readonly string $version = '4.1.0-forward-chaining',
     ) {}
 
     public static function fromFallback(array $activeFacts): self
     {
         return new self(
-            ruleId: 'ERR-FALLBACK',
-            diagnosis: 'Normal Learning',
-            recommendation: 'Tetap konsisten dalam belajar!',
-            recommendations: [['id' => 'FEEDBACK', 'metadata' => []]],
+            ruleId: 'R00',
+            diagnosis: 'Progres Terjaga',
+            recommendation: 'Teruslah melangkah! Setiap soal yang kamu kerjakan membawamu lebih dekat ke penguasaan materi.',
+            actions: ['FEEDBACK'],
             activeFacts: $activeFacts,
             deducedFacts: [],
             iterations: 0,
-            ruleChain: [],
-            priority: 0,
+            ruleChain: ['R00'],
+            priority: 100,
             timestamp: now()->toIso8601String(),
         );
     }
 
     public static function fromAppliedRules(array $appliedRules, array $activeFacts, int $iterations): self
     {
-        $finalRule = end($appliedRules);
+        // Sort by priority (ascending, so P0 is first) and pick the most specific one as the final rule
+        usort($appliedRules, fn ($a, $b): int => $a->priority <=> $b->priority);
+        $finalRule = $appliedRules[0];
 
-        $recommendations = [];
+        $actions = [];
         foreach ($appliedRules as $appliedRule) {
             if (empty($appliedRule->actions)) {
                 continue;
             }
 
-            foreach ($appliedRule->actions as $action) {
-                if (is_string($action)) {
-                    $recommendations[] = [
-                        'id'       => $action,
-                        'metadata' => [],
-                    ];
-                } else {
-                    $recommendations[] = [
-                        'id'       => $action['id'],
-                        'metadata' => $action['metadata'] ?? [],
-                    ];
-                }
+            foreach ($appliedRule->actions as $actionId) {
+                $actions[] = is_string($actionId) ? $actionId : $actionId['id'];
             }
         }
 
@@ -68,7 +60,7 @@ class EngineResultDTO
             ruleId: $finalRule->id,
             diagnosis: $finalRule->name,
             recommendation: $finalRule->recommendation,
-            recommendations: $recommendations,
+            actions: array_values(array_unique($actions)),
             activeFacts: $activeFacts,
             deducedFacts: $finalRule->deduced_fact_ids ?? [],
             iterations: $iterations,
@@ -84,7 +76,7 @@ class EngineResultDTO
             'id'              => $this->ruleId,
             'diagnosis'       => $this->diagnosis,
             'recommendation'  => $this->recommendation,
-            'recommendations' => $this->recommendations,
+            'actions'         => $this->actions,
             'facts'           => $this->activeFacts,
             'deduced_facts'   => $this->deducedFacts,
             'timestamp'       => $this->timestamp,

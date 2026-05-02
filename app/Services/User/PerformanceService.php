@@ -67,7 +67,6 @@ final readonly class PerformanceService implements PerformanceServiceInterface
 
         if ($usedHint) {
             $currentSession['hints']++;
-            $hintsAvailable = max(0, $hintsAvailable - 1);
         }
 
         $currentSession['time_spent'] += $timeSpent;
@@ -75,7 +74,7 @@ final readonly class PerformanceService implements PerformanceServiceInterface
         // 2. Update cumulative counts (tidak terpengaruh reset sesi)
         $totalAnswered = ($studentState->total_answered ?? 0) + 1;
         $correctCount  = ($studentState->correct_count ?? 0)  + ($isCorrect ? 1 : 0);
-        $hintsUsed     = ($studentState->hints_used ?? 0)     + ($usedHint ? 1 : 0);
+        $hintsUsed     = ($studentState->hints_used ?? 0);
 
         // Akurasi = kumulatif global, bukan sesi mini
         $accuracy = round(($correctCount / $totalAnswered) * 100, 2);
@@ -89,7 +88,10 @@ final readonly class PerformanceService implements PerformanceServiceInterface
             $speed = 'fast';
         }
 
-        $metrics['speed'] = $speed;
+        $metrics['speed']              = $speed;
+        $metrics['last_result']        = $isCorrect;
+        $metrics['last_response_time'] = $timeSpent;
+        $metrics['last_used_hint']     = $usedHint;
 
         // 4. Session Buffer Logic (Every 5 questions, record session and reset)
         $sessionHistory = $studentState->session_history ?? [0, 0, 0];
@@ -208,14 +210,25 @@ final readonly class PerformanceService implements PerformanceServiceInterface
         $studentState = $this->findOrCreateStudentState($userId);
 
         return [
-            'accuracy'            => round($studentState->accuracy, 2),
-            'xp'                  => $studentState->xp,
-            'streak'              => $studentState->streak,
-            'level'               => $studentState->level ?? StudentLevel::PEMULA->value,
-            'hints_available'     => $studentState->hints_available,
-            'target_difficulty'   => $studentState->target_difficulty,
-            'adaptive_state'      => $studentState->adaptive_state      ?? [],
-            'performance_metrics' => $studentState->performance_metrics ?? [],
+            'gamification' => [
+                'xp'     => $studentState->xp,
+                'level'  => $studentState->level ?? StudentLevel::PEMULA->value,
+                'streak' => $studentState->streak,
+                'badges' => $studentState->badges ?? [],
+            ],
+            'performance' => [
+                'total_answered' => $studentState->total_answered,
+                'correct_count'  => $studentState->correct_count,
+                'accuracy'       => round((float) $studentState->accuracy, 2),
+                'hints_used'     => $studentState->hints_used,
+            ],
+            'hints_available' => $studentState->hints_available,
+            'adaptive_engine' => [
+                'session_history'     => $studentState->session_history     ?? [],
+                'current_session'     => $studentState->current_session     ?? [],
+                'performance_metrics' => $studentState->performance_metrics ?? [],
+                'adaptive_state'      => $studentState->adaptive_state      ?? [],
+            ],
         ];
     }
 

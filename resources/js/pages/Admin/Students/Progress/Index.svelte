@@ -12,7 +12,7 @@
     import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';
     import { StudentProgressState } from '@/states/Admin/StudentState.svelte';
-    import type { User, MaterialWithProgress, MissingQuestionsItem } from '@/types';
+    import type { User, Material, MissingQuestionsItem } from '@/types';
 
     let {
         student,
@@ -21,7 +21,7 @@
         certifications = {},
     }: {
         student: User;
-        materials: MaterialWithProgress[];
+        materials: Material[];
         missingQuestionsByMaterial: MissingQuestionsItem[];
         certifications: Record<string, string>;
     } = $props();
@@ -161,9 +161,7 @@
                 </h3>
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {#each Object.entries(state.certifications) as [materialId, type]}
-                        {@const material = state.materials.find(
-                            (m) => m.material.id === materialId
-                        )}
+                        {@const material = state.materials.find((m) => m.id === materialId)}
                         <Card
                             class="relative overflow-hidden border-2 {type === 'gold'
                                 ? 'border-amber-400 bg-amber-50/10'
@@ -194,7 +192,7 @@
                                         CERTIFIED ARCHITECT {type.toUpperCase()}
                                     </span>
                                     <h4 class="truncate text-sm font-bold text-slate-900 uppercase">
-                                        {material?.material.title || 'Project'}
+                                        {material?.title || 'Project'}
                                     </h4>
                                 </div>
                             </div>
@@ -224,9 +222,9 @@
 
                     {#snippet row(material)}
                         {@const status =
-                            material.progress === 100
+                            material.progress_percentage === 100
                                 ? 'STABIL'
-                                : material.progress > 0
+                                : (material.progress_percentage ?? 0) > 0
                                   ? 'PROSES'
                                   : 'BELUM DIMULAI'}
                         <td class="border-b border-slate-50 px-6 py-6">
@@ -234,7 +232,7 @@
                                 <div class="bg-primary-600 h-10 w-1 rounded-full"></div>
                                 <span
                                     class="text-sm font-bold tracking-widest text-slate-900 uppercase"
-                                    >{material.material.title}</span
+                                    >{material.title}</span
                                 >
                             </div>
                         </td>
@@ -243,10 +241,14 @@
                                 <div class="flex items-center justify-between px-0.5">
                                     <span
                                         class="text-[9px] font-bold tracking-widest text-slate-400 uppercase"
-                                        >{material.progress}%</span
+                                        >{material.progress_percentage}%</span
                                     >
                                 </div>
-                                <ProgressBar value={material.progress} height="h-2" color="blue" />
+                                <ProgressBar
+                                    value={material.progress_percentage}
+                                    height="h-2"
+                                    color="blue"
+                                />
                             </div>
                         </td>
                         <td class="border-b border-slate-50 px-6 py-6">

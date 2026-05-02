@@ -10,7 +10,6 @@ use App\DTOs\Material\MaterialUpdateDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Material\StoreMaterialRequest;
 use App\Http\Requests\Material\UpdateMaterialRequest;
-use App\Models\Material;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -52,7 +51,7 @@ final class MaterialController extends Controller
     {
         $material = $this->materialService->getMaterialById($materialId);
 
-        if (! $material instanceof Material) {
+        if (! $material) {
             return to_route('admin.materials.index')
                 ->with('error', 'Material tidak ditemukan');
         }
