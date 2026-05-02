@@ -60,8 +60,8 @@
             const el = block as HTMLElement;
             // Skip: <code> inside <pre>
             if (el.tagName === 'CODE' && el.parentElement?.tagName === 'PRE') return;
-            // Skip: inline <code> inside table cells, list items, paragraphs
-            if (el.tagName === 'CODE' && el.closest('td, th, li, p')) return;
+            // Skip: inline <code> inside table cells, list items, paragraphs, blockquotes
+            if (el.tagName === 'CODE' && el.closest('td, th, li, p, blockquote')) return;
 
             if (!el.dataset['enhanced']) {
                 const text = el.innerText.trim();
@@ -365,7 +365,8 @@
     :global(.pedagogical-content-root td code),
     :global(.pedagogical-content-root th code),
     :global(.pedagogical-content-root li code),
-    :global(.pedagogical-content-root p code) {
+    :global(.pedagogical-content-root p code),
+    :global(.pedagogical-content-root blockquote code) {
         @apply rounded-md bg-slate-100 px-2 py-0.5 font-mono text-[14px] font-bold text-slate-700;
     }
 
