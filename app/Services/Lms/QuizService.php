@@ -240,7 +240,6 @@ final readonly class QuizService implements QuizServiceInterface
 
         return [
             'material'                => new MaterialResource($material)->resolve(),
-            'questions'               => QuestionResource::collection($questions)->resolve(),
             'current_question'        => $currentQuestion instanceof Question ? new QuestionResource($currentQuestion)->resolve() : null,
             'current_question_number' => $actualAnsweredCount + 1,
             'total_questions'         => $totalFilteredQuestions,

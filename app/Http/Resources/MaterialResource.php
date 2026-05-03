@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Enums\User\RoleName;
 use App\Models\Material;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -21,11 +22,13 @@ final class MaterialResource extends JsonResource
     #[\Override]
     public function toArray(Request $request): array
     {
+        $showContent = $this->shouldShowContent($request);
+
         return [
             'id'                  => $this->id,
             'title'               => $this->title,
             'cover_url'           => $this->cover_url,
-            'content'             => $this->content,
+            'content'             => $this->when($showContent, $this->content),
             'description'         => $this->description ?? '',
             'module_id'           => $this->module_id,
             'is_final_project'    => $this->is_final_project,
@@ -55,5 +58,28 @@ final class MaterialResource extends JsonResource
             // If it's a detail view with stats (DashboardService usage)
             'stats' => $this->when(isset($this->resource->stats), $this->resource->stats),
         ];
+    }
+
+    private function shouldShowContent(Request $request): bool
+    {
+        $user = $request->user();
+        if ($user?->hasRole(RoleName::SUPERADMIN) || $user?->hasRole(RoleName::DOSEN)) {
+            return true;
+        }
+
+        $routeMaterial = $request->route('material');
+        $materialId    = $routeMaterial instanceof Material ? $routeMaterial->id : (string) $routeMaterial;
+
+        // Only show if it's the specific material show page and this IS that material
+        if ($request->routeIs('mahasiswa.materials.show') && $materialId === $this->id) {
+            return true;
+        }
+
+        // Also allow content for question views of THIS specific material
+        if ($request->routeIs('mahasiswa.materials.questions.*') && $materialId === $this->id) {
+            return true;
+        }
+
+        return false;
     }
 }

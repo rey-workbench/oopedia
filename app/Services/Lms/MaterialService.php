@@ -14,7 +14,6 @@ use App\Exceptions\Domain\MaterialNotFoundException;
 use App\Exceptions\Domain\MediaOperationException;
 use App\Helpers\ProgressHelper;
 use App\Http\Resources\MaterialResource;
-use App\Http\Resources\QuestionResource;
 use App\Models\Material;
 use App\Models\Media;
 use Illuminate\Support\Collection;
@@ -231,10 +230,7 @@ final readonly class MaterialService implements MaterialServiceInterface
         $currentQuestionNumber = ($answeredCount >= $material->questions->count()) ? 'Review' : ($answeredCount + 1);
 
         return [
-            'material'                => new MaterialResource($material)->resolve(),
-            'materials'               => MaterialResource::collection($materials)->resolve(),
-            'current_question_number' => $currentQuestionNumber,
-            'current_question'        => $currentQuestion ? new QuestionResource($currentQuestion)->resolve() : null,
+            'material' => new MaterialResource($material)->resolve(),
         ];
     }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Enums\User\RoleName;
 use App\Models\Question;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -21,6 +22,12 @@ final class QuestionResource extends JsonResource
     #[\Override]
     public function toArray(Request $request): array
     {
+        $user    = $request->user();
+        $isAdmin = $user?->hasRole(RoleName::SUPERADMIN) || $user?->hasRole(RoleName::DOSEN);
+
+        // Only show correct answers if it's an admin or if the question is being reviewed (has user_attempt)
+        $showAnswers = $isAdmin || isset($this->resource->user_attempt);
+
         return [
             'id'            => $this->resource->id,
             'material_id'   => $this->material_id,
@@ -31,8 +38,8 @@ final class QuestionResource extends JsonResource
             'answers'       => $this->whenLoaded('answers', fn () => $this->answers->map(fn ($answer): array => [
                 'id'             => $answer->id,
                 'answer_text'    => $answer->answer_text,
-                'is_correct'     => $answer->is_correct,
-                'explanation'    => $answer->explanation,
+                'is_correct'     => $this->when($showAnswers, (bool) $answer->is_correct),
+                'explanation'    => $this->when($showAnswers, $answer->explanation),
                 'drag_source'    => $answer->drag_source,
                 'drag_target'    => $answer->drag_target,
                 'blank_position' => $answer->blank_position,
