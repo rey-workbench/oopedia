@@ -212,6 +212,7 @@
                     items={state.materials}
                     columns={matrixColumns}
                     hideSearch={true}
+                    itemsPerPage={10}
                 >
                     {#snippet empty()}
                         <EmptyState
@@ -281,6 +282,7 @@
                         items={state.missingQuestionsByMaterial}
                         columns={challengeColumns}
                         hideSearch={true}
+                        itemsPerPage={10}
                     >
                         {#snippet row(item)}
                             <td class="border-b border-slate-50 px-6 py-6">

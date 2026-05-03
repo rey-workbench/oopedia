@@ -4,7 +4,6 @@
     import Button from '@/components/ui/Button.svelte';
     import DataTable from '@/components/ui/DataTable.svelte';
     import Badge from '@/components/ui/Badge.svelte';
-    import Pagination from '@/components/ui/Pagination.svelte';
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import { UserListState } from '@/states/Admin/UserState.svelte';
     import { Clock, UserPlus, ShieldCheck, Edit2, Trash2 } from 'lucide-svelte';
@@ -75,6 +74,7 @@
                 }}
                 searchPlaceholder="Cari nama atau email..."
                 {columns}
+                links={listState.users.links}
             >
                 {#snippet empty()}
                     <EmptyState
@@ -160,10 +160,5 @@
             </DataTable>
         </div>
 
-        {#if listState.users.data && listState.users.data.length > 0}
-            <div class="mt-6">
-                <Pagination links={listState.users.links || []} />
-            </div>
-        {/if}
     </div>
 </App>

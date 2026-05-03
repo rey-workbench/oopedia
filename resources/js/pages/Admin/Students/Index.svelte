@@ -13,7 +13,6 @@
     import DataTable from '@/components/ui/DataTable.svelte';
     import ProgressBar from '@/components/ui/ProgressBar.svelte';
     import EmptyState from '@/components/ui/EmptyState.svelte';
-    import Pagination from '@/components/ui/Pagination.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
     import Modal from '@/components/ui/Modal.svelte';
     import Input from '@/components/ui/Input.svelte';
@@ -74,6 +73,7 @@
                 }}
                 searchPlaceholder="Cari mahasiswa..."
                 {columns}
+                links={listState.students.links}
             >
                 {#snippet empty()}
                     <EmptyState
@@ -165,11 +165,6 @@
             </DataTable>
         </div>
 
-        {#if listState.students.data && listState.students.data.length > 0}
-            <div class="mt-6">
-                <Pagination links={listState.students.links} />
-            </div>
-        {/if}
 
         <Modal show={openModal} onclose={() => (openModal = false)}>
             <form

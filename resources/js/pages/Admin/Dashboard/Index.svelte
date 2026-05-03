@@ -496,6 +496,7 @@
                     title="Statistik Materi"
                     items={state.material_stats}
                     hideSearch={true}
+                    itemsPerPage={10}
                     columns={materialColumns}
                     rowClass={() => ''}
                 >

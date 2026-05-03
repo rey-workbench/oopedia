@@ -44,7 +44,12 @@ final class Media extends Model
             return $this->media_url;
         }
 
-        $url = str_replace('storage/', '', $this->media_url);
+        if (str_starts_with($this->media_url, '/images/')) {
+            return asset($this->media_url);
+        }
+
+        $url = ltrim($this->media_url, '/');
+        $url = str_replace('storage/', '', $url);
 
         return asset('storage/' . $url);
     }

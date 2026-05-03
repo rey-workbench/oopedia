@@ -98,7 +98,7 @@
                 </Alert>
 
                 <!-- Detailed Breakdown Section -->
-                <Card class="rounded-[2.5rem] border-slate-100 shadow-xl overflow-hidden" padding="p-0">
+                <Card class="rounded-3xl border-slate-100 shadow-xl overflow-hidden" padding="p-0">
                     <div class="bg-slate-50/50 border-b border-slate-100 px-8 py-6 flex items-center justify-between">
                         <div class="flex items-center gap-4">
                             <div class="bg-accent-500 flex h-10 w-10 items-center justify-center rounded-xl text-white shadow-lg shadow-accent-100">
@@ -124,7 +124,7 @@
                     </div>
                 </Card>
 
-                <Card class="rounded-[2.5rem] border-slate-100 shadow-xl overflow-hidden" padding="p-0">
+                <Card class="rounded-3xl border-slate-100 shadow-xl overflow-hidden" padding="p-0">
                     <div class="bg-slate-50/50 border-b border-slate-100 px-8 py-6 flex items-center justify-between">
                         <div class="flex items-center gap-4">
                             <div class="bg-primary-500 flex h-10 w-10 items-center justify-center rounded-xl text-white shadow-lg shadow-slate-100">
@@ -162,6 +162,7 @@
                         { key: 'text', label: 'Pernyataan', align: 'left' },
                         { key: 'value', label: 'Skor', align: 'center' }
                     ]}
+                    itemsPerPage={10}
                     class="rounded-[3rem] border-slate-100 shadow-xl"
                 >
                     {#snippet row(answer)}

@@ -49,7 +49,7 @@ final class MaterialResource extends JsonResource
                 'id'        => $media->id,
                 'type'      => $media->media_type,
                 'url'       => $media->media_url,
-                'full_url'  => $media->media_url ? url($media->media_url) : null,
+                'full_url'  => $media->full_url,
             ])),
 
             'creator'         => new UserResource($this->whenLoaded('creator')),

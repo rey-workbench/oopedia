@@ -162,6 +162,7 @@
                 onsearch={() => listState.handleSearch()}
                 searchPlaceholder="Pindai materi..."
                 {columns}
+                itemsPerPage={10}
             >
                 {#snippet empty()}
                     <EmptyState

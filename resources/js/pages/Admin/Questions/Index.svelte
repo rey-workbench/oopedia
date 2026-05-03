@@ -4,7 +4,6 @@
     import Button from '@/components/ui/Button.svelte';
     import DataTable from '@/components/ui/DataTable.svelte';
     import EmptyState from '@/components/ui/EmptyState.svelte';
-    import Pagination from '@/components/ui/Pagination.svelte';
     import Select from '@/components/ui/Select.svelte';
     import { ROUTES } from '@/utils/route';
     import { FlaskConical, Plus, Trash2, Edit2, ArrowLeft } from 'lucide-svelte';
@@ -75,6 +74,7 @@
             bind:search={state.search}
             searchPlaceholder="Cari teks soal atau identitas..."
             onsearch={state.handleSearch}
+            links={state.questions.links}
         >
             {#snippet empty()}
                 <EmptyState
@@ -153,7 +153,4 @@
         </DataTable>
     </div>
 
-    {#if state.questions?.data?.length > 0}
-        <Pagination links={state.questions.links} />
-    {/if}
 </App>

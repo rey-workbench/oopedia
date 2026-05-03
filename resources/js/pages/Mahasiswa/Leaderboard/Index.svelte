@@ -45,6 +45,7 @@
                         items={state.leaderboard_data}
                         {columns}
                         hideSearch={true}
+                        itemsPerPage={10}
                         rowClass={(item: LeaderboardEntry) =>
                             item.id === state.user?.id ? 'bg-primary-50/50' : ''}
                     >

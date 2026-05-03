@@ -3,7 +3,6 @@
     import Button from '@/components/ui/Button.svelte';
     import Card from '@/components/ui/Card.svelte';
     import DataTable from '@/components/ui/DataTable.svelte';
-    import Pagination from '@/components/ui/Pagination.svelte';
     import StatCard from '@/components/ui/StatCard.svelte';
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import Select from '@/components/ui/Select.svelte';
@@ -35,6 +34,10 @@
     let activeTab = $state('overview');
     let class1 = $state(activeClass);
     let class2 = $state('');
+
+    $effect(() => {
+        class1 = activeClass;
+    });
 
     const columns = $derived([
         { key: 'respondent', label: 'Responden', align: 'left' },
@@ -101,7 +104,7 @@
 
         <!-- Tab Navigation -->
         <div class="border-b border-slate-100">
-            <nav class="flex gap-8" aria-label="Tabs" role="tablist">
+            <div class="flex gap-8" aria-label="Tabs" role="tablist">
                 <button
                     onclick={() => activeTab = 'overview'}
                     aria-selected={activeTab === 'overview'}
@@ -118,7 +121,7 @@
                 >
                     Analisis Statistik (Skripsi)
                 </button>
-            </nav>
+            </div>
         </div>
 
         {#if activeTab === 'overview'}
@@ -141,6 +144,7 @@
                     items={ueqState.surveys}
                     {columns}
                     hideSearch={true}
+                    itemsPerPage={10}
                 >
                     {#snippet row(survey)}
                         <td class="border-b border-slate-50 px-6 py-6">
@@ -186,7 +190,6 @@
                 </DataTable>
             </div>
 
-            <Pagination links={(ueqState.surveys as any).links || []} />
         {:else}
             <!-- Statistical Analysis Section -->
             <div class="space-y-6">

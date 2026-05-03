@@ -57,6 +57,7 @@
                 items={state.pendingAdmins}
                 {columns}
                 hideSearch={true}
+                itemsPerPage={10}
             >
                 {#snippet row(admin: any, index)}
                     <td class="border-b border-slate-50 px-6 py-6">

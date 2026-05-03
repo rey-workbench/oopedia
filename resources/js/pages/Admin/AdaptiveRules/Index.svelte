@@ -168,7 +168,7 @@
                 title="Manajemen Aturan"
                 subtitle="Daftar seluruh logika inferensi yang terdaftar dalam sistem."
             >
-                <DataTable items={flattenedRules} {columns} hideSearch={false}>
+                <DataTable items={flattenedRules} {columns} hideSearch={false} itemsPerPage={10}>
                     {#snippet empty()}
                         <EmptyState
                             icon={Zap}

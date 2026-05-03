@@ -1,11 +1,9 @@
 <script lang="ts">
     import App from '@/layouts/App.svelte';
-    import Button from '@/components/ui/Button.svelte';
-    import DataTable from '@/components/ui/DataTable.svelte';
-    import Pagination from '@/components/ui/Pagination.svelte';
-    import Card from '@/components/ui/Card.svelte';
-    import StatCard from '@/components/ui/StatCard.svelte';
     import PageHeader from '@/components/ui/PageHeader.svelte';
+    import DataTable from '@/components/ui/DataTable.svelte';
+    import StatCard from '@/components/ui/StatCard.svelte';
+    import Card from '@/components/ui/Card.svelte';
     import Select from '@/components/ui/Select.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
     import { FileDown, Eye, ChevronRight, BarChart3, Star, Award, CheckCircle2, Calculator } from 'lucide-svelte';
@@ -16,6 +14,7 @@
     import type { AdminSusIndexProps } from '@/types';
     import { router } from '@inertiajs/svelte';
     import StatisticalAnalysis from '@/components/Admin/StatisticalAnalysis.svelte';
+    import { Button } from '@/components';
     
     let {
         results = [],
@@ -31,7 +30,7 @@
     let class2 = $state('');
 
     $effect(() => {
-        if (class1 === undefined) class1 = activeClass;
+        class1 = activeClass;
     });
 
     function handleComparison() {
@@ -137,7 +136,7 @@
             </div>
 
             <div id="sus-results-table" class="mt-8">
-                <DataTable title="Log Responden SUS" items={susState.results} {columns} hideSearch={true}>
+                <DataTable title="Log Responden SUS" items={susState.results} {columns} hideSearch={true} itemsPerPage={10}>
                     {#snippet row(result)}
                         <td class="border-b border-slate-50 px-6 py-6">
                             <div class="flex items-center gap-4">
@@ -189,7 +188,6 @@
                 </DataTable>
             </div>
 
-            <Pagination links={(susState.results as any).links || []} />
         {:else}
             <!-- Statistical Analysis Section -->
             <div class="space-y-6">

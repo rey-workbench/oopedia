@@ -1,16 +1,20 @@
 <script lang="ts">
+    import { Link } from '@inertiajs/svelte';
     import type { Snippet } from 'svelte';
     import Card from '@/components/ui/Card.svelte';
     import EmptyState from '@/components/ui/EmptyState.svelte';
-    import { Search } from 'lucide-svelte';
+    import { Search, ChevronLeft, ChevronRight } from 'lucide-svelte';
 
     export interface Props {
         id?: string;
         title?: string;
         items?: any[];
+        links?: any[]; // New prop for server-side pagination links
         search?: string;
         searchPlaceholder?: string;
         hideSearch?: boolean;
+        hidePagination?: boolean;
+        itemsPerPage?: number;
         columns?: {
             key: string;
             label: string;
@@ -29,9 +33,12 @@
         id,
         title = 'Data',
         items = [],
+        links = [], // Default to empty
         search = $bindable(''),
         searchPlaceholder = 'Cari...',
         hideSearch = false,
+        hidePagination = false,
+        itemsPerPage = 10,
         columns = [],
         rowClass = () => '',
         emptyTitle = 'Data Kosong',
@@ -41,6 +48,28 @@
         empty,
         ...rest
     }: Props = $props();
+
+    // Internal pagination state for client-side
+    let currentPage = $state(1);
+
+    // Check if we are using server-side pagination
+    const isServerSide = $derived(links && links.length > 3);
+    
+    // Derived values for client-side pagination
+    const totalPages = $derived(Math.ceil((items?.length ?? 0) / itemsPerPage));
+    const paginatedItems = $derived(
+        (hidePagination || isServerSide)
+            ? items 
+            : (items ?? []).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+    );
+
+    // Reset to page 1 when items change (e.g. filter)
+    $effect(() => {
+        items; // touch for dependency
+        if (!isServerSide) {
+            currentPage = 1;
+        }
+    });
 </script>
 
 <Card {id} padding="p-0" class="overflow-hidden" {...rest}>
@@ -84,7 +113,7 @@
                 </tr>
             </thead>
             <tbody>
-                {#if (items?.length ?? 0) === 0}
+                {#if (paginatedItems?.length ?? 0) === 0}
                     <tr>
                         <td colspan={columns.length} class="p-0">
                             {#if empty}
@@ -95,15 +124,69 @@
                         </td>
                     </tr>
                 {:else}
-                    {#each items as item, i (item?.id ?? i)}
+                    {#each paginatedItems as item, i (item?.id ?? i)}
                         <tr
                             class={`group border-cosmos-border hover:bg-primary-50/30 border-b-2 transition-colors last:border-0 ${rowClass(item)}`}
                         >
-                            {@render row?.(item, i)}
+                            {@render row?.(item, (currentPage - 1) * itemsPerPage + i)}
                         </tr>
                     {/each}
                 {/if}
             </tbody>
         </table>
     </div>
+
+    {#if !hidePagination && (isServerSide || totalPages > 1)}
+        <div class="flex items-center justify-between border-t border-slate-100 bg-slate-50/30 p-6">
+            {#if isServerSide}
+                <!-- Server-side Pagination Layout -->
+                <div class="flex w-full items-center justify-center gap-2">
+                    {#each links as link}
+                        {#if link.url}
+                            <Link
+                                href={link.url}
+                                class="rounded-xl border-2 px-4 py-2 text-xs font-black transition-all active:translate-y-[2px] active:border-b-2 {link.active
+                                    ? 'border-b-4 border-slate-900 bg-slate-900 text-white'
+                                    : 'border-cosmos-border border-b-4 bg-white text-slate-400 hover:text-slate-900'}"
+                            >
+                                {@html link.label}
+                            </Link>
+                        {:else}
+                            <span
+                                class="cursor-not-allowed rounded-xl border border-slate-100 bg-white/50 px-4 py-2 text-xs font-black text-slate-300"
+                            >
+                                {@html link.label}
+                            </span>
+                        {/if}
+                    {/each}
+                </div>
+            {:else}
+                <!-- Client-side Pagination Layout -->
+                <div class="text-[10px] font-black tracking-widest text-slate-400 uppercase">
+                    Menampilkan {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, items?.length ?? 0)} dari {items?.length ?? 0} data
+                </div>
+                <div class="flex items-center gap-2">
+                    <button
+                        onclick={() => currentPage = Math.max(1, currentPage - 1)}
+                        disabled={currentPage === 1}
+                        class="border-duo flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-400 transition-all hover:text-primary-500 disabled:cursor-not-allowed disabled:opacity-30 active:translate-y-0.5 active:border-b-2"
+                    >
+                        <ChevronLeft size={20} />
+                    </button>
+                    
+                    <div class="flex h-10 items-center justify-center rounded-xl bg-primary-500 px-4 text-xs font-black text-white shadow-lg shadow-primary-500/20">
+                        {currentPage} / {totalPages}
+                    </div>
+
+                    <button
+                        onclick={() => currentPage = Math.min(totalPages, currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        class="border-duo flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-400 transition-all hover:text-primary-500 disabled:cursor-not-allowed disabled:opacity-30 active:translate-y-0.5 active:border-b-2"
+                    >
+                        <ChevronRight size={20} />
+                    </button>
+                </div>
+            {/if}
+        </div>
+    {/if}
 </Card>

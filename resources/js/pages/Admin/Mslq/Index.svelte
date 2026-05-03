@@ -28,7 +28,7 @@
     let class2 = $state('');
 
     $effect(() => {
-        if (class1 === undefined) class1 = activeClass;
+        class1 = activeClass;
     });
 
     function handleComparison() {
@@ -315,6 +315,7 @@
             </div>
             <DataTable
                 items={results.data}
+                links={results.links}
                 columns={[
                     { key: 'user.name', label: 'Nama Mahasiswa', align: 'left' },
                     { key: 'nim', label: 'NIM', align: 'left' },

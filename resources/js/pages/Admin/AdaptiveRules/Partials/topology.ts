@@ -12,14 +12,6 @@ export function resolveGraphTopology(rules: any[], factData: any[], actionData: 
     const nodeRegistry = new Map<string, any>();
 
     // Phase 1: Initialize Virtual Inputs
-    const layers = [
-        { id: 'input', label: 'SUMBER DATA' },
-        { id: 'condition', label: 'GEJALA (FACTS)' },
-        { id: 'gate_diag', label: 'ANALISA (RULES)' },
-        { id: 'diagnosis', label: 'DIAGNOSIS (V-FACTS)' },
-        { id: 'gate_act', label: 'STRATEGI (DECISION)' },
-        { id: 'recommendation', label: 'INTERVENSI (ACTION)' },
-    ];
     const inputs = [
         { id: 'IN_ACC', name: 'Jawaban (B/S)' },
         { id: 'IN_SPD', name: 'Kecepatan Respons' },

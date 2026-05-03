@@ -24,7 +24,6 @@ export { default as Section } from './Section.svelte';
 // Data Display
 export { default as Chart } from './Chart.svelte';
 export { default as DataTable } from './DataTable.svelte';
-export { default as Pagination } from './Pagination.svelte';
 export { default as PageHeader } from './PageHeader.svelte';
 export { default as ProgressBar } from './ProgressBar.svelte';
 export { default as StatCard } from './StatCard.svelte';

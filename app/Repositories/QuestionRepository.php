@@ -85,7 +85,7 @@ final class QuestionRepository implements QuestionRepositoryInterface
             ))
             ->when($difficulty, fn ($query) => $query->where('difficulty', '=', $difficulty))
             ->when($materialId, fn ($query) => $query->where('material_id', '=', $materialId))->latest()
-            ->paginate(15);
+            ->paginate(10);
     }
 
     public function countByMaterialAndDifficulty(string $materialId, QuestionDifficulty $questionDifficulty): int

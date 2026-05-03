@@ -70,4 +70,17 @@ final class Material extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function getCoverUrlAttribute(?string $value): ?string
+    {
+        if (empty($value)) {
+            return null;
+        }
+
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return $value;
+        }
+
+        return asset('storage/' . ltrim($value, '/'));
+    }
 }
