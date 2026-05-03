@@ -198,10 +198,11 @@
     let feedbackTone = $derived(getFeedbackTone(feedbackStatus));
     let feedbackTitle = $derived(getFeedbackTitle(feedbackStatus));
     let displayTitle = $derived(quizState.adaptiveTriggeredRule?.rule?.name || feedbackTitle);
-    let displayMessage = $derived(
-        quizState.adaptiveTriggeredRule?.rule?.recommendation ||
-            quizState.feedbackData?.message ||
-            ''
+    let displayMessage = $derived(quizState.feedbackData?.message || '');
+    let recommendation = $derived(
+        quizState.adaptiveTriggeredRule?.rule?.recommendation !== displayMessage
+            ? quizState.adaptiveTriggeredRule?.rule?.recommendation
+            : null
     );
 
     const isRemedial = $derived(
@@ -265,9 +266,15 @@
                                 </span>
                             {/if}
                         </div>
-                        <p class={`mt-0.5 text-sm font-bold ${feedbackTone.body}`}>
+                        <p class={`mt-0.5 text-sm font-bold leading-relaxed ${feedbackTone.body}`}>
                             {displayMessage}
                         </p>
+
+                        {#if recommendation}
+                            <p class={`mt-2 text-xs font-medium italic opacity-80 ${feedbackTone.body}`}>
+                                {recommendation}
+                            </p>
+                        {/if}
 
                         {#if feedbackActions.length > 0}
                             <div class="mt-2 flex flex-wrap gap-2">

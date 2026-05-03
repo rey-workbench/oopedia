@@ -538,9 +538,22 @@ final readonly class QuizService implements QuizServiceInterface
                 'variant'     => $actionModels->get($id)?->variant ?? 'feedback',
             ], $engineResult->actions);
 
+            // 5. Get Explanation for Feedback
+            $explanation = null;
+            if ($question->question_type === QuestionType::RADIO_BUTTON && $answerId) {
+                $selectedAnswer = $question->answers->firstWhere('id', $answerId);
+                $explanation    = $selectedAnswer?->explanation;
+            } elseif ($question->question_type === QuestionType::FILL_IN_THE_BLANK) {
+                $correctAnswer = $question->answers->where('is_correct', true)->first();
+                $explanation   = $correctAnswer?->explanation;
+            } elseif ($question->question_type === QuestionType::DRAG_AND_DROP) {
+                $explanation = $question->answers->first()?->explanation;
+            }
+
             return [
                 'is_correct'          => $isCorrect,
                 'score'               => $score,
+                'explanation'         => $explanation,
                 'challenge_question'  => null, // Handled via adaptive_state
                 'engine_result'       => array_merge($engineResult->toArray(), [
                     'diagnosis'       => $friendlyDiagnosis,

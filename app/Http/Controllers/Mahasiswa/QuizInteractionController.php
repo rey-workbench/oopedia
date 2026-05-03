@@ -57,13 +57,11 @@ final class QuizInteractionController extends Controller
         if ($finalRuleId) {
             $ruleModel = AdaptiveRule::find($finalRuleId);
             if ($ruleModel) {
-                $triggeredRule = array_merge(
-                    new AdaptiveRuleResource($ruleModel)->resolve(),
-                    [
-                        'actions' => $engineResult['actions'], // Already hydrated by QuizService
-                        'title'   => $isCorrect ? 'Berhasil!' : 'Belum Tepat',
-                    ],
-                );
+                $triggeredRule = [
+                    'rule'    => new AdaptiveRuleResource($ruleModel)->resolve(),
+                    'actions' => $engineResult['actions'], // Already hydrated by QuizService
+                    'title'   => $isCorrect ? 'Berhasil!' : 'Belum Tepat',
+                ];
             }
         }
 
@@ -72,14 +70,17 @@ final class QuizInteractionController extends Controller
             $rulesModels = AdaptiveRule::whereIn('id', $ruleChain)->get()->keyBy('id');
             foreach ($ruleChain as $id) {
                 if (isset($rulesModels[$id])) {
-                    $triggeredRules[] = new AdaptiveRuleResource($rulesModels[$id])->resolve();
+                    $triggeredRules[] = [
+                        'rule'    => new AdaptiveRuleResource($rulesModels[$id])->resolve(),
+                        'actions' => [], // Actions are usually only for the final rule
+                    ];
                 }
             }
         }
 
         $feedback = [
             'status'          => $isCorrect ? 'success' : 'error',
-            'message'         => $isCorrect ? 'Jawaban Benar!' : 'Belum Tepat',
+            'message'         => $result['explanation'] ?? ($isCorrect ? 'Jawaban Benar!' : 'Belum Tepat'),
             'xp_earned'       => $result['score'],
             'is_correct'      => $isCorrect,
             'adaptive_result' => array_merge($engineResult, [
