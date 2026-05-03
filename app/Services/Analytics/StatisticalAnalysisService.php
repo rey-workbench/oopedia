@@ -23,7 +23,14 @@ final class StatisticalAnalysisService
             return ['error' => 'Sampel terlalu kecil'];
         }
 
-        return Significance::tTest($group1, $group2);
+        $result = Significance::tTest($group1, $group2);
+        
+        // Standarisasi key untuk frontend
+        if (isset($result['p2'])) {
+            $result['p-value'] = $result['p2'];
+        }
+
+        return $result;
     }
 
     /**
@@ -99,17 +106,23 @@ final class StatisticalAnalysisService
         $u2 = ($n1 * $n2) + (($n2 * ($n2 + 1)) / 2) - $r2;
 
         $uMin = min($u1, $u2);
-
+        
         // Z-Score untuk n > 20
-        $z = ($uMin - ($n1 * $n2 / 2)) / sqrt(($n1 * $n2 * ($n1 + $n2 + 1)) / 12);
+        $denom = sqrt(($n1 * $n2 * ($n1 + $n2 + 1)) / 12);
+        $z = $denom == 0 ? 0 : ($uMin - ($n1 * $n2 / 2)) / $denom;
+
+        // P-Value dari Z-Score (Dua sisi)
+        $standardNormal = new \MathPHP\Probability\Distribution\Continuous\StandardNormal();
+        $pValue = 2 * (1 - $standardNormal->cdf(abs($z)));
 
         return [
-            'u_1'     => $u1,
-            'u_2'     => $u2,
-            'u_min'   => $uMin,
-            'z_score' => $z,
-            'r_1'     => $r1,
-            'r_2'     => $r2,
+            'u_1'      => $u1,
+            'u_2'      => $u2,
+            'u_min'    => $uMin,
+            'z_score'  => $z,
+            'p-value'  => $pValue,
+            'r_1'      => $r1,
+            'r_2'      => $r2,
         ];
     }
 

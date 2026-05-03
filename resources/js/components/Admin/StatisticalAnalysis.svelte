@@ -59,10 +59,10 @@
             <div class="p-8">
                 <div class="mb-6 flex items-center justify-between">
                     <div class="flex items-center gap-4">
-                        <div class="bg-accent-50 text-accent-500 border-accent-100 flex h-10 w-10 items-center justify-center rounded-xl border-2">
+                        <div class="bg-primary-50 text-primary-500 border-primary-100 flex h-10 w-10 items-center justify-center rounded-xl border-2">
                             <Calculator size={20} />
                         </div>
-                        <h3 class="text-accent-500 font-display text-lg font-black tracking-widest uppercase">
+                        <h3 class="text-primary-500 font-display text-lg font-black tracking-widest uppercase">
                             Uji Hipotesis (Komparasi)
                         </h3>
                     </div>
@@ -111,6 +111,18 @@
                                 <div class="flex justify-between">
                                     <span class="text-[10px] font-bold text-slate-400 uppercase">U-Min</span>
                                     <span class="text-sm font-black text-slate-700">{comparison.mann_whitney.u_min}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase">P-Value</span>
+                                    <span class="font-black {comparison.mann_whitney['p-value'] < 0.05 ? 'text-emerald-500' : 'text-slate-700'}">
+                                        {formatNumber(comparison.mann_whitney['p-value'])}
+                                    </span>
+                                </div>
+                                <div class="mt-2 flex items-center gap-2">
+                                    <div class="h-2 w-2 rounded-full {comparison.mann_whitney['p-value'] < 0.05 ? 'bg-emerald-500' : 'bg-slate-300'}"></div>
+                                    <span class="text-[9px] font-black tracking-widest uppercase">
+                                        {comparison.mann_whitney['p-value'] < 0.05 ? 'Signifikan (H1 Diterima)' : 'Tidak Signifikan (H0 Diterima)'}
+                                    </span>
                                 </div>
                                 <div class="mt-2 text-[9px] font-bold text-slate-400 uppercase italic">
                                     Digunakan jika data tidak berdistribusi normal.

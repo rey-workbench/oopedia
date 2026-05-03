@@ -6,7 +6,7 @@
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import Chart from '@/components/ui/Chart.svelte';
     import Select from '@/components/ui/Select.svelte';
-    import { Eye, FileSpreadsheet, Brain, Target, ClipboardList, ChevronRight } from 'lucide-svelte';
+    import { Eye, FileSpreadsheet, Brain, Target, ClipboardList, ChevronRight, Calculator } from 'lucide-svelte';
     import { MslqState } from '@/states/Admin/MslqState.svelte';
     import { Link } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils/route';
@@ -134,11 +134,11 @@
                         class="border-duo w-48 rounded-xl"
                     />
                     <Button
-                        variant="outline"
+                        variant="success"
                         size="md"
                         icon={FileSpreadsheet}
                         class="border-duo"
-                        onclick={() => mslqState.exportResults()}>Export Data</Button
+                        onclick={() => mslqState.exportResults()}>EKSPOR CSV</Button
                     >
                 </div>
             {/snippet}
@@ -158,7 +158,7 @@
                 onclick={() => activeTab = 'analysis'}
                 aria-selected={activeTab === 'analysis'}
                 role="tab"
-                class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab === 'analysis' ? 'border-accent-500 text-accent-500 border-b-4' : 'text-slate-400 hover:text-slate-600'}"
+                class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab === 'analysis' ? 'border-primary-500 text-primary-600 border-b-4' : 'text-slate-400 hover:text-slate-600'}"
             >
                 Analisis Statistik (Skripsi)
             </button>
@@ -266,7 +266,7 @@
                 <Card class="border-duo overflow-hidden rounded-3xl border-slate-100 shadow-xl">
                     <div class="flex flex-wrap items-center justify-between gap-6 p-8">
                         <div class="space-y-1">
-                            <h3 class="text-accent-500 font-display text-lg font-black tracking-widest uppercase">Komparasi Kelompok</h3>
+                            <h3 class="text-primary-500 font-display text-lg font-black tracking-widest uppercase">Komparasi Kelompok</h3>
                             <p class="text-xs font-medium text-slate-500 uppercase">Pilih dua kelas untuk melakukan uji Independent T-Test & Mann-Whitney U.</p>
                         </div>
                         <div class="flex items-center gap-4">
@@ -291,7 +291,7 @@
                                     class="w-40 rounded-xl"
                                 />
                             </div>
-                            <Button variant="primary" class="mt-6 rounded-xl font-black" onclick={handleComparison}>PROSES UJI</Button>
+                            <Button variant="primary" class="mt-6 rounded-xl font-black" icon={Calculator} onclick={handleComparison}>PROSES UJI</Button>
                         </div>
                     </div>
                 </Card>

@@ -8,7 +8,7 @@
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import Select from '@/components/ui/Select.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
-    import { FileDown, Eye, ChevronRight, BarChart3, Star, Award, CheckCircle2 } from 'lucide-svelte';
+    import { FileDown, Eye, ChevronRight, BarChart3, Star, Award, CheckCircle2, Calculator } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { SusListState } from '@/states/Admin/SusState.svelte';
     import { formatDate } from '@/utils/formatters';
@@ -88,13 +88,13 @@
                 role="tab"
                 class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab === 'overview' ? 'border-primary-500 text-primary-500 border-b-4' : 'text-slate-400 hover:text-slate-600'}"
             >
-                Metrik SUS
+                Ringkasan Data
             </button>
             <button 
                 onclick={() => activeTab = 'analysis'}
                 aria-selected={activeTab === 'analysis'}
                 role="tab"
-                class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab === 'analysis' ? 'border-accent-500 text-accent-500 border-b-4' : 'text-slate-400 hover:text-slate-600'}"
+                class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab === 'analysis' ? 'border-primary-500 text-primary-600 border-b-4' : 'text-slate-400 hover:text-slate-600'}"
             >
                 Analisis Statistik (Skripsi)
             </button>
@@ -196,7 +196,7 @@
                 <Card class="border-duo overflow-hidden rounded-3xl border-slate-100 shadow-xl">
                     <div class="flex flex-wrap items-center justify-between gap-6 p-8">
                         <div class="space-y-1">
-                            <h3 class="text-accent-500 font-display text-lg font-black tracking-widest uppercase">Komparasi Kelompok SUS</h3>
+                            <h3 class="text-primary-500 font-display text-lg font-black tracking-widest uppercase">Komparasi Kelompok</h3>
                             <p class="text-xs font-medium text-slate-500 uppercase">Pilih dua kelas untuk membandingkan skor SUS secara statistik.</p>
                         </div>
                         <div class="flex items-center gap-4">
@@ -221,7 +221,7 @@
                                     class="w-40 rounded-xl"
                                 />
                             </div>
-                            <Button variant="primary" class="mt-6 rounded-xl font-black" onclick={handleComparison}>PROSES UJI</Button>
+                            <Button variant="primary" class="mt-6 rounded-xl font-black" icon={Calculator} onclick={handleComparison}>PROSES UJI</Button>
                         </div>
                     </div>
                 </Card>

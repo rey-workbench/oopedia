@@ -9,7 +9,7 @@
     import Select from '@/components/ui/Select.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
     import StatisticalAnalysis from '@/components/Admin/StatisticalAnalysis.svelte';
-    import { BarChart3, FileDown, Eye, Calculator } from 'lucide-svelte';
+    import { BarChart3, FileDown, Eye, Calculator, ChevronRight } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { UeqListState } from '@/states/Admin/UeqState.svelte';
     import { formatDate } from '@/utils/formatters';
@@ -108,13 +108,13 @@
                     role="tab"
                     class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab === 'overview' ? 'border-primary-500 text-primary-500 border-b-4' : 'text-slate-400 hover:text-slate-600'}"
                 >
-                    Ikhtisar Data
+                    Ringkasan Data
                 </button>
                 <button
                     onclick={() => activeTab = 'analysis'}
                     aria-selected={activeTab === 'analysis'}
                     role="tab"
-                    class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab === 'analysis' ? 'border-accent-500 text-accent-500 border-b-4' : 'text-slate-400 hover:text-slate-600'}"
+                    class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab === 'analysis' ? 'border-primary-500 text-primary-600 border-b-4' : 'text-slate-400 hover:text-slate-600'}"
                 >
                     Analisis Statistik (Skripsi)
                 </button>
@@ -193,7 +193,7 @@
                 <Card class="border-duo overflow-hidden rounded-3xl border-slate-100 shadow-xl">
                     <div class="flex flex-wrap items-center justify-between gap-6 p-8">
                         <div class="space-y-1">
-                            <h3 class="text-accent-500 font-display text-lg font-black tracking-widest uppercase">Komparasi Kelompok UEQ</h3>
+                            <h3 class="text-primary-500 font-display text-lg font-black tracking-widest uppercase">Komparasi Kelompok</h3>
                             <p class="text-xs font-medium text-slate-500 uppercase">Pilih dua kelas untuk membandingkan skor UEQ (Attractiveness) secara statistik.</p>
                         </div>
                         <div class="flex items-center gap-4">
@@ -205,6 +205,9 @@
                                     placeholder="Kelas 1"
                                     class="w-40 rounded-xl"
                                 />
+                            </div>
+                            <div class="text-slate-300 mt-6">
+                                <ChevronRight size={20} />
                             </div>
                             <div class="space-y-2">
                                 <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Kelompok 2</span>
@@ -218,11 +221,11 @@
                             <Button 
                                 variant="primary" 
                                 size="md" 
-                                class="mt-6"
+                                class="mt-6 rounded-xl font-black"
                                 icon={Calculator}
                                 onclick={runAnalysis}
                             >
-                                ANALISIS
+                                PROSES UJI
                             </Button>
                         </div>
                     </div>
