@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Contracts\Services\MaterialServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
+use App\Contracts\Services\UserServiceInterface;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -16,6 +17,7 @@ class HandleInertiaRequests extends Middleware
     public function __construct(
         protected ?MaterialServiceInterface $materialService = null,
         protected ?PerformanceServiceInterface $performanceService = null,
+        protected ?UserServiceInterface $userService = null,
     ) {}
 
     #[\Override]
@@ -41,6 +43,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'feedback'          => fn () => $request->session()->get('feedback'),
             'sidebar_materials' => $sidebarMaterials,
+            'pending_admins_count' => fn () => ($user && $user->isSuperAdmin() && $this->userService) ? $this->userService->getPendingAdminsCount() : 0,
             'student_state'     => fn () => $user ? ($this->performanceService instanceof PerformanceServiceInterface ? $this->performanceService->getStudentSessionState((string) $user->id) : $request->session()->get('student_state')) : $request->session()->get('student_state'),
             'csrf_token'        => csrf_token(),
         ];

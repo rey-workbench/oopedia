@@ -111,7 +111,7 @@
                                   : 'success'}
                             size="xs"
                         >
-                            {user.role ? user.role.name : 'N/A'}
+                            {user.role ? user.role.role_name : 'N/A'}
                         </Badge>
                     </td>
                     <td class="border-b border-slate-50 px-6 py-6">
@@ -120,7 +120,7 @@
                                 class="text-[10px] font-bold tracking-widest text-slate-400 uppercase"
                                 >TANPA BATAS</span
                             >
-                        {:else if user.approved_at}
+                        {:else if user.is_approved}
                             <span
                                 class="text-[10px] font-bold tracking-widest text-emerald-600 uppercase"
                                 >DISETUJUI</span

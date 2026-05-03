@@ -27,10 +27,12 @@ final class UserResource extends JsonResource
             'email'             => $this->email,
             'nim'               => $this->nim,
             'class'             => $this->class,
-            'is_approved'       => $this->is_approved,
+            'role_id'           => $this->role_id,
+            'is_approved'       => (bool) $this->is_approved,
             'role'              => [
                 'role_name' => $this->role?->role_name?->value ?? 'guest',
             ],
+            'approved_at'       => $this->approved_at?->toIso8601String(),
             'overall_progress'  => $this->when(isset($this->overall_progress), $this->overall_progress),
             'total_answered'    => $this->when(isset($this->total_answered_questions), $this->total_answered_questions),
             'last_active'       => $this->updated_at?->toIso8601String(),

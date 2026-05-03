@@ -30,7 +30,7 @@
         analysis: any;
     } = $props();
 
-    const state = untrack(() => new UeqListState(surveys, averages, classes, activeClass));
+    const ueqState = untrack(() => new UeqListState(surveys, averages, classes, activeClass));
 
     let activeTab = $state('overview');
     let class1 = $state(activeClass);
@@ -44,7 +44,7 @@
     ]);
 
     const statsData = $derived(
-        Object.entries(state.averages).map(([dimension, score]) => ({
+        Object.entries(ueqState.averages).map(([dimension, score]) => ({
             title: dimension,
             value: (score as number).toFixed(2),
             icon: BarChart3,
@@ -83,9 +83,9 @@
                 <div class="flex items-center gap-4">
                     <Select
                         placeholder="Filter Kelas"
-                        value={state.activeClass}
-                        onchange={(v) => state.handleFilterChange({ target: { value: v } } as any)}
-                        options={state.classes.map((c) => ({ label: c, value: c }))}
+                        value={ueqState.activeClass}
+                        onchange={(v) => ueqState.handleFilterChange({ target: { value: v } } as any)}
+                        options={ueqState.classes.map((c) => ({ label: c, value: c }))}
                         class="border-duo w-48 rounded-xl"
                     />
                     <Button
@@ -93,7 +93,7 @@
                         size="md"
                         icon={FileDown}
                         class="border-duo"
-                        onclick={() => state.exportResults()}>EKSPOR CSV</Button
+                        onclick={() => ueqState.exportResults()}>EKSPOR CSV</Button
                     >
                 </div>
             {/snippet}
@@ -138,7 +138,7 @@
             <div id="ueq-respondents-table" class="mt-8">
                 <DataTable
                     title="Log Responden Survey"
-                    items={state.surveys}
+                    items={ueqState.surveys}
                     {columns}
                     hideSearch={true}
                 >
@@ -186,7 +186,7 @@
                 </DataTable>
             </div>
 
-            <Pagination links={(state.surveys as any).links || []} />
+            <Pagination links={(ueqState.surveys as any).links || []} />
         {:else}
             <!-- Statistical Analysis Section -->
             <div class="space-y-6">
@@ -200,7 +200,7 @@
                             <div class="space-y-2">
                                 <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Kelompok 1</span>
                                 <Select 
-                                    options={state.classes.map(c => ({ label: c, value: c }))} 
+                                    options={ueqState.classes.map(c => ({ label: c, value: c }))} 
                                     bind:value={class1} 
                                     placeholder="Kelas 1"
                                     class="w-40 rounded-xl"
@@ -209,7 +209,7 @@
                             <div class="space-y-2">
                                 <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Kelompok 2</span>
                                 <Select 
-                                    options={state.classes.map(c => ({ label: c, value: c }))} 
+                                    options={ueqState.classes.map(c => ({ label: c, value: c }))} 
                                     bind:value={class2} 
                                     placeholder="Kelas 2"
                                     class="w-40 rounded-xl"

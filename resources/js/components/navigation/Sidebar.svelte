@@ -21,6 +21,7 @@
         LogIn,
         UserPlus,
         Brain,
+        Clock,
     } from 'lucide-svelte';
     import { getTourIdFromUrl, registerGlobalTutorials } from '@/tutorial';
     import { onMount } from 'svelte';
@@ -160,6 +161,23 @@
                             active={page.url.startsWith(ROUTES.ADMIN.USERS.INDEX)}
                             >Daftar Admin</SidebarLink
                         >
+                        <SidebarLink
+                            id="sidebar-admin-pending"
+                            href={ROUTES.ADMIN.PENDING_ADMINS.INDEX}
+                            icon={Clock}
+                            active={page.url.startsWith(ROUTES.ADMIN.PENDING_ADMINS.INDEX)}
+                        >
+                            <div class="flex flex-1 items-center justify-between">
+                                <span>Permohonan Akses</span>
+                                {#if (page.props as any).pending_admins_count > 0}
+                                    <span
+                                        class="flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white shadow-sm"
+                                    >
+                                        {(page.props as any).pending_admins_count}
+                                    </span>
+                                {/if}
+                            </div>
+                        </SidebarLink>
                     {/if}
                     {#if userRole === ROLE.SUPERADMIN}
                         <SidebarLink
