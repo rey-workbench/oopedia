@@ -21,6 +21,10 @@ final class SusSurveyController extends Controller
         $classes    = $this->susResultService->getDistinctClasses();
         $metrics    = $this->susResultService->calculateGlobalMetrics($results);
 
+        $class1   = $request->input('class1', $class);
+        $class2   = $request->input('class2');
+        $analysis = $this->susResultService->calculateStatisticalAnalysis($class1, $class2);
+
         return $this->render('Admin/Sus/Index', [
             'results'  => $results,
             'averages' => [
@@ -35,6 +39,7 @@ final class SusSurveyController extends Controller
             ],
             'classes'     => $classes,
             'activeClass' => $class,
+            'analysis'    => $analysis,
         ]);
     }
 

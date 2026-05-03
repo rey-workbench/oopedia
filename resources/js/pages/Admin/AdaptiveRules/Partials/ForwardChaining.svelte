@@ -50,10 +50,12 @@
     // ─── CONFIGURATION & CONSTANTS ──────────────────────────────────────────
 
     const LAYERS = [
-        { id: 'input', label: 'INPUT', color: 'bg-slate-100/50' },
-        { id: 'condition', label: 'KONDISI', color: 'bg-indigo-50/30' },
-        { id: 'diagnosis', label: 'DIAGNOSIS', color: 'bg-emerald-50/30' },
-        { id: 'recommendation', label: 'REKOMENDASI', color: 'bg-amber-50/30' },
+        { id: 'input', label: 'SUMBER DATA', color: 'bg-slate-100/50' },
+        { id: 'condition', label: 'GEJALA (FACTS)', color: 'bg-primary-50/30' },
+        { id: 'gate_diag', label: 'ANALISA (RULES)', color: 'bg-indigo-50/30' },
+        { id: 'diagnosis', label: 'DIAGNOSIS (V-FACTS)', color: 'bg-emerald-50/30' },
+        { id: 'gate_act', label: 'STRATEGI (DECISION)', color: 'bg-purple-50/30' },
+        { id: 'recommendation', label: 'INTERVENSI (ACTION)', color: 'bg-amber-50/30' },
     ];
 
     let isInitialized = false;
@@ -421,7 +423,7 @@
             <div
                 class="pointer-events-auto flex items-center gap-3 rounded-xl border border-slate-200 bg-white/90 p-2 px-4 shadow-sm backdrop-blur transition-transform"
             >
-                <div class="h-3 w-3 rounded-sm bg-emerald-600"></div>
+                <div class="h-3 w-3 rounded-sm bg-amber-600"></div>
                 <span class="text-[10px] font-bold tracking-wider text-slate-500 uppercase"
                     >Keputusan Adaptif</span
                 >

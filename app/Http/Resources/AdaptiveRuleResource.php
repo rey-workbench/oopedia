@@ -22,19 +22,18 @@ final class AdaptiveRuleResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'             => $this->id,
-            'name'           => $this->name,
-            'description'    => $this->description,
-            'priority'       => $this->priority,
-            'is_active'      => $this->is_active,
-            'conditions'     => $this->conditions,
-            'consequences'   => $this->consequences,
-            'facts'          => $this->facts,
-            'deduced_facts'  => $this->deduced_facts,
-            'actions'        => $this->actions, // Relation to AdaptiveAction
-            'execution_logs' => $this->whenLoaded('executionLogs'),
-            'created_at'     => $this->created_at?->toIso8601String(),
-            'updated_at'     => $this->updated_at?->toIso8601String(),
+            'id'                => $this->id,
+            'name'              => $this->name,
+            'description'       => $this->description,
+            'recommendation'    => $this->recommendation,
+            'priority'          => $this->priority,
+            'is_active'         => $this->is_active,
+            'required_fact_ids' => $this->required_fact_ids,
+            'deduced_fact_ids'  => $this->deduced_fact_ids,
+            'actions'           => $this->actions,
+            'execution_logs'    => $this->whenLoaded('executionLogs'),
+            'created_at'        => $this->created_at?->toIso8601String(),
+            'updated_at'        => $this->updated_at?->toIso8601String(),
         ];
     }
 }

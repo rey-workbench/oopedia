@@ -1,10 +1,11 @@
 <script lang="ts">
     import Card from '@/components/ui/Card.svelte';
+
     import type { Component } from 'svelte';
 
-    type IconType = Component<{ size?: number; strokeWidth?: number }> | string;
+    type IconType = Component<any> | (new (...args: any[]) => any) | string;
 
-    type StatVariant = 'primary' | 'success' | 'danger' | 'warning';
+    type StatVariant = 'primary' | 'accent' | 'success' | 'danger' | 'warning' | 'info';
 
     interface Props {
         title: string;
@@ -25,17 +26,21 @@
     }: Props = $props();
 
     const variantStyles: Record<StatVariant, string> = {
-        primary: 'bg-primary-100 text-primary-600',
-        success: 'bg-emerald-100 text-emerald-600',
-        danger: 'bg-rose-100 text-rose-600',
-        warning: 'bg-amber-100 text-amber-600',
+        primary: 'bg-primary-50 text-primary-500 border-primary-100',
+        accent: 'bg-accent-50 text-accent-500 border-accent-100',
+        success: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+        danger: 'bg-rose-50 text-rose-600 border-rose-100',
+        warning: 'bg-amber-50 text-amber-600 border-amber-100',
+        info: 'bg-blue-50 text-blue-600 border-blue-100',
     };
 
     const dotStyles: Record<StatVariant, string> = {
         primary: 'bg-primary-500',
+        accent: 'bg-accent-500',
         success: 'bg-emerald-500',
         danger: 'bg-rose-500',
         warning: 'bg-amber-500',
+        info: 'bg-blue-500',
     };
 </script>
 

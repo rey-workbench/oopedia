@@ -13,11 +13,13 @@ use App\Models\MslqResult;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use MathPHP\Statistics\Descriptive;
 
 final readonly class MslqService implements MslqServiceInterface
 {
     public function __construct(
         private MslqRepositoryInterface $mslqRepository,
+        private StatisticalAnalysisService $statisticalAnalysisService,
     ) {}
 
     public function getAdminResults(?string $class = null): LengthAwarePaginator
@@ -154,5 +156,62 @@ final readonly class MslqService implements MslqServiceInterface
         });
 
         return $total / $answers->count();
+    }
+
+    public function calculateStatisticalAnalysis(?string $class1 = null, ?string $class2 = null): array
+    {
+        $results1 = $this->mslqRepository->getAllForCalculation($class1);
+        $results2 = $class2 ? $this->mslqRepository->getAllForCalculation($class2) : collect();
+
+        // 1. Cronbach's Alpha (Reliability)
+        $matrix = $this->buildAnswerMatrix($results1->merge($results2));
+        $alpha  = $this->statisticalAnalysisService->cronbachAlpha($matrix);
+
+        // 2. Mann-Whitney U (Comparison if 2 groups provided)
+        $comparison = null;
+        $tTest      = null;
+        $desc1      = null;
+        $desc2      = null;
+
+        if ($class1 && $results1->isNotEmpty()) {
+            $scores1 = $results1->pluck('total_motivation')->toArray();
+            $desc1   = Descriptive::describe($scores1);
+
+            if ($class2 && $results2->isNotEmpty()) {
+                $scores2 = $results2->pluck('total_motivation')->toArray();
+                $desc2   = Descriptive::describe($scores2);
+
+                // Perform Tests
+                $comparison = $this->statisticalAnalysisService->mannWhitneyU($scores1, $scores2);
+                $tTest      = $this->statisticalAnalysisService->independentTTest($scores1, $scores2);
+            }
+        }
+
+        return [
+            'reliability' => [
+                'cronbach_alpha' => round($alpha, 3),
+                'status'         => $alpha > 0.6 ? 'Reliabel' : 'Tidak Reliabel',
+                'n_items'        => count($matrix[0] ?? []),
+                'n_samples'      => count($matrix),
+            ],
+            'descriptive' => [
+                'group1' => $desc1,
+                'group2' => $desc2,
+            ],
+            'comparison' => [
+                'mann_whitney' => $comparison,
+                't_test'       => $tTest,
+            ],
+        ];
+    }
+
+    private function buildAnswerMatrix(Collection $results): array
+    {
+        $matrix = [];
+        foreach ($results as $result) {
+            $matrix[] = $result->answers()->orderBy('mslq_question_id')->pluck('value')->toArray();
+        }
+
+        return array_filter($matrix);
     }
 }

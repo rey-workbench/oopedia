@@ -183,7 +183,7 @@
                                 class="group-hover:border-primary-500 h-14 w-20 overflow-hidden rounded-xl shadow-lg shadow-slate-200 transition-all duration-300 group-hover:border-2"
                             >
                                 <img
-                                    src={`/${material.media[0].media_url}`}
+                                    src={material.media[0].full_url || `/${material.media[0].media_url}`}
                                     alt={material.title}
                                     class="h-full w-full object-cover"
                                 />

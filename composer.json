@@ -42,7 +42,8 @@
         "spatie/laravel-pdf": "^2.7",
         "endroid/qr-code": "^6.1",
         "laravel/socialite": "^5.27",
-        "propaganistas/laravel-disposable-email": "^2.4"
+        "propaganistas/laravel-disposable-email": "^2.4",
+        "markrogoyski/math-php": "^2.13"
     },
     "autoload": {
         "psr-4": {

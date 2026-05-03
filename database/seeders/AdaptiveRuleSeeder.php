@@ -101,106 +101,102 @@ class AdaptiveRuleSeeder extends Seeder
         $id = AdaptiveActionId::class;
 
         $rules = [
-            // ==========================================================
-            // KATEGORI 1: ELITE PERFORMANCE (PRIORITAS 0)
-            // ==========================================================
+            // --- DIAGNOSTIC RULES (DEDUCING VIRTUAL FACTS) ---
             [
                 'id'                => 'R01',
-                'priority'          => 0,
-                'name'              => 'Akselerasi & Tantangan Kilat',
-                'recommendation'    => 'Luar biasa! Kamu memahami materi ini dengan sangat cepat. Mari kita naik ke tingkat yang lebih menantang!',
-                'required_fact_ids' => ['G21', 'G17', 'G11', 'G20'], // Benar, Acc > 90, Cepat, Tanpa Hint
-                'actions'           => [$id::INCREASE_DIFF->value, $id::NEW_CHALLENGE->value],
+                'priority'          => 10,
+                'name'              => 'Analisa Performa Optimal',
+                'recommendation'    => 'Menganalisa data akurasi dan kecepatan untuk menentukan status penguasaan tinggi.',
+                'required_fact_ids' => ['G21', 'G17', 'G11'],
+                'deduced_fact_ids'  => ['V03'],
+                'actions'           => [],
             ],
             [
                 'id'                => 'R02',
-                'priority'          => 0,
-                'name'              => 'Expert Mastery Milestone',
-                'recommendation'    => 'Status Expert dan penguasaan materimu sangat solid. Siap untuk tantangan dadakan?',
-                'required_fact_ids' => ['G21', 'G19', 'G15'], // Benar, Level Expert, Streak 5
-                'actions'           => [$id::NEW_CHALLENGE->value, $id::STREAK_BONUS->value],
+                'priority'          => 9,
+                'name'              => 'Analisa Krisis Belajar',
+                'recommendation'    => 'Mendeteksi penurunan performa drastis yang memerlukan intervensi segera.',
+                'required_fact_ids' => ['G22', 'G01', 'G05'],
+                'deduced_fact_ids'  => ['V01'],
+                'actions'           => [],
             ],
-
-            // ==========================================================
-            // KATEGORI 2: SUPPORT & SAFETY NET (PRIORITAS 1 - 5)
-            // ==========================================================
             [
                 'id'                => 'R03',
-                'priority'          => 1,
-                'name'              => 'Streak & Frustration Protection',
-                'recommendation'    => 'Jangan biarkan semangatmu turun. Mari kita sesuaikan level soal agar kamu bisa kembali fokus dengan ritme yang lebih nyaman.',
-                'required_fact_ids' => ['G22', 'G15', 'G12'], // Salah, Streak Tinggi/Lama, Lambat
-                'actions'           => [$id::REDUCE_DIFF->value, $id::GIVE_HINT->value],
+                'priority'          => 8,
+                'name'              => 'Analisa Kesulitan Materi',
+                'recommendation'    => 'Menganalisa apakah mahasiswa memerlukan penyesuaian tingkat kesulitan.',
+                'required_fact_ids' => ['G22', 'G02', 'G12'],
+                'deduced_fact_ids'  => ['V02'],
+                'actions'           => [],
             ],
             [
                 'id'                => 'R04',
-                'priority'          => 2,
-                'name'              => 'Deteksi Perilaku Instan (Guessing/Abuse)',
-                'recommendation'    => 'Sistem mendeteksi jawaban yang terlalu cepat. Pastikan kamu membaca soal dan bantuan dengan teliti agar pemahamanmu maksimal.',
-                'required_fact_ids' => ['G11', 'G23'], // Sangat Cepat + (Salah/Gunakan Hint)
-                'actions'           => [$id::REDUCE_HINT->value],
+                'priority'          => 7,
+                'name'              => 'Analisa Pola Bantuan',
+                'recommendation'    => 'Mengevaluasi tingkat ketergantungan mahasiswa pada fitur bantuan/hint.',
+                'required_fact_ids' => ['G08', 'G12'],
+                'deduced_fact_ids'  => ['V04'],
+                'actions'           => [],
             ],
             [
                 'id'                => 'R05',
-                'priority'          => 3,
-                'name'              => 'Pencegahan Frustrasi (Struggling)',
-                'recommendation'    => 'Soal ini memang menantang. Mari kita coba level yang lebih rendah sejenak agar pikiranmu segar kembali.',
-                'required_fact_ids' => ['G22', 'G08', 'G12'], // Salah, Banyak Hint, Lambat
-                'actions'           => [$id::REDUCE_DIFF->value, $id::GIVE_HINT->value],
+                'priority'          => 6,
+                'name'              => 'Analisa Potensi Menebak',
+                'recommendation'    => 'Mendeteksi jawaban cepat dengan akurasi rendah yang mengarah pada perilaku menebak.',
+                'required_fact_ids' => ['G11', 'G01'],
+                'deduced_fact_ids'  => ['V05'],
+                'actions'           => [],
             ],
 
-            // ==========================================================
-            // KATEGORI 3: REMEDIAL & CRISIS (PRIORITAS 6 - 9)
-            // ==========================================================
+            // --- INTERVENTION RULES (USING DIAGNOSIS) ---
             [
                 'id'                => 'R06',
-                'priority'          => 6,
-                'name'              => 'Diagnosis Krisis Pembelajaran',
-                'recommendation'    => 'Mari kita kembali ke konsep dasar. Penguatan pondasi sangat penting sebelum melangkah lebih jauh.',
-                'required_fact_ids' => ['G22', 'G01', 'G05'], // Salah, Acc < 40, Tren Turun
-                'deduced_fact_ids'  => ['V01'],
-                'actions'           => [$id::REMEDIAL->value, $id::NOTIFY_TEACHER->value],
+                'priority'          => 5,
+                'name'              => 'Strategi Akselerasi',
+                'recommendation'    => 'Memberikan tantangan lebih sulit dan bonus motivasi untuk performa optimal.',
+                'required_fact_ids' => ['V03', 'G20'],
+                'actions'           => [$id::INCREASE_DIFF->value, $id::NEW_CHALLENGE->value, $id::STREAK_BONUS->value],
             ],
             [
                 'id'                => 'R07',
-                'priority'          => 7,
-                'name'              => 'Intervensi Krisis Intensif',
-                'recommendation'    => 'Konsep dasar butuh perhatian ekstra. Mari kita coba latihan yang paling sederhana.',
-                'required_fact_ids' => ['V01', 'G08'], // Sudah Krisis + Masih Pakai Banyak Hint
-                'actions'           => [$id::REMEDIAL_INTENSIVE->value],
+                'priority'          => 4,
+                'name'              => 'Strategi Intervensi Krisis',
+                'recommendation'    => 'Mengaktifkan jalur remedial intensif dan notifikasi ke pengajar.',
+                'required_fact_ids' => ['V01'],
+                'actions'           => [$id::REMEDIAL_INTENSIVE->value, $id::NOTIFY_TEACHER->value],
             ],
-
-            // ==========================================================
-            // KATEGORI 4: STANDARD ADAPTATION (PRIORITAS 10 - 20)
-            // ==========================================================
             [
                 'id'                => 'R08',
-                'priority'          => 10,
-                'name'              => 'Peningkatan Kesulitan Standar',
-                'recommendation'    => 'Kemampuanmu meningkat. Mari kita coba level yang sedikit lebih tinggi.',
-                'required_fact_ids' => ['G21', 'G04', 'G07'], // Benar, Acc 80-90, Tren Naik
-                'actions'           => [$id::INCREASE_DIFF->value],
+                'priority'          => 3,
+                'name'              => 'Strategi Adaptasi Kesulitan',
+                'recommendation'    => 'Menurunkan tingkat kesulitan soal dan memberikan bantuan tambahan.',
+                'required_fact_ids' => ['V02'],
+                'actions'           => [$id::REDUCE_DIFF->value, $id::GIVE_HINT->value, $id::SHOW_GUIDANCE->value],
             ],
             [
                 'id'                => 'R09',
-                'priority'          => 11,
-                'name'              => 'Penurunan Kesulitan Standar',
-                'recommendation'    => 'Mari kita sesuaikan level soal agar pas dengan ritme belajarmu saat ini.',
-                'required_fact_ids' => ['G22', 'G02'], // Salah, Acc 40-80
-                'actions'           => [$id::REDUCE_DIFF->value],
+                'priority'          => 2,
+                'name'              => 'Strategi Penguatan Mandiri',
+                'recommendation'    => 'Membatasi penggunaan hint untuk mendorong kemandirian belajar.',
+                'required_fact_ids' => ['V04'],
+                'actions'           => [$id::REDUCE_HINT->value],
             ],
             [
                 'id'                => 'R10',
-                'priority'          => 15,
-                'name'              => 'Apresiasi Ketelitian & Motivasi',
-                'recommendation'    => 'Kerja bagus dalam menjawab secara hati-hati dan mandiri. Ini bonus untuk menyemangatimu!',
-                'required_fact_ids' => ['G21', 'G12', 'G20'], // Benar, Lambat/Teliti, Tanpa Hint
-                'actions'           => [$id::GIVE_HINT->value, $id::STREAK_BONUS->value],
+                'priority'          => 1,
+                'name'              => 'Strategi Bimbingan Fokus',
+                'recommendation'    => 'Memberikan panduan agar mahasiswa lebih teliti membaca soal.',
+                'required_fact_ids' => ['V05'],
+                'actions'           => [$id::SHOW_GUIDANCE->value],
             ],
-
-            // ==========================================================
-            // KATEGORI 5: FALLBACK (SAFETY NET)
-            // ==========================================================
+            [
+                'id'                => 'R11',
+                'priority'          => 0,
+                'name'              => 'Strategi Kelulusan Materi',
+                'recommendation'    => 'Memberikan sertifikasi penguasaan materi bagi mahasiswa yang mencapai level puncak.',
+                'required_fact_ids' => ['G19', 'G17'],
+                'actions'           => [$id::CERTIFICATION->value],
+            ],
             [
                 'id'                => 'R00',
                 'priority'          => 100,

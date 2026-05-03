@@ -64,6 +64,7 @@ final class QuestionRepository implements QuestionRepositoryInterface
         ?string $materialId = null,
     ): LengthAwarePaginator {
         return Question::with(['createdBy', 'answers', 'material'])
+            ->withCount('answers')
             ->when($search, fn ($query) => $query->where(
                 function (Builder $q) use ($search): void {
                     $q->where('question_text', 'like', sprintf('%%%s%%', $search))

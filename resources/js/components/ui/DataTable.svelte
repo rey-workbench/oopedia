@@ -84,7 +84,7 @@
                 </tr>
             </thead>
             <tbody>
-                {#if items.length === 0}
+                {#if (items?.length ?? 0) === 0}
                     <tr>
                         <td colspan={columns.length} class="p-0">
                             {#if empty}

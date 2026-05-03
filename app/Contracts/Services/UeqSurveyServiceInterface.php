@@ -20,4 +20,6 @@ interface UeqSurveyServiceInterface
     public function createSurvey(array $data): UeqSurvey;
 
     public function calculateAverages(Collection $surveys): array;
+
+    public function calculateStatisticalAnalysis(?string $class1 = null, ?string $class2 = null): array;
 }

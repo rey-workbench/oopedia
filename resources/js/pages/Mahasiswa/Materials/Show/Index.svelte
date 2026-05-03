@@ -24,7 +24,7 @@
 
         {#if state.material.cover_url}
             <div id="material-cover" class="relative">
-                <div class="relative aspect-32/9 w-full overflow-hidden rounded-[2.5rem] border-b-8 border-slate-700 bg-slate-100 shadow-2xl">
+                <div class="relative aspect-32/9 w-full overflow-hidden rounded-3xl border-b-8 border-slate-700 bg-slate-100 shadow-2xl">
                     <img
                         src={state.material.cover_url}
                         alt={state.material.title}

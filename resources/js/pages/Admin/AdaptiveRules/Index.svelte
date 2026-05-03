@@ -208,13 +208,14 @@
                         <td class="px-6 py-5">
                             <div class="flex flex-wrap gap-2">
                                 {#each rule.actions as action}
+                                    {@const actionObj = analyticsState.all_actions.find(a => a.id === (typeof action === 'string' ? action : action.id))}
                                     <div
                                         class="flex items-center gap-1.5 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1"
                                     >
                                         <div class="h-1 w-1 rounded-full bg-emerald-500"></div>
                                         <span
                                             class="text-[10px] font-black text-emerald-700 uppercase"
-                                            >{action.name}</span
+                                            >{actionObj?.name || (typeof action === 'string' ? action : action.id)}</span
                                         >
                                     </div>
                                 {/each}
@@ -356,7 +357,7 @@
             <div id="adaptive-engine-activities" class="grid grid-cols-1 gap-8 lg:grid-cols-2">
                 <Card title="Aktivitas Engine Terbaru">
                     <div class="mb-6 flex items-center gap-3">
-                        <div class="rounded-xl bg-indigo-50 p-2 text-indigo-600">
+                        <div class="rounded-xl bg-primary-50 p-2 text-primary-600">
                             <Activity size={20} />
                         </div>
                         <div>

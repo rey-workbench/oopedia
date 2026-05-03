@@ -39,4 +39,9 @@ interface MslqServiceInterface
      * Get all results for export.
      */
     public function getResultsForExport(?string $class = null): Collection;
+
+    /**
+     * Perform advanced statistical analysis (Reliability, Mann-Whitney).
+     */
+    public function calculateStatisticalAnalysis(?string $class1 = null, ?string $class2 = null): array;
 }

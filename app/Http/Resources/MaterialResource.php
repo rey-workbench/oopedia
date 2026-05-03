@@ -76,10 +76,6 @@ final class MaterialResource extends JsonResource
         }
 
         // Also allow content for question views of THIS specific material
-        if ($request->routeIs('mahasiswa.materials.questions.*') && $materialId === $this->id) {
-            return true;
-        }
-
-        return false;
+        return $request->routeIs('mahasiswa.materials.questions.*') && $materialId === $this->id;
     }
 }

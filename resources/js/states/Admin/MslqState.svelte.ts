@@ -41,3 +41,52 @@ export class MslqState extends BaseState {
             ROUTES.ADMIN.MSLQ.EXPORT + (this.activeClass ? `?class=${this.activeClass}` : '');
     }
 }
+
+/**
+ * MSLQ Detail State
+ */
+export class MslqDetailState extends BaseState {
+    result = $state<MslqResult>({} as MslqResult);
+
+    constructor(result: MslqResult) {
+        super();
+        this.result = result;
+    }
+
+    get motivationScores() {
+        const labels: Record<string, string> = {
+            mslq_intrinsic_goal_orientation: 'Intrinsic Goal Orientation',
+            mslq_extrinsic_goal_orientation: 'Extrinsic Goal Orientation',
+            mslq_task_value: 'Task Value',
+            mslq_control_of_learning_beliefs: 'Control of Learning Beliefs',
+            mslq_self_efficacy_for_learning_performance: 'Self-Efficacy for Learning & Performance',
+            mslq_test_anxiety: 'Test Anxiety',
+        };
+
+        return Object.entries(labels).map(([key, label]) => ({
+            key,
+            label,
+            value: this.result.scores_by_scale[key as keyof typeof this.result.scores_by_scale] ?? 0,
+        }));
+    }
+
+    get strategyScores() {
+        const labels: Record<string, string> = {
+            mslq_rehearsal: 'Rehearsal',
+            mslq_elaboration: 'Elaboration',
+            mslq_organization: 'Organization',
+            mslq_critical_thinking: 'Critical Thinking',
+            mslq_metacognitive_self_regulation: 'Metacognitive Self-Regulation',
+            mslq_time_study_environment_management: 'Time & Study Environment Management',
+            mslq_effort_regulation: 'Effort Regulation',
+            mslq_peer_learning: 'Peer Learning',
+            mslq_help_seeking: 'Help Seeking',
+        };
+
+        return Object.entries(labels).map(([key, label]) => ({
+            key,
+            label,
+            value: this.result.scores_by_scale[key as keyof typeof this.result.scores_by_scale] ?? 0,
+        }));
+    }
+}

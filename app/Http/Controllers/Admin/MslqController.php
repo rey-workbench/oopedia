@@ -24,6 +24,10 @@ final class MslqController extends Controller
         $distinctClasses          = $this->mslqService->getDistinctClasses();
         $metricsData              = $this->mslqService->calculateGlobalMetrics($class);
 
+        $class1      = $request->query('class1', $class); // Fallback to current filter
+        $class2      = $request->query('class2');
+        $analysis    = $this->mslqService->calculateStatisticalAnalysis($class1, $class2);
+
         return $this->render('Admin/Mslq/Index', [
             'results'     => $lengthAwarePaginator,
             'classes'     => $distinctClasses,
@@ -31,6 +35,7 @@ final class MslqController extends Controller
             'metrics'     => array_merge($metricsData, [
                 'total_responses' => $lengthAwarePaginator->total(),
             ]),
+            'analysis'    => $analysis,
         ]);
     }
 

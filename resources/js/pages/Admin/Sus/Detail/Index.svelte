@@ -3,7 +3,7 @@
     import Card from '@/components/ui/Card.svelte';
     import Button from '@/components/ui/Button.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
-    import { ChevronLeft, Info, MessageSquare, Target } from 'lucide-svelte';
+    import { ArrowLeft, Info, MessageSquare, Target } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { SusDetailState } from '@/states/Admin/SusState.svelte';
     import { formatDate } from '@/utils/formatters';
@@ -21,41 +21,41 @@
     };
 </script>
 
-<App title="Detail Survey SUS">
+<App title={`Detail SUS - ${state.targetUser.name}`}>
     <div class="space-y-12 pb-20">
-        <div class="mb-8 flex flex-wrap items-end justify-between gap-6">
-            <div>
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    href={ROUTES.ADMIN.SUS.INDEX}
-                    icon={ChevronLeft}
-                    class="mb-4 text-slate-400 transition-colors hover:text-slate-900"
-                    >KEMBALI KE LIST</Button
-                >
-                <h1
-                    class="font-display text-3xl leading-tight font-extrabold tracking-tight text-slate-900 md:text-4xl"
-                >
-                    Detail Responden SUS
-                </h1>
-                <div class="mt-3 flex items-center gap-2" role="presentation">
-                    <div class="bg-primary-600 h-1.5 w-12 rounded-full"></div>
-                    <div class="h-1.5 w-4 rounded-full bg-slate-200"></div>
-                </div>
-            </div>
-
-            <div
-                class="flex items-center gap-6 rounded-3xl bg-white p-4 shadow-xl shadow-slate-200/50"
+        <div class="mb-8">
+            <h1
+                class="text-primary-500 font-display text-3xl font-black tracking-widest uppercase md:text-4xl"
             >
-                <UserAvatar name={state.targetUser.name} size="lg" />
-                <div>
-                    <div class="text-sm font-bold tracking-widest text-slate-900 uppercase">
-                        {state.targetUser.name}
-                    </div>
-                    <div
-                        class="mt-0.5 text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                    >
-                        {state.result.nim || '-'} • {state.result.class || '-'}
+                Detail Analisis <span class="text-accent-500">SUS</span>
+            </h1>
+            <div class="mt-3 flex items-center gap-2">
+                <div class="bg-accent-500 h-2 w-16 rounded-full"></div>
+                <div class="h-2 w-4 rounded-full bg-slate-200"></div>
+            </div>
+            <div class="mt-6 flex flex-wrap items-center justify-between gap-6">
+                <Button
+                    href={ROUTES.ADMIN.SUS.INDEX}
+                    variant="ghost"
+                    icon={ArrowLeft}
+                    size="sm"
+                    class="hover:text-primary-500 font-black text-slate-400"
+                    >KEMBALI KE DAFTAR</Button
+                >
+
+                <div
+                    class="flex items-center gap-6 rounded-3xl bg-white p-4 shadow-xl shadow-slate-200/50"
+                >
+                    <UserAvatar name={state.targetUser.name} size="lg" />
+                    <div>
+                        <div class="text-sm font-bold tracking-widest text-slate-900 uppercase">
+                            {state.targetUser.name}
+                        </div>
+                        <div
+                            class="mt-0.5 text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                        >
+                            {state.result.nim || '-'} • {state.result.class || '-'}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -141,8 +141,8 @@
                         </p>
                     </Card>
 
-                    <Card class="rounded-3xl border-indigo-100 bg-indigo-50/20">
-                        <div class="mb-4 flex items-center gap-3 text-indigo-600">
+                    <Card class="rounded-3xl border-primary-100 bg-primary-50/20">
+                        <div class="mb-4 flex items-center gap-3 text-primary-600">
                             <Info size={18} />
                             <h4 class="text-[10px] font-bold tracking-[0.2em] uppercase">
                                 Saran Optimasi

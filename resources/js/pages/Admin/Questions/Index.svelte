@@ -153,7 +153,7 @@
         </DataTable>
     </div>
 
-    {#if state.questions.data.length > 0}
+    {#if state.questions?.data?.length > 0}
         <Pagination links={state.questions.links} />
     {/if}
 </App>

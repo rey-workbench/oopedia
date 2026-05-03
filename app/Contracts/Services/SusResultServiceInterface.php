@@ -37,4 +37,9 @@ interface SusResultServiceInterface
      * @return array<string, int>
      */
     public function calculateItemScores(SusResult|array $result): array;
+
+    /**
+     * Perform advanced statistical analysis (Reliability, Mann-Whitney).
+     */
+    public function calculateStatisticalAnalysis(?string $class1 = null, ?string $class2 = null): array;
 }

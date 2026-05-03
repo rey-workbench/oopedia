@@ -6,21 +6,40 @@
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import Chart from '@/components/ui/Chart.svelte';
     import Select from '@/components/ui/Select.svelte';
-    import { Eye, FileSpreadsheet, Brain, Target, ClipboardList } from 'lucide-svelte';
+    import { Eye, FileSpreadsheet, Brain, Target, ClipboardList, ChevronRight } from 'lucide-svelte';
     import { MslqState } from '@/states/Admin/MslqState.svelte';
     import { Link } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils/route';
     import type { AdminMslqIndexProps, MslqResult } from '@/types';
     import { untrack } from 'svelte';
+    import StatisticalAnalysis from '@/components/Admin/StatisticalAnalysis.svelte';
+    import { router } from '@inertiajs/svelte';
 
     let {
         results,
         metrics = { averages: {}, total_responses: 0, avg_motivation: 0, avg_strategy: 0 },
         classes = [],
         activeClass = '',
-    }: AdminMslqIndexProps = $props();
+        analysis = {},
+    }: AdminMslqIndexProps & { analysis: any } = $props();
 
-    const state = untrack(() => new MslqState(results.data, metrics, classes, activeClass));
+    let activeTab = $state('overview');
+    let class1 = $state(activeClass);
+    let class2 = $state('');
+
+    $effect(() => {
+        if (class1 === undefined) class1 = activeClass;
+    });
+
+    function handleComparison() {
+        router.visit(window.location.pathname, {
+            data: { class: class1, class1, class2 },
+            preserveState: true,
+            only: ['analysis'],
+        });
+    }
+
+    const mslqState = untrack(() => new MslqState(results.data, metrics, classes, activeClass));
 
     // Removed unused scale helper variables
 
@@ -99,7 +118,7 @@
 </script>
 
 <App title="Analitik MSLQ">
-    <div class="space-y-8 pb-10">
+    <div class="space-y-12 pb-20">
         <PageHeader
             title="Analitik MSLQ"
             subtitle="Motivated Strategies for Learning Questionnaire"
@@ -109,9 +128,9 @@
                 <div class="flex items-center gap-4">
                     <Select
                         placeholder="Filter Kelas"
-                        value={state.activeClass}
-                        onchange={(v) => state.handleFilterChange(v as any)}
-                        options={state.classes.map((c) => ({ label: c, value: c }))}
+                        value={mslqState.activeClass}
+                        onchange={(v) => mslqState.handleFilterChange(v as any)}
+                        options={mslqState.classes.map((c) => ({ label: c, value: c }))}
                         class="border-duo w-48 rounded-xl"
                     />
                     <Button
@@ -119,107 +138,167 @@
                         size="md"
                         icon={FileSpreadsheet}
                         class="border-duo"
-                        onclick={() => state.exportResults()}>Export Data</Button
+                        onclick={() => mslqState.exportResults()}>Export Data</Button
                     >
                 </div>
             {/snippet}
         </PageHeader>
 
-        <!-- Chart Summary -->
-        <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
-            <Card
-                padding="p-0"
-                class="border-duo overflow-hidden rounded-3xl border-slate-100 shadow-xl lg:col-span-2"
-                id="mslq-chart-card"
+        <!-- Tabs -->
+        <div class="flex items-center gap-2 border-b-2 border-slate-50">
+            <button 
+                onclick={() => activeTab = 'overview'}
+                aria-selected={activeTab === 'overview'}
+                role="tab"
+                class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab === 'overview' ? 'border-primary-500 text-primary-500 border-b-4' : 'text-slate-400 hover:text-slate-600'}"
             >
-                <div class="p-8">
-                    <div class="mb-6 flex items-center gap-4">
-                        <div
-                            class="bg-primary-50 text-primary-500 border-primary-100 flex h-10 w-10 items-center justify-center rounded-xl border-2"
-                        >
-                            <Brain size={20} />
-                        </div>
-                        <h3
-                            class="text-primary-500 font-display text-lg font-black tracking-widest uppercase"
-                        >
-                            Profil Belajar Mahasiswa
-                        </h3>
-                    </div>
-                    <Chart type="radar" series={chartSeries} options={chartOptions} height={450} />
-                </div>
-            </Card>
-
-            <div class="space-y-6">
-                <Card
-                    padding="p-0"
-                    class="border-duo-lg border-accent-700 bg-accent-500 shadow-accent-100 overflow-hidden rounded-3xl text-white shadow-xl"
-                    id="mslq-stat-motivation"
-                >
-                    <div class="relative p-8">
-                        <div
-                            class="absolute -top-6 -right-6 h-24 w-24 rounded-full bg-white/10 blur-2xl"
-                        ></div>
-                        <div class="relative z-10 flex items-center justify-between">
-                            <div class="space-y-1">
-                                <div
-                                    class="text-[10px] font-black tracking-widest uppercase opacity-80"
-                                >
-                                    Rata-rata Motivasi
-                                </div>
-                                <div class="text-4xl font-black">
-                                    {state.avgMotivation.toFixed(2)}
-                                </div>
-                            </div>
-                            <div class="rounded-2xl border-2 border-white/20 bg-white/20 p-4">
-                                <Target size={32} />
-                            </div>
-                        </div>
-                    </div>
-                </Card>
-
-                <Card
-                    padding="p-0"
-                    class="border-duo-lg border-primary-800 bg-primary-500 overflow-hidden rounded-3xl text-white shadow-xl shadow-slate-200"
-                    id="mslq-stat-strategy"
-                >
-                    <div class="relative p-8">
-                        <div
-                            class="absolute -top-6 -right-6 h-24 w-24 rounded-full bg-white/10 blur-2xl"
-                        ></div>
-                        <div class="relative z-10 flex items-center justify-between">
-                            <div class="space-y-1">
-                                <div
-                                    class="text-[10px] font-black tracking-widest uppercase opacity-80"
-                                >
-                                    Rata-rata Strategi
-                                </div>
-                                <div class="text-4xl font-black">
-                                    {state.avgStrategy.toFixed(2)}
-                                </div>
-                            </div>
-                            <div class="rounded-2xl border-2 border-white/20 bg-white/20 p-4">
-                                <ClipboardList size={32} />
-                            </div>
-                        </div>
-                    </div>
-                </Card>
-
-                <Card class="border-duo rounded-3xl border-slate-100 shadow-xl" id="mslq-info">
-                    <div class="space-y-4 p-8">
-                        <h4
-                            class="text-primary-500 font-display text-sm font-black tracking-widest uppercase"
-                        >
-                            Informasi
-                        </h4>
-                        <p class="text-[11px] leading-relaxed font-medium text-slate-500 uppercase">
-                            Grafik radar di samping menunjukkan kekuatan dan kelemahan kolektif
-                            mahasiswa dalam motivasi dan strategi belajar. Skor berkisar antara 1
-                            hingga 7.
-                        </p>
-                    </div>
-                </Card>
-            </div>
+                Ringkasan Data
+            </button>
+            <button 
+                onclick={() => activeTab = 'analysis'}
+                aria-selected={activeTab === 'analysis'}
+                role="tab"
+                class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab === 'analysis' ? 'border-accent-500 text-accent-500 border-b-4' : 'text-slate-400 hover:text-slate-600'}"
+            >
+                Analisis Statistik (Skripsi)
+            </button>
         </div>
+
+        {#if activeTab === 'overview'}
+            <!-- Chart Summary -->
+            <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+                <Card
+                    padding="p-0"
+                    class="border-duo overflow-hidden rounded-3xl border-slate-100 shadow-xl lg:col-span-2"
+                    id="mslq-chart-card"
+                >
+                    <div class="p-8">
+                        <div class="mb-6 flex items-center gap-4">
+                            <div
+                                class="bg-primary-50 text-primary-500 border-primary-100 flex h-10 w-10 items-center justify-center rounded-xl border-2"
+                            >
+                                <Brain size={20} />
+                            </div>
+                            <h3
+                                class="text-primary-500 font-display text-lg font-black tracking-widest uppercase"
+                            >
+                                Profil Belajar Mahasiswa
+                            </h3>
+                        </div>
+                        <Chart type="radar" series={chartSeries} options={chartOptions} height={450} />
+                    </div>
+                </Card>
+
+                <div class="space-y-6">
+                    <Card
+                        padding="p-0"
+                        class="border-duo-lg border-accent-700 bg-accent-500 shadow-accent-100 overflow-hidden rounded-3xl text-white shadow-xl"
+                        id="mslq-stat-motivation"
+                    >
+                        <div class="relative p-8">
+                            <div
+                                class="absolute -top-6 -right-6 h-24 w-24 rounded-full bg-white/10 blur-2xl"
+                            ></div>
+                            <div class="relative z-10 flex items-center justify-between">
+                                <div class="space-y-1">
+                                    <div
+                                        class="text-[10px] font-black tracking-widest uppercase opacity-80"
+                                    >
+                                        Rata-rata Motivasi
+                                    </div>
+                                    <div class="text-4xl font-black">
+                                        {mslqState.avgMotivation.toFixed(2)}
+                                    </div>
+                                </div>
+                                <div class="rounded-2xl border-2 border-white/20 bg-white/20 p-4">
+                                    <Target size={32} />
+                                </div>
+                            </div>
+                        </div>
+                    </Card>
+ 
+                    <Card
+                        padding="p-0"
+                        class="border-duo-lg border-primary-800 bg-primary-500 overflow-hidden rounded-3xl text-white shadow-xl shadow-slate-200"
+                        id="mslq-stat-strategy"
+                    >
+                        <div class="relative p-8">
+                            <div
+                                class="absolute -top-6 -right-6 h-24 w-24 rounded-full bg-white/10 blur-2xl"
+                            ></div>
+                            <div class="relative z-10 flex items-center justify-between">
+                                <div class="space-y-1">
+                                    <div
+                                        class="text-[10px] font-black tracking-widest uppercase opacity-80"
+                                    >
+                                        Rata-rata Strategi
+                                    </div>
+                                    <div class="text-4xl font-black">
+                                        {mslqState.avgStrategy.toFixed(2)}
+                                    </div>
+                                </div>
+                                <div class="rounded-2xl border-2 border-white/20 bg-white/20 p-4">
+                                    <ClipboardList size={32} />
+                                </div>
+                            </div>
+                        </div>
+                    </Card>
+
+                    <Card class="border-duo rounded-3xl border-slate-100 shadow-xl" id="mslq-info">
+                        <div class="space-y-4 p-8">
+                            <h4
+                                class="text-primary-500 font-display text-sm font-black tracking-widest uppercase"
+                            >
+                                Informasi
+                            </h4>
+                            <p class="text-[11px] leading-relaxed font-medium text-slate-500 uppercase">
+                                Grafik radar di samping menunjukkan kekuatan dan kelemahan kolektif
+                                mahasiswa dalam motivasi dan strategi belajar. Skor berkisar antara 1
+                                hingga 7.
+                            </p>
+                        </div>
+                    </Card>
+                </div>
+            </div>
+        {:else}
+            <!-- Statistical Analysis Section -->
+            <div class="space-y-6">
+                <Card class="border-duo overflow-hidden rounded-3xl border-slate-100 shadow-xl">
+                    <div class="flex flex-wrap items-center justify-between gap-6 p-8">
+                        <div class="space-y-1">
+                            <h3 class="text-accent-500 font-display text-lg font-black tracking-widest uppercase">Komparasi Kelompok</h3>
+                            <p class="text-xs font-medium text-slate-500 uppercase">Pilih dua kelas untuk melakukan uji Independent T-Test & Mann-Whitney U.</p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="space-y-2">
+                                <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Kelompok 1</span>
+                                <Select 
+                                    options={classes.map(c => ({ label: c, value: c }))} 
+                                    bind:value={class1} 
+                                    placeholder="Kelas 1"
+                                    class="w-40 rounded-xl"
+                                />
+                            </div>
+                            <div class="text-slate-300 mt-6">
+                                <ChevronRight size={20} />
+                            </div>
+                            <div class="space-y-2">
+                                <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Kelompok 2</span>
+                                <Select 
+                                    options={classes.map(c => ({ label: c, value: c }))} 
+                                    bind:value={class2} 
+                                    placeholder="Kelas 2"
+                                    class="w-40 rounded-xl"
+                                />
+                            </div>
+                            <Button variant="primary" class="mt-6 rounded-xl font-black" onclick={handleComparison}>PROSES UJI</Button>
+                        </div>
+                    </div>
+                </Card>
+
+                <StatisticalAnalysis {analysis} />
+            </div>
+        {/if}
 
         <!-- Data Table -->
         <Card
@@ -250,7 +329,7 @@
                     <td
                         class="group-hover:border-accent-500 border-l-4 border-transparent px-6 py-6 transition-all"
                     >
-                        <span class="font-bold text-slate-900">{item.user.name}</span>
+                        <span class="font-bold text-slate-900">{item.user?.name ?? 'Tamu'}</span>
                     </td>
                     <td class="px-6 py-6 font-medium text-slate-500">{item.nim}</td>
                     <td class="px-6 py-6">

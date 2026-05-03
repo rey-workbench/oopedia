@@ -18,14 +18,19 @@ final class UeqSurveyController extends Controller
     {
         $class    = $request->input('class');
         $surveys  = $this->ueqSurveyService->getAllSurveys($class);
-        $classes  = $this->ueqSurveyService->getDistinctClasses();
         $averages = $this->ueqSurveyService->calculateAverages($surveys);
+        $classes  = $this->ueqSurveyService->getDistinctClasses();
+
+        $class1   = $request->query('class1', $class);
+        $class2   = $request->query('class2');
+        $analysis = $this->ueqSurveyService->calculateStatisticalAnalysis($class1, $class2);
 
         return $this->render('Admin/Ueq/Index', [
             'surveys'     => $surveys,
             'averages'    => $averages,
             'classes'     => $classes,
-            'activeClass' => $class,
+            'activeClass' => $class ?? '',
+            'analysis'    => $analysis,
         ]);
     }
 

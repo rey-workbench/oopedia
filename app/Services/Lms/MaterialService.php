@@ -223,11 +223,11 @@ final readonly class MaterialService implements MaterialServiceInterface
             ? $this->progressRepository->getAnsweredQuestionIds($userId, $materialId)
             : $guestProgress);
 
-        $currentQuestion = $material->questions->whereNotIn('id', $answeredQuestionIds)->first()
+        $material->questions->whereNotIn('id', $answeredQuestionIds)->first()
             ?? $material->questions->first();
 
         $answeredCount         = $answeredQuestionIds->count();
-        $currentQuestionNumber = ($answeredCount >= $material->questions->count()) ? 'Review' : ($answeredCount + 1);
+        ($answeredCount >= $material->questions->count()) ? 'Review' : ($answeredCount + 1);
 
         return [
             'material' => new MaterialResource($material)->resolve(),

@@ -31,7 +31,7 @@ final class QuestionResource extends JsonResource
         return [
             'id'            => $this->resource->id,
             'material_id'   => $this->material_id,
-            'question_text' => $this->question_text,
+            'question_text' => $this->processHtml($this->question_text),
             'question_type' => $this->question_type->value,
             'difficulty'    => $this->difficulty->value,
             'hint'          => $this->hint,
@@ -44,9 +44,27 @@ final class QuestionResource extends JsonResource
                 'drag_target'    => $answer->drag_target,
                 'blank_position' => $answer->blank_position,
             ])),
-            'user_attempt' => $this->when(isset($this->resource->user_attempt), $this->resource->user_attempt),
-            'created_at'   => $this->created_at?->toIso8601String(),
-            'updated_at'   => $this->updated_at?->toIso8601String(),
+            'answers_count' => $this->whenCounted('answers', $this->answers_count),
+            'user_attempt'  => $this->when(isset($this->resource->user_attempt), $this->resource->user_attempt),
+            'created_at'    => $this->created_at?->toIso8601String(),
+            'updated_at'    => $this->updated_at?->toIso8601String(),
         ];
+    }
+
+    private function processHtml(?string $html): string
+    {
+        if (! $html) {
+            return '';
+        }
+
+        // Make storage URLs absolute
+        return preg_replace_callback('/src="([^"]+)"/', function ($matches) {
+            $url = $matches[1];
+            if (str_starts_with($url, 'storage/') || str_starts_with($url, 'public/storage/')) {
+                return 'src="' . url(str_replace('public/storage/', 'storage/', $url)) . '"';
+            }
+
+            return $matches[0];
+        }, $html);
     }
 }

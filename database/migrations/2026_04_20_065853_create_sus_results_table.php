@@ -20,16 +20,9 @@ return new class extends Migration
             $table->string('class')->nullable();
 
             // SUS 10 items (1-5 rating)
-            $table->integer('q1');
-            $table->integer('q2');
-            $table->integer('q3');
-            $table->integer('q4');
-            $table->integer('q5');
-            $table->integer('q6');
-            $table->integer('q7');
-            $table->integer('q8');
-            $table->integer('q9');
-            $table->integer('q10');
+            for ($i = 1; $i <= 10; $i++) {
+                $table->integer('q' . $i);
+            }
 
             $table->float('total_score');
 

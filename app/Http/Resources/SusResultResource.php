@@ -26,22 +26,15 @@ final class SusResultResource extends JsonResource
             'user'        => new UserResource($this->whenLoaded('user')),
             'nim'         => $this->nim,
             'class'       => $this->class,
-            'score'       => $this->score,
             'total_score' => $this->total_score,
             'created_at'  => $this->created_at?->toIso8601String(),
-
-            // Detailed answers merge when q1 is present
-            $this->mergeWhen($this->q1 !== null, function (): array {
-                $details = [];
-                for ($i = 1; $i <= 10; $i++) {
-                    $details['q' . $i] = $this->{'q' . $i};
-                }
-
-                return array_merge($details, [
-                    'comments'    => $this->comments,
-                    'suggestions' => $this->suggestions,
-                ]);
-            }),
+            'comments'    => $this->comments,
+            'suggestions' => $this->suggestions,
+            'answers'     => $this->whenLoaded('answers', fn () => $this->answers->map(fn ($answer): array => [
+                'order' => $answer->question->order,
+                'text'  => $answer->question->text,
+                'value' => $answer->value,
+            ])->sortBy('order')->values()),
         ];
     }
 }

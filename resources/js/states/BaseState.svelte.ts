@@ -26,9 +26,18 @@ export class BaseState {
             );
 
         // Standard Laravel Resource Unwrapping logic for Svelte states
+        // We skip objects that look like paginators (contain 'links' or 'current_page')
         Object.keys(filteredData).forEach((key) => {
             const value = filteredData[key];
-            if (value && typeof value === 'object' && value !== null && 'data' in value && !Array.isArray(value)) {
+            if (
+                value && 
+                typeof value === 'object' && 
+                value !== null && 
+                'data' in value && 
+                !Array.isArray(value) &&
+                !('links' in value) && 
+                !('current_page' in value)
+            ) {
                 filteredData[key] = (value as { data: any }).data;
             }
         });

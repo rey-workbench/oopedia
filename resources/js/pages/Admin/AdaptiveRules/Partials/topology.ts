@@ -12,11 +12,20 @@ export function resolveGraphTopology(rules: any[], factData: any[], actionData: 
     const nodeRegistry = new Map<string, any>();
 
     // Phase 1: Initialize Virtual Inputs
+    const layers = [
+        { id: 'input', label: 'SUMBER DATA' },
+        { id: 'condition', label: 'GEJALA (FACTS)' },
+        { id: 'gate_diag', label: 'ANALISA (RULES)' },
+        { id: 'diagnosis', label: 'DIAGNOSIS (V-FACTS)' },
+        { id: 'gate_act', label: 'STRATEGI (DECISION)' },
+        { id: 'recommendation', label: 'INTERVENSI (ACTION)' },
+    ];
     const inputs = [
         { id: 'IN_ACC', name: 'Jawaban (B/S)' },
         { id: 'IN_SPD', name: 'Kecepatan Respons' },
         { id: 'IN_HLP', name: 'Penggunaan Bantuan' },
         { id: 'IN_LVL', name: 'Level Saat Ini' },
+        { id: 'IN_TRD', name: 'Tren Performa' },
         { id: 'IN_STR', name: 'Streak & Sesi' },
     ];
 
@@ -67,38 +76,51 @@ export function resolveGraphTopology(rules: any[], factData: any[], actionData: 
                     ? Math.max(...resolvedSources.map((s: any) => s.depth))
                     : 1;
 
-            const ruleDepth = maxPrereqDepth + 0.5;
-
-            // Register Rule Gate
+            // Register Rule Gate (ANALISA / STRATEGI)
             const ruleNodeId = `rule_${rule.id}`;
             if (!nodeRegistry.has(ruleNodeId)) {
                 nodeRegistry.set(ruleNodeId, {
                     type: 'gate',
-                    depth: ruleDepth,
+                    depth: Math.floor(maxPrereqDepth + 1),
                     data: rule,
                     id: `r_${rule.id}`,
                 });
                 hasTopologyChanged = true;
             }
 
+            const currentRuleDepth = nodeRegistry.get(ruleNodeId).depth;
+
             // Register Deduced Facts (DIAGNOSIS)
             if (rule.deduced_fact_ids && rule.deduced_fact_ids.length > 0) {
                 rule.deduced_fact_ids.forEach((id: string) => {
-                    if (registerVirtualFact(nodeRegistry, id, 2, factData)) {
+                    if (registerVirtualFact(nodeRegistry, id, currentRuleDepth + 1, factData)) {
                         hasTopologyChanged = true;
                     }
                 });
             }
 
-            // Register Resulting Actions (REKOMENDASI)
-            const actionIds = rule.actions ? rule.actions.map((a: any) => a.id) : [];
+            // Register Resulting Actions (INTERVENSI)
+            const actionIds = rule.actions
+                ? rule.actions.map((a: any) => (typeof a === 'string' ? a : a.id))
+                : [];
             actionIds.forEach((id: string) => {
-                if (registerAction(nodeRegistry, id, 3, actionData)) {
+                if (registerAction(nodeRegistry, id, 5, actionData)) {
                     hasTopologyChanged = true;
                 }
             });
         });
     }
+
+    // Final Pass: Ensure everything is aligned to its intended layer
+    // and cleanup any floating nodes
+    Array.from(nodeRegistry.values()).forEach(node => {
+        if (node.type === 'action') node.depth = 5;
+        if (node.type === 'virtual_fact') {
+             // Virtual facts (Diagnosis) should be between rules (2) and strategies (4)
+             // But naturally they fall at depth 3.
+             if (node.depth > 3) node.depth = 3;
+        }
+    });
 
     return nodeRegistry;
 }
@@ -176,21 +198,15 @@ export function buildGraphLinks(nodeRegistry: Map<string, any>, rules: any[]) {
             const target = nodeRegistry.get(`virtual_fact_${id}`);
             if (target) links.push({ source: gateNode, target, type: 'deduction' });
         });
-
-        const actionIds = rule.actions ? rule.actions.map((a: any) => a.id) : [];
+        const actionIds = rule.actions
+            ? rule.actions.map((a: any) => (typeof a === 'string' ? a : a.id))
+            : [];
         actionIds.forEach((id: string) => {
             const actionNode = nodeRegistry.get(`action_${id}`);
             if (!actionNode) return;
 
-            if (deducedFactIds.length > 0) {
-                deducedFactIds.forEach((factId: string) => {
-                    const factNode = nodeRegistry.get(`virtual_fact_${factId}`);
-                    if (factNode)
-                        links.push({ source: factNode, target: actionNode, type: 'action' });
-                });
-            } else {
-                links.push({ source: gateNode, target: actionNode, type: 'action' });
-            }
+            // Always link from the rule that triggers the action
+            links.push({ source: gateNode, target: actionNode, type: 'action' });
         });
     });
 

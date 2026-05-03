@@ -182,7 +182,7 @@
                                 logo: data.logo?.url
                             };
                             linkCache.set(url, linkData);
-                        } catch (e) {
+                        } catch (_) {
                             linkData = { title: new URL(url).hostname };
                         } finally {
                             isLoadingLink = false;
@@ -459,7 +459,7 @@
                         <div class="h-full w-full animate-pulse bg-slate-100"></div>
                     {:else if linkData?.image}
                         <img src={linkData.image} alt="Preview" class="h-full w-full object-cover" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
+                        <div class="absolute inset-0 bg-linear-to-t from-black/10 to-transparent"></div>
                     {:else}
                         <div class="flex h-full w-full items-center justify-center">
                             <ExternalLink size={20} class="text-slate-300" />
@@ -491,7 +491,7 @@
                 {/if}
             </div>
             <!-- Triangle pointing down toward link -->
-            <div class="h-2.5 w-2.5 -mt-[6px] rotate-45 border-r-2 border-b-2 border-slate-200 bg-white"></div>
+            <div class="h-2.5 w-2.5 mt-[-6px] rotate-45 border-r-2 border-b-2 border-slate-200 bg-white"></div>
         </div>
     </div>
 {/if}
