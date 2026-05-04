@@ -81,6 +81,11 @@ final class Material extends Model
             return $value;
         }
 
+        // Handle static images in public/images
+        if (str_starts_with($value, 'images/')) {
+            return asset($value);
+        }
+
         return asset('storage/' . ltrim($value, '/'));
     }
 }
