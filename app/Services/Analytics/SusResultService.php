@@ -62,12 +62,25 @@ final readonly class SusResultService implements SusResultServiceInterface
                 'total_score' => 0,
             ]);
 
+            $answers = $data['answers'] ?? [];
+
+            // If answers are passed as q1, q2... in the top level
+            if (empty($answers)) {
+                $questions = SusQuestion::orderBy('order')->get();
+                foreach ($questions as $question) {
+                    $key = 'q' . $question->order;
+                    if (isset($data[$key])) {
+                        $answers[$question->id] = $data[$key];
+                    }
+                }
+            }
+
             $totalContribution = 0;
-            foreach ($data['answers'] as $questionId => $value) {
+            foreach ($answers as $questionId => $value) {
                 $answer = SusAnswer::create([
                     'sus_result_id'    => $result->id,
                     'sus_question_id'  => $questionId,
-                    'value'            => $value,
+                    'value'            => (int) $value,
                 ]);
 
                 $question = $answer->question;
