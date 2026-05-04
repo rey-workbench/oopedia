@@ -14,7 +14,7 @@ class MaterialsSeeder extends Seeder
         $materials = [
             [
                 'title'     => 'Paradigma OOP vs Struktural',
-                'cover_url' => 'materials/fd155d81676941892f9105cd2fe67127.png',
+                'cover_url' => 'images/materials/oopstruktural.png',
                 'content'   => '
                 <h2>Paradigma Prosedural VS Object Oriented Programming (OOP)</h2>
                 
@@ -71,7 +71,7 @@ class MaterialsSeeder extends Seeder
             ],
             [
                 'title'     => 'Struktur Dasar: Class & Object Java',
-                'cover_url' => 'materials/22acc243206cd9073603ff88f8a9a46b.png',
+                'cover_url' => 'images/materials/classobject.png',
                 'content'   => '<h2>Konsep Class dan Objek dalam Pemrograman Java</h2>
                 <p>Pemrograman Berorientasi Objek atau <em>Object-Oriented Programming</em> (OOP) merupakan paradigma utama dalam Java. Dua konsep ini menjadi fondasi dasar yang memungkinkan kita membangun sistem yang terstruktur, modular, dan mudah dikembangkan.</p>
 
@@ -172,7 +172,7 @@ m1.perkenalan(); // Output: Halo, saya Andi dari jurusan Informatika</code></pre
             ],
             [
                 'title'     => 'Enkapsulasi & Information Hiding',
-                'cover_url' => 'materials/67d38a5cb641fc35e70c53310c4b634d.png',
+                'cover_url' => 'images/materials/encapsulation.png',
                 'content'   => '<h2>Enkapsulasi: Melindungi dan Memaketkan Data</h2>
                 <p>Enkapsulasi adalah proses pemaketan atau penyatuan data bersama metode-metodenya, di mana hal ini bermanfaat untuk menyembunyikan rincian implementasi dari pemakai.</p>
 
@@ -281,7 +281,7 @@ public class Main {
             ],
             [
                 'title'     => 'Inheritance: Pewarisan dan Kata Kunci Super',
-                'cover_url' => 'materials/b5d3f604a2a25a860792161323183781.png',
+                'cover_url' => 'images/materials/inhe.png',
                 'content'   => '<h2>Pewarisan (Inheritance)</h2>
                 <p>Pewarisan merupakan proses penciptaan kelas baru dengan mewarisi karakteristik kelas yang sudah ada (Superclass), ditambah dengan karakteristik unik kelas baru tersebut (Subclass).</p>
                 
@@ -339,7 +339,7 @@ class KotakPejal extends Kotak {
             ],
             [
                 'title'     => 'Polimorfisme: Override dan Overload',
-                'cover_url' => 'materials/1dd45384507ccbd8996101ecbfe1055c.png',
+                'cover_url' => 'images/materials/poly.png',
                 'content'   => '<h2>Polimorfisme (Banyak Bentuk)</h2>
                 <p>Polimorfisme adalah kemampuan suatu objek untuk mengungkapkan banyak hal melalui satu cara yang sama. Dalam Java, hal ini diwujudkan melalui Overloading dan Overriding.</p>
                 
@@ -405,7 +405,7 @@ class Anak extends Induk {
             ],
             [
                 'title'     => 'Abstraksi dan Interface: Kontrak Standarisasi',
-                'cover_url' => 'materials/7b30791a2a7c4aa3defe0be90d1ce81d.png',
+                'cover_url' => 'images/materials/abstraksi.png',
                 'content'   => '<h2>Abstraksi: Penyembunyian Kerumitan</h2>
                 <p>Abstraksi digunakan untuk menyembunyikan detail proses dan hanya menampilkan fungsi penting. Kelas abstrak tidak dapat diinstansiasi (dibuat objeknya secara langsung).</p>
                 
@@ -451,7 +451,7 @@ class Merpati extends Hewan implements AlatTerbang {
             ],
             [
                 'title'     => 'Relasi Antar Class (UML Dasar)',
-                'cover_url' => 'materials/11a4db745936d3e71464f8bdb7f263f5.png',
+                'cover_url' => 'images/materials/uml.png',
                 'content'   => '<h2>Memahami Class Diagram: Struktur dan Relasi</h2>
                 <p>Class diagram atau diagram kelas adalah salah satu jenis diagram struktur pada UML yang menggambarkan dengan jelas struktur serta deskripsi class, atribut, metode, dan hubungan dari setiap objek.</p>
 
