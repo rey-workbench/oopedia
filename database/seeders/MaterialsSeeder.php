@@ -2,7 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Enums\User\RoleName;
 use App\Models\Material;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class MaterialsSeeder extends Seeder
@@ -13,9 +16,9 @@ class MaterialsSeeder extends Seeder
         // never use custom styling like tailwind etc only use basic html tag!
         $materials = [
             [
-                'title'     => 'Paradigma OOP vs Struktural',
+                'title' => 'Paradigma OOP vs Struktural',
                 'cover_url' => 'images/materials/oopstruktural.png',
-                'content'   => '
+                'content' => '
                 <h2>Paradigma Prosedural VS Object Oriented Programming (OOP)</h2>
                 
                 <iframe 
@@ -70,9 +73,9 @@ class MaterialsSeeder extends Seeder
                 'module_id' => '1',
             ],
             [
-                'title'     => 'Struktur Dasar: Class & Object Java',
+                'title' => 'Struktur Dasar: Class & Object Java',
                 'cover_url' => 'images/materials/classobject.png',
-                'content'   => '<h2>Konsep Class dan Objek dalam Pemrograman Java</h2>
+                'content' => '<h2>Konsep Class dan Objek dalam Pemrograman Java</h2>
                 <p>Pemrograman Berorientasi Objek atau <em>Object-Oriented Programming</em> (OOP) merupakan paradigma utama dalam Java. Dua konsep ini menjadi fondasi dasar yang memungkinkan kita membangun sistem yang terstruktur, modular, dan mudah dikembangkan.</p>
 
                 <iframe 
@@ -171,9 +174,9 @@ m1.perkenalan(); // Output: Halo, saya Andi dari jurusan Informatika</code></pre
                 'module_id' => '2',
             ],
             [
-                'title'     => 'Enkapsulasi & Information Hiding',
+                'title' => 'Enkapsulasi & Information Hiding',
                 'cover_url' => 'images/materials/encapsulation.png',
-                'content'   => '<h2>Enkapsulasi: Melindungi dan Memaketkan Data</h2>
+                'content' => '<h2>Enkapsulasi: Melindungi dan Memaketkan Data</h2>
                 <p>Enkapsulasi adalah proses pemaketan atau penyatuan data bersama metode-metodenya, di mana hal ini bermanfaat untuk menyembunyikan rincian implementasi dari pemakai.</p>
 
                 <blockquote>
@@ -280,9 +283,9 @@ public class Main {
                 'module_id' => '3',
             ],
             [
-                'title'     => 'Inheritance: Pewarisan dan Kata Kunci Super',
+                'title' => 'Inheritance: Pewarisan dan Kata Kunci Super',
                 'cover_url' => 'images/materials/inhe.png',
-                'content'   => '<h2>Pewarisan (Inheritance)</h2>
+                'content' => '<h2>Pewarisan (Inheritance)</h2>
                 <p>Pewarisan merupakan proses penciptaan kelas baru dengan mewarisi karakteristik kelas yang sudah ada (Superclass), ditambah dengan karakteristik unik kelas baru tersebut (Subclass).</p>
                 
                 <blockquote>
@@ -338,9 +341,9 @@ class KotakPejal extends Kotak {
                 'module_id' => '4',
             ],
             [
-                'title'     => 'Polimorfisme: Override dan Overload',
+                'title' => 'Polimorfisme: Override dan Overload',
                 'cover_url' => 'images/materials/poly.png',
-                'content'   => '<h2>Polimorfisme (Banyak Bentuk)</h2>
+                'content' => '<h2>Polimorfisme (Banyak Bentuk)</h2>
                 <p>Polimorfisme adalah kemampuan suatu objek untuk mengungkapkan banyak hal melalui satu cara yang sama. Dalam Java, hal ini diwujudkan melalui Overloading dan Overriding.</p>
                 
                 <h3>Video Tutorial: Polimorfisme</h3>
@@ -404,9 +407,9 @@ class Anak extends Induk {
                 'module_id' => '5',
             ],
             [
-                'title'     => 'Abstraksi dan Interface: Kontrak Standarisasi',
+                'title' => 'Abstraksi dan Interface: Kontrak Standarisasi',
                 'cover_url' => 'images/materials/abstraksi.png',
-                'content'   => '<h2>Abstraksi: Penyembunyian Kerumitan</h2>
+                'content' => '<h2>Abstraksi: Penyembunyian Kerumitan</h2>
                 <p>Abstraksi digunakan untuk menyembunyikan detail proses dan hanya menampilkan fungsi penting. Kelas abstrak tidak dapat diinstansiasi (dibuat objeknya secara langsung).</p>
                 
                 <pre><code>abstract class Hewan {
@@ -450,9 +453,9 @@ class Merpati extends Hewan implements AlatTerbang {
                 'module_id' => '6',
             ],
             [
-                'title'     => 'Relasi Antar Class (UML Dasar)',
+                'title' => 'Relasi Antar Class (UML Dasar)',
                 'cover_url' => 'images/materials/uml.png',
-                'content'   => '<h2>Memahami Class Diagram: Struktur dan Relasi</h2>
+                'content' => '<h2>Memahami Class Diagram: Struktur dan Relasi</h2>
                 <p>Class diagram atau diagram kelas adalah salah satu jenis diagram struktur pada UML yang menggambarkan dengan jelas struktur serta deskripsi class, atribut, metode, dan hubungan dari setiap objek.</p>
 
                 <blockquote>
@@ -523,10 +526,10 @@ class Merpati extends Hewan implements AlatTerbang {
             Material::updateOrCreate(
                 ['title' => $material['title']],
                 [
-                    'cover_url'  => $material['cover_url'] ?? null,
-                    'content'    => $material['content'],
-                    'module_id'  => $material['module_id'],
-                    'created_by' => '01kqd08mx4rj8z6ergz63k7gfe',
+                    'cover_url' => $material['cover_url'] ?? null,
+                    'content' => $material['content'],
+                    'module_id' => $material['module_id'],
+                    'created_by' => User::whereHas('role', fn($q) => $q->where('role_name', RoleName::DOSEN))->first()?->id ?? User::first()?->id,
                 ],
             );
         }

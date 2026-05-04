@@ -2475,15 +2475,11 @@ class RealQuestionSeeder extends Seeder
             ],
         ];
 
-        if ($title === 'Inheritance & Abstraksi: Hierarki dan Kontrak') {
-            return array_merge(
-                $allQuestions['Inheritance (Pewarisan)']                       ?? [],
-                $allQuestions['Abstract Class']                                ?? [],
-                $allQuestions['Interface']                                     ?? [],
-            );
+        if ($title === 'Inheritance: Pewarisan dan Kata Kunci Super') {
+            return $allQuestions['Inheritance (Pewarisan)'] ?? [];
         }
 
-        if ($title === 'Mastering Polimorfisme: Fleksibilitas Dewa') {
+        if ($title === 'Polimorfisme: Override dan Overload') {
             return array_merge(
                 $allQuestions['Mastering Polimorfisme: Fleksibilitas Dewa'] ?? [],
                 $allQuestions['Overriding dan Overloading']                 ?? [],
@@ -2494,12 +2490,18 @@ class RealQuestionSeeder extends Seeder
             return $allQuestions['Anatomi Class & Object'] ?? [];
         }
 
-        if ($title === 'Enkapsulasi: Proteksi Data') {
-            return $allQuestions['Enkapsulasi & Information Hiding'] ?? [];
+        if ($title === 'Abstraksi dan Interface: Kontrak Standarisasi') {
+            return array_merge(
+                $allQuestions['Abstract Class'] ?? [],
+                $allQuestions['Interface']      ?? [],
+            );
         }
 
-        if ($title === 'UML: Blueprints Arsitektur') {
-            return $allQuestions['Relasi Antar Class (UML Dasar)'] ?? [];
+        if ($title === 'Relasi Antar Class (UML Dasar)') {
+            return array_merge(
+                $allQuestions['Relasi Antar Class (UML Dasar)']               ?? [],
+                $allQuestions['Proyek Akhir: Arsitektur Sistem Terintegrasi'] ?? [],
+            );
         }
 
         return $allQuestions[$title] ?? [];
