@@ -14,20 +14,21 @@ class FinalProjectSeeder extends Seeder
 {
     public function run(): void
     {
-        $dosen = User::whereHas('role', function ($q) {
-            $q->where('role_name', 'dosen');
-        })->first();
-        $dosenId = $dosen ? $dosen->id : null;
+        $admin = User::whereHas('role', function ($q) {
+            $q->whereIn('role_name', [\App\Enums\User\RoleName::SUPERADMIN, \App\Enums\User\RoleName::DOSEN]);
+        })->first() ?? User::first();
+
+        $dosenId = $admin ? $admin->id : null;
 
         // 1. Create Final Project Material
         $material = Material::updateOrCreate(
             ['module_id' => '10'],
             [
-                'title'   => 'Proyek Akhir: Arsitektur Sistem Terintegrasi',
+                'title' => 'Proyek Akhir: Arsitektur Sistem Terintegrasi',
                 'content' => '<h2>Ujian Akhir Penguasaan OOP</h2>
                     <p>Selamat! Anda telah capai tahap akhir. Proyek ini akan menguji seluruh pemahaman Anda tentang 4 pilar OOP (Enkapsulasi, Pewarisan, Polimorfisme, dan Abstraksi) dalam satu skenario terpadu.</p>
                     <p>Selesaikan pertanyaan berikut dengan tingkat akurasi tinggi untuk mendapatkan sertifikasi.</p>',
-                'created_by'       => $dosenId,
+                'created_by' => $dosenId,
                 'is_final_project' => true,
             ],
         );
@@ -36,11 +37,11 @@ class FinalProjectSeeder extends Seeder
         $q1 = Question::updateOrCreate(
             ['question_text' => 'Dalam sebuah sistem pembayaran, Anda memiliki interface "PaymentProcessor" dan class "CreditCard", "EWallet", serta "BankTransfer". Konsep apa yang paling tepat menggambarkan kemampuan memanggil method "pay()" pada variabel bertipe "PaymentProcessor" tanpa peduli jenis pembayarannya?'],
             [
-                'material_id'     => $material->id,
-                'question_type'   => QuestionType::RADIO_BUTTON->value,
-                'difficulty'      => QuestionDifficulty::HARD->value,
-                'hint'            => 'Satu antarmuka, banyak wujud.',
-                'created_by'      => $dosenId,
+                'material_id' => $material->id,
+                'question_type' => QuestionType::RADIO_BUTTON->value,
+                'difficulty' => QuestionDifficulty::HARD->value,
+                'hint' => 'Satu antarmuka, banyak wujud.',
+                'created_by' => $dosenId,
             ],
         );
 
@@ -58,11 +59,11 @@ class FinalProjectSeeder extends Seeder
         $q2 = Question::updateOrCreate(
             ['question_text' => 'Manakah potongan kode Java yang benar untuk mendeklarasikan kelas "Manager" yang mewarisi dari "Employee" dan mengimplementasikan interface "Authenticatable"?'],
             [
-                'material_id'     => $material->id,
-                'question_type'   => QuestionType::RADIO_BUTTON->value,
-                'difficulty'      => QuestionDifficulty::HARD->value,
-                'hint'            => 'Urutannya adalah extends lalu implements.',
-                'created_by'      => $dosenId,
+                'material_id' => $material->id,
+                'question_type' => QuestionType::RADIO_BUTTON->value,
+                'difficulty' => QuestionDifficulty::HARD->value,
+                'hint' => 'Urutannya adalah extends lalu implements.',
+                'created_by' => $dosenId,
             ],
         );
 
