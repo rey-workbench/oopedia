@@ -18,28 +18,28 @@
     let {
         results,
         metrics = { averages: {}, total_responses: 0, avg_motivation: 0, avg_strategy: 0 },
-        classes = [],
-        activeClass = '',
+        types = [],
+        activeType = '',
         analysis = {},
     }: AdminMslqIndexProps & { analysis: any } = $props();
 
     let activeTab = $state('overview');
-    let class1 = $state(activeClass);
-    let class2 = $state('');
+    let type1 = $state(activeType);
+    let type2 = $state('');
 
     $effect(() => {
-        class1 = activeClass;
+        type1 = activeType;
     });
 
     function handleComparison() {
         router.visit(window.location.pathname, {
-            data: { class: class1, class1, class2 },
+            data: { type: type1, type1, type2 },
             preserveState: true,
             only: ['analysis'],
         });
     }
 
-    const mslqState = untrack(() => new MslqState(results.data, metrics, classes, activeClass));
+    const mslqState = untrack(() => new MslqState(results.data, metrics, types, activeType));
 
     // Removed unused scale helper variables
 
@@ -127,10 +127,10 @@
             {#snippet actions()}
                 <div class="flex items-center gap-4">
                     <Select
-                        placeholder="Filter Kelas"
-                        value={mslqState.activeClass}
+                        placeholder="Filter Tipe"
+                        value={mslqState.activeType}
                         onchange={(v) => mslqState.handleFilterChange(v as any)}
-                        options={mslqState.classes.map((c) => ({ label: c, value: c }))}
+                        options={mslqState.types.map((t) => ({ label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)', value: t }))}
                         class="border-duo w-48 rounded-xl"
                     />
                     <Button
@@ -267,15 +267,15 @@
                     <div class="flex flex-wrap items-center justify-between gap-6 p-8">
                         <div class="space-y-1">
                             <h3 class="text-primary-500 font-display text-lg font-black tracking-widest uppercase">Komparasi Kelompok</h3>
-                            <p class="text-xs font-medium text-slate-500 uppercase">Pilih dua kelas untuk melakukan uji Independent T-Test & Mann-Whitney U.</p>
+                            <p class="text-xs font-medium text-slate-500 uppercase">Pilih dua tipe asesmen untuk melakukan uji Independent T-Test & Mann-Whitney U.</p>
                         </div>
                         <div class="flex items-center gap-4">
                             <div class="space-y-2">
                                 <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Kelompok 1</span>
                                 <Select 
-                                    options={classes.map(c => ({ label: c, value: c }))} 
-                                    bind:value={class1} 
-                                    placeholder="Kelas 1"
+                                    options={types.map(t => ({ label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)', value: t }))} 
+                                    bind:value={type1} 
+                                    placeholder="Tipe 1"
                                     class="w-40 rounded-xl"
                                 />
                             </div>
@@ -285,9 +285,9 @@
                             <div class="space-y-2">
                                 <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Kelompok 2</span>
                                 <Select 
-                                    options={classes.map(c => ({ label: c, value: c }))} 
-                                    bind:value={class2} 
-                                    placeholder="Kelas 2"
+                                    options={types.map(t => ({ label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)', value: t }))} 
+                                    bind:value={type2} 
+                                    placeholder="Tipe 2"
                                     class="w-40 rounded-xl"
                                 />
                             </div>
@@ -318,8 +318,7 @@
                 links={results.links}
                 columns={[
                     { key: 'user.name', label: 'Nama Mahasiswa', align: 'left' },
-                    { key: 'nim', label: 'NIM', align: 'left' },
-                    { key: 'class', label: 'Kelas', align: 'left' },
+                    { key: 'assessment_type', label: 'Tipe Asesmen', align: 'left' },
                     { key: 'total_motivation', label: 'Motivasi', align: 'center' },
                     { key: 'total_strategy', label: 'Strategi Belajar', align: 'center' },
                     { key: 'created_at', label: 'Tanggal Submit', align: 'left' },
@@ -332,11 +331,10 @@
                     >
                         <span class="font-bold text-slate-900">{item.user?.name ?? 'Tamu'}</span>
                     </td>
-                    <td class="px-6 py-6 font-medium text-slate-500">{item.nim}</td>
                     <td class="px-6 py-6">
                         <span
                             class="text-primary-500 bg-primary-50 border-primary-100 rounded-full border px-3 py-1 text-[10px] font-black tracking-widest uppercase"
-                            >{item.class}</span
+                            >{item.assessment_type === 'pre' ? 'Pre-Test' : 'Post-Test'}</span
                         >
                     </td>
                     <td class="px-6 py-6 text-center">

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\DTOs\Survey;
 
+use App\Enums\Lms\AssessmentType;
 use Illuminate\Http\Request;
 
 final readonly class SusResultCreateDTO
 {
     public function __construct(
         public string $user_id,
-        public ?string $nim = null,
-        public ?string $class = null,
+        public AssessmentType $assessment_type = AssessmentType::PRE_TEST,
         public int $q1 = 0,
         public int $q2 = 0,
         public int $q3 = 0,
@@ -30,8 +30,7 @@ final readonly class SusResultCreateDTO
     {
         return new self(
             user_id: $userId,
-            nim: $request->input('nim'),
-            class: $request->input('class'),
+            assessment_type: AssessmentType::from($request->input('assessment_type', 'pre')),
             q1: (int) $request->input('q1'),
             q2: (int) $request->input('q2'),
             q3: (int) $request->input('q3'),
@@ -53,9 +52,8 @@ final readonly class SusResultCreateDTO
     public function toArray(): array
     {
         return [
-            'user_id'     => $this->user_id,
-            'nim'         => $this->nim,
-            'class'       => $this->class,
+            'user_id'         => $this->user_id,
+            'assessment_type' => $this->assessment_type,
             'q1'          => $this->q1,
             'q2'          => $this->q2,
             'q3'          => $this->q3,

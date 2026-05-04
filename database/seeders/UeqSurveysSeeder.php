@@ -20,9 +20,8 @@ class UeqSurveysSeeder extends Seeder
 
         $surveys = [
             [
-                'user_id'                           => $mahasiswas[0]->id, // Mahasiswa 1
-                'nim'                               => '12345678',
-                'class'                             => 'TI-3A',
+                'user_id'                           => $mahasiswas[0]->id,
+                'assessment_type'                   => 'pre',
                 'annoying_enjoyable'                => 6,
                 'not_understandable_understandable' => 5,
                 'creative_dull'                     => 4,
@@ -53,9 +52,8 @@ class UeqSurveysSeeder extends Seeder
                 'suggestions'                       => 'Add more interactive examples',
             ],
             [
-                'user_id'                           => $mahasiswas[1]->id, // Mahasiswa 2
-                'nim'                               => '87654321',
-                'class'                             => 'TI-3B',
+                'user_id'                           => $mahasiswas[1]->id,
+                'assessment_type'                   => 'post',
                 'annoying_enjoyable'                => 5,
                 'not_understandable_understandable' => 6,
                 'creative_dull'                     => 5,

@@ -8,6 +8,9 @@ use App\Contracts\Services\SusResultServiceInterface;
 use App\DTOs\Survey\SusResultCreateDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\SusQuestionResource;
+use App\Http\Requests\Survey\StoreSusResultRequest;
+use App\Enums\Lms\AssessmentType;
+use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
@@ -18,30 +21,33 @@ final class SusSurveyController extends Controller
         private readonly SusResultServiceInterface $susResultService,
     ) {}
 
-    public function create(): Response|RedirectResponse
+    public function create(Request $request): Response|RedirectResponse
     {
-        if ($this->susResultService->hasUserSubmitted((string) Auth::id())) {
-            return to_route('mahasiswa.sus-survey.thankyou');
+        $type = AssessmentType::from($request->query('type', 'pre'));
+        if ($this->susResultService->hasUserSubmitted((string) Auth::id(), $type)) {
+            return to_route('mahasiswa.surveys.sus.thankyou');
         }
 
         $questions = $this->getQuestions();
 
         return $this->render('Mahasiswa/Sus/Create/Index', [
             'questions' => SusQuestionResource::collection(collect($questions)->map(fn ($q): \stdClass => (object) $q))->resolve(),
+            'type'      => $type->value,
         ]);
     }
 
     public function store(StoreSusResultRequest $storeSusResultRequest): RedirectResponse
     {
-        if ($this->susResultService->hasUserSubmitted((string) Auth::id())) {
-            return to_route('mahasiswa.sus-survey.thankyou');
+        $type = AssessmentType::from($storeSusResultRequest->input('assessment_type', 'pre'));
+        if ($this->susResultService->hasUserSubmitted((string) Auth::id(), $type)) {
+            return to_route('mahasiswa.surveys.sus.thankyou');
         }
 
         $susResultCreateDTO = SusResultCreateDTO::fromRequest($storeSusResultRequest, (string) Auth::id());
 
         $this->susResultService->submitResult($susResultCreateDTO->toArray());
 
-        return to_route('mahasiswa.sus-survey.thankyou');
+        return to_route('mahasiswa.surveys.sus.thankyou');
     }
 
     public function show(): Response

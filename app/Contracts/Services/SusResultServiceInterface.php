@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Contracts\Services;
 
+use App\Enums\Lms\AssessmentType;
 use App\Models\SusResult;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -12,16 +13,16 @@ interface SusResultServiceInterface
     /**
      * @return Collection<int, SusResult>
      */
-    public function getAllResults(?string $class = null): \Illuminate\Support\Collection;
+    public function getAllResults(?AssessmentType $type = null): \Illuminate\Support\Collection;
 
     /**
      * @return array<string>
      */
-    public function getDistinctClasses(): array;
+    public function getDistinctAssessmentTypes(): array;
 
     public function getStudentDetail(string $userId): ?array;
 
-    public function hasUserSubmitted(string $userId): bool;
+    public function hasUserSubmitted(string $userId, ?AssessmentType $type = null): bool;
 
     /**
      * @param array<string, mixed> $data
@@ -41,5 +42,5 @@ interface SusResultServiceInterface
     /**
      * Perform advanced statistical analysis (Reliability, Mann-Whitney).
      */
-    public function calculateStatisticalAnalysis(?string $class1 = null, ?string $class2 = null): array;
+    public function calculateStatisticalAnalysis(?AssessmentType $type1 = null, ?AssessmentType $type2 = null): array;
 }

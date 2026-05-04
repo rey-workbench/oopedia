@@ -16,21 +16,15 @@ final class UeqSurveyRepository implements UeqSurveyRepositoryInterface
     }
 
     /** @return Collection<int, UeqSurvey> */
-    public function getAllWithUser(?string $class = null): Collection
+    public function getAllWithUser(?string $type = null): Collection
     {
         $builder = UeqSurvey::with('user');
 
-        if ($class) {
-            $builder->where('class', '=', $class);
+        if ($type) {
+            $builder->where('assessment_type', '=', $type);
         }
 
         return $builder->get();
-    }
-
-    /** @return array<string> */
-    public function getDistinctClasses(): array
-    {
-        return UeqSurvey::distinct()->pluck('class')->filter()->values()->all();
     }
 
     public function findByUserId(string $userId): ?UeqSurvey
@@ -38,8 +32,14 @@ final class UeqSurveyRepository implements UeqSurveyRepositoryInterface
         return UeqSurvey::where('user_id', '=', $userId)->firstOrFail();
     }
 
-    public function findSurveyByUser(string $userId): ?UeqSurvey
+    public function findSurveyByUser(string $userId, ?string $type = null): ?UeqSurvey
     {
-        return UeqSurvey::where('user_id', '=', $userId)->first();
+        $query = UeqSurvey::where('user_id', '=', $userId);
+
+        if ($type) {
+            $query->where('assessment_type', '=', $type);
+        }
+
+        return $query->first();
     }
 }

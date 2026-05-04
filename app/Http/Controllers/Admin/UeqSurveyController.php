@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\Lms\AssessmentType;
 use App\Contracts\Services\UeqSurveyServiceInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -16,28 +17,28 @@ final class UeqSurveyController extends Controller
 
     public function index(Request $request): Response
     {
-        $class    = $request->input('class');
-        $surveys  = $this->ueqSurveyService->getAllSurveys($class);
+        $type     = $request->query('type') ? AssessmentType::tryFrom($request->query('type')) : null;
+        $surveys  = $this->ueqSurveyService->getAllSurveys($type);
         $averages = $this->ueqSurveyService->calculateAverages($surveys);
-        $classes  = $this->ueqSurveyService->getDistinctClasses();
+        $types    = $this->ueqSurveyService->getDistinctAssessmentTypes();
 
-        $class1   = $request->query('class1', $class);
-        $class2   = $request->query('class2');
-        $analysis = $this->ueqSurveyService->calculateStatisticalAnalysis($class1, $class2);
+        $type1    = $request->query('type1') ? AssessmentType::tryFrom($request->query('type1')) : $type;
+        $type2    = $request->query('type2') ? AssessmentType::tryFrom($request->query('type2')) : null;
+        $analysis = $this->ueqSurveyService->calculateStatisticalAnalysis($type1, $type2);
 
         return $this->render('Admin/Ueq/Index', [
             'surveys'     => $surveys,
             'averages'    => $averages,
-            'classes'     => $classes,
-            'activeClass' => $class ?? '',
+            'types'       => $types,
+            'activeType'  => $type?->value ?? '',
             'analysis'    => $analysis,
         ]);
     }
 
     public function export(Request $request): StreamedResponse
     {
-        $class   = $request->input('class');
-        $surveys = $this->ueqSurveyService->getAllSurveys($class);
+        $type    = $request->query('type') ? AssessmentType::tryFrom($request->query('type')) : null;
+        $surveys = $this->ueqSurveyService->getAllSurveys($type);
 
         $headers = [
             'Content-Type'        => 'text/csv',

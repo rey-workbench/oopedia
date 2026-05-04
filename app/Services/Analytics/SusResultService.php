@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Analytics;
 
+use App\Enums\Lms\AssessmentType;
 use App\Contracts\Repositories\SusResultRepositoryInterface;
 use App\Contracts\Services\SusResultServiceInterface;
 use App\Http\Resources\SusResultResource;
@@ -21,17 +22,17 @@ final readonly class SusResultService implements SusResultServiceInterface
         private StatisticalAnalysisService $statisticalAnalysisService,
     ) {}
 
-    public function getAllResults(?string $class = null): SupportCollection
+    public function getAllResults(?AssessmentType $type = null): SupportCollection
     {
         return collect(SusResultResource::collection(
-            $this->susResultRepository->getAllWithUser($class),
+            $this->susResultRepository->getAllWithUser($type?->value),
         )->resolve());
     }
 
     /** @return array<string> */
-    public function getDistinctClasses(): array
+    public function getDistinctAssessmentTypes(): array
     {
-        return $this->susResultRepository->getDistinctClasses();
+        return ['pre', 'post'];
     }
 
     public function getStudentDetail(string $userId): ?array
@@ -45,21 +46,25 @@ final readonly class SusResultService implements SusResultServiceInterface
         return new SusResultResource($result)->resolve();
     }
 
-    public function hasUserSubmitted(string $userId): bool
+    public function hasUserSubmitted(string $userId, ?AssessmentType $type = null): bool
     {
-        return $this->susResultRepository->findByUserId($userId) instanceof SusResult;
+        $query = SusResult::where('user_id', $userId);
+        if ($type) {
+            $query->where('assessment_type', $type->value);
+        }
+
+        return $query->exists();
     }
 
     public function submitResult(array $data): SusResult
     {
         return DB::transaction(function () use ($data): SusResult {
             $result = $this->susResultRepository->create([
-                'user_id'     => $data['user_id'],
-                'nim'         => $data['nim']         ?? null,
-                'class'       => $data['class']       ?? null,
-                'comments'    => $data['comments']    ?? null,
-                'suggestions' => $data['suggestions'] ?? null,
-                'total_score' => 0,
+                'user_id'         => $data['user_id'],
+                'assessment_type' => $data['assessment_type'],
+                'comments'        => $data['comments']    ?? null,
+                'suggestions'     => $data['suggestions'] ?? null,
+                'total_score'     => 0,
             ]);
 
             $answers = $data['answers'] ?? [];
@@ -215,10 +220,10 @@ final readonly class SusResultService implements SusResultServiceInterface
         return 'Not Acceptable';
     }
 
-    public function calculateStatisticalAnalysis(?string $class1 = null, ?string $class2 = null): array
+    public function calculateStatisticalAnalysis(?AssessmentType $type1 = null, ?AssessmentType $type2 = null): array
     {
-        $results1 = $this->susResultRepository->getAllWithUser($class1);
-        $results2 = $class2 ? $this->susResultRepository->getAllWithUser($class2) : collect();
+        $results1 = $this->susResultRepository->getAllWithUser($type1?->value);
+        $results2 = $type2 ? $this->susResultRepository->getAllWithUser($type2->value) : collect();
 
         // 1. Reliability (Cronbach's Alpha) for Class 1 (or all if class1 is null)
         $matrix = $this->buildAnswerMatrix($results1);
@@ -234,7 +239,7 @@ final readonly class SusResultService implements SusResultServiceInterface
             $scores1 = $results1->pluck('total_score')->toArray();
             $desc1   = Descriptive::describe($scores1);
 
-            if ($class2 && $results2->isNotEmpty()) {
+            if ($results2->isNotEmpty()) {
                 $scores2 = $results2->pluck('total_score')->toArray();
                 $desc2   = Descriptive::describe($scores2);
 

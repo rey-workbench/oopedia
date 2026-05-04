@@ -11,8 +11,7 @@ final class StoreUeqSurveyRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'nim'   => ['required', 'string', 'max:20'],
-            'class' => ['required', 'string', 'max:20'],
+            'assessment_type' => ['required', 'string', 'in:pre,post'],
 
             'annoying_enjoyable'                => ['required', 'integer', 'between:1,7'],
             'not_understandable_understandable' => ['required', 'integer', 'between:1,7'],
@@ -115,12 +114,12 @@ final class StoreUeqSurveyRequest extends BaseFormRequest
             'friendly_unfriendly.between'               => $between,
             'conservative_innovative.between'           => $between,
 
-            'comments.required'    => 'Komentar wajib diisi',
-            'suggestions.required' => 'Saran wajib diisi',
-            'comments.max'         => 'Komentar tidak boleh lebih dari 1000 karakter',
-            'suggestions.max'      => 'Saran tidak boleh lebih dari 1000 karakter',
-            'nim.required'         => 'NIM wajib diisi',
-            'class.required'       => 'Kelas wajib diisi',
+            'comments.required'         => 'Komentar wajib diisi',
+            'suggestions.required'      => 'Saran wajib diisi',
+            'comments.max'              => 'Komentar tidak boleh lebih dari 1000 karakter',
+            'suggestions.max'           => 'Saran tidak boleh lebih dari 1000 karakter',
+            'assessment_type.required'  => 'Tipe asesmen wajib diisi',
+            'assessment_type.in'        => 'Tipe asesmen tidak valid',
         ]);
     }
 }

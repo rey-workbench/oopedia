@@ -11,23 +11,23 @@ use Illuminate\Support\Collection;
 
 final class MslqRepository implements MslqRepositoryInterface
 {
-    public function getAll(?string $class = null, int $perPage = 10): LengthAwarePaginator
+    public function getAll(?string $assessmentType = null, int $perPage = 10): LengthAwarePaginator
     {
         return MslqResult::with('user')
-            ->when($class, fn ($query) => $query->where('class', $class))
+            ->when($assessmentType, fn ($query) => $query->where('assessment_type', $assessmentType))
             ->latest()
             ->paginate($perPage);
     }
 
-    public function getAllForCalculation(?string $class = null): Collection
+    public function getAllForCalculation(?string $assessmentType = null): Collection
     {
-        return MslqResult::when($class, fn ($query) => $query->where('class', $class))
+        return MslqResult::when($assessmentType, fn ($query) => $query->where('assessment_type', $assessmentType))
             ->get();
     }
 
-    public function getDistinctClasses(): Collection
+    public function getDistinctAssessmentTypes(): Collection
     {
-        return MslqResult::distinct()->pluck('class')->filter()->values();
+        return MslqResult::distinct()->pluck('assessment_type')->filter()->values();
     }
 
     public function findWithRelations(string $id): MslqResult

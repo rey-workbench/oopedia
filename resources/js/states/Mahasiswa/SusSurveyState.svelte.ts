@@ -6,10 +6,9 @@ import { ROUTES } from '@/utils/route';
 export class SusSurveyState extends FormState<SusSurveyForm> {
     questions = SUS_QUESTIONS;
 
-    constructor() {
+    constructor(type: string = 'pre') {
         const initialFields: SusSurveyForm = {
-            nim: '',
-            class: '',
+            assessment_type: type,
             q1: 3,
             q2: 3,
             q3: 3,

@@ -10,11 +10,11 @@ use Illuminate\Support\Collection;
 
 interface MslqRepositoryInterface
 {
-    public function getAll(?string $class = null, int $perPage = 10): LengthAwarePaginator;
+    public function getAll(?string $assessmentType = null, int $perPage = 10): LengthAwarePaginator;
 
-    public function getAllForCalculation(?string $class = null): Collection;
+    public function getAllForCalculation(?string $assessmentType = null): Collection;
 
-    public function getDistinctClasses(): Collection;
+    public function getDistinctAssessmentTypes(): Collection;
 
     public function findWithRelations(string $id): MslqResult;
 

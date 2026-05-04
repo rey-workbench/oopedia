@@ -8,14 +8,14 @@ export class MslqState extends BaseState {
     averages = $state<Record<string, number>>({});
     avgMotivation = $state(0);
     avgStrategy = $state(0);
-    classes = $state<string[]>([]);
-    activeClass = $state('');
+    types = $state<string[]>([]);
+    activeType = $state('');
 
     constructor(
         results: MslqResult[],
         metrics: { averages: Record<string, number>; avg_motivation: number; avg_strategy: number },
-        classes: string[],
-        activeClass: string
+        types: string[],
+        activeType: string
     ) {
         super();
         this.hydrate({
@@ -23,22 +23,22 @@ export class MslqState extends BaseState {
             averages: metrics.averages,
             avgMotivation: metrics.avg_motivation,
             avgStrategy: metrics.avg_strategy,
-            classes,
-            activeClass,
+            types,
+            activeType,
         });
     }
 
     handleFilterChange(value: string | number) {
         router.get(
             ROUTES.ADMIN.MSLQ.INDEX,
-            { class: String(value) },
+            { type: String(value) },
             { preserveState: true, replace: true }
         );
     }
 
     exportResults() {
         window.location.href =
-            ROUTES.ADMIN.MSLQ.EXPORT + (this.activeClass ? `?class=${this.activeClass}` : '');
+            ROUTES.ADMIN.MSLQ.EXPORT + (this.activeType ? `?type=${this.activeType}` : '');
     }
 }
 

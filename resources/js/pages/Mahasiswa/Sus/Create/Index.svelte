@@ -8,8 +8,10 @@
     import { untrack } from 'svelte';
     import { SusSurveyState } from '@/states/Mahasiswa/SusSurveyState.svelte';
     import Input from '@/components/ui/Input.svelte';
+    import Select from '@/components/ui/Select.svelte';
 
-    const state = untrack(() => new SusSurveyState());
+    const { type = 'pre' } = $props();
+    const state = untrack(() => new SusSurveyState(type));
 
     const scaleLabels = [
         'Sangat Tidak Setuju',
@@ -45,20 +47,20 @@
                     }}
                     class="space-y-16"
                 >
-                    <div id="sus-identitas" class="grid grid-cols-1 gap-10 md:grid-cols-3">
+                    <div id="sus-identitas" class="grid grid-cols-1 gap-10 md:grid-cols-2">
                         <div class="space-y-3">
                             <label
-                                for="nim"
+                                for="assessment_type"
                                 class="ml-4 block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                                >Tipe Asesmen</label
                             >
-                                NIM Mahasiswa <span class="text-rose-500">*</span>
-                            </label>
-                            <Input
-                                id="nim"
-                                bind:value={state.form.nim}
-                                placeholder="Contoh: 2141720000"
-                                required
-                                error={state.form.errors['nim']}
+                            <Select
+                                id="assessment_type"
+                                bind:value={state.form.assessment_type}
+                                options={[
+                                    { label: 'PRE-TEST (AWAL)', value: 'pre' },
+                                    { label: 'POST-TEST (AKHIR)', value: 'post' }
+                                ]}
                                 class="rounded-[1.5rem] py-4"
                             />
                         </div>
@@ -70,24 +72,8 @@
                             <div
                                 class="w-full rounded-[1.5rem] border-2 border-slate-50 bg-slate-50 px-6 py-4 text-xs font-bold tracking-widest text-slate-400 uppercase"
                             >
-                                {state.user ? state.user.name : 'GUEST SESSION'}
+                                {state.user ? state.user.name : 'STUDENT SESSION'}
                             </div>
-                        </div>
-                        <div class="space-y-3">
-                            <label
-                                for="class"
-                                class="ml-4 block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                            >
-                                Segmentasi Kelas <span class="text-rose-500">*</span>
-                            </label>
-                            <Input
-                                id="class"
-                                bind:value={state.form.class}
-                                placeholder="Contoh: TI-3A"
-                                required
-                                error={state.form.errors['class']}
-                                class="rounded-[1.5rem] py-4"
-                            />
                         </div>
                     </div>
 

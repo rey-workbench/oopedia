@@ -21,8 +21,7 @@ export interface MslqAnswer {
 }
 
 export interface MslqForm {
-    nim: string;
-    class: string;
+    assessment_type: string;
     answers: MslqAnswer[];
 }
 
@@ -34,8 +33,7 @@ export interface MslqAnswerDetail {
 export interface MslqResult {
     id: string;
     user: User;
-    nim?: string;
-    class?: string;
+    assessment_type: string;
     scores_by_scale: Record<string, number>;
     total_motivation: number;
     total_strategy: number;
@@ -50,8 +48,8 @@ export interface AdminMslqIndexProps {
         avg_strategy: number;
         total_responses: number;
     };
-    classes: string[];
-    activeClass: string;
+    types: string[];
+    activeType: string;
 }
 
 export interface AdminMslqDetailProps {

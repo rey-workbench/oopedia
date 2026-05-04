@@ -8,10 +8,11 @@
     import { untrack } from 'svelte';
     import { UeqSurveyState } from '@/states/Mahasiswa/UeqSurveyState.svelte';
     import Input from '@/components/ui/Input.svelte';
+    import Select from '@/components/ui/Select.svelte';
 
-    const { aspects = [] }: { aspects: { name: string }[] } = $props();
+    const { aspects = [], assessmentType = 'pre' }: { aspects: { name: string }[], assessmentType: string } = $props();
 
-    const state = untrack(() => new UeqSurveyState(aspects));
+    const state = untrack(() => new UeqSurveyState(aspects, assessmentType));
 </script>
 
 <App title="UEQ Survey">
@@ -42,23 +43,7 @@
                     }}
                     class="space-y-16"
                 >
-                    <div id="ueq-identitas" class="grid grid-cols-1 gap-10 md:grid-cols-3">
-                        <div class="space-y-3">
-                            <label
-                                for="nim"
-                                class="ml-4 block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                            >
-                                NIM Mahasiswa <span class="text-rose-500">*</span>
-                            </label>
-                            <Input
-                                id="nim"
-                                bind:value={state.form['nim']}
-                                placeholder="Contoh: 2141720000"
-                                required
-                                error={state.form.errors['nim']}
-                                class="rounded-[1.5rem] py-4"
-                            />
-                        </div>
+                    <div id="ueq-identitas" class="grid grid-cols-1 gap-10 md:grid-cols-2">
                         <div class="space-y-3">
                             <span
                                 class="ml-4 block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
@@ -72,17 +57,18 @@
                         </div>
                         <div class="space-y-3">
                             <label
-                                for="class"
+                                for="assessment_type"
                                 class="ml-4 block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
                             >
-                                Segmentasi Kelas <span class="text-rose-500">*</span>
+                                Tipe Asesmen
                             </label>
-                            <Input
-                                id="class"
-                                bind:value={state.form['class']}
-                                placeholder="Contoh: TI-3A"
-                                required
-                                error={state.form.errors['class']}
+                            <Select
+                                id="assessment_type"
+                                bind:value={state.form.assessment_type}
+                                options={[
+                                    { label: 'PRE-TEST (AWAL)', value: 'pre' },
+                                    { label: 'POST-TEST (AKHIR)', value: 'post' }
+                                ]}
                                 class="rounded-[1.5rem] py-4"
                             />
                         </div>

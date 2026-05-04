@@ -48,7 +48,7 @@
                         <div
                             class="mt-0.5 text-[10px] font-bold tracking-widest text-slate-400 uppercase"
                         >
-                            {state.survey.nim || '-'} • {state.survey.class || '-'}
+                            ID: {state.survey.id.substring(0, 8)} • {state.survey.assessment_type === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)'}
                         </div>
                     </div>
                 </div>
@@ -82,9 +82,9 @@
                         </div>
                         <div class="h-px bg-white/5"></div>
                         <div>
-                            <div class="mb-1 text-[9px] font-bold tracking-widest text-slate-500 uppercase">Kelas</div>
+                            <div class="mb-1 text-[9px] font-bold tracking-widest text-slate-500 uppercase">Tipe Asesmen</div>
                             <div class="text-xs font-bold text-slate-300">
-                                {state.survey.class || '-'}
+                                {state.survey.assessment_type === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)'}
                             </div>
                         </div>
                     </div>

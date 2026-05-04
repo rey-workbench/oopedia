@@ -11,8 +11,7 @@ final class StoreSusResultRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'nim'   => ['required', 'string', 'max:20'],
-            'class' => ['required', 'string', 'max:20'],
+            'assessment_type' => ['required', 'string', 'in:pre,post'],
 
             'q1'  => ['required', 'integer', 'between:1,5'],
             'q2'  => ['required', 'integer', 'between:1,5'],
@@ -60,8 +59,7 @@ final class StoreSusResultRequest extends BaseFormRequest
 
             'comments.required'    => 'Komentar wajib diisi',
             'suggestions.required' => 'Saran wajib diisi',
-            'nim.required'         => 'NIM wajib diisi',
-            'class.required'       => 'Kelas wajib diisi',
+            'assessment_type.required' => 'Tipe asessmen wajib diisi',
         ]);
     }
 }

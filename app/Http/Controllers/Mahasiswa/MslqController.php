@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Contracts\Services\MslqServiceInterface;
+use App\Enums\Lms\AssessmentType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Survey\StoreMslqRequest;
 use App\Http\Resources\MslqQuestionResource;
 use App\Models\MslqQuestion;
 use App\Models\MslqResult;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
@@ -20,25 +22,34 @@ final class MslqController extends Controller
         private readonly MslqServiceInterface $mslqService,
     ) {}
 
-    public function create(): Response|RedirectResponse
+    public function create(Request $request): Response|RedirectResponse
     {
-        $existing = MslqResult::where('user_id', Auth::id())->first();
+        $type = $request->query('type', 'pre');
+        $existing = MslqResult::where('user_id', Auth::id())
+            ->where('assessment_type', $type)
+            ->first();
+            
         if ($existing) {
-            return to_route('mahasiswa.mslq.thankyou');
+            return to_route('mahasiswa.surveys.mslq.thankyou');
         }
 
         $questions = MslqQuestion::orderBy('order')->get();
 
         return $this->render('Mahasiswa/Mslq/Create/Index', [
             'questions' => MslqQuestionResource::collection($questions)->resolve(),
+            'type'      => $type,
         ]);
     }
 
     public function store(StoreMslqRequest $storeMslqRequest): RedirectResponse
     {
-        $existing = MslqResult::where('user_id', Auth::id())->first();
+        $validated = $storeMslqRequest->validated();
+        $existing = MslqResult::where('user_id', Auth::id())
+            ->where('assessment_type', $validated['assessment_type'])
+            ->first();
+            
         if ($existing) {
-            return to_route('mahasiswa.mslq.thankyou');
+            return to_route('mahasiswa.surveys.mslq.thankyou');
         }
 
         try {
@@ -50,12 +61,11 @@ final class MslqController extends Controller
 
             $this->mslqService->storeSubmission(
                 $answers,
-                (int) Auth::id(),
-                (string) $validated['nim'],
-                (string) $validated['class'],
+                Auth::id(),
+                AssessmentType::from($validated['assessment_type']),
             );
 
-            return to_route('mahasiswa.mslq.thankyou');
+            return to_route('mahasiswa.surveys.mslq.thankyou');
         } catch (\Exception $exception) {
             return back()->with('error', 'Gagal menyimpan data survey: ' . $exception->getMessage());
         }

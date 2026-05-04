@@ -6,6 +6,7 @@ namespace App\Services\Analytics;
 
 use App\Contracts\Repositories\MslqRepositoryInterface;
 use App\Contracts\Services\MslqServiceInterface;
+use App\Enums\Lms\AssessmentType;
 use App\Enums\Lms\MslqCategory;
 use App\Http\Resources\MslqResultResource;
 use App\Models\MslqAnswer;
@@ -22,20 +23,20 @@ final readonly class MslqService implements MslqServiceInterface
         private StatisticalAnalysisService $statisticalAnalysisService,
     ) {}
 
-    public function getAdminResults(?string $class = null): LengthAwarePaginator
+    public function getAdminResults(?AssessmentType $type = null): LengthAwarePaginator
     {
-        return $this->mslqRepository->getAll($class)
+        return $this->mslqRepository->getAll($type?->value)
             ->through(fn ($result) => new MslqResultResource($result)->resolve());
     }
 
-    public function getDistinctClasses(): Collection
+    public function getDistinctAssessmentTypes(): Collection
     {
-        return $this->mslqRepository->getDistinctClasses();
+        return collect(['pre', 'post']);
     }
 
-    public function calculateGlobalMetrics(?string $class = null): array
+    public function calculateGlobalMetrics(?AssessmentType $type = null): array
     {
-        $results = $this->mslqRepository->getAllForCalculation($class);
+        $results = $this->mslqRepository->getAllForCalculation($type?->value);
 
         if ($results->isEmpty()) {
             return [
@@ -78,13 +79,12 @@ final readonly class MslqService implements MslqServiceInterface
         return new MslqResultResource($result)->resolve();
     }
 
-    public function storeSubmission(array $data, int|string $userId, string $nim, string $class): MslqResult
+    public function storeSubmission(array $data, int|string $userId, AssessmentType $type): MslqResult
     {
-        return DB::transaction(function () use ($data, $userId, $nim, $class): MslqResult {
+        return DB::transaction(function () use ($data, $userId, $type): MslqResult {
             $mslqResult = $this->mslqRepository->create([
                 'user_id'          => $userId,
-                'nim'              => $nim,
-                'class'            => $class,
+                'assessment_type'  => $type,
                 'scores_by_scale'  => [],
                 'total_motivation' => 0,
                 'total_strategy'   => 0,
@@ -105,10 +105,10 @@ final readonly class MslqService implements MslqServiceInterface
         });
     }
 
-    public function getResultsForExport(?string $class = null): Collection
+    public function getResultsForExport(?AssessmentType $type = null): Collection
     {
         return collect(MslqResultResource::collection(
-            $this->mslqRepository->getAllForCalculation($class),
+            $this->mslqRepository->getAllForCalculation($type?->value),
         )->resolve());
     }
 
@@ -158,10 +158,10 @@ final readonly class MslqService implements MslqServiceInterface
         return $total / $answers->count();
     }
 
-    public function calculateStatisticalAnalysis(?string $class1 = null, ?string $class2 = null): array
+    public function calculateStatisticalAnalysis(?AssessmentType $type1 = null, ?AssessmentType $type2 = null): array
     {
-        $results1 = $this->mslqRepository->getAllForCalculation($class1);
-        $results2 = $class2 ? $this->mslqRepository->getAllForCalculation($class2) : collect();
+        $results1 = $this->mslqRepository->getAllForCalculation($type1?->value);
+        $results2 = $type2 ? $this->mslqRepository->getAllForCalculation($type2->value) : collect();
 
         // 1. Cronbach's Alpha (Reliability)
         $matrix = $this->buildAnswerMatrix($results1->merge($results2));
@@ -173,11 +173,11 @@ final readonly class MslqService implements MslqServiceInterface
         $desc1      = null;
         $desc2      = null;
 
-        if ($class1 && $results1->isNotEmpty()) {
+        if ($results1->isNotEmpty()) {
             $scores1 = $results1->pluck('total_motivation')->toArray();
             $desc1   = Descriptive::describe($scores1);
 
-            if ($class2 && $results2->isNotEmpty()) {
+            if ($results2->isNotEmpty()) {
                 $scores2 = $results2->pluck('total_motivation')->toArray();
                 $desc2   = Descriptive::describe($scores2);
 

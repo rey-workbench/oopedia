@@ -6,6 +6,7 @@ namespace App\Services\Analytics;
 
 use App\Contracts\Repositories\UeqSurveyRepositoryInterface;
 use App\Contracts\Services\UeqSurveyServiceInterface;
+use App\Enums\Lms\AssessmentType;
 use App\Http\Resources\UeqSurveyResource;
 use App\Models\UeqSurvey;
 use Illuminate\Support\Collection as SupportCollection;
@@ -18,17 +19,16 @@ final readonly class UeqSurveyService implements UeqSurveyServiceInterface
         private StatisticalAnalysisService $statisticalAnalysisService,
     ) {}
 
-    public function getAllSurveys(?string $class = null): SupportCollection
+    public function getAllSurveys(?AssessmentType $type = null): SupportCollection
     {
         return collect(UeqSurveyResource::collection(
-            $this->ueqRepo->getAllWithUser($class),
+            $this->ueqRepo->getAllWithUser($type?->value),
         )->resolve());
     }
 
-    /** @return array<string> */
-    public function getDistinctClasses(): array
+    public function getDistinctAssessmentTypes(): SupportCollection
     {
-        return $this->ueqRepo->getDistinctClasses();
+        return collect(['pre', 'post']);
     }
 
     /** @return array<string, mixed>|null */
@@ -43,9 +43,9 @@ final readonly class UeqSurveyService implements UeqSurveyServiceInterface
         return new UeqSurveyResource($survey)->resolve();
     }
 
-    public function hasUserSubmitted(string $userId): bool
+    public function hasUserSubmitted(string $userId, ?AssessmentType $type = null): bool
     {
-        return $this->ueqRepo->findSurveyByUser($userId) instanceof UeqSurvey;
+        return $this->ueqRepo->findSurveyByUser($userId, $type?->value) instanceof UeqSurvey;
     }
 
     public function createSurvey(array $data): UeqSurvey
@@ -125,10 +125,10 @@ final readonly class UeqSurveyService implements UeqSurveyServiceInterface
         return $averages;
     }
 
-    public function calculateStatisticalAnalysis(?string $class1 = null, ?string $class2 = null): array
+    public function calculateStatisticalAnalysis(?AssessmentType $type1 = null, ?AssessmentType $type2 = null): array
     {
-        $results1 = $this->ueqRepo->getAllWithUser($class1);
-        $results2 = $class2 ? $this->ueqRepo->getAllWithUser($class2) : collect();
+        $results1 = $this->ueqRepo->getAllWithUser($type1?->value);
+        $results2 = $type2 ? $this->ueqRepo->getAllWithUser($type2->value) : collect();
 
         // 1. Cronbach's Alpha (Reliability)
         $matrix = $this->buildAnswerMatrix($results1->merge($results2));
@@ -140,7 +140,7 @@ final readonly class UeqSurveyService implements UeqSurveyServiceInterface
         $desc1      = null;
         $desc2      = null;
 
-        if ($class1 && $results1->isNotEmpty()) {
+        if ($type1 && $results1->isNotEmpty()) {
             // Use attractiveness as primary metric for overall comparison
             $scores1 = $results1->map(fn ($s) => (
                 $s->annoying_enjoyable  + $s->good_bad + $s->unlikable_pleasing +
@@ -149,7 +149,7 @@ final readonly class UeqSurveyService implements UeqSurveyServiceInterface
 
             $desc1 = Descriptive::describe($scores1);
 
-            if ($class2 && $results2->isNotEmpty()) {
+            if ($type2 && $results2->isNotEmpty()) {
                 $scores2 = $results2->map(fn ($s) => (
                     $s->annoying_enjoyable  + $s->good_bad + $s->unlikable_pleasing +
                     $s->unpleasant_pleasant + $s->attractive_unattractive + $s->friendly_unfriendly
@@ -184,8 +184,6 @@ final readonly class UeqSurveyService implements UeqSurveyServiceInterface
     {
         $matrix = [];
         foreach ($results as $result) {
-            // UEQ has 26 items (or 32 depending on version, here it seems to be 26/32)
-            // We collect all numerical scores
             $matrix[] = [
                 $result->annoying_enjoyable,
                 $result->not_understandable_understandable,

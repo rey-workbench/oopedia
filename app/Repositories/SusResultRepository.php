@@ -16,21 +16,21 @@ final class SusResultRepository implements SusResultRepositoryInterface
     }
 
     /** @return Collection<int, SusResult> */
-    public function getAllWithUser(?string $class = null): Collection
+    public function getAllWithUser(?string $assessmentType = null): Collection
     {
         $builder = SusResult::with('user');
 
-        if ($class) {
-            $builder->where('class', '=', $class);
+        if ($assessmentType) {
+            $builder->where('assessment_type', '=', $assessmentType);
         }
 
         return $builder->get();
     }
 
     /** @return array<string> */
-    public function getDistinctClasses(): array
+    public function getDistinctAssessmentTypes(): array
     {
-        return SusResult::distinct()->pluck('class')->filter()->values()->all();
+        return SusResult::distinct()->pluck('assessment_type')->filter()->values()->all();
     }
 
     public function findByUserId(string $userId): ?SusResult

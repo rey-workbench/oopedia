@@ -7,7 +7,7 @@ namespace App\Enums\User;
 enum RoleName: string
 {
     case SUPERADMIN = 'superadmin';
-    case DOSEN = 'admin';
+    case DOSEN = 'dosen';
     case MAHASISWA = 'mahasiswa';
     case GUEST = 'guest';
 

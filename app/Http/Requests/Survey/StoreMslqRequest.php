@@ -16,10 +16,11 @@ final class StoreMslqRequest extends BaseFormRequest
 
     public function rules(): array
     {
+        $count = \App\Models\MslqQuestion::count();
+        
         return [
-            'nim'                   => ['required', 'string', 'max:20'],
-            'class'                 => ['required', 'string', 'max:10'],
-            'answers'               => ['required', 'array', 'size:81'],
+            'assessment_type'       => ['required', 'string', 'in:pre,post'],
+            'answers'               => ['required', 'array', "size:{$count}"],
             'answers.*.question_id' => ['required', 'exists:mslq_questions,id'],
             'answers.*.value'       => ['required', 'integer', 'min:1', 'max:7'],
         ];

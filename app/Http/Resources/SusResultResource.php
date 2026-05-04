@@ -24,8 +24,7 @@ final class SusResultResource extends JsonResource
         return [
             'id'          => $this->id,
             'user'        => new UserResource($this->whenLoaded('user')),
-            'nim'         => $this->nim,
-            'class'       => $this->class,
+            'assessment_type' => $this->assessment_type,
             'total_score' => $this->total_score,
             'created_at'  => $this->created_at?->toIso8601String(),
             'comments'    => $this->comments,

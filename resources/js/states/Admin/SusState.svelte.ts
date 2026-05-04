@@ -16,32 +16,31 @@ export class SusListState extends BaseState {
         grade: '',
         acceptability: '',
     });
-    classes = $state<string[]>([]);
-    activeClass = $state('');
+    types = $state<string[]>([]);
+    activeType = $state('');
 
     constructor(
         results: SusResult[],
         averages: { total: number; items: Record<string, number> },
         grading: { score: number; adjective: string; grade: string; acceptability: string },
-        classes: string[],
-        activeClass: string
+        types: string[],
+        activeType: string
     ) {
         super();
-        this.hydrate({ results, averages, grading, classes, activeClass });
+        this.hydrate({ results, averages, grading, types, activeType });
     }
 
-    handleFilterChange(e: Event) {
-        const select = e.target as HTMLSelectElement;
+    handleFilterChange(value: string) {
         router.get(
             ROUTES.ADMIN.SUS.INDEX,
-            { class: select.value },
+            { type: value },
             { preserveState: true, replace: true }
         );
     }
 
     exportResults() {
-        const url = this.activeClass
-            ? `${ROUTES.ADMIN.SUS.EXPORT}?class=${this.activeClass}`
+        const url = this.activeType
+            ? `${ROUTES.ADMIN.SUS.EXPORT}?type=${this.activeType}`
             : ROUTES.ADMIN.SUS.EXPORT;
         window.location.href = url;
     }

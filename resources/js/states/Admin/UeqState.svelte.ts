@@ -10,31 +10,30 @@ import { UEQ_ASPECTS, UEQ_DIMENSIONS } from '@/constants/survey';
 export class UeqListState extends BaseState {
     surveys = $state<UeqSurvey[]>([]);
     averages = $state<Partial<UeqAverages>>({});
-    classes = $state<string[]>([]);
-    activeClass = $state('');
+    types = $state<string[]>([]);
+    activeType = $state('');
 
     constructor(
         surveys: UeqSurvey[],
         averages: Partial<UeqAverages>,
-        classes: string[],
-        activeClass: string
+        types: string[],
+        activeType: string
     ) {
         super();
-        this.hydrate({ surveys, averages, classes, activeClass });
+        this.hydrate({ surveys, averages, types, activeType });
     }
 
-    public handleFilterChange(e: Event) {
-        const select = e.target as HTMLSelectElement;
+    public handleFilterChange(value: string | number) {
         router.get(
             ROUTES.ADMIN.UEQ.INDEX,
-            { class: select.value },
+            { type: String(value) },
             { preserveState: true, replace: true }
         );
     }
 
     public exportResults() {
-        const url = this.activeClass
-            ? `${ROUTES.ADMIN.UEQ.EXPORT}?class=${this.activeClass}`
+        const url = this.activeType
+            ? `${ROUTES.ADMIN.UEQ.EXPORT}?type=${this.activeType}`
             : ROUTES.ADMIN.UEQ.EXPORT;
         window.location.href = url;
     }

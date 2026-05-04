@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\Lms\AssessmentType;
 use App\Contracts\Services\SusResultServiceInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -16,14 +17,14 @@ final class SusSurveyController extends Controller
 
     public function index(Request $request): Response
     {
-        $class      = $request->input('class');
-        $results    = $this->susResultService->getAllResults($class);
-        $classes    = $this->susResultService->getDistinctClasses();
+        $type       = $request->query('type') ? AssessmentType::tryFrom($request->query('type')) : null;
+        $results    = $this->susResultService->getAllResults($type);
+        $types      = $this->susResultService->getDistinctAssessmentTypes();
         $metrics    = $this->susResultService->calculateGlobalMetrics($results);
 
-        $class1   = $request->input('class1', $class);
-        $class2   = $request->input('class2');
-        $analysis = $this->susResultService->calculateStatisticalAnalysis($class1, $class2);
+        $type1    = $request->query('type1') ? AssessmentType::tryFrom($request->query('type1')) : $type;
+        $type2    = $request->query('type2') ? AssessmentType::tryFrom($request->query('type2')) : null;
+        $analysis = $this->susResultService->calculateStatisticalAnalysis($type1, $type2);
 
         return $this->render('Admin/Sus/Index', [
             'results'  => $results,
@@ -37,16 +38,16 @@ final class SusSurveyController extends Controller
                 'grade'         => $metrics['grade'],
                 'acceptability' => $metrics['acceptability'],
             ],
-            'classes'     => $classes,
-            'activeClass' => $class,
+            'types'       => $types,
+            'activeType'  => $type?->value ?? '',
             'analysis'    => $analysis,
         ]);
     }
 
     public function export(Request $request): StreamedResponse
     {
-        $class   = $request->input('class');
-        $results = $this->susResultService->getAllResults($class);
+        $type    = $request->query('type') ? AssessmentType::tryFrom($request->query('type')) : null;
+        $results = $this->susResultService->getAllResults($type);
 
         $headers = [
             'Content-Type'        => 'text/csv',
@@ -63,10 +64,9 @@ final class SusSurveyController extends Controller
                 $file,
                 [
                     'ID',
-                    'NIM',
                     'Nama Pengguna',
                     'Email',
-                    'Kelas',
+                    'Tipe Asesmen',
                     'Tanggal Pengisian',
                     'Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9', 'Q10',
                     'Total Score',
@@ -81,10 +81,9 @@ final class SusSurveyController extends Controller
                     $file,
                     [
                         $result['id'],
-                        $result['nim']           ?? '',
                         $result['user']['name']  ?? 'Tidak ada',
                         $result['user']['email'] ?? 'Tidak ada',
-                        $result['class']         ?? '',
+                        $result['assessment_type'] ?? '',
                         $result['created_at'],
                         $result['q1'], $result['q2'], $result['q3'], $result['q4'], $result['q5'],
                         $result['q6'], $result['q7'], $result['q8'], $result['q9'], $result['q10'],

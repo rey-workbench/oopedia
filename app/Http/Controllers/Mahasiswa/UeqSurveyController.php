@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Mahasiswa;
 
+use App\Enums\Lms\AssessmentType;
 use App\Contracts\Services\UeqSurveyServiceInterface;
 use App\DTOs\Survey\UeqSurveyCreateDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Survey\StoreUeqSurveyRequest;
 use App\Http\Resources\UeqAspectResource;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
@@ -19,30 +21,35 @@ final class UeqSurveyController extends Controller
         private readonly UeqSurveyServiceInterface $ueqSurveyService,
     ) {}
 
-    public function create(): Response|RedirectResponse
+    public function create(Request $request): Response|RedirectResponse
     {
-        if ($this->ueqSurveyService->hasUserSubmitted(Auth::id())) {
-            return to_route('mahasiswa.ueq-survey.thankyou');
+        $type = $request->query('type') ? AssessmentType::tryFrom($request->query('type')) : AssessmentType::Pre;
+
+        if ($this->ueqSurveyService->hasUserSubmitted(Auth::id(), $type)) {
+            return to_route('mahasiswa.surveys.ueq.thankyou');
         }
 
         $aspects = $this->getAspects();
 
         return $this->render('Mahasiswa/Ueq/Create/Index', [
             'aspects' => UeqAspectResource::collection(collect($aspects)->map(fn ($a): \stdClass => (object) $a))->resolve(),
+            'assessmentType' => $type?->value ?? 'pre',
         ]);
     }
 
     public function store(StoreUeqSurveyRequest $storeUeqSurveyRequest): RedirectResponse
     {
-        if ($this->ueqSurveyService->hasUserSubmitted(Auth::id())) {
-            return to_route('mahasiswa.ueq-survey.thankyou');
+        $type = AssessmentType::tryFrom($storeUeqSurveyRequest->input('assessment_type'));
+
+        if ($this->ueqSurveyService->hasUserSubmitted(Auth::id(), $type)) {
+            return to_route('mahasiswa.surveys.ueq.thankyou');
         }
 
         $ueqSurveyCreateDTO = UeqSurveyCreateDTO::fromRequest($storeUeqSurveyRequest, (string) Auth::id());
 
         $this->ueqSurveyService->createSurvey($ueqSurveyCreateDTO->toArray());
 
-        return to_route('mahasiswa.ueq-survey.thankyou');
+        return to_route('mahasiswa.surveys.ueq.thankyou');
     }
 
     public function show(): Response

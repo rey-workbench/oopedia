@@ -8,8 +8,7 @@ import type { SharedProps } from '../../props/Shared';
 export interface SusResult {
     id: string;
     user: User;
-    nim?: string;
-    class?: string;
+    assessment_type: string;
     comments?: string;
     suggestions?: string;
     q1: number;
@@ -28,8 +27,7 @@ export interface SusResult {
 }
 
 export interface SusSurveyForm {
-    nim: string;
-    class: string;
+    assessment_type: string;
     q1: number;
     q2: number;
     q3: number;
@@ -56,8 +54,8 @@ export interface AdminSusIndexProps extends SharedProps {
         grade: string;
         acceptability: string;
     };
-    classes: string[];
-    activeClass: string;
+    types: string[];
+    activeType: string;
 }
 
 export interface AdminSusDetailProps extends SharedProps {

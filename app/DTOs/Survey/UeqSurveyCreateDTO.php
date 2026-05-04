@@ -10,8 +10,7 @@ final readonly class UeqSurveyCreateDTO
 {
     public function __construct(
         public string $user_id,
-        public ?string $nim = null,
-        public ?string $class = null,
+        public string $assessment_type,
         public ?int $annoying_enjoyable = null,
         public ?int $not_understandable_understandable = null,
         public ?int $creative_dull = null,
@@ -46,8 +45,7 @@ final readonly class UeqSurveyCreateDTO
     {
         return new self(
             user_id: $userId,
-            nim: $request->input('nim'),
-            class: $request->input('class'),
+            assessment_type: (string) $request->input('assessment_type'),
             annoying_enjoyable: $request->input('annoying_enjoyable'),
             not_understandable_understandable: $request->input('not_understandable_understandable'),
             creative_dull: $request->input('creative_dull'),
@@ -83,8 +81,7 @@ final readonly class UeqSurveyCreateDTO
     {
         return array_filter([
             'user_id'                           => $this->user_id,
-            'nim'                               => $this->nim,
-            'class'                             => $this->class,
+            'assessment_type'                   => $this->assessment_type,
             'annoying_enjoyable'                => $this->annoying_enjoyable,
             'not_understandable_understandable' => $this->not_understandable_understandable,
             'creative_dull'                     => $this->creative_dull,

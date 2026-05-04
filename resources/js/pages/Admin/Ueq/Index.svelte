@@ -18,30 +18,24 @@
     let {
         surveys = [],
         averages = {},
-        classes = [],
-        activeClass = '',
+        types = [],
+        activeType = '',
         analysis = {},
-    }: {
-        surveys: any[];
-        averages: Record<string, number>;
-        classes: string[];
-        activeClass: string;    
-        analysis: any;
-    } = $props();
+    }: AdminUeqIndexProps & { analysis: any } = $props();
 
-    const ueqState = untrack(() => new UeqListState(surveys, averages, classes, activeClass));
+    const ueqState = untrack(() => new UeqListState(surveys, averages, types, activeType));
 
     let activeTab = $state('overview');
-    let class1 = $state(activeClass);
-    let class2 = $state('');
+    let type1 = $state(activeType);
+    let type2 = $state('');
 
     $effect(() => {
-        class1 = activeClass;
+        type1 = activeType;
     });
 
     const columns = $derived([
         { key: 'respondent', label: 'Responden', align: 'left' },
-        { key: 'class', label: 'Kelas', align: 'center' },
+        { key: 'assessment_type', label: 'Tipe Asesmen', align: 'center' },
         { key: 'date', label: 'Tanggal Input', align: 'center' },
         { key: 'actions', label: 'Aksi', align: 'right' },
     ]);
@@ -67,11 +61,11 @@
     );
 
     function runAnalysis() {
-        router.get(
-            ROUTES.ADMIN.UEQ.INDEX,
-            { class: activeClass, class1, class2 },
-            { preserveState: true, only: ['analysis'] }
-        );
+        router.visit(window.location.pathname, {
+            data: { type: activeType, type1, type2 },
+            preserveState: true,
+            only: ['analysis'],
+        });
     }
 </script>
 
@@ -85,10 +79,10 @@
             {#snippet actions()}
                 <div class="flex items-center gap-4">
                     <Select
-                        placeholder="Filter Kelas"
-                        value={ueqState.activeClass}
-                        onchange={(v) => ueqState.handleFilterChange({ target: { value: v } } as any)}
-                        options={ueqState.classes.map((c) => ({ label: c, value: c }))}
+                        placeholder="Filter Tipe"
+                        value={ueqState.activeType}
+                        onchange={(v) => ueqState.handleFilterChange(v as any)}
+                        options={ueqState.types.map((t) => ({ label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)', value: t }))}
                         class="border-duo w-48 rounded-xl"
                     />
                     <Button
@@ -159,7 +153,7 @@
                                     <div
                                         class="mt-0.5 text-[9px] font-bold tracking-widest text-slate-400 uppercase"
                                     >
-                                        {survey.nim || '-'}
+                                        ID: {survey.id.substring(0, 8)}
                                     </div>
                                 </div>
                             </div>
@@ -168,7 +162,7 @@
                             <span
                                 class="rounded-xl bg-slate-100 px-3 py-1.5 text-[10px] font-bold tracking-widest text-slate-600 uppercase"
                             >
-                                {survey.class || '-'}
+                                {survey.assessment_type === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)'}
                             </span>
                         </td>
                         <td class="border-b border-slate-50 px-6 py-6 text-center">
@@ -203,9 +197,9 @@
                             <div class="space-y-2">
                                 <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Kelompok 1</span>
                                 <Select 
-                                    options={ueqState.classes.map(c => ({ label: c, value: c }))} 
-                                    bind:value={class1} 
-                                    placeholder="Kelas 1"
+                                    options={ueqState.types.map(t => ({ label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)', value: t }))} 
+                                    bind:value={type1} 
+                                    placeholder="Tipe 1"
                                     class="w-40 rounded-xl"
                                 />
                             </div>
@@ -215,9 +209,9 @@
                             <div class="space-y-2">
                                 <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Kelompok 2</span>
                                 <Select 
-                                    options={ueqState.classes.map(c => ({ label: c, value: c }))} 
-                                    bind:value={class2} 
-                                    placeholder="Kelas 2"
+                                    options={ueqState.types.map(t => ({ label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)', value: t }))} 
+                                    bind:value={type2} 
+                                    placeholder="Tipe 2"
                                     class="w-40 rounded-xl"
                                 />
                             </div>

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Services\MslqServiceInterface;
+use App\Enums\Lms\AssessmentType;
 use App\Enums\Lms\MslqScale;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -19,19 +20,20 @@ final class MslqController extends Controller
 
     public function index(Request $request): Response
     {
-        $class                    = $request->query('class');
-        $lengthAwarePaginator     = $this->mslqService->getAdminResults($class);
-        $distinctClasses          = $this->mslqService->getDistinctClasses();
-        $metricsData              = $this->mslqService->calculateGlobalMetrics($class);
+        $type = $request->query('type') ? AssessmentType::tryFrom($request->query('type')) : null;
+        
+        $lengthAwarePaginator     = $this->mslqService->getAdminResults($type);
+        $distinctTypes            = $this->mslqService->getDistinctAssessmentTypes();
+        $metricsData              = $this->mslqService->calculateGlobalMetrics($type);
 
-        $class1      = $request->query('class1', $class); // Fallback to current filter
-        $class2      = $request->query('class2');
-        $analysis    = $this->mslqService->calculateStatisticalAnalysis($class1, $class2);
+        $type1      = $request->query('type1') ? AssessmentType::tryFrom($request->query('type1')) : $type;
+        $type2      = $request->query('type2') ? AssessmentType::tryFrom($request->query('type2')) : null;
+        $analysis    = $this->mslqService->calculateStatisticalAnalysis($type1, $type2);
 
         return $this->render('Admin/Mslq/Index', [
             'results'     => $lengthAwarePaginator,
-            'classes'     => $distinctClasses,
-            'activeClass' => $class ?? '',
+            'types'       => $distinctTypes,
+            'activeType'  => $type?->value ?? '',
             'metrics'     => array_merge($metricsData, [
                 'total_responses' => $lengthAwarePaginator->total(),
             ]),
@@ -50,8 +52,8 @@ final class MslqController extends Controller
 
     public function export(Request $request): StreamedResponse
     {
-        $class   = $request->input('class');
-        $results = $this->mslqService->getResultsForExport($class);
+        $type    = $request->input('type') ? AssessmentType::tryFrom($request->input('type')) : null;
+        $results = $this->mslqService->getResultsForExport($type);
 
         $headers = [
             'Content-Type'        => 'text/csv',
@@ -68,10 +70,9 @@ final class MslqController extends Controller
                 $file,
                 [
                     'ID',
-                    'NIM',
                     'Nama Mahasiswa',
                     'Email',
-                    'Kelas',
+                    'Tipe Asesmen',
                     'Tanggal Pengisian',
                     'Total Motivasi',
                     'Total Strategi',
@@ -100,10 +101,9 @@ final class MslqController extends Controller
                     $file,
                     [
                         $result['id'],
-                        $result['nim'],
                         $result['user']['name']  ?? 'Tidak ada',
                         $result['user']['email'] ?? 'Tidak ada',
-                        $result['class'],
+                        $result['assessment_type'],
                         $result['created_at'],
                         $result['total_motivation'],
                         $result['total_strategy'],

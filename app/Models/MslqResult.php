@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\Lms\AssessmentType;
 use Database\Factories\MslqResultFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,8 +22,7 @@ final class MslqResult extends Model
     #[\Override]
     protected $fillable = [
         'user_id',
-        'nim',
-        'class',
+        'assessment_type',
         'scores_by_scale',
         'total_motivation',
         'total_strategy',
@@ -32,6 +32,7 @@ final class MslqResult extends Model
     protected function casts(): array
     {
         return [
+            'assessment_type'  => AssessmentType::class,
             'scores_by_scale'  => 'json',
             'total_motivation' => 'float',
             'total_strategy'   => 'float',

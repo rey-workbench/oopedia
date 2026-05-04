@@ -4,22 +4,23 @@ declare(strict_types=1);
 
 namespace App\Contracts\Services;
 
+use App\Enums\Lms\AssessmentType;
 use App\Models\UeqSurvey;
 use Illuminate\Support\Collection;
 
 interface UeqSurveyServiceInterface
 {
-    public function getAllSurveys(?string $class = null): Collection;
+    public function getAllSurveys(?AssessmentType $type = null): Collection;
 
-    public function getDistinctClasses(): array;
+    public function getDistinctAssessmentTypes(): Collection;
 
     public function getStudentDetail(string $userId): ?array;
 
-    public function hasUserSubmitted(string $userId): bool;
+    public function hasUserSubmitted(string $userId, ?AssessmentType $type = null): bool;
 
     public function createSurvey(array $data): UeqSurvey;
 
     public function calculateAverages(Collection $surveys): array;
 
-    public function calculateStatisticalAnalysis(?string $class1 = null, ?string $class2 = null): array;
+    public function calculateStatisticalAnalysis(?AssessmentType $type1 = null, ?AssessmentType $type2 = null): array;
 }

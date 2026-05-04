@@ -20,32 +20,32 @@
         results = [],
         averages = { total: 0, items: {} },
         grading = { score: 0, adjective: '', grade: '', acceptability: '' },
-        classes = [],
-        activeClass = '',
+        types = [],
+        activeType = '',
         analysis = {},
     }: AdminSusIndexProps & { analysis: any } = $props();
 
     let activeTab = $state('overview');
-    let class1 = $state(activeClass);
-    let class2 = $state('');
+    let type1 = $state(activeType);
+    let type2 = $state('');
 
     $effect(() => {
-        class1 = activeClass;
+        type1 = activeType;
     });
 
     function handleComparison() {
         router.visit(window.location.pathname, {
-            data: { class: class1, class1, class2 },
+            data: { type: type1, type1, type2 },
             preserveState: true,
             only: ['analysis'],
         });
     }
 
-    const susState = untrack(() => new SusListState(results, averages, grading, classes, activeClass));
+    const susState = untrack(() => new SusListState(results, averages, grading, types, activeType));
 
     const columns = $derived([
         { key: 'respondent', label: 'Responden', align: 'left' },
-        { key: 'class', label: 'Kelas', align: 'center' },
+        { key: 'assessment_type', label: 'Tipe Asesmen', align: 'center' },
         { key: 'score', label: 'Skor SUS', align: 'center' },
         { key: 'date', label: 'Tanggal Input', align: 'center' },
         { key: 'actions', label: 'Aksi', align: 'right' },
@@ -62,10 +62,10 @@
             {#snippet actions()}
                 <div class="flex items-center gap-4">
                     <Select
-                        placeholder="Filter Kelas"
-                        value={susState.activeClass}
-                        onchange={(v) => susState.handleFilterChange({ target: { value: v } } as any)}
-                        options={susState.classes.map((c) => ({ label: c, value: c }))}
+                        placeholder="Filter Tipe"
+                        value={susState.activeType}
+                        onchange={(v) => susState.handleFilterChange(v as any)}
+                        options={susState.types.map((t) => ({ label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)', value: t }))}
                         class="border-duo w-48 rounded-xl"
                     />
                     <Button
@@ -150,7 +150,7 @@
                                     <div
                                         class="mt-0.5 text-[9px] font-bold tracking-widest text-slate-400 uppercase"
                                     >
-                                        {result.nim || '-'}
+                                        ID: {result.id.substring(0, 8)}
                                     </div>
                                 </div>
                             </div>
@@ -159,7 +159,7 @@
                             <span
                                 class="rounded-xl bg-slate-100 px-3 py-1.5 text-[10px] font-bold tracking-widest text-slate-600 uppercase"
                             >
-                                {result.class || '-'}
+                                {result.assessment_type === 'pre' ? 'Pre-Test' : 'Post-Test'}
                             </span>
                         </td>
                         <td class="border-b border-slate-50 px-6 py-6 text-center">
@@ -195,15 +195,15 @@
                     <div class="flex flex-wrap items-center justify-between gap-6 p-8">
                         <div class="space-y-1">
                             <h3 class="text-primary-500 font-display text-lg font-black tracking-widest uppercase">Komparasi Kelompok</h3>
-                            <p class="text-xs font-medium text-slate-500 uppercase">Pilih dua kelas untuk membandingkan skor SUS secara statistik.</p>
+                            <p class="text-xs font-medium text-slate-500 uppercase">Pilih dua tipe asesmen untuk membandingkan skor SUS secara statistik.</p>
                         </div>
                         <div class="flex items-center gap-4">
                             <div class="space-y-2">
                                 <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Kelompok 1</span>
                                 <Select 
-                                    options={classes.map(c => ({ label: c, value: c }))} 
-                                    bind:value={class1} 
-                                    placeholder="Kelas 1"
+                                    options={types.map(t => ({ label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)', value: t }))} 
+                                    bind:value={type1} 
+                                    placeholder="Tipe 1"
                                     class="w-40 rounded-xl"
                                 />
                             </div>
@@ -213,9 +213,9 @@
                             <div class="space-y-2">
                                 <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Kelompok 2</span>
                                 <Select 
-                                    options={classes.map(c => ({ label: c, value: c }))} 
-                                    bind:value={class2} 
-                                    placeholder="Kelas 2"
+                                    options={types.map(t => ({ label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)', value: t }))} 
+                                    bind:value={type2} 
+                                    placeholder="Tipe 2"
                                     class="w-40 rounded-xl"
                                 />
                             </div>

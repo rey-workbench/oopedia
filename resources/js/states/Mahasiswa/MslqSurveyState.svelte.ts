@@ -6,15 +6,15 @@ import type { MslqForm, MslqQuestion } from '@/types';
 export class MslqSurveyState extends FormState<MslqForm> {
     questions = $state<MslqQuestion[]>([]);
 
-    constructor(questions: MslqQuestion[]) {
-        super(MslqSurveyState.createInitialFields(questions));
+    constructor(questions: MslqQuestion[], type: string = 'pre') {
+        super(MslqSurveyState.createInitialFields(questions, type));
+        this.questions = questions;
         this.hydrate({ questions });
     }
 
-    private static createInitialFields(questions: MslqQuestion[]): MslqForm {
+    private static createInitialFields(questions: MslqQuestion[], type: string): MslqForm {
         return {
-            nim: '',
-            class: '',
+            assessment_type: type,
             answers: questions.map((q) => ({
                 question_id: q.id,
                 value: null,

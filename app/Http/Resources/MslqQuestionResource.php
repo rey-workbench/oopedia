@@ -9,7 +9,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * @property string $id
- * @property string $question_text
+ * @property string $text
  * @property string $category
  * @property int $order
  * @property string $type
@@ -23,11 +23,12 @@ final class MslqQuestionResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'            => $this->id,
-            'question_text' => $this->question_text,
-            'category'      => $this->category,
-            'order'         => $this->order,
-            'type'          => $this->type,
+            'id'         => $this->id,
+            'text'       => $this->text,
+            'category'   => $this->category instanceof \UnitEnum ? $this->category->value : $this->category,
+            'scale'      => $this->scale,
+            'is_reverse' => $this->is_reverse,
+            'order'      => $this->order,
         ];
     }
 }

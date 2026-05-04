@@ -20,10 +20,9 @@ class DatabaseSeeder extends Seeder
             RealQuestionSeeder::class,
             // ComprehensiveQuestionsSeeder::class,
             FinalProjectSeeder::class,
-            UeqSurveysSeeder::class,
             MslqOopediaSeeder::class,
             SusQuestionSeeder::class,
-            SusResultsSeeder::class,
+            // MslqQuestionSeeder::class,
             AdaptiveRuleSeeder::class,
         ]);
     }

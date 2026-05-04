@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Enums\User\RoleName;
 use App\Models\SusAnswer;
 use App\Models\SusQuestion;
 use App\Models\SusResult;
@@ -19,7 +20,7 @@ final class SusResultsSeeder extends Seeder
     public function run(): void
     {
         $mahasiswas = User::whereHas('role', function ($q) {
-            $q->where('role_name', 'mahasiswa');
+            $q->where('role_name', RoleName::MAHASISWA);
         })->take(2)->get();
 
         if ($mahasiswas->isEmpty()) {
@@ -42,10 +43,8 @@ final class SusResultsSeeder extends Seeder
             $answers = $dummyAnswers[$index] ?? [4, 2, 4, 2, 4, 2, 4, 2, 4, 2];
 
             $result = SusResult::updateOrCreate(
-                ['user_id' => $user->id],
+                ['user_id' => $user->id, 'assessment_type' => 'pre'],
                 [
-                    'nim'         => $user->nim   ?? '123456',
-                    'class'       => $user->class ?? 'TI-3A',
                     'comments'    => 'Sistem sangat membantu belajar OOP.',
                     'suggestions' => 'Perbanyak variasi soal.',
                     'total_score' => 0, // Will update after answers

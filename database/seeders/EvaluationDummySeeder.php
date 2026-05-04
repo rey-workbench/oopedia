@@ -40,21 +40,20 @@ final class EvaluationDummySeeder extends Seeder
             return;
         }
 
-        $classes = ['TI-3A', 'TI-3B'];
+        $types = ['pre', 'post'];
 
         $this->command->info('Generating 40 dummy students with analysis data...');
 
-        foreach ($classes as $class) {
+        foreach ($types as $type) {
             // Adjust means for T-Test variety
-            // TI-3A: High motivation (4-6), Mid Strategy (3-5)
-            // TI-3B: Mid motivation (2-4), High Strategy (5-7)
-            $motivationRange = $class === 'TI-3A' ? [4, 6] : [2, 5];
-            $strategyRange   = $class === 'TI-3A' ? [3, 5] : [4, 7];
-            $susRange        = $class === 'TI-3A' ? [3, 5] : [2, 4]; // TI-3A likes it more
+            // pre: Mid motivation (3-5), Mid Strategy (3-5)
+            // post: High motivation (5-7), High Strategy (5-7)
+            $motivationRange = $type === 'pre' ? [3, 5] : [5, 7];
+            $strategyRange   = $type === 'pre' ? [3, 5] : [4, 7];
+            $susRange        = $type === 'pre' ? [2, 4] : [4, 5]; // Post-test liked it more
 
             for ($i = 1; $i <= 20; $i++) {
-                $name = 'Student ' . Str::random(5) . " ($class)";
-                $nim  = '214172' . str_pad((string) rand(100, 999), 3, '0', STR_PAD_LEFT);
+                $name = 'Student ' . Str::random(5) . " ($type)";
                 $user = User::create([
                     'name'        => $name,
                     'email'       => strtolower(Str::slug($name)) . '@example.com',
@@ -64,22 +63,21 @@ final class EvaluationDummySeeder extends Seeder
                 ]);
 
                 // 1. Generate MSLQ
-                $this->seedMslq($user, $nim, $class, $mslqQuestions, $motivationRange, $strategyRange);
+                $this->seedMslq($user, $type, $mslqQuestions, $motivationRange, $strategyRange);
 
                 // 2. Generate SUS
-                $this->seedSus($user, $nim, $class, $susQuestions, $susRange);
+                $this->seedSus($user, $type, $susQuestions, $susRange);
             }
         }
 
         $this->command->info('Successfully seeded 40 students with evaluation data.');
     }
 
-    private function seedMslq($user, $nim, $class, $questions, $mRange, $sRange): void
+    private function seedMslq($user, $type, $questions, $mRange, $sRange): void
     {
         $result = MslqResult::create([
             'user_id'          => $user->id,
-            'nim'              => $nim,
-            'class'            => $class,
+            'assessment_type'  => $type,
             'scores_by_scale'  => [],
             'total_motivation' => 0,
             'total_strategy'   => 0,
@@ -125,14 +123,13 @@ final class EvaluationDummySeeder extends Seeder
         ]);
     }
 
-    private function seedSus($user, $nim, $class, $questions, $range): void
+    private function seedSus($user, $type, $questions, $range): void
     {
         $susData = [
-            'user_id'     => $user->id,
-            'nim'         => $nim,
-            'class'       => $class,
-            'comments'    => 'Dummy comment for ' . $user->name,
-            'total_score' => 0,
+            'user_id'         => $user->id,
+            'assessment_type' => $type,
+            'comments'        => 'Dummy comment for ' . $user->name,
+            'total_score'     => 0,
         ];
 
         $totalContribution = 0;

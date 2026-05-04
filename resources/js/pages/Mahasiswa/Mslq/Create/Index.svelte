@@ -3,16 +3,15 @@
     import Card from '@/components/ui/Card.svelte';
     import Button from '@/components/ui/Button.svelte';
     import Alert from '@/components/ui/Alert.svelte';
-    import ProgressBar from '@/components/ui/ProgressBar.svelte';
     import PageHeader from '@/components/ui/PageHeader.svelte';
-    import { ClipboardList, Send, Target, Info } from 'lucide-svelte';
+    import { ClipboardList, Send, Target } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { MslqSurveyState } from '@/states/Mahasiswa/MslqSurveyState.svelte';
-    import Input from '@/components/ui/Input.svelte';
+    import Select from '@/components/ui/Select.svelte';
 
-    const { questions = [] } = $props();
+    const { questions = [], type = 'pre' } = $props();
 
-    const state = untrack(() => new MslqSurveyState(questions));
+    const state = untrack(() => new MslqSurveyState(questions, type));
 
     const motivationQuestions = $derived(
         state.questions.filter((q) => q.category === 'motivation')
@@ -20,15 +19,17 @@
     const strategyQuestions = $derived(
         state.questions.filter((q) => q.category === 'learning_strategy')
     );
-</script>
 
-<style>
-    .glass {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-    }
-</style>
+    const scaleLabels = [
+        'Sangat Tidak Setuju',
+        '',
+        '',
+        'Netral',
+        '',
+        '',
+        'Sangat Setuju',
+    ];
+</script>
 
 <App title="MSLQ Survey">
     <div class="space-y-12 pb-20">
@@ -38,49 +39,11 @@
             subtitle="Kuesioner ini membantu kami memahami bagaimana motivasi dan strategi belajar Anda mempengaruhi keberhasilan akademik."
         />
 
-        <div id="mslq-progress" class="sticky top-20 z-20">
-            <div
-                class="glass flex items-center justify-between rounded-3xl border-2 border-slate-100 bg-white/80 p-6 shadow-xl backdrop-blur-xl"
-            >
-                <div class="flex flex-1 items-center gap-6">
-                    <div class="hidden sm:block">
-                        <div
-                            class="text-[10px] font-black tracking-widest text-slate-400 uppercase"
-                        >
-                            Progress Pengisian
-                        </div>
-                        <div class="text-primary-500 text-2xl font-black">
-                            {Math.round(state.progress)}%
-                        </div>
-                    </div>
-                    <div class="flex-1 px-4">
-                        <ProgressBar value={state.progress} color="accent" height="h-3" />
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 border-l-2 border-slate-100 pl-6">
-                    <div class="hidden text-right sm:block">
-                        <div
-                            class="text-[10px] font-black tracking-widest text-slate-400 uppercase"
-                        >
-                            Item Terisi
-                        </div>
-                        <div class="text-primary-500 text-lg font-black">
-                            {state.form.answers.filter((a) => a.value !== null).length} / 81
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <Card
-            padding="p-0"
-            class="border-duo overflow-hidden rounded-[3rem] border-slate-100 shadow-2xl"
-        >
+        <Card padding="p-0" class="overflow-hidden rounded-[3rem] border-slate-100 shadow-2xl">
             <div class="space-y-12 p-8 sm:p-12">
                 {#if state.form.errors && Object.keys(state.form.errors).length > 0}
                     <Alert variant="danger" dismissible={true}>
-                        Mohon lengkapi seluruh pernyataan (81 butir) dan pastikan identitas sudah
-                        benar.
+                        Mohon lengkapi seluruh pernyataan ({state.form.answers.length} butir) sebelum menyimpan.
                     </Alert>
                 {/if}
 
@@ -89,91 +52,77 @@
                         e.preventDefault();
                         state.submit();
                     }}
-                    class="space-y-20"
+                    class="space-y-16"
                 >
-                    <div id="mslq-identitas" class="grid grid-cols-1 gap-10 md:grid-cols-3">
+                    <div id="mslq-identitas" class="grid grid-cols-1 gap-10 md:grid-cols-2">
                         <div class="space-y-3">
                             <label
-                                for="nim"
-                                class="ml-4 block text-[10px] font-black tracking-widest text-slate-400 uppercase"
+                                for="assessment_type"
+                                class="ml-4 block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                                >Tipe Asesmen</label
                             >
-                                NIM Mahasiswa <span class="text-accent-500">*</span>
-                            </label>
-                            <Input
-                                id="nim"
-                                bind:value={state.form.nim}
-                                placeholder="Contoh: 2141720000"
-                                required
-                                error={state.form.errors['nim']}
-                            />
-                        </div>
-                        <div class="space-y-3">
-                            <label
-                                for="class"
-                                class="ml-4 block text-[10px] font-black tracking-widest text-slate-400 uppercase"
-                            >
-                                Segmentasi Kelas <span class="text-accent-500">*</span>
-                            </label>
-                            <Input
-                                id="class"
-                                bind:value={state.form.class}
-                                placeholder="Contoh: TI-3A"
-                                required
-                                error={state.form.errors['class']}
+                            <Select
+                                id="assessment_type"
+                                bind:value={state.form.assessment_type}
+                                options={[
+                                    { label: 'PRE-TEST (AWAL)', value: 'pre' },
+                                    { label: 'POST-TEST (AKHIR)', value: 'post' }
+                                ]}
+                                class="rounded-[1.5rem] py-4"
                             />
                         </div>
                         <div class="space-y-3">
                             <span
-                                class="ml-4 block text-[10px] font-black tracking-widest text-slate-400 uppercase"
-                                >Skala Penilaian</span
+                                class="ml-4 block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
+                                >Identitas Akun</span
                             >
                             <div
-                                class="border-accent-50 bg-accent-50/50 text-accent-600 w-full rounded-[1.5rem] border-4 px-6 py-4 text-[11px] leading-relaxed font-black uppercase"
+                                class="w-full rounded-[1.5rem] border-2 border-slate-50 bg-slate-50 px-6 py-4 text-xs font-bold tracking-widest text-slate-400 uppercase"
                             >
-                                1 (STS) &harr; 7 (SS)
+                                {state.user?.name || 'STUDENT SESSION'}
                             </div>
                         </div>
                     </div>
 
-                    <div id="mslq-bagian-a" class="space-y-10">
-                        <div class="flex items-center gap-4">
+                    <div id="mslq-bagian-a" class="space-y-8 border-t border-slate-50 pt-12">
+                        <div class="mb-8 flex items-center gap-4">
                             <div
-                                class="bg-accent-500 shadow-accent-200 border-accent-700 flex h-10 w-10 items-center justify-center rounded-xl border-b-4 text-white shadow-lg"
+                                class="bg-primary-600 shadow-primary-900/20 flex h-10 w-10 items-center justify-center rounded-xl text-white shadow-lg"
                             >
                                 <Target size={20} />
                             </div>
                             <h4
-                                class="text-primary-500 font-display mb-0 text-xl font-black tracking-widest uppercase"
+                                class="mb-0 text-xl font-bold tracking-widest text-slate-900 uppercase"
                             >
                                 Bagian A: Motivasi Belajar
                             </h4>
                         </div>
 
-                        <div class="grid grid-cols-1 gap-4">
-                            {#each motivationQuestions as question}
+                        <div class="grid grid-cols-1 gap-6">
+                            {#each motivationQuestions as question (question.id)}
                                 {@const answerIndex = state.form.answers.findIndex(
                                     (a) => a.question_id === question.id
                                 )}
                                 <div
-                                    class="group relative flex flex-col gap-6 rounded-3xl border-2 border-transparent bg-white p-8 transition-all hover:border-slate-100 hover:bg-slate-50/50 hover:shadow-xl"
+                                    class="group flex flex-col space-y-6 rounded-[2rem] border-2 border-transparent bg-white p-8 transition-all hover:border-slate-100 hover:bg-slate-50"
                                 >
-                                    <div class="flex gap-6">
+                                    <div class="flex items-start gap-6">
                                         <div
-                                            class="group-hover:bg-accent-100 group-hover:text-accent-600 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-xs font-black text-slate-400 transition-all"
+                                            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-xs font-bold text-white"
                                         >
                                             {question.order}
                                         </div>
                                         <p
-                                            class="group-hover:text-primary-500 pt-1.5 text-sm leading-relaxed font-bold text-slate-600 transition-colors"
+                                            class="text-base leading-relaxed font-bold text-slate-700"
                                         >
                                             {question.text}
                                         </p>
                                     </div>
 
-                                    <div class="flex flex-wrap justify-between gap-2 px-4 sm:px-12">
+                                    <div class="flex flex-wrap items-center justify-between gap-4 px-2 md:px-16">
                                         {#each Array(7) as _, val}
                                             <label
-                                                class="group/item press-active relative cursor-pointer"
+                                                class="group/item relative flex cursor-pointer flex-col items-center gap-3"
                                             >
                                                 <input
                                                     type="radio"
@@ -186,9 +135,18 @@
                                                     required
                                                 />
                                                 <div
-                                                    class="peer-checked:bg-accent-500 peer-checked:border-accent-700 peer-checked:shadow-accent-900/20 group-hover/item:border-accent-300 flex h-10 w-10 items-center justify-center rounded-xl border-2 border-b-6 border-slate-100 bg-white text-[10px] font-black text-slate-400 transition-all peer-checked:translate-y-[2px] peer-checked:text-white sm:h-12 sm:w-12 sm:text-xs"
+                                                    class="peer-checked:bg-primary-600 peer-checked:border-primary-600 peer-checked:shadow-primary-900/20 group-hover/item:border-primary-300 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-slate-100 bg-white text-sm font-bold text-slate-400 transition-all peer-checked:text-white peer-checked:shadow-xl"
                                                 >
                                                     {val + 1}
+                                                </div>
+                                                <div class="h-4 flex items-center justify-center">
+                                                    {#if scaleLabels[val]}
+                                                        <span
+                                                            class="text-[8px] font-bold tracking-tighter text-slate-400 uppercase opacity-0 transition-opacity group-hover/item:opacity-100 peer-checked:opacity-100 text-center leading-tight"
+                                                        >
+                                                            {scaleLabels[val]}
+                                                        </span>
+                                                    {/if}
                                                 </div>
                                             </label>
                                         {/each}
@@ -198,45 +156,45 @@
                         </div>
                     </div>
 
-                    <div id="mslq-bagian-b" class="space-y-10">
-                        <div class="flex items-center gap-4">
+                    <div id="mslq-bagian-b" class="space-y-8 border-t border-slate-50 pt-12">
+                        <div class="mb-8 flex items-center gap-4">
                             <div
-                                class="bg-primary-500 flex h-10 w-10 items-center justify-center rounded-xl border-b-4 border-black text-white shadow-lg shadow-slate-200"
+                                class="bg-primary-600 shadow-primary-900/20 flex h-10 w-10 items-center justify-center rounded-xl text-white shadow-lg"
                             >
                                 <ClipboardList size={20} />
                             </div>
                             <h4
-                                class="text-primary-500 font-display mb-0 text-xl font-black tracking-widest uppercase"
+                                class="mb-0 text-xl font-bold tracking-widest text-slate-900 uppercase"
                             >
                                 Bagian B: Strategi Belajar
                             </h4>
                         </div>
 
-                        <div class="grid grid-cols-1 gap-4">
-                            {#each strategyQuestions as question}
+                        <div class="grid grid-cols-1 gap-6">
+                            {#each strategyQuestions as question (question.id)}
                                 {@const answerIndex = state.form.answers.findIndex(
                                     (a) => a.question_id === question.id
                                 )}
                                 <div
-                                    class="group relative flex flex-col gap-6 rounded-3xl border-2 border-transparent bg-white p-8 transition-all hover:border-slate-100 hover:bg-slate-50/50 hover:shadow-xl"
+                                    class="group flex flex-col space-y-6 rounded-[2rem] border-2 border-transparent bg-white p-8 transition-all hover:border-slate-100 hover:bg-slate-50"
                                 >
-                                    <div class="flex gap-6">
+                                    <div class="flex items-start gap-6">
                                         <div
-                                            class="group-hover:bg-primary-100 group-hover:text-primary-500 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-xs font-black text-slate-400 transition-all"
+                                            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-xs font-bold text-white"
                                         >
                                             {question.order}
                                         </div>
                                         <p
-                                            class="group-hover:text-primary-500 pt-1.5 text-sm leading-relaxed font-bold text-slate-600 transition-colors"
+                                            class="text-base leading-relaxed font-bold text-slate-700"
                                         >
                                             {question.text}
                                         </p>
                                     </div>
 
-                                    <div class="flex flex-wrap justify-between gap-2 px-4 sm:px-12">
+                                    <div class="flex flex-wrap items-center justify-between gap-4 px-2 md:px-16">
                                         {#each Array(7) as _, val}
                                             <label
-                                                class="group/item press-active relative cursor-pointer"
+                                                class="group/item relative flex cursor-pointer flex-col items-center gap-3"
                                             >
                                                 <input
                                                     type="radio"
@@ -249,9 +207,18 @@
                                                     required
                                                 />
                                                 <div
-                                                    class="peer-checked:bg-primary-500 peer-checked:shadow-primary-900/20 group-hover/item:border-primary-300 flex h-10 w-10 items-center justify-center rounded-xl border-2 border-b-6 border-slate-100 bg-white text-[10px] font-black text-slate-400 transition-all peer-checked:translate-y-[2px] peer-checked:border-black peer-checked:text-white sm:h-12 sm:w-12 sm:text-xs"
+                                                    class="peer-checked:bg-primary-600 peer-checked:border-primary-600 peer-checked:shadow-primary-900/20 group-hover/item:border-primary-300 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-slate-100 bg-white text-sm font-bold text-slate-400 transition-all peer-checked:text-white peer-checked:shadow-xl"
                                                 >
                                                     {val + 1}
+                                                </div>
+                                                <div class="h-4 flex items-center justify-center">
+                                                    {#if scaleLabels[val]}
+                                                        <span
+                                                            class="text-[8px] font-bold tracking-tighter text-slate-400 uppercase opacity-0 transition-opacity group-hover/item:opacity-100 peer-checked:opacity-100 text-center leading-tight"
+                                                        >
+                                                            {scaleLabels[val]}
+                                                        </span>
+                                                    {/if}
                                                 </div>
                                             </label>
                                         {/each}
@@ -261,22 +228,15 @@
                         </div>
                     </div>
 
-                    <div class="flex flex-col items-center gap-6 border-t border-slate-50 pt-16">
-                        <div
-                            class="flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase"
-                        >
-                            <Info size={14} />
-                            Pastikan anda telah mengisi seluruh butir pertanyaan
-                        </div>
+                    <div class="flex justify-center pt-10">
                         <Button
                             type="submit"
                             variant="primary"
-                            size="xl"
-                            class="group h-20 px-16"
+                            class="px-20 py-6 text-sm shadow-2xl"
                             icon={Send}
-                            disabled={state.form.processing || state.progress < 100}
+                            disabled={state.form.processing}
                         >
-                            {#if state.form.processing}MEMPROSES...{:else}SIMPAN HASIL SURVEY MSLQ{/if}
+                            {#if state.form.processing}MENYIMPAN...{:else}SIMPAN HASIL MSLQ{/if}
                         </Button>
                     </div>
                 </form>
@@ -284,3 +244,4 @@
         </Card>
     </div>
 </App>
+

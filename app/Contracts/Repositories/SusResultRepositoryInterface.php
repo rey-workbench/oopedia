@@ -12,12 +12,12 @@ interface SusResultRepositoryInterface
     /**
      * @return Collection<int, SusResult>
      */
-    public function getAllWithUser(?string $class = null): Collection;
+    public function getAllWithUser(?string $assessmentType = null): Collection;
 
     /**
      * @return array<string>
      */
-    public function getDistinctClasses(): array;
+    public function getDistinctAssessmentTypes(): array;
 
     public function findByUserId(string $userId): ?SusResult;
 
