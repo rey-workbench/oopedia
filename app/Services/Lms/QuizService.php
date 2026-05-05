@@ -559,6 +559,7 @@ final readonly class QuizService implements QuizServiceInterface
                     'diagnosis'       => $friendlyDiagnosis,
                     'actions'         => $hydratedActions,
                     'show_guidance'   => in_array('SHOW_GUIDANCE', $engineResult->actions),
+                    'guidance_data'   => in_array('SHOW_GUIDANCE', $engineResult->actions) ? $this->generateGuidanceData($question) : null,
                 ]),
             ];
         });
@@ -599,6 +600,54 @@ final readonly class QuizService implements QuizServiceInterface
     // PRIVATE HELPERS
     // =========================================================================
 
+    private function generateGuidanceData(Question $question): ?array
+    {
+        if (! $question->relationLoaded('answers')) {
+            $question->load('answers');
+        }
+
+        if ($question->question_type === QuestionType::RADIO_BUTTON) {
+            $wrongAnswer = $question->answers->where('is_correct', false)->random();
+            return [
+                'type'      => 'remove_option',
+                'remove_id' => $wrongAnswer?->id,
+            ];
+        }
+
+        if ($question->question_type === QuestionType::FILL_IN_THE_BLANK) {
+            $rawCorrect = $question->answers->where('is_correct', true)->first()?->answer_text;
+            if (! $rawCorrect) return null;
+
+            $correctAns = trim($rawCorrect);
+            $characters = [];
+            for ($i = 0; $i < mb_strlen($correctAns); $i++) {
+                $char = mb_substr($correctAns, $i, 1);
+                if ($char === ' ') {
+                    $characters[] = ['char' => ' ', 'revealed' => true];
+                } elseif ($i % 4 === 0 || $i === mb_strlen($correctAns) - 1) {
+                    $characters[] = ['char' => $char, 'revealed' => true];
+                } else {
+                    $characters[] = ['char' => $char, 'revealed' => false];
+                }
+            }
+            return [
+                'type'       => 'tts_hint',
+                'characters' => $characters,
+            ];
+        }
+
+        if ($question->question_type === QuestionType::DRAG_AND_DROP) {
+            $firstCorrect = $question->answers->where('is_correct', true)->first();
+            return [
+                'type'        => 'auto_fill',
+                'drag_source' => $firstCorrect?->answer_text,
+                'drag_target' => $firstCorrect?->drag_target,
+            ];
+        }
+
+        return null;
+    }
+
     private function getFilteredQuestionsForQuiz(Material $material, ?QuestionDifficulty $questionDifficulty, bool $isGuest): array
     {
         $questions = $this->questionRepository->getByMaterialAndDifficulty($material->id, $questionDifficulty instanceof QuestionDifficulty ? $questionDifficulty->value : 'all');
@@ -623,7 +672,7 @@ final readonly class QuizService implements QuizServiceInterface
     {
         $answeredArray = $supportCollection->toArray();
         $current       = $questions->reject(fn ($q): bool => in_array($q->id, $answeredArray))->first();
-        if ($current instanceof Question && $current->question_type !== QuestionType::FILL_IN_THE_BLANK) {
+        if ($current instanceof Question) {
             if (! $current->relationLoaded('answers')) {
                 $current->load('answers');
             }

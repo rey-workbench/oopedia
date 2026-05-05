@@ -87,6 +87,7 @@ export class QuizState extends BaseState {
     showGuidance = $derived(
         this.studentState?.adaptive_engine?.adaptive_state?.['show_guidance'] === true
     );
+    guidanceData = $derived(this.feedbackData?.adaptive_result?.guidance_data);
     xp = $derived(this.studentState?.gamification?.xp ?? 0);
     streak = $derived(this.studentState?.gamification?.streak ?? 0);
     level = $derived(this.studentState?.gamification?.level ?? 'Pemula');
@@ -128,7 +129,7 @@ export class QuizState extends BaseState {
     }
 
     private canUseHint(): boolean {
-        return !!(this.currentQuestion && this.hintsAvailable > 0);
+        return !!(this.currentQuestion && this.hintsAvailable > 0 && this.currentQuestion.hint);
     }
 
     closeHint() {

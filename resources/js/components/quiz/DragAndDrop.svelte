@@ -8,6 +8,7 @@
         disabled = false,
         showResult = false,
         showGuidance = false,
+        guidanceData = null,
         isOverallCorrect = false,
     }: {
         question: Question;
@@ -15,25 +16,22 @@
         disabled?: boolean;
         showResult?: boolean;
         showGuidance?: boolean;
+        guidanceData?: any;
         isOverallCorrect?: boolean;
     } = $props();
 
     let displayAnswers = $derived.by(() => {
-        if (!showGuidance) return question.answers || [];
+        return (question.answers || []).slice().sort((a, b) => (a?.id ?? '').localeCompare(b?.id ?? ''));
+    });
 
-        const correctOnes = (question.answers || []).filter((a) => a.drag_target !== null);
-        const distractors = (question.answers || []).filter((a) => a.drag_target === null);
-
-        // Keep all correct ones + maybe 1 distractor if available
-        const list = [...correctOnes];
-        const distractor = distractors[0];
-        if (distractor) {
-            list.push(distractor);
+    $effect(() => {
+        if (showGuidance && guidanceData?.type === 'auto_fill' && Object.keys(dragAndDropAnswers).length === 0) {
+            const zoneId = String(guidanceData.drag_target);
+            dragAndDropAnswers = {
+                ...dragAndDropAnswers,
+                [zoneId]: guidanceData.drag_source ?? ''
+            };
         }
-
-        return list
-            .filter((a): a is import('@/types').Answer => !!a)
-            .sort((a, b) => (a?.id ?? '').localeCompare(b?.id ?? ''));
     });
 
     let activeZone = $state<string | null>(null);
@@ -85,7 +83,18 @@
 
             if (zoneNum > maxZone) maxZone = zoneNum;
 
-            return `<span class="${baseClass} ${stateClass}" data-zone="${zoneIdStr}">${currentAnswer}</span>`;
+            const escapeHtml = (unsafe: string) => {
+                return unsafe
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            };
+
+            const safeAnswer = escapeHtml(currentAnswer);
+
+            return `<span class="${baseClass} ${stateClass}" data-zone="${zoneIdStr}">${safeAnswer}</span>`;
         });
 
         return { text, count: maxZone };

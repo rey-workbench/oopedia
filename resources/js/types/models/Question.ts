@@ -37,6 +37,8 @@ export interface Question {
     difficulty: QuestionDifficulty;
     hint: string | null;
     answers: Answer[];
+    /** For fill_in_the_blank — character count of the correct answer, supplied by QuestionResource */
+    blank_length: number | null;
 }
 
 // ==============================================================

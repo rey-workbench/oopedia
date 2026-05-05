@@ -8,6 +8,7 @@
         disabled = false,
         showResult = false,
         showGuidance = false,
+        guidanceData = null,
         isOverallCorrect = false,
     }: {
         question?: Question;
@@ -15,6 +16,7 @@
         disabled?: boolean;
         showResult?: boolean;
         showGuidance?: boolean;
+        guidanceData?: any;
         isOverallCorrect?: boolean;
     } = $props();
 
@@ -34,6 +36,52 @@
         const list = [...new Set([...corrects, ...(wrongs.length > 0 ? [wrongs[0]] : [])])];
         return list.sort((a, b) => (a ?? '').localeCompare(b ?? ''));
     });
+
+    let length = $derived(Math.max(question?.blank_length || 0, answerText.length));
+    let boxValues = $state<string[]>([]);
+
+    $effect(() => {
+        if (boxValues.length !== length) {
+            let initial = answerText.split('');
+            boxValues = Array.from({ length }, (_, i) => initial[i] || '');
+        }
+    });
+
+    $effect(() => {
+        if (showGuidance && guidanceData?.type === 'tts_hint') {
+            const chars = guidanceData.characters || [];
+            chars.forEach((c: any, i: number) => {
+                if (c.revealed && i < boxValues.length) {
+                    boxValues[i] = c.char;
+                }
+            });
+            answerText = boxValues.join('');
+        }
+    });
+
+    function handleBoxInput(i: number, event: Event) {
+        const input = event.target as HTMLInputElement;
+        const val = input.value.slice(-1); // only last char
+        boxValues[i] = val;
+        answerText = boxValues.join('');
+        
+        if (val && i < length - 1) {
+            const next = document.getElementById(`box-${i + 1}`) as HTMLInputElement;
+            if (next && !next.disabled) next.focus();
+        }
+    }
+
+    function handleBoxKeydown(i: number, event: KeyboardEvent) {
+        if (event.key === 'Backspace' && !boxValues[i] && i > 0) {
+            const prev = document.getElementById(`box-${i - 1}`) as HTMLInputElement;
+            if (prev && !prev.disabled) {
+                prev.focus();
+                // Optional: clear the previous box too
+                // boxValues[i - 1] = '';
+                // answerText = boxValues.join('');
+            }
+        }
+    }
 </script>
 
 <div class="space-y-6">
@@ -78,27 +126,58 @@
             <div class="ml-2 h-px flex-1 bg-slate-100"></div>
         </div>
 
-        <div class="relative">
-            <input
-                id="fill_in_the_blank_answer"
-                type="text"
-                bind:value={answerText}
-                {disabled}
-                placeholder={showResult ? 'Hasil Jawaban' : 'Ketik jawaban Anda di sini...'}
-                class="w-full rounded-2xl border-2 border-b-6 px-6 py-5 text-lg font-bold shadow-sm transition-all duration-150 outline-none placeholder:text-slate-300
-                {showResult
-                    ? isOverallCorrect
-                        ? 'border-emerald-600 border-b-emerald-700 bg-emerald-50 text-emerald-900'
-                        : 'border-rose-600 border-b-rose-700 bg-rose-50 text-rose-900'
-                    : 'focus:border-primary-500 focus:bg-primary-50/10 border-slate-200 bg-white text-slate-900 focus:translate-y-[2px] focus:border-b-4'}"
-            />
-            <!-- No icon when result, as requested -->
-            {#if !showResult && answerText?.length > 0}
-                <div
-                    class="bg-primary-500 shadow-primary-200 absolute top-1/2 right-6 h-2.5 w-2.5 -translate-y-1/2 animate-pulse rounded-full shadow-lg"
-                ></div>
-            {/if}
-        </div>
+        {#if showGuidance && guidanceData?.type === 'tts_hint'}
+            <div class="flex flex-wrap items-center justify-center gap-2">
+                {#each boxValues as val, i}
+                    {@const isGuidanceRevealed = showGuidance && guidanceData?.type === 'tts_hint' && guidanceData.characters?.[i]?.revealed}
+                    {@const isSpace = showGuidance && guidanceData?.type === 'tts_hint' ? guidanceData.characters?.[i]?.char === ' ' : false}
+                    
+                    {#if isSpace}
+                        <div class="w-4 h-14"></div>
+                    {:else}
+                        <input
+                            id="box-{i}"
+                            type="text"
+                            maxlength="1"
+                            value={val}
+                            disabled={disabled || isGuidanceRevealed || showResult}
+                            oninput={(e) => handleBoxInput(i, e)}
+                            onkeydown={(e) => handleBoxKeydown(i, e)}
+                            class="h-14 w-12 rounded-xl border-2 border-b-4 text-center text-2xl font-bold uppercase transition-all duration-150 outline-none
+                            {showResult
+                                ? isOverallCorrect
+                                    ? 'border-emerald-600 border-b-emerald-700 bg-emerald-50 text-emerald-900'
+                                    : 'border-rose-600 border-b-rose-700 bg-rose-50 text-rose-900'
+                                : isGuidanceRevealed
+                                    ? 'border-amber-400 bg-amber-50 text-amber-600 border-b-amber-500'
+                                    : 'focus:border-primary-500 focus:bg-primary-50/10 border-slate-200 bg-white text-slate-900 focus:translate-y-[-2px] focus:border-b-6'}
+                            "
+                        />
+                    {/if}
+                {/each}
+            </div>
+        {:else}
+            <div class="relative">
+                <input
+                    id="fill_in_the_blank_answer"
+                    type="text"
+                    bind:value={answerText}
+                    {disabled}
+                    placeholder={showResult ? 'Hasil Jawaban' : 'Ketik jawaban Anda di sini...'}
+                    class="w-full rounded-2xl border-2 border-b-6 px-6 py-5 text-lg font-bold shadow-sm transition-all duration-150 outline-none placeholder:text-slate-300
+                    {showResult
+                        ? isOverallCorrect
+                            ? 'border-emerald-600 border-b-emerald-700 bg-emerald-50 text-emerald-900'
+                            : 'border-rose-600 border-b-rose-700 bg-rose-50 text-rose-900'
+                        : 'focus:border-primary-500 focus:bg-primary-50/10 border-slate-200 bg-white text-slate-900 focus:translate-y-[2px] focus:border-b-4'}"
+                />
+                {#if !showResult && answerText?.length > 0}
+                    <div
+                        class="bg-primary-500 shadow-primary-200 absolute top-1/2 right-6 h-2.5 w-2.5 -translate-y-1/2 animate-pulse rounded-full shadow-lg"
+                    ></div>
+                {/if}
+            </div>
+        {/if}
 
         {#if showGuidance && wordBank.length > 0}
             <div

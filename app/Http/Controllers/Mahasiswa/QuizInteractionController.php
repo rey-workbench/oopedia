@@ -97,7 +97,7 @@ final class QuizInteractionController extends Controller
     /**
      * Handle hint usage.
      */
-    public function useHint(): RedirectResponse
+    public function useHint(string $materialId, string $questionId): RedirectResponse
     {
         $userId  = (string) $this->getUserId();
         $isGuest = $this->isGuest();
@@ -106,7 +106,11 @@ final class QuizInteractionController extends Controller
             return back();
         }
 
-        $this->performanceService->decrementHint($userId);
+        $question = \App\Models\Question::find($questionId);
+
+        if ($question && !empty($question->hint)) {
+            $this->performanceService->decrementHint($userId);
+        }
 
         return back()->with('student_state', $this->performanceService->getStudentSessionState($userId));
     }

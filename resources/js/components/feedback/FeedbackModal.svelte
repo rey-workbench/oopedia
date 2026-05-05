@@ -204,7 +204,13 @@
     let feedbackTone = $derived(getFeedbackTone(feedbackStatus));
     let feedbackTitle = $derived(getFeedbackTitle(feedbackStatus));
     let displayTitle = $derived(quizState.adaptiveTriggeredRule?.rule?.name || feedbackTitle);
-    let displayMessage = $derived(quizState.feedbackData?.message || '');
+    let displayMessage = $derived.by(() => {
+        const remedialMsg = quizState.studentState?.adaptive_engine?.adaptive_state?.['remedial_message'];
+        if (isRemedial && remedialMsg) {
+            return remedialMsg as string;
+        }
+        return quizState.feedbackData?.message || '';
+    });
     let recommendation = $derived(
         quizState.adaptiveTriggeredRule?.rule?.recommendation !== displayMessage
             ? quizState.adaptiveTriggeredRule?.rule?.recommendation
@@ -225,7 +231,12 @@
             router.visit(remedialUrl);
             return;
         }
-        quizState.handleNext();
+
+        if (quizState.feedbackData?.status === 'success' || quizState.feedbackData?.next_url) {
+            quizState.handleNext();
+        } else {
+            quizState.handleTryAgain();
+        }
     }
 </script>
 

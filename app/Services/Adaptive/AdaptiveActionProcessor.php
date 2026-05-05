@@ -24,10 +24,14 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
         $adaptiveState = $studentState->adaptive_state ?? [];
 
         // Reset transient flags before applying new actions
-        $adaptiveState['show_guidance'] = false;
-        $adaptiveState['needs_remedial'] = false;
-        $adaptiveState['next_url'] = null;
-        $adaptiveState['challenge_question'] = null;
+        $adaptiveState['show_guidance']       = false;
+        $adaptiveState['needs_remedial']      = false;
+        $adaptiveState['next_url']            = null;
+        $adaptiveState['challenge_question']  = null;
+
+        if ($isCorrect) {
+            $adaptiveState['guidance_count'] = 0;
+        }
 
         foreach ($actions as $action) {
             // Recommendation is now just an ID string or an object with an ID
@@ -47,7 +51,7 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
                 AdaptiveActionId::NEW_CHALLENGE => $this->handleNewChallenge($studentState, $adaptiveState, $materialId, $isCorrect),
                 AdaptiveActionId::STREAK_BONUS => $this->handleStreakBonus($studentState, $adaptiveState, $isCorrect),
                 AdaptiveActionId::CERTIFICATION => $this->handleCertification($adaptiveState),
-                AdaptiveActionId::SHOW_GUIDANCE => $this->handleShowGuidance($adaptiveState),
+                AdaptiveActionId::SHOW_GUIDANCE => $this->handleShowGuidance($studentState, $adaptiveState, $materialId),
                 AdaptiveActionId::NOTIFY_TEACHER => $this->handleNotifyTeacher($adaptiveState),
                 AdaptiveActionId::GIVE_HINT => $this->handleGiveHint($studentState),
                 AdaptiveActionId::FEEDBACK => null,
@@ -59,12 +63,16 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
         return $studentState;
     }
 
-    private function handleRemedial(StudentState $studentState, array &$adaptiveState, string $materialId): void
+    private function handleRemedial(StudentState $studentState, array &$adaptiveState, string $materialId, ?string $customMessage = null): void
     {
-        $adaptiveState['needs_remedial'] = true;
+        $adaptiveState['needs_remedial']       = true;
         $adaptiveState['remedial_material_id'] = $materialId;
-        $studentState->target_difficulty = 'beginner';
-        $adaptiveState['next_url'] = route('mahasiswa.materials.show', ['material' => $materialId]);
+        $studentState->target_difficulty       = 'beginner';
+        $adaptiveState['next_url']             = route('mahasiswa.materials.show', ['material' => $materialId]);
+
+        if ($customMessage) {
+            $adaptiveState['remedial_message'] = $customMessage;
+        }
     }
 
     private function handleRemedialIntensive(StudentState $studentState, array &$adaptiveState, string $materialId): void
@@ -189,8 +197,22 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
         $this->handleNotifyTeacher($adaptiveState);
     }
 
-    private function handleShowGuidance(array &$adaptiveState): void
+    private function handleShowGuidance(StudentState $studentState, array &$adaptiveState, string $materialId): void
     {
+        $count = ($adaptiveState['guidance_count'] ?? 0) + 1;
+        $adaptiveState['guidance_count'] = $count;
+
+        if ($count > 3) {
+            $this->handleRemedial(
+                $studentState,
+                $adaptiveState,
+                $materialId,
+                'Kamu terlalu banyak menebak, baca materi dulu.'
+            );
+            $adaptiveState['guidance_count'] = 0; // Reset after forced remedial
+            return;
+        }
+
         $adaptiveState['show_guidance'] = true;
     }
 

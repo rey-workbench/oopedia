@@ -194,6 +194,7 @@
                             bind:selectedAnswerId={quizState.selectedMultipleChoiceAnswer}
                             disabled={quizState.isSubmitting}
                             showGuidance={quizState.showGuidance}
+                            guidanceData={quizState.guidanceData}
                         />
                     {:else if quizState.currentQuestion.question_type === 'fill_in_the_blank'}
                         <FillInTheBlank
@@ -201,6 +202,7 @@
                             bind:answerText={quizState.fillInTheBlankAnswer}
                             disabled={quizState.isSubmitting}
                             showGuidance={quizState.showGuidance}
+                            guidanceData={quizState.guidanceData}
                         />
                     {:else if quizState.currentQuestion.question_type === 'drag_and_drop'}
                         <DragAndDrop
@@ -208,6 +210,7 @@
                             bind:dragAndDropAnswers={quizState.dragAndDropAnswers}
                             disabled={quizState.isSubmitting}
                             showGuidance={quizState.showGuidance}
+                            guidanceData={quizState.guidanceData}
                         />
                     {/if}
                 </QuestionSessionCard>
@@ -231,7 +234,7 @@
                 <!-- Hint Button -->
                 <button
                     onclick={() => quizState.useHint()}
-                    disabled={quizState.isSubmitting || quizState.hintsAvailable <= 0}
+                    disabled={quizState.isSubmitting || quizState.hintsAvailable <= 0 || !quizState.currentQuestion?.hint}
                     class="group flex flex-col items-center justify-center rounded-2xl border-2 border-b-4 border-slate-200 px-6 py-3 font-black text-slate-400 transition-all hover:bg-slate-50 active:border-b-2 active:translate-y-0.5 disabled:opacity-50 disabled:grayscale"
                 >
                     <div class="flex items-center gap-3">

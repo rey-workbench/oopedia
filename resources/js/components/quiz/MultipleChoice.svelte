@@ -8,6 +8,7 @@
         disabled?: boolean;
         showResult?: boolean;
         showGuidance?: boolean;
+        guidanceData?: any;
         onselect?: (answerId: string) => void;
     }
 
@@ -17,27 +18,20 @@
         disabled = false,
         showResult = false,
         showGuidance = false,
+        guidanceData = null,
         onselect = () => {},
     }: Props = $props();
 
     let displayAnswers = $derived.by(() => {
-        if (!showGuidance || (question.answers?.length ?? 0) <= 2) return question.answers || [];
+        if (!question?.answers) return [];
 
-        const correct = question.answers?.find((a) => a.is_correct);
-        const wrongs = question.answers?.filter((a) => !a.is_correct) || [];
+        let currentAnswers = [...question.answers];
 
-        if (!correct || wrongs.length === 0) return question.answers || [];
+        if (showGuidance && guidanceData?.type === 'remove_option' && currentAnswers.length > 2) {
+            currentAnswers = currentAnswers.filter((a) => a.id !== guidanceData.remove_id);
+        }
 
-        // Deterministic but "random" selection using question.id and wrongs length
-        const seed = (question.id ?? '')
-            .split('')
-            .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-        const randomIndex = seed % wrongs.length;
-        const randomWrong = wrongs[randomIndex];
-
-        return [correct, randomWrong]
-            .filter((a): a is import('@/types').Answer => !!a)
-            .sort((a, b) => (a?.id ?? '').localeCompare(b?.id ?? ''));
+        return currentAnswers;
     });
 
     function handleSelect(answerId: string) {

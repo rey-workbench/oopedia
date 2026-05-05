@@ -298,13 +298,12 @@ class RealQuestionSeeder extends Seeder
                     ],
                 ],
                 [
-                    'text'       => '____ adalah paradigma yang memisahkan data dan fungsi, sedangkan ____ menggabungkannya.',
+                    'text'       => 'Paradigma yang memisahkan data dan fungsi (bukan menggabungkannya) disebut?',
                     'type'       => QuestionType::FILL_IN_THE_BLANK->value,
                     'difficulty' => QuestionDifficulty::HARD->value,
                     'hint'       => 'Struktural memisahkan data dari logika, sedangkan OOP menyatukan keduanya dalam satu wadah.',
                     'answers'    => [
-                        ['Prosedural', 'Memisahkan data dan fungsi'],
-                        ['OOP', 'Menggabungkan data dan fungsi'],
+                        ['Prosedural', 'Paradigma prosedural/struktural memisahkan data dan fungsi secara terpisah.'],
                     ],
                 ],
                 [
@@ -356,13 +355,12 @@ class RealQuestionSeeder extends Seeder
             'Anatomi Class & Object' => [
                 // BEGINNER (7)
                 [
-                    'text'       => 'Class diibaratkan sebagai sebuah ____, sedangkan Object adalah ____.',
+                    'text'       => 'Class diibaratkan sebagai sebuah ____ (cetak biru) dari sebuah Object.',
                     'type'       => QuestionType::FILL_IN_THE_BLANK->value,
                     'difficulty' => QuestionDifficulty::BEGINNER->value,
                     'hint'       => 'Pikirkan tentang perbedaan antara desain arsitektur dan gedung aslinya.',
                     'answers'    => [
-                        ['Blueprint', 'Cetak biru'],
-                        ['Instance', 'Wujud nyata'],
+                        ['Blueprint', 'Class adalah blueprint atau cetakan yang mendefinisikan struktur dan perilaku objek.'],
                     ],
                 ],
                 [
@@ -1050,13 +1048,12 @@ class RealQuestionSeeder extends Seeder
                     ],
                 ],
                 [
-                    'text'       => 'Dalam Java, relasi "implements" digunakan untuk relasi antara ____ dan ____.',
+                    'text'       => 'Dalam Java, keyword "implements" digunakan oleh sebuah ____ untuk menjalankan kontrak dari sebuah Interface.',
                     'type'       => QuestionType::FILL_IN_THE_BLANK->value,
                     'difficulty' => QuestionDifficulty::HARD->value,
                     'hint'       => 'Relasi ini digunakan ketika sebuah class setuju untuk menjalankan "peraturan" atau janji yang ada di dalam sebuah kontrak.',
                     'answers'    => [
-                        ['Class', 'Yang melakukan implementasi'],
-                        ['Interface', 'Kontrak yang dijalankan'],
+                        ['Class', 'Class yang menggunakan "implements" berjanji untuk mengimplementasikan semua method dari Interface tersebut.'],
                     ],
                 ],
                 [
@@ -1343,14 +1340,12 @@ class RealQuestionSeeder extends Seeder
                     ],
                 ],
                 [
-                    'text'       => 'Overloading terjadi di dalam ____ class, sedangkan Overriding terjadi di antara ____ dan ____.',
+                    'text'       => 'Overloading terjadi di dalam ____ class yang sama (tidak melibatkan pewarisan).',
                     'type'       => QuestionType::FILL_IN_THE_BLANK->value,
                     'difficulty' => QuestionDifficulty::BEGINNER->value,
                     'hint'       => 'Overloading adalah persaingan di dalam satu class, sedangkan Overriding melibatkan hubungan orang tua-anak.',
                     'answers'    => [
-                        ['Satu', 'Dalam class itu sendiri'],
-                        ['Induk', 'Superclass'],
-                        ['Anak', 'Subclass'],
+                        ['Satu', 'Overloading terjadi di dalam satu class yang sama dengan nama method yang sama tetapi parameter berbeda.'],
                     ],
                 ],
                 [
@@ -1391,13 +1386,12 @@ class RealQuestionSeeder extends Seeder
                 ],
                 // MEDIUM (7)
                 [
-                    'text'       => 'Overloading merupakan contoh dari polimorfisme ____, sedangkan Overriding adalah polimorfisme ____.',
+                    'text'       => 'Overloading merupakan contoh polimorfisme ____ (keputusan diambil saat compile-time).',
                     'type'       => QuestionType::FILL_IN_THE_BLANK->value,
                     'difficulty' => QuestionDifficulty::MEDIUM->value,
                     'hint'       => 'Pikirkan kapan pemilihan method dilakukan: saat kode diperiksa (compile) atau saat kode benar-benar berjalan (runtime).',
                     'answers'    => [
-                        ['Statik', 'Compile-time'],
-                        ['Dinamis', 'Runtime'],
+                        ['Statik', 'Overloading disebut Static/Compile-time Polymorphism karena method yang dipanggil ditentukan saat kompilasi.'],
                     ],
                 ],
                 [

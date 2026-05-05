@@ -32,10 +32,23 @@ export interface EngineResult {
     engine_metadata: EngineResultMetadata;
 }
 
+export interface GuidanceCharacter {
+    char: string;
+    revealed: boolean;
+}
+
+export interface GuidanceData {
+    type: 'tts_hint' | 'reduce_option' | 'autofill';
+    characters?: GuidanceCharacter[];
+    removed_option_ids?: string[];
+    autofilled_id?: string;
+}
+
 export interface AdaptiveResult extends EngineResult {
     triggered_rule: TriggeredRule | null;
     triggered_rules: TriggeredRule[];
     show_guidance?: boolean;
+    guidance_data?: GuidanceData | null;
 }
 
 /**
