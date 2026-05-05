@@ -103,7 +103,7 @@ function handleWindowBlur() {
 
 export function activateExamProtection(options: Partial<ExamProtectionOptions> = {}): void {
     if (DEBUG_MODE) {
-        console.debug('[ExamProtection] Debug mode active - protection disabled');
+        // console.debug('[ExamProtection] Debug mode active - protection disabled');
         return;
     }
 

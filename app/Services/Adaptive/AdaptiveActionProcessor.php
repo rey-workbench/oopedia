@@ -41,7 +41,7 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
             match ($actionId) {
                 AdaptiveActionId::REMEDIAL => $this->handleRemedial($studentState, $adaptiveState, $materialId),
                 AdaptiveActionId::REMEDIAL_INTENSIVE => $this->handleRemedialIntensive($studentState, $adaptiveState, $materialId),
-                AdaptiveActionId::REDUCE_DIFF => $this->handleReduceDifficulty($studentState),
+                AdaptiveActionId::REDUCE_DIFF => $this->handleReduceDifficulty($studentState, $adaptiveState, $materialId),
                 AdaptiveActionId::INCREASE_DIFF => $this->handleIncreaseDifficulty($studentState, 1),
                 AdaptiveActionId::REDUCE_HINT => $this->handleReduceHint($studentState, $adaptiveState),
                 AdaptiveActionId::NEW_CHALLENGE => $this->handleNewChallenge($studentState, $adaptiveState, $materialId, $isCorrect),
@@ -73,19 +73,64 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
         $adaptiveState['forced_easy_count'] = 5;
     }
 
-    private function handleReduceDifficulty(StudentState $studentState): void
+    private function handleReduceDifficulty(StudentState $studentState, array &$adaptiveState, string $materialId): void
     {
-        $currentDiff = $studentState->target_difficulty ?? 'beginner';
+        $currentDiff = $studentState->target_difficulty;
+
+        if (!$currentDiff && isset($studentState->current_session['question_ids'])) {
+            $questionIds = $studentState->current_session['question_ids'];
+            $lastQuestionId = end($questionIds);
+            if ($lastQuestionId) {
+                $lastQuestion = Question::find($lastQuestionId);
+                $currentDiff = $lastQuestion?->difficulty?->value;
+            }
+        }
+
+        $currentDiff ??= 'beginner';
+
         $currentIndex = array_search($currentDiff, self::DIFFICULTY_ORDER, true);
 
         if ($currentIndex > 0) {
+            // Cek apakah ada soal dengan tingkat kesulitan di bawahnya yang belum dijawab benar
+            $lowerDifficulties = array_slice(self::DIFFICULTY_ORDER, 0, $currentIndex);
+            
+            $availableLowerQuestions = Question::where('material_id', $materialId)
+                ->whereIn('difficulty', $lowerDifficulties)
+                ->whereNotIn('id', function($query) use ($studentState) {
+                    $query->select('question_id')
+                          ->from('quiz_attempts')
+                          ->where('user_id', $studentState->user_id)
+                          ->where('is_correct', true);
+                })->exists();
+
+            if (!$availableLowerQuestions) {
+                // Stok soal mudah sudah habis. Pemicu mentok, paksa Remedial (V01)
+                $this->handleRemedial($studentState, $adaptiveState, $materialId);
+                return;
+            }
+
             $studentState->target_difficulty = self::DIFFICULTY_ORDER[$currentIndex - 1];
+        } else {
+            // Jika sudah di level Beginner dan disuruh turun, berarti mentok. Paksa Remedial.
+            $this->handleRemedial($studentState, $adaptiveState, $materialId);
         }
     }
 
     private function handleIncreaseDifficulty(StudentState $studentState, int $steps): void
     {
-        $currentDiff = $studentState->target_difficulty ?? 'beginner';
+        $currentDiff = $studentState->target_difficulty;
+
+        if (!$currentDiff && isset($studentState->current_session['question_ids'])) {
+            $questionIds = $studentState->current_session['question_ids'];
+            $lastQuestionId = end($questionIds);
+            if ($lastQuestionId) {
+                $lastQuestion = Question::find($lastQuestionId);
+                $currentDiff = $lastQuestion?->difficulty?->value;
+            }
+        }
+
+        $currentDiff ??= 'beginner';
+
         $currentIndex = array_search($currentDiff, self::DIFFICULTY_ORDER, true);
 
         $newIndex = min(2, $currentIndex + $steps);

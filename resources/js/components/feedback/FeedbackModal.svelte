@@ -43,6 +43,12 @@
             showPopups = true;
             showChallenges = true;
 
+            // Play streak bonus audio if STREAK_BONUS action is present
+            if (actions.some((a: any) => (typeof a === 'object' ? a.id : a) === 'STREAK_BONUS')) {
+                const audio = new Audio('/sound/newLevel.mp3');
+                audio.play().catch(e => console.error('Failed to play streak bonus audio:', e));
+            }
+
             // Auto-dismiss standard popups after 3 seconds
             if (popupActions.length > 0) {
                 const timer = setTimeout(() => {

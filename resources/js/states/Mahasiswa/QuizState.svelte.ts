@@ -128,7 +128,7 @@ export class QuizState extends BaseState {
     }
 
     private canUseHint(): boolean {
-        return !!(this.currentQuestion && this.hintsAvailable > 0 && this.currentQuestion.hint);
+        return !!(this.currentQuestion && this.hintsAvailable > 0);
     }
 
     closeHint() {
