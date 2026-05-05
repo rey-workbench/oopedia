@@ -40,7 +40,7 @@ final class MaterialResource extends JsonResource
             'is_locked'           => $this->is_locked           ?? false,
             'status'              => $this->status              ?? 'not_started',
             'last_accessed'       => $this->last_accessed       ?? null,
-            'user_attempt'        => $this->when(isset($this->resource->user_attempt), $this->resource->user_attempt),
+            'user_attempt'        => $this->when($this->resource->user_attempt !== null, $this->resource->user_attempt),
             'created_at'          => $this->created_at?->toIso8601String(),
             'updated_at'          => $this->updated_at?->toIso8601String(),
 
@@ -56,7 +56,7 @@ final class MaterialResource extends JsonResource
             'questions_count' => $this->questions_count ?? $this->questions?->count() ?? 0,
 
             // If it's a detail view with stats (DashboardService usage)
-            'stats' => $this->when(isset($this->resource->stats), $this->resource->stats),
+            'stats' => $this->when($this->resource->stats !== null, $this->resource->stats),
         ];
     }
 

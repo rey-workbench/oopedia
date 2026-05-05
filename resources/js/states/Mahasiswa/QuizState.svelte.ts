@@ -239,7 +239,6 @@ export class QuizState extends BaseState {
             });
         } else {
             router.reload({
-                preserveScroll: true,
                 showProgress: false,
                 onFinish: () => (this.isNavigating = false),
                 onError: () => (this.isNavigating = false),

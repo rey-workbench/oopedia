@@ -6,12 +6,18 @@
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import { ClipboardList, Send, Target } from 'lucide-svelte';
     import { untrack } from 'svelte';
+    import { page } from '@inertiajs/svelte';
     import { MslqSurveyState } from '@/states/Mahasiswa/MslqSurveyState.svelte';
+    import Input from '@/components/ui/Input.svelte';
     import Select from '@/components/ui/Select.svelte';
+    import type { SharedProps } from '@/types';
 
     const { questions = [], type = 'pre' } = $props();
 
-    const state = untrack(() => new MslqSurveyState(questions, type));
+    const state = untrack(() => {
+        const user = (page.props as unknown as SharedProps).auth?.user;
+        return new MslqSurveyState(questions, type, user);
+    });
 
     const motivationQuestions = $derived(
         state.questions.filter((q) => q.category === 'motivation')
@@ -22,11 +28,11 @@
 
     const scaleLabels = [
         'Sangat Tidak Setuju',
-        '',
-        '',
+        'Tidak Setuju',
+        'Agak Tidak Setuju',
         'Netral',
-        '',
-        '',
+        'Agak Setuju',
+        'Setuju',
         'Sangat Setuju',
     ];
 </script>
@@ -54,34 +60,41 @@
                     }}
                     class="space-y-16"
                 >
-                    <div id="mslq-identitas" class="grid grid-cols-1 gap-10 md:grid-cols-2">
-                        <div class="space-y-3">
-                            <label
-                                for="assessment_type"
-                                class="ml-4 block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                                >Tipe Asesmen</label
-                            >
-                            <Select
-                                id="assessment_type"
-                                bind:value={state.form.assessment_type}
-                                options={[
-                                    { label: 'PRE-TEST (AWAL)', value: 'pre' },
-                                    { label: 'POST-TEST (AKHIR)', value: 'post' }
-                                ]}
-                                class="rounded-[1.5rem] py-4"
-                            />
-                        </div>
-                        <div class="space-y-3">
-                            <span
-                                class="ml-4 block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                                >Identitas Akun</span
-                            >
-                            <div
-                                class="w-full rounded-[1.5rem] border-2 border-slate-50 bg-slate-50 px-6 py-4 text-xs font-bold tracking-widest text-slate-400 uppercase"
-                            >
+                    <div id="mslq-identitas" class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
+                        <div class="space-y-2.5">
+                            <span class="ml-4 block text-xs font-black tracking-widest text-slate-500 uppercase">
+                                Identitas Mahasiswa
+                            </span>
+                            <div class="flex px-6 py-4 text-sm font-bold border-2 border-b-6 border-slate-200 rounded-3xl bg-slate-50/50 text-slate-400 uppercase tracking-widest">
                                 {state.user?.name || 'STUDENT SESSION'}
                             </div>
                         </div>
+
+                        <Input
+                            id="nim"
+                            label="NIM"
+                            placeholder="Masukkan NIM Anda"
+                            bind:value={state.form.nim}
+                            class="rounded-3xl!"
+                        />
+
+                        <Input
+                            id="class"
+                            label="Kelas"
+                            placeholder="Masukkan Kelas Anda"
+                            bind:value={state.form.class}
+                            class="rounded-3xl!"
+                        />
+
+                        <Select
+                            id="assessment_type"
+                            label="Tipe Asesmen"
+                            bind:value={state.form.assessment_type}
+                            options={[
+                                { label: 'PRE-TEST (AWAL)', value: 'pre' },
+                                { label: 'POST-TEST (AKHIR)', value: 'post' },
+                            ]}
+                        />
                     </div>
 
                     <div id="mslq-bagian-a" class="space-y-8 border-t border-slate-50 pt-12">
@@ -104,7 +117,8 @@
                                     (a) => a.question_id === question.id
                                 )}
                                 <div
-                                    class="group flex flex-col space-y-6 rounded-[2rem] border-2 border-transparent bg-white p-8 transition-all hover:border-slate-100 hover:bg-slate-50"
+                                    class={`group flex flex-col space-y-6 rounded-[2rem] border-2 p-8 transition-all
+                                    ${state.form.errors[`answers.${answerIndex}.value`] ? 'border-rose-100 bg-rose-50/50 ring-4 ring-rose-50' : 'border-transparent bg-white hover:border-slate-100 hover:bg-slate-50'}`}
                                 >
                                     <div class="flex items-start gap-6">
                                         <div
@@ -139,10 +153,10 @@
                                                 >
                                                     {val + 1}
                                                 </div>
-                                                <div class="h-4 flex items-center justify-center">
+                                                <div class="h-10 flex items-center justify-center">
                                                     {#if scaleLabels[val]}
                                                         <span
-                                                            class="text-[8px] font-bold tracking-tighter text-slate-400 uppercase opacity-0 transition-opacity group-hover/item:opacity-100 peer-checked:opacity-100 text-center leading-tight"
+                                                            class="text-[8px] font-bold tracking-tighter text-slate-400 uppercase opacity-0 transition-opacity group-hover/item:opacity-100 peer-checked:opacity-100 text-center leading-tight max-w-[60px]"
                                                         >
                                                             {scaleLabels[val]}
                                                         </span>
@@ -176,7 +190,8 @@
                                     (a) => a.question_id === question.id
                                 )}
                                 <div
-                                    class="group flex flex-col space-y-6 rounded-[2rem] border-2 border-transparent bg-white p-8 transition-all hover:border-slate-100 hover:bg-slate-50"
+                                    class={`group flex flex-col space-y-6 rounded-[2rem] border-2 p-8 transition-all
+                                    ${state.form.errors[`answers.${answerIndex}.value`] ? 'border-rose-100 bg-rose-50/50 ring-4 ring-rose-50' : 'border-transparent bg-white hover:border-slate-100 hover:bg-slate-50'}`}
                                 >
                                     <div class="flex items-start gap-6">
                                         <div
@@ -211,10 +226,10 @@
                                                 >
                                                     {val + 1}
                                                 </div>
-                                                <div class="h-4 flex items-center justify-center">
+                                                <div class="h-10 flex items-center justify-center">
                                                     {#if scaleLabels[val]}
                                                         <span
-                                                            class="text-[8px] font-bold tracking-tighter text-slate-400 uppercase opacity-0 transition-opacity group-hover/item:opacity-100 peer-checked:opacity-100 text-center leading-tight"
+                                                            class="text-[8px] font-bold tracking-tighter text-slate-400 uppercase opacity-0 transition-opacity group-hover/item:opacity-100 peer-checked:opacity-100 text-center leading-tight max-w-[60px]"
                                                         >
                                                             {scaleLabels[val]}
                                                         </span>
@@ -232,7 +247,7 @@
                         <Button
                             type="submit"
                             variant="primary"
-                            class="px-20 py-6 text-sm shadow-2xl"
+                            class="shadow-primary-900/20 px-20 py-6 text-sm shadow-2xl"
                             icon={Send}
                             disabled={state.form.processing}
                         >

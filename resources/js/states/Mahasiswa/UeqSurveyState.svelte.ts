@@ -7,23 +7,25 @@ export class UeqSurveyState extends FormState<UeqSurveyForm> {
     aspects = $state<{ name: string }[]>([]);
     questionnaireAspects = UEQ_ASPECTS;
 
-    constructor(aspects: { name: string }[], assessmentType: string = 'pre') {
-        super(UeqSurveyState.createInitialFields(aspects, assessmentType));
+    constructor(aspects: { name: string }[], assessmentType: string = 'pre', user?: any) {
+        super(UeqSurveyState.createInitialFields(aspects, assessmentType, user));
         this.aspects = aspects;
     }
 
-    private static createInitialFields(aspects: { name: string }[], assessmentType: string): UeqSurveyForm {
+    private static createInitialFields(aspects: { name: string }[], assessmentType: string, user?: any): UeqSurveyForm {
         const fields: UeqSurveyForm = {
             assessment_type: assessmentType,
+            nim: user?.nim || '',
+            class: user?.class || '',
+            answers: aspects.map(a => ({
+                question_id: a.name,
+                value: null,
+            })),
             comments: '',
             suggestions: '',
+            errors: {},
+            processing: false,
         };
-
-        for (const aspect of aspects) {
-            if (aspect.name) {
-                fields[aspect.name] = 0;
-            }
-        }
 
         return fields;
     }

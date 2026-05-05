@@ -45,6 +45,14 @@ final class SusSurveyController extends Controller
 
         $susResultCreateDTO = SusResultCreateDTO::fromRequest($storeSusResultRequest, (string) Auth::id());
 
+        // Update user profile if nim or class is provided
+        if ($storeSusResultRequest->filled('nim') || $storeSusResultRequest->filled('class')) {
+            Auth::user()->update([
+                'nim'   => $storeSusResultRequest->input('nim') ?? Auth::user()->nim,
+                'class' => $storeSusResultRequest->input('class') ?? Auth::user()->class,
+            ]);
+        }
+
         $this->susResultService->submitResult($susResultCreateDTO->toArray());
 
         return to_route('mahasiswa.surveys.sus.thankyou');

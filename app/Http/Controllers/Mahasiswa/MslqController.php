@@ -54,6 +54,15 @@ final class MslqController extends Controller
 
         try {
             $validated = $storeMslqRequest->validated();
+            
+            // Update user profile if nim or class is provided
+            if (!empty($validated['nim']) || !empty($validated['class'])) {
+                Auth::user()->update([
+                    'nim'   => $validated['nim'] ?? Auth::user()->nim,
+                    'class' => $validated['class'] ?? Auth::user()->class,
+                ]);
+            }
+
             $answers   = [];
             foreach ($validated['answers'] as $ans) {
                 $answers[$ans['question_id']] = $ans['value'];

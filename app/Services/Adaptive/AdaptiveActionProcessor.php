@@ -16,16 +16,17 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
 
     public function __construct(
         private QuestionRepositoryInterface $questionRepository,
-    ) {}
+    ) {
+    }
 
     public function process(StudentState $studentState, array $actions, string $materialId, bool $isCorrect): StudentState
     {
         $adaptiveState = $studentState->adaptive_state ?? [];
 
         // Reset transient flags before applying new actions
-        $adaptiveState['show_guidance']      = false;
-        $adaptiveState['needs_remedial']     = false;
-        $adaptiveState['next_url']           = null;
+        $adaptiveState['show_guidance'] = false;
+        $adaptiveState['needs_remedial'] = false;
+        $adaptiveState['next_url'] = null;
         $adaptiveState['challenge_question'] = null;
 
         foreach ($actions as $action) {
@@ -33,23 +34,23 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
             $actionIdString = is_array($action) ? $action['id'] : $action;
 
             $actionId = AdaptiveActionId::tryFrom($actionIdString);
-            if (! $actionId) {
+            if (!$actionId) {
                 continue;
             }
 
             match ($actionId) {
-                AdaptiveActionId::REMEDIAL           => $this->handleRemedial($studentState, $adaptiveState, $materialId),
+                AdaptiveActionId::REMEDIAL => $this->handleRemedial($studentState, $adaptiveState, $materialId),
                 AdaptiveActionId::REMEDIAL_INTENSIVE => $this->handleRemedialIntensive($studentState, $adaptiveState, $materialId),
-                AdaptiveActionId::REDUCE_DIFF        => $this->handleReduceDifficulty($studentState),
-                AdaptiveActionId::INCREASE_DIFF      => $this->handleIncreaseDifficulty($studentState, 1),
-                AdaptiveActionId::REDUCE_HINT        => $this->handleReduceHint($studentState, $adaptiveState),
-                AdaptiveActionId::NEW_CHALLENGE      => $this->handleNewChallenge($studentState, $adaptiveState, $materialId, $isCorrect),
-                AdaptiveActionId::STREAK_BONUS       => $this->handleStreakBonus($studentState, $adaptiveState, $isCorrect),
-                AdaptiveActionId::CERTIFICATION      => $this->handleCertification($adaptiveState),
-                AdaptiveActionId::SHOW_GUIDANCE      => $this->handleShowGuidance($adaptiveState),
-                AdaptiveActionId::NOTIFY_TEACHER     => $this->handleNotifyTeacher($adaptiveState),
-                AdaptiveActionId::GIVE_HINT          => $this->handleGiveHint($studentState),
-                AdaptiveActionId::FEEDBACK           => null,
+                AdaptiveActionId::REDUCE_DIFF => $this->handleReduceDifficulty($studentState),
+                AdaptiveActionId::INCREASE_DIFF => $this->handleIncreaseDifficulty($studentState, 1),
+                AdaptiveActionId::REDUCE_HINT => $this->handleReduceHint($studentState, $adaptiveState),
+                AdaptiveActionId::NEW_CHALLENGE => $this->handleNewChallenge($studentState, $adaptiveState, $materialId, $isCorrect),
+                AdaptiveActionId::STREAK_BONUS => $this->handleStreakBonus($studentState, $adaptiveState, $isCorrect),
+                AdaptiveActionId::CERTIFICATION => $this->handleCertification($adaptiveState),
+                AdaptiveActionId::SHOW_GUIDANCE => $this->handleShowGuidance($adaptiveState),
+                AdaptiveActionId::NOTIFY_TEACHER => $this->handleNotifyTeacher($adaptiveState),
+                AdaptiveActionId::GIVE_HINT => $this->handleGiveHint($studentState),
+                AdaptiveActionId::FEEDBACK => null,
             };
         }
 
@@ -60,10 +61,10 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
 
     private function handleRemedial(StudentState $studentState, array &$adaptiveState, string $materialId): void
     {
-        $adaptiveState['needs_remedial']       = true;
+        $adaptiveState['needs_remedial'] = true;
         $adaptiveState['remedial_material_id'] = $materialId;
-        $studentState->target_difficulty       = 'beginner';
-        $adaptiveState['next_url']             = route('mahasiswa.materials.show', ['material' => $materialId]);
+        $studentState->target_difficulty = 'beginner';
+        $adaptiveState['next_url'] = route('mahasiswa.materials.show', ['material' => $materialId]);
     }
 
     private function handleRemedialIntensive(StudentState $studentState, array &$adaptiveState, string $materialId): void
@@ -74,7 +75,7 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
 
     private function handleReduceDifficulty(StudentState $studentState): void
     {
-        $currentDiff  = $studentState->target_difficulty ?? 'beginner';
+        $currentDiff = $studentState->target_difficulty ?? 'beginner';
         $currentIndex = array_search($currentDiff, self::DIFFICULTY_ORDER, true);
 
         if ($currentIndex > 0) {
@@ -84,19 +85,19 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
 
     private function handleIncreaseDifficulty(StudentState $studentState, int $steps): void
     {
-        $currentDiff  = $studentState->target_difficulty ?? 'beginner';
+        $currentDiff = $studentState->target_difficulty ?? 'beginner';
         $currentIndex = array_search($currentDiff, self::DIFFICULTY_ORDER, true);
 
-        $newIndex                        = min(2, $currentIndex + $steps);
+        $newIndex = min(2, $currentIndex + $steps);
         $studentState->target_difficulty = self::DIFFICULTY_ORDER[$newIndex];
     }
 
     private function handleReduceHint(StudentState $studentState, array &$adaptiveState): void
     {
-        $currentMax                             = $adaptiveState['max_hints_per_session'] ?? 3;
+        $currentMax = $adaptiveState['max_hints_per_session'] ?? 3;
         $adaptiveState['max_hints_per_session'] = max(0, $currentMax - 1);
-        $studentState->hints_available          = min($studentState->hints_available, $adaptiveState['max_hints_per_session']);
-        $adaptiveState['scaffold_mode']         = 'minimal';
+        $studentState->hints_available = min($studentState->hints_available, $adaptiveState['max_hints_per_session']);
+        $adaptiveState['scaffold_mode'] = 'minimal';
     }
 
     private function handleNewChallenge(StudentState $studentState, array &$adaptiveState, string $materialId, bool $isCorrect): void
@@ -110,12 +111,12 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
 
         if ($question instanceof Question) {
             $adaptiveState['challenge_question'] = [
-                'id'      => $question->id,
+                'id' => $question->id,
                 'content' => $question->question_text,
-                'type'    => $question->question_type->value,
-                'options' => $question->answers->map(fn ($a): array => [
-                    'id'         => $a->id,
-                    'text'       => $a->answer_text,
+                'type' => $question->question_type->value,
+                'options' => $question->answers->map(fn($a): array => [
+                    'id' => $a->id,
+                    'text' => $a->answer_text,
                     'is_correct' => $a->is_correct,
                 ])->toArray(),
             ];
@@ -124,21 +125,21 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
 
     private function handleStreakBonus(StudentState $studentState, array &$adaptiveState, bool $isCorrect): void
     {
-        if (! $isCorrect) {
+        if (!$isCorrect) {
             return;
         }
 
         $studentState->xp += 50;
-        $badges                  = $adaptiveState['badges'] ?? [];
-        $badges[]                = 'streak_' . ($studentState->streak ?? 0);
+        $badges = $adaptiveState['badges'] ?? [];
+        $badges[] = 'streak_' . ($studentState->streak ?? 0);
         $adaptiveState['badges'] = array_unique($badges);
     }
 
     private function handleCertification(array &$adaptiveState): void
     {
-        $certs                            = $adaptiveState['certifications'] ?? [];
-        $certs[]                          = 'GOLD';
-        $adaptiveState['certifications']  = array_unique($certs);
+        $certs = $adaptiveState['certifications'] ?? [];
+        $certs[] = 'GOLD';
+        $adaptiveState['certifications'] = array_unique($certs);
         $adaptiveState['unlock_advanced'] = true;
         $this->handleNotifyTeacher($adaptiveState);
     }
@@ -150,7 +151,7 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
 
     private function handleNotifyTeacher(array &$adaptiveState): void
     {
-        $adaptiveState['notify_teacher']      = true;
+        $adaptiveState['notify_teacher'] = true;
         $adaptiveState['notify_teacher_type'] = 'general';
     }
 

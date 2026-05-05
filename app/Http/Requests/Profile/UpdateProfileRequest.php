@@ -14,6 +14,8 @@ final class UpdateProfileRequest extends BaseFormRequest
         return [
             'name'     => ['required', 'string', 'max:255'],
             'email'    => 'required|email|unique:users,email,' . Auth::id(),
+            'nim'      => ['nullable', 'string', 'max:20'],
+            'class'    => ['nullable', 'string', 'max:50'],
             'password' => ['nullable', 'min:6', 'confirmed'],
         ];
     }

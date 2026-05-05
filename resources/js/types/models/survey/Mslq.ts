@@ -22,6 +22,8 @@ export interface MslqAnswer {
 
 export interface MslqForm {
     assessment_type: string;
+    nim?: string;
+    class?: string;
     answers: MslqAnswer[];
 }
 

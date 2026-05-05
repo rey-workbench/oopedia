@@ -25,7 +25,7 @@ final class MslqQuestionResource extends JsonResource
         return [
             'id'         => $this->id,
             'text'       => $this->text,
-            'category'   => $this->category instanceof \UnitEnum ? $this->category->value : $this->category,
+            'category'   => $this->category instanceof \BackedEnum ? $this->category->value : $this->category,
             'scale'      => $this->scale,
             'is_reverse' => $this->is_reverse,
             'order'      => $this->order,

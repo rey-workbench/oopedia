@@ -5,21 +5,32 @@ import type { User } from '../User';
  * Based on 26 Bipolar columns (column1-column26)
  */
 
+export interface UeqAnswer {
+    question_id: string;
+    value: number | null;
+}
+
 export interface UeqSurvey {
     id: string;
     user: User;
     assessment_type: string;
+    nim?: string;
+    class?: string;
+    answers: UeqAnswer[];
     comments?: string;
     suggestions?: string;
-    [key: string]: any;
     created_at: string;
 }
 
 export interface UeqSurveyForm {
     assessment_type: string;
-    [key: string]: number | string | undefined;
+    nim: string;
+    class: string;
+    answers: UeqAnswer[];
     comments: string;
     suggestions: string;
+    errors: Record<string, string>;
+    processing: boolean;
 }
 
 export interface UeqAverages {

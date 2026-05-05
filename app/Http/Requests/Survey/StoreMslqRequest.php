@@ -17,12 +17,24 @@ final class StoreMslqRequest extends BaseFormRequest
     public function rules(): array
     {
         $count = \App\Models\MslqQuestion::count();
-        
+
         return [
-            'assessment_type'       => ['required', 'string', 'in:pre,post'],
-            'answers'               => ['required', 'array', "size:{$count}"],
+            'assessment_type' => ['required', 'string', 'in:pre,post'],
+            'nim' => ['nullable', 'string', 'max:20'],
+            'class' => ['nullable', 'string', 'max:50'],
+            'answers' => ['required', 'array', "size:{$count}"],
             'answers.*.question_id' => ['required', 'exists:mslq_questions,id'],
-            'answers.*.value'       => ['required', 'integer', 'min:1', 'max:7'],
+            'answers.*.value' => ['required', 'integer', 'min:1', 'max:7'],
         ];
+    }
+    #[\Override]
+    public function messages(): array
+    {
+        return array_merge(parent::messages(), [
+            'answers.*.value.required' => 'Seluruh pertanyaan instrumen penilaian MSLQ wajib diisi',
+            'answers.*.value.integer' => 'Nilai jawaban harus berupa angka',
+            'answers.*.value.min' => 'Nilai minimal adalah 1',
+            'answers.*.value.max' => 'Nilai maksimal adalah 7',
+        ]);
     }
 }

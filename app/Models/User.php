@@ -43,7 +43,7 @@ final class User extends Authenticatable
     protected $with = ['role'];
 
     #[\Override]
-    protected $fillable = ['name', 'email', 'password', 'role_id', 'is_approved', 'google_id', 'avatar'];
+    protected $fillable = ['name', 'email', 'nim', 'class', 'password', 'role_id', 'is_approved', 'google_id', 'avatar'];
 
     /** @var array<int, string> */
     #[\Override]

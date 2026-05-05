@@ -6,12 +6,17 @@
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import { CheckSquare, MessageSquare, Send } from 'lucide-svelte';
     import { untrack } from 'svelte';
+    import { page } from '@inertiajs/svelte';
     import { SusSurveyState } from '@/states/Mahasiswa/SusSurveyState.svelte';
-    import Input from '@/components/ui/Input.svelte';
     import Select from '@/components/ui/Select.svelte';
+    import Input from '@/components/ui/Input.svelte';
+    import type { SharedProps } from '@/types';
 
     const { type = 'pre' } = $props();
-    const state = untrack(() => new SusSurveyState(type));
+    const state = untrack(() => {
+        const user = (page.props as unknown as SharedProps).auth?.user;
+        return new SusSurveyState(type, user);
+    });
 
     const scaleLabels = [
         'Sangat Tidak Setuju',
@@ -31,7 +36,7 @@
         />
 
         <Card padding="p-0" class="overflow-hidden rounded-[3rem] border-slate-100 shadow-2xl">
-            <div class="space-y-12 p-12">
+            <div class="space-y-12 p-8 sm:p-12">
                 {#if state.form.errors && Object.keys(state.form.errors).length > 0}
                     <Alert variant="danger" dismissible={true}>
                         Ada beberapa field yang belum valid atau belum diisi. Silakan tinjau kembali
@@ -47,34 +52,41 @@
                     }}
                     class="space-y-16"
                 >
-                    <div id="sus-identitas" class="grid grid-cols-1 gap-10 md:grid-cols-2">
-                        <div class="space-y-3">
-                            <label
-                                for="assessment_type"
-                                class="ml-4 block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                                >Tipe Asesmen</label
-                            >
-                            <Select
-                                id="assessment_type"
-                                bind:value={state.form.assessment_type}
-                                options={[
-                                    { label: 'PRE-TEST (AWAL)', value: 'pre' },
-                                    { label: 'POST-TEST (AKHIR)', value: 'post' }
-                                ]}
-                                class="rounded-[1.5rem] py-4"
-                            />
-                        </div>
-                        <div class="space-y-3">
-                            <span
-                                class="ml-4 block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
-                                >Identitas Akun</span
-                            >
-                            <div
-                                class="w-full rounded-[1.5rem] border-2 border-slate-50 bg-slate-50 px-6 py-4 text-xs font-bold tracking-widest text-slate-400 uppercase"
-                            >
-                                {state.user ? state.user.name : 'STUDENT SESSION'}
+                    <div id="sus-identitas" class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
+                        <div class="space-y-2.5">
+                            <span class="ml-4 block text-xs font-black tracking-widest text-slate-500 uppercase">
+                                Identitas Mahasiswa
+                            </span>
+                            <div class="flex px-6 py-4 text-sm font-bold border-2 border-b-6 border-slate-200 rounded-3xl bg-slate-50/50 text-slate-400 uppercase tracking-widest">
+                                {state.user?.name || 'STUDENT SESSION'}
                             </div>
                         </div>
+
+                        <Input
+                            id="nim"
+                            label="NIM"
+                            placeholder="Masukkan NIM Anda"
+                            bind:value={state.form.nim}
+                            class="rounded-3xl!"
+                        />
+
+                        <Input
+                            id="class"
+                            label="Kelas"
+                            placeholder="Masukkan Kelas Anda"
+                            bind:value={state.form.class}
+                            class="rounded-3xl!"
+                        />
+
+                        <Select
+                            id="assessment_type"
+                            label="Tipe Asesmen"
+                            bind:value={state.form.assessment_type}
+                            options={[
+                                { label: 'PRE-TEST (AWAL)', value: 'pre' },
+                                { label: 'POST-TEST (AKHIR)', value: 'post' }
+                            ]}
+                        />
                     </div>
 
                     <div class="space-y-8 border-t border-slate-50 pt-12">
@@ -93,9 +105,12 @@
 
                         <div id="sus-questions" class="space-y-6">
                             {#each state.questions as question (question.id)}
+                                {@const answerIndex = state.form.answers.findIndex(
+                                    (a) => String(a.question_id) === String(question.id)
+                                )}
                                 <div
                                     class={`group flex flex-col space-y-6 rounded-[2rem] border-2 p-8 transition-all
-                                    ${state.form.errors[`q${question.id}`] ? 'border-rose-100 bg-rose-50/50 ring-4 ring-rose-50' : 'border-transparent bg-white hover:border-slate-100 hover:bg-slate-50'}`}
+                                    ${state.form.errors[`answers.${answerIndex}.value`] ? 'border-rose-100 bg-rose-50/50 ring-4 ring-rose-50' : 'border-transparent bg-white hover:border-slate-100 hover:bg-slate-50'}`}
                                 >
                                     <div class="flex items-start gap-6">
                                         <div
@@ -121,9 +136,7 @@
                                                     type="radio"
                                                     name={`q${question.id}`}
                                                     value={i + 1}
-                                                    bind:group={
-                                                        (state.form as any)[`q${question.id}`]
-                                                    }
+                                                    bind:group={state.form.answers[answerIndex]!.value}
                                                     class="peer hidden"
                                                     required
                                                 />
@@ -132,11 +145,13 @@
                                                 >
                                                     {i + 1}
                                                 </div>
-                                                <span
-                                                    class="text-[8px] font-bold tracking-tighter text-slate-400 uppercase opacity-0 transition-opacity group-hover/item:opacity-100 peer-checked:opacity-100"
-                                                >
-                                                    {scaleLabels[i]}
-                                                </span>
+                                                <div class="h-10 flex items-center justify-center">
+                                                    <span
+                                                        class="text-[8px] font-bold tracking-tighter text-slate-400 uppercase opacity-0 transition-opacity group-hover/item:opacity-100 peer-checked:opacity-100 text-center leading-tight max-w-[60px]"
+                                                    >
+                                                        {scaleLabels[i]}
+                                                    </span>
+                                                </div>
                                             </label>
                                         {/each}
                                     </div>

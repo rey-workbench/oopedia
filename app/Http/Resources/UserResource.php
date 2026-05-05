@@ -30,11 +30,13 @@ final class UserResource extends JsonResource
             'role_id'           => $this->role_id,
             'is_approved'       => (bool) $this->is_approved,
             'role'              => [
-                'role_name' => $this->role?->role_name?->value ?? 'guest',
+                'role_name' => ($userRole = $this->role?->role_name) instanceof \BackedEnum
+                    ? $userRole->value
+                    : ($userRole ?? 'guest'),
             ],
             'approved_at'       => $this->approved_at?->toIso8601String(),
-            'overall_progress'  => $this->when(isset($this->overall_progress), $this->overall_progress),
-            'total_answered'    => $this->when(isset($this->total_answered_questions), $this->total_answered_questions),
+            'overall_progress'  => $this->when($this->overall_progress !== null, $this->overall_progress),
+            'total_answered'    => $this->when($this->total_answered_questions !== null, $this->total_answered_questions),
             'last_active'       => $this->updated_at?->toIso8601String(),
         ];
     }

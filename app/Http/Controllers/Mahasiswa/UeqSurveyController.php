@@ -23,7 +23,7 @@ final class UeqSurveyController extends Controller
 
     public function create(Request $request): Response|RedirectResponse
     {
-        $type = $request->query('type') ? AssessmentType::tryFrom($request->query('type')) : AssessmentType::Pre;
+        $type = $request->query('type') ? AssessmentType::tryFrom((string) $request->query('type')) : AssessmentType::PRE_TEST;
 
         if ($this->ueqSurveyService->hasUserSubmitted(Auth::id(), $type)) {
             return to_route('mahasiswa.surveys.ueq.thankyou');
@@ -46,6 +46,14 @@ final class UeqSurveyController extends Controller
         }
 
         $ueqSurveyCreateDTO = UeqSurveyCreateDTO::fromRequest($storeUeqSurveyRequest, (string) Auth::id());
+        
+        // Update user profile if nim or class is provided
+        if ($storeUeqSurveyRequest->filled('nim') || $storeUeqSurveyRequest->filled('class')) {
+            Auth::user()->update([
+                'nim'   => $storeUeqSurveyRequest->input('nim') ?? Auth::user()->nim,
+                'class' => $storeUeqSurveyRequest->input('class') ?? Auth::user()->class,
+            ]);
+        }
 
         $this->ueqSurveyService->createSurvey($ueqSurveyCreateDTO->toArray());
 

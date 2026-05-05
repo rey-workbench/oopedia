@@ -26,7 +26,7 @@ final class QuestionResource extends JsonResource
         $isAdmin = $user?->hasRole(RoleName::SUPERADMIN) || $user?->hasRole(RoleName::DOSEN);
 
         // Only show correct answers if it's an admin or if the question is being reviewed (has user_attempt)
-        $showAnswers = $isAdmin || isset($this->resource->user_attempt);
+        $showAnswers = $isAdmin || $this->resource->user_attempt !== null;
 
         return [
             'id'            => $this->resource->id,
@@ -45,7 +45,7 @@ final class QuestionResource extends JsonResource
                 'blank_position' => $answer->blank_position,
             ])),
             'answers_count' => $this->whenCounted('answers', $this->answers_count),
-            'user_attempt'  => $this->when(isset($this->resource->user_attempt), $this->resource->user_attempt),
+            'user_attempt'  => $this->when($this->resource->user_attempt !== null, $this->resource->user_attempt),
             'created_at'    => $this->created_at?->toIso8601String(),
             'updated_at'    => $this->updated_at?->toIso8601String(),
         ];
