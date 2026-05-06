@@ -24,7 +24,7 @@ final class MslqController extends Controller
 
     public function create(Request $request): Response|RedirectResponse
     {
-        $type = $request->query('type', 'pre');
+        $type = $request->query('type', 'post');
         $existing = MslqResult::where('user_id', Auth::id())
             ->where('assessment_type', $type)
             ->first();

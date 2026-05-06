@@ -12,11 +12,12 @@
     import Select from '@/components/ui/Select.svelte';
     import type { SharedProps } from '@/types';
 
-    const { questions = [], type = 'pre' } = $props();
+    const { questions = [] } = $props();
 
     const state = untrack(() => {
         const user = (page.props as unknown as SharedProps).auth?.user;
-        return new MslqSurveyState(questions, type, user);
+        // Force type to 'post' and lock it as requested by the user
+        return new MslqSurveyState(questions, 'post', user);
     });
 
     const motivationQuestions = $derived(
@@ -76,6 +77,7 @@
                             placeholder="Masukkan NIM Anda"
                             bind:value={state.form.nim}
                             class="rounded-3xl!"
+                            required
                         />
 
                         <Input
@@ -84,12 +86,15 @@
                             placeholder="Masukkan Kelas Anda"
                             bind:value={state.form.class}
                             class="rounded-3xl!"
+                            required
                         />
 
                         <Select
                             id="assessment_type"
                             label="Tipe Asesmen"
                             bind:value={state.form.assessment_type}
+                            disabled={true}
+                            required
                             options={[
                                 { label: 'PRE-TEST (AWAL)', value: 'pre' },
                                 { label: 'POST-TEST (AKHIR)', value: 'post' },
@@ -130,6 +135,7 @@
                                             class="text-base leading-relaxed font-bold text-slate-700"
                                         >
                                             {question.text}
+                                            <span class="ml-1 text-rose-500">*</span>
                                         </p>
                                     </div>
 
@@ -145,7 +151,7 @@
                                                     bind:group={
                                                         state.form.answers[answerIndex]!.value
                                                     }
-                                                    class="peer hidden"
+                                                    class="peer sr-only"
                                                     required
                                                 />
                                                 <div
@@ -203,6 +209,7 @@
                                             class="text-base leading-relaxed font-bold text-slate-700"
                                         >
                                             {question.text}
+                                            <span class="ml-1 text-rose-500">*</span>
                                         </p>
                                     </div>
 
@@ -218,7 +225,7 @@
                                                     bind:group={
                                                         state.form.answers[answerIndex]!.value
                                                     }
-                                                    class="peer hidden"
+                                                    class="peer sr-only"
                                                     required
                                                 />
                                                 <div
