@@ -328,13 +328,13 @@
                             active={page.url.startsWith(ROUTES.MAHASISWA.MSLQ.CREATE)}
                             >Kuesioner MSLQ</SidebarLink
                         >
-                        <SidebarLink
+                        <!-- <SidebarLink
                             id="sidebar-mahasiswa-ueq"
                             href={ROUTES.MAHASISWA.UEQ.CREATE}
                             icon={MessageSquareQuote}
                             active={page.url.startsWith(ROUTES.MAHASISWA.UEQ.CREATE)}
                             >Kuesioner UEQ</SidebarLink
-                        >
+                        > -->
                         <SidebarLink
                             id="sidebar-mahasiswa-sus"
                             href={ROUTES.MAHASISWA.SUS.CREATE}
