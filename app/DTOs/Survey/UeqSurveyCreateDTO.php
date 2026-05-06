@@ -43,7 +43,7 @@ final readonly class UeqSurveyCreateDTO
 
     public static function fromRequest(Request $request, string $userId): self
     {
-        $answers = $request->input('answers', []);
+        $answers       = $request->input('answers', []);
         $mappedAnswers = [];
         foreach ($answers as $answer) {
             $mappedAnswers[$answer['question_id']] = $answer['value'];
@@ -51,33 +51,33 @@ final readonly class UeqSurveyCreateDTO
 
         return new self(
             user_id: $userId,
-            assessment_type: (string) $request->input('assessment_type'),
-            annoying_enjoyable: $mappedAnswers['annoying_enjoyable'] ?? null,
+            assessment_type: (string) $request->input('assessment_type', 'post'),
+            annoying_enjoyable: $mappedAnswers['annoying_enjoyable']                               ?? null,
             not_understandable_understandable: $mappedAnswers['not_understandable_understandable'] ?? null,
-            creative_dull: $mappedAnswers['creative_dull'] ?? null,
-            easy_difficult: $mappedAnswers['easy_difficult'] ?? null,
-            valuable_inferior: $mappedAnswers['valuable_inferior'] ?? null,
-            boring_exciting: $mappedAnswers['boring_exciting'] ?? null,
-            not_interesting_interesting: $mappedAnswers['not_interesting_interesting'] ?? null,
-            unpredictable_predictable: $mappedAnswers['unpredictable_predictable'] ?? null,
-            fast_slow: $mappedAnswers['fast_slow'] ?? null,
-            inventive_conventional: $mappedAnswers['inventive_conventional'] ?? null,
-            obstructive_supportive: $mappedAnswers['obstructive_supportive'] ?? null,
-            good_bad: $mappedAnswers['good_bad'] ?? null,
-            complicated_easy: $mappedAnswers['complicated_easy'] ?? null,
-            unlikable_pleasing: $mappedAnswers['unlikable_pleasing'] ?? null,
-            usual_leading_edge: $mappedAnswers['usual_leading_edge'] ?? null,
-            unpleasant_pleasant: $mappedAnswers['unpleasant_pleasant'] ?? null,
-            secure_not_secure: $mappedAnswers['secure_not_secure'] ?? null,
-            motivating_demotivating: $mappedAnswers['motivating_demotivating'] ?? null,
-            meets_expectations_does_not_meet: $mappedAnswers['meets_expectations_does_not_meet'] ?? null,
-            inefficient_efficient: $mappedAnswers['inefficient_efficient'] ?? null,
-            clear_confusing: $mappedAnswers['clear_confusing'] ?? null,
-            impractical_practical: $mappedAnswers['impractical_practical'] ?? null,
-            organized_cluttered: $mappedAnswers['organized_cluttered'] ?? null,
-            attractive_unattractive: $mappedAnswers['attractive_unattractive'] ?? null,
-            friendly_unfriendly: $mappedAnswers['friendly_unfriendly'] ?? null,
-            conservative_innovative: $mappedAnswers['conservative_innovative'] ?? null,
+            creative_dull: $mappedAnswers['creative_dull']                                         ?? null,
+            easy_difficult: $mappedAnswers['easy_difficult']                                       ?? null,
+            valuable_inferior: $mappedAnswers['valuable_inferior']                                 ?? null,
+            boring_exciting: $mappedAnswers['boring_exciting']                                     ?? null,
+            not_interesting_interesting: $mappedAnswers['not_interesting_interesting']             ?? null,
+            unpredictable_predictable: $mappedAnswers['unpredictable_predictable']                 ?? null,
+            fast_slow: $mappedAnswers['fast_slow']                                                 ?? null,
+            inventive_conventional: $mappedAnswers['inventive_conventional']                       ?? null,
+            obstructive_supportive: $mappedAnswers['obstructive_supportive']                       ?? null,
+            good_bad: $mappedAnswers['good_bad']                                                   ?? null,
+            complicated_easy: $mappedAnswers['complicated_easy']                                   ?? null,
+            unlikable_pleasing: $mappedAnswers['unlikable_pleasing']                               ?? null,
+            usual_leading_edge: $mappedAnswers['usual_leading_edge']                               ?? null,
+            unpleasant_pleasant: $mappedAnswers['unpleasant_pleasant']                             ?? null,
+            secure_not_secure: $mappedAnswers['secure_not_secure']                                 ?? null,
+            motivating_demotivating: $mappedAnswers['motivating_demotivating']                     ?? null,
+            meets_expectations_does_not_meet: $mappedAnswers['meets_expectations_does_not_meet']   ?? null,
+            inefficient_efficient: $mappedAnswers['inefficient_efficient']                         ?? null,
+            clear_confusing: $mappedAnswers['clear_confusing']                                     ?? null,
+            impractical_practical: $mappedAnswers['impractical_practical']                         ?? null,
+            organized_cluttered: $mappedAnswers['organized_cluttered']                             ?? null,
+            attractive_unattractive: $mappedAnswers['attractive_unattractive']                     ?? null,
+            friendly_unfriendly: $mappedAnswers['friendly_unfriendly']                             ?? null,
+            conservative_innovative: $mappedAnswers['conservative_innovative']                     ?? null,
             comments: $request->input('comments'),
             suggestions: $request->input('suggestions'),
         );

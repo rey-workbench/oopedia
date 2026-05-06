@@ -8,14 +8,13 @@
     import { untrack } from 'svelte';
     import { page } from '@inertiajs/svelte';
     import { SusSurveyState } from '@/states/Mahasiswa/SusSurveyState.svelte';
-    import Select from '@/components/ui/Select.svelte';
     import Input from '@/components/ui/Input.svelte';
     import type { SharedProps } from '@/types';
 
-    const { type = 'pre' } = $props();
     const state = untrack(() => {
         const user = (page.props as unknown as SharedProps).auth?.user;
-        return new SusSurveyState(type, user);
+        // SUS is neutral (always post-usage), so we hardcode to 'post' internally
+        return new SusSurveyState('post', user);
     });
 
     const scaleLabels = [
@@ -64,29 +63,23 @@
 
                         <Input
                             id="nim"
-                            label="NIM"
+                            label="NIM *"
                             placeholder="Masukkan NIM Anda"
                             bind:value={state.form.nim}
                             class="rounded-3xl!"
+                            required
                         />
 
                         <Input
                             id="class"
-                            label="Kelas"
+                            label="Kelas *"
                             placeholder="Masukkan Kelas Anda"
                             bind:value={state.form.class}
                             class="rounded-3xl!"
+                            required
                         />
 
-                        <Select
-                            id="assessment_type"
-                            label="Tipe Asesmen"
-                            bind:value={state.form.assessment_type}
-                            options={[
-                                { label: 'PRE-TEST (AWAL)', value: 'pre' },
-                                { label: 'POST-TEST (AKHIR)', value: 'post' }
-                            ]}
-                        />
+
                     </div>
 
                     <div class="space-y-8 border-t border-slate-50 pt-12">
@@ -122,6 +115,7 @@
                                             class="text-base leading-relaxed font-bold text-slate-700"
                                         >
                                             {question.text}
+                                            <span class="text-rose-500">*</span>
                                         </p>
                                     </div>
 
@@ -137,7 +131,7 @@
                                                     name={`q${question.id}`}
                                                     value={i + 1}
                                                     bind:group={state.form.answers[answerIndex]!.value}
-                                                    class="peer hidden"
+                                                    class="peer sr-only"
                                                     required
                                                 />
                                                 <div
@@ -188,13 +182,15 @@
                                     for="comments"
                                     class="ml-4 block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
                                 >
-                                    Komentar Subjektif
+                                    Komentar Subjektif *
                                 </label>
                                 <textarea
                                     id="comments"
-                                    bind:value={state.form.comments}
-                                    class="focus:ring-primary-50 focus:border-primary-500 min-h-[160px] w-full rounded-[2rem] border-2 border-slate-50 bg-slate-50 px-8 py-6 text-xs font-bold tracking-wider uppercase transition-all outline-none placeholder:text-slate-300 focus:ring-8"
+                                    bind:value={state.form['comments']}
+                                    class={`focus:ring-primary-50 focus:border-primary-500 min-h-[160px] w-full rounded-[2rem] border-2 px-8 py-6 text-xs font-bold tracking-wider uppercase transition-all outline-none placeholder:text-slate-300 focus:ring-8
+                                    ${state.form.errors['comments'] ? 'border-rose-100 bg-rose-50/50' : 'border-slate-50 bg-slate-50'}`}
                                     placeholder="Apa yang Anda rasakan selama menggunakan media pembelajaran ini?"
+                                    required
                                 ></textarea>
                             </div>
 
@@ -203,13 +199,15 @@
                                     for="suggestions"
                                     class="ml-4 block text-[10px] font-bold tracking-widest text-slate-400 uppercase"
                                 >
-                                    Saran Optimasi
+                                    Saran Optimasi *
                                 </label>
                                 <textarea
                                     id="suggestions"
-                                    bind:value={state.form.suggestions}
-                                    class="focus:ring-primary-50 focus:border-primary-500 min-h-[160px] w-full rounded-[2rem] border-2 border-slate-50 bg-slate-50 px-8 py-6 text-xs font-bold tracking-wider uppercase transition-all outline-none placeholder:text-slate-300 focus:ring-8"
+                                    bind:value={state.form['suggestions']}
+                                    class={`focus:ring-primary-50 focus:border-primary-500 min-h-[160px] w-full rounded-[2rem] border-2 px-8 py-6 text-xs font-bold tracking-wider uppercase transition-all outline-none placeholder:text-slate-300 focus:ring-8
+                                    ${state.form.errors['suggestions'] ? 'border-rose-100 bg-rose-50/50' : 'border-slate-50 bg-slate-50'}`}
                                     placeholder="Ada saran fitur atau tampilan yang perlu diperbaiki?"
+                                    required
                                 ></textarea>
                             </div>
                         </div>

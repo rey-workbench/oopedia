@@ -73,7 +73,7 @@
 
                         <Input
                             id="nim"
-                            label="NIM"
+                            label="NIM *"
                             placeholder="Masukkan NIM Anda"
                             bind:value={state.form.nim}
                             class="rounded-3xl!"
@@ -82,7 +82,7 @@
 
                         <Input
                             id="class"
-                            label="Kelas"
+                            label="Kelas *"
                             placeholder="Masukkan Kelas Anda"
                             bind:value={state.form.class}
                             class="rounded-3xl!"
@@ -91,7 +91,7 @@
 
                         <Select
                             id="assessment_type"
-                            label="Tipe Asesmen"
+                            label="Tipe Asesmen *"
                             bind:value={state.form.assessment_type}
                             disabled={true}
                             required

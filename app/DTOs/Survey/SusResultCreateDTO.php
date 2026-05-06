@@ -21,7 +21,7 @@ final readonly class SusResultCreateDTO
     {
         return new self(
             user_id: $userId,
-            assessment_type: AssessmentType::from($request->input('assessment_type', 'pre')),
+            assessment_type: AssessmentType::from($request->input('assessment_type', 'post')),
             answers: $request->input('answers', []),
             comments: $request->input('comments'),
             suggestions: $request->input('suggestions'),

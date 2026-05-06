@@ -9,14 +9,14 @@
     import { page } from '@inertiajs/svelte';
     import { UeqSurveyState } from '@/states/Mahasiswa/UeqSurveyState.svelte';
     import Input from '@/components/ui/Input.svelte';
-    import Select from '@/components/ui/Select.svelte';
     import type { SharedProps } from '@/types';
 
-    const { aspects = [], assessmentType = 'pre' }: { aspects: { name: string }[], assessmentType: string } = $props();
+    const { aspects = [] }: { aspects: { name: string }[] } = $props();
 
     const state = untrack(() => {
         const user = (page.props as unknown as SharedProps).auth?.user;
-        return new UeqSurveyState(aspects, assessmentType, user);
+        // UEQ is always post-usage evaluation, so hardcode to 'post'
+        return new UeqSurveyState(aspects, 'post', user);
     });
 </script>
 
@@ -60,29 +60,23 @@
 
                         <Input
                             id="nim"
-                            label="NIM"
+                            label="NIM *"
                             placeholder="Masukkan NIM Anda"
                             bind:value={state.form.nim}
                             class="rounded-3xl!"
+                            required
                         />
 
                         <Input
                             id="class"
-                            label="Kelas"
+                            label="Kelas *"
                             placeholder="Masukkan Kelas Anda"
                             bind:value={state.form.class}
                             class="rounded-3xl!"
+                            required
                         />
 
-                        <Select
-                            id="assessment_type"
-                            label="Tipe Asesmen"
-                            bind:value={state.form.assessment_type}
-                            options={[
-                                { label: 'PRE-TEST (AWAL)', value: 'pre' },
-                                { label: 'POST-TEST (AKHIR)', value: 'post' }
-                            ]}
-                        />
+
                     </div>
 
                     <div class="space-y-8 border-t border-slate-50 pt-12">
@@ -139,8 +133,8 @@
                                                                 type="radio"
                                                                 name={aspect.name}
                                                                 value={i + 1}
-                                                                bind:group={state.form.answers[answerIndex].value}
-                                                                class="peer hidden"
+                                                                bind:group={state.form.answers[answerIndex]!.value}
+                                                                class="peer sr-only"
                                                                 required
                                                             />
                                                         {/if}

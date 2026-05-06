@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Mahasiswa;
 
-use App\Enums\Lms\AssessmentType;
 use App\Contracts\Services\UeqSurveyServiceInterface;
 use App\DTOs\Survey\UeqSurveyCreateDTO;
+use App\Enums\Lms\AssessmentType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Survey\StoreUeqSurveyRequest;
 use App\Http\Resources\UeqAspectResource;
@@ -23,9 +23,7 @@ final class UeqSurveyController extends Controller
 
     public function create(Request $request): Response|RedirectResponse
     {
-        $type = $request->query('type') ? AssessmentType::tryFrom((string) $request->query('type')) : AssessmentType::PRE_TEST;
-
-        if ($this->ueqSurveyService->hasUserSubmitted(Auth::id(), $type)) {
+        if ($this->ueqSurveyService->hasUserSubmitted(Auth::id(), AssessmentType::POST_TEST)) {
             return to_route('mahasiswa.surveys.ueq.thankyou');
         }
 
@@ -33,24 +31,21 @@ final class UeqSurveyController extends Controller
 
         return $this->render('Mahasiswa/Ueq/Create/Index', [
             'aspects' => UeqAspectResource::collection(collect($aspects)->map(fn ($a): \stdClass => (object) $a))->resolve(),
-            'assessmentType' => $type?->value ?? 'pre',
         ]);
     }
 
     public function store(StoreUeqSurveyRequest $storeUeqSurveyRequest): RedirectResponse
     {
-        $type = AssessmentType::tryFrom($storeUeqSurveyRequest->input('assessment_type'));
-
-        if ($this->ueqSurveyService->hasUserSubmitted(Auth::id(), $type)) {
+        if ($this->ueqSurveyService->hasUserSubmitted(Auth::id(), AssessmentType::POST_TEST)) {
             return to_route('mahasiswa.surveys.ueq.thankyou');
         }
 
         $ueqSurveyCreateDTO = UeqSurveyCreateDTO::fromRequest($storeUeqSurveyRequest, (string) Auth::id());
-        
+
         // Update user profile if nim or class is provided
         if ($storeUeqSurveyRequest->filled('nim') || $storeUeqSurveyRequest->filled('class')) {
             Auth::user()->update([
-                'nim'   => $storeUeqSurveyRequest->input('nim') ?? Auth::user()->nim,
+                'nim'   => $storeUeqSurveyRequest->input('nim')   ?? Auth::user()->nim,
                 'class' => $storeUeqSurveyRequest->input('class') ?? Auth::user()->class,
             ]);
         }

@@ -6,12 +6,12 @@ namespace App\Http\Controllers\Mahasiswa;
 
 use App\Contracts\Services\SusResultServiceInterface;
 use App\DTOs\Survey\SusResultCreateDTO;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\SusQuestionResource;
-use App\Http\Requests\Survey\StoreSusResultRequest;
 use App\Enums\Lms\AssessmentType;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Survey\StoreSusResultRequest;
+use App\Http\Resources\SusQuestionResource;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
@@ -19,27 +19,25 @@ final class SusSurveyController extends Controller
 {
     public function __construct(
         private readonly SusResultServiceInterface $susResultService,
-    ) {}
+    ) {
+    }
 
     public function create(Request $request): Response|RedirectResponse
     {
-        $type = AssessmentType::from($request->query('type', 'pre'));
-        if ($this->susResultService->hasUserSubmitted((string) Auth::id(), $type)) {
+        if ($this->susResultService->hasUserSubmitted((string) Auth::id(), AssessmentType::POST_TEST)) {
             return to_route('mahasiswa.surveys.sus.thankyou');
         }
 
         $questions = $this->getQuestions();
 
         return $this->render('Mahasiswa/Sus/Create/Index', [
-            'questions' => SusQuestionResource::collection(collect($questions)->map(fn ($q): \stdClass => (object) $q))->resolve(),
-            'type'      => $type->value,
+            'questions' => SusQuestionResource::collection(collect($questions)->map(fn($q): \stdClass => (object) $q))->resolve(),
         ]);
     }
 
     public function store(StoreSusResultRequest $storeSusResultRequest): RedirectResponse
     {
-        $type = AssessmentType::from($storeSusResultRequest->input('assessment_type', 'pre'));
-        if ($this->susResultService->hasUserSubmitted((string) Auth::id(), $type)) {
+        if ($this->susResultService->hasUserSubmitted((string) Auth::id(), AssessmentType::POST_TEST)) {
             return to_route('mahasiswa.surveys.sus.thankyou');
         }
 
@@ -48,7 +46,7 @@ final class SusSurveyController extends Controller
         // Update user profile if nim or class is provided
         if ($storeSusResultRequest->filled('nim') || $storeSusResultRequest->filled('class')) {
             Auth::user()->update([
-                'nim'   => $storeSusResultRequest->input('nim') ?? Auth::user()->nim,
+                'nim' => $storeSusResultRequest->input('nim') ?? Auth::user()->nim,
                 'class' => $storeSusResultRequest->input('class') ?? Auth::user()->class,
             ]);
         }
