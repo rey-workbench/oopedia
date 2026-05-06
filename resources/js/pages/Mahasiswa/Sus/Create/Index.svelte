@@ -11,10 +11,11 @@
     import Input from '@/components/ui/Input.svelte';
     import type { SharedProps } from '@/types';
 
+    const { questions } = $props<{ questions: any[] }>();
     const state = untrack(() => {
         const user = (page.props as unknown as SharedProps).auth?.user;
         // SUS is neutral (always post-usage), so we hardcode to 'post' internally
-        return new SusSurveyState('post', user);
+        return new SusSurveyState('post', user, questions);
     });
 
     const scaleLabels = [
@@ -150,11 +151,11 @@
                                         {/each}
                                     </div>
 
-                                    {#if state.form.errors[`q${question.id}`]}
+                                    {#if state.form.errors[`answers.${answerIndex}.value`]}
                                         <p
                                             class="ml-16 text-[10px] font-bold tracking-widest text-rose-500 uppercase"
                                         >
-                                            {state.form.errors[`q${question.id}`]}
+                                            {state.form.errors[`answers.${answerIndex}.value`]}
                                         </p>
                                     {/if}
                                 </div>

@@ -4,14 +4,14 @@ import { SUS_QUESTIONS } from '@/constants/survey';
 import { ROUTES } from '@/utils/route';
 
 export class SusSurveyState extends FormState<SusSurveyForm> {
-    questions = SUS_QUESTIONS;
+    questions: any[];
 
-    constructor(type: string = 'pre', user?: any) {
+    constructor(type: string = 'post', user?: any, questions: any[] = []) {
         const initialFields: SusSurveyForm = {
             assessment_type: type,
             nim: user?.nim || '',
             class: user?.class || '',
-            answers: SUS_QUESTIONS.map(q => ({
+            answers: questions.map(q => ({
                 question_id: q.id,
                 value: null,
             })),
@@ -19,6 +19,7 @@ export class SusSurveyState extends FormState<SusSurveyForm> {
             suggestions: '',
         };
         super(initialFields);
+        this.questions = questions;
     }
 
     submit() {
