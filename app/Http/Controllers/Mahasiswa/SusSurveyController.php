@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Mahasiswa;
 
+use Illuminate\Database\Eloquent\Collection;
+use App\Models\SusQuestion;
 use App\Contracts\Services\SusResultServiceInterface;
 use App\DTOs\Survey\SusResultCreateDTO;
 use App\Enums\Lms\AssessmentType;
@@ -61,9 +63,9 @@ final class SusSurveyController extends Controller
         return $this->render('Mahasiswa/Sus/ThankYou/Index');
     }
 
-    /** @return \Illuminate\Database\Eloquent\Collection<int, \App\Models\SusQuestion> */
-    private function getQuestions(): \Illuminate\Database\Eloquent\Collection
+    /** @return Collection<int, SusQuestion> */
+    private function getQuestions(): Collection
     {
-        return \App\Models\SusQuestion::orderBy('order')->get();
+        return SusQuestion::orderBy('order')->get();
     }
 }

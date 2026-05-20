@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Mahasiswa;
 
+use App\Models\Question;
 use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
 use App\Contracts\Services\QuizServiceInterface;
@@ -107,7 +108,7 @@ final class QuizInteractionController extends Controller
             return back();
         }
 
-        $question = \App\Models\Question::find($questionId);
+        $question = Question::find($questionId);
 
         if ($question && !empty($question->hint)) {
             $this->performanceService->decrementHint($userId);

@@ -50,7 +50,7 @@ final readonly class SusResultService implements SusResultServiceInterface
     public function hasUserSubmitted(string $userId, ?AssessmentType $type = null): bool
     {
         $query = SusResult::where('user_id', $userId);
-        if ($type) {
+        if ($type instanceof AssessmentType) {
             $query->where('assessment_type', $type->value);
         }
 
@@ -89,7 +89,7 @@ final readonly class SusResultService implements SusResultServiceInterface
                 }
             }
 
-            $result->update(['total_score' => (float) ($totalContribution * 2.5)]);
+            $result->update(['total_score' => $totalContribution * 2.5]);
 
             return $result;
         });
@@ -216,7 +216,7 @@ final readonly class SusResultService implements SusResultServiceInterface
     public function calculateStatisticalAnalysis(?AssessmentType $type1 = null, ?AssessmentType $type2 = null): array
     {
         $results1 = $this->susResultRepository->getAllWithUser($type1?->value);
-        $results2 = $type2 ? $this->susResultRepository->getAllWithUser($type2->value) : collect();
+        $results2 = $type2 instanceof AssessmentType ? $this->susResultRepository->getAllWithUser($type2->value) : collect();
 
         // 1. Reliability (Cronbach's Alpha) for Class 1 (or all if class1 is null)
         $matrix = $this->buildAnswerMatrix($results1);

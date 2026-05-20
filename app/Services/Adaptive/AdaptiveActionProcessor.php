@@ -104,7 +104,7 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
 
             $availableLowerQuestions = Question::where('material_id', $materialId)
                 ->whereIn('difficulty', $lowerDifficulties)
-                ->whereNotIn('id', function ($query) use ($studentState) {
+                ->whereNotIn('id', function ($query) use ($studentState): void {
                     $query->select('question_id')
                           ->from('quiz_attempts')
                           ->where('user_id', $studentState->user_id)

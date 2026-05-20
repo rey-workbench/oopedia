@@ -129,7 +129,7 @@ final readonly class UeqSurveyService implements UeqSurveyServiceInterface
     public function calculateStatisticalAnalysis(?AssessmentType $type1 = null, ?AssessmentType $type2 = null): array
     {
         $results1 = $this->ueqRepo->getAllWithUser($type1?->value);
-        $results2 = $type2 ? $this->ueqRepo->getAllWithUser($type2->value) : collect();
+        $results2 = $type2 instanceof AssessmentType ? $this->ueqRepo->getAllWithUser($type2->value) : collect();
 
         // 1. Cronbach's Alpha (Reliability)
         $matrix = $this->buildAnswerMatrix($results1->merge($results2));
@@ -141,20 +141,20 @@ final readonly class UeqSurveyService implements UeqSurveyServiceInterface
         $desc1      = null;
         $desc2      = null;
 
-        if ($type1 && $results1->isNotEmpty()) {
+        if ($type1 instanceof AssessmentType && $results1->isNotEmpty()) {
             // Use attractiveness as primary metric for overall comparison
-            $scores1 = $results1->map(fn ($s) => (
+            $scores1 = $results1->map(fn ($s): float|int => (
                 $s->annoying_enjoyable  + $s->good_bad + $s->unlikable_pleasing +
                 $s->unpleasant_pleasant + $s->attractive_unattractive + $s->friendly_unfriendly
-            ) / 6)->toArray();
+            ) / 6)->all();
 
             $desc1 = Descriptive::describe($scores1);
 
-            if ($type2 && $results2->isNotEmpty()) {
-                $scores2 = $results2->map(fn ($s) => (
+            if ($type2 instanceof AssessmentType && $results2->isNotEmpty()) {
+                $scores2 = $results2->map(fn ($s): float|int => (
                     $s->annoying_enjoyable  + $s->good_bad + $s->unlikable_pleasing +
                     $s->unpleasant_pleasant + $s->attractive_unattractive + $s->friendly_unfriendly
-                ) / 6)->toArray();
+                ) / 6)->all();
 
                 $desc2 = Descriptive::describe($scores2);
 

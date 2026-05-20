@@ -44,7 +44,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'feedback'          => fn () => $request->session()->get('feedback'),
             'sidebar_materials' => $sidebarMaterials,
-            'pending_admins_count' => fn () => ($user && $user->isSuperAdmin() && $this->userService) ? $this->userService->getPendingAdminsCount() : 0,
+            'pending_admins_count' => fn (): int => ($user && $user->isSuperAdmin() && $this->userService instanceof UserServiceInterface) ? $this->userService->getPendingAdminsCount() : 0,
             'student_state'     => fn () => $user ? ($this->performanceService instanceof PerformanceServiceInterface ? $this->performanceService->getStudentSessionState((string) $user->id) : $request->session()->get('student_state')) : $request->session()->get('student_state'),
             'csrf_token'        => csrf_token(),
         ];

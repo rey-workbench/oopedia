@@ -162,7 +162,7 @@ final readonly class MslqService implements MslqServiceInterface
     public function calculateStatisticalAnalysis(?AssessmentType $type1 = null, ?AssessmentType $type2 = null): array
     {
         $results1 = $this->mslqRepository->getAllForCalculation($type1?->value);
-        $results2 = $type2 ? $this->mslqRepository->getAllForCalculation($type2->value) : collect();
+        $results2 = $type2 instanceof AssessmentType ? $this->mslqRepository->getAllForCalculation($type2->value) : collect();
 
         // 1. Cronbach's Alpha (Reliability)
         $matrix = $this->buildAnswerMatrix($results1->merge($results2));

@@ -71,9 +71,9 @@ final class Material extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function getCoverUrlAttribute(?string $value): ?string
+    protected function getCoverUrlAttribute(?string $value): ?string
     {
-        if (empty($value)) {
+        if (in_array($value, [null, '', '0'], true)) {
             return null;
         }
 

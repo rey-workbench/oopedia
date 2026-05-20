@@ -36,7 +36,7 @@ final class QuestionResource extends JsonResource
             'question_type' => $this->question_type->value,
             'difficulty'    => $this->difficulty->value,
             'hint'          => $this->hint,
-            'answers'       => $this->whenLoaded('answers', fn () => $this->answers->map(function ($answer) use ($showAnswers) {
+            'answers'       => $this->whenLoaded('answers', fn () => $this->answers->map(function ($answer) use ($showAnswers): array {
                 $data = [
                     'id'             => $answer->id,
                     'drag_source'    => $answer->drag_source,
@@ -74,7 +74,7 @@ final class QuestionResource extends JsonResource
         }
 
         // Make storage URLs absolute
-        return preg_replace_callback('/src="([^"]+)"/', function ($matches) {
+        return preg_replace_callback('/src="([^"]+)"/', function ($matches): string {
             $url = $matches[1];
             if (str_starts_with($url, 'storage/') || str_starts_with($url, 'public/storage/')) {
                 return 'src="' . url(str_replace('public/storage/', 'storage/', $url)) . '"';

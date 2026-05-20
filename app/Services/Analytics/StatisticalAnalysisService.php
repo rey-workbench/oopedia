@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Analytics;
 
+use MathPHP\Probability\Distribution\Continuous\StandardNormal;
 use MathPHP\Statistics\Significance;
 
 /**
@@ -112,7 +113,7 @@ final class StatisticalAnalysisService
         $z = $denom == 0 ? 0 : ($uMin - ($n1 * $n2 / 2)) / $denom;
 
         // P-Value dari Z-Score (Dua sisi)
-        $standardNormal = new \MathPHP\Probability\Distribution\Continuous\StandardNormal();
+        $standardNormal = new StandardNormal();
         $pValue = 2 * (1 - $standardNormal->cdf(abs($z)));
 
         return [

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Survey;
 
+use App\Models\MslqQuestion;
 use App\Http\Requests\BaseFormRequest;
 
 final class StoreMslqRequest extends BaseFormRequest
@@ -16,17 +17,18 @@ final class StoreMslqRequest extends BaseFormRequest
 
     public function rules(): array
     {
-        $count = \App\Models\MslqQuestion::count();
+        $count = MslqQuestion::count();
 
         return [
             'assessment_type' => ['required', 'string', 'in:pre,post'],
             'nim' => ['nullable', 'string', 'max:20'],
             'class' => ['nullable', 'string', 'max:50'],
-            'answers' => ['required', 'array', "size:{$count}"],
+            'answers' => ['required', 'array', 'size:' . $count],
             'answers.*.question_id' => ['required', 'exists:mslq_questions,id'],
             'answers.*.value' => ['required', 'integer', 'min:1', 'max:7'],
         ];
     }
+
     #[\Override]
     public function messages(): array
     {

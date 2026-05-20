@@ -621,7 +621,7 @@ final readonly class QuizService implements QuizServiceInterface
                 return null;
             }
 
-            $correctAns = trim($rawCorrect);
+            $correctAns = trim((string) $rawCorrect);
             $characters = [];
             for ($i = 0; $i < mb_strlen($correctAns); $i++) {
                 $char = mb_substr($correctAns, $i, 1);
@@ -633,6 +633,7 @@ final readonly class QuizService implements QuizServiceInterface
                     $characters[] = ['char' => $char, 'revealed' => false];
                 }
             }
+
             return [
                 'type'       => 'tts_hint',
                 'characters' => $characters,
