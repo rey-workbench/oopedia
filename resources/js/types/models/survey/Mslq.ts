@@ -36,6 +36,8 @@ export interface MslqResult {
     id: string;
     user: User;
     assessment_type: string;
+    nim?: string;
+    class?: string;
     scores_by_scale: Record<string, number>;
     total_motivation: number;
     total_strategy: number;

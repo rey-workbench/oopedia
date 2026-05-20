@@ -19,6 +19,8 @@ export interface EngineResultMetadata {
     iterations: number;
     rule_chain: string[];
     priority: number;
+    total_rules_evaluated?: number;
+    execution_time_ms?: number;
 }
 
 export interface EngineResult {

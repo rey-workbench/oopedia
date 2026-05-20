@@ -15,6 +15,8 @@ export interface SusResult {
     id: string;
     user: User;
     assessment_type: string;
+    nim?: string;
+    class?: string;
     comments?: string;
     suggestions?: string;
     answers: SusAnswer[];

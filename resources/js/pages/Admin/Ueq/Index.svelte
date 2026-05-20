@@ -14,10 +14,11 @@
     import { formatDate } from '@/utils/formatters';
     import { ROUTES } from '@/utils/route';
     import { router } from '@inertiajs/svelte';
+    import type { AdminUeqIndexProps, UeqAverages } from '@/types';
 
     let {
         surveys = [],
-        averages = {},
+        averages = {} as UeqAverages,
         types = [],
         activeType = '',
         analysis = {},
@@ -26,7 +27,7 @@
     const ueqState = untrack(() => new UeqListState(surveys, averages, types, activeType));
 
     let activeTab = $state('overview');
-    let type1 = $state(activeType);
+    let type1 = $state('');
     let type2 = $state('');
 
     $effect(() => {

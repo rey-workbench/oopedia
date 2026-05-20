@@ -35,7 +35,7 @@
     }: AdminSusIndexProps & { analysis: any } = $props();
 
     let activeTab = $state('overview');
-    let type1 = $state(activeType);
+    let type1 = $state('');
     let type2 = $state('');
 
     $effect(() => {

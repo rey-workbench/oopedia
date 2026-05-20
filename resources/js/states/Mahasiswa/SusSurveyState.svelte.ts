@@ -1,6 +1,5 @@
 import { FormState } from '@/states/FormState.svelte';
 import type { SusSurveyForm } from '@/types';
-import { SUS_QUESTIONS } from '@/constants/survey';
 import { ROUTES } from '@/utils/route';
 
 export class SusSurveyState extends FormState<SusSurveyForm> {

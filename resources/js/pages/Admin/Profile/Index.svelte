@@ -51,7 +51,7 @@
                         <p
                             class="text-primary-400 mb-2 text-[10px] font-bold tracking-widest uppercase"
                         >
-                            MEMBER SINCE {state.user
+                            MEMBER SINCE {state.user && state.user.created_at
                                 ? new Date(state.user.created_at).getFullYear()
                                 : 'N/A'}
                         </p>
