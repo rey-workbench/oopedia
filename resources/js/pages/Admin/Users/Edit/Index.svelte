@@ -5,7 +5,7 @@
     import Button from '@/components/ui/Button.svelte';
     import Input from '@/components/ui/Input.svelte';
     import InfoPanel from '@/components/ui/InfoPanel.svelte';
-    import { ArrowLeft, Save, Lock } from 'lucide-svelte';
+    import { ArrowLeft, Save, Lock } from '@lucide/svelte';
     import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';
     import { UserFormState } from '@/states/Admin/UserState.svelte';

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { scrollReveal } from '@/utils/animations';
-    import { Brain, Zap, Trophy, Users, ShieldCheck } from 'lucide-svelte';
+    import { Brain, Zap, Trophy, Users, ShieldCheck } from '@lucide/svelte';
     import { Motion } from 'svelte-motion';
 
     const features = [

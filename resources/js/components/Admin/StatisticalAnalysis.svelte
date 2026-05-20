@@ -1,7 +1,7 @@
 <script lang="ts">
     import Card from '@/components/ui/Card.svelte';
     import Badge from '@/components/ui/Badge.svelte';
-    import { Brain, Calculator, Info, Users } from 'lucide-svelte';
+    import { Brain, Calculator, Info, Users } from '@lucide/svelte';
 
     let { analysis } = $props<{ analysis: any }>();
 

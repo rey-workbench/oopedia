@@ -1,6 +1,6 @@
 <script lang="ts">
     import { fade, fly } from 'svelte/transition';
-    import { CheckCircle, AlertCircle, Info, X, AlertTriangle } from 'lucide-svelte';
+    import { CheckCircle, AlertCircle, Info, X, AlertTriangle } from '@lucide/svelte';
 
     interface Toast {
         id: string;

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { Link } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils/route';
-    import { Search, Menu as MenuIcon } from 'lucide-svelte';
+    import { Search, Menu as MenuIcon } from '@lucide/svelte';
     import { Motion } from 'svelte-motion';
 
     let menuOpen = $state(false);

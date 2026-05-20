@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { MessageSquareQuote } from 'lucide-svelte';
+    import { MessageSquareQuote } from '@lucide/svelte';
 
     let { form } = $props<{ form: any }>();
 </script>

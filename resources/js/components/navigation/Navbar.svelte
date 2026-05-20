@@ -1,6 +1,6 @@
 <script lang="ts">
     import { Link, page, router } from '@inertiajs/svelte';
-    import { Menu, ChevronRight, CircleHelp, User, LogOut } from 'lucide-svelte';
+    import { Menu, ChevronRight, CircleHelp, User, LogOut } from '@lucide/svelte';
     import { ROUTES } from '@/utils/route';
     import { sidebarState } from '@/states/ui';
     import { getTourIdFromUrl } from '@/tutorial';

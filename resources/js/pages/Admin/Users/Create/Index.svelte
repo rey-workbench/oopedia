@@ -3,7 +3,7 @@
     import Button from '@/components/ui/Button.svelte';
     import Input from '@/components/ui/Input.svelte';
     import Select from '@/components/ui/Select.svelte';
-    import { ArrowLeft, UserPlus } from 'lucide-svelte';
+    import { ArrowLeft, UserPlus } from '@lucide/svelte';
     import { ROUTES } from '@/utils/route';
     import { UserFormState } from '@/states/Admin/UserState.svelte';
 

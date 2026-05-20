@@ -15,7 +15,7 @@
         Lock,
         Loader2,
         Save,
-    } from 'lucide-svelte';
+    } from '@lucide/svelte';
     import { untrack } from 'svelte';
     import { AdminProfileState } from '@/states/Admin/AdminProfileState.svelte';
 

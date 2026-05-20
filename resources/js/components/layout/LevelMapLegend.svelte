@@ -1,6 +1,6 @@
 <script lang="ts">
     import Panel from '@/components/ui/Panel.svelte';
-    import { Check, Lock, Trophy, Info } from 'lucide-svelte';
+    import { Check, Lock, Trophy, Info } from '@lucide/svelte';
 
     interface Props {
         class?: string;

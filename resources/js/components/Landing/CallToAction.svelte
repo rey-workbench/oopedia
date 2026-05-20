@@ -1,7 +1,7 @@
 <script lang="ts">
     import { Link } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils/route';
-    import { ArrowRight, Sparkles } from 'lucide-svelte';
+    import { ArrowRight, Sparkles } from '@lucide/svelte';
     import { scrollReveal } from '@/utils/animations';
     import { Motion } from 'svelte-motion';
 </script>

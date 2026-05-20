@@ -7,7 +7,7 @@
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import ProgressBar from '@/components/ui/ProgressBar.svelte';
     import Badge from '@/components/ui/Badge.svelte';
-    import { ArrowLeft, LineChart, CheckCheck, Zap, Award } from 'lucide-svelte';
+    import { ArrowLeft, LineChart, CheckCheck, Zap, Award } from '@lucide/svelte';
     import { formatDate } from '@/utils/formatters';
     import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';

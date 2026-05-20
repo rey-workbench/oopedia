@@ -22,7 +22,7 @@
         UserPlus,
         Brain,
         Clock,
-    } from 'lucide-svelte';
+    } from '@lucide/svelte';
     import { getTourIdFromUrl, registerGlobalTutorials } from '@/tutorial';
     import { onMount } from 'svelte';
     import { tutorialState } from '@/states/ui/tutorialState.svelte';

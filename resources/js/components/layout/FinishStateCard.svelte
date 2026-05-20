@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Trophy, Check, Target, Star, Flame, BarChart3, Home } from 'lucide-svelte';
+    import { Trophy, Check, Target, Star, Flame, BarChart3, Home } from '@lucide/svelte';
     import Button from '@/components/ui/Button.svelte';
     import Panel from '@/components/ui/Panel.svelte';
     import { ROUTES } from '@/utils/route';

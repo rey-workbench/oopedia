@@ -12,7 +12,7 @@
     import { untrack } from 'svelte';
     import { MaterialFormState } from '@/states/Admin/MaterialState.svelte';
     import { ROUTES } from '@/utils/route';
-    import { ArrowLeft, RefreshCw, CloudUpload, Eye } from 'lucide-svelte';
+    import { ArrowLeft, RefreshCw, CloudUpload, Eye } from '@lucide/svelte';
 
     let { material } = $props();
 

@@ -2,7 +2,7 @@
     import App from '@/layouts/App.svelte';
     import Card from '@/components/ui/Card.svelte';
     import Button from '@/components/ui/Button.svelte';
-    import { CheckCircle2, ArrowRight, LayoutDashboard } from 'lucide-svelte';
+    import { CheckCircle2, ArrowRight, LayoutDashboard } from '@lucide/svelte';
     import { Link } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils/route';
 </script>

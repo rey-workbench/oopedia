@@ -5,7 +5,7 @@
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import { LevelMapLegend, LevelMapCanvas, GuestBanner } from '@/components/layout';
     import { router } from '@inertiajs/svelte';
-    import { ArrowLeft, Map as MapIcon } from 'lucide-svelte';
+    import { ArrowLeft, Map as MapIcon } from '@lucide/svelte';
     import { untrack } from 'svelte';
     import { LevelMapState } from '@/states/Mahasiswa/QuizState.svelte';
     import { ROUTES } from '@/utils/route';

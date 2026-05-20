@@ -1,6 +1,6 @@
 <script lang="ts">
     import Card from '@/components/ui/Card.svelte';
-    import { Check, Lock, Star, Trophy, Zap } from 'lucide-svelte';
+    import { Check, Lock, Star, Trophy, Zap } from '@lucide/svelte';
     import type { LevelItem } from '@/types';
 
     interface Props {

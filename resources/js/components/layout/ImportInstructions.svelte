@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { FileText, ChevronRight } from 'lucide-svelte';
+    import { FileText, ChevronRight } from '@lucide/svelte';
     import Panel from '@/components/ui/Panel.svelte';
 
     interface Props {

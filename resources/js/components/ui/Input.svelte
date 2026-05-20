@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { AlertCircle } from 'lucide-svelte';
+    import { AlertCircle } from '@lucide/svelte';
     import { generateStableId } from '@/utils/ids';
 
     interface Props {

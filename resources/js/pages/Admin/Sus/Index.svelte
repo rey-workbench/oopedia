@@ -15,7 +15,7 @@
         Award,
         CheckCircle2,
         Calculator,
-    } from 'lucide-svelte';
+    } from '@lucide/svelte';
     import { untrack } from 'svelte';
     import { SusListState } from '@/states/Admin/SusState.svelte';
     import { formatDate } from '@/utils/formatters';

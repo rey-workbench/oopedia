@@ -10,7 +10,7 @@
         Loader2 as LoaderIcon,
         Star,
         Flame,
-    } from 'lucide-svelte';
+    } from '@lucide/svelte';
     import { QuizState } from '@/states/Mahasiswa/QuizState.svelte';
     import QuestionSessionCard from '@/components/layout/QuestionSessionCard.svelte';
     import FinishStateCard from '@/components/layout/FinishStateCard.svelte';

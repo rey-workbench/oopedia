@@ -1,7 +1,7 @@
 <script lang="ts">
     import Alert from '@/components/ui/Alert.svelte';
     import Card from '@/components/ui/Card.svelte';
-    import { GripVertical } from 'lucide-svelte';
+    import { GripVertical } from '@lucide/svelte';
 
     interface Props {
         value?: string;

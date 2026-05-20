@@ -6,7 +6,7 @@
     import Badge from '@/components/ui/Badge.svelte';
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import { UserListState } from '@/states/Admin/UserState.svelte';
-    import { Clock, UserPlus, ShieldCheck, Edit2, Trash2 } from 'lucide-svelte';
+    import { Clock, UserPlus, ShieldCheck, Edit2, Trash2 } from '@lucide/svelte';
     import { page } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';

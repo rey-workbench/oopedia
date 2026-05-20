@@ -1,6 +1,6 @@
 <script lang="ts">
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
-    import { Crown } from 'lucide-svelte';
+    import { Crown } from '@lucide/svelte';
     import type { LeaderboardEntry } from '@/types';
 
     let { top3 = [] }: { top3: LeaderboardEntry[] } = $props();

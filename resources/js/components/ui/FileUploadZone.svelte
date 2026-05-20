@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { FileSpreadsheet, Download } from 'lucide-svelte';
+    import { FileSpreadsheet, Download } from '@lucide/svelte';
 
     interface Props {
         form: any;

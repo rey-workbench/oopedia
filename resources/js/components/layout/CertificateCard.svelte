@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Download, FileImage } from 'lucide-svelte';
+    import { Download, FileImage } from '@lucide/svelte';
     import { page } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils';
 

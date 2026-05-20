@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Target, Plus, X } from 'lucide-svelte';
+    import { Target, Plus, X } from '@lucide/svelte';
     import type { AdaptiveRuleEditorState } from '@/states/Admin/AdaptiveRuleEditorState.svelte';
 
     let { form, state, allActions } = $props<{

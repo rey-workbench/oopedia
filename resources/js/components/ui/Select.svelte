@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { AlertCircle, ChevronDown } from 'lucide-svelte';
+    import { AlertCircle, ChevronDown } from '@lucide/svelte';
     import { generateStableId } from '@/utils/ids';
 
     interface Option {

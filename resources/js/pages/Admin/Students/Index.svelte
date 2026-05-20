@@ -8,7 +8,7 @@
         LineChart,
         GraduationCap,
         Loader2,
-    } from 'lucide-svelte';
+    } from '@lucide/svelte';
     import Button from '@/components/ui/Button.svelte';
     import DataTable from '@/components/ui/DataTable.svelte';
     import ProgressBar from '@/components/ui/ProgressBar.svelte';

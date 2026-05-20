@@ -5,7 +5,7 @@
     import Card from '@/components/ui/Card.svelte';
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
-    import { ChevronLeft, Inbox, UserCheck, UserX } from 'lucide-svelte';
+    import { ChevronLeft, Inbox, UserCheck, UserX } from '@lucide/svelte';
     import { ROUTES } from '@/utils/route';
     import { formatDate } from '@/utils/formatters';
     import { untrack } from 'svelte';

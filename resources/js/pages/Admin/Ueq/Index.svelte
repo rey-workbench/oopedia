@@ -8,7 +8,7 @@
     import Select from '@/components/ui/Select.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
     import StatisticalAnalysis from '@/components/Admin/StatisticalAnalysis.svelte';
-    import { BarChart3, FileDown, Eye, Calculator, ChevronRight } from 'lucide-svelte';
+    import { BarChart3, FileDown, Eye, Calculator, ChevronRight } from '@lucide/svelte';
     import { untrack } from 'svelte';
     import { UeqListState } from '@/states/Admin/UeqState.svelte';
     import { formatDate } from '@/utils/formatters';

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Settings2 } from 'lucide-svelte';
+    import { Settings2 } from '@lucide/svelte';
     import Input from '@/components/ui/Input.svelte';
 
     let { form } = $props<{ form: any }>();

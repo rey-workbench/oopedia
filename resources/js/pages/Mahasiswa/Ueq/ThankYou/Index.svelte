@@ -2,7 +2,7 @@
     import App from '@/layouts/App.svelte';
     import Card from '@/components/ui/Card.svelte';
     import Button from '@/components/ui/Button.svelte';
-    import { Heart, Home } from 'lucide-svelte';
+    import { Heart, Home } from '@lucide/svelte';
     import { ROUTES } from '@/utils/route';
 </script>
 

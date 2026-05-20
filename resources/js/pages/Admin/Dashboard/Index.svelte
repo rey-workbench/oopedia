@@ -19,7 +19,7 @@
         Trophy,
         Activity,
         AlertTriangle,
-    } from 'lucide-svelte';
+    } from '@lucide/svelte';
     import { formatDate } from '@/utils/formatters';
 
     let {

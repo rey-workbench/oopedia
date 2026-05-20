@@ -14,7 +14,7 @@
         ClipboardList,
         ChevronRight,
         Calculator,
-    } from 'lucide-svelte';
+    } from '@lucide/svelte';
     import { MslqState } from '@/states/Admin/MslqState.svelte';
     import { Link } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils/route';

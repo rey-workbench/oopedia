@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Terminal } from 'lucide-svelte';
+    import { Terminal } from '@lucide/svelte';
     import type { Question } from '@/types';
 
     let {

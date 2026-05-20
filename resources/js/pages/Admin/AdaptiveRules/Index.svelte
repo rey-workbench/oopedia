@@ -21,7 +21,7 @@
         Edit2,
         Trash2,
         CircleHelp,
-    } from 'lucide-svelte';
+    } from '@lucide/svelte';
     import Button from '@/components/ui/Button.svelte';
     import { ROUTES } from '@/utils/route';
     import { router } from '@inertiajs/svelte';

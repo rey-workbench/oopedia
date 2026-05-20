@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { Snippet } from 'svelte';
-    import { FolderOpen } from 'lucide-svelte';
+    import { FolderOpen } from '@lucide/svelte';
 
     interface Props {
         title?: string;

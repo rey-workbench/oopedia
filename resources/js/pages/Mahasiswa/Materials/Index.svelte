@@ -3,7 +3,7 @@
     import Card from '@/components/ui/Card.svelte';
     import Button from '@/components/ui/Button.svelte';
     import PageHeader from '@/components/ui/PageHeader.svelte';
-    import { Code, Puzzle, BookOpen, Ghost, ArrowRight, Trophy, Lock } from 'lucide-svelte';
+    import { Code, Puzzle, BookOpen, Ghost, ArrowRight, Trophy, Lock } from '@lucide/svelte';
     import { Link } from '@inertiajs/svelte';
     import Badge from '@/components/ui/Badge.svelte';
     import { formatDate } from '@/utils/formatters';

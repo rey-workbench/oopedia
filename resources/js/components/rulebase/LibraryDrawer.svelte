@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Library, Settings2, Code2, Target, Zap, ChevronDown } from 'lucide-svelte';
+    import { Library, Settings2, Code2, Target, Zap, ChevronDown } from '@lucide/svelte';
     import type { AdaptiveFact, AdaptiveAction } from '@/types';
 
     let { allFacts, allActions, CONDITION_KEYS, handleDragStart } = $props<{

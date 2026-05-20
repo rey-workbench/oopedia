@@ -3,7 +3,7 @@
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import CertificateCard from '@/components/layout/CertificateCard.svelte';
-    import { Award } from 'lucide-svelte';
+    import { Award } from '@lucide/svelte';
     import type { Certification } from '@/types';
 
     const { certifications = [] }: { certifications: Certification[] } = $props();

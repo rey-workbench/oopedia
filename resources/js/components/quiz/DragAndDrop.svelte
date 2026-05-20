@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { MousePointer2, List, Terminal } from 'lucide-svelte';
+    import { MousePointer2, List, Terminal } from '@lucide/svelte';
     import type { Question } from '@/types';
 
     let {

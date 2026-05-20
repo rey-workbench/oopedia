@@ -1,6 +1,6 @@
 <script lang="ts">
     import { slide, fade } from 'svelte/transition';
-    import { Lightbulb } from 'lucide-svelte';
+    import { Lightbulb } from '@lucide/svelte';
     import type { QuizState } from '@/states/Mahasiswa/QuizState.svelte';
     import type { Snippet } from 'svelte';
 

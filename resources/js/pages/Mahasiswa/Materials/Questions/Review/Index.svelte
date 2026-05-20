@@ -3,7 +3,7 @@
     import DifficultyFilterBar from '@/components/layout/DifficultyFilterBar.svelte';
     import Card from '@/components/ui/Card.svelte';
     import Badge from '@/components/ui/Badge.svelte';
-    import { HelpCircle, List, Check, X, Lightbulb } from 'lucide-svelte';
+    import { HelpCircle, List, Check, X, Lightbulb } from '@lucide/svelte';
     import { untrack } from 'svelte';
     import { ReviewState } from '@/states/Mahasiswa/QuizState.svelte';
     import type { Material, QuestionWithAttempt, QuestionDifficulty } from '@/types';

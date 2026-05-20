@@ -3,7 +3,7 @@
     import type { Snippet } from 'svelte';
     import Card from '@/components/ui/Card.svelte';
     import EmptyState from '@/components/ui/EmptyState.svelte';
-    import { Search, ChevronLeft, ChevronRight } from 'lucide-svelte';
+    import { Search, ChevronLeft, ChevronRight } from '@lucide/svelte';
 
     export interface Props {
         id?: string;

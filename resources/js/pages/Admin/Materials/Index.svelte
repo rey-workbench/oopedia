@@ -16,7 +16,7 @@
         FlaskConical,
         Edit2,
         Trash2,
-    } from 'lucide-svelte';
+    } from '@lucide/svelte';
     import { ROUTES } from '@/utils/route';
 
     let { materials = [] }: { materials: any[] } = $props();

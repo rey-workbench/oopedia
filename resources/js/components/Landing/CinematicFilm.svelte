@@ -1,6 +1,6 @@
 <script lang="ts">
     import { scrollReveal } from '@/utils/animations';
-    import { Play } from 'lucide-svelte';
+    import { Play } from '@lucide/svelte';
 </script>
 
 <section class="mx-auto mb-40 w-full max-w-6xl px-6">

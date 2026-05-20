@@ -1,6 +1,6 @@
 <script lang="ts">
     import Button from '@/components/ui/Button.svelte';
-    import { Compass, ShieldAlert, Server, Wrench, AlertTriangle, Home } from 'lucide-svelte';
+    import { Compass, ShieldAlert, Server, Wrench, AlertTriangle, Home } from '@lucide/svelte';
     import { ROUTES } from '@/utils/route';
 
     let { status }: { status: number } = $props();

@@ -2,7 +2,7 @@
     import App from '@/layouts/App.svelte';
     import { useForm, router } from '@inertiajs/svelte';
     import Button from '@/components/ui/Button.svelte';
-    import { Save, ArrowLeft } from 'lucide-svelte';
+    import { Save, ArrowLeft } from '@lucide/svelte';
     import { ROUTES } from '@/utils/route';
     import type { AdminAdaptiveRuleProps } from '@/types';
     import Toggle from '@/components/ui/Toggle.svelte';

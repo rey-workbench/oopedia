@@ -11,7 +11,7 @@
         CheckCircle2,
         RotateCcw,
         Trophy,
-    } from 'lucide-svelte';
+    } from '@lucide/svelte';
     import { untrack } from 'svelte';
     import { CompletedState } from '@/states/Mahasiswa/MaterialState.svelte';
     import { ROUTES } from '@/utils/route';

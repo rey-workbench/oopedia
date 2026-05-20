@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Navigation } from 'lucide-svelte';
+    import { Navigation } from '@lucide/svelte';
 </script>
 
 <footer class="relative flex w-full flex-col overflow-hidden pt-12">

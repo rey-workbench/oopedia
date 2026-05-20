@@ -2,7 +2,7 @@
     import type { Snippet } from 'svelte';
     import Button from '@/components/ui/Button.svelte';
     import Card from '@/components/ui/Card.svelte';
-    import { AlertTriangle, LogIn, UserPlus, ShieldAlert } from 'lucide-svelte';
+    import { AlertTriangle, LogIn, UserPlus, ShieldAlert } from '@lucide/svelte';
     import { ROUTES } from '@/utils/route';
 
     interface Props {

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Star } from 'lucide-svelte';
+    import { Star } from '@lucide/svelte';
     import { scale } from 'svelte/transition';
     import { elasticOut } from 'svelte/easing';
     import { xpAnimationState } from '@/states/ui/xpAnimation.svelte';

@@ -1,7 +1,7 @@
 <script lang="ts">
     import App from '@/layouts/App.svelte';
     import { router } from '@inertiajs/svelte';
-    import { UserRound, GraduationCap, ArrowLeft } from 'lucide-svelte';
+    import { UserRound, GraduationCap, ArrowLeft } from '@lucide/svelte';
     import { ROUTES } from '@/utils/route';
 
     interface Props {

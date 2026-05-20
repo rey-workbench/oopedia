@@ -4,7 +4,7 @@
     import Button from '@/components/ui/Button.svelte';
     import Alert from '@/components/ui/Alert.svelte';
     import PageHeader from '@/components/ui/PageHeader.svelte';
-    import { ClipboardList, Send, Target } from 'lucide-svelte';
+    import { ClipboardList, Send, Target } from '@lucide/svelte';
     import { untrack } from 'svelte';
     import { page } from '@inertiajs/svelte';
     import { MslqSurveyState } from '@/states/Mahasiswa/MslqSurveyState.svelte';

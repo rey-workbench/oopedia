@@ -2,7 +2,7 @@
     import App from '@/layouts/App.svelte';
     import Input from '@/components/ui/Input.svelte';
     import Button from '@/components/ui/Button.svelte';
-    import { Loader2, KeyRound } from 'lucide-svelte';
+    import { Loader2, KeyRound } from '@lucide/svelte';
     import { ResetPasswordState } from '@/states/Auth/AuthState.svelte';
 
     interface Props {

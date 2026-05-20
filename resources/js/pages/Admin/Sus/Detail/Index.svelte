@@ -3,7 +3,7 @@
     import Card from '@/components/ui/Card.svelte';
     import Button from '@/components/ui/Button.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
-    import { ArrowLeft, Info, MessageSquare, Target } from 'lucide-svelte';
+    import { ArrowLeft, Info, MessageSquare, Target } from '@lucide/svelte';
     import { untrack } from 'svelte';
     import { SusDetailState } from '@/states/Admin/SusState.svelte';
     import { formatDate } from '@/utils/formatters';

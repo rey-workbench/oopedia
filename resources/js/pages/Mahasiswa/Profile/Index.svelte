@@ -26,7 +26,7 @@
         BookOpen,
         Activity,
         Gauge,
-    } from 'lucide-svelte';
+    } from '@lucide/svelte';
     import { untrack } from 'svelte';
     import { ProfileState } from '@/states/Mahasiswa/ProfileState.svelte';
     import PageHeader from '@/components/ui/PageHeader.svelte';

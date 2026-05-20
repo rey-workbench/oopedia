@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Code2, Plus, X } from 'lucide-svelte';
+    import { Code2, Plus, X } from '@lucide/svelte';
     import Button from '@/components/ui/Button.svelte';
     import type { AdaptiveRuleEditorState } from '@/states/Admin/AdaptiveRuleEditorState.svelte';
 

@@ -4,7 +4,7 @@
     import Button from '@/components/ui/Button.svelte';
     import ImportInstructions from '@/components/layout/ImportInstructions.svelte';
     import FileUploadZone from '@/components/ui/FileUploadZone.svelte';
-    import { ArrowLeft, Upload } from 'lucide-svelte';
+    import { ArrowLeft, Upload } from '@lucide/svelte';
     import { ROUTES } from '@/utils/route';
     import { StudentImportState } from '@/states/Admin/StudentState.svelte';
 

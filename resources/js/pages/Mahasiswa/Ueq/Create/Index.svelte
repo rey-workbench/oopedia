@@ -4,7 +4,7 @@
     import Button from '@/components/ui/Button.svelte';
     import Alert from '@/components/ui/Alert.svelte';
     import PageHeader from '@/components/ui/PageHeader.svelte';
-    import { CheckSquare, MessageSquare, Send } from 'lucide-svelte';
+    import { CheckSquare, MessageSquare, Send } from '@lucide/svelte';
     import { untrack } from 'svelte';
     import { page } from '@inertiajs/svelte';
     import { UeqSurveyState } from '@/states/Mahasiswa/UeqSurveyState.svelte';

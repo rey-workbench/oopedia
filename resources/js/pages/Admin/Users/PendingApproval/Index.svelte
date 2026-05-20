@@ -2,7 +2,7 @@
     import App from '@/layouts/App.svelte';
     import Card from '@/components/ui/Card.svelte';
     import Button from '@/components/ui/Button.svelte';
-    import { Clock, LogOut } from 'lucide-svelte';
+    import { Clock, LogOut } from '@lucide/svelte';
     import { PendingUsersState } from '@/states/Admin/UserState.svelte';
 
     const state = new PendingUsersState();

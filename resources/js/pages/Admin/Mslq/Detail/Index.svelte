@@ -8,7 +8,7 @@
     import StatCard from '@/components/ui/StatCard.svelte';
     import Badge from '@/components/ui/Badge.svelte';
     import Alert from '@/components/ui/Alert.svelte';
-    import { Target, ClipboardList } from 'lucide-svelte';
+    import { Target, ClipboardList } from '@lucide/svelte';
     import { formatDate } from '@/utils/formatters';
     import { ROUTES } from '@/utils/route';
     import type { MslqResult } from '@/types';

@@ -3,7 +3,7 @@
     import Input from '@/components/ui/Input.svelte';
     import Button from '@/components/ui/Button.svelte';
     import { Link, page } from '@inertiajs/svelte';
-    import { Loader2, ArrowLeft, Mail } from 'lucide-svelte';
+    import { Loader2, ArrowLeft, Mail } from '@lucide/svelte';
     import { ROUTES } from '@/utils/route';
     import { ForgotPasswordState } from '@/states/Auth/AuthState.svelte';
 

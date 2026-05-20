@@ -1,7 +1,7 @@
 <script lang="ts">
     import { slide, fade } from 'svelte/transition';
     import { quintOut } from 'svelte/easing';
-    import { Activity, Zap, ChevronDown, Database, Cpu } from 'lucide-svelte';
+    import { Activity, Zap, ChevronDown, Database, Cpu } from '@lucide/svelte';
     import { QuizState } from '@/states/Mahasiswa/QuizState.svelte';
 
     let { quizState }: { quizState: QuizState } = $props();

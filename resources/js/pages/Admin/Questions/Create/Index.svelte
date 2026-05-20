@@ -6,7 +6,7 @@
     import DragDropEditor from '@/components/quiz/DragDropEditor.svelte';
     import DragDropHandle from '@/components/quiz/DragDropHandle.svelte';
     import Select from '@/components/ui/Select.svelte';
-    import { ArrowLeft, Save, Plus, X, CheckCircle2 } from 'lucide-svelte';
+    import { ArrowLeft, Save, Plus, X, CheckCircle2 } from '@lucide/svelte';
     import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';
     import { QuestionFormState } from '@/states/Admin/QuestionState.svelte';

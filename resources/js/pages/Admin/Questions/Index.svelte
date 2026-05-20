@@ -6,7 +6,7 @@
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import Select from '@/components/ui/Select.svelte';
     import { ROUTES } from '@/utils/route';
-    import { FlaskConical, Plus, Trash2, Edit2, ArrowLeft } from 'lucide-svelte';
+    import { FlaskConical, Plus, Trash2, Edit2, ArrowLeft } from '@lucide/svelte';
     import { QuestionListAdminState } from '@/states/Admin/QuestionState.svelte';
     import { untrack } from 'svelte';
     import Badge from '@/components/ui/Badge.svelte';

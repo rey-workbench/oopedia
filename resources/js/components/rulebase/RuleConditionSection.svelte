@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Zap, Plus, X } from 'lucide-svelte';
+    import { Zap, Plus, X } from '@lucide/svelte';
     import Button from '@/components/ui/Button.svelte';
     import type { AdaptiveRuleEditorState } from '@/states/Admin/AdaptiveRuleEditorState.svelte';
 

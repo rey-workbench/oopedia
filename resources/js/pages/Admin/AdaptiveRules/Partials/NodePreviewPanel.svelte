@@ -10,7 +10,7 @@
         Info,
         Trash2,
         MessageSquareQuote,
-    } from 'lucide-svelte';
+    } from '@lucide/svelte';
     import { router } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils/route';
 

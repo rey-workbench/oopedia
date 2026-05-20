@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { CloudUpload, Camera } from 'lucide-svelte';
+    import { CloudUpload, Camera } from '@lucide/svelte';
 
     interface Props {
         preview?: string | null;

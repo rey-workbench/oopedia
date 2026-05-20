@@ -6,7 +6,7 @@
     import Badge from '@/components/ui/Badge.svelte';
     import ProgressBar from '@/components/ui/ProgressBar.svelte';
     import { Link } from '@inertiajs/svelte';
-    import { ArrowLeft, BookOpen, Rocket, Activity, Play, Users } from 'lucide-svelte';
+    import { ArrowLeft, BookOpen, Rocket, Activity, Play, Users } from '@lucide/svelte';
     import { untrack } from 'svelte';
     import { InProgressState } from '@/states/Mahasiswa/MaterialState.svelte';
     import { ROUTES } from '@/utils/route';

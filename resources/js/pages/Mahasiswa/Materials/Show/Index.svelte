@@ -4,7 +4,7 @@
     import Card from '@/components/ui/Card.svelte';
     import ContentDisplay from '@/components/ui/ContentDisplay.svelte';
     import { page } from '@inertiajs/svelte';
-    import { Info, Puzzle } from 'lucide-svelte';
+    import { Info, Puzzle } from '@lucide/svelte';
     import { untrack } from 'svelte';
     import { MaterialShowState } from '@/states/Mahasiswa/MaterialState.svelte';
     import PageHeader from '@/components/ui/PageHeader.svelte';

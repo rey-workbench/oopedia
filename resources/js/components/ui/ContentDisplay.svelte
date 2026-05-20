@@ -2,7 +2,7 @@
     import hljs from 'highlight.js';
     import DOMPurify from 'dompurify';
     import { fade, scale } from 'svelte/transition';
-    import { MousePointer2, X, ExternalLink } from 'lucide-svelte';
+    import { MousePointer2, X, ExternalLink } from '@lucide/svelte';
 
     interface Props {
         content: string;

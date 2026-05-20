@@ -6,7 +6,7 @@
     import Button from '@/components/ui/Button.svelte';
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import ProgressBar from '@/components/ui/ProgressBar.svelte';
-    import { Shapes, Users, Puzzle, Play, Lock } from 'lucide-svelte';
+    import { Shapes, Users, Puzzle, Play, Lock } from '@lucide/svelte';
     import { Link } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';

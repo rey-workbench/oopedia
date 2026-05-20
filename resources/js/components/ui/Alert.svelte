@@ -1,7 +1,7 @@
 <script lang="ts">
     import { fade } from 'svelte/transition';
     import type { Snippet } from 'svelte';
-    import { Info, CheckCircle2, AlertTriangle, AlertCircle, X } from 'lucide-svelte';
+    import { Info, CheckCircle2, AlertTriangle, AlertCircle, X } from '@lucide/svelte';
 
     type AlertVariant = 'info' | 'success' | 'warning' | 'danger' | 'primary';
 

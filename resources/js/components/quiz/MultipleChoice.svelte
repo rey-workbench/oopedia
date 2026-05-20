@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { CheckSquare, Terminal } from 'lucide-svelte';
+    import { CheckSquare, Terminal } from '@lucide/svelte';
     import type { Question } from '@/types';
 
     interface Props {

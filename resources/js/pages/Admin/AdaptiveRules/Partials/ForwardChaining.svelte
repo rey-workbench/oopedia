@@ -9,7 +9,7 @@
         buildGraphLinks,
         calculateSpatialCoordinates,
     } from '@/pages/Admin/AdaptiveRules/Partials/topology';
-    import { Zap, Target } from 'lucide-svelte';
+    import { Zap, Target } from '@lucide/svelte';
     interface Props {
         analyticsState: AdaptiveRuleState;
         onedit?: ((rule: any) => void) | undefined;

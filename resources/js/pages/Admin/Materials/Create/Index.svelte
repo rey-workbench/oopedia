@@ -11,7 +11,7 @@
     import Toggle from '@/components/ui/Toggle.svelte';
     import { MaterialFormState } from '@/states/Admin/MaterialState.svelte';
     import { ROUTES } from '@/utils/route';
-    import { ArrowLeft, Info, CloudUpload, CheckCheck, Eye } from 'lucide-svelte';
+    import { ArrowLeft, Info, CloudUpload, CheckCheck, Eye } from '@lucide/svelte';
 
     const state = new MaterialFormState(null);
 </script>

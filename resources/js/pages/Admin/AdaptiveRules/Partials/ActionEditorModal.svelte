@@ -6,7 +6,7 @@
     import Select from '@/components/ui/Select.svelte';
     import Button from '@/components/ui/Button.svelte';
     import Alert from '@/components/ui/Alert.svelte';
-    import { Save, X, Target, Code, Info } from 'lucide-svelte';
+    import { Save, X, Target, Code, Info } from '@lucide/svelte';
     import { ROUTES } from '@/utils/route';
 
     let {
