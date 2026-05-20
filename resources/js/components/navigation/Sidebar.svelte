@@ -32,7 +32,7 @@
     });
 
     const auth = $derived(page.props['auth'] ?? {});
-    const user = $derived(auth.user as import('@/types').User ?? null);
+    const user = $derived((auth.user as import('@/types').User) ?? null);
     const isAdminRole = $derived(!!user && isAdmin(user.role?.role_name));
     const userRole = $derived(user?.role?.role_name ?? 'guest');
 

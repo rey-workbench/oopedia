@@ -6,7 +6,16 @@
     import Card from '@/components/ui/Card.svelte';
     import Select from '@/components/ui/Select.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
-    import { FileDown, Eye, ChevronRight, BarChart3, Star, Award, CheckCircle2, Calculator } from 'lucide-svelte';
+    import {
+        FileDown,
+        Eye,
+        ChevronRight,
+        BarChart3,
+        Star,
+        Award,
+        CheckCircle2,
+        Calculator,
+    } from 'lucide-svelte';
     import { untrack } from 'svelte';
     import { SusListState } from '@/states/Admin/SusState.svelte';
     import { formatDate } from '@/utils/formatters';
@@ -15,7 +24,7 @@
     import { router } from '@inertiajs/svelte';
     import StatisticalAnalysis from '@/components/Admin/StatisticalAnalysis.svelte';
     import { Button } from '@/components';
-    
+
     let {
         results = [],
         averages = { total: 0, items: {} },
@@ -65,7 +74,10 @@
                         placeholder="Filter Tipe"
                         value={susState.activeType}
                         onchange={(v) => susState.handleFilterChange(v as any)}
-                        options={susState.types.map((t) => ({ label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)', value: t }))}
+                        options={susState.types.map((t) => ({
+                            label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)',
+                            value: t,
+                        }))}
                         class="border-duo w-48 rounded-xl"
                     />
                     <Button
@@ -81,19 +93,25 @@
 
         <!-- Tabs -->
         <div class="flex items-center gap-2 border-b-2 border-slate-50">
-            <button 
-                onclick={() => activeTab = 'overview'}
+            <button
+                onclick={() => (activeTab = 'overview')}
                 aria-selected={activeTab === 'overview'}
                 role="tab"
-                class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab === 'overview' ? 'border-primary-500 text-primary-500 border-b-4' : 'text-slate-400 hover:text-slate-600'}"
+                class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab ===
+                'overview'
+                    ? 'border-primary-500 text-primary-500 border-b-4'
+                    : 'text-slate-400 hover:text-slate-600'}"
             >
                 Ringkasan Data
             </button>
-            <button 
-                onclick={() => activeTab = 'analysis'}
+            <button
+                onclick={() => (activeTab = 'analysis')}
                 aria-selected={activeTab === 'analysis'}
                 role="tab"
-                class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab === 'analysis' ? 'border-primary-500 text-primary-600 border-b-4' : 'text-slate-400 hover:text-slate-600'}"
+                class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab ===
+                'analysis'
+                    ? 'border-primary-500 text-primary-600 border-b-4'
+                    : 'text-slate-400 hover:text-slate-600'}"
             >
                 Analisis Statistik (Skripsi)
             </button>
@@ -102,7 +120,7 @@
         {#if activeTab === 'overview'}
             <!-- Average Overview -->
             <div class="grid grid-cols-1 gap-6 md:grid-cols-4">
-                <StatCard 
+                <StatCard
                     title="Rata-rata Skor"
                     value={susState.averages.total.toFixed(1)}
                     icon={BarChart3}
@@ -110,7 +128,7 @@
                     footer="Skala 0-100"
                 />
 
-                <StatCard 
+                <StatCard
                     title="Adjective Rating"
                     value={susState.grading.adjective}
                     icon={Star}
@@ -118,7 +136,7 @@
                     footer="Qualitative Scale"
                 />
 
-                <StatCard 
+                <StatCard
                     title="Grade Scale"
                     value={susState.grading.grade}
                     icon={Award}
@@ -126,7 +144,7 @@
                     footer="Letter Grade"
                 />
 
-                <StatCard 
+                <StatCard
                     title="Acceptability"
                     value={susState.grading.acceptability}
                     icon={CheckCircle2}
@@ -136,7 +154,13 @@
             </div>
 
             <div id="sus-results-table" class="mt-8">
-                <DataTable title="Log Responden SUS" items={susState.results} {columns} hideSearch={true} itemsPerPage={10}>
+                <DataTable
+                    title="Log Responden SUS"
+                    items={susState.results}
+                    {columns}
+                    hideSearch={true}
+                    itemsPerPage={10}
+                >
                     {#snippet row(result)}
                         <td class="border-b border-slate-50 px-6 py-6">
                             <div class="flex items-center gap-4">
@@ -187,39 +211,64 @@
                     {/snippet}
                 </DataTable>
             </div>
-
         {:else}
             <!-- Statistical Analysis Section -->
             <div class="space-y-6">
                 <Card class="border-duo overflow-hidden rounded-3xl border-slate-100 shadow-xl">
                     <div class="flex flex-wrap items-center justify-between gap-6 p-8">
                         <div class="space-y-1">
-                            <h3 class="text-primary-500 font-display text-lg font-black tracking-widest uppercase">Komparasi Kelompok</h3>
-                            <p class="text-xs font-medium text-slate-500 uppercase">Pilih dua tipe asesmen untuk membandingkan skor SUS secara statistik.</p>
+                            <h3
+                                class="text-primary-500 font-display text-lg font-black tracking-widest uppercase"
+                            >
+                                Komparasi Kelompok
+                            </h3>
+                            <p class="text-xs font-medium text-slate-500 uppercase">
+                                Pilih dua tipe asesmen untuk membandingkan skor SUS secara
+                                statistik.
+                            </p>
                         </div>
                         <div class="flex items-center gap-4">
                             <div class="space-y-2">
-                                <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Kelompok 1</span>
-                                <Select 
-                                    options={types.map(t => ({ label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)', value: t }))} 
-                                    bind:value={type1} 
+                                <span
+                                    class="text-[10px] font-black tracking-widest text-slate-400 uppercase"
+                                    >Kelompok 1</span
+                                >
+                                <Select
+                                    options={types.map((t) => ({
+                                        label:
+                                            t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)',
+                                        value: t,
+                                    }))}
+                                    bind:value={type1}
                                     placeholder="Tipe 1"
                                     class="w-40 rounded-xl"
                                 />
                             </div>
-                            <div class="text-slate-300 mt-6">
+                            <div class="mt-6 text-slate-300">
                                 <ChevronRight size={20} />
                             </div>
                             <div class="space-y-2">
-                                <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Kelompok 2</span>
-                                <Select 
-                                    options={types.map(t => ({ label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)', value: t }))} 
-                                    bind:value={type2} 
+                                <span
+                                    class="text-[10px] font-black tracking-widest text-slate-400 uppercase"
+                                    >Kelompok 2</span
+                                >
+                                <Select
+                                    options={types.map((t) => ({
+                                        label:
+                                            t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)',
+                                        value: t,
+                                    }))}
+                                    bind:value={type2}
                                     placeholder="Tipe 2"
                                     class="w-40 rounded-xl"
                                 />
                             </div>
-                            <Button variant="primary" class="mt-6 rounded-xl font-black" icon={Calculator} onclick={handleComparison}>PROSES UJI</Button>
+                            <Button
+                                variant="primary"
+                                class="mt-6 rounded-xl font-black"
+                                icon={Calculator}
+                                onclick={handleComparison}>PROSES UJI</Button
+                            >
                         </div>
                     </div>
                 </Card>

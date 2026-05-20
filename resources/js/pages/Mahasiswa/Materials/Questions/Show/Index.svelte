@@ -1,7 +1,16 @@
 <script lang="ts">
     import App from '@/layouts/App.svelte';
     import GuestBanner from '@/components/layout/GuestBanner.svelte';
-    import { Terminal, UserCheck, AlertTriangle, Lightbulb, CheckCircle2, Loader2 as LoaderIcon, Star, Flame } from 'lucide-svelte';
+    import {
+        Terminal,
+        UserCheck,
+        AlertTriangle,
+        Lightbulb,
+        CheckCircle2,
+        Loader2 as LoaderIcon,
+        Star,
+        Flame,
+    } from 'lucide-svelte';
     import { QuizState } from '@/states/Mahasiswa/QuizState.svelte';
     import QuestionSessionCard from '@/components/layout/QuestionSessionCard.svelte';
     import FinishStateCard from '@/components/layout/FinishStateCard.svelte';
@@ -161,13 +170,19 @@
 
                     <!-- XP & Streak Display (Duolingo Style) -->
                     <div class="flex items-center gap-3">
-                        <div id="xp-badge" class="flex items-center gap-2 rounded-2xl border-2 border-slate-100 bg-white px-4 py-2 shadow-sm transition-all duration-300">
+                        <div
+                            id="xp-badge"
+                            class="flex items-center gap-2 rounded-2xl border-2 border-slate-100 bg-white px-4 py-2 shadow-sm transition-all duration-300"
+                        >
                             <Star size={18} class="fill-amber-400 text-amber-400" />
                             <span class="text-sm font-black text-slate-700">{quizState.xp}</span>
                         </div>
-                        <div class="flex items-center gap-2 rounded-2xl border-2 border-slate-100 bg-white px-4 py-2 shadow-sm">
+                        <div
+                            class="flex items-center gap-2 rounded-2xl border-2 border-slate-100 bg-white px-4 py-2 shadow-sm"
+                        >
                             <Flame size={18} class="fill-orange-500 text-orange-500" />
-                            <span class="text-sm font-black text-slate-700">{quizState.streak}</span>
+                            <span class="text-sm font-black text-slate-700">{quizState.streak}</span
+                            >
                         </div>
                     </div>
                 </div>
@@ -234,8 +249,10 @@
                 <!-- Hint Button -->
                 <button
                     onclick={() => quizState.useHint()}
-                    disabled={quizState.isSubmitting || quizState.hintsAvailable <= 0 || !quizState.currentQuestion?.hint}
-                    class="group flex flex-col items-center justify-center rounded-2xl border-2 border-b-4 border-slate-200 px-6 py-3 font-black text-slate-400 transition-all hover:bg-slate-50 active:border-b-2 active:translate-y-0.5 disabled:opacity-50 disabled:grayscale"
+                    disabled={quizState.isSubmitting ||
+                        quizState.hintsAvailable <= 0 ||
+                        !quizState.currentQuestion?.hint}
+                    class="group flex flex-col items-center justify-center rounded-2xl border-2 border-b-4 border-slate-200 px-6 py-3 font-black text-slate-400 transition-all hover:bg-slate-50 active:translate-y-0.5 active:border-b-2 disabled:opacity-50 disabled:grayscale"
                 >
                     <div class="flex items-center gap-3">
                         <Lightbulb
@@ -251,12 +268,12 @@
                 </button>
 
                 <!-- Check Button -->
-                <div class="flex-1 md:flex-initial md:min-w-[240px]">
+                <div class="flex-1 md:min-w-[240px] md:flex-initial">
                     <Button
                         variant={quizState.validateAnswer() ? 'primary' : 'secondary'}
                         size="lg"
                         disabled={quizState.isSubmitting || !quizState.validateAnswer()}
-                        class="w-full rounded-2xl border-b-4 py-4 text-sm font-black tracking-widest uppercase transition-all active:border-b-0 active:translate-y-1"
+                        class="w-full rounded-2xl border-b-4 py-4 text-sm font-black tracking-widest uppercase transition-all active:translate-y-1 active:border-b-0"
                         onclick={() => quizState.submitAnswer()}
                     >
                         <div class="flex items-center justify-center gap-3">

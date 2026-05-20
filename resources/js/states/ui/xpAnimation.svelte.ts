@@ -1,4 +1,3 @@
-
 export const xpAnimationState = $state({
     active: false,
     startX: 0,
@@ -10,10 +9,10 @@ export const xpAnimationState = $state({
         this.startY = y;
         this.amount = Math.min(amount, 10); // Cap for performance
         this.active = true;
-        
+
         // Reset after animation duration
         setTimeout(() => {
             this.active = false;
         }, 2500);
-    }
+    },
 });

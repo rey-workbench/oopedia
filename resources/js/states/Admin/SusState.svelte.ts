@@ -31,11 +31,7 @@ export class SusListState extends BaseState {
     }
 
     handleFilterChange(value: string) {
-        router.get(
-            ROUTES.ADMIN.SUS.INDEX,
-            { type: value },
-            { preserveState: true, replace: true }
-        );
+        router.get(ROUTES.ADMIN.SUS.INDEX, { type: value }, { preserveState: true, replace: true });
     }
 
     exportResults() {

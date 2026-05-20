@@ -165,7 +165,6 @@
             </DataTable>
         </div>
 
-
         <Modal show={openModal} onclose={() => (openModal = false)}>
             <form
                 onsubmit={(e) => {

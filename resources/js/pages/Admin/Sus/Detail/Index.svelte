@@ -141,8 +141,8 @@
                         </p>
                     </Card>
 
-                    <Card class="rounded-3xl border-primary-100 bg-primary-50/20">
-                        <div class="mb-4 flex items-center gap-3 text-primary-600">
+                    <Card class="border-primary-100 bg-primary-50/20 rounded-3xl">
+                        <div class="text-primary-600 mb-4 flex items-center gap-3">
                             <Info size={18} />
                             <h4 class="text-[10px] font-bold tracking-[0.2em] uppercase">
                                 Saran Optimasi

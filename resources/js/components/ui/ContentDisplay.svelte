@@ -156,15 +156,15 @@
         links.forEach((link) => {
             if (!link.dataset['previewable']) {
                 link.classList.add('pedagogical-link');
-                
+
                 link.addEventListener('mouseenter', async () => {
                     const rect = link.getBoundingClientRect();
                     const url = link.href;
-                    
+
                     hoveredLink = {
                         url: url,
                         x: rect.left + rect.width / 2,
-                        y: rect.top
+                        y: rect.top,
                     };
 
                     if (linkCache.has(url)) {
@@ -173,13 +173,15 @@
                         isLoadingLink = true;
                         linkData = null;
                         try {
-                            const res = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`);
+                            const res = await fetch(
+                                `https://api.microlink.io/?url=${encodeURIComponent(url)}`
+                            );
                             const { data } = await res.json();
                             linkData = {
                                 title: data.title,
                                 description: data.description,
                                 image: data.image?.url || data.screenshot?.url,
-                                logo: data.logo?.url
+                                logo: data.logo?.url,
                             };
                             linkCache.set(url, linkData);
                         } catch (_) {
@@ -358,7 +360,7 @@
 
     /* 4. Interactive Links */
     :global(.pedagogical-content-root a.pedagogical-link) {
-        @apply inline-block rounded-lg border-b-4 border-sky-200 px-1 font-black text-sky-600 transition-all no-underline hover:border-sky-400 hover:bg-sky-50 active:translate-y-0.5 active:border-b-0;
+        @apply inline-block rounded-lg border-b-4 border-sky-200 px-1 font-black text-sky-600 no-underline transition-all hover:border-sky-400 hover:bg-sky-50 active:translate-y-0.5 active:border-b-0;
     }
 
     /* Inline code (inside td, li, p — NOT terminal blocks) */
@@ -429,13 +431,16 @@
         onkeydown={(e) => e.key === 'Escape' && (previewImage = null)}
     >
         <button
-            class="absolute top-8 right-8 z-20 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-white transition-all hover:bg-white/20 hover:scale-110 active:scale-95"
+            class="absolute top-8 right-8 z-20 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-white transition-all hover:scale-110 hover:bg-white/20 active:scale-95"
             onclick={() => (previewImage = null)}
         >
             <X size={32} strokeWidth={3} />
         </button>
 
-        <div class="relative max-h-full max-w-full overflow-hidden rounded-3xl shadow-2xl" transition:scale={{ start: 0.95, duration: 300 }}>
+        <div
+            class="relative max-h-full max-w-full overflow-hidden rounded-3xl shadow-2xl"
+            transition:scale={{ start: 0.95, duration: 300 }}
+        >
             <img
                 src={previewImage}
                 alt="Preview"
@@ -447,19 +452,27 @@
 
 {#if hoveredLink}
     <div
-        class="pointer-events-none fixed z-10001 -translate-x-1/2 -translate-y-full origin-bottom"
+        class="pointer-events-none fixed z-10001 origin-bottom -translate-x-1/2 -translate-y-full"
         style="left: {hoveredLink.x}px; top: {hoveredLink.y}px;"
         transition:scale={{ start: 0.85, duration: 150, opacity: 0 }}
     >
         <div class="flex flex-col items-center">
-            <div class="w-56 overflow-hidden rounded-2xl border-2 border-b-4 border-slate-200 bg-white shadow-lg">
+            <div
+                class="w-56 overflow-hidden rounded-2xl border-2 border-b-4 border-slate-200 bg-white shadow-lg"
+            >
                 <!-- Image strip -->
                 <div class="relative h-24 w-full overflow-hidden bg-slate-100">
                     {#if isLoadingLink}
                         <div class="h-full w-full animate-pulse bg-slate-100"></div>
                     {:else if linkData?.image}
-                        <img src={linkData.image} alt="Preview" class="h-full w-full object-cover" />
-                        <div class="absolute inset-0 bg-linear-to-t from-black/10 to-transparent"></div>
+                        <img
+                            src={linkData.image}
+                            alt="Preview"
+                            class="h-full w-full object-cover"
+                        />
+                        <div
+                            class="absolute inset-0 bg-linear-to-t from-black/10 to-transparent"
+                        ></div>
                     {:else}
                         <div class="flex h-full w-full items-center justify-center">
                             <ExternalLink size={20} class="text-slate-300" />
@@ -469,21 +482,31 @@
                 <!-- Info row -->
                 {#if isLoadingLink}
                     <div class="flex items-center gap-2 px-3 py-2">
-                        <div class="h-3 w-3 animate-spin rounded-full border-2 border-slate-200 border-t-sky-500 shrink-0"></div>
+                        <div
+                            class="h-3 w-3 shrink-0 animate-spin rounded-full border-2 border-slate-200 border-t-sky-500"
+                        ></div>
                         <div class="h-2.5 w-3/4 animate-pulse rounded bg-slate-100"></div>
                     </div>
                 {:else}
                     <div class="flex items-center gap-2 px-3 py-2">
                         {#if linkData?.logo}
-                            <img src={linkData.logo} alt="Logo" class="h-3.5 w-3.5 shrink-0 rounded-sm object-contain" />
+                            <img
+                                src={linkData.logo}
+                                alt="Logo"
+                                class="h-3.5 w-3.5 shrink-0 rounded-sm object-contain"
+                            />
                         {:else}
                             <ExternalLink size={12} class="shrink-0 text-sky-400" />
                         {/if}
                         <div class="flex min-w-0 flex-col">
-                            <span class="truncate text-[10px] font-black text-slate-800 leading-snug">
+                            <span
+                                class="truncate text-[10px] leading-snug font-black text-slate-800"
+                            >
                                 {linkData?.title || new URL(hoveredLink.url).hostname}
                             </span>
-                            <span class="truncate text-[9px] font-medium text-slate-400 leading-tight">
+                            <span
+                                class="truncate text-[9px] leading-tight font-medium text-slate-400"
+                            >
                                 {new URL(hoveredLink.url).hostname}
                             </span>
                         </div>
@@ -491,7 +514,9 @@
                 {/if}
             </div>
             <!-- Triangle pointing down toward link -->
-            <div class="h-2.5 w-2.5 mt-[-6px] rotate-45 border-r-2 border-b-2 border-slate-200 bg-white"></div>
+            <div
+                class="mt-[-6px] h-2.5 w-2.5 rotate-45 border-r-2 border-b-2 border-slate-200 bg-white"
+            ></div>
         </div>
     </div>
 {/if}

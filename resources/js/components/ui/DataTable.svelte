@@ -54,12 +54,12 @@
 
     // Check if we are using server-side pagination
     const isServerSide = $derived(links && links.length > 3);
-    
+
     // Derived values for client-side pagination
     const totalPages = $derived(Math.ceil((items?.length ?? 0) / itemsPerPage));
     const paginatedItems = $derived(
-        (hidePagination || isServerSide)
-            ? items 
+        hidePagination || isServerSide
+            ? items
             : (items ?? []).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
     );
 
@@ -163,25 +163,30 @@
             {:else}
                 <!-- Client-side Pagination Layout -->
                 <div class="text-[10px] font-black tracking-widest text-slate-400 uppercase">
-                    Menampilkan {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, items?.length ?? 0)} dari {items?.length ?? 0} data
+                    Menampilkan {(currentPage - 1) * itemsPerPage + 1} - {Math.min(
+                        currentPage * itemsPerPage,
+                        items?.length ?? 0
+                    )} dari {items?.length ?? 0} data
                 </div>
                 <div class="flex items-center gap-2">
                     <button
-                        onclick={() => currentPage = Math.max(1, currentPage - 1)}
+                        onclick={() => (currentPage = Math.max(1, currentPage - 1))}
                         disabled={currentPage === 1}
-                        class="border-duo flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-400 transition-all hover:text-primary-500 disabled:cursor-not-allowed disabled:opacity-30 active:translate-y-0.5 active:border-b-2"
+                        class="border-duo hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-400 transition-all active:translate-y-0.5 active:border-b-2 disabled:cursor-not-allowed disabled:opacity-30"
                     >
                         <ChevronLeft size={20} />
                     </button>
-                    
-                    <div class="flex h-10 items-center justify-center rounded-xl bg-primary-500 px-4 text-xs font-black text-white shadow-lg shadow-primary-500/20">
+
+                    <div
+                        class="bg-primary-500 shadow-primary-500/20 flex h-10 items-center justify-center rounded-xl px-4 text-xs font-black text-white shadow-lg"
+                    >
                         {currentPage} / {totalPages}
                     </div>
 
                     <button
-                        onclick={() => currentPage = Math.min(totalPages, currentPage + 1)}
+                        onclick={() => (currentPage = Math.min(totalPages, currentPage + 1))}
                         disabled={currentPage === totalPages}
-                        class="border-duo flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-400 transition-all hover:text-primary-500 disabled:cursor-not-allowed disabled:opacity-30 active:translate-y-0.5 active:border-b-2"
+                        class="border-duo hover:text-primary-500 flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-400 transition-all active:translate-y-0.5 active:border-b-2 disabled:cursor-not-allowed disabled:opacity-30"
                     >
                         <ChevronRight size={20} />
                     </button>

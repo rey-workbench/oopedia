@@ -6,7 +6,15 @@
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import Chart from '@/components/ui/Chart.svelte';
     import Select from '@/components/ui/Select.svelte';
-    import { Eye, FileSpreadsheet, Brain, Target, ClipboardList, ChevronRight, Calculator } from 'lucide-svelte';
+    import {
+        Eye,
+        FileSpreadsheet,
+        Brain,
+        Target,
+        ClipboardList,
+        ChevronRight,
+        Calculator,
+    } from 'lucide-svelte';
     import { MslqState } from '@/states/Admin/MslqState.svelte';
     import { Link } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils/route';
@@ -130,7 +138,10 @@
                         placeholder="Filter Tipe"
                         value={mslqState.activeType}
                         onchange={(v) => mslqState.handleFilterChange(v as any)}
-                        options={mslqState.types.map((t) => ({ label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)', value: t }))}
+                        options={mslqState.types.map((t) => ({
+                            label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)',
+                            value: t,
+                        }))}
                         class="border-duo w-48 rounded-xl"
                     />
                     <Button
@@ -146,19 +157,25 @@
 
         <!-- Tabs -->
         <div class="flex items-center gap-2 border-b-2 border-slate-50">
-            <button 
-                onclick={() => activeTab = 'overview'}
+            <button
+                onclick={() => (activeTab = 'overview')}
                 aria-selected={activeTab === 'overview'}
                 role="tab"
-                class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab === 'overview' ? 'border-primary-500 text-primary-500 border-b-4' : 'text-slate-400 hover:text-slate-600'}"
+                class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab ===
+                'overview'
+                    ? 'border-primary-500 text-primary-500 border-b-4'
+                    : 'text-slate-400 hover:text-slate-600'}"
             >
                 Ringkasan Data
             </button>
-            <button 
-                onclick={() => activeTab = 'analysis'}
+            <button
+                onclick={() => (activeTab = 'analysis')}
                 aria-selected={activeTab === 'analysis'}
                 role="tab"
-                class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab === 'analysis' ? 'border-primary-500 text-primary-600 border-b-4' : 'text-slate-400 hover:text-slate-600'}"
+                class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab ===
+                'analysis'
+                    ? 'border-primary-500 text-primary-600 border-b-4'
+                    : 'text-slate-400 hover:text-slate-600'}"
             >
                 Analisis Statistik (Skripsi)
             </button>
@@ -185,7 +202,12 @@
                                 Profil Belajar Mahasiswa
                             </h3>
                         </div>
-                        <Chart type="radar" series={chartSeries} options={chartOptions} height={450} />
+                        <Chart
+                            type="radar"
+                            series={chartSeries}
+                            options={chartOptions}
+                            height={450}
+                        />
                     </div>
                 </Card>
 
@@ -216,7 +238,7 @@
                             </div>
                         </div>
                     </Card>
- 
+
                     <Card
                         padding="p-0"
                         class="border-duo-lg border-primary-800 bg-primary-500 overflow-hidden rounded-3xl text-white shadow-xl shadow-slate-200"
@@ -251,10 +273,12 @@
                             >
                                 Informasi
                             </h4>
-                            <p class="text-[11px] leading-relaxed font-medium text-slate-500 uppercase">
+                            <p
+                                class="text-[11px] leading-relaxed font-medium text-slate-500 uppercase"
+                            >
                                 Grafik radar di samping menunjukkan kekuatan dan kelemahan kolektif
-                                mahasiswa dalam motivasi dan strategi belajar. Skor berkisar antara 1
-                                hingga 7.
+                                mahasiswa dalam motivasi dan strategi belajar. Skor berkisar antara
+                                1 hingga 7.
                             </p>
                         </div>
                     </Card>
@@ -266,32 +290,58 @@
                 <Card class="border-duo overflow-hidden rounded-3xl border-slate-100 shadow-xl">
                     <div class="flex flex-wrap items-center justify-between gap-6 p-8">
                         <div class="space-y-1">
-                            <h3 class="text-primary-500 font-display text-lg font-black tracking-widest uppercase">Komparasi Kelompok</h3>
-                            <p class="text-xs font-medium text-slate-500 uppercase">Pilih dua tipe asesmen untuk melakukan uji Independent T-Test & Mann-Whitney U.</p>
+                            <h3
+                                class="text-primary-500 font-display text-lg font-black tracking-widest uppercase"
+                            >
+                                Komparasi Kelompok
+                            </h3>
+                            <p class="text-xs font-medium text-slate-500 uppercase">
+                                Pilih dua tipe asesmen untuk melakukan uji Independent T-Test &
+                                Mann-Whitney U.
+                            </p>
                         </div>
                         <div class="flex items-center gap-4">
                             <div class="space-y-2">
-                                <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Kelompok 1</span>
-                                <Select 
-                                    options={types.map(t => ({ label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)', value: t }))} 
-                                    bind:value={type1} 
+                                <span
+                                    class="text-[10px] font-black tracking-widest text-slate-400 uppercase"
+                                    >Kelompok 1</span
+                                >
+                                <Select
+                                    options={types.map((t) => ({
+                                        label:
+                                            t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)',
+                                        value: t,
+                                    }))}
+                                    bind:value={type1}
                                     placeholder="Tipe 1"
                                     class="w-40 rounded-xl"
                                 />
                             </div>
-                            <div class="text-slate-300 mt-6">
+                            <div class="mt-6 text-slate-300">
                                 <ChevronRight size={20} />
                             </div>
                             <div class="space-y-2">
-                                <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Kelompok 2</span>
-                                <Select 
-                                    options={types.map(t => ({ label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)', value: t }))} 
-                                    bind:value={type2} 
+                                <span
+                                    class="text-[10px] font-black tracking-widest text-slate-400 uppercase"
+                                    >Kelompok 2</span
+                                >
+                                <Select
+                                    options={types.map((t) => ({
+                                        label:
+                                            t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)',
+                                        value: t,
+                                    }))}
+                                    bind:value={type2}
                                     placeholder="Tipe 2"
                                     class="w-40 rounded-xl"
                                 />
                             </div>
-                            <Button variant="primary" class="mt-6 rounded-xl font-black" icon={Calculator} onclick={handleComparison}>PROSES UJI</Button>
+                            <Button
+                                variant="primary"
+                                class="mt-6 rounded-xl font-black"
+                                icon={Calculator}
+                                onclick={handleComparison}>PROSES UJI</Button
+                            >
                         </div>
                     </div>
                 </Card>

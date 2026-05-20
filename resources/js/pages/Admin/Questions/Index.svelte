@@ -152,5 +152,4 @@
             {/snippet}
         </DataTable>
     </div>
-
 </App>

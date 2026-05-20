@@ -105,12 +105,12 @@ export function resolveGraphTopology(rules: any[], factData: any[], actionData: 
 
     // Final Pass: Ensure everything is aligned to its intended layer
     // and cleanup any floating nodes
-    Array.from(nodeRegistry.values()).forEach(node => {
+    Array.from(nodeRegistry.values()).forEach((node) => {
         if (node.type === 'action') node.depth = 5;
         if (node.type === 'virtual_fact') {
-             // Virtual facts (Diagnosis) should be between rules (2) and strategies (4)
-             // But naturally they fall at depth 3.
-             if (node.depth > 3) node.depth = 3;
+            // Virtual facts (Diagnosis) should be between rules (2) and strategies (4)
+            // But naturally they fall at depth 3.
+            if (node.depth > 3) node.depth = 3;
         }
     });
 

@@ -30,12 +30,12 @@ export class BaseState {
         Object.keys(filteredData).forEach((key) => {
             const value = filteredData[key];
             if (
-                value && 
-                typeof value === 'object' && 
-                value !== null && 
-                'data' in value && 
+                value &&
+                typeof value === 'object' &&
+                value !== null &&
+                'data' in value &&
                 !Array.isArray(value) &&
-                !('links' in value) && 
+                !('links' in value) &&
                 !('current_page' in value)
             ) {
                 filteredData[key] = (value as { data: any }).data;

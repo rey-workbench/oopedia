@@ -11,7 +11,7 @@ export class SusSurveyState extends FormState<SusSurveyForm> {
             assessment_type: type,
             nim: user?.nim || '',
             class: user?.class || '',
-            answers: questions.map(q => ({
+            answers: questions.map((q) => ({
                 question_id: q.id,
                 value: null,
             })),

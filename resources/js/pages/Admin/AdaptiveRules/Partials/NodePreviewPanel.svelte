@@ -171,15 +171,19 @@
                                 <span class="font-bold text-emerald-600">THEN (Action)</span>
                                 <div class="mt-2 space-y-2">
                                     {#each selectedNode.data.actions as ruleAction}
-                                        {@const actionId = typeof ruleAction === 'string' ? ruleAction : ruleAction.id}
-                                        {@const action = actionData.find(
-                                            (a) => a.id === actionId
-                                        )}
+                                        {@const actionId =
+                                            typeof ruleAction === 'string'
+                                                ? ruleAction
+                                                : ruleAction.id}
+                                        {@const action = actionData.find((a) => a.id === actionId)}
                                         <div
                                             class="rounded-xl border border-emerald-100 bg-emerald-50/50 p-3"
                                         >
                                             <p class="text-xs font-bold text-emerald-900">
-                                                {action?.name || (typeof ruleAction === 'string' ? ruleAction : ruleAction.id)}
+                                                {action?.name ||
+                                                    (typeof ruleAction === 'string'
+                                                        ? ruleAction
+                                                        : ruleAction.id)}
                                             </p>
                                             <p
                                                 class="mt-1 text-[10px] leading-relaxed text-emerald-700/80"
@@ -330,11 +334,13 @@
                         class="overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 p-4 shadow-inner"
                     >
                         {#if (selectedNode.type === 'gate' && selectedNode.data.actions?.length > 0) || selectedNode.type === 'action'}
-                                {@const firstAction = selectedNode.data.actions[0]}
-                                {@const actionId =
-                                    selectedNode.type === 'gate'
-                                        ? (typeof firstAction === 'string' ? firstAction : firstAction.id)
-                                        : selectedNode.data.id}
+                            {@const firstAction = selectedNode.data.actions[0]}
+                            {@const actionId =
+                                selectedNode.type === 'gate'
+                                    ? typeof firstAction === 'string'
+                                        ? firstAction
+                                        : firstAction.id
+                                    : selectedNode.data.id}
 
                             {#if actionId === 'INCREASE_DIFF'}
                                 <div

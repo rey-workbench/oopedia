@@ -1,6 +1,6 @@
 # Instrumen MSLQ Terpilih (15 Butir) - OOPedia
 
-Daftar 15 butir instrumen MSLQ (Motivated Strategies for Learning Questionnaire) yang direkomendasikan untuk *pre-test* dan *post-test* pada platform OOPedia.
+Daftar 15 butir instrumen MSLQ (Motivated Strategies for Learning Questionnaire) yang direkomendasikan untuk _pre-test_ dan _post-test_ pada platform OOPedia.
 
 ## I. Motivasi (Motivation Scales)
 
@@ -37,5 +37,6 @@ Daftar 15 butir instrumen MSLQ (Motivated Strategies for Learning Questionnaire)
 2. **(Butir 67)** Bila saya sedang belajar, saya mencoba memikirkan alternatif cara untuk memecahkan sebuah masalah.
 
 ---
+
 **Catatan Penting:**
-Instrumen ini menggunakan skala Likert 1-7 (1: Sangat Tidak Setuju, 7: Sangat Setuju). Untuk analisis data *pre-test* dan *post-test*, disarankan menggunakan uji statistik *Paired T-Test* atau *Wilcoxon Signed Rank Test* untuk melihat efektivitas platform OOPedia terhadap perubahan motivasi dan strategi belajar mahasiswa.
+Instrumen ini menggunakan skala Likert 1-7 (1: Sangat Tidak Setuju, 7: Sangat Setuju). Untuk analisis data _pre-test_ dan _post-test_, disarankan menggunakan uji statistik _Paired T-Test_ atau _Wilcoxon Signed Rank Test_ untuk melihat efektivitas platform OOPedia terhadap perubahan motivasi dan strategi belajar mahasiswa.

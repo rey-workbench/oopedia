@@ -143,7 +143,9 @@
                                 </div>
 
                                 <!-- Content Section -->
-                                <div class="flex flex-1 flex-col justify-between p-6 md:p-8 lg:p-10">
+                                <div
+                                    class="flex flex-1 flex-col justify-between p-6 md:p-8 lg:p-10"
+                                >
                                     <div>
                                         <div class="flex items-start justify-between gap-6">
                                             <div>

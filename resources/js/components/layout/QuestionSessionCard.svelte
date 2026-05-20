@@ -15,8 +15,6 @@
 </script>
 
 <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
-
-
     <!-- Question Content -->
     <div class="p-6 md:p-8">
         {#if currentQuestion}

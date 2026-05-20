@@ -66,7 +66,8 @@ export class MslqDetailState extends BaseState {
         return Object.entries(labels).map(([key, label]) => ({
             key,
             label,
-            value: this.result.scores_by_scale[key as keyof typeof this.result.scores_by_scale] ?? 0,
+            value:
+                this.result.scores_by_scale[key as keyof typeof this.result.scores_by_scale] ?? 0,
         }));
     }
 
@@ -86,7 +87,8 @@ export class MslqDetailState extends BaseState {
         return Object.entries(labels).map(([key, label]) => ({
             key,
             label,
-            value: this.result.scores_by_scale[key as keyof typeof this.result.scores_by_scale] ?? 0,
+            value:
+                this.result.scores_by_scale[key as keyof typeof this.result.scores_by_scale] ?? 0,
         }));
     }
 }

@@ -13,7 +13,11 @@ export class MslqSurveyState extends FormState<MslqForm> {
         this.hydrate({ questions });
     }
 
-    private static createInitialFields(questions: MslqQuestion[], assessmentType: string, user?: User | null): MslqForm {
+    private static createInitialFields(
+        questions: MslqQuestion[],
+        assessmentType: string,
+        user?: User | null
+    ): MslqForm {
         return {
             assessment_type: assessmentType,
             nim: user?.nim || '',

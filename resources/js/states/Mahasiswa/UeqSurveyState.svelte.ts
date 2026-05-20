@@ -12,12 +12,16 @@ export class UeqSurveyState extends FormState<UeqSurveyForm> {
         this.aspects = aspects;
     }
 
-    private static createInitialFields(aspects: { name: string }[], assessmentType: string, user?: any): UeqSurveyForm {
+    private static createInitialFields(
+        aspects: { name: string }[],
+        assessmentType: string,
+        user?: any
+    ): UeqSurveyForm {
         const fields: UeqSurveyForm = {
             assessment_type: assessmentType,
             nim: user?.nim || '',
             class: user?.class || '',
-            answers: aspects.map(a => ({
+            answers: aspects.map((a) => ({
                 question_id: a.name,
                 value: null,
             })),

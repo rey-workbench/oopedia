@@ -50,7 +50,8 @@
             <div class="space-y-12 p-8 sm:p-12">
                 {#if state.form.errors && Object.keys(state.form.errors).length > 0}
                     <Alert variant="danger" dismissible={true}>
-                        Mohon lengkapi seluruh pernyataan ({state.form.answers.length} butir) sebelum menyimpan.
+                        Mohon lengkapi seluruh pernyataan ({state.form.answers.length} butir) sebelum
+                        menyimpan.
                     </Alert>
                 {/if}
 
@@ -61,12 +62,19 @@
                     }}
                     class="space-y-16"
                 >
-                    <div id="mslq-identitas" class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
+                    <div
+                        id="mslq-identitas"
+                        class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4"
+                    >
                         <div class="space-y-2.5">
-                            <span class="ml-4 block text-xs font-black tracking-widest text-slate-500 uppercase">
+                            <span
+                                class="ml-4 block text-xs font-black tracking-widest text-slate-500 uppercase"
+                            >
                                 Identitas Mahasiswa
                             </span>
-                            <div class="flex px-6 py-4 text-sm font-bold border-2 border-b-6 border-slate-200 rounded-3xl bg-slate-50/50 text-slate-400 uppercase tracking-widest">
+                            <div
+                                class="flex rounded-3xl border-2 border-b-6 border-slate-200 bg-slate-50/50 px-6 py-4 text-sm font-bold tracking-widest text-slate-400 uppercase"
+                            >
                                 {state.user?.name || 'STUDENT SESSION'}
                             </div>
                         </div>
@@ -139,7 +147,9 @@
                                         </p>
                                     </div>
 
-                                    <div class="flex flex-wrap items-center justify-between gap-4 px-2 md:px-16">
+                                    <div
+                                        class="flex flex-wrap items-center justify-between gap-4 px-2 md:px-16"
+                                    >
                                         {#each Array(7) as _, val}
                                             <label
                                                 class="group/item relative flex cursor-pointer flex-col items-center gap-3"
@@ -159,10 +169,10 @@
                                                 >
                                                     {val + 1}
                                                 </div>
-                                                <div class="h-10 flex items-center justify-center">
+                                                <div class="flex h-10 items-center justify-center">
                                                     {#if scaleLabels[val]}
                                                         <span
-                                                            class="text-[8px] font-bold tracking-tighter text-slate-400 uppercase opacity-0 transition-opacity group-hover/item:opacity-100 peer-checked:opacity-100 text-center leading-tight max-w-[60px]"
+                                                            class="max-w-[60px] text-center text-[8px] leading-tight font-bold tracking-tighter text-slate-400 uppercase opacity-0 transition-opacity group-hover/item:opacity-100 peer-checked:opacity-100"
                                                         >
                                                             {scaleLabels[val]}
                                                         </span>
@@ -213,7 +223,9 @@
                                         </p>
                                     </div>
 
-                                    <div class="flex flex-wrap items-center justify-between gap-4 px-2 md:px-16">
+                                    <div
+                                        class="flex flex-wrap items-center justify-between gap-4 px-2 md:px-16"
+                                    >
                                         {#each Array(7) as _, val}
                                             <label
                                                 class="group/item relative flex cursor-pointer flex-col items-center gap-3"
@@ -233,10 +245,10 @@
                                                 >
                                                     {val + 1}
                                                 </div>
-                                                <div class="h-10 flex items-center justify-center">
+                                                <div class="flex h-10 items-center justify-center">
                                                     {#if scaleLabels[val]}
                                                         <span
-                                                            class="text-[8px] font-bold tracking-tighter text-slate-400 uppercase opacity-0 transition-opacity group-hover/item:opacity-100 peer-checked:opacity-100 text-center leading-tight max-w-[60px]"
+                                                            class="max-w-[60px] text-center text-[8px] leading-tight font-bold tracking-tighter text-slate-400 uppercase opacity-0 transition-opacity group-hover/item:opacity-100 peer-checked:opacity-100"
                                                         >
                                                             {scaleLabels[val]}
                                                         </span>
@@ -266,4 +278,3 @@
         </Card>
     </div>
 </App>
-

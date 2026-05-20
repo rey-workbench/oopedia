@@ -92,7 +92,7 @@ The following commands are automatically rewritten by the system hook:
 - `npm/pnpm/yarn` -> `rtk npm/pnpm/yarn`
 - `php artisan` -> `rtk php artisan`
 - `vendor/bin/*` -> `rtk vendor/bin/*`
-*You don't need to manually prefix these - the hook handles it transparently.*
+  _You don't need to manually prefix these - the hook handles it transparently._
 
 ### Meta Commands (Direct RTK Usage)
 

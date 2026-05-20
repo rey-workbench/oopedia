@@ -24,30 +24,48 @@
 
         {#if state.material.cover_url}
             <div id="material-cover" class="relative">
-                <div class="relative aspect-32/9 w-full overflow-hidden rounded-3xl border-b-8 border-slate-700 bg-slate-100 shadow-2xl">
+                <div
+                    class="relative aspect-32/9 w-full overflow-hidden rounded-3xl border-b-8 border-slate-700 bg-slate-100 shadow-2xl"
+                >
                     <img
                         src={state.material.cover_url}
                         alt={state.material.title}
                         class="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
                     />
-                    <div class="absolute inset-0 bg-linear-to-t from-slate-900/40 to-transparent"></div>
-                    
+                    <div
+                        class="absolute inset-0 bg-linear-to-t from-slate-900/40 to-transparent"
+                    ></div>
+
                     <div class="absolute bottom-10 left-10 hidden md:block">
-                        <div class="flex items-center gap-4 rounded-2xl border border-white/20 bg-white/10 p-4 backdrop-blur-md">
-                             <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 text-white">
+                        <div
+                            class="flex items-center gap-4 rounded-2xl border border-white/20 bg-white/10 p-4 backdrop-blur-md"
+                        >
+                            <div
+                                class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 text-white"
+                            >
                                 <Puzzle size={24} />
-                             </div>
-                             <div>
-                                <p class="text-[10px] font-black tracking-widest text-white/70 uppercase">Modul Pembelajaran</p>
-                                <h3 class="text-lg font-black text-white uppercase tracking-tight">{state.material.title}</h3>
-                             </div>
+                            </div>
+                            <div>
+                                <p
+                                    class="text-[10px] font-black tracking-widest text-white/70 uppercase"
+                                >
+                                    Modul Pembelajaran
+                                </p>
+                                <h3 class="text-lg font-black tracking-tight text-white uppercase">
+                                    {state.material.title}
+                                </h3>
+                            </div>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Decorative Elements -->
-                <div class="absolute -top-4 -right-4 -z-10 h-32 w-32 rounded-full bg-primary-400/20 blur-3xl"></div>
-                <div class="absolute -bottom-10 -left-10 -z-10 h-64 w-64 rounded-full bg-indigo-500/10 blur-3xl"></div>
+                <div
+                    class="bg-primary-400/20 absolute -top-4 -right-4 -z-10 h-32 w-32 rounded-full blur-3xl"
+                ></div>
+                <div
+                    class="absolute -bottom-10 -left-10 -z-10 h-64 w-64 rounded-full bg-indigo-500/10 blur-3xl"
+                ></div>
             </div>
         {/if}
 

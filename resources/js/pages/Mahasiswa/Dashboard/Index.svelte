@@ -111,7 +111,12 @@
             subtitle="Selamat datang di pusat kendali belajar Anda."
         />
 
-        <Panel id="dashboard-hero" rounded="3xl" class="border-b-6 border-slate-700" padding="p-8 md:p-10">
+        <Panel
+            id="dashboard-hero"
+            rounded="3xl"
+            class="border-b-6 border-slate-700"
+            padding="p-8 md:p-10"
+        >
             <div class="flex flex-col items-center gap-10 md:flex-row">
                 <div class="group relative">
                     <div

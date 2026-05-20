@@ -21,7 +21,9 @@
     const ruleChain = $derived(metadata?.rule_chain || []);
 </script>
 
-<div class="pointer-events-none fixed right-4 top-1/2 z-10005 flex -translate-y-1/2 flex-col items-end gap-2">
+<div
+    class="pointer-events-none fixed top-1/2 right-4 z-10005 flex -translate-y-1/2 flex-col items-end gap-2"
+>
     {#if !isDebugPanelCollapsed}
         <div
             transition:slide={{ duration: 400, easing: quintOut }}
@@ -91,7 +93,8 @@
                                     Rules Eval
                                 </div>
                                 <div class="text-lg font-black text-slate-700">
-                                    {metadata?.total_rules_evaluated || (ruleChain.length > 0 ? ruleChain.length + 2 : 0)}
+                                    {metadata?.total_rules_evaluated ||
+                                        (ruleChain.length > 0 ? ruleChain.length + 2 : 0)}
                                 </div>
                             </div>
                             <div class="rounded-xl border border-slate-100 bg-slate-50 p-3">
@@ -108,15 +111,21 @@
                     <div class="space-y-4" in:fade={{ duration: 200 }}>
                         <div class="mb-2 flex items-center gap-2 text-slate-400">
                             <Zap size={12} />
-                            <span class="text-[10px] font-bold tracking-wider uppercase">Inference Chain</span>
+                            <span class="text-[10px] font-bold tracking-wider uppercase"
+                                >Inference Chain</span
+                            >
                         </div>
                         <div class="space-y-2">
                             {#each ruleChain as ruleId, i}
                                 <div class="flex items-center gap-3">
-                                    <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-[10px] font-bold text-slate-500">
+                                    <div
+                                        class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-[10px] font-bold text-slate-500"
+                                    >
                                         {i + 1}
                                     </div>
-                                    <div class="flex-1 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700">
+                                    <div
+                                        class="flex-1 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700"
+                                    >
                                         {ruleId}
                                     </div>
                                 </div>
@@ -124,14 +133,16 @@
                                     <div class="ml-3 h-3 w-px bg-slate-200"></div>
                                 {/if}
                             {:else}
-                                <p class="text-center text-xs italic text-slate-400 py-4">No chaining records available.</p>
+                                <p class="text-center text-xs italic text-slate-400 py-4">
+                                    No chaining records available.
+                                </p>
                             {/each}
                         </div>
                     </div>
                 {:else if activeTab === 'state'}
                     <div class="space-y-4" in:fade={{ duration: 200 }}>
-                         <!-- Active Facts -->
-                         <div>
+                        <!-- Active Facts -->
+                        <div>
                             <div class="mb-2 flex items-center gap-2 text-blue-500">
                                 <Database size={12} />
                                 <span class="text-[10px] font-bold tracking-wider uppercase"
@@ -178,7 +189,10 @@
                     </div>
                 {:else if activeTab === 'raw'}
                     <div class="rounded-xl bg-slate-900 p-4" in:fade={{ duration: 200 }}>
-                        <pre class="overflow-x-auto font-mono text-[10px] leading-relaxed text-emerald-400"><code>{JSON.stringify(engineResult, null, 2)}</code></pre>
+                        <pre
+                            class="overflow-x-auto font-mono text-[10px] leading-relaxed text-emerald-400"><code
+                                >{JSON.stringify(engineResult, null, 2)}</code
+                            ></pre>
                     </div>
                 {/if}
             </div>

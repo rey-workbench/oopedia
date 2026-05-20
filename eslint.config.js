@@ -1,4 +1,3 @@
-import { defineConfig } from 'eslint-define-config';
 import ts from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import svelte from 'eslint-plugin-svelte';
@@ -83,7 +82,7 @@ const tsRules = {
     'no-undef': 'off',
 };
 
-export default defineConfig([
+export default [
     // Ignore non-source directories
     {
         ignores: ['vendor/**', 'public/**', 'node_modules/**', 'bootstrap/cache/**', 'storage/**'],
@@ -124,4 +123,4 @@ export default defineConfig([
             ...tsRules,
         },
     },
-]);
+];

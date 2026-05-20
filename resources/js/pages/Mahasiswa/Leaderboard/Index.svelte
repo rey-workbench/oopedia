@@ -53,13 +53,14 @@
                             <td class="border-b border-slate-50 px-6 py-4">
                                 {#if data.rank <= 3}
                                     <div
-                                        class={`flex h-8 w-8 items-center justify-center rounded-lg border-2 border-b-4 border-slate-900 font-bold text-white text-xs
+                                        class={`flex h-8 w-8 items-center justify-center rounded-lg border-2 border-b-4 border-slate-900 text-xs font-bold text-white
                                     ${data.rank === 1 ? 'bg-amber-400' : data.rank === 2 ? 'bg-slate-300' : 'bg-rose-400'}`}
                                     >
                                         {data.rank}
                                     </div>
                                 {:else}
-                                    <span class="block w-8 text-center font-bold text-slate-300 text-xs"
+                                    <span
+                                        class="block w-8 text-center text-xs font-bold text-slate-300"
                                         >#{data.rank}</span
                                     >
                                 {/if}
@@ -69,7 +70,7 @@
                                     <UserAvatar name={data.name} size="sm" />
                                     <div>
                                         <div
-                                            class="font-bold tracking-widest text-slate-900 uppercase text-sm"
+                                            class="text-sm font-bold tracking-widest text-slate-900 uppercase"
                                         >
                                             {data.name}
                                         </div>

@@ -21,15 +21,21 @@
     } = $props();
 
     let displayAnswers = $derived.by(() => {
-        return (question.answers || []).slice().sort((a, b) => (a?.id ?? '').localeCompare(b?.id ?? ''));
+        return (question.answers || [])
+            .slice()
+            .sort((a, b) => (a?.id ?? '').localeCompare(b?.id ?? ''));
     });
 
     $effect(() => {
-        if (showGuidance && guidanceData?.type === 'auto_fill' && Object.keys(dragAndDropAnswers).length === 0) {
+        if (
+            showGuidance &&
+            guidanceData?.type === 'auto_fill' &&
+            Object.keys(dragAndDropAnswers).length === 0
+        ) {
             const zoneId = String(guidanceData.drag_target);
             dragAndDropAnswers = {
                 ...dragAndDropAnswers,
-                [zoneId]: guidanceData.drag_source ?? ''
+                [zoneId]: guidanceData.drag_source ?? '',
             };
         }
     });

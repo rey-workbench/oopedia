@@ -56,7 +56,9 @@
     );
 
     const distribution = $derived(state.student_analytics?.distribution ?? {});
-    const performance = $derived(state.student_analytics?.module_performance ?? { labels: [], data: [] });
+    const performance = $derived(
+        state.student_analytics?.module_performance ?? { labels: [], data: [] }
+    );
     const distributionMax = $derived(Math.max(1, ...Object.values(distribution).map(Number)));
     const performanceMax = $derived(Math.max(1, ...(performance.data || []).map(Number)));
     const radarColors = ['blue', 'emerald', 'amber', 'rose', 'gray'];

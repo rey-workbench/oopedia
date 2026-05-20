@@ -46,7 +46,7 @@
             // Play streak bonus audio if STREAK_BONUS action is present
             if (actions.some((a: any) => (typeof a === 'object' ? a.id : a) === 'STREAK_BONUS')) {
                 const audio = new Audio('/sound/newLevel.mp3');
-                audio.play().catch(e => console.error('Failed to play streak bonus audio:', e));
+                audio.play().catch((e) => console.error('Failed to play streak bonus audio:', e));
             }
 
             // Auto-dismiss standard popups after 3 seconds
@@ -205,7 +205,8 @@
     let feedbackTitle = $derived(getFeedbackTitle(feedbackStatus));
     let displayTitle = $derived(quizState.adaptiveTriggeredRule?.rule?.name || feedbackTitle);
     let displayMessage = $derived.by(() => {
-        const remedialMsg = quizState.studentState?.adaptive_engine?.adaptive_state?.['remedial_message'];
+        const remedialMsg =
+            quizState.studentState?.adaptive_engine?.adaptive_state?.['remedial_message'];
         if (isRemedial && remedialMsg) {
             return remedialMsg as string;
         }
@@ -283,12 +284,14 @@
                                 </span>
                             {/if}
                         </div>
-                        <p class={`mt-0.5 text-sm font-bold leading-relaxed ${feedbackTone.body}`}>
+                        <p class={`mt-0.5 text-sm leading-relaxed font-bold ${feedbackTone.body}`}>
                             {displayMessage}
                         </p>
 
                         {#if recommendation}
-                            <p class={`mt-2 text-xs font-medium italic opacity-80 ${feedbackTone.body}`}>
+                            <p
+                                class={`mt-2 text-xs font-medium italic opacity-80 ${feedbackTone.body}`}
+                            >
                                 {recommendation}
                             </p>
                         {/if}

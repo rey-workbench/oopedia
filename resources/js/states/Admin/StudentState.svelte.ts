@@ -4,13 +4,7 @@ import { confirmDelete } from '@/utils/confirmDelete';
 import { BaseState } from '@/states/BaseState.svelte';
 import { FormState } from '@/states/FormState.svelte';
 import { ROUTES } from '@/utils/route';
-import type {
-    User,
-    Pagination,
-    Material,
-    MissingQuestionsItem,
-    RecentActivity,
-} from '@/types';
+import type { User, Pagination, Material, MissingQuestionsItem, RecentActivity } from '@/types';
 
 /**
  * Student List State

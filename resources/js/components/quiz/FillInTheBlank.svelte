@@ -64,7 +64,7 @@
         const val = input.value.slice(-1); // only last char
         boxValues[i] = val;
         answerText = boxValues.join('');
-        
+
         if (val && i < length - 1) {
             const next = document.getElementById(`box-${i + 1}`) as HTMLInputElement;
             if (next && !next.disabled) next.focus();
@@ -129,11 +129,17 @@
         {#if showGuidance && guidanceData?.type === 'tts_hint'}
             <div class="flex flex-wrap items-center justify-center gap-2">
                 {#each boxValues as val, i}
-                    {@const isGuidanceRevealed = showGuidance && guidanceData?.type === 'tts_hint' && guidanceData.characters?.[i]?.revealed}
-                    {@const isSpace = showGuidance && guidanceData?.type === 'tts_hint' ? guidanceData.characters?.[i]?.char === ' ' : false}
-                    
+                    {@const isGuidanceRevealed =
+                        showGuidance &&
+                        guidanceData?.type === 'tts_hint' &&
+                        guidanceData.characters?.[i]?.revealed}
+                    {@const isSpace =
+                        showGuidance && guidanceData?.type === 'tts_hint'
+                            ? guidanceData.characters?.[i]?.char === ' '
+                            : false}
+
                     {#if isSpace}
-                        <div class="w-4 h-14"></div>
+                        <div class="h-14 w-4"></div>
                     {:else}
                         <input
                             id="box-{i}"
@@ -149,8 +155,8 @@
                                     ? 'border-emerald-600 border-b-emerald-700 bg-emerald-50 text-emerald-900'
                                     : 'border-rose-600 border-b-rose-700 bg-rose-50 text-rose-900'
                                 : isGuidanceRevealed
-                                    ? 'border-amber-400 bg-amber-50 text-amber-600 border-b-amber-500'
-                                    : 'focus:border-primary-500 focus:bg-primary-50/10 border-slate-200 bg-white text-slate-900 focus:translate-y-[-2px] focus:border-b-6'}
+                                  ? 'border-amber-400 border-b-amber-500 bg-amber-50 text-amber-600'
+                                  : 'focus:border-primary-500 focus:bg-primary-50/10 border-slate-200 bg-white text-slate-900 focus:translate-y-[-2px] focus:border-b-6'}
                             "
                         />
                     {/if}

@@ -82,7 +82,10 @@
                         placeholder="Filter Tipe"
                         value={ueqState.activeType}
                         onchange={(v) => ueqState.handleFilterChange(v as any)}
-                        options={ueqState.types.map((t) => ({ label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)', value: t }))}
+                        options={ueqState.types.map((t) => ({
+                            label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)',
+                            value: t,
+                        }))}
                         class="border-duo w-48 rounded-xl"
                     />
                     <Button
@@ -100,18 +103,24 @@
         <div class="border-b border-slate-100">
             <div class="flex gap-8" aria-label="Tabs" role="tablist">
                 <button
-                    onclick={() => activeTab = 'overview'}
+                    onclick={() => (activeTab = 'overview')}
                     aria-selected={activeTab === 'overview'}
                     role="tab"
-                    class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab === 'overview' ? 'border-primary-500 text-primary-500 border-b-4' : 'text-slate-400 hover:text-slate-600'}"
+                    class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab ===
+                    'overview'
+                        ? 'border-primary-500 text-primary-500 border-b-4'
+                        : 'text-slate-400 hover:text-slate-600'}"
                 >
                     Ringkasan Data
                 </button>
                 <button
-                    onclick={() => activeTab = 'analysis'}
+                    onclick={() => (activeTab = 'analysis')}
                     aria-selected={activeTab === 'analysis'}
                     role="tab"
-                    class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab === 'analysis' ? 'border-primary-500 text-primary-600 border-b-4' : 'text-slate-400 hover:text-slate-600'}"
+                    class="px-8 py-4 text-xs font-black tracking-widest uppercase transition-all {activeTab ===
+                    'analysis'
+                        ? 'border-primary-500 text-primary-600 border-b-4'
+                        : 'text-slate-400 hover:text-slate-600'}"
                 >
                     Analisis Statistik (Skripsi)
                 </button>
@@ -120,9 +129,12 @@
 
         {#if activeTab === 'overview'}
             <!-- Averages Overview -->
-            <div id="ueq-summary-metrics" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div
+                id="ueq-summary-metrics"
+                class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+            >
                 {#each statsData as stat (stat.title)}
-                    <StatCard 
+                    <StatCard
                         title={stat.title}
                         value={stat.value}
                         icon={stat.icon}
@@ -162,7 +174,9 @@
                             <span
                                 class="rounded-xl bg-slate-100 px-3 py-1.5 text-[10px] font-bold tracking-widest text-slate-600 uppercase"
                             >
-                                {survey.assessment_type === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)'}
+                                {survey.assessment_type === 'pre'
+                                    ? 'Pre-Test (Awal)'
+                                    : 'Post-Test (Akhir)'}
                             </span>
                         </td>
                         <td class="border-b border-slate-50 px-6 py-6 text-center">
@@ -183,41 +197,61 @@
                     {/snippet}
                 </DataTable>
             </div>
-
         {:else}
             <!-- Statistical Analysis Section -->
             <div class="space-y-6">
                 <Card class="border-duo overflow-hidden rounded-3xl border-slate-100 shadow-xl">
                     <div class="flex flex-wrap items-center justify-between gap-6 p-8">
                         <div class="space-y-1">
-                            <h3 class="text-primary-500 font-display text-lg font-black tracking-widest uppercase">Komparasi Kelompok</h3>
-                            <p class="text-xs font-medium text-slate-500 uppercase">Pilih dua kelas untuk membandingkan skor UEQ (Attractiveness) secara statistik.</p>
+                            <h3
+                                class="text-primary-500 font-display text-lg font-black tracking-widest uppercase"
+                            >
+                                Komparasi Kelompok
+                            </h3>
+                            <p class="text-xs font-medium text-slate-500 uppercase">
+                                Pilih dua kelas untuk membandingkan skor UEQ (Attractiveness) secara
+                                statistik.
+                            </p>
                         </div>
                         <div class="flex items-center gap-4">
                             <div class="space-y-2">
-                                <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Kelompok 1</span>
-                                <Select 
-                                    options={ueqState.types.map(t => ({ label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)', value: t }))} 
-                                    bind:value={type1} 
+                                <span
+                                    class="text-[10px] font-black tracking-widest text-slate-400 uppercase"
+                                    >Kelompok 1</span
+                                >
+                                <Select
+                                    options={ueqState.types.map((t) => ({
+                                        label:
+                                            t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)',
+                                        value: t,
+                                    }))}
+                                    bind:value={type1}
                                     placeholder="Tipe 1"
                                     class="w-40 rounded-xl"
                                 />
                             </div>
-                            <div class="text-slate-300 mt-6">
+                            <div class="mt-6 text-slate-300">
                                 <ChevronRight size={20} />
                             </div>
                             <div class="space-y-2">
-                                <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Kelompok 2</span>
-                                <Select 
-                                    options={ueqState.types.map(t => ({ label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)', value: t }))} 
-                                    bind:value={type2} 
+                                <span
+                                    class="text-[10px] font-black tracking-widest text-slate-400 uppercase"
+                                    >Kelompok 2</span
+                                >
+                                <Select
+                                    options={ueqState.types.map((t) => ({
+                                        label:
+                                            t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)',
+                                        value: t,
+                                    }))}
+                                    bind:value={type2}
                                     placeholder="Tipe 2"
                                     class="w-40 rounded-xl"
                                 />
                             </div>
-                            <Button 
-                                variant="primary" 
-                                size="md" 
+                            <Button
+                                variant="primary"
+                                size="md"
                                 class="mt-6 rounded-xl font-black"
                                 icon={Calculator}
                                 onclick={runAnalysis}
@@ -228,7 +262,7 @@
                     </div>
                 </Card>
 
-                <StatisticalAnalysis analysis={analysis} />
+                <StatisticalAnalysis {analysis} />
             </div>
         {/if}
     </div>
