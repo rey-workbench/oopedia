@@ -1,0 +1,788 @@
+@startuml
+title UC-01. Melihat Materi Pembelajaran
+
+|Mahasiswa|
+start
+:Mengakses halaman daftar materi;
+
+|Sistem|
+:Mengidentifikasi pengguna & status akses;
+if (Apakah pengguna sudah login?) then (Ya)
+    :Mengambil seluruh daftar materi\nbeserta status progress per materi;
+else (Tidak / Guest)
+    :Mengambil daftar materi\ndengan akses terbatas;
+endif
+:Menampilkan halaman daftar materi;
+
+|Mahasiswa|
+:Memilih salah satu materi;
+
+|Sistem|
+fork
+    :Mengambil detail materi:\nkonten teks dan daftar sub-materi;
+fork again
+    if (Apakah pengguna login?) then (Ya)
+        :Menyinkronisasi konteks materi\ndengan status adaptif mahasiswa;
+        :Mencatat log akses materi;
+    else (Tidak)
+    endif
+end fork
+:Menampilkan halaman detail materi;
+
+|Mahasiswa|
+:Membaca konten materi;
+
+stop
+@enduml
+
+
+@startuml
+title UC-02. Mengerjakan Kuis
+
+|Mahasiswa|
+start
+:Memilih materi & tingkat kesulitan kuis;
+
+|Sistem|
+:Mengidentifikasi pengguna & status guest;
+if (Apakah pengguna login?) then (Ya)
+    :Menyinkronisasi konteks materi\ndengan status adaptif;
+    :Menentukan tingkat kesulitan target\ndari status adaptif;
+else (Tidak / Guest)
+    :Menggunakan tingkat kesulitan\ndefault / manual;
+endif
+:Mengambil data kuis:\nsoal aktif, progress, total soal;
+if (Apakah masih ada soal tersisa?) then (Tidak)
+    :Mengarahkan ke halaman review hasil kuis;
+    stop
+else (Ya)
+endif
+
+|Sistem|
+:Menampilkan soal saat ini;
+
+|Mahasiswa|
+:Mengisi jawaban soal;
+:Mengirim jawaban;
+
+|Sistem|
+:Memvalidasi format jawaban;
+fork
+    :Memproses jawaban pada layanan kuis;
+    :Menerima hasil status benar/salah;
+fork again
+    if (Apakah pengguna guest?) then (Ya)
+        :Mengambil status sesi sementara;
+    else (Tidak)
+        :Mengambil rekam performa mahasiswa\ndari basis data;
+    endif
+    :Menyinkronisasi status adaptif terbaru;
+end fork
+:Menentukan langkah selanjutnya\nberdasar status adaptif;
+:Mengekstrak rantai aturan\nyang terpicu dari hasil evaluasi;
+:Memformat penjelasan aturan\nuntuk ditampilkan;
+:Mengirim respon balik:\nstatus, pesan, perolehan poin, rekomendasi;
+
+|Mahasiswa|
+:Melihat feedback hasil jawaban;
+:Melanjutkan ke soal berikutnya;
+
+stop
+@enduml
+
+
+@startuml
+title UC-03. Menggunakan Hint Kuis
+
+|Mahasiswa|
+start
+:Menekan tombol hint pada soal;
+
+|Sistem|
+:Mengidentifikasi pengguna & status guest;
+if (Apakah pengguna guest?) then (Ya)
+    :Mengembalikan halaman\ntanpa perubahan (hint tidak dicatat);
+    stop
+else (Tidak)
+endif
+fork
+    :Mencari teks hint pertanyaan\ndi basis data;
+fork again
+    :Mengurangi kuota hint\nmahasiswa di basis data;
+    :Mencatat log penggunaan hint;
+end fork
+:Mengambil status performa terbaru;
+:Menampilkan teks hint &\nmemperbarui status poin di layar;
+
+|Mahasiswa|
+:Membaca teks hint;
+
+stop
+@enduml
+
+
+@startuml
+title UC-04. Melihat Dashboard (In-Progress & Completed)
+
+|Mahasiswa|
+start
+:Mengakses halaman dashboard;
+
+|Sistem|
+:Memverifikasi hak akses:\nharus role mahasiswa login;
+fork
+    :Mengambil data ringkasan dashboard;
+    :Mengambil statistik progres materi;
+fork again
+    :Mengambil data peringkat pengguna\nsaat ini dari layanan leaderboard;
+    :Mengambil daftar lencana (badges)\nyang baru diperoleh;
+end fork
+:Menampilkan halaman utama dashboard:\nstatistik & peringkat;
+
+|Mahasiswa|
+if (Memilih sub-halaman?) then (In-Progress)
+    |Sistem|
+    :Mengambil daftar materi\nyang sedang dikerjakan beserta statistik;
+    :Menampilkan halaman materi\nsedang berjalan;
+elseif (Completed) then
+    |Sistem|
+    :Mengambil daftar materi\nyang sudah selesai beserta statistik;
+    :Menampilkan halaman materi selesai;
+else (Tetap di halaman utama)
+endif
+
+|Mahasiswa|
+:Melihat informasi dashboard;
+
+stop
+@enduml
+
+
+@startuml
+title UC-05. Mengupdate Profil Mahasiswa
+
+|Mahasiswa|
+start
+:Membuka halaman profil;
+
+|Sistem|
+:Mengambil data pengguna,\ndaftar materi, status gamifikasi;
+:Mengambil hasil MSLQ;
+fork
+    :Menghitung profil gaya belajar:\nPelajar Mendalam / Termotivasi\n/ Strategis / Seimbang;
+fork again
+    :Mengambil data diagnosis adaptif terakhir\n& intervensi aktif;
+    :Mengumpulkan data sertifikasi\nyang telah diperoleh;
+end fork
+:Menampilkan halaman profil lengkap;
+
+|Mahasiswa|
+if (Ingin memperbarui data diri?) then (Ya)
+    :Mengisi form perubahan data diri;
+    |Sistem|
+    :Memvalidasi aturan input form;
+    if (Validasi lolos?) then (Ya)
+        :Memperbarui data pengguna\ndi basis data;
+        :Menampilkan pesan berhasil disimpan;
+    else (Tidak)
+        :Menampilkan pesan peringatan\nkesalahan input;
+        |Mahasiswa|
+        :Memperbaiki input data;
+    endif
+else (Tidak)
+endif
+
+stop
+@enduml
+
+
+@startuml
+title UC-06. Melihat & Mengunduh Sertifikat
+
+|Mahasiswa|
+start
+:Mengakses halaman daftar sertifikat;
+
+|Sistem|
+:Mengambil data status mahasiswa\ndari basis data;
+:Membaca daftar sertifikasi\nyang telah diperoleh;
+:Untuk setiap sertifikat:\nmengambil judul materi terkait;
+:Menampilkan daftar sertifikat\nbeserta tier: Gold, Silver, Bronze;
+
+|Mahasiswa|
+if (Memilih aksi?) then (Preview)
+    |Sistem|
+    :Mengambil data mahasiswa,\nmateri, dan tier sertifikat;
+    :Memuat logo, tanda tangan,\ndan membuat kode QR verifikasi;
+    :Menentukan palet warna\nsesuai tier (Gold/Silver/Bronze);
+    :Menampilkan halaman preview sertifikat;
+elseif (Download) then
+    |Sistem|
+    :Memverifikasi apakah mahasiswa\nmemiliki sertifikat untuk materi ini;
+    if (Sertifikat dimiliki?) then (Ya)
+        fork
+            :Meng-generate dokumen PDF\nsertifikat secara otomatis;
+        fork again
+            :Mencatat log akses unduhan;
+            :Memverifikasi kode QR keamanan;
+        end fork
+        :Memberikan file PDF untuk diunduh;
+        |Mahasiswa|
+        :Mengunduh file sertifikat;
+    else (Tidak)
+        :Menolak akses:\nsertifikat belum diperoleh;
+    endif
+else (Kembali)
+endif
+
+stop
+@enduml
+
+
+@startuml
+title UC-07. Melihat Leaderboard
+
+|Mahasiswa|
+start
+:Mengakses halaman leaderboard;
+
+|Sistem|
+:Memverifikasi hak akses mahasiswa login;
+fork
+    :Mengambil data peringkat\nseluruh mahasiswa dari layanan;
+    :Mengkalkulasi total XP dan\nmengurutkan dari tertinggi ke terendah;
+fork again
+    :Mengidentifikasi posisi\nperingkat pengguna saat ini;
+    :Mengambil data statistik\nperforma rata-rata kelas;
+end fork
+:Menampilkan tabel peringkat global\nbeserta posisi pengguna;
+
+|Mahasiswa|
+:Melihat peringkat dan posisinya;
+
+stop
+@enduml
+
+
+@startuml
+title UC-08. Mengisi Survei (MSLQ, SUS, UEQ)
+
+|Mahasiswa|
+start
+:Mengakses form survei\nyang dipilih (MSLQ / SUS / UEQ);
+
+|Sistem|
+:Memeriksa di basis data apakah\npengguna sudah pernah mengisi;
+if (Sudah pernah mengisi?) then (Ya)
+    :Mengarahkan langsung ke\nhalaman terima kasih;
+    stop
+else (Belum)
+endif
+:Mengambil daftar pertanyaan\nsurvei (diurutkan);
+:Menampilkan form kuesioner;
+
+|Mahasiswa|
+:Mengisi seluruh jawaban survei;
+:Mengirim form;
+
+|Sistem|
+:Memvalidasi kelengkapan\ndan kesesuaian jawaban;
+fork
+    :Memproses dan menyimpan\nhasil jawaban survei ke basis data;
+fork again
+    if (Ada data NIM / kelas yang diisi?) then (Ya)
+        :Memperbarui data profil\npengguna (NIM dan kelas);
+    else (Tidak)
+    endif
+    :Menyinkronisasi data analitik;
+end fork
+:Mengarahkan ke halaman terima kasih;
+
+|Mahasiswa|
+:Melihat halaman terima kasih;
+
+stop
+@enduml
+
+
+@startuml
+title UC-09. Reset Progress Materi -skip
+
+|Mahasiswa|
+start
+:Menekan tombol reset\npada halaman materi;
+
+|Sistem|
+:Mengidentifikasi pengguna\nyang sedang aktif;
+if (Apakah pengguna teridentifikasi?) then (Ya)
+    fork
+        :Menghapus seluruh catatan\nriwayat kuis pada materi tersebut;
+    fork again
+        :Mengembalikan metrik evaluasi\ndan status adaptif ke nilai awal;
+        :Menyinkronisasi state mahasiswa;
+    end fork
+else (Tidak)
+    :Mengabaikan permintaan reset;
+endif
+:Mengarahkan pengguna kembali\nke halaman detail materi;
+
+|Mahasiswa|
+:Melihat materi dengan\nprogress yang sudah direset;
+
+stop
+@enduml
+
+
+@startuml
+title UC-10. Evaluasi Adaptive Engine (Forward Chaining)
+
+|Mahasiswa|
+start
+:Menyelesaikan soal kuis;
+:Mengirimkan jawaban;
+
+|Sistem|
+fork
+    :Menyimpan riwayat jawaban;
+    :Memperbarui metrik performa\n(Akurasi, Kecepatan, dll);
+fork again
+    :Menerima permintaan evaluasi adaptif;
+    :Menerima data status pelajar saat ini;
+    :Mengambil definisi fakta primer\ndari basis data;
+
+    repeat
+        :Membaca rumus logika pada\nsetiap definisi fakta;
+        :Membandingkan nilai metrik pelajar\ndengan syarat fakta (operator & threshold);
+        if (Kondisi fakta terpenuhi?) then (Ya)
+            :Menambahkan ke daftar fakta aktif;
+        else (Tidak)
+        endif
+    repeat while (Masih ada definisi fakta?) is (Ya)
+
+    :Mengambil seluruh aturan adaptif\nyang aktif (diurutkan prioritas);
+
+    partition "Loop Forward Chaining\n(Maks 10 Iterasi)" {
+        repeat
+            :Memeriksa setiap aturan:\napakah fakta syarat terpenuhi\ndi daftar fakta aktif?;
+            if (Aturan terpenuhi & belum pernah terpicu?) then (Ya)
+                :Menandai aturan terpicu;
+                if (Aturan menghasilkan fakta baru?) then (Ya)
+                    :Menginjeksikan fakta baru\nke daftar fakta aktif;
+                else (Tidak)
+                endif
+            else (Tidak)
+            endif
+        repeat while (Ada fakta baru ditambahkan?) is (Ya)
+    }
+end fork
+
+if (Ada aturan yang terpicu?) then (Ya)
+    :Mengembalikan hasil:\ndaftar aturan terpicu, aksi,\ndan fakta aktif;
+else (Tidak)
+    :Mencari aturan cadangan (fallback)\ndi basis data;
+    if (Aturan cadangan ditemukan?) then (Ya)
+        :Mengembalikan hasil\ndari aturan cadangan;
+    else (Tidak)
+        :Mengembalikan hasil default\ntanpa aksi;
+    endif
+endif
+
+stop
+@enduml
+
+
+@startuml
+title UC-11. Update Student State (Gamifikasi: XP, Badge, dsb)
+
+|Mahasiswa|
+start
+:Menyelesaikan soal / tantangan;
+
+|Sistem|
+:Menerima permintaan pembaruan\nstatus pelajar dari layanan kuis;
+:Mengambil tingkat kesulitan\nsoal yang dijawab;
+:Menentukan poin dasar\nberdasarkan tingkat kesulitan;
+:Menghitung jumlah percobaan\nmenjawab soal tersebut;
+:Menerapkan faktor pengurang poin\nberdasarkan jumlah percobaan;
+:Menghitung poin akhir:\npoin dasar × faktor pengurang;
+fork
+    :Menambahkan poin akhir\nke total XP mahasiswa;
+    :Memeriksa syarat pencapaian\nlevel baru;
+fork again
+    if (Apakah jawaban benar?) then (Ya)
+        :Menambahkan rekor jawaban\nberturut-turut (streak);
+    else (Tidak)
+        :Mengembalikan rekor streak\nke angka nol;
+    endif
+    :Memperbarui nilai streak maksimum;
+    :Memeriksa syarat pemberian badge;
+end fork
+:Menyimpan seluruh perubahan\nke tabel student states;
+
+stop
+@enduml
+
+
+@startuml
+title UC-11. Tambah Materi & Media
+
+|"Admin / Dosen"|
+start
+:Mengakses form tambah materi;
+:Mengisi judul dan konten materi;
+if (Perlu media?) then (Ya)
+    :Unggah file media;
+    |Sistem|
+    :Proses upload & simpan file;
+    |"Admin / Dosen"|
+    :Sisipkan URL ke konten;
+else (Tidak)
+endif
+
+|Sistem|
+fork
+    :Simpan data materi ke basis data;
+fork again
+    :Update indeks pencarian;
+    :Catat log audit pembuatan;
+end fork
+:Menampilkan pesan sukses;
+stop
+@enduml
+
+
+@startuml
+title UC-12. Edit Materi & Media
+
+|"Admin / Dosen"|
+start
+:Memilih materi yang akan diedit;
+
+|Sistem|
+:Ambil data materi & media;
+|"Admin / Dosen"|
+:Ubah judul / konten / media;
+
+|Sistem|
+fork
+    :Perbarui data di basis data;
+fork again
+    :Refresh cache materi;
+    :Catat log audit pembaruan;
+end fork
+:Menampilkan pesan sukses;
+stop
+@enduml
+
+
+@startuml
+title UC-14. Hapus Materi & Media
+
+|"Admin / Dosen"|
+start
+:Pilih materi untuk dihapus;
+:Konfirmasi penghapusan;
+
+|Sistem|
+fork
+    :Hapus record materi & sub-materi;
+fork again
+    :Hapus file media fisik;
+    :Catat log audit penghapusan;
+end fork
+:Menampilkan pesan sukses;
+stop
+@enduml
+
+
+@startuml
+title UC-15. Tambah Soal Kuis
+
+|"Admin / Dosen"|
+start
+:Pilih materi & tipe soal;
+:Input pertanyaan & pilihan jawaban;
+:Tentukan kunci jawaban & hint;
+
+|Sistem|
+:Validasi kelengkapan data;
+if (Valid?) then (Ya)
+    fork
+        :Simpan pertanyaan utama;
+    fork again
+        :Simpan opsi jawaban & hint;
+        :Catat log pembuatan soal;
+    end fork
+    :Tampilkan pesan sukses;
+else (Tidak)
+    :Tampilkan pesan error;
+endif
+stop
+@enduml
+
+
+@startuml
+title UC-16. Edit Soal Kuis
+
+|"Admin / Dosen"|
+start
+:Pilih soal yang akan diubah;
+:Ubah teks / tipe / kunci jawaban;
+
+|Sistem|
+fork
+    :Update record pertanyaan;
+fork again
+    :Update record jawaban & hint;
+    :Catat log audit edit soal;
+end fork
+:Menampilkan pesan sukses;
+stop
+@enduml
+
+
+@startuml
+title UC-17. Hapus Soal Kuis
+
+|"Admin / Dosen"|
+start
+:Pilih soal untuk dihapus;
+:Konfirmasi penghapusan;
+
+|Sistem|
+fork
+    :Hapus record soal;
+fork again
+    :Hapus opsi jawaban terkait;
+    :Catat log audit hapus soal;
+end fork
+:Menampilkan pesan sukses;
+stop
+@enduml
+
+
+@startuml
+title UC-18. Tambah Adaptive Rule
+
+|"Admin / Dosen"|
+start
+:Input fakta syarat & deduksi;
+:Pilih aksi & tentukan prioritas;
+
+|Sistem|
+fork
+    :Simpan aturan baru ke DB;
+fork again
+    :Validasi integritas logika engine;
+    :Catat log pembuatan rule;
+end fork
+:Tampilkan pesan sukses;
+stop
+@enduml
+
+
+@startuml
+title UC-19. Edit Adaptive Rule
+
+|"Admin / Dosen"|
+start
+:Pilih rule yang akan diubah;
+:Ubah parameter syarat / aksi;
+
+|Sistem|
+fork
+    :Update data rule di DB;
+fork again
+    :Refresh status prioritas engine;
+    :Catat log audit edit rule;
+end fork
+:Tampilkan pesan sukses;
+stop
+@enduml
+
+
+@startuml
+title UC-20. Hapus Adaptive Rule
+
+|"Admin / Dosen"|
+start
+:Pilih rule untuk dihapus;
+:Konfirmasi penghapusan;
+
+|Sistem|
+fork
+    :Hapus data rule dari DB;
+fork again
+    :Re-order prioritas aturan tersisa;
+    :Catat log audit hapus rule;
+end fork
+:Tampilkan pesan sukses;
+stop
+@enduml
+
+
+@startuml
+title UC-21. Tambah Mahasiswa (Manual)
+
+|"Admin / Dosen"|
+start
+:Input Nama, Email, NIM, Password;
+
+|Sistem|
+:Validasi duplikasi data;
+if (Data Valid?) then (Ya)
+    fork
+        :Simpan akun mahasiswa baru;
+    fork again
+        :Inisialisasi student state awal;
+        :Catat log pendaftaran;
+    end fork
+    :Tampilkan pesan sukses;
+else (Tidak)
+    :Tampilkan error data duplikat;
+endif
+stop
+@enduml
+
+
+@startuml
+title UC-22. Import Mahasiswa (CSV)
+
+|"Admin / Dosen"|
+start
+:Unggah file CSV mahasiswa;
+
+|Sistem|
+:Validasi format & tipe file;
+:Parsing data baris demi baris;
+fork
+    :Simpan akun-akun yang valid;
+fork again
+    :Simpan log ringkasan import;
+    :Inisialisasi state massal;
+end fork
+:Tampilkan hasil (Sukses/Gagal);
+stop
+@enduml
+
+
+@startuml
+title UC-23. Hapus Mahasiswa
+
+|"Admin / Dosen"|
+start
+:Pilih mahasiswa untuk dihapus;
+:Konfirmasi penghapusan;
+
+|Sistem|
+fork
+    :Hapus akun mahasiswa;
+fork again
+    :Hapus riwayat progress & state;
+    :Catat log audit penghapusan;
+end fork
+:Menampilkan pesan sukses;
+stop
+@enduml
+
+
+@startuml
+title UC-24. Approval Akun Dosen
+
+|"Super Admin"|
+start
+:Lihat antrean akun pending;
+:Pilih Setujui atau Tolak;
+
+|Sistem|
+if (Disetujui?) then (Ya)
+    fork
+        :Ubah status akun jadi aktif;
+    fork again
+        :Kirim notifikasi persetujuan;
+        :Catat log audit approval;
+    end fork
+else (Tolak)
+    :Hapus pendaftaran akun;
+endif
+:Tampilkan pesan sukses;
+stop
+@enduml
+
+
+@startuml
+title UC-25. Tambah Akun Admin/Dosen
+
+|"Super Admin"|
+start
+:Input Nama, Email, Role;
+
+|Sistem|
+fork
+    :Simpan akun admin/dosen;
+fork again
+    :Set hak akses sesuai role;
+    :Catat log audit super-admin;
+end fork
+:Tampilkan pesan sukses;
+stop
+@enduml
+
+
+@startuml
+title UC-26. Hapus Akun Admin/Dosen
+
+|"Super Admin"|
+start
+:Pilih akun untuk dihapus;
+:Konfirmasi penghapusan;
+
+|Sistem|
+fork
+    :Hapus data akun dari DB;
+fork again
+    :Hapus log akses terkait;
+    :Catat log audit penghapusan;
+end fork
+:Menampilkan pesan sukses;
+stop
+@enduml
+
+
+@startuml
+title UC-27. Rekapitulasi & Analisis Survei
+
+|"Super Admin"|
+start
+:Pilih jenis survei (UEQ/SUS/MSLQ);
+
+|Sistem|
+:Ambil data jawaban responden;
+fork
+    :Hitung rata-rata per dimensi;
+fork again
+    :Generate grafik distribusi skor;
+    :Analisis statistik perbandingan;
+end fork
+:Tampilkan dashboard analitik;
+stop
+@enduml
+
+
+@startuml
+title UC-27. Export Hasil Survei (CSV)
+
+|"Super Admin"|
+start
+:Pilih survei & klik Export;
+
+|Sistem|
+fork
+    :Kumpulkan data mentah jawaban;
+fork again
+    :Generate file CSV di server;
+    :Catat log audit export data;
+end fork
+:Berikan file untuk diunduh;
+stop
+@enduml

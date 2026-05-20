@@ -1,0 +1,187 @@
+@startuml
+!theme plain
+skinparam linetype ortho
+skinparam shadowing false
+hide circles
+
+skinparam class {
+    BackgroundColor white
+    BorderColor #333333
+    ArrowColor #666666
+    FontSize 12
+    HeaderBackgroundColor #F0F0F0
+}
+
+title ERD Database OOPedia (Laravel Migrations)
+
+class "roles" as roles {
+    * id : ULID <<PK>>
+    --
+    * role_name : varchar(50)
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+class "users" as users {
+    * id : ULID <<PK>>
+    --
+    * role_id : ULID <<FK>>
+    * name : varchar(100)
+    * email : varchar(100)
+    * password : varchar(255)
+    nim : varchar(20)
+    class : varchar(20)
+    google_id : varchar(255)
+    is_approved : boolean
+    remember_token : varchar(100)
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+class "student_states" as student_states {
+    * id : ULID <<PK>>
+    --
+    * user_id : ULID <<FK>>
+    xp : int
+    level : varchar(50)
+    streak : int
+    max_streak : int
+    badges : json
+    learning_style : varchar(20)
+    unlocked_modules : json
+    total_answered : int
+    correct_count : int
+    wrong_count : int
+    hints_used : int
+    last_active_at : timestamp
+}
+
+class "materials" as materials {
+    * id : ULID <<PK>>
+    --
+    * title : varchar(255)
+    * content : text
+    cover_url : varchar(255)
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+class "media" as media {
+    * id : ULID <<PK>>
+    --
+    * material_id : ULID <<FK>>
+    * file_path : varchar(255)
+    * file_type : varchar(50)
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+class "questions" as questions {
+    * id : ULID <<PK>>
+    --
+    * material_id : ULID <<FK>>
+    * question_text : text
+    question_type : enum
+    difficulty : enum
+    hint : text
+    explanation : text
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+class "answers" as answers {
+    * id : ULID <<PK>>
+    --
+    * question_id : ULID <<FK>>
+    * answer_text : text
+    * is_correct : boolean
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+class "quiz_attempts" as quiz_attempts {
+    * id : ULID <<PK>>
+    --
+    * user_id : ULID <<FK>>
+    * question_id : ULID <<FK>>
+    * score : float
+    * time_spent : int
+    created_at : timestamp
+}
+
+' --- ADAPTIVE ENGINE ---
+class "adaptive_rules" as rules {
+    * id : ULID <<PK>>
+    --
+    * name : varchar(255)
+    priority : int
+    recommendation : text
+    metadata : json
+}
+
+class "adaptive_facts" as facts {
+    * id : ULID <<PK>>
+    --
+    * name : varchar(100)
+    logic : text
+}
+
+class "adaptive_actions" as actions {
+    * id : ULID <<PK>>
+    --
+    * name : varchar(100)
+}
+
+class "adaptive_execution_logs" as logs {
+    * id : ULID <<PK>>
+    --
+    * user_id : ULID <<FK>>
+    * rule_id : ULID <<FK>>
+    triggered_at : timestamp
+}
+
+' --- SURVEYS ---
+class "mslq_results" as mslq_results {
+    * id : ULID <<PK>>
+    --
+    * user_id : ULID <<FK>>
+    scores : json
+    learning_profile : varchar(50)
+    assessment_type : varchar(50)
+}
+
+class "ueq_surveys" as ueq {
+    * id : ULID <<PK>>
+    --
+    * user_id : ULID <<FK>>
+    nim : varchar(20)
+    class : varchar(20)
+    q1_to_q26 : int
+}
+
+class "sus_results" as sus_results {
+    * id : ULID <<PK>>
+    --
+    * user_id : ULID <<FK>>
+    score : float
+}
+
+' --- RELATIONS ---
+roles ||--o{ users
+users ||--|| student_states
+materials ||--o{ media
+materials ||--o{ questions
+questions ||--o{ answers
+users ||--o{ quiz_attempts
+quiz_attempts }o--|| questions
+
+rules }o--o{ facts : "requires"
+rules ||--o{ actions : "triggers"
+users ||--o{ logs
+logs }o--|| rules
+
+users ||--o{ mslq_results
+users ||--o{ ueq
+users ||--o{ sus_results
+
+@enduml

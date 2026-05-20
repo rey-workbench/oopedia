@@ -1,0 +1,185 @@
+@startuml
+' -- Konfigurasi Estetika UML Klasik --
+skinparam linetype ortho
+skinparam shadowing false
+skinparam nodesep 40
+skinparam ranksep 60
+skinparam class {
+    BackgroundColor white
+    BorderColor black
+    ArrowColor black
+    FontSize 12
+}
+hide circle
+hide empty methods
+
+' --- 1. USER & ROLE ---
+class User {
+    +id: ULID
+    +name: String
+    +email: String
+    +password: String
+    +role_id: ULID
+    +is_approved: Boolean
+}
+
+class Role {
+    +id: ULID
+    +role_name: String
+}
+
+class StudentState {
+    +id: ULID
+    +user_id: ULID
+    +xp: Integer
+    +level: String
+    +accuracy: Float
+    +performance_metrics: JSON
+    +adaptive_state: JSON
+}
+
+' --- 2. LEARNING MANAGEMENT (LMS) ---
+class Material {
+    +id: ULID
+    +title: String
+    +content: Text
+}
+
+class Media {
+    +id: ULID
+    +material_id: ULID
+    +file_path: String
+    +file_type: String
+}
+
+class Question {
+    +id: ULID
+    +material_id: ULID
+    +question_text: Text
+    +difficulty: Enum
+}
+
+class Answer {
+    +id: ULID
+    +question_id: ULID
+    +answer_text: Text
+    +is_correct: Boolean
+}
+
+class QuizAttempt {
+    +id: ULID
+    +user_id: ULID
+    +question_id: ULID
+    +score: Integer
+    +is_correct: Boolean
+    +time_spent: Float
+}
+
+' --- 3. ADAPTIVE ENGINE ---
+class AdaptiveRule {
+    +id: String
+    +name: String
+    +required_fact_ids: JSON
+    +deduced_fact_ids: JSON
+    +priority: Integer
+}
+
+class AdaptiveFact {
+    +id: String
+    +name: String
+    +logic: JSON
+}
+
+class AdaptiveAction {
+    +id: ULID
+    +action_type: String
+    +payload: JSON
+}
+
+class AdaptiveExecutionLog {
+    +id: ULID
+    +user_id: ULID
+    +rule_id: String
+    +facts_at_time: JSON
+}
+
+' --- 4. SURVEYS (MSLQ, SUS, UEQ) ---
+class MslqQuestion {
+    +id: Integer
+    +category: String
+    +text: String
+}
+
+class MslqAnswer {
+    +id: ULID
+    +user_id: ULID
+    +question_id: Integer
+    +value: Integer
+}
+
+class MslqResult {
+    +id: ULID
+    +user_id: ULID
+    +scores: JSON
+    +learning_profile: String
+}
+
+class SusQuestion {
+    +id: Integer
+    +text: String
+}
+
+class SusAnswer {
+    +id: ULID
+    +user_id: ULID
+    +question_id: Integer
+    +value: Integer
+}
+
+class SusResult {
+    +id: ULID
+    +user_id: ULID
+    +score: Float
+}
+
+class UeqSurvey {
+    +id: ULID
+    +user_id: ULID
+    +q1_to_q26: Integer
+    +nim: String
+    +class: String
+}
+
+' --- HUBUNGAN (RELATIONSHIPS) ---
+
+' Auth & Identity
+User "1" -up-> "1" Role : has role
+User "1" -- "1" StudentState : has state
+
+' LMS
+Material "1" *-- "M" Media : attaches
+Material "1" *-- "M" Question : consists of
+Question "1" *-- "M" Answer : provides
+User "1" -- "M" QuizAttempt : performs
+QuizAttempt "M" -- "1" Question : answers
+
+' Adaptive
+AdaptiveRule "M" o-- "M" AdaptiveFact : requires
+AdaptiveRule "1" -- "M" AdaptiveAction : triggers
+User "1" -- "M" AdaptiveExecutionLog : generates
+AdaptiveExecutionLog "M" -- "1" AdaptiveRule : logs
+
+' MSLQ
+MslqResult "1" -- "M" MslqAnswer : derived from
+User "1" -- "1" MslqResult : gets
+MslqAnswer "M" -- "1" MslqQuestion : answers
+
+' SUS
+SusResult "1" -- "M" SusAnswer : derived from
+User "1" -- "1" SusResult : gets
+SusAnswer "M" -- "1" SusQuestion : answers
+
+' UEQ
+User "1" -- "M" UeqSurvey : fills
+
+@enduml

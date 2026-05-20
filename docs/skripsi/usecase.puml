@@ -1,0 +1,79 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+    BackgroundColor LightSkyBlue
+    BorderColor RoyalBlue
+}
+skinparam actor {
+    BackgroundColor Gold
+    BorderColor DarkGoldenRod
+}
+
+actor "Mahasiswa Tamu (Guest)" as Guest
+actor "Mahasiswa (Login)" as Student
+actor "Dosen" as Dosen
+actor "Super Admin" as Superadmin
+
+rectangle "Sistem E-Learning Adaptif OOPedia" {
+    
+    ' Shared (Guest & Login)
+    usecase "Melihat Materi Pembelajaran" as UC_Materi
+    usecase "Mengerjakan Kuis" as UC_Kuis
+    usecase "Menggunakan Hint Kuis" as UC_Hint
+    
+    ' Student Use Cases
+    usecase "Melihat Dashboard (In-Progress & Completed)" as UC_Dashboard
+    usecase "Mengupdate Profil Mahasiswa" as UC_UpdateProfil
+    usecase "Melihat & Mengunduh Sertifikat" as UC_Sertifikat
+    usecase "Melihat Leaderboard" as UC_Leaderboard
+    usecase "Mengisi Survei (MSLQ, SUS, UEQ)" as UC_Kuesioner
+    usecase "Reset Progress Materi" as UC_ResetProgress
+    
+    ' System Internal (Includes untuk Adaptive Quiz)
+    usecase "Evaluasi Adaptive Engine\n(Forward Chaining)" as UC_Engine
+    usecase "Update Student State\n(Gamifikasi: XP, Badge, dsb)" as UC_Gamification
+    
+    ' Admin (Dosen & Superadmin) Use Cases
+    usecase "Mengelola Materi & Media (Upload/Delete)" as UC_KelolaMateri
+    usecase "Mengelola Bank Soal" as UC_KelolaSoal
+    usecase "Mengelola Adaptive Rules & Actions" as UC_KelolaRules
+    usecase "Manajemen Data Mahasiswa\n(CRUD & Import CSV)" as UC_KelolaMhs
+    
+    ' Superadmin Only
+    usecase "Manajemen Akun Admin/Dosen\n(Approval & Import)" as UC_KelolaAdmin
+    usecase "Melihat & Export Hasil Survei" as UC_ExportSurvei
+}
+
+' Relasi Aktor Guest (Shared)
+Guest --> UC_Materi
+Guest --> UC_Kuis
+Guest --> UC_Hint
+
+' Relasi Aktor Student (Mewarisi akses Guest)
+Student -|> Guest 
+Student --> UC_Dashboard
+Student --> UC_UpdateProfil
+Student --> UC_Sertifikat
+Student --> UC_Leaderboard
+Student --> UC_Kuesioner
+Student --> UC_ResetProgress
+
+' Include relationships dari Kuis Interaktif
+UC_Kuis ..> UC_Engine : <<include>>
+UC_Kuis ..> UC_Gamification : <<include>>
+
+' Relasi Hierarchy Dosen dan Superadmin
+Superadmin -|> Dosen
+
+' Relasi Aktor Dosen
+Dosen --> UC_KelolaMateri
+Dosen --> UC_KelolaSoal
+Dosen --> UC_KelolaRules
+Dosen --> UC_KelolaMhs
+
+' Relasi Aktor Superadmin
+Superadmin --> UC_KelolaAdmin
+Superadmin --> UC_ExportSurvei
+
+@enduml

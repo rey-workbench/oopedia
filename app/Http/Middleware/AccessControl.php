@@ -43,29 +43,6 @@ class AccessControl
             return to_route('admin.pending-approval');
         }
 
-        if ($userRoleValue === RoleName::GUEST->value) {
-            $allowedRoutes = [
-                'mahasiswa.materials.index',
-                'mahasiswa.materials.show',
-                'mahasiswa.materials.questions.index',
-                'mahasiswa.materials.questions.show',
-                'mahasiswa.materials.questions.review',
-                'mahasiswa.materials.questions.levels',
-                'mahasiswa.materials.questions.check',
-                'mahasiswa.materials.questions.attempts',
-                'mahasiswa.materials.reset',
-                'logout',
-                'login',
-            ];
-
-            $routeName = $request->route()?->getName();
-
-            if ($routeName && ! in_array($routeName, $allowedRoutes)) {
-                return to_route('mahasiswa.materials.index')
-                    ->with('info', 'Fitur ini hanya tersedia untuk mahasiswa terdaftar.');
-            }
-        }
-
         return $next($request);
     }
 }
