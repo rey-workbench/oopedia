@@ -24,7 +24,8 @@ final class AdminUserController extends Controller
     public function __construct(
         private readonly UserServiceInterface $userService,
         private readonly RoleRepositoryInterface $roleRepository,
-    ) {}
+    ) {
+    }
 
     public function index(Request $request): Response
     {

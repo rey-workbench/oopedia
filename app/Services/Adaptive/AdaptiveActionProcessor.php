@@ -101,10 +101,10 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
         if ($currentIndex > 0) {
             // Cek apakah ada soal dengan tingkat kesulitan di bawahnya yang belum dijawab benar
             $lowerDifficulties = array_slice(self::DIFFICULTY_ORDER, 0, $currentIndex);
-            
+
             $availableLowerQuestions = Question::where('material_id', $materialId)
                 ->whereIn('difficulty', $lowerDifficulties)
-                ->whereNotIn('id', function($query) use ($studentState) {
+                ->whereNotIn('id', function ($query) use ($studentState) {
                     $query->select('question_id')
                           ->from('quiz_attempts')
                           ->where('user_id', $studentState->user_id)

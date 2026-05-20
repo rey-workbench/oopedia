@@ -20,7 +20,8 @@ final readonly class PerformanceService implements PerformanceServiceInterface
 {
     public function __construct(
         private StudentStateRepositoryInterface $studentStateRepository,
-    ) {}
+    ) {
+    }
 
     public function findOrCreateStudentState(string $userId): StudentState
     {

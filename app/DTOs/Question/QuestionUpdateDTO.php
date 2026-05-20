@@ -14,7 +14,8 @@ final readonly class QuestionUpdateDTO
         public ?string $question_type = null,
         public ?string $difficulty = null,
         public ?array $answers = null,
-    ) {}
+    ) {
+    }
 
     public static function fromRequest(Request $request): self
     {

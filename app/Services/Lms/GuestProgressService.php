@@ -14,12 +14,13 @@ use Illuminate\Support\Facades\Cookie;
 final readonly class GuestProgressService implements GuestProgressServiceInterface
 {
     public function __construct(
-        private string $cookieName        = 'guest_progress',
-        private string $cookieXp          = 'guest_xp',
-        private string $cookieStreak      = 'guest_streak',
+        private string $cookieName = 'guest_progress',
+        private string $cookieXp = 'guest_xp',
+        private string $cookieStreak = 'guest_streak',
         private string $cookiePerformance = 'guest_performance',
-        private int $cookieLifetime       = 60 * 24 * 30,
-    ) {}
+        private int $cookieLifetime = 60 * 24 * 30,
+    ) {
+    }
 
     /** @return array<string, mixed> */
     public function getProgress(): array

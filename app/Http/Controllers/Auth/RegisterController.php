@@ -17,7 +17,8 @@ final class RegisterController extends Controller
 {
     public function __construct(
         private readonly UserServiceInterface $userService,
-    ) {}
+    ) {
+    }
 
     public function create(): Response
     {

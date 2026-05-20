@@ -20,7 +20,8 @@ final readonly class SusResultService implements SusResultServiceInterface
     public function __construct(
         private SusResultRepositoryInterface $susResultRepository,
         private StatisticalAnalysisService $statisticalAnalysisService,
-    ) {}
+    ) {
+    }
 
     public function getAllResults(?AssessmentType $type = null): SupportCollection
     {

@@ -17,7 +17,8 @@ final readonly class UeqSurveyService implements UeqSurveyServiceInterface
     public function __construct(
         public UeqSurveyRepositoryInterface $ueqRepo,
         private StatisticalAnalysisService $statisticalAnalysisService,
-    ) {}
+    ) {
+    }
 
     public function getAllSurveys(?AssessmentType $type = null): SupportCollection
     {

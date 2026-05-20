@@ -15,7 +15,8 @@ final readonly class SusResultCreateDTO
         public array $answers = [],
         public ?string $comments = null,
         public ?string $suggestions = null,
-    ) {}
+    ) {
+    }
 
     public static function fromRequest(Request $request, string $userId): self
     {

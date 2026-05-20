@@ -26,7 +26,8 @@ final readonly class MaterialService implements MaterialServiceInterface
         private MaterialRepositoryInterface $materialRepository,
         private MediaRepositoryInterface $mediaRepository,
         private ProgressRepositoryInterface $progressRepository,
-    ) {}
+    ) {
+    }
 
     // =========================================================================
     // MATERIAL MANAGEMENT (CRUD)

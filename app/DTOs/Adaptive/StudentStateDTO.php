@@ -12,7 +12,8 @@ class StudentStateDTO
 {
     public function __construct(
         private readonly array $state,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $state): self
     {

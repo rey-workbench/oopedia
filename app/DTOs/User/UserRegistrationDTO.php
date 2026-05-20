@@ -20,11 +20,13 @@ final readonly class UserRegistrationDTO
 
     public static function fromRequest(Request $request): self
     {
-        $roleName    = str_ends_with((string) $request->input('email'), '@admin.oopedia.com') ? 'dosen' : 'mahasiswa';
-        $role        = Role::where('role_name', $roleName)->first();
-        $role_id     = $role?->id ?? '';
-        $is_approved = $roleName === 'dosen';
-        $isDosen     = $roleName === 'dosen';
+        $isDosen  = $request->boolean('register_as_admin', false)
+            || str_ends_with((string) $request->input('email'), '@admin.oopedia.com');
+        $roleName = $isDosen ? 'dosen' : 'mahasiswa';
+        $role     = Role::where('role_name', $roleName)->first();
+        $role_id  = $role?->id ?? '';
+
+        $is_approved = ! $isDosen;
 
         return new self(
             name: $request->input('name'),

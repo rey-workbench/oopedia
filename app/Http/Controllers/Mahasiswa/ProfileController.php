@@ -24,7 +24,8 @@ final class ProfileController extends Controller
         private readonly MaterialRepositoryInterface $materialRepository,
         private readonly UserServiceInterface $userService,
         private readonly ProgressRepositoryInterface $progressRepository,
-    ) {}
+    ) {
+    }
 
     public function show(): Response
     {

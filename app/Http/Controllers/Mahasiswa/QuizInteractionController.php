@@ -20,7 +20,8 @@ final class QuizInteractionController extends Controller
         private readonly QuizServiceInterface $quizService,
         private readonly PerformanceServiceInterface $performanceService,
         private readonly GuestProgressServiceInterface $guestProgressService,
-    ) {}
+    ) {
+    }
 
     /**
      * Handle question submission and process adaptive logic.

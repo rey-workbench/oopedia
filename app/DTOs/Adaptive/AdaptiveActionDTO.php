@@ -17,7 +17,8 @@ final readonly class AdaptiveActionDTO
         public string $description,
         public ?string $variant,
         public array $instructions,
-    ) {}
+    ) {
+    }
 
     public static function fromRequest(Request $request, ?string $id = null): self
     {

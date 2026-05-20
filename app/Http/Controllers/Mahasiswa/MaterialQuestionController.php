@@ -28,7 +28,8 @@ final class MaterialQuestionController extends Controller
         private readonly ProgressRepositoryInterface $progressRepository,
         private readonly PerformanceServiceInterface $performanceService,
         private readonly GuestProgressServiceInterface $guestProgressService,
-    ) {}
+    ) {
+    }
 
     public function index(): Response
     {

@@ -16,12 +16,13 @@ final class MslqController extends Controller
 {
     public function __construct(
         private readonly MslqServiceInterface $mslqService,
-    ) {}
+    ) {
+    }
 
     public function index(Request $request): Response
     {
         $type = $request->query('type') ? AssessmentType::tryFrom($request->query('type')) : null;
-        
+
         $lengthAwarePaginator     = $this->mslqService->getAdminResults($type);
         $distinctTypes            = $this->mslqService->getDistinctAssessmentTypes();
         $metricsData              = $this->mslqService->calculateGlobalMetrics($type);

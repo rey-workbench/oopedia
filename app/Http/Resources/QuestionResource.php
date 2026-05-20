@@ -57,8 +57,8 @@ final class QuestionResource extends JsonResource
             })),
             'answers_count' => $this->whenCounted('answers', $this->answers_count),
             'blank_length'  => $this->question_type === QuestionType::FILL_IN_THE_BLANK
-                ? ($this->relationLoaded('answers') 
-                    ? mb_strlen(trim($this->answers->firstWhere('is_correct', true)?->answer_text ?? '')) 
+                ? ($this->relationLoaded('answers')
+                    ? mb_strlen(trim($this->answers->firstWhere('is_correct', true)?->answer_text ?? ''))
                     : 0)
                 : null,
             'user_attempt'  => $this->when($this->resource->user_attempt !== null, $this->resource->user_attempt),

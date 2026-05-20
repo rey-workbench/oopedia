@@ -19,5 +19,6 @@ final readonly class InteractionDTO
         public QuestionDifficulty $difficulty,
         public bool $usedHint,
         public int $score = 0,
-    ) {}
+    ) {
+    }
 }

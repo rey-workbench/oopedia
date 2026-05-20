@@ -21,7 +21,8 @@ final readonly class MslqService implements MslqServiceInterface
     public function __construct(
         private MslqRepositoryInterface $mslqRepository,
         private StatisticalAnalysisService $statisticalAnalysisService,
-    ) {}
+    ) {
+    }
 
     public function getAdminResults(?AssessmentType $type = null): LengthAwarePaginator
     {

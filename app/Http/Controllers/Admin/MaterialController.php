@@ -19,7 +19,8 @@ final class MaterialController extends Controller
 {
     public function __construct(
         private readonly MaterialServiceInterface $materialService,
-    ) {}
+    ) {
+    }
 
     public function index(Request $request): Response
     {

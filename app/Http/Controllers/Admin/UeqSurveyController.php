@@ -13,7 +13,9 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 final class UeqSurveyController extends Controller
 {
-    public function __construct(private readonly UeqSurveyServiceInterface $ueqSurveyService) {}
+    public function __construct(private readonly UeqSurveyServiceInterface $ueqSurveyService)
+    {
+    }
 
     public function index(Request $request): Response
     {

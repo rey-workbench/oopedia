@@ -12,7 +12,8 @@ final readonly class AdminUpdateDTO
         public ?string $name = null,
         public ?string $email = null,
         public ?string $password = null,
-    ) {}
+    ) {
+    }
 
     public static function fromRequest(Request $request): self
     {

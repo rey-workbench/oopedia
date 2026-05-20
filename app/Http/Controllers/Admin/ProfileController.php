@@ -17,7 +17,8 @@ final class ProfileController extends Controller
 {
     public function __construct(
         private readonly UserServiceInterface $userService,
-    ) {}
+    ) {
+    }
 
     public function show(): Response
     {

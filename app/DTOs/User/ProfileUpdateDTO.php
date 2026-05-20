@@ -14,7 +14,8 @@ final readonly class ProfileUpdateDTO
         public ?string $nim = null,
         public ?string $class = null,
         public ?string $password = null,
-    ) {}
+    ) {
+    }
 
     public static function fromRequest(Request $request): self
     {

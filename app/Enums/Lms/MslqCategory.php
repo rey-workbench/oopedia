@@ -8,5 +8,4 @@ enum MslqCategory: string
 {
     case MOTIVATION        = 'motivation';
     case LEARNING_STRATEGY = 'learning_strategy';
-
 }

@@ -22,7 +22,8 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
 {
     public function __construct(
         private StudentStateRepositoryInterface $studentStateRepository,
-    ) {}
+    ) {
+    }
 
     public function getUserProgressStats(?string $userId): Collection
     {

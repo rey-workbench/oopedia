@@ -25,7 +25,8 @@ final readonly class AdaptiveRuleDTO
         public ?string $logic = null,
         public array $facts = [],
         public array $deduced_facts = [],
-    ) {}
+    ) {
+    }
 
     public static function fromRequest(Request $request): self
     {

@@ -19,5 +19,6 @@ final readonly class QuizContextDTO
         public bool $isGuest,
         public array $guestProgress = [],
         public ?QuestionDifficulty $targetDifficulty = null,
-    ) {}
+    ) {
+    }
 }

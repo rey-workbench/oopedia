@@ -18,7 +18,8 @@ final class MediaController extends Controller
 {
     public function __construct(
         private readonly MediaRepositoryInterface $mediaRepository,
-    ) {}
+    ) {
+    }
 
     public function upload(Request $request): JsonResponse
     {

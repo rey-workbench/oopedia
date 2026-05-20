@@ -12,7 +12,8 @@ final readonly class AdminCreateDTO
         public string $name,
         public string $email,
         public string $password,
-    ) {}
+    ) {
+    }
 
     public static function fromRequest(Request $request): self
     {

@@ -23,7 +23,8 @@ final readonly class AdaptiveAnalyticsService implements AdaptiveAnalyticsServic
     public function __construct(
         private AdaptiveRuleRepositoryInterface $adaptiveRuleRepository,
         private AdaptiveExecutionLogRepositoryInterface $adaptiveExecutionLogRepository,
-    ) {}
+    ) {
+    }
 
     public function getDashboardStats(): array
     {

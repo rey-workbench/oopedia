@@ -10,5 +10,4 @@ enum QuestionDifficulty: string
     case MEDIUM   = 'medium';
     case HARD     = 'hard';
     case FINAL    = 'final';
-
 }

@@ -20,7 +20,8 @@ final readonly class QuizSubmissionDTO
         public mixed $dragAndDropAnswers = null,
         public bool $usedHint = false,
         public int $timeSpent = 0,
-    ) {}
+    ) {
+    }
 
     public static function fromRequest(string $userId, string $materialId, string $questionId, array $data): self
     {

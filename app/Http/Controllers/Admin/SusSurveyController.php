@@ -13,7 +13,9 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 final class SusSurveyController extends Controller
 {
-    public function __construct(private readonly SusResultServiceInterface $susResultService) {}
+    public function __construct(private readonly SusResultServiceInterface $susResultService)
+    {
+    }
 
     public function index(Request $request): Response
     {

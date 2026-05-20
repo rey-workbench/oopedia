@@ -21,5 +21,4 @@ enum MslqScale: string
     case EFFORT_REGULATION                      = 'mslq_effort_regulation';
     case PEER_LEARNING                          = 'mslq_peer_learning';
     case HELP_SEEKING                           = 'mslq_help_seeking';
-
 }

@@ -20,7 +20,8 @@ final class MslqController extends Controller
 {
     public function __construct(
         private readonly MslqServiceInterface $mslqService,
-    ) {}
+    ) {
+    }
 
     public function create(Request $request): Response|RedirectResponse
     {
@@ -28,7 +29,7 @@ final class MslqController extends Controller
         $existing = MslqResult::where('user_id', Auth::id())
             ->where('assessment_type', $type)
             ->first();
-            
+
         if ($existing) {
             return to_route('mahasiswa.surveys.mslq.thankyou');
         }
@@ -47,14 +48,14 @@ final class MslqController extends Controller
         $existing = MslqResult::where('user_id', Auth::id())
             ->where('assessment_type', $validated['assessment_type'])
             ->first();
-            
+
         if ($existing) {
             return to_route('mahasiswa.surveys.mslq.thankyou');
         }
 
         try {
             $validated = $storeMslqRequest->validated();
-            
+
             // Update user profile if nim or class is provided
             if (!empty($validated['nim']) || !empty($validated['class'])) {
                 Auth::user()->update([

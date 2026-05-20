@@ -24,7 +24,8 @@ final class CertificateController extends Controller
     public function __construct(
         private readonly MaterialRepositoryInterface $materialRepository,
         private readonly ProgressRepositoryInterface $progressRepository,
-    ) {}
+    ) {
+    }
 
     public function index(): Response
     {

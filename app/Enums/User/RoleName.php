@@ -10,5 +10,4 @@ enum RoleName: string
     case DOSEN = 'dosen';
     case MAHASISWA = 'mahasiswa';
     case GUEST = 'guest';
-
 }

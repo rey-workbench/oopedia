@@ -20,7 +20,8 @@ final class AdaptiveRuleController extends Controller
     public function __construct(
         private readonly AdaptiveManagementServiceInterface $adaptiveManagementService,
         private readonly AdaptiveAnalyticsServiceInterface $adaptiveAnalyticsService,
-    ) {}
+    ) {
+    }
 
     public function create(): Response
     {

@@ -18,7 +18,8 @@ class HandleInertiaRequests extends Middleware
         protected ?MaterialServiceInterface $materialService = null,
         protected ?PerformanceServiceInterface $performanceService = null,
         protected ?UserServiceInterface $userService = null,
-    ) {}
+    ) {
+    }
 
     #[\Override]
     public function share(Request $request): array

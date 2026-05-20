@@ -63,7 +63,7 @@ oopedia/
 ## COMMANDS
 
 ```bash
-# backend
+# backend (handled via RTK hooks automatically, see below)
 composer install
 php artisan serve
 php artisan test --compact
@@ -79,10 +79,51 @@ composer run phpcs
 pnpm run format:check
 ```
 
+## RTK (RUST TOKEN KILLER) - MANDATORY USAGE
+
+**CRITICAL**: All shell commands MUST be executed through the `rtk` proxy to save tokens.
+
+### Automatic Rewriting (Hook-Based)
+
+The following commands are automatically rewritten by the system hook:
+
+- `git` -> `rtk git`
+- `composer` -> `rtk composer`
+- `npm/pnpm/yarn` -> `rtk npm/pnpm/yarn`
+- `php artisan` -> `rtk php artisan`
+- `vendor/bin/*` -> `rtk vendor/bin/*`
+*You don't need to manually prefix these - the hook handles it transparently.*
+
+### Meta Commands (Direct RTK Usage)
+
+These commands MUST be called with `rtk` directly:
+
+```bash
+rtk gain              # Show token savings analytics
+rtk gain --history    # Show command usage history with savings
+rtk discover          # Analyze Code Assistant history for missed opportunities
+rtk proxy <cmd>       # Execute raw command without filtering (for debugging)
+```
+
+### RTK Verification Protocol
+
+Before first use in any session:
+
+1. Verify installation: `rtk --version`
+2. Check savings: `rtk gain`
+3. If `rtk gain` fails -> name collision with reachingforthejack/rtk (Rust Type Kit)
+
+### When NOT to Use RTK
+
+- Interactive commands (servers, watchers, editors) like `php artisan serve` or `pnpm run dev`
+- Commands requiring user input
+- Already running in RTK context (avoid double-wrapping)
+
 ## NOTES
 
 - LSP servers not installed (intelephense, typescript-language-server missing); rely on static scan/grep.
 - .github/workflows absent; CI repo-external or not committed.
+- **Adaptive Engine Rules**: See `rules.md` for the exact Forward Chaining matrix (R01-R15), Diagnosis (V-Codes), and Input Facts (G-Codes) documentation.
 
 ===
 

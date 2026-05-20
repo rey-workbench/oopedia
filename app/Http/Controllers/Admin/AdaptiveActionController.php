@@ -16,7 +16,8 @@ final class AdaptiveActionController extends Controller
 {
     public function __construct(
         private readonly AdaptiveManagementServiceInterface $adaptiveManagementService,
-    ) {}
+    ) {
+    }
 
     public function update(UpdateAdaptiveActionRequest $updateAdaptiveActionRequest, AdaptiveAction $adaptiveAction): RedirectResponse
     {

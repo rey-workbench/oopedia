@@ -21,7 +21,8 @@ class EngineResultDTO
         public readonly int $priority,
         public readonly string $timestamp,
         public readonly string $version = '4.1.0-forward-chaining',
-    ) {}
+    ) {
+    }
 
     public static function fromFallback(array $activeFacts): self
     {

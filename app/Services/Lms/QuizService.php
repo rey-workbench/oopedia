@@ -48,7 +48,8 @@ final readonly class QuizService implements QuizServiceInterface
         private AdaptiveEngineServiceInterface $adaptiveEngineService,
         private AdaptiveActionProcessorInterface $adaptiveActionProcessor,
         private GuestProgressServiceInterface $guestProgressService,
-    ) {}
+    ) {
+    }
 
     // =========================================================================
     // QUESTION MANAGEMENT (CRUD)
@@ -616,7 +617,9 @@ final readonly class QuizService implements QuizServiceInterface
 
         if ($question->question_type === QuestionType::FILL_IN_THE_BLANK) {
             $rawCorrect = $question->answers->where('is_correct', true)->first()?->answer_text;
-            if (! $rawCorrect) return null;
+            if (! $rawCorrect) {
+                return null;
+            }
 
             $correctAns = trim($rawCorrect);
             $characters = [];

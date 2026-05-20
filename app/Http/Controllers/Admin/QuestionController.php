@@ -23,7 +23,8 @@ final class QuestionController extends Controller
     public function __construct(
         private readonly QuizServiceInterface $quizService,
         private readonly MaterialServiceInterface $materialService,
-    ) {}
+    ) {
+    }
 
     public function index(Request $request): Response
     {

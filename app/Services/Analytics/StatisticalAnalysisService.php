@@ -24,7 +24,7 @@ final class StatisticalAnalysisService
         }
 
         $result = Significance::tTest($group1, $group2);
-        
+
         // Standarisasi key untuk frontend
         if (isset($result['p2'])) {
             $result['p-value'] = $result['p2'];
@@ -106,7 +106,7 @@ final class StatisticalAnalysisService
         $u2 = ($n1 * $n2) + (($n2 * ($n2 + 1)) / 2) - $r2;
 
         $uMin = min($u1, $u2);
-        
+
         // Z-Score untuk n > 20
         $denom = sqrt(($n1 * $n2 * ($n1 + $n2 + 1)) / 12);
         $z = $denom == 0 ? 0 : ($uMin - ($n1 * $n2 / 2)) / $denom;
