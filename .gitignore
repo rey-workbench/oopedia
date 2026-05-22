@@ -23,7 +23,6 @@ opencode.json
 .agents
 skills-lock.json
 .opencode
-graphify-out/
 .github/skills/
 .github/agents/
 .agent/get-shit-done/
@@ -35,3 +34,4 @@ rr
 rr
 .rr.yaml
 test-results
+graphify-out/
