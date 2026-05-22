@@ -352,9 +352,15 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
 
     public function getRecentSystemProgress(int $limit): Collection
     {
-        return QuizAttempt::with(['user', 'question.material'])->latest()
-            ->limit($limit)
-            ->get();
+        return QuizAttempt::with(['user', 'question.material'])
+            ->latest()
+            ->limit($limit * 10)
+            ->get()
+            ->unique(function ($attempt) {
+                return $attempt->user_id . '-' . $attempt->question?->material_id;
+            })
+            ->take($limit)
+            ->values();
     }
 
     public function getMaterialPerformanceStats(): Collection
