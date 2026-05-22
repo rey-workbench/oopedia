@@ -103,7 +103,7 @@
                         </div>
 
                         <div id="sus-questions" class="space-y-6">
-                            {#each state.questions as question (question.id)}
+                            {#each state.questions as question, index (question.id)}
                                 {@const answerIndex = state.form.answers.findIndex(
                                     (a) => String(a.question_id) === String(question.id)
                                 )}
@@ -115,7 +115,7 @@
                                         <div
                                             class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-xs font-bold text-white"
                                         >
-                                            {question.id}
+                                            {index + 1}
                                         </div>
                                         <p
                                             class="text-base leading-relaxed font-bold text-slate-700"
