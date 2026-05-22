@@ -17,7 +17,7 @@
         Calculator,
     } from '@lucide/svelte';
     import { MslqState } from '@/states/Admin/MslqState.svelte';
-    import { Link } from '@inertiajs/svelte';
+    import ActionMenu from '@/components/ui/ActionMenu.svelte';
     import { ROUTES } from '@/utils/route';
     import type { AdminMslqIndexProps, MslqResult } from '@/types';
     import { untrack } from 'svelte';
@@ -406,10 +406,12 @@
                         >
                     </td>
                     <td class="px-6 py-6">
-                        <div class="flex justify-end gap-2">
-                            <Link href={ROUTES.ADMIN.MSLQ.SHOW(item.id)}>
-                                <Button variant="ghost" size="sm" icon={Eye} />
-                            </Link>
+                        <div class="flex justify-end">
+                            <ActionMenu
+                                items={[
+                                    { label: 'Lihat Detail', icon: Eye, href: ROUTES.ADMIN.MSLQ.SHOW(item.id) },
+                                ]}
+                            />
                         </div>
                     </td>
                 {/snippet}

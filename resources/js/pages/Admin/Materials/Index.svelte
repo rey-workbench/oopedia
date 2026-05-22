@@ -17,6 +17,7 @@
         Edit2,
         Trash2,
     } from '@lucide/svelte';
+    import ActionMenu from '@/components/ui/ActionMenu.svelte';
     import { ROUTES } from '@/utils/route';
 
     let { materials = [] }: { materials: any[] } = $props();
@@ -246,32 +247,14 @@
                     </td>
 
                     <td class="px-6 py-6">
-                        <div
-                            id={index === 0 ? 'material-actions' : undefined}
-                            class="flex justify-end gap-3"
-                        >
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                href={ROUTES.ADMIN.MATERIALS.QUESTIONS.INDEX(material.id)}
-                                icon={FlaskConical}
-                                class="text-primary-500 hover:text-primary-600"
-                                title="Kelola Soal"
-                            />
-                            <Button
-                                id={index === 0 ? 'btn-edit-material' : undefined}
-                                variant="ghost"
-                                size="sm"
-                                href={ROUTES.ADMIN.MATERIALS.EDIT(material.id)}
-                                icon={Edit2}
-                            />
-                            <Button
-                                id={index === 0 ? 'btn-delete-material' : undefined}
-                                variant="ghost"
-                                size="sm"
-                                onclick={() => listState.handleDelete(material.id)}
-                                icon={Trash2}
-                                class="text-slate-300 hover:text-rose-500"
+                        <div class="flex justify-end">
+                            <ActionMenu
+                                id={index === 0 ? 'material-actions' : undefined}
+                                items={[
+                                    { label: 'Kelola Soal', icon: FlaskConical, href: ROUTES.ADMIN.MATERIALS.QUESTIONS.INDEX(material.id) },
+                                    { label: 'Edit Modul', icon: Edit2, href: ROUTES.ADMIN.MATERIALS.EDIT(material.id) },
+                                    { label: 'Hapus Modul', icon: Trash2, onclick: () => listState.handleDelete(material.id), variant: 'danger' },
+                                ]}
                             />
                         </div>
                     </td>

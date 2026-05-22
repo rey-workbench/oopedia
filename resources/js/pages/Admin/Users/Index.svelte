@@ -7,6 +7,7 @@
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import { UserListState } from '@/states/Admin/UserState.svelte';
     import { Clock, UserPlus, ShieldCheck, Edit2, Trash2 } from '@lucide/svelte';
+    import ActionMenu from '@/components/ui/ActionMenu.svelte';
     import { page } from '@inertiajs/svelte';
     import { ROUTES } from '@/utils/route';
     import { untrack } from 'svelte';
@@ -133,27 +134,16 @@
                         {/if}
                     </td>
                     <td class="border-b border-slate-50 px-6 py-6">
-                        <div
-                            id={index === 0 ? 'user-actions' : undefined}
-                            class="flex justify-end gap-2"
-                        >
-                            <Button
-                                id={index === 0 ? 'btn-edit-user' : undefined}
-                                variant="ghost"
-                                size="sm"
-                                href={ROUTES.ADMIN.USERS.EDIT(user.id)}
-                                icon={Edit2}
+                        <div class="flex justify-end">
+                            <ActionMenu
+                                id={index === 0 ? 'user-actions' : undefined}
+                                items={[
+                                    { label: 'Edit User', icon: Edit2, href: ROUTES.ADMIN.USERS.EDIT(user.id) },
+                                    ...(isSuperAdmin && user.id !== authUser.id
+                                        ? [{ label: 'Hapus User', icon: Trash2, onclick: () => listState.handleDelete(user.id), variant: 'danger' as const }]
+                                        : []),
+                                ]}
                             />
-                            {#if isSuperAdmin && user.id !== authUser.id}
-                                <Button
-                                    id={index === 0 ? 'btn-delete-user' : undefined}
-                                    variant="ghost"
-                                    size="sm"
-                                    onclick={() => listState.handleDelete(user.id)}
-                                    icon={Trash2}
-                                    class="text-slate-300 hover:text-rose-500"
-                                />
-                            {/if}
                         </div>
                     </td>
                 {/snippet}

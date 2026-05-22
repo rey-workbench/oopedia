@@ -6,6 +6,7 @@
     import EmptyState from '@/components/ui/EmptyState.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
     import { ChevronLeft, Inbox, UserCheck, UserX } from '@lucide/svelte';
+    import ActionMenu from '@/components/ui/ActionMenu.svelte';
     import { ROUTES } from '@/utils/route';
     import { formatDate } from '@/utils/formatters';
     import { untrack } from 'svelte';
@@ -82,20 +83,14 @@
                     <td class="border-b border-slate-50 px-6 py-6">
                         <div
                             id={index === 0 ? 'pending-admin-actions' : undefined}
-                            class="flex justify-end gap-2"
+                            class="flex justify-end"
                         >
-                            <button
-                                onclick={() => state.handleApprove(admin.id)}
-                                class="flex items-center gap-2 rounded-xl border-b-2 border-emerald-100 bg-emerald-50 px-4 py-2 text-[10px] font-bold tracking-widest text-emerald-600 uppercase transition-all hover:bg-emerald-100 active:translate-y-px active:border-b-0"
-                            >
-                                <UserCheck size={14} /> Setujui
-                            </button>
-                            <button
-                                onclick={() => state.handleReject(admin.id)}
-                                class="flex items-center gap-2 rounded-xl border-b-2 border-rose-100 bg-rose-50 px-4 py-2 text-[10px] font-bold tracking-widest text-rose-600 uppercase transition-all hover:bg-rose-100 active:translate-y-px active:border-b-0"
-                            >
-                                <UserX size={14} /> Tolak
-                            </button>
+                            <ActionMenu
+                                items={[
+                                    { label: 'Setujui', icon: UserCheck, onclick: () => state.handleApprove(admin.id) },
+                                    { label: 'Tolak', icon: UserX, onclick: () => state.handleReject(admin.id), variant: 'danger' },
+                                ]}
+                            />
                         </div>
                     </td>
                 {/snippet}

@@ -7,15 +7,16 @@
     import Select from '@/components/ui/Select.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
     import {
-        FileDown,
         Eye,
-        ChevronRight,
         BarChart3,
         Star,
         Award,
         CheckCircle2,
+        FileDown,
+        ChevronRight,
         Calculator,
     } from '@lucide/svelte';
+    import ActionMenu from '@/components/ui/ActionMenu.svelte';
     import { untrack } from 'svelte';
     import { SusListState } from '@/states/Admin/SusState.svelte';
     import { formatDate } from '@/utils/formatters';
@@ -200,11 +201,14 @@
                         </td>
                         <td class="border-b border-slate-50 px-6 py-6">
                             <div class="flex justify-end">
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    href={ROUTES.ADMIN.SUS.SHOW(result.id)}
-                                    icon={Eye}
+                                <ActionMenu
+                                    items={[
+                                        {
+                                            label: 'Lihat Detail',
+                                            icon: Eye,
+                                            href: ROUTES.ADMIN.SUS.SHOW(result.id),
+                                        },
+                                    ]}
                                 />
                             </div>
                         </td>

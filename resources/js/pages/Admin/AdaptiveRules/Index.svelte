@@ -23,6 +23,7 @@
         CircleHelp,
     } from '@lucide/svelte';
     import Button from '@/components/ui/Button.svelte';
+    import ActionMenu from '@/components/ui/ActionMenu.svelte';
     import { ROUTES } from '@/utils/route';
     import { router } from '@inertiajs/svelte';
     import PageHeader from '@/components/ui/PageHeader.svelte';
@@ -237,20 +238,12 @@
                             </Badge>
                         </td>
                         <td class="px-6 py-5 text-right">
-                            <div class="flex justify-end gap-2">
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    icon={Edit2}
-                                    onclick={() => openEditRule(rule)}
-                                    class="hover:text-primary-500 text-slate-400"
-                                />
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    icon={Trash2}
-                                    onclick={() => handleDelete(rule.id)}
-                                    class="text-slate-300 hover:text-rose-500"
+                            <div class="flex justify-end">
+                                <ActionMenu
+                                    items={[
+                                        { label: 'Edit Aturan', icon: Edit2, onclick: () => openEditRule(rule) },
+                                        { label: 'Hapus Aturan', icon: Trash2, onclick: () => handleDelete(rule.id), variant: 'danger' },
+                                    ]}
                                 />
                             </div>
                         </td>

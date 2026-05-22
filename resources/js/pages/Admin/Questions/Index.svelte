@@ -7,6 +7,7 @@
     import Select from '@/components/ui/Select.svelte';
     import { ROUTES } from '@/utils/route';
     import { FlaskConical, Plus, Trash2, Edit2, ArrowLeft } from '@lucide/svelte';
+    import ActionMenu from '@/components/ui/ActionMenu.svelte';
     import { QuestionListAdminState } from '@/states/Admin/QuestionState.svelte';
     import { untrack } from 'svelte';
     import Badge from '@/components/ui/Badge.svelte';
@@ -126,26 +127,19 @@
                     </td>
                 {/if}
                 <td class="px-6 py-6">
-                    <div
-                        id={index === 0 ? 'question-actions' : undefined}
-                        class="flex justify-end gap-2"
-                    >
-                        <Button
-                            id={index === 0 ? 'btn-edit-question' : undefined}
-                            variant="ghost"
-                            size="sm"
-                            href={state.material
-                                ? `/admin/materials/${state.material.id}/questions/${question.id}/edit`
-                                : ROUTES.ADMIN.QUESTIONS.EDIT(question.id)}
-                            icon={Edit2}
-                        />
-                        <Button
-                            id={index === 0 ? 'btn-delete-question' : undefined}
-                            variant="ghost"
-                            size="sm"
-                            onclick={() => state.handleDelete(question.id)}
-                            icon={Trash2}
-                            class="text-slate-300 hover:text-rose-500"
+                    <div class="flex justify-end">
+                        <ActionMenu
+                            id={index === 0 ? 'question-actions' : undefined}
+                            items={[
+                                {
+                                    label: 'Edit Soal',
+                                    icon: Edit2,
+                                    href: state.material
+                                        ? `/admin/materials/${state.material.id}/questions/${question.id}/edit`
+                                        : ROUTES.ADMIN.QUESTIONS.EDIT(question.id),
+                                },
+                                { label: 'Hapus Soal', icon: Trash2, onclick: () => state.handleDelete(question.id), variant: 'danger' },
+                            ]}
                         />
                     </div>
                 </td>

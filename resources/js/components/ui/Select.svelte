@@ -1,6 +1,7 @@
 <script lang="ts">
     import { AlertCircle, ChevronDown } from '@lucide/svelte';
     import { generateStableId } from '@/utils/ids';
+    import { fly } from 'svelte/transition';
 
     interface Option {
         value: string | number;
@@ -37,23 +38,44 @@
         class: className = '',
         size = 'md',
         onchange,
-        ...rest
     }: Props = $props();
+
+    let open = $state(false);
+    let containerRef: HTMLDivElement | undefined = $state();
 
     const selectId = $derived(id || generateStableId('select'));
     const errorId = $derived(`${selectId}-error`);
 
     const sizes = {
-        sm: 'px-4 py-2.5 text-xs border-b-4',
-        md: 'px-6 py-4 text-sm border-b-6',
-        lg: 'px-6 py-5 text-base border-b-8',
+        sm: 'px-4 py-2.5 text-xs',
+        md: 'px-4 py-3 text-sm',
+        lg: 'px-5 py-4 text-base',
     };
 
-    function handleChange(e: Event) {
-        const target = e.target as HTMLSelectElement;
-        value = target.value;
-        onchange?.(target.value);
+    const selectedOption = $derived(options.find((opt) => String(opt.value) === String(value)));
+
+    function toggle() {
+        if (!disabled) open = !open;
     }
+
+    function select(opt: Option) {
+        if (opt.disabled) return;
+        value = opt.value;
+        onchange?.(opt.value);
+        open = false;
+    }
+
+    function handleClickOutside(e: MouseEvent) {
+        if (containerRef && !containerRef.contains(e.target as Node)) {
+            open = false;
+        }
+    }
+
+    $effect(() => {
+        if (!open) return;
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    });
 </script>
 
 <div class={`w-full space-y-2.5 ${className}`}>
@@ -67,28 +89,16 @@
         </label>
     {/if}
 
-    <div class="group relative">
+    <div bind:this={containerRef} class="relative">
+        <!-- Hidden native select for form submission -->
         <select
             id={selectId}
             {name}
             {required}
-            {disabled}
             bind:value
-            onchange={handleChange}
-            aria-invalid={error ? 'true' : undefined}
-            aria-describedby={error ? errorId : undefined}
-            {...rest}
-            class={`
-                w-full cursor-pointer appearance-none rounded-3xl border-2 font-bold transition-all outline-none
-                ${sizes[size]}
-                ${
-                    disabled
-                        ? 'cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400 grayscale'
-                        : error
-                          ? 'border-rose-200 bg-rose-50/20 text-rose-900 focus:border-rose-500 focus:ring-4 focus:ring-rose-50'
-                          : 'focus:border-primary-500 focus:ring-primary-100 border-slate-200 bg-white text-slate-900 hover:border-slate-300 focus:ring-4'
-                }
-            `}
+            class="sr-only"
+            aria-hidden="true"
+            tabindex="-1"
         >
             {#if placeholder}
                 <option value="" disabled selected={!value}>{placeholder}</option>
@@ -98,14 +108,68 @@
             {/each}
         </select>
 
-        <ChevronDown
-            size={18}
-            class={`pointer-events-none absolute top-1/2 right-6 -translate-y-1/2 text-slate-400 transition-transform ${error ? 'text-rose-500' : ''}`}
-        />
+        <button
+            type="button"
+            id={selectId}
+            {disabled}
+            onclick={toggle}
+            aria-haspopup="listbox"
+            aria-expanded={open}
+            aria-describedby={error ? errorId : undefined}
+            class={`
+                flex w-full items-center justify-between rounded-2xl border-2 font-bold tracking-widest uppercase transition-all outline-none
+                ${sizes[size]}
+                ${
+                    disabled
+                        ? 'cursor-not-allowed border-slate-50 bg-slate-50 text-slate-400'
+                        : error
+                          ? 'border-rose-100 bg-rose-50/30 text-rose-900 ring-rose-50 hover:border-rose-300 focus:border-rose-500'
+                          : open
+                            ? 'border-primary-500 ring-primary-100 bg-white text-slate-900 ring-4'
+                            : 'hover:border-primary-400 border-cosmos-border border-b-4 bg-white text-slate-900 active:translate-y-[2px] active:border-b-2'
+                }
+            `}
+        >
+            <span class={selectedOption ? 'text-slate-900' : 'text-slate-400'}>
+                {selectedOption?.label || placeholder || 'Pilih opsi'}
+            </span>
+            {#if error}
+                <AlertCircle size={16} class="mr-1 text-rose-500" />
+            {/if}
+            <ChevronDown
+                size={18}
+                class={`text-slate-400 transition-transform ${open ? 'rotate-180' : ''}`}
+            />
+        </button>
 
-        {#if error}
-            <div class="absolute top-1/2 right-12 -translate-y-1/2 animate-pulse text-rose-500">
-                <AlertCircle size={20} />
+        {#if open}
+            <div
+                class="border-cosmos-border absolute z-50 mt-2 w-full min-w-max overflow-hidden rounded-2xl border-2 bg-white shadow-2xl"
+                role="listbox"
+                transition:fly={{ y: -8, duration: 130, opacity: 0 }}
+            >
+                <div class="divide-y divide-slate-50">
+                    {#if options.length === 0}
+                        <div class="px-5 py-3.5 text-xs font-bold tracking-widest text-slate-400 uppercase">Tidak ada opsi</div>
+                    {:else}
+                        {#each options as opt (opt.value)}
+                            <button
+                                type="button"
+                                role="option"
+                                disabled={opt.disabled}
+                                aria-selected={String(opt.value) === String(value)}
+                                onclick={() => select(opt)}
+                                class={`
+                                    flex w-full items-center gap-3 px-5 py-3.5 text-left text-xs font-bold tracking-widest uppercase transition-colors
+                                    ${opt.disabled ? 'cursor-not-allowed text-slate-300' : 'hover:bg-slate-50 text-slate-700'}
+                                    ${String(opt.value) === String(value) ? 'bg-primary-50 text-primary-600' : ''}
+                                `}
+                            >
+                                {opt.label}
+                            </button>
+                        {/each}
+                    {/if}
+                </div>
             </div>
         {/if}
     </div>

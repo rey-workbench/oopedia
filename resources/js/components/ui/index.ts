@@ -1,7 +1,6 @@
 // Form Controls
 export { default as Accordion } from './Accordion.svelte';
 export { default as Checkbox } from './Checkbox.svelte';
-export { default as Dropdown } from './Dropdown.svelte';
 export { default as Input } from './Input.svelte';
 export { default as Radio } from './Radio.svelte';
 export { default as Select } from './Select.svelte';
@@ -36,6 +35,7 @@ export { default as ImageUpload } from './ImageUpload.svelte';
 export { default as Skeleton } from './Skeleton.svelte';
 
 // Navigation & Actions
+export { default as ActionMenu } from './ActionMenu.svelte';
 export { default as Button } from './Button.svelte';
 export { default as Modal } from './Modal.svelte';
 export { default as UserAvatar } from './UserAvatar.svelte';

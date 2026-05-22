@@ -8,7 +8,8 @@
     import Select from '@/components/ui/Select.svelte';
     import UserAvatar from '@/components/ui/UserAvatar.svelte';
     import StatisticalAnalysis from '@/components/Admin/StatisticalAnalysis.svelte';
-    import { BarChart3, FileDown, Eye, Calculator, ChevronRight } from '@lucide/svelte';
+    import { Eye, BarChart3, FileDown, Calculator, ChevronRight } from '@lucide/svelte';
+    import ActionMenu from '@/components/ui/ActionMenu.svelte';
     import { untrack } from 'svelte';
     import { UeqListState } from '@/states/Admin/UeqState.svelte';
     import { formatDate } from '@/utils/formatters';
@@ -187,11 +188,10 @@
                         </td>
                         <td class="border-b border-slate-50 px-6 py-6">
                             <div class="flex justify-end">
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    href={ROUTES.ADMIN.UEQ.SHOW(survey.id)}
-                                    icon={Eye}
+                                <ActionMenu
+                                    items={[
+                                        { label: 'Lihat Detail', icon: Eye, href: ROUTES.ADMIN.UEQ.SHOW(survey.id) },
+                                    ]}
                                 />
                             </div>
                         </td>

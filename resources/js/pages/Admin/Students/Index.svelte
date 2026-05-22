@@ -9,6 +9,7 @@
         GraduationCap,
         Loader2,
     } from '@lucide/svelte';
+    import ActionMenu from '@/components/ui/ActionMenu.svelte';
     import Button from '@/components/ui/Button.svelte';
     import DataTable from '@/components/ui/DataTable.svelte';
     import ProgressBar from '@/components/ui/ProgressBar.svelte';
@@ -140,24 +141,13 @@
                         </div>
                     </td>
                     <td class="px-6 py-6">
-                        <div
-                            id={index === 0 ? 'student-actions' : undefined}
-                            class="flex justify-end gap-2"
-                        >
-                            <Button
-                                id={index === 0 ? 'btn-progress-student' : undefined}
-                                variant="ghost"
-                                size="sm"
-                                href={ROUTES.ADMIN.STUDENTS.SHOW(student.id)}
-                                icon={LineChart}
-                            />
-                            <Button
-                                id={index === 0 ? 'btn-delete-student' : undefined}
-                                variant="ghost"
-                                size="sm"
-                                onclick={() => listState.handleDelete(student.id)}
-                                icon={UserMinus}
-                                class="text-slate-300 hover:text-rose-500"
+                        <div class="flex justify-end">
+                            <ActionMenu
+                                id={index === 0 ? 'student-actions' : undefined}
+                                items={[
+                                    { label: 'Lihat Progres', icon: LineChart, href: ROUTES.ADMIN.STUDENTS.SHOW(student.id) },
+                                    { label: 'Hapus Mahasiswa', icon: UserMinus, onclick: () => listState.handleDelete(student.id), variant: 'danger' },
+                                ]}
                             />
                         </div>
                     </td>

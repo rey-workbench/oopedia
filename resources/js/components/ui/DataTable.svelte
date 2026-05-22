@@ -126,7 +126,7 @@
                 {:else}
                     {#each paginatedItems as item, i (item?.id ?? i)}
                         <tr
-                            class={`group border-cosmos-border hover:bg-primary-50/30 border-b-2 transition-colors last:border-0 ${rowClass(item)}`}
+                            class={`group border-cosmos-border hover:bg-slate-50 border-b-2 transition-colors last:border-0 ${rowClass(item)}`}
                         >
                             {@render row?.(item, (currentPage - 1) * itemsPerPage + i)}
                         </tr>
