@@ -60,7 +60,7 @@
         if (!containerRef) return;
         const rect = containerRef.getBoundingClientRect();
         const estimatedHeight = options.length * 46 + 16;
-        
+
         let style = `width: ${rect.width}px; left: ${rect.left}px; `;
         if (rect.bottom + estimatedHeight > window.innerHeight && rect.top > estimatedHeight) {
             style += `bottom: ${window.innerHeight - rect.top + 8}px;`;
@@ -78,8 +78,7 @@
 
     function handleScroll(e: Event) {
         if (menuRef && menuRef.contains(e.target as Node)) return;
-    function handleScroll() {
-        if (open) updatePosition();
+        if (open) open = false;
     }
 
     function select(opt: Option) {
@@ -101,7 +100,7 @@
         document.addEventListener('click', handleClickOutside);
         document.addEventListener('scroll', handleScroll, true);
         window.addEventListener('resize', handleScroll);
-        
+
         return () => {
             document.removeEventListener('click', handleClickOutside);
             document.removeEventListener('scroll', handleScroll, true);
@@ -180,11 +179,19 @@
                 style={menuStyles}
                 class="border-cosmos-border fixed z-[9999] overflow-hidden rounded-2xl border-2 bg-white shadow-2xl"
                 role="listbox"
-                transition:fly={{ y: menuStyles.includes('bottom') ? 8 : -8, duration: 130, opacity: 0 }}
+                transition:fly={{
+                    y: menuStyles.includes('bottom') ? 8 : -8,
+                    duration: 130,
+                    opacity: 0,
+                }}
             >
                 <div class="divide-y divide-slate-50">
                     {#if options.length === 0}
-                        <div class="px-5 py-3.5 text-xs font-bold tracking-widest text-slate-400 uppercase">Tidak ada opsi</div>
+                        <div
+                            class="px-5 py-3.5 text-xs font-bold tracking-widest text-slate-400 uppercase"
+                        >
+                            Tidak ada opsi
+                        </div>
                     {:else}
                         {#each options as opt (opt.value)}
                             <button
