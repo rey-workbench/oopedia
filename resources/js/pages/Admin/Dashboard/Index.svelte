@@ -374,10 +374,10 @@
             </Card>
         </div>
 
-        <div id="admin-activity-overview" class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div id="admin-activity-overview" class="grid grid-cols-1 gap-6 lg:grid-cols-2 items-stretch">
             <!-- Top Students -->
-            <div id="admin-top-students" class="lg:col-span-2">
-                <Card hover={false}>
+            <div id="admin-top-students">
+                <Card hover={false} class="h-full">
                     <div class="space-y-4">
                         <div class="mb-2 flex items-center gap-3">
                             <div
@@ -441,7 +441,7 @@
 
             <!-- Popular Materials -->
             <div id="admin-popular-materials">
-                <Card hover={false}>
+                <Card hover={false} class="h-full">
                     <div class="space-y-4">
                         <div class="mb-2 flex items-center gap-3">
                             <div

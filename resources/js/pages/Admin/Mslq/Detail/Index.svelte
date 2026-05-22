@@ -70,31 +70,30 @@
             />
 
             <Card
-                class="flex items-center justify-between rounded-[2rem] border-none bg-slate-900 p-6 text-white shadow-2xl lg:col-span-2"
+                class="flex items-center justify-between lg:col-span-2"
             >
                 <div class="flex items-center gap-6 px-4">
                     <div class="text-center">
                         <div
-                            class="mb-1 text-[10px] font-bold tracking-[0.3em] text-slate-500 uppercase"
+                            class="mb-1 text-[10px] font-bold tracking-[0.3em] text-slate-400 uppercase"
                         >
-                            MSLQ Status
+                            Status MSLQ
                         </div>
-                        <div class="text-2xl font-black tracking-widest">COMPLETE</div>
+                        <div class="text-2xl font-black tracking-widest text-emerald-600">COMPLETE</div>
                     </div>
-                    <div class="h-10 w-px bg-white/10"></div>
+                    <div class="h-10 w-px bg-slate-200"></div>
                     <div class="text-center">
                         <div
-                            class="mb-1 text-[10px] font-bold tracking-[0.3em] text-slate-500 uppercase"
+                            class="mb-1 text-[10px] font-bold tracking-[0.3em] text-slate-400 uppercase"
                         >
                             Submitted
                         </div>
-                        <div class="text-xs font-bold text-slate-300">
+                        <div class="text-xs font-bold text-slate-600">
                             {formatDate(state.result.created_at)}
                         </div>
                     </div>
                 </div>
-                <Badge variant="success" size="sm" class="animate-pulse">
-                    <div class="mr-2 h-1 w-1 rounded-full bg-white"></div>
+                <Badge variant="success" size="sm">
                     Verified
                 </Badge>
             </Card>
@@ -117,13 +116,11 @@
                 </Alert>
 
                 <!-- Detailed Breakdown Section -->
-                <Card class="overflow-hidden rounded-3xl border-slate-100 shadow-xl" padding="p-0">
-                    <div
-                        class="flex items-center justify-between border-b border-slate-100 bg-slate-50/50 px-8 py-6"
-                    >
+                <Card padding="p-8">
+                    {#snippet header()}
                         <div class="flex items-center gap-4">
                             <div
-                                class="bg-accent-500 shadow-accent-100 flex h-10 w-10 items-center justify-center rounded-xl text-white shadow-lg"
+                                class="bg-accent-50 text-accent-500 border-accent-100 border-2 flex h-10 w-10 items-center justify-center rounded-xl font-bold"
                             >
                                 <Target size={20} />
                             </div>
@@ -131,8 +128,9 @@
                                 Motivasi
                             </h3>
                         </div>
-                    </div>
-                    <div class="space-y-5 p-8">
+                    {/snippet}
+
+                    <div class="space-y-5">
                         {#each state.motivationScores as score}
                             <div class="space-y-2">
                                 <div class="flex items-center justify-between">
@@ -154,13 +152,11 @@
                     </div>
                 </Card>
 
-                <Card class="overflow-hidden rounded-3xl border-slate-100 shadow-xl" padding="p-0">
-                    <div
-                        class="flex items-center justify-between border-b border-slate-100 bg-slate-50/50 px-8 py-6"
-                    >
+                <Card padding="p-8">
+                    {#snippet header()}
                         <div class="flex items-center gap-4">
                             <div
-                                class="bg-primary-500 flex h-10 w-10 items-center justify-center rounded-xl text-white shadow-lg shadow-slate-100"
+                                class="bg-primary-50 text-primary-500 border-primary-100 border-2 flex h-10 w-10 items-center justify-center rounded-xl font-bold"
                             >
                                 <ClipboardList size={20} />
                             </div>
@@ -168,8 +164,9 @@
                                 Strategi
                             </h3>
                         </div>
-                    </div>
-                    <div class="space-y-5 p-8">
+                    {/snippet}
+
+                    <div class="space-y-5">
                         {#each state.strategyScores as score}
                             <div class="space-y-2">
                                 <div class="flex items-center justify-between">
@@ -204,46 +201,43 @@
                         { key: 'value', label: 'Skor', align: 'center' },
                     ]}
                     itemsPerPage={10}
-                    class="rounded-[3rem] border-slate-100 shadow-xl"
                 >
                     {#snippet row(answer)}
-                        <tr class="group transition-colors hover:bg-slate-50/50">
-                            <td class="px-8 py-5">
-                                <div
-                                    class="group-hover:bg-primary-100 group-hover:text-primary-500 flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-[10px] font-black text-slate-400 transition-colors"
+                        <td class="px-8 py-5">
+                            <div
+                                class="group-hover:bg-primary-100 group-hover:text-primary-500 flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-[10px] font-black text-slate-400 transition-colors"
+                            >
+                                {answer.question.order}
+                            </div>
+                        </td>
+                        <td class="px-8 py-5">
+                            <p
+                                class="text-xs leading-relaxed font-bold text-slate-600 transition-colors group-hover:text-slate-900"
+                            >
+                                {answer.question.text}
+                            </p>
+                            <div class="mt-2 flex gap-2">
+                                <Badge
+                                    variant="outline"
+                                    size="xs"
+                                    class="border-slate-100 bg-slate-50 text-[8px] font-medium tracking-tight lowercase"
                                 >
-                                    {answer.question.order}
-                                </div>
-                            </td>
-                            <td class="px-8 py-5">
-                                <p
-                                    class="text-xs leading-relaxed font-bold text-slate-600 transition-colors group-hover:text-slate-900"
-                                >
-                                    {answer.question.text}
-                                </p>
-                                <div class="mt-2 flex gap-2">
-                                    <Badge
-                                        variant="outline"
-                                        size="xs"
-                                        class="border-slate-100 bg-slate-50 text-[8px] font-medium tracking-tight lowercase"
-                                    >
-                                        {answer.question.scale.split('_').join(' ')}
+                                    {answer.question.scale.split('_').join(' ')}
+                                </Badge>
+                                {#if answer.question.is_reverse}
+                                    <Badge variant="warning" size="xs" class="text-[8px]">
+                                        Reverse
                                     </Badge>
-                                    {#if answer.question.is_reverse}
-                                        <Badge variant="warning" size="xs" class="text-[8px]">
-                                            Reverse
-                                        </Badge>
-                                    {/if}
-                                </div>
-                            </td>
-                            <td class="px-8 py-5 text-center">
-                                <span
-                                    class="text-primary-500 group-hover:text-accent-500 text-lg font-black transition-colors"
-                                >
-                                    {answer.value}
-                                </span>
-                            </td>
-                        </tr>
+                                {/if}
+                            </div>
+                        </td>
+                        <td class="px-8 py-5 text-center">
+                            <span
+                                class="text-primary-500 group-hover:text-accent-500 text-lg font-black transition-colors"
+                            >
+                                {answer.value}
+                            </span>
+                        </td>
                     {/snippet}
                 </DataTable>
             </div>

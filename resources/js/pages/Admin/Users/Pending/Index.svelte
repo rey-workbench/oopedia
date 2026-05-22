@@ -13,8 +13,7 @@
 
     let { pendingAdmins }: { pendingAdmins: any } = $props();
 
-    const adminsList = pendingAdmins?.data || pendingAdmins || [];
-    const state = untrack(() => new PendingAdminState(adminsList));
+    const state = untrack(() => new PendingAdminState(pendingAdmins?.data || pendingAdmins || []));
 
     const columns = [
         { key: 'identity', label: 'Identitas', align: 'left' },
