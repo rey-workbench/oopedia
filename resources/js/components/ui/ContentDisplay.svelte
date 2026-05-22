@@ -74,7 +74,6 @@
                                 <span class="dot-yellow"></span>
                                 <span class="dot-green"></span>
                             </div>
-                            <div class="terminal-title">java code</div>
                             <button class="terminal-copy-btn" title="Salin Kode">
                                 <span class="copy-icon"></span>
                             </button>
