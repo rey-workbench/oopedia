@@ -75,7 +75,7 @@
         <button
             onclick={() => closeSidebar()}
             aria-label="Tutup sidebar"
-            class="group bg-primary-50 text-cosmos-muted flex h-10 w-10 items-center justify-center rounded-2xl border-2 border-transparent transition-all hover:border-rose-200 hover:bg-rose-50 hover:text-rose-500 active:translate-y-0.5"
+            class="group bg-primary-50 text-cosmos-muted flex h-10 w-10 lg:hidden items-center justify-center rounded-2xl border-2 border-transparent transition-all hover:border-rose-200 hover:bg-rose-50 hover:text-rose-500 active:translate-y-0.5"
         >
             <X size={20} strokeWidth={2.5} />
         </button>
