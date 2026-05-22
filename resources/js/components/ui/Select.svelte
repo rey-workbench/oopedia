@@ -41,7 +41,9 @@
     }: Props = $props();
 
     let open = $state(false);
+    let menuStyles = $state('');
     let containerRef: HTMLDivElement | undefined = $state();
+    let menuRef: HTMLDivElement | undefined = $state();
 
     const selectId = $derived(id || generateStableId('select'));
     const errorId = $derived(`${selectId}-error`);
@@ -54,8 +56,30 @@
 
     const selectedOption = $derived(options.find((opt) => String(opt.value) === String(value)));
 
+    function updatePosition() {
+        if (!containerRef) return;
+        const rect = containerRef.getBoundingClientRect();
+        const estimatedHeight = options.length * 46 + 16;
+        
+        let style = `width: ${rect.width}px; left: ${rect.left}px; `;
+        if (rect.bottom + estimatedHeight > window.innerHeight && rect.top > estimatedHeight) {
+            style += `bottom: ${window.innerHeight - rect.top + 8}px;`;
+        } else {
+            style += `top: ${rect.bottom + 8}px;`;
+        }
+        menuStyles = style;
+    }
+
     function toggle() {
-        if (!disabled) open = !open;
+        if (disabled) return;
+        if (!open) updatePosition();
+        open = !open;
+    }
+
+    function handleScroll(e: Event) {
+        if (menuRef && menuRef.contains(e.target as Node)) return;
+    function handleScroll() {
+        if (open) updatePosition();
     }
 
     function select(opt: Option) {
@@ -65,16 +89,24 @@
         open = false;
     }
 
-    function handleClickOutside(e: MouseEvent) {
-        if (containerRef && !containerRef.contains(e.target as Node)) {
-            open = false;
-        }
-    }
-
     $effect(() => {
         if (!open) return;
+
+        function handleClickOutside(event: MouseEvent) {
+            if (containerRef && !containerRef.contains(event.target as Node)) {
+                open = false;
+            }
+        }
+
         document.addEventListener('click', handleClickOutside);
-        return () => document.removeEventListener('click', handleClickOutside);
+        document.addEventListener('scroll', handleScroll, true);
+        window.addEventListener('resize', handleScroll);
+        
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+            document.removeEventListener('scroll', handleScroll, true);
+            window.removeEventListener('resize', handleScroll);
+        };
     });
 </script>
 
@@ -144,9 +176,11 @@
 
         {#if open}
             <div
-                class="border-cosmos-border absolute z-50 mt-2 w-full min-w-max overflow-hidden rounded-2xl border-2 bg-white shadow-2xl"
+                bind:this={menuRef}
+                style={menuStyles}
+                class="border-cosmos-border fixed z-[9999] overflow-hidden rounded-2xl border-2 bg-white shadow-2xl"
                 role="listbox"
-                transition:fly={{ y: -8, duration: 130, opacity: 0 }}
+                transition:fly={{ y: menuStyles.includes('bottom') ? 8 : -8, duration: 130, opacity: 0 }}
             >
                 <div class="divide-y divide-slate-50">
                     {#if options.length === 0}

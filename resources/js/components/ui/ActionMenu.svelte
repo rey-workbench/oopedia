@@ -20,11 +20,40 @@
     let { items, id = undefined, align = 'right' }: Props = $props();
 
     let open = $state(false);
+    let menuStyles = $state('');
     let containerRef: HTMLDivElement | undefined = $state();
+    let menuRef: HTMLDivElement | undefined = $state();
+
+    function updatePosition() {
+        if (!containerRef) return;
+        const rect = containerRef.getBoundingClientRect();
+        const estimatedHeight = items.length * 46 + 16;
+        
+        let style = '';
+        if (rect.bottom + estimatedHeight > window.innerHeight && rect.top > estimatedHeight) {
+            style += `bottom: ${window.innerHeight - rect.top + 6}px; `;
+        } else {
+            style += `top: ${rect.bottom + 6}px; `;
+        }
+
+        if (align === 'right') {
+            style += `right: ${window.innerWidth - rect.right}px;`;
+        } else {
+            style += `left: ${rect.left}px;`;
+        }
+        menuStyles = style;
+    }
 
     function toggle(e: MouseEvent) {
         e.stopPropagation();
+        if (!open) updatePosition();
         open = !open;
+    }
+
+    function handleScroll(e: Event) {
+        // Don't close if scrolling inside the menu itself
+        if (menuRef && menuRef.contains(e.target as Node)) return;
+        if (open) open = false;
     }
 
     function handleAction(item: ActionItem, e: MouseEvent) {
@@ -43,7 +72,13 @@
     $effect(() => {
         if (!open) return;
         document.addEventListener('click', handleClickOutside);
-        return () => document.removeEventListener('click', handleClickOutside);
+        document.addEventListener('scroll', handleScroll, true);
+        window.addEventListener('resize', handleScroll);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+            document.removeEventListener('scroll', handleScroll, true);
+            window.removeEventListener('resize', handleScroll);
+        };
     });
 </script>
 
@@ -61,9 +96,11 @@
 
     {#if open}
         <div
-            class={`border-cosmos-border absolute top-[calc(100%+6px)] z-[100] min-w-[200px] overflow-hidden rounded-2xl border-2 bg-white shadow-2xl ${align === 'right' ? 'right-0' : 'left-0'}`}
+            bind:this={menuRef}
+            style={menuStyles}
+            class="border-cosmos-border fixed z-[9999] min-w-[200px] overflow-hidden rounded-2xl border-2 bg-white shadow-2xl"
             role="menu"
-            transition:fly={{ y: -8, duration: 130, opacity: 0 }}
+            transition:fly={{ y: menuStyles.includes('bottom') ? 8 : -8, duration: 130, opacity: 0 }}
         >
             <div class="divide-y divide-slate-50">
                 {#each items as item}

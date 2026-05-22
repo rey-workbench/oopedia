@@ -169,7 +169,13 @@
                 title="Manajemen Aturan"
                 subtitle="Daftar seluruh logika inferensi yang terdaftar dalam sistem."
             >
-                <DataTable items={flattenedRules} {columns} hideSearch={false} itemsPerPage={10}>
+                <DataTable
+                    items={flattenedRules}
+                    {columns}
+                    hideSearch={false}
+                    itemsPerPage={10}
+                    title="Data Forward-Chaining"
+                >
                     {#snippet empty()}
                         <EmptyState
                             icon={Zap}
@@ -241,8 +247,17 @@
                             <div class="flex justify-end">
                                 <ActionMenu
                                     items={[
-                                        { label: 'Edit Aturan', icon: Edit2, onclick: () => openEditRule(rule) },
-                                        { label: 'Hapus Aturan', icon: Trash2, onclick: () => handleDelete(rule.id), variant: 'danger' },
+                                        {
+                                            label: 'Edit Aturan',
+                                            icon: Edit2,
+                                            onclick: () => openEditRule(rule),
+                                        },
+                                        {
+                                            label: 'Hapus Aturan',
+                                            icon: Trash2,
+                                            onclick: () => handleDelete(rule.id),
+                                            variant: 'danger',
+                                        },
                                     ]}
                                 />
                             </div>
