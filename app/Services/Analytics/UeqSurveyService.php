@@ -9,11 +9,14 @@ use App\Contracts\Services\UeqSurveyServiceInterface;
 use App\Enums\Lms\AssessmentType;
 use App\Http\Resources\UeqSurveyResource;
 use App\Models\UeqSurvey;
+use App\Traits\SanitizesJson;
 use Illuminate\Support\Collection as SupportCollection;
 use MathPHP\Statistics\Descriptive;
 
 final readonly class UeqSurveyService implements UeqSurveyServiceInterface
 {
+    use SanitizesJson;
+
     public function __construct(
         public UeqSurveyRepositoryInterface $ueqRepo,
         private StatisticalAnalysisService $statisticalAnalysisService,
@@ -163,7 +166,7 @@ final readonly class UeqSurveyService implements UeqSurveyServiceInterface
             }
         }
 
-        return [
+        return $this->sanitizeForJson([
             'reliability' => [
                 'cronbach_alpha' => round($alpha, 3),
                 'status'         => $alpha > 0.6 ? 'Reliabel' : 'Tidak Reliabel',
@@ -178,7 +181,7 @@ final readonly class UeqSurveyService implements UeqSurveyServiceInterface
                 'mann_whitney' => $comparison,
                 't_test'       => $tTest,
             ],
-        ];
+        ]);
     }
 
     private function buildAnswerMatrix(SupportCollection $results): array

@@ -11,12 +11,15 @@ use App\Http\Resources\SusResultResource;
 use App\Models\SusAnswer;
 use App\Models\SusQuestion;
 use App\Models\SusResult;
+use App\Traits\SanitizesJson;
 use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\DB;
 use MathPHP\Statistics\Descriptive;
 
 final readonly class SusResultService implements SusResultServiceInterface
 {
+    use SanitizesJson;
+
     public function __construct(
         private SusResultRepositoryInterface $susResultRepository,
         private StatisticalAnalysisService $statisticalAnalysisService,
@@ -241,7 +244,7 @@ final readonly class SusResultService implements SusResultServiceInterface
             }
         }
 
-        return [
+        return $this->sanitizeForJson([
             'reliability' => [
                 'cronbach_alpha' => round($alpha, 3),
                 'status'         => $alpha > 0.6 ? 'Reliabel' : 'Tidak Reliabel',
@@ -256,7 +259,7 @@ final readonly class SusResultService implements SusResultServiceInterface
                 'mann_whitney' => $comparison,
                 't_test'       => $tTest,
             ],
-        ];
+        ]);
     }
 
     private function buildAnswerMatrix(SupportCollection $results): array

@@ -11,6 +11,7 @@ use App\Enums\Lms\MslqCategory;
 use App\Http\Resources\MslqResultResource;
 use App\Models\MslqAnswer;
 use App\Models\MslqResult;
+use App\Traits\SanitizesJson;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +19,8 @@ use MathPHP\Statistics\Descriptive;
 
 final readonly class MslqService implements MslqServiceInterface
 {
+    use SanitizesJson;
+
     public function __construct(
         private MslqRepositoryInterface $mslqRepository,
         private StatisticalAnalysisService $statisticalAnalysisService,
@@ -188,7 +191,7 @@ final readonly class MslqService implements MslqServiceInterface
             }
         }
 
-        return [
+        return $this->sanitizeForJson([
             'reliability' => [
                 'cronbach_alpha' => round($alpha, 3),
                 'status'         => $alpha > 0.6 ? 'Reliabel' : 'Tidak Reliabel',
@@ -203,7 +206,7 @@ final readonly class MslqService implements MslqServiceInterface
                 'mann_whitney' => $comparison,
                 't_test'       => $tTest,
             ],
-        ];
+        ]);
     }
 
     private function buildAnswerMatrix(Collection $results): array

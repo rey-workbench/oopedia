@@ -213,6 +213,7 @@
 
                 <div class="space-y-6">
                     <Card
+                        variant="none"
                         padding="p-0"
                         class="border-duo-lg border-accent-700 bg-accent-500 shadow-accent-100 overflow-hidden rounded-3xl text-white shadow-xl"
                         id="mslq-stat-motivation"
@@ -240,6 +241,7 @@
                     </Card>
 
                     <Card
+                        variant="none"
                         padding="p-0"
                         class="border-duo-lg border-primary-800 bg-primary-500 overflow-hidden rounded-3xl text-white shadow-xl shadow-slate-200"
                         id="mslq-stat-strategy"
@@ -356,15 +358,9 @@
             padding="p-0"
             id="mslq-table-card"
         >
-            <div class="border-b-2 border-slate-50 p-8">
-                <h3
-                    class="text-primary-500 font-display text-lg font-black tracking-widest uppercase"
-                >
-                    Hasil Kuesioner Mahasiswa
-                </h3>
-            </div>
             <DataTable
                 items={results.data}
+                title="Log Responden MSLQ"
                 links={results.links}
                 columns={[
                     { key: 'user.name', label: 'Nama Mahasiswa', align: 'left' },
