@@ -276,9 +276,9 @@
                             >
                                 {displayTitle}
                             </h2>
-                            {#if diagnosis}
+                            {#if diagnosis && diagnosis.toLowerCase() !== displayTitle.toLowerCase()}
                                 <span
-                                    class={`rounded-full border bg-white/50 px-2 py-0.5 text-[10px] font-black tracking-widest uppercase ${feedbackTone.chipBorder} ${feedbackTone.chipText}`}
+                                    class={`rounded-full border bg-white/50 px-2 py-0.5 text-[10px] font-black tracking-widest uppercase whitespace-nowrap ${feedbackTone.chipBorder} ${feedbackTone.chipText}`}
                                 >
                                     {diagnosis}
                                 </span>
@@ -294,6 +294,13 @@
                             >
                                 {recommendation}
                             </p>
+                        {/if}
+
+                        {#if quizState.feedbackData?.correct_answer}
+                            <div class="mt-3 p-3 rounded-xl bg-white/50 border border-rose-200 shadow-sm animate-pulse-slight">
+                                <p class="text-[10px] font-black text-rose-800 uppercase tracking-widest mb-1 opacity-80">Kunci Jawaban:</p>
+                                <p class="text-sm font-bold text-slate-800">{@html quizState.feedbackData.correct_answer.text}</p>
+                            </div>
                         {/if}
 
                         {#if feedbackActions.length > 0}
@@ -323,8 +330,17 @@
                             class="flex items-center gap-2 rounded-xl border-2 border-white bg-white/80 px-3 py-1.5 shadow-sm transition-all hover:scale-110"
                         >
                             <Star size={16} class="fill-amber-400 text-amber-400" />
-                            <span class="text-base font-black tracking-tight text-slate-700"
-                                >+{xpEarned}</span
+                            <span class="text-base whitespace-nowrap font-black tracking-tight text-slate-700"
+                                >+{xpEarned} XP</span
+                            >
+                        </div>
+                    {:else if feedbackStatus === 'wrong'}
+                        <div
+                            class="flex items-center gap-2 rounded-xl border-2 border-rose-100 bg-white/80 px-3 py-1.5 shadow-sm"
+                        >
+                            <Star size={16} class="fill-slate-300 text-slate-300" />
+                            <span class="text-base whitespace-nowrap font-black tracking-tight text-rose-600"
+                                >+0 XP</span
                             >
                         </div>
                     {/if}

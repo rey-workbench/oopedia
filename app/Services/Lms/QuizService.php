@@ -551,10 +551,22 @@ final readonly class QuizService implements QuizServiceInterface
                 $explanation = $question->answers->first()?->explanation;
             }
 
+            $correctAnswerData = null;
+            if (!$isCorrect && $question->question_type === QuestionType::RADIO_BUTTON) {
+                $correctOption = $question->answers->where('is_correct', true)->first();
+                if ($correctOption) {
+                    $correctAnswerData = [
+                        'id' => $correctOption->id,
+                        'text' => $correctOption->answer_text
+                    ];
+                }
+            }
+
             return [
                 'is_correct'          => $isCorrect,
                 'score'               => $score,
                 'explanation'         => $explanation,
+                'correct_answer'      => $correctAnswerData,
                 'challenge_question'  => null, // Handled via adaptive_state
                 'engine_result'       => array_merge($engineResult->toArray(), [
                     'diagnosis'       => $friendlyDiagnosis,

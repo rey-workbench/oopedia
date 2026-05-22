@@ -361,10 +361,10 @@
                             const tourId = getTourIdFromUrl(page.url, isAdminRole);
                             tutorialState.startTour(tourId, true);
                         }}
-                        class="group text-cosmos-muted hover:border-primary-200 hover:bg-primary-50 hover:text-primary-600 flex w-full items-center gap-4 rounded-2xl border-2 border-b-4 border-transparent px-4 py-3 font-bold tracking-tight transition-all duration-100 active:translate-y-[2px] active:border-b-0"
+                        class="group text-cosmos-muted hover:border-slate-200 hover:bg-slate-50 hover:text-slate-600 flex w-full items-center gap-4 rounded-2xl border-2 border-b-4 border-transparent px-4 py-3 font-bold tracking-tight transition-all duration-100 active:translate-y-[2px] active:border-b-0"
                     >
                         <div
-                            class="bg-primary-50 group-hover:bg-primary-100 flex h-8 w-8 items-center justify-center rounded-xl transition-colors duration-200"
+                            class="bg-slate-50 group-hover:bg-slate-100 flex h-8 w-8 items-center justify-center rounded-xl transition-colors duration-200"
                         >
                             <HelpCircle size={18} strokeWidth={2.5} />
                         </div>

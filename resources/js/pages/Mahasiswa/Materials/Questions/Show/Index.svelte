@@ -7,9 +7,11 @@
         AlertTriangle,
         Lightbulb,
         CheckCircle2,
-        Loader2 as LoaderIcon,
+        Loader2,
         Star,
         Flame,
+        X,
+        Clock,
     } from '@lucide/svelte';
     import { QuizState } from '@/states/Mahasiswa/QuizState.svelte';
     import QuestionSessionCard from '@/components/layout/QuestionSessionCard.svelte';
@@ -124,6 +126,34 @@
 
     const DEBUG_MODE = import.meta.env['VITE_ADAPTIVE_DEBUG'] === 'true';
     const showDebug = $derived(quizState.showAdaptiveIndicator && DEBUG_MODE);
+
+    // Countdown Timer logic
+    const TIME_LIMIT = 60; // 60 seconds per question
+    let timeLeft = $state(TIME_LIMIT);
+
+    $effect(() => {
+        // Reset timer when question changes
+        quizState.startTime; // Dependency
+        timeLeft = TIME_LIMIT;
+    });
+
+    $effect(() => {
+        if (!quizState.currentQuestion || quizState.show_feedback || quizState.isSubmitting) {
+            return;
+        }
+
+        const timer = setInterval(() => {
+            if (timeLeft > 0) {
+                timeLeft -= 1;
+            }
+        }, 1000);
+
+        return () => clearInterval(timer);
+    });
+
+    const formattedTime = $derived(
+        `${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}`
+    );
 </script>
 
 <App
@@ -139,7 +169,14 @@
             class:pointer-events-none={quizState.show_feedback}
         >
             <div id="quiz-session-header" class="mb-12">
-                <div class="flex items-center gap-6">
+                <div class="flex items-start gap-4">
+                    <a
+                        href="/mahasiswa/dashboard"
+                        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-200 text-slate-400 transition-all hover:border-slate-300 hover:text-slate-600 active:scale-95"
+                        title="Keluar"
+                    >
+                        <X size={20} />
+                    </a>
                     <div class="flex-1">
                         <div class="mb-3 flex items-center justify-between px-2">
                             <div class="flex items-center gap-3">
@@ -167,22 +204,39 @@
                             <ProgressBar value={progressPercentage} height="h-4" color="blue" />
                         </div>
                     </div>
-
-                    <!-- XP & Streak Display (Duolingo Style) -->
-                    <div class="flex items-center gap-3">
-                        <div
-                            id="xp-badge"
-                            class="flex items-center gap-2 rounded-2xl border-2 border-slate-100 bg-white px-4 py-2 shadow-sm transition-all duration-300"
-                        >
-                            <Star size={18} class="fill-amber-400 text-amber-400" />
-                            <span class="text-sm font-black text-slate-700">{quizState.xp}</span>
-                        </div>
-                        <div
-                            class="flex items-center gap-2 rounded-2xl border-2 border-slate-100 bg-white px-4 py-2 shadow-sm"
-                        >
-                            <Flame size={18} class="fill-orange-500 text-orange-500" />
-                            <span class="text-sm font-black text-slate-700">{quizState.streak}</span
+                    <!-- Timer, XP & Streak Display -->
+                    <div class="flex flex-col items-end gap-2 shrink-0">
+                        {#if quizState.currentQuestion && !quizState.show_feedback}
+                            <div
+                                class={`flex items-center gap-2 rounded-2xl border-2 px-3 py-1.5 shadow-sm transition-all duration-300 ${
+                                    timeLeft <= 10
+                                        ? 'border-rose-200 bg-rose-50 text-rose-600 animate-pulse'
+                                        : 'border-slate-100 bg-white text-slate-500'
+                                }`}
                             >
+                                <Clock size={16} />
+                                <span class="text-sm font-black tracking-widest"
+                                    >{formattedTime}</span
+                                >
+                            </div>
+                        {/if}
+                        <div class="flex items-center gap-2">
+                            <div
+                                id="xp-badge"
+                                class="flex items-center gap-2 rounded-2xl border-2 border-slate-100 bg-white px-3 py-1.5 shadow-sm transition-all duration-300"
+                            >
+                                <Star size={16} class="fill-amber-400 text-amber-400" />
+                                <span class="text-sm font-black text-slate-700">{quizState.xp}</span
+                                >
+                            </div>
+                            <div
+                                class="flex items-center gap-2 rounded-2xl border-2 border-slate-100 bg-white px-3 py-1.5 shadow-sm"
+                            >
+                                <Flame size={16} class="fill-orange-500 text-orange-500" />
+                                <span class="text-sm font-black text-slate-700"
+                                    >{quizState.streak}</span
+                                >
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -278,7 +332,7 @@
                     >
                         <div class="flex items-center justify-center gap-3">
                             {#if quizState.isSubmitting}
-                                <LoaderIcon size={20} class="animate-spin" />
+                                <Loader2 size={20} class="animate-spin" />
                                 <span>Memproses...</span>
                             {:else}
                                 <span>Periksa Jawaban</span>

@@ -1,12 +1,13 @@
 <script lang="ts">
     interface Props {
         name?: string;
+        src?: string | null;
         size?: 'sm' | 'md' | 'lg';
         dark?: boolean;
         class?: string;
     }
 
-    let { name = '', size = 'md', dark = false, class: className = '' }: Props = $props();
+    let { name = '', src = null, size = 'md', dark = false, class: className = '' }: Props = $props();
 
     const sizes = {
         sm: 'w-8 h-8 text-xs',
@@ -27,7 +28,11 @@
 </script>
 
 <div
-    class="{sizeClass} {radiusClass} {bgClass} border-cosmos-border flex shrink-0 items-center justify-center border-2 font-bold {className}"
+    class="{sizeClass} {radiusClass} {bgClass} border-cosmos-border overflow-hidden flex shrink-0 items-center justify-center border-2 font-bold {className}"
 >
-    {initial}
+    {#if src}
+        <img src={src} alt={name || 'Avatar'} class="h-full w-full object-cover" />
+    {:else}
+        {initial}
+    {/if}
 </div>

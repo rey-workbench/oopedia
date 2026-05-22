@@ -111,6 +111,7 @@
                     <img
                         src={f.img}
                         alt=""
+                        loading="lazy"
                         class="absolute -right-12 -bottom-12 w-64 opacity-20 mix-blend-multiply grayscale transition-all duration-700 group-hover:scale-110 group-hover:rotate-6 group-hover:opacity-40"
                     />
                 </div>

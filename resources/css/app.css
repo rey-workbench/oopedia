@@ -169,6 +169,7 @@
 #driver-page-overlay {
     backdrop-filter: blur(4px) !important;
     fill: rgba(15, 23, 42, 0.6) !important; /* bg-slate-900/60 matched to Modal.svelte */
+    z-index: 100000 !important;
 }
 
 /* Driver.js Custom Styling - Gamified Gamers Aesthetic */
@@ -183,6 +184,7 @@
     animation: duo-pop-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
     color: #0f172a !important;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05) !important;
+    z-index: 100001 !important;
 }
 
 .oopedia-driver-popover .driver-popover-title {
@@ -322,5 +324,11 @@
     100% {
         opacity: 1;
         transform: scale(1) translateY(0);
+    }
+}
+
+@layer base {
+    html {
+        font-size: 14px; /* Scale down oversized fonts globally */
     }
 }

@@ -3,11 +3,13 @@
     import Input from '@/components/ui/Input.svelte';
     import Button from '@/components/ui/Button.svelte';
     import { Link } from '@inertiajs/svelte';
-    import { Loader2, UserPlus, X } from '@lucide/svelte';
+    import { Loader2, UserPlus, X, Eye, EyeOff } from '@lucide/svelte';
     import { ROUTES } from '@/utils/route';
     import { RegisterState } from '@/states/Auth/AuthState.svelte';
 
-    const state = new RegisterState({
+    let showPassword = $state(false);
+
+    const authState = new RegisterState({
         showSuccessToast: 'Registrasi berhasil!',
         showErrorToast: true,
     });
@@ -47,7 +49,7 @@
             <form
                 onsubmit={(event) => {
                     event.preventDefault();
-                    state.submit();
+                    authState.submit();
                 }}
                 class="w-full space-y-4"
             >
@@ -55,11 +57,11 @@
                     <Input
                         id="name"
                         type="text"
-                        bind:value={state.form.name}
+                        bind:value={authState.form.name}
                         placeholder="Nama Lengkap"
                         autocomplete="name"
                         required
-                        error={state.form.errors['name']}
+                        error={authState.form.errors['name']}
                         inputClass="h-14 w-full rounded-2xl border-2 border-slate-300 bg-slate-50 px-5 text-base font-bold text-slate-900 placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-0 transition-colors"
                         label=""
                     />
@@ -67,38 +69,66 @@
                     <Input
                         id="email"
                         type="email"
-                        bind:value={state.form.email}
+                        bind:value={authState.form.email}
                         placeholder="Email atau nama pengguna"
                         autocomplete="email"
                         required
-                        error={state.form.errors['email']}
+                        error={authState.form.errors['email']}
                         inputClass="h-14 w-full rounded-2xl border-2 border-slate-300 bg-slate-50 px-5 text-base font-bold text-slate-900 placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-0 transition-colors"
                         label=""
                     />
 
-                    <Input
-                        id="password"
-                        type="password"
-                        bind:value={state.form.password}
-                        placeholder="Kata sandi"
-                        autocomplete="new-password"
-                        required
-                        error={state.form.errors['password']}
-                        inputClass="h-14 w-full rounded-2xl border-2 border-slate-300 bg-slate-50 px-5 text-base font-bold text-slate-900 placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-0 transition-colors"
-                        label=""
-                    />
+                    <div class="relative">
+                        <Input
+                            id="password"
+                            type={showPassword ? 'text' : 'password'}
+                            bind:value={authState.form.password}
+                            placeholder="Kata sandi"
+                            autocomplete="new-password"
+                            required
+                            error={authState.form.errors['password']}
+                            inputClass="h-14 w-full pr-12 rounded-2xl border-2 border-slate-300 bg-slate-50 px-5 text-base font-bold text-slate-900 placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-0 transition-colors"
+                            label=""
+                        />
+                        <button
+                            type="button"
+                            onclick={() => (showPassword = !showPassword)}
+                            class="absolute top-1/2 right-4 z-10 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
+                            aria-label="Toggle password visibility"
+                        >
+                            {#if showPassword}
+                                <EyeOff size={20} strokeWidth={2} />
+                            {:else}
+                                <Eye size={20} strokeWidth={2} />
+                            {/if}
+                        </button>
+                    </div>
 
-                    <Input
-                        id="password_confirmation"
-                        type="password"
-                        bind:value={state.form.password_confirmation}
-                        placeholder="Konfirmasi kata sandi"
-                        autocomplete="new-password"
-                        required
-                        error={state.form.errors['password_confirmation']}
-                        inputClass="h-14 w-full rounded-2xl border-2 border-slate-300 bg-slate-50 px-5 text-base font-bold text-slate-900 placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-0 transition-colors"
-                        label=""
-                    />
+                    <div class="relative">
+                        <Input
+                            id="password_confirmation"
+                            type={showPassword ? 'text' : 'password'}
+                            bind:value={authState.form.password_confirmation}
+                            placeholder="Konfirmasi kata sandi"
+                            autocomplete="new-password"
+                            required
+                            error={authState.form.errors['password_confirmation']}
+                            inputClass="h-14 w-full pr-12 rounded-2xl border-2 border-slate-300 bg-slate-50 px-5 text-base font-bold text-slate-900 placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-0 transition-colors"
+                            label=""
+                        />
+                        <button
+                            type="button"
+                            onclick={() => (showPassword = !showPassword)}
+                            class="absolute top-1/2 right-4 z-10 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
+                            aria-label="Toggle password visibility"
+                        >
+                            {#if showPassword}
+                                <EyeOff size={20} strokeWidth={2} />
+                            {:else}
+                                <Eye size={20} strokeWidth={2} />
+                            {/if}
+                        </button>
+                    </div>
                 </div>
 
                 <div class="pt-1">
@@ -109,7 +139,7 @@
                         <input
                             id="register_as_admin"
                             type="checkbox"
-                            bind:checked={state.form.register_as_admin}
+                            bind:checked={authState.form.register_as_admin}
                             class="text-primary-500 focus:ring-primary-500 h-5 w-5 rounded border-2 border-slate-300"
                         />
                         <span class="text-sm leading-snug font-bold tracking-wide text-slate-600">
@@ -124,9 +154,9 @@
                         variant="primary"
                         size="md"
                         class="w-full text-[15px]"
-                        disabled={state.form.processing}
+                        disabled={authState.form.processing}
                     >
-                        {#if state.form.processing}
+                        {#if authState.form.processing}
                             <Loader2 size={22} class="animate-spin" />
                         {:else}
                             <UserPlus size={18} class="mr-1" />

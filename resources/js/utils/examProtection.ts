@@ -28,6 +28,7 @@ const defaultOptions: ExamProtectionOptions = {
 
 let protectionActive = false;
 let violationCallback: ExamProtectionOptions['onViolation'] = undefined;
+let blurIntervalId: NodeJS.Timeout | null = null;
 
 function triggerViolation(type: ViolationType, message: string) {
     if (violationCallback) {
@@ -101,6 +102,30 @@ function handleWindowBlur() {
     }
 }
 
+function handleCopy(e: ClipboardEvent) {
+    if (!protectionActive) return;
+    e.preventDefault();
+    triggerViolation('copy', 'Copy tidak diizinkan selama ujian');
+}
+
+function handleCut(e: ClipboardEvent) {
+    if (!protectionActive) return;
+    e.preventDefault();
+    triggerViolation('cut', 'Cut tidak diizinkan selama ujian');
+}
+
+function handlePaste(e: ClipboardEvent) {
+    if (!protectionActive) return;
+    e.preventDefault();
+    triggerViolation('paste', 'Paste tidak diizinkan selama ujian');
+}
+
+function handleBlur() {
+    if (protectionActive) {
+        triggerViolation('tab_switch', 'Pindah tab tidak diizinkan selama ujian');
+    }
+}
+
 export function activateExamProtection(options: Partial<ExamProtectionOptions> = {}): void {
     if (DEBUG_MODE) {
         // console.debug('[ExamProtection] Debug mode active - protection disabled');
@@ -120,31 +145,20 @@ export function activateExamProtection(options: Partial<ExamProtectionOptions> =
     }
 
     if (opts.blockCopyPaste) {
-        document.addEventListener('copy', (e) => {
-            e.preventDefault();
-            triggerViolation('copy', 'Copy tidak diizinkan selama ujian');
-        });
-        document.addEventListener('cut', (e) => {
-            e.preventDefault();
-            triggerViolation('cut', 'Cut tidak diizinkan selama ujian');
-        });
-        document.addEventListener('paste', (e) => {
-            e.preventDefault();
-            triggerViolation('paste', 'Paste tidak diizinkan selama ujian');
-        });
+        document.addEventListener('copy', handleCopy);
+        document.addEventListener('cut', handleCut);
+        document.addEventListener('paste', handlePaste);
     }
 
     if (opts.blockTabSwitch) {
         document.addEventListener('visibilitychange', handleVisibilityChange);
-        window.addEventListener('blur', () => {
-            if (protectionActive) {
-                triggerViolation('tab_switch', 'Pindah tab tidak diizinkan selama ujian');
-            }
-        });
+        window.addEventListener('blur', handleBlur);
     }
 
     if (opts.blockDevTools) {
-        setInterval(handleWindowBlur, 1000);
+        if (!blurIntervalId) {
+            blurIntervalId = setInterval(handleWindowBlur, 1000);
+        }
     }
 
     console.debug('[ExamProtection] Protection activated');
@@ -157,6 +171,15 @@ export function deactivateExamProtection(): void {
     document.removeEventListener('contextmenu', handleContextMenu);
     document.removeEventListener('keydown', handleKeyDown);
     document.removeEventListener('visibilitychange', handleVisibilityChange);
+    document.removeEventListener('copy', handleCopy);
+    document.removeEventListener('cut', handleCut);
+    document.removeEventListener('paste', handlePaste);
+    window.removeEventListener('blur', handleBlur);
+
+    if (blurIntervalId) {
+        clearInterval(blurIntervalId);
+        blurIntervalId = null;
+    }
 
     console.debug('[ExamProtection] Protection deactivated');
 }

@@ -94,7 +94,7 @@
                 id="main-content"
                 class="w-full flex-1 {fullWidth
                     ? ''
-                    : 'mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8'}"
+                    : 'mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-10'}"
             >
                 {@render children?.()}
             </main>

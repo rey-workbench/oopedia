@@ -6,6 +6,7 @@
     import { getTourIdFromUrl } from '@/tutorial';
     import { isAdmin } from '@/utils/roles';
     import { tutorialState } from '@/states/ui/tutorialState.svelte';
+    import UserAvatar from '@/components/ui/UserAvatar.svelte';
 
     interface Props {
         titlePage?: string;
@@ -18,6 +19,9 @@
     const isAuthenticated = $derived(!!user);
     const isAdminRole = $derived(isAuthenticated && isAdmin(user?.role?.role_name));
     const userName = $derived(user?.name ?? 'Tamu');
+
+    const currentTourId = $derived(getTourIdFromUrl(page.url, isAdminRole));
+    const showTutorialDot = $derived(!tutorialState.hasSeenTutorial[currentTourId]);
 
     function logout() {
         router.post('/logout');
@@ -80,17 +84,19 @@
                         tutorialState.startTour(tourId, true);
                     }}
                     aria-label="Start Page Tour"
-                    class="group hover:border-accent-200 relative rounded-2xl border-2 border-transparent p-2 text-slate-900/40 transition-all hover:bg-slate-900/5 hover:text-slate-900 active:translate-y-[2px]"
+                    class="group hover:border-slate-200 relative rounded-2xl border-2 border-transparent p-2 text-slate-900/40 transition-all hover:bg-slate-900/5 hover:text-slate-900 active:translate-y-[2px]"
                     title="Tutorial"
                 >
-                    <CircleHelp size={20} strokeWidth={1.5} />
-                    <span class="absolute -top-1 -right-1 flex h-3 w-3">
-                        <span
-                            class="bg-accent-400 absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
-                        ></span>
-                        <span class="bg-accent-500 relative inline-flex h-3 w-3 rounded-full"
-                        ></span>
-                    </span>
+                    <CircleHelp size={20} strokeWidth={1.5} class="text-slate-500 transition-colors group-hover:text-slate-700" />
+                    {#if showTutorialDot}
+                        <span class="absolute -top-1 -right-1 flex h-3 w-3">
+                            <span
+                                class="bg-rose-400 absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
+                            ></span>
+                            <span class="bg-rose-500 relative inline-flex h-3 w-3 rounded-full"
+                            ></span>
+                        </span>
+                    {/if}
                 </button>
 
                 <div class="group relative" id="navbar-profile">
@@ -98,15 +104,7 @@
                         aria-label="Open profile menu"
                         class="group border-cosmos-border hover:border-primary-500/30 flex items-center gap-2 rounded-2xl border-2 p-1 transition-all duration-200"
                     >
-                        <div
-                            class="border-cosmos-border flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border-2 bg-white transition-all duration-200"
-                        >
-                            <img
-                                src="/images/profile.gif"
-                                alt="Profile"
-                                class="h-full w-full object-cover"
-                            />
-                        </div>
+                        <UserAvatar name={userName} src={user?.avatar} size="md" />
                     </button>
 
                     <div
@@ -119,6 +117,11 @@
                             <p class="truncate text-xs font-medium text-slate-500">
                                 {user.email}
                             </p>
+                            <div class="mt-2 flex items-center">
+                                <span class="rounded-lg px-2 py-1 text-[10px] font-bold tracking-widest uppercase {user.is_approved ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+                                    {user.is_approved ? 'Aktif' : 'Trial'}
+                                </span>
+                            </div>
                         </div>
 
                         <Link

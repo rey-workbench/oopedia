@@ -97,4 +97,5 @@ export interface CheckAnswerResponse {
     adaptive_result: AdaptiveResult | null;
     challenge_question?: ChallengeQuestion | null;
     next_url: string | null;
+    correct_answer?: { id: string; text: string } | null;
 }

@@ -36,6 +36,7 @@
                     <img
                         src={brand.image}
                         alt={brand.name}
+                        loading="lazy"
                         class="h-12 w-auto object-contain opacity-30 grayscale transition-all duration-500 group-hover:opacity-100 group-hover:grayscale-0 md:h-16"
                     />
                 </div>
@@ -43,3 +44,4 @@
         </div>
     </div>
 </section>
+    

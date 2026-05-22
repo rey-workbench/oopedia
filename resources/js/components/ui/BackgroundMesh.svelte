@@ -54,6 +54,8 @@
         canvas.height = height;
     };
 
+    let animationId: number;
+
     const animate = () => {
         if (!ctx) return;
         ctx.clearRect(0, 0, width, height);
@@ -76,13 +78,16 @@
             ctx.fillRect(0, 0, width, height);
         });
 
-        requestAnimationFrame(animate);
+        animationId = requestAnimationFrame(animate);
     };
 
     onMount(() => {
         init();
         window.addEventListener('resize', resize);
-        return () => window.removeEventListener('resize', resize);
+        return () => {
+            window.removeEventListener('resize', resize);
+            if (animationId) cancelAnimationFrame(animationId);
+        };
     });
 </script>
 
