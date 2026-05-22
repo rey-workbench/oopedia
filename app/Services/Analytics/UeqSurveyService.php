@@ -35,14 +35,10 @@ final readonly class UeqSurveyService implements UeqSurveyServiceInterface
         return collect(['pre', 'post']);
     }
 
-    /** @return array<string, mixed>|null */
-    public function getStudentDetail(string $userId): ?array
+    /** @return array<string, mixed> */
+    public function getSurveyDetail(string $id): array
     {
-        $survey = $this->ueqRepo->findByUserId($userId);
-
-        if (! $survey instanceof UeqSurvey) {
-            return null;
-        }
+        $survey = $this->ueqRepo->findWithRelations($id);
 
         return new UeqSurveyResource($survey)->resolve();
     }

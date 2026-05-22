@@ -32,6 +32,11 @@ final class UeqSurveyRepository implements UeqSurveyRepositoryInterface
         return UeqSurvey::where('user_id', '=', $userId)->firstOrFail();
     }
 
+    public function findWithRelations(string $id): UeqSurvey
+    {
+        return UeqSurvey::with('user')->findOrFail($id);
+    }
+
     public function findSurveyByUser(string $userId, ?string $type = null): ?UeqSurvey
     {
         $query = UeqSurvey::where('user_id', '=', $userId);

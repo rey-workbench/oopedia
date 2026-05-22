@@ -143,15 +143,10 @@ final class UeqSurveyController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
-    public function show(string $userId): Response
+    public function show(string $id): Response
     {
-        $survey = $this->ueqSurveyService->getStudentDetail($userId);
-
-        if (! $survey) {
-            abort(404);
-        }
-
-        $user = $survey['user'];
+        $survey = $this->ueqSurveyService->getSurveyDetail($id);
+        $user   = $survey['user'];
 
         return $this->render('Admin/Ueq/Detail/Index', ['survey' => $survey, 'user' => $user]);
     }

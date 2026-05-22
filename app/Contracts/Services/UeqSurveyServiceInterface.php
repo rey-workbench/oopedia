@@ -14,7 +14,7 @@ interface UeqSurveyServiceInterface
 
     public function getDistinctAssessmentTypes(): Collection;
 
-    public function getStudentDetail(string $userId): ?array;
+    public function getSurveyDetail(string $id): array;
 
     public function hasUserSubmitted(string $userId, ?AssessmentType $type = null): bool;
 

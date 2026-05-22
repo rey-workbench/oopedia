@@ -105,13 +105,8 @@ final class SusSurveyController extends Controller
 
     public function show(string $resultId): Response
     {
-        $result = $this->susResultService->getStudentDetail($resultId);
-
-        if (! $result) {
-            abort(404);
-        }
-
-        $user = $result['user'];
+        $result = $this->susResultService->getResultDetail($resultId);
+        $user   = $result['user'];
 
         $calculation = [
             'item_scores' => $this->susResultService->calculateItemScores($result),

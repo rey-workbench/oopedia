@@ -21,6 +21,8 @@ interface SusResultRepositoryInterface
 
     public function findByUserId(string $userId): ?SusResult;
 
+    public function findWithRelations(string $id): SusResult;
+
     /**
      * @param array<string, mixed> $data
      */

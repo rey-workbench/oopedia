@@ -37,4 +37,9 @@ final class SusResultRepository implements SusResultRepositoryInterface
     {
         return SusResult::where('user_id', '=', $userId)->with('user')->first();
     }
+
+    public function findWithRelations(string $id): SusResult
+    {
+        return SusResult::with(['user', 'answers.question'])->findOrFail($id);
+    }
 }

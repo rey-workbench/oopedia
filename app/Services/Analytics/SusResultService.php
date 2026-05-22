@@ -39,13 +39,9 @@ final readonly class SusResultService implements SusResultServiceInterface
         return ['pre', 'post'];
     }
 
-    public function getStudentDetail(string $userId): ?array
+    public function getResultDetail(string $id): array
     {
-        $result = $this->susResultRepository->findByUserId($userId);
-
-        if (! $result instanceof SusResult) {
-            return null;
-        }
+        $result = $this->susResultRepository->findWithRelations($id);
 
         return new SusResultResource($result)->resolve();
     }
@@ -100,20 +96,27 @@ final readonly class SusResultService implements SusResultServiceInterface
 
     public function calculateItemScores(SusResult|array $result): array
     {
-        if ($result instanceof SusResult) {
-            $answers = $result->answers()->with('question')->get();
-            $scores  = [];
-            foreach ($answers as $answer) {
-                $val                                    = $answer->value;
-                $scores['q' . $answer->question->order] = $answer->question->is_reverse
-                    ? (5 - $val)
-                    : ($val - 1);
+        if (is_array($result)) {
+            $resultId = $result['id'] ?? null;
+            if (! $resultId) {
+                return [];
             }
-
-            return $scores;
+            $result = SusResult::find($resultId);
+            if (! $result) {
+                return [];
+            }
         }
 
-        return [];
+        $answers = $result->answers()->with('question')->get();
+        $scores  = [];
+        foreach ($answers as $answer) {
+            $val                                    = $answer->value;
+            $scores['q' . $answer->question->order] = $answer->question->is_reverse
+                ? (5 - $val)
+                : ($val - 1);
+        }
+
+        return $scores;
     }
 
     /** @return array<string, mixed> */

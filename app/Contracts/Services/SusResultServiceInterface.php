@@ -20,7 +20,7 @@ interface SusResultServiceInterface
      */
     public function getDistinctAssessmentTypes(): array;
 
-    public function getStudentDetail(string $userId): ?array;
+    public function getResultDetail(string $id): array;
 
     public function hasUserSubmitted(string $userId, ?AssessmentType $type = null): bool;
 
