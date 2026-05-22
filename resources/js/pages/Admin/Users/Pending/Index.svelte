@@ -11,9 +11,10 @@
     import { untrack } from 'svelte';
     import { PendingAdminState } from '@/states/Admin/UserState.svelte';
 
-    let { pendingAdmins = [] }: { pendingAdmins: any[] } = $props();
+    let { pendingAdmins }: { pendingAdmins: any } = $props();
 
-    const state = untrack(() => new PendingAdminState(pendingAdmins));
+    const adminsList = pendingAdmins?.data || pendingAdmins || [];
+    const state = untrack(() => new PendingAdminState(adminsList));
 
     const columns = [
         { key: 'identity', label: 'Identitas', align: 'left' },

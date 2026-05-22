@@ -78,7 +78,7 @@
                             label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)',
                             value: t,
                         }))}
-                        class="border-duo w-48 rounded-xl"
+                        class="w-48"
                     />
                     <Button
                         variant="success"
@@ -164,12 +164,12 @@
                     {#snippet row(result)}
                         <td class="border-b border-slate-50 px-6 py-6">
                             <div class="flex items-center gap-4">
-                                <UserAvatar name={result.user ? result.user.name : '?'} />
+                                <UserAvatar name={result.user?.name} />
                                 <div>
                                     <div
                                         class="text-sm font-bold tracking-widest text-slate-900 uppercase"
                                     >
-                                        {result.user ? result.user.name : 'Tamu'}
+                                        {result.user?.name || 'Tamu'}
                                     </div>
                                     <div
                                         class="mt-0.5 text-[9px] font-bold tracking-widest text-slate-400 uppercase"
@@ -241,7 +241,7 @@
                                     }))}
                                     bind:value={type1}
                                     placeholder="Tipe 1"
-                                    class="w-40 rounded-xl"
+                                    class="w-40"
                                 />
                             </div>
                             <div class="mt-6 text-slate-300">
@@ -260,7 +260,7 @@
                                     }))}
                                     bind:value={type2}
                                     placeholder="Tipe 2"
-                                    class="w-40 rounded-xl"
+                                    class="w-40"
                                 />
                             </div>
                             <Button

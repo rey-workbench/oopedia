@@ -87,7 +87,7 @@
                             label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)',
                             value: t,
                         }))}
-                        class="border-duo w-48 rounded-xl"
+                        class="w-48"
                     />
                     <Button
                         variant="success"
@@ -228,7 +228,7 @@
                                     }))}
                                     bind:value={type1}
                                     placeholder="Tipe 1"
-                                    class="w-40 rounded-xl"
+                                    class="w-40"
                                 />
                             </div>
                             <div class="mt-6 text-slate-300">
@@ -247,7 +247,7 @@
                                     }))}
                                     bind:value={type2}
                                     placeholder="Tipe 2"
-                                    class="w-40 rounded-xl"
+                                    class="w-40"
                                 />
                             </div>
                             <Button

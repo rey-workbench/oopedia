@@ -6,6 +6,7 @@
     import PageHeader from '@/components/ui/PageHeader.svelte';
     import Chart from '@/components/ui/Chart.svelte';
     import Select from '@/components/ui/Select.svelte';
+    import UserAvatar from '@/components/ui/UserAvatar.svelte';
     import {
         Eye,
         FileSpreadsheet,
@@ -142,7 +143,7 @@
                             label: t === 'pre' ? 'Pre-Test (Awal)' : 'Post-Test (Akhir)',
                             value: t,
                         }))}
-                        class="border-duo w-48 rounded-xl"
+                        class="w-48"
                     />
                     <Button
                         variant="success"
@@ -316,7 +317,7 @@
                                     }))}
                                     bind:value={type1}
                                     placeholder="Tipe 1"
-                                    class="w-40 rounded-xl"
+                                    class="w-40"
                                 />
                             </div>
                             <div class="mt-6 text-slate-300">
@@ -335,7 +336,7 @@
                                     }))}
                                     bind:value={type2}
                                     placeholder="Tipe 2"
-                                    class="w-40 rounded-xl"
+                                    class="w-40"
                                 />
                             </div>
                             <Button
@@ -375,7 +376,17 @@
                     <td
                         class="group-hover:border-accent-500 border-l-4 border-transparent px-6 py-6 transition-all"
                     >
-                        <span class="font-bold text-slate-900">{item.user?.name ?? 'Tamu'}</span>
+                        <div class="flex items-center gap-4">
+                            <UserAvatar name={item.user?.name} />
+                            <div>
+                                <div class="text-sm font-bold tracking-widest text-slate-900 uppercase">
+                                    {item.user?.name || 'Tamu'}
+                                </div>
+                                <div class="mt-0.5 text-[9px] font-bold tracking-widest text-slate-400 uppercase">
+                                    ID: {item.id.substring(0, 8)}
+                                </div>
+                            </div>
+                        </div>
                     </td>
                     <td class="px-6 py-6">
                         <span
