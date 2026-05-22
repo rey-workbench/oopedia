@@ -23,7 +23,7 @@ final class UeqSurveyResource extends JsonResource
     {
         return [
             'id'         => $this->id,
-            'user'       => new UserResource($this->whenLoaded('user')),
+            'user'       => $this->whenLoaded('user', fn () => (new UserResource($this->user))->resolve()),
             'nim'        => $this->nim,
             'class'      => $this->class,
             'created_at' => $this->created_at?->toIso8601String(),

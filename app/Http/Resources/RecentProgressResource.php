@@ -23,7 +23,7 @@ final class RecentProgressResource extends JsonResource
     {
         return [
             'id'          => $this->id,
-            'user'        => new UserResource($this->whenLoaded('user')),
+            'user'        => $this->whenLoaded('user', fn () => (new UserResource($this->user))->resolve()),
             'material'    => $this->whenLoaded('question', fn (): array => [
                 'id'    => $this->question->material->id    ?? null,
                 'title' => $this->question->material->title ?? null,

@@ -23,7 +23,7 @@ final class MslqResultResource extends JsonResource
     {
         return [
             'id'               => $this->id,
-            'user'             => new UserResource($this->whenLoaded('user')),
+            'user'             => $this->whenLoaded('user', fn () => (new UserResource($this->user))->resolve()),
             'assessment_type'  => $this->assessment_type,
             'scores_by_scale'  => $this->scores_by_scale,
             'total_score'      => $this->total_score,
