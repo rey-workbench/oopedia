@@ -16,7 +16,7 @@
             >
                 <div class="mb-8 flex justify-center">
                     <div
-                        class="inline-flex h-24 w-24 items-center justify-center rounded-full border-[8px] border-emerald-50 bg-emerald-100 text-emerald-500"
+                        class="inline-flex h-24 w-24 items-center justify-center rounded-full border-8 border-emerald-50 bg-emerald-100 text-emerald-500"
                     >
                         <CheckCircle2 size={40} strokeWidth={2.5} />
                     </div>
