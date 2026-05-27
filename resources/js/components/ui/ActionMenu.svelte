@@ -89,7 +89,7 @@
         aria-haspopup="true"
         aria-expanded={open}
         title="Opsi"
-        class={`border-cosmos-border flex h-8 w-8 items-center justify-center rounded-xl border-2 border-b-4 bg-white text-slate-400 transition-all hover:border-slate-200 hover:bg-slate-50 hover:text-slate-700 active:translate-y-[1px] active:border-b-2 ${open ? 'border-slate-200 bg-slate-50 text-slate-700' : ''}`}
+        class={`border-cosmos-border flex h-8 w-8 items-center justify-center rounded-xl border-2 border-b-4 bg-white text-slate-400 transition-all hover:border-slate-200 hover:bg-slate-50 hover:text-slate-700 active:translate-y-px active:border-b-2 ${open ? 'border-slate-200 bg-slate-50 text-slate-700' : ''}`}
     >
         <MoreVertical size={14} strokeWidth={2.5} />
     </button>
@@ -98,7 +98,7 @@
         <div
             bind:this={menuRef}
             style={menuStyles}
-            class="border-cosmos-border fixed z-[9999] min-w-[200px] overflow-hidden rounded-2xl border-2 bg-white shadow-2xl"
+            class="border-cosmos-border fixed z-9999 min-w-[200px] overflow-hidden rounded-2xl border-2 bg-white shadow-2xl"
             role="menu"
             transition:fly={{ y: menuStyles.includes('bottom') ? 8 : -8, duration: 130, opacity: 0 }}
         >

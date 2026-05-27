@@ -1,78 +1,91 @@
-# Adaptive Learning Engine - Rule Documentation
+# Aturan Pembelajaran Adaptif (Adaptive Learning Rules)
 
-## Arsitektur 4 Layer
-
-Engine ini menggunakan pendekatan **Forward Chaining** dengan alur 4 lapis:
-
-1. **Input (Fakta / Raw Data)**
-   Sistem membaca data performa siswa pada akhir sesi kuis:
-    - `accuracy` (Akurasi jawaban, % dari total pertanyaan dijawab benar)
-    - `time_spent` (Total waktu yang dihabiskan untuk menjawab)
-    - `hints_used` (Jumlah bantuan yang digunakan)
-    - `streak` (Konsistensi hari berturut-turut belajar - _Daily Streak_)
-    - `stagnant_count` (Jumlah sesi beruntun di mana skor siswa tidak berubah lebih dari ±5%)
-    - `level` (Level gamifikasi siswa: Beginner, Ahli, dsb)
-    - `trend` (Tren grafik 3 sesi terakhir: `up`, `down`, atau `stable`)
-
-2. **Kondisi / Threshold (Layer Klasifikasi)**
-   Raw data dikonversi menjadi fakta boolean (`G-Codes`):
-    - **G01 - G04, G17** (Akurasi): `<40%`, `40-60%`, `60-70%`, `>80%`, `>85%`
-    - **G05 - G07** (Tren Performa): `Turun`, `Stabil`, `Naik`
-    - **G08, G09, G20** (Penggunaan Bantuan): `>3x`, `2-3x`, `0x`
-    - **G11 - G13** (Kecepatan Respon): `Cepat`, `Lambat`, `Normal`
-    - **G14 - G16** (Streak Harian): `≥3 Hari`, `≥5 Hari`, `≥7 Hari`
-    - **G19** (Gamifikasi): `Level Ahli`
-
-3. **Diagnosis (V-Codes)**
-   Kombinasi _G-Codes_ menyimpulkan status psikologis / kognitif siswa (`V-Codes`):
-    - **V_CRISIS (Krisis Pembelajaran):** Siswa gagal memahami konsep secara fatal.
-    - **V_STRUGGLING (Sedang Kesulitan):** Siswa kesulitan tapi masih mau berjuang.
-    - **V_OPTIMAL (Performa Optimal):** Siswa menguasai materi dengan baik.
-    - **V_DEPENDENCY (Ketergantungan Bantuan):** Siswa punya skor bagus hanya karena mengandalkan _hint_.
-    - **V_BOREDOM (Potensi Kebosanan):** Siswa terus-menerus mendapat skor sama (stagnan), butuh tantangan baru.
-
-4. **Rekomendasi (Aksi Sistem)**
-   Sistem melontarkan _Action Constants_ berdasarkan diagnosis dan kriteria spesifik:
-    - `REDUCE_DIFF` (Turunkan Kesulitan)
-    - `INCREASE_DIFF` (Naikkan Kesulitan)
-    - `REMEDIAL` (Ulangi Materi / Latihan Ekstra)
-    - `SCAFFOLD_REDUCTION` (Kurangi jatah bantuan di sesi selanjutnya)
-    - `NEW_CHALLENGE` (Format tantangan / soal baru)
-    - `STREAK_BONUS` (Beri ekstra XP/Poin)
-    - `CERTIFICATION` (Lulus dengan predikat sangat baik)
-    - `FEEDBACK` (Berikan umpan balik / motivasi umum)
+Dokumen ini berisi spesifikasi aturan pembelajaran adaptif yang digunakan dalam sistem e-learning Oopedia berbasis algoritma *Forward Chaining*. Aturan-aturan ini didefinisikan dalam database melalui seeder `AdaptiveRuleSeeder` dan dievaluasi secara dinamis oleh `AdaptiveEngineService`.
 
 ---
 
-## Matriks Rule (R01 - R15)
+## Tabel 3.1 Interpretasi Fakta/Gejala (Input)
 
-Evaluasi berjalan berurutan. Rule pertama yang kondisinya **TRUE** akan langsung dieksekusi, mengabaikan rule di bawahnya.
+Tabel ini mendefinisikan gejala atau fakta (*Facts*) yang diamati langsung dari perilaku mahasiswa (*G-Codes*) maupun fakta hasil kesimpulan/diagnosa virtual (*V-Codes*).
 
-| ID      | Diagnosis (V-Code) | Kondisi (Syarat G-Code)                                                                                                  | Rekomendasi Aksi                      |
-| ------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------- |
-| **R01** | `V_CRISIS`         | Akurasi <40% **AND** Tren Turun **AND** Bantuan >3x                                                                      | Remedial Review, Reduce Difficulty    |
-| **R02** | `V_CRISIS`         | Akurasi <40% **AND** Tren Turun **AND** Bantuan ≤3x                                                                      | Remedial Review                       |
-| **R03** | `V_CRISIS`         | Akurasi <40% **AND** Tren Stabil/Naik **AND** Bantuan >3x                                                                | Reduce Difficulty, Scaffold Reduction |
-| **R04** | `V_STRUGGLING`     | Akurasi 40-60% **AND** Respons Lambat **AND** Bantuan ≤3x                                                                | Reduce Difficulty                     |
-| **R05** | `V_STRUGGLING`     | Akurasi 40-60% **AND** Respons Normal **AND** Bantuan 2-3x                                                               | Remedial Review                       |
-| **R06** | `V_STRUGGLING`     | Akurasi 60-70% **AND** Tren Stabil **AND** Bantuan ≤2x                                                                   | General Feedback                      |
-| **R07** | `V_OPTIMAL`        | Akurasi >80% **AND** Tren Naik **AND** Level < Ahli                                                                      | Increase Difficulty                   |
-| **R08** | `V_OPTIMAL`        | Akurasi >80% **AND** Tren Naik **AND** Level = Ahli                                                                      | New Challenge                         |
-| **R09** | `V_OPTIMAL`        | Akurasi >80% **AND** Respons Cepat **AND** Streak ≥3 Hari                                                                | Increase Difficulty, Streak Bonus     |
-| **R10** | `V_DEPENDENCY`     | Bantuan >3x **AND** Akurasi <50% tanpa bantuan **AND** Tren Stabil                                                       | Scaffold Reduction, Remedial Review   |
-| **R11** | `V_DEPENDENCY`     | Bantuan >3x **AND** Akurasi >60% dengan bantuan **AND** Tren Naik                                                        | Scaffold Reduction                    |
-| **R12** | `V_BOREDOM`        | Akurasi >80% **AND** Skor stagnan ≥3 sesi **AND** Streak ≥5 hari                                                         | New Challenge, Streak Bonus           |
-| **R13** | `V_BOREDOM`        | Akurasi >80% **AND** Respons Cepat **AND** Skor stagnan ≥3 sesi                                                          | Increase Difficulty                   |
-| **R14** | `-`                | _DEFAULT FALLBACK_ (Tidak masuk kondisi apa pun)                                                                         | General Feedback                      |
-| **R15** | `V_OPTIMAL`        | Level = Ahli **AND** Bantuan = 0 **AND** Streak ≥7 Hari **AND** _Akumulasi akurasi rata-rata 3 sesi berturut-turut >85%_ | Grant Certification                   |
+| Kode Fakta | Nama Fakta / Gejala | Kategori | Kondisi Logika / Parameter Sensoris |
+| :--- | :--- | :--- | :--- |
+| **G01** | Akurasi < 40% | Primary | `accuracy < 40` |
+| **G02** | Akurasi 40-60% | Primary | `accuracy >= 40` AND `accuracy <= 60` |
+| **G03** | Akurasi 60-70% | Primary | `accuracy >= 60` AND `accuracy <= 70` |
+| **G18** | Akurasi 70-80% | Primary | `accuracy >= 70` AND `accuracy <= 80` |
+| **G04** | Akurasi 80-90% | Primary | `accuracy >= 80` AND `accuracy <= 90` |
+| **G17** | Akurasi > 90% | Primary | `accuracy > 90` |
+| **G05** | Tren Menurun | Primary | `performance_metrics.trend == 'down'` |
+| **G06** | Tren Stabil | Primary | `performance_metrics.trend == 'stable'` |
+| **G07** | Tren Meningkat | Primary | `performance_metrics.trend == 'up'` |
+| **G11** | Respon Sangat Cepat (<10s) | Primary | `performance_metrics.last_response_time < 10` |
+| **G13** | Respon Normal (10-45s) | Primary | `performance_metrics.last_response_time >= 10` AND `<= 45` |
+| **G12** | Respon Lambat (>45s) | Primary | `performance_metrics.last_response_time > 45` |
+| **G08** | Ketergantungan Hint (>3x) | Primary | `hints_used > 3` |
+| **G09** | Hint Sedang (2-3x) | Primary | `hints_used >= 2` AND `hints_used <= 3` |
+| **G10** | Hint Minimal (1x) | Primary | `hints_used == 1` |
+| **G20** | Tanpa Bantuan (0x) | Primary | `hints_used == 0` |
+| **G21** | Jawaban Terakhir Benar | Primary | `performance_metrics.last_result == true` |
+| **G22** | Jawaban Terakhir Salah | Primary | `performance_metrics.last_result == false` |
+| **G23** | Gunakan Hint Sekarang | Primary | `performance_metrics.last_used_hint == true` |
+| **G14** | Streak Aktif (>=3 hari) | Primary | `streak >= 3` |
+| **G15** | Streak Kuat (>=5 hari) | Primary | `streak >= 5` |
+| **G16** | Streak Legendaris (>=10 hari) | Primary | `streak >= 10` |
+| **G19** | Level Expert | Primary | `level == 'Expert'` |
+| **V01** | Krisis Pembelajaran | Virtual / Diagnosa | Disimpulkan melalui Forward Chaining (Aturan Diagnosa) |
+| **V02** | Sedang Kesulitan | Virtual / Diagnosa | Disimpulkan melalui Forward Chaining (Aturan Diagnosa) |
+| **V03** | Performa Optimal | Virtual / Diagnosa | Disimpulkan melalui Forward Chaining (Aturan Diagnosa) |
+| **V04** | Ketergantungan Bantuan | Virtual / Diagnosa | Disimpulkan melalui Forward Chaining (Aturan Diagnosa) |
+| **V05** | Potensi Menebak | Virtual / Diagnosa | Disimpulkan melalui Forward Chaining (Aturan Diagnosa) |
 
 ---
 
-## Technical Edge Cases
+## Tabel 3.2 Interpretasi Hasil/Tindakan (Output)
 
-1. **Daily Login Streak:**
-   Streak bukan sekadar bertambah setiap kali menjawab kuis. Sistem mengecek `last_active_at`. Jika rentang aktivitas terakhir adalah kemarin (`Carbon::isYesterday()`), _streak_ naik. Jika hari yang sama, _streak_ tetap. Jika bolong, kembali ke 1.
-2. **Hitungan Stagnansi:**
-   Di-handle via `PerformanceService::calculateStagnantCount()`. Menggunakan perbandingan _sliding window_ dari sejarah sesi ke belakang untuk mencari pola konsisten di margin ±5%.
-3. **Penyusutan Bantuan (Scaffold Reduction):**
-   Sistem tidak serta-merta menganggap siswa pintar kalau mereka banyak buka _hint_. Justru bantuan (`hints_available`) akan dikurangi bertahap menjadi 2, 1, 0 di sesi berikutnya untuk memaksa kemandirian.
+Tabel ini mendefinisikan tindakan atau rekomendasi pedagogis (*Actions*) yang diberikan oleh sistem kepada mahasiswa berdasarkan hasil diagnosa kognitif mereka.
+
+| Kode Aksi | Nama Tindakan | Deskripsi | Varian UI / Mekanisme |
+| :--- | :--- | :--- | :--- |
+| **FEEDBACK** | Lanjutkan Latihan | Navigasi normal ke soal berikutnya. | `feedback` |
+| **GIVE_HINT** | Bonus Bantuan | Berikan tambahan +1 jatah Hint untuk soal selanjutnya. | `popup` |
+| **REMEDIAL** | Remedial Standard | Ulangi materi dari awal untuk penguatan konsep. | `feedback` |
+| **REMEDIAL_INTENSIVE** | Remedial Intensif | Remedial materi disertai pemberian soal dengan tingkat kesulitan rendah. | `feedback` |
+| **REDUCE_DIFF** | Turunkan Kesulitan | Ganti soal berikutnya ke level kesulitan yang lebih rendah. | `feedback` |
+| **INCREASE_DIFF** | Naikkan Kesulitan | Naikkan tingkat kesulitan soal untuk memberikan tantangan baru. | `feedback` |
+| **REDUCE_HINT** | Batasi Bantuan | Batasi/kurangi ketersediaan fitur bantuan untuk memaksa kemandirian. | `popup` |
+| **NEW_CHALLENGE** | Tantangan Kilat | Instruksi pengerjaan soal berikutnya dengan target waktu yang cepat. | `challenge` |
+| **STREAK_BONUS** | Bonus Streak | Memberikan bonus XP (Experience Points) untuk menjaga keterlibatan belajar. | `popup` |
+| **CERTIFICATION** | Berikan Sertifikat | Memberikan sertifikat pencapaian tertinggi atas penguasaan modul. | `feedback` |
+| **SHOW_GUIDANCE** | Tampilkan Bimbingan | Memberikan petunjuk bimbingan kontekstual dan dorongan motivasi. | `feedback` |
+| **NOTIFY_TEACHER** | Lapor Pengajar | Mengirimkan notifikasi peringatan potensi krisis belajar mahasiswa ke admin/dosen. | `background_notification` |
+
+---
+
+## Tabel 3.3 Rule Base Forward Chaining (Aturan)
+
+Basis aturan (*Rule Base*) dibagi menjadi dua tahapan proses inferensi *Forward Chaining*:
+1. **Aturan Diagnosa (Diagnostic Rules)**: Mendeduksi fakta baru (*Virtual Facts* / *V-Codes*) berdasarkan fakta gejala input (*G-Codes*).
+2. **Aturan Intervensi (Intervention Rules)**: Menentukan tindakan pedagogis (*Adaptive Actions*) berdasarkan kombinasi diagnosa dan gejala teramati.
+
+### 1. Aturan Diagnosa (Deducing V-Codes)
+
+| Kode Rule | Prioritas | Nama Aturan | Kondisi Premis (IF) | Hasil Konklusi (THEN) |
+| :--- | :---: | :--- | :--- | :--- |
+| **R01** | 10 | Analisa Performa Optimal | Jawaban Terakhir Benar (**G21**) AND Akurasi > 90% (**G17**) AND Respon Sangat Cepat (**G11**) | Performa Optimal (**V03**) |
+| **R02** | 9 | Analisa Krisis Belajar | Jawaban Terakhir Salah (**G22**) AND Akurasi < 40% (**G01**) AND Tren Menurun (**G05**) | Krisis Pembelajaran (**V01**) |
+| **R03** | 8 | Analisa Kesulitan Materi | Jawaban Terakhir Salah (**G22**) AND Akurasi 40-60% (**G02**) AND Respon Lambat (**G12**) | Sedang Kesulitan (**V02**) |
+| **R04** | 7 | Analisa Pola Bantuan | Ketergantungan Hint (**G08**) AND Respon Lambat (**G12**) | Ketergantungan Bantuan (**V04**) |
+| **R05** | 6 | Analisa Potensi Menebak | Respon Sangat Cepat (**G11**) AND Akurasi < 40% (**G01**) | Potensi Menebak (**V05**) |
+
+### 2. Aturan Intervensi (Firing Actions)
+
+| Kode Rule | Prioritas | Nama Aturan | Kondisi Premis (IF) | Hasil Konklusi / Tindakan (THEN) |
+| :--- | :---: | :--- | :--- | :--- |
+| **R06** | 5 | Strategi Akselerasi | Performa Optimal (**V03**) AND Tanpa Bantuan (**G20**) | **INCREASE_DIFF**, **NEW_CHALLENGE**, **STREAK_BONUS** |
+| **R07** | 4 | Strategi Intervensi Krisis | Krisis Pembelajaran (**V01**) | **REMEDIAL_INTENSIVE**, **NOTIFY_TEACHER** |
+| **R08** | 3 | Strategi Adaptasi Kesulitan | Sedang Kesulitan (**V02**) | **REDUCE_DIFF**, **GIVE_HINT**, **SHOW_GUIDANCE** |
+| **R09** | 2 | Strategi Penguatan Mandiri | Ketergantungan Bantuan (**V04**) | **REDUCE_HINT** |
+| **R10** | 1 | Strategi Bimbingan Fokus | Potensi Menebak (**V05**) | **SHOW_GUIDANCE** |
+| **R11** | 0 | Strategi Kelulusan Materi | Level Expert (**G19**) AND Akurasi > 90% (**G17**) | **CERTIFICATION** |
+| **R00** | 100 | Progres Terjaga *(Default)* | *(Default fallback jika aturan di atas tidak terpenuhi)* | **FEEDBACK** |

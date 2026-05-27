@@ -177,7 +177,7 @@
             <div
                 bind:this={menuRef}
                 style={menuStyles}
-                class="border-cosmos-border fixed z-[9999] overflow-hidden rounded-2xl border-2 bg-white shadow-2xl"
+                class="border-cosmos-border fixed z-9999 overflow-hidden rounded-2xl border-2 bg-white shadow-2xl"
                 role="listbox"
                 transition:fly={{
                     y: menuStyles.includes('bottom') ? 8 : -8,
