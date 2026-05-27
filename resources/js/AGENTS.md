@@ -1,6 +1,6 @@
 # Frontend Domain Guide
 
-**Generated:** 2026-04-02
+**Generated:** 2026-05-28
 **Part of:** Adaptive E-Learning Platform (Svelte 5 + Inertia v3)
 
 ## OVERVIEW
@@ -34,6 +34,7 @@ resources/js/
 - Re-export shared APIs through barrels (`components/index.ts`, `types/index.ts`, `states/index.ts`, `utils/index.ts`).
 - Keep domain state in `.svelte.ts` classes and avoid duplicating prop-shape logic across pages.
 - Use Tailwind v4 patterns already established in project (no deprecated v3 utility syntax).
+- Svelte 5: Use runse (`$state`, `$derived`) and `{#snippet}` over Svelte 4 primitives.
 
 ## COUPLING BOUNDARIES
 

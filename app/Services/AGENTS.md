@@ -1,6 +1,6 @@
 # Services Domain Guide
 
-**Generated:** 2026-04-11 (Asia/Bangkok)
+**Generated:** 2026-05-28
 **Parent:** `/AGENTS.md`
 
 ## OVERVIEW
