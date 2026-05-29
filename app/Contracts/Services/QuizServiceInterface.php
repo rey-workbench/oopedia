@@ -38,9 +38,7 @@ interface QuizServiceInterface
     public function getQuizData(QuizContextDTO $quizContextDTO): array;
 
     public function getMaterialsListWithStudentCount(
-        string $userId,
-        bool $isGuest,
-        array $guestProgress = [],
+        \App\DTOs\Quiz\MaterialProgressDTO $materialProgressDTO,
     ): SupportCollection;
 
     public function getReviewQuestions(QuizContextDTO $quizContextDTO): SupportCollection;

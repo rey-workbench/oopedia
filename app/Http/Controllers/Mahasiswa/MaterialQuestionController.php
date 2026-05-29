@@ -37,9 +37,11 @@ final class MaterialQuestionController extends Controller
         $isGuest = $this->isGuest();
 
         $data = $this->quizService->getMaterialsListWithStudentCount(
-            userId: $userId,
-            isGuest: $isGuest,
-            guestProgress: $isGuest ? $this->getGuestProgress() : [],
+            new \App\DTOs\Quiz\MaterialProgressDTO(
+                userId: $userId,
+                isGuest: $isGuest,
+                guestProgress: $isGuest ? $this->getGuestProgress() : [],
+            )
         );
 
         return $this->render('Mahasiswa/Materials/Questions/Index', ['materials' => $data]);
@@ -58,7 +60,13 @@ final class MaterialQuestionController extends Controller
         return $this->render('Mahasiswa/Materials/Questions/Levels/Index', [
             'material'  => new MaterialResource($material)->resolve(),
             'levels'    => $this->quizService->getLevelProgress($material, null, $answeredIds, $isGuest),
-            'materials' => $this->quizService->getMaterialsListWithStudentCount($userId, $isGuest, $isGuest ? $this->guestProgressService->getProgress() : []),
+            'materials' => $this->quizService->getMaterialsListWithStudentCount(
+                new \App\DTOs\Quiz\MaterialProgressDTO(
+                    userId: $userId,
+                    isGuest: $isGuest,
+                    guestProgress: $isGuest ? $this->guestProgressService->getProgress() : [],
+                )
+            ),
         ]);
     }
 

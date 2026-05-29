@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Contracts\Services;
 
 use App\DTOs\Quiz\InteractionDTO;
-use App\Enums\Lms\QuestionDifficulty;
+use App\DTOs\User\PerformanceScoreDTO;
 use App\Models\StudentState;
 
 interface PerformanceServiceInterface
@@ -20,7 +20,7 @@ interface PerformanceServiceInterface
 
     public function syncMaterialContext(string $userId, string $materialId): StudentState;
 
-    public function calculateScore(bool $isCorrect, bool $usedHint, int $timeSpent, QuestionDifficulty|string $difficulty): int;
+    public function calculateScore(PerformanceScoreDTO $performanceScoreDTO): int;
 
     public function decrementHint(string $userId): array;
 }
