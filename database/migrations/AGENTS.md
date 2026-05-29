@@ -1,3 +1,7 @@
+# DATABASE MIGRATIONS
+
+[← Back to Project Knowledge Base](../../AGENTS.md)
+
 ## OVERVIEW
 
 Manage database migrations to evolve the schema across 20+ files safely and reproducibly.

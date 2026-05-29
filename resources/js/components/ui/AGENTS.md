@@ -1,3 +1,9 @@
+# PRIMITIVE UI COMPONENTS
+
+[← Back to UI Components](../AGENTS.md) | [← Back to Project Knowledge Base](../../../../AGENTS.md)
+
+## OVERVIEW
+
 AGENTS for: resources/js/components/ui
 
 Overview: A catalog of 30+ UI components with high complexity to guide development, testing, and maintenance.

@@ -1,5 +1,7 @@
 # FRONTEND STATE MANAGEMENT
 
+[← Back to Frontend Core](../AGENTS.md) | [← Back to Project Knowledge Base](../../../AGENTS.md)
+
 **Generated:** 2026-05-28
 
 ## OVERVIEW

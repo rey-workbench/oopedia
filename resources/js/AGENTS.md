@@ -1,5 +1,7 @@
 # Frontend Domain Guide
 
+[← Back to Project Knowledge Base](../../AGENTS.md)
+
 **Generated:** 2026-05-28
 **Part of:** Adaptive E-Learning Platform (Svelte 5 + Inertia v3)
 

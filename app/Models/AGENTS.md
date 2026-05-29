@@ -1,5 +1,7 @@
 # ELOQUENT MODELS
 
+[← Back to Backend Core](../AGENTS.md) | [← Back to Project Knowledge Base](../../AGENTS.md)
+
 **Generated:** 2026-05-28
 
 ## OVERVIEW

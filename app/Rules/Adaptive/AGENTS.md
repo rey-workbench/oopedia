@@ -1,3 +1,7 @@
+# ADAPTIVE RULES ENGINE
+
+[← Back to Backend Core](../../AGENTS.md) | [← Back to Project Knowledge Base](../../../AGENTS.md)
+
 ## OVERVIEW
 
 Core adaptive engine logic components. Contains Constants for Facts, Actions, and Pedagogy.
