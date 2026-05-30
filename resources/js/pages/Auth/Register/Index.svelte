@@ -2,6 +2,7 @@
     import App from '@/layouts/App.svelte';
     import Input from '@/components/ui/Input.svelte';
     import Button from '@/components/ui/Button.svelte';
+    import Checkbox from '@/components/ui/Checkbox.svelte';
     import { Link } from '@inertiajs/svelte';
     import { Loader2, UserPlus, X, Eye, EyeOff } from '@lucide/svelte';
     import { ROUTES } from '@/utils/route';
@@ -136,11 +137,9 @@
                         for="register_as_admin"
                         class="flex cursor-pointer items-center gap-3 rounded-2xl border-2 border-slate-300 bg-slate-50 p-4 transition hover:bg-slate-100"
                     >
-                        <input
+                        <Checkbox
                             id="register_as_admin"
-                            type="checkbox"
                             bind:checked={authState.form.register_as_admin}
-                            class="text-primary-500 focus:ring-primary-500 h-5 w-5 rounded border-2 border-slate-300"
                         />
                         <span class="text-sm leading-snug font-bold tracking-wide text-slate-600">
                             Daftar sebagai Dosen/Admin
