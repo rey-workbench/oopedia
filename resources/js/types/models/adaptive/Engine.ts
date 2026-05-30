@@ -62,7 +62,7 @@ export interface StudentSessionState {
         xp: number;
         level: string;
         streak: number;
-        badges: string[];
+        max_streak: number;
     };
     performance: {
         total_answered: number;

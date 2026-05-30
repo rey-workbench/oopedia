@@ -71,7 +71,7 @@ final class ProfileController extends Controller
             'target_difficulty'    => $studentState->target_difficulty ?? 'beginner',
         ];
 
-        $rawCertifications = $studentState?->certifications ?? [];
+        $rawCertifications = $studentState->certifications ?? [];
         $certifications    = collect($rawCertifications)
             ->map(function (string $type, string $materialId): array {
                 $material = $this->materialRepository->find($materialId);
@@ -82,7 +82,8 @@ final class ProfileController extends Controller
                     'type'           => $type,
                     'issued_at'      => null,
                 ];
-            });
+            })
+            ->values();
 
         return $this->render(
             'Mahasiswa/Profile/Index',

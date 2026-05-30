@@ -50,7 +50,7 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
                 AdaptiveActionId::REDUCE_HINT => $this->handleReduceHint($studentState, $adaptiveState),
                 AdaptiveActionId::NEW_CHALLENGE => $this->handleNewChallenge($studentState, $adaptiveState, $materialId, $isCorrect),
                 AdaptiveActionId::STREAK_BONUS => $this->handleStreakBonus($studentState, $adaptiveState, $isCorrect),
-                AdaptiveActionId::CERTIFICATION => $this->handleCertification($adaptiveState),
+                AdaptiveActionId::CERTIFICATION => $this->handleCertification($studentState, $adaptiveState, $materialId),
                 AdaptiveActionId::SHOW_GUIDANCE => $this->handleShowGuidance($studentState, $adaptiveState, $materialId),
                 AdaptiveActionId::NOTIFY_TEACHER => $this->handleNotifyTeacher($adaptiveState),
                 AdaptiveActionId::GIVE_HINT => $this->handleGiveHint($studentState),
@@ -183,16 +183,14 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
         }
 
         $studentState->xp += 50;
-        $badges = $adaptiveState['badges'] ?? [];
-        $badges[] = 'streak_' . ($studentState->streak ?? 0);
-        $adaptiveState['badges'] = array_unique($badges);
     }
 
-    private function handleCertification(array &$adaptiveState): void
+    private function handleCertification(StudentState $studentState, array &$adaptiveState, string $materialId): void
     {
-        $certs = $adaptiveState['certifications'] ?? [];
-        $certs[] = 'GOLD';
-        $adaptiveState['certifications'] = array_unique($certs);
+        $certs = $studentState->certifications ?? [];
+        $certs[$materialId] = 'gold'; // Award gold certificate for completing the material
+        $studentState->certifications = $certs;
+        
         $adaptiveState['unlock_advanced'] = true;
         $this->handleNotifyTeacher($adaptiveState);
     }

@@ -23,10 +23,10 @@ final class StudentStateResource extends JsonResource
     {
         return [
             'accuracy'            => round((float) ($this->accuracy ?? 0), 2),
-            'xp'                  => $this->xp,
-            'streak'              => $this->streak,
-            'level'               => $this->level  ?? 'Pemula',
-            'badges'              => $this->badges ?? [],
+            'xp'                  => $this->xp ?? 0,
+            'streak'              => $this->streak ?? 0,
+            'level'               => $this->level ?? 'Pemula',
+            'max_streak'          => $this->max_streak ?? 0,
             'hints_available'     => $this->hints_available,
             'target_difficulty'   => $this->target_difficulty,
             'adaptive_state'      => $this->adaptive_state      ?? [],

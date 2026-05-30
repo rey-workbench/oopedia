@@ -38,6 +38,7 @@
             <iframe
                 src={previewUrl}
                 title="Sertifikat Preview"
+                scrolling="no"
                 class="pointer-events-none h-[200%] w-[200%] origin-top-left scale-50 border-none"
             ></iframe>
         {:else}

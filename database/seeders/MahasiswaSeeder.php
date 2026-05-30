@@ -68,7 +68,6 @@ class MahasiswaSeeder extends Seeder
                         StudentStateSchema::STREAK          => 5,
                         StudentStateSchema::HINTS_USED      => 0,
                         StudentStateSchema::MAX_STREAK      => 12,
-                        'badges'                            => ['fast_learner', 'logic_master', 'module_complete'],
                         StudentStateSchema::ACCURACY        => 85.5,
                         StudentStateSchema::SESSION_HISTORY => [80.0, 90.0, 85.0, 85.5, 90.0],
                         StudentStateSchema::CURRENT_SESSION => [

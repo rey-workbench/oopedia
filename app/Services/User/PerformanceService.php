@@ -215,7 +215,6 @@ final readonly class PerformanceService implements PerformanceServiceInterface
                 'xp' => $studentState->xp,
                 'level' => $studentState->level ?? StudentLevel::PEMULA->value,
                 'streak' => $studentState->streak,
-                'badges' => $studentState->badges ?? [],
             ],
             'performance' => [
                 'total_answered' => $studentState->total_answered,

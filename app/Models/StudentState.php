@@ -19,7 +19,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $level
  * @property int $streak
  * @property int $max_streak
- * @property array<int, string> $badges
  *
  * Performance (Diagnostic Input)
  * @property int $total_answered
@@ -54,7 +53,7 @@ final class StudentState extends Model
     protected $fillable = [
         'user_id',
         // Gamification
-        'xp', 'level', 'streak', 'max_streak', 'badges',
+        'xp', 'level', 'streak', 'max_streak',
         // Performance
         'total_answered', 'correct_count', 'accuracy',
         'hints_used', 'hints_available',
@@ -63,6 +62,7 @@ final class StudentState extends Model
         // Navigation
         'current_material_id', 'target_difficulty',
         // Meta
+        'certifications',
         'last_active_at',
     ];
 
@@ -78,11 +78,11 @@ final class StudentState extends Model
             'total_answered'      => 'integer',
             'correct_count'       => 'integer',
             'accuracy'            => 'float',
-            'badges'              => 'array',
             'session_history'     => 'array',
             'current_session'     => 'array',
             'performance_metrics' => 'array',
             'adaptive_state'      => 'array',
+            'certifications'      => 'array',
             'last_active_at'      => 'datetime',
         ];
     }

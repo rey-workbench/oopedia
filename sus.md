@@ -1,40 +1,41 @@
-# Instrumen SUS (System Usability Scale) - OOPedia
-
-Kuesioner standar untuk mengukur kegunaan (usability) platform OOPedia.
-
-## Instruksi
-
-Pilihlah jawaban yang paling sesuai dengan pengalaman Anda menggunakan platform OOPedia.
-Skala: 1 (Sangat Tidak Setuju) sampai 5 (Sangat Setuju).
-
-| No  | Pernyataan                                                                               | 1   | 2   | 3   | 4   | 5   |
-| --- | ---------------------------------------------------------------------------------------- | --- | --- | --- | --- | --- |
-| 1   | Saya rasa saya akan sering menggunakan sistem ini.                                       |     |     |     |     |     |
-| 2   | Saya merasa sistem ini rumit untuk digunakan, padahal seharusnya bisa lebih sederhana.   |     |     |     |     |     |
-| 3   | Saya rasa sistem ini mudah digunakan.                                                    |     |     |     |     |     |
-| 4   | Saya rasa saya butuh bantuan orang teknis untuk dapat menggunakan sistem ini.            |     |     |     |     |     |
-| 5   | Saya merasa fitur-fitur dalam sistem ini terintegrasi dengan baik.                       |     |     |     |     |     |
-| 6   | Saya merasa ada banyak hal yang tidak konsisten pada sistem ini.                         |     |     |     |     |     |
-| 7   | Saya rasa orang lain akan belajar menggunakan sistem ini dengan sangat cepat.            |     |     |     |     |     |
-| 8   | Saya merasa sistem ini sangat membingungkan saat digunakan.                              |     |     |     |     |     |
-| 9   | Saya merasa sangat percaya diri saat menggunakan sistem ini.                             |     |     |     |     |     |
-| 10  | Saya harus belajar banyak hal terlebih dahulu sebelum saya dapat menggunakan sistem ini. |     |     |     |     |     |
-
----
-
-## Rumus Perhitungan Skor SUS
-
-Untuk menghitung skor akhir SUS (0-100):
-
-1.  **Untuk item bernomor Ganjil (1, 3, 5, 7, 9):**
-    Skor Kontribusi = (Skor Jawaban - 1)
-2.  **Untuk item bernomor Genap (2, 4, 6, 8, 10):**
-    Skor Kontribusi = (5 - Skor Jawaban)
-3.  **Total Skor SUS:**
-    Jumlahkan semua Skor Kontribusi, lalu kalikan dengan 2,5.
-
-**Interpretasi Skor:**
-
-- **0 - 50:** Unacceptable (Sangat Kurang)
-- **51 - 70:** Marginal (Cukup)
-- **71 - 100:** Acceptable (Baik/Sangat Baik)
+Email / Nama Mahasiswa	Q1	Q2	Q3	Q4	Q5	Q6	Q7	Q8	Q9	Q10	Komentar atau Saran Spesifik (Opsional)
+kiritodd10@gmail.com	3	4	4	2	4	3	3	2	3	1	-
+rakaesal@gmail.com	4	3	4	2	3	2	4	2	3	4	-
+indhirayuantikac1176@gmail.com	4	4	4	2	4	2	4	2	4	2	Tidak asa sudah bagus, dan nyaman untuk digunakan
+nailahslsb@gmail.com	4	3	3	2	3	2	4	2	3	2	-
+robbycatur330@gmail.com	4	3	4	2	3	2	3	3	4	2	1. Kalau bisa ada mode gelapnya... 2. Detail foto profil... 3. Tombol (?) merah mengganggu... 4. Status akun di web isinya masih rekomendasi keamanan.
+mfattah1215@gmail.com	4	4	4	2	4	2	4	3	3	2	-
+arya.rabbani06@gmail.com	4	5	5	3	3	3	4	3	4	4	-
+athaullahafizh@gmail.com	4	3	3	2	3	4	3	2	3	3	Bug teks ketumpuk langkah 19/20 di logo oopedia, dot merah tutorial mengganggu, foto profil kanan atas mending default material icon.
+fadhiltaufiqurrachman08@gmail.com	3	4	5	1	3	2	4	4	4	2	Latihan soal salah tidak jelas mana yang salah. Batas waktu pertanyaan cepat boost poin tidak tampil. Tidak ada tombol keluar stop latihan. UI agak membosankan lama-lama.
+muhammadshabran77@gmail.com	3	4	3	1	2	3	3	2	3	2	Sistemnya lumayan bagus tapi saya akses agak nge lag, ui nya masih monoton jadi untuk penggunaan diatas 5 menit cukup membosankan
+wahdaadella.ba@gmail.com	4	5	5	5	5	1	5	1	5	4	-
+fajar.ekasandiyuda@gmail.com	4	4	5	2	4	2	3	1	4	3	Pada bagian latihan soal, saran saya ketika jawaban salah, diberikan highlight pada jawaban benar atau diberikan jawaban benar dan dilakukan pengurangan poin...
+baguswichaksonoamanulloh@gmail.com	4	4	4	2	4	3	4	2	3	3	-
+pacifistapool@gmail.com	3	4	3	4	4	2	3	4	4	3	Ukuran Font Terlalu Besar
+laksamana.arya1412@gmail.com	4	3	5	1	4	3	4	2	4	1	-
+geraldiakmal612@gmail.com	5	3	5	1	5	1	5	1	5	1	-
+louisjudia06@gmail.com	3	4	4	3	3	3	4	2	4	3	-
+kennzi9999@gmail.com	4	3	4	5	5	2	4	5	5	3	-
+riskiafifudin05@gmail.com	5	5	5	1	4	3	5	3	4	1	-
+faiqramzy2004@gmail.com	3	5	5	1	5	2	4	1	4	1	-
+bagusaria14@gmail.com	4	3	5	1	5	2	5	1	4	1	Menurut saya webnya sedikit berat dibagian landing page mungkin bisa dibuat lebih ringan lagi. Terimakasih
+yusriyah9@gmail.com	3	2	4	2	5	3	5	2	5	3	-
+lalasipo20@gmail.com	5	5	5	5	5	5	5	5	5	5	Pada bagian sign up, nama saya tidak valid, di bagian Al-Muniri, - strip membuat sistem mendeteksi tidak valid...
+2241720250@student.polinema.ac.id	4	4	4	2	4	3	4	3	4	3	-
+baguswahasdwikaaa@gmail.com	3	5	4	4	4	3	3	3	4	5	-
+didoimam7@gmail.com	5	4	5	1	5	1	4	1	5	1	-
+abimafadricho.29@gmail.com	4	5	5	2	5	1	5	1	5	1	-
+agtafadjrin@gmail.com	5	3	5	2	4	2	5	1	5	1	-
+2241720058@student.polinema.ac.id	4	4	5	2	5	2	5	1	5	4	-
+nizamel982@gmail.com	4	2	4	2	4	3	4	2	4	2	Sudah cukup baik dan informatif
+muhammadibnzzi@gmail.com	4	2	5	1	4	2	5	1	4	2	Sistemnya smooth, transisinya bagus.
+auliaatha123@gmail.com	5	1	5	1	5	2	4	1	5	1	Sangat membantu untuk belajar OOP.
+astrdrisawww2212@gmail.com	4	2	4	2	4	3	4	2	4	2	-
+satria.abrarr@gmail.com	3	3	4	2	4	2	5	2	3	3	-
+yogest86@gmail.com	4	2	5	1	4	2	4	1	4	2	Sejauh ini performa sistem sudah oke.
+brotoagungw@gmail.com	4	3	4	2	3	2	4	2	4	2	-
+lukmaneka216@gmail.com	5	2	4	1	4	2	5	2	4	1	Loading antar halaman bisa dioptimalkan lagi.
+sofisugiartozaini@gmail.com	4	2	4	2	5	1	4	2	4	2	-
+Rijal	4	1	5	2	4	2	4	1	5	2	Tampilan responsif diakses lewat HP.
+ahmadputra	4	2	4	1	4	2	4	2	4	2	Cukup mudah dipahami fiturnya.

@@ -31,7 +31,6 @@ final class CertificateController extends Controller
     {
         $userId = Auth::id();
         $state  = $this->progressRepository->getOrCreateStudentState($userId);
-
         $rawCertifications = $state->certifications ?? [];
 
         $certifications = collect($rawCertifications)
@@ -44,7 +43,8 @@ final class CertificateController extends Controller
                     'type'           => $type,
                     'issued_at'      => null,
                 ];
-            });
+            })
+            ->values();
 
         return $this->render('Mahasiswa/Certificates/Index', [
             'certifications' => CertificateResource::collection($certifications)->resolve(),
@@ -142,6 +142,23 @@ final class CertificateController extends Controller
         $logo      = 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('images/logo.png')));
         $signature = 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('images/certificates/sign.png')));
 
+        $qrUrl = route('mahasiswa.certificates.preview', [$materialId, $userId]);
+        $logoPath = public_path('images/logo.png');
+
+        $builder = new Builder(
+            data: $qrUrl,
+            encoding: new Encoding('UTF-8'),
+            errorCorrectionLevel: ErrorCorrectionLevel::High,
+            size: 300,
+            margin: 10,
+            roundBlockSizeMode: RoundBlockSizeMode::Margin,
+            logoPath: $logoPath,
+            logoResizeToWidth: 80,
+            logoPunchoutBackground: true,
+        );
+        $result = $builder->build();
+        $qrCodeDataUri = $result->getDataUri();
+
         return Pdf::view('pdf.certificate', [
             'student_name'    => $user?->name ?? 'Student',
             'material_title'  => $material->title,
@@ -151,6 +168,7 @@ final class CertificateController extends Controller
             'tier_color_dark' => $palette['dark'],
             'logo_image'      => $logo,
             'sign_image'      => $signature,
+            'qr_code'         => $qrCodeDataUri,
             'date'            => now()->translatedFormat('d F Y'),
         ])
             ->landscape()

@@ -271,7 +271,6 @@ class TestRulesSeeder extends Seeder
                     StudentStateSchema::HINTS_USED      => $tester['state'][StudentStateSchema::HINTS_USED] ?? 0,
                     StudentStateSchema::HINTS_AVAILABLE => 3,
                     StudentStateSchema::MAX_STREAK      => max(5, $tester['state'][StudentStateSchema::STREAK] ?? 0),
-                    'badges'                            => [],
                     StudentStateSchema::ACCURACY        => $tester['state'][StudentStateSchema::ACCURACY] ?? 0.0,
                     StudentStateSchema::SESSION_HISTORY => [],
                     StudentStateSchema::CURRENT_SESSION => [

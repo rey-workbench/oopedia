@@ -20,9 +20,8 @@ return new class extends Migration
             // Gamification
             $table->unsignedInteger('xp')->default(0);
             $table->string('level')->default('Pemula');
-            $table->unsignedInteger('streak')->default(0);
-            $table->unsignedInteger('max_streak')->default(0);
-            $table->json('badges')->nullable();
+            $table->integer('streak')->default(0);
+            $table->integer('max_streak')->default(0);
 
             // Learning profile
             $table->string('learning_style')->default('visual');
