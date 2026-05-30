@@ -70,6 +70,7 @@ class MahasiswaSeeder extends Seeder
                         StudentStateSchema::MAX_STREAK      => 12,
                         'total_answered' => 5,
                         'correct_count' => 4,
+                        'certifications' => \App\Models\Material::first() ? [\App\Models\Material::first()->id => 'gold'] : [],
                         'last_active_at' => now(),
                     ],
                 );
