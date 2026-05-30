@@ -188,7 +188,7 @@
                                 <textarea
                                     id="comments"
                                     bind:value={state.form['comments']}
-                                    class="focus:ring-primary-50 focus:border-primary-500 min-h-[160px] w-full rounded-[2rem] border-2 border-slate-50 bg-slate-50 px-8 py-6 text-xs font-bold tracking-wider uppercase transition-all outline-none placeholder:text-slate-300 focus:ring-8"
+                                    class="focus:ring-primary-50 focus:border-primary-500 min-h-[160px] w-full rounded-[2rem] border-2 border-slate-50 bg-slate-50 px-8 py-6 text-sm font-medium transition-all outline-none placeholder:text-slate-300 focus:ring-8"
                                     placeholder="Bagaimana perasaan Anda saat belajar menggunakan OOPEDIA?"
                                     required
                                 ></textarea>
@@ -211,7 +211,7 @@
                                 <textarea
                                     id="suggestions"
                                     bind:value={state.form['suggestions']}
-                                    class="focus:ring-primary-50 focus:border-primary-500 min-h-[160px] w-full rounded-[2rem] border-2 border-slate-50 bg-slate-50 px-8 py-6 text-xs font-bold tracking-wider uppercase transition-all outline-none placeholder:text-slate-300 focus:ring-8"
+                                    class="focus:ring-primary-50 focus:border-primary-500 min-h-[160px] w-full rounded-[2rem] border-2 border-slate-50 bg-slate-50 px-8 py-6 text-sm font-medium transition-all outline-none placeholder:text-slate-300 focus:ring-8"
                                     placeholder="Apa satu hal yang paling ingin Anda tingkatkan dari sistem ini?"
                                     required
                                 ></textarea>

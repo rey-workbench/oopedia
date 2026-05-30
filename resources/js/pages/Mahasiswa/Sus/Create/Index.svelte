@@ -104,9 +104,7 @@
 
                         <div id="sus-questions" class="space-y-6">
                             {#each state.questions as question, index (question.id)}
-                                {@const answerIndex = state.form.answers.findIndex(
-                                    (a) => String(a.question_id) === String(question.id)
-                                )}
+                                {@const answerIndex = index}
                                 <div
                                     class={`group flex flex-col space-y-6 rounded-[2rem] border-2 p-8 transition-all
                                     ${state.form.errors[`answers.${answerIndex}.value`] ? 'border-rose-100 bg-rose-50/50 ring-4 ring-rose-50' : 'border-transparent bg-white hover:border-slate-100 hover:bg-slate-50'}`}
@@ -195,7 +193,7 @@
                                 <textarea
                                     id="comments"
                                     bind:value={state.form['comments']}
-                                    class={`focus:ring-primary-50 focus:border-primary-500 min-h-[160px] w-full rounded-[2rem] border-2 px-8 py-6 text-xs font-bold tracking-wider uppercase transition-all outline-none placeholder:text-slate-300 focus:ring-8
+                                    class={`focus:ring-primary-50 focus:border-primary-500 min-h-[160px] w-full rounded-[2rem] border-2 px-8 py-6 text-sm font-medium transition-all outline-none placeholder:text-slate-300 focus:ring-8
                                     ${state.form.errors['comments'] ? 'border-rose-100 bg-rose-50/50' : 'border-slate-50 bg-slate-50'}`}
                                     placeholder="Apa yang Anda rasakan selama menggunakan media pembelajaran ini?"
                                     required
@@ -212,7 +210,7 @@
                                 <textarea
                                     id="suggestions"
                                     bind:value={state.form['suggestions']}
-                                    class={`focus:ring-primary-50 focus:border-primary-500 min-h-[160px] w-full rounded-[2rem] border-2 px-8 py-6 text-xs font-bold tracking-wider uppercase transition-all outline-none placeholder:text-slate-300 focus:ring-8
+                                    class={`focus:ring-primary-50 focus:border-primary-500 min-h-[160px] w-full rounded-[2rem] border-2 px-8 py-6 text-sm font-medium transition-all outline-none placeholder:text-slate-300 focus:ring-8
                                     ${state.form.errors['suggestions'] ? 'border-rose-100 bg-rose-50/50' : 'border-slate-50 bg-slate-50'}`}
                                     placeholder="Ada saran fitur atau tampilan yang perlu diperbaiki?"
                                     required

@@ -8,6 +8,14 @@ use App\Http\Requests\BaseFormRequest;
 
 final class StoreSusResultRequest extends BaseFormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'comments'    => strip_tags((string) $this->input('comments')),
+            'suggestions' => strip_tags((string) $this->input('suggestions')),
+        ]);
+    }
+
     public function rules(): array
     {
         return [
@@ -15,7 +23,7 @@ final class StoreSusResultRequest extends BaseFormRequest
             'nim'             => ['nullable', 'string', 'max:20'],
             'class'           => ['nullable', 'string', 'max:50'],
 
-            'answers'         => ['required', 'array', 'size:10'],
+            'answers'               => ['required', 'array', 'size:10'],
             'answers.*.question_id' => ['required', 'string', 'exists:sus_questions,id'],
             'answers.*.value'       => ['required', 'integer', 'between:1,5'],
 
@@ -33,8 +41,8 @@ final class StoreSusResultRequest extends BaseFormRequest
             'answers.*.value.required' => 'Seluruh pertanyaan instrumen penilaian SUS wajib diisi',
             'answers.*.value.between'  => $between,
 
-            'comments.required'    => 'Komentar wajib diisi',
-            'suggestions.required' => 'Saran wajib diisi',
+            'comments.required'        => 'Komentar wajib diisi',
+            'suggestions.required'     => 'Saran wajib diisi',
             'assessment_type.required' => 'Tipe asessmen wajib diisi',
         ]);
     }

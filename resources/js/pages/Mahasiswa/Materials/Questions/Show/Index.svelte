@@ -172,10 +172,11 @@
                 <div class="flex items-start gap-4">
                     <a
                         href="/mahasiswa/dashboard"
-                        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-200 text-slate-400 transition-all hover:border-slate-300 hover:text-slate-600 active:scale-95"
+                        class="flex h-10 shrink-0 items-center justify-center gap-2 rounded-xl border-2 border-slate-200 px-3 text-slate-400 transition-all hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600 active:scale-95"
                         title="Keluar"
                     >
                         <X size={20} />
+                        <span class="hidden sm:inline text-xs font-black tracking-widest uppercase">KEMBALI</span>
                     </a>
                     <div class="flex-1">
                         <div class="mb-3 flex items-center justify-between px-2">

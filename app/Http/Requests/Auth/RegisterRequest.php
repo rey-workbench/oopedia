@@ -14,7 +14,7 @@ final class RegisterRequest extends BaseFormRequest
         return [
             'name'     => ['required', 'string', 'max:255', 'regex:/^[\p{L}\'\-\s]+$/u'],
             'email'    => ['required', 'string', 'email:rfc,dns,spoof', 'indisposable', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', Password::defaults()],
+            'password' => ['required', 'confirmed', Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
         ];
     }
 }
