@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('ueq_surveys', function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->foreignUlid('user_id')->constrained()->onDelete('cascade');
+            $table->string('assessment_type')->default('post_test');
             $table->string('nim')->nullable();
             $table->string('class')->nullable();
             // UEQ Scale items (1-7 rating)

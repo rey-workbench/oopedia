@@ -11,6 +11,7 @@ class CreateMaterialsTable extends Migration
         Schema::create('materials', function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->string('title');
+            $table->string('cover_url')->nullable();
             $table->longText('content');
             $table->integer('module_id')->nullable();
             $table->boolean('is_final_project')->default(false);

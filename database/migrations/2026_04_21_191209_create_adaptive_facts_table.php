@@ -9,11 +9,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('adaptive_facts', function (Blueprint $table) {
-            $table->id();
-            $table->string('code')->unique(); // G01, G02...
+            $table->string('id')->primary();
             $table->string('name');
             $table->string('category')->nullable();
-            $table->text('description')->nullable();
+            $table->json('logic')->nullable();
             $table->timestamps();
         });
     }

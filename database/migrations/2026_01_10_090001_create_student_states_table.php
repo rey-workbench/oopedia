@@ -25,8 +25,8 @@ return new class extends Migration
 
             // Learning profile
             $table->string('learning_style')->default('visual');
-            $table->json('unlocked_modules')->nullable();
             $table->json('certifications')->nullable();
+            $table->json('unlocked_modules')->nullable();
             $table->json('time_distribution')->nullable();
 
             // Performance metrics

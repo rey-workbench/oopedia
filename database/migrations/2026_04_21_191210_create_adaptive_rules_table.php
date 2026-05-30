@@ -13,15 +13,13 @@ return new class extends Migration
         Schema::dropIfExists('adaptive_rules');
 
         Schema::create('adaptive_rules', function (Blueprint $table) {
-            $table->id();
-            $table->string('code')->unique();
+            $table->string('id')->primary();
             $table->string('name');
-            $table->string('domain')->nullable()->index();
+            $table->string('recommendation')->nullable()->index();
             $table->integer('priority')->default(0);
-            $table->json('required_facts');
-            $table->json('deduced_facts')->nullable();
-            $table->json('action_codes')->nullable();
-            $table->foreignId('action_id')->nullable()->constrained('adaptive_actions')->nullOnDelete();
+            $table->json('actions')->nullable();
+            $table->json('required_fact_ids');
+            $table->json('deduced_fact_ids')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

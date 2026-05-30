@@ -68,24 +68,8 @@ class MahasiswaSeeder extends Seeder
                         StudentStateSchema::STREAK          => 5,
                         StudentStateSchema::HINTS_USED      => 0,
                         StudentStateSchema::MAX_STREAK      => 12,
-                        StudentStateSchema::ACCURACY        => 85.5,
-                        StudentStateSchema::SESSION_HISTORY => [80.0, 90.0, 85.0, 85.5, 90.0],
-                        StudentStateSchema::CURRENT_SESSION => [
-                            'correct'    => 4,
-                            'total'      => 5,
-                            'hints'      => 0,
-                            'time_spent' => 120,
-                        ],
-                        StudentStateSchema::PERFORMANCE_METRICS => [
-                            'trend'          => 'up',
-                            'speed'          => 'normal',
-                            'stagnant_count' => 0,
-                            'last_used_hint' => false,
-                        ],
-                        StudentStateSchema::ADAPTIVE_STATE => [
-                            'consecutive_correct' => 4,
-                            'help_count_session'  => 0,
-                        ],
+                        'total_answered' => 5,
+                        'correct_count' => 4,
                         'last_active_at' => now(),
                     ],
                 );

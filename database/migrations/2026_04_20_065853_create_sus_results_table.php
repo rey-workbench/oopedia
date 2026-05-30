@@ -16,13 +16,9 @@ return new class extends Migration
         Schema::create('sus_results', function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->foreignUlid('user_id')->constrained()->onDelete('cascade');
+            $table->string('assessment_type')->default('post_test');
             $table->string('nim')->nullable();
             $table->string('class')->nullable();
-
-            // SUS 10 items (1-5 rating)
-            for ($i = 1; $i <= 10; $i++) {
-                $table->integer('q' . $i);
-            }
 
             $table->float('total_score');
 

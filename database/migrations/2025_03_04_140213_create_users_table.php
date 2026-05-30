@@ -10,9 +10,13 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->ulid('id')->primary();
+            $table->string('google_id')->nullable();
             $table->string('name', 100);
             $table->string('email', 100)->unique();
-            $table->string('password', 255);
+            $table->string('avatar')->nullable();
+            $table->string('nim', 20)->nullable();
+            $table->string('class', 50)->nullable();
+            $table->string('password', 255)->nullable();
             $table->foreignUlid('role_id')->constrained('roles')->onDelete('restrict');
             $table->boolean('is_approved')->default(true);
             $table->rememberToken();
