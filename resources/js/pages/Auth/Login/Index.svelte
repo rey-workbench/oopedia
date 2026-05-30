@@ -161,16 +161,13 @@
             </div>
 
             <div
-                class="mt-8 max-w-[280px] text-center text-[12px] leading-relaxed font-bold text-slate-400"
+                class="mt-8 max-w-[320px] text-center text-[11px] leading-relaxed font-medium text-slate-400"
             >
-                By signing in to OOPedia, you agree to our <a
-                    href="/"
-                    class="font-black text-slate-500 transition hover:text-slate-700">Terms</a
-                >
-                and
-                <a href="/" class="font-black text-slate-500 transition hover:text-slate-700"
-                    >Privacy Policy</a
-                >.
+                By signing in, you agree to our
+                <a href="/" class="font-bold text-slate-500 transition hover:text-slate-700">Terms</a> &
+                <a href="/" class="font-bold text-slate-500 transition hover:text-slate-700">Privacy Policy</a>.
+                Protected by reCAPTCHA & Google's
+                <a href="/" class="font-bold text-slate-500 transition hover:text-slate-700">Terms</a>.
             </div>
         </div>
     </div>
