@@ -12,6 +12,9 @@ jobs:
 
     security:
         uses: ./.github/workflows/security.yml
+        permissions:
+            contents: read
+            issues: write
         secrets: inherit
 
     deploy:
