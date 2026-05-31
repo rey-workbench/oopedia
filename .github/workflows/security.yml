@@ -12,10 +12,11 @@ jobs:
               with:
                   fetch-depth: 0
 
-            - name: Secret Scanning (Gitleaks)
-              uses: gitleaks/gitleaks-action@v2
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - name: Secret Scanning (TruffleHog)
+              uses: trufflesecurity/trufflehog@main
+              with:
+                  path: ./
+                  extra_args: --only-verified
 
             - name: SCA Scanner (Trivy)
               uses: aquasecurity/trivy-action@master
