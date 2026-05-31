@@ -21,4 +21,4 @@ require __DIR__ . '/admin.php';
 require __DIR__ . '/mahasiswa.php';
 
 // Fallback route for 404 errors (Handles UI consistency)
-Route::fallback([LoginController::class, 'home']);
+// Route::fallback([LoginController::class, 'home']);
