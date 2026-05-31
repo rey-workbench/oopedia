@@ -36,13 +36,8 @@ final class SecurityHeaders
 
             // Build CSP
             $csp = config('security.csp', []);
-            // Automatically append nonce to script-src and style-src if not already present
-            if (isset($csp['script-src'])) {
-                $csp['script-src'] .= " 'nonce-{$nonce}'";
-            }
-            if (isset($csp['style-src'])) {
-                $csp['style-src'] .= " 'nonce-{$nonce}'";
-            }
+            // Note: We avoid appending 'nonce' here dynamically because it invalidates 'unsafe-inline'
+            // which breaks Vite's dev server. If strict CSP is required, configure it fully in security.php.
 
             $cspDirectives = [];
             foreach ($csp as $directive => $value) {
