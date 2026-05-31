@@ -18,22 +18,17 @@ class HandleInertiaRequests extends Middleware
         protected ?MaterialServiceInterface $materialService = null,
         protected ?PerformanceServiceInterface $performanceService = null,
         protected ?UserServiceInterface $userService = null,
-    ) {
-    }
+    ) {}
 
     #[\Override]
     public function share(Request $request): array
     {
         $user = $request->user();
 
-        $sidebarMaterials = $this->materialService instanceof MaterialServiceInterface
-            ? $this->materialService->getSidebarMaterials($user?->id, ! $user)
-            : collect();
-
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $user ? new UserResource($user)->resolve() : null,
+                'user' => fn () => $user ? new UserResource($user)->resolve() : null,
             ],
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
@@ -43,10 +38,12 @@ class HandleInertiaRequests extends Middleware
                 'status'  => fn () => $request->session()->get('status'),
             ],
             'feedback'          => fn () => $request->session()->get('feedback'),
-            'sidebar_materials' => $sidebarMaterials,
+            'sidebar_materials' => fn () => $this->materialService instanceof MaterialServiceInterface
+                ? $this->materialService->getSidebarMaterials($user?->id, ! $user)
+                : collect(),
             'pending_admins_count' => fn (): int => ($user && $user->isSuperAdmin() && $this->userService instanceof UserServiceInterface) ? $this->userService->getPendingAdminsCount() : 0,
-            'student_state'     => fn () => $user ? ($this->performanceService instanceof PerformanceServiceInterface ? $this->performanceService->getStudentSessionState((string) $user->id) : $request->session()->get('student_state')) : $request->session()->get('student_state'),
-            'csrf_token'        => csrf_token(),
+            'student_state'        => fn () => $user ? ($this->performanceService instanceof PerformanceServiceInterface ? $this->performanceService->getStudentSessionState((string) $user->id) : $request->session()->get('student_state')) : $request->session()->get('student_state'),
+            'csrf_token'           => csrf_token(),
         ];
     }
 }
