@@ -6,8 +6,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Vite;
 use Symfony\Component\HttpFoundation\Response;
 
 final class SecurityHeaders
@@ -19,14 +17,8 @@ final class SecurityHeaders
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // 1. Generate nonce and attach to Vite
-        $nonce = Str::random(32);
-        Vite::useCspNonce($nonce);
-
-        // 2. Process Request
         $response = $next($request);
 
-        // 3. Apply Security Headers
         if ($response instanceof Response) {
             // Apply standard headers
             $headers = config('security.headers', []);
@@ -36,9 +28,6 @@ final class SecurityHeaders
 
             // Build CSP
             $csp = config('security.csp', []);
-            // Note: We avoid appending 'nonce' here dynamically because it invalidates 'unsafe-inline'
-            // which breaks Vite's dev server. If strict CSP is required, configure it fully in security.php.
-
             $cspDirectives = [];
             foreach ($csp as $directive => $value) {
                 $cspDirectives[] = empty($value) ? $directive : "$directive $value";
@@ -52,11 +41,6 @@ final class SecurityHeaders
                 $permDirectives[] = "$feature$value";
             }
             $response->headers->set('Permissions-Policy', implode(', ', $permDirectives));
-
-            // COOP, CORP, COEP - Temporarily disabled as it breaks Vite dev server and cross-origin assets
-            // $response->headers->set('Cross-Origin-Embedder-Policy', 'require-corp');
-            // $response->headers->set('Cross-Origin-Opener-Policy', 'same-origin');
-            // $response->headers->set('Cross-Origin-Resource-Policy', 'same-origin');
 
             // Remove server headers
             $response->headers->remove('X-Powered-By');
