@@ -11,8 +11,8 @@ return new class extends Migration
         Schema::create('adaptive_execution_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignUlid('user_id')->constrained()->cascadeOnDelete();
-            $table->string('code')->index();
-            $table->string('action_code')->nullable()->index();
+            $table->string('rule_id')->index();
+            $table->string('action_id')->nullable()->index();
             $table->json('trigger_facts')->nullable();
             $table->json('state_deltas')->nullable();
             $table->json('new_state')->nullable();

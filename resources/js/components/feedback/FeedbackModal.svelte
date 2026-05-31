@@ -32,7 +32,9 @@
     let challengeActions = $derived(
         actions.filter((r: HydratedAction) => r.variant === 'challenge')
     );
-    let feedbackActions = $derived(actions.filter((r: HydratedAction) => r.variant === 'feedback'));
+    let feedbackActions = $derived(
+        actions.filter((r: HydratedAction, index: number) => r.variant === 'feedback' && index !== 0)
+    );
 
     // Visibility control for popups to avoid getting stuck
     let showPopups = $state(true);

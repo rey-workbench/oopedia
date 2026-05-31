@@ -36,6 +36,13 @@ return new class extends Migration
             $table->unsignedInteger('wrong_streak')->default(0);
             $table->unsignedInteger('hints_used')->default(0);
             $table->unsignedInteger('hints_available')->default(3);
+            $table->float('accuracy')->default(0);
+
+            // Adaptive Engine
+            $table->json('session_history')->nullable();
+            $table->json('current_session')->nullable();
+            $table->json('performance_metrics')->nullable();
+            $table->json('adaptive_state')->nullable();
 
             // Navigation
             $table->string('current_material_id')->nullable();
