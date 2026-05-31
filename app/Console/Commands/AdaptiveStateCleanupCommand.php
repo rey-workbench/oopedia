@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
-use App\Models\StudentState;
 use Illuminate\Console\Command;
-use Illuminate\Support\Collection;
 
 class AdaptiveStateCleanupCommand extends Command
 {

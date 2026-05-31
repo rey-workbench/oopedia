@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Mahasiswa;
 
-use App\Models\Question;
 use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
 use App\Contracts\Services\QuizServiceInterface;
@@ -13,6 +12,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Question\CheckAnswerRequest;
 use App\Http\Resources\AdaptiveRuleResource;
 use App\Models\AdaptiveRule;
+use App\Models\Material;
+use App\Models\Question;
 use Illuminate\Http\RedirectResponse;
 
 final class QuizInteractionController extends Controller
@@ -21,21 +22,24 @@ final class QuizInteractionController extends Controller
         private readonly QuizServiceInterface $quizService,
         private readonly PerformanceServiceInterface $performanceService,
         private readonly GuestProgressServiceInterface $guestProgressService,
-    ) {
-    }
+    ) {}
 
     /**
      * Handle question submission and process adaptive logic.
      */
-    public function submit(CheckAnswerRequest $request, string $materialId, string $questionId): RedirectResponse
+    public function submit(CheckAnswerRequest $request, Material $material, Question $question): RedirectResponse
     {
+        if ((string) $question->material_id !== (string) $material->id) {
+            abort(403, 'Aksi tidak sah: Pertanyaan tidak cocok dengan materi.');
+        }
+
         $userId  = (string) $this->getUserId();
         $isGuest = $this->isGuest();
 
         $submissionDTO = QuizSubmissionDTO::fromRequest(
             userId: $userId,
-            materialId: $materialId,
-            questionId: $questionId,
+            materialId: (string) $material->id,
+            questionId: (string) $question->id,
             data: $request->validated(),
         );
 
@@ -110,7 +114,7 @@ final class QuizInteractionController extends Controller
 
         $question = Question::find($questionId);
 
-        if ($question && !empty($question->hint)) {
+        if ($question && ! empty($question->hint)) {
             $this->performanceService->decrementHint($userId);
         }
 

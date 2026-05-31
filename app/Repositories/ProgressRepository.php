@@ -22,8 +22,7 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
 {
     public function __construct(
         private StudentStateRepositoryInterface $studentStateRepository,
-    ) {
-    }
+    ) {}
 
     public function getUserProgressStats(?string $userId): Collection
     {
@@ -356,9 +355,7 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
             ->latest()
             ->limit($limit * 10)
             ->get()
-            ->unique(function ($attempt) {
-                return $attempt->user_id . '-' . $attempt->question?->material_id;
-            })
+            ->unique(fn ($attempt) => $attempt->user_id . '-' . $attempt->question?->material_id)
             ->take($limit)
             ->values();
     }

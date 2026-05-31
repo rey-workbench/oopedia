@@ -52,7 +52,7 @@ final class MaterialResource extends JsonResource
                 'full_url'  => $media->full_url,
             ])),
 
-            'creator'         => $this->whenLoaded('creator', fn () => (new UserResource($this->creator))->resolve()),
+            'creator'         => $this->whenLoaded('creator', fn () => new UserResource($this->creator)->resolve()),
             'questions_count' => $this->questions_count ?? $this->questions?->count() ?? 0,
 
             // If it's a detail view with stats (DashboardService usage)

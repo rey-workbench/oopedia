@@ -8,6 +8,7 @@ use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
 use App\Contracts\Services\QuizServiceInterface;
+use App\DTOs\Quiz\MaterialProgressDTO;
 use App\DTOs\Quiz\QuizContextDTO;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Http\Controllers\Controller;
@@ -28,8 +29,7 @@ final class MaterialQuestionController extends Controller
         private readonly ProgressRepositoryInterface $progressRepository,
         private readonly PerformanceServiceInterface $performanceService,
         private readonly GuestProgressServiceInterface $guestProgressService,
-    ) {
-    }
+    ) {}
 
     public function index(): Response
     {
@@ -37,11 +37,11 @@ final class MaterialQuestionController extends Controller
         $isGuest = $this->isGuest();
 
         $data = $this->quizService->getMaterialsListWithStudentCount(
-            new \App\DTOs\Quiz\MaterialProgressDTO(
+            new MaterialProgressDTO(
                 userId: $userId,
                 isGuest: $isGuest,
                 guestProgress: $isGuest ? $this->getGuestProgress() : [],
-            )
+            ),
         );
 
         return $this->render('Mahasiswa/Materials/Questions/Index', ['materials' => $data]);
@@ -61,11 +61,11 @@ final class MaterialQuestionController extends Controller
             'material'  => new MaterialResource($material)->resolve(),
             'levels'    => $this->quizService->getLevelProgress($material, null, $answeredIds, $isGuest),
             'materials' => $this->quizService->getMaterialsListWithStudentCount(
-                new \App\DTOs\Quiz\MaterialProgressDTO(
+                new MaterialProgressDTO(
                     userId: $userId,
                     isGuest: $isGuest,
                     guestProgress: $isGuest ? $this->guestProgressService->getProgress() : [],
-                )
+                ),
             ),
         ]);
     }

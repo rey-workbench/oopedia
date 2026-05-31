@@ -71,7 +71,9 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->group(function (): void {
 
         // Quiz Interactions (API/Action Logic)
         Route::controller(QuizInteractionController::class)->prefix('materials')->group(function (): void {
-            Route::post('{material}/questions/{question}/check', 'submit')->name('materials.questions.check');
+            Route::post('{material}/questions/{question}/check', 'submit')
+                ->name('materials.questions.check')
+                ->middleware('throttle:15,1');
             Route::post('{material}/questions/{question}/hint', 'useHint')->name('materials.questions.hint');
         });
 

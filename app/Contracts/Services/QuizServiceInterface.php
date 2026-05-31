@@ -6,6 +6,7 @@ namespace App\Contracts\Services;
 
 use App\DTOs\Question\QuestionCreateDTO;
 use App\DTOs\Question\QuestionUpdateDTO;
+use App\DTOs\Quiz\MaterialProgressDTO;
 use App\DTOs\Quiz\QuizContextDTO;
 use App\DTOs\Quiz\QuizSubmissionDTO;
 use App\Enums\Lms\QuestionDifficulty;
@@ -38,7 +39,7 @@ interface QuizServiceInterface
     public function getQuizData(QuizContextDTO $quizContextDTO): array;
 
     public function getMaterialsListWithStudentCount(
-        \App\DTOs\Quiz\MaterialProgressDTO $materialProgressDTO,
+        MaterialProgressDTO $materialProgressDTO,
     ): SupportCollection;
 
     public function getReviewQuestions(QuizContextDTO $quizContextDTO): SupportCollection;

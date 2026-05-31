@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services\Analytics;
 
-use App\Enums\Lms\AssessmentType;
 use App\Contracts\Repositories\SusResultRepositoryInterface;
 use App\Contracts\Services\SusResultServiceInterface;
+use App\Enums\Lms\AssessmentType;
 use App\Http\Resources\SusResultResource;
 use App\Models\SusAnswer;
 use App\Models\SusQuestion;
@@ -23,8 +23,7 @@ final readonly class SusResultService implements SusResultServiceInterface
     public function __construct(
         private SusResultRepositoryInterface $susResultRepository,
         private StatisticalAnalysisService $statisticalAnalysisService,
-    ) {
-    }
+    ) {}
 
     public function getAllResults(?AssessmentType $type = null): SupportCollection
     {
@@ -101,6 +100,7 @@ final readonly class SusResultService implements SusResultServiceInterface
             if (! $resultId) {
                 return [];
             }
+
             $result = SusResult::find($resultId);
             if (! $result) {
                 return [];

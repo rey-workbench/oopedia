@@ -74,7 +74,7 @@ final class QuestionResource extends JsonResource
         }
 
         // Make storage URLs absolute
-        return preg_replace_callback('/src="([^"]+)"/', function ($matches): string {
+        return preg_replace_callback('/src="([^"]+)"/', function (array $matches): string {
             $url = $matches[1];
             if (str_starts_with($url, 'storage/') || str_starts_with($url, 'public/storage/')) {
                 return 'src="' . url(str_replace('public/storage/', 'storage/', $url)) . '"';
