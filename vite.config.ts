@@ -19,37 +19,37 @@ export default defineConfig({
         }),
         tailwindcss(),
         inertia({ ssr: false }),
-        obfuscatorPlugin({
-            include: ['resources/js/**/*.js', 'resources/js/**/*.ts', 'resources/js/**/*.svelte'],
-            exclude: [/node_modules/],
-            apply: 'build',
-            options: {
-                // Konfigurasi High Performance (Cepat, Ringan, Tidak Lemot)
-                compact: true,
-                controlFlowFlattening: false, // Wajib false agar tidak lag
-                deadCodeInjection: false,
-                debugProtection: false,
-                disableConsoleOutput: true,
-                identifierNamesGenerator: 'hexadecimal',
-                log: false,
-                renameGlobals: false,
-                selfDefending: false, // Wajib false agar memory tidak bocor
-                simplify: true,
-                splitStrings: false, // Wajib false agar ukuran file tidak bengkak
-                stringArray: true,
-                stringArrayCallsTransform: false,
-                stringArrayEncoding: [], // Tanpa encoding base64 agar browser tidak bekerja dua kali
-                stringArrayIndexShift: true,
-                stringArrayRotate: true,
-                stringArrayShuffle: true,
-                stringArrayWrappersCount: 1,
-                stringArrayWrappersChainedCalls: true,
-                stringArrayWrappersParametersMaxCount: 2,
-                stringArrayWrappersType: 'variable',
-                stringArrayThreshold: 0.75,
-                unicodeEscapeSequence: false
-            }
-        })
+        // obfuscatorPlugin({
+        //     include: ['resources/js/**/*.js', 'resources/js/**/*.ts', 'resources/js/**/*.svelte'],
+        //     exclude: [/node_modules/],
+        //     apply: 'build',
+        //     options: {
+        //         // Konfigurasi High Performance (Cepat, Ringan, Tidak Lemot)
+        //         compact: true,
+        //         controlFlowFlattening: false, // Wajib false agar tidak lag
+        //         deadCodeInjection: false,
+        //         debugProtection: false,
+        //         disableConsoleOutput: true,
+        //         identifierNamesGenerator: 'hexadecimal',
+        //         log: false,
+        //         renameGlobals: false,
+        //         selfDefending: false, // Wajib false agar memory tidak bocor
+        //         simplify: true,
+        //         splitStrings: false, // Wajib false agar ukuran file tidak bengkak
+        //         stringArray: true,
+        //         stringArrayCallsTransform: false,
+        //         stringArrayEncoding: [], // Tanpa encoding base64 agar browser tidak bekerja dua kali
+        //         stringArrayIndexShift: true,
+        //         stringArrayRotate: true,
+        //         stringArrayShuffle: true,
+        //         stringArrayWrappersCount: 1,
+        //         stringArrayWrappersChainedCalls: true,
+        //         stringArrayWrappersParametersMaxCount: 2,
+        //         stringArrayWrappersType: 'variable',
+        //         stringArrayThreshold: 0.75,
+        //         unicodeEscapeSequence: false
+        //     }
+        // })
     ],
     resolve: {
         alias: {
