@@ -1,8 +1,20 @@
 {
-    "agents": ["opencode", "copilot", "gemini"],
+    "agents": [
+        "opencode"
+    ],
+    "cloud": false,
     "guidelines": true,
     "mcp": true,
-    "nightwatch_mcp": false,
+    "nightwatch": false,
+    "packages": [
+        "spatie/laravel-pdf"
+    ],
     "sail": false,
-    "skills": ["laravel-best-practices", "inertia-svelte-development", "tailwindcss-development"]
+    "skills": [
+        "laravel-best-practices",
+        "socialite-development",
+        "inertia-svelte-development",
+        "tailwindcss-development",
+        "laravel-pdf"
+    ]
 }

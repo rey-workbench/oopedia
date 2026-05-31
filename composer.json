@@ -69,7 +69,7 @@
         "phpunit/phpunit": "^12.0",
         "spatie/laravel-ignition": "^2.4",
         "laravel/pint": "^1.27",
-        "laravel/boost": "^2.0",
+        "laravel/boost": "^2.4",
         "squizlabs/php_codesniffer": "*",
         "shipmonk/dead-code-detector": "^1.0",
         "larastan/larastan": "^3.9",
