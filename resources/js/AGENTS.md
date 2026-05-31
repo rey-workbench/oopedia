@@ -1,51 +1,44 @@
-# Frontend Domain Guide
+<!-- Parent: ../AGENTS.md -->
+<!-- Generated: 2026-06-01 | Updated: 2026-06-01 -->
 
-[← Back to Project Knowledge Base](../../AGENTS.md)
+# Frontend Javascript (resources/js/)
 
-**Generated:** 2026-05-28
-**Part of:** Adaptive E-Learning Platform (Svelte 5 + Inertia v3)
+## Purpose
+Svelte 5 SPA with Inertia v3 for server-rendered pages. This is the root of the frontend application logic.
 
-## OVERVIEW
+## Key Files
+| File | Description |
+|------|-------------|
+| `app.ts` | Inertia boot + dynamic page resolution |
+| `bootstrap.ts` | Axios and global window bootstrapper |
 
-Svelte 5 SPA with Inertia v3 for server-rendered pages. Role-based routing (Admin, Mahasiswa), adaptive learning UI, gamification components.
+## Subdirectories
+| Directory | Purpose |
+|-----------|---------|
+| `pages/` | Role/feature/action page hierarchy (see `pages/AGENTS.md`) |
+| `states/` | `.svelte.ts` state classes + UI state (see `states/AGENTS.md`) |
+| `components/` | Shared UI/navigation/feedback/quiz components (see `components/AGENTS.md`) |
+| `types/` | Public type barrels + model/state contracts |
+| `utils/` | Routing, role, formatter, helper utilities |
+| `layouts/` | Shared page wrapper layouts |
 
-## STRUCTURE
+## For AI Agents
 
-```text
-resources/js/
-├── app.ts             # Inertia boot + dynamic page resolution
-├── pages/             # Role/feature/action page hierarchy
-├── states/            # `.svelte.ts` state classes + UI state
-├── components/        # Shared UI/navigation/feedback/quiz components
-├── types/             # Public type barrels + model/state contracts
-└── utils/             # Routing, role, formatter, helper utilities
-```
+### Working In This Directory
+- **Re-exports**: Re-export shared APIs through barrels (`components/index.ts`, `types/index.ts`, `states/index.ts`, `utils/index.ts`).
+- **Svelte 5 Runes**: Use Svelte 5 syntax exclusively (`$state`, `$derived`, `{#snippet}`). Avoid Svelte 4 primitives and old stores.
+- **Styling**: Use Tailwind v4 patterns already established in project.
 
-## WHERE TO LOOK
-
-| Task                            | Location                                                       |
-| ------------------------------- | -------------------------------------------------------------- |
-| Inertia page resolution failure | `app.ts` (`import.meta.glob('./pages/**/*.svelte')`)           |
-| Shared state contracts          | `states/index.ts`, `states/**/*.svelte.ts`                     |
-| Shared type contracts           | `types/index.ts`, `types/models/*`, `types/states/*`           |
-| Navigation and route helpers    | `utils/route.ts`, `utils/router.ts`, `components/navigation/*` |
-
-## CONVENTIONS
-
-- Pages follow `pages/{Role}/{Feature}/{Action}/Index.svelte`.
-- Re-export shared APIs through barrels (`components/index.ts`, `types/index.ts`, `states/index.ts`, `utils/index.ts`).
-- Keep domain state in `.svelte.ts` classes and avoid duplicating prop-shape logic across pages.
-- Use Tailwind v4 patterns already established in project (no deprecated v3 utility syntax).
-- Svelte 5: Use runse (`$state`, `$derived`) and `{#snippet}` over Svelte 4 primitives.
-
-## COUPLING BOUNDARIES
-
-- **Allowed:** Page → state class + typed props + shared utils/components.
-- **Avoid:** Duplicating route constants/role checks in pages when utilities exist.
-- **Avoid:** Defining duplicate model/state types outside `types/` barrels.
-
-## ANTI-PATTERNS
-
+### Common Patterns (ANTI-PATTERNS)
 - Deep relative type imports bypassing `@/types` barrel.
 - Page-local ad-hoc type/interface drift from backend contract shapes.
 - New role/feature page trees that break existing role-first hierarchy.
+
+## Dependencies
+
+### External
+- `Inertia v3` - Bridges Laravel and Svelte.
+- `Svelte 5` - UI Framework.
+- `Tailwind CSS v4` - Utility-first styling framework.
+
+<!-- MANUAL: Any manually added notes below this line are preserved on regeneration -->

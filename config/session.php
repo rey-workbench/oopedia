@@ -159,28 +159,19 @@ return [
     /*
     |--------------------------------------------------------------------------
     | HTTPS Only Cookies
-    |--------------------------------------------------------------------------
-    |
     | By setting this option to true, session cookies will only be sent back
-    | to the server if the browser has a HTTPS connection. This will keep
+    | to the server if the browser has a HTTPS conn. This will keep
     | the cookie from being sent to you when it can't be done securely.
-    |
-    */
-
-    'secure' => env('SESSION_SECURE_COOKIE'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | HTTP Access Only
-    |--------------------------------------------------------------------------
-    |
-    | Setting this value to true will prevent JavaScript from accessing the
-    | value of the cookie and the cookie will only be accessible through
+    'secure' => env('SESSION_SECURE_COOKIE', false),
+    | Setting this val to true will prevent JavaScript from accessing the
+    | val of the cookie and the cookie will only be accessible through
     | the HTTP protocol. You are free to modify this option if needed.
-    |
-    */
-
     'http_only' => true,
+    | Same-Site Cookie Attribute
+    | This setting controls the SameSite attribute of the session cookie.
+    | Supported: "lax", "strict", "none"
+    | Default "lax" is recommended for CSRF protection.
+    'same_site' => 'lax',
 
     /*
     |--------------------------------------------------------------------------

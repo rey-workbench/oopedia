@@ -1,26 +1,33 @@
-# ELOQUENT MODELS
+<!-- Parent: ../AGENTS.md -->
+<!-- Generated: 2026-06-01 | Updated: 2026-06-01 -->
 
-[← Back to Backend Core](../AGENTS.md) | [← Back to Project Knowledge Base](../../AGENTS.md)
+# Eloquent Models (app/Models/)
 
-**Generated:** 2026-05-28
+## Purpose
+Contains Laravel Eloquent ORM Models that map to database tables.
 
-## OVERVIEW
+## Key Files
+| File | Description |
+|------|-------------|
+| `User.php`, `Role.php`, `StudentState.php` | Core Entities |
+| `Material.php`, `Question.php`, `Answer.php`, `QuizAttempt.php`, `Media.php` | LMS Entities |
+| `AdaptiveRule.php`, `AdaptiveFact.php`, `AdaptiveAction.php`, `AdaptiveExecutionLog.php` | Adaptive Engine Entities |
+| `MslqQuestion.php`, `MslqAnswer.php`, `MslqResult.php`, `SusResult.php`, `UeqSurvey.php` | Survey Entities |
 
-Models map to database tables in `App\Models`.
+## For AI Agents
 
-## WHERE TO LOOK
+### Working In This Directory
+- Keep models simple. They should primarily define relationships via methods (e.g., `public function relationName(): HasMany`).
+- **Casting**: Use the `casts()` method instead of the `$casts` property (this is a Laravel 12 convention).
 
-- **Core Entities**: `User.php`, `Role.php`, `StudentState.php`
-- **LMS Entities**: `Material.php`, `Question.php`, `Answer.php`, `QuizAttempt.php`, `Media.php`
-- **Adaptive Engine Entities**: `AdaptiveRule.php`, `AdaptiveFact.php`, `AdaptiveAction.php`, `AdaptiveExecutionLog.php`
-- **Survey Entities**: `MslqQuestion.php`, `MslqAnswer.php`, `MslqResult.php`, `SusResult.php`, `UeqSurvey.php`
+### Common Patterns (ANTI-PATTERNS)
+- Do not place heavy business logic in models. Offload it to `Services` or `Repositories`.
+- Avoid using the `$casts` array property; use the `casts()` method instead.
 
-## CONVENTIONS
+## Dependencies
 
-- Keep models simple, defining relationships via methods (e.g. `public function relationName(): HasMany`).
-- Use the `casts()` method instead of the `$casts` property (Laravel 12 convention).
+### Internal
+- `database/migrations/` - Table schemas for these models.
+- `app/Repositories/` - Where the actual data access queries for these models should be executed.
 
-## ANTI-PATTERNS
-
-- Do not place heavy business logic in models; offload to services or repositories.
-- Avoid using `$casts` property; use `casts()` method instead.
+<!-- MANUAL: Any manually added notes below this line are preserved on regeneration -->
