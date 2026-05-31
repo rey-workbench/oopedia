@@ -9,6 +9,12 @@ import { initTutorials } from '@/tutorial';
 
 initTutorials();
 
+// Menangani Error Chunk Load (misalnya setelah deploy versi baru)
+window.addEventListener('vite:preloadError', () => {
+    console.warn('Terjadi kesalahan saat memuat module (chunk lama tidak ditemukan). Memuat ulang halaman...');
+    window.location.reload();
+});
+
 createInertiaApp({
     progress: false,
     resolve: (name) =>
