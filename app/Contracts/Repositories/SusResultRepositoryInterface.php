@@ -14,13 +14,6 @@ interface SusResultRepositoryInterface
      */
     public function getAllWithUser(?string $assessmentType = null): Collection;
 
-    /**
-     * @return array<string>
-     */
-    public function getDistinctAssessmentTypes(): array;
-
-    public function findByUserId(string $userId): ?SusResult;
-
     public function findWithRelations(string $id): SusResult;
 
     /**

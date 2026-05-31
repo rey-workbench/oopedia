@@ -248,7 +248,6 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
             StudentStateSchema::MAX_STREAK      => $attributes[StudentStateSchema::MAX_STREAK]      ?? null,
             StudentStateSchema::TOTAL_ANSWERED  => $attributes[StudentStateSchema::TOTAL_ANSWERED]  ?? null,
             StudentStateSchema::CORRECT_COUNT   => $attributes[StudentStateSchema::CORRECT_COUNT]   ?? null,
-            StudentStateSchema::WRONG_COUNT     => $attributes[StudentStateSchema::WRONG_COUNT]     ?? null,
             StudentStateSchema::HINTS_USED      => $attributes[StudentStateSchema::HINTS_USED]      ?? null,
             StudentStateSchema::HINTS_AVAILABLE => $attributes[StudentStateSchema::HINTS_AVAILABLE] ?? null,
             'last_active_at'                    => now(),

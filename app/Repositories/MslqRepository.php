@@ -25,11 +25,6 @@ final class MslqRepository implements MslqRepositoryInterface
             ->get();
     }
 
-    public function getDistinctAssessmentTypes(): Collection
-    {
-        return MslqResult::distinct()->pluck('assessment_type')->filter()->values();
-    }
-
     public function findWithRelations(string $id): MslqResult
     {
         return MslqResult::with(['user', 'answers.question'])->findOrFail($id);

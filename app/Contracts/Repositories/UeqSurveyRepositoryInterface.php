@@ -13,8 +13,6 @@ interface UeqSurveyRepositoryInterface
 
     public function getAllWithUser(?string $type = null): Collection;
 
-    public function findByUserId(string $userId): ?UeqSurvey;
-
     public function findWithRelations(string $id): UeqSurvey;
 
     public function findSurveyByUser(string $userId, ?string $type = null): ?UeqSurvey;

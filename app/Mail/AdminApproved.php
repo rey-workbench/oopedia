@@ -16,14 +16,8 @@ class AdminApproved extends Mailable
     use Queueable;
     use SerializesModels;
 
-    /**
-     * @var User
-     */
-    public $user;
-
-    public function __construct(User $user)
+    public function __construct(private User $user)
     {
-        $this->user = $user;
     }
 
     public function envelope(): Envelope
@@ -37,6 +31,7 @@ class AdminApproved extends Mailable
     {
         return new Content(
             view: 'emails.admin-approved',
+            with: ['user' => $this->user],
         );
     }
 

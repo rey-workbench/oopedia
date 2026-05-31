@@ -290,10 +290,3 @@ $this->app->singleton(Service::class, fn () => new Service(fn () => request()));
 - IMPORTANT: Activate `inertia-svelte-development` when working with Inertia Svelte client-side patterns.
 
 </laravel-boost-guidelines>
-
-<!-- lean-ctx -->
-## lean-ctx
-
-Prefer lean-ctx MCP tools over native equivalents for token savings.
-Full rules: @LEAN-CTX.md
-<!-- /lean-ctx -->

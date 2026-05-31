@@ -27,17 +27,6 @@ final class SusResultRepository implements SusResultRepositoryInterface
         return $builder->get();
     }
 
-    /** @return array<string> */
-    public function getDistinctAssessmentTypes(): array
-    {
-        return SusResult::distinct()->pluck('assessment_type')->filter()->values()->all();
-    }
-
-    public function findByUserId(string $userId): ?SusResult
-    {
-        return SusResult::where('user_id', '=', $userId)->with('user')->first();
-    }
-
     public function findWithRelations(string $id): SusResult
     {
         return SusResult::with(['user', 'answers.question'])->findOrFail($id);

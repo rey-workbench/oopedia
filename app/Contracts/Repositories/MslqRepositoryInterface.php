@@ -14,8 +14,6 @@ interface MslqRepositoryInterface
 
     public function getAllForCalculation(?string $assessmentType = null): Collection;
 
-    public function getDistinctAssessmentTypes(): Collection;
-
     public function findWithRelations(string $id): MslqResult;
 
     public function create(array $data): MslqResult;
