@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Illuminate\Support\Collection;
 use App\Contracts\Services\MaterialServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
 use App\Contracts\Services\UserServiceInterface;
@@ -27,9 +28,11 @@ class HandleInertiaRequests extends Middleware
 
         return [
             ...parent::share($request),
+            
             'auth' => [
                 'user' => fn () => $user ? new UserResource($user)->resolve() : null,
             ],
+            
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
                 'error'   => fn () => $request->session()->get('error'),
@@ -37,13 +40,26 @@ class HandleInertiaRequests extends Middleware
                 'warning' => fn () => $request->session()->get('warning'),
                 'status'  => fn () => $request->session()->get('status'),
             ],
-            'feedback'          => fn () => $request->session()->get('feedback'),
-            'sidebar_materials' => fn () => $this->materialService instanceof MaterialServiceInterface
+            'feedback' => fn () => $request->session()->get('feedback'),
+            
+            'sidebar_materials' => fn (): Collection => $this->materialService instanceof MaterialServiceInterface
                 ? $this->materialService->getSidebarMaterials($user?->id, ! $user)
                 : collect(),
-            'pending_admins_count' => fn (): int => ($user && $user->isSuperAdmin() && $this->userService instanceof UserServiceInterface) ? $this->userService->getPendingAdminsCount() : 0,
-            'student_state'        => fn () => $user ? ($this->performanceService instanceof PerformanceServiceInterface ? $this->performanceService->getStudentSessionState((string) $user->id) : $request->session()->get('student_state')) : $request->session()->get('student_state'),
-            'csrf_token'           => csrf_token(),
+                
+            'pending_admins_count' => fn (): int => 
+                ($user && $user->isSuperAdmin() && $this->userService instanceof UserServiceInterface) 
+                    ? $this->userService->getPendingAdminsCount() 
+                    : 0,
+                    
+            'student_state' => function () use ($user, $request) {
+                if ($user && $this->performanceService instanceof PerformanceServiceInterface) {
+                    return $this->performanceService->getStudentSessionState((string) $user->id);
+                }
+
+                return $request->session()->get('student_state');
+            },
+            
+            'csrf_token' => csrf_token(),
         ];
     }
 }

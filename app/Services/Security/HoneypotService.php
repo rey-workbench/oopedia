@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Security;
 
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -15,7 +16,7 @@ final class HoneypotService
      *
      * @var array<int, string>
      */
-    private const KEYWORDS = [
+    private const array KEYWORDS = [
         'wp-',
         '.env',
         'passwd',
@@ -58,11 +59,11 @@ final class HoneypotService
         if ($ip && $ip !== '127.0.0.1' && $ip !== '::1') {
             try {
                 // Fetch location from free GeoIP API (ip-api.com)
-                $geo = \Illuminate\Support\Facades\Http::timeout(3)->get("http://ip-api.com/json/{$ip}")->json();
+                $geo = Http::timeout(3)->get('http://ip-api.com/json/' . $ip)->json();
                 if (isset($geo['status']) && $geo['status'] === 'success') {
-                    $location = "{$geo['city']}, {$geo['regionName']}, {$geo['country']}";
+                    $location = sprintf('%s, %s, %s', $geo['city'], $geo['regionName'], $geo['country']);
                 }
-            } catch (\Throwable $e) {
+            } catch (\Throwable) {
                 // Ignore API failures silently to not break the honeypot
             }
         } else {

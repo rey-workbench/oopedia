@@ -354,7 +354,7 @@ final readonly class ProgressRepository implements ProgressRepositoryInterface
             ->latest()
             ->limit($limit * 10)
             ->get()
-            ->unique(fn ($attempt) => $attempt->user_id . '-' . $attempt->question?->material_id)
+            ->unique(fn ($attempt): string => $attempt->user_id . '-' . $attempt->question?->material_id)
             ->take($limit)
             ->values();
     }

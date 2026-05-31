@@ -26,12 +26,26 @@ class AppServiceProvider extends ServiceProvider
 
     protected function configureRateLimiting(): void
     {
+        RateLimiter::for('anti_scrape', fn(Request $request) => Limit::perMinute(60)->by($request->ip())
+            ->response(function () {
+                if (request()->inertia()) {
+                    return inertia('Error/Index', [
+                        'status' => 429,
+                        'message' => 'Too many requests. Please slow down.',
+                    ])->toResponse(request())->setStatusCode(429);
+                }
+
+                return response()->json([
+                    'message' => 'Too many requests. Please slow down.',
+                ], 429);
+            }));
+
         RateLimiter::for('api', function (Request $request) {
             $config = config('rate_limiting.api');
 
             return Limit::perMinute($config['limit'])
                 ->by($request->user()?->id ?: $request->ip())
-                ->response(fn () => response()->json([
+                ->response(fn() => response()->json([
                     'message' => 'Too many requests. Please slow down.',
                 ], 429));
         });
@@ -41,7 +55,7 @@ class AppServiceProvider extends ServiceProvider
 
             return Limit::perMinute($config['limit'])
                 ->by($request->ip())
-                ->response(fn () => response()->json([
+                ->response(fn() => response()->json([
                     'message' => 'Too many requests. Please slow down.',
                 ], 429));
         });

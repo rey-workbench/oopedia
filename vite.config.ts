@@ -5,6 +5,7 @@ import { svelte } from '@sveltejs/vite-plugin-svelte';
 import inertia from '@inertiajs/vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import obfuscatorPlugin from 'vite-plugin-javascript-obfuscator';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,6 +19,38 @@ export default defineConfig({
         }),
         tailwindcss(),
         inertia({ ssr: false }),
+        obfuscatorPlugin({
+            include: ['resources/js/**/*.js', 'resources/js/**/*.ts', 'resources/js/**/*.svelte'],
+            exclude: [/node_modules/],
+            apply: 'build',
+            options: {
+                compact: true,
+                controlFlowFlattening: true,
+                controlFlowFlatteningThreshold: 0.5,
+                deadCodeInjection: false,
+                debugProtection: false,
+                disableConsoleOutput: true,
+                identifierNamesGenerator: 'hexadecimal',
+                log: false,
+                renameGlobals: false,
+                selfDefending: true,
+                simplify: true,
+                splitStrings: true,
+                splitStringsChunkLength: 10,
+                stringArray: true,
+                stringArrayCallsTransform: true,
+                stringArrayEncoding: ['base64'],
+                stringArrayIndexShift: true,
+                stringArrayRotate: true,
+                stringArrayShuffle: true,
+                stringArrayWrappersCount: 1,
+                stringArrayWrappersChainedCalls: true,
+                stringArrayWrappersParametersMaxCount: 2,
+                stringArrayWrappersType: 'variable',
+                stringArrayThreshold: 0.75,
+                unicodeEscapeSequence: false
+            }
+        })
     ],
     resolve: {
         alias: {
