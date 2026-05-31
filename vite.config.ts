@@ -24,22 +24,21 @@ export default defineConfig({
             exclude: [/node_modules/],
             apply: 'build',
             options: {
+                // Konfigurasi High Performance (Cepat, Ringan, Tidak Lemot)
                 compact: true,
-                controlFlowFlattening: true,
-                controlFlowFlatteningThreshold: 0.5,
+                controlFlowFlattening: false, // Wajib false agar tidak lag
                 deadCodeInjection: false,
                 debugProtection: false,
                 disableConsoleOutput: true,
                 identifierNamesGenerator: 'hexadecimal',
                 log: false,
                 renameGlobals: false,
-                selfDefending: true,
+                selfDefending: false, // Wajib false agar memory tidak bocor
                 simplify: true,
-                splitStrings: true,
-                splitStringsChunkLength: 10,
+                splitStrings: false, // Wajib false agar ukuran file tidak bengkak
                 stringArray: true,
-                stringArrayCallsTransform: true,
-                stringArrayEncoding: ['base64'],
+                stringArrayCallsTransform: false,
+                stringArrayEncoding: [], // Tanpa encoding base64 agar browser tidak bekerja dua kali
                 stringArrayIndexShift: true,
                 stringArrayRotate: true,
                 stringArrayShuffle: true,
