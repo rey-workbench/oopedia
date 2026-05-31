@@ -40,7 +40,6 @@ export interface LearningPersonalization {
     max_streak?: number;
     total_questions_answered?: number;
     correct_count?: number;
-    wrong_count?: number;
     hints_used_count?: number;
     hints_available?: number;
     accuracy?: number;

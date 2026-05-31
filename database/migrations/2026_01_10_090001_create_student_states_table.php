@@ -24,16 +24,11 @@ return new class extends Migration
             $table->integer('max_streak')->default(0);
 
             // Learning profile
-            $table->string('learning_style')->default('visual');
             $table->json('certifications')->nullable();
-            $table->json('unlocked_modules')->nullable();
-            $table->json('time_distribution')->nullable();
 
             // Performance metrics
             $table->unsignedInteger('total_answered')->default(0);
             $table->unsignedInteger('correct_count')->default(0);
-            $table->unsignedInteger('wrong_count')->default(0);
-            $table->unsignedInteger('wrong_streak')->default(0);
             $table->unsignedInteger('hints_used')->default(0);
             $table->unsignedInteger('hints_available')->default(3);
             $table->float('accuracy')->default(0);

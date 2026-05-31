@@ -122,7 +122,6 @@ final readonly class GuestProgressService implements GuestProgressServiceInterfa
             StudentStateSchema::LEVEL             => 'Tamu',
             StudentStateSchema::TOTAL_ANSWERED    => $performanceMetrics[StudentStateSchema::TOTAL_ANSWERED]    ?? 0,
             StudentStateSchema::CORRECT_COUNT     => $performanceMetrics[StudentStateSchema::CORRECT_COUNT]     ?? 0,
-            StudentStateSchema::WRONG_COUNT       => $performanceMetrics[StudentStateSchema::WRONG_COUNT]       ?? 0,
             StudentStateSchema::HINTS_USED        => $performanceMetrics[StudentStateSchema::HINTS_USED]        ?? 0,
             StudentStateSchema::HINTS_AVAILABLE   => $performanceMetrics[StudentStateSchema::HINTS_AVAILABLE]   ?? 3,
             StudentStateSchema::TARGET_DIFFICULTY => $performanceMetrics[StudentStateSchema::TARGET_DIFFICULTY] ?? null,
@@ -144,7 +143,6 @@ final readonly class GuestProgressService implements GuestProgressServiceInterfa
         $this->setCookie($this->cookiePerformance, json_encode([
             StudentStateSchema::TOTAL_ANSWERED    => $studentState->total_answered,
             StudentStateSchema::CORRECT_COUNT     => $studentState->correct_count,
-            StudentStateSchema::WRONG_COUNT       => $studentState->wrong_count,
             StudentStateSchema::HINTS_USED        => $studentState->hints_used,
             StudentStateSchema::HINTS_AVAILABLE   => $studentState->hints_available,
             StudentStateSchema::TARGET_DIFFICULTY => $studentState->target_difficulty,

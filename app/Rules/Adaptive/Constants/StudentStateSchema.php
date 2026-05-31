@@ -21,7 +21,6 @@ final class StudentStateSchema
 
     public const string CORRECT_COUNT = 'correct_count';
 
-    public const string WRONG_COUNT = 'wrong_count';
 
     public const string ACCURACY = 'accuracy';
 
@@ -49,7 +48,6 @@ final class StudentStateSchema
             self::MAX_STREAK        => 0,
             self::TOTAL_ANSWERED    => 0,
             self::CORRECT_COUNT     => 0,
-            self::WRONG_COUNT       => 0,
             self::ACCURACY          => 0.0,
             self::HINTS_USED        => 0,
             self::HINTS_AVAILABLE   => 3,

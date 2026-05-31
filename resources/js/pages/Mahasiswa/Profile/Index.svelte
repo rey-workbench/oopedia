@@ -19,7 +19,6 @@
         Target,
         Flame,
         CheckCircle,
-        XCircle,
         Lightbulb,
         Loader2,
         Save,
@@ -100,12 +99,6 @@
             value: state.personalization?.correct_count || 0,
             icon: CheckCircle,
             variant: 'success',
-        },
-        {
-            title: 'Jawaban Salah',
-            value: state.personalization?.wrong_count || 0,
-            icon: XCircle,
-            variant: 'danger',
         },
         {
             title: 'Hints Digunakan',

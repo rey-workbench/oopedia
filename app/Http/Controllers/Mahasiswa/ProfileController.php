@@ -58,7 +58,6 @@ final class ProfileController extends Controller
             'max_streak'               => $studentState->max_streak      ?? 0,
             'total_questions_answered' => $total,
             'correct_count'            => $correct,
-            'wrong_count'              => $studentState->wrong_count     ?? 0,
             'hints_used_count'         => $studentState->hints_used      ?? 0,
             'hints_available'          => $studentState->hints_available ?? 3,
             'accuracy'                 => $total > 0

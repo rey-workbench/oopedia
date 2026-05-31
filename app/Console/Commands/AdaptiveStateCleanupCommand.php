@@ -20,17 +20,7 @@ class AdaptiveStateCleanupCommand extends Command
             return;
         }
 
-        $this->info('Resetting wrong_streak for all students...');
-
-        StudentState::chunk(200, function (Collection $states): void {
-            /** @var StudentState $state */
-            foreach ($states as $state) {
-                // Only reset aggregated wrong_streak (never truncate real stats)
-                if ($state->wrong_streak > 20) {
-                    $state->update(['wrong_streak' => 0]);
-                }
-            }
-        });
+        $this->info('No state columns require cleanup at this time.');
 
         $this->info('Cleanup complete.');
     }
