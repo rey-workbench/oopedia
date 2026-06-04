@@ -11,7 +11,8 @@ return [
 
     'csp' => [
         'default-src' => "'self'",
-        'script-src' => "'self' 'unsafe-inline' 'unsafe-eval' https: http:",
+        'script-src' => "'self' 'unsafe-inline' 'unsafe-eval' https: http: blob:",
+        'worker-src' => "'self' blob:",
         'style-src' => "'self' 'unsafe-inline' https: http:",
         'img-src' => "'self' data: https: http:",
         'font-src' => "'self' data: https: http:",

@@ -19,7 +19,12 @@ window.addEventListener('vite:preloadError', () => {
 });
 
 createInertiaApp({
-    progress: false,
+    progress: {
+        delay: 250,
+        color: '#ff5242', // Accent 500
+        includeCSS: true,
+        showSpinner: true,
+    },
     resolve: async (name) => {
         try {
             return await resolvePageComponent(

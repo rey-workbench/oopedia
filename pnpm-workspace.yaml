@@ -1,7 +1,7 @@
 packages:
   - '.'
 allowBuilds:
-  core-js: set this to true or false
-  puppeteer: set this to true or false
+  core-js: true
+  puppeteer: true
 ignoredBuiltDependencies:
   - esbuild
