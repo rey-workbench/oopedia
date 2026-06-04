@@ -20,7 +20,7 @@
 </script>
 
 <App title="Latihan soal PBO">
-    <div class="space-y-12">
+    <div class="space-y-8">
         <PageHeader
             id="page-header"
             title="Latihan soal PBO"
@@ -36,7 +36,7 @@
             />
         {/if}
 
-        <div id="module-list" class="grid grid-cols-1 gap-10">
+        <div id="module-list" class="grid grid-cols-1 gap-6">
             {#each state.materials as material (material.id)}
                 {@const isLocked = !state.isGuest && !!material.is_locked}
 
@@ -50,7 +50,7 @@
                     <!-- ── Graphic + Content (shared markup) ─────────────────── -->
                     {#snippet cardInner()}
                         <!-- Graphic Section -->
-                        <div class="relative shrink-0 md:w-72 lg:w-96">
+                        <div class="relative shrink-0 md:w-64 lg:w-80">
                             {#if material.cover_url}
                                 <div class="h-60 md:h-full">
                                     <img
@@ -75,7 +75,7 @@
                                 </div>
                             {:else}
                                 <div
-                                    class="bg-primary-600 flex h-60 items-center justify-center md:h-full"
+                                    class="bg-primary-600 flex h-48 items-center justify-center md:h-full"
                                 >
                                     <Shapes
                                         size={96}
@@ -97,12 +97,12 @@
                         </div>
 
                         <!-- Content Section -->
-                        <div class="flex flex-1 flex-col justify-between p-10">
+                        <div class="flex flex-1 flex-col justify-between p-6 md:p-8 lg:p-10">
                             <div>
                                 <div class="flex items-start justify-between gap-6">
                                     <div>
                                         <h2
-                                            class="group-hover:text-primary-600 mb-3 text-3xl leading-tight font-bold tracking-widest text-slate-900 transition-colors"
+                                            class="group-hover:text-primary-600 mb-2 text-2xl leading-tight font-bold tracking-widest text-slate-900 transition-colors"
                                         >
                                             {material.title}
                                         </h2>
@@ -134,7 +134,7 @@
                                     <div
                                         class="{isLocked
                                             ? 'bg-slate-100 text-slate-400'
-                                            : 'group-hover:bg-primary-600 bg-slate-50 text-slate-900 group-hover:text-white group-active:translate-y-[2px]'} hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl shadow-inner transition-all duration-150 sm:flex"
+                                            : 'group-hover:bg-primary-600 bg-slate-50 text-slate-900 group-hover:text-white group-active:translate-y-px'} hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl shadow-inner transition-all duration-150 sm:flex"
                                     >
                                         {#if isLocked}
                                             <Lock size={20} />
