@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Mahasiswa;
 
 use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Contracts\Services\MslqServiceInterface;
 use App\Contracts\Services\UserServiceInterface;
 use App\DTOs\User\ProfileUpdateDTO;
 use App\Http\Controllers\Controller;
@@ -24,8 +25,8 @@ final class ProfileController extends Controller
         private readonly MaterialRepositoryInterface $materialRepository,
         private readonly UserServiceInterface $userService,
         private readonly ProgressRepositoryInterface $progressRepository,
-    ) {
-    }
+        private readonly MslqServiceInterface $mslqService,
+    ) {}
 
     public function show(): Response
     {
@@ -37,7 +38,7 @@ final class ProfileController extends Controller
         $correct = $studentState->correct_count  ?? 0;
 
         // Derive learning style from MSLQ result
-        $mslqResult      = MslqResult::where('user_id', $user->id)->first();
+        $mslqResult      = $this->mslqService->getMslqResultForUser($user->id);
         $learningProfile = $this->deriveLearningProfile($mslqResult);
 
         // Derive last adaptive diagnosis from adaptive_state
@@ -49,7 +50,7 @@ final class ProfileController extends Controller
         $personalization = [
             'learning_style'           => $learningProfile['style'],
             'learning_profile_label'   => $learningProfile['label'],
-            'mslq_filled'              => $mslqResult !== null,
+            'mslq_filled'              => $mslqResult instanceof MslqResult,
             'total_motivation'         => $mslqResult?->total_motivation ?? null,
             'total_strategy'           => $mslqResult?->total_strategy   ?? null,
             'current_level'            => $studentState->level           ?? 'Pemula',

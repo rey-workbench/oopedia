@@ -19,6 +19,11 @@ final class QuestionRepository implements QuestionRepositoryInterface
         return Question::find($id);
     }
 
+    public function findWithMaterial(string $id): ?Question
+    {
+        return Question::with('material')->find($id);
+    }
+
     public function create(array $data): Question
     {
         return Question::create($data);
@@ -102,5 +107,17 @@ final class QuestionRepository implements QuestionRepositoryInterface
             ->where('question_type', '=', QuestionType::RADIO_BUTTON->value)
             ->inRandomOrder()
             ->first();
+    }
+
+    public function hasUnansweredLowerDifficulty(string $materialId, string $userId, array $lowerDifficulties): bool
+    {
+        return Question::where('material_id', $materialId)
+            ->whereIn('difficulty', $lowerDifficulties)
+            ->whereNotIn('id', function ($query) use ($userId): void {
+                $query->select('question_id')
+                    ->from('quiz_attempts')
+                    ->where('user_id', $userId)
+                    ->where('is_correct', true);
+            })->exists();
     }
 }

@@ -13,6 +13,8 @@ interface QuestionRepositoryInterface
 {
     public function find(string $id): ?Question;
 
+    public function findWithMaterial(string $id): ?Question;
+
     public function create(array $data): Question;
 
     public function delete(string $id): bool;
@@ -35,4 +37,6 @@ interface QuestionRepositoryInterface
     public function countByMaterialAndDifficulty(string $materialId, QuestionDifficulty $questionDifficulty): int;
 
     public function getRandomMultipleChoiceFromOtherMaterials(string $excludeMaterialId): ?Question;
+
+    public function hasUnansweredLowerDifficulty(string $materialId, string $userId, array $lowerDifficulties): bool;
 }

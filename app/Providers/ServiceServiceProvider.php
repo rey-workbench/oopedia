@@ -9,13 +9,16 @@ use App\Contracts\Services\AdaptiveAnalyticsServiceInterface;
 use App\Contracts\Services\AdaptiveEngineServiceInterface;
 use App\Contracts\Services\AdaptiveManagementServiceInterface;
 use App\Contracts\Services\AdminDashboardServiceInterface;
+use App\Contracts\Services\CertificateServiceInterface;
 use App\Contracts\Services\DashboardServiceInterface;
 use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\LeaderboardServiceInterface;
 use App\Contracts\Services\MaterialServiceInterface;
 use App\Contracts\Services\MslqServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
+use App\Contracts\Services\QuestionServiceInterface;
 use App\Contracts\Services\QuizServiceInterface;
+use App\Contracts\Services\QuizSubmissionServiceInterface;
 use App\Contracts\Services\StudentServiceInterface;
 use App\Contracts\Services\SusResultServiceInterface;
 use App\Contracts\Services\UeqSurveyServiceInterface;
@@ -30,9 +33,12 @@ use App\Services\Analytics\LeaderboardService;
 use App\Services\Analytics\MslqService;
 use App\Services\Analytics\SusResultService;
 use App\Services\Analytics\UeqSurveyService;
+use App\Services\Lms\CertificateService;
 use App\Services\Lms\GuestProgressService;
 use App\Services\Lms\MaterialService;
+use App\Services\Lms\QuestionService;
 use App\Services\Lms\QuizService;
+use App\Services\Lms\QuizSubmissionService;
 use App\Services\User\PerformanceService;
 use App\Services\User\StudentService;
 use App\Services\User\UserService;
@@ -46,7 +52,10 @@ final class ServiceServiceProvider extends ServiceProvider
         // LMS Domain
         $this->app->bind(MaterialServiceInterface::class, MaterialService::class);
         $this->app->bind(QuizServiceInterface::class, QuizService::class);
+        $this->app->bind(QuestionServiceInterface::class, QuestionService::class);
+        $this->app->bind(QuizSubmissionServiceInterface::class, QuizSubmissionService::class);
         $this->app->bind(GuestProgressServiceInterface::class, GuestProgressService::class);
+        $this->app->bind(CertificateServiceInterface::class, CertificateService::class);
 
         // User & Performance Domain
         $this->app->bind(UserServiceInterface::class, UserService::class);

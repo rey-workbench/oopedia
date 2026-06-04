@@ -22,4 +22,9 @@ final class AdaptiveExecutionLogRepository implements AdaptiveExecutionLogReposi
             ->limit($limit)
             ->get();
     }
+
+    public function create(array $data): AdaptiveExecutionLog
+    {
+        return AdaptiveExecutionLog::create($data);
+    }
 }

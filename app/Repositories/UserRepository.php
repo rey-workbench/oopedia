@@ -48,6 +48,16 @@ final class UserRepository implements UserRepositoryInterface
         return (bool) $user->delete();
     }
 
+    public function findByGoogleId(string $googleId): ?User
+    {
+        return User::where('google_id', $googleId)->first();
+    }
+
+    public function findByEmail(string $email): ?User
+    {
+        return User::where('email', $email)->first();
+    }
+
     public function getStudentsList(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
         $query = User::whereHas('role', function (Builder $q): void {
@@ -149,6 +159,18 @@ final class UserRepository implements UserRepositoryInterface
             ->having('completed_questions', '>', 0)
             ->orderByDesc('completed_questions')
             ->limit($limit)
+            ->get();
+    }
+
+    public function getStudentsNeedingAttention(): Collection
+    {
+        return User::whereHas('role', function (Builder $q): void {
+            $q->where('role_name', 'mahasiswa');
+        })
+            ->whereHas('studentState', function ($q): void {
+                $q->whereJsonContains('adaptive_state->notify_teacher', true);
+            })
+            ->with(['role', 'studentState'])
             ->get();
     }
 

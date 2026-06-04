@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace App\Services\Adaptive;
 
+use App\Contracts\Repositories\AdaptiveActionRepositoryInterface;
 use App\Contracts\Repositories\AdaptiveExecutionLogRepositoryInterface;
+use App\Contracts\Repositories\AdaptiveFactRepositoryInterface;
 use App\Contracts\Repositories\AdaptiveRuleRepositoryInterface;
 use App\Contracts\Services\AdaptiveAnalyticsServiceInterface;
 use App\Http\Resources\AdaptiveActionResource;
 use App\Http\Resources\AdaptiveExecutionLogResource;
 use App\Http\Resources\AdaptiveFactResource;
 use App\Http\Resources\AdaptiveRuleResource;
-use App\Models\AdaptiveAction;
-use App\Models\AdaptiveFact;
-use App\Models\AdaptiveRule;
 use App\Models\StudentState;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection as SupportCollection;
@@ -23,26 +22,27 @@ final readonly class AdaptiveAnalyticsService implements AdaptiveAnalyticsServic
     public function __construct(
         private AdaptiveRuleRepositoryInterface $adaptiveRuleRepository,
         private AdaptiveExecutionLogRepositoryInterface $adaptiveExecutionLogRepository,
-    ) {
-    }
+        private AdaptiveFactRepositoryInterface $adaptiveFactRepository,
+        private AdaptiveActionRepositoryInterface $adaptiveActionRepository,
+    ) {}
 
     public function getDashboardStats(): array
     {
         return [
             'total_rules'   => $this->adaptiveRuleRepository->count(),
-            'total_facts'   => AdaptiveFact::count(),
-            'total_actions' => AdaptiveAction::count(),
+            'total_facts'   => $this->adaptiveFactRepository->count(),
+            'total_actions' => $this->adaptiveActionRepository->count(),
         ];
     }
 
     public function getRecentTriggers(int $limit = 10): array
     {
-        $actions = AdaptiveAction::all()->keyBy('id');
+        $actions = $this->adaptiveActionRepository->allKeyedById();
         $logs    = $this->adaptiveExecutionLogRepository->getRecent($limit);
 
         return AdaptiveExecutionLogResource::collection($logs->map(function ($log) use ($actions): Model {
-            $log->rule_name   = AdaptiveRule::where('id', $log->rule_id)->value('name') ?? $log->rule_id;
-            $log->action_name = $actions->get($log->action_id)?->name                   ?? $log->action_id;
+            $log->rule_name   = $this->adaptiveRuleRepository->findNameById($log->rule_id) ?? $log->rule_id;
+            $log->action_name = $actions->get($log->action_id)?->name                      ?? $log->action_id;
 
             return $log;
         }))->resolve();
@@ -113,12 +113,8 @@ final readonly class AdaptiveAnalyticsService implements AdaptiveAnalyticsServic
 
     public function getRulesByDiagnosis(): array
     {
-        $rules = $this->adaptiveRuleRepository->getOrdered();
-
-        // Group by Name (Diagnosis) from DB
-        $grouped = $rules->groupBy('name');
-
-        AdaptiveAction::all()->keyBy('id');
+        $rules     = $this->adaptiveRuleRepository->getOrdered();
+        $grouped   = $rules->groupBy('name');
 
         $result = [];
         foreach ($grouped as $diagnosisName => $ruleList) {
@@ -134,11 +130,11 @@ final readonly class AdaptiveAnalyticsService implements AdaptiveAnalyticsServic
 
     public function getAllFacts(): SupportCollection
     {
-        return collect(AdaptiveFactResource::collection(AdaptiveFact::select(['id', 'name', 'category'])->get())->resolve());
+        return collect(AdaptiveFactResource::collection($this->adaptiveFactRepository->getAllForResources())->resolve());
     }
 
     public function getAllActions(): SupportCollection
     {
-        return collect(AdaptiveActionResource::collection(AdaptiveAction::select(['id', 'name', 'description', 'variant'])->get())->resolve());
+        return collect(AdaptiveActionResource::collection($this->adaptiveActionRepository->getAllForResources())->resolve());
     }
 }

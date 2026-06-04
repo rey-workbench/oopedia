@@ -13,7 +13,7 @@ final class SecurityHeaders
     /**
      * Handle an incoming request.
      *
-     * @param \Closure(Request):Response $next
+     * @param Closure(Request):Response $next
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -27,19 +27,21 @@ final class SecurityHeaders
             }
 
             // Build CSP
-            $csp = config('security.csp', []);
+            $csp           = config('security.csp', []);
             $cspDirectives = [];
             foreach ($csp as $directive => $value) {
-                $cspDirectives[] = empty($value) ? $directive : "$directive $value";
+                $cspDirectives[] = empty($value) ? $directive : sprintf('%s %s', $directive, $value);
             }
+
             $response->headers->set('Content-Security-Policy', implode('; ', $cspDirectives));
 
             // Build Permissions Policy
-            $permissions = config('security.permissions', []);
+            $permissions    = config('security.permissions', []);
             $permDirectives = [];
             foreach ($permissions as $feature => $value) {
-                $permDirectives[] = "$feature$value";
+                $permDirectives[] = $feature . $value;
             }
+
             $response->headers->set('Permissions-Policy', implode(', ', $permDirectives));
 
             // Remove server headers

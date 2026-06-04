@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Services\Adaptive;
 
+use App\Contracts\Repositories\AdaptiveFactRepositoryInterface;
+use App\Contracts\Repositories\AdaptiveRuleRepositoryInterface;
 use App\Contracts\Services\AdaptiveEngineServiceInterface;
 use App\DTOs\Adaptive\EngineResultDTO;
 use App\DTOs\Adaptive\StudentStateDTO;
-use App\Models\AdaptiveFact;
 use App\Models\AdaptiveRule;
 use App\Rules\Adaptive\Constants\AdaptiveConditionKeys;
 use App\Traits\Adaptive\EvaluatesAdaptiveConditions;
@@ -15,15 +16,20 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
 
-final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
+final readonly class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 {
     use EvaluatesAdaptiveConditions;
 
     private const int MAX_CHAINING_ITERATIONS = 10;
 
-    private const string FALLBACK_RULE_ID        = 'R00';
+    private const string FALLBACK_RULE_ID  = 'R00';
 
-    private const string CATEGORY_PRIMARY       = 'primary';
+    private const string CATEGORY_PRIMARY  = 'primary';
+
+    public function __construct(
+        private AdaptiveFactRepositoryInterface $adaptiveFactRepository,
+        private AdaptiveRuleRepositoryInterface $adaptiveRuleRepository,
+    ) {}
 
     /**
      * Core Engine: True Forward Chaining with Iterative Evaluation.
@@ -51,7 +57,7 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
     {
         $activeFacts = [];
 
-        $factDefinitions = AdaptiveFact::where('category', self::CATEGORY_PRIMARY)->get();
+        $factDefinitions = $this->adaptiveFactRepository->getByCategory(self::CATEGORY_PRIMARY);
 
         foreach ($factDefinitions as $factDefinition) {
             $formula = json_decode($factDefinition->logic ?? '', true);
@@ -85,7 +91,7 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
         $iteration      = 0;
 
         /** @var Collection<int, AdaptiveRule> $rules */
-        $rules = AdaptiveRule::where('is_active', true)->ordered()->get();
+        $rules = $this->adaptiveRuleRepository->getActiveOrdered();
 
         while ($iteration < self::MAX_CHAINING_ITERATIONS) {
             $iteration++;
@@ -153,7 +159,7 @@ final class AdaptiveEngineService implements AdaptiveEngineServiceInterface
 
     private function handleFallback(array $activeFacts): EngineResultDTO
     {
-        $fallback = AdaptiveRule::where('id', self::FALLBACK_RULE_ID)->first();
+        $fallback = $this->adaptiveRuleRepository->find(self::FALLBACK_RULE_ID);
 
         if ($fallback instanceof AdaptiveRule) {
             return EngineResultDTO::fromAppliedRules([$fallback], $activeFacts, 1);

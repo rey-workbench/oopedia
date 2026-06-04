@@ -35,4 +35,14 @@ interface UserServiceInterface
     public function importAdminsFromFile(UploadedFile $uploadedFile): array;
 
     public function generateImportTemplate(): array;
+
+    /**
+     * @param array{google_id: string, name: string, email: string, avatar: ?string} $googleData
+     */
+    public function findOrCreateSocialUser(array $googleData): ?User;
+
+    /**
+     * @param array{google_id: string, name: string, email: string, avatar: ?string} $googleData
+     */
+    public function registerSocialUser(array $googleData, string $role): User;
 }

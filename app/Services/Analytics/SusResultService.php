@@ -8,10 +8,10 @@ use App\Contracts\Repositories\SusResultRepositoryInterface;
 use App\Contracts\Services\SusResultServiceInterface;
 use App\Enums\Lms\AssessmentType;
 use App\Http\Resources\SusResultResource;
-use App\Models\SusAnswer;
-use App\Models\SusQuestion;
 use App\Models\SusResult;
+use App\Rules\Adaptive\Constants\SusBenchmarks;
 use App\Traits\SanitizesJson;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\DB;
 use MathPHP\Statistics\Descriptive;
@@ -73,7 +73,7 @@ final readonly class SusResultService implements SusResultServiceInterface
                 $questionId = $answerData['question_id'];
                 $value      = $answerData['value'];
 
-                $answer = SusAnswer::create([
+                $answer = $this->susResultRepository->createAnswer([
                     'sus_result_id'    => $result->id,
                     'sus_question_id'  => $questionId,
                     'value'            => (int) $value,
@@ -148,12 +148,10 @@ final readonly class SusResultService implements SusResultServiceInterface
     private function calculateAveragePerItem(SupportCollection $results): array
     {
         $averages  = [];
-        $questions = SusQuestion::orderBy('order')->get();
+        $questions = $this->susResultRepository->getOrderedQuestions();
 
         foreach ($questions as $question) {
-            $avgValue = SusAnswer::where('sus_question_id', $question->id)
-                ->whereIn('sus_result_id', $results->pluck('id'))
-                ->avg('value');
+            $avgValue = $this->susResultRepository->getAverageValueForQuestion($question->id, $results->pluck('id')->all());
 
             $averages['q' . $question->order] = [
                 'text'    => $question->text,
@@ -166,19 +164,19 @@ final readonly class SusResultService implements SusResultServiceInterface
 
     private function getGradeForScore(float $score): string
     {
-        if ($score >= 80.3) {
+        if ($score >= SusBenchmarks::GRADE_A) {
             return 'A';
         }
 
-        if ($score >= 74) {
+        if ($score >= SusBenchmarks::GRADE_B) {
             return 'B';
         }
 
-        if ($score >= 68) {
+        if ($score >= SusBenchmarks::GRADE_C) {
             return 'C';
         }
 
-        if ($score >= 51) {
+        if ($score >= SusBenchmarks::GRADE_D) {
             return 'D';
         }
 
@@ -187,19 +185,19 @@ final readonly class SusResultService implements SusResultServiceInterface
 
     private function getAdjectiveForScore(float $score): string
     {
-        if ($score >= 85) {
+        if ($score >= SusBenchmarks::ADJECTIVE_EXCELLENT) {
             return 'Excellent';
         }
 
-        if ($score >= 71.4) {
+        if ($score >= SusBenchmarks::ADJECTIVE_GOOD) {
             return 'Good';
         }
 
-        if ($score >= 50.9) {
+        if ($score >= SusBenchmarks::ADJECTIVE_OK) {
             return 'OK';
         }
 
-        if ($score >= 35.7) {
+        if ($score >= SusBenchmarks::ADJECTIVE_POOR) {
             return 'Poor';
         }
 
@@ -208,11 +206,11 @@ final readonly class SusResultService implements SusResultServiceInterface
 
     private function getAcceptabilityForScore(float $score): string
     {
-        if ($score >= 71) {
+        if ($score >= SusBenchmarks::ACCEPTABLE) {
             return 'Acceptable';
         }
 
-        if ($score >= 51) {
+        if ($score >= SusBenchmarks::MARGINAL) {
             return 'Marginal';
         }
 
@@ -281,5 +279,10 @@ final readonly class SusResultService implements SusResultServiceInterface
         }
 
         return $matrix;
+    }
+
+    public function getOrderedQuestions(): Collection
+    {
+        return $this->susResultRepository->getOrderedQuestions();
     }
 }

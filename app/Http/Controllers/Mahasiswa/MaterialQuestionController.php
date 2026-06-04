@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Mahasiswa;
 
+use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Services\GuestProgressServiceInterface;
 use App\Contracts\Services\PerformanceServiceInterface;
@@ -29,6 +30,7 @@ final class MaterialQuestionController extends Controller
         private readonly ProgressRepositoryInterface $progressRepository,
         private readonly PerformanceServiceInterface $performanceService,
         private readonly GuestProgressServiceInterface $guestProgressService,
+        private readonly MaterialRepositoryInterface $materialRepository,
     ) {}
 
     public function index(): Response
@@ -124,7 +126,7 @@ final class MaterialQuestionController extends Controller
 
     private function getMaterialOrAbort(string $id): Material
     {
-        $material = Material::find($id);
+        $material = $this->materialRepository->find($id);
         if (! $material instanceof Material) {
             abort(404);
         }

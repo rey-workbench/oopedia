@@ -24,8 +24,7 @@ final readonly class MslqService implements MslqServiceInterface
     public function __construct(
         private MslqRepositoryInterface $mslqRepository,
         private StatisticalAnalysisService $statisticalAnalysisService,
-    ) {
-    }
+    ) {}
 
     public function getAdminResults(?AssessmentType $type = null): LengthAwarePaginator
     {
@@ -95,7 +94,7 @@ final readonly class MslqService implements MslqServiceInterface
             ]);
 
             foreach ($data as $questionId => $value) {
-                MslqAnswer::create([
+                $this->mslqRepository->createAnswer([
                     'mslq_result_id'   => $mslqResult->getKey(),
                     'mslq_question_id' => $questionId,
                     'value'            => $value,
@@ -207,6 +206,22 @@ final readonly class MslqService implements MslqServiceInterface
                 't_test'       => $tTest,
             ],
         ]);
+    }
+
+    public function hasExistingResult(string $userId, string $assessmentType): bool
+    {
+        return $this->mslqRepository->findExistingResult($userId, $assessmentType) instanceof MslqResult;
+    }
+
+    public function getOrderedQuestions(): Collection
+    {
+        return $this->mslqRepository->getOrderedQuestions();
+    }
+
+    public function getMslqResultForUser(string $userId): ?MslqResult
+    {
+        return $this->mslqRepository->findExistingResult($userId, 'pre')
+            ?? $this->mslqRepository->findExistingResult($userId, 'post');
     }
 
     private function buildAnswerMatrix(Collection $results): array

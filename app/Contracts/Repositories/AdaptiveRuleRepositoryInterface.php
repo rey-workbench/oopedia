@@ -17,4 +17,17 @@ interface AdaptiveRuleRepositoryInterface
 
     /** @return Collection<int, AdaptiveRule> */
     public function getWithExecutionStats(): Collection;
+
+    public function find(string $id): ?AdaptiveRule;
+
+    /** @param array<string> $ids */
+    public function findByIds(array $ids): Collection;
+
+    public function create(array $data): AdaptiveRule;
+
+    public function delete(string $id): bool;
+
+    public function getActiveOrdered(): Collection;
+
+    public function findNameById(string $id): ?string;
 }

@@ -14,8 +14,6 @@ use App\Http\Resources\MaterialResource;
 use App\Http\Resources\RecentProgressResource;
 use App\Http\Resources\StudentProgressResource;
 use App\Http\Resources\UserResource;
-use App\Models\User;
-use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\Cache;
@@ -27,8 +25,7 @@ final readonly class AdminDashboardService implements AdminDashboardServiceInter
         public MaterialRepositoryInterface $materialRepo,
         public ProgressRepositoryInterface $progressRepo,
         public QuestionRepositoryInterface $questionRepo,
-    ) {
-    }
+    ) {}
 
     /** @return array<string, int> */
     public function getDashboardStats(): array
@@ -99,7 +96,10 @@ final readonly class AdminDashboardService implements AdminDashboardServiceInter
     public function getStudentAnalytics(): array
     {
         return Cache::remember('admin_student_analytics', 600, function (): array {
-            $allStudents                = $this->userRepo->getUsersByRoleAndApproval('mahasiswa', true, null, null);
+            $allStudents                = $this->userRepo->getUsersByRoleAndApproval('mahasiswa', true, null, null)
+                ->load(['quizAttempts' => function ($query): void {
+                    $query->where('is_correct', true)->select('id', 'user_id', 'question_id', 'is_correct');
+                }]);
             $allWithQuestionsAndConfigs = $this->materialRepo->getAllWithQuestionsAndConfigs();
             $totalConfiguredQuestions   = ProgressHelper::calculateTotalQuestions($allWithQuestionsAndConfigs);
 
@@ -150,14 +150,7 @@ final readonly class AdminDashboardService implements AdminDashboardServiceInter
 
     public function getStudentsNeedingAttention(): SupportCollection
     {
-        $students = User::whereHas('role', function (Builder $q): void {
-            $q->where('role_name', 'mahasiswa');
-        })
-            ->whereHas('studentState', function ($q): void {
-                $q->whereJsonContains('adaptive_state->notify_teacher', true);
-            })
-            ->with(['role', 'studentState'])
-            ->get();
+        $students = $this->userRepo->getStudentsNeedingAttention();
 
         return $students->map(fn ($student): array => [
             'id'              => $student->id,

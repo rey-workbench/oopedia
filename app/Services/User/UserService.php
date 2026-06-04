@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Services\User;
 
+use App\Contracts\Repositories\RoleRepositoryInterface;
 use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Contracts\Services\UserServiceInterface;
 use App\Enums\User\RoleName;
 use App\Exceptions\Domain\UserNotFoundException;
 use App\Http\Resources\UserResource;
 use App\Mail\AdminApproved;
-use App\Models\Role;
 use App\Models\User;
 use App\Services\User\Concerns\ImportsCsvUsers;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -26,8 +26,8 @@ final readonly class UserService implements UserServiceInterface
 
     public function __construct(
         public UserRepositoryInterface $userRepo,
-    ) {
-    }
+        public RoleRepositoryInterface $roleRepo,
+    ) {}
 
     public function getUserById(string $id): ?array
     {
@@ -46,7 +46,7 @@ final readonly class UserService implements UserServiceInterface
     public function createAdmin(array $data): User
     {
         $data['password']    = Hash::make($data['password']);
-        $data['role_id']     = Role::where('role_name', RoleName::DOSEN->value)->value('id');
+        $data['role_id']     = $this->roleRepo->findByRoleName(RoleName::DOSEN->value)?->id;
         $data['is_approved'] = true;
 
         return $this->userRepo->create($data);
@@ -123,8 +123,8 @@ final readonly class UserService implements UserServiceInterface
     {
         $data['password'] = Hash::make($data['password']);
 
-        $roleDosenId     = Role::where('role_name', RoleName::DOSEN->value)->value('id');
-        $roleMahasiswaId = Role::where('role_name', RoleName::MAHASISWA->value)->value('id');
+        $roleDosenId     = $this->roleRepo->findByRoleName(RoleName::DOSEN->value)?->id;
+        $roleMahasiswaId = $this->roleRepo->findByRoleName(RoleName::MAHASISWA->value)?->id;
 
         $data['role_id'] ??= str_ends_with((string) $data['email'], User::ADMIN_EMAIL_DOMAIN)
             ? $roleDosenId
@@ -143,5 +143,44 @@ final readonly class UserService implements UserServiceInterface
     public function generateImportTemplate(): array
     {
         return $this->generateCsvTemplate('admin_template.csv', ['Nama Admin', 'admin@example.com', 'password123']);
+    }
+
+    public function findOrCreateSocialUser(array $googleData): ?User
+    {
+        $user = $this->userRepo->findByGoogleId($googleData['google_id'])
+            ?? $this->userRepo->findByEmail($googleData['email']);
+
+        if ($user instanceof User) {
+            $this->userRepo->update($user->id, [
+                'google_id' => $googleData['google_id'],
+                'avatar'    => $googleData['avatar'],
+            ]);
+
+            return $user->fresh();
+        }
+
+        return null;
+    }
+
+    public function registerSocialUser(array $googleData, string $role): User
+    {
+        $roleEnum = $role === 'dosen' ? RoleName::DOSEN : RoleName::MAHASISWA;
+        $roleId   = $this->roleRepo->findByRoleName($roleEnum->value)?->id;
+
+        if (! $roleId) {
+            throw new \RuntimeException('Peran tidak ditemukan.');
+        }
+
+        $isApproved = ($roleEnum === RoleName::MAHASISWA);
+
+        return $this->userRepo->create([
+            'name'        => $googleData['name'],
+            'email'       => $googleData['email'],
+            'google_id'   => $googleData['google_id'],
+            'avatar'      => $googleData['avatar'],
+            'role_id'     => $roleId,
+            'password'    => null,
+            'is_approved' => $isApproved,
+        ]);
     }
 }

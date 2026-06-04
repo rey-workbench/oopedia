@@ -31,4 +31,40 @@ final class AdaptiveRuleRepository implements AdaptiveRuleRepositoryInterface
             ->orderByDesc('execution_logs_count')
             ->get();
     }
+
+    public function find(string $id): ?AdaptiveRule
+    {
+        return AdaptiveRule::find($id);
+    }
+
+    public function findByIds(array $ids): Collection
+    {
+        return AdaptiveRule::whereIn('id', $ids)->get()->keyBy('id');
+    }
+
+    public function create(array $data): AdaptiveRule
+    {
+        return AdaptiveRule::create($data);
+    }
+
+    public function delete(string $id): bool
+    {
+        $rule = AdaptiveRule::find($id);
+
+        if (! $rule) {
+            return false;
+        }
+
+        return (bool) $rule->delete();
+    }
+
+    public function getActiveOrdered(): Collection
+    {
+        return AdaptiveRule::where('is_active', true)->orderBy('priority')->get();
+    }
+
+    public function findNameById(string $id): ?string
+    {
+        return AdaptiveRule::where('id', $id)->value('name');
+    }
 }

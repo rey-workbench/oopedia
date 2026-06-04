@@ -16,8 +16,7 @@ final class AdaptiveActionController extends Controller
 {
     public function __construct(
         private readonly AdaptiveManagementServiceInterface $adaptiveManagementService,
-    ) {
-    }
+    ) {}
 
     public function update(UpdateAdaptiveActionRequest $updateAdaptiveActionRequest, AdaptiveAction $adaptiveAction): RedirectResponse
     {
@@ -42,7 +41,9 @@ final class AdaptiveActionController extends Controller
 
             return back()->with('success', 'Aksi adaptif berhasil dihapus.');
         } catch (\Exception $exception) {
-            return back()->with('error', $exception->getMessage());
+            report($exception);
+
+            return back()->with('error', 'Gagal menghapus aksi adaptif. Silakan coba lagi.');
         }
     }
 }

@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Mahasiswa;
 
-use Illuminate\Database\Eloquent\Collection;
-use App\Models\SusQuestion;
 use App\Contracts\Services\SusResultServiceInterface;
+use App\Contracts\Services\UserServiceInterface;
 use App\DTOs\Survey\SusResultCreateDTO;
 use App\Enums\Lms\AssessmentType;
 use App\Http\Controllers\Controller;
@@ -21,8 +20,8 @@ final class SusSurveyController extends Controller
 {
     public function __construct(
         private readonly SusResultServiceInterface $susResultService,
-    ) {
-    }
+        private readonly UserServiceInterface $userService,
+    ) {}
 
     public function create(Request $request): Response|RedirectResponse
     {
@@ -30,7 +29,7 @@ final class SusSurveyController extends Controller
             return to_route('mahasiswa.surveys.sus.thankyou');
         }
 
-        $questions = $this->getQuestions();
+        $questions = $this->susResultService->getOrderedQuestions();
 
         return $this->render('Mahasiswa/Sus/Create/Index', [
             'questions' => SusQuestionResource::collection($questions)->resolve(),
@@ -45,11 +44,10 @@ final class SusSurveyController extends Controller
 
         $susResultCreateDTO = SusResultCreateDTO::fromRequest($storeSusResultRequest, (string) Auth::id());
 
-        // Update user profile if nim or class is provided
         if ($storeSusResultRequest->filled('nim') || $storeSusResultRequest->filled('class')) {
-            Auth::user()->update([
-                'nim' => $storeSusResultRequest->input('nim') ?? Auth::user()->nim,
-                'class' => $storeSusResultRequest->input('class') ?? Auth::user()->class,
+            $this->userService->updateProfile((string) Auth::id(), [
+                'nim'   => $storeSusResultRequest->input('nim'),
+                'class' => $storeSusResultRequest->input('class'),
             ]);
         }
 
@@ -61,11 +59,5 @@ final class SusSurveyController extends Controller
     public function show(): Response
     {
         return $this->render('Mahasiswa/Sus/ThankYou/Index');
-    }
-
-    /** @return Collection<int, SusQuestion> */
-    private function getQuestions(): Collection
-    {
-        return SusQuestion::orderBy('order')->get();
     }
 }

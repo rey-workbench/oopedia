@@ -29,9 +29,6 @@ parameters:
         - identifier: shipmonk.deadMethod
           path: app/Http/Controllers/*
 
-        # Request methods like after() are invoked by Laravel automatically.
-        - identifier: shipmonk.deadMethod
-          path: app/Http/Requests/*
 
         # Service methods are called from controllers and other services via DI.
         # PHPStan cannot trace callers that go through the IoC container.

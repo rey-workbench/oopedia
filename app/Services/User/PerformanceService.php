@@ -13,6 +13,7 @@ use App\Enums\Lms\StudentLevel;
 use App\Enums\User\RoleName;
 use App\Models\StudentState;
 use App\Rules\Adaptive\Constants\PedagogicalConstants;
+use App\Rules\Adaptive\Constants\PerformanceConstants;
 use App\Rules\Adaptive\Constants\StudentStateSchema;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Date;
@@ -96,12 +97,11 @@ final readonly class PerformanceService implements PerformanceServiceInterface
 
         // 4. Session Buffer Logic (Every 5 questions, record session and reset)
         $sessionHistory = $studentState->session_history ?? [0, 0, 0];
-        if ($currentSession['total'] >= 5) {
+        if ($currentSession['total'] >= PerformanceConstants::SESSION_BUFFER_SIZE) {
             $sessionAccuracy = ($currentSession['correct'] / $currentSession['total']) * 100;
 
-            // Update History (Slide)
             $sessionHistory[] = $sessionAccuracy;
-            if (count($sessionHistory) > 5) {
+            if (count($sessionHistory) > PerformanceConstants::MAX_SESSION_HISTORY) {
                 array_shift($sessionHistory);
             }
 
@@ -157,7 +157,7 @@ final readonly class PerformanceService implements PerformanceServiceInterface
 
     private function calculateTrend(array $history): string
     {
-        if (count($history) < 3) {
+        if (count($history) < PerformanceConstants::TREND_ANALYSIS_WINDOW) {
             return 'stable';
         }
 
@@ -224,9 +224,9 @@ final readonly class PerformanceService implements PerformanceServiceInterface
             ],
             'hints_available' => $studentState->hints_available,
             'adaptive_engine' => [
-                'session_history'     => $studentState->session_history         ?? [],
-                'current_session'     => $studentState->current_session         ?? [],
-                'performance_metrics' => $studentState->performance_metrics ?? [],
+                'session_history'     => $studentState->session_history          ?? [],
+                'current_session'     => $studentState->current_session          ?? [],
+                'performance_metrics' => $studentState->performance_metrics      ?? [],
                 'adaptive_state'      => $studentState->adaptive_state           ?? [],
             ],
         ];
@@ -249,28 +249,27 @@ final readonly class PerformanceService implements PerformanceServiceInterface
             return 0;
         }
 
-        $baseScore = 10;
+        $baseScore = PerformanceConstants::BASE_SCORE;
 
         $difficultyValue = $performanceScoreDTO->difficulty instanceof QuestionDifficulty ? $performanceScoreDTO->difficulty->value : $performanceScoreDTO->difficulty;
         $multiplier      = match ($difficultyValue) {
-            'medium' => 1.5,
-            'hard'   => 2.0,
-            default  => 1.0,
+            'medium' => PerformanceConstants::MEDIUM_MULTIPLIER,
+            'hard'   => PerformanceConstants::HARD_MULTIPLIER,
+            default  => PerformanceConstants::DEFAULT_MULTIPLIER,
         };
 
         $score = $baseScore * $multiplier;
 
         if ($performanceScoreDTO->usedHint) {
-            $score -= 2;
+            $score -= PerformanceConstants::HINT_PENALTY;
         }
 
-        // Time penalty for taking > 2x baseline
         $baseline = PedagogicalConstants::BASELINE_TIME[$difficultyValue] ?? 30;
         if ($performanceScoreDTO->timeSpent > ($baseline * 2)) {
-            $score -= 1;
+            $score -= PerformanceConstants::TIME_PENALTY;
         }
 
-        return (int) max(5, $score);
+        return (int) max(PerformanceConstants::MIN_SCORE, $score);
     }
 
     public function decrementHint(string $userId): array

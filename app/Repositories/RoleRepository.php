@@ -14,4 +14,9 @@ final class RoleRepository implements RoleRepositoryInterface
     {
         return Role::select(['id', 'role_name', 'display_name'])->get();
     }
+
+    public function findByRoleName(string $roleName): ?Role
+    {
+        return Role::where('role_name', $roleName)->first();
+    }
 }

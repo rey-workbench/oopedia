@@ -18,6 +18,10 @@ interface UserRepositoryInterface
 
     public function delete(string $id): bool;
 
+    public function findByGoogleId(string $googleId): ?User;
+
+    public function findByEmail(string $email): ?User;
+
     public function getStudentsList(?string $search = null, int $perPage = 10): LengthAwarePaginator;
 
     public function getStudentsWithRole(
@@ -42,4 +46,6 @@ interface UserRepositoryInterface
     public function getActiveStudentsCount(int $days): int;
 
     public function getStudentProgressOverview(int $limit): Collection;
+
+    public function getStudentsNeedingAttention(): Collection;
 }

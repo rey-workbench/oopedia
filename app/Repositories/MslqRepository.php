@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Contracts\Repositories\MslqRepositoryInterface;
+use App\Models\MslqAnswer;
+use App\Models\MslqQuestion;
 use App\Models\MslqResult;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -33,5 +35,22 @@ final class MslqRepository implements MslqRepositoryInterface
     public function create(array $data): MslqResult
     {
         return MslqResult::create($data);
+    }
+
+    public function findExistingResult(string $userId, string $assessmentType): ?MslqResult
+    {
+        return MslqResult::where('user_id', $userId)
+            ->where('assessment_type', $assessmentType)
+            ->first();
+    }
+
+    public function getOrderedQuestions(): Collection
+    {
+        return MslqQuestion::orderBy('order')->get();
+    }
+
+    public function createAnswer(array $data): MslqAnswer
+    {
+        return MslqAnswer::create($data);
     }
 }

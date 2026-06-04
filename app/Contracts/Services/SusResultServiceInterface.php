@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Contracts\Services;
 
 use App\Enums\Lms\AssessmentType;
+use App\Models\SusQuestion;
 use App\Models\SusResult;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -43,4 +44,7 @@ interface SusResultServiceInterface
      * Perform advanced statistical analysis (Reliability, Mann-Whitney).
      */
     public function calculateStatisticalAnalysis(?AssessmentType $type1 = null, ?AssessmentType $type2 = null): array;
+
+    /** @return Collection<int, SusQuestion> */
+    public function getOrderedQuestions(): Collection;
 }

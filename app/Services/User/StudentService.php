@@ -6,6 +6,7 @@ namespace App\Services\User;
 
 use App\Contracts\Repositories\MaterialRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
+use App\Contracts\Repositories\RoleRepositoryInterface;
 use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Contracts\Services\StudentServiceInterface;
 use App\Enums\User\RoleName;
@@ -13,7 +14,6 @@ use App\Exceptions\Domain\UserNotFoundException;
 use App\Helpers\ProgressHelper;
 use App\Http\Resources\MaterialResource;
 use App\Http\Resources\UserResource;
-use App\Models\Role;
 use App\Models\StudentState;
 use App\Models\User;
 use App\Services\User\Concerns\ImportsCsvUsers;
@@ -31,6 +31,7 @@ final readonly class StudentService implements StudentServiceInterface
         public UserRepositoryInterface $userRepo,
         public MaterialRepositoryInterface $materialRepo,
         public ProgressRepositoryInterface $progressRepo,
+        public RoleRepositoryInterface $roleRepo,
     ) {}
 
     public function getStudentsWithProgress(?string $search = null, int $perPage = 10): LengthAwarePaginator
@@ -58,7 +59,7 @@ final readonly class StudentService implements StudentServiceInterface
     public function createStudent(array $data): User
     {
         $data['password']    = Hash::make($data['password']);
-        $data['role_id']     = Role::where('role_name', RoleName::MAHASISWA)->value('id');
+        $data['role_id']     = $this->roleRepo->findByRoleName(RoleName::MAHASISWA->value)?->id;
         $data['is_approved'] = true;
 
         return $this->userRepo->create($data);

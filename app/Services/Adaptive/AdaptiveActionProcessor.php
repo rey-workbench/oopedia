@@ -9,6 +9,7 @@ use App\Contracts\Services\AdaptiveActionProcessorInterface;
 use App\Enums\Adaptive\AdaptiveActionId;
 use App\Models\Question;
 use App\Models\StudentState;
+use App\Rules\Adaptive\Constants\PerformanceConstants;
 
 final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorInterface
 {
@@ -77,7 +78,7 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
     private function handleRemedialIntensive(StudentState $studentState, array &$adaptiveState, string $materialId): void
     {
         $this->handleRemedial($studentState, $adaptiveState, $materialId);
-        $adaptiveState['forced_easy_count'] = 5;
+        $adaptiveState['forced_easy_count'] = PerformanceConstants::FORCED_EASY_COUNT;
     }
 
     private function handleReduceDifficulty(StudentState $studentState, array &$adaptiveState, string $materialId): void
@@ -88,7 +89,7 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
             $questionIds    = $studentState->current_session['question_ids'];
             $lastQuestionId = end($questionIds);
             if ($lastQuestionId) {
-                $lastQuestion = Question::find($lastQuestionId);
+                $lastQuestion = $this->questionRepository->find($lastQuestionId);
                 $currentDiff  = $lastQuestion?->difficulty?->value;
             }
         }
@@ -98,17 +99,13 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
         $currentIndex = array_search($currentDiff, self::DIFFICULTY_ORDER, true);
 
         if ($currentIndex > 0) {
-            // Cek apakah ada soal dengan tingkat kesulitan di bawahnya yang belum dijawab benar
             $lowerDifficulties = array_slice(self::DIFFICULTY_ORDER, 0, $currentIndex);
 
-            $availableLowerQuestions = Question::where('material_id', $materialId)
-                ->whereIn('difficulty', $lowerDifficulties)
-                ->whereNotIn('id', function ($query) use ($studentState): void {
-                    $query->select('question_id')
-                        ->from('quiz_attempts')
-                        ->where('user_id', $studentState->user_id)
-                        ->where('is_correct', true);
-                })->exists();
+            $availableLowerQuestions = $this->questionRepository->hasUnansweredLowerDifficulty(
+                $materialId,
+                $studentState->user_id,
+                $lowerDifficulties,
+            );
 
             if (! $availableLowerQuestions) {
                 // Stok soal mudah sudah habis. Pemicu mentok, paksa Remedial (V01)
@@ -132,7 +129,7 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
             $questionIds    = $studentState->current_session['question_ids'];
             $lastQuestionId = end($questionIds);
             if ($lastQuestionId) {
-                $lastQuestion = Question::find($lastQuestionId);
+                $lastQuestion = $this->questionRepository->find($lastQuestionId);
                 $currentDiff  = $lastQuestion?->difficulty?->value;
             }
         }
@@ -156,7 +153,7 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
     private function handleNewChallenge(StudentState $studentState, array &$adaptiveState, string $materialId, bool $isCorrect): void
     {
         if ($isCorrect) {
-            $studentState->xp += 100;
+            $studentState->xp += PerformanceConstants::CHALLENGE_XP_REWARD;
             $studentState->hints_available = ($studentState->hints_available ?? 0) + 1;
         }
 
@@ -182,7 +179,7 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
             return;
         }
 
-        $studentState->xp += 50;
+        $studentState->xp += PerformanceConstants::STREAK_BONUS_XP;
     }
 
     private function handleCertification(StudentState $studentState, array &$adaptiveState, string $materialId): void
@@ -200,7 +197,7 @@ final readonly class AdaptiveActionProcessor implements AdaptiveActionProcessorI
         $count                           = ($adaptiveState['guidance_count'] ?? 0) + 1;
         $adaptiveState['guidance_count'] = $count;
 
-        if ($count > 3) {
+        if ($count > PerformanceConstants::GUIDANCE_THRESHOLD) {
             $this->handleRemedial(
                 $studentState,
                 $adaptiveState,

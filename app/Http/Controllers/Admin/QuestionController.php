@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Contracts\Services\MaterialServiceInterface;
-use App\Contracts\Services\QuizServiceInterface;
+use App\Contracts\Services\QuestionServiceInterface;
 use App\DTOs\Question\QuestionCreateDTO;
 use App\DTOs\Question\QuestionUpdateDTO;
 use App\Enums\Lms\QuestionDifficulty;
@@ -21,10 +21,9 @@ use Inertia\Response;
 final class QuestionController extends Controller
 {
     public function __construct(
-        private readonly QuizServiceInterface $quizService,
+        private readonly QuestionServiceInterface $questionService,
         private readonly MaterialServiceInterface $materialService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): Response
     {
@@ -33,7 +32,7 @@ final class QuestionController extends Controller
         $materialId = $request->input('material');
 
         $material             = $materialId ? $this->materialService->getMaterialById((string) $materialId) : null;
-        $lengthAwarePaginator = $this->quizService->getFilteredQuestions($search, $difficulty, (string) $materialId);
+        $lengthAwarePaginator = $this->questionService->getFilteredQuestions($search, $difficulty, (string) $materialId);
 
         return $this->render('Admin/Questions/Index', [
             'questions'  => $lengthAwarePaginator,
@@ -80,7 +79,7 @@ final class QuestionController extends Controller
                 );
         }
 
-        $this->quizService->createQuestion($questionCreateDTO);
+        $this->questionService->createQuestion($questionCreateDTO);
 
         $redirectParams = $questionCreateDTO->material_id !== '' && $questionCreateDTO->material_id !== '0' ? ['material' => $questionCreateDTO->material_id] : [];
 
@@ -90,7 +89,7 @@ final class QuestionController extends Controller
 
     public function edit(string $questionId): Response|RedirectResponse
     {
-        $question = $this->quizService->getQuestionWithAnswers($questionId);
+        $question = $this->questionService->getQuestionWithAnswers($questionId);
 
         if (! $question) {
             return to_route('admin.questions.index')
@@ -123,7 +122,7 @@ final class QuestionController extends Controller
             }
         }
 
-        $this->quizService->updateQuestion($questionId, $questionUpdateDTO);
+        $this->questionService->updateQuestion($questionId, $questionUpdateDTO);
 
         $redirectParams = $questionUpdateDTO->material_id ? ['material' => $questionUpdateDTO->material_id] : [];
 
@@ -133,10 +132,10 @@ final class QuestionController extends Controller
 
     public function destroy(string $questionId): RedirectResponse
     {
-        $question   = $this->quizService->getQuestionById($questionId);
+        $question   = $this->questionService->getQuestionById($questionId);
         $materialId = $question ? $question['material_id'] : null;
 
-        $this->quizService->deleteQuestion($questionId);
+        $this->questionService->deleteQuestion($questionId);
 
         $redirectParams = $materialId ? ['material' => $materialId] : [];
 
