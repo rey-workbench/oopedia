@@ -15,6 +15,11 @@
         "socialite-development",
         "inertia-svelte-development",
         "tailwindcss-development",
-        "laravel-pdf"
+        "laravel-pdf",
+        "laravel-patterns",
+        "laravel-security",
+        "laravel-specialist",
+        "laravel-verification",
+        "php-pro"
     ]
 }

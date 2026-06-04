@@ -294,6 +294,7 @@ $this->app->singleton(Service::class, fn () => new Service(fn () => request()));
 # Inertia + Svelte
 
 - IMPORTANT: Activate `inertia-svelte-development` when working with Inertia Svelte client-side patterns.
+
 </laravel-boost-guidelines>
 
 <!-- lean-ctx -->
