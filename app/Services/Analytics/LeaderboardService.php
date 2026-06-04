@@ -10,6 +10,7 @@ use App\Contracts\Services\LeaderboardServiceInterface;
 use App\Enums\Lms\QuestionDifficulty;
 use App\Helpers\ProgressHelper;
 use App\Http\Resources\LeaderboardResource;
+use App\Rules\Adaptive\Constants\LeaderboardConstants;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
@@ -18,8 +19,7 @@ final readonly class LeaderboardService implements LeaderboardServiceInterface
     public function __construct(
         public MaterialRepositoryInterface $materialRepo,
         public ProgressRepositoryInterface $progressRepo,
-    ) {
-    }
+    ) {}
 
     /** @return array<string, mixed> */
     public function getLeaderboardData(string $currentUserId): array
@@ -71,18 +71,18 @@ final readonly class LeaderboardService implements LeaderboardServiceInterface
 
             $difficulty = $correctAnswer->difficulty instanceof QuestionDifficulty ? $correctAnswer->difficulty->value : $correctAnswer->difficulty;
             $basePoin   = match ($difficulty) {
-                'beginner' => 5,
-                'medium'   => 10,
-                'hard'     => 15,
-                default    => 0
+                'beginner' => LeaderboardConstants::BASE_POINTS_BEGINNER,
+                'medium'   => LeaderboardConstants::BASE_POINTS_MEDIUM,
+                'hard'     => LeaderboardConstants::BASE_POINTS_HARD,
+                default    => 0,
             };
 
             $attemptMultiplier = match ($attempts) {
-                1       => 1.0,
-                2       => 0.8,
-                3       => 0.6,
-                4       => 0.4,
-                default => 0.2
+                1       => LeaderboardConstants::MULTIPLIER_FIRST_ATTEMPT,
+                2       => LeaderboardConstants::MULTIPLIER_SECOND_ATTEMPT,
+                3       => LeaderboardConstants::MULTIPLIER_THIRD_ATTEMPT,
+                4       => LeaderboardConstants::MULTIPLIER_FOURTH_ATTEMPT,
+                default => LeaderboardConstants::MULTIPLIER_DEFAULT_ATTEMPT,
             };
 
             $finalPoin = floor($basePoin * $attemptMultiplier);

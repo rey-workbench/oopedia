@@ -18,6 +18,9 @@ interface UeqSurveyServiceInterface
 
     public function hasUserSubmitted(string $userId, ?AssessmentType $type = null): bool;
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function createSurvey(array $data): UeqSurvey;
 
     public function calculateAverages(Collection $surveys): array;

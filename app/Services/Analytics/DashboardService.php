@@ -13,8 +13,8 @@ use App\Helpers\ProgressHelper;
 use App\Http\Resources\ActivityResource;
 use App\Http\Resources\MaterialResource;
 use App\Models\Material;
-use App\Models\StudentState;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\Cache;
 
 final readonly class DashboardService implements DashboardServiceInterface
@@ -23,8 +23,7 @@ final readonly class DashboardService implements DashboardServiceInterface
         public MaterialRepositoryInterface $materialRepo,
         public ProgressRepositoryInterface $progressRepo,
         public QuestionRepositoryInterface $questionRepo,
-    ) {
-    }
+    ) {}
 
     /** @return Collection<int, Material> */
     public function getAllMaterials(): Collection
@@ -65,9 +64,9 @@ final readonly class DashboardService implements DashboardServiceInterface
 
                 $recentActivities = $this->progressRepo->getRecentActivities($userId, 10)
                     ->map(fn ($activity): object => $this->addActivityType($activity))
-                    ->pipe(fn (\Illuminate\Support\Collection $activities): \Illuminate\Support\Collection => $this->deduplicateActivities($activities, 5));
+                    ->pipe(fn (SupportCollection $activities): SupportCollection => $this->deduplicateActivities($activities, 5));
 
-                $studentState   = StudentState::where('user_id', $userId)->first();
+                $studentState   = $this->progressRepo->getOrCreateStudentState($userId);
                 $certifications = $studentState?->certifications ?? [];
 
                 $completedMaterialsCount  = $materials->filter(fn ($m): bool => $m['progress_percentage'] >= 100)->count();
@@ -120,7 +119,7 @@ final readonly class DashboardService implements DashboardServiceInterface
         return $counts;
     }
 
-    private function addActivityType($activity): object
+    private function addActivityType(object $activity): object
     {
         if ($activity->total_correct >= 5) {
             $activity->type = 'achievement';
@@ -133,7 +132,7 @@ final readonly class DashboardService implements DashboardServiceInterface
         return $activity;
     }
 
-    private function deduplicateActivities(\Illuminate\Support\Collection $activities, int $limit): \Illuminate\Support\Collection
+    private function deduplicateActivities(SupportCollection $activities, int $limit): SupportCollection
     {
         $seen = [];
 
@@ -251,7 +250,10 @@ final readonly class DashboardService implements DashboardServiceInterface
         );
     }
 
-    private function processMaterialsWithStats($materials, \Illuminate\Support\Collection $progressStats, bool $isGuest)
+    /**
+     * @param Collection<int, Material> $materials
+     */
+    private function processMaterialsWithStats(Collection $materials, SupportCollection $progressStats, bool $isGuest): array
     {
         return $materials->map(function ($material) use ($progressStats, $isGuest): array {
             $counts = ProgressHelper::calculateMaterialQuestionCounts($material, $isGuest);
